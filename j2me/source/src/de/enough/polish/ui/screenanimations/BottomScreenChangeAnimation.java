@@ -3,7 +3,7 @@
 /*
  * Created on 27-May-2005 at 18:54:36.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -45,7 +45,7 @@ import de.enough.polish.ui.Style;
  * </pre>
  * </p>
  *
- * <p>Copyright (c) Enough Software 2005 - 2008</p>
+ * <p>Copyright (c) Enough Software 2005 - 2009</p>
  * <pre>
  * history
  *        27-May-2005 - rob creation
@@ -68,6 +68,7 @@ public class BottomScreenChangeAnimation extends ScreenChangeAnimation {
 	 */
 	public BottomScreenChangeAnimation() {
 		super();
+		this.supportsDifferentScreenSizes = true;
 	}
 	
 	
@@ -143,15 +144,30 @@ public class BottomScreenChangeAnimation extends ScreenChangeAnimation {
 		//#endif
 		Image first;
 		Image second;
+		int firstX = 0;
+		int firstY = 0;
+		int secondX = 0;
+		int secondY = 0;
 		if (this.isForwardAnimation) {
 			first = this.lastCanvasImage;
 			second = this.nextCanvasImage;
+			firstX = this.lastContentX;
+			firstY = this.lastContentY;
+			secondX = this.nextContentX;
+			secondY = this.nextContentY;
 		} else {
 			first = this.nextCanvasImage;
 			second = this.lastCanvasImage;
+			firstX = this.nextContentX;
+			firstY = this.nextContentY;
+			secondX = this.lastContentX;
+			secondY = this.lastContentY;
 		}
-		g.drawImage( first, 0, y, Graphics.TOP | Graphics.LEFT );
-		g.drawImage( second, 0, this.screenHeight -  this.currentY, Graphics.TOP | Graphics.LEFT );
+		g.drawImage( first, firstX, y + firstY, Graphics.TOP | Graphics.LEFT );
+		g.drawImage( second, secondX, secondY + this.screenHeight - this.currentY, Graphics.TOP | Graphics.LEFT );
+
+//		g.drawImage( first, 0, y, Graphics.TOP | Graphics.LEFT );
+//		g.drawImage( second, 0, this.screenHeight -  this.currentY, Graphics.TOP | Graphics.LEFT );
 	}
 
 }

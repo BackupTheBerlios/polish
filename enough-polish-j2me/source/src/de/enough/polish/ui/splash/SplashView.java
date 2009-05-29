@@ -3,7 +3,7 @@
 /*
  * Created on 23-Mar-2005 at 21:53:09.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -41,7 +41,7 @@ import javax.microedition.lcdui.Graphics;
  * //#endif  
  * </p>
  *
- * <p>Copyright (c) Enough Software 2005 - 2008</p>
+ * <p>Copyright (c) Enough Software 2005 - 2009</p>
  * <pre>
  * history
  *        23-Mar-2005 - rob creation

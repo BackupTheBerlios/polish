@@ -2,7 +2,7 @@
 /*
  * Created on Jul 29, 2006 at 6:34:22 PM.
  * 
- * Copyright (c) 2006 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -33,7 +33,7 @@ import de.enough.polish.ui.Background;
 /**
  * <p>Renders a simple background with a maxium width.</p>
  *
- * <p>Copyright Enough Software 2006 - 2008</p>
+ * <p>Copyright Enough Software 2006 - 2009</p>
  * <pre>
  * history
  *        Jul 29, 2006 - rob creation

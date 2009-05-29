@@ -3,7 +3,7 @@
 /*
  * Created on 22-Feb-2006 at 19:09:37.
  * 
- * Copyright (c) 2006 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -66,7 +66,7 @@ import javax.microedition.lcdui.Image;
  *    variable.
  * </p>
  *
- * <p>Copyright Enough Software 2006 - 2008</p>
+ * <p>Copyright Enough Software 2006 - 2009</p>
  * <pre>
  * history
  *        22-Feb-2006 - rob creation
@@ -89,6 +89,9 @@ public class ScrollBar extends Item {
 	//#endif
 	//#if polish.css.scrollbar-slider-mode
 		protected int sliderMode = MODE_PAGE;
+	//#endif
+	//#if polish.css.scrollbar-slider-background
+		protected Background sliderBackground;
 	//#endif
 	protected boolean hideSlider = true;
 	protected int sliderY;
@@ -138,7 +141,7 @@ public class ScrollBar extends Item {
 		System.out.println("initScrollBar( screenWidth=" + screenWidth + ", screenAvailableHeight=" + screenAvailableHeight + ", screenContentHeight=" + screenContentHeight + ", contentYOffset=" + contentYOffset + ", selectionStart=" + selectionStart + ", selectionHeight=" + selectionHeight + ", focusedIndex=" + focusedIndex + ", numberOfItems=" + numberOfItems + ")");
 		this.screenActualContentHeight = screenContentHeight;
 		this.screenAvailableContentHeight = screenAvailableHeight;
-		if ( screenAvailableHeight >= screenContentHeight ) {
+		if ( screenAvailableHeight >= screenContentHeight || screenContentHeight == 0) {
 			this.isVisible = false;
 			return 0;
 		}
@@ -178,10 +181,10 @@ public class ScrollBar extends Item {
 		//#debug
 		System.out.println("sliderY=" + this.sliderY + ", sliderHeight=" + this.sliderHeight);
 		if (!this.isInitialized || (this.scrollBarHeight != this.itemHeight) ) {
-			init( screenWidth, screenWidth );
+			init( screenWidth, screenWidth, screenAvailableHeight );
 		}
 		this.itemHeight = this.scrollBarHeight;
-		//#if polish.css.opacity && polish.midp2
+		//#if tmp.fadeout
 			if (lastSliderY != this.sliderY || lastSliderHeight != this.sliderHeight) {
 				this.opacityRgbData = null;
 				this.opacity = this.startOpacity;
@@ -238,7 +241,7 @@ public class ScrollBar extends Item {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#initContent(int, int)
 	 */
-	protected void initContent(int firstLineWidth, int lineWidth) {
+	protected void initContent(int firstLineWidth, int availWidth, int availHeight) {
 //		//#if polish.css.scrollbar-slider-hide
 //			if (!this.hideSlider) {
 //			} else {
@@ -247,7 +250,7 @@ public class ScrollBar extends Item {
 //			}
 //		//#endif
 		this.contentWidth = this.sliderWidth;
-		this.contentHeight = this.scrollBarHeight - ( this.paddingTop + this.paddingBottom + this.marginTop + this.marginBottom + (this.borderWidth << 1));
+		this.contentHeight = this.scrollBarHeight - ( this.paddingTop + this.paddingBottom + this.marginTop + this.marginBottom + getBorderWidthTop() + getBorderWidthBottom());
 
 	}
 
@@ -259,7 +262,9 @@ public class ScrollBar extends Item {
 			//System.out.println("scrollbar is not visible - aborting paint");
 			return;
 		}
-//		//System.out.println("painting scrollbar at y=" + y + " width=" + this.itemWidth + ", height=" + this.itemHeight + " pixel=" + Integer.toHexString( this.opacityRgbData[ this.itemWidth * this.itemHeight / 2] ) ) ;
+//		System.out.println("painting scrollbar at x=" + x + ", y=" + y + " width=" + this.itemWidth + ", height=" + this.itemHeight + ", screenWidth=" + this.screen.screenWidth); //+ " pixel=" + Integer.toHexString( this.opacityRgbData[ this.itemWidth * this.itemHeight / 2] ) ) ;
+//		System.out.println("clipping: x=" + g.getClipX() + ", clipWidth=" + g.getClipWidth() );
+//		System.out.println("opacity=" + this.opacity);
 //		//#if polish.css.scrollbar-slider-hide
 //			if (this.hideSlider) {
 //		//#endif
@@ -276,26 +281,51 @@ public class ScrollBar extends Item {
 	protected void paintContent(int x, int y, int leftBorder, int rightBorder,
 			Graphics g) 
 	{
-		//#if polish.css.scrollbar-slider-image
-			if (this.sliderImage != null) {
-				//#if polish.css.scrollbar-slider-image-repeat
-					int imageHeight = this.sliderImage.getHeight();
-					y = this.sliderY;
-					for (int i=this.repeatSliderNumber; --i >= 0; ) {
-						g.drawImage(this.sliderImage, x, this.sliderY, Graphics.TOP | Graphics.LEFT );
-						y += imageHeight;
-					}
-				//#else
-					g.drawImage(this.sliderImage, x, this.sliderY, Graphics.TOP | Graphics.LEFT );
-				//#endif
+		boolean doClip = false;
+		int clipX = 0;
+		int clipY = 0;
+		int clipWidth = 0;
+		int clipHeight = 0;
+		if (this.sliderY + this.sliderHeight > this.contentHeight) {
+			doClip = true;
+			clipX = g.getClipX();
+			clipY = g.getClipY();
+			clipWidth = g.getClipWidth();
+			clipHeight = g.getClipHeight();
+			g.clipRect( clipX, y, clipWidth, this.contentHeight );
+		}
+		//#if polish.css.scrollbar-slider-background
+			if (this.sliderBackground != null) {
+				this.sliderBackground.paint(x, y + this.sliderY, this.sliderWidth, this.sliderHeight, g);
 			} else {
 		//#endif
-				//System.out.println("Painting slider at " + x + "," + (y + this.sliderY) + ", width=" + this.sliderWidth + ", height=" + this.sliderHeight);
-				g.setColor( this.sliderColor );
-				g.fillRect(x, y + this.sliderY, this.sliderWidth, this.sliderHeight);
-		//#if polish.css.scrollbar-slider-image
+			//#if polish.css.scrollbar-slider-image
+				if (this.sliderImage != null) {
+					//System.out.println("painting scrollbar image");
+					//#if polish.css.scrollbar-slider-image-repeat
+						int imageHeight = this.sliderImage.getHeight();
+						y = this.sliderY;
+						for (int i=this.repeatSliderNumber; --i >= 0; ) {
+							g.drawImage(this.sliderImage, x, this.sliderY, Graphics.TOP | Graphics.LEFT );
+							y += imageHeight;
+						}
+					//#else
+						g.drawImage(this.sliderImage, x, this.sliderY, Graphics.TOP | Graphics.LEFT );
+					//#endif
+				} else {
+			//#endif
+					//System.out.println("Painting slider at " + x + "," + (y + this.sliderY) + ", width=" + this.sliderWidth + ", height=" + this.sliderHeight);
+					g.setColor( this.sliderColor );
+					g.fillRect(x, y + this.sliderY, this.sliderWidth, this.sliderHeight);
+			//#if polish.css.scrollbar-slider-image
+				}
+			//#endif
+		//#if polish.css.scrollbar-slider-background
 			}
 		//#endif
+		if (doClip) {
+			g.setClip( clipX, clipY, clipWidth, clipHeight );
+		}
 	}
 
 	//#ifdef polish.useDynamicStyles	
@@ -352,13 +382,19 @@ public class ScrollBar extends Item {
 			}
 		//#endif
 		//#if tmp.fadeout
-			Integer opacityInt = style.getIntProperty("opacity");
+			Dimension opacityInt = (Dimension) style.getObjectProperty("opacity");
 			if (opacityInt != null) {
-				this.startOpacity = opacityInt.intValue();
+				this.startOpacity = opacityInt.getValue(255);
 			}
 			Boolean fadeOutBool = style.getBooleanProperty("scrollbar-fadeout");
 			if (fadeOutBool != null) {
 				this.overlap = fadeOutBool.booleanValue();
+			}
+		//#endif
+		//#if polish.css.scrollbar-slider-background
+			Background bg = (Background) style.getObjectProperty("scrollbar-slider-background");
+			if (bg != null) {
+				this.sliderBackground = bg;
 			}
 		//#endif
 	}
@@ -383,10 +419,9 @@ public class ScrollBar extends Item {
 	protected boolean handlePointerPressed( int relX, int relY ) {
 		this.isPointerPressedHandled = false;
 		//System.out.println("relX=" + relX + ", itemWidth=" + this.itemWidth);
-		if (this.screenActualContentHeight <= this.screenAvailableContentHeight) {
+		if (this.screenActualContentHeight <= this.screenAvailableContentHeight || relY < 0 || relY > this.screenAvailableContentHeight) {
 			return false;
 		}
-		//if ( isInItemArea(relX, relY) ) {
 		if ( (relX >= 0) || ((this.hideSlider || !this.isVisible) && relX >= -this.itemWidth) ) 
 		{
 			this.isPointerPressedHandled = true;
@@ -459,6 +494,11 @@ public class ScrollBar extends Item {
 		if (this.isPointerPressedHandled) {
 			// use the page dimensions:
 			int scrollOffset = (y * this.screenActualContentHeight) / this.screenAvailableContentHeight;
+			if (scrollOffset < 0) {
+				scrollOffset = 0;
+			} else if (scrollOffset > this.screenActualContentHeight - this.screenAvailableContentHeight) {
+				scrollOffset = this.screenActualContentHeight - this.screenAvailableContentHeight;
+			}
 			this.screen.setScrollYOffset(-scrollOffset, false);
 			this.isPointerDraggedHandled = true;
 			return true;

@@ -3,7 +3,7 @@
 /*
  * Created on Mar 13, 2007 at 12:37:50 PM.
  * 
- * Copyright (c) 2007 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -28,13 +28,14 @@
 package de.enough.polish.blackberry.ui;
 
 
+import de.enough.polish.ui.Style;
 import net.rim.device.api.ui.FieldChangeListener;
 import net.rim.device.api.ui.XYRect;
 
 /**
  * <p>Provides common funcitonality of the PolishEditField and the PolishPasswordEditField.</p>
  *
- * <p>Copyright Enough Software 2007 - 2008</p>
+ * <p>Copyright Enough Software 2007 - 2009</p>
  * <pre>
  * history
  *        Mar 13, 2007 - rob creation
@@ -49,9 +50,7 @@ public interface PolishTextField {
 	
 	public void focusRemove();
 	
-	public void setFont( Font font, int color );
-	
-	public void setFont( javax.microedition.lcdui.Font font, int color );
+	public void setStyle( Style style );
 	
 	public XYRect getExtent();
 	
@@ -64,5 +63,7 @@ public interface PolishTextField {
 	public int getInsertPositionOffset();
 	
 	public void setChangeListener( FieldChangeListener listener );
+
+	public int getCursorPosition();
 
 }

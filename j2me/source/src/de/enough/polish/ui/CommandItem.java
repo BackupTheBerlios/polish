@@ -2,7 +2,7 @@
 /*
  * Created on Mar 4, 2006 at 3:17:15 PM.
  * 
- * Copyright (c) 2006 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -29,7 +29,7 @@ package de.enough.polish.ui;
 import java.io.IOException;
 
 import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Command;
+
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
@@ -38,7 +38,7 @@ import javax.microedition.lcdui.Image;
 /**
  * <p>Wraps a javax.microedition.lcdui.Command object and allows to add subcommands, specific styles etc to single commands.</p>
  *
- * <p>Copyright Enough Software 2006 - 2008</p>
+ * <p>Copyright Enough Software 2006 - 2009</p>
  * <pre>
  * history
  *        Mar 4, 2006 - rob creation
@@ -60,12 +60,14 @@ public class CommandItem extends IconItem {
 		private int childIndicatorColor = -1;
 	//#endif
 	private boolean isOpen;
-
+	//#if polish.css.suppress-indicator
+		boolean suppressIndicator;
+	//#endif
 	
 	/**
 	 * Creates a new command item.
 	 * 
-	 * @param command the command represented by this item.
+	 * @param command the commmand represented by this item.
 	 * @param parent the parent item
 	 */
 	public CommandItem( Command command, Item parent ) {
@@ -192,20 +194,22 @@ public class CommandItem extends IconItem {
 				return true;
 			}
 		}
+		
 		return false;
 	}
-
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.IconItem#initContent(int, int)
 	 */
-	protected void initContent(int firstLineWidth, int lineWidth) {
+	protected void initContent(int firstLineWidth, int availWidth, int availHeight) {
+		//#debug
+		System.out.println("initContent(" + firstLineWidth + ", " + availWidth + ", " + availHeight + ") for " + this);
 		if (this.hasChildren) {
 			firstLineWidth -= this.childIndicatorWidth + this.paddingHorizontal;
-			lineWidth -= this.childIndicatorWidth + this.paddingHorizontal;
+			availWidth -= this.childIndicatorWidth + this.paddingHorizontal;
 		}
 		
-		super.initContent(firstLineWidth, lineWidth);
+		super.initContent(firstLineWidth, availWidth, availHeight);
 		
 		if (this.hasChildren) {
 			this.contentWidth += this.childIndicatorWidth + this.paddingHorizontal;
@@ -228,30 +232,52 @@ public class CommandItem extends IconItem {
 //			System.out.println( this + ": backgroundYOffset=" + this.backgroundYOffset);
 //		}
 		if (this.hasChildren) {
+			paintChildren(y, leftBorder, rightBorder, g);
+		}
+	}
+
+	/**
+	 * @param y
+	 * @param leftBorder
+	 * @param rightBorder
+	 * @param g
+	 */
+	private void paintChildren(int y, int leftBorder, int rightBorder,
+			Graphics g)
+	{
+		int x;
+		if (this.hasChildren) {
 			// paint child indicator
 			//rightBorder -= this.childIndicatorWidth;
-			//#if polish.css.command-child-indicator
-				if (this.childIndicator != null) {
-					int height = this.childIndicator.getHeight(); // center image if lower than the font:
-					g.drawImage( this.childIndicator, rightBorder, y + (this.contentHeight - height)/2, Graphics.TOP | Graphics.RIGHT );
-				} else {
+			//#if polish.css.suppress-indicator
+			if(!this.suppressIndicator)
+			{
 			//#endif
-					//#if polish.css.command-child-indicator-color
-						if ( this.childIndicatorColor != -1 ) {
-							g.setColor( this.childIndicatorColor );							
-						}
-					//#endif
-					x = rightBorder - this.childIndicatorWidth;
-					int indicatorY = y + this.childIndicatorYOffset;
-					//#if polish.midp2
-						g.fillTriangle(x, indicatorY, rightBorder, indicatorY + this.childIndicatorHeight/2, x, indicatorY + this.childIndicatorHeight );
-					//#else
-						g.drawLine( x, indicatorY, rightBorder, indicatorY + this.childIndicatorHeight/2 );
-						g.drawLine( x, indicatorY + this.childIndicatorHeight, rightBorder, indicatorY + this.childIndicatorHeight/2 );
-						g.drawLine( x, indicatorY, x, indicatorY + this.childIndicatorHeight );
-					//#endif
-			//#if polish.css.command-child-indicator
-				}
+				//#if polish.css.command-child-indicator
+					if (this.childIndicator != null) {
+						int height = this.childIndicator.getHeight(); // center image if lower than the font:
+						g.drawImage( this.childIndicator, rightBorder, y + (this.contentHeight - height)/2, Graphics.TOP | Graphics.RIGHT );
+					} else {
+				//#endif
+						//#if polish.css.command-child-indicator-color
+							if ( this.childIndicatorColor != -1 ) {
+								g.setColor( this.childIndicatorColor );							
+							}
+						//#endif
+						x = rightBorder - this.childIndicatorWidth;
+						int indicatorY = y + this.childIndicatorYOffset;
+						//#if polish.midp2
+							g.fillTriangle(x, indicatorY, rightBorder, indicatorY + this.childIndicatorHeight/2, x, indicatorY + this.childIndicatorHeight );
+						//#else
+							g.drawLine( x, indicatorY, rightBorder, indicatorY + this.childIndicatorHeight/2 );
+							g.drawLine( x, indicatorY + this.childIndicatorHeight, rightBorder, indicatorY + this.childIndicatorHeight/2 );
+							g.drawLine( x, indicatorY, x, indicatorY + this.childIndicatorHeight );
+						//#endif
+				//#if polish.css.command-child-indicator
+					}
+				//#endif
+			//#if polish.css.suppress-indicator
+			}
 			//#endif
 			
 			if (this.isOpen) {
@@ -265,8 +291,9 @@ public class CommandItem extends IconItem {
 //				g.setColor(0x00FF00);
 //				g.fillRect(clipX, clipY, clipWidth, clipHeight);
 				
-				int availableWidth = (clipWidth * 2) / 3;
-				int childrenWidth = this.children.getItemWidth( availableWidth, availableWidth );
+				int availWidth = (clipWidth * 2) / 3;
+				int availHeight = this.availableHeight;
+				int childrenWidth = this.children.getItemWidth( availWidth, availWidth, availHeight );
 				int childrenHeight = this.children.itemHeight; // is initialised because of the getItemWidth() call
 				rightBorder += this.paddingHorizontal;
 //				System.out.println("drawing children: children-width " + childrenWidth + ", clipWidth=" + clipWidth + ", leftBorder=" + leftBorder + ", rightBorder=" + rightBorder);
@@ -477,7 +504,7 @@ public class CommandItem extends IconItem {
 	 * 
 	 * @param open true when the children should be visible and the focus is moved to them.
 	 */
-	protected void open(boolean open) {
+	public void open(boolean open) {
 		//#debug
 		System.out.println( this + ": opening children: " + open);
 		//try { throw new RuntimeException(); } catch (Exception e) { e.printStackTrace(); }
@@ -486,14 +513,21 @@ public class CommandItem extends IconItem {
 			// move focus to first child:
 			this.children.showNotify();
 			this.children.focus( getFocusedStyle(), 0 );
+			this.children.focusChild( 0 );
+			//#if polish.CommandItem.showCommand
+			removeCommandFromScreen();
+			//#endif
 		} else {
 			// focus myself:
 			// reset selected command element to the first one in the list:
 			if ( this.children != null ) {
 				this.children.hideNotify();
-				this.children.focus( 0 );
+				this.children.focusChild( -1 );
 				this.children.setScrollYOffset( 0 );
 			}
+			//#if polish.CommandItem.showCommand
+			addCommandToScreen();
+			//#endif
 		}
 	}
 	
@@ -527,12 +561,6 @@ public class CommandItem extends IconItem {
 	 */
 	public void setStyle(Style style) {
 		super.setStyle(style);
-		//#if polish.css.command-child-indicator-color
-			Integer childIndicatorColorInt = style.getIntProperty("command-child-indicator-color");
-			if ( childIndicatorColorInt != null ) {
-				this.childIndicatorColor = childIndicatorColorInt.intValue();
-			}
-		//#endif
 		//#if polish.css.command-child-indicator
 			if (this.hasChildren) {
 				String childIndicatorUrl = style.getProperty( "command-child-indicator" );
@@ -553,9 +581,29 @@ public class CommandItem extends IconItem {
 				if (this.font == null) {
 					this.font = Font.getDefaultFont();
 				}
-				this.childIndicatorWidth = this.font.getHeight();
-				this.childIndicatorHeight = this.childIndicatorWidth;
+				if (this.childIndicatorWidth == 0) {
+					this.childIndicatorWidth = this.font.getHeight();
+					this.childIndicatorHeight = this.childIndicatorWidth;
+				}
 		//#if polish.css.command-child-indicator
+			}
+		//#endif
+		
+	}
+	
+
+	
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.StringItem#setStyle(de.enough.polish.ui.Style, boolean)
+	 */
+	public void setStyle(Style style, boolean resetStyle)
+	{
+		super.setStyle(style, resetStyle);
+		//#if polish.css.command-child-indicator-color
+			Integer childIndicatorColorInt = style.getIntProperty("command-child-indicator-color");
+			if ( childIndicatorColorInt != null ) {
+				this.childIndicatorColor = childIndicatorColorInt.intValue();
 			}
 		//#endif
 		//#if polish.css.command-child-indicator-width
@@ -570,11 +618,15 @@ public class CommandItem extends IconItem {
 				this.childIndicatorHeight = childIndicatorHeightInt.intValue();
 			}
 		//#endif
-
+						
+		//#ifdef polish.css.suppress-indicator
+			Boolean suppressIndicatorBool = style.getBooleanProperty("supress-indicator");
+			if(suppressIndicatorBool != null)
+			{
+				this.suppressIndicator = suppressIndicatorBool.booleanValue();
+			}
+		//#endif
 	}
-	
-
-	
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.IconItem#animate(long, de.enough.polish.ui.ClippingRegion)
@@ -615,7 +667,7 @@ public class CommandItem extends IconItem {
 	 * 
 	 * @return true of open, false otherwise
 	 */
-	protected boolean isOpen() {
+	public boolean isOpen() {
 		return this.isOpen;
 	}
 
@@ -631,9 +683,101 @@ public class CommandItem extends IconItem {
 		}
 		return (CommandItem) this.children.get(index);
 	}
-	
-	
-	
 
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#fireEvent(java.lang.String, java.lang.Object)
+	 */
+	public void fireEvent(String eventName, Object eventData)
+	{
+		super.fireEvent(eventName, eventData);
+		if (this.children != null) {
+			this.children.fireEvent(eventName, eventData);
+		}
+	}
 
+	/* (Override) */
+	public Item getItemAt(int relX, int relY) {
+		if (this.isOpen) {
+			int itemRelX = relX - this.contentX - this.children.relativeX;
+			int itemRelY = relY - this.contentY - this.children.relativeY;
+			Item item = this.children.getItemAt(itemRelX, itemRelY);
+			if (item != null) {
+				return item;
+			}
+		}
+		return super.getItemAt(relX, relY);
+	}
+
+	/* (Override) */
+	public boolean isInItemArea(int relX, int relY) {
+		if (this.isOpen) {
+			int itemRelX = relX - this.contentX - this.children.relativeX;
+			int itemRelY = relY - this.contentY - this.children.relativeY;
+			if (this.children.isInItemArea(itemRelX, itemRelY)) {
+				return true;
+			}
+		}
+		return super.isInItemArea(relX, relY);
+	}
+
+	/**
+	 * Focuses the child command item of this CommandItem.
+	 * @param item the child command item
+	 */
+	public void focusChild(Item item) {
+		System.out.println("focusChild");
+		if (this.hasChildren) {
+			int index = this.children.indexOf(item);
+			if (index != -1) {
+				this.children.focusChild(index);
+			} else if (this.children.focusedItem != null) {
+				((CommandItem)this.children.focusedItem).focusChild(item);
+			}
+		}
+		
+	}
+
+	//#if polish.CommandItem.showCommand
+	/**
+	 * Adds the command to the screen of
+	 * the parenting item
+	 */
+	protected void addCommandToScreen()
+	{
+		if(this.parent != null)
+		{
+			this.parent.getScreen().addCommand(getCommand());
+		}
+	}
+	
+	/**
+	 * Removes the command from the screen of
+	 * the parenting item
+	 */
+	protected void removeCommandFromScreen()
+	{
+		if(this.parent != null)
+		{
+			this.parent.getScreen().removeCommand(getCommand());
+		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#focus(de.enough.polish.ui.Style, int)
+	 */
+	protected Style focus(Style newStyle, int direction) {
+		addCommandToScreen();
+		return super.focus(newStyle, direction);
+	}
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.IconItem#defocus(de.enough.polish.ui.Style)
+	 */
+	protected void defocus( Style originalStyle ) {
+		removeCommandFromScreen();
+		
+		super.defocus(originalStyle);
+	}
+	//#endif
+	
 }

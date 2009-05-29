@@ -54,7 +54,7 @@ import de.enough.polish.util.ImageUtil;
  * </ul>
  * </p>
  *
- * <p>Copyright Enough Software 2004 - 2008</p>
+ * <p>Copyright Enough Software 2004 - 2009</p>
 
  * <pre>
  * history

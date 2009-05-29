@@ -3,7 +3,7 @@
 /*
  * Created on Dec 9, 2007 at 7:39:26 PM.
  * 
- * Copyright (c) 2007 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -47,7 +47,7 @@ import de.enough.polish.xml.XmlDomParser;
 /**
  * <p>Allows to communicate with XML-RPC servers</p>
  *
- * <p>Copyright Enough Software 2007 - 2008</p>
+ * <p>Copyright Enough Software 2007 - 2009</p>
  * <pre>
  * history
  *        Dec 9, 2007 - rob creation
@@ -78,7 +78,7 @@ public class XmlRpcRemoteClient extends RemoteClient
 	 * @return a return value for methods; void methods return null
 	 * @throws RemoteException when a checked or an unchecked exception has occurred on the server side or the connection failed
 	 */
-	protected Object callMethodSynchrone(String name, long primitivesFlag, Object[] parameters) throws RemoteException
+	protected Object callMethod(String name, long primitivesFlag, Object[] parameters) throws RemoteException
 	{
 		// prepare call:
 		String dot = "__";
@@ -138,7 +138,11 @@ public class XmlRpcRemoteClient extends RemoteClient
 			if (status != HttpConnection.HTTP_OK) {
 				throw new RemoteException("Server responded with response code " + status );
 			} else {
-				out.flush();
+				try {
+					out.flush();
+				} catch (IllegalStateException e) {
+					// ignore
+				}
 				// okay, call succeeded at least partially:
 				// check for cookie:
 				String newCookie = connection.getHeaderField("Set-cookie");
@@ -160,7 +164,17 @@ public class XmlRpcRemoteClient extends RemoteClient
 					byteOut.write(readBuffer, 0, read);
 				}
 				String response = new String( byteOut.toByteArray() );
-				XmlDomNode node = XmlDomParser.parseTree(response).getChild("methodResponse").getChild(0);
+				XmlDomNode root = XmlDomParser.parseTree(response);
+				XmlDomNode node;
+				if ("methodResponse".equals(root.getName())) {
+					node = root;
+				} else {
+					node = root.getChild("methodResponse");
+					if (node == null) {
+						throw new IOException("Invalid XML RPC Response: " + response);
+					}
+				}
+				node = node.getChild(0);
 				if (node.getName().equals("fault")) {
 					node = node.getChild("value");
 					Hashtable struct = (Hashtable) XmlRpcSerializer.deserialize(node);
@@ -181,6 +195,8 @@ public class XmlRpcRemoteClient extends RemoteClient
 			throw new RemoteException( e );					
 		} catch (Throwable e) {
 			// create new RemoteException for this (e.g. SecurityException):
+			//#debug error
+			System.out.println("Unexpected error during XML RPC call: " + e);
 			throw new RemoteException( e );					
 		} finally {
 			if (in != null) {
@@ -208,7 +224,6 @@ public class XmlRpcRemoteClient extends RemoteClient
 				}
 			}
 		}			
-		// check remote results:
 	}
 
 	

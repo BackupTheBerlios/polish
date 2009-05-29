@@ -172,7 +172,7 @@ import javax.microedition.lcdui.Image;
  * device-specific characteristics such as these.
  * <p>
   * 
- * <p>Copyright Enough Software 2005 - 2008</p>
+ * <p>Copyright Enough Software 2005 - 2009</p>
  * @author Robert Virkus (original implementation)
  * @author Thomas Boyer (optimizations)
  */

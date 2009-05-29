@@ -2,7 +2,7 @@
 /*
  * Created on Nov 21, 2007 at 4:42:11 PM.
  * 
- * Copyright (c) 2007 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -30,12 +30,14 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 import de.enough.polish.ui.Background;
+import de.enough.polish.ui.Dimension;
+import de.enough.polish.ui.Style;
 import de.enough.polish.util.DrawUtil;
 
 /**
  * <p></p>
  *
- * <p>Copyright Enough Software 2007 - 2008</p>
+ * <p>Copyright Enough Software 2007 - 2009</p>
  * <pre>
  * history
  *        Nov 21, 2007 - rob creation
@@ -44,7 +46,6 @@ import de.enough.polish.util.DrawUtil;
  */
 public class MaskBackground extends Background
 {
-	
 	private final Background mask;
 	private final Background background;
 	
@@ -54,13 +55,13 @@ public class MaskBackground extends Background
 	private int lastWidth;
 	private int lastHeight;
 	private final int maskColor;
-	private final int opacity;
+	private int opacity;
 	private boolean refreshMask;
 	private boolean refreshBackground;
 
 
 	/**
-	 * Creates a new combiend background.
+	 * Creates a new mask background.
 	 * 
 	 * @param mask the background used for masking the actual background
 	 * @param maskColor the color of the mask
@@ -75,6 +76,21 @@ public class MaskBackground extends Background
 		this.background = background;
 		this.opacity = opacity;
 	}
+	
+
+	/**
+	 * Creates a new mask background.
+	 * 
+	 * @param mask the background used for masking the actual background
+	 * @param maskColor the color of the mask
+	 * @param background  the background painted in the background
+	 * @param opacity the overall maximum opacity between 0 (invisible) to 255 (fully opaque) 
+	 * 
+	 */
+	public MaskBackground( Background mask, int maskColor, Background background, Dimension opacity )
+	{
+		this( mask, maskColor, background, opacity.getValue(255));
+	}
 
 
 	/* (non-Javadoc)
@@ -82,15 +98,19 @@ public class MaskBackground extends Background
 	 */
 	public void paint(int x, int y, int width, int height, Graphics g)
 	{
+		if (width == 0 || height == 0) {
+			return;
+		}
 		//#if polish.midp2
-			boolean refreshAll = this.buffer == null || width != this.lastWidth || height != this.lastHeight; 
+			int[] rgbData = this.buffer;
+			boolean refreshAll = rgbData == null || width != this.lastWidth || height != this.lastHeight; 
 			if (refreshAll || this.refreshBackground || this.refreshMask ) {
 				int area = width * height;
 				Image image = Image.createImage( width, height );
 				Graphics imageG = image.getGraphics();
+				int[] maskData = this.maskBuffer; 
 				if (refreshAll || this.refreshMask ) {
 					this.mask.paint(0,0, width, height, imageG);
-					int[] maskData = this.maskBuffer; 
 					if (maskData == null || maskData.length != area) {
 						maskData = new int[ area ];
 						this.maskBuffer = maskData;
@@ -99,7 +119,7 @@ public class MaskBackground extends Background
 					this.refreshMask = false;
 					if (refreshAll || this.refreshBackground) {
 						imageG.setColor( 0xffffff );
-						imageG.fillRect(0, 0, width + 1, height + 1);
+						imageG.fillRect(0, 0, width, height );
 					}
 				}
 				
@@ -114,7 +134,6 @@ public class MaskBackground extends Background
 					this.refreshBackground = false;
 				}
 				
-				int[] rgbData = this.buffer;
 				if (rgbData == null || rgbData.length != area) {
 					rgbData = new int[ area ];
 					this.buffer = rgbData;
@@ -123,7 +142,7 @@ public class MaskBackground extends Background
 				
 				int targetColor = imageG.getDisplayColor( this.maskColor ) | 0xff000000;
 				for (int i = 0; i < area; i++) {
-					int maskCol = this.maskBuffer[i];
+					int maskCol = maskData[i];
 					int maskAlpha = maskCol >>> 24;
 					maskCol |= 0xff000000;
 					if (maskCol == targetColor) {
@@ -131,7 +150,7 @@ public class MaskBackground extends Background
 						int pixelAlpha = pixel >>> 24;
 						int maxAlpha = Math.min( maskAlpha, this.opacity );
 						if (pixelAlpha > maxAlpha) {
-							pixel = (pixel | 0xff000000)  & ((maxAlpha << 24) | 0x00ffffff);
+							pixel = (pixel | 0xff000000) & ((maxAlpha << 24) | 0x00ffffff);
 						}
 						rgbData[i] = pixel;
 						
@@ -148,7 +167,7 @@ public class MaskBackground extends Background
 				x += g.getTranslateX();
 				y += g.getTranslateY();
 			//#endif
-			DrawUtil.drawRgb( this.buffer, x, y, width, height, true, g );			
+			DrawUtil.drawRgb( rgbData, x, y, width, height, true, g );	
 		//#else
 			this.background.paint(x, y, width, height, g);
 		//#endif
@@ -205,4 +224,19 @@ public class MaskBackground extends Background
 		this.background.showNotify();
 	}
 
+	
+	//#if polish.css.animations && polish.css.background-mask-opacity
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Background#setStyle(de.enough.polish.ui.Style)
+	 */
+	public void setStyle(Style style)
+	{
+		//#if polish.css.background-mask-opacity
+			Dimension opacityObj = (Dimension) style.getObjectProperty("background-mask-opacity");
+			if (opacityObj != null) {
+				this.opacity = opacityObj.getValue(255);
+			}
+		//#endif
+	}
+//#endif
 }

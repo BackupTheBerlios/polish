@@ -5,15 +5,13 @@
 package de.enough.polish.doja.ui;
 
 /**
- * The <code>Command</code> class is a construct that encapsulates
- * the semantic information of an action. The behavior that the command
- * activates is not encapsulated in this object. This means that command
- * contains
- * only information about &quot;command&quot; not the actual action
- * that happens when
- * command
- * is activated. The action is defined in a
- * <A HREF="../../../javax/microedition/lcdui/CommandListener.html"><CODE>CommandListener</CODE></A>
+ * The <code>Command</code> class is a construct that encapsulates the semantic information of an action. 
+ * In J2ME Polish a command is also an IconItem, so it can be designed using normal //#style directives during
+ * the construction, etc.
+ * The behavior that the command  activates is not encapsulated in this object. This means that command
+ * contains only information about &quot;command&quot; not the actual action
+ * that happens when command is activated. The action is defined in a
+ * <A HREF="CommandListener.html"><CODE>CommandListener</CODE></A>
  * associated
  * with the <code>Displayable</code>. <code>Command</code> objects are
  * <em>presented</em>
@@ -88,15 +86,15 @@ package de.enough.polish.doja.ui;
  * certain soft-button,
  * the implementation can follow the style of the device by using the semantic
  * information as a guide. The defined types are
- * <A HREF="../../../javax/microedition/lcdui/Command.html#BACK"><CODE>BACK</CODE></A>,
- * <A HREF="../../../javax/microedition/lcdui/Command.html#CANCEL"><CODE>CANCEL</CODE></A>,
- * <A HREF="../../../javax/microedition/lcdui/Command.html#EXIT"><CODE>EXIT</CODE></A>,
- * <A HREF="../../../javax/microedition/lcdui/Command.html#HELP"><CODE>HELP</CODE></A>,
- * <A HREF="../../../javax/microedition/lcdui/Command.html#ITEM"><CODE>ITEM</CODE></A>,
- * <A HREF="../../../javax/microedition/lcdui/Command.html#OK"><CODE>OK</CODE></A>,
- * <A HREF="../../../javax/microedition/lcdui/Command.html#SCREEN"><CODE>SCREEN</CODE></A>,
+ * <A HREF="#BACK"><CODE>BACK</CODE></A>,
+ * <A HREF="#CANCEL"><CODE>CANCEL</CODE></A>,
+ * <A HREF="#EXIT"><CODE>EXIT</CODE></A>,
+ * <A HREF="#HELP"><CODE>HELP</CODE></A>,
+ * <A HREF="#ITEM"><CODE>ITEM</CODE></A>,
+ * <A HREF="#OK"><CODE>OK</CODE></A>,
+ * <A HREF="#SCREEN"><CODE>SCREEN</CODE></A>,
  * and
- * <A HREF="../../../javax/microedition/lcdui/Command.html#STOP"><CODE>STOP</CODE></A>. </p>
+ * <A HREF="#STOP"><CODE>STOP</CODE></A>. </p>
  * 
  * <a name="priority"></a>
  * <h3>Priority</h3>
@@ -176,7 +174,7 @@ public class Command extends Object
 	 * previous screen.
 	 * The jump to the previous screen is not done automatically by the
 	 * implementation
-	 * but by the <A HREF="../../../javax/microedition/lcdui/CommandListener.html#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)"><CODE>commandAction</CODE></A>
+	 * but by the <A HREF="CommandListener.html#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)"><CODE>commandAction</CODE></A>
 	 * provided by
 	 * the application.
 	 * Note that the application defines the actual action since the strictly
@@ -184,7 +182,7 @@ public class Command extends Object
 	 * 
 	 * <P>Value <code>2</code> is assigned to <code>BACK</code>.</P>
 	 * <DT><B>See Also: </B>
-	 * <A HREF="../../../javax/microedition/lcdui/Command.html#STOP"><CODE>STOP</CODE></A>
+	 * <A HREF="#STOP"><CODE>STOP</CODE></A>
 	 * 
 	 */
 	public static final int BACK = 2;
@@ -194,7 +192,7 @@ public class Command extends Object
 	 * current screen.
 	 * Nothing is cancelled automatically by the implementation; cancellation
 	 * is implemented
-	 * by the <A HREF="../../../javax/microedition/lcdui/CommandListener.html#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)"><CODE>commandAction</CODE></A> provided by
+	 * by the <A HREF="CommandListener.html#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)"><CODE>commandAction</CODE></A> provided by
 	 * the application.
 	 * 
 	 * <p> With this command type, the application hints to the implementation
@@ -210,7 +208,7 @@ public class Command extends Object
 	 * 
 	 * <P>Value <code>3</code> is assigned to <code>CANCEL</code>.</P>
 	 * <DT><B>See Also: </B>
-	 * <A HREF="../../../javax/microedition/lcdui/Command.html#STOP"><CODE>STOP</CODE></A>
+	 * <A HREF="#STOP"><CODE>STOP</CODE></A>
 	 * 
 	 */
 	public static final int CANCEL = 3;
@@ -220,7 +218,7 @@ public class Command extends Object
 	 * current screen.
 	 * Nothing is done automatically by the implementation; any action taken
 	 * is implemented
-	 * by the <A HREF="../../../javax/microedition/lcdui/CommandListener.html#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)"><CODE>commandAction</CODE></A> provided by
+	 * by the <A HREF="CommandListener.html#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)"><CODE>commandAction</CODE></A> provided by
 	 * the application.
 	 * 
 	 * <p> With this command type the application hints to the
@@ -242,7 +240,7 @@ public class Command extends Object
 	 * This command specifies a request for on-line help.
 	 * No help information is shown automatically by the implementation.
 	 * The
-	 * <A HREF="../../../javax/microedition/lcdui/CommandListener.html#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)"><CODE>commandAction</CODE></A> provided by the
+	 * <A HREF="CommandListener.html#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)"><CODE>commandAction</CODE></A> provided by the
 	 * application is responsible for showing the help information.
 	 * 
 	 * <P>Value <code>5</code> is assigned to <code>HELP</code>.</P>
@@ -256,7 +254,7 @@ public class Command extends Object
 	 * Nothing is stopped automatically by the implementation.
 	 * The cessation must
 	 * be performed
-	 * by the <A HREF="../../../javax/microedition/lcdui/CommandListener.html#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)"><CODE>commandAction</CODE></A> provided by
+	 * by the <A HREF="CommandListener.html#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)"><CODE>commandAction</CODE></A> provided by
 	 * the application.
 	 * 
 	 * <p> With this command type the application hints to the
@@ -270,7 +268,7 @@ public class Command extends Object
 	 * 
 	 * <P>Value <code>6</code> is assigned to <code>STOP</code>.</P>
 	 * <DT><B>See Also: </B>
-	 * <A HREF="../../../javax/microedition/lcdui/Command.html#CANCEL"><CODE>CANCEL</CODE></A>
+	 * <A HREF="#CANCEL"><CODE>CANCEL</CODE></A>
 	 * 
 	 */
 	public static final int STOP = 6;
@@ -279,7 +277,7 @@ public class Command extends Object
 	 * A command used for exiting from the application.  When the user
 	 * invokes this command, the implementation does not exit automatically.
 	 * The application's
-	 * <A HREF="../../../javax/microedition/lcdui/CommandListener.html#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)"><CODE>commandAction</CODE></A>
+	 * <A HREF="CommandListener.html#commandAction(Command, Displayable)"><CODE>commandAction</CODE></A>
 	 * will be called, and it should exit the application if it
 	 * is appropriate to do so.
 	 * 

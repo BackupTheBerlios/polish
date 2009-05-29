@@ -3,7 +3,7 @@
 /*
  * Created on 18-Jul-2005 at 09:20:00.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -88,20 +88,21 @@ public class MessageItem
 		//#endif
 		this.headlineItem.background = null;
 		this.headlineItem.border = null;
-		int headlineWidth = this.headlineItem.getItemWidth(width, width);
+		int headlineWidth = this.headlineItem.getItemWidth(width, width, height);
 		this.textItem.background = null;
 		this.textItem.border = null;
-		int textWidth = this.textItem.getItemWidth(width, width);
+		int textWidth = this.textItem.getItemWidth(width, width, height);
 		return Math.max(headlineWidth, textWidth);
 	}
 
 	protected int getPrefContentHeight(int width) {
 		this.headlineItem.background = null;
 		this.headlineItem.border = null;
-		int height = this.headlineItem.getItemHeight(width, width);
+		int availHeight = 200;
+		int height = this.headlineItem.getItemHeight(width, width, availHeight);
 		this.textItem.background = null;
 		this.textItem.border = null;
-		height += this.textItem.getItemHeight(width, width);
+		height += this.textItem.getItemHeight(width, width, availHeight);
 		//#if !polish.LibraryBuild
 			//# height += this.paddingVertical;
 		//#endif

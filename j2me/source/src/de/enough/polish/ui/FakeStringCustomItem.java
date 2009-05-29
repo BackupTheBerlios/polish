@@ -53,6 +53,9 @@ import javax.microedition.lcdui.Graphics;
  */
 public class FakeStringCustomItem extends FakeCustomItem
 {
+	private static final int DIRECTION_BACK_AND_FORTH = 0;
+	private static final int DIRECTION_LEFT = 1;
+	private static final int DIRECTION_RIGHT = 2;
 	protected String text;
 	protected String[] textLines;
 	protected int textColor;
@@ -67,7 +70,13 @@ public class FakeStringCustomItem extends FakeCustomItem
 		protected int xOffset;
 		private int textWidth;
 		private boolean isHorizontalAnimationDirectionRight;
-		private boolean isSkipHorizontalAnimation;
+		protected boolean animateTextWrap = true;
+		//#ifdef polish.css.text-wrap-animation-direction
+			protected int textWrapDirection = DIRECTION_BACK_AND_FORTH;
+		//#endif
+		//#ifdef polish.css.text-wrap-animation-speed
+			protected int textWrapSpeed = DIRECTION_BACK_AND_FORTH;
+		//#endif
 	//#endif
 	//#ifdef polish.css.text-horizontal-adjustment
 		protected int textHorizontalAdjustment;
@@ -89,7 +98,7 @@ public class FakeStringCustomItem extends FakeCustomItem
 	 * 
 	 * @param label the Item label
 	 * @param text the text contents
-	 * @see StringItem#StringItem(String, String, int, Style)
+	 * @see de.enough.polish.ui.StringItem#StringItem(String, String, int, Style)
 	 */
 	public FakeStringCustomItem( String label, String text)
 	{
@@ -107,7 +116,7 @@ public class FakeStringCustomItem extends FakeCustomItem
 	 * @param label the Item label
 	 * @param text the text contents
 	 * @param style the style
-	 * @see StringItem#StringItem(String, String, int, Style)
+	 * @see de.enough.polish.ui.StringItem#StringItem(String, String, int, Style)
 	 */
 	public FakeStringCustomItem( String label, String text, Style style )
 	{
@@ -190,41 +199,63 @@ public class FakeStringCustomItem extends FakeCustomItem
 	}
 	
 	
-	//#if polish.css.text-effect || polish.css.text-wrap
+	
+	//#if polish.css.text-effect
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Item#animate()
+	 * @see de.enough.polish.ui.Item#animate(long, de.enough.polish.ui.ClippingRegion)
 	 */
-	public boolean animate() {
-		boolean animated = super.animate();
-		//#if polish.css.text-effect 
-			if (this.textEffect != null) {
-				animated |= this.textEffect.animate();
-			}
-		//#endif
+	public void animate(long currentTime, ClippingRegion repaintRegion)
+	{
+		super.animate(currentTime, repaintRegion);
 		//#if polish.css.text-wrap
-			if (this.useSingleLine && this.clipText) {
-				if (this.isSkipHorizontalAnimation) {
-					this.isSkipHorizontalAnimation = false;
-				} else {
-					if (this.isHorizontalAnimationDirectionRight) {
-						this.xOffset++;
-						if (this.xOffset >= 0) {
-							this.isHorizontalAnimationDirectionRight = false;
+			if (this.animateTextWrap) {
+				if (this.useSingleLine && this.clipText) {
+					
+					int speed = 1;
+					//#ifdef polish.css.text-wrap-animation-speed
+						speed = this.textWrapSpeed;
+					//#endif
+					//#ifdef polish.css.text-wrap-animation-direction
+						if (this.textWrapDirection == 0) {
+					//#endif
+							if (this.isHorizontalAnimationDirectionRight) {
+								this.xOffset += speed;
+								if (this.xOffset >= 0) {
+									this.isHorizontalAnimationDirectionRight = false;
+								}
+							} else {
+								this.xOffset -= speed;
+								if (this.xOffset + this.textWidth < this.contentWidth) {
+									this.isHorizontalAnimationDirectionRight = true;
+								}
+							}
+					//#ifdef polish.css.text-wrap-animation-direction
+						} else if (this.textWrapDirection == DIRECTION_LEFT) {
+							int offset = this.xOffset - speed;
+							if (offset + this.textWidth < 0) {
+								offset = this.contentWidth;
+							}
+							this.xOffset = offset;
+						} else {
+							int offset = this.xOffset + speed;
+							if (offset > this.contentWidth) {
+								offset = -this.textWidth;
+							}
+							this.xOffset = offset;							
 						}
-					} else {
-						this.xOffset--;
-						if (this.xOffset + this.textWidth < this.contentWidth) {
-							this.isHorizontalAnimationDirectionRight = true;
-						}
-					}
-					animated = true;
-					this.isSkipHorizontalAnimation = true;
+					//#endif
+
+					addRelativeToContentRegion(repaintRegion, 0, 0, this.contentWidth, this.contentHeight );
 				}
 			}
 		//#endif
-		return animated;
+		//#if polish.css.text-effect
+			if (this.textEffect != null) {
+			}
+		//#endif
 	}
 	//#endif
+
 	
 	//#if polish.css.text-wrap
 	/* (non-Javadoc)
@@ -315,6 +346,16 @@ public class FakeStringCustomItem extends FakeCustomItem
 		}
 		requestInit();
 	}
+	
+	/**
+	 * Sets the text color for contents of the <code>StringItem</code>.
+	 *
+	 * @param color the new color for the content
+	 */
+	public void setTextColor( int color)
+	{
+		this.textColor = color;
+	}
 
 	/**
 	 * Sets the application's preferred font for
@@ -352,6 +393,14 @@ public class FakeStringCustomItem extends FakeCustomItem
 	 */
 	public Font getFont()
 	{
+		if (this.font == null) {
+			if (this.style != null) {
+				this.font = this.style.getFont();
+			}
+			if (this.font == null) {
+				this.font = Font.getDefaultFont();
+			}
+		}
 		return this.font;
 	}
 
@@ -362,34 +411,58 @@ public class FakeStringCustomItem extends FakeCustomItem
 	 */
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		if (this.text != null) {
+			//#if polish.css.text-wrap
+				int clipX = 0;
+				int clipY = 0;
+				int clipWidth = 0;
+				int clipHeight = 0;
+				if (this.useSingleLine && this.clipText ) {
+					clipX = g.getClipX();
+					clipY = g.getClipY();
+					clipWidth = g.getClipWidth();
+					clipHeight = g.getClipHeight();
+					g.clipRect( x, y, this.contentWidth, this.contentHeight );
+				}
+			//#endif
 			//#ifdef polish.css.text-vertical-adjustment
 				y += this.textVerticalAdjustment;
 			//#endif
 			//#ifdef polish.css.font-bitmap
 				if (this.bitMapFontViewer != null) {
-					if (this.isLayoutCenter) {
-						x = leftBorder + (rightBorder - leftBorder) / 2;
-						//#ifdef polish.css.text-horizontal-adjustment
-							x += this.textHorizontalAdjustment;
-						//#endif
-					} else if (this.isLayoutRight) {
-						x = rightBorder;
-						//#ifdef polish.css.text-horizontal-adjustment
-							x += this.textHorizontalAdjustment;
-						//#endif
-					} 
-					//#ifdef polish.css.text-vertical-adjustment
-						y += this.textVerticalAdjustment;
+					//#if polish.css.text-wrap
+						if (this.useSingleLine && this.clipText ) {
+							x += this.xOffset;
+						} else {
+					//#endif
+							if (this.isLayoutCenter) {
+								x = leftBorder + (rightBorder - leftBorder) / 2;
+							} else if (this.isLayoutRight) {
+								x = rightBorder;
+							} 
+					//#if polish.css.text-wrap
+						}
+					//#endif
+					//#ifdef polish.css.text-horizontal-adjustment
+						x += this.textHorizontalAdjustment;
 					//#endif
 					this.bitMapFontViewer.paint( x, y, g );
+					//#if polish.css.text-wrap
+						if (this.useSingleLine && this.clipText ) {
+							g.setClip( clipX, clipY, clipWidth, clipHeight );
+						}
+					//#endif
 					return;
 				}
 			//#endif
 				
+			//#if polish.Bugs.needsBottomOrientiationForStringDrawing
+				y += this.font.getHeight();
+			//#endif
+
 			g.setFont( this.font );
 			g.setColor( this.textColor );
 			
-			int lineHeight = this.font.getHeight() + this.paddingVertical; 
+			int lineHeight = getFontHeight() + this.paddingVertical; 
 			int centerX = 0;
 			if (this.isLayoutCenter) {
 				centerX = leftBorder + (rightBorder - leftBorder) / 2;
@@ -404,22 +477,23 @@ public class FakeStringCustomItem extends FakeCustomItem
 				leftBorder += this.textHorizontalAdjustment;
 				rightBorder += this.textHorizontalAdjustment;
 			//#endif
-			//#if polish.css.text-wrap
-				int clipX = 0;
-				int clipY = 0;
-				int clipWidth = 0;
-				int clipHeight = 0;
-				if (this.useSingleLine && this.clipText ) {
-					clipX = g.getClipX();
-					clipY = g.getClipY();
-					clipWidth = g.getClipWidth();
-					clipHeight = g.getClipHeight();
-					g.clipRect( x, y, this.contentWidth, this.contentHeight );
-				}
-			//#endif
+
 			//#if polish.css.text-effect
 				if (this.textEffect != null) {
-					this.textEffect.drawStrings( this.textLines, this.textColor, x, y, leftBorder, rightBorder, lineHeight, this.contentWidth, this.layout, g );
+					//#if polish.css.text-wrap
+						if (this.useSingleLine && this.clipText ) {
+							x += this.xOffset;
+							//#if polish.Bugs.needsBottomOrientiationForStringDrawing
+								this.textEffect.drawStrings( this.textLines, this.textColor, x, y, leftBorder, rightBorder, lineHeight, this.contentWidth, Graphics.LEFT | Graphics.BOTTOM, g );
+							//#else
+								this.textEffect.drawStrings( this.textLines, this.textColor, x, y, leftBorder, rightBorder, lineHeight, this.contentWidth, Graphics.LEFT | Graphics.TOP, g );
+							//#endif
+						} else {
+					//#endif
+							this.textEffect.drawStrings( this.textLines, this.textColor, x, y, leftBorder, rightBorder, lineHeight, this.contentWidth, this.layout, g );
+					//#if polish.css.text-wrap
+						}
+					//#endif
 				} else {
 			//#endif
 					for (int i = 0; i < this.textLines.length; i++) {
@@ -430,20 +504,40 @@ public class FakeStringCustomItem extends FakeCustomItem
 						// adjust the painting according to the layout:
 						if (this.isLayoutRight) {
 							lineX = rightBorder;
-							orientation = Graphics.TOP | Graphics.RIGHT;
+							//#if polish.Bugs.needsBottomOrientiationForStringDrawing
+								orientation = Graphics.BOTTOM | Graphics.RIGHT;
+							//#else
+								orientation = Graphics.TOP | Graphics.RIGHT;
+							//#endif
 							//g.drawString( line, rightBorder, y, Graphics.TOP | Graphics.RIGHT );
 						} else if (this.isLayoutCenter) {
 							lineX = centerX;
-							orientation = Graphics.TOP | Graphics.HCENTER;
+							//#if polish.Bugs.needsBottomOrientiationForStringDrawing
+								orientation = Graphics.BOTTOM | Graphics.HCENTER;
+							//#else
+								orientation = Graphics.TOP | Graphics.HCENTER;
+							//#endif
 							//g.drawString( line, centerX, y, Graphics.TOP | Graphics.HCENTER );
 						} else {
-							orientation = Graphics.TOP | Graphics.LEFT;
+							//#if polish.Bugs.needsBottomOrientiationForStringDrawing
+								orientation = Graphics.BOTTOM | Graphics.LEFT;
+							//#else
+								orientation = Graphics.TOP | Graphics.LEFT;
+							//#endif
 							// left layout (default)
 							//g.drawString( line, x, y, Graphics.TOP | Graphics.LEFT );
 						}	
 						//#if polish.css.text-wrap
 							if (this.clipText) {
-								lineX += this.xOffset;
+								// when clipping (and therefore a scrolling animation) is needed,
+								// center and right layouts don't really make sense - this would
+								// start and stop the scrolling at wrong places outside of the clipping area: 
+								//#if polish.Bugs.needsBottomOrientiationForStringDrawing
+									orientation = Graphics.BOTTOM | Graphics.LEFT;
+								//#else
+									orientation = Graphics.TOP | Graphics.LEFT;
+								//#endif
+								lineX = x + this.xOffset;
 							}
 						//#endif
 						g.drawString( line, lineX, lineY, orientation );
@@ -460,17 +554,72 @@ public class FakeStringCustomItem extends FakeCustomItem
 			//#endif
 		}
 	}
+	
+	/**
+	 * Calculates the width of the given text.
+	 * When a bitmap font is used, the calculation is forwarded to it.
+	 * When a texteffect is used, the calculation is forwared to it.
+	 * In other cases font.stringWidth(text) is returned.
+	 * 
+	 * @param str the text of which the width should be determined
+	 * @return the width of the text
+	 */
+	public int stringWidth( String str ) {
+		//#ifdef polish.css.font-bitmap
+			if (this.bitMapFont != null) {
+				return this.bitMapFont.stringWidth( str );
+			} else {
+		//#endif
+			//#if polish.css.text-effect
+				if (this.textEffect != null) {
+					return this.textEffect.stringWidth( str );
+				} else {
+			//#endif
+					return getFont().stringWidth(str);
+			//#if polish.css.text-effect
+				}
+			//#endif
+		//#ifdef polish.css.font-bitmap
+			}
+		//#endif
+	}
+	/**
+	 * Retrieves the height necessary for displaying a row of text without the padding-vertical.
+	 * 
+	 * @return the font height (either from the bitmap, the text-effect or the font used)
+	 */
+	public int getFontHeight() {
+		//#ifdef polish.css.font-bitmap
+			if (this.bitMapFont != null) {
+				return this.bitMapFont.getFontHeight();
+			} else {
+		//#endif
+			//#if polish.css.text-effect
+				if (this.textEffect != null) {
+					return this.textEffect.getFontHeight();
+				} else {
+			//#endif
+					return getFont().getHeight();
+			//#if polish.css.text-effect
+				}
+			//#endif
+		//#ifdef polish.css.font-bitmap
+			}
+		//#endif
+		
+	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#initItem()
 	 */
-	protected void initContent(int firstLineWidth, int lineWidth){
+	protected void initContent(int firstLineWidth, int availWidth, int availHeight){
 		if (this.text != null && this.font == null) {
 			this.font = Font.getDefaultFont();
 		}
 		if (this.text == null) {
 			this.contentHeight = 0;
 			this.contentWidth = 0;
+			this.textLines = null;
 			return;
 		}
 		//#ifdef polish.css.font-bitmap
@@ -481,39 +630,98 @@ public class FakeStringCustomItem extends FakeCustomItem
 				} else if (this.isLayoutRight) {
 					orientation = Graphics.RIGHT;
 				}
-				this.bitMapFontViewer = this.bitMapFont.getViewer( this.text );
-				this.bitMapFontViewer.layout( firstLineWidth, lineWidth, this.paddingVertical, orientation );
-				this.contentHeight = this.bitMapFontViewer.getHeight();
-				this.contentWidth = this.bitMapFontViewer.getWidth();
-				return;
+				this.bitMapFontViewer = this.bitMapFont.getViewer(
+						//#if polish.i18n.rightToLeft
+							TextUtil.reverseForRtlLanguage(
+						//#endif
+								this.text 
+						//#if polish.i18n.rightToLeft
+							),
+							this.textColor
+						//#endif
+				);
+				if (this.bitMapFontViewer != null) {
+					//#if polish.css.text-wrap
+						if (this.useSingleLine) {
+							this.contentHeight = this.bitMapFontViewer.getHeight();
+							int width = this.bitMapFontViewer.getWidth();
+							if (width > availWidth) {
+								this.clipText = true;
+								this.textWidth = width;
+								width = availWidth;
+								this.bitMapFontViewer.setHorizontalOrientation(Graphics.LEFT);
+							} else {
+								this.bitMapFontViewer.setHorizontalOrientation(orientation);
+								this.clipText = false;
+							}
+							this.contentWidth = width;
+						} else {
+					//#endif
+							// wrap the text:
+							this.bitMapFontViewer.layout( firstLineWidth, availWidth, this.paddingVertical, orientation );
+							this.contentHeight = this.bitMapFontViewer.getHeight();
+							this.contentWidth = this.bitMapFontViewer.getWidth();
+					//#if polish.css.text-wrap
+						}
+					//#endif
+					return;
+				}
 			}
 		//#endif
 		//#if polish.css.text-wrap
 			if ( this.useSingleLine ) {
-				this.textLines = new String[]{ this.text };
-				int myTextWidth = this.font.stringWidth(this.text);
-				if (myTextWidth > lineWidth) {
+				this.textLines = new String[]{ 
+					//#if polish.i18n.rightToLeft
+						TextUtil.reverseForRtlLanguage(
+					//#endif
+							this.text 
+					//#if polish.i18n.rightToLeft
+						)
+					//#endif
+				};
+				int myTextWidth = stringWidth(this.text);
+				if (myTextWidth > availWidth) {
 					this.clipText = true;
 					this.textWidth = myTextWidth;
 					this.isHorizontalAnimationDirectionRight = false;
-					this.contentWidth = lineWidth;
+					this.contentWidth = availWidth;
+					//TODO do this only when no animation should be used
+//					int numberOfChars = (this.text.length() * lineWidth) / myTextWidth - 1;
+//					if (numberOfChars > 1) {
+//						this.textLines = new String[] { this.text.substring( 0, numberOfChars ) + ".." };
+//					}
 				} else {
 					this.clipText = false;
 					this.contentWidth = myTextWidth;
 				}
-				this.contentHeight = this.font.getHeight();
+				this.contentHeight = getFontHeight();
 			} else {
 		//#endif
-				String[] lines = TextUtil.wrap(this.text, this.font, firstLineWidth, lineWidth);
-				int fontHeight = this.font.getHeight();
+				String[] lines;
+				//#ifdef polish.css.text-effect
+					if (this.textEffect != null) {
+						lines = this.textEffect.wrap( this.text, this.textColor,
+								this.font, firstLineWidth, availWidth );
+					} else {
+				//#endif
+						lines = TextUtil.wrap(this.text, this.font, firstLineWidth, availWidth);
+				//#ifdef polish.css.text-effect
+					}
+				//#endif
+						
+				int fontHeight = getFontHeight();
 				this.contentHeight = (lines.length * (fontHeight + this.paddingVertical)) - this.paddingVertical;
 				int maxWidth = 0;
 				for (int i = 0; i < lines.length; i++) {
 					String line = lines[i];
-					int width = this.font.stringWidth(line);
+					int width = stringWidth(line);
 					if (width > maxWidth) {
 						maxWidth = width;
 					}
+					//#if polish.i18n.rightToLeft
+						lines[i] =  TextUtil.reverseForRtlLanguage( line );
+					//#endif
+
 				}
 				this.contentWidth = maxWidth;
 				this.textLines = lines;
@@ -521,21 +729,46 @@ public class FakeStringCustomItem extends FakeCustomItem
 			}
 		//#endif
 	}
+	
+	
+	
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#setStyle(de.enough.polish.ui.Style)
 	 */
-	public void setStyle(Style style) {
+	public void setStyle(Style style)
+	{
+		// TODO robertvirkus implement setStyle
 		super.setStyle(style);
-		this.textColor = style.getFontColor();
-		this.font = style.font;
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#setStyle(de.enough.polish.ui.Style, boolean)
+	 */
+	public void setStyle(Style style, boolean resetStyle) {
+		super.setStyle(style, resetStyle);
+		if (resetStyle) {
+			this.textColor = style.getFontColor();
+			//System.out.println("reset style: color=" + Integer.toHexString(this.textColor) + " for " + this);
+			this.font = style.getFont();
+		}
 		//#ifdef polish.css.font-bitmap
 			String bitMapUrl = style.getProperty("font-bitmap");
 			if (bitMapUrl != null) {
+				//#debug
+				System.out.println("getting bitmapfont " + bitMapUrl );
 				this.bitMapFont = BitMapFont.getInstance( bitMapUrl );
-			} else {
+				//#debug
+				System.out.println("bitmap=" + this.bitMapFont + " for " + this );
+			} else if (resetStyle){
 				this.bitMapFont = null;
 				this.bitMapFontViewer = null;
+			}
+		//#endif
+		//#ifdef polish.css.font-color
+			Color textColorObj = style.getColorProperty("font-color");
+			if ( textColorObj != null ) {
+				this.textColor = textColorObj.getColor();
 			}
 		//#endif
 		//#ifdef polish.css.text-horizontal-adjustment
@@ -555,8 +788,10 @@ public class FakeStringCustomItem extends FakeCustomItem
 			if (effect != null) {
 				this.textEffect = effect;
 				effect.setStyle(style);
-			} else {
+			} else if (resetStyle) {
 				this.textEffect = null;
+			} else if (!resetStyle && this.textEffect != null) {
+				this.textEffect.setStyle( style, false );
 			}
 		//#endif	
 		//#ifdef polish.css.text-wrap
@@ -564,7 +799,25 @@ public class FakeStringCustomItem extends FakeCustomItem
 			if (textWrapBool != null) {
 				this.useSingleLine = !textWrapBool.booleanValue();
 			}
-		//#endif	
+			//#if polish.css.text-wrap-animate
+				Boolean animateTextWrapBool = style.getBooleanProperty("text-wrap-animate");
+				if (animateTextWrapBool != null) {
+					this.animateTextWrap = animateTextWrapBool.booleanValue();
+				}
+			//#endif
+			//#ifdef polish.css.text-wrap-animation-direction
+				Integer directionInt = style.getIntProperty("text-wrap-animation-direction");
+				if (directionInt != null) {
+					this.textWrapDirection = directionInt.intValue();
+				}
+			//#endif
+			//#ifdef polish.css.text-wrap-animation-speed
+				Integer animationSpeedInt = style.getIntProperty("text-wrap-animation-speed");
+				if (animationSpeedInt != null) {
+					this.textWrapSpeed = animationSpeedInt.intValue();
+				}
+			//#endif
+		//#endif
 	}
 
 	//#ifdef polish.useDynamicStyles
@@ -582,7 +835,7 @@ public class FakeStringCustomItem extends FakeCustomItem
 	}
 	//#endif
 	
-	//#if polish.debug.error
+	//#if polish.debug.error || polish.keepToString
 	public String toString() {
 		return  "StringItem " + super.toString() + ": \"" + this.getText() + "\""; 
 	}
@@ -599,7 +852,5 @@ public class FakeStringCustomItem extends FakeCustomItem
 			 }
 		//#endif
 	}
-
-	
 
 }

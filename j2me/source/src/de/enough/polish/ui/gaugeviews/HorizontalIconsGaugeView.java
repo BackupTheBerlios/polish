@@ -2,7 +2,7 @@
 /*
  * Created on Jan 31, 2007 at 3:01:30 PM.
  * 
- * Copyright (c) 2007 Andre Schmidt / Enough Software
+ * Copyright (c) 2009 Andre Schmidt / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -32,17 +32,15 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 import de.enough.polish.ui.ClippingRegion;
-import de.enough.polish.ui.Color;
 import de.enough.polish.ui.Gauge;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.ItemView;
 import de.enough.polish.ui.Style;
-import de.enough.polish.util.DrawUtil;
 
 /**
  * <p>Shows an animation of horizontal aligned icons for visualizing an CONTINUOUS_RUNNING indefinite gauge.</p>
  *
- * <p>Copyright Enough Software 2007 - 2008</p>
+ * <p>Copyright Enough Software 2007 - 2009</p>
  * <pre>
  * history
  *        Aug 30, 2007 - asc creation
@@ -76,7 +74,7 @@ public class HorizontalIconsGaugeView extends ItemView {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ItemView#initContent(de.enough.polish.ui.Item, int, int)
 	 */
-	protected void initContent(Item parent, int firstLineWidth, int lineWidth) {
+	protected void initContent(Item parent, int firstLineWidth, int availWidth, int availHeight) {
 		this.gauge = (Gauge)parent;
 		this.isContinuousRunning = this.gauge.getMaxValue() == Gauge.INDEFINITE && this.gauge.getValue() == Gauge.CONTINUOUS_RUNNING;
 		
@@ -84,7 +82,7 @@ public class HorizontalIconsGaugeView extends ItemView {
 			this.maxIcons = this.iconCount - this.iconHighlightCount;
 		}
 		
-		this.contentWidth = lineWidth;
+		this.contentWidth = availWidth;
 		this.contentHeight = this.iconWidth;
 	}
 
@@ -159,19 +157,26 @@ public class HorizontalIconsGaugeView extends ItemView {
 			}
 		}
 		//#endif
-		
-		//#if polish.css.gauge-horizontal-icons-interval
-		countObj = style.getIntProperty("gauge-horizontal-icons-interval");
+	}
+	
+	
+	//#if polish.css.gauge-horizontal-icons-interval
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.ItemView#setStyle(de.enough.polish.ui.Style, boolean)
+	 */
+	protected void setStyle(Style style, boolean resetStyle)
+	{
+		super.setStyle(style, resetStyle);
+		Integer countObj = style.getIntProperty("gauge-horizontal-icons-interval");
 		if (countObj != null) {
 			this.interval = countObj.intValue();
 		}
-		//#endif
 	}
+	//#endif
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ItemView#animate()
 	 */
-	
 	public void animate(long currentTime, ClippingRegion repaintRegion) {
 		if (this.isContinuousRunning && (currentTime - this.lastAnimationTime) > this.interval) {
 			this.nextHighlight = true;

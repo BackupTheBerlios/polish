@@ -2,7 +2,7 @@
 /*
  * Created on Feb 22, 2007 at 12:41:53 PM.
  * 
- * Copyright (c) 2006 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -39,7 +39,7 @@ import de.enough.polish.util.ArrayList;
  *    can use the AsynchronousCommandListener.
  * </p>
  *
- * <p>Copyright Enough Software 2006 - 2008</p>
+ * <p>Copyright Enough Software 2006 - 2009</p>
  * <pre>
  * history
  *        Feb 22, 2007 - rob creation

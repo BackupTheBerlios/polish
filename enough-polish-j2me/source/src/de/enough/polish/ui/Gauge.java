@@ -280,6 +280,8 @@ implements ImageConsumer
 	private int maxValue;
 	private boolean isInteractive;
 	private int color = 0x0000FF; //default color is blue
+	private boolean useBackgroundColor;
+	private int backgroundColor = 0xFFFFFF; //default color is white
 	private int mode = MODE_CHUNKED;
 	private int chunkWidth = 6;
 	private int gapWidth = 3;
@@ -536,7 +538,7 @@ implements ImageConsumer
 		//#if polish.css.view-type
 		}
 		//#endif
-		if (this.isInitialized) {
+		if (this.isShown) {
 			repaint();
 		}
 	}
@@ -788,12 +790,19 @@ implements ImageConsumer
 			}
 		} else {
 			if (this.mode == MODE_CONTINUOUS) {
-				g.setColor( this.color );
 				int maxWidth = this.contentWidth;
+				//#if polish.css.gauge-background-color
+				if(this.useBackgroundColor)
+				{
+					g.setColor(this.backgroundColor);
+					g.fillRect(x, y, this.contentWidth + 1, this.contentHeight + 1 );
+				}
+				//#endif
 				if (this.showValue && this.valuePosition != POSITION_CENTER) {
 					maxWidth -= this.valueWidth;
 				}
 				int w = (maxWidth * this.value) / this.maxValue;
+				g.setColor( this.color );
 				g.fillRect(x, y, w + 1, this.contentHeight + 1 );
 			} else {
 				g.drawImage(this.indicatorImage, x, y, Graphics.TOP | Graphics.LEFT );
@@ -810,12 +819,14 @@ implements ImageConsumer
 				g.drawString( this.valueString, leftBorder + ((rightBorder - leftBorder) >> 1), y, Graphics.TOP | Graphics.HCENTER );				
 			}
 		}
+//		g.setColor( 0xff0000 );
+//		g.drawRect( getAbsoluteX(), getAbsoluteY(), this.itemWidth, itemHeight );
 	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#initItem()
 	 */
-	protected void initContent(int firstLineWidth, int lineWidth) {
+	protected void initContent(int firstLineWidth, int availWidth, int availHeight) {
 		this.valueWidth = 0;
 		int valueHeight = 0;
 		if (this.isIndefinite) {
@@ -862,7 +873,7 @@ implements ImageConsumer
 						if (this.preferredWidth > 0) {
 							this.contentWidth = this.preferredWidth + this.valueWidth;
 						} else if (this.isLayoutExpand) {
-							this.contentWidth = lineWidth;
+							this.contentWidth = availWidth;
 						} else {
 							this.contentWidth = firstLineWidth;
 						}
@@ -879,9 +890,9 @@ implements ImageConsumer
 		} else if (this.preferredWidth > 0) {
 			this.contentWidth = this.preferredWidth + this.valueWidth;
 		} else if (this.isLayoutExpand) {
-			this.contentWidth = lineWidth;
+			this.contentWidth = availWidth;
 		} else if ((this.layout & LAYOUT_SHRINK) == LAYOUT_SHRINK) {
-			this.contentWidth = Math.max( lineWidth / 3, 10 );
+			this.contentWidth = Math.max( availWidth / 3, 10 );
 		} else {
 			this.contentWidth = firstLineWidth;
 		}
@@ -904,7 +915,7 @@ implements ImageConsumer
 				updateIndefiniteIndicatorImage();
 			} else {
 				//#if polish.debug.error
-					throw new IllegalArgumentException( "invalid lineWidth for gauge: " + lineWidth );
+					throw new IllegalArgumentException( "invalid lineWidth for gauge: " + availWidth );
 				//#else
 					//# throw new IllegalArgumentException();
 				//#endif
@@ -928,24 +939,6 @@ implements ImageConsumer
 	 */
 	public void setStyle(Style style) {
 		super.setStyle(style);
-		//#ifdef polish.css.gauge-color
-			Integer gaugeColor = style.getIntProperty("gauge-color");
-			if (gaugeColor != null) {
-				this.color = gaugeColor.intValue();
-			}
-		//#endif
-		//#ifdef polish.css.gauge-width
-			Integer width = style.getIntProperty( "gauge-width");
-			if (width != null) {
-				this.preferredWidth = width.intValue();
-			}
-		//#endif
-		//#ifdef polish.css.gauge-height
-			Integer height = style.getIntProperty( "gauge-height");
-			if (height != null) {
-				this.preferredHeight = height.intValue();
-			}
-		//#endif
 		//#ifdef polish.css.gauge-mode
 			Integer modeInt = style.getIntProperty( "gauge-mode");
 			if (modeInt != null) {
@@ -954,24 +947,6 @@ implements ImageConsumer
 				} else {
 					this.mode = MODE_CONTINUOUS;
 				}					
-			}
-		//#endif
-		//#ifdef polish.css.gauge-gap-color
-			Integer gapColorInt = style.getIntProperty( "gauge-gap-color");
-			if (gapColorInt != null) {
-				this.gapColor = gapColorInt.intValue();
-			}
-		//#endif
-		//#ifdef polish.css.gauge-gap-width
-			Integer gapWidthInt = style.getIntProperty( "gauge-gap-width");
-			if (gapWidthInt != null) {
-				this.gapWidth = gapWidthInt.intValue();
-			}
-		//#endif
-		//#ifdef polish.css.gauge-chunk-width
-			Integer chunkWidthInt = style.getIntProperty( "gauge-chunk-width");
-			if (chunkWidthInt != null) {
-				this.chunkWidth = chunkWidthInt.intValue();
 			}
 		//#endif
 		//#ifdef polish.css.gauge-image
@@ -1003,8 +978,8 @@ implements ImageConsumer
 					this.showValue = showValueBool.booleanValue();
 				}
 			//#endif
-			if (style.font != null) {
-				this.font = style.font;
+			if (style.getFont() != null) {
+				this.font = style.getFont();
 			}
 			this.fontColor = style.getFontColor();
 			//#ifdef polish.css.gauge-value-align
@@ -1014,12 +989,6 @@ implements ImageConsumer
 				}
 			//#endif
 		}
-		//#if polish.css.gauge-animation-speed
-			Integer animationSpeedInt = style.getIntProperty( "gauge-animation-speed" );
-			if (animationSpeedInt != null) {
-				this.animationSpeed = animationSpeedInt.intValue();
-			}
-		//#endif
 		//#if polish.css.gauge-animation-mode
 			Integer animationModeInt = style.getIntProperty( "gauge-animation-mode" );
 			if (animationModeInt != null) {
@@ -1053,6 +1022,63 @@ implements ImageConsumer
 			Boolean isPercentBool = style.getBooleanProperty( "gauge-is-percent");
 			if (isPercentBool != null) {
 				this.isPercent = isPercentBool.booleanValue();
+			}
+		//#endif
+	}
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#setStyle(de.enough.polish.ui.Style)
+	 */
+	public void setStyle(Style style, boolean resetStyle ) {
+		super.setStyle(style, resetStyle);
+		//#ifdef polish.css.gauge-color
+			Integer gaugeColor = style.getIntProperty("gauge-color");
+			if (gaugeColor != null) {
+				this.color = gaugeColor.intValue();
+			}
+		//#endif
+		//#ifdef polish.css.gauge-color
+			Integer gaugeBackgroundColor = style.getIntProperty("gauge-background-color");
+			if (gaugeBackgroundColor != null) {
+				this.backgroundColor = gaugeBackgroundColor.intValue();
+				this.useBackgroundColor = true;
+			}
+		//#endif
+		//#ifdef polish.css.gauge-width
+			Integer width = style.getIntProperty( "gauge-width");
+			if (width != null) {
+				this.preferredWidth = width.intValue();
+			}
+		//#endif
+		//#ifdef polish.css.gauge-height
+			Integer height = style.getIntProperty( "gauge-height");
+			if (height != null) {
+				this.preferredHeight = height.intValue();
+			}
+		//#endif
+		//#ifdef polish.css.gauge-gap-color
+			Integer gapColorInt = style.getIntProperty( "gauge-gap-color");
+			if (gapColorInt != null) {
+				this.gapColor = gapColorInt.intValue();
+			}
+		//#endif
+		//#ifdef polish.css.gauge-gap-width
+			Integer gapWidthInt = style.getIntProperty( "gauge-gap-width");
+			if (gapWidthInt != null) {
+				this.gapWidth = gapWidthInt.intValue();
+			}
+		//#endif
+		//#ifdef polish.css.gauge-chunk-width
+			Integer chunkWidthInt = style.getIntProperty( "gauge-chunk-width");
+			if (chunkWidthInt != null) {
+				this.chunkWidth = chunkWidthInt.intValue();
+			}
+		//#endif
+		
+		//#if polish.css.gauge-animation-speed
+			Integer animationSpeedInt = style.getIntProperty( "gauge-animation-speed" );
+			if (animationSpeedInt != null) {
+				this.animationSpeed = animationSpeedInt.intValue();
 			}
 		//#endif
 	}

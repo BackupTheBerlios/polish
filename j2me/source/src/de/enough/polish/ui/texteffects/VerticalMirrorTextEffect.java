@@ -2,7 +2,7 @@
 /*
  * Created on Jun 20, 2006 at 9:52:50 PM.
  * 
- * Copyright (c) 2006 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -51,7 +51,7 @@ import de.enough.polish.util.DrawUtil;
  *    Also note that this effect requires MIDP 2.0 support.
  * </p>
  *
- * <p>Copyright Enough Software 2006 - 2008</p>
+ * <p>Copyright Enough Software 2006 - 2009</p>
  * <pre>
  * history
  *        Jun 20, 2006 - rob creation
@@ -80,6 +80,8 @@ public class VerticalMirrorTextEffect extends TextEffect {
 	private int clearColor;
 	private String lastText;
 
+	
+	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.TextEffect#drawStrings(java.lang.String[], int, int, int, int, int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
@@ -115,6 +117,15 @@ public class VerticalMirrorTextEffect extends TextEffect {
 //			}
 //		}
 //	}
+
+	/**
+	 * Creates a new mirror effect
+	 */
+	public VerticalMirrorTextEffect()
+	{
+		super();
+		this.isTextSensitive = true;
+	}
 
 	private void prepareRgbBuffer( int width, int height ) {
 		this.rgbWidth = width;
@@ -194,33 +205,38 @@ public class VerticalMirrorTextEffect extends TextEffect {
 
 
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.TextEffect#setStyle(de.enough.polish.ui.Style)
+	 * @see de.enough.polish.ui.TextEffect#setStyle(de.enough.polish.ui.Style, boolean)
 	 */
-	public void setStyle(Style style) {
-		super.setStyle(style);
-		this.lastText = null;
-		this.shadowColor = style.getFontColor();
+	public void setStyle(Style style, boolean resetStyle) {
+		super.setStyle(style, resetStyle);
+		boolean styleChanged = false;
+		if (resetStyle) {
+			this.shadowColor = style.getFontColor();
+			Font font = style.getFont();
+			if (font == null) {
+				font = Font.getDefaultFont();
+			}	
+			this.steps = font.getHeight();
+		}
 		//#if polish.css.text-mirror-color
 			Color shadowColorObj = style.getColorProperty( "text-mirror-color" );
 			if (shadowColorObj != null) {
 				this.shadowColor = shadowColorObj.getColor();
+				styleChanged = true;
 			}
 		//#endif
 		//#if polish.css.text-mirror-padding
 			Integer paddingInt = style.getIntProperty( "text-mirror-padding" );
 			if (paddingInt != null) {
 				this.padding = paddingInt.intValue();
+				styleChanged = true;
 			}
 		//#endif
-		Font font = style.font;
-		if (font == null) {
-			font = Font.getDefaultFont();
-		}	
-		this.steps = font.getHeight();
 		//#if polish.css.text-mirror-steps
 			Integer stepsInt = style.getIntProperty( "text-mirror-steps" );
 			if (stepsInt != null) {
 				this.steps = stepsInt.intValue();
+				styleChanged = true;
 			}
 		//#endif
 		int startTranslucencyPercent = 90;
@@ -228,18 +244,29 @@ public class VerticalMirrorTextEffect extends TextEffect {
 			Integer startTranslucencyInt = style.getIntProperty("text-mirror-start-translucency");
 			if (startTranslucencyInt != null ) {
 				startTranslucencyPercent = startTranslucencyInt.intValue();
+				this.startTranslucency = (startTranslucencyPercent * 255) / 100;	
+				styleChanged = true;
 			}
 		//#endif
-		this.startTranslucency = (startTranslucencyPercent * 255) / 100;	
+		if (resetStyle) {
+			this.startTranslucency = (startTranslucencyPercent * 255) / 100;
+		}
 
 		int endTranslucencyPercent = 0;
 		//#if polish.css.text-mirror-end-translucency
 			Integer endTranslucencyInt = style.getIntProperty("text-mirror-end-translucency");
 			if (endTranslucencyInt != null ) {
 				endTranslucencyPercent = endTranslucencyInt.intValue();
+				this.endTranslucency = (endTranslucencyPercent * 255) / 100;
+				styleChanged = true;
 			}
 		//#endif
-		this.endTranslucency = (endTranslucencyPercent * 255) / 100;	
+		if (resetStyle) {
+			this.endTranslucency = (endTranslucencyPercent * 255) / 100;
+		}
+		if (styleChanged || resetStyle) {
+			this.lastText = null;
+		}
 	}
 
 	/* (non-Javadoc)

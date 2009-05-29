@@ -32,7 +32,7 @@ import javax.microedition.lcdui.Image;
 /**
  * <p>Is used for a performant showing of String with a bitmap font.</p>
  *
- * <p>Copyright Enough Software 2004 - 2008</p>
+ * <p>Copyright Enough Software 2004 - 2009</p>
 
  * <pre>
  * history
@@ -67,8 +67,9 @@ public class BitMapFontViewer {
 
 	public final static int ABSOLUTE_LINE_BREAK = -2;
 	public final static int ARTIFICAL_LINE_BREAK = -3;
+	public final static int COLORIZE_MASK = 0xFF000000;
 
-	private final Image image;
+	private Image image;
 	private final short[] xPositions;
 	private final byte[] usedCharactersWidths;
 	private final int fontHeight;
@@ -142,7 +143,79 @@ public class BitMapFontViewer {
 		this.fontHeight = fontHeight;
 	}
 	
-
+	/**
+	 * Views a specific input string with a specific bitmap font.
+	 * 
+	 * @param image the basic font-image
+	 * @param color the color for the font; -1 when it should be ignored
+	 * @param indeces array of the x-positions of the to-be-displayed characters
+	 * @param xPositions array of the x-positions of the to-be-displayed characters
+	 * @param characterWidths array of the widths of the to-be-displayed characters
+	 * @param fontHeight the height of the font
+	 * @param spaceIndex the index of the space character
+	 * @param verticalPadding the padding between two lines
+	 * 
+	 */
+	public BitMapFontViewer(Image image, int color, int[] indeces, short[] xPositions, byte[] characterWidths, int fontHeight, int spaceIndex, int verticalPadding ) {
+		this(image,indeces,xPositions,characterWidths,fontHeight,spaceIndex,verticalPadding);
+		if (color != -1) {
+			this.image = applyColor(image, COLORIZE_MASK, color);
+		}
+	}
+	
+	/**
+	 * Applies the color to the pixels in the image that fits the mask
+	 * 
+	 * @param img the image to get the pixels from
+	 * @param mask the mask
+	 * @param color the color
+	 * @return the resulting image with the applied color
+	 */
+	protected Image applyColor(Image img, int mask, int color)
+	{
+		//#if polish.midp2
+			int h = img.getHeight();
+			int w = img.getWidth();
+			int[] rgb = new int[h * w];
+			
+			img.getRGB(rgb, 0, w, 0, 0, w, h);
+			
+			for (int i = 0; i < rgb.length; i++) {
+				int pixel = rgb[i];
+				
+				if(isValidPixel(pixel, mask))
+				{
+					rgb[i] = colorizePixel(pixel, color);
+				}
+			}
+			
+			return Image.createRGBImage(rgb, w, h, true);
+		//#else
+			//# return img;
+		//#endif
+	}
+	
+	/**
+	 * @param argb the argb value
+	 * @param mask the mask
+	 * @return true, if the argb value matches the mask, otherwise false
+	 */
+	protected boolean isValidPixel(int argb, int mask)
+	{
+		return ((argb & 0x00FFFFFF) == (mask & 0x00FFFFFF));
+	}
+	
+	/**
+	 * Colorizes the given argb pixel to the given color while
+	 * maintaining the alpha value
+	 * @param argb the argb pixel
+	 * @param color the color
+	 * @return the colorized pixel
+	 */
+	protected int colorizePixel(int argb, int color)
+	{
+		return (argb & 0xFF000000) | (color & 0x00FFFFFF);
+	}
 	
 	/**
 	 * Paints this viewer on the screen.
@@ -349,5 +422,44 @@ public class BitMapFontViewer {
 		byte ret[] = new byte[this.usedCharactersWidths.length];
 		System.arraycopy(this.usedCharactersWidths, 0, ret, 0, ret.length);
 		return ret;
+	}
+
+
+
+	/**
+	 * @return true when this font is loaded correctly
+	 */
+	public boolean isInitialized()
+	{
+		return (this.fontHeight != 0 && this.usedCharactersWidths != null && this.usedCharactersWidths.length > 0);
+	}
+
+
+
+	/**
+	 * @param text
+	 * @return an array of strings
+	 */
+	public String[] wrap(String text)
+	{
+		if (this.lineWidths == null) {
+			throw new IllegalStateException();
+		}
+		String[] lines = new String[ this.numberOfLines ];
+		int start = 0;
+		int lineIndex = 0;
+		for (int i = 0; i < this.xPositions.length; i++ ) {
+			int characterWidth = this.usedCharactersWidths[i];
+			if (characterWidth < 0) {
+				// this is a linebreak:
+				lines[lineIndex] = text.substring(start, i);
+				start = i + 1;
+				lineIndex++;
+			}
+		}
+		if (lineIndex < this.numberOfLines) {
+			lines[lineIndex] = text.substring(start);
+		}
+		return lines;
 	}
 }

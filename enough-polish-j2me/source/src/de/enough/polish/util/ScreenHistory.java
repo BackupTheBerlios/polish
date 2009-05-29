@@ -2,7 +2,7 @@
 /*
  * Created on Jan 14, 2007 at 11:54:15 AM.
  * 
- * Copyright (c) 2007 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -33,7 +33,7 @@ import javax.microedition.lcdui.Displayable;
  * <p>Manages a history of screens in a stack, when a previous screen is shown all following screens are removed from the history.</p>
  * <p>ScreenHistory is thread safe.</p>
  *
- * <p>Copyright Enough Software 2007 - 2008</p>
+ * <p>Copyright Enough Software 2007 - 2009</p>
  * <pre>
  * history
  *        Jan 14, 2007 - rob creation
@@ -189,5 +189,15 @@ public class ScreenHistory {
                this.history.remove(this.history.size()-1);
          }
    }
+
+	/**
+	 * Pushes a displayable on the history without showing it.
+	 * 
+	 * @param displayable the displayable which should be added to this history
+	 */
+	public void push(Displayable displayable )
+	{
+		this.history.add( displayable );
+	}
 
 }

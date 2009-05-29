@@ -2,7 +2,7 @@
 /*
  * Created on 24.08.2005 at 15:37:25.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -26,12 +26,10 @@
  */
 package de.enough.polish.ui.screenanimations;
 
-import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Displayable;
+import de.enough.polish.ui.Display;
+import de.enough.polish.ui.Displayable;
 import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Image;
 
-import de.enough.polish.ui.AccessibleCanvas;
 import de.enough.polish.ui.ScreenChangeAnimation;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.DrawUtil;
@@ -48,7 +46,7 @@ import de.enough.polish.util.DrawUtil;
  * </pre>
  * </p>
  *
- * <p>Copyright Enough Software 2007 - 2008</p>
+ * <p>Copyright Enough Software 2007 - 2009</p>
  * <pre>
  * history
  *        Apr 15, 2007 - rob creation
@@ -75,10 +73,10 @@ extends ScreenChangeAnimation
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#show(de.enough.polish.ui.Style, javax.microedition.lcdui.Display, int, int, javax.microedition.lcdui.Image, javax.microedition.lcdui.Image, de.enough.polish.ui.Screen)
 	 */
-	protected void show(Style style, Display dsplay, int width, int height,
-			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable, boolean isForward  ) 
+	protected void onShow(Style style, Display dsplay, int width, int height,
+			Displayable lstDisplayable, Displayable nxtDisplayable, boolean isForward  ) 
 	{
-		super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable, isForward );
+		super.onShow(style, dsplay, width, height, lstDisplayable, nxtDisplayable, isForward );
 		this.currentScreenRgb = new int[ width * height ];
 		System.arraycopy( this.lastCanvasRgb, 0, this.currentScreenRgb, 0, width * height);
 		this.currentStep = 0;

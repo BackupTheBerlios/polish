@@ -2,7 +2,7 @@
 /*
  * Created on June 21, 2007 at 10:48:13 AM.
  * 
- * Copyright (c) 2006 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -28,22 +28,14 @@ package de.enough.polish.ui.containerviews;
 
 import javax.microedition.lcdui.Graphics;
 
-import de.enough.polish.ui.Background;
-import de.enough.polish.ui.Border;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.ContainerView;
-import de.enough.polish.ui.IconItem;
 import de.enough.polish.ui.Item;
-import de.enough.polish.ui.Screen;
-import de.enough.polish.ui.StringItem;
-import de.enough.polish.ui.Style;
-import de.enough.polish.ui.UiAccess;
-import de.enough.polish.util.ImageUtil;
 
 /**
  * <p>Let items spring into view from under the currently focused element.</p>
  *
- * <p>Copyright Enough Software 2007 - 2008</p>
+ * <p>Copyright Enough Software 2007 - 2009</p>
  * <pre>
  * history
  *        June 21, 2007 - rob creation
@@ -107,8 +99,8 @@ public class SpringContainerView extends ContainerView {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#initContent(de.enough.polish.ui.Container, int, int)
 	 */
-	protected void initContent(Item parentContainerItem, int firstLineWidth, int lineWidth) {
-		super.initContent(parentContainerItem, firstLineWidth, lineWidth);
+	protected void initContent(Item parentContainerItem, int firstLineWidth, int availWidth, int availHeight) {
+		super.initContent(parentContainerItem, firstLineWidth, availWidth, availHeight);
 		//#debug
 		System.out.println("initContent of " + this + ": restartAnimation=" + this.restartAnimation + ", focusedItem=" + this.focusedItem + ", items.length=" + this.parentContainer.getItems().length);
 		// new RuntimeException().printStackTrace();

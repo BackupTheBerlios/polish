@@ -2,17 +2,12 @@
 
 package de.enough.polish.ui;
 
-import java.io.DataInputStream;
-import java.io.IOException;
-
-import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Displayable;
+
+import de.enough.polish.ui.Displayable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.rms.RecordStoreException;
 
-import de.enough.polish.io.RedirectHttpConnection;
 import de.enough.polish.predictive.TextBuilder;
 import de.enough.polish.predictive.TextElement;
 import de.enough.polish.predictive.array.ArrayReader;
@@ -25,10 +20,6 @@ import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.Locale;
 import de.enough.polish.util.TextUtil;
 import de.enough.polish.predictive.trie.TrieSetup;
-
-//#if polish.blackberry
-import de.enough.polish.blackberry.ui.PolishEditField;
-//#endif
 
 public class PredictiveAccess implements TrieSetupCallback{
 	private TextField parent;
@@ -256,6 +247,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 	}
 	
 	public void disablePredictiveInput() {
+		
 		//#if polish.TextField.predictive.showCommands || !polish.key.ChangeInputModeKey:defined
 			this.parent.addCommand(PredictiveAccess.ENABLE_PREDICTIVE_CMD);
 		//#endif
@@ -264,11 +256,14 @@ public class PredictiveAccess implements TrieSetupCallback{
 		
 		this.parent.removeCommand(PredictiveAccess.ADD_WORD_CMD);
 
-		this.predictiveEnabled = false;
-		this.parent.predictiveInput = false;
-
+		if(this.predictiveEnabled)
+		{
 		this.parent.setText(this.builder.getText().toString());
 		this.parent.setCaretPosition(this.builder.getCaretPosition());
+		}
+		
+		this.predictiveEnabled = false;
+		this.parent.predictiveInput = false;
 
 		this.parent.updateInfo();
 
@@ -395,11 +390,11 @@ public class PredictiveAccess implements TrieSetupCallback{
 			if(this.numberOfMatches > 0)
 			{
 				if (this.choiceOrientation == ORIENTATION_BOTTOM) {
-					this.choicesContainer.focus(0);
+					this.choicesContainer.focusChild(0);
 				}
 				else
 				{
-					this.choicesContainer.focus(this.choicesContainer.size() - 1);
+					this.choicesContainer.focusChild(this.choicesContainer.size() - 1);
 				}
 			}
 			
@@ -501,12 +496,12 @@ public class PredictiveAccess implements TrieSetupCallback{
 			if (this.choiceOrientation == ORIENTATION_BOTTOM) {
 				if(size > 1)
 				{
-					this.choicesContainer.focus(1);
+					this.choicesContainer.focusChild(1);
 				}
 			} else {
 				if(size > 1)
 				{
-					this.choicesContainer.focus(this.choicesContainer.size() - 2);
+					this.choicesContainer.focusChild(this.choicesContainer.size() - 2);
 				}
 				
 				int scrollOffset = this.choicesContainer.getScrollYOffset();
@@ -610,6 +605,9 @@ public class PredictiveAccess implements TrieSetupCallback{
 	}
 
 	protected boolean keyInsert(int keyCode, int gameAction) {
+		if (this.builder == null) {
+			return false;
+		}
 		if ((keyCode >= Canvas.KEY_NUM0 && keyCode <= Canvas.KEY_NUM9)
 				|| keyCode == Canvas.KEY_POUND || keyCode == Canvas.KEY_STAR) {
 			if (this.isInChoice) {
@@ -670,6 +668,9 @@ public class PredictiveAccess implements TrieSetupCallback{
 	}
 
 	protected boolean keyClear(int keyCode, int gameAction) {
+		if (this.builder == null) {
+			return false;
+		}
 		if (this.isInChoice) {
 			enterChoices(false);
 			openChoices(false);
@@ -709,6 +710,9 @@ public class PredictiveAccess implements TrieSetupCallback{
 	}
 
 	protected boolean keyMode(int keyCode, int gameAction) {
+		if (this.builder == null) {
+			return false;
+		}
 		if (keyCode == TextField.KEY_CHANGE_MODE
 		//#if polish.key.shift:defined
 		//#= || keyCode == ${polish.key.shift}
@@ -882,7 +886,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 			if (this.refreshChoices) {
 				this.elementX = getChoicesX(leftBorder, rightBorder,
 						this.choicesContainer.getItemWidth(
-								this.parent.itemWidth, this.parent.itemWidth));
+								this.parent.itemWidth, this.parent.itemWidth, this.parent.itemHeight));
 //				this.elementY = getChoicesY(this.parent.paddingVertical,
 //						this.parent.borderWidth);
 				this.refreshChoices = false;
@@ -892,18 +896,20 @@ public class PredictiveAccess implements TrieSetupCallback{
 			int clipY = 0;
 			int clipWidth = 0;
 			int clipHeight = 0;
+			int availWidth = rightBorder-leftBorder;
+			int availHeight = this.parent.availableHeight;
 			if (this.choiceOrientation == ORIENTATION_TOP) {
 				int space;
-				if(this.parent.getParent() != null)
+				/*if(this.parent.getParent() != null)
 				{
 					space = y + caretY - this.parent.getParent().getAbsoluteY();
 				}
 				else
-				{
+				{*/
 					space = y + caretY - this.parent.getScreen().contentY;
-				}
+				//}
 				this.choicesContainer.setScrollHeight(space);
-				if (this.choicesContainer.getItemHeight(rightBorder-leftBorder, rightBorder-leftBorder) > space) {
+				if (this.choicesContainer.getItemHeight(availWidth, availWidth, availHeight) > space) {
 //					this.elementY = - space;
 					this.choicesContainer.relativeY = caretY - space;
 					if (!this.isInChoice) {
@@ -928,7 +934,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 					space = this.parent.getScreen().contentY;
 				}
 				this.choicesContainer.setScrollHeight(space);
-				if (this.choicesContainer.getItemHeight(rightBorder-leftBorder, rightBorder-leftBorder) > space) {
+				if (this.choicesContainer.getItemHeight(availWidth, availWidth, availHeight) > space) {
 					clipX = g.getClipX();
 					clipY = g.getClipY();
 					clipWidth = g.getClipWidth();
@@ -995,14 +1001,18 @@ public class PredictiveAccess implements TrieSetupCallback{
 	public boolean commandAction(Command cmd, Item item) {
 		if (cmd == INSTALL_PREDICTIVE_CMD) {
 			this.setup = new TrieSetup(this);
-			this.setup.showInfo();
+			//#if polish.predictive.noInfo
+				this.setup.install();
+			//#else
+				this.setup.showInfo();
+			//#endif
 			return true;
 		}
 		
 		if (this.builder == null) {
 			return false;
 		}
-		if (cmd == TextField.CLEAR_CMD) {
+		if (this.parent.predictiveInput && cmd == TextField.CLEAR_CMD) {
 			while (this.builder.deleteCurrent());
 			openChoices(false);
 
@@ -1073,6 +1083,9 @@ public class PredictiveAccess implements TrieSetupCallback{
 	 * @return true when the key has been handled / recognized
 	 */
 	public boolean handleKeyReleased(int keyCode, int gameAction) {
+		if (this.builder == null) {
+			return false;
+		}
 		if ((gameAction == Canvas.FIRE || gameAction == Canvas.RIGHT) &&
 			!(keyCode >= Canvas.KEY_NUM0 && keyCode <= Canvas.KEY_NUM9) &&
 			this.isOpen &&

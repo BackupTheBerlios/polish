@@ -1,7 +1,7 @@
 /*
  * Created on 30-Nov-2005 at 23:12:37.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -37,16 +37,25 @@ package de.enough.polish.util;
  *    do not have many collisions (items with the same hash code).
  * </p>
  *
- * <p>Copyright (c) Enough Software 2005 - 2008</p>
+ * <p>Copyright (c) Enough Software 2005 - 2009</p>
  * <pre>
  * history
  *        30-Nov-2005 - rob creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
+ * @param <K> when you use the enough-polish-client-java5.jar you can parameterize the HashMap, e.g. HashMap&lt;User, Message&gt; = new HashMap&lt;User, Message&gt;(10); 
+ * @param <V> when you use the enough-polish-client-java5.jar you can parameterize the HashMap, e.g. HashMap&lt;User, Message&gt; = new HashMap&lt;User, Message&gt;(10); 
  */
-public class HashMap 
+public class HashMap
+//#if polish.java5
+	<K, V>
+//#endif
+
 //#if polish.Map.dropInterface != true
 	implements Map 
+	//#if polish.java5
+		<K, V>
+	//#endif
 //#endif
 {
 	
@@ -56,7 +65,11 @@ public class HashMap
 	public static final int DEFAULT_LOAD_FACTOR = 75;
 	
 	private final int loadFactor;	
-	Element[] buckets;
+	Element
+	//#if polish.java5
+		<K, V>
+	//#endif
+		[] buckets;
 	private final boolean isPowerOfTwo;
 	int size;
 
@@ -108,7 +121,12 @@ public class HashMap
 	/* (non-Javadoc)
 	 * @see de.enough.polish.util.Map#put(java.lang.Object, java.lang.Object)
 	 */
-	public Object put( Object key, Object value ) {
+	//#if polish.java5
+		public V put( K key, V value ) {
+	//#else
+		//# public Object put( Object key, Object value ) { 
+	//#endif
+	
 		if (key == null || value == null ) {
 			throw new IllegalArgumentException("HashMap cannot accept null key [" + key + "] or value [" + value + "].");
 		}
@@ -123,18 +141,34 @@ public class HashMap
 		} else {
 			index = (hashCode & 0x7FFFFFFF) % this.buckets.length;
 		}
-		Element element = this.buckets[ index ];
+		Element
+		//#if polish.java5
+			<K,V>
+		//#endif
+		element = this.buckets[ index ];
 		if (element == null) {
-			element = new Element( hashCode, key, value );
+			element = new Element
+			//#if polish.java5
+				<K,V>
+			//#endif
+				( hashCode, key, value );
 			this.buckets[index] = element;
 			this.size++;
 			return null;
 		}
 		// okay, there is a collision:
-		Element lastElement = element;
+		Element 
+		//#if polish.java5
+			<K,V>
+		//#endif
+		lastElement = element;
 		do {
 			if (element.key.equals( key )) {
-				Object oldValue = element.value;
+				//#if polish.java5
+					V oldValue = element.value;
+				//#else
+					//# Object oldValue = element.value;
+				//#endif
 				element.value = value;
 				return oldValue;
 			}
@@ -142,7 +176,11 @@ public class HashMap
 			element = element.next;
 		} while ( element != null );
 		// now insert new element at the end of the bucket:
-		element = new Element( hashCode, key, value );
+		element = new Element
+		//#if polish.java5
+			<K,V>
+		//#endif
+		( hashCode, key, value );
 		lastElement.next = element;
 		this.size++;
 		return null;
@@ -151,7 +189,11 @@ public class HashMap
 	/* (non-Javadoc)
 	 * @see de.enough.polish.util.Map#get(java.lang.Object)
 	 */
-	public Object get( Object key ) {
+	//#if polish.java5
+		public V get( K key ) {
+	//#else
+		//# public Object get( Object key ) { 
+	//#endif
 		if (key == null) {
 			throw new IllegalArgumentException();
 		}
@@ -161,7 +203,11 @@ public class HashMap
 		} else {
 			index = (key.hashCode()& 0x7FFFFFFF) % this.buckets.length;
 		}
-		Element element = this.buckets[ index ];
+		Element 
+		//#if polish.java5
+			<K,V>
+		//#endif
+		element = this.buckets[ index ];
 		if (element == null) {
 			return null;
 		}
@@ -177,7 +223,12 @@ public class HashMap
 	/* (non-Javadoc)
 	 * @see de.enough.polish.util.Map#remove(java.lang.Object)
 	 */
-	public Object remove( Object key ) {
+	//#if polish.java5
+		public V remove( K key ) {
+	//#else
+		//# public Object remove( Object key ) { 
+	//#endif
+	
 		if (key == null) {
 			throw new IllegalArgumentException();
 		}
@@ -187,12 +238,20 @@ public class HashMap
 		} else {
 			index = (key.hashCode()& 0x7FFFFFFF) % this.buckets.length;
 		}
-		Element element = this.buckets[ index ];
+		Element 
+		//#if polish.java5
+			<K,V>
+		//#endif
+		element = this.buckets[ index ];
 		if (element == null) {
 			//System.out.println("remove: No bucket found for key " + key + ", containsKey()=" + containsKey(key));
 			return null;
 		}
-		Element lastElement = null;
+		Element 
+		//#if polish.java5
+			<K,V>
+		//#endif
+		lastElement = null;
 		do {
 			if (element.key.equals( key )) {
 				if (lastElement == null) {
@@ -227,16 +286,28 @@ public class HashMap
 	/* (non-Javadoc)
 	 * @see de.enough.polish.util.Map#containsKey(java.lang.Object)
 	 */
-	public boolean containsKey( Object key ) {
+	//#if polish.java5
+		public boolean containsKey( K key ) {
+	//#else
+		//# public boolean containsKey( Object key ) {
+	//#endif
 		return get( key ) != null;
 	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.util.Map#containsValue(java.lang.Object)
 	 */
-	public boolean containsValue( Object value ) {
+	//#if polish.java5
+		public boolean containsValue( V value ) {
+	//#else
+		//# public boolean containsValue( Object value ) {
+	//#endif
 		for (int i = 0; i < this.buckets.length; i++) {
-			Element element = this.buckets[i];
+			Element 
+			//#if polish.java5
+				<K,V>
+			//#endif
+			element = this.buckets[i];
 			while (element != null) {
 				if (element.value.equals( value )) {
 					return true;
@@ -261,16 +332,44 @@ public class HashMap
 	 * @see de.enough.polish.util.Map#values()
 	 */
 	public Object[] values() {
-		return values( new Object[ this.size ] );
+		//#if polish.java5
+			Object[] objects = new Object[ this.size ];
+			int index = 0;
+			for (int i = 0; i < this.buckets.length; i++) {
+				Element 
+				//#if polish.java5
+					<K,V> 
+				//#endif
+				element = this.buckets[i];
+				while (element != null) {
+					objects[index] = element.value;
+					index++;
+					element = element.next;
+				}
+			}
+			return objects;
+		
+		//#else
+			//# return values( new Object[ this.size ] );
+		//#endif
+		 
 	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.util.Map#values(java.lang.Object[])
 	 */
-	public Object[] values(Object[] objects) {
+	//#if polish.java5
+		public V[] values(V[] objects) {
+	//#else
+		//# public Object[] values(Object[] objects) {
+	//#endif
 		int index = 0;
 		for (int i = 0; i < this.buckets.length; i++) {
-			Element element = this.buckets[i];
+			Element 
+			//#if polish.java5
+				<K,V> 
+			//#endif
+			element = this.buckets[i];
 			while (element != null) {
 				objects[index] = element.value;
 				index++;
@@ -284,16 +383,39 @@ public class HashMap
 	 * @see de.enough.polish.util.Map#keys()
 	 */
 	public Object[] keys() {
-		return keys( new Object[ this.size ] );
+		//#if polish.java5
+			Object[] objects = new Object[ this.size ];
+			int index = 0;
+			for (int i = 0; i < this.buckets.length; i++) {
+				Element<K,V> element = this.buckets[i];
+				while (element != null) {
+					objects[index] = element.key;
+					index++;
+					element = element.next;
+				}
+			}
+			return objects;
+		//#else
+			//# return keys( new Object[ this.size ] ); 
+		//#endif
+		
 	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.util.Map#keys(java.lang.Object[])
 	 */
-	public Object[] keys(Object[] objects) {
+	//#if polish.java5
+		public K[] keys(K[] objects) {
+	//#else
+		//# public Object[] keys(Object[] objects) { 
+	//#endif
 		int index = 0;
 		for (int i = 0; i < this.buckets.length; i++) {
-			Element element = this.buckets[i];
+			Element 
+			//#if polish.java5
+			<K,V>
+			//#endif
+			element = this.buckets[i];
 			while (element != null) {
 				objects[index] = element.key;
 				index++;
@@ -330,9 +452,17 @@ public class HashMap
 		} else {
 			newCapacity = (this.buckets.length << 1) - 1; // * 2 - 1 
 		}
-		Element[] newBuckets = new Element[ newCapacity ];
+		Element
+		//#if polish.java5
+			<K,V>
+		//#endif
+			[] newBuckets = new Element[ newCapacity ];
 		for (int i = 0; i < this.buckets.length; i++) {
-			Element element = this.buckets[i];
+			Element
+			//#if polish.java5
+				<K,V>
+			//#endif
+			element = this.buckets[i];
 			while (element != null) {				
 				int index;
 				if (this.isPowerOfTwo) {
@@ -340,7 +470,11 @@ public class HashMap
 				} else {
 					index = (element.hashCodeValue & 0x7FFFFFFF) % newCapacity;
 				}
-				Element newElement = newBuckets[ index ];
+				Element 
+				//#if polish.java5
+					<K,V>
+				//#endif
+				newElement = newBuckets[ index ];
 				if (newElement == null ) {
 					newBuckets[ index ] = element;
 				} else {
@@ -351,7 +485,11 @@ public class HashMap
 					newElement.next = element;
 					
 				}
-				Element lastElement = element;
+				Element 
+				//#if polish.java5
+					<K,V>
+				//#endif
+				lastElement = element;
 				element = element.next;
 				lastElement.next = null;
 			}
@@ -364,12 +502,37 @@ public class HashMap
 	}
 	
 
-	private static final class Element {
-		public final Object key;
+	private static final class Element 
+	//#if polish.java5
+		<K, V>
+	//#endif
+	{
+		//#if polish.java5
+		public final K key;
+		//#else
+			//# public final Object key; 
+		//#endif
+		
 		public final int hashCodeValue;
-		public Object value;
-		public Element next;
-		public Element ( int hashCode, Object key, Object value ) {
+		//#if polish.java5
+		public V value;
+		//#else
+			//# public Object value; 
+		//#endif
+		
+		//#if polish.java5
+		public Element<K,V> next;
+		//#else
+			//# public Element next;
+		//#endif
+		
+		
+		//#if polish.java5
+		public Element ( int hashCode, K key, V value ) {
+		//#else
+			//# public Element ( int hashCode, Object key, Object value ) { 
+		//#endif
+		
 			this.hashCodeValue = hashCode;
 			this.key = key;
 			this.value = value;

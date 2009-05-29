@@ -2,7 +2,7 @@
 /*
  * Created on Nov 29, 2006 at 9:33:31 PM.
  * 
- * Copyright (c) 2006 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -46,7 +46,7 @@ import de.enough.polish.util.RgbImage;
  * 	 <li><b>text-rotating-steps</b>: The number of degrees by which the rotation should be increased in each animation step, defaults to 2 degrees.</li>
  * </ul>
  *
- * <p>Copyright Enough Software 2006 - 2008</p>
+ * <p>Copyright Enough Software 2006 - 2009</p>
  * <pre>
  * history
  *        Nov 29, 2006 - rob creation
@@ -67,6 +67,16 @@ public class RotatingTextEffect extends TextEffect {
 	private int rotatedWidthHeight;
 	private int originalHeight;
 	private int originalWidth;
+	
+	/**
+	 * Creates a new rotating effect
+	 */
+	public RotatingTextEffect()
+	{
+		super();
+		this.isTextSensitive = true;
+	}
+
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.TextEffect#drawString(java.lang.String, int, int, int, int, javax.microedition.lcdui.Graphics)
@@ -169,8 +179,8 @@ public class RotatingTextEffect extends TextEffect {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.TextEffect#setStyle(de.enough.polish.ui.Style)
 	 */
-	public void setStyle(Style style) {
-		super.setStyle(style);
+	public void setStyle(Style style, boolean resetStyle) {
+		super.setStyle(style, resetStyle);
 		this.lastText = null;
 		//#if polish.css.text-rotating-start-angle
 			Integer startAngleInt = style.getIntProperty("text-rotating-start-angle");

@@ -1,7 +1,7 @@
 /*
  * Created on Jul 9, 2007 at 10:23:37 PM.
  * 
- * Copyright (c) 2007 Andre Schmidt / Enough Software
+ * Copyright (c) 2009 Andre Schmidt / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -37,7 +37,7 @@ import de.enough.polish.io.Externalizable;
  * The stream is assumed to be using the ISO 8859-1 character encoding; 
  * that is each byte is one Latin1 character.
  * 
- * <p>Copyright (c) 2007-2008 Enough Software</p>
+ * <p>Copyright (c) 2009-2008 Enough Software</p>
  * <pre>
  * history
  *        09-Jul-2007 - asc creation

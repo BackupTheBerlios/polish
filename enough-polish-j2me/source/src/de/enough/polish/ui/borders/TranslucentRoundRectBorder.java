@@ -2,7 +2,7 @@
 /*
  * Created on 20-May-2008 at 16:09:10.
  *
- * Copyright (c) 2008 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -58,10 +58,8 @@ public class TranslucentRoundRectBorder extends Border {
 	 * @param arcHeight the vertical diameter of the arc at the four corners
 	 */
 	public TranslucentRoundRectBorder( int argbColor, int borderWidth, int arcWidth, int arcHeight ) {
-		super();
-		this.borderWidth = borderWidth;
+		super(borderWidth, borderWidth, borderWidth, borderWidth);
 		this.color = argbColor;
-		this.borderWidth = borderWidth;
 		this.arcWidth = arcWidth;
 		this.arcHeight = arcHeight;
 	}
@@ -73,7 +71,7 @@ public class TranslucentRoundRectBorder extends Border {
 		g.setColor( this.color );
 		boolean isTransparent = (this.color & 0xff000000) != 0;
 		//#if polish.midp2
-		if (this.borderWidth == 1 && !isTransparent) {
+		if (this.borderWidthLeft == 1 && !isTransparent) {
 		//#endif
 			width--;
 			height--;
@@ -86,7 +84,7 @@ public class TranslucentRoundRectBorder extends Border {
 			int[] rb = this.rgbDataRb;
 			int aw = this.arcWidth;
 			int ah = this.arcHeight;
-			int bw = this.borderWidth;
+			int bw = this.borderWidthLeft;
 			if (lt == null) {
 				// setup RGB data:
 				int bgColor = DrawUtil.getComplementaryColor(this.color);

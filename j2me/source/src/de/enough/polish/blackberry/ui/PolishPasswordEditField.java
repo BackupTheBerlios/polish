@@ -25,8 +25,8 @@
  */
 package de.enough.polish.blackberry.ui;
 
+import de.enough.polish.ui.Style;
 import de.enough.polish.ui.StyleSheet;
-import net.rim.device.api.ui.component.EditField;
 import net.rim.device.api.ui.component.PasswordEditField;
 
 public class PolishPasswordEditField extends PasswordEditField implements PolishTextField {
@@ -35,6 +35,9 @@ public class PolishPasswordEditField extends PasswordEditField implements Polish
         private boolean isFocused;
         public boolean processKeyEvents = true;
 		private int fontColor;
+		//#if ${ version(polish.JavaPlatform, BlackBerry) } >= ${version(4.6)}
+			private BackgroundWrapper backgroundWrapper;
+		//#endif
 
         public PolishPasswordEditField(String label, String text, int numChars, long style) {
                 super(label, text, numChars, style);
@@ -92,5 +95,34 @@ public class PolishPasswordEditField extends PasswordEditField implements Polish
 			return getCursorPosition();
 		}
 
+		
+		public void setStyle(Style style) {
+			Font font = (Font)(Object)style.getFont();
+			if (font == null) {
+				font = Font.getDefaultFont();
+			}
+			try {
+				super.setFont( font.font );
+			} catch (IllegalStateException e) {
+				//#debug error
+				System.out.println("Layout error: " + e );
+			}
+			this.fontColor = style.getFontColor();
+			//#if ${ version(polish.JavaPlatform, BlackBerry) } >= ${version(4.6)}
+				if (style.background != null) {
+					if (this.backgroundWrapper == null) {
+						this.backgroundWrapper = new BackgroundWrapper( style.background );
+						try {
+							setBackground(this.backgroundWrapper);
+						} catch (Exception e) {
+							//#debug error
+							System.out.println("Unable to set background" + e);
+						}
+					} else {
+						this.backgroundWrapper.setBackground(style.background);
+					}
+				}
+			//#endif
+		}
 
 }

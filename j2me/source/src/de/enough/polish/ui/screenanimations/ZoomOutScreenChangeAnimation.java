@@ -3,7 +3,7 @@
 /*
  * Created on 27-May-2005 at 18:54:36.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -27,12 +27,11 @@
  */
 package de.enough.polish.ui.screenanimations;
 
-import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Displayable;
+import de.enough.polish.ui.Display;
+import de.enough.polish.ui.Displayable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
-import de.enough.polish.ui.AccessibleCanvas;
 import de.enough.polish.ui.ScreenChangeAnimation;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.ImageUtil;
@@ -49,7 +48,7 @@ import de.enough.polish.util.ImageUtil;
  * </pre>
  * </p>
  *
- * <p>Copyright (c) Enough Software 2005 - 2008</p>
+ * <p>Copyright (c) Enough Software 2005 - 2009</p>
  * <pre>
  * history
  *        27-May-2005 - rob creation
@@ -73,8 +72,8 @@ public class ZoomOutScreenChangeAnimation extends ScreenChangeAnimation {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#show(de.enough.polish.ui.Style, javax.microedition.lcdui.Display, int, int, javax.microedition.lcdui.Image, javax.microedition.lcdui.Image, de.enough.polish.ui.Screen)
 	 */
-	protected void show(Style style, Display dsplay, int width, int height,
-			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable, boolean isForward  ) 
+	protected void onShow(Style style, Display dsplay, int width, int height,
+			Displayable lstDisplayable, Displayable nxtDisplayable, boolean isForward  ) 
 	{
 		if (isForward) {
 			this.useLastCanvasRgb = false;
@@ -85,7 +84,7 @@ public class ZoomOutScreenChangeAnimation extends ScreenChangeAnimation {
 			this.useLastCanvasRgb = true;
 			this.useNextCanvasRgb = false;			
 		}
-		super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable, isForward );
+		super.onShow(style, dsplay, width, height, lstDisplayable, nxtDisplayable, isForward );
 		this.scaledScreenRgb = new int[ width * height ];
 		animate();
 	}

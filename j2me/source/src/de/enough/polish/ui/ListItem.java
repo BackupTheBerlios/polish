@@ -2,7 +2,7 @@
 /*
  * Created on 16-Feb-2005 at 09:45:41.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -26,8 +26,6 @@
  */
 package de.enough.polish.ui;
 
-import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Image;
 
 /**
  * <p>Provides a list of items that can be used within a Form.</p>
@@ -35,7 +33,7 @@ import javax.microedition.lcdui.Image;
  *    you can specify view-types, columns, colspans, etc.
  * </p>
  *
- * <p>Copyright (c) Enough Software 2005 - 2008</p>
+ * <p>Copyright (c) Enough Software 2005 - 2009</p>
  * <pre>
  * history
  *        16-Feb-2005 - rob creation
@@ -78,6 +76,17 @@ public class ListItem
 	 * @param item the item that should be added
 	 */
 	public void append( javax.microedition.lcdui.Item item ) {
+		// ignore, only for the users
+	}
+	//#endif
+
+	//#if polish.LibraryBuild
+	/**
+	 * Adds the specified item to this list.
+	 * 
+	 * @param item the item that should be added
+	 */
+	public void append( javax.microedition.lcdui.Item item, Style style ) {
 		// ignore, only for the users
 	}
 	//#endif
@@ -131,14 +140,15 @@ public class ListItem
 		super.add( item );
 	}
 
-//	/**
-//	 * Adds the specified item to this list.
-//	 * 
-//	 * @param item the item that should be added
-//	 */
-//	public void append( Item item, Style itemStyle ) {
-//		super.add( item,  itemStyle );
-//	}
+	/**
+	 * Adds the specified item to this list.
+	 * 
+	 * @param item the item that should be added
+	 * @param itmStyle the item style
+	 */
+	public void append( Item item, Style itmStyle ) {
+		super.add( item,  itmStyle );
+	}
 
 	/**
 	 * Inserts the specified item into this list.

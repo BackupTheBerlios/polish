@@ -75,7 +75,7 @@ import javax.microedition.lcdui.Graphics;
  * <center><img src="doc-files/drawWindow.gif" width=321 height=324
  * ALT="Drawing the View Window"></center>
  * <br>
- * <p>Copyright Enough Software 2005 - 2008</p>
+ * <p>Copyright Enough Software 2005 - 2009</p>
  * 
  * @since MIDP 2.0
  */

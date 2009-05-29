@@ -3,7 +3,7 @@
 /*
  * Created on 02-Jul-2006 at 15:19:49.
  * 
- * Copyright (c) 2006 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -33,7 +33,7 @@ import java.util.Date;
 /**
  * <p>Display the current time digitally.</p>
  *
- * <p>Copyright Enough Software 2006 - 2008</p>
+ * <p>Copyright Enough Software 2006 - 2009</p>
  * <pre>
  * history
  *        02-Jul-2006 - rob creation
@@ -116,11 +116,11 @@ public class ClockItem
 	//#endif
 
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.FakeStringCustomItem#initContent(int, int)
+	 * @see de.enough.polish.ui.FakeStringCustomItem#initContent(int, int, int)
 	 */
-	protected void initContent(int firstLineWidth, int lineWidth) {
+	protected void initContent(int firstLineWidth, int availWidth, int availHeight) {
 		updateTime( System.currentTimeMillis() );
-		super.initContent(firstLineWidth, lineWidth);
+		super.initContent(firstLineWidth, availWidth, availHeight );
 	}
 
 	private void updateTime( long time ) {

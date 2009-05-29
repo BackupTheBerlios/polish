@@ -2,7 +2,7 @@
 /*
  * Created on Apr 23, 2008 at 11:52:42 PM.
  * 
- * Copyright (c) 2007 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -29,6 +29,8 @@ package de.enough.polish.ui.backgrounds;
 import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.ui.Background;
+import de.enough.polish.ui.Color;
+import de.enough.polish.ui.Style;
 
 /**
  * <p>Creates a rectangular background with two colors.</p>
@@ -39,9 +41,9 @@ import de.enough.polish.ui.Background;
 public class HorizontalSplitBackground extends Background
 {
 	private final static int SIDE_RIGHT = 1;
-	private final int leftColor;
-	private final int rightColor;
-	private final int splitPos;
+	private int leftColor;
+	private int rightColor;
+	private int splitPos;
 	private final boolean isPercent;
 	private final boolean isSplitRight;
 
@@ -81,5 +83,34 @@ public class HorizontalSplitBackground extends Background
 		g.setColor( this.rightColor );
 		g.fillRect( x + split, y , width - split, height );
 	}
+
+	//#if polish.css.animations
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Background#setStyle(de.enough.polish.ui.Style)
+	 */
+	public void setStyle(Style style)
+	{
+		//#if polish.css.background-horizontal-split-left-color
+			Color lcol = style.getColorProperty("background-horizontal-split-left-color");
+			if (lcol != null) {
+				this.leftColor = lcol.getColor();
+			}
+		//#endif
+			//#if polish.css.background-horizontal-split-right-color
+			Color rcol = style.getColorProperty("background-horizontal-split-right-color");
+			if (rcol != null) {
+				this.rightColor = rcol.getColor();
+			}
+		//#endif
+			//#if polish.css.background-horizontal-split-split-pos
+			Integer splitPosInt = style.getIntProperty("background-horizontal-split-split-pos");
+			if (splitPosInt != null) {
+				this.splitPos = splitPosInt.intValue();
+			}
+		//#endif
+	}
+	//#endif
+	
+	
 
 }

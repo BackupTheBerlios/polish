@@ -26,7 +26,7 @@ import de.enough.polish.util.DrawUtil;
  *   <li><b>font-color:</b>: You should set the font-color black in order to get an nice alien glow effect. </li>
  * </ul>
  * <p>Choosing the same inner and outer color and varying the transparency is recommended. Dropshadow just works, if the Text is opaque.</p>
- * <p>Copyright Enough Software 2006 - 2008</p>
+ * <p>Copyright Enough Software 2006 - 2009</p>
  * <pre>
  * history
  *        14-Jul-2006
@@ -53,6 +53,7 @@ public class FadingAlienGlowTextEffect extends TextEffect {
 	public FadingAlienGlowTextEffect()
 	{
 		this.outerFader =new DrawUtil.FadeUtil();
+		this.isTextSensitive = true;
 	}
 	
 	/* (non-Javadoc)
@@ -170,26 +171,29 @@ public class FadingAlienGlowTextEffect extends TextEffect {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.TextEffect#setStyle(de.enough.polish.ui.Style)
 	 */
-	public void setStyle(Style style) {
-		super.setStyle(style);
-		this.lastText = null;
+	public void setStyle(Style style, boolean resetStyle) {
+		super.setStyle(style, resetStyle);
+		boolean hasChanged = false;
 		
 		 //#if polish.css.text-fading-alien-glow-inner-color
 			Color innerColorObj = style.getColorProperty( "text-fading-alien-glow-inner-color" );
 			if (innerColorObj != null) {
 				this.innerColor = innerColorObj.getColor();
+				hasChanged = true;
 			}
 		//#endif
 		//#if polish.css.text-fading-alien-glow-outer-out-color
 			Color outerOutColorObj = style.getColorProperty( "text-fading-alien-glow-outer-out-color" );
 			if (outerOutColorObj != null) {
 				this.outerFader.startColor = outerOutColorObj.getColor();
+				hasChanged = true;
 			}
 		//#endif
 		//#if polish.css.text-fading-alien-glow-outer-in-color
 			Color outerInColorObj = style.getColorProperty( "text-fading-alien-glow-outer-in-color" );
 			if (outerInColorObj != null) {
 				this.outerFader.endColor = outerInColorObj.getColor();
+				hasChanged = true;
 			}
 		//#endif
 			
@@ -197,6 +201,7 @@ public class FadingAlienGlowTextEffect extends TextEffect {
 			Integer delayInt = style.getIntProperty("text-fading-alien-glow-delay");
 			if (delayInt != null ) {
 				this.outerFader.delay = delayInt.intValue();
+				hasChanged = true;
 			}
 		//#endif
 		//#if polish.css.text-fading-alien-glow-steps
@@ -204,26 +209,33 @@ public class FadingAlienGlowTextEffect extends TextEffect {
 			if (fadeTimeInt != null ) {
 				this.outerFader.stepsIn = fadeTimeInt.intValue();
 				this.outerFader.stepsOut=this.outerFader.stepsIn;
+				hasChanged = true;
 			}
 		//#endif
 		//#if polish.css.text-fading-alien-glow-duration-in
 			Integer diInt = style.getIntProperty("text-fading-alien-glow-duration-in");
 			if (diInt != null ) {
 				this.outerFader.sWaitTimeIn = diInt.intValue();
+				hasChanged = true;
 			}
 		//#endif
 		//#if polish.css.text-fading-alien-glow-duration-out
 			Integer doInt = style.getIntProperty("text-fading-alien-glow-duration-out");
 			if (doInt != null ) {
 				this.outerFader.sWaitTimeOut = doInt.intValue();
+				hasChanged = true;
 			}
 		//#endif
 		//#if polish.css.text-fading-alien-glow-mode
 			Integer glowModeInt = style.getIntProperty("text-fading-alien-glow-mode");
 			if (glowModeInt!=null){
 				this.outerFader.mode = glowModeInt.intValue();
+				hasChanged = true;
 			}
 		//#endif	
+		if (resetStyle || hasChanged ) {
+			this.lastText = null;
+		}
 	}
 	
 	/* (non-Javadoc)

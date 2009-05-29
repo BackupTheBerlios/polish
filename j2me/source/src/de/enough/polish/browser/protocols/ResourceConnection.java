@@ -1,7 +1,7 @@
 /*
  * Created on 11-Jan-2006 at 19:20:28.
  * 
- * Copyright (c) 2007 - 2008 Michael Koch / Enough Software
+ * Copyright (c) 2009 - 2009 Michael Koch / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -38,81 +38,94 @@ import javax.microedition.io.StreamConnection;
  * The urls of resources always start with <code>resource://</code>. 
  */
 public class ResourceConnection
-  implements StreamConnection
+implements StreamConnection
 {
-  private String path;
-  private InputStream inputStream;
+	private String path;
+	private InputStream inputStream;
 
-  public ResourceConnection(String url)
-  {
-    // Strip off 'resource:/' part of url.
-    this.path = url.substring(10);
-    
-    // Resource paths are always absolute.
-    if (this.path.charAt(0) != '/')
-    {
-      this.path = '/' + this.path;
-    }
-  }
-  
-  /* (non-Javadoc)
-   * @see javax.microedition.io.Connection#close()
-   */
-  public void close() throws IOException
-  {
-    if (this.inputStream != null)
-    {
-    	try {
-    		this.inputStream.close();
-    	} catch (Exception e) {
-    		// ignore
-    	} finally{
-    		this.inputStream = null;
-    	}
-    }
-  }
-  
-  /* (non-Javadoc)
-   * @see javax.microedition.io.InputConnection#openDataInputStream()
-   */
-  public DataInputStream openDataInputStream() throws IOException
-  {
-    return new DataInputStream(openInputStream());
-  }
+	/**
+	 * Creates a new resource connection for the specified URL
+	 * @param url the URL, e.g. /image.png.
+	 */
+	public ResourceConnection(String url)
+	{
+		// Resource paths are always absolute.
+		if (url.length() > 0 && url.charAt(0) != '/')
+		{
+			url = '/' + url;
+		}
+		this.path = url;
+	}
+	
+	/**
+	 * Creates a new resource connection for the specified input stream.
+	 * 
+	 * @param in the input stream
+	 */
+	public ResourceConnection(InputStream in)
+	{
+		this.path = "";
+		this.inputStream = in;
+	}
 
-  /* (non-Javadoc)
-   * @see javax.microedition.io.OutputConnection#openDataOutputStream()
-   */
-  public DataOutputStream openDataOutputStream() throws IOException
-  {
-    // Resource connections don't support output streams.
-    return null;
-  }
-  
-  /* (non-Javadoc)
-   * @see javax.microedition.io.InputConnection#openInputStream()
-   */
-  public synchronized InputStream openInputStream() throws IOException
-  {
-    if (this.inputStream == null)
-    {
-      this.inputStream = getClass().getResourceAsStream(this.path);
+	/* (non-Javadoc)
+	 * @see javax.microedition.io.Connection#close()
+	 */
+	public void close() throws IOException
+	{
+		if (this.inputStream != null)
+		{
+			try {
+				this.inputStream.close();
+			} catch (Exception e) {
+				// ignore
+			} finally{
+				this.inputStream = null;
+			}
+		}
+	}
 
-      if (this.inputStream == null)
-      {
-    	  throw new IOException("resource not found: " + this.path );
-      }
-    }
-    
-    return this.inputStream;
-  }
+	/* (non-Javadoc)
+	 * @see javax.microedition.io.InputConnection#openDataInputStream()
+	 */
+	public DataInputStream openDataInputStream() throws IOException
+	{
+		return new DataInputStream(openInputStream());
+	}
 
-  /* (non-Javadoc)
-   * @see javax.microedition.io.OutputConnection#openOutputStream()
-   */
-  public OutputStream openOutputStream() throws IOException
-  {
-    // Resource connections don't support output streams.
-    return null;
-  }
+	/* (non-Javadoc)
+	 * @see javax.microedition.io.OutputConnection#openDataOutputStream()
+	 */
+	public DataOutputStream openDataOutputStream() throws IOException
+	{
+		// Resource connections don't support output streams.
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.microedition.io.InputConnection#openInputStream()
+	 */
+	public synchronized InputStream openInputStream() throws IOException
+	{
+		if (this.inputStream == null)
+		{
+			this.inputStream = getClass().getResourceAsStream(this.path);
+
+			if (this.inputStream == null)
+			{
+				throw new IOException("resource not found: " + this.path );
+			}
+		}
+
+		return this.inputStream;
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.microedition.io.OutputConnection#openOutputStream()
+	 */
+	public OutputStream openOutputStream() throws IOException
+	{
+		// Resource connections don't support output streams.
+		return null;
+	}
 }

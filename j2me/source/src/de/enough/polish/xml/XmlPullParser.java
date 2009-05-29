@@ -203,6 +203,14 @@ public class XmlPullParser implements SimplePullParser {
                 req = "--";
                 term = '-';
             }
+            else if(this.peek0 == '[')
+            {
+            	//TODO hack for <![CDATA[]]
+            	req = "[CDATA[";
+                term = ']';
+                this.type = SimplePullParser.TEXT;
+                push = true;
+            }
             else {
                 req = "DOCTYPE";
                 term = -1;
@@ -403,8 +411,9 @@ public class XmlPullParser implements SimplePullParser {
 
         int pos = this.txtPos;
 
-        while (!this.eof && this.peek0 != ';')
+        while (!this.eof && this.peek0 != ';') {
             push(read());
+        }
 
         String code = pop(pos);
 
@@ -422,13 +431,15 @@ public class XmlPullParser implements SimplePullParser {
         String result = (String) this.entityMap.get(code);
         boolean whitespace = true;
 
-        if (result == null)
+        if (result == null) {
             result = "&" + code + ";";
+        }
 
         for (int i = 0; i < result.length(); i++) {
             char c = result.charAt(i);
-            if (c > ' ')
+            if (c > ' ') {
                 whitespace = false;
+            }
             push(c);
         }
 

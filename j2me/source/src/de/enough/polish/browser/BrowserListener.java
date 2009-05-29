@@ -3,7 +3,7 @@
 /*
  * Created on 24-Apr-2007 at 19:20:28.
  * 
- * Copyright (c) 2007 - 2008 Michael Koch / Enough Software
+ * Copyright (c) 2009 - 2009 Michael Koch / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -30,7 +30,7 @@ package de.enough.polish.browser;
 /**
  * Interface to be able to listen to the status of the browser.
  * 
- * <p>copyright Enough Software 2006 - 2008</p>
+ * <p>copyright Enough Software 2006 - 2009</p>
  * @see Browser
  */
 public interface BrowserListener

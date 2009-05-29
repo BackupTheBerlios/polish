@@ -3,7 +3,7 @@
 /*
  * Created on 15-April-2007 at 18:54:36.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -27,12 +27,10 @@
  */
 package de.enough.polish.ui.screenanimations;
 
-import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Displayable;
+import de.enough.polish.ui.Display;
+import de.enough.polish.ui.Displayable;
 import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Image;
 
-import de.enough.polish.ui.AccessibleCanvas;
 import de.enough.polish.ui.ScreenChangeAnimation;
 import de.enough.polish.ui.Style;
 
@@ -49,7 +47,7 @@ import de.enough.polish.ui.Style;
  * </pre>
  * </p>
  *
- * <p>Copyright (c) 2007 Enough Software</p>
+ * <p>Copyright (c) 2009 Enough Software</p>
  * <pre>
  * history
  *        15-April-2007 - rob creation
@@ -59,23 +57,23 @@ import de.enough.polish.ui.Style;
 public class FadeScreenChangeAnimation extends ScreenChangeAnimation {
 	private int steps = 6;
 	private int currentStep;
-	//#if !polish.blackberry
-		private int[] nextCanvasRgb;
-	//#endif
 
 	/**
 	 * Creates a new animation 
 	 */
 	public FadeScreenChangeAnimation() {
 		super();
+		//#if !polish.blackberry
+		this.useNextCanvasRgb = true;
+		//#endif
 	}
 
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#show(de.enough.polish.ui.Style, javax.microedition.lcdui.Display, int, int, javax.microedition.lcdui.Image, javax.microedition.lcdui.Image, de.enough.polish.ui.Screen)
 	 */
-	protected void show(Style style, Display dsplay, int width, int height,
-			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable, boolean isForward  ) 
+	protected void onShow(Style style, Display dsplay, int width, int height,
+			Displayable lstDisplayable, Displayable nxtDisplayable, boolean isForward  ) 
 	{
 		//#if polish.css.fade-screen-change-animation-steps
 			Integer stepsInt = style.getIntProperty("fade-screen-change-animation-steps");
@@ -83,16 +81,12 @@ public class FadeScreenChangeAnimation extends ScreenChangeAnimation {
 				this.steps = stepsInt.intValue();
 			}
 		//#endif
-		//#if !polish.blackberry
-			if ( this.nextCanvasRgb == null ) {
-				this.nextCanvasRgb = new int[ width * height ];
-			}
-			nxtScreenImage.getRGB( this.nextCanvasRgb, 0, width, 0, 0, width, height );
-			addOpacity( 255/this.steps, this.nextCanvasRgb );
-		//#endif
 		this.currentStep = 0;
 		
-		super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable, isForward );
+		super.onShow(style, dsplay, width, height, lstDisplayable, nxtDisplayable, isForward );
+		//#if !polish.blackberry
+			addOpacity( 255/this.steps, this.nextCanvasRgb );
+		//#endif
 	}
 	
 	

@@ -6,7 +6,7 @@ import de.enough.polish.io.Serializable;
 /**
  * <p>Stores a byte array with name and size to store or load from a theme file</p>
  *
- * <p>Copyright (c) 2005, 2006, 2007 Enough Software</p>
+ * <p>Copyright (c) 2009, 2006, 2007 Enough Software</p>
  * <pre>
  * history
  *        10-Dec-2007 - asc creation

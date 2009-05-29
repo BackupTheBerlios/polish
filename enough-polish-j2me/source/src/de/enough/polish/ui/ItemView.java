@@ -3,7 +3,7 @@
 /*
  * Created on Nov 27, 2006 at 1:06:40 PM.
  * 
- * Copyright (c) 2006 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -27,16 +27,14 @@
  */
 package de.enough.polish.ui;
 
-import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 
-import de.enough.polish.event.EventManager;
 import de.enough.polish.io.Serializable;
 
 /**
  * <p>An item view can take over the rendering of an item.</p>
  *
- * <p>Copyright Enough Software 2006 - 2008</p>
+ * <p>Copyright Enough Software 2006 - 2009</p>
  * <pre>
  * history
  *        Nov 27, 2006 - rob creation
@@ -47,6 +45,8 @@ public abstract class ItemView implements Serializable{
 	
 	protected int contentWidth;
 	protected int contentHeight;
+	protected int availableWidth;
+	protected int availableHeight;
 	protected int paddingVertical;
 	protected int paddingHorizontal;
 	protected int layout;
@@ -59,16 +59,34 @@ public abstract class ItemView implements Serializable{
 	 * Initialises this item view. 
 	 * The implementation needs to calculate and set the contentWidth and 
 	 * contentHeight fields. 
-	 * The implementation should take the fields preferredWidth and preferredHeight
-	 * into account.
 	 * 
 	 * @param parent the parent item
 	 * @param firstLineWidth the maximum width of the first line 
-	 * @param lineWidth the maximum width of any following lines
+	 * @param availWidth the maximum width of the view
+	 * @param availHeight the maximum height of the view
 	 * @see #contentWidth
 	 * @see #contentHeight
 	 */
-	protected abstract void initContent(Item parent, int firstLineWidth, int lineWidth);
+	protected void init( Item parent, int firstLineWidth, int availWidth, int availHeight ) {
+		this.parentItem = parent;
+		this.availableWidth = availWidth;
+		this.availableHeight = availHeight;
+		initContent( parent, firstLineWidth, availWidth, availHeight );
+	}
+	
+	/**
+	 * Initialises this item view. 
+	 * The implementation needs to calculate and set the contentWidth and 
+	 * contentHeight fields. 
+	 * 
+	 * @param parent the parent item
+	 * @param firstLineWidth the maximum width of the first line 
+	 * @param availWidth the maximum width of the view
+	 * @param availHeight the maximum height of the view
+	 * @see #contentWidth
+	 * @see #contentHeight
+	 */
+	protected abstract void initContent(Item parent, int firstLineWidth, int availWidth, int availHeight);
 
 	/**
 	 * Paints this item view.
@@ -89,10 +107,11 @@ public abstract class ItemView implements Serializable{
 	 * 
 	 * @param parent the parent item
 	 * @param firstLineWidth the maximum width of the first line 
-	 * @param lineWidth the maximum width of any following lines
+	 * @param availWidth the maximum width of any following lines
+	 * @param availHeight TODO
 	 */
-	protected void initContentByParent( Item parent, int firstLineWidth, int lineWidth) {
-		parent.initContent(firstLineWidth, lineWidth);
+	protected void initContentByParent( Item parent, int firstLineWidth, int availWidth, int availHeight) {
+		parent.initContent(firstLineWidth, availWidth, availHeight);
 		this.contentWidth = parent.contentWidth;
 		this.contentHeight = parent.contentHeight;
 	}
@@ -157,9 +176,11 @@ public abstract class ItemView implements Serializable{
 	 */
 	protected void setStyle( Style style ) {
 		//#debug
-		System.out.println("Setting style for " + this + " with vertical padding=" + style.paddingVertical  );
-		this.paddingHorizontal = style.paddingHorizontal;
-		this.paddingVertical = style.paddingVertical;
+		System.out.println("Setting style for " + this  );
+		if (this.parentItem != null) {
+			this.paddingHorizontal = this.parentItem.paddingHorizontal;
+			this.paddingVertical = this.parentItem.paddingVertical;
+		}
 		this.layout = style.layout;
 		// horizontal styles: center -> right -> left
 		if ( ( this.layout & Item.LAYOUT_CENTER ) == Item.LAYOUT_CENTER ) {
@@ -173,7 +194,25 @@ public abstract class ItemView implements Serializable{
 				this.isLayoutRight = false;
 				// meaning: layout == Item.LAYOUT_LEFT
 			}
-		}		
+		}
+		setStyle( style, true );
+	}
+	
+
+	/**
+	 * Sets the style for this view and is used to specify animatable CSS attribute.
+	 * The style can include additional parameters for the view.
+	 * Subclasses should call super.setStyle(style, resetStyle) first.
+	 * 
+	 * @param style the style
+	 * @param resetStyle true when default style settings should be applied when nothing is set
+	 */
+	protected void setStyle( Style style, boolean resetStyle ) {
+		// subclasses may implement this
+		if (!resetStyle) {
+			this.paddingHorizontal = this.parentItem.paddingHorizontal;
+			this.paddingVertical = this.parentItem.paddingVertical;
+		}
 	}
 	
 
@@ -371,7 +410,26 @@ public abstract class ItemView implements Serializable{
 	 * @param y the y position of the event relative to the item's vertical top edge
 	 * @return true when the pressing of the pointer was actually handled by this item.
 	 */
-	protected boolean handlePointerReleased( int x, int y ) {
+	public boolean handlePointerReleased( int x, int y ) {
+		return false;
+	}
+	//#endif
+	
+	//#ifdef polish.hasPointerEvents
+	/**
+	 * Handles the event when a pointer has been dragged to the specified position.
+	 * The default implementation just returns false.
+	 * You only need to implement this method when there are pointer events:
+	 * <pre>
+	 * //#if polish.hasPointerEvents
+	 * </pre>
+	 *    
+	 * @param x the x position of the event relative to the item's horizontal left edge
+	 * @param y the y position of the event relative to the item's vertical top edge
+	 * @return true when the pressing of the pointer was actually handled by this item.
+	 */
+	public boolean handlePointerDragged(int x, int y)
+	{
 		return false;
 	}
 	//#endif
@@ -451,4 +509,24 @@ public abstract class ItemView implements Serializable{
 			this.parentItem.isInitialized = false;
 		}
 	}
+	
+	/**
+	 * Call this to notify an item that it is being pressed using a FIRE game action or similar
+	 * 
+	 * @param item the item that should be notified
+	 * @return true when the item requests a repaint after this action
+	 */
+	protected boolean notifyItemPressedStart(Item item) {
+		return item.notifyItemPressedStart();
+	}
+	
+	/**
+	 * Call this to notify an item that it is not being pressed anymore after a FIRE game action or similar
+	 * @param item the item that should be notified
+	 */
+	protected void notifyItemPressedEnd(Item item) {
+		item.notifyItemPressedEnd();
+	}
+
+	
 }

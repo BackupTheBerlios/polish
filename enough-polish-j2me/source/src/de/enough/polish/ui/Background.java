@@ -35,9 +35,9 @@ import de.enough.polish.io.Serializable;
  * <p>Background is the base class for any backgrounds of widgets or forms.</p>
  *
  * @author Robert Virkus, robert@enough.de
- * <p>copyright Enough Software 2004 - 2008</p>
+ * <p>copyright Enough Software 2004 - 2009</p>
  */
-public abstract class Background implements Serializable 
+public abstract class Background implements Serializable
 {
 	
 	/**
@@ -89,7 +89,7 @@ public abstract class Background implements Serializable
 					//#if polish.css.complete-background
 						this, null, // provide references to this background so that the correct background dimensions are selected 
 					//#endif
-					repaintRegion, left, top, parent.backgroundWidth - left + right, parent.backgroundHeight - top + bottom 
+					repaintRegion, left, top, parent.backgroundWidth - left + right + 1, parent.backgroundHeight - top + bottom + 1 
 			);
 		} else {
 			repaintRegion.addRegion(0, 0, screen.getWidth(), screen.getScreenHeight() );
@@ -140,6 +140,18 @@ public abstract class Background implements Serializable
 	 */
 	public void showNotify() {
 		// do nothing
+	}
+	
+
+
+	/**
+	 * Allows backgrounds to be animated using CSS attribute animations.
+	 * @param style the style containing typically only one element
+	 */
+	public void setStyle(Style style)
+	{
+		// do nothing
+		
 	}
 
 }

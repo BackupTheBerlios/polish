@@ -1,7 +1,7 @@
 /*
  * Created on 12-Dec-2006 at 12:02:32.
  * 
- * Copyright (c) 2006 Michael Koch / Enough Software
+ * Copyright (c) 2009 Michael Koch / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -31,7 +31,7 @@ import java.io.Reader;
 /**
  * Reader class for String objects.
  *
- * <p>Copyright Enough Software 2006 - 2008</p>
+ * <p>Copyright Enough Software 2006 - 2009</p>
  * 
  * <pre>
  * history

@@ -2,7 +2,7 @@
 /*
  * Created on Jun 27, 2007 at 11:33:57 PM.
  * 
- * Copyright (c) 2007 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -27,7 +27,7 @@
 package de.enough.polish.ui;
 
 import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Command;
+
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
@@ -36,7 +36,7 @@ import de.enough.polish.util.ArrayList;
 /**
  * <p>Provides several lists in tabs.</p>
  *
- * <p>Copyright Enough Software 2007 - 2008</p>
+ * <p>Copyright Enough Software 2007 - 2009</p>
  * <pre>
  * history
  *        Jun 27, 2007 - rob creation
@@ -46,6 +46,17 @@ import de.enough.polish.util.ArrayList;
 public class TabbedList extends Screen {
 	private final static int TAB_POSITION_TOP = 0;
 	private final static int TAB_POSITION_BOTTOM = 1;
+	/**
+	 * The default select command for <code>IMPLICIT</code> <code>Lists</code>.
+	 * Applications using an <code>IMPLICIT</code> <code>List</code>
+	 * should set their own select command
+	 * using
+	 * <A HREF="../../../javax/microedition/lcdui/List.html#setSelectCommand(javax.microedition.lcdui.Command)"><CODE>setSelectCommand</CODE></A>.
+	 * 
+	 * <p><code>SELECT_COMMAND</code> is treated as an ordinary
+	 * <code>Command</code> if it is used with other <code>Displayable</code>
+	 * types.</p>
+	 */
 	public static Command SELECT_COMMAND = List.SELECT_COMMAND;
 	
 	private final Container tabTitles;
@@ -68,6 +79,7 @@ public class TabbedList extends Screen {
 		super(title, false, style);
 		this.defaultListType = defaultListType;
 		this.tabTitles = new Container( true );
+		this.tabTitles.isFocused = true;
 		this.tabTitles.screen = this;
 		this.tabContainers = new ArrayList();
 		if (SELECT_COMMAND != null) {
@@ -125,15 +137,15 @@ public class TabbedList extends Screen {
 			//this.container.defocus( this.style );
 			this.container.hideNotify();
 		}
-		this.tabTitles.focus(tabIndex);
+		this.tabTitles.focusChild(tabIndex);
 		ChoiceGroup group = getTab(tabIndex);
 		this.container = group;
 		this.currentTabIndex = tabIndex;
 		group.setScrollHeight( this.contentHeight );
 		if (group.style == null) {
-			group.setStyle( this.style, true );			
+			group.setStyleWithBackground( this.style, true );			
 		}
-		//group.focus( group.style, 0 );
+		group.focus( group.style, 0 );
 		group.isFocused = true;
 		group.showNotify();
 		repaint();
@@ -172,14 +184,18 @@ public class TabbedList extends Screen {
 		super.calculateContentArea(x, y, width, height);
 		if (this.tabTitlePosition == TAB_POSITION_TOP) {
 			this.tabTitles.relativeY = this.contentY;
-			this.contentY += this.tabTitles.getItemHeight(this.contentWidth, this.contentWidth);
+			this.contentY += this.tabTitles.getItemHeight(this.contentWidth, this.contentWidth, this.contentHeight);
 		} else {
-			this.tabTitles.relativeY = this.contentY + this.contentHeight - this.tabTitles.getItemHeight(this.contentWidth, this.contentWidth);
+			this.tabTitles.relativeY = this.contentY + this.contentHeight - this.tabTitles.getItemHeight(this.contentWidth, this.contentWidth, this.contentHeight);
 		}
 		this.contentHeight -= this.tabTitles.itemHeight;
 		this.tabTitles.relativeX = this.contentX;
 		if (this.container != null) {
 			this.container.setScrollHeight( this.contentHeight );
+		}
+		if (!this.isInitialized && this.tabTitles.size() > 0) {
+			this.isInitialized = true;
+			setCurrentTab( this.currentTabIndex );
 		}
 	}
 	
@@ -239,9 +255,24 @@ public class TabbedList extends Screen {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Screen#handlePointerReleased(int, int)
 	 */
-	protected boolean handlePointerReleased(int x, int y) {
-		return this.tabTitles.handlePointerReleased(x-this.tabTitles.relativeX, y-this.tabTitles.relativeY) 
+	protected boolean handlePointerDragged(int x, int y) {
+		return this.tabTitles.handlePointerDragged(x-this.tabTitles.relativeX, y-this.tabTitles.relativeY) 
 				|| super.handlePointerReleased(x, y);
+	}
+	//#endif
+
+	
+	//#ifdef polish.hasPointerEvents
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#handlePointerReleased(int, int)
+	 */
+	protected boolean handlePointerReleased(int x, int y) {
+		boolean releaseHandled = this.tabTitles.handlePointerReleased(x-this.tabTitles.relativeX, y-this.tabTitles.relativeY);
+		if (releaseHandled) {
+			int index = this.tabTitles.getFocusedIndex();
+			setCurrentTab( index );
+		}
+		return  releaseHandled || super.handlePointerReleased(x, y);
 	}
 	//#endif
 
@@ -297,6 +328,7 @@ public class TabbedList extends Screen {
 		super.hideNotify();
 		this.tabTitles.hideNotify();
 	}
+	
 	//#ifdef polish.useDynamicStyles	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Screen#createCssSelector()
@@ -309,6 +341,7 @@ public class TabbedList extends Screen {
 	/**
 	 * Gets the number of elements present.
 	 * 
+	 * @param tabIndex the index of the tab
 	 * @return the number of elements in the Choice
 	 */
 	public int size(int tabIndex) {
@@ -377,16 +410,6 @@ public class TabbedList extends Screen {
 	 */
 	public int append( int tabIndex, String stringPart, Image imagePart, Style style) {
 		return append( tabIndex, new ChoiceItem( stringPart, imagePart, this.defaultListType, style), null );
-	}
-	
-	/**
-	 * @param tabIndex the index of the tab
-	 * @param item
-	 * @param style
-	 * @return
-	 */
-	private int append(int tabIndex, ChoiceItem item) {
-		return append( tabIndex, item, null );
 	}
 	
 	/**

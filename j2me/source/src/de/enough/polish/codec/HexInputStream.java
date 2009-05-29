@@ -33,7 +33,7 @@ import java.io.InputStream;
 /**
  * <p>Decodes hex encoded data on the fly.</p>
  *
- * <p>Copyright (c) Enough Software 2005 - 2008</p>
+ * <p>Copyright (c) Enough Software 2005 - 2009</p>
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class HexInputStream extends InputStream {

@@ -26,7 +26,7 @@
 package de.enough.polish.ui;
 
 import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Command;
+
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
@@ -108,7 +108,7 @@ implements Choice
 		private int originalContentWidth;
 		private int originalContentHeight;
 		private int originalBackgroundHeight;
-		private boolean closePopupOnKeyRelease;
+//		private boolean closePopupOnKeyRelease;
 	//#endif
 	//#ifndef tmp.suppressAllCommands
 		private ItemCommandListener additionalItemCommandListener;
@@ -419,7 +419,11 @@ implements Choice
 	public ChoiceGroup( String label, int choiceType, ChoiceItem[] items, Style style, boolean allowImplicit )
 	{
 		super( label, false, style, -1 );
-		if (choiceType == Choice.EXCLUSIVE) {
+		if (choiceType == Choice.EXCLUSIVE
+			//#if !polish.usePopupItem
+				|| choiceType == Choice.POPUP
+			//#endif
+		) {
 			//this.isExclusive = true;
 		} else if (choiceType == Choice.MULTIPLE) {
 			this.isMultiple = true;
@@ -922,7 +926,7 @@ implements Choice
 		int selectedItems = 0;
 		for (int i = 0; i < myItems.length; i++) {
 			ChoiceItem item = myItems[i];
-			if (item.isSelected || (this.isImplicit && i == this.focusedIndex) ) {
+			if (item.isSelected || (this.isImplicit && i == this.focusedIndex) || (!this.isMultiple && i == this.selectedIndex)) {
 				selectedArray_return[i] = true;
 				selectedItems++;
 			} else {
@@ -973,12 +977,13 @@ implements Choice
 			
 			if(elementNum != -1)
 			{
+				this.selectedIndex = elementNum;
 				ChoiceItem newSelected = (ChoiceItem) this.itemsList.get( elementNum );
 				newSelected.select( true );
 				
 				if (this.isFocused) {
 					if ( this.isInitialized) {
-						focus( elementNum, newSelected, 0 );
+						focusChild( elementNum, newSelected, 0 );
 					} else {
 						this.autoFocusEnabled = true;
 						this.autoFocusIndex = elementNum;
@@ -991,7 +996,6 @@ implements Choice
 				//#endif
 			}		
 			
-			this.selectedIndex = elementNum;
 		}
 		if (this.isInitialized) {
 			this.isInitialized = false;
@@ -1186,8 +1190,8 @@ implements Choice
 	//#endif
 	
 	//#ifdef polish.usePopupItem
-	protected void init( int firstLineWidth, int lineWidth ) {
-		super.init(firstLineWidth, lineWidth);
+	protected void init( int firstLineWidth, int availWidth, int availHeight ) {
+		super.init(firstLineWidth, availWidth, availHeight);
 		//#if tmp.supportViewType
 			if (this.containerView != null) {
 				return;
@@ -1205,8 +1209,8 @@ implements Choice
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#initItem()
 	 */
-	protected void initContent(int firstLineWidth, int lineWidth) {
-		super.initContent(firstLineWidth, lineWidth);
+	protected void initContent(int firstLineWidth, int availWidth, int availHeight) {
+		super.initContent(firstLineWidth, availWidth, availHeight);
 		//#if tmp.supportViewType
 			if (this.containerView != null) {
 				return;
@@ -1222,8 +1226,8 @@ implements Choice
 					ChoiceItem selectedItem = (ChoiceItem) this.itemsList.get( 0 );
 					this.popupItem.setText( selectedItem.getText() );
 				}
-				int noneContentWidth = lineWidth + this.marginLeft + this.borderWidth + this.paddingLeft + this.marginRight + this.borderWidth + this.paddingRight;
-				this.popupItem.init( noneContentWidth, noneContentWidth ); //firstLineWidth + noneContentWidth, lineWidth + noneContentWidth);
+				int noneContentWidth = availWidth + this.marginLeft + getBorderWidthLeft() + this.paddingLeft + this.marginRight + getBorderWidthRight() + this.paddingRight;
+				this.popupItem.init( noneContentWidth, noneContentWidth, availHeight );
 				this.internalX = NO_POSITION_SET;
 			} else {
 				this.originalContentWidth = this.contentWidth;
@@ -1252,13 +1256,18 @@ implements Choice
 		
 	//#ifdef polish.usePopupItem
 	private void closePopup() {
+		if (this.isPopupClosed) {
+			return;
+		}
+		getScreen().removeCommandsLayer();
 		this.isPopupClosed = true;
+		this.internalX = NO_POSITION_SET;			
 		if (this.parent instanceof Container) {
 			//#debug
 			System.out.println("closing popup and adjusting scroll y offset to " + this.popupParentOpenY);
-			((Container)this.parent).setScrollYOffset( this.popupParentOpenY, false );
-			this.internalX = NO_POSITION_SET;
-			this.parent.internalX = NO_POSITION_SET;
+			Container container = (Container)this.parent;
+			container.updateInternalPosition( this );
+			container.setScrollYOffset( this.popupParentOpenY, false );
 		}
 		this.isInitialized = false;
 	}
@@ -1269,6 +1278,7 @@ implements Choice
 		if (this.isPopupClosed == false) {
 			return;
 		}
+		getScreen().addCommandsLayer( new Command[]{ StyleSheet.OK_CMD, StyleSheet.CANCEL_CMD} );
 		//this.popupOpenY = this.yTopPos; 
 		if (this.parent instanceof Container) {
 			this.popupParentOpenY = ((Container)this.parent).getScrollYOffset();
@@ -1277,7 +1287,7 @@ implements Choice
 		}
 		//System.out.println("openPopup: backgroundHeight=" + this.originalBackgroundHeight + ", itemHeight=" + this.itemHeight);
 		this.isPopupClosed = false;
-		focus( this.selectedIndex );
+		focusChild( this.selectedIndex );
 		// recalculate the internal positions of the selected choice:
 		if (this.selectedIndex != -1) {
 			Item item = (Item) this.itemsList.get( this.selectedIndex );
@@ -1363,7 +1373,7 @@ implements Choice
 							}
 						}
 						if (nextFocusedIndex != -1) {
-							focus(nextFocusedIndex);
+							focusChild(nextFocusedIndex);
 							processed = true;
 						}
 					}
@@ -1423,12 +1433,12 @@ implements Choice
 						}
 					}
 				//#endif
-				//#ifdef polish.usePopupItem
-					if (this.isPopup && (this.isPopupClosed == false)) {
-						this.closePopupOnKeyRelease = true;
-						return true;
-					}
-				//#endif
+//				//#ifdef polish.usePopupItem
+//					if (this.isPopup && (this.isPopupClosed == false)) {
+//						this.closePopupOnKeyRelease = true;
+//						return true;
+//					}
+//				//#endif
 			}
 		}
 //		//#else
@@ -1516,6 +1526,9 @@ implements Choice
 	protected boolean handleKeyReleased(int keyCode, int gameAction) {
 		//#debug
 		System.out.println("handleKeyReleased( " + keyCode + ", " + gameAction + " ) for " + this + ", isPressed="+ this.isPressed );
+		//#ifdef polish.usePopupItem
+			boolean isClosed = this.isPopupClosed;
+		//#endif
 		// note: this was a rough fix for selecting an entry on a popup choice group when the "Select" command button
 		// was pressed - that worked for few cases and additionally required a Nokia layout, so it's outcommented for now
 //		if ((gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) 
@@ -1533,17 +1546,16 @@ implements Choice
 			ChoiceItem choiceItem = (ChoiceItem) this.focusedItem;
 			if (choiceItem != null
 					//#ifdef polish.usePopupItem
-						&& !(this.isPopup && this.isPopupClosed)
+						&& !(this.isPopup && isClosed)
 					//#endif
 					) 
 			{
-				boolean isAlreadySelected = choiceItem.isSelected;
 				if (this.isMultiple) {
-					selectChoiceItem( choiceItem, !isAlreadySelected);
-				} else if (!isAlreadySelected){
+					selectChoiceItem( choiceItem, !choiceItem.isSelected);
+				} else {
 					setSelectedIndex(this.focusedIndex, true);
 				}
-				if ( !isAlreadySelected && this.choiceType != Choice.IMPLICIT ) 
+				if ( this.choiceType != Choice.IMPLICIT ) 
 				{
 					notifyStateChanged();
 				}
@@ -1564,7 +1576,7 @@ implements Choice
 			}
 			//#ifdef polish.usePopupItem
 			if (this.isPopup) {
-				if (this.isPopupClosed) {
+				if (isClosed) {
 					notifyItemPressedEnd();
 					openPopup();
 				} else {
@@ -1574,13 +1586,13 @@ implements Choice
 			//#endif
 			return true;
 		}
-		//#ifdef polish.usePopupItem
-			if (this.closePopupOnKeyRelease) {
-				this.closePopupOnKeyRelease = false;
-				closePopup();
-				return true;
-			}
-		//#endif
+//		//#ifdef polish.usePopupItem
+//			if (this.closePopupOnKeyRelease) {
+//				this.closePopupOnKeyRelease = false;
+//				closePopup();
+//				return true;
+//			}
+//		//#endif
 		return super.handleKeyReleased(keyCode, gameAction);
 	}
 
@@ -1619,9 +1631,10 @@ implements Choice
 	 */
 	protected boolean handlePointerReleased(int relX, int relY) {
 		//#debug
-		System.out.println("ChoiceGroup.handlePointerReleased(" + relX + ", " + relY + ") for " + this );
+		System.out.println("ChoiceGroup.handlePointerReleased(" + relX + ", " + relY + ") for " + this + ", isPointerReleaseShouldTriggerKeyRelease=" + this.isPointerReleaseShouldTriggerKeyRelease + ", focusedItem=" + this.focusedItem + ", focusuedIndex=" + this.focusedIndex);
 		//#ifdef polish.usePopupItem
-			if (this.isPopup && this.isPopupClosed) {
+			boolean isClosed = this.isPopupClosed;
+			if (this.isPopup && isClosed) {
 				if (isInItemArea(relX, relY)) {
 					openPopup();
 					return true;
@@ -1630,12 +1643,20 @@ implements Choice
 				}
 			}
 		//#endif
+		boolean isEventCloseBy = Math.abs( this.lastPointerPressY - relY ) < 15;
 		if (   this.isPointerReleaseShouldTriggerKeyRelease ) { 
 			this.isPointerReleaseShouldTriggerKeyRelease = false;
 			
 			boolean handled = handlePointerScrollReleased(relX, relY);
 			if (!handled) {
-				handled = handleKeyReleased( 0, Canvas.FIRE );
+				//#ifdef tmp.supportViewType
+					if (this.containerView != null) {
+						handled = this.containerView.handlePointerReleased(relX - this.contentX, relY - this.yOffset - this.contentY);
+					}
+				//#endif
+				if (!handled && isEventCloseBy) {
+					handled = handleKeyReleased( 0, Canvas.FIRE );
+				}
 			}
 			if (handled) {
 				return true;
@@ -1643,7 +1664,7 @@ implements Choice
 		}
 		boolean handled = super.handlePointerReleased(relX, relY);
 		//#ifdef polish.usePopupItem
-			if (!handled && this.isPopup && !this.isPopupClosed) {
+			if (!handled && this.isPopup && !isClosed && isEventCloseBy ) {
 				closePopup();
 				handled = true;
 			}
@@ -1651,7 +1672,21 @@ implements Choice
 		return handled;
 	}
 	//#endif
+
 	
+
+//	//#ifdef polish.hasPointerEvents && polish.usePopupItem
+//	/* (non-Javadoc)
+//	 * @see de.enough.polish.ui.Container#handlePointerDragged(int, int)
+//	 */
+//	protected boolean handlePointerDragged(int relX, int relY)
+//	{
+//		if (this.isPopup  && !this.isPopupClosed) {
+//			
+//		}
+//		return super.handlePointerDragged(relX, relY);
+//	}
+//	//#endif
 
 	//#if polish.usePopupItem
 	/* (non-Javadoc)
@@ -1724,9 +1759,13 @@ implements Choice
 				}
 			//#endif
 		}
-		if (this.additionalItemCommandListener == null) {
+		
+		//removed due to potential infinite loops
+		/*
+		 * if (this.additionalItemCommandListener == null) {
 			this.additionalItemCommandListener = this.itemCommandListener;
-		}
+		}*/
+		
 		addCommand( cmd );
 		this.selectCommand = cmd;
 		this.defaultCommand = cmd;
@@ -1740,12 +1779,10 @@ implements Choice
 	 */
 	public void defocus(Style originalStyle) {
 		if (this.isPopup) {
-			boolean requestInit = false;
 			if (this.isPopupClosed) {
 				this.popupItem.setStyle( originalStyle );
 			} else {
-				this.isPopupClosed = true;
-				requestInit = true;
+				closePopup();
 			}
 			setStyle( originalStyle );
 			// now remove any commands which are associated with this item:
@@ -1766,9 +1803,7 @@ implements Choice
 					this.label.setStyle( tmpLabelStyle );
 				}
 			//#endif
-			if (requestInit) {
-				requestInit();
-			}
+			this.isFocused = false;
 		} else {
 			super.defocus(originalStyle);
 		}
@@ -1803,18 +1838,21 @@ implements Choice
 					}
 				}
 			//#endif
+			this.isFocused = true;
 			return original;
 		} else {
 			return super.focus(focusStyle, direction);
 		}
 	}
 	//#endif
-
+	
+	
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Container#setStyle(de.enough.polish.ui.Style, boolean)
+	 * @see de.enough.polish.ui.Container#setStyleWithBackground(de.enough.polish.ui.Style, boolean)
 	 */
-	public void setStyle(Style style, boolean ignoreBackground) {
-		super.setStyle(style, ignoreBackground);
+	public void setStyleWithBackground(Style style, boolean ignoreBackground)
+	{
+		super.setStyleWithBackground(style, ignoreBackground);
 		//#ifdef polish.usePopupItem
 			if (this.isPopup && this.popupItem != null) {
 				this.popupItem.setStyle( style );
@@ -1826,6 +1864,72 @@ implements Choice
 						this.popupItem.setImage( url );
 					}
 				//#endif
+				//#ifdef polish.css.popup-roundtrip
+					Boolean popupRoundTripBool = style.getBooleanProperty("popup-roundtrip");
+					if (popupRoundTripBool != null) {
+						this.popupRoundTrip = popupRoundTripBool.booleanValue();
+					}
+				//#endif
+				//#if ! tmp.suppressSelectCommand && tmp.supportViewType
+					if (!this.isSelectCommandAdded && this.choiceType == Choice.EXCLUSIVE && this.containerView == null) {
+						if (this.selectCommand != null) {
+							setDefaultCommand( this.selectCommand );
+						} else {
+							setDefaultCommand( List.SELECT_COMMAND );
+						}
+						this.isSelectCommandAdded = true;				
+					}
+				//#endif
+			}
+		//#endif
+		//#ifndef tmp.suppressAllCommands
+			if (this.choiceType == Choice.MULTIPLE) {
+				//#ifndef tmp.suppressMarkCommands
+					//#ifdef polish.i18n.useDynamicTranslations
+						String cmdLabel = Locale.get("polish.command.mark");
+						if (cmdLabel != MARK_COMMAND.getLabel()) {
+							MARK_COMMAND = new Command( cmdLabel, Command.ITEM, 9 );
+						}
+						cmdLabel = Locale.get("polish.command.unmark");
+						if (cmdLabel != UNMARK_COMMAND.getLabel()) {
+							UNMARK_COMMAND = new Command( cmdLabel, Command.ITEM, 10 );
+						}
+					//#endif					
+					//addCommand( MARK_COMMAND );
+					//addCommand( UNMARK_COMMAND );
+				//#endif
+			} else if (this.choiceType == Choice.EXCLUSIVE){
+				//#if !tmp.suppressSelectCommand
+					//#if tmp.supportViewType
+						if (this.containerView == null) {
+					//#endif
+						//#ifdef polish.i18n.useDynamicTranslations
+							String cmdLabel = Locale.get("polish.command.select");
+							if (cmdLabel != List.SELECT_COMMAND.getLabel()) {
+								List.SELECT_COMMAND = new Command( cmdLabel, Command.ITEM, 3 );
+							}
+						//#endif
+						setDefaultCommand( List.SELECT_COMMAND );
+					//#if tmp.supportViewType
+						}
+					//#endif
+				//#endif
+			}
+			this.itemCommandListener = this;
+		//#endif
+		setStyle( style, true );
+	}
+	
+	//#ifdef polish.usePopupItem
+		/* (non-Javadoc)
+		 * @see de.enough.polish.ui.Container#setStyle(de.enough.polish.ui.Style, boolean)
+		 */
+		public void setStyle(Style style, boolean resetStyle) {
+			super.setStyle(style, resetStyle);
+			if (!resetStyle && this.isPopup && this.popupItem != null) {
+				this.popupItem.setStyle( style, resetStyle );
+			}
+			if (this.isPopup && this.popupItem.image == null ) {
 				//#ifdef polish.css.popup-color
 					Integer color = style.getIntProperty("popup-color");
 					if (color != null) {
@@ -1838,67 +1942,18 @@ implements Choice
 						this.popupBackgroundColor = bgColor.intValue();
 					}
 				//#endif
-				//#ifdef polish.css.popup-roundtrip
-					Boolean popupRoundTripBool = style.getBooleanProperty("popup-roundtrip");
-					if (popupRoundTripBool != null) {
-						this.popupRoundTrip = popupRoundTripBool.booleanValue();
-					}
-				//#endif
-				//#if ! tmp.suppressSelectCommand && tmp.supportViewType
-					if (!this.isSelectCommandAdded && this.choiceType == Choice.EXCLUSIVE && this.containerView == null) {
-						if (this.selectCommand != null) {
-							addCommand( this.selectCommand );
-						} else {
-							addCommand( List.SELECT_COMMAND );
-						}
-						this.isSelectCommandAdded = true;				
-					}
-				//#endif
 			}
-		//#endif
-		//#ifndef tmp.suppressAllCommands
-		if (this.choiceType == Choice.MULTIPLE) {
-			//#ifndef tmp.suppressMarkCommands
-				//#ifdef polish.i18n.useDynamicTranslations
-					String cmdLabel = Locale.get("polish.command.mark");
-					if (cmdLabel != MARK_COMMAND.getLabel()) {
-						MARK_COMMAND = new Command( cmdLabel, Command.ITEM, 9 );
-					}
-					cmdLabel = Locale.get("polish.command.unmark");
-					if (cmdLabel != UNMARK_COMMAND.getLabel()) {
-						UNMARK_COMMAND = new Command( cmdLabel, Command.ITEM, 10 );
-					}
-				//#endif					
-				//addCommand( MARK_COMMAND );
-				//addCommand( UNMARK_COMMAND );
-			//#endif
-		} else if (this.choiceType == Choice.EXCLUSIVE){
-			//#if !tmp.suppressSelectCommand
-				//#if tmp.supportViewType
-					if (this.containerView == null) {
-				//#endif
-					//#ifdef polish.i18n.useDynamicTranslations
-						String cmdLabel = Locale.get("polish.command.select");
-						if (cmdLabel != List.SELECT_COMMAND.getLabel()) {
-							List.SELECT_COMMAND = new Command( cmdLabel, Command.ITEM, 3 );
-						}
-					//#endif
-					addCommand( List.SELECT_COMMAND );
-				//#if tmp.supportViewType
-					}
-				//#endif
-			//#endif
 		}
-		this.itemCommandListener = this;
 	//#endif
-	}
 
 	//#ifndef tmp.suppressAllCommands
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ItemCommandListener#commandAction(javax.microedition.lcdui.Command, de.enough.polish.ui.Item)
 	 */
 	public void commandAction(Command c, Item item) {
-		if (item == this) {
+		//#debug
+		System.out.println("handle item command " + c.getLabel() + " for " + item );
+		if (item == this || this.itemsList.contains(item)) {
 			handleCommand( c );
 		}
 	}
@@ -1910,6 +1965,25 @@ implements Choice
 	 */
 	protected boolean handleCommand(Command cmd)
 	{
+		//#debug
+		System.out.println("handle command " + cmd.getLabel());
+		//#ifdef polish.usePopupItem
+			if (this.isPopup && !this.isPopupClosed) {
+				if (cmd == StyleSheet.OK_CMD) {
+					ChoiceItem choiceItem = (ChoiceItem) this.focusedItem;
+					if (choiceItem != null) 
+					{
+						setSelectedIndex(this.focusedIndex, true);
+						notifyStateChanged();
+					}
+					closePopup();
+					return true;
+				} else if (cmd == StyleSheet.CANCEL_CMD) {
+					closePopup();
+					return true;
+				}
+			}
+		//#endif
 		//#if tmp.allowSelectCommand && tmp.allowMarkCommands
 			if (cmd == List.SELECT_COMMAND || cmd == MARK_COMMAND || cmd == this.selectCommand  ) {
 		//#elif tmp.allowSelectCommand
@@ -1961,7 +2035,7 @@ implements Choice
 				return true;
 			}
 		//#endif
-		} else if (this.additionalItemCommandListener != null) {
+		} else if (this.additionalItemCommandListener != null && this.additionalItemCommandListener != this) {
 			this.additionalItemCommandListener.commandAction(cmd, this);
 			return true;
 		}
@@ -1976,11 +2050,39 @@ implements Choice
 	}
 	//#endif
 
-	/* overrding Container.setItemsList() */
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Container#setItemsList(de.enough.polish.util.ArrayList)
+	 */
 	public void setItemsList(ArrayList itemsList) {
 		this.selectedIndex = -1;
 		super.setItemsList(itemsList);
 	}
+
+	/**
+	 * Retrieves the choice type of this group 
+	 * @return the choice type, either MULTIPLE, EXCLUSIVE or POPUP
+	 */
+	public int getType()
+	{
+		return this.choiceType;
+	}
+
+	//#ifdef polish.usePopupItem
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#getItemHeightOverlap()
+	 */
+	public int getItemHeightOverlap()
+	{
+		if (this.isPopup && !this.isPopupClosed) {
+			int res = this.backgroundHeight - this.itemHeight;
+			if (res > 0) {
+				return res;
+			}
+		}
+		return 0;
+	}
+	//#endif
+
 
 	
 	

@@ -2,7 +2,7 @@
 /*
  * Created on Nov 21, 2006 at 6:16:24 PM.
  * 
- * Copyright (c) 2007 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -30,41 +30,34 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Hashtable;
 
-//#if polish.android
-import android.media.MediaPlayer;
-import de.enough.polish.drone.midlet.MIDlet;
-import de.enough.polish.drone.resource.RawResources;
-import javax.sound.sampled.AndroidAudioInputStream;
-import javax.sound.sampled.AudioFileFormat;
-import javax.sound.sampled.AudioFormat;
-//#else
 import javax.microedition.media.Manager;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
 import javax.microedition.media.PlayerListener;
+import javax.microedition.media.control.VolumeControl;
+
+//#if polish.android
+import de.enough.polish.android.helper.ResourceInputStream;
+import de.enough.polish.android.helper.ResourcesHelper;
+import de.enough.polish.android.midlet.MIDlet;
+import android.content.Context;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 //#endif
-
-
 /**
  * <p>
- * Plays back audio files - at the moment this is only supported for MIDP 2.0
- * and devices that support the MMAPI
+ * Plays back audio files - at the moment this is only supported for MIDP 2.0 and devices that support the MMAPI and for Android devices.
  * </p>
  * 
  * <p>
- * Copyright Enough Software 2006 - 2008
+ * Copyright Enough Software 2006 - 2009
  * </p>
- * 
- * <pre>
- * history
- *        Nov 21, 2006 - rob creation
- * </pre>
  * 
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class AudioPlayer
-//#if !polish.android
-implements PlayerListener
+public class AudioPlayer implements PlayerListener
+//#if polish.android
+	, MediaPlayer.OnCompletionListener 
 //#endif
 {
 
@@ -72,15 +65,19 @@ implements PlayerListener
 
 	private final boolean doCachePlayer;
 
-	//#if !polish.android
 	private Player player;
 	private PlayerListener listener;
-	//#else
-	//# private MediaPlayer player;
+	//#if polish.android
+	private MediaPlayer androidPlayer;
 	//#endif
 
-
 	private final String defaultContentType;
+
+	private int volumeLevel = -1;
+
+	private int previousVolumeLevel;
+
+	private int androidMaxVolume;
 
 	/**
 	 * Creates a new audio player with no default content type and no caching.
@@ -127,15 +124,9 @@ implements PlayerListener
 	 *        is expected by the device.
 	 * @param listener an optional PlayerListener
 	 */
-	public AudioPlayer(boolean doCachePlayer, String contentType ,
-	//#if polish.android
-	//#	Object object)
-	//#	{
-	//#else
-	 PlayerListener listener)
+	public AudioPlayer(boolean doCachePlayer, String contentType, PlayerListener listener)
 	{
 		this.listener = listener;
-		//#endif
 		this.doCachePlayer = doCachePlayer;
 		if (contentType != null) {
 			if (!contentType.startsWith("audio/")) {
@@ -148,6 +139,23 @@ implements PlayerListener
 		}
 		this.defaultContentType = contentType;
 	}
+	
+	/**
+	 * Sets a player listener, replacing any previously registered listener.
+	 * 
+	 * @param listener the new listener or null
+	 */
+	public void setPlayerListener( PlayerListener listener) {
+		this.listener = listener;
+	}
+	
+	/**
+	 * Retrieves the currently registered player listener.
+	 * @return the current player listener
+	 */
+	public PlayerListener getPlayerListener() {
+		return this.listener;
+	}
 
 	/**
 	 * Plays the media taken from the specified URL.
@@ -158,20 +166,24 @@ implements PlayerListener
 	 * @throws MediaException when the media is not supported
 	 * @throws IOException when the URL cannot be resolved
 	 */
-	public void play(String url, String type)
-	//#if !polish.android
-	throws MediaException, IOException
-	//#endif
-			{
+	public void play(String url, String type) throws MediaException, IOException
+	{
 		//#if polish.android
-		//# this.player = MediaPlayer.create(MIDlet.current, RawResources.getResourceID(url));
-		//# this.player.start();
+			if(url.startsWith("file://")) {
+				this.androidPlayer = new MediaPlayer();
+				this.androidPlayer.setDataSource(url);
+			} else {
+				int resourceID = ResourcesHelper.getResourceID(url);
+				this.androidPlayer = MediaPlayer.create(MIDlet.midletInstance, resourceID);
+			}
+			this.androidPlayer.setOnCompletionListener(this);
+			this.androidPlayer.start();
 		//#else
-		InputStream in = getClass().getResourceAsStream(url);
-		if (in == null) {
-			throw new IOException("not found: " + url);
-		}
-		play(in, type);
+			InputStream in = getClass().getResourceAsStream(url);
+			if (in == null) {
+				throw new IOException("not found: " + url);
+			}
+			play(in, type);
 		//#endif
 	}
 
@@ -184,16 +196,12 @@ implements PlayerListener
 	 * @throws MediaException when the media is not supported
 	 * @throws IOException when the input cannot be read
 	 */
-	public void play(InputStream in, String type)
-	//#if !polish.android
-	throws MediaException, IOException 
-	//#endif
+	public void play(InputStream in, String type) throws MediaException, IOException 
 	{
 		String correctType = getAudioType(type, "file");
 		if (correctType == null) {
 			//#debug warn
-			System.out.println("Unable to find correct type for " + type
-					+ " with the file protocol");
+			System.out.println("Unable to find correct type for " + type + " with the file protocol");
 			correctType = getAudioType(type, null);
 			if (correctType == null) {
 				//#debug warn
@@ -202,12 +210,25 @@ implements PlayerListener
 			}
 		}
 		//#if polish.android
-		
+			if (in instanceof ResourceInputStream) {
+				this.androidPlayer = MediaPlayer.create(MIDlet.midletInstance, ((ResourceInputStream)in).getResourceId());
+				this.androidPlayer.setOnCompletionListener(this);
+				this.androidPlayer.start();
+			} 
+			//#if polish.debug.warn
+				else {
+					//#debug warn
+					System.out.println("Unable to play input stream: input stream does not originate from a resource.");
+				}
+			//#endif
 		//#else
-		this.player = Manager.createPlayer(in, correctType);
-		this.player.addPlayerListener(this);
-		this.player.start();
+			this.player = Manager.createPlayer(in, correctType);
+			this.player.addPlayerListener(this);
+			this.player.start();
 		//#endif
+		if (this.volumeLevel != -1) {
+			setVolumeLevel(this.volumeLevel);
+		}
 	}
 
 	/**
@@ -216,21 +237,31 @@ implements PlayerListener
 	 * @throws MediaException when the media is not supported
 	 * @throws IOException when the URL cannot be resolved
 	 */
-	public void play(String url)
-	//#if !polish.android
-	throws MediaException, IOException 
-	//#endif
+	public void play(String url) throws MediaException, IOException 
 	{
 		//#if polish.android
-		//# this.player = MediaPlayer.create(MIDlet.current, RawResources.getResourceID(url));
-		//# this.player.start();
+			if(url.startsWith("file://")) {
+				this.androidPlayer = new MediaPlayer();
+				this.androidPlayer.setDataSource(url);
+			} else {
+				int resourceID = ResourcesHelper.getResourceID(url);
+				this.androidPlayer = MediaPlayer.create(MIDlet.midletInstance, resourceID);
+				
+			}
+			this.androidPlayer.setOnCompletionListener(this);
+			this.androidPlayer.start();
 		//#else
-		InputStream in = getClass().getResourceAsStream(url);
-		if (in == null) {
-			throw new IOException("not found: " + url);
-		}
-		play(in);
+			InputStream in = getClass().getResourceAsStream(url);
+			if (in == null) {
+				throw new IOException("not found: " + url);
+			}
+			play(in);
 		//#endif
+		if (this.volumeLevel != -1) {
+			setVolumeLevel(this.volumeLevel);
+//		} else {
+//			this.volumeLevel = getVolumeLevel();
+		}
 	}
 
 	/**
@@ -239,16 +270,28 @@ implements PlayerListener
 	 * @throws MediaException when the media is not supported
 	 * @throws IOException when the input cannot be read
 	 */
-	//#if !polish.android
 	public void play(InputStream in)
 	throws MediaException, IOException 
 	{
-		String correctType = this.defaultContentType;
-		this.player = Manager.createPlayer(in, correctType);
-		this.player.addPlayerListener(this);
-		this.player.start();
+		//#if polish.android
+			if (in instanceof ResourceInputStream) {
+				this.androidPlayer = MediaPlayer.create(MIDlet.midletInstance, ((ResourceInputStream)in).getResourceId());
+				this.androidPlayer.setOnCompletionListener(this);
+				this.androidPlayer.start();
+			} 
+			//#if polish.debug.warn
+				else {
+					//#debug warn
+					System.out.println("Unable to play input stream: input stream does not originate from a resource.");
+				}
+			//#endif
+		//#else
+			String correctType = this.defaultContentType;
+			this.player = Manager.createPlayer(in, correctType);
+			this.player.addPlayerListener(this);
+			this.player.start();
+		//#endif
 	}
-	//#endif
 
 	/**
 	 * Plays back the last media again. This can only be used when doCachePlayer
@@ -261,14 +304,17 @@ implements PlayerListener
 	 * @see #AudioPlayer(boolean, String, PlayerListener)
 	 * @see #AudioPlayer(String)
 	 */
-	public void play()
-	//#if !polish.android
-	throws MediaException
-	//#endif
+	public void play() throws MediaException
 	{
-		if (this.player != null) {
-			this.player.start();
-		}
+		//#if polish.android
+			if (this.androidPlayer != null) {
+				this.androidPlayer.start();
+			}
+		//#else
+			if (this.player != null) {
+				this.player.start();
+			}
+		//#endif
 	}
 
 	/**
@@ -286,8 +332,7 @@ implements PlayerListener
 	/**
 	 * Helper function for getting a supported media type.
 	 * 
-	 * @param type
-	 *            the type like "audio/mp3"
+	 * @param type the type like "audio/mp3"
 	 * @param protocol
 	 *            the protocol, when null is given the content type will be
 	 *            returned for any protocol
@@ -336,6 +381,18 @@ implements PlayerListener
 		//#endif
 		return null;
 	}
+	
+	/**
+	 * Determines whether the given audio format is supported by this device for the specified protocol.
+	 * @param type the type like "audio/mp3"
+	 * @param protocol
+	 *            the protocol, when null is given the content type will be
+	 *            returned for any protocol
+	 * @return true when the given audio type is supported
+	 */
+	public static boolean isSupportedAudioType( String type, String protocol ) {
+		return getAudioType(type, protocol) != null;
+	}
 
 	/**
 	 * Determines if the audio player is currently playing music
@@ -343,18 +400,15 @@ implements PlayerListener
 	 */
 	public boolean isPlaying() {
 		//#if polish.android
-		//# if (this.player == null) {
-		//#	return false;
-		//# } else {
-		//#	 return this.player.isPlaying();
-		//# }
+			if (this.androidPlayer != null) {
+				return this.androidPlayer.isPlaying();
+			}
 		//#else
-		if (this.player == null) {
-			return false;
-		} else {
-			return this.player.getState() == Player.STARTED;
-		}
+			if (this.player != null) {
+				return this.player.getState() == Player.STARTED;
+			}
 		//#endif
+		return false;
 	}
 
 	private static final void addTypes(String[] types) {
@@ -366,7 +420,6 @@ implements PlayerListener
 		}
 	}
 
-	//#if !polish.android
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -378,30 +431,126 @@ implements PlayerListener
 		if (this.listener != null) {
 			this.listener.playerUpdate(p, event, data);
 		}
-
 		if (!this.doCachePlayer && PlayerListener.END_OF_MEDIA.equals(event)) {
-			p.removePlayerListener(this);
+			//#if !polish.android
+				p.removePlayerListener(this);
+			//#endif
 			cleanUpPlayer();
 		}
 	}
-	//#endif
 
 	/**
 	 * Closes and deallocates the player.
 	 */
 	public void cleanUpPlayer() {
+		//TODO: rickyn: do we need to reset the volume?
+		this.volumeLevel = -1;
 		//#if !polish.android
-		if (this.player != null) {
-			this.player.deallocate();
-			this.player.close(); // necessary for some Motorola devices
-			this.player = null;
-		}
+			if (this.player != null) {
+				this.player.deallocate();
+				this.player.close(); // necessary for some Motorola devices
+				this.player = null;
+			}
 		//#else
-		//# if (this.player != null) {
-		//# 	this.player.release();
-		//# 	this.player = null;
-		//# }
+			if (this.androidPlayer != null) {
+				this.androidPlayer.release();
+		 		this.androidPlayer = null;
+			}
 		//#endif
 	}
+	/**
+	 * Gets the volume using a linear point scale with values between 0 and 100.
+	 * 0 is silence; 100 is the loudest useful level that this VolumeControl supports. If the given level is less than 0 or greater than 100, the level will be set to 0 or 100 respectively.
+	 * When setLevel results in a change in the volume level, a VOLUME_CHANGED event will be delivered through the PlayerListener. 
+	 * @return the volume level between 0 and 100 or -1 when the player is not initialized
+	 */
+	public int getVolumeLevel() {
+		int volume;
+		//#if polish.android
+			AudioManager audioManager = (AudioManager) MIDlet.midletInstance.getSystemService(Context.AUDIO_SERVICE);			
+			if (this.androidMaxVolume == -1) {
+				this.androidMaxVolume = audioManager.getStreamMaxVolume( AudioManager.STREAM_MUSIC);
+			}
+			int current = audioManager.getStreamVolume( AudioManager.STREAM_MUSIC);
+			volume = (int) (((float)current * 100f) / this.androidMaxVolume);
+		//#else
+			Player pl = this.player;
+			if (pl != null) {
+				VolumeControl volumeControl = (VolumeControl) pl.getControl("VolumeControl");
+				if (volumeControl != null) {
+					return volumeControl.getLevel();
+				}
+			}
+			volume = this.volumeLevel;
+		//#endif
+		return volume;
+	}
+	
+	/**
+	 * Sets the volume using a linear point scale with values between 0 and 100.
+	 * 0 is silence; 100 is the loudest useful level that this VolumeControl supports. If the given level is less than 0 or greater than 100, the level will be set to 0 or 100 respectively.
+	 * When setLevel results in a change in the volume level, a VOLUME_CHANGED event will be delivered through the PlayerListener.
+	 *  
+	 * @param level the volume level between 0 and 100
+	 */
+	public void setVolumeLevel(int level) {
+		//#if polish.android
+			if (this.androidPlayer != null) {
+				if (this.androidMaxVolume == -1) {
+					AudioManager audioManager = (AudioManager) MIDlet.midletInstance.getSystemService(Context.AUDIO_SERVICE);			
+					this.androidMaxVolume = audioManager.getStreamMaxVolume( AudioManager.STREAM_MUSIC);
+				}
+				if (level < 0) {
+					level = 0;
+				} else if (level > 100) {
+					level = 100;
+				}
+				float levelF = ((float)level * this.androidMaxVolume) / 100f;
+				this.androidPlayer.setVolume(levelF,levelF);
+			}
+		//#else
+			Player pl = this.player;
+			if (pl != null) {
+				VolumeControl volumeControl = (VolumeControl) pl.getControl("VolumeControl");
+				if (volumeControl != null) {
+					volumeControl.setLevel(100);
+					return;
+				}
+			}
+		//#endif
+		this.volumeLevel = level;
+	}
+	
+	/**
+	 * Detects the the player is currently muted
+	 * @return true when the player is muted
+	 */
+	public boolean isMuted() {
+		int level = getVolumeLevel();
+		return level == 0;
+	}
+	
+	/**
+	 * Mutes the player or restores the previous volume level
+	 * @param mute true when the player should be muted, false when the previous volume level should be restored
+	 */
+	public void setMute( boolean mute ) {
+		if (mute) {
+			this.previousVolumeLevel = getVolumeLevel();
+			setVolumeLevel(0);
+		} else if (this.previousVolumeLevel != -1){
+			setVolumeLevel(this.previousVolumeLevel);
+		}
+	}
+
+	//#if polish.android
+	/**
+	 * Informs the audio player about a finished media on Android devices.
+	 * @param mp the media player (should be the same as this.mediaPlayer)
+	 */
+	public void onCompletion(MediaPlayer mp) {
+		playerUpdate( this.player, PlayerListener.END_OF_MEDIA, null );
+	}
+	//#endif
 
 }

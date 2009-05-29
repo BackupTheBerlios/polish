@@ -2,7 +2,7 @@
 /*
  * Created on Apr 25, 2007 at 11:45:01 PM.
  * 
- * Copyright (c) 2007 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -27,7 +27,6 @@
 package de.enough.polish.ui.itemviews;
 
 import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Image;
 
 import de.enough.polish.ui.AnimationThread;
 import de.enough.polish.ui.Item;
@@ -40,7 +39,7 @@ import de.enough.polish.util.ImageUtil;
 /**
  * <p>Fades out the item.</p>
  *
- * <p>Copyright Enough Software 2007 - 2008</p>
+ * <p>Copyright Enough Software 2007 - 2009</p>
  * <pre>
  * history
  *        Apr 25, 2007 - rob creation
@@ -58,10 +57,10 @@ public class FadeOutItemView extends ItemView {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ItemView#initContent(de.enough.polish.ui.Item, int, int)
 	 */
-	protected void initContent(Item parent, int firstLineWidth, int lineWidth) {
+	protected void initContent(Item parent, int firstLineWidth, int availWidth, int availHeight) {
 		//TODO  question: should the view handle focused states and do this stuff or is it more appropriate for the application to do this?
 		this.currentTransparency = this.startTransparency;
-		initContentByParent(parent, firstLineWidth, lineWidth);
+		initContentByParent(parent, firstLineWidth, availWidth, availHeight);
 		
 		int[] itemRgbData = UiAccess.getRgbDataOfContent( parent );
 		this.rgbData = itemRgbData;

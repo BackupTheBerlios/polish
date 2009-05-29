@@ -2,7 +2,7 @@
 /*
  * Created on 24-Jan-2005 at 01:37:32.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -29,11 +29,13 @@ package de.enough.polish.ui.backgrounds;
 import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.ui.Background;
+import de.enough.polish.ui.Color;
+import de.enough.polish.ui.Style;
 
 /**
  * <p>Paints a background in which the top uses rounded edges, but the bottom uses straight ones. CSS-type is "round-tab"</p>
  *
- * <p>Copyright (c) Enough Software 2005 - 2008</p>
+ * <p>Copyright (c) Enough Software 2005 - 2009</p>
  * <pre>
  * history
  *        24-Jan-2005 - rob creation
@@ -42,9 +44,9 @@ import de.enough.polish.ui.Background;
  */
 public class RoundTabBackground extends Background {
 
-	private final int color;
-	private final int arcWidth;
-	private final int arcHeight;
+	private int color;
+	private int arcWidth;
+	private int arcHeight;
 
 	/**
 	 * Creates a new round tab background.
@@ -72,7 +74,42 @@ public class RoundTabBackground extends Background {
 		} else {
 			height /=  2;
 		}
-		g.fillRect( x, y, width, height + 1 );
+		g.fillRect( x, y, width, height );
 	}
+	
+
+	//#if polish.css.animations
+		/* (non-Javadoc)
+		 * @see de.enough.polish.ui.Background#setStyle(de.enough.polish.ui.Style)
+		 */
+		public void setStyle(Style style)
+		{
+			//#if polish.css.background-round-tab-color
+				Color col = style.getColorProperty("background-round-tab-color");
+				if (col != null) {
+					this.color = col.getColor();
+				}
+			//#endif
+			//#if polish.css.background-round-tab-arc
+				Integer arcInt = style.getIntProperty("background-round-tab-arc");
+				if (arcInt != null) {
+					this.arcWidth = arcInt.intValue();
+					this.arcHeight = arcInt.intValue();
+				}
+			//#endif
+			//#if polish.css.background-round-tab-arc-width
+				Integer arcWidthInt = style.getIntProperty("background-round-tab-arc-width");
+				if (arcWidthInt != null) {
+					this.arcWidth = arcWidthInt.intValue();
+				}
+			//#endif
+			//#if polish.css.background-round-tab-arc-height
+				Integer arcHeightInt = style.getIntProperty("background-round-tab-arc-height");
+				if (arcHeightInt != null) {
+					this.arcHeight = arcHeightInt.intValue();
+				}
+			//#endif
+		}
+	//#endif
 
 }

@@ -2,7 +2,7 @@
 /*
  * Created on June 21, 2007 at 10:48:13 AM.
  * 
- * Copyright (c) 2006 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -73,7 +73,7 @@ import de.enough.polish.util.ImageUtil;
  * </pre>
  * </p>
  *
- * <p>Copyright Enough Software 2007 - 2008</p>
+ * <p>Copyright Enough Software 2007 - 2009</p>
  * <pre>
  * history
  *        June 21, 2007 - rob creation
@@ -326,7 +326,7 @@ public class FishEyeContainerView extends ContainerView {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#initContent(de.enough.polish.ui.Container, int, int)
 	 */
-	protected void initContent(Item parentContainerItem, int firstLineWidth, int lineWidth) {
+	protected void initContent(Item parentContainerItem, int firstLineWidth, int availWidth, int availHeight) {
 		this.isVertical = false;
 		this.isHorizontal = true;
 		Container parent = (Container) parentContainerItem;		
@@ -392,8 +392,8 @@ public class FishEyeContainerView extends ContainerView {
 					}
 				}
 			}
-			int width = item.getItemWidth( firstLineWidth, lineWidth );
-			int height = item.getItemHeight( firstLineWidth, lineWidth );
+			int width = item.getItemWidth( firstLineWidth, availWidth, availHeight );
+			int height = item.getItemHeight( firstLineWidth, availWidth, availHeight );
 			//#if polish.midp2
 				int[] data = UiAccess.getRgbData(item);
 				this.originalRgbData[i] = data;
@@ -435,7 +435,7 @@ public class FishEyeContainerView extends ContainerView {
 			this.appearanceMode = Item.PLAIN;
 		}
 		
-		initItemArrangement(lineWidth, myItems, length, maxWidth, maxHeight);
+		initItemArrangement(availWidth, myItems, length, maxWidth, maxHeight);
 		
 		// use reference positions to set the position for the items:
 		for (int i = 0; i < length; i++) {
@@ -444,8 +444,8 @@ public class FishEyeContainerView extends ContainerView {
 			if (distance != 0) {
 				distance--;
 			}
-			int halfItemWidth = (item.getItemWidth(lineWidth, lineWidth) >> 1);
-			int halfItemHeight = (item.getItemHeight(lineWidth, lineWidth) >> 1);
+			int halfItemWidth = (item.getItemWidth(availWidth, availWidth, availHeight) >> 1);
+			int halfItemHeight = (item.getItemHeight(availWidth, availWidth, availHeight) >> 1);
 			//#if polish.midp2
 				if (i != this.focusedIndex) {
 					int factor = getScaleFactor(distance, length);
@@ -464,16 +464,16 @@ public class FishEyeContainerView extends ContainerView {
 		}
 		if (this.focusedStyle != null) {
 			focusItem( this.focusedIndex, this.focusedItem, this.focusedDirection, this.focusedStyle );
-			this.focusedItem.relativeX = this.referenceXCenterPositions[this.focusedIndex] - (this.focusedItem.getItemWidth( lineWidth, lineWidth) >> 1);
+			this.focusedItem.relativeX = this.referenceXCenterPositions[this.focusedIndex] - (this.focusedItem.getItemWidth( availWidth, availWidth, availHeight) >> 1);
 			if (this.referenceYCenterPositions != null) {
-				this.focusedItem.relativeY = this.referenceYCenterPositions[this.focusedIndex] - (this.focusedItem.getItemHeight(lineWidth, lineWidth) >> 1);
+				this.focusedItem.relativeY = this.referenceYCenterPositions[this.focusedIndex] - (this.focusedItem.getItemHeight(availWidth, availWidth, availHeight) >> 1);
 			}
 //			System.out.println("focused.relativeX=" + this.focusedItem.relativeX);
 			this.focusedStyle = null;
 		}
 		
-		this.contentWidth = lineWidth; //TODO: this can change when no expanded layout is used
-		this.contentHeight = this.focusedLabel == null ? maxHeight : maxHeight + this.focusedLabel.getItemHeight(lineWidth, lineWidth); // maxItemHeight + this.paddingVertical + this.focusedLabel.getItemHeight(lineWidth, lineWidth);
+		this.contentWidth = availWidth; //TODO: this can change when no expanded layout is used
+		this.contentHeight = this.focusedLabel == null ? maxHeight : maxHeight + this.focusedLabel.getItemHeight(availWidth, availWidth, availHeight); // maxItemHeight + this.paddingVertical + this.focusedLabel.getItemHeight(lineWidth, lineWidth);
 		
 		if (!this.isFocused) {
 			AnimationThread.addAnimationItem( parent );
@@ -505,24 +505,24 @@ public class FishEyeContainerView extends ContainerView {
 		
 		if (this.focusedStyle != null && this.focusedItem != null) {
 			UiAccess.focus(this.focusedItem, this.focusedDirection, this.focusedStyle );
-			this.focusedWidth = this.focusedItem.getItemWidth( lineWidth, lineWidth );
+			this.focusedWidth = this.focusedItem.getItemWidth( lineWidth, lineWidth, maxHeight );
 			this.focusedItem.relativeX = (lineWidth - this.focusedWidth) >> 1;
 		} else if (this.focusedWidth == 0) {
 			this.focusedWidth = maxWidth;
 		}
-		int availableWidth;
+		int availWidth;
 		if ( (completeWidth > lineWidth && this.includeAllItems) || (completeWidth < lineWidth && isLayoutExpand() ) ) {
-			availableWidth = ((lineWidth - this.focusedWidth) >> 1) - this.paddingHorizontal;
+			availWidth = ((lineWidth - this.focusedWidth) >> 1) - this.paddingHorizontal;
 		} else {
-			availableWidth = ((completeWidth - this.focusedWidth) >> 1) - this.paddingHorizontal; 
+			availWidth = ((completeWidth - this.focusedWidth) >> 1) - this.paddingHorizontal; 
 		}
 //		System.out.println("available=" + availableWidth + ", lineWidth=" + lineWidth + ", completeWidth=" + completeWidth + ", maxItemWidth=" + maxWidth + ", paddingHorizontal=" + this.paddingHorizontal);
-		int availableWidthPerItem = (availableWidth << 8) / (length -1);
+		int availableWidthPerItem = (availWidth << 8) / (length -1);
 		// process items on the left side:
 		int index = this.focusedIndex - 1;
 		int processed = 0;
 		int halfLength = (length - 1) >> 1;
-		int startX = availableWidth;
+		int startX = availWidth;
 //		System.out.println("left: startX=" + startX + ", center=" + (lineWidth/2) );
 		while (processed < halfLength ) {
 			if (index < 0) {
@@ -537,7 +537,7 @@ public class FishEyeContainerView extends ContainerView {
 		index = this.focusedIndex + 1;
 		processed = 0;
 		halfLength = length >> 1;
-		startX =  lineWidth -  availableWidth - (this.paddingHorizontal >> 1); //(lineWidth >> 1) +  ((lineWidth >> 1) - startX);
+		startX =  lineWidth -  availWidth - (this.paddingHorizontal >> 1); //(lineWidth >> 1) +  ((lineWidth >> 1) - startX);
 //		System.out.println("right: startX=" + startX + ", center=" + (lineWidth/2) );
 		while (processed < halfLength) {
 			if (index >= length) {
@@ -709,15 +709,14 @@ public class FishEyeContainerView extends ContainerView {
 		int lineWidth = rightBorder - leftBorder;
 		int itemLabelDiff = 0;
 		if (this.isRemoveText && this.focusedLabel != null) {
-			Style labelStyle = this.focusedLabel.getStyle();
-			itemLabelDiff = labelStyle.paddingVertical - labelStyle.paddingBottom - labelStyle.paddingTop - labelStyle.marginBottom - labelStyle.marginTop;
+			itemLabelDiff = this.focusedLabel.itemHeight - this.focusedLabel.getContentHeight();
 		}
 		if (this.focusedItem != null && (this.focusedBackground != null || this.focusedBorder != null)) {
 			Item item = this.focusedItem;
 			int backgroundWidth;
 			int backgroundHeight;
 			if ( this.isRemoveText && this.focusedLabel != null) {
-				backgroundWidth = Math.max( item.itemWidth, this.focusedLabel.getItemWidth( lineWidth, lineWidth ) );
+				backgroundWidth = Math.max( item.itemWidth, this.focusedLabel.getItemWidth( lineWidth, lineWidth, this.availableHeight ) );
 				backgroundHeight = item.itemHeight + this.focusedLabel.itemHeight + itemLabelDiff;
 			} else {
 				backgroundWidth = item.itemWidth;
@@ -808,7 +807,7 @@ public class FishEyeContainerView extends ContainerView {
 			// now paint label:
 			if (this.isRemoveText && this.focusedLabel != null) {
 				//System.out.println("painting focused label with style " + this.focusedLabel.getStyle() );
-				int labelX = x + ((rightBorder - leftBorder) >> 1) - (this.focusedLabel.getItemWidth( lineWidth, lineWidth ) >> 1);
+				int labelX = x + ((rightBorder - leftBorder) >> 1) - (this.focusedLabel.getItemWidth( lineWidth, lineWidth, this.availableHeight ) >> 1);
 				int labelY = y + this.contentHeight - this.focusedLabel.itemHeight;  // item.itemHeight + itemLabelDiff;
 				this.focusedLabel.paint( labelX, labelY, labelX, labelX + this.focusedLabel.itemWidth, g);
 			}

@@ -3,7 +3,7 @@
 /*
  * Created on 15-April-2007 at 18:54:36.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -27,12 +27,10 @@
  */
 package de.enough.polish.ui.screenanimations;
 
-import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Displayable;
+import de.enough.polish.ui.Display;
+import de.enough.polish.ui.Displayable;
 import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Image;
 
-import de.enough.polish.ui.AccessibleCanvas;
 import de.enough.polish.ui.Color;
 import de.enough.polish.ui.ScreenChangeAnimation;
 import de.enough.polish.ui.Style;
@@ -51,7 +49,7 @@ import de.enough.polish.ui.Style;
  * </pre>
  * </p>
  *
- * <p>Copyright (c) 2007 Enough Software</p>
+ * <p>Copyright (c) 2009 Enough Software</p>
  * <pre>
  * history
  *        15-April-2007 - rob creation
@@ -76,8 +74,8 @@ public class FadeOutFadeInScreenChangeAnimation extends ScreenChangeAnimation {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#show(de.enough.polish.ui.Style, javax.microedition.lcdui.Display, int, int, javax.microedition.lcdui.Image, javax.microedition.lcdui.Image, de.enough.polish.ui.Screen)
 	 */
-	protected void show(Style style, Display dsplay, int width, int height,
-			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable, boolean isForward  ) 
+	protected void onShow(Style style, Display dsplay, int width, int height,
+			Displayable lstDisplayable, Displayable nxtDisplayable, boolean isForward  ) 
 	{
 		//#if polish.css.fadeOutFadeIn-screen-change-animation-steps
 			Integer stepsInt = style.getIntProperty("fade-screen-change-animation-steps");
@@ -94,13 +92,13 @@ public class FadeOutFadeInScreenChangeAnimation extends ScreenChangeAnimation {
 		if ( this.shownScreenRgb == null ) {
 			this.shownScreenRgb = new int[ width * height ];
 		}
+		super.onShow(style, dsplay, width, height, lstDisplayable, nxtDisplayable, isForward );
 		//nxtScreenImage.getRGB( this.shownScreenRgb, 0, width, 0, 0, width, height );
-		lstScreenImage.getRGB( this.shownScreenRgb, 0, width, 0, 0, width, height );
+		this.lastCanvasImage.getRGB( this.shownScreenRgb, 0, width, 0, 0, width, height );
 		this.isFadingPreviousScreen = true;
 		//addOpacity( 255/this.steps, this.shownScreenRgb );
 		this.currentStep = 0;
 		
-		super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable, isForward );
 	}
 	
 	/* (non-Javadoc)

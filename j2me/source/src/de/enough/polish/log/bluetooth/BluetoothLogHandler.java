@@ -3,7 +3,7 @@
 /*
  * Created on 27-Apr-2005 at 20:00:55.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -27,13 +27,12 @@
  */
 package de.enough.polish.log.bluetooth;
 
-import javax.bluetooth.DiscoveryAgent;
-import javax.bluetooth.L2CAPConnection;
-import javax.bluetooth.LocalDevice;
-import javax.bluetooth.ServiceRecord;
-import javax.bluetooth.UUID;
-import javax.microedition.io.Connector;
+import java.io.IOException;
 
+import javax.bluetooth.L2CAPConnection;
+
+import de.enough.polish.bluetooth.DiscoveryHelper;
+import de.enough.polish.bluetooth.L2CapOutputStream;
 import de.enough.polish.log.LogEntry;
 import de.enough.polish.log.LogHandler;
 import de.enough.polish.util.ArrayList;
@@ -41,7 +40,7 @@ import de.enough.polish.util.ArrayList;
 /**
  * <p>Forwards log messages to the first preknown device.</p>
  *
- * <p>Copyright (c) Enough Software 2005 - 2008</p>
+ * <p>Copyright (c) Enough Software 2005 - 2009</p>
  * <pre>
  * history
  *        27-Apr-2005 - rob creation
@@ -52,10 +51,12 @@ public class BluetoothLogHandler
 extends LogHandler
 implements Runnable
 {
-	private ArrayList buffer;
-	private L2CAPConnection connection;
-	private Exception exception;
+	private final static String UUID = "21dc585c319b4dc39cf8457e90a07444";
 
+	private ArrayList buffer;
+	private Exception exception;
+	private L2CAPConnection connection;
+	
 	/**
 	 * Creates a new handler 
 	 */
@@ -72,7 +73,7 @@ implements Runnable
 	throws Exception 
 	{
 		if (this.connection != null) {
-			this.connection.send( logEntry.toString().getBytes() );
+			sendLogEntry( logEntry );
 		} else {
 			ArrayList list = this.buffer;
 			if (list != null) {
@@ -92,19 +93,15 @@ implements Runnable
 	 */
 	public void run() {
 		try {
-			// try to find a known device:
-			LocalDevice localDevice = LocalDevice.getLocalDevice();
-			DiscoveryAgent agent = localDevice.getDiscoveryAgent();
-			String connectionUrl = agent.selectService( new UUID(0x0100), ServiceRecord.NOAUTHENTICATE_NOENCRYPT, false );
-			if (connectionUrl == null) {
+			this.connection = (L2CAPConnection) DiscoveryHelper.findAndConnectService(UUID, DiscoveryHelper.SEARCH_MODE_GIAC, DiscoveryHelper.DEVICE_CLASS_MAJOR_PC);
+			ArrayList list = this.buffer;
+			if (list == null) {
 				return;
 			}
-			this.connection = (L2CAPConnection) Connector.open( connectionUrl );
-			ArrayList list = this.buffer;
 			this.buffer = null;
 			for (int i = 0; i < list.size(); i++ ) {
 				LogEntry entry = (LogEntry) list.get( i );
-				this.connection.send( entry.toString().getBytes() );
+				sendLogEntry( entry );
 			}
 		} catch (Exception e) {
 			this.exception = e;
@@ -113,4 +110,34 @@ implements Runnable
 		}
 	}
 
+	/**
+	 * @param entry
+	 * @throws IOException 
+	 */
+	private void sendLogEntry(LogEntry entry) throws IOException
+	{
+		L2CapOutputStream out = new L2CapOutputStream(this.connection);
+		out.write( entry.toString().getBytes() );
+		out.close();
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.log.LogHandler#exit()
+	 */
+	public void exit()
+	{
+		super.exit();
+		if (this.connection != null) {
+			try
+			{
+				this.connection.close();
+			} catch (IOException e)
+			{
+				// ignore
+			}
+		}
+	}
+
+
+	
 }

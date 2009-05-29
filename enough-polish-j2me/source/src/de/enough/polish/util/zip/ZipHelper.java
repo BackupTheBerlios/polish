@@ -1,7 +1,7 @@
 /*
  * Created on Jun 25, 2007 at 11:12:23 AM.
  * 
- * Copyright (c) 2007 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -31,7 +31,7 @@ import java.io.InputStream;
 /**
  * <p>Provides some helper methods for ZipInputStream and ZipOutputStream.</p>
  *
- * <p>Copyright Enough Software 2007 - 2008</p>
+ * <p>Copyright Enough Software 2007 - 2009</p>
  * <pre>
  * history
  *        Jun 25, 2007 - Simon creation
@@ -292,8 +292,7 @@ public final class ZipHelper {
 		}
     	// fix the overflow
     	if (overflowCount!=0){
-    		//#debug
-    		System.out.println(" fixing " + overflowCount + " overflows  because of max=" + max_len);
+    		//System.out.println(" fixing " + overflowCount + " overflows  because of max=" + max_len);
 	    	
     		// list the overflows
     		short overflows[]= new short[overflowCount];
@@ -408,11 +407,14 @@ public final class ZipHelper {
 	 * @throws IOException
 	 */
     public static final int deHuffNext(long[] smallCodeBuffer, short[] huffmanTree) throws IOException{
-    	
+//    	//#debug
+//    	System.out.println("deHuffNext(long[], short[])");
+    	//#if polish.debug.error
     	if (smallCodeBuffer[1]<15){
     		//#debug error
     		System.out.println("smallCodebuffer is too small");
     	}
+    	//#endif
     	
     	short pointer=0;
     	

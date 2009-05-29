@@ -43,7 +43,7 @@ import de.enough.polish.util.ArrayList;
 /**
  * <p>Layouts and positions items relatively to it's parent items.</p>
  *
- * <p>Copyright Enough Software 2007 - 2008</p>
+ * <p>Copyright Enough Software 2007 - 2009</p>
  * <pre>
  * history
  *        Apr 15, 2007 - rob creation
@@ -77,7 +77,7 @@ public class RelativeLayoutView extends ContainerView {
          * 
          * @see de.enough.polish.ui.ContainerView#initContent(de.enough.polish.ui.Container,int, int)
          */
-        protected void initContent(Item parent, int firstLineWidth, int lineWidth) 
+        protected void initContent(Item parent, int firstLineWidth, int availWidth, int availHeight) 
         {
         	Container parContainer = (Container) parent;
         	this.parentContainer = parContainer;
@@ -96,10 +96,10 @@ public class RelativeLayoutView extends ContainerView {
                     if (item.appearanceMode != Item.PLAIN) {
                             hasFocusableItem = true;
                     }
-                    appendItemToRow(i, item, firstLineWidth, lineWidth);
+                    appendItemToRow(i, item, firstLineWidth, availWidth, availHeight);
                 }
                 // Make the remaining items a final line
-                rowBreak(lineWidth, 0 );
+                rowBreak(availWidth, availHeight,  0 );
                 if (!hasFocusableItem) {
                 	this.appearanceMode = Item.PLAIN;
                 } else {
@@ -107,7 +107,7 @@ public class RelativeLayoutView extends ContainerView {
                 }
         }
 
-        void appendItemToRow(int index, Item item, int firstLineWidth, int lineWidth) {
+        void appendItemToRow(int index, Item item, int firstLineWidth, int availWidth, int availHeight) {
 	        	int itemLayout = item.getLayout();
 	        	boolean isExpand = (itemLayout & Item.LAYOUT_EXPAND) == Item.LAYOUT_EXPAND;
 	        	if (isExpand) {
@@ -117,19 +117,19 @@ public class RelativeLayoutView extends ContainerView {
                         focusItem(index, item);
                         this.focusFirstElement = false;
                 }
-                int width = item.getItemWidth(firstLineWidth, lineWidth);
-                int height = item.getItemHeight(firstLineWidth, lineWidth);
+                int width = item.getItemWidth(firstLineWidth, availWidth, availHeight);
+                int height = item.getItemHeight(firstLineWidth, availWidth, availHeight);
                 if (isExpand) {
                 	item.setLayout(itemLayout);
                 }
                 
 
                 if ((Item.LAYOUT_NEWLINE_BEFORE == (itemLayout & Item.LAYOUT_NEWLINE_BEFORE) || isExpand )
-                                || (this.rowWidth + this.paddingHorizontal + width > lineWidth)) 
+                                || (this.rowWidth + this.paddingHorizontal + width > availWidth)) 
                 {
                         // Break if the NEWLINE_BEFORE is specified or not enough
                         // room in the current row
-                        rowBreak(lineWidth, itemLayout);
+                        rowBreak(availWidth, availHeight, itemLayout);
                 }
 
                 this.rowWidth += width;
@@ -149,11 +149,11 @@ public class RelativeLayoutView extends ContainerView {
                 this.currentRow.add(item);
 
                 if (Item.LAYOUT_NEWLINE_AFTER == (itemLayout & Item.LAYOUT_NEWLINE_AFTER)) {
-                        rowBreak(lineWidth, itemLayout);
+                        rowBreak(availWidth, availHeight, itemLayout);
                 }
         }
 
-        private void rowBreak(int lineWidth, int itemLayout) {
+        private void rowBreak(int lineWidth, int availHeight, int itemLayout) {
                 if (this.currentRow.size() == 0) {
                         return; // Current row is empty
                 }
@@ -176,7 +176,7 @@ public class RelativeLayoutView extends ContainerView {
                     rowItem.relativeY = top;
                     rowItem.relativeX = currentWidth;
                     if (Item.LAYOUT_EXPAND == (itemLayout & Item.LAYOUT_EXPAND)) {
-                    	rowItem.getItemWidth( lineWidth - currentWidth, lineWidth - currentWidth );
+                    	rowItem.getItemWidth( lineWidth - currentWidth, lineWidth - currentWidth, availHeight );
 //                        if (requiredExpanded == null) {
 ////                            requiredExpanded = new RowItem[this.currentRow.size() - i];
 //                        	requiredExpanded = new Item[this.currentRow.size() - i];

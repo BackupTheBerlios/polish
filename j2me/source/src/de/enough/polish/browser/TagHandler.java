@@ -3,7 +3,7 @@
 /*
  * Created on 11-Jan-2006 at 19:20:28.
  * 
- * Copyright (c) 2006 - 2008 Michael Koch / Enough Software
+ * Copyright (c) 2009 - 2009 Michael Koch / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -27,13 +27,12 @@
  */
 package de.enough.polish.browser;
 
+import de.enough.polish.ui.Command;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.HashMap;
 import de.enough.polish.xml.SimplePullParser;
-
-import javax.microedition.lcdui.Command;
 
 /**
  * This class provides the basic functionality for tag handlers. A tag handler is a

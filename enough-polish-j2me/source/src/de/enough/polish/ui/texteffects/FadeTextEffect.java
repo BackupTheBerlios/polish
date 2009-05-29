@@ -28,7 +28,7 @@ import de.enough.polish.util.DrawUtil;
  * </ul>
  * 
  *
- * <p>Copyright Enough Software 2006 - 2008</p>
+ * <p>Copyright Enough Software 2006 - 2009</p>
  *    
  * @author Simon Schmitt
  *
@@ -86,8 +86,8 @@ public class FadeTextEffect extends TextEffect {
 		
 	}
 	
-	public void setStyle(Style style) {
-		super.setStyle(style);
+	public void setStyle(Style style, boolean resetStyle) {
+		super.setStyle(style, resetStyle);
 		
 		//#if polish.css.text-fade-out-color
 			Color startColorObj = style.getColorProperty( "text-fade-out-color" );
@@ -95,7 +95,9 @@ public class FadeTextEffect extends TextEffect {
 				this.fader.startColor = startColorObj.getColor();
 			}
 		//#endif
-		this.fader.endColor = style.getFontColor();
+		if (resetStyle) {
+			this.fader.endColor = style.getFontColor();
+		}
 		//#if polish.css.text-fade-in-color
 			Color endColorObj = style.getColorProperty( "text-fade-in-color" );
 			if (endColorObj != null) {

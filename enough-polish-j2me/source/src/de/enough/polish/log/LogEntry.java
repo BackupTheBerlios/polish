@@ -1,7 +1,7 @@
 /*
  * Created on 23-Apr-2005 at 03:37:20.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -34,7 +34,7 @@ import java.io.IOException;
 /**
  * <p>Contains one log entry.</p>
  *
- * <p>Copyright (c) Enough Software 2005 - 2008</p>
+ * <p>Copyright (c) Enough Software 2005 - 2009</p>
  * <pre>
  * history
  *        23-Apr-2005 - rob creation
@@ -224,6 +224,19 @@ public class LogEntry {
 		String exception = in.readUTF();
 		String thread = in.readUTF();
 		return new LogEntry( className, lineNumber, time, level, message, exception, thread );
+	}
+
+	/**
+	 * Retrieves the message of this entry
+	 * @return the message along with the exception, if there is any.
+	 */
+	public String getMessage()
+	{
+		if (this.exception != null) {
+			return this.message + ": " + this.exception;
+		} else {
+			return this.message;
+		}
 	}
 
 

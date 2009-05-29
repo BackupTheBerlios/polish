@@ -1,7 +1,7 @@
 /*
  * Created on Jun 25, 2007 at 11:12:23 AM.
  * 
- * Copyright (c) 2007 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -32,7 +32,7 @@ import java.io.InputStream;
 /**
  * <p>Reads and uncompresses GZIP or DEFLATE encoded input streams.</p>
  *
- * <p>Copyright Enough Software 2007 - 2008</p>
+ * <p>Copyright Enough Software 2007 - 2009</p>
  * <pre>
  * history
  *        Jun 25, 2007 - Simon creation
@@ -67,7 +67,7 @@ public class GZipInputStream extends InputStream {
 	 *  on the parameters given to the constructor also by using
 	 *  a CRC32 checksum.
 	 */
-	private boolean vaildData;
+	private boolean validData;
 	
 	private int crc32;
 	private int[] crc32Table=new int[256];
@@ -130,6 +130,7 @@ public class GZipInputStream extends InputStream {
 	public GZipInputStream(InputStream inputStream, int size, int compressionType, boolean hash) 
 	throws IOException 
 	{
+		//System.out.println("creating GZipInputStream with hash=" + hash);
 		this.inStream=inputStream;
 		
 		this.inStreamEnded=false;
@@ -146,6 +147,8 @@ public class GZipInputStream extends InputStream {
 		
 		this.buffsize=size;
 		this.outBuff=new byte[size+300];
+		//#debug
+		System.out.println("creating outbuff, size=" + size + ", actual lenth=" + this.outBuff.length) ;
 		
 		if (this.type==GZipInputStream.TYPE_GZIP){
 			ZipHelper.skipheader(inputStream);
@@ -173,6 +176,8 @@ public class GZipInputStream extends InputStream {
      * @param dest
      */
     private void copyFromWindow(int start, int len, byte[] dest, int destoff){
+    	//#debug
+    	System.out.println( "copyFromWindow(start=" + start + ", len=" + len + ", dest.length=" + dest.length + ", destoff="  + destoff + ") - window.length=" + this.window.length );
     	if (start + len < this.window.length) {
     		System.arraycopy(this.window, start, dest, 0+destoff, len);
     	} else {
@@ -180,8 +185,12 @@ public class GZipInputStream extends InputStream {
     		System.arraycopy(this.window, 0, dest, this.window.length - start + destoff, len - (this.window.length - start) );
     		
     	}
+    	//#debug
+    	System.out.println("end of copyFromWindow");
     }
     private void copyIntoWindow(int start, int len, byte[] src, int srcOff){
+    	//#debug
+    	System.out.println( "copyIntoWindow()" );
     	if(len + start < this.window.length) {
 			System.arraycopy(src, srcOff, this.window, start, len);
 		} else {
@@ -198,6 +207,8 @@ public class GZipInputStream extends InputStream {
      */
     
     private void inflate() throws IOException{
+    	//#debug
+    	System.out.println("inflate - outbuff.length=" + this.outBuff.length);
     	int val=0;
     	
     	int rep;
@@ -341,7 +352,6 @@ public class GZipInputStream extends InputStream {
 		    			
 		    		}// val=256
 		    		else {
-		    			//System.out.println("Block End code=" + huffmanCode[256] + "  pP="+pProcessed + " popC: " + popcount[0]);
 		    			if(this.BFINAL){
 		    				this.status=GZipInputStream.EXPECTING_CHECK;
 		    			} else {
@@ -369,12 +379,12 @@ public class GZipInputStream extends InputStream {
     			int cCrc=popSmallBuffer(8)|(popSmallBuffer(8)<<8)|(popSmallBuffer(8)<<16)|(popSmallBuffer(8)<<24);
     			int iSize=popSmallBuffer(8)|(popSmallBuffer(8)<<8)|(popSmallBuffer(8)<<16)|(popSmallBuffer(8)<<24);
     			
-    			this.vaildData=(iSize==this.allPocessed);
+    			this.validData=(iSize==this.allPocessed);
     			if (this.hash){
-    				this.vaildData &= (this.crc32==cCrc);
+    				this.validData &= (this.crc32==cCrc);
     			}
     			
-    			if (!this.vaildData){
+    			if (!this.validData){
     				//ERROR: the data check (size & hash) are wrong
     				throw new IOException("2");
     			}
@@ -394,7 +404,9 @@ public class GZipInputStream extends InputStream {
     	
     }
     
-    private void processHeader () throws IOException{
+    private void processHeader() throws IOException{
+    	//#debug
+    	System.out.println("processHeader()");
     	int val;
     	
 		int HLIT; // number of miniHuff fragments
@@ -567,11 +579,13 @@ public class GZipInputStream extends InputStream {
      * @throws IOException
      */
     public int validData() throws IOException{
+    	//#debug
+    	System.out.println("validData()");
     	inflate();
     	if (this.status!=GZipInputStream.FINISHED){
     		return -1;
     	}  else {
-    		if (this.vaildData){
+    		if (this.validData){
     			return 1;
     		} else {
     			return 0;
@@ -580,7 +594,8 @@ public class GZipInputStream extends InputStream {
     }
     
     private int popSmallBuffer(long len) throws IOException{
-    	
+    	//#debug
+    	System.out.println("popSmallBuffer(" + len + ")");
     	if (len==0) return 0;
     	
 		if (this.smallCodeBuffer[1]<len){
@@ -601,6 +616,9 @@ public class GZipInputStream extends InputStream {
      */
     byte[] tmpRef = new byte[8]; // just one allocation
     private void refillSmallCodeBuffer() throws IOException{
+    	//#debug
+    	System.out.println("refillSmallCodeBuffer");
+    	
     	// (re)fill this.smallBuffer reading this.inStream
     	if (this.inStreamEnded==false){
 	    	
@@ -612,13 +630,13 @@ public class GZipInputStream extends InputStream {
 	    	}
 	    	
 			for (int i = 0; i < count; i++) {
-					this.smallCodeBuffer[0]&= ~( (long)0xff << this.smallCodeBuffer[1]);
-					if (this.tmpRef[i]<0){
-						this.smallCodeBuffer[0]|= (long)(this.tmpRef[i]+256) << this.smallCodeBuffer[1];
-					}else{
-						this.smallCodeBuffer[0]|= (long)this.tmpRef[i] << this.smallCodeBuffer[1];
-					}
-					this.smallCodeBuffer[1]+=8;
+				this.smallCodeBuffer[0] &= ~( (long)0xff << this.smallCodeBuffer[1]);
+				if (this.tmpRef[i]<0){
+					this.smallCodeBuffer[0] |= (long)(this.tmpRef[i]+256) << this.smallCodeBuffer[1];
+				}else{
+					this.smallCodeBuffer[0] |= (long)this.tmpRef[i] << this.smallCodeBuffer[1];
+				}
+				this.smallCodeBuffer[1] += 8;
 			}
     	}
     }
@@ -629,13 +647,20 @@ public class GZipInputStream extends InputStream {
      * size that was given to the constructor.
      */
     public int available() throws IOException {
+    	//#debug
+    	System.out.println("available()");
+    
     	if ((this.outEnd-this.outStart)<this.outBuff.length-300){
     		inflate();
+    		//#debug
+    		System.out.println("inflated to " + (this.outEnd-this.outStart));
     	}
     	return this.outEnd-this.outStart;
     }
     
     public long skip(long n) throws IOException{
+    	//#debug
+    	System.out.println("skip(" + n + ")");
     	long skipped=0;
     	byte b[]=new byte[this.buffsize];
     	
@@ -666,17 +691,18 @@ public class GZipInputStream extends InputStream {
      * @see java.io.InputStream#read(byte[], int, int)
      */
     public int read(byte b[], int off, int len) throws IOException  {
- 	
+    	//#debug
+    	System.out.println("read[byte[],off,len)");
     	// inflate as much as possible
     	if ((this.outEnd-this.outStart)<this.outBuff.length-300){
     		inflate();
     	}
     	
-    	// we can process just min(b.length, this.avialableBytes) Bytes
+    	// we can process just min(b.length, this.availableBytes) Bytes
     	int av=this.available();
     	int copyBytes= len > av ? av: len;
     	
-    	// copy avialable data from the ouputBuffer to 'b'
+    	// copy available data from the ouputBuffer to 'b'
     	// here ocurred an error once
     	System.arraycopy(this.outBuff, this.outStart, b, off, copyBytes);
     	

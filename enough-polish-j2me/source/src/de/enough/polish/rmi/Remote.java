@@ -1,7 +1,7 @@
 /*
  * Created on Dec 18, 2006 at 2:16:07 AM.
  * 
- * Copyright (c) 2006 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -28,7 +28,7 @@ package de.enough.polish.rmi;
 /**
  * <p>The base interface for any remote services. Defined methods need to declare to throw at least a RemoteException.</p>
  *
- * <p>Copyright Enough Software 2006, 2007 - 2008</p>
+ * <p>Copyright Enough Software 2006, 2007 - 2009</p>
  * <pre>
  * history
  *        Dec 18, 2006 - rob creation

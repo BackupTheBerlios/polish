@@ -2,7 +2,7 @@
 /*
  * Created on 12-Apr-2005 at 13:31:53.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -27,8 +27,10 @@
 package de.enough.polish.ui;
 
 import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Command;
+
 import javax.microedition.lcdui.Graphics;
+
+import de.enough.polish.util.ArrayList;
 
 /**
  * <p>Allows to split up a form into several frames.</p>
@@ -37,7 +39,7 @@ import javax.microedition.lcdui.Graphics;
  *    regardless whether the form is scrolled.
  * </p>
  *
- * <p>Copyright (c) Enough Software 2005 - 2008</p>
+ * <p>Copyright (c) Enough Software 2005 - 2009</p>
  * <pre>
  * history
  *        14-Apr-2005 - rob creation
@@ -54,6 +56,9 @@ public class FramedForm extends Form {
 	private int originalContentWidth;
 	private boolean expandRightFrame;
 	private boolean expandLeftFrame;
+	//#if polish.FramedForm.allowCycling
+		protected boolean allowCycling;
+	//#endif
 	
 	protected Container currentlyActiveContainer;
 	//#if polish.css.leftframe-style
@@ -68,8 +73,16 @@ public class FramedForm extends Form {
 	//#if polish.css.bottomframe-style
 		private Style bottomFrameStyle;
 	//#endif
+	//#if polish.css.bottomframe-height
+		private Dimension bottomFrameHeight;
+	//#endif
+	//#if polish.css.topframe-height
+		private Dimension topFrameHeight;
+	//#endif
+		
 	private int originalContentY;
 	private int originalContentX;
+	private boolean keepContentFocused;
 
 	/**
 	 * Creates a new FramedForm
@@ -144,7 +157,7 @@ public class FramedForm extends Form {
 
 	
 	/**
-	 * Removes all items from the specifid frame.
+	 * Removes all items from the specified frame.
 	 * 
 	 * @param frameOrientation either Graphics.TOP, Graphics.BOTTOM, Graphics.LEFT or Graphics.RIGHT. Use -1 for the content frame.
 	 */
@@ -165,32 +178,57 @@ public class FramedForm extends Form {
 	//#endif
 
 	//#if polish.LibraryBuild
-	public void set( int frameIndex, int itemNumber, javax.microedition.lcdui.Item item ) {
+	/**
+	 * Updates an existing item in the specified frame
+	 * @param frameOrientation either Graphics.TOP, Graphics.BOTTOM, Graphics.LEFT or Graphics.RIGHT
+	 * @param itemNumber the index of the previous item
+	 * @param item the new item
+	 */
+	public void set( int frameOrientation, int itemNumber, javax.microedition.lcdui.Item item ) {
 		// just a convenience method, in reality the append( Item item ) method is called
 	}
 	//#endif
 
 	//#if polish.LibraryBuild
+	/**
+	 * Updates an existing item in the content frame
+	 * @param itemNumber the index of the previous item
+	 * @param item the new item
+	 */
 	public void set( int itemNumber, javax.microedition.lcdui.Item item ) {
 		// just a convenience method, in reality the append( Item item ) method is called
 	}
 	//#endif
 
 	//#if polish.LibraryBuild
+	/**
+	 * Adds the given item to the specifid frame.
+	 * 
+	 * @param frameOrientation either Graphics.TOP, Graphics.BOTTOM, Graphics.LEFT or Graphics.RIGHT
+	 * @param item the item
+	 */
 	public void append( int frameOrientation, javax.microedition.lcdui.Item item ) {
 		// just a convenience method, in reality the addItem( Item item, int frameOrientation ) method is called
 	}
 	//#endif
 	
 	//#if polish.LibraryBuild
-	public void setItemStateListener( javax.microedition.lcdui.ItemStateListener listener ) {
+	/**
+	 * Sets the <code>ItemStateListener</code> for the <code>Screen</code>, 
+	 * replacing any previous <code>ItemStateListener</code>. 
+	 * If
+	 * <code>iListener</code> is <code>null</code>, simply
+	 * removes the previous <code>ItemStateListener</code>.
+	 * 
+	 * @param iListener the new listener, or null to remove it
+	 */
+	public void setItemStateListener( javax.microedition.lcdui.ItemStateListener iListener ) {
 		throw new RuntimeException("Unable to use standard ItemStateListener in a framed form.");
 	}
 	//#endif
 
 
 	/**
-	 * 
 	 * Adds the given item to the specifid frame.
 	 * 
 	 * @param frameOrientation either Graphics.TOP, Graphics.BOTTOM, Graphics.LEFT or Graphics.RIGHT
@@ -368,48 +406,88 @@ public class FramedForm extends Form {
 	 * @see de.enough.polish.ui.Screen#setContentArea(int, int, int, int)
 	 */
 	protected void calculateContentArea(int x, int y, int width, int height) {
+		int lastContentWidth = this.contentWidth;
+		int lastContentHeight = this.contentHeight;
 		super.calculateContentArea(x, y, width, height);
+		
 		x = this.contentX;
 		y = this.contentY;
-		width = this.contentWidth;
+		int sbw = getScrollBarWidth();
+		if (this.contentWidth + sbw <= width) {
+			width = this.contentWidth + sbw;
+		} else {
+			width = this.contentWidth;
+		}
 		height = this.contentHeight;
+		
+		this.originalContentX = x;
+		this.originalContentY = y;
 		this.originalContentWidth = width;
 		this.originalContentHeight = height;
-		this.originalContentY = this.contentY;
-		this.originalContentX = this.contentX;
+		Container cont = this.container;
 		if (this.leftFrame != null) {
 			this.expandLeftFrame = (this.leftFrame.style.layout & Item.LAYOUT_VEXPAND) == Item.LAYOUT_VEXPAND;
 			if (this.expandLeftFrame) {
-				this.leftFrame.setStyle( this.leftFrame.style, true );
+				this.leftFrame.setStyleWithBackground( this.leftFrame.style, true );
 			}
-			int frameWidth = this.leftFrame.getItemWidth(width/2, width/2);
+			int frameWidth = this.leftFrame.getItemWidth(width/2, width/2, height);
 			x += frameWidth;
 			width -= frameWidth;
 		}
 		if (this.rightFrame != null) {
 			this.expandRightFrame = (this.rightFrame.style.layout & Item.LAYOUT_VEXPAND) == Item.LAYOUT_VEXPAND; 
 			if (this.expandRightFrame) {
-				this.rightFrame.setStyle( this.rightFrame.style, true );
+				this.rightFrame.setStyleWithBackground( this.rightFrame.style, true );
 			}
-			width -= this.rightFrame.getItemWidth(this.originalContentWidth/2, this.originalContentWidth/2);
+			width -= this.rightFrame.getItemWidth(this.originalContentWidth/2, this.originalContentWidth/2, this.originalContentHeight);
 		}
 		if (this.topFrame != null ) {
-			int frameHeight = this.topFrame.getItemHeight(this.originalContentWidth, this.originalContentWidth);
+			int frameHeight = this.topFrame.getItemHeight(this.originalContentWidth, this.originalContentWidth, this.originalContentHeight);
+			//#if polish.css.topframe-height
+				if (this.topFrameHeight != null) {
+					frameHeight = this.topFrameHeight.getValue( frameHeight );
+				}
+			//#endif
 			y += frameHeight;
 			height -= frameHeight;
 		}
 		if (this.bottomFrame != null ) {
-			height -= this.bottomFrame.getItemHeight(this.originalContentWidth, this.originalContentWidth);
+			int frameHeight =  this.bottomFrame.getItemHeight(this.originalContentWidth, this.originalContentWidth, this.originalContentHeight);
+			//#if polish.css.bottomframe-height
+				if (this.bottomFrameHeight != null) {
+					frameHeight = this.bottomFrameHeight.getValue( frameHeight );
+				}
+			//#endif
+			height -= frameHeight;
 		}
-		this.container.requestFullInit();
-		this.container.init(width, width);
+		if (cont.getContentHeight() > height) {
+			cont.getItemWidth(width - sbw, width - sbw, height);
+		} else {
+			cont.getItemWidth(width, width, height);
+		}
 		this.contentX = x;
 		this.contentY = y;
 		this.contentWidth = width;
 		this.contentHeight = height;
-		this.container.relativeX = x;
-		this.container.relativeY = y;
-		this.container.setScrollHeight( height );
+		
+		initContent( cont );
+//		if (cont.isLayoutCenter) {
+//			cont.relativeX = x + (width - cont.itemWidth)/2;
+//		} else if (cont.isLayoutRight) {
+//			cont.relativeX = x + (width - cont.itemWidth);
+//		} else {
+//			cont.relativeX = x;
+//		}
+//		if (cont.isLayoutCenter) {
+//			cont.relativeY = y + (height - cont.itemHeight)/2;
+//		} else if (cont.isLayoutRight) {
+//			cont.relativeY = y + (height - cont.itemHeight);
+//		} else {
+//			cont.relativeY = y;
+//		}
+//		cont.setScrollHeight( height );
+		
+		
 	}	
 	
 	
@@ -425,38 +503,30 @@ public class FramedForm extends Form {
 		;
 	}
 	
-	
-
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Screen#requestInit()
-	 */
-	protected void requestInit() {
-		super.requestInit();
-		this.isInitRequested = true;
-	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Screen#paintScreen(javax.microedition.lcdui.Graphics)
 	 */
 	protected void paintScreen(Graphics g) {
-		if (this.currentlyActiveContainer != this.container) {
+		boolean paintContentContainerLast = this.currentlyActiveContainer == this.container;
+		if (!paintContentContainerLast) {
 			super.paintScreen(g);
 		}
 		if (this.leftFrame != null) {
 		 	Style frameStyle = this.leftFrame.style;
 			if (this.expandLeftFrame) {
 			 	if ( frameStyle.background != null ) {
-			 		frameStyle.background.paint( frameStyle.marginLeft, frameStyle.marginTop, this.leftFrame.backgroundWidth, this.originalContentHeight - frameStyle.marginTop - frameStyle.marginBottom, g);
+			 		frameStyle.background.paint( frameStyle.getMarginLeft(this.screenWidth), frameStyle.getMarginTop(this.screenHeight), this.leftFrame.backgroundWidth, this.originalContentHeight - frameStyle.getMarginTop(this.screenHeight) - frameStyle.getMarginBottom(this.screenHeight), g);
 			 	}
 			 	if ( frameStyle.border != null ) {
-			 		frameStyle.border.paint( frameStyle.marginLeft, frameStyle.marginTop, this.leftFrame.backgroundWidth, this.originalContentHeight - frameStyle.marginTop - frameStyle.marginBottom, g);
+			 		frameStyle.border.paint( frameStyle.getMarginLeft(this.screenWidth), frameStyle.getMarginTop(this.screenHeight), this.leftFrame.backgroundWidth, this.originalContentHeight - frameStyle.getMarginTop(this.screenHeight) - frameStyle.getMarginBottom(this.screenHeight), g);
 			 	}
 			}
 			int y = this.originalContentY;
 			if ( (frameStyle.layout & Item.LAYOUT_VCENTER) == Item.LAYOUT_VCENTER ) {
-				y += (this.originalContentHeight - frameStyle.marginBottom - this.leftFrame.itemHeight) / 2;
+				y += (this.originalContentHeight - frameStyle.getMarginBottom(this.screenHeight) - this.leftFrame.itemHeight) / 2;
 			} else if ( (frameStyle.layout & Item.LAYOUT_BOTTOM) == Item.LAYOUT_BOTTOM ) {
-				y += this.originalContentHeight - frameStyle.marginBottom - this.leftFrame.itemHeight;
+				y += this.originalContentHeight - frameStyle.getMarginBottom(this.screenHeight) - this.leftFrame.itemHeight;
 			}
 			this.leftFrame.relativeX = 0;
 			this.leftFrame.relativeY = y;
@@ -466,17 +536,17 @@ public class FramedForm extends Form {
 		 	Style frameStyle = this.rightFrame.style;
 			if (this.expandRightFrame) {
 			 	if ( frameStyle.background != null ) {
-			 		frameStyle.background.paint( this.contentWidth + frameStyle.marginLeft, frameStyle.marginTop, this.rightFrame.backgroundWidth, this.originalContentHeight - frameStyle.marginTop - frameStyle.marginBottom, g);
+			 		frameStyle.background.paint( this.contentX + this.contentWidth + frameStyle.getMarginLeft(this.screenWidth), frameStyle.getMarginTop(this.screenHeight), this.leftFrame.backgroundWidth, this.originalContentHeight - frameStyle.getMarginTop(this.screenHeight) - frameStyle.getMarginBottom(this.screenHeight), g);
 			 	}
 			 	if ( frameStyle.border != null ) {
-			 		frameStyle.border.paint( this.contentWidth + frameStyle.marginLeft, frameStyle.marginTop, this.rightFrame.backgroundWidth, this.originalContentHeight - frameStyle.marginTop - frameStyle.marginBottom, g);
+			 		frameStyle.border.paint( this.contentX + this.contentWidth + frameStyle.getMarginLeft(this.screenWidth), frameStyle.getMarginTop(this.screenHeight), this.leftFrame.backgroundWidth, this.originalContentHeight - frameStyle.getMarginTop(this.screenHeight) - frameStyle.getMarginBottom(this.screenHeight), g);
 			 	}
 			}
 			int y = this.originalContentY;
 			if ( (frameStyle.layout & Item.LAYOUT_VCENTER) == Item.LAYOUT_VCENTER ) {
-				y += (this.originalContentHeight - frameStyle.marginBottom - this.rightFrame.itemHeight) / 2;
+				y += (this.originalContentHeight - frameStyle.getMarginBottom(this.screenHeight) - this.rightFrame.itemHeight) / 2;
 			} else if ( (frameStyle.layout & Item.LAYOUT_BOTTOM) == Item.LAYOUT_BOTTOM ) {
-				y += this.originalContentHeight - frameStyle.marginBottom - this.rightFrame.itemHeight;
+				y += this.originalContentHeight - frameStyle.getMarginBottom(this.screenHeight) - this.rightFrame.itemHeight;
 			}
 			this.rightFrame.relativeX = this.contentWidth;
 			this.rightFrame.relativeY = y;
@@ -485,14 +555,67 @@ public class FramedForm extends Form {
 		if (this.topFrame != null ) {
 			this.topFrame.relativeX = this.originalContentX;
 			this.topFrame.relativeY = this.originalContentY;
-			this.topFrame.paint( this.originalContentX, this.originalContentY, this.originalContentX, this.originalContentX + this.originalContentWidth, g );
+			int frameY = this.originalContentY;
+			//#if polish.css.topframe-height
+			int clipX = 0;
+			int clipY = 0;
+			int clipWidth = 0;
+			int clipHeight = 0;
+			if(this.topFrameHeight != null)
+			{
+				if (paintContentContainerLast) {
+					super.paintScreen(g);
+					paintContentContainerLast = false;
+				}
+				clipX = g.getClipX();
+				clipY = g.getClipY();
+				clipWidth = g.getClipWidth();
+				clipHeight = g.getClipHeight();
+				int itemHeight = this.bottomFrame.itemHeight;
+				int height = this.bottomFrameHeight.getValue( itemHeight );
+				g.clipRect( clipX, frameY, clipWidth, height );
+			}
+			//#endif
+			this.topFrame.paint( this.originalContentX, frameY, this.originalContentX, this.originalContentX + this.originalContentWidth, g );
+			//#if polish.css.topframe-height
+			if (this.topFrameHeight != null) {
+				g.setClip( clipX, clipY, clipWidth, clipHeight );
+			}
+			//#endif
 		}
 		if (this.bottomFrame != null ) {
 			this.bottomFrame.relativeX = this.originalContentX;
 			this.bottomFrame.relativeY = this.contentY + this.contentHeight;
-			this.bottomFrame.paint( this.originalContentX, this.contentY + this.contentHeight, this.originalContentX, this.originalContentX + this.originalContentWidth, g );
+			int frameY = this.contentY + this.contentHeight;
+			//#if polish.css.bottomframe-height
+			int clipX = 0;
+			int clipY = 0;
+			int clipWidth = 0;
+			int clipHeight = 0;
+			if(this.bottomFrameHeight != null)
+			{
+				if (paintContentContainerLast) {
+					super.paintScreen(g);
+					paintContentContainerLast = false;
+				}
+				clipX = g.getClipX();
+				clipY = g.getClipY();
+				clipWidth = g.getClipWidth();
+				clipHeight = g.getClipHeight();
+				int itemHeight = this.bottomFrame.itemHeight;
+				int height = this.bottomFrameHeight.getValue( itemHeight );
+				g.clipRect( clipX, frameY, clipWidth, height );
+			}
+			//#endif
+			this.bottomFrame.paint( this.originalContentX, frameY, this.originalContentX, this.originalContentX + this.originalContentWidth, g );
+			//#if polish.css.bottomframe-height
+			if (this.bottomFrameHeight != null) {
+				g.setClip( clipX, clipY, clipWidth, clipHeight );
+			}
+			//#endif
 		}
-		if (this.currentlyActiveContainer == this.container) {
+		
+		if (paintContentContainerLast) {
 			super.paintScreen(g);
 		}
 	}
@@ -502,34 +625,76 @@ public class FramedForm extends Form {
 	 */
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
 		boolean handled = this.currentlyActiveContainer.handleKeyPressed(keyCode, gameAction);
+		
 		if (! handled && !isSoftKey(keyCode)) {
-			Container newFrame = null;
-			if (this.currentlyActiveContainer == this.container ) {
-				Container[] nextFrames;
-				switch (gameAction) {
-					case DOWN:
-						nextFrames = new Container[]{ this.bottomFrame, this.leftFrame, this.rightFrame, this.topFrame };
-						break;
-					case UP:
-						nextFrames = new Container[]{ this.topFrame, this.leftFrame, this.rightFrame, this.bottomFrame };
-						break;
-					case LEFT:
-						nextFrames = new Container[]{ this.leftFrame, this.topFrame, this.bottomFrame, this.rightFrame };
-						break;
-					case RIGHT:
-						nextFrames = new Container[]{ this.rightFrame, this.topFrame, this.bottomFrame, this.leftFrame };
-						break;
-					default:
-						return false;
-				}
-				for (int i = 0; i < nextFrames.length; i++) {
-					Container frame = nextFrames[i];
-					if (frame != null && frame.appearanceMode != Item.PLAIN) {
-						newFrame = frame;
-						break;
-					}
-				}
-			} else if (this.container.appearanceMode != Item.PLAIN &&
+			if (this.keepContentFocused) {
+				return super.handleKeyPressed(keyCode, gameAction);
+			}
+			
+			Container newFrame = getNextFrame(gameAction);
+			
+			if ( newFrame != null && newFrame != this.currentlyActiveContainer ) {
+				setActiveFrame(newFrame);
+				handled = true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		return handled || super.handleKeyPressed(keyCode, gameAction);
+	}
+	
+	/**
+	 * Returns the next frame depending on the currently active frame and the specified gameAction
+	 * @param gameAction the gameAction
+	 * @return the next frame
+	 */
+	Container getNextFrame(int gameAction)
+	{
+		Container newFrame = null;
+		if (this.currentlyActiveContainer == this.container ) {
+			newFrame = getFrameByGameAction(gameAction, new Container[]{ this.bottomFrame, this.leftFrame, this.rightFrame, this.topFrame }, 
+													new Container[]{ this.topFrame, this.leftFrame, this.rightFrame, this.bottomFrame }, 
+													new Container[]{ this.leftFrame, this.topFrame, this.bottomFrame, this.rightFrame },
+													new Container[]{ this.rightFrame, this.topFrame, this.bottomFrame, this.leftFrame });
+		} 
+		//#if polish.FramedForm.allowCycling
+		else if(this.allowCycling)
+		{
+			if(this.currentlyActiveContainer == this.bottomFrame)
+			{
+				newFrame = getFrameByGameAction(gameAction, new Container[]{ this.topFrame, this.container }, 
+														new Container[]{ this.container, this.topFrame }, 
+														new Container[]{ this.leftFrame, this.container },
+														new Container[]{ this.rightFrame, this.container });
+			}
+			else if(this.currentlyActiveContainer == this.topFrame)
+			{
+				newFrame = getFrameByGameAction(gameAction, new Container[]{ this.container, this.bottomFrame }, 
+														new Container[]{ this.bottomFrame, this.container }, 
+														new Container[]{ this.leftFrame, this.container },
+														new Container[]{ this.rightFrame, this.container });
+			}
+			else if(this.currentlyActiveContainer == this.leftFrame)
+			{
+				newFrame = getFrameByGameAction(gameAction, new Container[]{ this.bottomFrame, this.container }, 
+														new Container[]{ this.topFrame, this.container }, 
+														new Container[]{ this.rightFrame, this.container },
+														new Container[]{ this.container, this.rightFrame });
+			}
+			else if(this.currentlyActiveContainer == this.rightFrame)
+			{
+				newFrame = getFrameByGameAction(gameAction, new Container[]{ this.bottomFrame, this.container }, 
+														new Container[]{ this.topFrame, this.container }, 
+														new Container[]{ this.container, this.leftFrame },
+														new Container[]{ this.leftFrame, this.container });
+			}
+		}
+		else
+		{
+		//#endif
+			if (this.container.appearanceMode != Item.PLAIN &&
 					(
 					(gameAction == UP && this.currentlyActiveContainer == this.bottomFrame)
 					|| (gameAction == DOWN && this.currentlyActiveContainer == this.topFrame)
@@ -538,20 +703,53 @@ public class FramedForm extends Form {
 					)
 			){
 				//System.out.println("Changing back to default container");
-
 				newFrame = this.container;
-			}	
-			if ( newFrame != null && newFrame != this.currentlyActiveContainer ) {
-				setActiveFrame(newFrame);
-				handled = true;
 			}
-		//} else {
-		//	System.out.println("currently active container has handled the key press event");
+		//#if polish.FramedForm.allowCycling
 		}
-		return handled || super.handleKeyPressed(keyCode, gameAction);
+		//#endif
+		
+		return newFrame;
 	}
 	
-	
+	/**
+	 * Returns the next frame by getting the next relevant container form the specified container arrays
+	 * @param gameAction the game action
+	 * @param down the containers for DOWN  
+	 * @param up the containers for UP
+	 * @param left the containers for LEFT
+	 * @param right the containers for RIGHT
+	 * @return the next frame
+	 */
+	Container getFrameByGameAction(int gameAction, Container[] down, Container[] up, Container[] left, Container[] right)
+	{
+		Container newFrame = null;
+		Container[] nextFrames;
+		switch (gameAction) {
+			case DOWN:
+				nextFrames = down;
+				break;
+			case UP:
+				nextFrames = up;
+				break;
+			case LEFT:
+				nextFrames = left;
+				break;
+			case RIGHT:
+				nextFrames = right;
+				break;
+			default:
+				return newFrame;
+		}
+		for (int i = 0; i < nextFrames.length; i++) {
+			Container frame = nextFrames[i];
+			if (frame != null && frame.appearanceMode != Item.PLAIN) {
+				newFrame = frame;
+				break;
+			}
+		}
+		return newFrame;
+	}
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Screen#handleKeyReleased(int, int)
@@ -590,10 +788,10 @@ public class FramedForm extends Form {
 	 * @return the currently focused item, null when none is focused.
 	 */
 	public Item getCurrentItem() {
-		if (this.currentlyActiveContainer != null) {
+		if (!this.keepContentFocused && this.currentlyActiveContainer != null) {
 			return this.currentlyActiveContainer.focusedItem;
 		}
-		return null;
+		return this.container.focusedItem;
 	}
 	
 	/**
@@ -601,19 +799,42 @@ public class FramedForm extends Form {
 	 * @param frameOrientation either Graphics.TOP, Graphics.BOTTOM, Graphics.LEFT, Graphics.RIGHT or -1 for the main/scrollable frame
 	 */
 	public void setActiveFrame( int frameOrientation ) {
-		setActiveFrame( getFrame(frameOrientation) );
+		setActiveFrame( frameOrientation, false );
+	}
+	
+	/**
+	 * Focuses the specified frame while optionally keeping the focus on the main content frame.
+	 * 
+	 * @param frameOrientation either Graphics.TOP, Graphics.BOTTOM, Graphics.LEFT, Graphics.RIGHT or -1 for the main/scrollable frame
+	 * @param keepMainFocus true when the focus should be kept on the main container at the same time.
+	 */
+	public void setActiveFrame( int frameOrientation, boolean keepMainFocus ) {
+		setActiveFrame( getFrame(frameOrientation), keepMainFocus );
 	}
 	
 	/**
 	 * Activates another frame.
 	 * 
 	 * @param newFrame the next frame
+	 * @param keepMainFocus true when the focus should be kept on the main container at the same time.
 	 */
 	private void  setActiveFrame(Container newFrame) {
+		setActiveFrame(newFrame, false);
+	}
+
+	/**
+	 * Activates another frame.
+	 * 
+	 * @param newFrame the next frame
+	 * @param keepMainFocus true when the focus should be kept on the main container at the same time.
+	 */
+	private void  setActiveFrame(Container newFrame, boolean keepMainFocus ) {
 		if (newFrame == null || newFrame == this.currentlyActiveContainer) {
 			return;
 		}
-		this.currentlyActiveContainer.defocus( this.currentlyActiveContainer.style );
+		if (!keepMainFocus) {
+			this.currentlyActiveContainer.defocus( this.currentlyActiveContainer.style );
+		}
 		if (newFrame.appearanceMode != Item.PLAIN) {
 			int direction = 0;
 			if (this.currentlyActiveContainer == this.bottomFrame) {
@@ -638,9 +859,17 @@ public class FramedForm extends Form {
 			newFrame.focus( StyleSheet.focusedStyle, direction );
 		}
 		this.currentlyActiveContainer = newFrame;
+		if (newFrame == this.container) {
+			newFrame.init( this.contentWidth, this.contentWidth, this.contentHeight );
+			initContent(newFrame);
+		}
+		if (keepMainFocus && newFrame != this.container) {
+			this.keepContentFocused = true;
+		}
 		if (this.screenStateListener != null) {
 			this.screenStateListener.screenStateChanged( this );
 		}
+		
 	}
 
 	//#ifdef polish.hasPointerEvents
@@ -649,6 +878,7 @@ public class FramedForm extends Form {
 	 */
 	protected boolean handlePointerPressed(int x, int y) {
 		Container newFrame = null;
+		
 		if (this.container.handlePointerPressed(x - this.container.relativeX, y - this.container.relativeY)) {
 			newFrame = this.container;
 		} else if ( this.topFrame != null && this.topFrame.handlePointerPressed(x - this.topFrame.relativeX, y - this.topFrame.relativeY) ) {
@@ -660,7 +890,7 @@ public class FramedForm extends Form {
 		} else if ( this.rightFrame != null && this.rightFrame.handlePointerPressed(x - this.rightFrame.relativeX, y - this.rightFrame.relativeY) ) {
 			newFrame = this.rightFrame;
 		}
-		if (newFrame != null && newFrame != this.currentlyActiveContainer ) {
+		if (!this.keepContentFocused && newFrame != null && newFrame != this.currentlyActiveContainer ) {
 			setActiveFrame(newFrame);
 		}
 		return (newFrame != null);
@@ -684,7 +914,7 @@ public class FramedForm extends Form {
 		} else if ( this.rightFrame != null && this.rightFrame.handlePointerReleased(x - this.rightFrame.relativeX, y - this.rightFrame.relativeY) ) {
 			newFrame = this.rightFrame;
 		}
-		if (newFrame != null && newFrame != this.currentlyActiveContainer ) {
+		if (!this.keepContentFocused && newFrame != null && newFrame != this.currentlyActiveContainer ) {
 			setActiveFrame(newFrame);
 		}
 		return (newFrame != null);
@@ -751,17 +981,151 @@ public class FramedForm extends Form {
 		
 		//#if polish.css.leftframe-style
 			this.leftFrameStyle = (Style) style.getObjectProperty("leftframe-style");
+			if (this.leftFrame != null && this.leftFrameStyle != null) {
+				this.leftFrame.setStyle(this.leftFrameStyle);
+			}
 		//#endif
 		//#if polish.css.rightframe-style
 			this.rightFrameStyle = (Style) style.getObjectProperty("rightframe-style");
+			if (this.rightFrame != null && this.rightFrameStyle != null) {
+				this.rightFrame.setStyle(this.rightFrameStyle);
+			}
 		//#endif
 		//#if polish.css.topframe-style
 			this.topFrameStyle = (Style) style.getObjectProperty("topframe-style");
+			if (this.topFrame != null && this.topFrameStyle != null) {
+				this.topFrame.setStyle(this.topFrameStyle);
+			}
 		//#endif
 		//#if polish.css.bottomframe-style
 			this.bottomFrameStyle = (Style) style.getObjectProperty("bottomframe-style");
+			if (this.bottomFrame != null && this.bottomFrameStyle != null) {
+				this.bottomFrame.setStyle(this.bottomFrameStyle);
+			}
 		//#endif
 	}
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#setStyle(de.enough.polish.ui.Style, boolean)
+	 */
+	public void setStyle(Style style, boolean resetStyle) {
+		super.setStyle(style, resetStyle);
+		
+		//#if polish.css.bottomframe-height || polish.css.topframe-height
+			boolean recalculateContentArea = false;
+		//#endif
+		//#if polish.css.bottomframe-height
+			Dimension bottomFrameHeightInt = (Dimension) style.getObjectProperty("bottomframe-height");
+			if (bottomFrameHeightInt != null) {
+				this.bottomFrameHeight = bottomFrameHeightInt;
+				recalculateContentArea = true;
+			}
+		//#endif
+		
+		//#if polish.css.topframe-height
+			Dimension topFrameHeightInt = (Dimension) style.getObjectProperty("topframe-height");
+			if (topFrameHeightInt != null) {
+				this.topFrameHeight = topFrameHeightInt;
+				recalculateContentArea = true;
+			}
+		//#endif
+		
+		//#if polish.css.bottomframe-height || polish.css.topframe-height
+			if(recalculateContentArea) {
+				calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
+			}
+		//#endif
+	}
+
+	//#if polish.LibraryBuild
+	/**
+	 * Sets a style for the specified frame programmatically.
+	 * The style has to be defined using the //#style preprocessing directive, e.g.
+	 * <pre>
+	 * //#style dynamicTopFrame
+	 * framedForm.setFrameOrientation( Graphics.TOP );
+	 * </pre>
+	 * @param frameOrientation the frame, e.g. Graphics.TOP
+	 */
+	public void setFrameStyle( int frameOrientation) {
+		// nothing to do
+	}
+	//#endif
+	
+	/**
+	 * Sets the style for the specified frame programmatically
+	 * @param frameOrientation the frame, e.g. Graphics.TOP
+	 * @param style the style for the frame
+	 */
+	public void setFrameStyle( int frameOrientation, Style style) {
+		Container frame = null;
+		switch (frameOrientation) {
+		case  Graphics.TOP:
+			//#if polish.css.topframe-style
+				this.topFrameStyle = style;
+			//#endif
+			frame = this.topFrame;
+			break;
+		case  Graphics.BOTTOM:
+			//#if polish.css.bottomframe-style
+				this.bottomFrameStyle = style;
+			//#endif
+			frame = this.bottomFrame;
+			break;
+		case  Graphics.LEFT:
+			//#if polish.css.leftframe-style
+				this.leftFrameStyle = style;
+			//#endif
+			frame = this.leftFrame;
+			break;
+		case  Graphics.RIGHT:
+			//#if polish.css.rightframe-style
+				this.rightFrameStyle = style;
+			//#endif
+			frame = this.rightFrame;
+			break;
+		}		
+		if (style != null && frame != null) {
+			frame.setStyle( style );
+		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#setItemCommands( ArrayList,Item)
+	 */
+	protected void setItemCommands( ArrayList commandsList, Item item ) {
+		if (true/*this.keepContentFocused*/) {
+			while (item.parent != null) {
+				item = item.parent;
+			}
+			if (item != this.container) {
+				addItemCommands( this.container, commandsList );
+			} else {
+				if (this.topFrame != null && this.topFrame.isFocused) {
+					addItemCommands( this.topFrame, commandsList );
+				}
+				if (this.bottomFrame != null && this.bottomFrame.isFocused) {
+					addItemCommands( this.bottomFrame, commandsList );
+				}
+				if (this.leftFrame != null && this.leftFrame.isFocused) {
+					addItemCommands( this.leftFrame, commandsList );
+				}
+				if (this.rightFrame != null && this.rightFrame.isFocused) {
+					addItemCommands( this.rightFrame, commandsList );
+				}
+			}
+		}
+		super.setItemCommands(commandsList, item);
+	}
+
+	private void addItemCommands(Container cont, ArrayList commandsList )
+	{
+		Item item = cont.getFocusedItem();
+		if (item != null) {
+			item.addCommands(commandsList);
+		}
+	}
+	
 
 //	/* (non-Javadoc)
 //	 * @see de.enough.polish.ui.Screen#focus(int, de.enough.polish.ui.Item, boolean)

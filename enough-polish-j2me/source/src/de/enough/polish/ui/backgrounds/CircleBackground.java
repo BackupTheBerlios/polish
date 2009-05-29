@@ -29,6 +29,8 @@ package de.enough.polish.ui.backgrounds;
 import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.ui.Background;
+import de.enough.polish.ui.Color;
+import de.enough.polish.ui.Style;
 
 /**
  * <p>Paints a circular or elliptical background.</p>
@@ -40,21 +42,16 @@ import de.enough.polish.ui.Background;
  * 	always a circle will be painted.</li>
  * </ul>
  *
- * <p>Copyright Enough Software 2004 - 2008</p>
-
- * <pre>
- * history
- *        26-Jul-2004 - rob creation
- * </pre>
+ * <p>Copyright Enough Software 2004 - 2009</p>
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class CircleBackground extends Background {
 
-	private final int color;
-	private final int diameter;
+	private int color;
+	private int diameter;
 	private final int anchor;
-	private final int xOffset;
-	private final int yOffset;
+	private int xOffset;
+	private int yOffset;
 	private final boolean isPercent;
 	
 
@@ -105,5 +102,40 @@ public class CircleBackground extends Background {
 		g.setColor( this.color );
 		g.fillArc(x, y, width, height, 0, 360 );	
 	}
+	
+
+	//#if polish.css.animations
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Background#setStyle(de.enough.polish.ui.Style)
+	 */
+	public void setStyle(Style style)
+	{
+		//#if polish.css.background-circle-color
+			Color bgColor = style.getColorProperty("background-circle-color");
+			if (bgColor != null) {
+				this.color = bgColor.getColor();
+			}
+		//#endif
+		//#if polish.css.background-circle-diameter
+			Integer diameterInt = style.getIntProperty("background-circle-diameter");
+			if (diameterInt != null) {
+				this.diameter = diameterInt.intValue();
+			}
+		//#endif
+		//#if polish.css.background-circle-x-offset
+			Integer xOffsetInt = style.getIntProperty("background-circle-x-offset");
+			if (xOffsetInt != null) {
+				this.xOffset = xOffsetInt.intValue();
+			}
+		//#endif
+		//#if polish.css.background-circle-y-offset
+			Integer yOffsetInt = style.getIntProperty("background-circle-y-offset");
+			if (yOffsetInt != null) {
+				this.yOffset = yOffsetInt.intValue();
+			}
+		//#endif
+			
+	}
+	//#endif
 
 }

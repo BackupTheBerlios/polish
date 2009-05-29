@@ -2,7 +2,7 @@
 /*
  * Created on 16-Nov-2005 at 12:22:20.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -43,7 +43,7 @@ import de.enough.polish.ui.TextEffect;
  * 	 <li><b>text-shadow-y</b>: use this for finetuning the shadow's vertical position. Negative values move the shadow to the top.</li>
  * </ul>
  *
- * <p>Copyright (c) Enough Software 2005 - 2008</p>
+ * <p>Copyright (c) Enough Software 2005 - 2009</p>
  * <pre>
  * history
  *        16-Nov-2005 - rob creation
@@ -90,8 +90,8 @@ public class ShadowTextEffect extends TextEffect {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.TextEffect#setStyle(de.enough.polish.ui.Style)
 	 */
-	public void setStyle(Style style) {
-		super.setStyle(style);
+	public void setStyle(Style style, boolean resetStyle) {
+		super.setStyle(style, resetStyle);
 		//#ifdef polish.css.text-shadow-color
 			Integer colorInt = style.getIntProperty("text-shadow-color");
 			if (colorInt != null) {

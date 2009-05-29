@@ -2,7 +2,7 @@
 /*
  * Created on Apr 23, 2008 at 11:52:42 PM.
  * 
- * Copyright (c) 2007 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -29,6 +29,8 @@ package de.enough.polish.ui.backgrounds;
 import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.ui.Background;
+import de.enough.polish.ui.Color;
+import de.enough.polish.ui.Style;
 
 /**
  * <p>Creates a rectangular background with two colors and rounded corners.</p>
@@ -39,12 +41,12 @@ import de.enough.polish.ui.Background;
 public class VerticalSplitRoundRectBackground extends Background
 {
 
-	private final int topColor;
-	private final int bottomColor;
-	private final int splitPos;
+	private int topColor;
+	private int bottomColor;
+	private int splitPos;
 	private final boolean isPercent;
-	private final int arcWidth;
-	private final int arcHeight;
+	private int arcWidth;
+	private int arcHeight;
 
 	/**
 	 * Creates a new background
@@ -80,5 +82,51 @@ public class VerticalSplitRoundRectBackground extends Background
 		g.fillRoundRect( x, y + split, width, height - split, this.arcWidth, this.arcHeight );
 		g.fillRect( x, y + split, width, this.arcHeight );
 	}
+	
+	//#if polish.css.animations
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Background#setStyle(de.enough.polish.ui.Style)
+	 */
+	public void setStyle(Style style)
+	{
+		//#if polish.css.background-vertical-round-rect-split-top-color
+			Color lcol = style.getColorProperty("background-vertical-round-rect-split-left-color");
+			if (lcol != null) {
+				this.topColor = lcol.getColor();
+			}
+		//#endif
+		//#if polish.css.background-vertical-round-rect-split-bottom-color
+			Color rcol = style.getColorProperty("background-vertical-split-right-color");
+			if (rcol != null) {
+				this.bottomColor = rcol.getColor();
+			}
+		//#endif
+		//#if polish.css.background-vertical-round-rect-split-split-pos
+			Integer splitPosInt = style.getIntProperty("background-vertical-round-rect-split-split-pos");
+			if (splitPosInt != null) {
+				this.splitPos = splitPosInt.intValue();
+			}
+		//#endif
+		//#if polish.css.background-vertical-round-rect-split-arc
+			Integer arcInt = style.getIntProperty("background-vertical-round-rect-split-arc");
+			if (arcInt != null) {
+				this.arcWidth = arcInt.intValue();
+				this.arcHeight = arcInt.intValue();
+			}
+		//#endif
+		//#if polish.css.background-vertical-round-rect-split-arc-width
+			Integer arcWidthInt = style.getIntProperty("background-vertical-round-rect-split-arc-width");
+			if (arcWidthInt != null) {
+				this.arcWidth = arcWidthInt.intValue();
+			}
+		//#endif
+		//#if polish.css.background-vertical-round-rect-split-arc-height
+			Integer arcHeightInt = style.getIntProperty("background-vertical-round-rect-split-arc-height");
+			if (arcHeightInt != null) {
+				this.arcHeight = arcHeightInt.intValue();
+			}
+		//#endif
+	}
+	//#endif
 
 }

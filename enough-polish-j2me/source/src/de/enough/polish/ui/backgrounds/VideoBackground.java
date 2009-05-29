@@ -2,7 +2,7 @@
 /*
  * Created on Nov 8, 2007 at 8:26:29 PM.
  * 
- * Copyright (c) 2007 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -28,22 +28,20 @@ package de.enough.polish.ui.backgrounds;
 
 import java.io.InputStream;
 
-import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.media.Manager;
 import javax.microedition.media.Player;
 import javax.microedition.media.control.VideoControl;
 
 import de.enough.polish.ui.Background;
+import de.enough.polish.ui.Display;
 import de.enough.polish.ui.Item;
-import de.enough.polish.ui.MasterCanvas;
-import de.enough.polish.ui.StyleSheet;
 
 /**
  * <p>Plays a video in an background.</p>
  * <p>Note that you can use this background only when you target device supports the MMAPI 1.1 or higher.</p>
  *
- * <p>Copyright Enough Software 2007 - 2008</p>
+ * <p>Copyright Enough Software 2007 - 2009</p>
  * <pre>
  * history
  *        Nov 8, 2007 - rob creation
@@ -111,11 +109,7 @@ public class VideoBackground extends Background
 	            	System.out.println("Unable to retrieve VideoControl");
 	            	return;
 	            }
-	            Canvas canvas = StyleSheet.currentScreen;
-	    		//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
-	            	canvas = MasterCanvas.instance;
-	            //#endif
-	            control.initDisplayMode( VideoControl.USE_DIRECT_VIDEO, canvas );
+	            control.initDisplayMode( VideoControl.USE_DIRECT_VIDEO, Display.getInstance() );
 	            int sourceWidth = control.getSourceWidth();
 	            int sourceHeight = control.getSourceHeight();
 				if ( (this.anchor & Graphics.HCENTER) == Graphics.HCENTER) {

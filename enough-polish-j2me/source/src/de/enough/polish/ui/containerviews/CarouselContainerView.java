@@ -3,7 +3,7 @@
 /*
  * Created on Oct 11, 2007 at 12:12:47 PM.
  * 
- * Copyright (c) 2007 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -29,7 +29,6 @@ package de.enough.polish.ui.containerviews;
 
 import javax.microedition.lcdui.Graphics;
 
-import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.StringItem;
@@ -71,7 +70,7 @@ import de.enough.polish.ui.UiAccess;
  * }
  * </pre>
  * </p>
- * <p>Copyright Enough Software 2007 - 2008</p>
+ * <p>Copyright Enough Software 2007 - 2009</p>
  * <pre>
  * history
  *        Oct 11, 2007 - rob creation
@@ -106,7 +105,7 @@ public class CarouselContainerView extends FishEyeContainerView {
 				if (this.focusedLabel.getText() == null) {
 					this.focusedLabel.setText("T");
 				}	
-				lineHeight -= this.focusedLabel.getItemHeight(lineWidth, lineWidth);
+				lineHeight -= this.focusedLabel.getItemHeight(lineWidth, lineWidth, maxHeight);
 			}
 		}
 		this.referenceXCenterPositions = new int[length];
@@ -118,16 +117,16 @@ public class CarouselContainerView extends FishEyeContainerView {
 		
 		if (this.focusedStyle != null && this.focusedItem != null) {
 			UiAccess.focus(this.focusedItem, this.focusedDirection, this.focusedStyle );
-			this.focusedWidth = this.focusedItem.getItemWidth( lineWidth, lineWidth );
+			this.focusedWidth = this.focusedItem.getItemWidth( lineWidth, lineWidth, maxHeight );
 			this.focusedItem.relativeX = (lineWidth - this.focusedWidth) >> 1;
 		} else if (this.focusedWidth == 0) {
 			this.focusedWidth = maxWidth;
 		}
 		if (this.focusedItem != null) {
 			if (this.isFocusedAtBottom) {
-				this.referenceYCenterPositions[this.focusedIndex] = lineHeight - (this.focusedItem.getItemHeight(lineWidth, lineWidth) >> 1);
+				this.referenceYCenterPositions[this.focusedIndex] = lineHeight - (this.focusedItem.getItemHeight(lineWidth, lineWidth, maxHeight) >> 1);
 			} else {
-				this.referenceYCenterPositions[this.focusedIndex] = (this.focusedItem.getItemHeight(lineWidth, lineWidth) >> 1);
+				this.referenceYCenterPositions[this.focusedIndex] = (this.focusedItem.getItemHeight(lineWidth, lineWidth, maxHeight) >> 1);
 			}
 		}
 
@@ -198,8 +197,8 @@ public class CarouselContainerView extends FishEyeContainerView {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.containerviews.FishEyeContainerView#initContent(de.enough.polish.ui.Item, int, int)
 	 */
-	protected void initContent(Item parentContainerItem, int firstLineWidth, int lineWidth) {
-		super.initContent(parentContainerItem, firstLineWidth, lineWidth);
+	protected void initContent(Item parentContainerItem, int firstLineWidth, int availWidth, int availHeight) {
+		super.initContent(parentContainerItem, firstLineWidth, availWidth, availHeight);
 		int lineHeight = 100;
 		Screen scr = getScreen();
 		if (scr != null) {

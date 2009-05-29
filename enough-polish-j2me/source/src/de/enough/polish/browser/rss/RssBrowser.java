@@ -1,9 +1,9 @@
-//#condition polish.usePolishGui && !polish.android
+//#condition polish.usePolishGui
 
 /*
  * Created on 24-Apr-2007 at 19:20:28.
  * 
- * Copyright (c) 2007 - 2008 Michael Koch / Enough Software
+ * Copyright (c) 2009 - 2009 Michael Koch / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -29,12 +29,12 @@ package de.enough.polish.browser.rss;
 
 import de.enough.polish.browser.html.HtmlBrowser;
 import de.enough.polish.browser.html.HtmlTagHandler;
+import de.enough.polish.ui.Command;
+import de.enough.polish.ui.CommandListener;
+import de.enough.polish.ui.Displayable;
 import de.enough.polish.ui.ItemCommandListener;
 import de.enough.polish.ui.Style;
 
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.CommandListener;
-import javax.microedition.lcdui.Displayable;
 
 public class RssBrowser
 	extends HtmlBrowser
@@ -51,13 +51,13 @@ public class RssBrowser
 		this(new DefaultRssItemCommandListener(), style); 
 	}
 
-	//#if polish.midp2
+	//#if polish.midp2 && !polish.android
 	public RssBrowser(javax.microedition.lcdui.ItemCommandListener listener) {
 		this( listener, null ); 
 	}
 	//#endif
 
-	//#if polish.midp2
+	//#if polish.midp2 && !polish.android
 	public RssBrowser(javax.microedition.lcdui.ItemCommandListener listener, Style style ) {
 		super( style );
 		this.rssTagHandler = new RssTagHandler(HtmlTagHandler.CMD_LINK, (ItemCommandListener) null); 
@@ -83,6 +83,13 @@ public class RssBrowser
 		}
 	}
 
+	/**
+	 * Tries to handle the specified command.
+	 * The item checks if the command belongs to this item and if it has an associated ItemCommandListener.
+	 * Only then it handles the command.
+	 * @param command the command
+	 * @return true when the command has been handled by this item
+	 */
 	public boolean handleCommand(Command command)
 	{
 		if (this.rssItemCommandListener != null
@@ -94,12 +101,34 @@ public class RssBrowser
 
 		return super.handleCommand(command);
 	}
+	
 
+	/**
+	 * Tries to handle the specified command.
+	 * The item checks if the command belongs to this item and if it has an associated ItemCommandListener.
+	 * Only then it handles the command.
+	 * @param command the command
+	 * @param displayable the displayable
+	 */
 	public void commandAction(Command command, Displayable displayable)
 	{
 		handleCommand(command);
 	}
+
 	
+	//#if polish.LibraryBuild
+		/**
+		 * Tries to handle the specified command.
+		 * The item checks if the command belongs to this item and if it has an associated ItemCommandListener.
+		 * Only then it handles the command.
+		 * @param cmd the command
+		 * @param displayable the displayable
+		 */
+		public boolean commandAction( javax.microedition.lcdui.Command cmd, javax.microedition.lcdui.Displayable displayable ) {
+			return false;
+		}
+	//#endif
+
 
 	/**
 	 * Determines whether RSS descriptions should be included directly on the overview page

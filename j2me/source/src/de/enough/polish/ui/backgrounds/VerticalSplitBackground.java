@@ -2,7 +2,7 @@
 /*
  * Created on Apr 23, 2008 at 11:52:42 PM.
  * 
- * Copyright (c) 2007 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -29,6 +29,8 @@ package de.enough.polish.ui.backgrounds;
 import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.ui.Background;
+import de.enough.polish.ui.Color;
+import de.enough.polish.ui.Style;
 
 /**
  * <p>Creates a rectangular background with two colors.</p>
@@ -39,9 +41,9 @@ import de.enough.polish.ui.Background;
 public class VerticalSplitBackground extends Background
 {
 
-	private final int topColor;
-	private final int bottomColor;
-	private final int splitPos;
+	private int topColor;
+	private int bottomColor;
+	private int splitPos;
 	private final boolean isPercent;
 
 	/**
@@ -72,5 +74,32 @@ public class VerticalSplitBackground extends Background
 		g.setColor( this.bottomColor );
 		g.fillRect( x, y + split, width, height - split );
 	}
+	
+	//#if polish.css.animations
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Background#setStyle(de.enough.polish.ui.Style)
+	 */
+	public void setStyle(Style style)
+	{
+		//#if polish.css.background-vertical-split-top-color
+			Color lcol = style.getColorProperty("background-vertical-split-top-color");
+			if (lcol != null) {
+				this.topColor = lcol.getColor();
+			}
+		//#endif
+			//#if polish.css.background-vertical-split-bottom-color
+			Color rcol = style.getColorProperty("background-vertical-split-bottom-color");
+			if (rcol != null) {
+				this.bottomColor = rcol.getColor();
+			}
+		//#endif
+			//#if polish.css.background-vertical-split-split-pos
+			Integer splitPosInt = style.getIntProperty("background-vertical-split-split-pos");
+			if (splitPosInt != null) {
+				this.splitPos = splitPosInt.intValue();
+			}
+		//#endif
+	}
+	//#endif
 
 }

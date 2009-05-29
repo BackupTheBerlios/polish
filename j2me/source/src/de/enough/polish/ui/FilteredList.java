@@ -2,7 +2,7 @@
 /*
  * Created on Jun 21, 2007 at 11:28:35 PM.
  * 
- * Copyright (c) 2007 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -26,7 +26,7 @@
  */
 package de.enough.polish.ui;
 
-import javax.microedition.lcdui.Command;
+
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
@@ -35,7 +35,7 @@ import de.enough.polish.util.ArrayList;
 /**
  * <p>Displays a list of choices that can be limited by the user by entering some input.</p>
  *
- * <p>Copyright Enough Software 2007 - 2008</p>
+ * <p>Copyright Enough Software 2007 - 2009</p>
  * <pre>
  * history
  *        Jun 21, 2007 - michael creation
@@ -141,11 +141,8 @@ implements ItemStateListener //, CommandListener
 		boolean handled = false;
 		if (! isGameActionFire( keyCode, gameAction )) {
 			handled = this.filterTextField.handleKeyPressed(keyCode, gameAction);
-			if (handled) {
-				int height = this.filterTextField.getItemHeight( this.contentWidth, this.contentWidth );
-				if (height != this.filterHeight) {
-					calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
-				}
+			if (handled && this.filterTextField.getItemHeight( this.contentWidth, this.contentWidth, this.contentHeight + this.filterHeight) != this.filterHeight) {
+				calculateContentArea(0, 0, this.screenWidth, this.screenHeight );
 			}
 		}
 		if (!handled) {
@@ -204,10 +201,6 @@ implements ItemStateListener //, CommandListener
 		if (item != this.filterTextField) {
 			this.filterTextField.addCommands(commandsList);
 		} else {
-			item = this.container.getFocusedItem();
-			if (item == null) {
-				item = this.container;
-			}
 			this.container.addCommands(commandsList);
 		}
 		super.setItemCommands(commandsList, item);
@@ -219,12 +212,12 @@ implements ItemStateListener //, CommandListener
 	 */
 	protected void calculateContentArea(int x, int y, int width, int height) {
 		super.calculateContentArea(x, y, width, height);
-		this.filterHeight = this.filterTextField.getItemHeight( this.contentWidth, this.contentWidth );
-		this.contentHeight -= filterHeight;
+		this.filterHeight = this.filterTextField.getItemHeight( this.contentWidth, this.contentWidth, this.contentHeight / 2 );
+		this.contentHeight -= this.filterHeight;
 		this.container.setScrollHeight( this.contentHeight );
 		if (this.filterPosition == FIELD_POSITION_TOP) {
 			this.filterTextField.relativeY = this.contentY;
-			this.contentY += filterHeight;
+			this.contentY += this.filterHeight;
 		} else {
 			this.filterTextField.relativeY = this.contentY + this.contentHeight;
 		}
@@ -242,32 +235,28 @@ implements ItemStateListener //, CommandListener
 			this.filterTextField.focus( this.filterTextField.getFocusedStyle(), 0 );
 		}
 		//#if polish.blackberry
-			setFocus( this.filterTextField );
+			notifyFocusSet( this.filterTextField );
 		//#endif
 		itemStateChanged( this.filterTextField );
 		super.showNotify();
 	}
 	
-	//#if !polish.blackberry
-	private void setFocus( Item item ) {
-		forwardEventToNativeField(this, 0); // just a dummy call, so that the method is flagged as being used by an IDE
-	//#else
-		//# public void setFocus( Item item ) {
+	//#if polish.blackberry
+	protected void notifyFocusSet( Item item ) {
 		if (isMenuOpened()) {
-			//# super.setFocus( item );
+			Display.getInstance().notifyFocusSet(item);
 		} else {
-			//# super.setFocus( this.filterTextField );
+			Display.getInstance().notifyFocusSet(this.filterTextField);
 		}
-	//#endif
 	}
+	//#endif
 
 	//#if !polish.blackberry
     private boolean forwardEventToNativeField(Screen screen, int keyCode) {
     	//# return false;
     //#else
     	//# protected boolean forwardEventToNativeField(Screen screen, int keyCode) {
-    	boolean forward = true;
-    	//# forward = super.forwardEventToNativeField( screen, keyCode );
+    	boolean forward = Display.getInstance().forwardEventToNativeField( screen, keyCode );
     	return forward && (getGameAction( keyCode ) != FIRE);
 	//#endif
     }
@@ -455,8 +444,9 @@ implements ItemStateListener //, CommandListener
 			boolean isSelected = selectedArray[i];
 			ChoiceItem item = ((ChoiceItem) this.itemsList.get(i));
 			item.select( isSelected );
+			
 			//#if !polish.ChoiceGroup.suppressMarkCommands
-				if (this.listType == Choice.MULTIPLE) {
+				if ( this.listType == Choice.MULTIPLE ) {
 					if (isSelected) {
 						item.removeCommand(ChoiceGroup.MARK_COMMAND);
 						item.setDefaultCommand(ChoiceGroup.UNMARK_COMMAND);
@@ -475,21 +465,21 @@ implements ItemStateListener //, CommandListener
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.List#setSelectedIndex(int, boolean)
 	 */
-	public void setSelectedIndex(int elementNum, boolean selected) {
+	public void setSelectedIndex(int elementNum, boolean isSelected) {
 		if ( this.listType == Choice.MULTIPLE ) {
 			ChoiceItem item = (ChoiceItem) this.itemsList.get( elementNum );
-			item.select( selected );
+			item.select( isSelected );
 			//#if !polish.ChoiceGroup.suppressMarkCommands
-				if (selected) {
-					item.addCommand(ChoiceGroup.MARK_COMMAND);
-					item.removeCommand(ChoiceGroup.UNMARK_COMMAND);
+				if (isSelected) {
+					item.removeCommand(ChoiceGroup.MARK_COMMAND);
+					item.setDefaultCommand(ChoiceGroup.UNMARK_COMMAND);
 				} else {
-					item.addCommand(ChoiceGroup.MARK_COMMAND);
 					item.removeCommand(ChoiceGroup.UNMARK_COMMAND);
+					item.setDefaultCommand(ChoiceGroup.MARK_COMMAND);
 				}
 			//#endif
 		} else {
-			if (selected == false) {
+			if (isSelected == false) {
 				return; // ignore this call
 			}
 			int oldIndex = getSelectedIndex(); 
@@ -544,9 +534,9 @@ implements ItemStateListener //, CommandListener
 		}
 		if (item != null) {
 			index = this.container.indexOf(item);
-			this.container.focus(index);
+			this.container.focusChild(index);
 		} else {
-			this.container.focus(-1);
+			this.container.focusChild(-1);
 		}
 	}
 
@@ -616,7 +606,7 @@ implements ItemStateListener //, CommandListener
 	public void setFilterText( String text ) {
 		this.filterTextField.setString( text );
 		if (this.contentWidth != 0 && isShown()) {
-			int height = this.filterTextField.getItemHeight( this.contentWidth, this.contentWidth );
+			int height = this.filterTextField.getItemHeight( this.contentWidth, this.contentWidth, this.contentHeight + this.filterHeight );
 			if (height != this.filterHeight) {
 				calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
 			}

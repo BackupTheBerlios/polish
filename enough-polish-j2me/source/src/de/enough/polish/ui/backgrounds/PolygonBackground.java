@@ -29,6 +29,7 @@ package de.enough.polish.ui.backgrounds;
 import de.enough.polish.ui.Background;
 import de.enough.polish.ui.Color;
 import de.enough.polish.ui.Point;
+import de.enough.polish.ui.Style;
 import de.enough.polish.util.DrawUtil;
 
 import javax.microedition.lcdui.Graphics;
@@ -51,7 +52,7 @@ import javax.microedition.lcdui.Graphics;
  * </pre>
  * </p>
  * 
- * <p>Copyright Enough Software 2007 - 2008</p>
+ * <p>Copyright Enough Software 2007 - 2009</p>
  * @author Robert Virkus, robert@enough.de
  */
 public class PolygonBackground 
@@ -74,8 +75,8 @@ extends Background
 	
 	private int[] xPoints;
 	private int[] yPoints;
-	private final int referenceWidth;
-	private final int referenceHeight;
+	private int referenceWidth;
+	private int referenceHeight;
 	private int lastY;
 	private int lastX;
 	private int lastWidth;
@@ -214,4 +215,33 @@ extends Background
 		DrawUtil.fillPolygon(this.xPoints, this.yPoints, this.color, g);
 	}
 
+	//#if polish.css.animations
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Background#setStyle(de.enough.polish.ui.Style)
+	 */
+	public void setStyle(Style style)
+	{
+		//#if polish.css.background-polygon-color
+			Color tbgColor = style.getColorProperty("background-polygon-color");
+			if (tbgColor != null) {
+				this.color = tbgColor.getColor();
+			}
+		//#endif
+		//#if polish.css.background-polygon-reference-width
+			Integer refWidthInt = style.getIntProperty("background-polygon-reference-width");
+			if (refWidthInt != null) {
+				this.referenceWidth = refWidthInt.intValue();
+				this.lastWidth = 0;
+			}
+		//#endif
+		//#if polish.css.background-polygon-reference-height
+			Integer refHeightInt = style.getIntProperty("background-polygon-reference-height");
+			if (refHeightInt != null) {
+				this.referenceHeight = refHeightInt.intValue();
+				this.lastWidth = 0;
+			}
+		//#endif
+
+	}
+	//#endif
 }

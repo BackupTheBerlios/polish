@@ -2,7 +2,7 @@
 /*
  * Created on Jan 31, 2007 at 3:01:30 PM.
  * 
- * Copyright (c) 2006 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -38,7 +38,7 @@ import de.enough.polish.util.DrawUtil;
 /**
  * <p>Shows an animation of rotating arcs for visualizing an CONTINUOUS_RUNNING indefinite gauge.</p>
  *
- * <p>Copyright Enough Software 2006 - 2008</p>
+ * <p>Copyright Enough Software 2006 - 2009</p>
  * <pre>
  * history
  *        Jan 31, 2007 - rob creation
@@ -70,8 +70,8 @@ public class RotatingArcsGaugeView extends ItemView {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ItemView#initContent(de.enough.polish.ui.Item, int, int)
 	 */
-	protected void initContent(Item parent, int firstLineWidth, int lineWidth) {
-		this.contentWidth = Math.max( lineWidth/4, 24 );
+	protected void initContent(Item parent, int firstLineWidth, int availWidth, int availHeight) {
+		this.contentWidth = Math.max( availWidth/4, 24 );
 		this.contentHeight = this.contentWidth;
 		this.arcColors = DrawUtil.getGradient(this.startColor, this.endColor, this.numberOfArcs );
 	}
@@ -101,8 +101,8 @@ public class RotatingArcsGaugeView extends ItemView {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ItemView#setStyle(de.enough.polish.ui.Style)
 	 */
-	protected void setStyle(Style style) {
-		super.setStyle(style);
+	protected void setStyle(Style style, boolean resetStyle) {
+		super.setStyle(style, resetStyle );
 		//#if polish.css.gauge-rotating-arc-start-color
 			Color startColorObj = style.getColorProperty("gauge-rotating-arc-start-color");
 			if (startColorObj != null) {

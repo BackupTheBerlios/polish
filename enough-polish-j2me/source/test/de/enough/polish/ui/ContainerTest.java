@@ -66,11 +66,12 @@ public class ContainerTest extends TestCase {
 	public void testMIDP2LayoutContainerView() {
 		Container container = new Container(true);
 		Container nested = new Container( false );
+		int availHeight = 200;
 		container.add(nested);
 		nested.containerView = new MIDP2LayoutView();
 		StringItem button = new StringItem(null, "button", StringItem.BUTTON );
 		nested.add( button );
-		container.getItemHeight( 200, 200 );
+		container.getItemHeight( 200, 200, availHeight );
 		assertEquals( nested, container.getFocusedItem() );
 		assertEquals( button, nested.getFocusedItem() );
 		
@@ -80,7 +81,7 @@ public class ContainerTest extends TestCase {
 		button = new StringItem(null, "button", StringItem.BUTTON );
 		nested.add( button );
 		container.add(nested);		
-		container.getItemHeight( 200, 200 );
+		container.getItemHeight( 200, 200, availHeight );
 		assertEquals( nested, container.getFocusedItem() );
 		assertEquals( button, nested.getFocusedItem() );
 		
@@ -97,7 +98,7 @@ public class ContainerTest extends TestCase {
 		nested.add( button );
 		item = new StringItem(null, "Three");
 		nested.add( item );
-		container.getItemHeight( 200, 200 );
+		container.getItemHeight( 200, 200, availHeight );
 		assertEquals( nested, container.getFocusedItem() );
 		assertEquals( button, nested.getFocusedItem() );
 

@@ -3,7 +3,7 @@
 /*
  * Created on 11-Jan-2006 at 19:20:28.
  * 
- * Copyright (c) 2007 - 2008 Michael Koch / Enough Software
+ * Copyright (c) 2009 - 2009 Michael Koch / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -34,6 +34,8 @@ import de.enough.polish.ui.ChoiceGroup;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.TextField;
 import de.enough.polish.util.ArrayList;
+import de.enough.polish.util.KeyValueList;
+import de.enough.polish.util.TextUtil;
 
 public class HtmlForm
 {
@@ -46,12 +48,26 @@ public class HtmlForm
 	
 	private final ArrayList formItems = new ArrayList();
 	private Hashtable hiddenElememts;
+	private final HtmlBrowser browser;
+	private final String encoding;
+	private final FormListener formListener;
 	
-	
-	public HtmlForm(String name, String actionUrl, String method)
+	/**
+	 * Creates a new HTML form
+	 * @param name the name of the form
+	 * @param actionUrl the action
+	 * @param method the method (get or post)
+	 * @param encoding the encoding (is currently not used)
+	 * @param browser the browser
+	 * @param formListener the listener for form elements
+	 */
+	public HtmlForm(String name, String actionUrl, String method, String encoding, HtmlBrowser browser, FormListener formListener )
 	{
 		this.formName = name;
 		this.actionUrl = actionUrl;
+		this.encoding = encoding;
+		this.browser = browser;
+		this.formListener = formListener;
 		this.method = method.toUpperCase();
 	}
 	
@@ -59,7 +75,12 @@ public class HtmlForm
 	{
 		return this.actionUrl;
 	}
-	
+
+	public String getEncoding()
+	{
+		return this.encoding;
+	}
+
 	public String getMethod()
 	{
 		return this.method;
@@ -112,7 +133,7 @@ public class HtmlForm
 	 * Retrieves all form input elements for submitting this form as string-pairs (name:value) in a Hashtable.
 	 * @return a hashtable with all input elements
 	 */
-	public Hashtable getFormElements() {
+	public KeyValueList getFormElements() {
 		return getFormElements(null, null);
 	}
 	
@@ -120,11 +141,11 @@ public class HtmlForm
 	 * Retrieves all form input elements for submitting this form as string-pairs (name:value) in a Hashtable.
 	 * @param listener the form listener that may change the values, can be null
 	 * @param submitItem the submitItem that triggered the submission of the form, can be null
-	 * @return a hashtable with all input elements
+	 * @return a key value list with all input elements, some keys may be used several times
 	 */
-	public Hashtable getFormElements(FormListener listener, Item submitItem) {
+	public KeyValueList getFormElements(FormListener listener, Item submitItem) {
 		int size = this.hiddenElememts != null ? this.hiddenElememts.size() + this.formItems.size() : this.formItems.size();
-		Hashtable elements = new Hashtable(size);
+		KeyValueList elements = new KeyValueList(size);
 		if (this.hiddenElememts != null) {
 			Enumeration enumeration = this.hiddenElememts.keys();
 			while (enumeration.hasMoreElements()) {
@@ -136,7 +157,7 @@ public class HtmlForm
 				if (value == null) {
 					value = "";
 				}
-				elements.put( name, value );
+				elements.add( name, value );
 			}
 		}
 		Object[] items = this.formItems.getInternalArray();
@@ -167,7 +188,21 @@ public class HtmlForm
 			{
 				ChoiceGroup choiceGroup = (ChoiceGroup) item;
 				HtmlSelect htmlSelect = (HtmlSelect) choiceGroup.getAttribute(HtmlSelect.SELECT);
-				value = htmlSelect.getValue(choiceGroup.getSelectedIndex());
+				if (htmlSelect != null) {
+					value = htmlSelect.getValue(choiceGroup.getSelectedIndex());
+				} else {
+					boolean[] choices = new boolean[ choiceGroup.size() ];
+					choiceGroup.getSelectedFlags(choices);
+					for (int j = 0; j < choices.length; j++)
+					{
+						if ( choices[j] ) {
+							Item choiceItem = choiceGroup.get(j);
+							elements.add(name, choiceItem.getAttribute(HtmlTagHandler.ATTR_VALUE) );
+						}
+						
+					}
+					continue;
+				}
 			}
 			if (listener != null) {
 				value = listener.verifySubmitFormValue(this.actionUrl, name, value);
@@ -175,12 +210,107 @@ public class HtmlForm
 			if (value == null) {
 				value = "";
 			}
-			elements.put(name, value);
+			elements.add(name, value);
 			
 		}
 		return elements;
 	}
 	
-	
+	/**
+  	 * Does a Form POST method call.
+  	 * @param submitItem the item triggering the call
+  	 * @param form the form containing the data
+  	 */
+  	protected void doPostSubmitCall(Item submitItem )
+  	{
+	    StringBuffer postData = new StringBuffer();
+	    KeyValueList elements = getFormElements(this.formListener, submitItem);
+	    boolean addAnd = false;
+		for (int i=0; i<elements.size(); i++) {
+			String name = (String) elements.getKey(i);
+			String value = (String) elements.getValue(i);
+			value = TextUtil.encodeUrl(value);
+			if (addAnd) {
+				postData.append('&');
+			}
+			postData.append(name).append('=').append( value );
+			addAnd = true;
+		}
+	    this.browser.go( this.browser.makeAbsoluteURL( this.actionUrl ), postData.toString());
+  	}
+  	
+  	/**
+  	 * Creates a Form GET method URL for the specified browser.
+  	 * 
+  	 * @param submitItem the item that triggered the action
+  	 * @return the GET URL or null when the browser's current item is not a Submit button
+  	 */
+  	protected String createGetSubmitCall(Item submitItem)
+  	{
+
+  		StringBuffer sb = new StringBuffer();
+  		sb.append( this.browser.makeAbsoluteURL(this.actionUrl) );
+  		KeyValueList elements = getFormElements(this.formListener, submitItem);
+  		char separatorChar = '?';
+  		for (int i=0; i<elements.size(); i++) {
+  			String name = (String) elements.getKey(i);
+  			String value = (String) elements.getValue(i);
+  			value = TextUtil.encodeUrl(value);
+  			sb.append(separatorChar);
+  			sb.append(name).append('=').append( value );
+  			separatorChar = '&';
+  		}
+  		return sb.toString();
+  	}
+  	
+  	/**
+	 * Submits this form without specifying a submission item
+	 */
+	public void submit()
+	{
+		submit( (Item)null );
+	}
+
+	/**
+	 * Submits this form
+	 * @param submitItem the form element that triggered the submission, can be null
+	 * @throws IllegalArgumentException when the given name of the submit element is not known for this form
+	 */
+	public void submit(String submitItem)
+	{
+		if (submitItem == null) {
+			submit( (Item)null );
+		}
+		Object[] items = this.formItems.getInternalArray();
+		for (int i = 0; i < items.length; i++)
+		{
+			Item item = (Item) items[i];
+			if (item == null) {
+				break;
+			}
+			if ("submit".equals(item.getAttribute(HtmlTagHandler.ATTR_TYPE))
+				&& submitItem.equals( item.getAttribute(HtmlTagHandler.ATTR_NAME))
+			) {
+				submit( item );
+				return;
+			}
+		}
+		throw new IllegalArgumentException();
+	}
+
+	/**
+	 * Submits this form
+	 * @param submitItem the item that has been clicked for triggering the submission, can be null
+	 */
+	public void submit(Item submitItem)
+	{
+		if (isPost()) {
+  			doPostSubmitCall(submitItem );
+  		}
+  		else {
+  			String url = createGetSubmitCall(submitItem);
+  			this.browser.go(url);
+  		}
+	}
 
 }

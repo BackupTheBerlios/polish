@@ -3,7 +3,7 @@
  *
  * HFloat - floating point arithmetics for mobile devices
  *
- * Copyright (c) 2005 Horst Jaeger / Medienkonzepte GbR, Cologne, Germany
+ * Copyright (c) 2009 Horst Jaeger / Medienkonzepte GbR, Cologne, Germany
  *
  * This file is part of J2ME Polish.
  *

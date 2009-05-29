@@ -3,7 +3,7 @@
 /*
  * Created on 23-Mar-2005 at 18:00:01.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -28,26 +28,29 @@
 package de.enough.polish.ui.splash;
 
 import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Displayable;
+//#if polish.usePolishGui
+	//# import de.enough.polish.ui.Display;
+	//# import de.enough.polish.ui.Displayable;
+//#else
+	import javax.microedition.lcdui.Display;
+	import javax.microedition.lcdui.Displayable;
+//#endif
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
-import de.enough.polish.ui.AccessibleCanvas;
+
 //#if polish.usePolishGui
+	import de.enough.polish.ui.Style;
 	import de.enough.polish.ui.Background;
 //#endif
 import de.enough.polish.util.TextUtil;
 
 /**
- * <p>Provides a SplashScreen that intialises the real application in a background thread.</p>
+ * <p>Provides a SplashScreen that initializes the real application in a background thread.</p>
  *
- * <p>Copyright (c) Enough Software 2005 - 2008</p>
- * <pre>
- * history
- *        23-Mar-2005 - rob creation
- * </pre>
+ * <p>Copyright (c) Enough Software 2005 - 2009</p>
+ * @see ApplicationInitializer#initApp()
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class InitializerSplashScreen
@@ -58,11 +61,11 @@ public class InitializerSplashScreen
 //#else
 	extends Canvas
 //#endif
-implements Runnable, AccessibleCanvas
+implements Runnable
 {
 
 	//#if polish.classes.ApplicationInitializer:defined
-		//#= private final ${ classname( polish.classes.ApplicationInitializer) } initializer;
+		//#= private final ${ polish.classes.ApplicationInitializer } initializer;
 	//#else
 		private final ApplicationInitializer initializer;
 	//#endif
@@ -86,6 +89,44 @@ implements Runnable, AccessibleCanvas
 		private Background background;
 	//#endif
 	private boolean isStarted;
+	
+	//#if !polish.classes.SplashView:defined
+	/**
+	 * Creates a new InitializerSplashScreen using the internal default view and a white background.
+	 * 
+	 * @param display the display responsible for switching screens
+	 * @param image the image that is shown in the center
+	 * @param initializer the application initializer that will be called in a background thread
+	 */
+	//#if polish.classes.ApplicationInitializer:defined
+		//#= public InitializerSplashScreen( Display display, Image image, ${ polish.classes.ApplicationInitializer } initializer )
+	//#else
+	public InitializerSplashScreen(Display display, Image image, ApplicationInitializer initializer)
+	//#endif
+	{
+		this(display, image, 0xffffff, null, 0, initializer );
+	}
+	//#endif
+	
+	//#if !polish.classes.SplashView:defined && polish.usePolishGui
+	/**
+	 * Creates a new InitializerSplashScreen using the internal default view and a white background.
+	 * 
+	 * @param display the display responsible for switching screens
+	 * @param image the image that is shown in the center
+	 * @param initializer the application initializer that will be called in a background thread
+	 * @param style the style for this screen - only the background is currently applied
+	 */
+	//#if polish.classes.ApplicationInitializer:defined
+		//#= public InitializerSplashScreen( Display display, Image image, ${ polish.classes.ApplicationInitializer } initializer, Style style )
+	//#else
+	public InitializerSplashScreen(Display display, Image image, ApplicationInitializer initializer, Style style)
+	//#endif
+	{
+		this(display, image, 0xffffff, null, 0, initializer, style );
+	}
+	//#endif
+
 
 	//#if !polish.classes.SplashView:defined
 	/**
@@ -95,17 +136,16 @@ implements Runnable, AccessibleCanvas
 	 * @param display the display responsible for switching screens
 	 * @param image the image that is shown in the center
 	 * @param backgroundColor the background color, e.g. white: 0xFFFFFF
-	 * @param readyMessage the message that is displayed when the application has been initialized
+	 * @param readyMessage the message that is displayed when the application has been initialized, set to null if the screen created by ApplicationInitializer.initApp() should be shown directly after that method returns.
 	 * @param messageColor the color for the message, e.g. black: 0
 	 * @param initializer the application initializer that will be called in a background thread
 	 */
 	//#if polish.classes.ApplicationInitializer:defined
-		//#= public InitializerSplashScreen( Display display, Image image, int backgroundColor, String readyMessage, int messageColor, ${ classname( polish.classes.ApplicationInitializer) } initializer )
+		//#= public InitializerSplashScreen( Display display, Image image, int backgroundColor, String readyMessage, int messageColor, ${ polish.classes.ApplicationInitializer } initializer )
 	//#else
 		public InitializerSplashScreen( Display display, Image image, int backgroundColor, String readyMessage, int messageColor, ApplicationInitializer initializer )
 	//#endif
-	{
-		super();
+	{	
 		this.display = display;
 		this.image = image;
 		this.backgroundColor = backgroundColor;
@@ -117,6 +157,38 @@ implements Runnable, AccessibleCanvas
 		//#endif
 	}
 	//#endif
+		
+	//#if !polish.classes.SplashView:defined && polish.usePolishGui
+		/**
+		 * Creates a new InitializerSplashScreen using the internal default view.
+		 * The message will be shown in the default font.
+		 * 
+		 * @param display the display responsible for switching screens
+		 * @param image the image that is shown in the center
+		 * @param backgroundColor the background color, e.g. white: 0xFFFFFF
+		 * @param readyMessage the message that is displayed when the application has been initialized, set to null if the screen created by ApplicationInitializer.initApp() should be shown directly after that method returns.
+		 * @param messageColor the color for the message, e.g. black: 0
+		 * @param initializer the application initializer that will be called in a background thread
+		 * @param style the style for this screen - only the background is currently applied
+		 */
+		//#if polish.classes.ApplicationInitializer:defined
+			//#= public InitializerSplashScreen( Display display, Image image, int backgroundColor, String readyMessage, int messageColor, ${ polish.classes.ApplicationInitializer } initializer, Style style )
+		//#else
+			public InitializerSplashScreen( Display display, Image image, int backgroundColor, String readyMessage, int messageColor, ApplicationInitializer initializer, Style style )
+		//#endif
+		{
+			this.display = display;
+			this.image = image;
+			this.backgroundColor = backgroundColor;
+			this.readyMessage = readyMessage;
+			this.messageColor = messageColor;
+			this.initializer = initializer;
+			//#if polish.LibraryBuild
+				this.view = null;
+			//#endif
+			this.background = style.background;
+		}
+	//#endif		
 		
 	//#ifdef polish.classes.SplashView:defined
 		//#if polish.classes.ApplicationInitializer:defined
@@ -143,6 +215,7 @@ implements Runnable, AccessibleCanvas
 		}
 	//#endif
 
+
 	/**
 	 * Sets a message that is displayed immediately.
 	 * This call is ignored when a SplashView is used.
@@ -163,7 +236,7 @@ implements Runnable, AccessibleCanvas
 		//#if polish.Bugs.fullScreenInPaint
 			super.setFullScreenMode(true);
 		//#endif
-		//#ifdef polish.FullCanvasSize:defined
+		//#if polish.FullCanvasSize:defined && !polish.usePolishGui
 			//#= int height = ${polish.FullCanvasHeight};
 			//#= int width = ${polish.FullCanvasWidth};
 		//#else
@@ -173,8 +246,17 @@ implements Runnable, AccessibleCanvas
 		//#ifdef polish.classes.SplashView:defined
 			this.view.paint( width, height, this.isInitialized, g);
 		//#else
-			g.setColor( this.backgroundColor );
-			g.fillRect( 0, 0, width, height );
+			//#if polish.usePolishGui
+				if (this.background != null) {
+					this.background.paint( 0, 0, width, height, g );
+				} else {
+			//#endif
+					g.setColor( this.backgroundColor );
+					g.fillRect( 0, 0, width, height );					
+			//#if polish.usePolishGui
+				}
+			//#endif
+					
 			g.drawImage(this.image,  width/2, height/2, Graphics.HCENTER | Graphics.VCENTER );
 			if (this.isInitialized) {
 				g.setColor( this.messageColor );
@@ -288,7 +370,7 @@ implements Runnable, AccessibleCanvas
 		// the application will never be able to start.
 	}
 
-	//#if polish.usePolishGui && not polish.blackberry
+	//#if polish.usePolishGui
 	/**
 	 * Retrieves the background.
 	 * Warning: this method is only available when the J2ME Polish GUI is used, check for the polish.usePolishGui preprocessing symbol
@@ -309,6 +391,7 @@ implements Runnable, AccessibleCanvas
 	 */
 	public void setBackground(Background background) {
 		this.background = background;
+		repaint();
 	}
 	//#endif
 

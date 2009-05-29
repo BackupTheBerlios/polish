@@ -3,7 +3,7 @@
 /*
  * Created on Dec 31, 2006 at 4:19:03 PM.
  * 
- * Copyright (c) 2006 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -30,7 +30,7 @@ package de.enough.polish.doja.lang;
 /**
  * <p>Mapping for java.lang.IllegalStateException which is part of the MIDP standard.</p>
  *
- * <p>Copyright Enough Software 2006 - 2008</p>
+ * <p>Copyright Enough Software 2006 - 2009</p>
  * <pre>
  * history
  *        Dec 31, 2006 - rob creation

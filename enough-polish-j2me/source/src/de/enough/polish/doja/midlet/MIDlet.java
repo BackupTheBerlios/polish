@@ -12,7 +12,6 @@ import javax.microedition.io.ConnectionNotFoundException;
 
 import com.nttdocomo.ui.IApplication;
 
-import de.enough.polish.doja.ui.Display;
 import de.enough.polish.util.TextUtil;
 
 /**

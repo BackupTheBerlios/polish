@@ -30,8 +30,11 @@ import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.ui.Background;
 import de.enough.polish.ui.ClippingRegion;
+import de.enough.polish.ui.Color;
 import de.enough.polish.ui.Item;
+import de.enough.polish.ui.Dimension;
 import de.enough.polish.ui.Screen;
+import de.enough.polish.ui.Style;
 
 /**
  * <p>Paints an animated background filled with several ever-growing circles.</p>
@@ -46,7 +49,7 @@ import de.enough.polish.ui.Screen;
  * 	<li><b>step</b>: the number of pixels each circle should grow in every animation.</li>
  * </ul>
  *
- * <p>Copyright Enough Software 2004 - 2008</p>
+ * <p>Copyright Enough Software 2004 - 2009</p>
 
  * <pre>
  * history
@@ -57,21 +60,25 @@ import de.enough.polish.ui.Screen;
 public class PulsatingCirclesBackground extends Background {
 	
 	private int startColor;
-	private final int firstColor;
-	private final int secondColor;
+	private int firstColor;
+	private int secondColor;
 	private final short[] diameters;
-	private final int preciseMinDiameter;
-	private final int preciseMaxDiameter;
+	private int preciseMinDiameter;
+	private int preciseMaxDiameter;
 	private final int[] preciseDiameters; 
 	private final int diameterGrowth;
+	private Dimension maxDiameter;
+	private Dimension minDiameter;
+	int lastWidth;
+	int lastHeight;
 	
 	/**
 	 * Creates a new pulsating-circle background.
 	 * 
 	 * @param firstColor the first color of circles
 	 * @param secondColor the second color of circles
-	 * @param minDiameter the minimum diameter
-	 * @param maxDiameter the maximum diameter
+	 * @param minDiameter the minimum diameter in pixel
+	 * @param maxDiameter the maximum diameter in pixel
 	 * @param numberOfCircles the number of circles
 	 * @param step the number of pixels which should be added in each round to each circle
 	 */
@@ -80,14 +87,37 @@ public class PulsatingCirclesBackground extends Background {
 			int minDiameter, 
 			int maxDiameter,
 			int numberOfCircles,
+			int step) 
+	{
+		this( firstColor, secondColor, new Dimension(minDiameter, false), new Dimension(maxDiameter, false), numberOfCircles, step);
+	}
+	
+	
+	/**
+	 * Creates a new pulsating-circle background.
+	 * 
+	 * @param firstColor the first color of circles
+	 * @param secondColor the second color of circles
+	 * @param minDiameter the minimum diameter 
+	 * @param maxDiameter the maximum diameter
+	 * @param numberOfCircles the number of circles
+	 * @param step the number of pixels which should be added in each round to each circle
+	 */
+	public PulsatingCirclesBackground( int firstColor, 
+			int secondColor, 
+			Dimension minDiameter, 
+			Dimension maxDiameter,
+			int numberOfCircles,
 			int step) {
 		super();
 		this.startColor = firstColor;
 		this.firstColor = firstColor;
 		this.secondColor = secondColor;
 		step <<= 8;
-		this.preciseMinDiameter = minDiameter << 8;
-		this.preciseMaxDiameter = maxDiameter << 8;
+		this.minDiameter = minDiameter;
+		this.maxDiameter = maxDiameter;
+//		this.preciseMinDiameter = minDiameter << 8;
+//		this.preciseMaxDiameter = maxDiameter << 8;
 		this.diameters = new short[ numberOfCircles ];
 		this.preciseDiameters = new int[ numberOfCircles ];
 		this.diameterGrowth = step;
@@ -103,6 +133,24 @@ public class PulsatingCirclesBackground extends Background {
 	 * @param g the Graphics instance for rendering this background
 	 */
 	public void paint(int x, int y, int width, int height, Graphics g) {
+		if (width != this.lastWidth || height != this.lastHeight) {
+			int min = Math.min(width, height);
+			this.preciseMinDiameter = this.minDiameter.getValue(min) << 8;
+			this.preciseMaxDiameter = this.maxDiameter.getValue(min) << 8;
+
+			int numberOfCircles = this.diameters.length;
+			int difference = (this.preciseMaxDiameter - this.preciseMinDiameter) / numberOfCircles;
+			while (numberOfCircles > 0) {
+				int diameter = difference * numberOfCircles;
+				numberOfCircles--;
+				this.diameters[ numberOfCircles ] = (short) (diameter >>> 8);
+				this.preciseDiameters[ numberOfCircles ] = diameter;
+			}	
+			this.startColor = this.firstColor;
+
+			this.lastWidth = width;
+			this.lastHeight = height;
+		}
 		int centerX = x + (width >> 1);
 		int centerY = y + (height >> 1);
 		int color = this.startColor;
@@ -163,24 +211,43 @@ public class PulsatingCirclesBackground extends Background {
 			repaintRegion.addRegion(0, 0, screen.getWidth(), screen.getScreenHeight() );
 		}
 	}
-
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Background#showNotify()
-	 */
-	public void showNotify()
-	{
-		super.showNotify();
-		int numberOfCircles = this.diameters.length;
-		int difference = (this.preciseMaxDiameter - this.preciseMinDiameter) / numberOfCircles;
-		while (numberOfCircles > 0) {
-			int diameter = difference * numberOfCircles;
-			numberOfCircles--;
-			this.diameters[ numberOfCircles ] = (short) (diameter >>> 8);
-			this.preciseDiameters[ numberOfCircles ] = diameter;
-		}	
-		this.startColor = this.firstColor;
-	}
 	
+	
+	//#if polish.css.animations
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Background#setStyle(de.enough.polish.ui.Style)
+	 */
+	public void setStyle(Style style)
+	{
+		//#if polish.css.background-pulsating-circles-first-color
+			Color firstColorObj = style.getColorProperty("background-pulsating-circles-first-color");
+			if (firstColorObj != null) {
+				this.firstColor = firstColorObj.getColor();
+			}
+		//#endif
+		//#if polish.css.background-pulsating-circles-second-color
+			Color secondColorObj = style.getColorProperty("background-pulsating-circles-second-color");
+			if (secondColorObj != null) {
+				this.secondColor = secondColorObj.getColor();
+			}
+		//#endif
+		//#if polish.css.background-pulsating-circles-min-diameter
+			Dimension minDiameterObj = (Dimension) style.getObjectProperty("background-pulsating-circles-min-diameter");
+			if (minDiameterObj != null) {
+				this.minDiameter = minDiameterObj;
+				this.lastWidth = 0;
+			}
+		//#endif
+		//#if polish.css.background-pulsating-circles-min-diameter
+			Dimension maxDiameterObj = (Dimension) style.getObjectProperty("background-pulsating-circles-min-diameter");
+			if (maxDiameterObj != null) {
+				this.maxDiameter = maxDiameterObj;
+				this.lastWidth = 0;
+			}
+		//#endif
+
+	}
+	//#endif
 	
 	
 }

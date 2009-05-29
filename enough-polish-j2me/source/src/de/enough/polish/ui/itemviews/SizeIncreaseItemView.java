@@ -2,7 +2,7 @@
 /*
  * Created on Apr 25, 2007 at 11:45:01 PM.
  * 
- * Copyright (c) 2007 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -39,7 +39,7 @@ import de.enough.polish.util.ImageUtil;
 /**
  * <p>Increases the size of the item.</p>
  *
- * <p>Copyright Enough Software 2007 - 2008</p>
+ * <p>Copyright Enough Software 2007 - 2009</p>
  * <pre>
  * history
  *        Apr 25, 2007 - rob creation
@@ -61,12 +61,12 @@ public class SizeIncreaseItemView extends ItemView {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ItemView#initContent(de.enough.polish.ui.Item, int, int)
 	 */
-	protected void initContent(Item parent, int firstLineWidth, int lineWidth) {
+	protected void initContent(Item parent, int firstLineWidth, int availWidth, int availHeight) {
 		if (this.parentItem == parent && this.parentItem.getStyle() == parent.getStyle() && this.isInitialized) {
 			return;
 		}
 		
-		initContentByParent(parent, firstLineWidth, lineWidth);
+		initContentByParent(parent, firstLineWidth, availWidth, availHeight);
 		
 		this.currentHeight 	= 1;
 		this.targetHeight 	= this.contentHeight;

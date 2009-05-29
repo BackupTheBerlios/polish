@@ -3,7 +3,7 @@
 /*
  * Created on Jul 7, 2008 at 2:16:30 PM.
  * 
- * Copyright (c) 2007 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -27,6 +27,10 @@
  */
 package de.enough.polish.blackberry.ui;
 
+import de.enough.polish.ui.Command;
+import de.enough.polish.ui.Displayable;
+import de.enough.polish.ui.Screen;
+import de.enough.polish.ui.UiAccess;
 import net.rim.device.api.ui.MenuItem;
 
 /**
@@ -37,7 +41,7 @@ import net.rim.device.api.ui.MenuItem;
  */
 public class CommandMenuItem extends MenuItem {
 
-	private final Command cmd;
+	final Command cmd;
 	private final Displayable displayable;
 
 	/**
@@ -55,7 +59,9 @@ public class CommandMenuItem extends MenuItem {
 	 * @see java.lang.Runnable#run()
 	 */
 	public void run() {
-		this.displayable.handleCommand(this.cmd);
+		if (this.displayable instanceof Screen) {
+			UiAccess.handleCommand((Screen)this.displayable, this.cmd);
+		}
 	}
 
 }

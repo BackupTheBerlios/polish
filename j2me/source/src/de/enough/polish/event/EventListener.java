@@ -1,7 +1,7 @@
 /*
  * Created on Sep 15, 2007 at 3:50:54 AM.
  * 
- * Copyright (c) 2007 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -28,7 +28,7 @@ package de.enough.polish.event;
 /**
  * <p>Listens for events</p>
  *
- * <p>Copyright Enough Software 2007 - 2008</p>
+ * <p>Copyright Enough Software 2007 - 2009</p>
  * <pre>
  * history
  *        Sep 15, 2007 - rob creation
@@ -38,19 +38,12 @@ package de.enough.polish.event;
 public interface EventListener {
 	
 	/**
-	 * Handles (or ignores) the start of given event.
-	 * @param name name of the event e.g. EventManager.pressed == "pressed"
+	 * Handles (or ignores) the given event.
+	 * @param name name of the event e.g. EventManager.EVENT_FOCUS == "focus"
 	 * @param source the source of the event e.g. an item
 	 * @param data optional additional data, might be null
 	 */
-	public void handleEventStart( String name, Object source, Object data );
+	public void handleEvent( String name, Object source, Object data );
 
-	/**
-	 * Handles (or ignores) the end of the given event.
-	 * @param name name of the event e.g. EventManager.pressed == "pressed"
-	 * @param source the source of the event e.g. an item
-	 * @param data optional additional data, might be null
-	 */
-	public void handleEventEnd( String name, Object source, Object data );
 
 }

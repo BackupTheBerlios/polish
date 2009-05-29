@@ -1,7 +1,7 @@
 /*
  * Created on 11-Jan-2006 at 19:20:28.
  * 
- * Copyright (c) 2007 - 2008 Michael Koch / Enough Software
+ * Copyright (c) 2009 - 2009 Michael Koch / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -32,27 +32,35 @@ import java.io.IOException;
 import javax.microedition.io.StreamConnection;
 
 /**
- * Protocol handler class to handle resource URLs.
+ * Protocol handler for resource URLs.
  */
 public class ResourceProtocolHandler extends ProtocolHandler
 {
-  public ResourceProtocolHandler()
-  {
-    this("resource");
-  }
-  
-  public ResourceProtocolHandler( String protocolName )
-  {
-    super(protocolName);
-  }
+	/**
+	 * Creates a new resource protocol handler using <code>resource</code> as the protocol name.
+	 */
+	public ResourceProtocolHandler()
+	{
+		this("resource");
+	}
 
-  
-  /* (non-Javadoc)
-   * @see de.enough.polish.browser.ProtocolHandler#getConnection(java.lang.String)
-   */
-  public StreamConnection getConnection(String url)
-    throws IOException
-  {
-    return new ResourceConnection(url);
-  }
+	/**
+	 * Creates a new  resource protocol handler using the specified protocol name.
+	 * @param protocolName the name of the protocol - <code>resource</code> by default.
+	 */
+	public ResourceProtocolHandler( String protocolName )
+	{
+		super(protocolName);
+	}
+
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.browser.ProtocolHandler#getConnection(java.lang.String)
+	 */
+	public StreamConnection getConnection(String url)
+	throws IOException
+	{
+		url = url.substring( this.protocolName.length() + ":/".length() );
+		return new ResourceConnection(url);
+	}
 }

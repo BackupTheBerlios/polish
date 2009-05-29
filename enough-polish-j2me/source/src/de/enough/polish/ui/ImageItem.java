@@ -33,7 +33,6 @@ import javax.microedition.lcdui.Image;
 /**
  * An item that can contain an image.
  * 
- * 
  * <P> Each <code>ImageItem</code> object contains a reference to an
  * <A HREF="../../../javax/microedition/lcdui/Image.html"><CODE>Image</CODE></A> object.
  * This <code>Image</code> may be mutable or immutable.  If the
@@ -80,18 +79,14 @@ import javax.microedition.lcdui.Image;
  */
 public class ImageItem extends Item
 {
-
-	private Image image;
-	//#if polish.api.svg
-		
-	//#endif
-	private String altText;
-	private int textColor;
-	private Font font;
-	private int yOffset;
-	private int height = -1;
-	private int xOffset;
-	private int xOverlap;
+	protected Image image;
+	protected String altText;
+	protected int textColor;
+	protected Font font;
+	protected int yOffset;
+	protected int height = -1;
+	protected int xOffset;
+	protected int xOverlap;
 
 	/**
 	 * Creates a new <code>ImageItem</code> with the given label, image, layout
@@ -347,16 +342,18 @@ public class ImageItem extends Item
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#initItem()
 	 */
-	protected void initContent(int firstLineWidth, int lineWidth) {
+	protected void initContent(int firstLineWidth, int availWidth, int availHeight) {
 		this.xOverlap = 0;
 		if (this.image != null) {
 			this.contentHeight = this.image.getHeight();
 			this.contentWidth = this.image.getWidth();
-			if (this.contentWidth > lineWidth) {
-				this.xOverlap = this.contentWidth - lineWidth;
-				this.contentWidth = lineWidth;
-				this.appearanceMode = INTERACTIVE;
-			}
+			//#if polish.ImageItem.allowUserInteraction != false
+				if (this.contentWidth > availWidth) {
+					this.xOverlap = this.contentWidth - availWidth;
+					this.contentWidth = availWidth;
+					this.appearanceMode = INTERACTIVE;
+				}
+			//#endif
 		} else if (this.altText != null) {
 			if (this.font == null) {
 				this.font = Font.getDefaultFont();
@@ -384,10 +381,12 @@ public class ImageItem extends Item
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#setStyle(de.enough.polish.ui.Style)
 	 */
-	public void setStyle(Style style) {
-		super.setStyle(style);
-		this.textColor = style.getFontColor();
-		this.font = style.font;
+	public void setStyle(Style style, boolean resetStyle) {
+		super.setStyle(style, resetStyle);
+		if (resetStyle) {
+			this.textColor = style.getFontColor();
+			this.font = style.getFont();
+		}
 		//#if polish.css.image-y-offset
 			Integer yOffsetInt = style.getIntProperty("image-y-offset");
 			if (yOffsetInt != null) {
@@ -433,7 +432,7 @@ public class ImageItem extends Item
 	 */
 	protected boolean handlePointerPressed(int relX, int relY)
 	{
-		if (this.xOverlap != 0) {
+		if (this.xOverlap != 0  && isInItemArea( relX, relY )) {
 			int offset = this.xOffset + ((this.contentWidth >> 1) - relX);
 			if (offset + this.xOverlap < 0) {
 				offset = - this.xOverlap;

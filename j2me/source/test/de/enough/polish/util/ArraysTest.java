@@ -143,6 +143,44 @@ public class ArraysTest extends TestCase {
 	}
 
 
+	public void testArraycopy() {
+		int[] input = new int[]{ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 };
+		int[] output = new int[ input.length ];
+		Arrays.arraycopy(input, 0, output, 0, input.length );
+		assertTrue( Arrays.equals(input, output) );
+		
+		// test array copy on itself (1):
+		Arrays.arraycopy(input, 0, input, 9, input.length - 9 );
+		for (int i=9; i<input.length - 9; i++) {
+			assertEquals( i, input[i] );
+		}
+		
+		// test array copy on itself (2):
+		input = new int[]{ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 };
+		Arrays.arraycopy(input, 0, input, 2, 5 );
+		for (int i=2; i<2+5; i++) {
+			System.out.println("i=" + i + ", input[i]=" + input[i]);
+			assertEquals( i-2, input[i] );
+		}
+		
+		// test array copy on itself (3):
+		input = new int[]{ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 };
+		Arrays.arraycopy(input, 3, input, 2, 5 );
+		for (int i=2; i<2+5; i++) {
+			System.out.println("i=" + i + ", input[i]=" + input[i]);
+			assertEquals( i+1, input[i] );
+		}
+
+		// test array copy on itself (4):
+		System.out.println(">>>4");
+		input = new int[]{ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 };
+		Arrays.arraycopy(input, 1, input, 2, 5 );
+		for (int i=2; i<2+5; i++) {
+			System.out.println("i=" + i + ", input[i]=" + input[i]);
+			assertEquals( i-1, input[i] );
+		}
+
+	}
 
 
 

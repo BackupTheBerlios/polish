@@ -25,7 +25,7 @@
  */
 package de.enough.polish.ui;
 
-import javax.microedition.lcdui.Command;
+
 
 /**
  * A listener type for receiving notification of commands that have been

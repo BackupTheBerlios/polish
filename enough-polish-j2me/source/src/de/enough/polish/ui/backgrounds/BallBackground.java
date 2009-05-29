@@ -20,7 +20,6 @@ public class BallBackground extends Background {
 	//private final String imageURL;
 	private transient Sprite[] sprite;
 //	x--{1,5,8}, y--{2,5,6}, y++{3,7,8}, x++{4,6,7}
-	private String url;
 	
 	public BallBackground() {
 		this.random = new Random();
@@ -29,7 +28,6 @@ public class BallBackground extends Background {
 		super();
 		this.color = color;
 		this.borderColor = borderColor;
-		this.url = url;
 		this.roundWidth = roundWidth;
 		this.roundHeight = roundHeight;
 		this.number = number;

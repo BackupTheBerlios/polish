@@ -27,7 +27,7 @@
 package de.enough.polish.ui;
 
 import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Command;
+
 import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.util.ArrayList;
@@ -50,7 +50,7 @@ import de.enough.polish.util.ArrayList;
  * 				</li>
  * 		<li><b>scroll-mode</b>: Either "smooth" (=default) or "normal".</li>
  * </ul>
- * <p>Copyright Enough Software 2004 - 2007 - 2008</p>
+ * <p>Copyright Enough Software 2004 - 2007 - 2009</p>
 
  * <pre>
  * history
@@ -59,10 +59,6 @@ import de.enough.polish.util.ArrayList;
  * @author Robert Virkus, robert@enough.de
  */
 public class FakeContainerCustomItem extends FakeCustomItem {
-	//#if polish.css.columns || polish.useTable
-		//#define tmp.useTable
-	//#endif
-	
 	/** constant for normal scrolling (0) */
 	public static final int SCROLL_DEFAULT = 0;
 	/** constant for smooth scrolling (1) */
@@ -108,11 +104,12 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 	//#endif
 	private boolean isScrollRequired;
 	/** The height available for scrolling, ignore when set to -1 */
-	protected int availableHeight = -1;
+	protected int scrollHeight = -1;
 	private Item[] containerItems;
 	private boolean showCommandsHasBeenCalled;
 	private Item scrollItem;
 	protected Style plainStyle;
+	private int availableContentWidth;
 
 	
 	/**
@@ -147,24 +144,6 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 		super( label, LAYOUT_DEFAULT, INTERACTIVE, style );
 		this.itemsList = new ArrayList();
 		this.autoFocusEnabled = focusFirstElement;
-		Style focStyle = StyleSheet.focusedStyle;
-		//#if false
-			// this code is needed for the JUnit tests only:
-			if (focStyle == null) {
-				focStyle = new Style( 1, 1, 1, 1,
-						0, 0, 0, 0, 0, 0,
-						0, 0x0, null, null, null, null, null, null
-				);
-			}
-		//#endif
-		this.focusedStyle = focStyle;
-		this.focusedTopMargin = focStyle.marginTop + focStyle.paddingTop;
-		if (focStyle.border != null) {
-			this.focusedTopMargin += focStyle.border.borderWidth;
-		} 
-		if (focStyle.background != null) {
-			this.focusedTopMargin += focStyle.background.borderWidth;
-		}
 		this.layout |= Item.LAYOUT_NEWLINE_BEFORE;
 		setScrollHeight( height );
 	}
@@ -175,7 +154,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 	 * @param height available height for this item including label, padding, margin and border, -1 when scrolling should not be done.
 	 */
 	public void setScrollHeight( int height ) {
-		this.availableHeight = height;
+		this.scrollHeight = height;
 		this.enableScrolling = (height != -1);
 		Item item = this.scrollItem != null ? this.scrollItem : this.focusedItem;
 		if (this.isInitialized && this.enableScrolling && item != null) {
@@ -194,7 +173,11 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 	 * @see #getContentScrollHeight()
 	 */
 	public int getScrollHeight() {
-		return this.availableHeight;
+		if (this.scrollHeight == -1 && this.parent instanceof Container) {
+			return ((Container)this.parent).getScrollHeight();
+		} else {
+			return this.scrollHeight;
+		}
 	}
 	
 	/**
@@ -204,7 +187,11 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 	 * @see #getContentScrollHeight()
 	 */
 	public int getRelativeScrollHeight() {
-		return this.availableHeight;
+		if (this.scrollHeight == -1 && this.parent instanceof Container) {
+			return ((Container)this.parent).getScrollHeight() - this.relativeY;
+		} else {
+			return this.scrollHeight;
+		}
 	}
 
 	
@@ -215,7 +202,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 	 * @see #getScrollHeight()
 	 */
 	int getContentScrollHeight() {
-		return getScrollHeight() - (this.contentY + this.borderWidth + this.paddingBottom + this.marginBottom ); 
+		return getScrollHeight() - (this.contentY + 0 + this.paddingBottom + this.marginBottom ); 
 	}
 	
 	/**
@@ -301,10 +288,11 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 					}
 				//#endif
 			}
-			
-			this.isInitialized = false;
-			if (this.parent != null) {
-				this.parent.isInitialized = false;
+			requestInit();
+			// set following items to relativeY=0, so that they will be scrolled correctly:
+			for (int i= index + 1; i < this.itemsList.size(); i++ ) {
+				Item followingItem = (Item) this.itemsList.get(i);
+				followingItem.relativeY = 0;
 			}
 			if (this.isShown) {
 				item.showNotify();
@@ -318,6 +306,14 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 		// ignore
 	}
 	public void add( int index, javax.microedition.lcdui.Item item ) {
+		// ignore
+	}
+	/**
+	 * Replaces an item
+	 * @param index the index
+	 * @param item the item to be added
+	 */
+	public void set( int index, javax.microedition.lcdui.Item item ) {
 		// ignore
 	}
 	//#endif
@@ -353,12 +349,12 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 			last.defocus(this.itemStyle);
 			if ( item.appearanceMode != PLAIN ) {
 				if (this.isFocused) {
-					focus( index, item, 0 );
+					focusChild( index, item, 0 );
 				} else {
 					this.focusedItem = item;
 				}
 			} else {
-				focus( -1 );
+				focusChild( -1 );
 			}
 		}
 		if (this.focusedIndex == -1 || index <= this.focusedIndex ) {
@@ -368,10 +364,13 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 			}
 			setScrollYOffset(offset);
 		}
-//		if (this.items != null) {
-//			this.items[index] = item;
-//		}
-		this.isInitialized = false;
+		requestInit();
+		// set following items to relativeY=0, so that they will be scrolled correctly:
+		for (int i= index + 1; i < this.itemsList.size(); i++ ) {
+			Item followingItem = (Item) this.itemsList.get(i);
+			followingItem.relativeY = 0;
+		}
+		requestInit();
 		repaint();
 		return last;
 	}
@@ -438,7 +437,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 				if (index != -1) { 
 					Item item = myItems[ index ];
 					if (item.appearanceMode != PLAIN) {
-						focus( index, item, Canvas.DOWN );
+						focusChild( index, item, Canvas.DOWN );
 					} else {
 						focusClosestItem(index, myItems);
 					}
@@ -506,7 +505,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 			if (newFocusedIndex < index) {
 				direction = Canvas.UP;
 			}
-			focus( newFocusedIndex, newFocusedItem, direction );
+			focusChild( newFocusedIndex, newFocusedItem, direction );
 		} else {
 			this.autoFocusEnabled = true;
 			this.focusedItem = null;
@@ -572,7 +571,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 			if (i < index) {
 				direction = Canvas.UP;
 			}
-			focus( i, newFocusedItem, direction );
+			focusChild( i, newFocusedItem, direction );
 		} else {
 			this.autoFocusEnabled = true;
 			this.focusedItem = null;
@@ -595,7 +594,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 	 * @throws IllegalArgumentException when the given item is null
 	 */
 	public boolean remove( Item item ) {
-		int index = indexOf(item);
+		int index = this.itemsList.indexOf(item);
 		if (index != -1) {
 			remove( index );
 			return true;
@@ -660,7 +659,19 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 				this.internalY = 0;
 			}
 				// adjust scrolling:
+				if ( this.isFocused && this.parent instanceof Container ) {
+					Container parentContainer = (Container) this.parent;
+					int scrollOffset = - parentContainer.getScrollYOffset();
+					if (scrollOffset > this.relativeY) {
+						int diff = scrollOffset - this.relativeY;
+						parentContainer.setScrollYOffset( diff - scrollOffset,  false );
+					}
+				}
 			//}
+			this.contentHeight = 0;
+			this.contentWidth = 0;
+			this.itemHeight = this.marginTop + this.paddingTop + this.paddingBottom + this.marginBottom;
+			this.itemWidth = this.marginLeft + this.paddingLeft + this.paddingRight + this.marginRight;
 			if (this.isInitialized) {
 				this.isInitialized = false;
 				//this.yBottom = this.yTop = 0;
@@ -700,7 +711,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 	 * 		   It needs to have an appearanceMode which is not Item.PLAIN to
 	 *         be focusable.
 	 */
-	public boolean focus(int index) {
+	public boolean focusChild(int index) {
 		if (index == -1) {
 			this.focusedIndex = -1;
 			Item item = this.focusedItem; 
@@ -732,7 +743,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 				}
 			
 			}
-			focus( index, item, direction );			
+			focusChild( index, item, direction );			
 			return true;
 		}
 		return false;
@@ -745,7 +756,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 	 * @param item the item which should be focused
 	 * @param direction the direction, either Canvas.DOWN, Canvas.RIGHT, Canvas.UP, Canvas.LEFT or 0.
 	 */
-	public void focus( int index, Item item, int direction ) {
+	public void focusChild( int index, Item item, int direction ) {
 		//#debug
 		System.out.println("Container (" + this + "): Focusing item " + index + " (" + item + "), isInitialized=" + this.isInitialized + ", autoFocusEnabled=" + this.autoFocusEnabled );
 		//System.out.println("focus: yOffset=" + this.yOffset + ", targetYOffset=" + this.targetYOffset + ", enableScrolling=" + this.enableScrolling + ", isInitialized=" + this.isInitialized );
@@ -758,7 +769,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 			this.autoFocusIndex = index;
 		} 
 		//#if polish.blackberry
-	    	//# getScreen().setFocus( item );
+			Display.getInstance().notifyFocusSet( item );
 		//#endif
 		
 		if (index == this.focusedIndex && item.isFocused && item == this.focusedItem) {
@@ -784,19 +795,16 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 				fItem.defocus( StyleSheet.defaultStyle );
 			}
 			if (this.isInitialized) {
-				int wAfter = fItem.getItemWidth( this.contentWidth, this.contentWidth );
-				int hAfter = fItem.itemHeight;
-				int layoutAfter = fItem.layout;
-				if (wAfter != wBefore || hAfter != hBefore || layoutAfter != layoutBefore ) {
-					isReinitializationRequired = true;
-					fItem.isInitialized = false; // could be that a container view poses restrictions on the possible size, i.e. within a table
-				}
 			}
 		}
 		int wBefore = item.itemWidth;
 		int hBefore = item.itemHeight;
 		int layoutBefore = item.layout;
 		Style newStyle = getFocusedStyle( index, item);
+		boolean isDownwards = (direction == Canvas.DOWN) || (direction == Canvas.RIGHT) || (direction == 0 &&  index > this.focusedIndex);
+		int previousIndex = this.focusedIndex; // need to determine whether the user has scrolled from the bottom to the top
+		this.focusedIndex = index;
+		this.focusedItem = item;
 		//#if tmp.supportViewType
 			if ( this.containerView != null ) {
 				this.itemStyle =  this.containerView.focusItem( index, item, direction, newStyle );
@@ -812,22 +820,11 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 				System.out.println("Container: Unable to retrieve style of item " + item.getClass().getName() );
 			}
 		//#endif
-		boolean isDownwards = (direction == Canvas.DOWN) || (direction == Canvas.RIGHT) || (direction == 0 &&  index > this.focusedIndex);
-		int previousIndex = this.focusedIndex; // need to determine whether the user has scrolled from the bottom to the top
-		this.focusedIndex = index;
-		this.focusedItem = item;
 		//System.out.println("focus - still initialzed=" + this.isInitialized + " for " + this);
 		if  (this.isInitialized) {
 			// this container has been initialised already,
 			// so the dimensions are known.
 			//System.out.println("focus: contentWidth=" + this.contentWidth + ", of container " + this);
-			int wAfter = item.getItemWidth( this.contentWidth, this.contentWidth );
-			int hAfter = item.itemHeight;
-			int layoutAfter = item.layout;
-			if (wAfter != wBefore || hAfter != hBefore || layoutAfter != layoutBefore ) {
-				isReinitializationRequired = true;
-				item.isInitialized = false; // could be that a container view poses restrictions on the possible size, i.e. within a table
-			}
 
 			if (item.internalX != NO_POSITION_SET) {
 				this.internalX =  item.relativeX + item.contentX + item.internalX;
@@ -875,7 +872,15 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 				} else {
 					int itemYTop = isDownwards ? item.relativeY : nextItem.relativeY;
 					int itemYBottom = isDownwards ? nextItem.relativeY + nextItem.itemHeight : item.relativeY + item.itemHeight;
-					scroll( direction, this.relativeX, itemYTop, item.internalWidth, itemYBottom - itemYTop );
+                    int availHeight = getRelativeScrollHeight();
+                    int height = itemYBottom - itemYTop;
+                    if (height > availHeight) {
+                        height = availHeight - 5;
+                        if (!isDownwards) {
+                            itemYTop += (itemYBottom - itemYTop) - height;
+                        }
+                    }
+					scroll( direction, this.relativeX, itemYTop, item.internalWidth, height );
 				}
 			}
 		} else if (getScrollHeight() != -1) { // if (this.enableScrolling) {
@@ -927,21 +932,24 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 	 */
 	public boolean scroll(int direction, Item item) {
 		//#debug
-		System.out.println("scroll: scrolling for item " + item  + ", item.internalX=" + item.internalX +", relativeInternalY=" + ( item.relativeY + item.contentY + item.internalY ));
+		System.out.println("scroll: scrolling for item " + item  + ", item.internalX=" + item.internalX +", relativeInternalY=" + ( item.relativeY + item.contentY + item.internalY ) + ", relativeY=" + item.relativeY + ", contentY=" + item.contentY + ", internalY=" + item.internalY);
 		if (item.internalX != NO_POSITION_SET 
 				&& ( (item.itemHeight > getScrollHeight()) || ((item.internalY + item.internalHeight) > item.contentHeight ) ) ) 
 		{
 			// use internal position of item for scrolling:
+			//System.out.println("using internal area for scrolling");
 			int relativeInternalX = item.relativeX + item.contentX + item.internalX;
 			int relativeInternalY = item.relativeY + item.contentY + item.internalY;
 			return scroll(  direction, relativeInternalX, relativeInternalY, item.internalWidth, item.internalHeight );
 		} else {
 			if (!this.isInitialized && item.relativeY == 0) {
 				// defer scrolling to init at a later stage:
+				//System.out.println( this + ": setting scrollItem to " + item);
 				this.scrollItem = item;
 				return true;
 			} else {				
 				// use item dimensions for scrolling:
+				//System.out.println("use item area for scrolling");
 				return scroll(  direction, item.relativeX, item.relativeY, item.itemWidth, item.itemHeight );
 			}
 		}
@@ -960,10 +968,17 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 	 */
 	protected boolean scroll( int direction, int x, int y, int width, int height ) {
 		if (!this.enableScrolling) {
+			if (this.parent instanceof Container) {
+				x += this.contentX + this.relativeX;
+				y += this.contentY + this.relativeY;
+				//#debug
+				System.out.println("Forwarding scroll request to parent now with y=" + y);
+				return ((Container)this.parent).scroll(direction, x, y, width, height );
+			}
 			return false;
 		}
 		//#debug
-		System.out.println("scroll: direction=" + direction + ", y=" + y + ", availableHeight=" + this.availableHeight +  ", height=" +  height + ", focusedIndex=" + this.focusedIndex + ", yOffset=" + this.yOffset + ", targetYOffset=" + this.targetYOffset +", numberOfItems=" + this.itemsList.size() );
+		System.out.println("scroll: direction=" + direction + ", y=" + y + ", availableHeight=" + this.scrollHeight +  ", height=" +  height + ", focusedIndex=" + this.focusedIndex + ", yOffset=" + this.yOffset + ", targetYOffset=" + this.targetYOffset +", numberOfItems=" + this.itemsList.size() );
 		if ( height == 0) {
 			return false;
 		}
@@ -978,7 +993,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 			}
 		//#endif
 
-		int verticalSpace = this.availableHeight - (this.contentY + this.marginBottom + this.paddingBottom + this.borderWidth); // the available height for this container
+		int verticalSpace = this.scrollHeight - (this.contentY + this.marginBottom + this.paddingBottom + 0); // the available height for this container
 		int yTopAdjust = 0;
 		Screen scr = this.screen;
 		if ( y + height + currentYOffset + yTopAdjust > verticalSpace ) {
@@ -988,7 +1003,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 			//#debug
 			System.out.println("scroll: item too low: verticalSpace=" + verticalSpace + "  y=" + y + ", height=" + height + ", yTopAdjust=" + yTopAdjust + ", yOffset=" + currentYOffset);
 			// check if the top of the area is still visible when scrolling downwards:
-			if ( isDownwards && y + currentYOffset < 0 ) {
+			if ( isDownwards && y + currentYOffset < 0  && height < verticalSpace) {
 				currentYOffset -= (y + currentYOffset);
 			}
 		} else if ( y + currentYOffset < 0 ) {
@@ -997,7 +1012,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 			//#debug
 			System.out.println("scroll: item too high: , y=" + y + ", target=" + currentYOffset ); //+ ", focusedTopMargin=" + this.focusedTopMargin );
 			// check if the bottom of the area is still visible when scrolling upwards:
-			if (isUpwards && y + height + currentYOffset > verticalSpace ) {
+			if (isUpwards && y + height + currentYOffset > verticalSpace  && height < verticalSpace) {
 				currentYOffset += verticalSpace - (y + height + currentYOffset);
 			}
 
@@ -1014,9 +1029,20 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#initItem( int, int )
 	 */
-	protected void initContent(int firstLineWidth, int lineWidth) {
+	protected void initContent(int firstLineWidth, int availWidth, int availHeight) {
 		//#debug
-		System.out.println("Container: intialising content for " + this + ": autofocus=" + this.autoFocusEnabled + ", autoFocusIndex=" + this.autoFocusIndex + ", firstLineWidth=" + firstLineWidth + ", lineWidth=" + lineWidth + ", size=" + this.itemsList.size() );
+		System.out.println("Container: intialising content for " + this + ": autofocus=" + this.autoFocusEnabled + ", autoFocusIndex=" + this.autoFocusIndex + ", firstLineWidth=" + firstLineWidth + ", lineWidth=" + availWidth + ", size=" + this.itemsList.size() );
+		this.availableContentWidth = firstLineWidth;
+		//#if polish.css.focused-style
+			if (this.focusedStyle != null) {
+				this.focusedTopMargin = this.focusedStyle.getMarginTop(availWidth) + this.focusedStyle.getPaddingTop(availWidth);
+				if (this.focusedStyle.border != null) {
+				}
+				if (this.focusedStyle.background != null) {
+					this.focusedTopMargin += this.focusedStyle.background.borderWidth;
+				}
+			}
+		//#endif
 		synchronized (this.itemsList) {
 			int myContentWidth = 0;
 			int myContentHeight = 0;
@@ -1025,10 +1051,18 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 			if (this.autoFocusEnabled && this.autoFocusIndex >= myItems.length ) {
 				this.autoFocusIndex = 0;
 			}
+			Item ancestor = this.parent;
+			while (this.allowCycling && ancestor != null) {
+				if ( (ancestor instanceof Container)  && ((Container)ancestor).getNumberOfInteractiveItems()>1 ) {
+					this.allowCycling = false;
+					break;
+				}
+				ancestor = ancestor.parent;
+			}
 			//#if tmp.supportViewType
 				if (this.containerView != null) {
 					// additional initialization is necessary when a view is used for this container:
-					boolean requireScrolling = this.isScrollRequired;
+					boolean requireScrolling = this.isScrollRequired && this.isFocused;
 	//				System.out.println("ABOUT TO CALL INIT CONTENT - focusedIndex of Container=" + this.focusedIndex);
 					this.appearanceMode = this.containerView.appearanceMode;
 					if (this.isFocused && this.autoFocusEnabled) {
@@ -1043,14 +1077,18 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 									// now focus the item:
 									this.autoFocusEnabled = false;
 									requireScrolling = (this.autoFocusIndex != 0);
-									int heightBeforeFocus = item.itemHeight;
-									focus( i, item, 0 );
-									int availableWidth = item.itemWidth;
-									if (availableWidth < this.minimumWidth) {
-										availableWidth = this.minimumWidth;
-									}
-									if (item.getItemHeight( availableWidth, availableWidth ) > heightBeforeFocus) {
-									}
+//									int heightBeforeFocus = item.itemHeight;
+									focusChild( i, item, 0 );
+									// outcommented on 2008-07-09 because this results in a wrong
+									// available width for items with subsequent wrong getAbsoluteX() coordinates
+//									int availableWidth = item.itemWidth;
+//									if (availableWidth < this.minimumWidth) {
+//										availableWidth = this.minimumWidth;
+//									}
+//									if (item.getItemHeight( availableWidth, availableWidth ) > heightBeforeFocus) {
+//										item.isInitialized = false;
+//										this.containerView.initContent( this, firstLineWidth, lineWidth);	
+//									}
 									this.isScrollRequired = this.isScrollRequired && requireScrolling; // override setting in focus()
 									//this.containerView.focusedIndex = i; is done within focus(i, item, 0) already
 									//this.containerView.focusedItem = item;
@@ -1069,11 +1107,12 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 
 					if (requireScrolling && this.focusedItem != null) {
 						//#debug
-						System.out.println("initContent(): scrolling autofocused or scroll-required item for view");
+						System.out.println("initContent(): scrolling autofocused or scroll-required item for view, focused=" + this.focusedItem);
 						Item item = this.focusedItem;
 						scroll( 0, item.relativeX, item.relativeY, item.itemWidth, item.itemHeight );
 					}
 					else if (this.scrollItem != null) {
+						//System.out.println("initContent(): scrolling scrollItem=" + this.scrollItem);
 						boolean  scrolled = scroll( 0, this.scrollItem );
 						if (scrolled) {
 							this.scrollItem = null;
@@ -1090,7 +1129,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 			for (int i = 0; i < myItems.length; i++) {
 				Item item = myItems[i];
 				//System.out.println("initalising " + item.getClass().getName() + ":" + i);
-				int width = item.getItemWidth( lineWidth, lineWidth );
+				int width = item.getItemWidth( availWidth, availWidth, availHeight );
 				int height = item.itemHeight; // no need to call getItemHeight() since the item is now initialised...
 				// now the item should have a style, so it can be safely focused
 				// without loosing the style information:
@@ -1105,9 +1144,9 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 				if (this.isFocused && this.autoFocusEnabled  && (i >= this.autoFocusIndex ) && (item.appearanceMode != Item.PLAIN)) {
 					this.autoFocusEnabled = false;
 					//System.out.println("Container.initContent: auto-focusing " + i + ": " + item );
-					focus( i, item, 0 );
+					focusChild( i, item, 0 );
 					this.isScrollRequired = (this.isScrollRequired || hasFocusableItem) && (this.autoFocusIndex != 0); // override setting in focus()
-					height = item.getItemHeight(lineWidth, lineWidth);
+					height = item.getItemHeight(availWidth, availWidth, availHeight);
 					if (!isLayoutShrink) {
 						width = item.itemWidth;  // no need to call getItemWidth() since the item is now initialised...
 					} else {
@@ -1137,9 +1176,9 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 				}
 				item.relativeY = myContentHeight;
 				if  ( (item.layout & LAYOUT_CENTER) == LAYOUT_CENTER) {
-					item.relativeX = (lineWidth - width) / 2;
+					item.relativeX = (availWidth - width) / 2;
 				} else if ( (item.layout & LAYOUT_RIGHT) == LAYOUT_RIGHT) {
-					item.relativeX = (lineWidth - width);
+					item.relativeX = (availWidth - width);
 				} else {
 					item.relativeX = 0;
 				}
@@ -1157,8 +1196,8 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 				// this can happen when there are different layouts like left and right within the same container:
 				myContentWidth = myContentEndX - myContentStartX;
 			}
-			if (this.minimumWidth > myContentWidth) {
-				myContentWidth = this.minimumWidth - ((this.borderWidth << 1) + this.marginLeft + this.paddingLeft + this.marginRight + this.paddingRight);
+			if (this.minimumWidth != null && this.minimumWidth.getValue(firstLineWidth) > myContentWidth) {
+				myContentWidth = this.minimumWidth.getValue(firstLineWidth);
 			}
 			//#if polish.css.expand-items
 				if (this.isExpandItems) {
@@ -1167,7 +1206,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 						Item item = myItems[i];
 						if (!item.isLayoutExpand && item.itemWidth < myContentWidth) {
 							item.isLayoutExpand = true;
-							item.init(myContentWidth, myContentWidth);
+							item.init(myContentWidth, myContentWidth, availHeight);
 							item.isLayoutExpand = false;
 						}
 					}
@@ -1192,7 +1231,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 						this.internalWidth = item.itemWidth;
 						this.internalHeight = item.itemHeight;
 						//#debug
-						System.out.println("Container (" + getClass().getName() + "): NO internal area found in item " + item + ": setting internalY=" + this.internalY + ", internalHeight=" + this.internalHeight + ", this.yOffset=" + this.yOffset + ", item.itemHeight=" + item.itemHeight + ", this.availableHeight=" + this.availableHeight);
+						System.out.println("Container (" + getClass().getName() + "): NO internal area found in item " + item + ": setting internalY=" + this.internalY + ", internalHeight=" + this.internalHeight + ", this.yOffset=" + this.yOffset + ", item.itemHeight=" + item.itemHeight + ", this.availableHeight=" + this.scrollHeight);
 					}
 					if (isLayoutShrink) {
 						//System.out.println("container has shrinking layout and contains focuse item " + item);
@@ -1201,7 +1240,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 						int width;
 						if (doExpand) {
 							item.isLayoutExpand = false;
-							width = item.getItemWidth( lineWidth, lineWidth );
+							width = item.getItemWidth( availWidth, availWidth, availHeight );
 							item.isInitialized = false;
 							item.isLayoutExpand = true;
 						} else {
@@ -1210,8 +1249,8 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 						if (width > myContentWidth) {
 							myContentWidth = width;
 						}
-						if ( this.minimumWidth != 0 && myContentWidth < this.minimumWidth ) {
-							myContentWidth = this.minimumWidth;
+						if ( this.minimumWidth != null && myContentWidth < this.minimumWidth.getValue(firstLineWidth) ) {
+							myContentWidth = this.minimumWidth.getValue(firstLineWidth);
 						}
 						//myContentHeight += item.getItemHeight( lineWidth, lineWidth );
 					}
@@ -1219,6 +1258,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 			}
 			if (this.scrollItem != null) {
 				boolean scrolled = scroll( 0, this.scrollItem );
+				//System.out.println( this + ": scrolled scrollItem " + this.scrollItem + ": " + scrolled);
 				if (scrolled) {
 					this.scrollItem = null;
 				}
@@ -1251,7 +1291,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 				System.out.println("Container: drawing " + getClass().getName() + " with yOffset=" + this.yOffset );
 			}
 		//#endif
-		boolean setClipping = ( this.enableScrolling && (this.yOffset != 0 || this.itemHeight > this.availableHeight) ); //( this.yOffset != 0 && (this.marginTop != 0 || this.paddingTop != 0) );
+		boolean setClipping = ( this.enableScrolling && (this.yOffset != 0 || this.itemHeight > this.scrollHeight) ); //( this.yOffset != 0 && (this.marginTop != 0 || this.paddingTop != 0) );
 		int clipX = 0;
 		int clipY = 0;
 		int clipWidth = 0;
@@ -1280,9 +1320,6 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 //				// adjust the right border:
 //				rightBorder = leftBorder + this.contentWidth;
 //			}
-			int focusedX = x;
-			int focusedY = 0;
-			int focusedRightBorder = rightBorder;
 			int startY = g.getClipY();
 			int endY = startY + g.getClipHeight();
 			Item focItem = this.focusedItem;
@@ -1292,29 +1329,20 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 				Item item = myItems[i];
 				// currently the NEWLINE_AFTER and NEWLINE_BEFORE layouts will be ignored,
 				// since after every item a line break will be done. Use view-type: midp2; to place several items into a single row.
-				if (i == focIndex) {
-					//System.out.println("paint: FOCUSED ITEM=" + item);
-					focusedY = y;
-					item.getItemHeight( rightBorder - x, rightBorder - leftBorder );
-				} else if ( y + item.itemHeight >= startY && y < endY ){
-					// the currently focused item is painted last
-					item.paint(x, y, leftBorder, rightBorder, g);
-//					System.out.println("painting item at " + x + ", " + y + " - x+item.relativeX=" + (x+ item.relativeX) + ", y+item.relativeY=" + (y + item.relativeY) );
-//				} else {
-//					System.out.println("skipping " + item);
+				int itemY = y + item.relativeY;
+				if (i != focIndex &&  itemY + item.itemHeight >= startY && itemY < endY ){
+					//item.paint(x, y, leftBorder, rightBorder, g);
+					item.paint(x + item.relativeX, itemY, leftBorder, rightBorder, g);
 				}
-//				if (this.parent == null || ((Container)this.parent).size() == 1) {
-//					System.out.println( i + "=" + item.itemHeight);
+//				if (item.itemHeight != 0) {
+//					y += item.itemHeight + this.paddingVertical;
 //				}
-				if (item.itemHeight != 0) {
-					y += item.itemHeight + this.paddingVertical;
-				}
 			}
 			boolean paintFocusedItemOutside = false;
 			if (focItem != null) {
-				paintFocusedItemOutside = (focItem.internalX != NO_POSITION_SET);
+				paintFocusedItemOutside = setClipping && (focItem.internalX != NO_POSITION_SET);
 				if (!paintFocusedItemOutside) {
-					focItem.paint(focusedX, focusedY, focusedX, focusedRightBorder, g);
+					focItem.paint(x + focItem.relativeX, y + focItem.relativeY, leftBorder, rightBorder, g);
 				}
 			}
 	
@@ -1326,7 +1354,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 			// for example useful for popup items that extend the actual container area.
 			if (paintFocusedItemOutside) {
 				//System.out.println("Painting focusedItem " + this.focusedItem + " with width=" + this.focusedItem.itemWidth + " and with increased colwidth of " + (focusedRightBorder - focusedX)  );
-				focItem.paint(focusedX, focusedY, focusedX, focusedRightBorder, g);
+				focItem.paint(x + focItem.relativeX, y + focItem.relativeY, leftBorder, rightBorder, g);
 			}
 		//#ifdef tmp.supportViewType
 			}
@@ -1345,7 +1373,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 				// this is only necessary since ContainerViews are integrated differently from
 				// normal ItemViews - we should consider abonding this approach!
 				if ( this.background != null ) {
-					int bWidth = this.borderWidth;
+					int bWidth = 0;
 					if ( this.border != null ) {
 						x += bWidth;
 						y += bWidth;
@@ -1389,12 +1417,12 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 		Item item = this.focusedItem;
 		if (item != null) {
 			if (!item.isInitialized) {
-				item.init( this.contentWidth, this.contentWidth );
+				item.init( this.contentWidth, this.contentWidth, this.contentHeight );
 			} else if (this.enableScrolling && item.internalX != NO_POSITION_SET) {
 				int startY = getScrollYOffset() + item.relativeY + item.contentY + item.internalY;
 				if ( (
 					(startY < 0  && gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) 
-					||  (startY + item.internalHeight > this.availableHeight  && gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
+					||  (startY + item.internalHeight > this.scrollHeight  && gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
 					)
 					&& (scroll(gameAction, item))
 				){
@@ -1498,13 +1526,23 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 						|| (this.enableScrolling && offset + this.itemHeight > availableScrollHeight)
 						)
 			) {
+				int containerHeight = this.contentHeight;
+				int scrollHeight = this.getContentScrollHeight();
+				int scrollOffset = this.getScrollYOffset();
+				
 				// scroll downwards:
 				int difference =
 				//#if polish.Container.ScrollDelta:defined
 					//#=  ${polish.Container.ScrollDelta};
 				//#else
-					30;
+					((containerHeight + scrollOffset) - scrollHeight);
+				
+					if(difference > (scrollHeight / 2))
+					{
+						difference = scrollHeight / 2;
+					}
 				//#endif
+					
 				offset = getScrollYOffset() - difference;
 				setScrollYOffset( offset, true );
 				processed = true;
@@ -1522,8 +1560,8 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 					&& offset + focItem.relativeY < 0 ) // this.focusedItem.yTopPos < this.yTop ) 
 			{
 				// keep the focus do scroll upwards:
-				//#debug
-				System.out.println("Container(" + this + "): scrolling up: keeping focus, relativeScrollOffset=" + offset + ", scrollHeight=" + availableScrollHeight +  ", focusedIndex=" + this.focusedIndex + ", focusedItem.relativeY=" + this.focusedItem.relativeY + ", this.availableHeight=" + this.availableHeight + ", targetYOffset=" + this.targetYOffset);
+				// #debug
+				System.out.println("Container(" + this + "): scrolling up: keeping focus, relativeScrollOffset=" + offset + ", scrollHeight=" + availableScrollHeight +  ", focusedIndex=" + this.focusedIndex + ", focusedItem.relativeY=" + this.focusedItem.relativeY + ", this.availableHeight=" + this.scrollHeight + ", targetYOffset=" + this.targetYOffset);
 			} else {
 				//#ifdef tmp.supportViewType
 					if (this.containerView != null) {
@@ -1546,7 +1584,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 				//#if polish.Container.ScrollDelta:defined
 					//#= ${polish.Container.ScrollDelta};
 				//#else
-					30;
+					getScreen() != null ? getScreen().contentHeight / 2 :  30;
 				//#endif
 				offset = getScrollYOffset() + difference;
 				if (offset > 0) {
@@ -1715,49 +1753,49 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 			}
 		//#endif
 		Item item = null;
-			boolean allowCycle = this.enableScrolling && this.allowCycling;
-			if (allowCycle) {
-					if (forwardFocus) {
-						// when you scroll to the bottom and
-						// there is still space, do
-						// scroll first before cycling to the
-						// first item:
-						allowCycle = (getScrollYOffset() + this.itemHeight <= this.availableHeight + 1);
-						// System.out.println("allowCycle-calculation ( forward non-smoothScroll): yOffset=" + this.yOffset + ", itemHeight=" + this.itemHeight + " (together="+ (this.yOffset + this.itemHeight));
-					} else {
-						// when you scroll to the top and
-						// there is still space, do
-						// scroll first before cycling to the
-						// last item:
-						allowCycle = (this.yOffset == 0) || (this.targetYOffset == 1);
-					}						
-			}
-			//#debug
-			System.out.println("shiftFocus of " + this + ": allowCycle(local)=" + allowCycle + ", allowCycle(global)=" + this.allowCycling + ", isFoward=" + forwardFocus + ", enableScrolling=" + this.enableScrolling + ", targetYOffset=" + this.targetYOffset + ", yOffset=" + this.yOffset + ", focusedIndex=" + this.focusedIndex + ", start=" + i );
+		boolean allowCycle = this.allowCycling;
+		if (allowCycle) {
+				if (forwardFocus) {
+					// when you scroll to the bottom and
+					// there is still space, do
+					// scroll first before cycling to the
+					// first item:
+					allowCycle = (getScrollYOffset() + this.itemHeight <= getScrollHeight() + 1);
+					//System.out.println("allowCycle-calculation ( forward non-smoothScroll): yOffset=" + this.yOffset + ", itemHeight=" + this.itemHeight + " (together="+ (this.yOffset + this.itemHeight));
+				} else {
+					// when you scroll to the top and
+					// there is still space, do
+					// scroll first before cycling to the
+					// last item:
+					allowCycle = (getScrollYOffset() == 0);
+				}						
+		}
+		//#debug
+		System.out.println("shiftFocus of " + this + ": allowCycle(local)=" + allowCycle + ", allowCycle(global)=" + this.allowCycling + ", isFoward=" + forwardFocus + ", enableScrolling=" + this.enableScrolling + ", targetYOffset=" + this.targetYOffset + ", yOffset=" + this.yOffset + ", focusedIndex=" + this.focusedIndex + ", start=" + i );
 		while (true) {
 			if (forwardFocus) {
 				i++;
 				if (i >= items.length) {
-						if (allowCycle) {
-							allowCycle = false;
-							i = 0;
-							//#debug
-							System.out.println("allowCycle: Restarting at the beginning");
-						} else {
-							break;
-						}
+					if (allowCycle) {
+						allowCycle = false;
+						i = 0;
+						//#debug
+						System.out.println("allowCycle: Restarting at the beginning");
+					} else {
+						break;
+					}
 				}
 			} else {
 				i--;
 				if (i < 0) {
-						if (allowCycle) {
-							allowCycle = false;
-							i = items.length - 1;
-							//#debug
-							System.out.println("allowCycle: Restarting at the end");
-						} else {
-							break;
-						}
+					if (allowCycle) {
+						allowCycle = false;
+						i = items.length - 1;
+						//#debug
+						System.out.println("allowCycle: Restarting at the end");
+					} else {
+						break;
+					}
 				}
 			}
 			item = items[i];
@@ -1775,7 +1813,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 		if (forwardFocus) {
 			direction = Canvas.DOWN;
 		}
-		focus(i, item, direction );
+		focusChild(i, item, direction );
 		return true;
 	}
 
@@ -1807,7 +1845,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 			System.out.println("Container.setStyle without boolean parameter for container " + toString() );
 		}
 		//#endif
-		setStyle(style, false);
+		setStyleWithBackground(style, false);
 	}
 	
 	/**
@@ -1817,28 +1855,16 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 	 * @param ignoreBackground when true is given, the background and border-settings
 	 * 		  will be ignored.
 	 */
-	public void setStyle( Style style, boolean ignoreBackground) {
+	public void setStyleWithBackground( Style style, boolean ignoreBackground) {
 		super.setStyle(style);
 		if (ignoreBackground) {
 			this.background = null;
 			this.border = null;
-			this.borderWidth = 0;
 			this.marginTop = 0;
 			this.marginBottom = 0;
 			this.marginLeft = 0;
 			this.marginRight = 0;
 		}
-		//#if polish.css.focused-style
-			if (this.focusedStyle != null) {
-				this.focusedTopMargin = this.focusedStyle.marginTop + this.focusedStyle.paddingTop;
-				if (this.focusedStyle.border != null) {
-					this.focusedTopMargin += this.focusedStyle.border.borderWidth;
-				}
-				if (this.focusedStyle.background != null) {
-					this.focusedTopMargin += this.focusedStyle.background.borderWidth;
-				}
-			}
-		//#endif
 		//#if polish.css.focused-style-first
 			Style firstFocusStyleObj = (Style) style.getObjectProperty("focused-style-first");
 			if (firstFocusStyleObj != null) {
@@ -1917,6 +1943,21 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 		//#endif
 	}
 	
+	
+	
+	//#ifdef tmp.supportViewType
+		/* (non-Javadoc)
+		 * @see de.enough.polish.ui.Item#setStyle(de.enough.polish.ui.Style, boolean)
+		 */
+		public void setStyle(Style style, boolean resetStyle)
+		{
+			super.setStyle(style, resetStyle);
+			if (this.containerView != null) {
+				this.containerView.setStyle(style, resetStyle);
+			}
+		}
+	//#endif
+
 	/**
 	 * Changes the style of all children that are currently using the specified oldChildStyle with the given newChildStyle.
 	 * 
@@ -2079,7 +2120,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 //				previousStyle = StyleSheet.defaultStyle;
 //			}
 			this.showCommandsHasBeenCalled = false;
-			focus( this.focusedIndex, item, direction );
+			focusChild( this.focusedIndex, item, direction );
 			// item command handling is now done within showCommands and handleCommand
 			if (!this.showCommandsHasBeenCalled && this.commands != null) {
 				showCommands();
@@ -2108,19 +2149,21 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 	 * @see de.enough.polish.ui.Item#defocus(de.enough.polish.ui.Style)
 	 */
 	public void defocus(Style originalStyle) {
-		if ( this.itemsList.size() == 0 || this.focusedIndex == -1 
-		) {
+		if ( this.itemsList.size() == 0 || this.focusedIndex == -1 ) {
 			super.defocus( originalStyle );
 		} else {
 			if (this.plainStyle != null) {
 				super.defocus( this.plainStyle );
+				if (originalStyle == null) {
+					originalStyle = this.plainStyle;
+				}
 				this.plainStyle = null;
 			}
 			this.isFocused = false;
 			Item item = this.focusedItem; //(Item) this.itemsList.get( this.focusedIndex );
 			item.defocus( this.itemStyle );
 			//#ifdef tmp.supportViewType
-				if (this.containerView != null && originalStyle != null) {
+				if (this.containerView != null) {
 					this.containerView.defocus( originalStyle );
 					this.isInitialized = false;
 				}
@@ -2184,12 +2227,12 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 			&& this.scrollSmooth
 		//#endif
 		) {
-			if (this.availableHeight != -1 && Math.abs(target - current) > this.availableHeight) {
+			if (this.scrollHeight != -1 && Math.abs(target - current) > this.scrollHeight) {
 				// maximally scroll one page:
 				if (current < target) {
-					current = target - this.availableHeight;
+					current = target - this.scrollHeight;
 				} else {
-					current = target + this.availableHeight;
+					current = target + this.scrollHeight;
 				}
 			}
 			int speed = (target - current) / 3;
@@ -2213,7 +2256,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 			//#if polish.useScrollBar || polish.classes.ScrollBar:defined
 				width += scr.getScrollBarWidth();
 			//#endif
-			if (this.availableHeight > height) {
+			if (this.scrollHeight > height) {
 				x = scr.contentX;
 				y = scr.contentY;
 				height = scr.contentHeight;
@@ -2221,9 +2264,11 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 			}
 			repaintRegion.addRegion( x, y, width, height );
 		}
+		
 		if (this.focusedItem != null) {
 			this.focusedItem.animate(currentTime, repaintRegion);
 		}
+		
 		//#ifdef tmp.supportViewType
 			if ( this.containerView != null ) {
 				this.containerView.animate(currentTime, repaintRegion);
@@ -2355,7 +2400,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 			//#debug
 			System.out.println("Container.handlePointerPressed(" + relX + "," + relY + "): found item " + i + "=" + item + " at relative " + itemRelX + "," + itemRelY + ", itemHeight=" + item.itemHeight);
 			// only focus the item when it has not been focused already:
-			focus(i, item, 0);
+			focusChild(i, item, 0);
 			// let the item also handle the pointer-pressing event:
 			item.handlePointerPressed( itemRelX , itemRelY );
 			return true;			
@@ -2379,8 +2424,8 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 			bottomY = this.focusedItem.relativeY + this.focusedItem.backgroundHeight;
 		}
 		if ( this.enableScrolling 
-				&& (this.itemHeight > this.availableHeight || this.yOffset != 0)
-				&& ((yDiff < -5 && this.yOffset + bottomY > this.availableHeight) // scrolling downwards
+				&& (this.itemHeight > this.scrollHeight || this.yOffset != 0)
+				&& ((yDiff < -5 && this.yOffset + bottomY > this.scrollHeight) // scrolling downwards
 					|| (yDiff > 5 && this.yOffset != 0) ) // scrolling upwards
 			) 
 		{
@@ -2521,6 +2566,9 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 		for (int i = 0; i < this.itemsList.size(); i++) {
 			Item item = (Item) this.itemsList.get(i);
 			item.isInitialized = false;
+			if (item instanceof Container) {
+				((Container)item).requestFullInit();
+			}
 		}
 		requestInit();
 	}
@@ -2531,6 +2579,9 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 	 * @return either the currently used offset or the targeted offset in case the targeted one is different.
 	 */
 	public int getScrollYOffset() {
+		if (!this.enableScrolling && this.parent instanceof Container) {
+			return ((Container)this.parent).getScrollYOffset();
+		}
 		int offset = this.targetYOffset;
 		//#ifdef polish.css.scroll-mode
 			if (!this.scrollSmooth) {
@@ -2546,6 +2597,9 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 	 * @return either the currently used offset or the targeted offset in case the targeted one is different.
 	 */
 	public int getRelativeScrollYOffset() {
+		if (!this.enableScrolling && this.parent instanceof Container) {
+			return ((Container)this.parent).getRelativeScrollYOffset() + this.relativeY;
+		}
 		int offset = this.targetYOffset;
 		//#ifdef polish.css.scroll-mode
 			if (!this.scrollSmooth) {
@@ -2573,6 +2627,10 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 	public void setScrollYOffset( int offset, boolean smooth) {
 		//#debug
 		System.out.println("Setting scrollYOffset to " + offset );
+		if (!this.enableScrolling && this.parent instanceof Container) {
+			((Container)this.parent).setScrollYOffset(offset, smooth);
+			return;
+		}
 		if (!smooth  
 		//#ifdef polish.css.scroll-mode
 			|| !this.scrollSmooth
@@ -2708,6 +2766,22 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 		//#endif
 	}
 
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#fireEvent(java.lang.String, java.lang.Object)
+	 */
+	public void fireEvent(String eventName, Object eventData)
+	{
+		super.fireEvent(eventName, eventData);
+		Object[] items = this.itemsList.getInternalArray();
+		for (int i = 0; i < items.length; i++)
+		{
+			Item item = (Item) items[i];
+			if (item == null) {
+				break;
+			}
+			item.fireEvent(eventName, eventData);
+		}
+	}
 	
 	
 

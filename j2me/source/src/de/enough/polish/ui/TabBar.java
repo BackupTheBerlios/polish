@@ -2,7 +2,7 @@
 /*
  * Created on 23-Jan-2005 at 19:04:14.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -38,7 +38,7 @@ import de.enough.polish.util.ArrayList;
 /**
  * <p>Manages and paints the tabs of a tabbed form (or another Screen).</p>
  *
- * <p>Copyright (c) Enough Software 2005 - 2008</p>
+ * <p>Copyright (c) Enough Software 2005 - 2009</p>
  * <pre>
  * history
  *        23-Jan-2005 - rob creation
@@ -158,30 +158,31 @@ public class TabBar extends Item {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#initContent(int, int)
 	 */
-	protected void initContent(int firstLineWidth, int lineWidth) {
+	protected void initContent(int firstLineWidth, int availWidth, int availHeight) {
 		int scrollerWidth = this.scrollArrowHeight + 2 * this.scrollArrowPadding;
 		//#debug
-		System.out.println("init of TabBar lineWidth=" + lineWidth + ", scrollerWidth=" + scrollerWidth + ", number of tabs=" + this.tabs.size() );
+		System.out.println("init of TabBar lineWidth=" + availWidth + ", scrollerWidth=" + scrollerWidth + ", number of tabs=" + this.tabs.size() );
 		int maxHeight = scrollerWidth;
 		int completeWidth = 0;
-		int rightBorder = lineWidth - scrollerWidth;
+		int rightBorder = availWidth - scrollerWidth;
+		if (
 		//#if polish.css.tabbar-roundtrip
-			if (this.allowRoundtrip || this.activeTabIndex == 0 || this.activeTabIndex == this.tabs.size() -1) {
-		//#else
-			//# if (this.activeTabIndex == 0 || this.activeTabIndex == this.tabs.size() -1) {
+			this.allowRoundtrip || 
 		//#endif
+			this.activeTabIndex == 0 || this.activeTabIndex == this.tabs.size() -1) 
+		{
 			// only one scroll indicator needs to be painted
+			if (this.activeTabIndex != 0 
 			//#if polish.css.tabbar-roundtrip
-				if (this.activeTabIndex != 0 && !this.allowRoundtrip) {
-			//#else
-				//# if (this.activeTabIndex != 0) {
+				&& !this.allowRoundtrip
 			//#endif
-				rightBorder = lineWidth;
+			) {
+				rightBorder = availWidth;
 			}
-			lineWidth -= maxHeight;
+			availWidth -= maxHeight;
 			completeWidth = maxHeight;
 		} else {
-			lineWidth -= 2 * maxHeight;
+			availWidth -= 2 * maxHeight;
 			completeWidth = 2 * maxHeight;
 		}
 		
@@ -189,7 +190,7 @@ public class TabBar extends Item {
 		int activeTabWidth = 0;
 		for (int i = 0; i < this.tabs.size(); i++) {
 			ImageItem tab = (ImageItem) this.tabs.get(i);
-			int tabHeight = tab.getItemHeight(firstLineWidth, lineWidth);
+			int tabHeight = tab.getItemHeight(firstLineWidth, availWidth, availHeight);
 			if (tabHeight > maxHeight ) { 
 				maxHeight = tabHeight;
 			}
@@ -386,7 +387,6 @@ public class TabBar extends Item {
 	}
 	
 	
-	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#handleKeyPressed(int, int)
 	 */
@@ -399,32 +399,18 @@ public class TabBar extends Item {
 					if (index >= this.tabs.size()) {
 						index = 0;
 					}
-//					this.nextTabIndex = this.activeTabIndex + 1;
-//					if (this.nextTabIndex >= this.tabs.size()) {
-//						this.nextTabIndex = 0;
-//					}
-//					return true;
 				} else if (gameAction == Canvas.LEFT) {
 					index--;
 					if (index < 0) {
 						index = this.tabs.size() - 1;
 					}
-//					this.nextTabIndex = this.activeTabIndex - 1;
-//					if (this.nextTabIndex < 0) {
-//						this.nextTabIndex = this.tabs.size() - 1;
-//					}		
-//					return true;
 				}
 			}
 		//#else
 			if (gameAction == Canvas.RIGHT && index < this.tabs.size() -1 ) {
 				index++;
-	//			this.nextTabIndex = this.activeTabIndex + 1;
-	//			return true;
 			} else if (gameAction == Canvas.LEFT && index > 0) {
 				index--;
-	//			this.nextTabIndex = this.activeTabIndex - 1;
-	//			return true;
 			}
 		//#endif
 
@@ -545,13 +531,14 @@ public class TabBar extends Item {
 	* @param tabStyle the style of the tab
 	*/
 	public void addNewTab(String tabName, Image tabImage, Style tabStyle) {
-	   ImageItem tab = new ImageItem(null, tabImage, 0, tabName, tabStyle);
+	   ImageItem tab = new ImageItem(null, tabImage, 0, tabName, this.inactiveStyle);
 	   this.tabs.add(tab);
 	}
 	
- /**
+	 /**
 	* Creates a new tab on the tab bar.
-	*
+	* 
+	* @param index the index at which the tab should be added
 	* @param tabName the name of the new tab
 	* @param tabImage the image of the new tab, can be null
 	*/
@@ -562,6 +549,7 @@ public class TabBar extends Item {
   /**
 	* Creates a new tab on the tab bar.
 	*
+	* @param index the index at which the tab should be added
 	* @param tabName the name of the new tab
 	* @param tabImage the image of the new tab, can be null
 	* @param tabStyle the style of the tab
@@ -579,7 +567,7 @@ public class TabBar extends Item {
 	public void removeTab(int index) {
 	   this.tabs.remove(index);
 	}
-	
+
 	/**
 	 * Retrieves a tab item
 	 * @param tabIndex the index of the tab item
@@ -599,7 +587,7 @@ public class TabBar extends Item {
 	{
 		this.tabs.set(tabIndex, item);
 	}
-
+	
 	/**
 	 * Specifies if cycling is allowed
 	 * @return true when cycling is allowed for this TabBar
@@ -615,4 +603,6 @@ public class TabBar extends Item {
 	public void setRoundtrip(boolean allow) {
 		this.allowRoundtrip = allow;
 	}
+
+
 }

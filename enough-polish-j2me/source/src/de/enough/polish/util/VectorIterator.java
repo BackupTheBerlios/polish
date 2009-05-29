@@ -1,7 +1,7 @@
 /*
  * Created on 17-Aug-2006 at 12:18:43.
  * 
- * Copyright (c) 2006 Michael Koch / Enough Software
+ * Copyright (c) 2009 Michael Koch / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -30,7 +30,7 @@ import java.util.Vector;
 /**
  * <p>Is used to traverse through vectors.</p>
  *
- * <p>Copyright Enough Software 2006 - 2008</p>
+ * <p>Copyright Enough Software 2006 - 2009</p>
  * @author Michael Koch, michael.koch@enough.de
  */
 public class VectorIterator

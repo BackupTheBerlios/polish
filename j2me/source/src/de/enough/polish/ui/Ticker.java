@@ -69,6 +69,7 @@ import javax.microedition.lcdui.Graphics;
  * <ul>
  * 	<li><b>ticker-step</b>: the number of pixels by which the ticker is moved in every animation step, defaults to 2.</li>
  * 	<li><b>ticker-position</b>: the position of the ticker relative to the screen - either top or bottom</li>
+ * 	<li><b>ticker-direction</b>: the direction of the ticker, defaults to 'left' (meaning going from right to left).</li>
  * </ul>
  * @see StringItem
  * @see IconItem
@@ -76,9 +77,19 @@ import javax.microedition.lcdui.Graphics;
  */
 public class Ticker extends IconItem
 {
+	/**
+	 * The ticker moves from right to left.
+	 */
+	public static final int DIRECTION_RIGHT_TO_LEFT = 0;
+	/**
+	 * The ticker moves from left to right.
+	 */
+	public static final int DIRECTION_LEFT_TO_RIGHT = 1;
+	/** the x offset - if it increased, then the text will be painted more to the left side */ 
 	private int tickerXOffset;
 	private int step = 2;
 	private int tickerWidth;
+	private int direction;
 
 	/**
 	 * Constructs a new <code>Ticker</code> object, given its initial
@@ -105,6 +116,9 @@ public class Ticker extends IconItem
 		super( null, null, style );
 		setString( str );
 		setAppearanceMode( Item.PLAIN );
+		//#if polish.i18n.rightToLeft
+			this.direction = DIRECTION_LEFT_TO_RIGHT;
+		//#endif
 	}
 	
 	/**
@@ -131,11 +145,18 @@ public class Ticker extends IconItem
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#initContent(int, int)
 	 */
-	protected void initContent(int firstLineWidth, int lineWidth) {
-		super.initContent( Integer.MAX_VALUE, Integer.MAX_VALUE );
+	protected void initContent(int firstLineWidth, int availWidth, int availHeight) {
+		super.initContent( Integer.MAX_VALUE, Integer.MAX_VALUE, availHeight );
 		this.tickerWidth = this.contentWidth;
-		this.contentWidth = lineWidth;
-		this.tickerXOffset = - lineWidth;
+		//#debug
+		System.out.println("init content of ticker " + this.toString() + ", tickerWidth=" + this.tickerWidth + ", textVisible=" + this.isTextVisible) ;
+		this.contentWidth = availWidth;
+		if (this.direction == DIRECTION_LEFT_TO_RIGHT) {
+			this.tickerXOffset = this.tickerWidth;
+		} else {
+			this.tickerXOffset = - availWidth;
+		}
+		
 	}
 
 	/* (non-Javadoc)
@@ -153,14 +174,26 @@ public class Ticker extends IconItem
 		x -= this.tickerXOffset;
 		
 		super.paintContent(x, y, leftBorder, rightBorder, g);
-		if (x < leftBorder &&  x + this.tickerWidth + this.paddingHorizontal < rightBorder) {
-			// the item can be wrapped to the other side again:
-			if (this.tickerWidth > width) {
-				x += this.tickerWidth + this.paddingHorizontal;
-			} else {
-				x = rightBorder + (x - leftBorder);
+		if (this.direction == DIRECTION_RIGHT_TO_LEFT) {
+			if (x < leftBorder &&  x + this.tickerWidth + this.paddingHorizontal < rightBorder) {
+				// the item can be wrapped to the other side again:
+				if (this.tickerWidth > width) {
+					x += this.tickerWidth + this.paddingHorizontal;
+				} else {
+					x = rightBorder + (x - leftBorder);
+				}
+				super.paintContent(x, y, leftBorder, rightBorder, g);
 			}
-			super.paintContent(x, y, leftBorder, rightBorder, g);
+		} else {
+//			if (this.tickerXOffset < 0) {
+//				x += this.tickerXOffset; 
+//				x -= this.tickerWidth + this.tickerXOffset - this.paddingHorizontal;
+////				if (this.tickerWidth > width) {
+////					
+////				} else {
+////				}
+//				super.paintContent(x, y, leftBorder, rightBorder, g);
+//			}
 		}
 		
 		g.setClip(clipX, clipY, clipWidth, clipHeight);
@@ -179,16 +212,24 @@ public class Ticker extends IconItem
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#setStyle(de.enough.polish.ui.Style)
 	 */
-	public void setStyle(Style style) {
-		this.font = style.font;
-		this.textColor = style.getFontColor();
+	public void setStyle(Style style, boolean resetStyle) {
+		super.setStyle(style, resetStyle);
+		if (resetStyle) {
+			this.font = style.getFont();
+			this.textColor = style.getFontColor();
+		}
 		//#ifdef polish.css.ticker-step
 			Integer stepInt = style.getIntProperty("ticker-step");
 			if (stepInt != null) {
 				this.step = stepInt.intValue();
 			}
 		//#endif
-		super.setStyle(style);
+		//#ifdef polish.css.ticker-direction
+			Integer directionInt = style.getIntProperty("ticker-direction");
+			if (directionInt != null) {
+				this.direction = directionInt.intValue();
+			}
+		//#endif
 	}
 
 	/* (non-Javadoc)
@@ -198,13 +239,22 @@ public class Ticker extends IconItem
 		if (this.tickerWidth == 0) {
 			return false;
 		}
-		if (this.tickerXOffset < this.tickerWidth) {
-			this.tickerXOffset += this.step;
-		} else {
-			if (this.tickerWidth > this.contentWidth) {
-				this.tickerXOffset -= (this.tickerWidth + this.paddingHorizontal) - this.step;
+		if (this.direction == DIRECTION_RIGHT_TO_LEFT) {
+			if (this.tickerXOffset < this.tickerWidth) {
+				this.tickerXOffset += this.step;
 			} else {
-				this.tickerXOffset = (this.tickerXOffset - this.contentWidth) + this.step;
+				if (this.tickerWidth > this.contentWidth) {
+					this.tickerXOffset -= (this.tickerWidth + this.paddingHorizontal) - this.step;
+				} else {
+					this.tickerXOffset = (this.tickerXOffset - this.contentWidth) + this.step;
+				}
+			}
+		} else {
+			// direction is left to right:
+			if (this.tickerXOffset > -this.contentWidth) {
+				this.tickerXOffset -= this.step;
+			} else {
+				this.tickerXOffset = this.tickerWidth;
 			}
 		}
 		return true;

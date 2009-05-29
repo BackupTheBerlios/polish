@@ -3,7 +3,7 @@
 /*
  * Created on 15.09.2005 at 17:14:19.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -27,12 +27,10 @@
  */
 package de.enough.polish.ui.screenanimations;
 
-import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Displayable;
+import de.enough.polish.ui.Display;
+import de.enough.polish.ui.Displayable;
 import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Image;
 
-import de.enough.polish.ui.AccessibleCanvas;
 import de.enough.polish.ui.ScreenChangeAnimation;
 import de.enough.polish.ui.Style;
 
@@ -40,41 +38,36 @@ public class PaperScreenChangeAnimation extends ScreenChangeAnimation {
 	private boolean stillRun = true;
 	//row = wo sich das neue image befindet am display
 	private int row = 0;
-	private int[] rgbNew ;
-	private int[] rgbimage ,scaleableHeight;
+	private int[] scaleableHeight;
 	private int width, height;
 	
 	public PaperScreenChangeAnimation() {
 		super();
-		// TODO Auto-generated constructor stub
+		this.useNextCanvasRgb = true;
+		this.useLastCanvasRgb = true;
 	}
 
-	protected void show(Style style, Display dsplay, int width, int height,
-			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable, boolean isForward  ) 
+	protected void onShow(Style style, Display dsplay, int width, int height,
+			Displayable lstDisplayable, Displayable nxtDisplayable, boolean isForward  ) 
 	{
-			int size = nxtScreenImage.getWidth() * nxtScreenImage.getHeight();
 			this.row = 0;
 			this.height = height;
 			this.width = width;
-			this.rgbNew = new int [size];
-			this.rgbimage = new int[size];
 			this.scaleableHeight = new int[width];
 			for(int i = 0;i < this.scaleableHeight.length;i++){
 				this.scaleableHeight[i] = 0;
 			}
 			this.scaleableHeight[1]=1;
-			nxtScreenImage.getRGB(this.rgbNew, 0, width, 0, 0, width, height );
-			lstScreenImage.getRGB(this.rgbimage, 0, width, 0, 0, width, height );
-			super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable, isForward );
+			super.onShow(style, dsplay, width, height, lstDisplayable, nxtDisplayable, isForward );
 	}
 	
 	protected boolean animate() {
 		// TODO Auto-generated method stub
 		boolean Rowswitch = true;
 		int row = 0;
-		for(int i = 0; i < this.rgbimage.length;i++){		
+		for(int i = 0; i < this.lastCanvasRgb.length;i++){		
 			if(row <= this.row && this.scaleableHeight[row] !=0){
-				this.rgbimage[i] = this.rgbNew[i];
+				this.lastCanvasRgb[i] = this.nextCanvasRgb[i];
 			}
 			row = (row + 1) % this.width;
 		}
@@ -84,7 +77,7 @@ public class PaperScreenChangeAnimation extends ScreenChangeAnimation {
 	}
 
 	public void paintAnimation(Graphics g) {
-		g.drawRGB(this.rgbimage,0,this.width,0,0,this.width,this.height,false);
+		g.drawRGB(this.lastCanvasRgb,0,this.width,0,0,this.width,this.height,false);
 	}
 
 }

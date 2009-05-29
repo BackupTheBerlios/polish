@@ -33,7 +33,7 @@ import de.enough.polish.ui.Background;
 /**
  * <p>Draws an expanding backround which will show a border when it is fully expanded.</p>
  *
- * <p>Copyright Enough Software 2004 - 2008</p>
+ * <p>Copyright Enough Software 2004 - 2009</p>
 
  * <pre>
  * history
@@ -95,12 +95,10 @@ public class BorderedRoundRectOpeningBackground extends Background {
 			height--;
 			g.setColor( this.borderColor );
 			g.drawRoundRect( x, y, width, height, this.arcWidth, this.arcHeight );
-			if (this.borderWidth > 1) {
-				int border = this.borderWidth - 1;
-				while ( border > 0) {
-					g.drawRoundRect( x+border, y+border, width - (border<<1), height - (border<<1), this.arcWidth, this.arcHeight );
-					border--;
-				}
+			int border = this.borderWidth - 1;
+			while ( border > 0) {
+				g.drawRoundRect( x+border, y+border, width - (border<<1), height - (border<<1), this.arcWidth, this.arcHeight );
+				border--;
 			}
 		}
 	}

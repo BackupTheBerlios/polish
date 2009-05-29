@@ -2,7 +2,7 @@
 /*
  * Created on 16-Nov-2005 at 12:22:20.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -53,7 +53,7 @@ import de.enough.polish.util.ArrayList;
  * </ul>
  *    -->
  *
- * <p>Copyright (c) 2007 Enough Software</p>
+ * <p>Copyright (c) 2009 Enough Software</p>
  * <pre>
  * history
  *        16-July-2007 - Andre creation
@@ -107,7 +107,7 @@ public class SmileyTextEffect extends TextEffect {
 		//#if smileys:defined
 			//#= smileyList = new Smiley[]${smileys};
 		//#else
-			smileyList = new Smiley[0];		
+			smileyList = new Smiley[0];
 		//#endif
 	}
 	
@@ -124,7 +124,7 @@ public class SmileyTextEffect extends TextEffect {
 			
 			for(int j=0; j< smiley.smileys.length; j++)
 			{
-				this.smileyMap.put(smiley.smileys[j],smiley.image);
+				this.smileyMap.put(smiley.smileys[j].toLowerCase(),smiley.image);
 			}
 		}
 		
@@ -178,8 +178,13 @@ public class SmileyTextEffect extends TextEffect {
 	
 	
 
-
-	public String[] wrap(String text, Font font, int firstLineWidth, int lineWidth) {
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.TextEffect#wrap(java.lang.String, int, javax.microedition.lcdui.Font, int, int)
+	 */
+	public String[] wrap(String text, int textColor, Font font,
+			int firstLineWidth, int lineWidth)
+	{
 		if (!this.isInitialized) {
 			init();
 		}
@@ -243,6 +248,8 @@ public class SmileyTextEffect extends TextEffect {
 		return (String[]) lines.toArray( new String[ lines.size() ]);
 	}
 	
+	
+
 	public void wrap( String value, Font font, 
 			int completeWidth, int firstLineWidth, int lineWidth, 
 			ArrayList list ) 
@@ -250,6 +257,7 @@ public class SmileyTextEffect extends TextEffect {
 		if (!this.isInitialized) {
 			init();
 		}
+		
 		char[] valueChars = value.toCharArray();
 		int startPos = 0;
 		int lastSpacePos = -1;
@@ -259,17 +267,19 @@ public class SmileyTextEffect extends TextEffect {
 			char c = valueChars[i];
 			String smiley = isSmileyNext(valueChars,i);
 			
+			int elementWidth = 0;
+			
 			if(smiley == null)
 			{
-				currentLineWidth += font.charWidth( c );
+				elementWidth = font.charWidth( c );
 			}
 			else
 			{
 				Image img = (Image)this.smileyMap.get(smiley);
-				currentLineWidth += img.getWidth();
-				
-				i += smiley.length() - 1;
+				elementWidth = img.getWidth();
 			}
+			
+			currentLineWidth += elementWidth;
 			
 			if (c == '\n') {
 				list.add( new String( valueChars, startPos, i - startPos ) );
@@ -280,11 +290,11 @@ public class SmileyTextEffect extends TextEffect {
 				i = startPos;
 			} else if (currentLineWidth >= firstLineWidth && i > 0) {
 				if ( lastSpacePos == -1 ) {
-					i--;
-					//System.out.println("value=" + value + ", i=" + i + ", startPos=" + startPos);
+					//#debug debug
+					System.out.println("value=" + value + ", i=" + i + ", startPos=" + startPos);
 					list.add( new String( valueChars, startPos, i - startPos ) );
 					startPos =  i;
-					currentLineWidth = 0;
+					currentLineWidth = elementWidth;
 				} else {
 					currentLineWidth -= lastSpacePosLength;
 					list.add( new String( valueChars, startPos, lastSpacePos - startPos ) );
@@ -297,24 +307,29 @@ public class SmileyTextEffect extends TextEffect {
 				lastSpacePosLength = currentLineWidth;
 			}
 			
+			if(smiley != null)
+			{
+				i += smiley.length() - 1;
+			}
 		} 
+		
 		// add tail:
 		list.add( new String( valueChars, startPos, valueChars.length - startPos ) );
 	}
 	
+	
+	
 	private String isSmileyNext(char[] chars, int offset)
 	{
+		String charsStr = new String(chars).toLowerCase();
+		
 		Enumeration smileys = this.smileyMap.keys();
 		String smiley;
 		
 		while(smileys.hasMoreElements())
 		{
-			smiley = (String)smileys.nextElement(); 
-		}
-		
-		while(smileys.hasMoreElements())
-		{
 			smiley = (String)smileys.nextElement();
+			smiley = smiley.toLowerCase();
 			 
 			 if(offset + smiley.length() > chars.length)
 			 {
@@ -325,7 +340,7 @@ public class SmileyTextEffect extends TextEffect {
 				 boolean isSmiley = true;
 				 for(int j=0; j<smiley.length(); j++)
 				 {
-					 if(chars[offset + j] != smiley.charAt(j))
+					 if(charsStr.charAt(offset + j) != smiley.charAt(j))
 					 {
 						 isSmiley = false;
 						 break;
@@ -347,7 +362,7 @@ public class SmileyTextEffect extends TextEffect {
 	 */
 	public void drawString(String text, int textColor, int x, int y, int orientation,
 			Graphics g) 
-	{
+	{	
 		if (!this.isInitialized) {
 			init();
 		}
@@ -367,7 +382,7 @@ public class SmileyTextEffect extends TextEffect {
 				offset += super.stringWidth(linePart);
 				
 				Image img = (Image)this.smileyMap.get(this.currentSmiley);
-			
+								
 				g.drawImage(img, x + offset, y, orientation);
 				
 				offset += this.smileyWidth;
@@ -381,17 +396,20 @@ public class SmileyTextEffect extends TextEffect {
 	
 	protected int getSmiley(String line)
 	{
+		String lowerLine = line.toLowerCase();
+		
 		Enumeration smileys = this.smileyMap.keys();
 		
-		int first = line.length();
+		int first = lowerLine.length();
 		this.currentSmiley = null;
 		
 		while(smileys.hasMoreElements())
 		{
 			String smiley = (String)smileys.nextElement();
+			smiley = smiley.toLowerCase();
 			
 			int position = 0;
-			if((position = line.indexOf(smiley)) > -1)
+			if((position = lowerLine.indexOf(smiley)) > -1)
 			{
 				if(first > position)
 				{

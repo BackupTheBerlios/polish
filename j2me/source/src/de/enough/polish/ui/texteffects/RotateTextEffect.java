@@ -2,7 +2,7 @@
 /*
  * Created on Nov 29, 2006 at 9:33:31 PM.
  * 
- * Copyright (c) 2006 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -44,7 +44,7 @@ import de.enough.polish.util.RgbImage;
  * 	 <li><b>text-rotate-angle</b>: The angle by which the text should be rotated.</li>
  * </ul>
  *
- * <p>Copyright Enough Software 2006 - 2008</p>
+ * <p>Copyright Enough Software 2006 - 2009</p>
  * <pre>
  * history
  *        Nov 29, 2006 - rob creation
@@ -58,6 +58,16 @@ public class RotateTextEffect extends TextEffect {
 	private transient RgbImage rotatedImage;
 	private int xPos;
 	private int yPos;
+
+	
+	/**
+	 * Creates a new rotate effect
+	 */
+	public RotateTextEffect()
+	{
+		super();
+		this.isTextSensitive = true;
+	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.TextEffect#drawString(java.lang.String, int, int, int, int, javax.microedition.lcdui.Graphics)
@@ -126,8 +136,8 @@ public class RotateTextEffect extends TextEffect {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.TextEffect#setStyle(de.enough.polish.ui.Style)
 	 */
-	public void setStyle(Style style) {
-		super.setStyle(style);
+	public void setStyle(Style style, boolean resetStyle) {
+		super.setStyle(style, resetStyle);
 		//#if polish.css.text-rotate-angle
 			Integer angleInt = style.getIntProperty("text-rotate-angle");
 			if (angleInt != null) {

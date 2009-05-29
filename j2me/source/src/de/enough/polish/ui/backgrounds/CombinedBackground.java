@@ -2,7 +2,7 @@
 /*
  * Created on Nov 21, 2007 at 12:23:44 PM.
  * 
- * Copyright (c) 2007 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -32,6 +32,7 @@ import de.enough.polish.ui.Background;
 import de.enough.polish.ui.ClippingRegion;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
+import de.enough.polish.ui.Style;
 
 /**
  * <p>Provides a background consisting of two other backgrounds.</p>
@@ -87,7 +88,7 @@ title {
  * </pre>
  * </p>
  *
- * <p>Copyright Enough Software 2007 - 2008</p>
+ * <p>Copyright Enough Software 2007 - 2009</p>
  * <pre>
  * history
  *        Nov 21, 2007 - rob creation
@@ -101,7 +102,7 @@ public class CombinedBackground extends Background
 	private final Background background;
 
 	/**
-	 * Creates a new combiend background.
+	 * Creates a new combined background.
 	 * 
 	 * @param foreground the background painted last
 	 * @param background  the background painted in the background
@@ -161,4 +162,15 @@ public class CombinedBackground extends Background
 		this.background.releaseResources();
 	}
 
+	//#if polish.css.animations
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Background#setStyle(de.enough.polish.ui.Style)
+	 */
+	public void setStyle(Style style)
+	{
+		this.background.setStyle(style);
+		this.foreground.setStyle(style);
+	}
+	//#endif
+	
 }

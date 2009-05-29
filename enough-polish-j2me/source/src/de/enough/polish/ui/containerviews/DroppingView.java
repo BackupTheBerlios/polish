@@ -37,7 +37,7 @@ import de.enough.polish.ui.Style;
 /**
  * <p>Shows the items in a normal list. During the beginning an animation is shown, in which the items fall into their place.</p>
  *
- * <p>Copyright Enough Software 2004 - 2008</p>
+ * <p>Copyright Enough Software 2004 - 2009</p>
 
  * <pre>
  * history
@@ -75,9 +75,9 @@ public class DroppingView extends ContainerView {
 	 * @see de.enough.polish.ui.ContainerView#initContent(de.enough.polish.ui.Container, int, int)
 	 */
 	protected void initContent(Item parentItm, int firstLineWidth,
-			int lineWidth) 
+			int availWidth, int availHeight) 
 	{
-		super.initContent(parentItm, firstLineWidth, lineWidth);
+		super.initContent(parentItm, firstLineWidth, availWidth, availHeight);
 		
 		Container parent = (Container) parentItm;				
 		if (!this.animationInitialised) {

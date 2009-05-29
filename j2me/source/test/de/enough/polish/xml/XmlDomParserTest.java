@@ -1,10 +1,15 @@
 package de.enough.polish.xml;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 import junit.framework.TestCase;
 
 /*
  * Created on Jun 4, 2008 at 12:11:41 PM.
  * 
- * Copyright (c) 2007 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -49,6 +54,25 @@ public class XmlDomParserTest extends TestCase
 		// direct access:
 		XmlDomNode child = root.getChild("childnode");		
 		System.out.println("first child: " + child.getName() + ", x=" + child.getAttribute("x") + ", text=" + child.getText() );
+	}
+	
+	public void testPerformance() throws IOException {
+		long startTime = System.currentTimeMillis();
+		XmlDomNode root = XmlDomParser.parseTree( new FileInputStream( new File( "source/test/de/enough/polish/xml/test.html")));
+		System.out.println("XmlDomNode parsing took " + (System.currentTimeMillis() - startTime) + " ms");
+		
+		startTime = System.currentTimeMillis();
+		SimplePullParser parser = new XmlPullParser( new InputStreamReader(new FileInputStream( new File( "source/test/de/enough/polish/xml/test.html"))) );
+		while (parser.next() != SimplePullParser.END_DOCUMENT)
+	    {
+	      if (parser.getType() == SimplePullParser.START_TAG
+	          || parser.getType() == SimplePullParser.END_TAG)
+	      {
+	        boolean openingTag = parser.getType() == SimplePullParser.START_TAG;
+	      }
+	      
+	    }
+		System.out.println("SimplePullParser parsing took " + (System.currentTimeMillis() - startTime) + " ms");
 	}
 
 }

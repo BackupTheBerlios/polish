@@ -1,7 +1,7 @@
 /*
  * Created on Mar 1, 2006 at 12:31:15 PM.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -29,17 +29,13 @@ import java.util.Enumeration;
 import java.util.NoSuchElementException;
 
 /**
- * <p>Provides a simplified version of the J2SE StringTokeniyer class for J2ME applications.</p>
+ * <p>Provides a simplified version of the J2SE StringTokenizer class for J2ME applications.</p>
  * <p><b>Note:</b>: This implementation behaves like the J2SE StringTokenizer, so
  * empty tokens are not counted and are skipped in the nextToken()/hasMoreTokens() methods.
  * If you need to obtain empty tokens as well, please use StringUtil.split(...) instead. 
  * </p>
  *
- * <p>Copyright (c) Enough Software 2005 - 2008</p>
- * <pre>
- * history
- *        Mar 1, 2006 - rob creation
- * </pre>
+ * <p>Copyright (c) Enough Software 2005 - 2009</p>
  * @author Robert Virkus, j2mepolish@enough.de
  * @see de.enough.polish.util.TextUtil#split(String, char)
  * @see de.enough.polish.util.TextUtil#split(String, char, int)

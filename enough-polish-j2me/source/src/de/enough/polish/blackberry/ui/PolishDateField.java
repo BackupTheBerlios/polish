@@ -23,51 +23,35 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-/*
- * Copyright (c) 2006 Robert Virkus / Enough Software
- *
- * This file is part of J2ME Polish.
- *
- * J2ME Polish is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * 
- * J2ME Polish is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with Foobar; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- * 
- * Commercial licenses are also available, please
- * refer to the accompanying LICENSE.txt or visit
- * http://www.j2mepolish.org for details.
- */
 package de.enough.polish.blackberry.ui;
 
 import java.util.Date;
 import java.util.TimeZone;
 
+import de.enough.polish.ui.Style;
 import de.enough.polish.ui.StyleSheet;
 import net.rim.device.api.i18n.DateFormat;
 import net.rim.device.api.system.Application;
-import net.rim.device.api.ui.UiApplication;
 import net.rim.device.api.ui.component.DateField;
+import net.rim.device.api.ui.XYRect;
+import net.rim.device.api.i18n.SimpleDateFormat;
 
 /**
  * <p>A field used by de.enough.polish.ui.DateField for input of dates on blackberry platforms.</p>
  *
- * <p>copyright Enough Software 2006 - 2008</p>
+ * <p>copyright Enough Software 2006 - 2009</p>
  * <pre>
  * history
  *        18.09.2006 - rob creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class PolishDateField extends DateField {
+public class PolishDateField 
+extends DateField
+//#if polish.hasTrackballEvents
+implements AccessibleField
+//#endif
+{
 
 	private static final int MIDP_DATE = 1;
 	private static final int MIDP_TIME = 2;
@@ -76,6 +60,12 @@ public class PolishDateField extends DateField {
     private boolean isFocused;
     public boolean processKeyEvents = true;
 	private int fontColor;
+	private int maxLayoutHeight;
+	private int maxLayoutWidth;
+	//#if ${ version(polish.JavaPlatform, BlackBerry) } >= ${version(4.6)}
+		private BackgroundWrapper backgroundWrapper;
+	//#endif
+	private final XYRect xyFocusRect;
 
 	/**
 	 * Creates a new date field
@@ -112,9 +102,10 @@ public class PolishDateField extends DateField {
 	 */
 	public PolishDateField(long date, DateFormat dateFormat, long style) {
 		super(null, date, dateFormat, style);
+		this.xyFocusRect = new XYRect();
 	}
 	
-	private static long getStyle(int inputMode) {
+	public static long getStyle(int inputMode) {
 		long style = EDITABLE;
 		switch (inputMode) {
 		case MIDP_DATE:
@@ -174,19 +165,55 @@ public class PolishDateField extends DateField {
              super.paint( g );
          }
    }
+	 protected void drawFocus(net.rim.device.api.ui.Graphics graphics, boolean on)
+	 {
+		 getFocusRect( this.xyFocusRect );
+		 graphics.setColor( this.fontColor );
+		 // apparently the focus is paint _after_ the content is drawn on BB.
+		 // Weird design decision, this means that we cannot use any fill method here...
+//		 graphics.fillRoundRect( this.xyFocusRect.x - 2, this.xyFocusRect.y - 2, this.xyFocusRect.width + 4, this.xyFocusRect.height + 4, 6, 6 );
+//		 int complementaryColor = DrawUtil.getComplementaryColor( this.fontColor );
+//		 graphics.setColor( complementaryColor );
+//		 graphics.fillRoundRect( this.xyFocusRect.x, this.xyFocusRect.y, this.xyFocusRect.width, this.xyFocusRect.height, 6, 6 );
+		 graphics.drawRoundRect( this.xyFocusRect.x, this.xyFocusRect.y, this.xyFocusRect.width, this.xyFocusRect.height, 6, 6 );
+	 }
 	 
      public void layout( int width, int height) {
-         super.layout( width, height );
+    	 if (this.maxLayoutWidth != 0) {
+    		 super.layout( this.maxLayoutWidth, this.maxLayoutHeight );
+    	 } else {
+    		 super.layout( width, height );
+    	 }
      }
    
-	public void setFont(Font font, int textColor) {
-		super.setFont( font.font );
-		this.fontColor = textColor;
-	}
-
-	public void setFont(javax.microedition.lcdui.Font font, int textColor) {
-		// never used anyhow, since javax.microedition.lcdui.Font is mapped to Font
-	}
+		public void setStyle(Style style) {
+			Font font = (Font)(Object)style.getFont();
+			if (font == null) {
+				font = Font.getDefaultFont();
+			}
+			try {
+				super.setFont( font.font );
+			} catch (IllegalStateException e) {
+				//#debug error
+				System.out.println("Layout error: " + e );
+			}
+			this.fontColor = style.getFontColor();
+			//#if ${ version(polish.JavaPlatform, BlackBerry) } >= ${version(4.6)}
+				if (style.background != null) {
+					if (this.backgroundWrapper == null) {
+						this.backgroundWrapper = new BackgroundWrapper( style.background );
+						try {
+							setBackground(this.backgroundWrapper);
+						} catch (Exception e) {
+							//#debug error
+							System.out.println("Unable to set background" + e);
+						}
+					} else {
+						this.backgroundWrapper.setBackground(style.background);
+					}
+				}
+			//#endif
+		}
 
 	public void setPaintPosition(int x, int y ) {
        this.isFocused = true;
@@ -194,7 +221,6 @@ public class PolishDateField extends DateField {
 	}
 
 	public void setInputMode(int mode) {
-		
 		DateFormat format = getDateFormat(mode);
 		Object bbLock = Application.getEventLock();
 		synchronized (bbLock) {
@@ -206,5 +232,30 @@ public class PolishDateField extends DateField {
 		DateFormat format = getDateFormat( mode );
 		//TODO RIM API says it's possible to set timezone on DateFormat, however no applicable methods can be found
 		return format;
+	}
+
+	public void doLayout(int width, int height) {
+		this.maxLayoutWidth = width;
+		this.maxLayoutHeight = height;
+		layout( width, height );
+	}
+	
+	//#if polish.hasTrackballEvents
+	public boolean navigationMovement(int dx, int dy, int status, int time) {
+		int lastSubfield = getCurrentSubfield();
+		boolean processed = super.navigationMovement(dx, dy, status, time);
+		if (!processed && dx != 0) {
+			super.moveFocus( dx < 0 ? -1 : +1, 0, time);
+			processed = true;
+		}
+		if (processed && getCurrentSubfield() == lastSubfield ) {
+			processed = false;
+		}
+		return processed;
+	}
+	//#endif
+
+	public static DateFormat getDateFormat(String dateFormatPattern) {
+		return new SimpleDateFormat( dateFormatPattern );
 	}
 }

@@ -3,7 +3,7 @@
 /*
  * Created on 27-May-2005 at 18:54:36.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -36,7 +36,7 @@ import de.enough.polish.ui.Style;
 /**
  * <p>Moves the new screen from the bottom to the front.</p>
  *
- * <p>Copyright (c) Enough Software 2005 - 2008</p>
+ * <p>Copyright (c) Enough Software 2005 - 2009</p>
  * <pre>
  * history
  *        31-May-2005 - mkoch creation

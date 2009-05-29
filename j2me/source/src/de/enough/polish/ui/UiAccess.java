@@ -1,8 +1,8 @@
-//#condition polish.midp || polish.usePolishGui
+//#condition polish.usePolishGui
 /*
  * Created on 31-Jan-2006 at 00:04:45.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -26,13 +26,10 @@
  */
 package de.enough.polish.ui;
 
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.CommandListener;
-import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
+import de.enough.polish.event.EventManager;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.HashMap;
 
@@ -42,7 +39,7 @@ import de.enough.polish.util.HashMap;
  *    the screen changes its focus or another internal state (like changing a tab in the TabbedForm).
  * </p>
  *
- * <p>Copyright (c) Enough Software 2005 - 2008</p>
+ * <p>Copyright (c) Enough Software 2005 - 2009</p>
  * <pre>
  * history
  *        31-Jan-2006 - rob creation
@@ -50,6 +47,73 @@ import de.enough.polish.util.HashMap;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public final class UiAccess {
+	
+	/**
+	 * The bit representing the UP key.  This constant has a value of
+	 * <code>0x0002</code> (1 << Canvas.UP).
+	 * @see #getKeyStates() 
+	 */
+	public static final int UP_PRESSED = 0x0002;
+
+	/**
+	 * The bit representing the DOWN key.  This constant has a value of
+	 * <code>0x0040</code> (1 << Canvas.DOWN).
+	 * @see #getKeyStates() 
+	 */
+	public static final int DOWN_PRESSED = 0x0040;
+
+	/**
+	 * The bit representing the LEFT key.  This constant has a value of
+	 * <code>0x0004</code> (1 << Canvas.LEFT).
+	 * @see #getKeyStates() 
+	 */
+	public static final int LEFT_PRESSED = 0x0004;
+
+	/**
+	 * The bit representing the RIGHT key.  This constant has a value of
+	 * <code>0x0020</code> (1 << Canvas.RIGHT).
+	 * @see #getKeyStates() 
+	 */
+	public static final int RIGHT_PRESSED = 0x0020;
+
+	/**
+	 * The bit representing the FIRE key.  This constant has a value of
+	 * <code>0x0100</code> (1 << Canvas.FIRE).
+	 * @see #getKeyStates() 
+	 */
+	public static final int FIRE_PRESSED = 0x0100;
+
+	/**
+	 * The bit representing the GAME_A key (may not be supported on all
+	 * devices).  This constant has a value of
+	 * <code>0x0200</code> (1 << Canvas.GAME_A).
+	 * @see #getKeyStates() 
+	 */
+	public static final int GAME_A_PRESSED = 0x0200;
+
+	/**
+	 * The bit representing the GAME_B key (may not be supported on all
+	 * devices).  This constant has a value of
+	 * <code>0x0400</code> (1 << Canvas.GAME_B).
+	 * @see #getKeyStates() 
+	 */
+	public static final int GAME_B_PRESSED = 0x0400;
+
+	/**
+	 * The bit representing the GAME_C key (may not be supported on all
+	 * devices).  This constant has a value of
+	 * <code>0x0800</code> (1 << Canvas.GAME_C).
+	 * @see #getKeyStates() 
+	 */
+	public static final int GAME_C_PRESSED = 0x0800;
+
+	/**
+	 * The bit representing the GAME_D key (may not be supported on all
+	 * devices).  This constant has a value of
+	 * <code>0x1000</code> (1 << Canvas.GAME_D).
+	 * @see #getKeyStates() 
+	 */
+	public static final int GAME_D_PRESSED = 0x1000;
 	
 	/**
 	 * A constant for setting the input mode of an TextField to lowercase.
@@ -83,6 +147,75 @@ public final class UiAccess {
 	 */
 	private UiAccess() {
 		super();
+	}
+	
+	/**
+	 * Gets the states of the physical game keys.  
+	 * Each bit in the returned
+	 * integer represents a specific key on the device.  A key's bit will be
+	 * 1 if the key is currently down or has been pressed at least once since
+	 * the last time this method was called.  The bit will be 0 if the key
+	 * is currently up and has not been pressed at all since the last time
+	 * this method was called.  This latching behavior ensures that a rapid
+	 * key press and release will always be caught by an application loop,
+	 * regardless of how slowly the loop runs.
+	 * <p>
+	 * For example:
+	 * <code>
+	 * <pre>
+	 * 
+	 * // Get the key state and store it
+	 * int keyState = getKeyStates();
+	 * if ((keyState & UiAccess.LEFT_KEY) != 0) {
+	 * 		positionX--;
+	 * }
+	 * else if ((keyState & UiAccess.RIGHT_KEY) != 0) {
+	 * 		positionX++;
+	 * }
+	 * 
+	 * </pre>
+	 * </code>
+	 * <p>
+	 * Calling this method has the side effect of clearing any latched state.
+	 * Another call to getKeyStates immediately after a prior call will
+	 * therefore report the system's best idea of the current state of the
+	 * keys, the latched bits having been cleared by the first call.
+	 * <p>
+	 * On J2ME Polish this method is implemented by monitoring key press and
+	 * release events.  Thus the state reported by getKeyStates might
+	 * lag the actual state of the physical keys since the timeliness
+	 * of the key information is be subject to the capabilities of each
+	 * device.  Also, some devices may be incapable of detecting simultaneous
+	 * presses of multiple keys.
+	 * <p>
+	 * This method returns 0 unless the GameCanvas is currently visible as
+	 * reported by <A HREF="../../../../javax/microedition/lcdui/Displayable.html#isShown()"><CODE>Displayable.isShown()</CODE></A>.
+	 * Upon becoming visible, a GameCanvas will initially indicate that
+	 * all keys are unpressed (0); if a key is held down while the GameCanvas
+	 * is being shown, the key must be first released and then pressed in
+	 * order for the key press to be reported by the GameCanvas.
+	 * <p>
+	 * 
+	 * @return An integer containing the key state information (one bit per  key), or 0 if the J2ME Polish is not used or there is no current screen
+	 * @see UiAccess#UP_PRESSED
+	 * @see UiAccess#DOWN_PRESSED
+	 * @see UiAccess#LEFT_PRESSED
+	 * @see UiAccess#RIGHT_PRESSED
+	 * @see UiAccess#FIRE_PRESSED
+	 * @see UiAccess#GAME_A_PRESSED
+	 * @see UiAccess#GAME_B_PRESSED
+	 * @see UiAccess#GAME_C_PRESSED
+	 * @see UiAccess#GAME_D_PRESSED
+	 */
+	public static  int getKeyStates()
+	{
+		//#if polish.usePolishGui
+		Screen screen = StyleSheet.currentScreen;
+		if (screen != null) {
+			return screen.getKeyStates();
+		}
+		//#endif
+		return 0;
 	}
 	
 	//#if polish.usePolishGui && polish.midp
@@ -135,6 +268,31 @@ public final class UiAccess {
 		return -1;
 	}
 	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Retrieves the currently focused item of the specified ChoiceGroup
+	 * @param group the group
+	 * @return the index of the currently focused item, -1 if none is focused
+	 */
+	public static int getFocusedIndex(ChoiceGroup group)
+	{
+		return group.getFocusedIndex();
+	}
+	//#endif
+
+	//#if polish.midp
+	/**
+	 * Retrieves the currently focused item of the specified ChoiceGroup
+	 * @param group the group
+	 * @return the index of the currently focused item, -1 if none is focused
+	 */
+	public static int getFocusedIndex(javax.microedition.lcdui.ChoiceGroup group)
+	{
+		return -1;
+	}
+	//#endif
+
 
 	//#if polish.midp
 	/**
@@ -215,6 +373,7 @@ public final class UiAccess {
 	 * 
 	 * @param screen the screen for which the title should be replaced 
 	 * @param title the element responsible for painting the title.
+	 * @see #getTitleItem(javax.microedition.lcdui.Screen)
 	 */
 	public static void setTitle( javax.microedition.lcdui.Screen screen, javax.microedition.lcdui.Item title ) {
 		// this is ignored.
@@ -228,6 +387,7 @@ public final class UiAccess {
 	 * 
 	 * @param screen the screen for which the title should be replaced 
 	 * @param title the element responsible for painting the title.
+	 * @see #getTitleItem(Screen)
 	 */
 	public static void setTitle( Screen screen, Item title ) {
 		screen.setTitle( title );
@@ -243,6 +403,7 @@ public final class UiAccess {
 	 * @param screen the screen for which the title should be replaced 
 	 * @param title the element responsible for painting the title.
 	 * @param style the style for the title
+	 * @see #getTitleItem(Screen)
 	 */
 	public static void setTitle( Screen screen, Item title, Style style ) {
 		if (style != null) {
@@ -259,8 +420,12 @@ public final class UiAccess {
 	 * 
 	 * @param screen the screen for which the title should be replaced 
 	 * @param title the element responsible for painting the title.
+	 * @see #getTitleItem(javax.microedition.lcdui.Screen)
 	 */
 	public static void setTitle( javax.microedition.lcdui.Screen screen, Item title ) {
+		// ignore
+	}
+	public static void setTitle(Screen screen, javax.microedition.lcdui.Item title ) {
 		// ignore
 	}
 	//#endif
@@ -274,6 +439,7 @@ public final class UiAccess {
 	 * @param screen the screen for which the title should be replaced 
 	 * @param title the element responsible for painting the title.
 	 * @param style the style for the title
+	 * @see #getTitleItem(javax.microedition.lcdui.Screen)
 	 */
 	public static void setTitle( javax.microedition.lcdui.Screen screen, Item title, Style style ) {
 		// ignore
@@ -531,7 +697,7 @@ public final class UiAccess {
 	 */
 	public static void setCurrentListIndex( Display display, javax.microedition.lcdui.List list, int index ) {
 		//#if !polish.blackberry && polish.usePolishGui
-			display.setCurrent( list );
+			//display.setCurrent( list );
 		//#endif
 	}
 	//#endif
@@ -879,6 +1045,19 @@ public final class UiAccess {
 		item.setStyle(style);
 	}
 	//#endif	
+	
+	//#if polish.midp
+	/**
+	 * Applies a style to the specified command.
+	 * 
+	 * @param command the command 
+	 */
+	public static void setStyle(javax.microedition.lcdui.Command command) {
+		// ignore
+		
+	}
+	//#endif	
+
 
 	//#if polish.usePolishGui && polish.midp
 	/**
@@ -1596,9 +1775,26 @@ public final class UiAccess {
 	 * @param parent the parent command
 	 * @param screen the screen.
 	 */
-	public static void addSubCommand(  Command child, Command parent, javax.microedition.lcdui.Screen screen  ) {
+	public static void addSubCommand(  javax.microedition.lcdui.Command child, javax.microedition.lcdui.Command parent, javax.microedition.lcdui.Screen screen  ) {
 		//#if !polish.blackberry
-		screen.addCommand( child );
+			//TODO implement addSubCommand
+			screen.addCommand( child );
+		//#endif
+	}
+	//#endif
+	
+	//#if polish.LibraryBuild
+	/**
+	 * Adds the given command as a subcommand to the defined screen. When the J2ME Polish GUI is not used, this will just add the command to the screen like a normal command.
+	 * 
+	 * @param child the sub command
+	 * @param parent the parent command
+	 * @param screen the screen.
+	 */
+	public static void addSubCommand(  javax.microedition.lcdui.Command child, javax.microedition.lcdui.Command parent, Screen screen  ) {
+		//#if !polish.blackberry
+			//TODO implement addSubCommand
+			screen.addCommand( child );
 		//#endif
 	}
 	//#endif
@@ -1632,6 +1828,34 @@ public final class UiAccess {
 
 	//#if polish.midp
 	/**
+	 * Removes the given command as subcommand from the defined screen
+	 * 
+	 * @param childCommand the command to remove.
+	 * @param parentCommand the parent command of the command to remove.
+	 * @param screen the screen.
+	 */
+	public static void removeSubCommand(javax.microedition.lcdui.Command childCommand, javax.microedition.lcdui.Command parentCommand, javax.microedition.lcdui.Screen screen)
+	{
+		// ignore
+	}
+	//#endif
+
+	//#if polish.usePolishGui
+	/**
+	 * Removes the given command as a subcommand from the defined screen
+	 * 
+	 * @param childCommand the command to remove.
+	 * @param parentCommand the parent command of the command to remove.
+	 * @param screen the screen.
+	 */
+	public static void removeSubCommand(Command childCommand, Command parentCommand, Screen screen)
+	{
+		screen.removeSubCommand(childCommand, parentCommand);
+	}
+	//#endif
+
+	//#if polish.midp
+	/**
 	 * Removes all commands from the given screen
 	 * This option is only available when the "menu" fullscreen mode is activated.
 	 * 
@@ -1654,7 +1878,6 @@ public final class UiAccess {
 	}
 	//#endif
 
-	
 	//#if polish.midp
 	/**
 	 * Checks whether the commands menu of the screen is currently opened.
@@ -1689,6 +1912,27 @@ public final class UiAccess {
      * @param item the item that should be focused
      */
     public static void focus( javax.microedition.lcdui.Screen screen, javax.microedition.lcdui.Item item ) {
+        // ignore
+    }
+    //#endif
+
+	//#if polish.midp && polish.usePolishGui
+    /**
+     * Focuses the specified item on the given screen.
+     * 
+     * @param screen the screen
+     * @param item the item that should be focused
+     */
+    public static void focus( Screen screen, javax.microedition.lcdui.Item item ) {
+        // ignore
+    }
+    /**
+     * Focuses the specified item on the given screen.
+     * 
+     * @param screen the screen
+     * @param item the item that should be focused
+     */
+    public static void focus( javax.microedition.lcdui.Screen screen, Item item ) {
         // ignore
     }
     //#endif
@@ -1755,7 +1999,7 @@ public final class UiAccess {
     			screen.focus(choiceGroup);
     		}
     	}
-        choiceGroup.focus( index );
+        choiceGroup.focusChild( index );
     }
     //#endif
 
@@ -2444,7 +2688,7 @@ public final class UiAccess {
 			// first defocus item:
 			Item parent = item.parent;
 			if (parent instanceof Container) {
-				((Container)parent).focus(-1);
+				((Container)parent).focusChild(-1);
 			}
 		}
 		if (style != null) {
@@ -2508,7 +2752,7 @@ public final class UiAccess {
 	}
 	//#endif	
 	
-	//#if polish.midp
+	//#if polish.midp && polish.usePolishGui
 	/**
 	 * Makes the command interactive (accessible) or non-interactive.
 	 * This method is ignored when the J2ME Polish UI is not activated.
@@ -2525,6 +2769,25 @@ public final class UiAccess {
 		// ignore
 	}
 	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Makes the command interactive (accessible) or non-interactive.
+	 * This method is ignored when the J2ME Polish UI is not activated.
+	 * <pre>
+	 * //#style inactiveStyle
+	 * UiAccess.setAccessible( myScreen, myCommand, false );
+	 * </pre>
+	 * 
+	 * @param screen the screen that contains the command
+	 * @param command the item that should be made accessible 
+	 * @param isAccessible true when the item should be accessible/selectable
+	 */
+	public static void setAccessible( javax.microedition.lcdui.Screen screen, javax.microedition.lcdui.Command command, boolean isAccessible ) {
+		// ignore
+	}
+	//#endif
+
 	
 	//#if polish.usePolishGui
 	/**
@@ -2588,19 +2851,6 @@ public final class UiAccess {
 	}
 	//#endif
 	
-	//#if polish.usePolishGui
-	/**
-	 * Sets an image for the specified ticker.
-	 * This method is ignored when the J2ME Polish UI is not activated.
-	 * 
-   * @param ticker the ticker item which will the image be set 
-   * @param image that image that will be set to the ticker
-	 */
-	public static void setAccessible( Ticker ticker, Image image ) {
-		ticker.setImage(image);
-	}
-	//#endif
-
 	//#if polish.usePolishGui
 	/**
 	 * Attaches data to the specified screen.
@@ -2676,7 +2926,7 @@ public final class UiAccess {
 	 * @param command the command
 	 * @param label the new label that should be shown
 	 */
-	public static void setCommandLabel( javax.microedition.lcdui.Screen screen, Command command, String label) {
+	public static void setCommandLabel( javax.microedition.lcdui.Screen screen, javax.microedition.lcdui.Command command, String label) {
 		//ignore
 	}
 	//#endif
@@ -2695,12 +2945,43 @@ public final class UiAccess {
 	 * @param label the new label that should be shown
 	 */
 	public static void setCommandLabel( Screen screen, Command command, String label) {
-		CommandItem item = screen.getCommandItem(command);
-		//#debug
-		System.out.println("setting text=" + label + " for previous " + command.getLabel() + "=" + item );
-		if (item != null) {
-			item.setText(label);
-		}
+		screen.getCommandItem(command).setText(label);
+	}
+	//#endif
+	
+	//#if polish.LibraryBuild
+	/**
+	 * Changes the shown label of the specified command.
+	 * Note that command.getLabel() will afterwards retrieve the same string as before, 
+	 * only the shown label will be changed. You cannot change the labels of the
+	 * commands that are shown on the left or right side of the menu, unless the extended menubar is activated 
+	 * (polish.MenuBar.useExtendedMenuBar=true).
+	 * This call is ignored when J2ME Polish does not render the menu.
+	 *
+	 * @param screen the screen that contains the command
+	 * @param command the command
+	 * @param label the new label that should be shown
+	 */
+	public static void setCommandLabel( Screen screen, javax.microedition.lcdui.Command command, String label) {
+		// ignore
+	}
+	//#endif
+	
+	
+	//#if polish.LibraryBuild
+	/**
+	 * Changes the shown label of the specified command.
+	 * Note that command.getLabel() will afterwards retrieve the same string as before, 
+	 * only the shown label will be changed. You cannot change the labels of the
+	 * commands that are shown on the left or right side of the menu, unless the extended menubar is activated 
+	 * (polish.MenuBar.useExtendedMenuBar=true).
+	 * This call is ignored when J2ME Polish does not render the menu.
+	 *
+	 * @param command the command
+	 * @param label the new label that should be shown
+	 */
+	public static void setCommandLabel( javax.microedition.lcdui.Command command, String label) {
+		// ignore
 	}
 	//#endif
 
@@ -3460,6 +3741,22 @@ public final class UiAccess {
 	}
 	//#endif
 	
+	//#if polish.usePolishGui
+	/**
+	 * Specifies if the given FramedForm is allowed to cycle through its items.
+	 * Needs polish.FramedForm.allowCycling to be set to true.
+	 * 
+	 * @param form the FramedForm
+	 * @param cycling true, if cycling should be allowed, otherwise false
+	 */
+	public static void setCycling(FramedForm form, boolean cycling)
+	{
+		//#if polish.FramedForm.allowCycling
+	 		form.allowCycling = cycling;
+	 	//#endif
+	}
+	//#endif
+	
 	//#if polish.midp
 	/**
 	 * Retrieves the horizontal content start for the given screen.
@@ -3511,6 +3808,9 @@ public final class UiAccess {
 	 * @return the horizontal start position in pixels from the left, -1 when it is unknown 
 	 */
 	public static int getContentX( Screen screen ) {
+		if (screen.contentWidth == 0) {
+			screen.calculateContentArea(0, 0, Display.getScreenWidth(), Display.getScreenHeight() );
+		}
 		return screen.contentX;
 	}
 	//#endif
@@ -3522,6 +3822,9 @@ public final class UiAccess {
 	 * @return the vertical start position in pixels from the top, -1 when it is unknown 
 	 */
 	public static int getContentY( Screen screen ) {
+		if (screen.contentWidth == 0) {
+			screen.calculateContentArea(0, 0, Display.getScreenWidth(), Display.getScreenHeight() );
+		}
 		return screen.contentY;
 	}
 	//#endif
@@ -3533,6 +3836,9 @@ public final class UiAccess {
 	 * @return the horizontal content width in pixels, -1 when it is unknown 
 	 */
 	public static int getContentWidth( Screen screen ) {
+		if (screen.contentWidth == 0) {
+			screen.calculateContentArea(0, 0, Display.getScreenWidth(), Display.getScreenHeight() );
+		}
 		return screen.contentWidth;
 	}
 	//#endif
@@ -3544,11 +3850,14 @@ public final class UiAccess {
 	 * @return the vertical content width in pixels, -1 when it is unknown 
 	 */
 	public static int getContentHeight( Screen screen ) {
+		if (screen.contentHeight == 0) {
+			screen.calculateContentArea(0, 0, Display.getScreenWidth(), Display.getScreenHeight() );
+		}
 		return screen.contentHeight;
 	}
 	//#endif
 	
-	//#if polish.midp2 && !polish.android
+	//#if polish.midp2  && !polish.android
 	/**
 	 * Notifies the specified CustomItem that a key or pointer event has been processed and that it should not be processed by other components.
 	 * This is useful when overriding keyPressed, keyReleased, keyRepeated or pointerPressed in CustomItems -
@@ -3592,7 +3901,7 @@ public final class UiAccess {
 		item.isEventHandled = true;
 	}
 	//#endif
-
+	
 	/**
 	 * Simulates a keyPressed event.
 	 * The event will be forwarded to the current screen.
@@ -3601,12 +3910,27 @@ public final class UiAccess {
 	 */
 	public static void emitKeyPress( int keyCode ) {
 		//#if polish.usePolishGui
-		Screen screen = StyleSheet.currentScreen;
-		if (screen != null && screen.isShown()) {
-			screen.keyPressed(keyCode);
+		Display display = Display.getInstance();
+		if (display != null) {
+			display.keyPressed(keyCode);
 		}
 		//#endif
 	}
+
+	/**
+     * Simulates a keyRepeated event.
+     * The event will be forwarded to the current screen.
+     *
+     * @param keyCode the keyCode
+     */
+    public static void emitKeyRepeated( int keyCode ) {
+           //#if polish.usePolishGui
+           Display display = Display.getInstance();
+           if (display != null) {
+                  display.keyRepeated(keyCode);
+           }
+           //#endif
+    }
 	
 	/**
 	 * Simulates a keyPressed event.
@@ -3616,10 +3940,10 @@ public final class UiAccess {
 	 */
 	public static void emitGameActionPress( int gameAction ) {
 		//#if polish.usePolishGui
-		Screen screen = StyleSheet.currentScreen;
-		if (screen != null && screen.isShown()) {
-			int keyCode = screen.getKeyCode(gameAction);
-			screen.keyPressed(keyCode);
+		Display display = Display.getInstance();
+		if (display != null) {
+			int keyCode = display.getKeyCode(gameAction);
+			display.keyPressed(keyCode);
 		}
 		//#endif
 	}
@@ -3632,9 +3956,9 @@ public final class UiAccess {
 	 */
 	public static void emitKeyRelease( int keyCode ) {
 		//#if polish.usePolishGui
-		Screen screen = StyleSheet.currentScreen;
-		if (screen != null && screen.isShown()) {
-			screen.keyReleased(keyCode);
+		Display display = Display.getInstance();
+		if (display != null) {
+			display.keyReleased(keyCode);
 		}
 		//#endif
 	}
@@ -3647,15 +3971,115 @@ public final class UiAccess {
 	 */
 	public static void emitGameActionRelease( int gameAction ) {
 		//#if polish.usePolishGui
-		Screen screen = StyleSheet.currentScreen;
-		if (screen != null && screen.isShown()) {
-			int keyCode = screen.getKeyCode(gameAction);
-			screen.keyReleased(keyCode);
+		Display display = Display.getInstance();
+		if (display != null) {
+			int keyCode = display.getKeyCode(gameAction);
+			display.keyReleased(keyCode);
 		}
 		//#endif
 	}
 	
+
+	//#if polish.usePolishGui && polish.midp
+	/**
+	 * Casts the given MIDP command into a J2ME Polish command
+	 * @param cmd the command
+	 * @return the casted command
+	 */
+	public static Command cast(javax.microedition.lcdui.Command cmd)
+	{
+		return null;
+	}
+	//#endif
+	//#if polish.usePolishGui
+	/**
+	 * Casts the given J2ME Polish command into a MIDP command
+	 * @param cmd the command
+	 * @return the casted command
+	 */
+	public static 
+	//#if polish.LibraryBuild
+		javax.microedition.lcdui.Command
+	//#else
+		//# Command
+	//#endif
+	cast(Command cmd)
+	{
+		//#if polish.LibraryBuild
+			return null;
+		//#else
+			//# return cmd;
+		//#endif
+	}
+	//#endif
 	
+
+	//#if polish.usePolishGui && polish.midp
+	/**
+	 * Casts the given MIDP CommandListener into a J2ME Polish CommandListener
+	 * @param cmd the CommandListener
+	 * @return the casted CommandListener
+	 */
+	public static CommandListener cast(javax.microedition.lcdui.CommandListener cmd)
+	{
+		return null;
+	}
+	//#endif
+	//#if polish.usePolishGui
+	/**
+	 * Casts the given J2ME Polish CommandListener into a MIDP CommandListener
+	 * @param cmd the CommandListener
+	 * @return the casted CommandListener
+	 */
+	public static 
+	//#if polish.LibraryBuild
+		javax.microedition.lcdui.CommandListener
+	//#else
+		//# CommandListener
+	//#endif
+	cast(CommandListener cmd)
+	{
+		//#if polish.LibraryBuild
+			return null;
+		//#else
+			//# return cmd;
+		//#endif
+	}
+	//#endif
+	
+	//#if polish.usePolishGui && polish.midp
+	/**
+	 * Casts the given MIDP Displayable into a J2ME Polish Displayable
+	 * @param disp the displayable
+	 * @return the casted displayable
+	 */
+	public static Displayable cast(javax.microedition.lcdui.Displayable disp)
+	{
+		return null;
+	}
+	//#endif
+	//#if polish.usePolishGui
+	/**
+	 * Casts the given J2ME Polish Displayable into a MIDP Displayable
+	 * @param disp the displayable
+	 * @return the casted displayable
+	 */
+	public static 
+	//#if polish.LibraryBuild
+		javax.microedition.lcdui.Displayable
+	//#else
+		//# Displayable
+	//#endif
+	cast(Displayable disp)
+	{
+		//#if polish.LibraryBuild
+			return null;
+		//#else
+			//# return disp;
+		//#endif
+	}
+	//#endif
+
 
 	//#if polish.usePolishGui && polish.midp
 	/**
@@ -3728,9 +4152,23 @@ public final class UiAccess {
 	 * 
 	 * @param screen the screen
 	 * @param degrees the screen orientation in degrees: 90, 180, 270 or 0
+	 * @deprecated use setScreenOrientation(int degress) instead
+	 * @see #setScreenOrientation(int)
 	 */
 	public static  void setScreenOrientation( Screen screen, int degrees ) {
-		screen.setScreenOrientation(degrees);
+		setScreenOrientation( degrees );
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Sets the screen orientation in 90 degrees steps.
+	 * The preprocessing variable "polish.ScreenOrientationCanChangeManually" needs to be set to "true" for supporting this mode.
+	 * 
+	 * @param degrees the screen orientation in degrees: 90, 180, 270 or 0
+	 */
+	public static  void setScreenOrientation( int degrees ) {
+		Display.setScreenOrientation(degrees);
 	}
 	//#endif
 	
@@ -3739,6 +4177,8 @@ public final class UiAccess {
 	 * Sets the screen orientation in 90 degrees steps.
 	 * @param screen the screen
 	 * @param degrees the screen orientation in degrees: 90, 180, 270 or 0
+	 * @deprecated use setScreenOrientation(int degress) instead
+	 * @see #setScreenOrientation(int)
 	 */
 	public static void setScreenOrientation( javax.microedition.lcdui.Screen screen, int degrees ) {
 		// ignore
@@ -4117,7 +4557,6 @@ public final class UiAccess {
 		return null;
 	}
 	//#endif
-	
 
 	//#if polish.usePolishGui
 	/**
@@ -4145,4 +4584,276 @@ public final class UiAccess {
 	}
 	//#endif
 
+	//#if polish.midp
+	/**
+	 * Sets the 'screen' property of the specified item to the given item
+	 * @param item the item
+	 * @param screen the screen
+	 */
+	public static void setItemScreen(javax.microedition.lcdui.Item item, javax.microedition.lcdui.Screen screen)
+	{
+		// ignore
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Sets the 'screen' property of the specified item to the given item
+	 * @param item the item
+	 * @param screen the screen
+	 */
+	public static void setItemScreen(Item item, Screen screen)
+	{
+		item.screen = screen;
+	}
+	//#endif
+
+	//#if polish.usePolishGui
+	/**
+	 * Deletes the specified item from the form
+	 * @param form the form
+	 * @param item the item that should be deleted
+	 * @return true when the delete was successful
+	 */
+	public static boolean delete(Form form, Item item)
+	{
+		Container container = form.container;
+		if (container != null) {
+			return container.remove(item);
+		}
+		return false;
+	}
+	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Deletes the specified item from the form
+	 * @param form the form
+	 * @param item the item that should be deleted
+	 * @return true when the delete was successful
+	 */
+	public static boolean delete(javax.microedition.lcdui.Form form, javax.microedition.lcdui.Item item)
+	{
+		return false;
+	}
+	//#endif
+
+	//#if polish.usePolishGui
+	/**
+	 * Retrieves the title of the specified screen as an Item
+	 * @param screen the screen
+	 * @return the screen's title as an Item
+	 * @see #setTitle(Screen, Item)
+	 * @see #setTitle(Screen, Item, Style)
+	 */
+	public static Item getTitleItem(Screen screen) {
+		return screen.getTitleItem();
+	}
+	//#endif
+
+
+	//#if polish.midp
+	/**
+	 * Retrieves the title of the specified screen as an Item
+	 * @param screen the screen
+	 * @return the screen's title as an Item
+	 * @see #setTitle(javax.microedition.lcdui.Screen, Item)
+	 * @see #setTitle(javax.microedition.lcdui.Screen, javax.microedition.lcdui.Item)
+	 */
+	public static javax.microedition.lcdui.Item getTitleItem(javax.microedition.lcdui.Screen screen) {
+		return null;
+	}
+	//#endif
+
+	//#if polish.usePolishGui && polish.css.text-effect
+	/**
+	 * Specifies a new text effect for the specified string item.
+	 * Note that this method is only accessible when you use the 'text-effect' CSS property in your polish.css.
+	 * 
+	 * @param item the string item
+	 * @param effect the effect that should be applied
+	 */
+	public static void setTextEffect(StringItem item, TextEffect effect)
+	{
+		Style style = item.getStyle();
+		if (style != null) {
+			style = style.clone(true);
+		} else {
+			style = new Style();
+		}
+		style.addAttribute(88, effect);
+		item.setStyle(style);
+	}
+	//#endif
+	
+	//#if polish.midp && polish.usePolishGui && (polish.css.text-effect || polish.LibraryBuild)
+	/**
+	 * Specifies a new text effect for the specified string item.
+	 * Note that this method is only accessible when you use the 'text-effect' CSS property in your polish.css.
+	 * 
+	 * @param item the string item
+	 * @param effect the effect that should be applied
+	 */
+	public static void setTextEffect(javax.microedition.lcdui.StringItem item, TextEffect effect) {
+		// ignore
+	}
+	//#endif	
+	
+	//#if polish.usePolishGui
+	/**
+	 * Fires an event for the specified screen and all its components.
+	 * This is typically used for triggering animations within screen components like its title or menubar.
+	 * Since all screen components fire events, this method should be called within a background thread and never
+	 * from within a de.enough.polish.event.EventListener.
+	 * 
+	 * @param name the name of the event
+	 * @param screen the source of the event
+	 * @param data the event's data, can be null
+	 * @see UiAccess#fireEventForTitleAndMenubar(String, Screen, Object)
+	 */
+	public static void fireEvent( String name, Screen screen, Object data) {
+		screen.fireEvent(name, data);
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Fires an event for the title and menubar of the specified screen.
+	 * This is typically used for triggering animations for the title and/or menubar.
+	 * Since all these screen components fire events, this method should be called within a background thread and never
+	 * from within a de.enough.polish.event.EventListener.
+	 * This method is not cycling through all screen components and its subcomponents, so it is a multitude faster
+	 * than UiAccess.fireEvent( String name, Screen screen, Object data ).
+	 * 
+	 * @param name the name of the event
+	 * @param screen the source of the event
+	 * @param data the event's data, can be null
+	 */
+	public static void fireEventForTitleAndMenubar( String name, Screen screen, Object data) {
+		screen.fireEventForTitleAndMenubar(name, data);
+	}
+	//#endif
+	
+	
+	//#if polish.usePolishGui
+	/**
+	 * Fires an event for the specified item and all its subitems.
+	 * This is typically used for triggering animations within item components like ChoiceItems within a ChoiceGroup, etc.
+	 * Since all subitem fire events, this method should be called within a background thread and never
+	 * from within a de.enough.polish.event.EventListener.
+	 * 
+	 * @param name the name of the event
+	 * @param item the source of the event
+	 * @param data the event's data, can be null
+	 */
+	public static void fireEvent( String name, Item item, Object data) {
+		item.fireEvent(name, data);
+	}
+	//#endif
+	
+	
+	//#if polish.midp
+	/**
+	 * Fires an event for the specified screen and all its components.
+	 * This is typically used for triggering animations within screen components like its title or menubar.
+	 * Since all screen components fire events, this method should be called within a background thread and never
+	 * from within a de.enough.polish.event.EventListener.
+	 * 
+	 * @param name the name of the event
+	 * @param screen the source of the event
+	 * @param data the event's data, can be null
+	 */
+	public static void fireEvent( String name, javax.microedition.lcdui.Screen screen, Object data) {
+		EventManager.fireEvent( name, screen, data );
+	}
+	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Fires an event for the title and menubar of the specified screen.
+	 * This is typically used for triggering animations for the title and/or menubar.
+	 * Since all these screen components fire events, this method should be called within a background thread and never
+	 * from within a de.enough.polish.event.EventListener.
+	 * 
+	 * @param name the name of the event
+	 * @param screen the source of the event
+	 * @param data the event's data, can be null
+	 * @see UiAccess#fireEventForTitleAndMenubar(String, javax.microedition.lcdui.Screen, Object)
+	 */
+	public static void fireEventForTitleAndMenubar( String name, javax.microedition.lcdui.Screen screen, Object data) {
+		EventManager.fireEvent( name, screen, data );
+	}
+	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Fires an event for the specified item and all its subitems.
+	 * This is typically used for triggering animations within item components like ChoiceItems within a ChoiceGroup, etc.
+	 * Since all subitem fire events, this method should be called within a background thread and never
+	 * from within a de.enough.polish.event.EventListener.
+	 * This method is not cycling through all screen components and its subcomponents, so it is a multitude faster
+	 * than UiAccess.fireEvent( String name, Screen screen, Object data ).
+	 * 
+	 * @param name the name of the event
+	 * @param item the source of the event
+	 * @param data the event's data, can be null
+	 */
+	public static void fireEvent( String name, javax.microedition.lcdui.Item item, Object data) {
+		EventManager.fireEvent( name, item, data );
+	}
+	//#endif
+	
+	//#if polish.midp && polish.usePolishGui
+	/**
+	 * Retrieves the container of the screen.
+	 * Note that this might be null on some screens.
+	 * 
+	 * @param screen the screen
+	 * @return the container belonging to the given screen
+	 */
+	public static Container getScreenContainer( javax.microedition.lcdui.Screen screen ) {
+		return null;
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Retrieves the container of the screen.
+	 * Note that this might be null on some screens.
+	 * 
+	 * @param screen the screen
+	 * @return the container belonging to the given screen
+	 */
+	public static Container getScreenContainer( Screen screen ) {
+		return screen.container;
+	}
+	//#endif
+	
+	
+	//#if polish.midp
+	/**
+	 * Retrieves the lock object for the paint thread.
+	 * You can use this paint lock to synchronize with the paint method of the specified screen.
+	 * 
+	 * @param screen the screen for which the paint lock should be retrieved.
+	 * @return the paint lock object
+	 */
+	public static Object getPaintLock( javax.microedition.lcdui.Screen screen ) {
+		return null;
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Retrieves the lock object for the paint thread.
+	 * You can use this paint lock to synchronize with the paint method of the specified screen.
+	 * 
+	 * @param screen the screen for which the paint lock should be retrieved.
+	 * @return the paint lock object
+	 */
+	public static Object getPaintLock( Screen screen ) {
+		return screen.getPaintLock();
+	}
+	//#endif
+	
 }

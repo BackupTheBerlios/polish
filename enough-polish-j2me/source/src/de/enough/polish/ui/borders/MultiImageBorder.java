@@ -2,7 +2,7 @@
 /*
  * Created on 01-May-2007 at 11:34:15
  *
- * Copyright (c) 2007 Michael Koch / Enough Software
+ * Copyright (c) 2009 Michael Koch / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -37,7 +37,7 @@ import javax.microedition.lcdui.Image;
 /**
  * <p>Paints an border with customizable images for each edge and each side.</p>
  *
- * <p>Copyright Enough Software 2007 - 2008</p>
+ * <p>Copyright Enough Software 2007 - 2009</p>
  * @author Michael Koch, michael.koch@enough.de
  */
 public class MultiImageBorder extends Border
@@ -59,11 +59,13 @@ public class MultiImageBorder extends Border
 	private Image bottomRightImage;
 	private String bottomRightUrl;
 	private boolean isLoaded;
+	private int borderWidth;
 	
 	public MultiImageBorder(int borderWidth, Image topLeft, Image topCenter, Image topRight,
 	                    Image middleLeft, Image middleRight,
 	                    Image bottomLeft, Image bottomCenter, Image bottomRight)
 	{
+		super( borderWidth, borderWidth, borderWidth, borderWidth );
 		this.borderWidth = borderWidth;
 		this.topLeftImage = topLeft;
 		this.topCenterImage = topCenter;
@@ -80,6 +82,7 @@ public class MultiImageBorder extends Border
 	                    String middleLeft, String middleRight,
 	                    String bottomLeft, String bottomCenter, String bottomRight)
 	{
+		super( borderWidth, borderWidth, borderWidth, borderWidth );
 		this.borderWidth = borderWidth;
 		this.topLeftUrl = topLeft;
 		this.topCenterUrl = topCenter;
@@ -111,47 +114,51 @@ public class MultiImageBorder extends Border
 		}
 		
 		if (this.topLeftImage != null) {
-			g.drawImage(this.topLeftImage, x, y, Graphics.TOP | Graphics.LEFT );
+			g.drawImage(this.topLeftImage, x, y, Graphics.BOTTOM | Graphics.RIGHT );
 		}
 
 		if (this.topCenterImage != null) {
-			int num = (width - (2 * this.borderWidth)) / this.borderWidth + 1;
-			for (int i = 1; i <= num; i++) {
-				g.drawImage(this.topCenterImage, x + i * this.borderWidth, y, Graphics.TOP | Graphics.LEFT );
+			int w = this.topCenterImage.getWidth();			
+			int num = (width - w) / w + 1;
+			for (int i = 0; i <= num; i++) {
+				g.drawImage(this.topCenterImage, x + i * w, y, Graphics.BOTTOM | Graphics.LEFT );
 			}
 		}
 		
 		if (this.topRightImage != null) {
-			g.drawImage(this.topRightImage, x + width, y, Graphics.TOP | Graphics.RIGHT );
+			g.drawImage(this.topRightImage, x + width, y, Graphics.BOTTOM | Graphics.LEFT );
 		}
 
 		if (this.middleLeftImage != null) {
-			int num = (height - (2 * this.borderWidth)) / this.borderWidth + 1;
-			for (int i = 1; i <= num; i++) {
-				g.drawImage(this.middleLeftImage, x, y + i * this.borderWidth, Graphics.TOP | Graphics.LEFT );
+			int w = this.middleLeftImage.getHeight();			
+			int num = (height -  w) / w + 1;
+			for (int i = 0; i <= num; i++) {
+				g.drawImage(this.middleLeftImage, x, y + i * w, Graphics.TOP | Graphics.RIGHT );
 			}
 		}
 		
 		if (this.middleRightImage != null) {
-			int num = (height - (2 * this.borderWidth)) / this.borderWidth + 1;
-			for (int i = 1; i <= num; i++) {
-				g.drawImage(this.middleRightImage, x + width, y + i * this.borderWidth, Graphics.TOP | Graphics.RIGHT );
+			int w = this.middleRightImage.getHeight();			
+			int num = (height - w) / w + 1;
+			for (int i = 0; i <= num; i++) {
+				g.drawImage(this.middleRightImage, x + width, y + i * w, Graphics.TOP | Graphics.LEFT );
 			}
 		}
 		
 		if (this.bottomLeftImage != null) {
-			g.drawImage(this.bottomLeftImage, x, y + height, Graphics.BOTTOM | Graphics.LEFT );
+			g.drawImage(this.bottomLeftImage, x, y + height, Graphics.TOP | Graphics.RIGHT );
 		}
 		
 		if (this.bottomCenterImage != null) {
-			int num = (width - (2 * this.borderWidth)) / this.borderWidth + 1;
-			for (int i = 1; i <= num; i++) {
-				g.drawImage(this.bottomCenterImage, x + i * this.borderWidth, y + height, Graphics.BOTTOM | Graphics.LEFT );
+			int w = this.bottomCenterImage.getWidth();			
+			int num = (width - w) / w + 1;
+			for (int i = 0; i <= num; i++) {
+				g.drawImage(this.bottomCenterImage, x + i * w, y + height, Graphics.TOP | Graphics.LEFT );
 			}
 		}
 
 		if (this.bottomRightImage != null) {
-			g.drawImage(this.bottomRightImage, x + width, y + height, Graphics.BOTTOM | Graphics.RIGHT );
+			g.drawImage(this.bottomRightImage, x + width, y + height, Graphics.TOP | Graphics.LEFT );
 		}
 	}
 }

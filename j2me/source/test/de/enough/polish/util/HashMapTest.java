@@ -329,25 +329,25 @@ public class HashMapTest extends TestCase {
 	
 	public void testContainsKey() {
 		System.out.println(">>> containsKey()");
-		HashMap map = new HashMap();
+		HashMap<Integer, String> map = new HashMap<Integer, String>();
 		for (int i = 0; i < TEST_RUNS; i++) {
-			Object key = this.integerKeys[i];
-			Object value = this.stringKeys[i];
+			Integer key = this.integerKeys[i];
+			String value = this.stringKeys[i];
 			map.put( key, value );
 		}
 		System.gc();
 		long time = System.currentTimeMillis();
 		for (int i = 0; i < TEST_RUNS; i++) {
-			Object key = this.integerKeysMixed[i];
+			Integer key = this.integerKeysMixed[i];
 			assertTrue( map.containsKey( key ));
 		}		
 		long neededTime = System.currentTimeMillis() - time;
 		System.out.println("needed " + neededTime + "ms for checking " + TEST_RUNS + " keys in de.enough.polish.util.HashMap.");
 		
-		java.util.HashMap j2semap = new java.util.HashMap(); 
+		java.util.HashMap<Integer, String> j2semap = new java.util.HashMap<Integer, String>(); 
 		for (int i = 0; i < TEST_RUNS; i++) {
-			Object key = this.integerKeys[i];
-			Object value = this.stringKeys[i];
+			Integer key = this.integerKeys[i];
+			String value = this.stringKeys[i];
 			j2semap.put( key, value );
 		}
 		System.gc();
@@ -377,25 +377,25 @@ public class HashMapTest extends TestCase {
 	
 	public void testContainsValue() {
 		System.out.println(">>> containsValue()");
-		HashMap map = new HashMap();
+		HashMap<Integer, String> map = new HashMap<Integer, String>();
 		for (int i = 0; i < TEST_RUNS; i++) {
-			Object key = this.integerKeys[i];
-			Object value = this.stringKeys[i];
+			Integer key = this.integerKeys[i];
+			String value = this.stringKeys[i];
 			map.put( key, value );
 		}
 		System.gc();
 		long time = System.currentTimeMillis();
 		for (int i = 0; i < TEST_RUNS/10; i++) {
-			Object value = this.stringKeysMixed[i];			
+			String value = this.stringKeysMixed[i];			
 			assertTrue( map.containsValue( value ));
 		}		
 		long neededTime = System.currentTimeMillis() - time;
 		System.out.println("needed " + neededTime + "ms for checking " + TEST_RUNS/10 + " values in de.enough.polish.util.HashMap.");
 		
-		java.util.HashMap j2semap = new java.util.HashMap(); 
+		java.util.HashMap<Integer, String> j2semap = new java.util.HashMap<Integer, String>(); 
 		for (int i = 0; i < TEST_RUNS; i++) {
-			Object key = this.integerKeys[i];
-			Object value = this.stringKeys[i];
+			Integer key = this.integerKeys[i];
+			String value = this.stringKeys[i];
 			j2semap.put( key, value );
 		}
 		System.gc();
@@ -425,12 +425,12 @@ public class HashMapTest extends TestCase {
 
 	public void testValues() {
 		System.out.println(">>> values()");
-		HashMap map = new HashMap();
+		HashMap<Integer, String> map = new HashMap<Integer, String>();
 		Object[] values = map.values();
 		assertEquals( 0, values.length );
 		for (int i = 0; i < TEST_RUNS; i++) {
-			Object key = this.integerKeys[i];
-			Object value = this.stringKeys[i];
+			Integer key = this.integerKeys[i];
+			String value = this.stringKeys[i];
 			map.put( key, value );
 		}
 		System.gc();
@@ -450,13 +450,13 @@ public class HashMapTest extends TestCase {
 
 		
 		
-		java.util.HashMap j2semap = new java.util.HashMap();
-		Collection col = j2semap.values();
+		java.util.HashMap<Integer, String> j2semap = new java.util.HashMap<Integer, String>();
+		Collection<String> col = j2semap.values();
 		values = col.toArray();
 		assertEquals( 0, values.length  );
 		for (int i = 0; i < TEST_RUNS; i++) {
-			Object key = this.integerKeys[i];
-			Object value = this.stringKeys[i];
+			Integer key = this.integerKeys[i];
+			String value = this.stringKeys[i];
 			j2semap.put( key, value );
 		}
 		System.gc();

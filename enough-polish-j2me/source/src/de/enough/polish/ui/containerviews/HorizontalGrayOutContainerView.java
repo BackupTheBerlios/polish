@@ -15,10 +15,10 @@ import de.enough.polish.util.DrawUtil;
 
 
 /**
- * <p>Shows  the available items of a Container in a horizontal list.</p>
- * <p>Apply this view by specifying "view-type: horizontal;" in your polish.css file.</p>
+ * <p>Shows  the available items of a Container in a horizontal list and grays out all but the currently focused item.</p>
+ * <p>Apply this view by specifying "view-type: gray-out;" in your polish.css file.</p>
  *
- * <p>Copyright Enough Software 2007 - 2008</p>
+ * <p>Copyright Enough Software 2007 - 2009</p>
  * @author Andre Schmidt
  */
 public class HorizontalGrayOutContainerView extends ContainerView {
@@ -44,7 +44,7 @@ public class HorizontalGrayOutContainerView extends ContainerView {
 	 * @see de.enough.polish.ui.ContainerView#initContent(de.enough.polish.ui.Container, int, int)
 	 */
 	protected void initContent(Item parentItm, int firstLineWidth,
-			int lineWidth) 
+			int availWidth, int availHeight) 
 	{
 		Container parent = (Container) parentItm;
 		int height = 0;
@@ -57,7 +57,7 @@ public class HorizontalGrayOutContainerView extends ContainerView {
 		for (int i = 0; i < items.length; i++) {
 			Item item = items[i];
 			
-			int itemHeight = item.getItemHeight(lineWidth, lineWidth);
+			int itemHeight = item.getItemHeight(availWidth, availWidth, availHeight);
 			int itemWidth = item.itemWidth;
 			if (itemWidth == 0)  {
 				this.inactiveIcons[i] = new int[0];
@@ -79,7 +79,7 @@ public class HorizontalGrayOutContainerView extends ContainerView {
 		}
 		
 		this.contentHeight = height;
-		this.contentWidth = lineWidth;
+		this.contentWidth = availWidth;
 						
 		this.animateItems = true;
 		this.isInitialized = true;
@@ -166,21 +166,14 @@ public class HorizontalGrayOutContainerView extends ContainerView {
 	 * @see de.enough.polish.ui.ContainerView#paintContent(de.enough.polish.ui.Container, de.enough.polish.ui.Item[], int, int, int, int, int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
 	protected void paintContent(Container container, Item[] myItems, int x, int y, int leftBorder, int rightBorder, int clipX, int clipY, int clipWidth, int clipHeight, Graphics g) {
-		int clipEndX = clipX + clipWidth;
-		int xStart = x + this.offset; 
-		int itemStartX;
-		int itemEndX;
+		int itemOffset = this.offset; 
+		
 		for(int i = 0; i < myItems.length; i++)
 		{
 			Item item = myItems[i];
-			itemStartX = xStart + item.relativeX;
-			if (itemStartX < clipEndX) {
-				itemEndX = itemStartX + item.itemWidth;
-				if (itemEndX > clipX) {
-					int[] rgbData = this.inactiveIcons[i];
-					DrawUtil.drawRgb( rgbData, itemStartX, y, item.itemWidth, item.itemHeight, true, g );
-				}
-			}
+			int[] rgbData = this.inactiveIcons[i];
+			DrawUtil.drawRgb( rgbData, x + itemOffset, y, item.itemWidth, item.itemHeight, true, g );
+			itemOffset += item.itemWidth;
 		}
 		
 		if (this.focusedItem != null) {
@@ -188,17 +181,15 @@ public class HorizontalGrayOutContainerView extends ContainerView {
 			int focusOffset = x + (this.contentWidth >> 1) - (this.focusedItem.itemWidth >> 1);
 			g.clipRect(focusOffset, y, this.focusedItem.itemWidth, this.contentHeight);
 			
+			itemOffset = this.offset;
+			
 			for(int i = 0; i < myItems.length; i++)
 			{
 				Item item = myItems[i];
-				itemStartX = xStart + item.relativeX;
-				if (itemStartX < clipEndX) {
-					itemEndX = itemStartX + item.itemWidth;
-					if (itemEndX > clipX) {
-						item.paint(itemStartX, y, itemStartX, itemStartX + item.itemWidth, g);
-					}
-				}
+				item.paint(x + itemOffset, y, x + itemOffset, x + itemOffset + item.itemWidth, g);
+				itemOffset += item.itemWidth;
 			}
+			
 			g.setClip( clipX, clipY, clipWidth, clipHeight );
 		}
 	}
@@ -213,19 +204,8 @@ public class HorizontalGrayOutContainerView extends ContainerView {
 		//#else
 			return super.isValid(parent, style);
 		//#endif
-	}
-
-	//#ifdef polish.hasPointerEvents
-	public boolean handlePointerPressed(int x, int y) {
-		return super.handlePointerPressed(x + this.offset, y);
-	}
-	//#endif
-
-	//#ifdef polish.hasPointerEvents
-	protected boolean handlePointerReleased(int x, int y) {
-		return super.handlePointerReleased(x + this.offset, y);
 	}	
-	//#endif
+	
 	
 }
 

@@ -23,7 +23,7 @@
  */
 package de.enough.polish.ui;
 
-import javax.microedition.lcdui.Command;
+
 import javax.microedition.lcdui.Graphics;
 
 /**
@@ -162,7 +162,7 @@ public class Spacer extends Item
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#initItem()
 	 */
-	protected void initContent(int firstLineWidth, int lineWidth) {
+	protected void initContent(int firstLineWidth, int availWidth, int availHeight) {
 		// nothing to do. Content width and height are set in 
 		// the setMinimumSize(int, int) method. 
 	}

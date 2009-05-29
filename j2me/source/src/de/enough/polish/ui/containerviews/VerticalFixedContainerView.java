@@ -2,7 +2,7 @@
 /*
  * Created on Jul 10, 2007 at 2:12:11 PM.
  * 
- * Copyright (c) 2007 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -26,8 +26,6 @@
  */
 package de.enough.polish.ui.containerviews;
 
-import javax.microedition.lcdui.Graphics;
-
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.ContainerView;
 import de.enough.polish.ui.Item;
@@ -45,7 +43,7 @@ import de.enough.polish.ui.Item;
  * </pre>
  * </p>
  *
- * <p>Copyright Enough Software 2007 - 2008</p>
+ * <p>Copyright Enough Software 2007 - 2009</p>
  * <pre>
  * history
  *        Jul 10, 2007 - rob creation
@@ -54,60 +52,32 @@ import de.enough.polish.ui.Item;
  */
 public class VerticalFixedContainerView extends ContainerView {
 	
-//	private static int ALIGN_TOP = 0;
-//	private static int ALIGN_CENTER = 1;
-//	
-//	private int align = ALIGN_TOP;
-
 	/**
-	 * 
+	 * Creates a vertical container view with the focused item always centered
+	 * in the middle of the screen. 
 	 */
 	public VerticalFixedContainerView() {
-		// configure by calling setStyle()
 	}
 
-//	/* (non-Javadoc)
-//	 * @see de.enough.polish.ui.ContainerView#initContent(de.enough.polish.ui.Item, int, int)
-//	 */
-//	protected void initContent(Item parentContainerItem, int firstLineWidth, int lineWidth) {
-//		super.initContent(parentContainerItem, firstLineWidth, lineWidth);
-//		if (this.focusedItem != null) {
-//			
-//		}
-//	}
-//	
-//	/* (non-Javadoc)
-//	 * @see de.enough.polish.ui.ContainerView#focusItem(int, de.enough.polish.ui.Item)
-//	 */
-//	protected void focusItem(int index, Item item) {
-//		// TODO robertvirkus implement focusItem
-//		super.focusItem(index, item);
-//	}
-
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.ContainerView#paintContent(de.enough.polish.ui.Container, de.enough.polish.ui.Item[], int, int, int, int, int, int, int, int, javax.microedition.lcdui.Graphics)
+	 * @see de.enough.polish.ui.ContainerView#initContent(de.enough.polish.ui.Item, int, int, int)
 	 */
-	protected void paintContent(Container container, Item[] myItems, int x, int y, int leftBorder, int rightBorder, int clipX, int clipY, int clipWidth, int clipHeight, Graphics g) {
+	protected void initContent(Item parentContainerItem, int firstLineWidth, int availWidth, int availHeight)
+	{
 		if (this.focusedItem != null) {
+			Container container = (Container) parentContainerItem;
 			int availableVerticalSpace = container.getScrollHeight();
 			int focusedY = this.focusedItem.relativeY + container.getScrollYOffset();
 			int focusedHeight = this.focusedItem.itemHeight;
 			int targetY = (availableVerticalSpace - focusedHeight) >> 1;
+
 			if (availableVerticalSpace != -1 && this.focusedItem.relativeY > targetY 
-					&& (this.focusedItem.relativeY + ( focusedHeight >> 1)) < (this.contentHeight - targetY) ) 
+				&& (this.focusedItem.relativeY + ( focusedHeight >> 1)) < (this.contentHeight - targetY) ) 
 			{
-				y += targetY - focusedY;
-//				System.out.println("adjusting by " + (targetY - focusedY) + ": focusedY=" + focusedY + ", targetY=" + targetY + ", availableVerticalSpace=" + availableVerticalSpace + ", focusedHeight=" + focusedHeight + ", focusedItem.relativeY=" + this.focusedItem.relativeY );
-//			} else {
-//				System.out.println("NOT adjusting: focusedY=" + focusedY + ", targetY=" + targetY + ", availableVerticalSpace=" + availableVerticalSpace + ", focusedHeight=" + focusedHeight + ", focusedItem.relativeY=" + this.focusedItem.relativeY );
+				container.setScrollYOffset(container.getScrollYOffset() + targetY - focusedY);
 			}
 		}
-		super.paintContent(container, myItems, x, y, leftBorder, rightBorder, clipX,
-				clipY, clipWidth, clipHeight, g);
-		
-	}
-	
-	
 
-	
+		super.initContent(parentContainerItem, firstLineWidth, availWidth, availHeight);
+	}
 }

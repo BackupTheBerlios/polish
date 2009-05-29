@@ -2,7 +2,7 @@
 /*
  * Created on 06-Jan-2007 at 22:01:54.
  *
- * Copyright (c) 2007 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -29,21 +29,35 @@ package de.enough.polish.ui.backgrounds;
 import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.ui.Background;
+import de.enough.polish.ui.Color;
+import de.enough.polish.ui.Style;
 import de.enough.polish.util.DrawUtil;
 
 /**
  * <p>Paints a filled rectangle as a background in a specific color.</p>
  *
- * <p>Copyright Enough Software 2007 - 2008</p>
+ * <p>Copyright Enough Software 2007 - 2009</p>
  * @author Robert Virkus, robert@enough.de
  */
 public class TriangleBackground 
 extends Background 
 {
-	private final static int TOP = 0; 
-	private final static int BOTTOM = 1;
-	private final static int LEFT = 2;
-	//private final static int RIGHT = 3; not used
+	/**
+	 * Orientation for pointing the triangle upwards
+	 */
+	public final static int TOP = 0; 
+	/**
+	 * Orientation for pointing the triangle downwards
+	 */
+	public final static int BOTTOM = 1;
+	/**
+	 * Orientation for pointing the triangle to the left
+	 */
+	public final static int LEFT = 2;
+	/**
+	 * Orientation for pointing the triangle to the right
+	 */
+	public final static int RIGHT = 3;
 	
 	private int color;
 	private final int orientation;
@@ -107,5 +121,22 @@ extends Background
 			DrawUtil.fillTriangle(x1, y1, x2, y2, x3, y3, g);
 		//#endif
 	}
+
+	
+	//#if polish.css.animations
+		/* (non-Javadoc)
+		 * @see de.enough.polish.ui.Background#setStyle(de.enough.polish.ui.Style)
+		 */
+		public void setStyle(Style style)
+		{
+			//#if polish.css.background-triangle-color
+				Color col = style.getColorProperty("background-triangle-color");
+				if (col != null) {
+					this.color = col.getColor();
+				}
+			//#endif
+		}
+	//#endif
+
 
 }

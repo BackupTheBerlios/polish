@@ -3,7 +3,7 @@
 /*
  * Created on 2008-03-02 at 4:37:12.
  * 
- * Copyright (c) 2008 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -30,18 +30,21 @@ package de.enough.polish.ui.backgrounds;
 import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.ui.Background;
+import de.enough.polish.ui.Color;
+import de.enough.polish.ui.Dimension;
+import de.enough.polish.ui.Style;
 import de.enough.polish.util.DrawUtil;
 /**
  * Generates a radial gradient from the inner-color to the outer-color.
  * @author Robert Virkus 
  */
 public class GradientRadialBackground  extends Background {
-	private final int innerColor;
-	private final int outerColor;
-	private final int start;
-	private final int end;
-	private final int centerX;
-	private final int centerY;
+	private int innerColor;
+	private int outerColor;
+	private Dimension start;
+	private Dimension end;
+	private Dimension centerX;
+	private Dimension centerY;
 
 
 	/**
@@ -67,10 +70,25 @@ public class GradientRadialBackground  extends Background {
 	 * @param centerY the vertical center in percent. 0 is the center, -100 is the very top, +100 the very bottom
 	 */
 	public GradientRadialBackground( int innerColor, int outerColor, int start, int end, int centerX, int centerY ) {
+		this( innerColor, outerColor, new Dimension(start, true), new Dimension(end, true), new Dimension(centerX, true), new Dimension(centerY, true));
+	}
+	/**
+	 * Creates a new radial gradient background
+	 * 
+	 * @param innerColor the color at the top of the gradient
+	 * @param outerColor the color at the bottom of the gradient
+	 * @param start the line counted from the top at which the gradient starts, either in pixels or in percent
+	 * @param end the line counted from the top at which the gradient ends, either in pixels or in percent
+	 * @param centerX the horizontal center in percent. 0 is the center, -100 is the very left, +100 the very right
+	 * @param centerY the vertical center in percent. 0 is the center, -100 is the very top, +100 the very bottom
+	 */
+	public GradientRadialBackground( int innerColor, int outerColor, Dimension start, Dimension end, Dimension centerX, Dimension centerY ) {
 		this.innerColor = innerColor;
 		this.outerColor = outerColor;
-		this.start = start;
-		this.end = end;
+		if (start != null && end != null && start.getValue(100) != end.getValue( 100)) {
+			this.start = start;
+			this.end = end;
+		}
 		this.centerX = centerX;
 		this.centerY = centerY;
 	}
@@ -80,16 +98,17 @@ public class GradientRadialBackground  extends Background {
 	 */
 	public void paint(int x, int y, int width, int height, Graphics g) {
 		int steps = (Math.max( width, height) >> 1) - 1;
-		int startOffset = this.start;
-		int endOffset = this.end;
-		if (startOffset != endOffset) {
-			startOffset = (startOffset * steps) / 100;
-			endOffset = (endOffset * steps) / 100;
+		int startOffset;
+		int endOffset;
+		if (this.start != null) {
+			startOffset = this.start.getValue(steps);
+			endOffset = this.end.getValue(steps);
 		} else {
+			startOffset = 0;
 			endOffset = steps;
 		}
-		int targetX = (width >> 1) + (((width>>1)*this.centerX) / 100) - startOffset;
-		int targetY = (height >> 1) + (((width>>1)*this.centerY) / 100) - startOffset;
+		int targetX = (width >> 1) + (((width>>1)*this.centerX.getValue(width)) / 100) - startOffset;
+		int targetY = (height >> 1) + (((height>>1)*this.centerY.getValue(height))) - startOffset;
 		int originalX = x;
 		int originalY = y;
 		g.setColor( this.innerColor );
@@ -110,4 +129,49 @@ public class GradientRadialBackground  extends Background {
 			}
 		}
 	}
+	
+	//#if polish.css.animations
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Background#setStyle(de.enough.polish.ui.Style)
+	 */
+	public void setStyle(Style style)
+	{
+		//#if polish.css.background-radial-gradient-inner-color
+			Color tbgColor = style.getColorProperty("background-radial-gradient-inner-color");
+			if (tbgColor != null) {
+				this.innerColor = tbgColor.getColor();
+			}
+		//#endif
+		//#if polish.css.background-radial-gradient-outer-color
+			Color bbgColor = style.getColorProperty("background-radial-gradient-outer-color");
+			if (bbgColor != null) {
+				this.outerColor = bbgColor.getColor();
+			}
+		//#endif
+		//#if polish.css.background-radial-gradient-start
+			Dimension startObj = (Dimension) style.getObjectProperty("background-radial-gradient-start");
+			if (startObj != null) {
+				this.start = startObj;
+			}
+		//#endif
+		//#if polish.css.background-radial-gradient-end
+			Dimension endObj = (Dimension) style.getObjectProperty("background-radial-gradient-end");
+			if (endObj != null) {
+				this.end = endObj;
+			}
+		//#endif
+		//#if polish.css.background-radial-gradient-center-x
+			Dimension centerXObj = (Dimension) style.getObjectProperty("background-radial-gradient-center-x");
+			if (centerXObj != null) {
+				this.centerX = centerXObj;
+			}
+		//#endif
+		//#if polish.css.background-radial-gradient-center-y
+			Dimension centerYObj = (Dimension) style.getObjectProperty("background-radial-gradient-center-y");
+			if (centerYObj != null) {
+				this.centerY = centerYObj;
+			}
+		//#endif
+	}
+	//#endif
 }

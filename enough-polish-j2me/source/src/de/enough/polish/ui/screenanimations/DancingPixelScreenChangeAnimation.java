@@ -2,12 +2,11 @@
 
 package de.enough.polish.ui.screenanimations;
 
-import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Displayable;
+import de.enough.polish.ui.Display;
+import de.enough.polish.ui.Displayable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
-import de.enough.polish.ui.AccessibleCanvas;
 import de.enough.polish.ui.ScreenChangeAnimation;
 import de.enough.polish.ui.Style;
 
@@ -18,9 +17,7 @@ public class DancingPixelScreenChangeAnimation extends ScreenChangeAnimation {
 		private int row ,id;
 		private int[] left ,right ,up,down;
 		//the rgb - images
-		private int[] rgbData ;
 		private int[] rgbbuffer ;
-		private int[] lstrgbbuffer ;
 		//the height of the columns
 		private int[] scaleableHeight;
 		private int[] scaleableWidth;
@@ -31,8 +28,8 @@ public class DancingPixelScreenChangeAnimation extends ScreenChangeAnimation {
 			super();
 		}
 		
-		protected void show(Style style, Display dsplay, int width, int height,
-				Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable, boolean isForward  ) 
+		protected void onShow(Style style, Display dsplay, int width, int height,
+				Displayable lstDisplayable, Displayable nxtDisplayable, boolean isForward  ) 
 		{
 				System.gc();
 				this.id = 20;
@@ -55,20 +52,16 @@ public class DancingPixelScreenChangeAnimation extends ScreenChangeAnimation {
 					this.up[i] = 0;
 					this.down[i] = height;
 				}
+				super.onShow(style, dsplay, width, height, lstDisplayable, nxtDisplayable, isForward );
 				this.rgbbuffer = new int[size];
-				this.lstrgbbuffer = new int [size];
-				this.rgbData = new int [size];
-				nxtScreenImage.getRGB(this.rgbbuffer, 0, width, 0, 0, width, height );
-				lstScreenImage.getRGB(this.lstrgbbuffer, 0, width, 0, 0, width, height );
-				lstScreenImage.getRGB(this.rgbData, 0, width, 0, 0, width, height );
-				super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable, isForward );
+				this.nextCanvasImage.getRGB(this.rgbbuffer, 0, width, 0, 0, width, height );
 		}
 		
 		
 		
 		protected boolean animate() {
 			this.cubeEffect();
-			int length = this.rgbData.length-1;
+			int length = this.nextCanvasRgb.length-1;
 			int sH,c,scalePercentH,scalePercentWidth,r,newI,sW = 0,left = 0,right = this.screenWidth;
 			for(int y = 0; y < this.screenHeight;y++){
 					left = this.left[y];
@@ -81,7 +74,7 @@ public class DancingPixelScreenChangeAnimation extends ScreenChangeAnimation {
 						sH = this.scaleableHeight[x];
 						
 						if(left > x || right < x || this.down[x] < y || this.up[x] > y){
-							this.rgbData[column+x] = this.rgbbuffer[column+x];
+							this.nextCanvasRgb[column+x] = this.rgbbuffer[column+x];
 						}
 						else{
 							c = y - (this.screenHeight - sH);
@@ -105,7 +98,7 @@ public class DancingPixelScreenChangeAnimation extends ScreenChangeAnimation {
 							if(newI >= length)newI = length;
 							if(newI < 0)newI = 0;
 
-							this.rgbData[x+column] = this.lstrgbbuffer[newI];
+							this.nextCanvasRgb[x+column] = this.lastCanvasRgb[newI];
 						}	
 					}
 					
@@ -146,7 +139,7 @@ public class DancingPixelScreenChangeAnimation extends ScreenChangeAnimation {
 		//#endif
 		
 		public void paintAnimation(Graphics g) {
-			g.drawRGB(this.rgbData,0,this.screenWidth,0,0,this.screenWidth,this.screenHeight,false);
+			g.drawRGB(this.nextCanvasRgb,0,this.screenWidth,0,0,this.screenWidth,this.screenHeight,false);
 		}
 
 	}

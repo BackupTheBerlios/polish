@@ -1,7 +1,7 @@
 /*
  * Created on Aug 18, 2007 at 11:42:58 PM.
  * 
- * Copyright (c) 2007 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -28,7 +28,7 @@ package de.enough.polish.ui;
 /**
  * <p>Manages a region that is increased when further regions are added.</p>
  *
- * <p>Copyright Enough Software 2007 - 2008</p>
+ * <p>Copyright Enough Software 2007 - 2009</p>
  * <pre>
  * history
  *        Aug 18, 2007 - rob creation

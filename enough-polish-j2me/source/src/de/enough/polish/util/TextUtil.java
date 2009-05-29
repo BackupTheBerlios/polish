@@ -34,7 +34,7 @@ package de.enough.polish.util;
 /**
  * <p>Provides some usefull String methods.</p>
  *
- * <p>Copyright Enough Software 2004 - 2008</p>
+ * <p>Copyright Enough Software 2004 - 2009</p>
 
  * <pre>
  * history
@@ -43,6 +43,16 @@ package de.enough.polish.util;
  * @author Robert Virkus, robert@enough.de
  */
 public final class TextUtil {
+	
+	/**
+	 * standard maximum lines number for text wrapping 
+	 */
+	public static final int MAXLINES_UNLIMITED = Integer.MAX_VALUE; 
+	
+	/**
+	 * the appendix to attach to a truncated text
+	 */
+	private static final String MAXLINES_APPENDIX = "...";
 
 	private static final String UNRESERVED = "-_.!~*'()\"";
 	
@@ -155,23 +165,39 @@ public final class TextUtil {
 	 * @see #wrap(String, Font, int, int)
 	 */
 	public static String[] split( String value, Font font, int firstLineWidth, int lineWidth ) {
-		return wrap(value, font, firstLineWidth, lineWidth);
+		return wrap(value, font, firstLineWidth, lineWidth,MAXLINES_UNLIMITED);
 	}
 	//#endif
-
+	
 	//#if polish.midp || polish.usePolishGui
 	/**
 	 * Wraps the given string so it fits on the specified lines.
-	 * First of all it is split at the line-breaks ('\n'), subsequently the substrings
-	 * are split when they do not fit on a single line.
+	 * First of al it is splitted at the line-breaks ('\n'), subsequently the substrings
+	 * are splitted when they do not fit on a single line.
 	 *  
-	 * @param value the string which should be wrapped
+	 * @param value the string which should be splitted
 	 * @param font the font which is used to display the font
 	 * @param firstLineWidth the allowed width for the first line
 	 * @param lineWidth the allowed width for all other lines, lineWidth >= firstLineWidth
 	 * @return the array containing the substrings
 	 */
-	public static String[] wrap( String value, Font font, int firstLineWidth, int lineWidth ) {
+	public static String[] wrap( String value, Font font, int firstLineWidth, int lineWidth) {
+		return wrap(value, font, firstLineWidth, lineWidth,MAXLINES_UNLIMITED);
+	}
+
+	/**
+	 * Wraps the given string so it fits on the specified lines.
+	 * First of al it is splitted at the line-breaks ('\n'), subsequently the substrings
+	 * are splitted when they do not fit on a single line.
+	 *  
+	 * @param value the string which should be splitted
+	 * @param font the font which is used to display the font
+	 * @param firstLineWidth the allowed width for the first line
+	 * @param lineWidth the allowed width for all other lines, lineWidth >= firstLineWidth
+	 * @param maxLines the maximum number of lines
+	 * @return the array containing the substrings
+	 */
+	public static String[] wrap( String value, Font font, int firstLineWidth, int lineWidth, int maxLines ) {
 		if (firstLineWidth <= 0 || lineWidth <= 0) {
 			//#debug error
 			System.out.println("INVALID LINE WIDTH FOR SPLITTING " + firstLineWidth + " / " + lineWidth + " ( for string " + value + ")");
@@ -193,7 +219,7 @@ public final class TextUtil {
 		// the given string does not fit on the first line:
 		ArrayList lines = new ArrayList();
 		if (!hasLineBreaks) {
-			wrap( value, font, completeWidth, firstLineWidth, lineWidth, lines );
+			wrap( value, font, completeWidth, firstLineWidth, lineWidth, lines, maxLines );
 		} else {
 			// now the string will be splitted at the line-breaks and
 			// then each line is processed:
@@ -216,9 +242,15 @@ public final class TextUtil {
 					}
 					completeWidth = font.stringWidth(line);
 					if (completeWidth <= firstLineWidth ) {
-						lines.add( line );						
+						lines.add( line );
+						
+						if(lines.size() == maxLines)
+						{
+							// break if the maximum number of lines is reached
+							break;
+						}
 					} else {
-						wrap(line, font, completeWidth, firstLineWidth, lineWidth, lines);
+						wrap(line, font, completeWidth, firstLineWidth, lineWidth, lines, maxLines);
 					}
 					if (isCRLF) {
 						i++;
@@ -229,10 +261,18 @@ public final class TextUtil {
 				} // for each line
 			} // for all chars
 			// special case for lines that end with \n: add a further line
-			if (lineBreakCount > 1 && (c == '\n' || c == 10)) {
+			if (lineBreakCount > 1 && (c == '\n' || c == 10) && lines.size() != maxLines) {
 				lines.add("");
 			}
 		}
+		
+		if(lines.size() == maxLines)
+		{
+			String line = (String)lines.get(maxLines - 1);
+			line = addAppendix(line, font, firstLineWidth);
+			lines.set(maxLines - 1, line);
+		}
+		
 		//#debug
 		System.out.println("Wrapped [" + value + "] into " + lines.size() + " rows.");
 		return (String[]) lines.toArray( new String[ lines.size() ]);
@@ -246,12 +286,12 @@ public final class TextUtil {
 	 * The resulting substrings will be added to the given ArrayList.
 	 * When the complete string fits into the first line, it will be added
 	 * to the list.
-	 * When the string needs to be split to fit on the lines, it is tried to
-	 * split the string at a gap between words. When this is not possible, the
-	 * given string will be split in the middle of the corresponding word. 
+	 * When the string needs to be splited to fit on the lines, it is tried to
+	 * split the string at a gab between words. When this is not possible, the
+	 * given string will be splitted in the middle of the corresponding word. 
 	 * 
 	 * 
-	 * @param value the string which should be wrapped
+	 * @param value the string which should be splitted
 	 * @param font the font which is used to display the font
 	 * @param completeWidth the complete width of the given string for the specified font.
 	 * @param firstLineWidth the allowed width for the first line
@@ -264,7 +304,7 @@ public final class TextUtil {
 			int completeWidth, int firstLineWidth, int lineWidth, 
 			ArrayList list ) 
 	{
-		wrap(value, font, completeWidth, firstLineWidth, lineWidth, list);
+		wrap(value, font, completeWidth, firstLineWidth, lineWidth, list, MAXLINES_UNLIMITED);
 	}
 	//#endif
 	
@@ -275,22 +315,25 @@ public final class TextUtil {
 	 * The resulting substrings will be added to the given ArrayList.
 	 * When the complete string fits into the first line, it will be added
 	 * to the list.
-	 * When the string needs to be split to fit on the lines, it is tried to
-	 * split the string at a gap between words. When this is not possible, the
-	 * given string will be split in the middle of the corresponding word. 
+	 * When the string needs to be splited to fit on the lines, it is tried to
+	 * split the string at a gab between words. When this is not possible, the
+	 * given string will be splitted in the middle of the corresponding word. 
 	 * 
 	 * 
-	 * @param value the string which should be wrapped
+	 * @param value the string which should be splitted
 	 * @param font the font which is used to display the font
 	 * @param completeWidth the complete width of the given string for the specified font.
 	 * @param firstLineWidth the allowed width for the first line
 	 * @param lineWidth the allowed width for all other lines, lineWidth >= firstLineWidth
+	 * @param maxLines the maximum number of lines 
 	 * @param list the list to which the substrings will be added.
 	 */
 	public static void wrap( String value, Font font, 
 			int completeWidth, int firstLineWidth, int lineWidth, 
-			ArrayList list ) 
+			ArrayList list,
+			int maxLines ) 
 	{
+		int lastLineIndex = maxLines - 1;
 		char[] valueChars = value.toCharArray();
 		int startPos = 0;
 		int lastSpacePos = -1;
@@ -306,26 +349,50 @@ public final class TextUtil {
 				currentLineWidth = 0;
 				firstLineWidth = lineWidth; 
 				i = startPos;
-			} else if (currentLineWidth > firstLineWidth && i > 0) {
-				if (c == ' ' || c == '\t') { 
+			} else if (currentLineWidth >= firstLineWidth && i > 0) {
+				if(list.size() == lastLineIndex)
+				{
 					list.add( new String( valueChars, startPos, i - startPos ) );
-					startPos =  ++i;
-					currentLineWidth = 0;
-					lastSpacePos = -1;
-				} else if ( lastSpacePos == -1) {
-					if (i > startPos + 1) {
-						i--;
+					break;
+				}
+				
+				// need to create a line break:
+				if (c == ' ' || c == '\t') { 
+					String line = new String( valueChars, startPos, i - startPos );
+					if (lastSpacePos != -1 && (font.stringWidth(line) > currentLineWidth) ) {
+						// adding the widths of characters does not always yield a correct result,
+						// so using stringWidth here ensures that we really break at the correct position:
+						if (i > startPos + 1) {
+							i--;
+						}
+						//System.out.println("value=" + value + ", i=" + i + ", startPos=" + startPos);
+						list.add( new String( valueChars, startPos, lastSpacePos - startPos ) );
+						startPos =  lastSpacePos;
+						currentLineWidth -= lastSpacePosLength;
+						lastSpacePos = i;
+						lastSpacePosLength = currentLineWidth;
+					} else {
+						//line += font.stringWidth(line) + "[" + currentLineWidth + "]";
+						list.add( line );
+						startPos =  ++i;
+						currentLineWidth = 0;
+						lastSpacePos = -1;
 					}
+				} else if ( lastSpacePos == -1) {
+					/**/
 					//System.out.println("value=" + value + ", i=" + i + ", startPos=" + startPos);
 					list.add( new String( valueChars, startPos, i - startPos ) );
 					startPos =  i;
-					currentLineWidth = 0;
+					currentLineWidth = font.charWidth(valueChars[i]);
 				} else {
 					currentLineWidth -= lastSpacePosLength;
-					list.add( new String( valueChars, startPos, lastSpacePos - startPos ) );
+					String line = new String( valueChars, startPos, lastSpacePos - startPos );
+					//line += font.stringWidth(line) + "<" + lastSpacePosLength + ">";
+					list.add( line );
 					startPos =  lastSpacePos + 1;
 					lastSpacePos = -1;
 				}
+				
 				firstLineWidth = lineWidth; 
 			} else if (c == ' ' || c == '\t') {
 				lastSpacePos = i;
@@ -333,8 +400,12 @@ public final class TextUtil {
 			}
 			
 		} 
-		// add tail:
-		list.add( new String( valueChars, startPos, valueChars.length - startPos ) );
+		
+		if(list.size() != maxLines)
+		{
+			// add tail:
+			list.add( new String( valueChars, startPos, valueChars.length - startPos ) );
+		}
 		
 		/*
 		try {
@@ -374,6 +445,49 @@ public final class TextUtil {
 		*/
 	}
 	//#endif
+	
+	/**
+	 * Adds the specified appendix to the give line of text
+	 * and shortens the text to fit the available width 
+	 * @param line the textline
+	 * @param font the font used
+	 * @param availWidth the available width
+	 * @return the shortened line with the appendix
+	 */
+	private static String addAppendix(String line, Font font, int availWidth)
+	{
+		try
+		{
+			int appendixWidth = font.stringWidth(MAXLINES_APPENDIX);
+			int completeWidth = font.stringWidth(line) +  appendixWidth;
+			if(availWidth < appendixWidth)
+			{
+				line = MAXLINES_APPENDIX;
+				completeWidth = appendixWidth;
+				while(completeWidth > availWidth)
+				{
+					line = line.substring(0,line.length() - 1);
+					completeWidth = font.stringWidth(line);
+				}
+				
+				return line;
+			}
+			else
+			{
+				while(completeWidth > availWidth)
+				{
+					line = line.substring(0,line.length() - 1);
+					completeWidth = font.stringWidth(line) +  appendixWidth;
+				}
+				
+				return line + MAXLINES_APPENDIX;
+			}
+		}
+		catch(ArrayIndexOutOfBoundsException e)
+		{
+			return "";
+		}
+	}
 	
 //	 Unreserved punctuation mark/symbols
 

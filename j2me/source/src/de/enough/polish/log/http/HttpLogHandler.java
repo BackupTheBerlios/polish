@@ -3,7 +3,7 @@
 /*
  * Created on 27-Apr-2005 at 22:32:15.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -44,7 +44,7 @@ import de.enough.polish.util.ArrayList;
  * Use the loghandler by specifying the following handler in your build.xml script:
  * <pre>
  * &lt;debug ...&gt;
- *    &lt;handler name=&quot;http&quot; />
+ *    &lt;handler name=&quot;http&quot; /&gt;
  * &lt;/debug&gt;
  * </pre>
  * </p>
@@ -109,7 +109,7 @@ public class HttpLogHandler extends LogHandler implements Runnable
 	
 	private static final String HTTP_VALUE_LANGUAGE = "en-DE";
 	private static final String HTTP_KEY_LANGUAGE = "Content-Language";
-	private static final String HTTP_VALUE_USER_AGENT = "Profile/MIDP-2.0 Confirguration/CLDC-1.0";
+	private static final String HTTP_VALUE_USER_AGENT = "Profile/MIDP-2.0 Configuration/CLDC-1.0";
 	private static final String HTTP_KEY_USER_AGENT = "User-Agent";
 	private static final String HTTP_VALUE_IF_MODIFIER = "10 Nov 2000 17:29:12 GMT";
 	private static final String HTTP_KEY_IF_MODIFIER = "IF-Modified-Since";

@@ -1,7 +1,7 @@
 /*
  * Created on 01-Dec-2005 at 18:30:14.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -34,14 +34,21 @@ package de.enough.polish.util;
  *    is then able to remove the interface definition from the JAR.
  * </p>
  *
- * <p>Copyright (c) Enough Software 2005 - 2008</p>
+ * <p>Copyright (c) Enough Software 2005 - 2009</p>
  * <pre>
  * history
  *        01-Dec-2005 - rob creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
+ * @param <K> when you use the enough-polish-client-java5.jar you can parameterize the Map, e.g. Map&lt;User, Message&gt; = new HashMap&lt;User, Message&gt;(10); 
+ * @param <V> when you use the enough-polish-client-java5.jar you can parameterize the Map, e.g. Map&lt;User, Message&gt; = new HashMap&lt;User, Message&gt;(10); 
  */
-public interface Map {
+public interface Map
+//#if polish.java5
+	<K, V>
+//#endif
+
+{
 
 	/**
 	 * Adds a key-value pair to this map.
@@ -50,7 +57,12 @@ public interface Map {
 	 * @param value the value
 	 * @return the value that has been stored previously for the given key, or null.
 	 */
-	public Object put(Object key, Object value);
+	//#if polish.java5
+	public Object put(K key, V value);
+	//#else
+		//# public Object put(Object key, Object value);
+	//#endif
+	
 
 	/**
 	 * Gets the value that has been stored for the specified key.
@@ -58,7 +70,12 @@ public interface Map {
 	 * @param key the key
 	 * @return the value or null, when for the given key no value has been stored.
 	 */
-	public Object get(Object key);
+	//#if polish.java5
+		public V get(K key);
+	//#else
+		//# public Object get(Object key);
+	//#endif
+	
 
 	/**
 	 * Removes the key-value pair from this map.
@@ -66,7 +83,12 @@ public interface Map {
 	 * @param key the key
 	 * @return the value or null, when for the given key no value has been stored.
 	 */
-	public Object remove(Object key);
+	//#if polish.java5
+		public V remove(K key);
+	//#else
+		//# public Object remove(Object key);
+	//#endif
+	
 
 	/**
 	 * Determines whether this map is empty.
@@ -90,7 +112,12 @@ public interface Map {
 	 * @param key the key
 	 * @return true when a value has been stored in this map to the specified key.
 	 */
-	public boolean containsKey(Object key);
+	//#if polish.java5
+		public boolean containsKey(K key);
+	//#else
+		//# public boolean containsKey(Object key);
+	//#endif
+	
 
 	/**
 	 * Checks the given value has been stored in this map.
@@ -99,7 +126,12 @@ public interface Map {
 	 * @param value the value
 	 * @return true when the value has been stored in this map.
 	 */
-	public boolean containsValue(Object value);
+	//#if polish.java5
+		public boolean containsValue(V value);
+	//#else
+		//# public boolean containsValue(Object value);
+	//#endif
+	
 
 	/**
 	 * Removes all elements from this map.
@@ -119,7 +151,12 @@ public interface Map {
 	 * @param objects the typed array in which the elements are stored
 	 * @return an object array with all values.
 	 */
-	public Object[] values(Object[] objects);
+	//#if polish.java5
+		public V[] values(V[] objects);
+	//#else
+		//# public Object[] values(Object[] objects);
+	//#endif
+	
 
 	/**
 	 * Retrieves all keys that have been stored in this map.
@@ -134,7 +171,12 @@ public interface Map {
 	 * @param objects the typed array in which the keys are stored
 	 * @return an object array with all keys.
 	 */
-	public Object[] keys(Object[] objects);
+	//#if polish.java5
+		public K[] keys(K[] objects);
+	//#else
+		//# public Object[] keys(Object[] objects);
+	//#endif
+	
 	
 	/**
 	 * Iterates over the keys of this map.

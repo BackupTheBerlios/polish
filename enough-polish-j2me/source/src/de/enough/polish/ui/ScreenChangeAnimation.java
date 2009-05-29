@@ -3,7 +3,7 @@
 /*
  * Created on 27-May-2005 at 17:14:01.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -27,9 +27,6 @@
  */
 package de.enough.polish.ui;
 
-import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
@@ -77,30 +74,21 @@ import javax.microedition.lcdui.Image;
  * </pre>
  * </p>
  *
- * <p>Copyright (c) Enough Software 2005 - 2008</p>
+ * <p>Copyright (c) Enough Software 2005 - 2009</p>
  * <pre>
  * history
  *        27-May-2005 - rob creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
- * @see #show(Style, Display, int, int, Image, Image, AccessibleCanvas, Displayable, boolean)
+ * @see #onShow(Style, Display, int, int, Displayable, Displayable, boolean)
  * @see #animate()
  */
 public abstract class ScreenChangeAnimation
-//#if polish.midp2
-	extends Canvas
-//#elif polish.classes.fullscreen:defined && polish.useFullScreen
-	//#= extends ${polish.classes.fullscreen}
-//#else
-	//#= extends Canvas 
-//#endif
+extends Canvas
 implements Runnable
-//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
-	, AccessibleCanvas
-//#endif
 {
 	protected Display display;
-	protected AccessibleCanvas nextCanvas;
+	protected Canvas nextCanvas;
 	protected Image lastCanvasImage;
 	protected int[] lastCanvasRgb;
 	/** set to true in subclasses for populating lastCanvasRgb */
@@ -111,11 +99,13 @@ implements Runnable
 	protected boolean useNextCanvasRgb;
 	protected int screenWidth;
 	protected int screenHeight;
-	//#if polish.Bugs.fullScreenInPaint
-		protected boolean fullScreenModeSet;
-	//#endif
 	protected Displayable nextDisplayable;
 	protected boolean isForwardAnimation;
+	protected int nextContentX;
+	protected int nextContentY;
+	protected int lastContentX;
+	protected int lastContentY;
+	protected boolean supportsDifferentScreenSizes;
 	
 
 	/**
@@ -124,7 +114,7 @@ implements Runnable
 	 */
 	public ScreenChangeAnimation() {
 		// default constructor
-		//#if polish.midp2 && !polish.Bugs.fullScreenInPaint && polish.useFullScreen
+		//#if polish.midp2 && !polish.Bugs.fullScreenInPaint
 			setFullScreenMode(true);
 		//#endif
 	}
@@ -137,41 +127,162 @@ implements Runnable
 	 * @param dsplay the display, which is used for setting this animation
 	 * @param width the screen's width
 	 * @param height the screen's height
-	 * @param lstScreenImage an image of the last screen
-	 * @param nxtScreenImage an image of the next screen
-	 * @param nxtCanvas the next screen that should be displayed when this animation finishes (as an AccessibleCanvas)
+	 * @param lstDisplayable TODO
 	 * @param nxtDisplayable the next screen that should be displayed when this animation finishes (as a Displayable)
 	 * @param isForward true when the animation should run in the normal direction/mode - false if it should run backwards
 	 */
-	protected void show( Style style, Display dsplay, final int width, final int height, Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable, boolean isForward ) {
+	protected void onShow( Style style, Display dsplay, final int width, final int height, Displayable lstDisplayable, Displayable nxtDisplayable, boolean isForward ) {
+		//System.out.println("screen change animation initialized with width=" + width + ", height=" + height);
 		this.screenWidth = width;
 		this.screenHeight = height;
 		this.display = dsplay;
-		this.nextCanvas = nxtCanvas;
+		this.nextCanvas = (Canvas) nxtDisplayable;
 		this.nextDisplayable = nxtDisplayable;
-		this.lastCanvasImage = lstScreenImage;
+		Screen lastScreen = (Screen) (lstDisplayable instanceof Screen ? lstDisplayable : null);
+		Screen nextScreen = (Screen) (nxtDisplayable instanceof Screen ? nxtDisplayable : null);
+		
+		Image lastScreenImage = toImage( lstDisplayable, nextScreen, lastScreen, width, height);
+		Image nextScreenImage = toImage( nxtDisplayable, nextScreen, lastScreen, width, height);
+		//#if polish.css.repaint-previous-screen
+			if (this.supportsDifferentScreenSizes) {
+				if (lastScreen != null && nextScreen != null && nextScreen.container != null && nextScreen.style != null) {
+					Boolean limitToContentBool = nextScreen.style.getBooleanProperty("repaint-previous-screen");
+					if (limitToContentBool != null && limitToContentBool.booleanValue()) {
+						// paint title and menubar on the previous screen's image,
+						//TODO this should be configurable
+						Graphics g = lastScreenImage.getGraphics();
+						//#if !polish.Bugs.noTranslucencyWithDrawRgb
+							if (nextScreen.previousScreenOverlayBackground != null) {
+								nextScreen.previousScreenOverlayBackground.paint( 0, 0, width, height, g);
+							}
+						//#endif
+						nextScreen.paintMenuBar(g);
+					}
+				}
+				//#if !polish.Bugs.noTranslucencyWithDrawRgb
+					if (lastScreen != null && nextScreen != null && lastScreen.container != null && lastScreen.style != null) {
+						Boolean limitToContentBool = lastScreen.style.getBooleanProperty("repaint-previous-screen");
+						if (limitToContentBool != null && limitToContentBool.booleanValue()) {
+							Graphics g = nextScreenImage.getGraphics();
+							if (lastScreen.previousScreenOverlayBackground != null) {
+								lastScreen.previousScreenOverlayBackground.paint( 0, 0, width, nextScreen.contentY + nextScreen.contentHeight, g);
+							}
+						}
+					}
+				//#endif
+			}
+		//#endif
+
+		//#debug
+		System.out.println("ScreenAnimation: showing screen transition " + this + " for transition from " + lstDisplayable + " to " + nxtDisplayable);
+		
+		this.lastCanvasImage = lastScreenImage;
 		if (this.useLastCanvasRgb) {
-			this.lastCanvasRgb = new int[ width * height ];
+			int lstWidth = lastScreenImage.getWidth();
+			int lstHeight = lastScreenImage.getHeight();
+			this.lastCanvasRgb = new int[ lstWidth * lstHeight ];
 			//#if polish.midp2
-				lstScreenImage.getRGB(this.lastCanvasRgb, 0, width, 0, 0, width, height );
+				lastScreenImage.getRGB(this.lastCanvasRgb, 0, lstWidth, 0, 0, lstWidth, lstHeight );
 			//#endif
 		}
-		this.nextCanvasImage = nxtScreenImage;
+		
+		this.nextCanvasImage = nextScreenImage;
 		if (this.useNextCanvasRgb) {
-			this.nextCanvasRgb = new int[ width * height ];
+			int nxtWidth = nextScreenImage.getWidth();
+			int nxtHeight = nextScreenImage.getHeight();
+			this.nextCanvasRgb = new int[ nxtWidth * nxtHeight ];
 			//#if polish.midp2
-				nxtScreenImage.getRGB(this.nextCanvasRgb, 0, width, 0, 0, width, height );
+				nextScreenImage.getRGB(this.nextCanvasRgb, 0, nxtWidth, 0, 0, nxtWidth, nxtHeight );
 			//#endif
 		}
 		this.isForwardAnimation = isForward;
 		setStyle( style );
-		//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
-			MasterCanvas.setCurrent( dsplay, this );
-		//#else
-			dsplay.setCurrent( this );
-		//#endif
+		dsplay.setCurrent( this );
 	}
 	
+	protected Image toImage(Displayable displayable, Screen nextScreen, Screen lastScreen, int width, int height) {
+		boolean isLastScreen = (displayable == lastScreen);
+		Screen screen = isLastScreen ? lastScreen : nextScreen;
+		int screenWidth = width;
+		int screenHeight = height;
+		Image screenImage = null;
+		if (!isLastScreen && displayable instanceof Canvas) {
+			((Canvas)displayable).showNotify();
+		}
+		//#if polish.css.repaint-previous-screen
+			boolean limitToContent = false;
+			int contentX = 0;
+			int contentY = 0;
+			if (this.supportsDifferentScreenSizes && screen != null && screen.container != null && screen.style != null) {
+				Boolean limitToContentBool = screen.style.getBooleanProperty("repaint-previous-screen");
+				if (limitToContentBool != null) {
+					limitToContent = limitToContentBool.booleanValue();
+					if (limitToContent) {
+						screenWidth = screen.container.itemWidth;
+						screenHeight = Math.min( screen.contentHeight, screen.container.itemHeight );
+						Border border = screen.border;
+						if (border != null) {
+							screenWidth += border.borderWidthLeft + border.borderWidthRight;
+							screenHeight += border.borderWidthTop + border.borderWidthBottom;
+							contentX = border.borderWidthLeft;
+							contentY = border.borderWidthTop;
+						}
+						Item title = screen.getTitleItem();
+						if (title != null) {
+							screenHeight += title.itemHeight;
+							contentY += title.itemHeight;
+						}
+						// this creates an unmutable image and cannot be used:
+//						//#if polish.midp2
+//							int[] rgb = new int[ screenWidth * screenHeight ];
+//							screenImage = Image.createRGBImage(rgb, screenWidth, screenHeight, true );
+//						//#endif
+					}
+				}
+			}
+		//#endif
+		screenImage = Image.createImage(screenWidth, screenHeight);
+		Graphics g = screenImage.getGraphics(); 
+		g.setClip(0, 0, screenWidth, screenHeight);
+		if ( displayable instanceof Canvas) {
+			//#debug
+			System.out.println("StyleSheet: last screen is painted");
+			//#if polish.css.repaint-previous-screen
+				if (limitToContent) {
+					g.translate( -(screen.container.relativeX - contentX), -(screen.container.relativeY - contentY) );
+					screen.paintBackgroundAndBorder(g);
+					screen.paintTitleAndSubtitle(g);
+					if (isLastScreen) {
+						this.lastContentX = -g.getTranslateX();
+						this.lastContentY = -g.getTranslateY();
+					} else {
+						this.nextContentX = -g.getTranslateX();
+						this.nextContentY = -g.getTranslateY();
+					}
+					g.translate( -g.getTranslateX(), -g.getTranslateY() );
+					screen.container.paint(contentX, contentY, contentX,  screenWidth, g);
+				} else {
+			//#endif
+					if (isLastScreen) {	
+						this.lastContentX = 0;
+						this.lastContentY = 0;
+					} else {
+						this.nextContentX = 0;
+						this.nextContentY = 0;						
+					}
+					((Canvas)displayable).paint( g );				
+			//#if polish.css.repaint-previous-screen
+				}
+			//#endif
+	//#if polish.ScreenChangeAnimation.blankColor:defined
+		} else {
+			//#= g.setColor( ${polish.ScreenChangeAnimation.blankColor} );
+			g.fillRect( 0, 0, width, height );
+	//#endif
+		}
+		return screenImage;
+	}
+
 	/**
 	 * Sets the style for this animation.
 	 * Subclasses can override this for adapting to different design settings.
@@ -199,12 +310,6 @@ implements Runnable
 	protected abstract void paintAnimation( Graphics g );
 	
 	public final void paint( Graphics g ) {
-		//#if polish.Bugs.fullScreenInPaint && polish.useFullScreen
-			if (! this.fullScreenModeSet ) {
-				setFullScreenMode(true);
-				this.fullScreenModeSet = true;
-			}
-		//#endif
 		try {			
 			if (this.nextCanvasImage != null) {
 				paintAnimation( g );
@@ -224,10 +329,10 @@ implements Runnable
 	 * 
 	 * @param x the horizontal coordinate of the clicked pixel
 	 * @param y the vertical coordinate of the clicked pixel
-	 * @see #updateNextScreen(AccessibleCanvas, Image, int[])
+	 * @see #updateNextScreen(Canvas, Image, int[])
 	 */
 	public void pointerPressed( int x, int y ) {
-		AccessibleCanvas next = this.nextCanvas;
+		Canvas next = this.nextCanvas;
 		Image nextImage = this.nextCanvasImage;
 		if (next != null) {
 			next.pointerPressed( x, y );
@@ -242,10 +347,10 @@ implements Runnable
 	 * 
 	 * @param x the horizontal coordinate of the clicked pixel
 	 * @param y the vertical coordinate of the clicked pixel
-	 * @see #updateNextScreen(AccessibleCanvas, Image, int[])
+	 * @see #updateNextScreen(Canvas, Image, int[])
 	 */
 	public void pointerReleased( int x, int y ) {
-		AccessibleCanvas next = this.nextCanvas;
+		Canvas next = this.nextCanvas;
 		Image nextImage = this.nextCanvasImage;
 		if (next != null) {
 			next.pointerReleased( x, y );
@@ -260,10 +365,10 @@ implements Runnable
 	 * 
 	 * @param x the horizontal coordinate of the clicked pixel
 	 * @param y the vertical coordinate of the clicked pixel
-	 * @see #updateNextScreen(AccessibleCanvas, Image, int[])
+	 * @see #updateNextScreen(Canvas, Image, int[])
 	 */
 	public void pointerDragged( int x, int y ) {
-		AccessibleCanvas next = this.nextCanvas;
+		Canvas next = this.nextCanvas;
 		Image nextImage = this.nextCanvasImage;
 		if (next != null) {
 			next.pointerDragged( x, y );
@@ -278,7 +383,7 @@ implements Runnable
 	 * The default implementation switches into fullscreen mode
 	 */
 	public void showNotify() {
-		//#if polish.midp2 && !polish.Bugs.fullScreenInPaint && polish.useFullScreen
+		//#if polish.midp2 && !polish.Bugs.fullScreenInPaint
 			setFullScreenMode(true);
 		//#endif
 	}
@@ -310,10 +415,10 @@ implements Runnable
 	 * 
 	 * @param keyCode the code of the key
 	 * @see #nextCanvasImage
-	 * @see #updateNextScreen(AccessibleCanvas, Image, int[])
+	 * @see #updateNextScreen(Canvas, Image, int[])
 	 */
 	public void keyRepeated( int keyCode ) {
-		AccessibleCanvas next = this.nextCanvas;
+		Canvas next = this.nextCanvas;
 		Image nextImage = this.nextCanvasImage;
 		try {
 			if (next != null) {
@@ -332,10 +437,10 @@ implements Runnable
 	 * 
 	 * @param keyCode the code of the key
 	 * @see #nextCanvasImage
-	 * @see #updateNextScreen(AccessibleCanvas, Image, int[])
+	 * @see #updateNextScreen(Canvas, Image, int[])
 	 */
 	public void keyReleased( int keyCode ) {
-		AccessibleCanvas next = this.nextCanvas;
+		Canvas next = this.nextCanvas;
 		Image nextImage = this.nextCanvasImage;
 		try {
 			if (next != null) {
@@ -354,10 +459,10 @@ implements Runnable
 	 * 
 	 * @param keyCode the code of the key
 	 * @see #nextCanvasImage
-	 * @see #updateNextScreen(AccessibleCanvas, Image, int[])
+	 * @see #updateNextScreen(Canvas, Image, int[])
 	 */
 	public void keyPressed( int keyCode ) {
-		AccessibleCanvas next = this.nextCanvas;
+		Canvas next = this.nextCanvas;
 		Image nextImage = this.nextCanvasImage;
 		try {
 			if (next != null) {
@@ -378,9 +483,26 @@ implements Runnable
 	 * @param nextImage the image to which the screen should be painted
 	 * @param rgb the RGB data, can be null
 	 */
-	protected void updateNextScreen( AccessibleCanvas next, Image nextImage, int[] rgb ) {
-		Graphics g = nextImage.getGraphics();
-		next.paint( g );
+	protected void updateNextScreen( Canvas next, Image nextImage, int[] rgb ) {
+		//#if polish.css.repaint-previous-screen
+			boolean isFullScreen = true;
+			if (this.supportsDifferentScreenSizes) {
+				Screen nextScreen = (next instanceof Screen ? (Screen)next : null );
+				if (nextScreen != null && nextScreen.style != null) {
+					Boolean repaintPrevScreen = nextScreen.style.getBooleanProperty("repaint-previous-screen");
+					if (repaintPrevScreen != null && repaintPrevScreen.booleanValue()) {
+						this.nextCanvasImage = toImage( next, nextScreen, null, this.screenWidth, this.screenHeight );
+						isFullScreen = false;
+					}
+				}
+			}
+			if (isFullScreen) {
+		//#endif
+				Graphics g = nextImage.getGraphics();
+				next.paint( g );
+		//#if polish.css.repaint-previous-screen
+			}
+		//#endif
 		//#if polish.midp2
 			if (rgb != null) {
 				nextImage.getRGB(rgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
@@ -396,14 +518,10 @@ implements Runnable
 	public void run() {
 		try {
 			if (this.nextCanvas != null && animate()) {
-				//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
-					MasterCanvas.instance.repaint();
-				//#else
-					repaint();
-				//#endif
+				repaint();
 			} else {
 				//#debug
-				System.out.println("ScreenChangeAnimation: setting next screen");
+				System.out.println("ScreenChangeAnimation: setting next screen " + this.nextDisplayable);
 				this.lastCanvasImage = null;
 				this.lastCanvasRgb = null;
 				this.nextCanvasImage = null;
@@ -419,11 +537,7 @@ implements Runnable
 					//Displayable current = disp.getCurrent();
 					//if (current == this && next != null) {
 					if (next != null) {
-						//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
-							MasterCanvas.setCurrent( disp, next );
-						//#else
-							disp.setCurrent( next );
-						//#endif
+						disp.setCurrent( next );
 					}
 				}
 			}
@@ -433,11 +547,7 @@ implements Runnable
 			Display disp = this.display;
 			Displayable next = this.nextDisplayable;
 			if (disp != null && next != null) {
-				//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
-					MasterCanvas.setCurrent( disp, next );
-				//#else
-					disp.setCurrent( next );
-				//#endif
+				disp.setCurrent( next );
 			}
 		}
 	}

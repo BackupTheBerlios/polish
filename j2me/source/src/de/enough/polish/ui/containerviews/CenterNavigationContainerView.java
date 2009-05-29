@@ -20,7 +20,7 @@ import de.enough.polish.util.DrawUtil;
  * <p>Shows  the available items of a Container in a horizontal list.</p>
  * <p>Apply this view by specifying "view-type: horizontal;" in your polish.css file.</p>
  *
- * <p>Copyright Enough Software 2007 - 2008</p>
+ * <p>Copyright Enough Software 2007 - 2009</p>
  * @author Andre Schmidt
  */
 public class CenterNavigationContainerView extends ContainerView {
@@ -69,7 +69,7 @@ public class CenterNavigationContainerView extends ContainerView {
 	 * @see de.enough.polish.ui.ContainerView#initContent(de.enough.polish.ui.Container, int, int)
 	 */
 	protected void initContent(Item parentItm, int firstLineWidth,
-			int lineWidth) 
+			int availWidth, int availHeight) 
 	{
 		int height = 0;
 		Item[] items = this.parentContainer.getItems();
@@ -78,7 +78,7 @@ public class CenterNavigationContainerView extends ContainerView {
 		for (int i = 0; i < items.length; i++) {
 			Item item = items[i];
 			
-			int itemHeight = item.getItemHeight(lineWidth, lineWidth);
+			int itemHeight = item.getItemHeight(availWidth, availWidth, availHeight);
 			int itemWidth = item.itemWidth;
 			
 			if (itemWidth == 0)  {
@@ -108,7 +108,7 @@ public class CenterNavigationContainerView extends ContainerView {
 		}
 		
 		this.contentHeight = height;
-		this.contentWidth = lineWidth;
+		this.contentWidth = availWidth;
 	}
 	
 	boolean animateItems = false;
@@ -153,16 +153,16 @@ public class CenterNavigationContainerView extends ContainerView {
 		int originalRightBorder = rightBorder;
 		
 		int width = rightBorder - leftBorder;
-
-		int leftWidth = leftItem.getItemWidth(width, width);
-		int rightWidth = rightItem.getItemWidth(width, width);
+		int availHeight = this.availableHeight;
+		int leftWidth = leftItem.getItemWidth(width, width, availHeight);
+		int rightWidth = rightItem.getItemWidth(width, width, availHeight);
 		
 		leftBorder += leftWidth;
 		rightBorder -= rightWidth;
 		
 		int center = width/2;
 		
-		int itemWidth = myItems[0].getItemWidth(width, width);
+		int itemWidth = myItems[0].getItemWidth(width, width, availHeight);
 		
 		int offset = (center - (this.focusedIndex * itemWidth)) - (itemWidth / 2);  
 		

@@ -2,7 +2,7 @@
 /*
  * Created on 30-Dez-2005 at 16:32:21.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -40,7 +40,7 @@ import de.enough.polish.util.ArrayList;
  *    you can specify view-types, columns, colspans, etc.
  * </p>
  *
- * <p>Copyright (c) Enough Software 2005 - 2008</p>
+ * <p>Copyright (c) Enough Software 2005 - 2009</p>
  * <pre>
  * history
  *        16-Feb-2005 - rob creation
@@ -192,11 +192,11 @@ public class TreeItem
 	 * Adds the specified item to this list.
 	 * 
 	 * @param item the item that should be added
-	 * @param nodeStyle the style
+	 * @param childStyle the style
 	 */
-	public void appendToRoot( Item item, Style nodeStyle ) {
-		if (nodeStyle != null) {
-			item.setStyle( nodeStyle );
+	public void appendToRoot( Item item, Style childStyle ) {
+		if (childStyle != null) {
+			item.setStyle( childStyle );
 		}
 		add(item);
 //		this.lastAddedItem = item;
@@ -244,11 +244,11 @@ public class TreeItem
 	 * 
 	 * @param node the parent node that has been previously added to this tree
 	 * @param item the item that should be added
-	 * @param nodeStyle the style
+	 * @param childStyle the style
 	 */
-	public void appendToNode( Item node, Item item, Style nodeStyle  ) {
-		if (nodeStyle != null) {
-			item.setStyle( nodeStyle );
+	public void appendToNode( Item node, Item item, Style childStyle  ) {
+		if (childStyle != null) {
+			item.setStyle( childStyle );
 		}
 		// find correct Node:
 		Node parentNode;
@@ -343,7 +343,7 @@ public class TreeItem
 
 
 	/**
-	 * Retireves the currently selected path of this tree item.
+	 * Retrieves the currently selected path of this tree item.
 	 * 
 	 * @return an array that contains all selected items
 	 */
@@ -368,7 +368,7 @@ public class TreeItem
 	}
 
 	/**
-	 * Retireves the currently selected path of this tree item.
+	 * Retrieves the currently selected path of this tree item.
 	 * 
 	 * @param key the key that is used for querying attributes from the focused item
 	 * @return an array that contains all attribute values of the selected items. 
@@ -394,7 +394,7 @@ public class TreeItem
 	/**
 	 * Opens the tree and focuses the specified items.
 	 * All other branches are collapsed while the specified path(s) is opened.
-	 * When several pathes do match, the last atching path is focused.
+	 * When several paths do match, the last matching path is focused.
 	 * @param key the attribute key
 	 * @param values the values that are set for each item / node
 	 * @see UiAccess#setAttribute(Item, Object, Object)
@@ -414,7 +414,7 @@ public class TreeItem
 		Object[] items = container.itemsList.getInternalArray();
 		Object valueExpected = values[index];
 		if (container.isFocused) {
-			container.focus(-1);
+			container.focusChild(-1);
 		}
 		for (int i = 0; i < items.length; i++)
 		{
@@ -435,9 +435,9 @@ public class TreeItem
 			if (valueExpected.equals(valuePresent)) {
 				if (node != null) {
 					node.setExpanded(true);
-					container.focus( i, node, Canvas.UP );
+					container.focusChild( i, node, Canvas.UP );
 				} else {
-					container.focus( i, item, 0 );
+					container.focusChild( i, item, 0 );
 				}
 				if (index < values.length - 1) {
 					if (node != null) {
@@ -531,11 +531,11 @@ public class TreeItem
 			this.children.add( child );
 		}
 
-		protected void initContent(int firstLineWidth, int lineWidth) {
+		protected void initContent(int firstLineWidth, int availWidth, int availHeight) {
 			//#debug
 			System.out.println("Node (" + this.root + ").initContent()");
 			//this.availableWidth = lineWidth - this.xLeftOffset;
-			this.root.init(firstLineWidth, lineWidth);
+			this.root.init(firstLineWidth, availWidth, availHeight);
 			this.children.relativeX = this.xLeftOffset;
 			this.children.relativeY = this.root.itemHeight;
 			
@@ -557,8 +557,8 @@ public class TreeItem
 				this.contentWidth = rootWidth;
 				this.contentHeight = this.root.itemHeight;
 			} else {
-				lineWidth -= this.xLeftOffset;
-				this.children.init(lineWidth, lineWidth);
+				availWidth -= this.xLeftOffset;
+				this.children.init(availWidth, availWidth, availHeight);
 				this.contentWidth = Math.max(rootWidth, this.children.itemWidth + this.xLeftOffset);
 				this.contentHeight = this.root.itemHeight + this.paddingVertical + this.children.itemHeight;
 			}
@@ -769,7 +769,7 @@ public class TreeItem
 			this.internalHeight = this.root.itemHeight + this.contentY;
 			if (this.children.isFocused) {
 				this.children.defocus( null );
-				this.children.focus( -1 );
+				this.children.focusChild( -1 );
 				// move focus to root:
 				this.root.focus(null, Canvas.UP);
 			}
@@ -832,6 +832,17 @@ public class TreeItem
 			this.root.showNotify();
 			if (this.isExpanded) {
 				this.children.showNotify();
+			}
+		}
+
+		/* (non-Javadoc)
+		 * @see de.enough.polish.ui.Item#fireEvent(java.lang.String, java.lang.Object)
+		 */
+		public void fireEvent(String eventName, Object eventData)
+		{
+			super.fireEvent(eventName, eventData);
+			if (this.children != null) {
+				this.children.fireEvent(eventName, eventData);
 			}
 		}
 

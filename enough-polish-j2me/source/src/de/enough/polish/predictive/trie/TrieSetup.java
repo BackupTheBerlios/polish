@@ -2,20 +2,17 @@
 package de.enough.polish.predictive.trie;
 
 import java.io.DataInputStream;
-import java.io.IOException;
 import java.util.Vector;
 
 import javax.microedition.io.ConnectionNotFoundException;
-import javax.microedition.lcdui.Alert;
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.CommandListener;
-import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Displayable;
-import javax.microedition.lcdui.Form;
-import javax.microedition.lcdui.Gauge;
-import javax.microedition.lcdui.List;
-import javax.microedition.lcdui.StringItem;
-import javax.microedition.midlet.MIDlet;
+import de.enough.polish.ui.Alert;
+import de.enough.polish.ui.Command;
+import de.enough.polish.ui.CommandListener;
+import de.enough.polish.ui.Displayable;
+import de.enough.polish.ui.Form;
+import de.enough.polish.ui.Gauge;
+import de.enough.polish.ui.List;
+import de.enough.polish.ui.StringItem;
 import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
 import javax.microedition.rms.RecordStoreNotOpenException;
@@ -389,5 +386,12 @@ implements Runnable, CommandListener
 				StyleSheet.display.setCurrent(this.parent.getParent().getScreen());
 			}
 		}
+	}
+	
+	public void install()
+	{
+		registerListener(this.parent);
+		Thread thread = new Thread(this);
+		thread.start();
 	}
 }

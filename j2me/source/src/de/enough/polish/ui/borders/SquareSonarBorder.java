@@ -2,7 +2,7 @@
 /*
  * Created on Jan 5, 2008 at 7:02:15 PM.
  * 
- * Copyright (c) 2007 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -73,6 +73,7 @@ public class SquareSonarBorder extends Border
 	 */
 	public SquareSonarBorder( int innerColor, int outerColor, int steps, int distance, int pause, int numSignals, int speed )
 	{
+		super( 0, 0, 0, 0 );
 		this.innerColor = innerColor;
 		this.outerColor = outerColor;
 		this.steps = steps;
@@ -109,7 +110,6 @@ public class SquareSonarBorder extends Border
 		}
 		this.activeSignals = new boolean[ steps ];
 		this.colors = DrawUtil.getGradient(innerColor, outerColor, steps);
-		this.borderWidth = 0;
 	}
 	
 	

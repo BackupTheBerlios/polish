@@ -28,6 +28,7 @@ package de.enough.polish.ui.backgrounds;
 
 import de.enough.polish.ui.Background;
 import de.enough.polish.ui.Color;
+import de.enough.polish.ui.Style;
 
 import javax.microedition.lcdui.Graphics;
 
@@ -37,7 +38,7 @@ import javax.microedition.lcdui.Graphics;
  *       when used instead of the SimpleBackground and a SimpleBorder together.
  * </p>
  *
- * <p>Copyright Enough Software 2004 - 2008</p>
+ * <p>Copyright Enough Software 2004 - 2009</p>
  * @author Robert Virkus, robert@enough.de
  */
 public class BorderedSimpleBackground extends Background {
@@ -93,13 +94,37 @@ public class BorderedSimpleBackground extends Background {
 		height--;
 		g.setColor( this.borderColor );
 		g.drawRect( x, y, width, height );
-		if (this.borderWidth > 1) {
-			int border = this.borderWidth - 1;
-			while ( border > 0) {
-				g.drawRect( x+border, y+border, width - (border<<1), height - (border<<1) );
-				border--;
-			}
+		int border = this.borderWidth - 1;
+		while ( border > 0) {
+			g.drawRect( x+border, y+border, width - (border<<1), height - (border<<1) );
+			border--;
 		}
 	}
 
+	//#if polish.css.animations
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Background#setStyle(de.enough.polish.ui.Style)
+	 */
+	public void setStyle(Style style)
+	{
+		//#if polish.css.background-simple-bordered-color
+			Color bgColor = style.getColorProperty("background-simple-bordered-color");
+			if (bgColor != null) {
+				this.color = bgColor.getColor();
+			}
+		//#endif
+		//#if polish.css.background-simple-bordered-border-color
+			Color brdColor = style.getColorProperty("background-simple-bordered-border-color");
+			if (brdColor != null) {
+				this.borderColor = brdColor.getColor();
+			}
+		//#endif
+		//#if polish.css.background-simple-bordered-border-width
+			Integer brdWidth = style.getIntProperty("background-simple-bordered-border-width");
+			if (brdWidth != null) {
+				this.borderWidth = brdWidth.intValue();
+			}
+		//#endif
+	}
+	//#endif
 }

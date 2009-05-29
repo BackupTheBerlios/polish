@@ -37,7 +37,7 @@ import de.enough.polish.util.TextUtil;
 /**
  * <p>Provides a TextField that provides the user with possible matches for the current input.</p>
  *
- * <p>Copyright Enough Software 2006 - 2008</p>
+ * <p>Copyright Enough Software 2006 - 2009</p>
  * <pre>
  * history
  *        27-Feb-2006 - rob creation
@@ -172,12 +172,9 @@ public class ChoiceTextField
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.FakeTextFieldCustomItem#initContent(int, int)
 	 */
-	protected void initContent(int firstLineWidth, int lineWidth) {
-		super.initContent(firstLineWidth, lineWidth);
+	protected void initContent(int firstLineWidth, int availWidth, int availHeight) {
+		super.initContent(firstLineWidth, availWidth, availHeight);
 		this.choicesContainer.relativeY = this.contentHeight + this.paddingVertical;
-		if (!this.isLayoutExpand) {
-			try { throw new RuntimeException(); } catch (Exception e) { e.printStackTrace(); }
-		}
  	}
 
 	/**
@@ -522,7 +519,7 @@ public class ChoiceTextField
 		//#debug
 		System.out.println("enter choices: " + enter + ", have been entered already: " + this.isInChoice);
 		if (enter) {
-			this.choicesContainer.focus(0);
+			this.choicesContainer.focusChild(0);
 			setStyle( this.originalStyle );
 			//#if polish.usePolishGui && !polish.LibraryBuild
 				this.flashCaret = false;
@@ -559,13 +556,13 @@ public class ChoiceTextField
 	private void openChoices( boolean open ) {
 		//#debug
 		System.out.println("open choices: " + open + ", have been opened already:" + this.isOpen);
-		this.choicesContainer.focus( -1 );
+		this.choicesContainer.focusChild( -1 );
 		if (open) {
 			if (this.parent instanceof Container) {
 				Container parentContainer = (Container) this.parent;
 				if ( parentContainer.enableScrolling ) {
-					int availableWidth = this.itemWidth - (this.marginLeft + this.marginRight);
-					int choicesHeight = this.choicesContainer.getItemHeight( availableWidth, availableWidth );
+					int availWidth = this.itemWidth - (this.marginLeft + this.marginRight);
+					int choicesHeight = this.choicesContainer.getItemHeight( availWidth, availWidth, this.availableHeight	 );
 					int choicesBottomY = this.contentY + this.contentHeight + this.paddingVertical + choicesHeight;
 					//#debug
 					System.out.println("choicesHeight " + choicesHeight + ", choicesBottom=" + choicesBottomY + ", parent.height=" + parentContainer.availableHeight  );
@@ -631,7 +628,7 @@ public class ChoiceTextField
 				return; // no choices are known
 			}
 			if (this.isOpen) {
-				this.choicesContainer.focus(-1);
+				this.choicesContainer.focusChild(-1);
 			}
 			String currentText = getString();
 			//#debug

@@ -27,10 +27,6 @@ package de.enough.polish.ui;
 
 import java.io.IOException;
 
-import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.CommandListener;
-import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
@@ -39,9 +35,10 @@ import javax.microedition.lcdui.Image;
 import com.nttdocomo.ui.Frame;
 //#endif
 
+import de.enough.polish.event.AsynchronousMultipleCommandListener;
+import de.enough.polish.event.EventManager;
 import de.enough.polish.ui.backgrounds.TranslucentSimpleBackground;
 import de.enough.polish.util.ArrayList;
-import de.enough.polish.util.ImageUtil;
 import de.enough.polish.util.Locale;
 
 //#ifdef polish.Screen.imports:defined
@@ -92,25 +89,25 @@ public abstract class Screen
 //#if polish.Bugs.needsNokiaUiForSystemAlerts && !polish.SystemAlertNotUsed
 	//#define tmp.needsNokiaUiForSystemAlerts
 //#endif
+//#if polish.handleEvents || polish.css.animations
+	//#define tmp.handleEvents
+//#endif
 //#if polish.hasCommandKeyEvents || (polish.key.LeftSoftKey:defined && polish.key.RightSoftKey:defined)
 	//#define tmp.hasCommandKeyEvents
 //#endif
 //#if polish.useFullScreen
 	//#if polish.Screen.base:defined
 		//#define tmp.fullScreen
-		//#= extends ${polish.Screen.base}
 	//#elif (polish.midp2 && !tmp.needsNokiaUiForSystemAlerts) && (!polish.useMenuFullScreen || tmp.hasCommandKeyEvents)
 		//#define tmp.fullScreen
-		//# extends Canvas
 	//#elif polish.classes.fullscreen:defined
 		//#define tmp.fullScreen
-		//#= extends ${polish.classes.fullscreen}
+	//#elif polish.build.classes.fullscreen:defined
+		//#define tmp.fullScreen
 	//#endif
 //#endif
-//#if !tmp.fullScreen
-	extends Canvas
-//#endif
-implements AccessibleCanvas
+extends Canvas
+implements UiElement, Animatable
 {
 	private final static int POSITION_TOP = 0;
 	private final static int POSITION_LEFT = 1;
@@ -120,6 +117,10 @@ implements AccessibleCanvas
 		//#define tmp.usingTitle
 		protected Item title;
 		private boolean excludeTitleForBackground;
+		//#if polish.css.separate-title
+			private boolean separateTitle;
+		//#endif
+		
 		//#ifdef polish.css.title-style
 			private Style titleStyle;
 		//#endif
@@ -127,8 +128,8 @@ implements AccessibleCanvas
 			private boolean paintTitleAtTop = true;
 		//#endif	
 		//#if polish.Vendor.Motorola || polish.Bugs.ignoreTitleCall
-			//#define tmp.ignoreMotorolaTitleCall
-			private boolean ignoreMotorolaTitleCall = true;
+			//#define tmp.ignoreTitleCall
+			private boolean ignoreTitleCall = true;
 		//#endif
 	//#endif
 
@@ -142,10 +143,34 @@ implements AccessibleCanvas
 	//#endif
 	private Item subTitle;
 	protected int subTitleHeight;
+	//#if polish.css.subtitle-position
+		private boolean paintSubTitleAtTop = true;
+	//#endif
 	protected int titleHeight;
 	protected Background background;
+	protected int backgroundX;
+	protected int backgroundY;
+	protected int backgroundWidth;
+	protected int backgroundHeight;
 	protected Border border;
 	protected Style style;
+	//#if (polish.content-background-width || polish.css.content-background-height) && (polish.css.content-bgborder || polish.css.content-background || polish.css.content-border)
+		protected Dimension contentBackgroundWidth;
+		protected Dimension contentBackgroundHeight;
+		protected int contentBackgroundAnchor = Graphics.HCENTER | Graphics.VCENTER;
+	//#endif
+	//#if polish.css.content-background
+		/** the content's (container) background */
+		protected Background contentBackground;
+	//#endif
+	//#if polish.css.content-border
+		/** the content's (container) border */
+		protected Border contentBorder;
+	//#endif
+	//#if polish.css.content-bgborder
+		/** the content's (container) border that is drawn before the content-background is drawn */
+		protected Border contentBgBorder;
+	//#endif
 	/** the screen height minus the ticker height and the height of the menu bar */
 	protected int screenHeight;
 	/** the screen height minus the height of the menu bar */
@@ -201,6 +226,9 @@ implements AccessibleCanvas
 				private final MenuBar menuBar;
 			//#endif
 			//#define tmp.useExternalMenuBar
+			//#if polish.css.title-menu
+				//#define tmp.useTitleMenu
+			//#endif
 		//#else
 			private Command menuSingleLeftCommand;
 			private String menuLeftString;
@@ -254,14 +282,9 @@ implements AccessibleCanvas
 		private boolean showTitleOrMenu = true;
 	//#endif
 	/** an info text which is shown e.g. when some content is added to textfields */
-	private StringItem infoItem;
+	private Item infoItem;
 	/** determines whether the info text should be shown */
-	private boolean showInfoItem;
 	protected int infoHeight;
-	//#if tmp.fullScreen && polish.midp2 && polish.Bugs.fullScreenInPaint
-		//#define tmp.fullScreenInPaint
-		private boolean isInFullScreenMode;
-	//#endif
 	//#ifdef polish.css.foreground-image
 		private Image foregroundImage;
 		private int foregroundX;
@@ -289,22 +312,13 @@ implements AccessibleCanvas
 	//#endif
 	//#if polish.css.repaint-previous-screen
 		private boolean repaintPreviousScreen;
-		private AccessibleCanvas previousScreen;
+		private Canvas previousScreen;
 		//#if !polish.Bugs.noTranslucencyWithDrawRgb
-			private Background previousScreenOverlayBackground;
+			protected Background previousScreenOverlayBackground;
 		//#endif
 		//#if polish.ScreenOrientationCanChange && tmp.usingTitle
 			private Background previousScreenTitleBackground;
 			private int previousScreenTitleHeight;
-		//#endif
-	//#endif
-	//#if polish.ScreenOrientationCanChangeManually && polish.midp2
-		//#define tmp.manualOrientationChange
-		protected boolean isSetFullScreenCalled;
-		protected int screenOrientationDegrees;
-		private Image screenOrientationBuffer;
-		//#if polish.css.screen-orientation-change-animation
-			private ScreenChangeAnimation screenOrientationAnimation;
 		//#endif
 	//#endif
 	protected ScreenStateListener screenStateListener;
@@ -335,10 +349,25 @@ implements AccessibleCanvas
 		protected boolean isScrollBackground;
 	//#endif
 	
-	//#if polish.Bugs.displaySetCurrentFlickers || polish.MasterCanvas.enable
-		//#define tmp.useMasterCanvas
-	//#endif
+	protected long lastAnimateTime = -1;
+	protected boolean isAnimated = false;
 	
+	private int keyStates;
+	private int releasedKeys;
+	
+	//#if polish.css.content-expand
+		boolean isContentExpand;
+	//#endif	
+	
+	//#if tmp.useTitleMenu
+		boolean hasTitleMenu;
+	//#endif	
+	//#if polish.css.scroll-up-background
+		private Background scrollUpBackground;
+	//#endif
+	//#if polish.css.scroll-down-background
+		private Background scrollDownBackground;
+	//#endif
 	
 	/**
 	 * Creates a new screen, this constructor can be used together with the //#style directive.
@@ -376,11 +405,23 @@ implements AccessibleCanvas
 						
 		// creating standard container:
 		if (createDefaultContainer) {
-			this.container = new Container( true );
+			//#if polish.hasVirtualKeyboard
+				this.container = new Container( false );
+			//#else
+				this.container = new Container( true );
+			//#endif
 			this.container.screen = this;
 			this.container.isFocused = true;
 		}
 		this.style = style;
+		
+		//#if tmp.useTitleMenu
+		if(style != null)
+		{
+			this.hasTitleMenu = hasTitleMenu(this.style);
+		}
+		//#endif
+		
 		this.forwardCommandListener = new ForwardCommandListener();
 		//#ifndef tmp.menuFullScreen
 			super.setCommandListener(this.forwardCommandListener);
@@ -390,13 +431,22 @@ implements AccessibleCanvas
 				//#style menubar, menu, default
 				//#= this.menuBar = new ${polish.classes.MenuBar}( this );
 			//#else
-	 			//#style menubar, menu, default
-	 			this.menuBar = new MenuBar( this );
+				//#if tmp.useTitleMenu
+				if(this.hasTitleMenu)
+				{
+					//#style menubar, menu, default
+			 		this.menuBar = new TitleMenuBar( this );
+			 		setTitle(this.menuBar);
+				}
+				else
+				//#endif
+				{
+		 			//#style menubar, menu, default
+		 			this.menuBar = new MenuBar( this );
+				}
 	 		//#endif
 		//#endif
-		//#if !tmp.useMasterCanvas && tmp.fullScreen && polish.midp2 && !(polish.Bugs.fullScreenInPaint || tmp.needsNokiaUiForSystemAlerts)
-			super.setFullScreenMode( true );
-		//#endif
+	 	
 		setTitle( title );
 		
 		//make sure paintlock is initialized after all the other variables
@@ -406,9 +456,9 @@ implements AccessibleCanvas
 	/**
 	 * Initialises this screen before it is painted for the first time.
 	 */
-	private void init( int width, int height) {
+	protected void init( int width, int height) {
 		//#debug
-		System.out.println("Initialising screen " + this );
+		System.out.println("Initialising screen " + this + " with dimension " + width + "x" + height);
 		// calling super.setFullScreenMode(true) is already done within the showNotify() method
 		if (height == 0 || width == 0) {
 			return; // invalid initialization values...
@@ -420,12 +470,6 @@ implements AccessibleCanvas
 		this.originalScreenHeight =  height;
 		this.screenWidth = width;
 
-		
-		boolean startAnimationThread = false;
-		if (StyleSheet.animationThread == null) {
-			StyleSheet.animationThread = new AnimationThread();
-			startAnimationThread = true;
-		}
 		
 		//#ifdef polish.Screen.initCode:defined
 			//#include ${polish.Screen.initCode}
@@ -442,6 +486,12 @@ implements AccessibleCanvas
 				this.cssSelector = this.style.name;
 			}
 		//#endif
+		if (this.style != null) {
+			this.marginLeft = this.style.getMarginLeft(this.screenWidth);
+			this.marginRight = this.style.getMarginRight(this.screenWidth);			
+			this.marginTop = this.style.getMarginTop(this.screenHeight);
+			this.marginBottom = this.style.getMarginBottom(this.screenHeight);
+		}
 		//#ifdef tmp.menuFullScreen
 			//#ifdef tmp.useExternalMenuBar
 				int availableScreenWidth = this.screenWidth;
@@ -451,13 +501,24 @@ implements AccessibleCanvas
 					}
 				//#endif
 				//#if polish.ScreenOrientationCanChange && ! ( polish.key.TopLeftSotkey:defined || polish.hasPointerEvents )
-					if (this.screenWidth > this.screenHeight) {
-						this.menuBar.setOrientationVertical( true );
-					} else {
-						this.menuBar.setOrientationVertical( false );
-					}
+//					if (this.screenWidth > this.screenHeight) {
+//						this.menuBar.setOrientationVertical( true );
+//					} else {
+//						this.menuBar.setOrientationVertical( false );
+//					}
 				//#endif
-				this.menuBarHeight = this.menuBar.getSpaceBottom( availableScreenWidth, this.fullScreenHeight);
+					
+				//#if tmp.useTitleMenu
+					if(this.hasTitleMenu)
+					{
+						this.menuBarHeight = 0;
+					}
+					else
+				//#endif
+				{
+					this.menuBarHeight = this.menuBar.getSpaceBottom( availableScreenWidth, this.fullScreenHeight);
+				}
+				
 				//#if tmp.useScrollIndicator
 					int scrollWidth = this.menuBar.contentHeight + this.menuBar.paddingTop + this.menuBar.paddingBottom;
 					int scrollHeight = scrollWidth;
@@ -499,8 +560,8 @@ implements AccessibleCanvas
 						this.menuBarColor = colorInt.intValue();
 					}
 					this.menuFontColor = menustyle.getFontColor();
-					if (menustyle.font != null) {
-						this.menuFont = menustyle.font;
+					if (menustyle.getFont() != null) {
+						this.menuFont = menustyle.getFont();
 					} else {
 						this.menuFont = Font.getFont( Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_MEDIUM );				
 					}			
@@ -545,7 +606,7 @@ implements AccessibleCanvas
 				//#ifdef polish.MenuBar.MarginTop:defined 
 					//#= localMenuBarHeight += ${polish.MenuBar.MarginTop};
 				//#endif
-				//#if polish.doja
+				//#if polish.doja 
 					localMenuBarHeight = 0;
 				//#endif
 				this.menuBarHeight = localMenuBarHeight;
@@ -594,38 +655,35 @@ implements AccessibleCanvas
 		}
 		int availableWidth = this.screenWidth - this.marginLeft + this.marginRight;
 		if (this.border != null) {
-			availableWidth -= this.border.borderWidth << 1;
+			availableWidth -= this.border.borderWidthLeft + this.border.borderWidthRight;
 		}
-		//#if tmp.usingTitle
-			if (this.title != null) {
-				this.titleHeight = this.title.getItemHeight( availableWidth, availableWidth ); 
-			}
-		//#endif
 		//#if !tmp.menuFullScreen
 			this.screenHeight = getHeight();
 		//#elif tmp.useExternalMenuBar
+		//#if tmp.usingTitle
+			if (this.title != null) {
+				this.titleHeight = this.title.getItemHeight( availableWidth, availableWidth, this.screenHeight ); 
+			}
+		//#endif
 			this.menuBar.relativeY = this.screenHeight;
 		//#endif
-		if (this.infoItem != null) {
-			this.infoHeight = this.infoItem.getItemHeight(this.screenWidth, this.screenWidth);
-			this.showInfoItem = true;
-		}
 		calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
-		//#if tmp.menuFullScreen &&  tmp.useExternalMenuBar
-			int menuHeight = this.menuBar.getSpaceBottom( availableScreenWidth, this.fullScreenHeight);
-			if (menuHeight != this.menuBarHeight) {
-				// this can happen when the container has been initialized within calculateContentArea...
-				this.menuBarHeight = menuHeight;
-				this.screenHeight = this.fullScreenHeight - menuHeight;
-				calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
+		//#if tmp.menuFullScreen &&  tmp.useExternalMenuBar 
+			//#if tmp.useTitleMenu
+			if(!this.hasTitleMenu)
+			//#endif
+			{
+				int menuHeight = this.menuBar.getSpaceBottom( availableScreenWidth, this.fullScreenHeight);
+				if (menuHeight != this.menuBarHeight) {
+					// this can happen when the container has been initialized within calculateContentArea...
+					this.menuBarHeight = menuHeight;
+					this.screenHeight = this.fullScreenHeight - menuHeight;
+					calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
+				}
 			}
 		//#endif
 
 		this.isInitialized = true;
-		// start the animmation thread if necessary: 
-		if (startAnimationThread) {
-			StyleSheet.animationThread.start();
-		}
 	}
 	
 	/**
@@ -635,9 +693,7 @@ implements AccessibleCanvas
 	 * or when this screen has a shrink layout.
 	 */
 	protected void requestInit() {
-		if (this.isLayoutHorizontalShrink || this.isLayoutVerticalShrink) {
-			this.isInitRequested = true;
-		}
+		this.isInitRequested = true;
 	}
 	
 //	/**
@@ -657,7 +713,7 @@ implements AccessibleCanvas
 	 * Requests should be usually ignored during the event handling, for example. 
 	 * @see #ignoreRepaintRequests
 	 */
-	protected void requestRepaint() {
+	public void requestRepaint() {
 		if (this.ignoreRepaintRequests) {
 			this.isRepaintRequested = true;
 			return;
@@ -674,42 +730,16 @@ implements AccessibleCanvas
 	 * @param height the height of the area that needs to be refreshed
 	 * @see #ignoreRepaintRequests
 	 */
-	protected void requestRepaint( int x, int y, int width, int height ) {
+	public void requestRepaint( int x, int y, int width, int height ) {
 		if (this.ignoreRepaintRequests) {
 			return;
 		}
-		//#if tmp.manualOrientationChange
-			int sh;
-			//#if tmp.fullScreen
-				sh = this.fullScreenHeight;
-			//#else
-				sh = this.screenHeight;
-			//#endif
-			int sw = this.screenWidth;
-			if (this.screenOrientationDegrees == 90) {
-				int t = x;
-				x = sh - (y + height);
-				y = t;
-				t = width;
-				width = height;
-				height = t;
-			} else if (this.screenOrientationDegrees == 180) {
-				x = sw - (x + width);
-				y = sh - (y + height);
-			} else if (this.screenOrientationDegrees == 270) {
-				int t = x;
-				x = y;
-				y = sw - (t + width);
-				t = width;
-				width = height;
-				height = t;
-			}
-		//#endif
 		//#if polish.Screen.callSuperEvents
 			//#  super.requestRepaint( x, y, width, height );
 		//#else
-			super.repaint( x, y, width, height );
+			Display.getInstance().requestRepaint( x, y, width, height );
 		//#endif
+		
 	}
 	
 	
@@ -739,7 +769,7 @@ implements AccessibleCanvas
 
 		
 	/**
-	 * Calculates and sets the content area for this screen.
+	 * Calculates and initializes the content area for this screen.
 	 * Usually no items are painted outside of the specified area.
 	 * This method knows about the title, subtitle, infoarea and ticker
 	 * and adjusts the content area accordingly
@@ -753,54 +783,161 @@ implements AccessibleCanvas
 	 */
 	protected void calculateContentArea( int x, int y, int width, int height ) {
 		//#debug
-		System.out.println("calculateContentArea(" + x + ", " + y + ", " + width + ", " + height + ")");
+		System.out.println("calculateContentArea(" + x + ", " + y + ", " + width + ", " + height + ") for " + this);
 		if (width < 1 || height < 1 ) {
 			//#debug info
 			System.out.println("invalid content dimension, width=" + width + ", height=" + height);
 			return;
 		}
-		
-		int availableWidth = this.screenWidth - this.marginLeft - this.marginRight;
+
+		int borderWidthL = 0;
+		int borderWidthR = 0;
+		int borderWidthT = 0;
+		int borderWidthB = 0;
 		if (this.border != null) {
-			availableWidth -= (this.border.borderWidth << 1);
+			borderWidthL = this.border.borderWidthLeft;
+			x += borderWidthL;
+			borderWidthR = this.border.borderWidthRight;
+			width -= borderWidthL + borderWidthR;
+			borderWidthT = this.border.borderWidthTop;
+			y += borderWidthT;
+			borderWidthB = this.border.borderWidthBottom;
+			height -= borderWidthT + borderWidthB;
 		}
-		//#if tmp.usingTitle
-			if (this.title != null) {
-				this.titleHeight = this.title.getItemHeight( availableWidth, availableWidth );
-			}
-		//#endif
-		if (this.subTitle != null) {
-			this.subTitle.relativeX = this.marginLeft;
-			this.subTitle.relativeY = this.titleHeight;
-			this.subTitleHeight = this.subTitle.getItemHeight( availableWidth, availableWidth );
-		}
-		x += this.marginLeft;
+		x += this.marginRight;
 		width -= this.marginLeft + this.marginRight;
 		y += this.marginTop;
 		height -= this.marginTop + this.marginBottom;
-		if (this.border != null) {
-			int borderWidth = this.border.borderWidth; 
-			width  -= borderWidth << 1;
-			height -= borderWidth << 1;
-			x += borderWidth;
-			y += borderWidth;
+
+		Container cont = this.container;
+		int containerWidth = 0;
+		int containerHeight = 0; 
+		int originalWidth = width;
+		if (cont != null) {
+			containerWidth = cont.getItemWidth(width, width, height);
+			containerHeight = cont.itemHeight;
+			if (this.isLayoutHorizontalShrink) {
+				width = containerWidth;
+			}
 		}
-		//#if !polish.css.title-position || !tmp.usingTitle
-			int topHeight = this.titleHeight + this.subTitleHeight + this.infoHeight;
-		//#else
-			//# int topHeight = this.subTitleHeight + this.infoHeight;
-			if (this.paintTitleAtTop) {
-				topHeight += this.titleHeight;
-			} else {
-				height -= this.titleHeight;
+		boolean isTitleAtTop = true;
+		//#if tmp.usingTitle
+			if (this.title != null) {
+				//TODO 	use #if polish.css.separate-title
+				this.titleHeight = this.title.getItemHeight( width, width, height );
+				this.title.relativeX = x;
+				this.title.relativeY = y;
+				//#if polish.css.title-position
+					if (!this.paintTitleAtTop) {
+						isTitleAtTop = false;
+						this.title.relativeY = this.screenHeight - this.titleHeight;
+					}
+				//#endif
+				int tw = this.title.itemWidth;
+				if (tw < originalWidth) {
+					if ((this.title.isLayoutRight && !this.isLayoutHorizontalShrink) || (this.isLayoutHorizontalShrink && this.isLayoutRight)) {
+						this.title.relativeX = x + (originalWidth - tw);
+					} else if ((this.title.isLayoutCenter && !this.isLayoutHorizontalShrink) || (this.isLayoutHorizontalShrink && this.isLayoutCenter)) {
+						this.title.relativeX = x + (originalWidth - tw) / 2;
+					}
+				}
+			}
+			if (isTitleAtTop && this.excludeTitleForBackground) {
+				this.backgroundY += this.titleHeight;
+				this.backgroundHeight -= this.titleHeight;
 			}
 		//#endif
+		boolean isSubTitleAtTop = true;
+		if (this.subTitle != null) {
+			this.subTitle.relativeX = x;
+			//#if polish.css.subtitle-position
+				if (!this.paintSubTitleAtTop) {
+					isSubTitleAtTop = false;
+				} else {
+			//#endif
+					this.subTitle.relativeY = y + this.titleHeight;
+			//#if polish.css.subtitle-position
+				}
+			//#endif
+			
+			this.subTitleHeight = this.subTitle.getItemHeight( width, width, height );
+			int sw = this.subTitle.itemWidth;
+			if (sw < originalWidth) {
+				if (this.subTitle.isLayoutRight) {
+					this.subTitle.relativeX += originalWidth - sw;
+				} else if (this.subTitle.isLayoutCenter) {
+					this.subTitle.relativeX += (originalWidth - sw) / 2;
+				}
+			}
+		}
+//		x += this.marginLeft;
+//		width -= this.marginLeft + this.marginRight;
+//		y += this.marginTop;
+//		height -= this.marginTop + this.marginBottom;
+//		if (this.border != null) {
+//			width  -= borderWidthL + borderWidthR;
+//			height -= borderWidthT + borderWidthB;
+//			x += this.border.borderWidthLeft;
+//			y += this.border.borderWidthTop;
+//		}
+		Item info = this.infoItem;
+		if (info != null) {
+			//TODO use #if polish.css.clip-screen-info
+				//			if (this.infoItem != null && this.clipScreenInfo) {			
+				//				topHeight += this.infoHeight;
+				//			}
+			this.infoHeight = info.getItemHeight(width, width, height);
+			info.relativeX = x;
+			int iw = info.itemWidth;
+			if (iw < originalWidth) {
+				if (info.isLayoutRight) {
+					info.relativeX += originalWidth - iw;
+				} else if (info.isLayoutCenter) {
+					info.relativeX += (originalWidth - iw)/2;
+				}
+			}
+		}
+		int topHeight = 0;
+		//#if polish.css.clip-screen-info
+			if (this.clipScreenInfo) {
+				topHeight += this.infoHeight;
+			}
+		//#endif
+		if (isTitleAtTop) {
+			topHeight += this.titleHeight;
+		} else {
+			height -= this.titleHeight;
+		}
+		if (isSubTitleAtTop) {
+			topHeight += this.subTitleHeight;
+		} else {
+			height -= this.subTitleHeight;
+		}
 		y += topHeight;
+		if (info != null) {
+			info.relativeY = topHeight;
+			//#if polish.css.clip-screen-info
+			if (this.clipScreenInfo) {
+				info.relativeY = topHeight - this.infoHeight;				
+			}
+			//#endif
+		}
 		//#if tmp.useExternalMenuBar
+			//TODO use #if polish.css.separate-menubar    
+			// if (!this.separateMenubar) {
+
 			int space;
 			//#if polish.MenuBar.Position:defined
-			if(this.menuBar != null)
+			
+			if(this.menuBar != null 
+				//#if tmp.useTitleMenu
+				&& this.hasTitleMenu
+				//#endif
+				)
 			{
+				if (this.excludeMenuBarForBackground) {
+					this.backgroundHeight -= this.menuBar.getSpaceBottom( this.screenWidth, this.fullScreenHeight );
+				}
 				space = this.menuBar.getSpaceLeft( this.screenWidth, this.fullScreenHeight );
 				x += space;
 				width -= space;
@@ -817,8 +954,20 @@ implements AccessibleCanvas
 		//#endif
 		//#ifndef polish.skipTicker			
 			int tickerHeight = 0;
-			if (this.ticker != null) {
-				tickerHeight = this.ticker.getItemHeight( width, width );
+			Item tick = this.ticker;
+			if (tick != null) {
+				tickerHeight = tick.getItemHeight( width, width, height );
+				tick.relativeX = x;
+				tick.relativeY = this.screenHeight - tickerHeight;
+				//#if tmp.paintTickerAtTop
+					tick.relativeY = y;
+					y += tickerHeight;
+				//#elif polish.css.ticker-position && !polish.TickerPosition:defined
+					if (this.paintTickerAtTop ) {
+						tick.relativeY = y;
+						y += tickerHeight;
+					}
+				//#endif
 			} 	
 			height -= topHeight + tickerHeight;
 		//#else
@@ -828,20 +977,18 @@ implements AccessibleCanvas
 			//#if polish.css.show-scrollbar
 				if ( this.scrollBarVisible ) {
 			//#endif
-					if ( this.container != null ) {
+					if ( cont != null ) {
 						this.scrollBar.scrollBarHeight = height;
-						//System.out.println("calculateContentArea for " + this + ": container.isInitialised=" + this.container.isInitialised );
-						int scrollBarWidth = this.scrollBar.getItemWidth(width, width);
+						//System.out.println("calculateContentArea for " + this + ": container.isInitialised=" + cont.isInitialised );
+						int scrollBarWidth = this.scrollBar.getItemWidth(width, width, height);
 						if (this.scrollBar.overlap) {
 							scrollBarWidth = 0;
 						}
-						int containerHeight = this.container.getItemHeight(width - scrollBarWidth, width - scrollBarWidth);
+						containerHeight = cont.getItemHeight(originalWidth, originalWidth, height);
 						if (containerHeight > height) {
 							//System.out.println("calculateContentArea for" + this + ": scrollBar is required for containerHeight of " + containerHeight + ", availableHeight=" + height );					
-							width -= scrollBarWidth;
-						} else if (scrollBarWidth != 0) {
-							//System.out.println("calculateContentArea for" + this + ": scrollBar is NOT required for containerHeight of " + containerHeight + ", availableHeight=" + height );					
-							this.container.requestFullInit();
+							int w = originalWidth - scrollBarWidth;
+							containerHeight = cont.getItemHeight(w, w, height);
 						}
 					}
 			//#if polish.css.show-scrollbar
@@ -849,7 +996,30 @@ implements AccessibleCanvas
 			//#endif
 			this.scrollBar.relativeX = x + width;
 		//#endif
-			
+		//#if polish.css.subtitle-position
+			if (!isSubTitleAtTop) {
+				this.subTitle.relativeY = y + height;
+			}
+		//#endif
+		//#if tmp.usingTitle
+			if (cont != null
+					&& cont.itemHeight < height
+					//#if polish.css.separate-title
+						&& !this.separateTitle
+					//#endif
+					&& this.isLayoutVerticalShrink 
+					&& this.title != null 
+					) 
+			{
+				
+				if (this.isLayoutBottom && isTitleAtTop) {
+					this.title.relativeY +=  (height - cont.itemHeight);
+				}
+				else if (this.isLayoutVCenter) {
+					this.title.relativeY +=  (height - cont.itemHeight) / 2;
+				}
+			}
+		//#endif
 		// now set the content coordinates:	
 		this.contentX = x;
 		//#ifndef polish.skipTicker			
@@ -862,17 +1032,117 @@ implements AccessibleCanvas
 			//#endif
 		//#endif
 		this.contentY = y;
-		this.contentWidth = width;
+		this.contentWidth = originalWidth;
 		this.contentHeight = height;
 		//#debug
 		System.out.println("calculateContentArea: x=" + this.contentX + ", y=" + this.contentY + ", width=" + this.contentWidth + ", height=" + this.contentHeight);
-		if (this.container != null) {
-			this.container.relativeX = x;
-			this.container.relativeY = y;
-			this.container.setScrollHeight( height );
-		}
+		initContent(cont);
 	}
 	
+	/**
+	 * Initializes the container and background position 
+	 * @param cont the container, may be null if no container is used at all.
+	 */
+	protected void initContent(Container cont) {
+		int borderWidthL = 0;
+		int borderWidthR = 0;
+		int borderWidthT = 0;
+		int borderWidthB = 0;
+		if (this.border != null) {
+			borderWidthL = this.border.borderWidthLeft;
+			borderWidthR = this.border.borderWidthRight;
+			borderWidthT = this.border.borderWidthTop;
+			borderWidthB = this.border.borderWidthBottom;
+		}
+		this.backgroundX = this.marginLeft + borderWidthL;
+		this.backgroundY = this.marginTop + borderWidthT;
+		this.backgroundWidth = this.screenWidth - this.backgroundX - borderWidthR - this.marginRight;
+		//#if tmp.fullscreen
+			this.backgroundHeight = this.fullScreenHeight - this.backgroundY - borderWidthB - this.marginBottom;
+			//#if polish.css.background-bottom
+				if (this.excludeMenuBarForBackground) {
+					this.backgroundHeight -= this.menuBarHeight - 1;
+				} else {
+			//#endif
+					if (this.isLayoutVerticalShrink) {
+						this.backgroundHeight -= this.menuBarHeight - 1;
+					}
+			//#if polish.css.background-bottom
+				}
+			//#endif
+		//#else
+			this.backgroundHeight = this.screenHeight - this.backgroundY - borderWidthB - this.marginBottom;
+		//#endif
+		//#if polish.css.background-top && tmp.usingTitle
+			if (this.excludeTitleForBackground) {
+				this.backgroundY += this.titleHeight;
+				this.backgroundHeight -= this.titleHeight;
+			}
+		//#endif
+		
+			
+		int x = this.contentX;
+		int y = this.contentY;
+		int width = this.contentWidth;
+		int height = this.contentHeight;
+		
+		
+		if (cont != null) {
+			cont.relativeX = x;
+			cont.relativeY = y;
+			cont.setScrollHeight( height );
+			
+			int containerHeight = cont.itemHeight;
+			int containerWidth = cont.itemWidth;
+			if (containerHeight < height) {
+				if (this.isLayoutVCenter) {
+					cont.relativeY = y + (height - containerHeight)/2;
+					if (this.isLayoutVerticalShrink) {
+						this.backgroundY += (height - containerHeight)/2;
+					}
+				} else  if (this.isLayoutBottom) {
+					cont.relativeY = y + (height - containerHeight);						
+					if (this.isLayoutVerticalShrink) {
+						this.backgroundY += (height - containerHeight);
+					}
+				}
+				if (this.isLayoutVerticalShrink) {
+					this.backgroundHeight -= (height - containerHeight);
+				}
+			} else {
+				cont.relativeY = y;
+			}
+			if (containerHeight > height) {
+				width -= getScrollBarWidth();
+			}
+			if (containerWidth < width) {
+				int paddingH = 0;
+				if (this.isLayoutHorizontalShrink) {
+					Style myStyle = this.style;
+					if (myStyle != null) {
+						paddingH =  myStyle.getPaddingLeft( width ) + myStyle.getPaddingRight( width );
+					}
+				}
+
+				if (this.isLayoutCenter) {
+					cont.relativeX = x + (width - containerWidth)/2;
+					if (this.isLayoutHorizontalShrink) {
+						this.backgroundX += (width - containerWidth - paddingH)/2;
+					}
+				} else if (this.isLayoutRight) {
+					cont.relativeX = x + (width - containerWidth);
+					if (this.isLayoutHorizontalShrink) {
+						this.backgroundX += (width - containerWidth - paddingH);
+					}
+				}
+				if (this.isLayoutHorizontalShrink) {
+					this.backgroundWidth -= (width - containerWidth - paddingH);
+				}
+			} else {
+				cont.relativeX = x;
+			}
+		}
+	}
 	
 
 	/**
@@ -884,57 +1154,45 @@ implements AccessibleCanvas
 		//#endif
 
 		//#debug
-		System.out.println("showNotify " + this + " isInitialised=" + this.isInitialized);
+		System.out.println("showNotify " + this + " isInitialized=" + this.isInitialized);
 		try {
+			
 			//#ifdef polish.Screen.showNotifyCode:defined
 				//#include ${polish.Screen.showNotifyCode}
-			//#endif
-			//#if tmp.manualOrientationChange
-				this.isSetFullScreenCalled = true;
-			//#endif
-			//#if !tmp.useMasterCanvas &&  tmp.fullScreen && polish.midp2 && polish.Bugs.fullScreenInShowNotify
-				super.setFullScreenMode( true );
-				this.isInitialized = false;
-			//#elif !tmp.useMasterCanvas && tmp.fullScreen && polish.midp2 && !polish.blackberry && !tmp.fullScreenInPaint && !tmp.useMasterCanvas
-				// this is needed on old Sony Ericssons for example,
-				// since the fullscreen mode is not resumed automatically
-				// when the previous screen was in the "normal" mode:
-				super.setFullScreenMode( true );
-			//#endif
-			//#if tmp.manualOrientationChange
-				this.isSetFullScreenCalled = false;
 			//#endif
 			if (!this.isInitialized) {
 				int w = getScreenFullWidth();
 				int h = getScreenFullHeight();
-				//#if tmp.manualOrientationChange
-					if ((this.screenOrientationDegrees == 90) || (this.screenOrientationDegrees == 270)) {
-						int t = w;
-						w = h;
-						h = t;
-					}
-				//#endif
 				init( w, h );
 			}
+			//#if polish.blackberry
+				else {
+					notifyFocusSet( getCurrentItem() );
+				}
+			//#endif
 			//#if polish.css.repaint-previous-screen
 				if (this.repaintPreviousScreen) {
 					//#if !polish.Bugs.noTranslucencyWithDrawRgb
-						//#if polish.color.overlay:defined
-							//#= this.previousScreenOverlayBackground = new TranslucentSimpleBackground( ${polish.color.overlay} );
-						//#else
-							this.previousScreenOverlayBackground = new TranslucentSimpleBackground( 0xAA000000 );
-						//#endif
+						if (this.previousScreenOverlayBackground == null) {
+							//#if polish.color.overlay:defined
+								//#= this.previousScreenOverlayBackground = new TranslucentSimpleBackground( ${polish.color.overlay} );
+							//#else
+								this.previousScreenOverlayBackground = new TranslucentSimpleBackground( 0xAA000000 );
+							//#endif
+						}
 					//#endif
-					Displayable currentDisplayable = StyleSheet.display.getCurrent();
-					if (currentDisplayable == this) {
-						currentDisplayable = StyleSheet.currentScreen;
+					// by using StyleSheet.currentScreen instead of Display.getCurrent() we
+					// circumvent using screen change animations as the previous screen:
+					Displayable currentDisplayable = StyleSheet.currentScreen;
+					if (currentDisplayable == null || currentDisplayable == this) {
+						currentDisplayable = Display.getInstance().getCurrent();;
 					}
 					//#if polish.css.screen-change-animation
 						if (currentDisplayable instanceof ScreenChangeAnimation) {
 							currentDisplayable = ((ScreenChangeAnimation)currentDisplayable).nextDisplayable;
 						}
 					//#endif
-					if ( currentDisplayable != this && currentDisplayable instanceof AccessibleCanvas) {
+					if ( currentDisplayable != this && currentDisplayable instanceof Canvas) {
 						Screen screen = currentDisplayable instanceof Screen ? (Screen) currentDisplayable : null;
 						if (screen != null) {
 							// detect circles within previous-screen-queue:
@@ -968,19 +1226,22 @@ implements AccessibleCanvas
 						//#endif
 						if (this.previousScreen != null && screen != null) {
 							if (screen.previousScreen != this) {
-								this.previousScreen = screen; //(AccessibleCanvas) currentDisplayable;
+								this.previousScreen = screen; //(Canvas) currentDisplayable;
 							} else {
 								screen.previousScreen = null;
 //									System.out.println("1: showNotify of " + this + ", current=" + currentDisplayable + ", current.previous=" + screen.previousScreen );
 							}
 						} else {
 //								System.out.println("2: showNotify of " + this + ", current=" + currentDisplayable);
-							this.previousScreen = (AccessibleCanvas) currentDisplayable;
+							this.previousScreen = (Canvas) currentDisplayable;
 						}
 					}
 				}
 			//#endif
 			
+			//#if tmp.handleEvents
+				EventManager.fireEvent( EventManager.EVENT_SHOW,  this, null );
+			//#endif
 			// inform all root items that they belong to this screen
 			// and that they will be shown soon:
 			Item[] items = getRootItems();
@@ -1002,54 +1263,59 @@ implements AccessibleCanvas
 					this.title.showNotify();
 				}
 			//#endif
-			//#if tmp.ignoreMotorolaTitleCall
-				this.ignoreMotorolaTitleCall = true;
+			//#if tmp.ignoreTitleCall
+				this.ignoreTitleCall = true;
+			//#endif
+			//#ifdef tmp.useExternalMenuBar
+				this.menuBar.showNotify();
 			//#endif
 			
 		
-			// init components:
-			if (this.isInitialized) {
-				int	width = this.screenWidth - (this.marginLeft + this.marginRight);
-				//#ifdef tmp.menuFullScreen
-					//#ifdef tmp.useExternalMenuBar
-						if (!this.menuBar.isInitialized) {
-							//#if polish.css.separate-menubar
-								if (this.separateMenubar) {
-									this.menuBar.init( width, width );								
-								} else {
-									this.menuBar.init( this.screenWidth, this.screenWidth );								
-								}
-							//#else
-								this.menuBar.init( this.screenWidth, this.screenWidth );								
-							//#endif
-						}
-					//#else
-						if (this.menuOpened) {
-							if (!this.menuContainer.isInitialized) {
-								this.menuContainer.init( width, width );
-							}
-						} else
-					//#endif
-				//#endif
-				if (this.container != null && !this.container.isInitialized) {
-					this.container.init( width, width );
-				}
-				//#ifdef tmp.usingTitle
-					if (this.title != null) {
-						if (!this.title.isInitialized) {
-							this.title.init( width, width );
-						}
-					}
-				//#endif
-				//#ifndef polish.skipTicker
-					if (this.ticker != null) {
-						if (!this.ticker.isInitialized) {
-							this.ticker.init( width, width );
-						}
-					}
-				//#endif
-				calculateContentArea(0, 0, this.screenWidth, this.screenHeight);
-			}
+			// init components (why? Should not be necessary... 2009-02-01):
+//			if (this.isInitialized) {
+//				int	width = this.screenWidth - (this.marginLeft + this.marginRight);
+//				int availHeight = this.screenHeight - (this.marginTop + this.marginBottom);
+//				//#ifdef tmp.menuFullScreen
+//					//#ifdef tmp.useExternalMenuBar
+//						this.menuBar.showNotify();
+//						if (!this.menuBar.isInitialized) {
+//							//#if polish.css.separate-menubar
+//								if (this.separateMenubar) {
+//									this.menuBar.init( width, width, availHeight );								
+//								} else {
+//									this.menuBar.init( this.screenWidth, this.screenWidth, availHeight );								
+//								}
+//							//#else
+//								this.menuBar.init( this.screenWidth, this.screenWidth, availHeight );								
+//							//#endif
+//						}
+//					//#else
+//						if (this.menuOpened) {
+//							if (!this.menuContainer.isInitialized) {
+//								this.menuContainer.init( width, width, availHeight );
+//							}
+//						} else
+//					//#endif
+//				//#endif
+//				if (this.container != null && !this.container.isInitialized) {
+//					this.container.init( width, width, availHeight );
+//				}
+//				//#ifdef tmp.usingTitle
+//					if (this.title != null) {
+//						if (!this.title.isInitialized) {
+//							this.title.init( width, width, availHeight );
+//						}
+//					}
+//				//#endif
+//				//#ifndef polish.skipTicker
+//					if (this.ticker != null) {
+//						if (!this.ticker.isInitialized) {
+//							this.ticker.init( width, width, availHeight );
+//						}
+//					}
+//				//#endif
+//				calculateContentArea(0, 0, this.screenWidth, this.screenHeight);
+//			}
 		} catch (Exception e) {
 			//#debug error
 			System.out.println("error while calling showNotify" + e );
@@ -1086,7 +1352,7 @@ implements AccessibleCanvas
 	 */
 	public void hideNotify() {
 		//#if polish.Screen.callSuperEvents
-			super.showNotify();
+			super.hideNotify();
 		//#endif
 		//#if polish.Bugs.noSoftKeyReleasedEvents
 			this.triggerReleasedKeyCode = 0;
@@ -1100,7 +1366,7 @@ implements AccessibleCanvas
 			// while the "parent" screen should be removed from the memory. However - we just take this risk for now.
 		 	// (rob, 2007-07-09)
 			// this.previousScreen = null;
-			//#if !polish.Bugs.noTranslucencyWithDrawRgb
+			//#if !polish.Bugs.noTranslucencyWithDrawRgb && !polish.css.overlay-background
 				this.previousScreenOverlayBackground = null;
 			//#endif
 			//#if polish.ScreenOrientationCanChange && tmp.usingTitle
@@ -1130,6 +1396,9 @@ implements AccessibleCanvas
 				StyleSheet.currentScreen = null;
 			}
 		//#endif
+		//#if tmp.handleEvents
+			EventManager.fireEvent( EventManager.EVENT_HIDE,  this, null );
+		//#endif
 		Item[] items = getRootItems();
 		for (int i = 0; i < items.length; i++) {
 			Item item = items[i];
@@ -1148,8 +1417,8 @@ implements AccessibleCanvas
 				this.title.hideNotify();
 			}
 		//#endif
-		//#ifdef tmp.ignoreMotorolaTitleCall
-			this.ignoreMotorolaTitleCall = true;
+		//#ifdef tmp.ignoreTitleCall
+			this.ignoreTitleCall = true;
 		//#endif
 		//#if polish.ScreenInfo.enable
 			// de-register screen from ScreenInfo element:
@@ -1163,12 +1432,16 @@ implements AccessibleCanvas
 		if (this.border != null) {
 			this.border.hideNotify();
 		}
+		//#ifdef tmp.useExternalMenuBar
+			this.menuBar.hideNotify();
+		//#endif
 	}
 	
 	/**
 	 * Sets the style of this screen.
 	 * 
 	 * @param style the style
+	 * @see #setStyle(Style, boolean)
 	 */
 	public void setStyle(Style style) {
 		if (style != this.style && this.style != null ) {
@@ -1179,13 +1452,9 @@ implements AccessibleCanvas
 		this.style = style;
 		this.background = style.background;
 		this.border = style.border;
-		this.marginTop = style.marginTop;
-		this.marginBottom = style.marginBottom;
-		this.marginLeft = style.marginRight;
-		this.marginRight = style.marginRight;
 		if (this.container != null) {
 			// use the same style for the container - but ignore the background, border and margin settings:
-			this.container.setStyle(style, true);
+			this.container.setStyleWithBackground(style, true);
 		}
 		this.isLayoutVCenter = (( style.layout & Item.LAYOUT_VCENTER ) == Item.LAYOUT_VCENTER);
 		this.isLayoutBottom = !this.isLayoutVCenter 
@@ -1195,6 +1464,24 @@ implements AccessibleCanvas
 							&& (( style.layout & Item.LAYOUT_RIGHT ) == Item.LAYOUT_RIGHT);
 		this.isLayoutHorizontalShrink = (style.layout & Item.LAYOUT_SHRINK) == Item.LAYOUT_SHRINK; 
 		this.isLayoutVerticalShrink = (style.layout & Item.LAYOUT_VSHRINK) == Item.LAYOUT_VSHRINK; 
+		//#if polish.css.content-background
+			Background contBackground = (Background) style.getObjectProperty("content-background");
+			if (contBackground != null) {
+				this.contentBackground = contBackground;
+			}
+		//#endif
+		//#if polish.css.content-border
+			Border contBorder = (Border) style.getObjectProperty("content-border");
+			if (contBorder != null) {
+				this.contentBorder = contBorder;
+			}
+		//#endif
+		//#if polish.css.content-bgborder
+			Border contBgBorder = (Border) style.getObjectProperty("content-bgborder");
+			if (contBgBorder != null) {
+				this.contentBgBorder = contBgBorder;
+			}
+		//#endif
 		//#if polish.css.scrollindicator-up-image && tmp.useScrollIndicator
 			String scrollUpUrl = style.getProperty("scrollindicator-up-image");
 			if (scrollUpUrl != null) {
@@ -1248,19 +1535,13 @@ implements AccessibleCanvas
 			}
 		//#endif
 
-		//#if polish.css.scrollindicator-color && tmp.useScrollIndicator
-			Integer scrollIndicatorColorInt = style.getIntProperty( "scrollindicator-color" );
-			if (scrollIndicatorColorInt != null) {
-				this.scrollIndicatorColor = scrollIndicatorColorInt.intValue();
-			}
-		//#endif
 		//#if tmp.usingTitle && polish.css.title-style
 			this.titleStyle = (Style) style.getObjectProperty("title-style");
 			if (this.titleStyle != null && this.title != null) {
 				this.title.setStyle(this.titleStyle);
 				if (this.isInitialized) {
 					int width = this.screenWidth - (this.marginLeft + this.marginRight);
-					this.titleHeight = this.title.getItemHeight( width, width );
+					this.titleHeight = this.title.getItemHeight( width, width, this.screenHeight );
 				}
 			} else {
 		//#endif
@@ -1269,7 +1550,7 @@ implements AccessibleCanvas
 		 		this.title.isInitialized = false;
 				if (this.isInitialized) {
 					int width = this.screenWidth - (this.marginLeft + this.marginRight);
-					this.titleHeight = this.title.getItemHeight( width, width );
+					this.titleHeight = this.title.getItemHeight( width, width, this.screenHeight );
 				}
 		 	}
 		 //#endif
@@ -1285,6 +1566,21 @@ implements AccessibleCanvas
 				this.paintTitleAtTop = (titlePositionInt.intValue() == POSITION_TOP);
 			}
 			
+		//#endif
+		//#if tmp.usingTitle && polish.css.separate-title
+			Boolean separateTitleBool = style.getBooleanProperty("separate-title");
+			if (separateTitleBool != null) {
+				this.separateTitle = separateTitleBool.booleanValue();
+			}
+		//#endif
+		//#if polish.css.subtitle-position
+			Integer subtitlePositionInt = style.getIntProperty("subtitle-position");
+			if (subtitlePositionInt == null && this.subTitle != null && this.subTitle.style != null) {
+				subtitlePositionInt = this.subTitle.style.getIntProperty("subtitle-position");
+			}
+			if (subtitlePositionInt != null) {
+				this.paintSubTitleAtTop = (subtitlePositionInt.intValue() == POSITION_TOP);
+			}
 		//#endif
 		//#if tmp.useScrollBar && polish.css.scrollbar-style
 			Style scrollbarStyle = (Style) style.getObjectProperty("scrollbar-style");
@@ -1362,6 +1658,14 @@ implements AccessibleCanvas
 			Boolean repaintPreviousScreenBool = style.getBooleanProperty("repaint-previous-screen");
 			if (repaintPreviousScreenBool != null) {
 				this.repaintPreviousScreen = repaintPreviousScreenBool.booleanValue();
+				//#if !polish.Bugs.noTranslucencyWithDrawRgb && polish.css.overlay-background
+				if (this.repaintPreviousScreen) {
+					Background bg = (Background) style.getObjectProperty("overlay-background");
+					if (bg != null) {
+						this.previousScreenOverlayBackground = bg;
+					}
+				}
+				//#endif
 			}
 		//#endif
 		//#if polish.css.separate-menubar
@@ -1392,10 +1696,123 @@ implements AccessibleCanvas
 				}
 			//#endif
 		//#endif
-		//#if tmp.manualOrientationChange
-			//#if polish.css.screen-orientation-change-animation
-				this.screenOrientationAnimation = (ScreenChangeAnimation) style.getObjectProperty("screen-orientation-change-animation");
+		//#if polish.css.content-expand
+			Boolean contentExpandBool = style.getBooleanProperty("content-expand");
+			if(contentExpandBool != null)
+			{
+				this.isContentExpand = contentExpandBool.booleanValue();
+			}
+		//#endif
+		//#if polish.css.scroll-up-background
+			Background upBg = (Background) style.getObjectProperty("scroll-up-background");
+			if (upBg != null) {
+				this.scrollUpBackground = upBg;
+			}
+		//#endif
+		//#if polish.css.scroll-down-background
+			Background downBg = (Background) style.getObjectProperty("scroll-down-background");
+			if (downBg != null) {
+				this.scrollDownBackground = downBg;
+			}
+		//#endif
+		
+			
+		setStyle( style, true );
+	}
+	
+	//#if tmp.useTitleMenu
+	boolean hasTitleMenu(Style style)
+	{
+		Boolean titleMenuBool = style.getBooleanProperty("title-menu");
+		if(titleMenuBool != null)
+		{
+			return titleMenuBool.booleanValue();
+		}
+		
+		return false;
+	}
+	//#endif
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.UiElement#setStyle(de.enough.polish.ui.Style, boolean)
+	 */
+	public void setStyle(Style style, boolean resetStyle)
+	{
+		if(!resetStyle && this.isInitialized) {
+			Dimension value;
+			//#if polish.css.margin
+				value = (Dimension) style.getObjectProperty("margin");
+				if (value != null) {
+					int margin = value.getValue(this.screenWidth);
+					this.marginLeft = margin;
+					this.marginRight = margin;
+					this.marginTop = margin;
+					this.marginBottom = margin;
+				}
 			//#endif
+			//#if polish.css.margin-left
+				value = (Dimension) style.getObjectProperty("margin-left");
+				if (value != null) {
+					this.marginLeft = value.getValue(this.screenWidth);
+				}
+			//#endif
+			//#if polish.css.mragin-right
+				value = (Dimension) style.getObjectProperty("margin-right");
+				if (value != null) {
+					this.marginRight = value.getValue(this.screenWidth);
+				}
+			//#endif
+			//#if polish.css.margin-top
+				value = (Dimension) style.getObjectProperty("margin-top");
+				if (value != null) {
+					this.marginTop = value.getValue(this.screenHeight);
+				}
+			//#endif
+			//#if polish.css.margin-bottom
+				value = (Dimension) style.getObjectProperty("margin-bottom");
+				if (value != null) {
+					this.marginBottom = value.getValue(this.screenHeight);
+				}
+			//#endif
+		}
+		//#if polish.css.content-background
+			//#if polish.css.content-background-width
+				Dimension contBackgroundW = (Dimension) style.getObjectProperty("content-background-width");
+				if (contBackgroundW != null) {
+					this.contentBackgroundWidth = contBackgroundW;
+				}
+			//#endif
+			//#if polish.css.content-background-height
+				Dimension contBackgroundH = (Dimension) style.getObjectProperty("content-background-height");
+				if (contBackgroundH != null) {
+					this.contentBackgroundHeight = contBackgroundH;
+				}
+			//#endif
+			//#if polish.css.content-background-anchor
+				Integer contBackgroundA = (Integer) style.getObjectProperty("content-background-anchor");
+				if (contBackgroundA != null) {
+					this.contentBackgroundAnchor = contBackgroundA.intValue();
+				}
+			//#endif
+		//#endif
+		//#if polish.css.scrollindicator-color && tmp.useScrollIndicator
+			Integer scrollIndicatorColorInt = style.getIntProperty( "scrollindicator-color" );
+			if (scrollIndicatorColorInt != null) {
+				this.scrollIndicatorColor = scrollIndicatorColorInt.intValue();
+			}
+		//#endif
+		//#if polish.css.animations
+			if (!resetStyle) {
+				if (this.container != null) {
+					this.container.setStyle(style, resetStyle);
+				}
+				if (this.background != null) {
+					this.background.setStyle(style);
+				}
+				if (this.border != null) {
+					this.border.setStyle(style);
+				}
+			}
 		//#endif
 	}
 	
@@ -1411,6 +1828,8 @@ implements AccessibleCanvas
 		if (!this.isInitialized) {
 			return;
 		}
+		
+		this.lastAnimateTime = currentTime;
 		
 		synchronized (this.paintLock) {
 			try {
@@ -1434,16 +1853,27 @@ implements AccessibleCanvas
 				if (this.border != null) {
 					this.border.animate( this, null, currentTime, repaintRegion );
 				}
+				//#if polish.css.content-background
+					if (this.contentBackground != null) {
+						this.contentBackground.animate(this, null, currentTime, repaintRegion);
+					}
+				//#endif
+				//#if polish.css.content-border
+					if (this.contentBorder != null) {
+						this.contentBorder.animate(this, null, currentTime, repaintRegion);
+					}
+				//#endif
+				boolean isMenuOpen = isMenuOpened();
 				//#ifdef tmp.menuFullScreen
 					//#ifdef tmp.useExternalMenuBar
 						this.menuBar.animate( currentTime, repaintRegion );
 					//#else
-						if (this.menuOpened) {
+						if (isMenuOpen) {
 							this.menuContainer.animate( currentTime, repaintRegion );
-						} else
+						}
 					//#endif
 				//#endif
-				if (this.container != null) {
+				if (this.container != null && !isMenuOpen) {
 					this.container.animate( currentTime, repaintRegion );
 				}
 				//#ifdef tmp.usingTitle
@@ -1468,7 +1898,14 @@ implements AccessibleCanvas
 				//#if polish.Bugs.noSoftKeyReleasedEvents
 					int keyCode = this.triggerReleasedKeyCode;
 					long time = this.triggerReleasedTime;
-					if (time != 0 && keyCode != 0 && (currentTime - time) > 400) {
+					
+					//#if polish.Screen.releaseInterval:defined
+						//#= int interval = ${polish.Screen.releaseInterval};
+					//#else
+						int interval = 400;
+					//#endif
+					
+					if (time != 0 && keyCode != 0 && (currentTime - time) > interval) {
 						keyReleased(keyCode);
 					}
 				//#endif
@@ -1509,23 +1946,6 @@ implements AccessibleCanvas
 		if (this.isResourcesReleased) {
 			return;
 		}
-		//#if tmp.manualOrientationChange
-			Graphics originalGraphics = null;
-			if (this.screenOrientationDegrees != 0) {
-				Image buffer = this.screenOrientationBuffer;
-				if (buffer == null || buffer.getWidth() != this.screenWidth) {
-					int w = this.screenWidth;
-					int h = this.screenHeight;
-					//#if tmp.fullScreen
-						h = this.fullScreenHeight;
-					//#endif
-					buffer = Image.createImage( w, h );
-					this.screenOrientationBuffer = buffer;
-				}
-				originalGraphics = g;
-				g = buffer.getGraphics();
-			}
-		//#endif
 		//#if polish.Screen.callSuperEvents
 			//# super.paint(g);
 		//#endif
@@ -1540,30 +1960,8 @@ implements AccessibleCanvas
 		}
 
 		synchronized (this.paintLock ) {
-			//#if !tmp.useMasterCanvas && polish.Bugs.losesFullScreen
+			//#if polish.Bugs.losesFullScreen
 				super.setFullScreenMode( true );
-			//#endif
-			//#if tmp.fullScreenInPaint && !tmp.useMasterCanvas
-				if (!this.isInFullScreenMode) {
-					super.setFullScreenMode( true );
-					this.isInFullScreenMode = true;
-					//#if tmp.menuFullScreen
-						//#ifdef polish.FullCanvasHeight:defined
-							//#= this.fullScreenHeight = ${polish.FullCanvasHeight};
-						//#else
-							this.fullScreenHeight = getHeight();
-						//#endif
-						this.screenHeight = this.fullScreenHeight - this.menuBarHeight;
-						this.originalScreenHeight = this.screenHeight;
-						//#if tmp.useScrollIndicator
-							this.scrollIndicatorY = this.screenHeight + 1; //- this.scrollIndicatorWidth - 1 - this.menuBarHeight;
-						//#endif
-					//#endif
-				}
-			//#endif
-			//#if tmp.fullScreen && polish.FullCanvasSize:defined && polish.Bugs.setClipForFullScreenNeeded
-				g.translate( -g.getTranslateX(), -g.getTranslateY() );
-				//#= g.setClip( 0, 0, ${polish.FullCanvasWidth}, ${polish.FullCanvasHeight} );
 			//#endif
 			//#if polish.debug.error
 			try {
@@ -1589,220 +1987,140 @@ implements AccessibleCanvas
 						//#endif
 					}
 				//#endif
-				int borderWidth = 0;
-				if (this.border != null) {
-					borderWidth = this.border.borderWidth;
-				}
-				int sWidth = this.screenWidth - this.marginLeft - this.marginRight - (borderWidth << 1);
-				int leftBorder = this.marginLeft + borderWidth;
-				int rightBorder = leftBorder + sWidth;
-				int sHeight;
-				//#ifdef tmp.menuFullScreen
-					sHeight = this.fullScreenHeight - this.marginTop - this.marginBottom - (borderWidth << 1);
-				//#else
-					sHeight = this.screenHeight - this.marginTop - this.marginBottom - (borderWidth << 1);
-				//#endif
-				int topBorder = this.marginTop + borderWidth;
-				//#if tmp.useExternalMenuBar
-					int space;
-					//#if polish.MenuBar.Position:defined
-						space = this.menuBar.getSpaceLeft( this.screenWidth, this.fullScreenHeight );
-						leftBorder += space;
-						sWidth -= space;
-						rightBorder -= space;
-						space = this.menuBar.getSpaceRight( this.screenWidth, this.fullScreenHeight );
-						sWidth -= space;
-						rightBorder -= space;
-						space = this.menuBar.getSpaceTop( this.screenWidth, this.fullScreenHeight );
-						topBorder += space;
-						sHeight -= space;
-					//#endif
-					space = this.menuBar.getSpaceBottom( this.screenWidth, this.fullScreenHeight );
-					sHeight -= space;
-				//#endif		
-				if (this.isLayoutHorizontalShrink) {
-					int contWidth = this.contentWidth;
-					if (this.container != null) {
-						contWidth = this.container.getItemWidth(sWidth, sWidth); 
-						//#ifdef tmp.usingTitle
-							if (this.title != null && this.title.itemWidth > contWidth ) {
-								this.titleHeight = this.title.getItemHeight( contWidth, contWidth );
-							}
-						//#endif
-					}
-					sWidth = contWidth;
-					//System.out.println("is horizontal shrink - from sWidth=" + (this.screenWidth - this.marginLeft - this.marginRight) + ", to=" + sWidth );					
-					if (this.isLayoutRight) {
-						leftBorder = rightBorder - sWidth;
-					} else if (this.isLayoutCenter) {
-						int diff = (rightBorder - leftBorder - sWidth) >> 1;
-						leftBorder += diff;
-						rightBorder -= diff;
-//						leftBorder = (this.screenWidth - sWidth) >> 1;
-//						rightBorder = this.screenWidth - leftBorder;
-					} else { // layout left:
-						rightBorder = leftBorder + sWidth;
-//						rightBorder = this.screenWidth - sWidth;
-					}
-					//System.out.println("leftBorder=" + leftBorder + ", rightBorder=" + rightBorder );
-				}
-				
-				if (this.isLayoutVerticalShrink) {
-					int contHeight = this.contentHeight;
-					if (this.container != null) {
-						int height = this.container.getItemHeight(sWidth, sWidth);
-						if (height < contHeight) {
-							contHeight = height;  
-						}
-					}
-//					//#if tmp.menuFullScreen
-//						sHeight = contHeight + this.titleHeight + this.menuBarHeight;
-//					//#else
-						sHeight = contHeight + this.titleHeight;
+//				int borderWidthL = 0;
+//				int borderWidthR = 0;
+//				int borderWidthT = 0;
+//				int borderWidthB = 0;
+//				if (this.border != null) {
+//					borderWidthL = this.border.borderWidthLeft;
+//					borderWidthR = this.border.borderWidthRight;
+//					borderWidthT = this.border.borderWidthTop;
+//					borderWidthB = this.border.borderWidthBottom;
+//				}
+//				int sWidth = this.screenWidth - this.marginLeft - this.marginRight - borderWidthL - borderWidthR;
+//				int leftBorder = this.marginLeft + borderWidthL;
+//				int rightBorder = leftBorder + sWidth;
+//				int sHeight;
+//				//#ifdef tmp.menuFullScreen
+//					sHeight = this.fullScreenHeight - this.marginTop - this.marginBottom - borderWidthT - borderWidthB;
+//				//#else
+//					sHeight = this.screenHeight - this.marginTop - this.marginBottom- borderWidthT - borderWidthB;
+//				//#endif
+//				int topBorder = this.marginTop + borderWidthT;
+//				//#if tmp.useExternalMenuBar
+//					int space;
+//					//#if polish.MenuBar.Position:defined
+//						space = this.menuBar.getSpaceLeft( this.screenWidth, this.fullScreenHeight );
+//						leftBorder += space;
+//						sWidth -= space;
+//						rightBorder -= space;
+//						space = this.menuBar.getSpaceRight( this.screenWidth, this.fullScreenHeight );
+//						sWidth -= space;
+//						rightBorder -= space;
+//						space = this.menuBar.getSpaceTop( this.screenWidth, this.fullScreenHeight );
+//						topBorder += space;
+//						sHeight -= space;
 //					//#endif
-					//System.out.println("isLayoutVerticalShrink - sHeight: from=" + (this.fullScreenHeight - this.marginTop - this.marginBottom) + ", to=" + sHeight + ", contentHeight=" + this.contentHeight + ", topBorder=" + topBorder );
-					if (this.isLayoutBottom) {
-//						//#ifdef tmp.menuFullScreen
-//							topBorder = this.fullScreenHeight - (this.marginBottom + sHeight + 1);
-//						//#else
-							topBorder = this.screenHeight - (this.marginBottom + sHeight + 1);
-//						//#endif
-						//System.out.println("bottom -> topBorder=" + topBorder + ", contY=>" + (topBorder + this.titleHeight) );
-					} else if (this.isLayoutVCenter) {
-//						//#ifdef tmp.menuFullScreen
-//							topBorder = (this.fullScreenHeight - (this.marginBottom + this.marginBottom))/2 - sHeight/2;
-//						//#else
-							topBorder = (this.screenHeight - (this.marginBottom + this.marginTop + sHeight)) >> 1;
-//						//#endif						 
-						//System.out.println("vcenter -> topBorder=" + topBorder + ", contY=>" + (topBorder + this.titleHeight) );
-					}
-				}
+//					space = this.menuBar.getSpaceBottom( this.screenWidth, this.fullScreenHeight );
+//					sHeight -= space;
+//				//#endif		
+//				if (this.isLayoutHorizontalShrink) {
+//					int contWidth = this.contentWidth;
+//					if (this.container != null) {
+//						contWidth = this.container.getItemWidth(sWidth, sWidth, sHeight); 
+//					}
+//					sWidth = contWidth;
+//					//System.out.println("is horizontal shrink - from sWidth=" + (this.screenWidth - this.marginLeft - this.marginRight) + ", to=" + sWidth );					
+//					if (this.isLayoutRight) {
+//						leftBorder = rightBorder - sWidth;
+//					} else if (this.isLayoutCenter) {
+//						int diff = (rightBorder - leftBorder - sWidth) >> 1;
+//						leftBorder += diff;
+//						rightBorder -= diff;
+////						leftBorder = (this.screenWidth - sWidth) >> 1;
+////						rightBorder = this.screenWidth - leftBorder;
+//					} else { // layout left:
+//						rightBorder = leftBorder + sWidth;
+////						rightBorder = this.screenWidth - sWidth;
+//					}
+//					//System.out.println("leftBorder=" + leftBorder + ", rightBorder=" + rightBorder );
+//				}
+//				
+//				if (this.isLayoutVerticalShrink) {
+//					int contHeight = this.contentHeight;
+//					if (this.container != null) {
+//						int height = this.container.getItemHeight(sWidth, sWidth, sHeight);
+//						if (height < contHeight) {
+//							contHeight = height;  
+//						}
+//					}
+////					//#if tmp.menuFullScreen
+////						sHeight = contHeight + this.titleHeight + this.menuBarHeight;
+////					//#else
+//						sHeight = contHeight + this.titleHeight;
+////					//#endif
+//					//System.out.println("isLayoutVerticalShrink - sHeight: from=" + (this.fullScreenHeight - this.marginTop - this.marginBottom) + ", to=" + sHeight + ", contentHeight=" + this.contentHeight + ", topBorder=" + topBorder );
+//					if (this.isLayoutBottom) {
+////						//#ifdef tmp.menuFullScreen
+////							topBorder = this.fullScreenHeight - (this.marginBottom + sHeight + 1);
+////						//#else
+//							topBorder = this.screenHeight - (this.marginBottom + sHeight + 1);
+////						//#endif
+//						//System.out.println("bottom -> topBorder=" + topBorder + ", contY=>" + (topBorder + this.titleHeight) );
+//					} else if (this.isLayoutVCenter) {
+////						//#ifdef tmp.menuFullScreen
+////							topBorder = (this.fullScreenHeight - (this.marginBottom + this.marginBottom))/2 - sHeight/2;
+////						//#else
+//							topBorder = (this.screenHeight - (this.marginBottom + this.marginTop + sHeight)) >> 1;
+////						//#endif						 
+//						//System.out.println("vcenter -> topBorder=" + topBorder + ", contY=>" + (topBorder + this.titleHeight) );
+//					}
+//				}
 
-				int clipY = g.getClipY();
+//				int clipY = g.getClipY();
 				// paint background:
-				int backgroundHeight = sHeight;
-				int backgroundY = topBorder + borderWidth;
-				//#ifdef tmp.menuFullScreen
-					if (!this.excludeMenuBarForBackground && this.marginBottom == 0) {
-						//#if tmp.useExternalMenuBar
-							backgroundHeight += this.menuBar.getSpaceBottom( this.screenWidth, this.fullScreenHeight );
-						//#else
-							backgroundHeight += this.menuBarHeight;
-						//#endif
+//				int backgroundHeight = sHeight; // - (borderWidth << 1);
+//				int backgroundY = topBorder;
+//				//#ifdef tmp.menuFullScreen
+//					if (!this.excludeMenuBarForBackground && this.marginBottom == 0 && !this.isLayoutVerticalShrink) {
+//						//#if tmp.useExternalMenuBar
+//							backgroundHeight += this.menuBar.getSpaceBottom( this.screenWidth, this.fullScreenHeight );
+//						//#else
+//							backgroundHeight += this.menuBarHeight;
+//						//#endif
+//					}
+//				//#endif
+//				//#ifdef tmp.usingTitle
+//					if (this.excludeTitleForBackground) {
+//						backgroundHeight -= this.titleHeight;
+//						backgroundY += this.titleHeight;
+//					}
+//				//#endif
+				paintBackgroundAndBorder( g );
+//				
+//				int topHeight = topBorder;
+				paintTitleAndSubtitle(g);
+				//#ifndef polish.skipTicker
+					Item tick = this.ticker;
+					if (tick != null) {
+						tick.paint( tick.relativeX, tick.relativeY, 0, this.screenWidth, g );
 					}
-				//#endif
-				//#ifdef tmp.usingTitle
-					if (this.excludeTitleForBackground) {
-						backgroundHeight -= this.titleHeight;
-						backgroundY += this.titleHeight;
-					}
-				//#endif
-				if (this.background != null) {
-					//System.out.println("Screen (" + this + ": painting background at leftBorder=" + leftBorder + ", backgroundY=" + backgroundY + ", backgroundHeight=" + backgroundHeight + ", screenHeight=" + this.screenHeight + ", fullscreenHeight=" + this.fullScreenHeight + ", titleHeight=" + this.titleHeight + ", excludeTitleForBackground=" + excludeTitleForBackground);
-					//#if polish.css.scroll-background
-						if (this.isScrollBackground && this.container != null) {
-							 int bgHeight = Math.max( backgroundHeight, this.container.itemHeight);
-							 int bgY = backgroundY + this.container.yOffset;
-							 if (bgY + bgHeight < backgroundY + backgroundHeight) {
-								 bgHeight += (backgroundY + backgroundHeight) - (bgY + bgHeight); 
-							 }
-							 int clipX = g.getClipX();
-							 int clipWidth = g.getClipWidth();
-							 int clipHeight = g.getClipHeight();
-							 g.clipRect( clipX, backgroundY, clipWidth, backgroundHeight );
-							 this.background.paint(leftBorder, bgY, sWidth, bgHeight, g);
-							 g.setClip( clipX, clipY, clipWidth, clipHeight );
-						} else {
-					//#endif
-							this.background.paint(leftBorder, backgroundY, sWidth, backgroundHeight, g);
-					//#if polish.css.scroll-background
-						}
-					//#endif
-				} else {
-					g.setColor( 0xFFFFFF );
-					g.fillRect( leftBorder, backgroundY, sWidth, backgroundHeight );
-				}
-				
-				int topHeight = topBorder;
-				//#ifdef tmp.usingTitle
-					//#if polish.css.title-position
-						if (this.paintTitleAtTop) {
-					//#endif
-							// paint title:
-							if (this.title != null && this.showTitleOrMenu) {
-								if (clipY < topBorder + this.titleHeight) {
-									this.title.paint( leftBorder, topBorder, leftBorder, rightBorder, g);
-//									System.out.println("clipY=" + clipY + ", topBorder=" + topBorder + ", titleHeight=" + this.titleHeight);
-//								} else {
-//									g.setColor( 0x00ff00 );
-//									g.fillRect( 10, clipY, 10, 10 );
-								}
-								topHeight += this.titleHeight;
-							}
-					//#if polish.css.title-position
-						}
-					//#endif
-				//#endif
-				if (this.subTitle != null) {
-					this.subTitle.paint( leftBorder, topHeight, leftBorder, rightBorder, g );
-					this.subTitle.relativeY = topHeight;
-					topHeight += this.subTitleHeight;
-				}
-				//#ifndef polish.skipTicker			
-					//#if tmp.paintTickerAtTop
-						if (this.ticker != null) {
-							this.ticker.relativeY = topHeight;
-							this.ticker.relativeX = leftBorder;
-							this.ticker.paint( leftBorder, topHeight, leftBorder, rightBorder, g);
-							topHeight += this.ticker.itemHeight;
-						}
-					//#elif polish.css.ticker-position && !polish.TickerPosition:defined
-						if (this.paintTickerAtTop && this.ticker != null) {
-							this.ticker.relativeY = topHeight;
-							this.ticker.relativeX = leftBorder;
-							this.ticker.paint( leftBorder, topHeight, leftBorder, rightBorder, g);
-							topHeight += this.ticker.itemHeight;
-						}
-					//#endif
 				//#endif
 	
-				int infoItemY = topHeight;
-				//#if polish.clip-screen-info
-					if (this.showInfoItem && this.clipScreenInfo) {			
-						topHeight += this.infoHeight;
-					}
-				//#endif
 				//System.out.println("topHeight=" + topHeight + ", contentY=" + contentY);
+					
 				
 				// paint content:
 				paintScreen( g );
 	//				g.setColor( 0xff0000 );
 	//				g.drawRect(g.getClipX() + 1 , g.getClipY() + 1 , g.getClipWidth() - 2 ,  g.getClipHeight() - 2);
 					
-				//#if tmp.useScrollBar
-						if (this.container != null && this.container.itemHeight > this.contentHeight) {
-							// paint scroll bar: - this.container.yOffset
-							// #debug
-							// System.out.println("Screen/ScrollBar: container.contentY=" + this.container.contentY + ", container.internalY=" +  this.container.internalY + ", container.yOffset=" + this.container.yOffset + ", container.height=" + this.container.availableHeight + ", container.relativeY=" + this.container.relativeY);
-							
-							int scrollX =  rightBorder
-										- this.scrollBar.initScrollBar(sWidth, this.contentHeight, this.container.itemHeight, this.container.yOffset, this.container.internalY, this.container.internalHeight, this.container.focusedIndex, this.container.size() );
-							//TODO allow scroll bar on the left side
-							this.scrollBar.relativeX = scrollX;
-							this.scrollBar.relativeY = this.container.relativeY;
-							//#if polish.css.show-scrollbar
-								if ( this.scrollBarVisible ) {
-							//#endif
-									this.scrollBar.paint( scrollX , this.scrollBar.relativeY + borderWidth, scrollX, rightBorder, g);
-							//#if polish.css.show-scrollbar
-								}
-							//#endif
-							//g.setColor( 0x00ff00 );
-							//g.drawRect( this.contentX, this.contentY, this.contentWidth - 3, this.contentHeight );
-							//System.out.println("scrollbar: width=" + scrollBar.itemWidth + ", backgroundWidth=" + scrollBar.backgroundWidth + ", height=" + scrollBar.itemHeight + ", backgroundHeight=" + scrollBar.backgroundHeight + ", contentY=" + contentY + ", contentHeight=" + this.contentHeight );
-						}
-				//#endif
-					
+				paintScrollBar(g);
+
+//				g.setColor( 0x88ff88 );
+//				g.drawRect( this.container.relativeX, this.container.relativeY + 1, this.container.itemWidth, this.container.itemHeight - 2 );
+//				g.setColor( 0xff7788 );
+//				g.drawRect( this.contentX, this.contentY, this.contentWidth, this.contentHeight );
 
 //				//#ifdef tmp.menuFullScreen
 //				 	g.setClip(0, 0, this.screenWidth, this.fullScreenHeight );
@@ -1823,204 +2141,15 @@ implements AccessibleCanvas
 //				 g.drawString( this.contentWidth+ "x" + this.contentHeight , 60, 60, Graphics.TOP | Graphics.LEFT );
 				 
 				// paint info element:
-				if (this.showInfoItem) {			
-					this.infoItem.paint( this.marginLeft, infoItemY, this.marginLeft, rightBorder, g );
+				if (this.infoItem != null) {			
+					this.infoItem.paint( this.infoItem.relativeX, this.infoItem.relativeY, this.marginLeft, this.screenWidth - this.marginRight, g );
 				}
 	 	
-				int bottomY = this.contentY + this.contentHeight;
-				//#ifndef polish.skipTicker			
-					//#if tmp.paintTickerAtBottom
-						if (this.ticker != null) {
-							this.ticker.relativeX = this.marginLeft;
-							this.ticker.relativeY = bottomY;
-							this.ticker.paint( this.marginLeft, bottomY, this.marginLeft, rightBorder, g);
-							bottomY += this.ticker.itemHeight;
-						}
-					//#elif polish.css.ticker-position && !polish.TickerPosition:defined
-						if (!this.paintTickerAtTop && this.ticker != null) {
-							this.ticker.relativeX = this.marginLeft;
-							this.ticker.relativeY = bottomY;
-							this.ticker.paint( this.marginLeft, bottomY, this.marginLeft, rightBorder, g);
-							bottomY += this.ticker.itemHeight;
-						}
-					//#endif
-				//#endif
-				//#if tmp.usingTitle && polish.css.title-position
-						if (!this.paintTitleAtTop) {
-							// paint title:
-							if (this.title != null && this.showTitleOrMenu) {
-								this.title.paint( leftBorder, bottomY, leftBorder, rightBorder, g);
-								//bottomY += this.titleHeight;
-							}
-						}
-				//#endif
-				
-				// paint border:
-				if (this.border != null) {
-					this.border.paint(leftBorder - borderWidth, topBorder - borderWidth, sWidth + (borderWidth <<1), sHeight + (borderWidth <<1), g );
-				}
-				
 				//#if polish.ScreenInfo.enable
-					ScreenInfo.paint( g, topHeight, this.screenWidth );
+					ScreenInfo.paint( g, this.titleHeight, this.screenWidth );
 				//#endif
-					
-				// paint menu in full-screen mode:
-				int menuLeftX = 0;
-				int menuRightX = this.screenWidth;
-				int menuY = this.screenHeight; // + this.marginBottom;
-				//#if polish.css.separate-menubar
-					if (!this.separateMenubar) {
-						menuLeftX = leftBorder;
-						menuRightX = rightBorder;
-						menuY = this.screenHeight - this.marginBottom;
-					}
-				//#endif
-				//#ifdef tmp.menuFullScreen
-					//#ifdef tmp.useExternalMenuBar
-						//#if polish.MenuBar.Position == right
-							menuLeftX = menuRightX - this.menuBar.getItemWidth( this.screenWidth, this.screenWidth ) - 1;
-							menuY = 0;
-						//#endif
-						this.menuBar.paint(menuLeftX, menuY, menuLeftX, menuRightX, g);
-						//#if tmp.useScrollIndicator
-							if (this.menuBar.isOpened) {
-								this.paintScrollIndicator = this.menuBar.paintScrollIndicator;
-								this.paintScrollIndicatorUp = this.menuBar.canScrollUpwards;
-								this.paintScrollIndicatorDown = this.menuBar.canScrollDownwards;
-							}
-						//#endif
-					//#else
-						if (this.menuOpened) {
-							topHeight -= this.infoHeight;
-							int menuHeight = this.menuContainer.getItemHeight(this.screenWidth, this.screenWidth);
-							int y = this.originalScreenHeight - (menuHeight + 1);
-							if (y < topHeight) {
-								//#if tmp.useScrollIndicator
-								this.paintScrollIndicator = true;
-								this.paintScrollIndicatorUp = (this.menuContainer.yOffset != 0);
-								this.paintScrollIndicatorDown = ( (this.menuContainer.focusedIndex != this.menuContainer.size() - 1)
-										&& (this.menuContainer.yOffset + menuHeight > this.originalScreenHeight - topHeight)) ;
-								//#endif
-								y = topHeight; 
-							//#if tmp.useScrollIndicator
-							} else {
-								this.paintScrollIndicator = false;
-							//#endif
-							}
-							this.menuContainer.setScrollHeight( this.originalScreenHeight - y );
-							// set clip so that submenu items do know where they should be painted.
-							// ATTENTION: this leads to situations in which items are repainted that
-							// need no refresh...
-							g.setClip(0, topHeight, this.screenWidth, this.originalScreenHeight - topHeight );
-							this.menuContainer.paint(menuLeftX, y, menuLeftX, menuLeftX + this.screenWidth, g);
-							this.menuContainer.relativeY = y;
-							this.menuContainer.relativeX = menuLeftX;
-						 	g.setClip(0, 0, this.screenWidth, this.fullScreenHeight );
-						} 
-						//#if !polish.doja
-							if (this.showTitleOrMenu || this.menuOpened) {
-								// clear menu-bar:
-								if (this.menuBarColor != Item.TRANSPARENT) {
-									g.setColor( this.menuBarColor );
-									//TODO check use menuY instead of this.originalScreenHeight?
-									g.fillRect(menuLeftX, menuY, menuRightX,  this.menuBarHeight );
-								}
-								g.setColor( this.menuFontColor );
-								g.setFont( this.menuFont );
-								String menuText = this.menuLeftString;
-								if (menuText != null) {
-									//#ifdef polish.MenuBar.MarginLeft:defined
-										//#= menuLeftX += ${polish.MenuBar.MarginLeft};
-									//#elifdef polish.MenuBar.PaddingLeft:defined
-										//#= menuLeftX += ${polish.MenuBar.PaddingLeft};
-									//#else
-										menuLeftX += 2;
-									//#endif
-									//#ifdef polish.MenuBar.MarginTop:defined
-										//#= g.drawString(menuText, menuX, this.originalScreenHeight + ${polish.MenuBar.MarginTop}, Graphics.TOP | Graphics.LEFT );
-									//#else
-										g.drawString(menuText, menuLeftX, this.originalScreenHeight + 2, Graphics.TOP | Graphics.LEFT );
-									//#endif
-									
-								}
-								menuText = this.menuRightString;
-								if (menuText != null) {
-									//#ifdef polish.MenuBar.MarginRight:defined
-										//#= menuRightX -= ${polish.MenuBar.MarginRight};
-									//#elifdef polish.MenuBar.PaddingRight:defined
-										//#= menuRightX -= ${polish.MenuBar.PaddingRight};
-									//#elifdef polish.MenuBar.MarginLeft:defined
-										menuRightX -= 2;
-									//#endif
-
-									//#ifdef polish.MenuBar.MarginTop:defined
-										//#= g.drawString(menuText, menuRightX, this.originalScreenHeight + ${polish.MenuBar.MarginTop}, Graphics.TOP | Graphics.RIGHT );
-									//#else
-										g.drawString(menuText, menuRightX, this.originalScreenHeight + 2, Graphics.TOP | Graphics.RIGHT );
-									//#endif
-									//#ifdef polish.hasPointerEvents
-										this.menuRightCommandX = menuRightX - this.menuFont.stringWidth( menuText );
-									//#endif
-								}
-							} // if this.showTitleOrMenu || this.menuOpened
-						//#endif
-					//#endif
-				//#endif
-						
-				//#if tmp.useScrollIndicator
-					// paint scroll-indicator in the middle of the menu:					
-					if (this.paintScrollIndicator) {
-						g.setColor( this.scrollIndicatorColor );
-						int x = this.scrollIndicatorX;
-						int y = this.scrollIndicatorY;
-						//System.out.println("paint: this.scrollIndicatorY=" + this.scrollIndicatorY);
-						int width = this.scrollIndicatorWidth;
-						int halfWidth = width / 2;
-						if (this.paintScrollIndicatorUp) {
-							//#if polish.css.scrollindicator-up-image
-								if (this.scrollIndicatorUpImage != null) {
-									g.drawImage(this.scrollIndicatorUpImage, x, y, Graphics.LEFT | Graphics.TOP );
-								} else {
-							//#endif						
-								//#ifdef polish.midp2
-									g.fillTriangle(x, y + halfWidth-1, x + width, y + halfWidth-1, x + halfWidth, y );
-								//#else
-									g.drawLine( x, y + halfWidth-1, x + width, y + halfWidth-1 );
-									g.drawLine( x, y + halfWidth-1, x + halfWidth, y );
-									g.drawLine( x + width, y + halfWidth-1, x + halfWidth, y );
-								//#endif
-							//#if polish.css.scrollindicator-up-image
-								}
-							//#endif
-						}
-						if (this.paintScrollIndicatorDown) {
-							//#if polish.css.scrollindicator-down-image
-								if (this.scrollIndicatorDownImage != null) {
-									//#if polish.css.scrollindicator-down-image
-										if (this.scrollIndicatorUpImage != null) {
-											y += this.scrollIndicatorUpImage.getHeight() + 1;
-										} else {
-											y += halfWidth;
-										}
-									//#else
-										y += halfWidth;
-									//#endif
-									g.drawImage(this.scrollIndicatorDownImage, x, y, Graphics.LEFT | Graphics.TOP );
-								} else {
-							//#endif						
-								//#ifdef polish.midp2
-									g.fillTriangle(x, y + halfWidth+1, x + width, y + halfWidth+1, x + halfWidth, y + width );
-								//#else
-									g.drawLine( x, y + halfWidth+1, x + width, y + halfWidth+1 );
-									g.drawLine( x, y + halfWidth+1, x + halfWidth, y + width );
-									g.drawLine(x + width, y + halfWidth+1, x + halfWidth, y + width );
-								//#endif
-							//#if polish.css.scrollindicator-down-image
-								}
-							//#endif
-						}
-					}
-				//#endif
+				
+				paintMenuBar(g);
 				//#ifdef polish.css.foreground-image
 					if (this.foregroundImage != null) {
 						g.drawImage( this.foregroundImage, this.foregroundX, this.foregroundY, Graphics.TOP | Graphics.LEFT  );
@@ -2038,27 +2167,7 @@ implements AccessibleCanvas
 			}
 			//#endif
 		}
-		//#if tmp.manualOrientationChange
-			if (this.screenOrientationDegrees != 0 && originalGraphics != null) {
-				//#if polish.midp2 && polish.hasFloatingPoint
-				Image bufferImage = this.screenOrientationBuffer;
-				if (bufferImage != null) {
-					int w = bufferImage.getWidth();
-					int h = bufferImage.getHeight();
-					int[] rgb = new int[ w * h ];
-					bufferImage.getRGB(rgb, 0, w, 0, 0, w, h );
-					int[] targetRgb = new int[ rgb.length ];
-					ImageUtil.rotateSimple(rgb, targetRgb, w, h, this.screenOrientationDegrees );
-					if (this.screenOrientationDegrees == 90 || this.screenOrientationDegrees == 270) {
-						int t = w;
-						w = h;
-						h = t;
-					}
-					originalGraphics.drawRGB( targetRgb, 0, w, 0, 0, w, h, false);
-				}
-				//#endif
-			}
-		//#endif
+
 //			g.setColor( 0xff0000 );
 //			g.drawString( "key =" + this.triggerReleasedKeyCode, 20, 30, 0 );
 //			g.drawString( "time=" + this.triggerReleasedTime, 20, 55, 0 );
@@ -2070,7 +2179,366 @@ implements AccessibleCanvas
 //		}
 //		g.drawString( Integer.toString( MasterCanvas.getScreenHeight() ), 5, 25, 0);
 	}
+
+	/**
+	 * Paints the scrollbar of this screen.
+	 * Note: from J2ME Polish 2.2 this functionality will move into Item.
+	 * @param g the Graphics context
+	 */
+	protected void paintScrollBar(Graphics g) {
+		//#if tmp.useScrollBar
+			if (this.container != null && this.container.itemHeight > this.contentHeight) {
+				int rightBorder = this.screenWidth - this.marginRight;
+				// paint scroll bar: - this.container.yOffset
+				// #debug
+				// System.out.println("Screen/ScrollBar: container.contentY=" + this.container.contentY + ", container.internalY=" +  this.container.internalY + ", container.yOffset=" + this.container.yOffset + ", container.height=" + this.container.availableHeight + ", container.relativeY=" + this.container.relativeY);
+				
+				int scrollX =  rightBorder
+							- this.scrollBar.initScrollBar(this.screenWidth, this.contentHeight, this.container.itemHeight, this.container.yOffset, this.container.internalY, this.container.internalHeight, this.container.focusedIndex, this.container.size() );
+				//TODO allow scroll bar on the left side
+				this.scrollBar.relativeX = scrollX;
+				this.scrollBar.relativeY = this.container.relativeY;
+				//#if polish.css.show-scrollbar
+					if ( this.scrollBarVisible ) {
+				//#endif
+						this.scrollBar.paint( scrollX , this.scrollBar.relativeY, scrollX, rightBorder, g);
+				//#if polish.css.show-scrollbar
+					}
+				//#endif
+				//g.setColor( 0x00ff00 );
+				//g.drawRect( this.contentX, this.contentY, this.contentWidth - 3, this.contentHeight );
+				//System.out.println("scrollbar: width=" + scrollBar.itemWidth + ", backgroundWidth=" + scrollBar.backgroundWidth + ", height=" + scrollBar.itemHeight + ", backgroundHeight=" + scrollBar.backgroundHeight + ", contentY=" + contentY + ", contentHeight=" + this.contentHeight );
+			}
+		//#endif
+	}
+
+	/**
+	 * Paints the menubar, if in fullscreen mode.
+	 * Also scroll indicators are painted here, in case no scrollbar is being used
+	 * @param g the graphics context
+	 */
+	protected void paintMenuBar(Graphics g) {
+		int leftBorder = this.marginLeft;
+		Border bord = this.border;
+		if (bord != null) {
+			leftBorder += bord.borderWidthLeft;
+		}
+		int menuLeftX = 0;
+		int menuRightX = this.screenWidth;
+		int menuY = this.screenHeight; // + this.marginBottom;
+		//#if polish.css.separate-menubar
+			if (!this.separateMenubar) {
+				menuLeftX = leftBorder;
+				menuRightX = this.screenWidth - this.marginRight;
+				if (bord != null) {
+					menuRightX -= bord.borderWidthRight;
+				}
+				menuY = this.screenHeight - this.marginBottom;
+			}
+		//#endif
+		//#ifdef tmp.menuFullScreen
+			// paint menu in full-screen mode:
+			
+			//#ifdef tmp.useExternalMenuBar
+//				//#if polish.MenuBar.Position == right
+//					menuLeftX = menuRightX - this.menuBar.getItemWidth( this.screenWidth, this.screenWidth, this.screenHeight ) - 1;
+//					menuY = 0;
+//				//#endif
+
+				//#if tmp.useTitleMenu
+				if(this.hasTitleMenu)
+				{
+					Item t = this.title;
+					t.paint( t.relativeX, t.relativeY, t.relativeX, t.relativeX + t.itemWidth, g);
+				}
+				else
+				//#endif
+				{
+					Item mb  = this.menuBar;
+					//#if (polish.MenuBar.Position == invisible) || (polish.blackberry && (polish.BlackBerry.useStandardMenuBar != true))
+						//#define tmp.useInvisibleMenuBar
+					//#else
+						menuRightX = mb.relativeX + mb.itemWidth;
+					//#endif
+					mb.paint( mb.relativeX, mb.relativeY, mb.relativeX, menuRightX, g );
+					//this.menuBar.paint(menuLeftX, menuY, menuLeftX, menuRightX, g);
+				}
+				
+				//#if tmp.useScrollIndicator
+					if (this.menuBar.isOpened) {
+						this.paintScrollIndicator = this.menuBar.paintScrollIndicator;
+						this.paintScrollIndicatorUp = this.menuBar.canScrollUpwards;
+						this.paintScrollIndicatorDown = this.menuBar.canScrollDownwards;
+					}
+				//#endif
+			//#else
+				int topHeight = this.contentY;
+				if (this.menuOpened) {
+					topHeight -= this.infoHeight;
+					int menuHeight = this.menuContainer.getItemHeight(this.screenWidth, this.screenWidth, this.screenHeight);
+					int y = this.originalScreenHeight - (menuHeight + 1);
+					if (y < topHeight) {
+						//#if tmp.useScrollIndicator
+						this.paintScrollIndicator = true;
+						this.paintScrollIndicatorUp = (this.menuContainer.yOffset != 0);
+						this.paintScrollIndicatorDown = ( (this.menuContainer.focusedIndex != this.menuContainer.size() - 1)
+								&& (this.menuContainer.yOffset + menuHeight > this.originalScreenHeight - topHeight)) ;
+						//#endif
+						y = topHeight; 
+					//#if tmp.useScrollIndicator
+					} else {
+						this.paintScrollIndicator = false;
+					//#endif
+					}
+					this.menuContainer.setScrollHeight( this.originalScreenHeight - y );
+					// set clip so that submenu items do know where they should be painted.
+					// ATTENTION: this leads to situations in which items are repainted that
+					// need no refresh...
+					g.setClip(0, topHeight, this.screenWidth, this.originalScreenHeight - topHeight );
+					this.menuContainer.paint(menuLeftX, y, menuLeftX, menuLeftX + this.screenWidth, g);
+					this.menuContainer.relativeY = y;
+					this.menuContainer.relativeX = menuLeftX;
+				 	g.setClip(0, 0, this.screenWidth, this.fullScreenHeight );
+				} 
+				//#if !polish.doja
+					if (this.showTitleOrMenu || this.menuOpened) {
+						// clear menu-bar:
+						if (this.menuBarColor != Item.TRANSPARENT) {
+							g.setColor( this.menuBarColor );
+							//TODO check use menuY instead of this.originalScreenHeight?
+							g.fillRect(menuLeftX, menuY, menuRightX,  this.menuBarHeight );
+						}
+						g.setColor( this.menuFontColor );
+						g.setFont( this.menuFont );
+						String menuText = this.menuLeftString;
+						if (menuText != null) {
+							//#ifdef polish.MenuBar.MarginLeft:defined
+								//#= menuLeftX += ${polish.MenuBar.MarginLeft};
+							//#elifdef polish.MenuBar.PaddingLeft:defined
+								//#= menuLeftX += ${polish.MenuBar.PaddingLeft};
+							//#else
+								menuLeftX += 2;
+							//#endif
+							//#ifdef polish.MenuBar.MarginTop:defined
+								//#= g.drawString(menuText, menuX, this.originalScreenHeight + ${polish.MenuBar.MarginTop}, Graphics.TOP | Graphics.LEFT );
+							//#else
+								g.drawString(menuText, menuLeftX, this.originalScreenHeight + 2, Graphics.TOP | Graphics.LEFT );
+							//#endif
+							
+						}
+						menuText = this.menuRightString;
+						if (menuText != null) {
+							//#ifdef polish.MenuBar.MarginRight:defined
+								//#= menuRightX -= ${polish.MenuBar.MarginRight};
+							//#elifdef polish.MenuBar.PaddingRight:defined
+								//#= menuRightX -= ${polish.MenuBar.PaddingRight};
+							//#elifdef polish.MenuBar.MarginLeft:defined
+								menuRightX -= 2;
+							//#endif
+
+							//#ifdef polish.MenuBar.MarginTop:defined
+								//#= g.drawString(menuText, menuRightX, this.originalScreenHeight + ${polish.MenuBar.MarginTop}, Graphics.TOP | Graphics.RIGHT );
+							//#else
+								g.drawString(menuText, menuRightX, this.originalScreenHeight + 2, Graphics.TOP | Graphics.RIGHT );
+							//#endif
+							//#ifdef polish.hasPointerEvents
+								this.menuRightCommandX = menuRightX - this.menuFont.stringWidth( menuText );
+							//#endif
+						}
+					} // if this.showTitleOrMenu || this.menuOpened
+				//#endif
+			//#endif
+		//#endif
+				
+		//#if tmp.useScrollIndicator
+			// paint scroll-indicator in the middle of the menu:					
+			if (this.paintScrollIndicator) {
+				g.setColor( this.scrollIndicatorColor );
+				int x = this.scrollIndicatorX;
+				int y = this.scrollIndicatorY;
+				//System.out.println("paint: this.scrollIndicatorY=" + this.scrollIndicatorY);
+				int width = this.scrollIndicatorWidth;
+				int halfWidth = width / 2;
+				if (this.paintScrollIndicatorUp) {
+					//#if polish.css.scrollindicator-up-image
+						if (this.scrollIndicatorUpImage != null) {
+							g.drawImage(this.scrollIndicatorUpImage, x, y, Graphics.LEFT | Graphics.TOP );
+						} else {
+					//#endif						
+						//#ifdef polish.midp2
+							g.fillTriangle(x, y + halfWidth-1, x + width, y + halfWidth-1, x + halfWidth, y );
+						//#else
+							g.drawLine( x, y + halfWidth-1, x + width, y + halfWidth-1 );
+							g.drawLine( x, y + halfWidth-1, x + halfWidth, y );
+							g.drawLine( x + width, y + halfWidth-1, x + halfWidth, y );
+						//#endif
+					//#if polish.css.scrollindicator-up-image
+						}
+					//#endif
+				}
+				if (this.paintScrollIndicatorDown) {
+					//#if polish.css.scrollindicator-down-image
+						if (this.scrollIndicatorDownImage != null) {
+							//#if polish.css.scrollindicator-down-image
+								if (this.scrollIndicatorUpImage != null) {
+									y += this.scrollIndicatorUpImage.getHeight() + 1;
+								} else {
+									y += halfWidth;
+								}
+							//#else
+								y += halfWidth;
+							//#endif
+							g.drawImage(this.scrollIndicatorDownImage, x, y, Graphics.LEFT | Graphics.TOP );
+						} else {
+					//#endif						
+						//#ifdef polish.midp2
+							g.fillTriangle(x, y + halfWidth+1, x + width, y + halfWidth+1, x + halfWidth, y + width );
+						//#else
+							g.drawLine( x, y + halfWidth+1, x + width, y + halfWidth+1 );
+							g.drawLine( x, y + halfWidth+1, x + halfWidth, y + width );
+							g.drawLine(x + width, y + halfWidth+1, x + halfWidth, y + width );
+						//#endif
+					//#if polish.css.scrollindicator-down-image
+						}
+					//#endif
+				}
+			}
+		//#endif
+	}
+
+	/**
+	 * Paints the title (if in fullscreen mode) and the subtitle of this screen
+	 * @param g the graphics context
+	 */
+	protected void paintTitleAndSubtitle(Graphics g) {
+		//#ifdef tmp.usingTitle
+			// paint title:
+			Item t = this.title;
+			if (t != null && this.showTitleOrMenu
+				//#if tmp.useTitleMenu
+					&& !this.hasTitleMenu 
+				//#endif
+				)
+			{
+				t.paint( t.relativeX, t.relativeY, t.relativeX, t.relativeX + t.itemWidth, g);
+			}
+		//#endif
+		Item st = this.subTitle;
+		if (st != null) {
+			st.paint( st.relativeX, st.relativeY, st.relativeX, st.relativeX + st.itemWidth, g );
+		}
+	}
+
+	/**
+	 * Paints the background and border for this screen.
+	 * @param g the graphics context
+	 */
+	protected void paintBackgroundAndBorder(Graphics g) {
+		if (this.background != null) {
+			//#if polish.css.scroll-background
+				if (this.isScrollBackground && this.container != null) {
+					 int bgHeight = Math.max( this.backgroundHeight, this.container.itemHeight);
+					 int bgY = this.backgroundY + this.container.yOffset;
+					 if (bgY + bgHeight < this.backgroundY + this.backgroundHeight) {
+						 bgHeight += (this.backgroundY + this.backgroundHeight) - (bgY + bgHeight); 
+					 }
+					 int clipY = g.getClipY();
+					 int clipX = g.getClipX();
+					 int clipWidth = g.getClipWidth();
+					 int clipHeight = g.getClipHeight();
+					 g.clipRect( clipX, this.backgroundY, clipWidth, this.backgroundHeight );
+					 this.background.paint(this.backgroundX, bgY, this.backgroundWidth, bgHeight, g);
+					 g.setClip( clipX, clipY, clipWidth, clipHeight );
+				} else {
+			//#endif
+					this.background.paint(this.backgroundX, this.backgroundY, this.backgroundWidth, this.backgroundHeight, g);
+			//#if polish.css.scroll-background
+				}
+			//#endif
+			//#if polish.css.scroll-up-background
+				if (this.scrollUpBackground != null && canScrollUp()) {
+					int bgY = this.backgroundY;
+					int off = getScrollUpBackgroundOffset();
+					if (off < this.backgroundHeight) {
+						bgY -= ((this.backgroundHeight - off) * 5) / 100;
+					}
+					this.scrollUpBackground.paint(this.backgroundX, bgY, this.backgroundWidth, this.backgroundHeight, g);
+				}
+			//#endif
+			//#if polish.css.scroll-down-background
+				if (this.scrollDownBackground != null && canScrollDown()) {
+					int bgY = this.backgroundY;
+					int off = getScrollDownBackgroundOffset();
+					if (off < this.backgroundHeight) {
+						bgY += ((this.backgroundHeight - off) * 5) / 100;
+					}
+					this.scrollDownBackground.paint(this.backgroundX, bgY, this.backgroundWidth, this.backgroundHeight, g);
+				}
+			//#endif
+		} else {
+			//#if polish.css.repaint-previous-screen
+				if (!this.repaintPreviousScreen) {
+			//#endif
+					g.setColor( 0xFFFFFF );
+					g.fillRect( this.backgroundX, this.backgroundY, this.backgroundWidth, this.backgroundHeight );
+			//#if polish.css.repaint-previous-screen
+				}
+			//#endif
+		}
+		Border bord = this.border;
+		if (bord != null) {
+			bord.paint( this.backgroundX - bord.borderWidthLeft, this.backgroundY - bord.borderWidthTop, this.backgroundWidth + bord.borderWidthLeft + bord.borderWidthRight, this.backgroundHeight + bord.borderWidthTop + bord.borderWidthBottom, g );
+		}
+	}
+
+	/**
+	 * Checks if this screen can currently scroll downwards.
+	 * @return true when scrolling down is possible.
+	 */
+	protected boolean canScrollDown() {
+		Container cont = this.container;
+		if (cont != null && cont.itemHeight + cont.yOffset > this.backgroundHeight ) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Checks if this screen can currently scroll upwards.
+	 * @return true when scrolling up is possible.
+	 */
+	protected boolean canScrollUp() {
+		Container cont = this.container;
+		if (cont != null && cont.yOffset != 0) {
+			return true;
+		}
+		return false;
+	}
 	
+	/**
+	 * Checks if this screen can currently scroll downwards.
+	 * @return true when scrolling down is possible.
+	 */
+	protected int getScrollDownBackgroundOffset() {
+		Container cont = this.container;
+		if (cont != null && cont.itemHeight + cont.yOffset > this.backgroundHeight ) {
+			return cont.itemHeight + cont.yOffset - this.backgroundHeight;
+		}
+		return 0;
+	}
+
+	/**
+	 * Checks if this screen can currently scroll upwards.
+	 * @return true when scrolling up is possible.
+	 */
+	protected int getScrollUpBackgroundOffset() {
+		Container cont = this.container;
+		if (cont != null && cont.yOffset != 0) {
+			return -cont.yOffset;
+		}
+		return 0;
+	}
+
 	/**
 	 * Paints the screen.
 	 * This method also needs to set the protected variables
@@ -2086,68 +2554,135 @@ implements AccessibleCanvas
 	 * @see #paintScrollIndicatorDown
 	 */
 	protected void paintScreen( Graphics g ) {
-		
+		Container cont = this.container;
+		if (cont == null || cont.size() == 0) {
+			return;
+		}
 		int clipX = g.getClipX();
 		int clipY = g.getClipY();
 		int clipWidth = g.getClipWidth();
 		int clipHeight = g.getClipHeight();
-
+		
 		int y = this.contentY;
 		int x = this.contentX;
 		int height = this.contentHeight;
 		int width = this.contentWidth;
+		
+		//#if polish.css.content-expand
+			if(this.isContentExpand)
+			{
+				//#if tmp.fullscreen
+					height = this.fullScreenHeight - this.contentY;
+				//#else
+					height = this.screenHeight - this.contentY;
+				//#endif
+			}
+		//#endif
+		
 //		g.setColor( 0x00ff00 );
 //		g.drawRect( x, y, width, height);
+//		g.setColor( 0xff0000 );
+//		g.drawLine( (int) (this.screenWidth * 0.05), this.contentY, this.screenWidth - (int)(this.screenWidth * 0.05), this.contentY + this.contentHeight );
 		// initialising the container here prevents clipping problems on BlackBerry for some
 		// screens like FilteredList. Why this makes a difference is beyond me, but well... it works.
-		int containerHeight = this.container.getItemHeight( width, width);		
+		int containerHeight;
+		if (cont.itemHeight > height) {
+			int sbw = getScrollBarWidth();
+			containerHeight = cont.getItemHeight( width - sbw, width - sbw, height);
+		} else {
+			containerHeight = cont.getItemHeight( width, width, height);
+		}
 		
 		g.clipRect(x, y, width, height );
 		
-		
 		if ( g.getClipHeight() > 0 ) {
+			
 			//#if tmp.useScrollIndicator
 				this.paintScrollIndicator = false; // defaults to false
 			//#endif
-			if (containerHeight > this.container.availableHeight ) {
+			if (containerHeight > cont.availableHeight ) {
 				//#if tmp.useScrollIndicator
 					this.paintScrollIndicator = true;
-					this.paintScrollIndicatorUp = (this.container.yOffset != 0);
+					this.paintScrollIndicatorUp = (cont.yOffset != 0);
 						//&& (this.container.focusedIndex != 0);
 					this.paintScrollIndicatorDown = (  
-							( (this.container.focusedIndex != this.container.size() - 1) 
-									|| (this.container.focusedItem != null && this.container.focusedItem.itemHeight > this.container.availableHeight) )
-							 && (this.container.getScrollYOffset() + containerHeight > this.container.availableHeight) );
+							( (cont.focusedIndex != cont.size() - 1) 
+									|| (cont.focusedItem != null && cont.focusedItem.itemHeight > cont.availableHeight) )
+							 && (cont.getScrollYOffset() + containerHeight > cont.availableHeight) );
 				//#endif
-			} else if (this.isLayoutVCenter) {
-				/*
-				//#debug
-				System.out.println("Screen: adjusting y from [" + y + "] to [" + ( y + (height - containerHeight) / 2) + "] - containerHeight=" + containerHeight);
-				*/
-				y += ((height - containerHeight) >> 1);
-				//this.container.availableHeight = height - ((height - containerHeight) >> 1);
-			} else if (this.isLayoutBottom) {
-				y += (height - containerHeight);
-				//this.container.availableHeight = containerHeight;
-	//			System.out.println("content: y=" + y + ", contentY=" + this.contentY + ", contentHeight="+ this.contentHeight + ", containerHeight=" + containerHeight);
+//			} else if (this.isLayoutVCenter) {
+//				/*
+//				//#debug
+//				System.out.println("Screen: adjusting y from [" + y + "] to [" + ( y + (height - containerHeight) / 2) + "] - containerHeight=" + containerHeight);
+//				*/
+//				y += ((height - containerHeight) >> 1);
+//				//this.container.availableHeight = height - ((height - containerHeight) >> 1);
+//			} else if (this.isLayoutBottom) {
+//				y += (height - containerHeight);
+//				//this.container.availableHeight = containerHeight;
+//	//			System.out.println("content: y=" + y + ", contentY=" + this.contentY + ", contentHeight="+ this.contentHeight + ", containerHeight=" + containerHeight);
 			}
-			int containerWidth = this.container.itemWidth;
-			if (this.isLayoutCenter) {
-				int diff = (width - containerWidth) >> 1;
-				x += diff;
-				width -= (width - containerWidth);
-			} else if (this.isLayoutRight) {
-				int diff = width - containerWidth;
-				x += diff;
-				width -= diff;
-			}
-			this.container.relativeX = x;
-			this.container.relativeY = y;
-//			g.setColor(0xffff00);
-//			g.drawRect( x, y, containerWidth, containerHeight);
+//			int containerWidth = this.container.itemWidth;
+//			if (this.isLayoutCenter) {
+//				int diff = (width - containerWidth) >> 1;
+//				x += diff;
+//				width -= (width - containerWidth);
+//			} else if (this.isLayoutRight) {
+//				int diff = width - containerWidth;
+//				x += diff;
+//				width -= diff;
+//			}
+//			this.container.relativeX = this.contentX;
+//			//TODO  move this positioning to calculcateContentArea or initScreen
+//			this.container.relativeY = y;
 			//System.out.println("screen: content: x=" + x + ", rightBorder=" + (x + width) );
 			//System.out.println("content: y=" + y + ", bottom=" + (y + height) );
-			this.container.paint( x, y, x, x + width, g );
+			//#if polish.css.content-bgborder || polish.css.content-background || polish.css.content-border
+				int bX = cont.relativeX;
+				int bY = cont.relativeY;
+				int bW = cont.itemWidth;
+				int bH = cont.itemHeight; 
+				//#if (polish.content-background-width || polish.css.content-background-height)
+					if (this.contentBackgroundWidth != null) {
+						int prev = bW;
+						bW = this.contentBackgroundWidth.getValue(bW);
+						if ((this.contentBackgroundAnchor & Graphics.HCENTER) == Graphics.HCENTER) {
+							bX -= (bW - prev) >> 1;
+						} else if ((this.contentBackgroundAnchor & Graphics.LEFT) == Graphics.LEFT) {
+							bX -= (bW - prev);
+						}
+					}
+					if (this.contentBackgroundHeight != null) {
+						bH = this.contentBackgroundHeight.getValue(bH);
+						if ((this.contentBackgroundAnchor & Graphics.VCENTER) == Graphics.VCENTER) {
+							bY -= (bH - containerHeight) >> 1;
+						} else if ((this.contentBackgroundAnchor & Graphics.TOP) == Graphics.TOP) {
+							bY -= (bH - containerHeight);
+						}
+					}
+				//#endif
+				//#if polish.css.content-bgborder
+					if (this.contentBgBorder != null ) {
+						this.contentBgBorder.paint( bX, bY, bW, bH, g);
+					}
+				//#endif
+				//#if polish.css.content-background
+					if (this.contentBackground != null ) {
+						this.contentBackground.paint( bX, bY, bW, bH, g);
+					}
+				//#endif
+				//#if polish.css.content-border
+					if (this.contentBorder != null ) {
+						this.contentBorder.paint( bX, bY, bW, bH, g);
+					}
+				//#endif
+			//#endif
+			cont.paint( cont.relativeX, cont.relativeY, cont.relativeX, cont.relativeX + cont.itemWidth, g);
+//			this.container.paint( x, y, x, x + width, g );
+//			g.setColor(0x0000ff);
+//			g.drawRect( x, y, containerWidth, containerHeight);
+//			g.setColor(0x0000ff00);
+//			g.drawRect( this.container.getAbsoluteX(), this.container.getAbsoluteY(), this.container.itemWidth, this.container.itemHeight);
 //			g.setColor(0x00ff00);
 //			g.drawString( Integer.toString(g.getClipHeight()), x, y, Graphics.TOP | Graphics.LEFT );
 //		} else {
@@ -2158,7 +2693,6 @@ implements AccessibleCanvas
 		
 		// allow painting outside of the content area again:
 		g.setClip( clipX, clipY, clipWidth, clipHeight );
-
 	}
 	
 	//#ifdef tmp.usingTitle
@@ -2202,6 +2736,7 @@ implements AccessibleCanvas
 	}
 	//#endif
 	
+	
 	/**
 	 * Sets the title of the Screen. If null is given, removes the title.
 	 * 
@@ -2221,27 +2756,45 @@ implements AccessibleCanvas
 		//#else
 			//#debug
 			System.out.println("Setting title " + text );
-			//#ifdef tmp.ignoreMotorolaTitleCall
+			//#ifdef tmp.ignoreTitleCall
 				if (text == null) {
-					if (this.ignoreMotorolaTitleCall) {
-						this.ignoreMotorolaTitleCall = false;
+					if (this.ignoreTitleCall) {
+						this.ignoreTitleCall = false;
 						return;
 					}
 					//return;
 				}
 			//#endif
 			if (text != null) {
-				//#style title, default
-				this.title = new StringItem( null, text );
-				this.title.screen = this;
-				if ( tStyle != null ) {
-					this.title.setStyle( tStyle );
-				}
-				//#ifdef polish.css.title-style
-					else if (this.titleStyle != null) {
-						this.title.setStyle( this.titleStyle );
+				//#if tmp.useTitleMenu
+					if(this.hasTitleMenu)
+					{
+						((TitleMenuBar)this.menuBar).setTitle(text, tStyle);
 					}
+					else
 				//#endif
+					{
+						if (this.title == null || !(this.title instanceof StringItem)) {
+							//#if polish.classes.title:defined
+								//#style title, default
+								//#= this.title = new ${polish.classes.title}( null, text );
+							//#else
+								//#style title, default
+								this.title = new StringItem( null, text );
+							//#endif
+							this.title.screen = this;
+							//#ifdef polish.css.title-style
+								if (this.titleStyle != null) {
+									this.title.setStyle( this.titleStyle );
+								}
+							//#endif
+						} else {
+							((StringItem)this.title).setText( text );
+						}
+						if ( tStyle != null ) {
+							this.title.setStyle( tStyle );
+						}
+					}
 				// the Nokia 6600 has an amazing bug - when trying to refer the
 				// field screenWidth, it returns 0 in setTitle(). Obviously this works
 				// in other phones and in the simulator, but not on the Nokia 6600.
@@ -2256,16 +2809,21 @@ implements AccessibleCanvas
 	//			//#endif
 	//			this.titleHeight = this.title.getItemHeight( width, width );			
 			} else {
-				this.title = null;
-				this.titleHeight = 0;
+				//#if tmp.useTitleMenu
+				if(!this.hasTitleMenu)
+				{
+					this.title = null;
+					this.titleHeight = 0;
+				}
+				//#endif
 			}
 			if (this.isInitialized && super.isShown()) {
 				if (this.title != null) {
 					int width = this.screenWidth - this.marginLeft - this.marginRight;
 					if (this.border != null) {
-						width -= this.border.borderWidth << 1;
+						width -= this.border.borderWidthLeft + this.border.borderWidthRight;
 					}
-					this.titleHeight = this.title.getItemHeight( width, width );
+					this.titleHeight = this.title.getItemHeight( width, width, this.screenHeight );
 				}
 				calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
 				//this.isInitialized = false;
@@ -2282,26 +2840,66 @@ implements AccessibleCanvas
 	 */
 	public void setTitle(Item item) {
 		//#ifdef tmp.usingTitle
-		this.title = item;
-		if (item != null){
-			//#ifdef polish.ScreenWidth:defined
-				//#= int width = ${polish.ScreenWidth}  - (this.marginLeft + this.marginRight);
-			//#else
-				int width = this.screenWidth - (this.marginLeft + this.marginRight);
-			//#endif
-			if (width > 1) {
-				this.titleHeight = this.title.getItemHeight( width, width );
-			}
-			item.screen = this;
-		} else {
-			this.titleHeight = 0;
-		}
-		if (this.isInitialized && super.isShown()) {
-			calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
-			requestRepaint();
-		}
+		setTitle( item, null );
 		//#endif
 	}
+	
+
+	/**
+	 * Sets an Item as the title for this screen.
+	 * WARNING: You must not call setTitle(String) after calling this method anymore!
+	 * 
+	 * @param item the title Item 
+	 * @param tStyle the new style for the title, is ignored when null
+	 */
+	public void setTitle(Item item, Style tStyle) {
+		//#ifdef tmp.usingTitle
+			//#if tmp.useTitleMenu
+				if(this.hasTitleMenu && item != this.menuBar)
+				{
+					((TitleMenuBar)this.menuBar).setTitle(item, tStyle);
+				}
+				else
+			//#endif
+			{
+				this.title = item;
+				if (item != null){
+					//#ifdef polish.ScreenWidth:defined
+						//#= int width = ${polish.ScreenWidth}  - (this.marginLeft + this.marginRight);
+					//#else
+						int width = this.screenWidth - (this.marginLeft + this.marginRight);
+					//#endif
+					if (width > 1) {
+						this.titleHeight = this.title.getItemHeight( width, width, this.screenHeight );
+					}
+					item.screen = this;
+				} else {
+					this.titleHeight = 0;
+				}
+				if (this.isInitialized && super.isShown()) {
+					calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
+					requestRepaint();
+				}
+			}
+		//#endif
+	}
+	
+	/**
+	 * Retrieves this screen's title item (when the fullscreen mode of J2ME Polish is activated)
+	 * 
+	 * @return the title of this screen as an item
+	 */
+	public Item getTitleItem()
+	{
+		Item item = null;
+		//#ifdef tmp.usingTitle
+			item = this.title;
+		//#endif
+		return item;
+	}
+
+
+
 
 	/**
 	 * Sets the information which should be shown to the user.
@@ -2314,41 +2912,54 @@ implements AccessibleCanvas
 	 * @param infoText the text which will be shown to the user
 	 */
 	public void setInfo( String infoText ) {
-		if (this.infoItem == null) {
+		//#debug
+		System.out.println("setInfoString=" + infoText);
+		if (infoText == null) {
+			this.infoItem = null;
+		} else if (this.infoItem == null || !(this.infoItem instanceof StringItem)) {
 			//#style info, default
 			this.infoItem = new StringItem( null, infoText );
 			this.infoItem.screen = this;
 		} else {
-			this.infoItem.setText( infoText );
+			StringItem info = ((StringItem)this.infoItem); 
+			info.setText( infoText );
+			int leftX = this.marginLeft + (this.border != null ? this.border.borderWidthLeft : 0 );
+			int width = this.screenWidth - leftX - this.marginRight - (this.border != null ? this.border.borderWidthRight : 0 );
+			int ih = info.getItemHeight(width, width, this.contentHeight);
+			if (ih == this.infoHeight) {
+				info.relativeX = leftX;
+				int iw = info.itemWidth;
+				if (iw < width) {
+					if (info.isLayoutRight) {
+						info.relativeX = leftX + width - iw;
+					} else if (info.isLayoutCenter) {
+						info.relativeX = leftX + (width - iw)/2;
+					}
+				}
+				return;
+			}
 		}
-		int previousHeight = this.infoHeight;
-		if (infoText == null) {
+		setInfo( this.infoItem );
+	}
+
+	/**
+	 * Sets the information which should be shown to the user.
+	 * The info is shown below the title (if any) and can be designed
+	 * using the predefined style "info".
+	 * At the moment this feature is only used by the TextField implementation,
+	 * when the direct input mode is enabled.
+	 * A repaint is not triggered automatically by calling this method.
+	 * 
+	 * @param info the info item which will be shown to the user
+	 */
+	public void setInfo( Item info ) {
+		//#debug
+		System.out.println("setInfoItem=" + info + ", current=" + this.infoItem + ", screen.isInitialized=" + this.isInitialized);
+		this.infoItem = info; 
+		if (info == null) {
 			this.infoHeight = 0;
-			this.showInfoItem = false;
-		} else if (this.screenWidth != 0){
-			this.infoHeight = this.infoItem.getItemHeight(this.screenWidth, this.screenWidth);
-			this.showInfoItem = true;
-		}
-		if (this.infoHeight != previousHeight) {
-			requestInit();
-		}
-//		if (this.isInitialized && this.container != null) {
-//			int difference = this.infoHeight - previousHeight;
-//			int newOffset = this.container.yOffset + difference;
-//			System.out.println("ADJUSTING CONTAINER.YOFFSET BY " + difference + " PIXELS FOR CONTAINER " + this.container + " TO " + newOffset );
-//			this.container.setScrollYOffset(newOffset);
-////			int previousContentHeight = this.contentHeight;
-////			calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
-////			int difference = this.contentHeight - previousContentHeight;
-////			//
-////			try { throw new RuntimeException(); } catch (Exception e) { e.printStackTrace(); }
-////			int newOffset = this.container.yOffset + difference;
-////			this.container.yOffset += difference;
-//		} else {
-//			//System.out.println("!!!NOT ADJUSTING CONTAINER.YOFFSET for container " + this.container );
-//			calculateContentArea( 0, 0, this.screenWidth, this.screenHeight ); 
-//		}
-		
+		} 
+		this.isInitRequested = this.isInitialized;
 	}
 	//#ifndef polish.skipTicker
 	/**
@@ -2423,46 +3034,73 @@ implements AccessibleCanvas
 		return this.ticker;
 	}
 	//#endif
-		
-	//#if tmp.manualOrientationChange || polish.Bugs.SoftKeyMappedToFire
-	/* (non-Javadoc)
-	 * @see javax.microedition.lcdui.Canvas#getGameAction(int)
+	
+	/**
+	 * Gets the states of the physical game keys.  
+	 * Each bit in the returned
+	 * integer represents a specific key on the device.  A key's bit will be
+	 * 1 if the key is currently down or has been pressed at least once since
+	 * the last time this method was called.  The bit will be 0 if the key
+	 * is currently up and has not been pressed at all since the last time
+	 * this method was called.  This latching behavior ensures that a rapid
+	 * key press and release will always be caught by an application loop,
+	 * regardless of how slowly the loop runs.
+	 * <p>
+	 * For example:
+	 * <code>
+	 * <pre>
+	 * 
+	 * // Get the key state and store it
+	 * int keyState = getKeyStates();
+	 * if ((keyState & UiAccess.LEFT_KEY) != 0) {
+	 * 		positionX--;
+	 * }
+	 * else if ((keyState & UiAccess.RIGHT_KEY) != 0) {
+	 * 		positionX++;
+	 * }
+	 * 
+	 * </pre>
+	 * </code>
+	 * <p>
+	 * Calling this method has the side effect of clearing any latched state.
+	 * Another call to getKeyStates immediately after a prior call will
+	 * therefore report the system's best idea of the current state of the
+	 * keys, the latched bits having been cleared by the first call.
+	 * <p>
+	 * On J2ME Polish this method is implemented by monitoring key press and
+	 * release events.  Thus the state reported by getKeyStates might
+	 * lag the actual state of the physical keys since the timeliness
+	 * of the key information is be subject to the capabilities of each
+	 * device.  Also, some devices may be incapable of detecting simultaneous
+	 * presses of multiple keys.
+	 * <p>
+	 * This method returns 0 unless the GameCanvas is currently visible as
+	 * reported by <A HREF="../../../../javax/microedition/lcdui/Displayable.html#isShown()"><CODE>Displayable.isShown()</CODE></A>.
+	 * Upon becoming visible, a GameCanvas will initially indicate that
+	 * all keys are unpressed (0); if a key is held down while the GameCanvas
+	 * is being shown, the key must be first released and then pressed in
+	 * order for the key press to be reported by the GameCanvas.
+	 * <p>
+	 * 
+	 * @return An integer containing the key state information (one bit per  key), or 0 if the GameCanvas is not currently shown.
+	 * @see UiAccess#UP_PRESSED
+	 * @see UiAccess#DOWN_PRESSED
+	 * @see UiAccess#LEFT_PRESSED
+	 * @see UiAccess#RIGHT_PRESSED
+	 * @see UiAccess#FIRE_PRESSED
+	 * @see UiAccess#GAME_A_PRESSED
+	 * @see UiAccess#GAME_B_PRESSED
+	 * @see UiAccess#GAME_C_PRESSED
+	 * @see UiAccess#GAME_D_PRESSED
 	 */
-	public int getGameAction(int keyCode)
+	public int getKeyStates()
 	{
-		int gameAction = super.getGameAction(keyCode);
-		//#if polish.Bugs.SoftKeyMappedToFire
-			if (gameAction == FIRE && ( isSoftKeyLeft( keyCode, gameAction) || isSoftKeyRight(keyCode, gameAction))) {
-				gameAction = 0;
-			}
-		//#endif
-		//#if tmp.manualOrientationChange
-		if (this.screenOrientationDegrees == 90) {
-			switch (gameAction) {
-			case UP: gameAction = LEFT; break;
-			case LEFT: gameAction = DOWN; break;
-			case RIGHT: gameAction = UP; break;
-			case DOWN: gameAction = RIGHT; break;
-			}
-		} else if (this.screenOrientationDegrees == 180) {
-			switch (gameAction) {
-			case UP: gameAction = DOWN; break;
-			case LEFT: gameAction = RIGHT; break;
-			case RIGHT: gameAction = LEFT; break;
-			case DOWN: gameAction = UP; break;
-			}
-		} else if (this.screenOrientationDegrees == 270) {
-			switch (gameAction) {
-			case UP: gameAction = RIGHT; break;
-			case LEFT: gameAction = UP; break;
-			case RIGHT: gameAction = DOWN; break;
-			case DOWN: gameAction = LEFT; break;
-			}
-		}
-		//#endif
-		return gameAction;
-	}	
-	//#endif
+		
+		int states = this.keyStates;
+	    this.keyStates &= ~this.releasedKeys;
+	    this.releasedKeys = 0;
+	    return states;
+	}
 
 
 	/**
@@ -2498,6 +3136,12 @@ implements AccessibleCanvas
 					//#debug warn
 					System.out.println("Unable to get game action for key code " + keyCode + ": " + e );
 				}
+				if (gameAction != 0) {
+					int bit = 1 << gameAction;
+					this.keyStates |= bit;
+			        this.releasedKeys &= ~bit;
+				}
+
 				boolean processed = false;
 				//#if tmp.menuFullScreen
 					boolean letTheMenuBarProcessKey;
@@ -2648,12 +3292,11 @@ implements AccessibleCanvas
 					notifyScreenStateChanged();
 					repaint();
 				}
+			//#if polish.debug.eror
 			} catch (Exception e) {
-				//#if !polish.debug.error 
-					e.printStackTrace();
-				//#endif
 				//#debug error
 				System.out.println("keyPressed() threw an exception" + e );
+			//#endif
 			} finally {
 				this.ignoreRepaintRequests = false;
 				this.isScreenChangeDirtyFlag = false;
@@ -2745,6 +3388,9 @@ implements AccessibleCanvas
 					//#debug warn
 					System.out.println("Unable to get game action for key code " + keyCode + ": " + e );
 				}
+				if (gameAction != 0) {
+					this.releasedKeys |= 1 << gameAction;
+				}
 				//#if tmp.menuFullScreen
 					if (isMenuOpened()) { // || (isSoftKeyLeft(keyCode, gameAction)) || (isSoftKeyRight(keyCode, gameAction))) {
 						//#ifdef tmp.useExternalMenuBar
@@ -2774,7 +3420,7 @@ implements AccessibleCanvas
 				//#endif
 				processed = handleKeyReleased( keyCode, gameAction );
 				//#if tmp.menuFullScreen
-					if (!isMenuOpened() && !processed) {
+					if (!processed && !isMenuOpened()) {
 						//#ifdef tmp.useExternalMenuBar
 							processed = this.menuBar.handleKeyReleased(keyCode, gameAction);
 						//#endif		
@@ -2924,6 +3570,18 @@ implements AccessibleCanvas
 		this.realCommandListener = listener;
 	}
 	
+	//#if polish.LibraryBuild
+		/**
+		 * Sets the command listener for this screen
+		 * 
+		 * @param listener the listener
+		 */
+		public void setCommandListener(javax.microedition.lcdui.CommandListener listener) {
+			// ignore
+		}
+	//#endif
+
+	
 	/**
 	 * Retrieves the asscociated command listener of this screen (if any).
 	 * 
@@ -3024,17 +3682,34 @@ implements AccessibleCanvas
 	//#if tmp.menuFullScreen && !tmp.useExternalMenuBar
 	private void openMenu( boolean open ) {
 		if (!open && this.menuOpened) {
+			//#if tmp.handleEvents
+				EventManager.fireEvent( EventManager.EVENT_MENU_CLOSE, this, null );
+			//#endif
 			this.menuContainer.hideNotify();
 		} else if (open && !this.menuOpened) {
+			//#if tmp.handleEvents
+				EventManager.fireEvent( EventManager.EVENT_MENU_OPEN, this, null );
+			//#endif
 			//#if !polish.MenuBar.focusFirstAfterClose
 				// focus the first item again, so when the user opens the menu again, it will be "fresh" again
-				this.menuContainer.focus(0);
+				this.menuContainer.focusChild(0);
 			//#endif
 			this.menuContainer.showNotify();
 		}
 		this.menuOpened = open;
 		updateMenuTexts();
 	}
+	//#endif
+	
+	//#if polish.LibraryBuild
+		/**
+		 * Adds a command to this screen
+		 * 
+		 * @param cmd the command
+		 */
+		public void addCommand(javax.microedition.lcdui.Command cmd) {
+			// ignore
+		}
 	//#endif
 
 	//#ifdef tmp.menuFullScreen
@@ -3250,6 +3925,22 @@ implements AccessibleCanvas
 		//#endif
 	}
 
+	//#ifdef tmp.menuFullScreen
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Displayable#getCommands()
+	 */
+	public Object[] getCommands()
+	{
+		Object[] commands;
+		//#ifdef tmp.useExternalMenuBar
+			commands = this.menuBar.commands.getInternalArray();
+		//#else
+			commands = this.menuCommands.getInternalArray();
+		//#endif
+		return commands;
+	}
+	//#endif
+
 	
 	/**
 	 * Adds the given command as a subcommand to the specified parent command.
@@ -3272,6 +3963,8 @@ implements AccessibleCanvas
 	 */
 	public void addSubCommand(Command child, Command parent, Style commandStyle) {
 		//#if !tmp.menuFullScreen
+			child.setLabel( parent.getLabel() + " > " + child.getLabel() );
+			removeCommand( parent );
 			addCommand( child );
 		//#else
 			//#debug
@@ -3311,7 +4004,6 @@ implements AccessibleCanvas
 			}
 		//#endif
 	}
-
 	
 	//#ifdef tmp.menuFullScreen
 	/* (non-Javadoc)
@@ -3320,6 +4012,9 @@ implements AccessibleCanvas
 	public void removeCommand(Command cmd) {
 		//#debug
 		System.out.println("removing command " + cmd.getLabel() + " from screen " + this );
+		if (this.okCommand == cmd) {
+			this.okCommand = null;
+		}
 		//#ifdef tmp.useExternalMenuBar
 			this.menuBar.removeCommand(cmd);
 			if (this.isInitialized) {
@@ -3329,9 +4024,6 @@ implements AccessibleCanvas
 				requestRepaint();
 			}
 		//#else
-			if (this.okCommand == cmd) {
-				this.okCommand = null;
-			}
 			if (this.menuSingleRightCommand == cmd) {
 				this.menuSingleRightCommand = null;
 				//move another suitable command-item to the right-pos:
@@ -3374,10 +4066,78 @@ implements AccessibleCanvas
 			requestRepaint();
 		//#endif
 	}
-	
+	//#endif
+
+	/**
+	 * Removes the given command as a subcommand.
+	 * 
+	 * @param childCommand the command to remove
+	 * @param parentCommand the parent command of the command to remove.
+	 * @throws IllegalStateException when the command has not been added before
+	 */
+	public void removeSubCommand(Command childCommand, Command parentCommand)
+	{
+		//#if !tmp.menuFullScreen
+			removeCommand( childCommand );
+		//#else
+			//#debug
+			System.out.println("Removing subcommand " + childCommand.getLabel() );
+			//#ifdef tmp.useExternalMenuBar
+				this.menuBar.removeSubCommand( childCommand, parentCommand );
+			//#else
+				// find parent CommandItem, could be tricky, especially when there are nested commands over several layers
+				if ( this.menuCommands == null ) {
+					throw new IllegalStateException();
+				}
+				int index = this.menuCommands.indexOf( childCommand );
+				CommandItem commandItem = null;
+				if (index != -1) {
+					// found it:
+					commandItem = (CommandItem) this.menuContainer.get( index );
+				} else {
+					// search through all commands
+					for ( int i=0; i < this.menuContainer.size(); i++ ) {
+						CommandItem item = (CommandItem) this.menuContainer.get( i );
+						commandItem = item.getChild( childCommand );
+						if ( commandItem != null ) {
+							break;
+						}
+					}
+				}
+				if ( commandItem == null ) {
+					throw new IllegalStateException();
+				}
+				index = this.menuCommands.indexOf( parentCommand );
+				CommandItem parentCommandItem = null;
+				if (index != -1) {
+					// found it:
+					parentCommandItem = (CommandItem) this.menuContainer.get( index );
+				} else {
+					// search through all commands
+					for ( int i=0; i < this.menuContainer.size(); i++ ) {
+						CommandItem item = (CommandItem) this.menuContainer.get( i );
+						parentCommandItem = item.getChild( parentCommand );
+						if ( parentCommandItem != null ) {
+							break;
+						}
+					}
+				}
+				if ( parentCommandItem == null ) {
+					throw new IllegalStateException();
+				}
+				parentCommandItem.removeChild(childCommand);
+				this.menuCommands.remove(childCommand);
+			//#endif	
+			if (super.isShown() || isMenuOpened()) {
+				requestRepaint();
+			}
+		//#endif
+	}
+
 	//#if tmp.menuFullScreen &&  tmp.useExternalMenuBar
 	/**
-	 * Initializes the menubar and calls calculateContentArea again if necessary 
+	 * Initializes the menubar and calls calculateContentArea again if necessary.
+	 * This method is only available when the external menubar and the fullscree mode is used.
 	 */
 	private void initMenuBar()
 	{
@@ -3395,10 +4155,31 @@ implements AccessibleCanvas
 			this.menuBarHeight = height;
 			this.screenHeight = this.fullScreenHeight - height;
 			this.menuBar.relativeY = this.screenHeight;
-			calculateContentArea(0, 0, this.screenWidth, this.screenHeight );
 		}
 	}
 	//#endif
+	
+	/**
+	 * @param commands
+	 */
+	public void addCommandsLayer(Command[] commands)
+	{
+		//#if tmp.useExternalMenuBar
+			this.menuBar.addCommandsLayer( commands );
+		//#endif
+	}
+
+	/**
+	 * 
+	 */
+	public void removeCommandsLayer()
+	{
+		//#if tmp.useExternalMenuBar
+			this.menuBar.removeCommandsLayer();
+		//#endif
+	}
+
+
 
 //	private void showMenuItems() {
 //		System.out.println("menuContainer.size=" + this.menuContainer.size() + ", menuCommands.size=" + this.menuCommands.size());
@@ -3413,13 +4194,12 @@ implements AccessibleCanvas
 //			System.out.println( i + "=" + cmd );
 //		}
 //	}
-	//#endif
 	
 	/**
 	 * Sets the commands of the given item
 	 * 
-	 * @param commandsList commands that should be added 
-	 * @param item the item which contains the commands 
+	 * @param commandsList the commands that are added 
+	 * @param item the item which contains the specified commands 
 	 * @see #removeItemCommands(Item)
 	 */
 	protected void setItemCommands( ArrayList commandsList, Item item ) {
@@ -3449,7 +4229,7 @@ implements AccessibleCanvas
 					addCommand = !this.menuBar.contains( command );
 				//#elif tmp.menuFullScreen
 					addCommand = ( ( this.menuCommands == null) ||  !this.menuCommands.contains( command) )
-							&& ( command != this.menuSingleLeftCommand && command != this.menuSingleRightCommand);
+								&& ( command != this.menuSingleLeftCommand && command != this.menuSingleRightCommand);
 				//#else
 					addCommand = true;
 				//#endif
@@ -3468,13 +4248,11 @@ implements AccessibleCanvas
 					this.menuBar.informDefaultCommand( cmd );
 				}
 			//#endif
-			if (super.isShown()) {
+			if (isShown()) {
 				requestRepaint();
 			}
 		//#endif
 	}
-	
-
 
 	/**
 	 * Informs this screen about a new default command for a focused item
@@ -3501,6 +4279,7 @@ implements AccessibleCanvas
 		return item.defaultCommand;
 	}
 
+	
 	/**
 	 * Removes the commands of the given item.
 	 *  
@@ -3524,6 +4303,7 @@ implements AccessibleCanvas
 					removeCommand(command);
 				//#endif
 			}
+			this.itemCommands.clear();
 		}
 		//#ifdef tmp.useExternalMenuBar
 			if (this.menuBar.size() ==0) {
@@ -3703,7 +4483,8 @@ implements AccessibleCanvas
 	 */
 	public void pointerDragged(int x, int y)
 	{
-		//System.out.println("screen: pointer drag " + x + ", " + y);
+		//#debug
+		System.out.println("screen: pointer drag " + x + ", " + y);
 		try {
 			this.ignoreRepaintRequests = true;
 			//#if polish.Screen.callSuperEvents
@@ -3715,6 +4496,27 @@ implements AccessibleCanvas
 					return;
 				}			
 			//#endif
+			//#ifdef tmp.menuFullScreen
+				//#ifdef tmp.useExternalMenuBar
+					if (this.menuBar.handlePointerDragged(x - this.menuBar.relativeX, y - this.menuBar.relativeY)) {
+						repaint();
+						return;
+					}
+				//#else
+					// check if one of the command buttons has been pressed:
+					if (this.menuOpened && y <= this.screenHeight) {
+						// a menu-item could have been selected:
+						if (this.menuContainer.handlePointerDragged( x - this.menuContainer.relativeX, y - this.menuContainer.relativeY )) {
+							//openMenu( false ); close the menu in pointerReleased so that the user can scroll within large commands menu
+							repaint();
+						}
+						return;
+					}
+				//#endif
+			//#endif
+			if (handlePointerDragged(x,y)) {
+				repaint();
+			}
 		} finally {
 			this.ignoreRepaintRequests = false;
 		}
@@ -3838,7 +4640,7 @@ implements AccessibleCanvas
 	 *  
 	 * @param x the absolute x position of the pointer pressing
 	 * @param y the absolute y position of the pointer pressing
-	 * @return true when the pressing of the pointer was actually handled by this item.
+	 * @return true when releasing the pointer was actually handled by this item.
 	 */
 	protected boolean handlePointerReleased( int x, int y ) {
 		if (this.container == null) {
@@ -3847,6 +4649,30 @@ implements AccessibleCanvas
 		return this.container.handlePointerReleased(x - this.container.relativeX, y - this.container.relativeY );
 	}
 	//#endif
+
+	//#ifdef polish.hasPointerEvents
+	/**
+	 * Handles the dragging/movement of a pointer.
+	 * This method should be overwritten only when the polish.hasPointerEvents 
+	 * preprocessing symbol is defined.
+	 * When the screen could handle the pointer drag event, it needs to 
+	 * return true.
+	 * The default implementation returns the result of calling the container's
+	 * handlePointerDragged-method
+	 *  
+	 * @param x the absolute x position of the pointer pressing
+	 * @param y the absolute y position of the pointer pressing
+	 * @return true when the dragging of the pointer was actually handled by this item.
+	 */
+	protected boolean handlePointerDragged(int x, int y)
+	{
+		if (this.container == null) {
+			return false;
+		}
+		return this.container.handlePointerDragged( x - this.container.relativeX, y - this.container.relativeY );
+	}
+	//#endif
+
 
 	
 	/**
@@ -3873,22 +4699,41 @@ implements AccessibleCanvas
 				item = getCurrentItem();
 			}
 			//#debug
-			System.out.println("FowardCommandListener: processing command " + cmd.getLabel() + " for item " + item + " and screen " + Screen.this + ", itemCommandListener=" + (item == null ? null : item.itemCommandListener) + ", real commandListener=" + this.realCommandListener);
+			System.out.println("ForwardCommandListener: processing command " + cmd.getLabel() + " for item " + item + " and screen " + Screen.this + ", itemCommandListener=" + (item == null ? null : item.itemCommandListener) + ", real commandListener=" + this.realCommandListener);
 			if ( item != null && item.handleCommand(cmd)) {
 				//System.out.println("command processed by item (or subitem) " + item);
 				return true;
 			}
 			// now invoke the usual command listener:
-			if (this.realCommandListener != null) {
-				this.realCommandListener.commandAction(cmd, this);
+			CommandListener listener = this.realCommandListener;
+			if (listener != null) {
+				//#if polish.executeCommandsAsynchrone
+					AsynchronousMultipleCommandListener.getInstance().commandAction(listener, cmd, this);
+				//#else
+					listener.commandAction(cmd, this);
+				//#endif
 				return true;
 			}
 		} finally {
 			//this.isInRequestInit = false;
-			this.requestInit();
+			requestInit();
 		}
 		return false;
 	}
+	
+	//#if polish.BuildLibrary
+	/**
+	 * Tries to handle the specified command.
+	 * The default implementation forwards the call to the container. When the container is unable to process the command,
+	 * it will be forwarded to an external command listener that has been set using setCommandListener(..)
+	 * 
+	 * @param cmd the command
+	 * @return true when the command has been handled by this screen
+	 */	
+	protected boolean handleCommand( javax.microedition.lcdui.Command cmd ) {
+		return false;
+	}
+	//#endif
 	
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#setFullScreenMode(boolean)
@@ -3905,18 +4750,16 @@ implements AccessibleCanvas
 				this.screenHeight = this.fullScreenHeight;
 			} else {
 				this.screenHeight = this.originalScreenHeight;
-				//#if tmp.usingTitle
-					//this.screenHeight = this.originalScreenHeight - this.titleHeight;
-				//#else
-					//this.screenHeight = this.originalScreenHeight;
-				//#endif
 			}
 		//#endif
 		requestRepaint();
 	}
 	
-	
-	//#if polish.midp2 && !polish.Bugs.needsNokiaUiForSystemAlerts 
+	/**
+	 * Adjusts the size of this screen.
+	 * @param width the new width of the screen
+	 * @param height the new height of the screen
+	 */
 	public void sizeChanged(int width, int height) {
 		//If the constructor has not been called, exit the method
 		//This is done because on some devices Displayable.sizeChanged() is
@@ -3925,24 +4768,6 @@ implements AccessibleCanvas
 		if(this.paintLock == null) {
 			return;
 		}
-		//#if tmp.useMasterCanvas
-			if (MasterCanvas.instance == null
-					//#if polish.Screen.base:defined
-						//# || height != getCanvasHeight()
-					//#else
-						|| MasterCanvas.getScreenHeight() != height
-					//#endif
-					|| MasterCanvas.getScreenWidth() != width) {
-				// ignore this sizeChanged event - we are probably on Series 60 and the system called sizeChanged on
-				// this screen rather than on MasterCanvas
-				return;
-			}
-		//#endif
-		//#if tmp.manualOrientationChange
-			if ( this.isSetFullScreenCalled ) {
-				return;
-			}
-		//#endif
 		//#if !polish.Bugs.sizeChangedReportsWrongHeight 
 			//#debug
 			System.out.println("Screen: sizeChanged to width=" + width + ", height=" + height );
@@ -3951,6 +4776,16 @@ implements AccessibleCanvas
 			//#ifdef tmp.menuFullScreen
 				doInit = width != this.screenWidth || height != this.fullScreenHeight;
 				if (doInit) {
+					if (this.fullScreenHeight != 0) {
+						int diff = height - this.fullScreenHeight;
+						if (diff > 0 && this.container != null) {
+							int offset = this.container.getScrollYOffset() + diff;
+							if (offset > 0) {
+								offset = 0;
+							}
+							this.container.setScrollYOffset(offset, false);
+						}
+					}
 					this.fullScreenHeight = height;
 					this.screenHeight = height - this.menuBarHeight;
 					this.originalScreenHeight = this.screenHeight;
@@ -3966,9 +4801,6 @@ implements AccessibleCanvas
 			//#endif
 			//System.out.println("sizeChanged - doInit=" + doInit);
 			if (doInit) {
-				if (this.container != null) {
-					this.container.requestFullInit();
-				}
 				//#if tmp.usingTitle
 					if (this.title != null) {
 						this.title.isInitialized = false;
@@ -3979,9 +4811,13 @@ implements AccessibleCanvas
 				//#endif
 				init( width, height );
 			}
+			//#if polish.css.repaint-previous-screen
+				if (this.repaintPreviousScreen && this.previousScreen != null) {
+					this.previousScreen.sizeChanged(width, height);
+				}
+			//#endif
 		//#endif
 	}
-	//#endif
 	
 	/**
 	 * @return the usable screen height
@@ -4034,7 +4870,7 @@ implements AccessibleCanvas
 								if (child.appearanceMode != Item.PLAIN || force ) {
 									Container parentContainer = (Container) child.parent;
 									//System.out.println("focusing " + child + " in parent " + parentContainer);
-									parentContainer.focus( parentContainer.indexOf(child), child, 0 );
+									parentContainer.focusChild( parentContainer.indexOf(child), child, 0 );
 								} else {
 									//System.out.println("child is not focussable: " + child);
 									return;
@@ -4045,6 +4881,22 @@ implements AccessibleCanvas
 					}
 					children.add( parent );
 					parent = parent.parent;
+				}
+				if (index == -1) {
+					//#ifdef tmp.menuFullScreen
+						//#ifdef tmp.useExternalMenuBar
+							this.menuBar.focusChild( item );
+						//#else
+							if (this.menuOpened) {
+								index = this.menuContainer.indexOf( item );
+								if (index != -1) {
+									this.menuContainer.focusChild(index);
+								}
+							} 
+						//#endif
+					//#endif
+					// ignore this call, the item should be focused, but it is unknown for this screen:
+					return;
 				}
 			}
 		}
@@ -4085,16 +4937,17 @@ implements AccessibleCanvas
 		if (index != -1 && item != null && (item.appearanceMode != Item.PLAIN || force ) ) {
 			//#debug
 			System.out.println("Screen: focusing item " + index + ": " + item );
-			this.container.focus( index, item, 0 );
+			this.container.focusChild( index, item, 0 );
 			if (index == 0) {
 				this.container.setScrollYOffset( 0, false );
 			}
 		} else if (index == -1) {
-			this.container.focus( -1 );
+			this.container.focusChild( -1 );
 		} else {
 			//#debug warn
 			System.out.println("Screen: unable to focus item (did not find it in the container or is not activatable): index=" + index + ", item=" + item);
 		}
+		repaint();
 	}
 	
 	/**
@@ -4110,58 +4963,12 @@ implements AccessibleCanvas
 			this.subTitleHeight = 0;
 		} else {
 			subTitle.screen = this;
-//			this.subTitle.relativeY = this.titleHeight;
-//			//#ifdef polish.ScreenWidth:defined
-//				//#= this.subTitleHeight = subTitle.getItemHeight(${polish.ScreenWidth}, ${polish.ScreenWidth});
-//			//#else
-//				this.subTitleHeight = subTitle.getItemHeight( this.screenWidth, this.screenWidth );
-//			//#endif
 		}
 		if (this.isInitialized) {
 			calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
 		}
 	}
 	
-	//#if tmp.useMasterCanvas  && polish.useFullScreen
-	/**
-	 * Determines whether the screen is currently shown.
-	 * When the screen is shown but the menu is openend, this method return false.
-	 * 
-	 * @return <code>true</code> if the screen is currently shown, <code>false</code> otherwise
-	 * @see javax.microedition.lcdui.Displayable#isShown()
-	 */
-	public boolean isShown() {
-		return (StyleSheet.currentScreen == this && MasterCanvas.instance != null && MasterCanvas.instance.isShown());
-	}
-	//#endif
-	
-	// when returning false in isShown(), repaint() will not trigger an actual repaint() on Sony Ericsson devices
-	// so we cannot implement this behavior differently
-//	//#if tmp.useMasterCanvas || tmp.menuFullScreen
-//	/**
-//	 * Determines whether the screen is currently shown.
-//	 * When the screen is shown but the menu is openend, this method return false.
-//	 * 
-//	 * @return <code>true</code> if the screen is currently shown, <code>false</code> otherwise
-//	 * @see javax.microedition.lcdui.Displayable#isShown()
-//	 */
-//	public boolean isShown() {
-//		boolean isShown;
-//		//#if tmp.useMasterCanvas
-//			isShown = (StyleSheet.currentScreen == this);
-//		//#else
-//			isShown = super.isShown();
-//		//#endif
-//		//#if tmp.menuFullScreen
-//			//#if tmp.useExternalMenuBar
-//				isShown &= this.menuBar != null && !this.menuBar.isOpened;
-//			//#else
-//				isShown &= !this.menuOpened;
-//			//#endif
-//		//#endif
-//		return isShown;
-//	}
-//	//#endif
 	
 	/**
 	 * Retrieves the currently focused item.
@@ -4202,14 +5009,13 @@ implements AccessibleCanvas
 	 * @return true when the commands menu is opened.
 	 */
 	public boolean isMenuOpened() {
-		//#if !tmp.menuFullScreen
-			//# return false;
-		//#elif tmp.useExternalMenuBar
-			//# return this.menuBar.isOpened;
-		//#else
-			return this.menuOpened;
+		boolean result = false;
+		//#if tmp.useExternalMenuBar
+			result = this.menuBar.isOpened;
+		//#elif tmp.menuFullScreen
+			result = this.menuOpened;
 		//#endif
-
+		return result;
 	}
 	
 	/**
@@ -4265,6 +5071,7 @@ implements AccessibleCanvas
 	 * Scrolls this screen by the given amount.
 	 * 
 	 * @param amount the number of pixels, positive values scroll upwards, negative scroll downwards
+	 * @see #setScrollYOffset(int, boolean)
 	 */
 	public void scrollRelative(int amount) {
 		if (this.container != null) {
@@ -4272,6 +5079,7 @@ implements AccessibleCanvas
 			requestRepaint();
 		}
 	}
+	
 
 	/**
 	 * Attaches data to this screen.
@@ -4467,7 +5275,7 @@ implements AccessibleCanvas
 	 * Note that you need to activate the usage of the scrollbar
 	 * by setting polish.useScrollbar=true
 	 * 
-	 * @return the width of the scrollbar, 0 when none is used
+	 * @return the width of the scrollbar, 0 when none is used or when the screen is not yet initialized
 	 */
 	protected int getScrollBarWidth() {
 		int width = 0;
@@ -4475,7 +5283,9 @@ implements AccessibleCanvas
 			//#if polish.css.show-scrollbar
 				if ( this.scrollBarVisible ) {
 			//#endif
-					width = this.scrollBar.itemWidth;
+					if (!this.scrollBar.overlap) {
+						width = this.scrollBar.itemWidth;
+					}
 			//#if polish.css.show-scrollbar
 				}
 			//#endif
@@ -4489,7 +5299,8 @@ implements AccessibleCanvas
 	/**
 	 * Retrieves the height of the content area.
 	 * 
-	 * @return the height available for the content
+	 * @return the height available for the content in pixels
+	 * @see #getScrollHeight() for retrieving the screen's actual content height
 	 */ 
 	public int getScreenContentHeight() {
 		if (this.contentHeight == 0) {
@@ -4516,20 +5327,7 @@ implements AccessibleCanvas
 	 * @return the fully available height.
 	 */
 	public int getScreenFullHeight() {
-		int height;
-		//#if polish.Screen.base:defined
-			//# height = getCanvasHeight();
-		//#elif tmp.fullScreen && polish.Bugs.requiresHardcodedCanvasDimensionsInFullScreenMode && polish.FullCanvasHeight:defined
-			//#= height = ${polish.FullCanvasHeight};
-		//#elif tmp.useMasterCanvas
-			height = MasterCanvas.getScreenHeight();
-			if (height == 0) {
-				height = getHeight();
-			}
-		//#else
-			height = getHeight();
-		//#endif
-		return height;	
+		return Display.getScreenHeight();
 	}
 	
 	/**
@@ -4538,18 +5336,7 @@ implements AccessibleCanvas
 	 * @return the fully available width.
 	 */
 	public int getScreenFullWidth() {
-		int width;
-		//#if tmp.fullScreen && polish.Bugs.requiresHardcodedCanvasDimensionsInFullScreenMode && polish.FullCanvasWidth:defined
-			//#= width = ${polish.FullCanvasWidth};
-		//#elif tmp.useMasterCanvas
-			width = MasterCanvas.getScreenWidth();
-			if (width == 0) {
-				width = getWidth();
-			}
-		//#else
-			width = getWidth();
-		//#endif
-		return width;
+		return Display.getScreenWidth();
 	}
 
 	
@@ -4602,11 +5389,25 @@ implements AccessibleCanvas
 	 * Retrieves the vertical scroll offset.
 	 * 
 	 * @return the vertical scroll offset in pixels.
+	 * @see #setScrollYOffset(int, boolean)
+	 * @see #getScrollHeight()
 	 */
 	public int getScrollYOffset()
 	{
 		if (this.container != null) {
 			return this.container.getScrollYOffset();
+		}
+		return 0;
+	}
+	
+	/**
+	 * Retrieves this screen's actual content's height
+	 * @return the content's height, 0 if unknown or not initialized yet
+	 * @see #getScrollYOffset() 
+	 */
+	public int getScrollHeight() {
+		if (this.container != null) {
+			return this.container.itemHeight;
 		}
 		return 0;
 	}
@@ -4616,6 +5417,7 @@ implements AccessibleCanvas
 	 *  
 	 * @param offset either the new offset
 	 * @param smooth scroll to this new offset smooth if allowed
+	 * @see #getScrollYOffset()
 	 */
 	public void setScrollYOffset(int offset, boolean smooth)
 	{
@@ -4624,47 +5426,38 @@ implements AccessibleCanvas
 		}
 	}
 	
+	
+	/**
+	 * Indicates if this screen is active (scrolling, key pressed etc.)
+	 * @return true, if the screen was active in the given interval, otherwise false
+	 */
+	public boolean isActive()
+	{
+		long currentTime = System.currentTimeMillis();
+		return 	(currentTime - this.lastInteractionTime) < 100 ||
+				(currentTime - this.lastAnimateTime) < 100;
+	}
+	
+	/**
+	 * Indicates if this screen was interacted with in the given timespan
+	 * @param timespan the timespan 
+	 * @return true, if the screen was active in the given interval, otherwise false
+	 */
+	public boolean isInteracted(long timespan)
+	{
+		return 	(System.currentTimeMillis() - this.lastInteractionTime) < timespan;
+	}
+	
 	/**
 	 * Sets the screen orientation in 90 degrees steps.
 	 * The preprocessing variable "polish.ScreenOrientationCanChangeManually" needs to be set to "true" for supporting this mode.
 	 * 
 	 * @param degrees the screen orientation in degrees: 90, 180, 270 or 0
+	 * @deprecated use Display.getInstance().setScreenOrientation(int) instead
+	 * @see Display#setScreenOrientation(int)
 	 */
 	public void setScreenOrientation( int degrees ) {
-		//#if tmp.manualOrientationChange
-			if (degrees == this.screenOrientationDegrees) {
-				return;
-			}
-			//#if polish.css.screen-orientation-change-animation
-				Image beforeImage = null;
-				if (this.screenOrientationAnimation != null) {
-					beforeImage = Image.createImage( getScreenFullWidth(), getScreenFullHeight() );
-					paint( beforeImage.getGraphics() );
-				}
-			//#endif
-			this.screenOrientationDegrees = degrees;
-			if ((degrees == 90) || (degrees == 270)) {
-				sizeChanged( getScreenFullHeight(), getScreenFullWidth() );
-			} else {
-				this.screenOrientationBuffer = null;
-				sizeChanged( getScreenFullWidth(), getScreenFullHeight() );
-			}
-			//#if polish.css.screen-orientation-change-animation
-				if (this.screenOrientationAnimation != null) {
-					boolean isForward = (degrees == 90 || degrees == 270);
-					Image afterImage = Image.createImage( getScreenFullWidth(), getScreenFullHeight() );
-					paint( afterImage.getGraphics() );
-					this.screenOrientationAnimation.show( this.style, StyleSheet.display, getScreenFullWidth(), getScreenFullHeight(),
-							beforeImage, afterImage, this, this, isForward );
-				} else {
-			//#endif
-					if (isShown()) {
-						requestRepaint();
-					}
-			//#if polish.css.screen-orientation-change-animation
-				}
-			//#endif
-		//#endif
+		Display.setScreenOrientation(degrees);
 	}
 	
 	/**
@@ -4692,42 +5485,8 @@ implements AccessibleCanvas
 		if (gameAction == LEFT || gameAction == RIGHT || gameAction == UP || gameAction == DOWN) {
 			return false;
 		}
-		int expected = 
-		//#ifdef polish.key.LeftSoftKey:defined
-			//#=  ${polish.key.LeftSoftKey};
-		//#else
-			-6;
-		//#endif
-		//#if tmp.manualOrientationChange && polish.key.TopLeftSoftKey:defined
-			if (this.screenOrientationDegrees == 90) {
-				//#= expected = ${polish.key.TopLeftSoftKey};
-			}
-			//#if polish.key.TopRightSoftKey:defined
-			else if (this.screenOrientationDegrees == 180) {
-				//#= expected = ${polish.key.TopRightSoftKey};
-			} else if (this.screenOrientationDegrees == 270) {
-				expected = 
-				//#ifdef polish.key.RightSoftKey:defined
-					//#=  ${polish.key.RightSoftKey};
-				//#else
-					-7;
-				//#endif
-			}
-			//#endif
-		//#endif
-		boolean result;
-		//#if ! polish.key.LeftSoftKeys:defined
-			result = (keyCode == expected);
-		//#else
-			result = false;
-			//#foreach key in polish.key.LeftSoftKeys
-				//#= expected = ${key};
-				if ( keyCode == expected ) {
-					return true;
-				}
-			//#next key
-		//#endif
-		return result;
+		return Display.getInstance().isSoftKeyLeft(keyCode, gameAction);
+
 	}
 	
 	/**
@@ -4740,41 +5499,8 @@ implements AccessibleCanvas
 		if (gameAction == LEFT || gameAction == RIGHT || gameAction == UP || gameAction == DOWN) {
 			return false;
 		}
-		int expected = 
-		//#ifdef polish.key.RightSoftKey:defined
-			//#=  ${polish.key.RightSoftKey};
-		//#else
-			-7;
-		//#endif
-		//#if tmp.manualOrientationChange && polish.key.TopLeftSoftKey:defined
-			if (this.screenOrientationDegrees == 90) {
-				expected = 
-				//#ifdef polish.key.LeftSoftKey:defined
-					//#=  ${polish.key.LeftSoftKey};
-				//#else
-					-6;
-				//#endif
-			//#if polish.key.TopRightSoftKey:defined
-			} else if (this.screenOrientationDegrees == 180) {
-				//#= expected = ${polish.key.TopLeftSoftKey};
-			} else if (this.screenOrientationDegrees == 270) {
-				//#= expected = ${polish.key.TopRightSoftKey};
-			//#endif
-			}
-		//#endif
-		boolean result;
-		//#if ! polish.key.RightSoftKeys:defined
-			result = (keyCode == expected);
-		//#else
-			result = false;
-			//#foreach key in polish.key.RightSoftKeys
-				//#= expected = ${key};
-				if ( keyCode == expected ) {
-					return true;
-				}
-			//#next key
-		//#endif
-		return result;
+		return Display.getInstance().isSoftKeyRight(keyCode, gameAction);
+
 	}
 	
 	/**
@@ -4787,19 +5513,7 @@ implements AccessibleCanvas
 		if (gameAction == LEFT || gameAction == RIGHT || gameAction == UP || gameAction == DOWN) {
 			return false;
 		}
-		int expected = 
-		//#ifdef polish.key.MiddleSoftKey:defined
-			//#=  ${polish.key.MiddleSoftKey};
-		//#elifdef polish.key.CenterSoftKey:defined
-			//#=  ${polish.key.CenterSoftKey};
-		//#else
-			//#define tmp.hasNoMiddleSoftKey
-			0;
-			//# return false;
-		//#endif
-		//#if !tmp.hasNoMiddleSoftKey
-		return (keyCode == expected);
-		//#endif
+		return Display.getInstance().isSoftKeyMiddle(keyCode, gameAction);
 	}
 	
 	
@@ -4810,13 +5524,7 @@ implements AccessibleCanvas
 	 * @return true when the key code represents a softkey
 	 */
 	public boolean isSoftKey( int keyCode ) {
-		int gameAction = 0;
-		try {
-			gameAction = getGameAction(keyCode);
-		} catch (Exception e) {
-			// could be an illegal key code
-		}
-		return isSoftKey( keyCode, gameAction );
+		return Display.getInstance().isSoftKey(keyCode);
 	}
 	
 
@@ -4829,15 +5537,94 @@ implements AccessibleCanvas
 	 */
 	public boolean isSoftKey(int keyCode, int gameAction)
 	{
-		return isSoftKeyLeft(keyCode, gameAction) || isSoftKeyRight(keyCode, gameAction) || isSoftKeyMiddle(keyCode, gameAction);
+		return Display.getInstance().isSoftKey(keyCode, gameAction);
 	}
 
+	/**
+	 * Notifies this screen about the new item that is focused on BlackBerry platforms.
+	 * This is only called for BlackBerry platforms - check for the preprocesing
+	 * symbol polish.blackberry.
+	 * 
+	 * @param item the item that has been focused
+	 */
+	protected void notifyFocusSet( Item item ) {
+		//#if polish.blackberry
+			Display.getInstance().notifyFocusSet(item);
+		//#endif
+	}
+	
+	/**
+	 * Notifies this screen about the new item with a native componen that is added on BlackBerry platforms.
+	 * This is only called for BlackBerry platforms - check for the preprocesing
+	 * symbol polish.blackberry.
+	 * 
+	 * @param item the item with a native component which needs to be displayed all the time.
+	 */
+	public void addPermanentNativeItem( Item item ) {
+		//#if polish.blackberry
+			((de.enough.polish.blackberry.ui.BaseScreen)(Object)Display.getInstance()).addPermanentNativeItem(item);
+		//#endif
+	}
+	
+	/**
+	 * Notifies this screen about an item with a native componen that is removed on BlackBerry platforms.
+	 * This is only called for BlackBerry platforms - check for the preprocesing
+	 * symbol polish.blackberry.
+	 * 
+	 * @param item the item with a native component which was displayed all the time.
+	 */
+	public void removePermanentNativeItem(Item item) {
+		//#if polish.blackberry
+			((de.enough.polish.blackberry.ui.BaseScreen)(Object)Display.getInstance()).removePermanentNativeItem(item);
+		//#endif
+	}
+
+	
+	
+	/********* UI ELEMENT INTERFACE *************************************/
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.UiElement#addRepaintArea(de.enough.polish.ui.ClippingRegion)
+	 */
+	public void addRepaintArea(ClippingRegion repaintArea)
+	{
+		repaintArea.addRegion(0, 0, this.screenWidth, getScreenFullHeight() );
+	}
+	
+	/**
+	 * Adds a region relative to this screen's content x/y start position.
+	 * @param repaintRegion the clipping region
+	 * @param x horizontal start relative to this item's content position
+	 * @param y vertical start relative to this item's content position
+	 * @param width width
+	 * @param height height
+	 * @see #getScreenContentWidth()
+	 * @see #getScreenContentWidth()
+	 */
+	public void addRelativeToContentRegion(ClippingRegion repaintRegion, int x, int y, int width, int height) {
+		repaintRegion.addRegion( 
+				this.contentX + x, 
+				this.contentY + y,
+				width,
+				height 
+				);
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.UiElement#getStyle()
+	 */
+	public Style getStyle()
+	{
+		return this.style;
+	}
+
+    	
 	
 
 	/**
 	 * <p>A command listener which forwards commands to the item command listener in case it encounters an item command.</p>
 	 *
-	 * <p>Copyright Enough Software 2004 - 2008</p>
+	 * <p>Copyright Enough Software 2004 - 2009</p>
 
 	 * <pre>
 	 * history
@@ -4859,6 +5646,84 @@ implements AccessibleCanvas
 	}
 
 
+
+
+	/**
+	 * Fires an event for this screen and all its components.
+	 * This is typically used for triggering animations within screen components like its title or menubar.
+	 * Since all screen components fire events, this method should be called within a background thread and never
+	 * from within a de.enough.polish.event.EventListener.
+	 * 
+	 * @param eventName the name of the event 
+	 * @param eventData the associated data of the event
+	 * @see Screen#fireEventForTitleAndMenubar(String, Object)
+	 */
+	public void fireEvent(String eventName, Object eventData)
+	{
+		EventManager.fireEvent(eventName, this, eventData);
+		//#if tmp.useScrollBar
+			this.scrollBar.fireEvent( eventName, eventData );
+		//#endif
+
+		//#ifdef tmp.menuFullScreen
+			//#ifdef tmp.useExternalMenuBar
+				this.menuBar.fireEvent(eventName, eventData);
+			//#else
+				this.menuContainer.fireEvent(eventName, eventData);
+			//#endif
+		//#endif
+		if (this.container != null ) {
+			this.container.fireEvent(eventName, eventData);
+		}
+		//#ifdef tmp.usingTitle
+			if (this.title != null) {
+				this.title.fireEvent(eventName, eventData);
+			}
+		//#endif
+		//#if polish.ScreenInfo.enable
+			if (ScreenInfo.item != null && ScreenInfo.isVisible()) {
+				ScreenInfo.item.fireEvent(eventName, eventData);
+			}
+		//#endif
+	}
+
+	/**
+	 * Fires an event for the title and menubar of the specified screen.
+	 * This is typically used for triggering animations for the title and/or menubar.
+	 * Since all these screen components fire events, this method should be called within a background thread and never
+	 * from within a de.enough.polish.event.EventListener.
+	 * 
+	 * @param eventName the name of the event 
+	 * @param eventData the associated data of the event
+	 * @see Screen#fireEvent(String, Object)
+	 */
+	public void fireEventForTitleAndMenubar(String eventName, Object eventData)
+	{
+		//#ifdef tmp.menuFullScreen
+			//#ifdef tmp.useExternalMenuBar
+				UiAccess.fireEvent ( eventName, this.menuBar, eventData);
+			//#endif
+		//#endif
+		//#ifdef tmp.usingTitle
+			if (this.title != null) {
+				//#ifdef tmp.useExternalMenuBar
+					UiAccess.fireEvent ( eventName, this.title, eventData);
+				//#endif
+			}
+		//#endif
+	}
+
+
+
+	/**
+	 * Retrieves the lock object for the paint thread.
+	 * You can use this paint lock to synchronize with the paint method of this screen.
+	 * 
+	 * @return the paint lock object
+	 */
+	public Object getPaintLock() {
+		return this.paintLock;
+	}
 
 
 

@@ -1,3 +1,4 @@
+//#condition polish.usePolishGui
 /*
  * Created on 05-Jan-2004 at 20:41:52.
  *
@@ -30,10 +31,6 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Timer;
 
-import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
@@ -72,20 +69,14 @@ public final class StyleSheet {
 		private static Hashtable stylesByName = new Hashtable();
 	//#endif
 
-	//#if polish.ScreenChangeAnimation.forward:defined
-		//#if false
-			private static ScreenChangeAnimation forwardAnimation;
-			private static ScreenChangeAnimation backwardAnimation;			
-		//#endif
-		//#= private static ScreenChangeAnimation forwardAnimation = ${polish.ScreenChangeAnimation.forward};
-		//#if polish.ScreenChangeAnimation.back:defined
-			//#= private static ScreenChangeAnimation backwardAnimation = ${polish.ScreenChangeAnimation.back};
-		//#elif polish.ScreenChangeAnimation.backward:defined
-			//#= private static ScreenChangeAnimation backwardAnimation = ${polish.ScreenChangeAnimation.backward};
-		//#else
-			//#abort You need to define the polish.ScreenChangeAnimation.backward screen change animation as well, when you define the forward animation!
-		//#endif
-	//#endif
+
+		private StyleSheet() {
+			// disallow instantion
+			//#if false
+				// use Graphics so that the import is being kept:
+				System.out.println(Graphics.LEFT);
+			//#endif
+		}
 
 	
 	
@@ -114,14 +105,6 @@ public final class StyleSheet {
 		//#= public static final Command CANCEL_CMD = new Command("${polish.command.cancel}", Command.CANCEL, 3 );
 	//#else
 		//# public static final Command CANCEL_CMD = new Command("Cancel", Command.CANCEL, 3 );
-	//#endif
-
-	//#if polish.ScreenChangeAnimation.allowConfiguration
-		/** Allows you to disable or enable screen change animations.
-		 *  This can only be used when you have set the preprocessing variable
-		 *  <code>polish.ScreenChangeAnimation.allowConfiguration</code> to <code>true</code>.
-		 */
-		public static boolean enableScreenChangeAnimations = true;
 	//#endif
 
 	/**
@@ -395,210 +378,6 @@ public final class StyleSheet {
 	}		
 	//#endif
 	
-	/**
-	 * Includes an animation while changing the screen.
-	 *  
-	 * @param display the display
-	 * @param nextDisplayable the new screen, animations are only included for de.enough.polish.ui.Screen classes
-	 */
-	public static void setCurrent( Display display, Displayable nextDisplayable ) {
-		Displayable lastDisplayable = null;
-		//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
-			if ( MasterCanvas.instance != null ) {
-				lastDisplayable = MasterCanvas.instance.currentDisplayable;
-			}
-		//#else
-			lastDisplayable = display.getCurrent();
-		//#endif
-		if (lastDisplayable instanceof ScreenChangeAnimation) {
-			lastDisplayable = (Displayable) ((ScreenChangeAnimation)lastDisplayable).nextCanvas;
-		}
-		//System.out.println("last=" + lastDisplayable + ", next=" + nextDisplayable);
-		if (nextDisplayable instanceof Alert) {
-			Alert alert = (Alert) nextDisplayable;
-			//System.out.println("alert.nextDisplayable=" + alert.nextDisplayable);
-			if (alert.nextDisplayable == null ) {
-				alert.nextDisplayable = lastDisplayable;
-			}
-		}
-		//#if !(polish.css.screen-change-animation || polish.ScreenChangeAnimation.forward:defined)
-			//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
-				MasterCanvas.setCurrent(display, nextDisplayable);
-			//#else
-				display.setCurrent( nextDisplayable );						
-			//#endif			
-		//#else
-		if ( nextDisplayable instanceof AccessibleCanvas ) {
-			//#if polish.ScreenChangeAnimation.allowConfiguration == true
-				if (!enableScreenChangeAnimations) {
-					//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
-						MasterCanvas.setCurrent(display, nextDisplayable);
-					//#else
-						display.setCurrent( nextDisplayable );						
-					//#endif
-					return;	
-				}
-			//#endif
-
-			try {
-				Screen nextScreen = null;
-				if ( nextDisplayable instanceof Screen ) {
-					nextScreen = (Screen) nextDisplayable;
-				}
-				ScreenChangeAnimation screenAnimation = null;
-				boolean isForwardAnimation = true;
-	
-				Screen lastScreen = null;
-				Style screenstyle = null;
-				//#if polish.ScreenChangeAnimation.forward:defined
-					if (lastDisplayable != null && lastDisplayable instanceof Screen) {
-						lastScreen = (Screen) lastDisplayable;
-						Command lastCommand = lastScreen.lastTriggeredCommand;
-						if (lastCommand != null && lastCommand.getCommandType() == Command.BACK ) {
-							screenAnimation = backwardAnimation;
-							screenstyle = lastScreen.style;
-							isForwardAnimation = false;
-						}
-					}
-					if ( screenAnimation == null ) {
-						screenAnimation = forwardAnimation;
-						if (nextScreen != null) {
-							screenstyle = nextScreen.style;
-						}
-					}
-				//#else					
-					if (nextScreen != null && nextScreen.style != null) {
-						screenstyle = nextScreen.style;
-						screenAnimation = (ScreenChangeAnimation) screenstyle.getObjectProperty("screen-change-animation");
-					}
-					if (lastDisplayable != null && lastDisplayable instanceof ScreenChangeAnimation ) {
-						//#debug
-						System.out.println("StyleSheet: last displayable is a ScreenChangeAnimation" );
-						lastDisplayable = ((ScreenChangeAnimation) lastDisplayable).nextDisplayable;
-					}
-					if (lastDisplayable != null && lastDisplayable instanceof Screen) {
-						//#debug
-						System.out.println("StyleSheet: last displayble is a Screen");
-						lastScreen = (Screen) lastDisplayable;
-						if ( (screenAnimation == null || lastScreen instanceof Alert) && lastScreen.style != null) {
-							if (screenAnimation == null || lastScreen.style.getObjectProperty("screen-change-animation") != null) {
-								screenstyle = lastScreen.style;
-								screenAnimation = (ScreenChangeAnimation) screenstyle.getObjectProperty("screen-change-animation");
-							}
-							isForwardAnimation = false;
-							//#debug
-							System.out.println("StyleSheet: Using screen animation of last screen");
-						}
-					}
-					//#if polish.Screen.showScreenChangeAnimationOnlyForScreen
-						if ( nextScreen == null ) {
-							screenAnimation = null;
-						}
-					//#endif
-					if ( screenAnimation == null ) {
-						//#debug
-						System.out.println("StyleSheet: found no screen animation");
-						//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
-							MasterCanvas.setCurrent(display, nextDisplayable);
-						//#else
-							display.setCurrent( nextDisplayable );						
-						//#endif
-						return;
-					}
-				//#endif
-				
-				int width;
-				int height;
-				if (currentScreen != null) {
-					width = currentScreen.getScreenFullWidth();
-					height = currentScreen.getScreenFullHeight();
-				} else {
-					//#if polish.FullCanvasSize:defined
-						//#= width = ${polish.FullCanvasWidth};
-						//#= height = ${polish.FullCanvasHeight};
-					//#else
-						//#if polish.midp2
-							width = nextDisplayable.getWidth();
-							height = nextDisplayable.getHeight();
-						//#else
-							if (nextScreen != null) {
-								width = lastScreen.getWidth();
-								height = lastScreen.getHeight();
-							} else if (nextDisplayable instanceof Canvas) {
-								width = ((Canvas) nextDisplayable).getWidth();
-								height = ((Canvas) nextDisplayable).getHeight();
-							} else {
-								Canvas canvas = new Canvas() {
-									public void paint( Graphics g) {}
-								};
-								width = canvas.getWidth();
-								height = canvas.getHeight();
-							}
-						//#endif
-					//#endif
-				}
-				Image lastScreenImage = Image.createImage(width, height);
-				Graphics g = lastScreenImage.getGraphics(); 
-				if ( lastDisplayable != null && lastDisplayable instanceof AccessibleCanvas) {
-					//#debug
-					System.out.println("StyleSheet: last screen is painted");
-					( (AccessibleCanvas)lastDisplayable).paint( g );
-				//#if polish.ScreenChangeAnimation.blankColor:defined
-					} else {
-						//#= g.setColor( ${polish.ScreenChangeAnimation.blankColor} );
-						g.fillRect( 0, 0, width, height );
-				//#endif
-				}
-				Image nextScreenImage = Image.createImage(width, height);
-				g = nextScreenImage.getGraphics();
-				AccessibleCanvas nextCanvas = (AccessibleCanvas) nextDisplayable;
-				nextCanvas.showNotify();
-				//#if polish.midp2 && !polish.Bugs.needsNokiaUiForSystemAlerts
-					//if (nextScreen == null || !nextScreen.isInitialized) {
-						nextCanvas.sizeChanged(width, height);
-					//}
-					//#if polish.ScreenOrientationCanChangeManually
-						if (lastScreen != null && nextScreen != null && nextScreen != lastScreen) {
-							nextScreen.screenOrientationDegrees = -1;
-							nextScreen.setScreenOrientation( lastScreen.screenOrientationDegrees );
-						} 
-					//#endif
-				//#endif
-				nextCanvas.paint( g );
-				//#debug
-				System.out.println("StyleSheet: showing screen animation " + screenAnimation.getClass().getName() );
-				if ( screenstyle == null ) {
-					screenstyle = defaultStyle;
-				}
-				//#if !polish.useFullScreen
-					//#if polish.midp2
-						screenAnimation.setTitle( nextDisplayable.getTitle() );
-					//#else
-						if (nextScreen != null) {
-							screenAnimation.setTitle( nextScreen.getTitle() );
-						}
-					//#endif
-				//#endif
-				screenAnimation.show( screenstyle, display, width, height, lastScreenImage, nextScreenImage, nextCanvas, nextDisplayable, isForwardAnimation );
-			} catch (Exception e) {
-				//#debug error
-				System.out.println("Screen: unable to start screen change animation" + e );
-				//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
-					MasterCanvas.setCurrent(display, nextDisplayable);
-				//#else
-					display.setCurrent( nextDisplayable );						
-				//#endif
-			}
-			
-		} else {
-			//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
-				MasterCanvas.setCurrent(display, nextDisplayable);
-			//#else
-				display.setCurrent( nextDisplayable );						
-			//#endif
-		}
-		//#endif
-	}
 	
 	/**
 	 * Releases all (memory intensive) resources such as images or RGB arrays of this style sheet.

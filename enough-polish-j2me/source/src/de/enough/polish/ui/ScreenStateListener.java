@@ -2,7 +2,7 @@
 /*
  * Created on 01-May-2005 at 02:18:32.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -30,7 +30,7 @@ package de.enough.polish.ui;
  * <p>Is used to detect internal changes of Screens, e.g. when the user changes the tab of a TabbedForm.</p>
  * <p>This is a J2ME Polish specific mechanism and not supported by the MIDP standard.</p>
  *
- * <p>Copyright (c) Enough Software 2005 - 2008</p>
+ * <p>Copyright (c) Enough Software 2005 - 2009</p>
  * <pre>
  * history
  *        01-May-2005 - rob creation

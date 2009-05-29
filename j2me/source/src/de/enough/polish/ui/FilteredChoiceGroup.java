@@ -2,7 +2,7 @@
 /*
  * Created on Jun 26, 2007 at 3:06:59 PM.
  * 
- * Copyright (c) 2007 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -26,18 +26,14 @@
  */
 package de.enough.polish.ui;
 
-import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.CommandListener;
-import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Displayable;
+import de.enough.polish.ui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Image;
 
 /**
  * <p>Displays the currently selected item(s) and opens up a new FilteredList for selecting an element.</p>
  *
- * <p>Copyright Enough Software 2007 - 2008</p>
+ * <p>Copyright Enough Software 2007 - 2009</p>
  * <pre>
  * history
  *        Jun 26, 2007 - rob creation
@@ -313,7 +309,7 @@ public class FilteredChoiceGroup
 				if (this.filteredList.containsChangesTo(this.lastChoices)) {
 					  if (this.filteredList.listType != MULTIPLE) {
 						  // the FilteredList will return multiple selections
-						  // we need to make sure that only the focused item is retained
+						  // we need to make sure that only the focussed item is retained
 						  this.filteredList.setSelectedIndex(getSelectedIndex(), true);
 					  }
 			         updateText();

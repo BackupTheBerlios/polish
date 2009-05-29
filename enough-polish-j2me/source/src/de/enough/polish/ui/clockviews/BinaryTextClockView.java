@@ -2,7 +2,7 @@
 /*
  * Created on May 30, 2007 at 12:09:08 AM.
  * 
- * Copyright (c) 2007 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -40,7 +40,7 @@ import de.enough.polish.ui.Style;
 /**
  * <p>Visualizes the clock as a binary string, e.g. 101:111 instead of 4:11.</p>
  *
- * <p>Copyright Enough Software 2007 - 2008</p>
+ * <p>Copyright Enough Software 2007 - 2009</p>
  * <pre>
  * history
  *        May 30, 2007 - rob creation
@@ -84,13 +84,13 @@ public class BinaryTextClockView extends ItemView {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ItemView#initContent(de.enough.polish.ui.Item, int, int)
 	 */
-	protected void initContent(Item parent, int firstLineWidth, int lineWidth) 
+	protected void initContent(Item parent, int firstLineWidth, int availWidth, int availHeight) 
 	{
 		// cast to object is required since ClockItem officially extends javax.microedition.lcdui.CustomItem:
 		this.clockItem = (ClockItem)(Object)parent; 
 		this.clockText.setText( updateTime( System.currentTimeMillis() ) );
-		this.contentWidth = this.clockText.getItemWidth(firstLineWidth, lineWidth);
-		this.contentHeight = this.clockText.getItemHeight(firstLineWidth, lineWidth);
+		this.contentWidth = this.clockText.getItemWidth(firstLineWidth, availWidth, availHeight);
+		this.contentHeight = this.clockText.getItemHeight(firstLineWidth, availWidth, availHeight);
 	}
 	
 	/**

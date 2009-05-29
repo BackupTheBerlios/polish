@@ -1,6 +1,6 @@
 package de.enough.polish.browser.rss;
 /*
- * Copyright (c) 2007 - 2008 Michael Koch / Enough Software
+ * Copyright (c) 2009 - 2009 Michael Koch / Enough Software
  *
  * This file is part of J2ME Polish.
  *

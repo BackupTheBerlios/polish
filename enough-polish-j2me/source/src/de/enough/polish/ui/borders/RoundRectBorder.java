@@ -33,7 +33,7 @@ import javax.microedition.lcdui.Graphics;
 /**
  * <p>Paints a border with round corners.</p>
  *
- * <p>Copyright Enough Software 2004 - 2008</p>
+ * <p>Copyright Enough Software 2004 - 2009</p>
  * @author Robert Virkus, robert@enough.de
  */
 public class RoundRectBorder extends Border {
@@ -51,8 +51,8 @@ public class RoundRectBorder extends Border {
 	 * @param arcHeight the vertical diameter of the arc at the four corners
 	 */
 	public RoundRectBorder( int color, int borderWidth, int arcWidth, int arcHeight ) {
+		super( borderWidth, borderWidth, borderWidth, borderWidth );
 		this.color = color;
-		this.borderWidth = borderWidth;
 		this.arcWidth = arcWidth;
 		this.arcHeight = arcHeight;
 	}
@@ -62,15 +62,11 @@ public class RoundRectBorder extends Border {
 	 */
 	public void paint(int x, int y, int width, int height, Graphics g) {
 		g.setColor( this.color );
-		width--;
-		height--;
 		g.drawRoundRect( x, y, width, height, this.arcWidth, this.arcHeight );
-		if (this.borderWidth > 1) {
-			int border = this.borderWidth - 1;
-			while ( border > 0) {
-				g.drawRoundRect( x+border, y+border, width - 2*border, height - 2*border, this.arcWidth, this.arcHeight );
-				border--;
-			}
+		int border = this.borderWidthLeft - 1;
+		while ( border > 0) {
+			g.drawRoundRect( x+border, y+border, width - 2*border, height - 2*border, this.arcWidth, this.arcHeight );
+			border--;
 		}
 	}
 

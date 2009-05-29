@@ -28,13 +28,14 @@ package de.enough.polish.ui.backgrounds;
 
 import de.enough.polish.ui.Background;
 import de.enough.polish.ui.Color;
+import de.enough.polish.ui.Style;
 
 import javax.microedition.lcdui.Graphics;
 
 /**
  * <p>Paints a rectangle with round corners as a background.</p>
  *
- * <p>Copyright Enough Software 2006 - 2008</p>
+ * <p>Copyright Enough Software 2006 - 2009</p>
  * @author Robert Virkus, robert@enough.de
  */
 public class Web20RoundRectBackground 
@@ -42,15 +43,15 @@ extends Background
 {
 	private int color;
 	private Color colorObj;
-	private final int arcWidth;
-	private final int arcHeight;
+	private int arcWidth;
+	private int arcHeight;
 	private int circleColor;
 	private Color circleColorObj;
 	private final int circleAnchor;
-	private final int paddingLeft;
-	private final int paddingRight;
-	private final int paddingTop;
-	private final int paddingBottom;
+	private int paddingLeft;
+	private int paddingRight;
+	private int paddingTop;
+	private int paddingBottom;
 	private boolean isInitialized;
 
 
@@ -148,5 +149,70 @@ extends Background
 		}
 		
 	}
+	
+	
+	//#if polish.css.animations
+		/* (non-Javadoc)
+		 * @see de.enough.polish.ui.Background#setStyle(de.enough.polish.ui.Style)
+		 */
+		public void setStyle(Style style)
+		{
+			//#if polish.css.background-web20-color
+				Color bgCol = style.getColorProperty("background-web20-color");
+				if (bgCol != null) {
+					this.color = bgCol.getColor();
+				}
+			//#endif
+			//#if polish.css.background-web20-arc
+				Integer arcInt = style.getIntProperty("background-web20-arc");
+				if (arcInt != null) {
+					this.arcWidth = arcInt.intValue();
+					this.arcHeight = arcInt.intValue();
+				}
+			//#endif
+			//#if polish.css.background-web20-arc-width
+				Integer arcWidthInt = style.getIntProperty("background-web20-arc-width");
+				if (arcWidthInt != null) {
+					this.arcWidth = arcWidthInt.intValue();
+				}
+			//#endif
+			//#if polish.css.background-web20-arc-height
+				Integer arcHeightInt = style.getIntProperty("background-web20-arc-height");
+				if (arcHeightInt != null) {
+					this.arcHeight = arcHeightInt.intValue();
+				}
+			//#endif
+			//#if polish.css.background-web20-circle-color
+				Color circleCol = style.getColorProperty("background-web20-circle-color");
+				if (circleCol != null) {
+					this.circleColor = circleCol.getColor();
+				}
+			//#endif
+			//#if polish.css.background-web20-padding-left
+				Integer paddingLeftInt = style.getIntProperty("background-web20-padding-left");
+				if (paddingLeftInt != null) {
+					this.paddingLeft = paddingLeftInt.intValue();
+				}
+			//#endif
+			//#if polish.css.background-web20-padding-right
+				Integer paddingRightObj = style.getIntProperty("background-web20-padding-right");
+				if (paddingRightObj != null) {
+					this.paddingRight = paddingRightObj.intValue();
+				}
+			//#endif
+			//#if polish.css.background-web20-padding-top
+				Integer paddingTopObj = style.getIntProperty("background-web20-padding-top");
+				if (paddingTopObj != null) {
+					this.paddingTop = paddingTopObj.intValue();
+				}
+			//#endif
+			//#if polish.css.background-web20-padding-bottom
+				Integer paddingBottomObj = style.getIntProperty("background-web20-padding-bottom");
+				if (paddingBottomObj != null) {
+					this.paddingBottom = paddingBottomObj.intValue();
+				}
+			//#endif
+		}
+	//#endif
 
 }

@@ -43,7 +43,7 @@ import de.enough.polish.ui.Screen;
  * 	<li><b>max-diameter</b>: the minimum diameter of the circle.</li>
  * </ul>
  *
- * <p>Copyright Enough Software 2004 - 2008</p>
+ * <p>Copyright Enough Software 2004 - 2009</p>
 
  * <pre>
  * history

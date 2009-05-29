@@ -103,7 +103,7 @@ import javax.microedition.lcdui.Image;
  * }
  * </PRE>
  * <b><i>(Example and JavaDoc provided by Pierre G. Richard)</i></b> 
- * <p>Copyright Enough Software 2004 - 2008</p>
+ * <p>Copyright Enough Software 2004 - 2009</p>
  * <pre>
  * history
  *        05-May-2004 - rob creation
@@ -141,6 +141,13 @@ public class ChoiceItem extends IconItem
 		private String plainImgName;
 	//#endif
 	private int yBoxAdjust;
+	
+	//#if polish.css.checked-style
+		Style styleNormal;
+		Style styleNormalFocused;
+		Style styleChecked;
+		Style styleCheckedFocused;
+	//#endif
 
 	/**
 	 * Creates a new ChoiceItem.
@@ -202,9 +209,9 @@ public class ChoiceItem extends IconItem
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#initContent(int, int)
 	 */
-	protected void initContent(int firstLineWidth, int lineWidth) {
+	protected void initContent(int firstLineWidth, int availWidth, int availHeight) {
 		if (!this.drawBox) {
-			super.initContent(firstLineWidth, lineWidth);
+			super.initContent(firstLineWidth, availWidth, availHeight);
 			return;
 		}
 		if (this.selected == null && !this.drawNoSelected) {
@@ -225,30 +232,29 @@ public class ChoiceItem extends IconItem
 			maxHeight = this.plain.getHeight();
 		}
 		firstLineWidth -= maxWidth;
-		lineWidth -=  maxWidth;
+		availWidth -=  maxWidth;
 		
-		super.initContent(firstLineWidth, lineWidth);
-		
+		super.initContent(firstLineWidth, availWidth, availHeight);
 		this.contentWidth += maxWidth;
 		if (this.contentHeight < maxHeight) {
 			// the image is bigger than the text:
 			this.yBoxAdjust = 0;
-			if ((this.layout & LAYOUT_TOP) == LAYOUT_TOP) {
-				this.yAdjust = 0;
+			if ((this.layout & LAYOUT_VCENTER) == LAYOUT_VCENTER){
+				this.yAdjust = (maxHeight - this.contentHeight)/2;
 			} else if ((this.layout & LAYOUT_BOTTOM) == LAYOUT_BOTTOM) { 
 				this.yAdjust = maxHeight - this.contentHeight;
 			} else {
-				this.yAdjust = (maxHeight - this.contentHeight)/2;
+				this.yAdjust = 0;
 			}
 			this.contentHeight = maxHeight;
 		} else {
 			// the image is smaller than the text:
-			if ((this.layout & LAYOUT_TOP) == LAYOUT_TOP) {
-				this.yBoxAdjust = 0;
+			if ((this.layout & LAYOUT_VCENTER) == LAYOUT_VCENTER){
+				this.yBoxAdjust = (this.contentHeight - maxHeight)/2;
 			} else if ((this.layout & LAYOUT_BOTTOM) == LAYOUT_BOTTOM) { 
 				this.yBoxAdjust = this.contentHeight - maxHeight;
 			} else {
-				this.yBoxAdjust = (this.contentHeight - maxHeight)/2;
+				this.yBoxAdjust = 0;
 			}
 			this.yAdjust = 0;
 		}
@@ -407,10 +413,48 @@ public class ChoiceItem extends IconItem
 				if (color != null) {
 					this.boxColor = color.getColor();
 				}
+			//#endif				
+		} // if draw box
+		//#if polish.css.checked-style
+			Style st = (Style) style.getObjectProperty("checked-style");
+			if (st != null) {
+				if (this.styleNormal == null) {
+					this.styleNormal = style; 
+				}
+				if (this.isFocused) {
+					this.styleCheckedFocused = st; 
+				} else {
+					this.styleChecked = st;
+					if (this.styleCheckedFocused == null) {
+						Style focStyle = getFocusedStyle();
+						st = (Style) focStyle.getObjectProperty("checked-style");
+						if (st == null) {
+							st = this.styleChecked;
+						}
+						this.styleCheckedFocused = st;
+					}
+				}
+			}
+		//#endif
+	}
+
+	//#ifdef polish.css.choice-color
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#setStyle(de.enough.polish.ui.Style)
+	 */
+	public void setStyle(Style style, boolean resetStyle) {
+		super.setStyle(style, resetStyle);
+		if (this.drawBox) {
+			//#ifdef polish.css.choice-color
+				Color color = style.getColorProperty("choice-color");
+				if (color != null) {
+					this.boxColor = color.getColor();
+				}
 			//#endif
 	
 		} // if draw box
 	}
+	//#endif
 	
 	private void loadImage( String name, boolean isPlain ) {
 		if (name == null) {
@@ -465,12 +509,32 @@ public class ChoiceItem extends IconItem
 	 * @param select true when this item should be selected
 	 */
 	public void select(boolean select ) {
+		if (select == this.isSelected) {
+			// ignore
+			return;
+		}
 		this.isSelected = select;
 		if (select) {
 			this.boxImage = this.selected;
 		} else {
 			this.boxImage = this.plain;
 		}
+		//#if polish.css.checked-style
+			//System.out.println("select occurrend, all styles defined=" + (this.styleNormal != null) + ( this.styleNormalFocused != null) + ( this.styleChecked != null) + ( this.styleCheckedFocused != null) + ", isFocused=" + this.isFocused);
+			if (select) {
+				if (this.isFocused && this.styleCheckedFocused != null) {
+					setStyle( this.styleCheckedFocused);
+				} else if (!this.isFocused && this.styleChecked != null) {
+					setStyle( this.styleChecked);
+				}
+			} else {
+				if (this.isFocused && this.styleNormalFocused != null) {
+					setStyle(this.styleNormalFocused);
+				} else if (!this.isFocused && this.styleNormal != null) {
+					setStyle(this.styleNormal);
+				}
+			}
+		//#endif
 		/*
 		 * if this is enabled, the navigation in Lists does not work anymore...
 		if (this.isInitialised) {
@@ -485,6 +549,36 @@ public class ChoiceItem extends IconItem
 	public void toggleSelect() {
 		select( !this.isSelected );
 	}
+	
+	//#if polish.css.checked-style
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#focus(Style, int)
+	 */
+	protected Style focus(Style newStyle, int direction) {
+		if (this.style == this.styleChecked && this.styleCheckedFocused == null) {
+			this.styleCheckedFocused = newStyle;
+		} else if (this.style == this.styleNormal && this.styleNormalFocused == null) {
+			this.styleNormalFocused = newStyle;
+		}
+		Style st = super.focus(newStyle, direction);
+		if (this.styleNormal != null) {
+			st = this.styleNormal;
+		}
+		return st;
+	}
+	//#endif
+
+	//#if polish.css.checked-style
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#focus(Style, int)
+	 */
+	protected void defocus(Style originalStyle) {
+		if ( this.isSelected && this.styleChecked != null && originalStyle == this.styleNormal) {
+			originalStyle = this.styleChecked;
+		}
+		super.defocus(originalStyle);
+	}
+	//#endif
 
 	/**
 	 * Sets the preferred font.

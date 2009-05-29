@@ -2,7 +2,7 @@
 /*
  * Created on Apr 10, 2008 at 2:10:53 AM.
  * 
- * Copyright (c) 2007 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -44,7 +44,6 @@ public class TableItem
 //#else
 	//# extends Container
 //#endif
-
 {
 	/**
 	 * Selection mode for a table in which no cells can be selected.
@@ -55,7 +54,7 @@ public class TableItem
 	 */
 	public static final int SELECTION_MODE_CELL = 2;
 	/**
-	 * Selection mode for a table in which cells/columns/rows with content can be selected.
+	 * Selection mode for a table in which cells/colummns/rows with content can be selected.
 	 */
 	public static final int SELECTION_MODE_NONEMPTY = 4;
 	/**
@@ -103,6 +102,9 @@ public class TableItem
 	private Style cellContainerStyle;
 	
 	private final Object paintLock = new Object();
+	private boolean focusedItemHandledKeyEvent;
+	private boolean focusedItemHandledPointerEvent;
+	private int pointerEventX;
 	
 
 	/**
@@ -179,25 +181,16 @@ public class TableItem
 
 
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Item#initContent(int, int)
-	 */
-	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#setStyle(de.enough.polish.ui.Style)
 	 */
 	public void setStyle(Style style)
 	{
 		super.setStyle(style);
-		this.font = style.font;
+		this.font = style.getFont();
 		this.fontColor = style.getFontColor();
 		if (this.lineColor == -1) {
 			this.lineColor = this.fontColor;
 		}
-		//#if polish.css.table-line-color
-			Color lineColorObj = style.getColorProperty("table-line-color");
-			if (lineColorObj != null) {
-				this.lineColor = lineColorObj.getColor();
-			}
-		//#endif
 		//#if polish.css.table-line-stroke
 			Integer strokeObj = style.getIntProperty("table-line-stroke");
 			if (strokeObj != null) {
@@ -225,6 +218,20 @@ public class TableItem
 		
 	}
 	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#setStyle(de.enough.polish.ui.Style)
+	 */
+	public void setStyle(Style style, boolean resetStyle)
+	{
+		super.setStyle(style, resetStyle);
+		//#if polish.css.table-line-color
+			Color lineColorObj = style.getColorProperty("table-line-color");
+			if (lineColorObj != null) {
+				this.lineColor = lineColorObj.getColor();
+			}
+		//#endif
+	}
+	
 	/**
 	 * Sets the stroke style and color of the lines between cells.
 	 * @param lineStroke the line stroke style
@@ -237,10 +244,20 @@ public class TableItem
 		this.lineStroke = lineStroke;
 		this.lineColor = lineColor;
 	}
+	
+	
 
-	protected void initContent(int firstLineWidth, int lineWidth)
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#getAbsoluteX()
+	 */
+	public int getAbsoluteX()
 	{
-		if (lineWidth == 0) {
+		return super.getAbsoluteX() + this.xOffset;
+	}
+
+	protected void initContent(int firstLineWidth, int availWidth, int availHeight)
+	{
+		if (availWidth == 0) {
 			return;
 		}
 		if (this.tableData == null) {
@@ -266,8 +283,8 @@ public class TableItem
 				}
 				if (data instanceof Item) {
 					Item item = (Item) data;
-					width = item.getItemWidth(lineWidth, lineWidth);
-					height = item.getItemHeight(lineWidth, lineWidth);
+					width = item.getItemWidth(availWidth, availWidth, availHeight);
+					height = item.getItemHeight(availWidth, availWidth, availHeight);
 				} else {
 					width = this.font.stringWidth( data.toString() );
 					height = textHeight;
@@ -294,45 +311,55 @@ public class TableItem
 		width = 0;
 		for (int col = 0; col < numberOfColumns; col++ ) {
 			height = 0;
+			int colWidth = widths[col] - this.paddingHorizontal;
 			for (int row = 0; row < numberOfRows; row++ ) {
+				int rowHeight = heights[row];
 				Object data = this.tableData.get(col, row);
 				if (data instanceof Item) {
 					Item item = (Item) data;
 					item.relativeX = width;
+//					//#if polish.css.expand-items
+//						if (this.isExpandItems) {
+//							item.itemWidth = colWidth;
+//						}
+//					//#endif
+					if (item.itemWidth < colWidth) {
+						if (item.isLayoutCenter) {
+							item.relativeX += (colWidth - item.itemWidth) / 2;
+						} else if (item.isLayoutRight) {
+							item.relativeX += (colWidth - item.itemWidth);
+						}
+					}
 					item.relativeY = height;
+//					//#if polish.css.expand-items
+//						if (this.isExpandItems) {
+//							item.itemHeight = rowHeight;
+//						}
+//					//#endif
+					if (item.itemHeight < rowHeight) {
+						if ((item.layout & LAYOUT_VCENTER) == LAYOUT_VCENTER) {
+							item.relativeY += (rowHeight - item.itemHeight) / 2;
+						} else if ((item.layout & LAYOUT_BOTTOM) == LAYOUT_BOTTOM) {
+							item.relativeY += (rowHeight - item.itemHeight);
+						}
+					}
 				}
-				height += heights[row];
+				height += rowHeight;
 			}
-			width += widths[col];
+			width += colWidth + this.paddingHorizontal;
 		}
 		this.completeWidth = width;
 		this.contentWidth = width;
 		this.contentHeight = height - this.paddingVertical;
 		this.columnWidths = widths;
 		this.rowHeights = heights;
-		int appearance = PLAIN;
-		if (this.completeWidth > lineWidth) {
-			appearance = INTERACTIVE;
-			this.contentWidth = lineWidth;
+		if (this.completeWidth > availWidth) {
+			this.appearanceMode = INTERACTIVE;
+			this.contentWidth = availWidth;
 		}
-		if (this.selectionMode != SELECTION_MODE_NONE) {
-			if (this.internalX == NO_POSITION_SET) {
-				selectCell();
-			} else if (
-					(this.selectedColumnIndex != -1 && widths[this.selectedColumnIndex] != this.internalWidth)
-					|| (this.selectedRowIndex != -1 && (heights[this.selectedRowIndex] - (this.paddingVertical / 2)) != this.internalHeight)
-			) {
-				setSelectedCell( this.selectedColumnIndex, this.selectedRowIndex);
-			}
-			if (this.selectedColumnIndex != -1 || this.selectedRowIndex != -1) {
-				appearance = INTERACTIVE;
-			} else if (this.completeWidth <= this.contentWidth){
-				appearance = PLAIN;
-			}
-		}
-		this.appearanceMode = appearance;
+
 		//System.out.println("contentHeight=" + this.contentHeight + ", width=" + this.contentWidth );
-		
+		updateInternalArea();
 	}
 
 	/* (non-Javadoc)
@@ -371,6 +398,7 @@ public class TableItem
 			}
 			//System.out.println("clipping: y=" + clipY + ", bottom=" + (clipY + clipHeight));
 			boolean horizontalLinesPainted = false;
+			Item focItem = this.focusedItem;
 			for (int col = 0; col < numberOfColumns; col++ ) {
 				height = 0;
 				for (int row = 0; row < numberOfRows; row++ ) {
@@ -395,7 +423,10 @@ public class TableItem
 					//System.out.println("painting cell " + col + ", " + row + " / " + (x + width) + ", " + (y + height) + " : " + data);
 					if (data instanceof Item) {
 						Item item = (Item) data;
-						item.paint(x + width, y + height, x + width, x + width + widths[col] - (this.paddingHorizontal << 1), g);
+						//item.paint(x + width, y + height, x + width, x + width + widths[col] - (this.paddingHorizontal << 1), g);
+						if (item != focItem) {
+							item.paint(x + item.relativeX, y + item.relativeY, x + item.relativeX, x + item.relativeX + item.itemWidth, g);
+						}
 	//					g.setColor( 0x00ff00);
 	//					g.drawRect(x + width, y + height, widths[col] - (this.paddingHorizontal << 1), heights[row] - (this.paddingVertical << 1 ) );
 					} else if (data != null) {
@@ -417,6 +448,9 @@ public class TableItem
 						g.drawLine( x + width - this.paddingHorizontal, y, x + width - this.paddingHorizontal, y + this.contentHeight );
 					}
 				}
+			}
+			if (focItem != null) {
+				focItem.paint(x + focItem.relativeX, y + focItem.relativeY, x + focItem.relativeX, x + focItem.relativeX + focItem.itemWidth, g);
 			}
 			if (this.completeWidth > rightBorder - leftBorder){
 				g.setClip(clipX, clipY, clipWidth, clipHeight );
@@ -486,10 +520,21 @@ public class TableItem
 	}
 
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.FakeCustomItem#handleKeyPressed(int, int)
+	 * @see de.enough.polish.ui.Item#handleKeyPressed(int, int)
 	 */
 	protected boolean handleKeyPressed(int keyCode, int gameAction)
 	{
+		//#debug
+		System.out.println("TableItem: handleKeyPressed( " + keyCode + ", " + gameAction + ")");
+		Item item = this.focusedItem;
+		if (item != null) {
+			if (item.handleKeyPressed(keyCode, gameAction)) {
+				this.focusedItemHandledKeyEvent = true;
+				updateInternalArea();
+				return true;
+			}
+			this.focusedItemHandledKeyEvent = false;
+		}
 		if (this.appearanceMode != PLAIN) {
 			if (this.selectionMode == SELECTION_MODE_NONE) {
 				if (gameAction == Canvas.RIGHT 
@@ -636,6 +681,230 @@ public class TableItem
 	}
 	
 	
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Container#handleKeyReleased(int, int)
+	 */
+	protected boolean handleKeyReleased(int keyCode, int gameAction)
+	{
+		//#debug
+		System.out.println("TableItem: handleKeyReleased( " + keyCode + ", " + gameAction + ")");
+		Item item = this.focusedItem;
+		if (item != null && this.focusedItemHandledKeyEvent && item.handleKeyReleased(keyCode, gameAction)) {
+			return true;
+		}
+		return super.handleKeyReleased( keyCode, gameAction );
+	}
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#handleKeyRepeated(int, int)
+	 */
+	protected boolean handleKeyRepeated(int keyCode, int gameAction) {
+		//#debug
+		System.out.println("TableItem: handleKeyRepeated( " + keyCode + ", " + gameAction + ")");
+		Item item = this.focusedItem;
+		if (item != null && this.focusedItemHandledKeyEvent && item.handleKeyRepeated(keyCode, gameAction)) {
+			return true;
+		}
+		return super.handleKeyReleased( keyCode, gameAction );
+	}
+
+	//#ifdef polish.hasPointerEvents
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#handlePointerPressed(int, int)
+	 */
+	protected boolean handlePointerPressed(int relX, int relY) {
+		//#debug
+		System.out.println("TableItem.handlePointerPressed(" + relX + ", " + relY + ") for " + this );
+		this.pointerEventX = relX;
+		Item item = this.focusedItem;
+		if (item != null) {
+			if (item.handlePointerPressed(relX - this.xOffset - this.contentX - item.relativeX, relY - this.yOffset - this.contentY - item.relativeY)) {
+				this.focusedItemHandledPointerEvent = true;
+				return true;
+			}
+			this.focusedItemHandledPointerEvent = false;
+		}
+		if (this.appearanceMode != PLAIN && this.selectionMode != SELECTION_MODE_NONE) {
+			int col = getColumnIndex( relX );
+			if (col != -1) {
+				int row = getRowIndex( relY );
+				if (row != -1) {
+//					Object o = this.tableData.get( col, row );
+//					System.out.println("col=" + col + ", row=" + row + ", data=" + o);
+					if ((this.selectionMode & SELECTION_MODE_INTERACTIVE) == SELECTION_MODE_INTERACTIVE) {
+						Object data = this.tableData.get( col, row );
+						if (data != null && data instanceof Item && ((Item)data).appearanceMode != PLAIN) {
+							setSelectedCell( col, row );
+							return true;
+						}
+					} else if ((this.selectionMode & SELECTION_MODE_NONEMPTY) == SELECTION_MODE_NONEMPTY) {
+						Object data = this.tableData.get( col, row );
+						if (data != null) {
+							setSelectedCell( col, row );
+							return true;
+						}
+						
+					} else {
+						setSelectedCell( col, row );
+						return true;
+					}
+				}
+			}
+		}
+		return super.handlePointerPressed(relX, relY);
+	}
+	//#endif
+	
+	
+	//#ifdef polish.hasPointerEvents
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#handlePointerReleased(int, int)
+	 */
+	protected boolean handlePointerReleased(int relX, int relY) {
+		//#debug
+		System.out.println("TableItem.handlePointerReleased(" + relX + ", " + relY + ") for " + this );
+		Item item = this.focusedItem;
+		if (item != null && this.focusedItemHandledPointerEvent && item.handlePointerReleased(relX - this.xOffset - this.contentX - item.relativeX, relY - this.yOffset - this.contentY - item.relativeY)) {
+			return true;
+		}
+		int diff = 	relX - this.pointerEventX;
+		if (diff > 5 || diff < -5) {
+			diff += this.targetXOffset;
+			if (diff > 0) {
+				diff = 0;
+			} else if (diff + this.completeWidth < this.contentWidth) {
+				diff = this.contentWidth - this.completeWidth;
+			}
+			this.targetXOffset = diff;
+			return true;
+		}
+
+		return super.handlePointerReleased(relX, relY);
+	}
+	//#endif
+	
+	//#ifdef polish.hasPointerEvents
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#handlePointerDragged(int, int)
+	 */
+	protected boolean handlePointerDragged(int relX, int relY) {
+		//#debug
+		System.out.println("TableItem.handlePointerDragged(" + relX + ", " + relY + ") for " + this );
+		Item item = this.focusedItem;
+		if (item != null && this.focusedItemHandledPointerEvent && item.handlePointerDragged(relX - this.xOffset - this.contentX - item.relativeX, relY - this.yOffset - this.contentY - item.relativeY)) {
+			return true;
+		}
+		int diff = 	relX - this.pointerEventX;
+		if (diff > 5 || diff < -5) {
+			diff += this.targetXOffset;
+			if (diff > 0) {
+				diff = 0;
+			} else if (diff + this.completeWidth < this.contentWidth) {
+				diff = this.contentWidth - this.completeWidth;
+			}
+			this.pointerEventX = relX;
+			this.targetXOffset = diff;
+			this.xOffset = diff;
+			return true;
+		}
+		return super.handlePointerDragged( relX, relY );
+	}
+	//#endif
+
+	/** 
+	 * Checks if this container includes the specified item
+	 * @param item the item
+	 * @return true when this container contains the item
+	 */
+	public boolean contains( Item item ) {
+		int size = this.tableData.size();
+		for (int i=0; i<size; i++) {
+			Object data = this.tableData.get( i );
+			if ( data == item ) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Retrieves the column index for the given x position.
+	 * @param relX the position relative to the horizontal item start position 
+	 * @return the column index or -1 if relX is not within this table item or when the table item is not yet initialized
+	 */
+	protected int getColumnIndex( int relX ) {
+		if (this.columnWidths == null) {
+			return -1;
+		}
+		relX -= this.xOffset;
+		relX -= this.contentX;
+		int w = 0;
+		for (int col = 0; col < this.columnWidths.length; col++ ) {
+			int cw = this.columnWidths[col];
+			if (relX >= w && relX <= w + cw) {
+				return col;
+			}
+			w += cw;
+		}
+		return -1;
+	}
+	
+	/**
+	 * Retrieves the row index for the given y position.
+	 * @param relY the position relative to the vertical item start position 
+	 * @return the row index or -1 if relY is not within this table item or when the table item is not yet initialized
+	 */
+	protected int getRowIndex( int relY ) {
+		if (this.rowHeights == null) {
+			return -1;
+		}
+		relY -= this.yOffset;
+		relY -= this.contentY;
+		int h = 0;
+		for (int row = 0; row < this.rowHeights.length; row++ ) {
+			int rh = this.rowHeights[row];
+			if (relY >= h && relY <= h + rh) {
+				return row;
+			}
+			h += rh;
+		}
+		return -1;
+	}
+	
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#getItemAreaHeight()
+	 */
+	public int getItemAreaHeight()
+	{
+		int max =  super.getItemAreaHeight();
+		Item item = this.focusedItem;
+		if (item != null) {
+			max = Math.max( max, item.relativeY + item.getItemAreaHeight() );
+		}
+		return max;
+	}
+	
+
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#getItemAt(int, int)
+	 */
+	public Item getItemAt(int relX, int relY) {
+		int col = getColumnIndex( relX );
+		if (col != -1) {
+			int row = getRowIndex( relY );
+			if (row != -1) {
+				Object data = this.tableData.get( col, row );
+				if (data instanceof Item) {
+					return (Item) data;
+				}
+			}
+		}
+		return super.getItemAt(relX, relY);
+	}
+	
 	/**
 	 * @param col the column
 	 * @param row the row
@@ -651,37 +920,21 @@ public class TableItem
 	 */
 	public void setSelectedCell(int col, int row, int direction)
 	{
-		if (this.selectionMode == SELECTION_MODE_CELL) {
-			if (this.selectedItemStyle != null) {
-				Object data = getSelectedCell();
-				if (data instanceof Item) {
-					Item item = (Item) data;
-					item.defocus(this.selectedItemStyle);
-				}
+		if ((this.selectionMode & SELECTION_MODE_CELL) == SELECTION_MODE_CELL) {
+			if (this.selectedItemStyle != null && this.focusedItem != null) {
+				this.focusedItem.defocus(this.selectedItemStyle);
 			}
 			Object data = get(col, row);
 			if (data instanceof Item) {
 				Item item = (Item) data;
-				item.focus( null, direction );
+				this.selectedItemStyle = item.focus( null, direction );
+				this.focusedItem = item;
 			}
 		}
 		this.selectedColumnIndex = col;
 		this.selectedRowIndex = row;
+		updateInternalArea();
 		if (this.rowHeights != null) {
-			if (col != -1) {
-				this.internalX = getRelativeColumnX(col);
-				this.internalWidth = this.columnWidths[col];
-			} else {
-				this.internalX = 0;
-				this.internalWidth = this.completeWidth;				
-			}
-			if (row != -1) {
-				this.internalY = getRelativeRowY(row);
-				this.internalHeight = this.rowHeights[row] - (this.paddingVertical / 1);
-			} else {
-				this.internalY = 0;
-				this.internalHeight = this.contentHeight;
-			}
 			// scroll horizontally:
 			if (this.targetXOffset + this.internalX <  0) {
 				this.targetXOffset = -this.internalX;
@@ -689,6 +942,7 @@ public class TableItem
 				this.targetXOffset = this.contentWidth - (this.internalX + this.internalWidth );
 			}
 		}
+		notifyStateChanged();
 	}
 
 	/**
@@ -716,6 +970,9 @@ public class TableItem
 		int x = 0;
 		for (int i=0; i<col; i++) {
 			x += this.columnWidths[i];
+		}
+		if (col > 0) {
+			x -= this.paddingHorizontal;
 		}
 		return x;
 	}
@@ -1023,7 +1280,7 @@ public class TableItem
 			} else {
 				this.appearanceMode = PLAIN;
 			}
-		} else {
+		} else if (this.isFocused){
 			selectCell();
 			if (this.selectedColumnIndex != -1 || this.selectedRowIndex != -1) {
 				this.appearanceMode = INTERACTIVE;
@@ -1106,16 +1363,30 @@ public class TableItem
 	protected Style focus(Style newStyle, int direction)
 	{
 		Style oldStyle = super.focus(newStyle, direction);
-		if ( this.selectionMode == SELECTION_MODE_CELL) {			
+		if ( (this.selectionMode & SELECTION_MODE_CELL) == SELECTION_MODE_CELL) {			
 			Object obj = getSelectedCell();
 			if (obj == null) {
 				selectCell();
-			}
-			if (obj instanceof Item) {
+			} else if (obj instanceof Item) {
 				Item item = (Item) obj;
 				this.selectedItemStyle = item.focus( null, direction );
 			}
 		}
+//		if (this.selectionMode != SELECTION_MODE_NONE) {
+//			if (this.internalX == NO_POSITION_SET) {
+//				selectCell();
+//			} else if (
+//					(this.selectedColumnIndex != -1 && widths[this.selectedColumnIndex] != this.internalWidth)
+//					|| (this.selectedRowIndex != -1 && (heights[this.selectedRowIndex] - (this.paddingVertical / 2)) != this.internalHeight)
+//			) {
+//				setSelectedCell( this.selectedColumnIndex, this.selectedRowIndex);
+//			}
+//			if (this.selectedColumnIndex != -1 || this.selectedRowIndex != -1) {
+//				this.appearanceMode = INTERACTIVE;
+//			} else if (this.completeWidth <= this.contentWidth){
+//				this.appearanceMode = PLAIN;
+//			}
+//		} 		
 		return oldStyle;
 	}
 
@@ -1206,7 +1477,7 @@ public class TableItem
 						container.add( existing.toString() );
 					}
 					container.add(item);
-					set( col, row, container );
+					set(col, row, container );
 				}
 			}
 		}
@@ -1216,7 +1487,7 @@ public class TableItem
 	/****** Container methods ********************************************************************************/
 
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.FakeContainerCustomItem#add(de.enough.polish.ui.Item)
+	 * @see de.enough.polish.ui.Container#add(de.enough.polish.ui.Item)
 	 */
 	public void add(Item item)
 	{
@@ -1226,7 +1497,7 @@ public class TableItem
 	
 
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.FakeContainerCustomItem#size()
+	 * @see de.enough.polish.ui.Container#size()
 	 */
 	public int size()
 	{
@@ -1234,7 +1505,7 @@ public class TableItem
 	}
 
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.FakeContainerCustomItem#get(int)
+	 * @see de.enough.polish.ui.Container#get(int)
 	 */
 	public Item get(int index)
 	{
@@ -1244,7 +1515,7 @@ public class TableItem
 	}
 
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.FakeContainerCustomItem#indexOf(de.enough.polish.ui.Item)
+	 * @see de.enough.polish.ui.Container#indexOf(de.enough.polish.ui.Item)
 	 */
 	public int indexOf(Item item)
 	{
@@ -1260,7 +1531,7 @@ public class TableItem
 	}
 
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.FakeContainerCustomItem#remove(int)
+	 * @see de.enough.polish.ui.Container#remove(int)
 	 */
 	public Item remove(int index)
 	{
@@ -1273,7 +1544,7 @@ public class TableItem
 
 
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.FakeContainerCustomItem#set(int, de.enough.polish.ui.Item, de.enough.polish.ui.Style)
+	 * @see de.enough.polish.ui.Container#set(int, de.enough.polish.ui.Item, de.enough.polish.ui.Style)
 	 */
 	public Item set(int index, Item item, Style itemStyle)
 	{
@@ -1287,6 +1558,48 @@ public class TableItem
 		return prev;
 	}
 
-	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.FakeCustomItem#updateInternalArea()
+	 */
+	public void updateInternalArea()
+	{
+		if (this.columnWidths == null) {
+			return;
+		}
+		if (this.selectedColumnIndex != -1) {
+			this.internalX = getRelativeColumnX(this.selectedColumnIndex);
+			this.internalWidth = this.columnWidths[this.selectedColumnIndex];
+		} else {
+			this.internalX = 0;
+			this.internalWidth = this.completeWidth;				
+		}
+		if (this.selectedRowIndex != -1) {
+			this.internalY = getRelativeRowY(this.selectedRowIndex);
+			this.internalHeight = this.rowHeights[this.selectedRowIndex] - (this.paddingVertical / 1);
+		} else {
+			this.internalY = 0;
+			this.internalHeight = this.contentHeight;
+		}
+		//System.out.println("col=" + this.selectedColumnIndex + ", row=" + this.selectedRowIndex + ", x=" + this.internalX + ", y=" + this.internalY);
+		Item item = this.focusedItem;
+		if (item != null && item.internalX != NO_POSITION_SET) {
+			int intX = this.xOffset + item.relativeX + item.contentX + item.internalX;
+			int intY = this.yOffset + item.relativeY + item.contentY + item.internalY;
+			if (	this.internalHeight > this.availableHeight 
+					|| intY + item.internalHeight > this.internalY + this.internalHeight 
+					|| intY < this.internalY
+					|| this.internalWidth > this.availableWidth
+					|| intX + item.internalWidth > this.internalX + this.internalWidth 
+					|| intX < this.internalX ) 
+			{
+				this.internalX = intX;
+				this.internalY = intY;
+				this.internalWidth = item.internalWidth;
+				this.internalHeight = item.internalHeight;				
+				//System.out.println("internal X of cell set, x=" + this.internalX + ", y=" + this.internalY);
+			}
+		} 
+	}
+
 	
 }

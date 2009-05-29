@@ -2,7 +2,7 @@
 /*
  * Created on Jan 23, 2007 at 3:42:30 PM.
  * 
- * Copyright (c) 2006 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -58,7 +58,7 @@ import de.enough.polish.ui.Style;
  * 	<li><b>gauge-tachometer-factor</b>: an integer factor by which all given values are divided for simulating floating point. A factor of 10 and a value of 14 will result in a shown value of 1.4, for example.</li>
  * </ul>
  *
- * <p>Copyright Enough Software 2006 - 2008</p>
+ * <p>Copyright Enough Software 2006 - 2009</p>
  * <pre>
  * history
  *        Jan 23, 2007 - rob creation
@@ -86,7 +86,7 @@ public class TachometerGaugeView extends ItemView {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ItemView#initContent(de.enough.polish.ui.Item, int, int)
 	 */
-	protected void initContent(Item parent, int firstLineWidth, int lineWidth) {
+	protected void initContent(Item parent, int firstLineWidth, int availWidth, int availHeight) {
 		Gauge gauge = (Gauge) parent;
 		this.maxValue = gauge.getMaxValue(); 
 		
@@ -203,8 +203,8 @@ public class TachometerGaugeView extends ItemView {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ItemView#setStyle(de.enough.polish.ui.Style)
 	 */
-	protected void setStyle(Style style) {
-		super.setStyle(style);
+	protected void setStyle(Style style, boolean resetStyle) {
+		super.setStyle(style, resetStyle);
 		
 		//#if polish.css.gauge-tachometer-startvalue
 			Integer startValueInt = style.getIntProperty("gauge-tachometer-startvalue");

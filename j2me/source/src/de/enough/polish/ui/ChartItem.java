@@ -3,7 +3,7 @@
 /*
  * Created on Nov 28, 2006 at 1:34:21 PM.
  * 
- * Copyright (c) 2006 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -35,7 +35,7 @@ import de.enough.polish.util.RgbImage;
 /**
  * <p>The ChartItem renders numerical integer based data in a diagram.</p>
  *
- * <p>Copyright Enough Software 2006 - 2008</p>
+ * <p>Copyright Enough Software 2006 - 2009</p>
  * <pre>
  * history
  *        Nov 28, 2006 - rob creation
@@ -154,9 +154,9 @@ public class ChartItem
 	//#endif
 
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.FakeCustomItem#initContent(int, int)
+	 * @see de.enough.polish.ui.FakeCustomItem#initContent(int, int, int)
 	 */
-	protected void initContent(int firstLineWidth, int lineWidth) {
+	protected void initContent(int firstLineWidth, int availWidth, int availHeight) {
 		if ( this.dataSequences == null || this.dataSequences.length == 0 || this.dataSequences[0].length == 0 ) {
 			this.contentHeight = 0;
 			this.contentWidth = 0;
@@ -170,36 +170,30 @@ public class ChartItem
 		int labelWidth = 0;
 		if (this.labelX != null) {
 			labelWidth = this.font.getHeight() + this.paddingVertical;
-			lineWidth -= labelWidth;
+			availWidth -= labelWidth;
 		}
 		int length = this.dataSequences[0].length - 1;
 		boolean isHorizontalShrink = (this.layout & LAYOUT_SHRINK) == LAYOUT_SHRINK;
 		//#ifdef polish.css.max-width
-			if (this.maximumWidth != 0 && this.maximumWidth < lineWidth ) {
-				lineWidth = this.maximumWidth;
+			if (this.maximumWidth != null && this.maximumWidth.getValue(firstLineWidth) < availWidth ) {
+				availWidth = this.maximumWidth.getValue(firstLineWidth);
 			}
 		//#endif
-		if (isHorizontalShrink && length <= lineWidth) {
-			this.contentWidth = lineWidth + labelWidth;
+		if (isHorizontalShrink && length <= availWidth) {
+			this.contentWidth = availWidth + labelWidth;
 			this.scaleFactorX = 100;
 		} else {
-			this.scaleFactorX = (lineWidth * 100) / length;
+			this.scaleFactorX = (availWidth * 100) / length;
 			this.contentWidth = (this.scaleFactorX * length) / 100 + labelWidth;
 		}
 		
 		// vertical / y axis initialization:
-		int maxHeight = 0;
+		int maxHeight = availHeight;
 		//#ifdef polish.css.max-height
-			maxHeight = this.maximumHeight;
-		//#endif
-		if (maxHeight == 0) {
-			Screen scr = getScreen();
-			if (scr == null) {
-				maxHeight = 100;
-			} else {
-				maxHeight = scr.contentHeight - 2;
+			if (this.maximumHeight != null) {
+				maxHeight = this.maximumHeight.getValue(availWidth);
 			}
-		}
+		//#endif
 		int dataRange;
 		if (this.dataMaximum > 0 ) {
 			if (this.dataMinimum > 0) {
@@ -224,7 +218,7 @@ public class ChartItem
 			this.contentHeight = dataRange + labelHeight;
 		} else {
 			this.scaleFactorY = (maxHeight * 100) / dataRange; 
-			this.contentHeight = maxHeight + labelHeight; 
+			this.contentHeight = maxHeight + labelHeight;
 		}
 		
 		//#if tmp.rotate
@@ -360,9 +354,12 @@ public class ChartItem
 	 */
 	public void setStyle(Style style) {
 		super.setStyle(style);
-		this.font = style.font;
 		this.fontColor = style.getFontColor();
-	}
+		this.font = style.getFont();
+		if (this.font == null) {
+			this.font = Font.getDefaultFont();
+		}
+	} 
 
 	/**
 	 * @return the baseLine

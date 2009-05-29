@@ -30,10 +30,6 @@ import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
-//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
-	import de.enough.polish.ui.MasterCanvas;
-//#endif
-
 //#ifdef polish.usePolishGui
 	//# import de.enough.polish.ui.Screen;
 //#endif
@@ -94,7 +90,7 @@ import javax.microedition.lcdui.Image;
  * </pre>
  * </code>
  * 
- * <p>Copyright Enough Software 2005 - 2008</p>
+ * <p>Copyright Enough Software 2005 - 2009</p>
  * @author Robert Virkus (initial implementation)
  * @author Jan Peknik (Optimizations)
  * @author Thomas Broyer (Optimizations)
@@ -102,31 +98,31 @@ import javax.microedition.lcdui.Image;
  * @since MIDP 2.0
  */
 public abstract class GameCanvas
-//#if !(polish.classes.fullscreen:defined || (polish.midp2 && ( !polish.useMenuFullScreen || polish.hasCommandKeyEvents)))
-		extends Canvas
-//#else
-	// a fullscreen class is available
-	//#if (polish.GameCanvas.useFullScreen == false) || (polish.GameCanvas.useFullScreen == no)
-		//# extends Canvas
-	//#elif polish.classes.fullscreen:defined && ((polish.GameCanvas.useFullScreen == true) || (polish.GameCanvas.useFullScreen == yes))
-		//#define tmp.useFullScreen
-		//#= extends ${polish.classes.fullscreen}
-	//#elif (polish.GameCanvas.useFullScreen == menu) || ( polish.useFullScreen && polish.useMenuFullScreen ) 
-		// a menu should be used along with the full screen:
-		//#ifdef polish.usePolishGui
+	//#if !(polish.classes.fullscreen:defined || (polish.midp2 && ( !polish.useMenuFullScreen || polish.hasCommandKeyEvents)))
+			extends Canvas
+	//#else
+		// a fullscreen class is available
+		//#if (polish.GameCanvas.useFullScreen == false) || (polish.GameCanvas.useFullScreen == no)
+			//# extends Canvas
+		//#elif (polish.GameCanvas.useFullScreen == true) || (polish.GameCanvas.useFullScreen == yes)
 			//#define tmp.useFullScreen
-			//#define tmp.extendsPolishScreen
-			//# extends Screen
+			//#= extends ${polish.classes.fullscreen}
+		//#elif (polish.GameCanvas.useFullScreen == menu) || ( polish.useFullScreen && polish.useMenuFullScreen ) 
+			// a menu should be used along with the full screen:
+			//#ifdef polish.usePolishGui
+				//#define tmp.useFullScreen
+				//#define tmp.extendsPolishScreen
+				//# extends Screen
+			//#else
+				//# extends Canvas
+			//#endif
+		//#elif (polish.useFullScreen && !polish.useMenuFullScreen)
+			//#define tmp.useFullScreen
+			//#= extends ${polish.classes.fullscreen}
 		//#else
 			//# extends Canvas
 		//#endif
-	//#elif polish.classes.fullscreen:defined && (polish.useFullScreen && !polish.useMenuFullScreen)
-		//#define tmp.useFullScreen
-		//#= extends ${polish.classes.fullscreen}
-	//#else
-		//# extends Canvas
 	//#endif
-//#endif
 {
 	/**
 	 * The bit representing the UP key.  This constant has a value of
@@ -402,13 +398,8 @@ public abstract class GameCanvas
 		this.clipY = y;
 		this.clipWidth = width;
 		this.clipHeight = height;
-		//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
-			MasterCanvas.instance.repaint();
-			MasterCanvas.instance.serviceRepaints();			
-		//#else
-			repaint();
-			serviceRepaints();			
-		//#endif
+		repaint();
+		serviceRepaints();			
 	}
 
 	/**
@@ -428,13 +419,8 @@ public abstract class GameCanvas
 	 */
 	public void flushGraphics()
 	{
-		//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
-			MasterCanvas.instance.repaint();
-			MasterCanvas.instance.serviceRepaints();			
-		//#else
-			repaint();
-			serviceRepaints();			
-		//#endif
+		repaint();
+		serviceRepaints();			
 	}
 
 	//#ifdef tmp.extendsPolishScreen

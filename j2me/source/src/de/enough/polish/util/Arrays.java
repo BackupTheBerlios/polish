@@ -1,7 +1,7 @@
 /*
  * Created on 05.01.2006 at 15:14:27.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -25,11 +25,12 @@
  */
 package de.enough.polish.util;
 
+
 /**
  * Arrays is used for sorting array elements.
  * When no comparator is specified, the default toString() comparator is used. That comparator
  * just compares the string values of the elements using the toString() method.
- * <p>Copyright (c) Enough Software 2006 - 2008</p>
+ * <p>Copyright (c) Enough Software 2006 - 2009</p>
  * 
  * @author Tim Muders
  * @author Robert Virkus
@@ -47,6 +48,27 @@ public final class Arrays implements Comparator {
 		return o1.toString().compareTo(o2.toString());
 	}
 
+	public static boolean byteArrayEquals(byte[] a, byte[] b) {
+		if(a == null && b == null) {
+			return true;
+		}
+		if(a == null && b != null) {
+			return false;
+		}
+		if(a != null && b == null) {
+			return false;
+		}
+		if(a.length != b.length) {
+			return false;
+		}
+		for(int i = 0; i < a.length; i++) {
+			if(a[i] != b[i]) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	/**
 	 * Sorts the objects using the standard shell sort implementation and the toString() comparator.
 	 * 
@@ -97,11 +119,20 @@ public final class Arrays implements Comparator {
     		}
 	}
 
+    /**
+     * Sorts the given array by the toString() output
+     * @param obj the input array that is sorted
+     */
 	public static void quicksort(Object[] obj) {
 		quicksort( obj,obj.length, STRING_COMPARATOR );
     }
     
-    public static void iQuick(int array[], int elements)
+    /**
+     * Sorts the given int array
+     * @param array the to be sorted array
+     * @param elements the split position
+     */
+    public static void iQuick(int[] array, int elements)
     {
             int left=0, right=elements-1, top=0;
             int sSize = elements/2;
@@ -408,9 +439,8 @@ public final class Arrays implements Comparator {
     		}
     		return true;
     }
-    
-    
-    /**
+
+	/**
 	 * Casts the given input array into the output array 
 	 * @param input the input array, may be null
 	 * @param output the output array
@@ -424,7 +454,6 @@ public final class Arrays implements Comparator {
 		System.arraycopy(input, 0, output, 0, Math.min( input.length, output.length) );
 		return output;
 	}
-    
 	
 	/**
 	 * A replacement for System.arraycopy() which crashes badly on some Nokia N78 firmware versions

@@ -2,7 +2,7 @@
 /*
  * Created on Jan 31, 2007 at 3:01:30 PM.
  * 
- * Copyright (c) 2007 Andre Schmidt / Enough Software
+ * Copyright (c) 2009 Andre Schmidt / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -34,12 +34,11 @@ import de.enough.polish.ui.Gauge;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.ItemView;
 import de.enough.polish.ui.Style;
-import de.enough.polish.util.DrawUtil;
 
 /**
  * <p>Shows an animation of cyclic aligned spheres for visualizing an CONTINUOUS_RUNNING indefinite gauge.</p>
  *
- * <p>Copyright Enough Software 2007 - 2008</p>
+ * <p>Copyright Enough Software 2007 - 2009</p>
  * <pre>
  * history
  *        Aug 30, 2007 - asc creation
@@ -74,7 +73,7 @@ public class CyclingSpheresGaugeView extends ItemView {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ItemView#initContent(de.enough.polish.ui.Item, int, int)
 	 */
-	protected void initContent(Item parent, int firstLineWidth, int lineWidth) {
+	protected void initContent(Item parent, int firstLineWidth, int availWidth, int availHeight) {
 		this.gauge = (Gauge)parent;
 		this.isContinuousRunning = this.gauge.getMaxValue() == Gauge.INDEFINITE && this.gauge.getValue() == Gauge.CONTINUOUS_RUNNING;
 		
@@ -82,7 +81,7 @@ public class CyclingSpheresGaugeView extends ItemView {
 			this.maxSpheres = this.sphereCount - this.sphereHighlightCount;
 		}
 		
-		this.contentWidth = Math.max( lineWidth/4, 24 );
+		this.contentWidth = Math.max( availWidth/4, 24 );
 		this.contentHeight = this.contentWidth;
 	}
 
@@ -145,23 +144,23 @@ public class CyclingSpheresGaugeView extends ItemView {
 			}
 		}
 		//#endif
-		
-		//#if polish.css.gauge-cycling-spheres-interval
-		countObj = style.getIntProperty("gauge-cycling-spheres-interval");
+	}
+	
+	
+	
+	//#if polish.css.gauge-cycling-spheres-interval
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.ItemView#setStyle(de.enough.polish.ui.Style, boolean)
+	 */
+	protected void setStyle(Style style, boolean resetStyle)
+	{
+		Integer countObj = style.getIntProperty("gauge-cycling-spheres-interval");
 		if (countObj != null) {
 			this.interval = countObj.intValue();
 		}
-		//#endif
-
-		//#if polish.css.gauge-cycling-spheres-width
-		countObj = style.getIntProperty("gauge-cycling-spheres-width");
-		if (countObj != null && countObj.intValue() >= 3)
-		{
-			this.sphereWidth  = countObj.intValue();
-		}
-		//#endif
 	}
-	
+	//#endif
+
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ItemView#animate(long, de.enough.polish.ui.ClippingRegion)
 	 */

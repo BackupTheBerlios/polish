@@ -1,8 +1,7 @@
-//#condition polish.midp || polish.usePolishGui
 /*
  * Created on Jun 14, 2006 at 6:37:31 PM.
  * 
- * Copyright (c) 2006 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -26,13 +25,15 @@
  */
 package de.enough.polish.util;
 
-import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Image;
+//#if polish.midp || polish.usePolishGui
+	import javax.microedition.lcdui.Graphics;
+	import javax.microedition.lcdui.Image;
+//#endif
 
 /**
  * <p>Allows to manipulate image data.</p>
  *
- * <p>Copyright Enough Software 2006 - 2008</p>
+ * <p>Copyright Enough Software 2006 - 2009</p>
  * <pre>
  * history
  *        Jun 14, 2006 - rob creation
@@ -45,6 +46,17 @@ public class RgbImage {
 	private int width;
 	private int height;
 	private boolean processTransparency;
+	
+	/**
+	 * Creates a new transparent RGB image
+	 * @param width the width
+	 * @param height the height
+	 */
+	public RgbImage(int width, int height)
+	{
+		this( width, height, 0, true );
+	}
+
 	
 	/**
 	 * Creates a new empty RGB image.
@@ -77,6 +89,15 @@ public class RgbImage {
 		this.rgbData = data;
 		this.processTransparency = processTransparency;
 	}
+	
+	/**
+	 * Creates a new transparent RGB image
+	 * @param source the source RGB image
+	 */
+	public RgbImage(RgbImage source)
+	{
+		setRgbData( source.copyRgbData(), source.width, source.processTransparency );
+	}
 
 	/**
 	 * Creates a new RGB image.
@@ -99,6 +120,7 @@ public class RgbImage {
 		setRgbData(rgbData, width, processTransparency );
 	}
 	
+	//#if polish.midp || polish.usePolishGui
 	/**
 	 * Creates a new RGB image. WARNING: The extraction of RGB data can only succeed on MIDP 2.0 devices
 	 * 
@@ -110,10 +132,11 @@ public class RgbImage {
 		int h = image.getHeight();
 		int[] data = new int[ w * h ];
 		//#if polish.midp2
-			//data = image.getRGB(data, w, w, h, ... );
+			image.getRGB(data, 0, w, 0, 0, w, h );
 		//#endif
 		setRgbData(data, w, processTransparency);
 	}
+	//#endif
 
 	
 	/**
@@ -161,6 +184,18 @@ public class RgbImage {
 	public int[] getRgbData() {
 		return this.rgbData;
 	}
+	
+	/**
+	 * Returns a copy of the original RGB data for processing
+	 * @return the RGB data in a new int[] array
+	 */
+	public int[] copyRgbData()
+	{
+		int[] copy = new int[ this.rgbData.length ];
+		System.arraycopy( this.rgbData, 0, copy, 0, copy.length );
+		return copy;
+	}
+
 
 	/**
 	 * Sets a new (A)RGB data array.
@@ -187,11 +222,12 @@ public class RgbImage {
 		this.processTransparency = processTransparency;
 	}
 	
+	//#if polish.midp || polish.usePolishGui
 	/**
 	 * Renders this RGB image on MIDP 2.0 devices to the given Graphics context.
 	 * 
-	 * @param x the horizontal position
-	 * @param y the vertical position
+	 * @param x the horizontal/left start position
+	 * @param y the vertical/top start position
 	 * @param g the graphics context
 	 */
 	public void paint( int x, int y, Graphics g ) {
@@ -199,6 +235,7 @@ public class RgbImage {
 			DrawUtil.drawRgb( this.rgbData, x, y, this.width, this.height, this.processTransparency, g );
 		//#endif
 	}
+	//#endif
 
 	public void setHeight(int height) {
 		this.height = height;

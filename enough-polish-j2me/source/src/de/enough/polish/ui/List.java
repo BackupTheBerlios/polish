@@ -25,7 +25,7 @@
  */
 package de.enough.polish.ui;
 
-import javax.microedition.lcdui.Command;
+
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Image;
 
@@ -182,21 +182,6 @@ public class List extends Screen implements Choice
 	 * using
 	 * <A HREF="../../../javax/microedition/lcdui/List.html#setSelectCommand(javax.microedition.lcdui.Command)"><CODE>setSelectCommand</CODE></A>.
 	 * 
-	 * <p>
-	 * The field values of <code>SELECT_COMMAND</code> are:<br>
-	 * - <code>label = &quot;&quot;</code> (an empty string)<br>
-	 * - <code>type = SCREEN</code><br>
-	 * - <code>priority = 0</code><br>
-	 * </p>
-	 * <p>(It would be more appropriate if the type were
-	 * <code>ITEM</code>, but the type of
-	 * <code>SCREEN</code> is retained for historical purposes.)</p>
-	 * <p>
-	 * The application should not use these values for recognizing
-	 * the <code>SELECT_COMMAND</code>. Instead, object identities of
-	 * the <code>Command</code> and
-	 * <code>Displayable</code> (<code>List</code>) should be used.
-	 * </p>
 	 * 
 	 * <p><code>SELECT_COMMAND</code> is treated as an ordinary
 	 * <code>Command</code> if it is used with other <code>Displayable</code>
@@ -585,7 +570,30 @@ public class List extends Screen implements Choice
 	 */
 	public void insert(int elementNum, ChoiceItem item)
 	{
+		//#ifdef polish.css.show-text-in-title
+			if (this.showTextInTitle){
+				item.setTextVisible(false);
+				String stringPart = item.getText();
+				if (this.choiceGroup.size() == 0) {
+					setTitle( stringPart );
+				}
+			}
+		//#endif
 		this.choiceGroup.insert( elementNum, item );
+		//#if polish.List.suppressCommands != true
+			if (this.choiceGroup.size() == 0) {
+				// the first item has been inserted:
+				if (this.listType == Choice.IMPLICIT && this.selectCommand != null ) {
+					//#if polish.List.suppressSelectCommand != true
+						addCommand( this.selectCommand );
+					//#endif
+				} else {
+					//#if polish.List.suppressMarkCommands != true
+						setItemCommands(this.choiceGroup.commands, this.choiceGroup);
+					//#endif
+				}
+			}
+		//#endif
 	}
 	
 	/**
@@ -620,12 +628,7 @@ public class List extends Screen implements Choice
 	 */
 	public void set(int elementNum, String stringPart, Image imagePart, Style elementStyle )
 	{
-		this.choiceGroup.set(elementNum, stringPart, imagePart, elementStyle);
-		//#ifdef polish.css.show-text-in-title
-			if (this.showTextInTitle && elementNum == this.choiceGroup.getFocusedIndex()) {
-				setTitle( stringPart );
-			}
-		//#endif
+		set(elementNum, new ChoiceItem(stringPart, imagePart, this.listType, elementStyle));
 	}
 
 	/**
@@ -640,6 +643,15 @@ public class List extends Screen implements Choice
 	public void set(int elementNum, ChoiceItem item)
 	{
 		this.choiceGroup.set( elementNum, item );
+		//#ifdef polish.css.show-text-in-title
+			if (this.showTextInTitle){
+				item.setTextVisible(false);
+				String stringPart = item.getText();
+				if (elementNum == this.choiceGroup.getFocusedIndex()) {
+					setTitle( stringPart );
+				}
+			}
+		//#endif
 	}
 
 	/**

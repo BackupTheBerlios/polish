@@ -26,8 +26,6 @@
  */
 package de.enough.polish.ui;
 
-import de.enough.polish.util.ArrayList;
-
 import javax.microedition.lcdui.Image;
 
 /**

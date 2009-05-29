@@ -3,7 +3,7 @@
 /*
  * Created on Dec 31, 2006 at 4:31:41 PM.
  * 
- * Copyright (c) 2006 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -32,7 +32,7 @@ import java.util.Date;
 /**
  * <p>Maps the MIDP java.lang.Timer for DoJa devices.</p>
  *
- * <p>Copyright Enough Software 2006 - 2008</p>
+ * <p>Copyright Enough Software 2006 - 2009</p>
  * <pre>
  * history
  *        Dec 31, 2006 - rob creation

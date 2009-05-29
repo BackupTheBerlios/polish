@@ -26,7 +26,7 @@
  */
 package de.enough.polish.util;
 
-//#if polish.midp
+//#if polish.midp || polish.usePolishGui
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Display;
@@ -43,7 +43,7 @@ import de.enough.polish.log.LogHandler;
 /**
  * <p>Is used for debugging of information.</p>
  *
- * <p>Copyright Enough Software 2004 - 2008</p>
+ * <p>Copyright Enough Software 2004 - 2009</p>
 
  * <pre>
  * history
@@ -61,7 +61,11 @@ implements CommandListener
 	public static final Command RETURN_COMMAND = new Command( "Return", Command.SCREEN, 1 );
 	private static Displayable returnDisplayable;
 	private static Display midletDisplay;
-	private static javax.microedition.lcdui.TextBox textBox;
+	//#if polish.usePolishGui
+		private static de.enough.polish.midp.ui.TextBox textBox;
+	//#else
+		//# private static javax.microedition.lcdui.TextBox textBox;
+	//#endif
 	//#endif
 	private static final ArrayList MESSAGES = new ArrayList( 100 );
 	//#if polish.log.handlers:defined
@@ -76,6 +80,14 @@ implements CommandListener
 		}
 	//#endif
 	
+	/**
+	 * Clears the log messages from MESSAGES. showLog() must be called again
+	 */
+	public static void clearLog()
+	{
+		MESSAGES.clear();
+	}
+		
 	/**
 	 * Prints a message.
 	 * 
@@ -328,7 +340,7 @@ implements CommandListener
 	}
 	//#endif
 	
-	//#if polish.midp
+	//#if polish.midp || polish.usePolishGui
 	/**
 	 * Shows the log with the current messages.
 	 * When new messages are added, the log will be updated.
@@ -347,7 +359,11 @@ implements CommandListener
 		if (Debug.returnDisplayable != currentDisplayable) {
 			Debug.returnDisplayable = currentDisplayable;
 			Debug.midletDisplay = display;
-			Debug.textBox = new javax.microedition.lcdui.TextBox("Log", null, 4096, javax.microedition.lcdui.TextField.ANY );
+			//#if polish.usePolishGui
+			Debug.textBox = new de.enough.polish.midp.ui.TextBox("Log", null, 4096, javax.microedition.lcdui.TextField.ANY );
+			//#else
+				//# Debug.textBox = new javax.microedition.lcdui.TextBox("Log", null, 4096, javax.microedition.lcdui.TextField.ANY );
+			//#endif
 			int maxSize = Debug.textBox.getMaxSize();
 			Debug.textBox.setMaxSize( maxSize );
 			addMessages();
@@ -358,6 +374,26 @@ implements CommandListener
 		//#endif
 	}
 	//#endif
+	
+	//#if polish.LibraryBuild
+		/**
+		 * Shows the log with the current messages.
+		 * When new messages are added, the log will be updated.
+		 * The latest messages will be at the top.
+		 * 
+		 * @param display the display-variable for the current MIDlet.
+		 */
+		public static void showLog(
+				//#if polish.usePolishGui
+					//# javax.microedition.lcdui.Display display
+				//#else
+				de.enough.polish.ui.Display display
+				//#endif
+		) {
+			// ignore
+		}
+	//#endif
+
 	
 	//#if polish.midp
 	/**

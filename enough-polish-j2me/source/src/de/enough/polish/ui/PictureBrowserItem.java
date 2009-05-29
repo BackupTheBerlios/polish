@@ -2,7 +2,7 @@
 /*
  * Created on 09.01.2006 at 16:56:54.
  * 
- * Copyright (c) 2006 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -265,7 +265,7 @@ public class PictureBrowserItem
 		return "picturebrowser";
 	}
 
-	protected void initContent(int firstLineWidth, int lineWidth) {
+	protected void initContent(int firstLineWidth, int availWidth, int availHeight) {
 		this.contentWidth = this.thumbnailWidth * 2 + 2 * this.paddingHorizontal + this.selectedWidth;
 		this.contentHeight = this.thumbnailHeight * 2 + this.paddingVertical;
 	}

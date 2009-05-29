@@ -27,9 +27,6 @@ package de.enough.polish.ui;
 
 import java.io.IOException;
 
-import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 //#if polish.blackberry
@@ -40,6 +37,7 @@ import de.enough.polish.event.EventManager;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.DrawUtil;
 import de.enough.polish.util.HashMap;
+import de.enough.polish.util.RgbImage;
 
 
 /**
@@ -385,11 +383,15 @@ import de.enough.polish.util.HashMap;
  * <li>both the preferred width and preferred height are unlocked.</li>
  * </ul>
  * 
- * <p>copyright Enough Software 2004 - 2008</p>
+ * <p>copyright Enough Software 2004 - 2009</p>
  * @since MIDP 1.0
  */
-public abstract class Item extends Object
+public abstract class Item implements UiElement, Animatable
 {
+//#if polish.handleEvents || polish.css.animations
+	//#define tmp.handleEvents
+//#endif
+	
 	/**
 	 * A J2ME Polish constant defining a transparent/invisible color.
 	 * TRANSPARENT has the value -1.
@@ -616,18 +618,25 @@ public abstract class Item extends Object
 	protected Command defaultCommand;
 	protected int preferredWidth;
 	protected int preferredHeight;
-	protected int minimumWidth;
-	protected int minimumHeight;
+	protected Dimension minimumWidth;
+	protected Dimension minimumHeight;
 	//#ifdef polish.css.max-width
-		protected int maximumWidth;
+		protected Dimension maximumWidth;
 	//#endif
 	//#ifdef polish.css.max-height
-		protected int maximumHeight;
+		protected Dimension maximumHeight;
 	//#endif
 	protected boolean isInitialized;
 	/** the background of this item  */
 	public Background background;
 	protected Border border;
+	//#if polish.css.bgborder
+		/** the background border of an item - this border is painted before the background. This field
+		 * is only present when polish.css.bgborder is true.
+		 */
+		protected Border bgBorder;
+	//#endif
+		
 	protected Style style;
 	/** the width of this item - only for read access */
 	public int itemWidth;
@@ -647,7 +656,6 @@ public abstract class Item extends Object
 	protected int contentWidth;
 	/** The height of this item's content **/
 	protected int contentHeight;
-	protected int borderWidth;
 	protected int backgroundWidth;
 	protected int backgroundHeight;
 	/** The appearance mode of this item, either PLAIN or one of the interactive modes BUTTON, HYPERLINK or INTERACTIVE. */
@@ -733,8 +741,6 @@ public abstract class Item extends Object
 	//#if polish.blackberry
 		/** a blackberry specific internal field */
 		public Field _bbField;
-		/** a blackberry specific internal field */
-		public boolean _bbFieldAdded;
 	//#endif
 	protected Style focusedStyle;
 	protected boolean isPressed;
@@ -767,6 +773,7 @@ public abstract class Item extends Object
 	//#ifdef polish.css.view-type
 		protected ItemView view;
 		protected boolean preserveViewType;
+		protected boolean setView;
 	//#endif
 	//#if polish.supportInvisibleItems || polish.css.visible
 		//#define tmp.invisible
@@ -781,8 +788,56 @@ public abstract class Item extends Object
 		protected int opacity = 255;
 		protected int[] opacityRgbData;
 		protected boolean opacityPaintNormally;
+		private int opacityAtGeneration;
 	//#endif
 	private ItemStateListener itemStateListener;
+
+	//#if polish.css.x-adjust
+		protected Dimension xAdjustment;
+	//#endif
+	//#if polish.css.y-adjust
+		protected Dimension yAdjustment;
+	//#endif
+	//#if polish.css.content-x-adjust
+		protected Dimension contentXAdjustment;
+	//#endif
+	//#if polish.css.content-y-adjust
+		protected Dimension contentYAdjustment;
+	//#endif
+
+	//#if polish.css.background-width
+		private int originalBackgroundWidth;
+	//#endif
+	//#if polish.css.background-height
+		private int originalBackgroundHeight;
+	//#endif
+	//#if polish.css.background-anchor && (polish.css.background-width || polish.css.background-height)
+		private int backgroundAnchor;
+	//#endif
+	//#if polish.css.content-visible
+		protected boolean isContentVisible = true;
+	//#endif
+	//#if polish.css.filter
+		private RgbFilter[] filters;
+		private boolean isFiltersActive;
+		private boolean filterPaintNormally;
+		private RgbImage filterRgbImage;
+		private RgbFilter[] originalFilters;
+	//#endif
+	//#if polish.css.inline-label
+		protected boolean isInlineLabel;
+	//#endif
+	protected int availableWidth;
+	protected int availableHeight;
+	protected boolean ignoreRepaintRequests;
+
+	private ItemTransition itemTransition;
+
+	private boolean preserveBackground;
+	private boolean preserveBorder;
+
+
+
 
 	
 	protected Item() {
@@ -836,6 +891,9 @@ public abstract class Item extends Object
 		if (this.label == null) {
 			this.label = new StringItem( null, label, this.labelStyle );
 			this.label.parent = this; // orginally used "this.parent", however that field might not be known at this moment.
+			if (this.isShown){
+				this.label.showNotify();
+			}
 		} else {
 			this.label.setText( label );
 		}
@@ -897,13 +955,7 @@ public abstract class Item extends Object
 	{
 		if (layout != this.layout) {
 			this.layout = layout;
-			if (this.isInitialized) {
-				this.isInitialized = false;
-				repaint();
-			} else if (!this.isStyleInitialised && this.style != null) {
-				setStyle( this.style );
-				this.layout = layout;
-			}
+
 			// horizontal styles: center -> right -> left
 			if ( ( layout & LAYOUT_CENTER ) == LAYOUT_CENTER ) {
 				this.isLayoutCenter = true;
@@ -923,6 +975,13 @@ public abstract class Item extends Object
 				this.isLayoutExpand = true;
 			} else {
 				this.isLayoutExpand = false;
+			}
+			if (this.isInitialized) {
+				this.isInitialized = false;
+				repaint();
+			} else if (!this.isStyleInitialised && this.style != null) {
+				setStyle( this.style );
+				this.layout = layout;
 			}
 		}
 	}
@@ -948,6 +1007,38 @@ public abstract class Item extends Object
 		this.appearanceMode = appearanceMode;
 	}
 	
+	
+	//#ifdef polish.css.view-type
+	/**
+	 * Sets the view type for this item.
+	 * Please note that this is only supported when view-type CSS attributes are used within
+	 * your application.
+	 * @param view the new view, use null to remove the current view
+	 */
+	public void setView( ItemView view ) {
+		if (!this.isStyleInitialised && this.style != null) {
+			setStyle( this.style );
+		}
+		this.view = view;
+		if (view != null && this.style != null) {
+			view.setStyle( this.style );
+		}
+	}
+	//#endif
+	
+	//#ifdef polish.css.view-type	
+	/**
+	 * Retrieves the view type for this item.
+	 * Please note that this is only supported when view-type CSS attributes are used within
+	 * your application.
+	 * 
+	 * @return the current view, may be null
+	 */
+	public ItemView getView() {
+		return this.view;
+	}
+	//#endif
+	
 	/**
 	 * Retrieves the style of this item.
 	 * 
@@ -958,6 +1049,24 @@ public abstract class Item extends Object
 	}
 	
 	/**
+	 * Sets a new background for this item.
+	 * @param background the new background, use null for not showing a background
+	 */
+	public void setBackground( Background background ) {
+		this.preserveBackground = true;
+		this.background = background;
+	}
+	
+	/**
+	 * Sets a new border for this item
+	 * @param border the new border, use null for not showing a border
+	 */
+	public void setBorder( Border border ) {
+		this.preserveBorder = true;
+		this.border = border;
+	}
+	
+	/**
 	 * Sets the style of this item.
 	 * 
 	 * @param style the new style for this item.
@@ -965,36 +1074,16 @@ public abstract class Item extends Object
 	 */
 	public void setStyle( Style style ) {
 		//#debug
-		System.out.println("setting style " + style.name + " - with background: " + (style.background) );
+		System.out.println("setting style " + style.name + " for " + this );
 		this.isInitialized = false;
 		this.isStyleInitialised = true;
 		this.style = style;
 		if (style != StyleSheet.defaultStyle) {
-			this.layout = style.layout;
-			// horizontal styles: center -> right -> left
-			if ( ( this.layout & LAYOUT_CENTER ) == LAYOUT_CENTER ) {
-				this.isLayoutCenter = true;
-				this.isLayoutRight = false;
-			} else {
-				this.isLayoutCenter = false;
-				if ( ( this.layout & LAYOUT_RIGHT ) == LAYOUT_RIGHT ) {
-					this.isLayoutRight = true;
-				} else {
-					this.isLayoutRight = false;
-				}
-			}
-			
-			// vertical styles: vcenter -> bottom -> top
-			// expanding layouts:
-			if ( ( this.layout & LAYOUT_EXPAND ) == LAYOUT_EXPAND ) {
-				this.isLayoutExpand = true;
-			} else {
-				this.isLayoutExpand = false;
-			}
+			setLayout( style.layout );
 		}
 		//System.out.println( this + " style [" + style.name + "]: right: " + this.isLayoutRight + " center: " + this.isLayoutCenter + " expand: " + this.isLayoutExpand + " layout=" + Integer.toHexString(this.layout));
 		if (this.isShown) {
-			if (this.background != style.background) {
+			if (this.background != style.background && !this.preserveBackground) {
 				if (this.background != null) {
 					this.background.hideNotify();
 				}
@@ -1002,7 +1091,7 @@ public abstract class Item extends Object
 					style.background.showNotify();
 				}
 			}
-			if (this.border != style.border) {
+			if (this.border != style.border && !this.preserveBackground) {
 				if (this.border != null) {
 					this.border.hideNotify();
 				}
@@ -1011,69 +1100,24 @@ public abstract class Item extends Object
 				}
 			}
 		}
-		this.background = style.background;
-		this.border = style.border;
-		if (this.border != null) {
-			this.borderWidth = this.border.borderWidth;
-		} else if (this.background != null){
-			this.borderWidth = this.background.borderWidth;
-		} else {
-			this.borderWidth = 0;
+		if (!this.preserveBackground) {
+			this.background = style.background;
 		}
-		this.paddingLeft = style.paddingLeft;
-		this.paddingRight = style.paddingRight;
-		this.paddingTop = style.paddingTop;
-		this.paddingBottom = style.paddingBottom;
-		this.paddingVertical = style.paddingVertical;
-		this.paddingHorizontal = style.paddingHorizontal;
-		this.marginLeft = style.marginLeft;
-		this.marginRight = style.marginRight;
-		this.marginTop = style.marginTop;
-		this.marginBottom = style.marginBottom;
-		//#ifdef polish.css.before
-			String beforeUrlStr = style.getProperty("before"); 
-			if (beforeUrlStr != null) {
-				if ( !beforeUrlStr.equals(this.beforeUrl) ) {
-					try {
-						this.beforeImage = StyleSheet.getImage(beforeUrlStr, null, true );
-						this.beforeWidth = this.beforeImage.getWidth() + this.paddingHorizontal;
-						this.beforeHeight = this.beforeImage.getHeight();
-					} catch (IOException e) {
-						this.beforeUrl = null;
-						this.beforeImage = null;
-						this.beforeWidth = 0;
-						this.beforeHeight = 0;						
-					}
-				}
-			} else {
-				this.beforeImage = null;
-				this.beforeWidth = 0;
-				this.beforeHeight = 0;
+		if (!this.preserveBorder) {
+			this.border = style.border;
+		}
+		
+		//#if polish.css.content-visible
+			Boolean contentVisibleBool = style.getBooleanProperty("content-visible");
+			if (contentVisibleBool != null) {
+				this.isContentVisible = contentVisibleBool.booleanValue();
 			}
-			this.beforeUrl = beforeUrlStr;
 		//#endif
-		//#ifdef polish.css.after
-			String afterUrlStr = style.getProperty("after");
-			if (afterUrlStr != null) {
-				if ( !afterUrlStr.equals(this.afterUrl) ) {
-					try {
-						this.afterImage = StyleSheet.getImage(afterUrlStr, null, true );
-						this.afterWidth = this.afterImage.getWidth() + this.paddingHorizontal;
-						this.afterHeight = this.afterImage.getHeight();
-					} catch (IOException e) {
-						this.afterUrl = null;
-						this.afterWidth = 0;
-						this.afterHeight = 0;
-						this.afterImage = null;
-					}
-				}
-			} else {
-				this.afterWidth = 0;
-				this.afterHeight = 0;
-				this.afterImage = null;
-			}
-			this.afterUrl = afterUrlStr;
+		//#if polish.css.bgborder
+			Border bgBord = (Border) style.getObjectProperty("bgborder");
+			this.bgBorder = bgBord;
 		//#endif
+		
 		//#ifdef polish.css.label-style
 			Style labStyle = (Style) style.getObjectProperty("label-style");
 			if (labStyle != null) {
@@ -1087,30 +1131,7 @@ public abstract class Item extends Object
 		if (this.label != null) {
 			this.label.setStyle( this.labelStyle );			
 		}
-		//#ifdef polish.css.min-width
-			Integer minWidthInt = style.getIntProperty("min-width");
-			if (minWidthInt != null) {
-				this.minimumWidth = minWidthInt.intValue();
-			}
-		//#endif
-		//#ifdef polish.css.max-width
-			Integer maxWidthInt  = style.getIntProperty("max-width");
-			if (maxWidthInt != null) {
-				this.maximumWidth = maxWidthInt.intValue();
-			}
-		//#endif
-		//#ifdef polish.css.min-height
-			Integer minHeightInt = style.getIntProperty("min-height");
-			if (minHeightInt != null) {
-				this.minimumHeight = minHeightInt.intValue();
-			}
-		//#endif
-		//#ifdef polish.css.max-height
-			Integer maxHeightInt  = style.getIntProperty("max-height");
-			if (maxHeightInt != null) {
-				this.maximumHeight = maxHeightInt.intValue();
-			}
-		//#endif
+		
 		//#ifdef polish.css.focused-style
 			//Object object = style.getObjectProperty("focused-style");
 			//if (object != null) {
@@ -1119,9 +1140,6 @@ public abstract class Item extends Object
 			Style focused = (Style) style.getObjectProperty("focused-style");
 			if (focused != null) {
 				this.focusedStyle = focused;
-//				if (this instanceof ChoiceGroup) {
-//					System.out.println("Setting focused style for choicegroup!");
-//				}
 			}
 		//#endif
 		//#if polish.css.pressed-style
@@ -1131,18 +1149,6 @@ public abstract class Item extends Object
 			}
 		//#endif
 
-		//#if polish.css.colspan
-			Integer colSpanInt = style.getIntProperty("colspan");
-			if ( colSpanInt != null ) {
-				this.colSpan = colSpanInt.intValue();
-			}
-		//#endif	
-		//#if polish.css.include-label
-			Boolean includeLabelBool = style.getBooleanProperty("include-label");
-			if (includeLabelBool != null) {
-				this.includeLabel = includeLabelBool.booleanValue();
-			}
-		//#endif
 		//#if polish.css.complete-background
 			Background bg = (Background) style.getObjectProperty("complete-background");
 			if (this.isShown && this.completeBackground != bg) {
@@ -1167,6 +1173,293 @@ public abstract class Item extends Object
 			}
 			this.completeBorder = brd;
 		//#endif
+			
+		//#ifdef polish.css.view-type
+			ItemView viewType = (ItemView) style.getObjectProperty("view-type");
+	//		if (this instanceof ChoiceGroup) {
+	//			System.out.println("SET.STYLE / CHOICEGROUP: found view-type (1): " + (viewType != null) + " for " + this);
+	//		}
+			if (viewType != null && viewType.isValid(this, style)) {
+				this.view = getView( viewType, style );
+			}
+		//#endif
+		//#ifdef polish.css.view-type
+			if (this.view != null) {
+				this.view.setStyle(style);
+			}
+		//#endif	
+		//#if polish.css.background-anchor && (polish.css.background-width || polish.css.background-height)
+			Integer bgAnchor = style.getIntProperty("background-anchor");
+			if (bgAnchor != null) {
+				this.backgroundAnchor = bgAnchor.intValue();
+			}
+		//#endif
+		//#if polish.css.filter
+			RgbFilter[] filterObjects = (RgbFilter[]) style.getObjectProperty("filter");
+			if (filterObjects != null) {
+				if (filterObjects != this.originalFilters) {
+					this.filters = new RgbFilter[ filterObjects.length ];
+					for (int i = 0; i < filterObjects.length; i++)
+					{
+						RgbFilter rgbFilter = filterObjects[i];
+						try
+						{
+							this.filters[i] = (RgbFilter) rgbFilter.getClass().newInstance();
+						} catch (Exception e)
+						{
+							//#debug warn
+							System.out.println("Unable to initialize filter class " + rgbFilter.getClass().getName() + e );
+						}
+					}
+					this.originalFilters = filterObjects;
+				}
+			}
+		//#endif
+			
+		//#if polish.css.inline-label
+			Boolean inlineBool = style.getBooleanProperty("inline-label");
+			if (inlineBool != null) {
+				this.isInlineLabel = inlineBool.booleanValue();
+			}
+		//#endif
+			
+		// now set other style attributes:
+		setStyle( style, true );
+	}
+	
+	//#ifdef polish.css.view-type	
+	/**
+	 * Retrieves the view type for this item or instantiates a new one.
+	 * Please note that this is only supported when view-type CSS attributes are used within
+	 * your application.
+	 * 
+	 * @param viewType the view registered in the style
+	 * @param viewStyle the style
+	 * @return the view, may be null
+	 */
+	protected ItemView getView(ItemView viewType, Style viewStyle)
+	{
+		if (this.view == null || this.view.getClass() != viewType.getClass()) {
+			try {
+				// formerly we have used the style's instance when that instance was still free.
+				// However, that approach lead to GC problems, as the style is not garbage collected.
+				viewType = (ItemView) viewType.getClass().newInstance();
+				viewType.parentItem = this;
+				if (this.isShown) {
+					if (this.view != null) {
+						this.view.hideNotify();
+					}
+					viewType.showNotify();
+				}
+				return viewType;
+			} catch (Exception e) {
+				//#debug error
+				System.out.println("Container: Unable to init view-type " + e );
+			}
+		}
+		return this.view;
+	}
+	//#endif
+
+	/**
+	 * Sets the style of this item for animatable CSS attributes.
+	 * 
+	 * @param style the new style for this element.
+	 * @param resetStyle true when style settings should be resetted. This is not the case
+	 * 			when styles are animated, for example.
+	 * @throws NullPointerException when style is null
+	 */
+	public void setStyle( Style style, boolean resetStyle ) {
+		if(!resetStyle && this.isInitialized) {
+//			boolean initializationRequired = false;
+			Dimension value;
+			//#if polish.css.margin
+				value = (Dimension) style.getObjectProperty("margin");
+				if (value != null) {
+					int margin = value.getValue(this.availableWidth);
+					this.marginLeft = margin;
+					this.marginRight = margin;
+					this.marginTop = margin;
+					this.marginBottom = margin;
+//					initializationRequired = true;
+				}
+			//#endif
+			//#if polish.css.margin-left
+				value = (Dimension) style.getObjectProperty("margin-left");
+				if (value != null) {
+					this.marginLeft = value.getValue(this.availableWidth);
+//					initializationRequired = true;
+				}
+			//#endif
+			//#if polish.css.margin-right
+				value = (Dimension) style.getObjectProperty("margin-right");
+				if (value != null) {
+					this.marginRight = value.getValue(this.availableWidth);
+//					initializationRequired = true;
+				}
+			//#endif
+			//#if polish.css.margin-top
+				value = (Dimension) style.getObjectProperty("margin-top");
+				if (value != null) {
+					this.marginTop = value.getValue(this.availableWidth);
+//					initializationRequired = true;
+				}
+			//#endif
+			//#if polish.css.margin-bottom
+				value = (Dimension) style.getObjectProperty("margin-bottom");
+				if (value != null) {
+					this.marginBottom = value.getValue(this.availableWidth);
+//					initializationRequired = true;
+				}
+			//#endif
+			//#if polish.css.padding
+				value = (Dimension) style.getObjectProperty("padding");
+				if (value != null) {
+					int padding = value.getValue(this.availableWidth);
+					this.paddingLeft = padding;
+					this.paddingRight = padding;
+					this.paddingTop = padding;
+					this.paddingHorizontal = padding;
+					this.paddingVertical = padding;
+//					initializationRequired = true;
+				}
+			//#endif
+			//#if polish.css.padding-left
+				value = (Dimension) style.getObjectProperty("padding-left");
+				if (value != null) {
+					this.paddingLeft = value.getValue(this.availableWidth);
+//					initializationRequired = true;
+				}
+			//#endif
+			//#if polish.css.padding-right
+				value = (Dimension) style.getObjectProperty("padding-right");
+				if (value != null) {
+					this.paddingRight = value.getValue(this.availableWidth);
+//					initializationRequired = true;
+				}
+			//#endif
+			//#if polish.css.padding-top
+				value = (Dimension) style.getObjectProperty("padding-top");
+				if (value != null) {
+					this.paddingTop = value.getValue(this.availableWidth);
+//					initializationRequired = true;
+				}
+			//#endif
+			//#if polish.css.padding-bottom
+				value = (Dimension) style.getObjectProperty("padding-bottom");
+				if (value != null) {
+					this.paddingBottom = value.getValue(this.availableWidth);
+//					initializationRequired = true;
+				}
+			//#endif
+			//#if polish.css.padding-horizontal
+				value = (Dimension) style.getObjectProperty("padding-horizontal");
+				if (value != null) {
+					this.paddingHorizontal = value.getValue(this.availableWidth);
+//					initializationRequired = true;
+				}
+			//#endif
+			//#if polish.css.padding-vertical
+				value = (Dimension) style.getObjectProperty("padding-vertical");
+				if (value != null) {
+					this.paddingVertical = value.getValue(this.availableWidth);
+//					initializationRequired = true;
+				}
+			//#endif
+//			if (initializationRequired) {
+//				if (this.parent != null) {
+//					this.parent.isInitialized = false;
+//				} else if (this.screen != null) {
+//					this.screen.requestInit();
+//				}
+//			}
+		}
+		
+		//#ifdef polish.css.before
+			String beforeUrlStr = style.getProperty("before"); 
+			if (beforeUrlStr != null) {
+				if ( !beforeUrlStr.equals(this.beforeUrl) ) {
+					try {
+						this.beforeImage = StyleSheet.getImage(beforeUrlStr, null, true );
+						this.beforeWidth = this.beforeImage.getWidth() + this.paddingHorizontal;
+						this.beforeHeight = this.beforeImage.getHeight();
+					} catch (IOException e) {
+						this.beforeUrl = null;
+						this.beforeImage = null;
+						this.beforeWidth = 0;
+						this.beforeHeight = 0;						
+					}
+				}
+				this.beforeUrl = beforeUrlStr;
+			} else if (resetStyle) {
+				this.beforeImage = null;
+				this.beforeWidth = 0;
+				this.beforeHeight = 0;
+				this.beforeUrl = beforeUrlStr;
+			}
+		//#endif
+		//#ifdef polish.css.after
+			String afterUrlStr = style.getProperty("after");
+			if (afterUrlStr != null) {
+				if ( !afterUrlStr.equals(this.afterUrl) ) {
+					try {
+						this.afterImage = StyleSheet.getImage(afterUrlStr, null, true );
+						this.afterWidth = this.afterImage.getWidth() + this.paddingHorizontal;
+						this.afterHeight = this.afterImage.getHeight();
+					} catch (IOException e) {
+						this.afterUrl = null;
+						this.afterWidth = 0;
+						this.afterHeight = 0;
+						this.afterImage = null;
+					}
+				}
+				this.afterUrl = afterUrlStr;
+			} else if (resetStyle) {
+				this.afterWidth = 0;
+				this.afterHeight = 0;
+				this.afterImage = null;
+				this.afterUrl = afterUrlStr;
+			}
+		//#endif
+		//#ifdef polish.css.min-width
+			Dimension minWidthInt = (Dimension) style.getObjectProperty("min-width");
+			if (minWidthInt != null) {
+				this.minimumWidth = minWidthInt;
+			}
+		//#endif
+		//#ifdef polish.css.max-width
+			Dimension maxWidthInt  = (Dimension) style.getObjectProperty("max-width");
+			if (maxWidthInt != null) {
+				this.maximumWidth = maxWidthInt;
+			}
+		//#endif
+		//#ifdef polish.css.min-height
+			Dimension minHeightInt = (Dimension) style.getObjectProperty("min-height");
+			if (minHeightInt != null) {
+				this.minimumHeight = minHeightInt;
+			}
+		//#endif
+		//#ifdef polish.css.max-height
+			Dimension maxHeightInt  = (Dimension) style.getObjectProperty("max-height");
+			if (maxHeightInt != null) {
+				this.maximumHeight = maxHeightInt;
+			}
+		//#endif
+
+	
+		//#if polish.css.colspan
+			Integer colSpanInt = style.getIntProperty("colspan");
+			if ( colSpanInt != null ) {
+				this.colSpan = colSpanInt.intValue();
+			}
+		//#endif	
+		//#if polish.css.include-label
+			Boolean includeLabelBool = style.getBooleanProperty("include-label");
+			if (includeLabelBool != null) {
+				this.includeLabel = includeLabelBool.booleanValue();
+			}
+		//#endif
+
 		//#if polish.css.complete-background || polish.css.complete-border 
 			//#if polish.css.complete-background-padding
 				Integer completeBackgroundPaddingInt = style.getIntProperty("complete-background-padding");
@@ -1175,43 +1468,16 @@ public abstract class Item extends Object
 				}
 			//#endif
 		//#endif
+	
 
-		//#ifdef polish.css.view-type
-			ItemView viewType = (ItemView) style.getObjectProperty("view-type");
-//			if (this instanceof ChoiceGroup) {
-//				System.out.println("SET.STYLE / CHOICEGROUP: found view-type (1): " + (viewType != null) + " for " + this);
-//			}
-			if (viewType != null && viewType.isValid(this, style)) {
-				if (this.view == null || this.view.getClass() != viewType.getClass()) {
-					try {
-						if (viewType.parentItem != null) {
-							viewType = (ItemView) viewType.getClass().newInstance();
-						}
-						viewType.parentItem = this;
-						if (this.isShown) {
-							if (this.view != null) {
-								this.view.hideNotify();
-							}
-							viewType.showNotify();
-						}
-						this.view = viewType;
-					} catch (Exception e) {
-						//#debug error
-						System.out.println("Container: Unable to init view-type " + e );
-						viewType = null;
-					}
-				}
-			}
-		//#endif
-		//#ifdef polish.css.view-type
-			if (this.view != null) {
-				this.view.setStyle(style);
-			}
-		//#endif
 		//#if polish.css.opacity && polish.midp2
-			Integer opacityInt = style.getIntProperty("opacity");
+			Dimension opacityInt = (Dimension) style.getObjectProperty("opacity");
 			if (opacityInt != null) {
-				this.opacity = opacityInt.intValue();
+				this.opacity = opacityInt.getValue(255);
+				//System.out.println("Setting opacity to " + this.opacity + " for item " + this + " and style " + style.name);
+			} else if (!resetStyle && this.opacity != 255 && this.opacity != 0) {
+				// when an attribut is changed, you have to re-generate the opacity buffer:
+				this.opacityAtGeneration = this.opacity + 1;
 			}
 		//#endif
 		//#if polish.css.visible
@@ -1220,7 +1486,89 @@ public abstract class Item extends Object
 				setVisible( visibleBool.booleanValue() );
 			}
 		//#endif
+			
+		//#if polish.css.x-adjust
+			Dimension xInt = (Dimension) style.getObjectProperty("x-adjust");
+			if (xInt != null) {
+				this.xAdjustment = xInt;
+			}
+		//#endif
+		//#if polish.css.y-adjust
+			Dimension yInt = (Dimension) style.getObjectProperty("y-adjust");
+			if (yInt != null) {
+				this.yAdjustment = yInt;
+				//System.out.println("setStyle: got yAdjustment of " + yInt.getValue(100) );
+			}
+		//#endif
+		//#if polish.css.content-x-adjust
+			Dimension contentXInt = (Dimension) style.getObjectProperty("content-x-adjust");
+			if (contentXInt != null) {
+				this.contentXAdjustment = contentXInt;
+			}
+		//#endif
+		//#if polish.css.content-y-adjust
+			Dimension contentYInt = (Dimension) style.getObjectProperty("content-y-adjust");
+			if (contentYInt != null) {
+				this.contentYAdjustment = contentYInt;
+			}
+		//#endif
+		if (!resetStyle && this.isInitialized) {
+			//#if polish.css.background-width
+				Dimension bgWidth = (Dimension) style.getObjectProperty("background-width");
+				if (bgWidth != null) {
+					this.backgroundWidth = bgWidth.getValue(this.originalBackgroundWidth);
+				}
+			//#endif
+			//#if polish.css.background-height
+				Dimension bgHeight = (Dimension) style.getObjectProperty("background-height");
+				if (bgHeight != null) {
+					this.backgroundHeight = bgHeight.getValue(this.originalBackgroundHeight);
+				}
+			//#endif
+		}
+		//#if polish.css.filter && polish.midp2
+		if (this.filters != null) {
+			boolean isActive = false;
+			for (int i=0; i<this.filters.length; i++) {
+				RgbFilter filter = this.filters[i];
+				filter.setStyle(style, resetStyle);
+				isActive |= filter.isActive();
+			}
+			this.isFiltersActive = isActive;
+			this.filterRgbImage = null;
+		}
+		//#endif
+			
+		//#if polish.css.animations
+		if (!resetStyle) {
+			//#ifdef polish.css.view-type
+				if (this.view != null) {
+					this.view.setStyle(style, resetStyle);
+				}
+			//#endif
+			if (this.background != null) {
+				this.background.setStyle(style);
+			}
+			if (this.border != null) {
+				this.border.setStyle(style);
+			}
+		}
+		//#endif
 	}
+
+	/**
+	 * Retrieves the complete width of this item.
+	 * Note that the width can dynamically change,
+	 * e.g. when a StringItem gets a new text.
+	 * 
+	 * @param firstLineWidth the maximum width of the first line 
+	 * @param availWidth the maximum visible width of any following lines
+	 * @return the complete width of this item.
+	 */
+	public int getItemWidth( int firstLineWidth, int availWidth) {
+		return getItemWidth(firstLineWidth, availWidth, -1);
+	}
+
 	
 	/**
 	 * Retrieves the complete width of this item.
@@ -1228,17 +1576,28 @@ public abstract class Item extends Object
 	 * e.g. when a StringItem gets a new text.
 	 * 
 	 * @param firstLineWidth the maximum width of the first line 
-	 * @param lineWidth the maximum width of any following lines
+	 * @param availWidth the maximum visible width of any following lines
+	 * @param availHeight the maximum visible height, -1 if unknown
 	 * @return the complete width of this item.
 	 */
-	public int getItemWidth( int firstLineWidth, int lineWidth ) {
-		if (!this.isInitialized || this.itemWidth > lineWidth) {// || (this.isLayoutExpand && lineWidth > this.itemWidth) ) {
-//			if (this.itemWidth > lineWidth) {
-//				System.out.println("itemWidth=" + this.itemWidth + ", lineWidth=" + lineWidth + ", this=" + this);
-//			}
-			init( firstLineWidth, lineWidth );
+	public int getItemWidth( int firstLineWidth, int availWidth, int availHeight ) {
+		if (!this.isInitialized || this.availableWidth != availWidth || this.availableHeight != availHeight  ) {
+			init( firstLineWidth, availWidth, availHeight );
 		}
 		return this.itemWidth;
+	}
+	
+	/**
+	 * Retrieves the complete height of this item.
+	 * Note that the width can dynamically change,
+	 * e.g. when a new style is set.
+	 * 
+	 * @param firstLineWidth the maximum width of the first line 
+	 * @param availWidth the maximum visible width of any following lines
+	 * @return the complete heigth of this item.
+	 */
+	public int getItemHeight( int firstLineWidth, int availWidth) {
+		return getItemHeight(firstLineWidth, availWidth, -1);
 	}
 
 	/**
@@ -1247,18 +1606,28 @@ public abstract class Item extends Object
 	 * e.g. when a new style is set.
 	 * 
 	 * @param firstLineWidth the maximum width of the first line 
-	 * @param lineWidth the maximum width of any following lines
+	 * @param availWidth the maximum visible width of any following lines
+	 * @param availHeight the maximum visible height, -1 if unknown
 	 * @return the complete heigth of this item.
 	 */
-	public int getItemHeight( int firstLineWidth, int lineWidth ) {
-		if (!this.isInitialized || this.itemWidth > lineWidth) {
-//			if (this.itemWidth > lineWidth) {
-//				System.out.println("trigger re-initialise lineWidth=" + lineWidth + ", itemWidth=" + itemWidth);
-//			}
-			init( firstLineWidth, lineWidth );
+	public int getItemHeight( int firstLineWidth, int availWidth, int availHeight ) {
+		if (!this.isInitialized || this.availableWidth != availWidth || this.availableHeight != availHeight  ) {
+			init( firstLineWidth, availWidth, availHeight );
 		}
 		return this.itemHeight;
 	}
+	
+	//#if polish.LibraryBuild
+		/**
+		 * Adds a command to this item
+		 * 
+		 * @param cmd the command
+		 */
+		public void addCommand(javax.microedition.lcdui.Command cmd) {
+			// ignore
+		}
+	//#endif
+
 
 	/**
 	 * Adds a context sensitive <code>Command</code> to the item.
@@ -1419,6 +1788,9 @@ public abstract class Item extends Object
 	 * @see #repaint(int, int, int, int)
 	 */
 	protected void repaint() {
+		if (this.ignoreRepaintRequests) {
+			return;
+		}
 		//#if tmp.invisible
 			if (this.isInvisible) {
 				return;
@@ -1430,13 +1802,79 @@ public abstract class Item extends Object
 			//System.out.println("repaint(): " + this.relativeX + ", " + this.relativeY + ", " + this.itemWidth + ", " + this.itemHeight);
 			if (this.isInitialized) {
 				// note: -contentX, -contentY fails for right or center layouts
-				repaint( - (this.paddingLeft + this.marginLeft + this.borderWidth), -(this.paddingTop + this.marginTop + this.borderWidth), this.itemWidth, this.itemHeight );
+				repaint( - (this.paddingLeft + this.marginLeft + getBorderWidthLeft()), -(this.paddingTop + this.marginTop + getBorderWidthTop()), this.itemWidth, this.itemHeight );
 			} else {
 				repaintFully();
 			}
 		//#endif
 	}
 	
+	/**
+	 * Retrieves the border width.
+	 * 
+	 * @return the border for the left side in pixels
+	 */
+	protected int getBorderWidthLeft()
+	{
+		if (this.border != null) {
+			return this.border.borderWidthLeft;
+		}
+		if (this.background != null) {
+			return this.background.borderWidth;
+		}
+		return 0;
+	}
+	
+	/**
+	 * Retrieves the border width.
+	 * 
+	 * @return the border for the right side in pixels
+	 */
+	protected int getBorderWidthRight()
+	{
+		if (this.border != null) {
+			return this.border.borderWidthRight;
+		}
+		if (this.background != null) {
+			return this.background.borderWidth;
+		}
+		return 0;
+	}
+	
+	/**
+	 * Retrieves the border width.
+	 * 
+	 * @return the border for the top side in pixels
+	 */
+	protected int getBorderWidthTop()
+	{
+		if (this.border != null) {
+			return this.border.borderWidthTop;
+		}
+		if (this.background != null) {
+			return this.background.borderWidth;
+		}
+		return 0;
+	}
+	
+	/**
+	 * Retrieves the border width.
+	 * 
+	 * @return the border for the bottom side in pixels
+	 */
+	protected int getBorderWidthBottom()
+	{
+		if (this.border != null) {
+			return this.border.borderWidthBottom;
+		}
+		if (this.background != null) {
+			return this.background.borderWidth;
+		}
+		return 0;
+	}
+
+
+
 	/**
 	 * Repaints the specified relative area of this item.
 	 * The area is specified relative to the <code>Item's</code>
@@ -1456,7 +1894,8 @@ public abstract class Item extends Object
 //			((Container) this.parent).isInitialized = false;
 //		}
 		Screen scr = getScreen();
-		if (scr != null && scr == StyleSheet.currentScreen) {
+		// rickyn: Removed second test to correct dropped redraw requests for screens within a tabbedPane
+		if (scr != null/* && scr == StyleSheet.currentScreen*/) {
 			relX += getAbsoluteX(); // + this.contentX;
 			relY += getAbsoluteY(); // + this.contentY;
 			//System.out.println("item.repaint(" + relX + ", " + relY+ ", " +  width + ", " +  height + ")  for " + this );
@@ -1466,30 +1905,29 @@ public abstract class Item extends Object
 
 	
 	/**
-	 * Requests that this item and all its parents are to be re-initialised at the next repainting.
+	 * Requests that this item and all its parents are to be re-initialised, if the size of this item has been changed.
 	 * All parents of this item are notified, too.
-	 * This method should be called when an item changes its size more than
-	 * usual.
-	 * When the item already has been initialised, a repaint() is requested, too.
+	 * This method should be called when an item changes its size more than usual.
 	 */
 	public void requestInit() {
-		//System.out.println("requestInit called by class " + getClass().getName() + " - screen.class=" + getScreen().getClass().getName()  );
-		Item p = this.parent;
-		while ( p != null) {
-			p.isInitialized = false;
-			p = p.parent;
-		}
-		this.isInitialized = false;
-		if (this.label != null) {
-			this.label.isInitialized = false;
-		}
-		Screen scr = getScreen();
-		if (scr != null) {
-			//if (scr.checkForRequestInit(this)) {
+		if (this.isInitialized) {
+			this.isInitialized = false;
+			if (this.label != null) {
+				this.label.isInitialized = false;
+			}
+			Item p = this.parent; 
+			while ( p != null) {
+				p.isInitialized = false;
+				p = p.parent;
+			}
+			Screen scr = getScreen();
+			if (scr != null) {
 				scr.requestInit();
-			//}
+			}
+			if (this.isShown) {
+				repaint();
+			}
 		}
-		repaint();
 	}
 	
 	/**
@@ -1530,7 +1968,7 @@ public abstract class Item extends Object
 		this.itemCommandListener = l;
 	}
 	
-	//#if polish.midp2 && !polish.android
+	//#if polish.LibraryBuild
 	/**
 	 * Sets a listener for <code>Commands</code> to this <code>Item</code>,
 	 * replacing any previous
@@ -1675,7 +2113,7 @@ public abstract class Item extends Object
 	 */
 	public int getMinimumWidth()
 	{
-		return this.minimumWidth;
+		return this.minimumWidth.getValue(100);
 	}
 
 	/**
@@ -1689,7 +2127,7 @@ public abstract class Item extends Object
 	 */
 	public int getMinimumHeight()
 	{
-		return this.minimumHeight;
+		return this.minimumHeight.getValue(100);
 	}
 
 	/**
@@ -1722,6 +2160,8 @@ public abstract class Item extends Object
 	 */
 	public void setDefaultCommand( Command cmd)
 	{
+		//#debug
+		System.out.println("set default command " + cmd.getLabel() + " for " + this);
 		//#if !polish.Item.suppressDefaultCommand
 			if (this.defaultCommand != null && cmd != this.defaultCommand) {
 				addCommand(this.defaultCommand);
@@ -1741,6 +2181,17 @@ public abstract class Item extends Object
 			getScreen().notifyDefaultCommand( cmd );
 		}
 	}
+	
+	//#if polish.LibraryBuild
+	/**
+	 * Sets default <code>Command</code> for this <code>Item</code>.
+	 * @param cmd the command to be used as this Item's default Command, or null if there is to be no default command
+	 */
+	public void setDefaultCommand( javax.microedition.lcdui.Command cmd)
+	{
+		// ignore
+	}
+	//#endif
 
 	/**
 	 * Causes this <code>Item's</code> containing <code>Form</code> to notify
@@ -1788,6 +2239,7 @@ public abstract class Item extends Object
 		if (this.itemStateListener != null) {
 			try {
 				this.itemStateListener.itemStateChanged( this );
+				return;
 			} catch (Exception e) {
 				//#debug error
 				System.out.println("Unable to forward ItemStateChanged event to listener " + this.itemStateListener + e );
@@ -1822,27 +2274,90 @@ public abstract class Item extends Object
 		//#endif
 
 		// initialise this item if necessary:
-		int availableWidth = rightBorder - leftBorder;
-		if (!this.isInitialized || (availableWidth < this.itemWidth )) {
-			//#if polish.debug.info
-			if (availableWidth < this.itemWidth ) {
-				//#debug info
-				System.out.println("re-initializing item " + this + " for availableWidth=" + availableWidth + ", itemWidth=" + this.itemWidth);
+		int availWidth = rightBorder - leftBorder;
+		if (!this.isInitialized || (availWidth < this.itemWidth )) {
+			if (availWidth < 2) {
+				repaint();
+				return;
 			}
+			//#if polish.debug.info
+			if (availWidth < this.itemWidth ) {
+				//#debug info
+				System.out.println("re-initializing item " + this + " for availableWidth=" + availWidth + "(original=" + this.availableWidth + "), itemWidth=" + this.itemWidth);
+			} 
 			//#endif
-			init( rightBorder - x, availableWidth );
+			if (this.availableWidth == 0) {
+				this.availableWidth = availWidth;
+				if (this.parent != null) {
+					this.availableHeight = this.parent.contentHeight;
+				}
+			}
+			int heightBefore = this.itemHeight;
+			int widthBefore = this.itemWidth;
+			init( this.availableWidth, this.availableWidth, this.availableHeight );
+			if ( (this.itemHeight != heightBefore || this.itemWidth != widthBefore) && this.parent != null) {
+				//#debug
+				System.out.println("requesting initialization of parent: itemWidth=" + this.itemWidth + "(" + widthBefore + "), itemHeight=" + this.itemHeight + "(" + heightBefore + ") for item " + this);
+				this.parent.requestInit();
+				// returning here can lead to flickering - however, having to re-initialize the parent here
+				// should be exceptional.
+				//return;
+			}
 		}
+		//#if polish.css.x-adjust
+			if (this.xAdjustment != null) {
+				int value = this.xAdjustment.getValue(this.itemWidth);
+				x += value;
+				leftBorder += value;
+				rightBorder += value;
+			}
+		//#endif
+		//#if polish.css.y-adjust
+			if (this.yAdjustment != null) {
+				y += this.yAdjustment.getValue(this.itemHeight);
+			}
+		//#endif
+			
+		//#if polish.css.filter && polish.midp2
+			if (this.isFiltersActive && this.filters != null && !this.filterPaintNormally) {
+				RgbImage rgbImage = this.filterRgbImage;
+				if ( rgbImage == null) {
+					this.filterPaintNormally = true;
+					int[] rgbData = UiAccess.getRgbData( this );
+					rgbImage = new RgbImage( rgbData, this.itemWidth);
+					this.filterRgbImage = rgbImage;
+					this.filterPaintNormally = false;
+				} 
+				//System.out.println("painting RGB data for " + this  + ", pixel=" + Integer.toHexString( rgbData[ rgbData.length / 2 ]));
+				for (int i=0; i<this.filters.length; i++) {
+					RgbFilter filter = this.filters[i];
+					rgbImage = filter.process(rgbImage);
+				}
+				int width = rgbImage.getWidth();
+				int height = rgbImage.getHeight();
+				int[] rgbData = rgbImage.getRgbData();
+				if (this.isLayoutRight) {
+					x = rightBorder - width;
+				} else if (this.isLayoutCenter) {
+					x =  leftBorder + ((rightBorder - leftBorder)/2) - (width/2);
+				}
+				DrawUtil.drawRgb(rgbData, x, y, width, height, true, g );
+				return;
+			}
+		//#endif
+
 		//#if polish.css.opacity && polish.midp2
 			if (this.opacity != 255 && !this.opacityPaintNormally) {
 				if (this.opacity == 0) {
 					return;
 				}
 				int[] rgbData = this.opacityRgbData;
-				if ( rgbData == null ) {
+				if ( rgbData == null || this.opacity != this.opacityAtGeneration ) {
 					this.opacityPaintNormally = true;
 					rgbData = UiAccess.getRgbData( this, this.opacity );
 					this.opacityRgbData = rgbData;
 					this.opacityPaintNormally = false;
+					this.opacityAtGeneration = this.opacity;
 				} 
 				//System.out.println("painting RGB data for " + this  + ", pixel=" + Integer.toHexString( rgbData[ rgbData.length / 2 ]));
 				DrawUtil.drawRgb(rgbData, x, y, this.itemWidth, this.itemHeight, true, g );
@@ -1850,9 +2365,8 @@ public abstract class Item extends Object
 			}
 		//#endif
 	
-
 		
-		boolean isLayoutShrink = (this.layout & LAYOUT_SHRINK) == LAYOUT_SHRINK;
+		//boolean isLayoutShrink = (this.layout & LAYOUT_SHRINK) == LAYOUT_SHRINK;
 
 		// paint background and border when the label should be included in this:
 		//#if polish.css.include-label
@@ -1885,45 +2399,45 @@ public abstract class Item extends Object
 		if (this.label != null) {
 			if (this.useSingleRow) {
 				this.label.paint( x, y, leftBorder, rightBorder - (this.contentWidth + this.paddingHorizontal), g );
-				x += this.label.itemWidth;
-				leftBorder += this.label.itemWidth;
 			} else {
 				this.label.paint( x, y, leftBorder, rightBorder, g );
 				y += this.label.itemHeight;
 			}
 		}
 		
-		leftBorder += (this.marginLeft + this.borderWidth + this.paddingLeft);
+		leftBorder += (this.marginLeft + getBorderWidthLeft() + this.paddingLeft);
 		//#ifdef polish.css.before
 			leftBorder += this.beforeWidth;
 		//#endif
 		//System.out.println( this.style.name + ":  increasing leftBorder by " + (this.marginLeft + this.borderWidth + this.paddingLeft));
-		rightBorder -= (this.marginRight + this.borderWidth + this.paddingRight);
+		rightBorder -= (this.marginRight + getBorderWidthRight() + this.paddingRight);
 		//#ifdef polish.css.after
 			rightBorder -= this.afterWidth;
 		//#endif
 
 		//System.out.println( this.style.name + ":  decreasing rightBorder by " + (this.marginRight + this.borderWidth + this.paddingRight));
-		if ( this.isLayoutCenter  && availableWidth > this.itemWidth) {
-			int difference = (availableWidth - this.itemWidth) >> 1; 
-			x += difference;
-			if (isLayoutShrink) {
-				leftBorder += difference;
-				rightBorder -= difference;
-				//System.out.println("item " + this + ": (center) shrinking left border to " + leftBorder + ", right border to " + rightBorder);
-			}
-		} else if ( this.isLayoutRight && availableWidth > this.itemWidth) {
-			// adjust the x-position so that the item is painted up to
-			// the right border (when it starts at x):
-			x += availableWidth - this.itemWidth;
-			if (isLayoutShrink) {
-				leftBorder += availableWidth - this.itemWidth;
-				//System.out.println("item " + this + ": (right) shrinking left border to " + leftBorder);
-			}
-		} else if (isLayoutShrink && availableWidth > this.itemWidth) {
-			rightBorder -= availableWidth - this.itemWidth;
-			//System.out.println("item " + this + ": (left) shrinking right border to " + rightBorder);
-		}
+//		if ( this.isLayoutCenter  && availWidth > this.itemWidth) {
+//			int difference = (availWidth - this.itemWidth) >> 1;
+//			System.out.println("increasing x from " + x + " to " + (x + difference) + ", availableWidth=" + this.availableWidth + ", availWidth=" + availWidth + ", itemWidth=" + this.itemWidth);
+//			x += difference;
+//			if (!this.isLayoutExpand) {
+//				leftBorder += difference;
+//				rightBorder -= difference;
+//				//System.out.println("item " + this + ": (center) shrinking left border to " + leftBorder + ", right border to " + rightBorder);
+//			}
+//		} else if ( this.isLayoutRight && availWidth > this.itemWidth) {
+//			// adjust the x-position so that the item is painted up to
+//			// the right border (when it starts at x):
+//			x += availWidth - this.itemWidth;
+//			if (!this.isLayoutExpand) {
+//				leftBorder += availWidth - this.itemWidth;
+//				//System.out.println("item " + this + ": (right) shrinking left border to " + leftBorder);
+//			}
+//		} else if (isLayoutShrink && availWidth > this.itemWidth) {
+//			rightBorder -= availWidth - this.itemWidth;
+//			//System.out.println("item " + this + ": (left) shrinking right border to " + rightBorder);
+//		}
+		
 		
 		// paint background:
 		x += this.marginLeft;
@@ -1931,13 +2445,35 @@ public abstract class Item extends Object
 		//#if polish.css.include-label
 			if (!this.includeLabel) {
 		//#endif
-				paintBackgroundAndBorder(x, y, this.backgroundWidth, this.backgroundHeight, g);
+				int backgroundX = x;
+				int backgroundY = y;
+				if (this.useSingleRow && this.label != null) {
+					backgroundX += this.label.itemWidth;
+				}
+				if(this.isLayoutRight)
+				{
+					backgroundX = rightBorder + this.paddingRight - this.backgroundWidth;
+				}
+				paintBackgroundAndBorder(backgroundX, backgroundY, this.backgroundWidth, this.backgroundHeight, g);
 		//#if polish.css.include-label
 			}
 		//#endif
 		
-		x += this.borderWidth + this.paddingLeft;
-		y += this.borderWidth + this.paddingTop;
+		//#if polish.css.content-x-adjust
+			if (this.contentXAdjustment != null) {
+				x += this.contentXAdjustment.getValue(this.contentWidth);
+			}
+		//#endif
+		//#if polish.css.content-y-adjust
+			if (this.contentYAdjustment != null) {
+				y += this.contentYAdjustment.getValue(this.contentHeight);
+			}
+		//#endif
+		x += this.contentX - this.marginLeft; //getBorderWidthLeft() + this.paddingLeft;
+		y += this.contentY - this.marginTop; //getBorderWidthTop() + this.paddingTop;
+		if (this.label != null && !this.useSingleRow) {
+			y -= this.label.itemHeight;
+		}
 		int originalContentY = y;
 		
 		// paint before element:
@@ -1946,42 +2482,36 @@ public abstract class Item extends Object
 			boolean isTop = !isVerticalCenter && (this.layout & LAYOUT_TOP) == LAYOUT_TOP; 
 			boolean isBottom = !isVerticalCenter && (this.layout & LAYOUT_BOTTOM) == LAYOUT_BOTTOM; 
 		//#endif
-		//#if polish.css.min-height
-			if (this.minimumHeight != 0) {
-				int minHeight = this.minimumHeight - ( 2 * this.borderWidth + this.marginTop + this.marginBottom + this.paddingTop + this.paddingBottom);
-				if ( isVerticalCenter ) {
-//					System.out.println("vertical: adjusting contY by " + ((this.minimumHeight - this.contentHeight) / 2)
-//							+ ", contentHeight=" + this.contentHeight + ", minHeight=" + this.minimumHeight );
-					y += ((minHeight - this.contentHeight) >> 1); 
-				} else if ( isBottom ) {
-					//System.out.println("bottom: adjusting contY by " + (this.minimumHeight - this.contentHeight) );
-					y += (minHeight - this.contentHeight);
-				}
-			}
-		//#endif
 		//#ifdef polish.css.before
 			if (this.beforeImage != null) {
+				int beforeX = x;
 				int beforeY = y;
-				int yAdjustment = this.beforeHeight - this.contentHeight;
+				int yAdjust = this.beforeHeight - this.contentHeight;
 				if ( this.beforeHeight < this.contentHeight) {
 					if (isTop) {
-						beforeY -= yAdjustment;
+						beforeY -= yAdjust;
 					} else if (isBottom) {
-						beforeY += yAdjustment;
+						beforeY += yAdjust;
 					} else {
-						beforeY -= (yAdjustment >> 1);
+						beforeY -= (yAdjust >> 1);
 					}
 				} else {
 					if (isTop) {
 						// keep contY
 					} else if (isBottom) {
-						y += yAdjustment;
+						y += yAdjust;
 					} else {
-						y += (yAdjustment >> 1);
+						y += (yAdjust >> 1);
 					}
 					//contY += (this.beforeHeight - this.contentHeight) / 2;
 				}
-				g.drawImage(this.beforeImage, x, beforeY, Graphics.TOP | Graphics.LEFT );
+				
+				if(this.isLayoutRight)
+				{
+					beforeX = rightBorder - (this.contentWidth + this.beforeWidth);
+				}
+				
+				g.drawImage(this.beforeImage, beforeX, beforeY, Graphics.TOP | Graphics.LEFT );
 				x += this.beforeWidth;
 			}
 		//#endif
@@ -1990,14 +2520,14 @@ public abstract class Item extends Object
 		//#ifdef polish.css.after
 			if (this.afterImage != null) {
 				int afterY = originalContentY;
-				int yAdjustment = this.afterHeight - this.contentHeight;
+				int yAdjust = this.afterHeight - this.contentHeight;
 				if ( this.afterHeight < this.contentHeight) {
 					if (isTop) {
-						afterY -= yAdjustment;
+						afterY -= yAdjust;
 					} else if (isBottom) {
-						afterY += yAdjustment;
+						afterY += yAdjust;
 					} else {
-						afterY -= (yAdjustment >> 1);
+						afterY -= (yAdjust >> 1);
 					}
 					//afterY += (this.contentHeight - this.afterHeight) / 2;
 				} else {
@@ -2007,9 +2537,9 @@ public abstract class Item extends Object
 						if (isTop) {
 							// keep contY
 						} else if (isBottom) {
-							y = originalContentY + yAdjustment;
+							y = originalContentY + yAdjust;
 						} else {
-							y = originalContentY + (yAdjustment >> 1);
+							y = originalContentY + (yAdjust >> 1);
 						}
 						//contY = originalContentY + (this.afterHeight - this.contentHeight) / 2;
 					//#ifdef polish.css.before
@@ -2020,16 +2550,32 @@ public abstract class Item extends Object
 			}
 		//#endif
 		
-		// paint content:
-		//#ifdef polish.css.view-type
-			if (this.view != null) {
-				this.view.paintContent( this, x, y, leftBorder, rightBorder, g);
+		//#if polish.css.content-visible
+			if (!this.isContentVisible) {
+				this.contentWidth = 0;
+				this.contentHeight = 0;
 			} else {
 		//#endif
-				paintContent( x, y, leftBorder, rightBorder, g );				
-		//#ifdef polish.css.view-type
+			// paint content:
+			//#ifdef polish.css.view-type
+				if (this.view != null) {
+					this.view.paintContent( this, x, y, leftBorder, rightBorder, g);
+				} else {
+			//#endif
+					paintContent( x, y, leftBorder, rightBorder, g );				
+			//#ifdef polish.css.view-type
+				}
+			//#endif
+		//#if polish.css.content-visible
 			}
 		//#endif
+			
+//		g.setColor(0xff0000);
+//		g.drawRect( getAbsoluteX() + 1, getAbsoluteY() + 1, this.itemWidth - 2, this.itemHeight - 2);
+//		if (this.parent != null) {
+//			g.setColor(0x00ff00);
+//			g.drawRect( this.parent.getAbsoluteX()  + this.parent.contentX + this.relativeX, this.parent.getAbsoluteY() + this.parent.contentY + this.relativeY, this.itemWidth, this.itemHeight);
+//		}
 	}
 	
 	/**
@@ -2045,20 +2591,46 @@ public abstract class Item extends Object
 	 * @see #paintBorder(int, int, int, int, Graphics)
 	 */
 	protected void paintBackgroundAndBorder(int x, int y, int width, int height, Graphics g) {
+		//#if polish.css.background-anchor && (polish.css.background-width || polish.css.background-height)
+			if (this.backgroundAnchor != 0) {
+				//#if polish.css.background-width
+				if (width != this.originalBackgroundWidth) {
+					if ((Graphics.HCENTER & this.backgroundAnchor) == Graphics.HCENTER) { 
+						x += (this.originalBackgroundWidth - width) / 2;
+					} else if ((Graphics.RIGHT & this.backgroundAnchor) == Graphics.RIGHT) {
+						x += (this.originalBackgroundWidth - width);
+					}
+				}
+				//#endif
+				//#if polish.css.background-height
+				if (height != this.originalBackgroundHeight) {
+					if ((Graphics.VCENTER & this.backgroundAnchor) == Graphics.VCENTER) { 
+						y += (this.originalBackgroundHeight - height) / 2;
+					} else if ((Graphics.BOTTOM & this.backgroundAnchor) == Graphics.BOTTOM) {
+						y += (this.originalBackgroundHeight - height);
+					}					
+				}
+				//#endif
+			}
+		//#endif
+		
 		if ( this.background != null ) {
-			int bWidth = this.borderWidth;
+			int bWidthL = getBorderWidthLeft();
+			int bWidthR = getBorderWidthRight();
+			int bWidthT = getBorderWidthTop();
+			int bWidthB = getBorderWidthBottom();
 			if ( this.border != null ) {
-				x += bWidth;
-				y += bWidth;
-				width -= (bWidth << 1);
-				height -= (bWidth << 1);
+				x += bWidthL;
+				y += bWidthT;
+				width -= bWidthL + bWidthR;
+				height -= bWidthT + bWidthB;
 			}
 			paintBackground(x, y, width, height, g);
 			if (this.border != null) {
-				x -= bWidth;
-				y -= bWidth;
-				width += (bWidth << 1);
-				height += (bWidth << 1);				
+				x -= bWidthL;
+				y -= bWidthT;
+				width += bWidthL + bWidthR;
+				height += bWidthT + bWidthB;
 			}
 		}
 		if ( this.border != null ) {
@@ -2098,6 +2670,23 @@ public abstract class Item extends Object
 	 * @param g graphics context
 	 */
 	protected void paintBackground( int x, int y, int width, int height, Graphics g ) {
+		//#if polish.css.bgborder
+			if (this.bgBorder != null) {
+				int bgX = x - this.bgBorder.borderWidthLeft;
+				int bgW = width + this.bgBorder.borderWidthLeft + this.bgBorder.borderWidthRight;
+				int bgY = y - this.bgBorder.borderWidthTop;
+				int bgH = height + this.bgBorder.borderWidthTop + this.bgBorder.borderWidthBottom;
+				//#if polish.css.view-type
+					if (this.view != null) {
+						this.view.paintBorder( this.bgBorder, bgX, bgY, bgW, bgH, g );
+					} else {
+				//#endif
+						this.bgBorder.paint(bgX, bgY, bgW, bgH, g);
+				//#if polish.css.view-type
+					}
+				//#endif
+			}
+		//#endif
 		//#if polish.css.view-type
 			if (this.view != null) {
 				this.view.paintBackground( this.background, x, y, width, height, g );
@@ -2117,13 +2706,16 @@ public abstract class Item extends Object
 	 * ItemView is associated with this Item. Usually implementing initContent() should suffice.
 	 * 
 	 * @param firstLineWidth the maximum width of the first line 
-	 * @param lineWidth the maximum width of any following lines
-	 * @see #initContent(int, int)
-	 * @see ItemView#initContent(Item, int, int)
+	 * @param availWidth the maximum width of any following lines
+	 * @param availHeight the maximum height that can be used without scrolling
+	 * @see #initContent(int, int, int)
+	 * @see ItemView#initContent(Item, int, int, int)
 	 */
-	protected void init( int firstLineWidth, int lineWidth ) {
+	protected void init( int firstLineWidth, int availWidth, int availHeight ) {
 		//#debug
-		System.out.println("intialising item " + this.getClass().getName() + " (" + this + ") with lineWidths " + firstLineWidth + "/" + lineWidth);
+		System.out.println("initialising item " + this + " with availWidth " + firstLineWidth + "/" + availWidth + ", height " + availHeight);
+		this.availableWidth = availWidth;
+		this.availableHeight = availHeight;
 		//#if tmp.invisible
 			if (this.isInvisible) {
 				//#debug 
@@ -2133,6 +2725,20 @@ public abstract class Item extends Object
 				return;
 			}
  		//#endif
+			
+		Style myStyle = this.style;
+		if (myStyle != null) {
+			this.paddingLeft = myStyle.getPaddingLeft(availWidth);
+			this.paddingRight = myStyle.getPaddingRight(availWidth);
+			this.paddingTop = myStyle.getPaddingTop(availWidth);
+			this.paddingBottom = myStyle.getPaddingBottom(availWidth);
+			this.paddingVertical = myStyle.getPaddingVertical(availWidth);
+			this.paddingHorizontal = myStyle.getPaddingHorizontal(availWidth);
+			this.marginLeft = getMarginLeft(availWidth);
+			this.marginRight = getMarginRight(availWidth);
+			this.marginTop = getMarginTop(availWidth);
+			this.marginBottom = getMarginBottom(availWidth);
+		}
 		
 		if (this.style != null && !this.isStyleInitialised) {
 			setStyle( this.style );
@@ -2148,19 +2754,20 @@ public abstract class Item extends Object
 				setStyle( StyleSheet.defaultStyle );
 			}
 		//#endif
+		
 		int labelWidth = 0;
 		int labelHeight = 0;
 		if (this.label != null) {
 			if (!this.label.isInitialized) {
-				this.label.init( firstLineWidth, lineWidth );
+				this.label.init( firstLineWidth, availWidth, availHeight );
 			}
 			labelWidth = this.label.itemWidth;
 			labelHeight = this.label.itemHeight;
 		}
 		// calculate content width and content height:
 		int noneContentWidth =  
-			 	this.marginLeft + this.borderWidth + this.paddingLeft 
-				+ this.paddingRight + this.borderWidth + this.marginRight;
+			 	this.marginLeft + getBorderWidthLeft() + this.paddingLeft 
+				+ this.paddingRight + getBorderWidthRight() + this.marginRight;
 		//#ifdef polish.css.before
 			noneContentWidth += this.beforeWidth;
 		//#endif
@@ -2176,38 +2783,54 @@ public abstract class Item extends Object
 		int availableContentWidth;
 		//#ifdef polish.css.max-width
 			int firstLineAdjustedWidth = firstLineWidth;
-			int lineAdjustedWidth = lineWidth;
-			if (this.maximumWidth != 0 ) {
-				if (firstLineAdjustedWidth > this.maximumWidth ) {
-					firstLineAdjustedWidth = this.maximumWidth;
+			int lineAdjustedWidth = availWidth;
+			if (this.maximumWidth != null ) {
+				if (firstLineAdjustedWidth > this.maximumWidth.getValue(firstLineWidth) ) {
+					firstLineAdjustedWidth = this.maximumWidth.getValue(firstLineWidth);
 				} 
-				if (lineAdjustedWidth > this.maximumWidth ) {
-					lineAdjustedWidth = this.maximumWidth;
+				if (lineAdjustedWidth > this.maximumWidth.getValue(firstLineWidth) ) {
+					lineAdjustedWidth = this.maximumWidth.getValue(firstLineWidth);
 				}
 			}
 			firstLineContentWidth = firstLineAdjustedWidth - noneContentWidth;
 			availableContentWidth = lineAdjustedWidth - noneContentWidth;
 		//#else
 			firstLineContentWidth = firstLineWidth - noneContentWidth;
-			availableContentWidth = lineWidth - noneContentWidth;
+			availableContentWidth = availWidth - noneContentWidth;
 		//#endif
 		
-		this.contentX = this.marginLeft + this.borderWidth + this.paddingLeft;
-		this.contentY = this.marginTop + this.borderWidth + this.paddingTop; 
+		this.contentX = this.marginLeft + getBorderWidthLeft() + this.paddingLeft;
+		this.contentY = this.marginTop + getBorderWidthTop() + this.paddingTop; 
 		
-		// initialise content by subclass:
-		//#ifdef polish.css.view-type
-			if (this.view != null) {
-				this.view.initContent(this, firstLineContentWidth, availableContentWidth);
-				this.contentWidth = this.view.contentWidth;
-				this.contentHeight = this.view.contentHeight;
-			} else {
-		//#endif
-				initContent( firstLineContentWidth, availableContentWidth );
-		//#ifdef polish.css.view-type
+		//#if polish.css.inline-label
+			if (this.isInlineLabel && labelWidth < (90 * availWidth)/100) {
+				firstLineContentWidth -= labelWidth;
+				availableContentWidth -= labelWidth;
 			}
 		//#endif
-			
+		
+		// initialise content by subclass:
+		//#if polish.css.content-visible
+			if (!this.isContentVisible) {
+				this.contentWidth = 0;
+				this.contentHeight = 0;
+			} else {
+		//#endif
+			//#ifdef polish.css.view-type
+				if (this.view != null) {
+					this.view.parentItem = this;
+					this.view.init(this, firstLineContentWidth, availableContentWidth, availHeight);
+					this.contentWidth = this.view.contentWidth;
+					this.contentHeight = this.view.contentHeight;
+				} else {
+			//#endif
+					initContent( firstLineContentWidth, availableContentWidth, availHeight );
+			//#ifdef polish.css.view-type
+				}
+			//#endif
+		//#if polish.css.content-visible
+			}
+		//#endif
 		
 		if (this.contentWidth == 0 && this.contentHeight == 0) {
 			this.itemWidth = labelWidth;
@@ -2220,13 +2843,19 @@ public abstract class Item extends Object
 		
 		this.itemWidth = noneContentWidth + this.contentWidth;
 		//#ifdef polish.css.min-width
-			if (this.itemWidth < this.minimumWidth ) {
-				this.itemWidth = this.minimumWidth;
+			if (this.minimumWidth != null) {
+				if (this.itemWidth < this.minimumWidth.getValue(availWidth) ) {
+					int diff = this.minimumWidth.getValue(availWidth) - this.itemWidth;
+					this.itemWidth += diff;
+					setContentWidth( this.contentWidth + diff );
+				}
 			}
 		//#endif
 		//#ifdef polish.css.max-width
-			if (this.maximumWidth != 0 && this.itemWidth > this.maximumWidth ) {
-				this.itemWidth = this.maximumWidth;
+			if (this.maximumWidth != null && this.itemWidth > this.maximumWidth.getValue(availWidth) ) {
+				int diff = this.maximumWidth.getValue(availWidth) - this.itemWidth;
+				this.itemWidth += diff;
+				setContentWidth( this.contentWidth + diff );
 			}
 		//#endif
 		int cHeight = this.contentHeight;
@@ -2240,21 +2869,9 @@ public abstract class Item extends Object
 				cHeight = this.afterHeight;
 			}
 		//#endif
-		int noneContentHeight = this.marginTop + this.borderWidth + this.paddingTop 
-			  + this.paddingBottom + this.borderWidth + this.marginBottom;
-		//#if polish.css.before || polish.css.after || polish.css.min-height  || polish.css.max-height
-			boolean isVerticalCenter = (this.layout & LAYOUT_VCENTER) == LAYOUT_VCENTER; 
-			//boolean isTop = !isVerticalCenter && (this.layout & LAYOUT_TOP) == LAYOUT_TOP; 
-			boolean isBottom = !isVerticalCenter && (this.layout & LAYOUT_BOTTOM) == LAYOUT_BOTTOM;
-			if (cHeight > this.contentHeight) {
-				if (isVerticalCenter) {
-					this.contentY = ( (cHeight - this.contentHeight) >> 1);
-				} else if (isBottom) {
-					this.contentY = ( cHeight - this.contentHeight );
-				}
-			}
-		//#endif
-		if (this.itemWidth + labelWidth <= lineWidth) {
+		int noneContentHeight = this.marginTop + getBorderWidthTop() + this.paddingTop 
+			  + this.paddingBottom + getBorderWidthBottom() + this.marginBottom;
+		if (this.itemWidth + labelWidth <= availWidth) {
 			// label and content fit on one row:
 			this.useSingleRow = true;
 			if (this.label != null) {
@@ -2276,24 +2893,40 @@ public abstract class Item extends Object
 			cHeight += labelHeight;
 			this.contentY += labelHeight;
 		}
+		if (labelWidth > this.itemWidth) {
+			this.itemWidth = labelWidth;
+		}
 		if ( this.isLayoutExpand ) {
-			this.itemWidth = lineWidth;
+			this.itemWidth = availWidth;
 			//#ifdef polish.css.max-width
-				if (this.maximumWidth != 0 && lineWidth > this.maximumWidth ) {
-					this.itemWidth = this.maximumWidth;
+				if (this.maximumWidth != null && availWidth > this.maximumWidth.getValue(firstLineWidth) ) {
+					this.itemWidth = this.maximumWidth.getValue(firstLineWidth);
 				}
 			//#endif
-		} else if (this.itemWidth > lineWidth) {
-			this.itemWidth = lineWidth;
+		} else if (this.itemWidth > availWidth) {
+			this.itemWidth = availWidth;
 		}
-		if (cHeight + noneContentHeight < this.minimumHeight) {
-			cHeight = this.minimumHeight - noneContentHeight;
+		if (this.minimumHeight != null && cHeight + noneContentHeight < this.minimumHeight.getValue(availWidth)) {
+			cHeight = this.minimumHeight.getValue(availWidth) - noneContentHeight;
 		}
 		//#if polish.css.max-height
-			if (this.maximumHeight != 0 && cHeight + noneContentHeight > this.maximumHeight) {
-				cHeight = this.maximumHeight - noneContentHeight;
+			if (this.maximumHeight != null && cHeight + noneContentHeight > this.maximumHeight.getValue(availWidth)) {
+				cHeight = this.maximumHeight.getValue(availWidth) - noneContentHeight;
 			}
 		//#endif
+		if (cHeight > this.contentHeight) {
+			int ch = cHeight;
+			int start = 0;
+			if (!this.useSingleRow) {
+				ch -= labelHeight;
+				start = labelHeight;
+			}
+			if (isLayoutVerticalCenter()) {
+				this.contentY = start + ( (ch - this.contentHeight) >> 1);
+			} else if (isLayoutBottom()) {
+				this.contentY = start + ( ch - this.contentHeight );
+			}
+		}
 		this.itemHeight = cHeight + noneContentHeight;
 		if (this.useSingleRow) {
 			this.backgroundWidth = this.itemWidth - this.marginLeft - this.marginRight - labelWidth;
@@ -2309,6 +2942,24 @@ public abstract class Item extends Object
 							  - this.marginBottom
 							  - labelHeight;
 		}
+		//#if polish.css.background-width
+			this.originalBackgroundWidth = this.backgroundWidth;
+			if (this.style != null) {
+				Dimension bgWidth = (Dimension) this.style.getObjectProperty("background-width");
+				if (bgWidth != null) {
+					this.backgroundWidth = bgWidth.getValue(this.backgroundWidth);
+				}
+			}
+		//#endif
+		//#if polish.css.background-height
+			this.originalBackgroundHeight = this.backgroundHeight;
+			if (this.style != null) {
+				Dimension bgHeight = (Dimension) this.style.getObjectProperty("background-height");
+				if (bgHeight != null) {
+					this.backgroundHeight = bgHeight.getValue(this.backgroundHeight);
+				}
+			}
+		//#endif
 		//#if tmp.invisible
 			if (this.isInvisible) {
 				this.itemWidth = 0;
@@ -2322,6 +2973,84 @@ public abstract class Item extends Object
 		//#debug
 		System.out.println("Item.init(): contentWidth=" + this.contentWidth + ", itemWidth=" + this.itemWidth + ", backgroundWidth=" + this.backgroundWidth);
 	}
+	
+	
+	/**
+	 * Retrieves the margin in pixels for at the right.
+	 * Subclasses may override this (required for containers embedded in Screens)
+	 * @param availWidth the available width
+	 * @return the margin at the right in pixels
+	 */
+	protected int getMarginRight(int availWidth)
+	{
+		if (this.style != null) {
+			return this.style.getMarginRight( availWidth );
+		}
+		return 0;
+	}
+	
+	/**
+	 * Retrieves the margin in pixels for at the left.
+	 * Subclasses may override this (required for containers embedded in Screens)
+	 * @param availWidth the available width
+	 * @return the margin at the left in pixels
+	 */
+	protected int getMarginLeft(int availWidth)
+	{
+		if (this.style != null) {
+			return this.style.getMarginLeft( availWidth );
+		}
+		return 0;
+	}
+
+	/**
+	 * Retrieves the margin in pixels for at the top.
+	 * Subclasses may override this (required for containers embedded in Screens)
+	 * @param availWidth the available width
+	 * @return the margin at the top in pixels
+	 */
+	protected int getMarginTop(int availWidth)
+	{
+		if (this.style != null) {
+			return this.style.getMarginTop( availWidth );
+		}
+		return 0;
+	}
+
+	/**
+	 * Retrieves the margin in pixels for at the bottom.
+	 * Subclasses may override this (required for containers embedded in Screens)
+	 * @param availWidth the available width
+	 * @return the margin at the bottom in pixels
+	 */
+	protected int getMarginBottom(int availWidth)
+	{
+		if (this.style != null) {
+			return this.style.getMarginBottom( availWidth );
+		}
+		return 0;
+	}
+
+	
+
+	/**
+	 * Sets the content width of this item.
+	 * Subclasses can override this to react to content width changes
+	 * @param width the new content width in pixel
+	 */
+	protected void setContentWidth( int width ) {
+		this.contentWidth = width;
+	}
+	
+	/**
+	 * Sets the content height of this item.
+	 * Subclasses can override this to react to content height changes
+	 * @param height the new content height in pixel
+	 */
+	protected void setContentHeight( int height ) {
+		this.contentHeight = height;
+	}
+
 	
 	//#ifdef polish.useDynamicStyles
 	/**
@@ -2365,13 +3094,14 @@ public abstract class Item extends Object
 	 * 
 	 * 
 	 * @param firstLineWidth the maximum width of the first line 
-	 * @param lineWidth the maximum width of any following lines
+	 * @param availWidth the maximum width of any following lines
+	 * @param availHeight TODO
 	 * @see #contentWidth
 	 * @see #contentHeight
 	 * @see #preferredWidth
 	 * @see #preferredHeight
 	 */
-	protected abstract void initContent(int firstLineWidth, int lineWidth);
+	protected abstract void initContent(int firstLineWidth, int availWidth, int availHeight);
 	
 	
 	/**
@@ -2462,7 +3192,7 @@ public abstract class Item extends Object
 	 */
 	protected boolean handleKeyReleased( int keyCode, int gameAction ) {
 		//#debug
-		System.out.println("handleKeyReleased(" + keyCode + ", " + gameAction + ") for " + this + ", isPressed=" + this.isPressed);
+		System.out.println("handleKeyReleased(" + keyCode + ", " + gameAction + ") for " + this + ", isPressed=" + this.isPressed );
 		if (this.appearanceMode != PLAIN && this.isPressed && getScreen().isGameActionFire(keyCode, gameAction) )
 		{
 			notifyItemPressedEnd();
@@ -2532,15 +3262,15 @@ public abstract class Item extends Object
 		this.isPressed = true;
 		boolean handled = false;
 		//#if polish.css.pressed-style
-			//System.out.println("notifyItemPressedStart for " + this + ", pressedStyle=" + this.pressedStyle);
+			//System.out.println("notifyItemPressedStart for " + this + ", pressedStyle=" + (this.pressedStyle != null ? this.pressedStyle.name : "<null>") );
 			if (this.pressedStyle != null && this.style != this.pressedStyle) {
 				this.normalStyle = this.style;
 				setStyle( this.pressedStyle );
 				handled = true;
 			}
 		//#endif
-		//#if polish.handleEvents
-			EventManager.getInstance().triggerEventStart( EventManager.EVENT_PRESSED, this, null); 
+		//#if tmp.handleEvents
+			EventManager.fireEvent( EventManager.EVENT_PRESS, this, null); 
 		//#endif
 		return handled;
 	}
@@ -2553,7 +3283,7 @@ public abstract class Item extends Object
 			return;
 		}
 		//#debug
-		System.out.println("notifyItemPressedEnd");
+		System.out.println("notifyItemPressedEnd for " + this);
 		this.isPressed = false;
 		//#if polish.css.pressed-style
 			Style previousStyle = this.normalStyle;
@@ -2570,8 +3300,8 @@ public abstract class Item extends Object
 				//#endif
 			}
 		//#endif
-		//#if polish.handleEvents
-			EventManager.getInstance().triggerEventEnd( EventManager.EVENT_PRESSED, this, null); 
+		//#if tmp.handleEvents
+			EventManager.fireEvent( EventManager.EVENT_UNPRESS, this, null); 
 		//#endif
 	}
 
@@ -2585,7 +3315,7 @@ public abstract class Item extends Object
 	 * @param relX the x position relative to this item's left position
 	 * @param relY the y position relative to this item's top position
 	 * @return true when the relX/relY coordinate is within this item's content area.
-	 * @see #initContent(int, int)
+	 * @see #initContent(int, int, int)
 	 */
 	public boolean isInContentArea( int relX, int relY ) {
 		int contTop = this.contentY;
@@ -2614,11 +3344,9 @@ public abstract class Item extends Object
 	 * @param relX the x position relative to this item's left position
 	 * @param relY the y position relative to this item's top position
 	 * @return true when the relX/relY coordinate is within this item's area.
-	 * @see #initContent(int, int)
+	 * @see #initContent(int, int, int)
 	 */
 	public boolean isInItemArea( int relX, int relY ) {
-		// problem:
-		// itemWidth can be smaller than the available width - when then a center or right layout is used, then this fucks up...
 		if (relY < 0 || relY > this.itemHeight || relX < 0 || relX > Math.max(this.itemWidth, this.contentX + this.contentWidth)) {
 			//#debug
 			System.out.println("isInItemArea(" + relX + "," + relY + ") = false: itemWidth=" + this.itemWidth + ", itemHeight=" + this.itemHeight + " (" + this + ")");
@@ -2701,7 +3429,42 @@ public abstract class Item extends Object
 		return false;
 	}
 	//#endif
+	
+	//#ifdef polish.hasPointerEvents
+	/**
+	 * Handles the dragging/movement of a pointer.
+	 * This method should be overwritten only when the polish.hasPointerEvents 
+	 * preprocessing symbol is defined.
+	 * The default implementation returns false.
+	 *  
+	 * @param relX the x position of the pointer pressing relative to this item's left position
+	 * @param relY the y position of the pointer pressing relative to this item's top position
+	 * @return true when the dragging of the pointer was actually handled by this item.
+	 */
+	protected boolean handlePointerDragged(int relX, int relY)
+	{
+		//#ifdef polish.css.view-type
+			if (this.view != null && this.view.handlePointerDragged(relX, relY)) {
+				return true;
+			}
+		//#endif
+		return false;
+	}
+	//#endif
 
+
+	/**
+	 * Adds a repaint request for this item's space.
+	 * @param repaintRegion the clipping rectangle to which the repaint area should be added
+	 */
+	public void addRepaintArea( ClippingRegion repaintRegion ) {
+		//System.out.println("adding repaint area x=" + getAbsoluteX() + ", width=" + this.itemWidth + ", y=" + getAbsoluteY() + " for " + this);
+		repaintRegion.addRegion(
+				getAbsoluteX(),
+				getAbsoluteY(),
+				this.itemWidth, 
+				this.itemHeight + 1 );
+	}
 	
 	/**
 	 * Adds a region relative to this item's content x/y start position.
@@ -2846,6 +3609,9 @@ public abstract class Item extends Object
 	 * @return the style used for focussing this item.
 	 */
 	public Style getFocusedStyle() {
+		if (!this.isStyleInitialised && this.style != null) {
+			setStyle( this.style );
+		}
 		if (this.focusedStyle != null) {
 			return this.focusedStyle;
 		} else if (this.parent != null) {
@@ -2865,6 +3631,8 @@ public abstract class Item extends Object
 	 * @return the current style of this item
 	 */
 	protected Style focus( Style newStyle, int direction ) {
+		//#debug
+		System.out.println("focus " + this);
 		Style oldStyle = this.style;
 		if (!this.isStyleInitialised && oldStyle != null) {
 			setStyle( oldStyle );
@@ -2884,15 +3652,16 @@ public abstract class Item extends Object
 		if (this.commands != null) {
 			showCommands();
 		}
-		// when an item is focused, it usually grows bigger, so
-		// increase the bottom position a bit:
-		//this.itemHeight += 5;
 		if (oldStyle == null) {
 			oldStyle = StyleSheet.defaultStyle;
 		}
+		//#if tmp.handleEvents
+			EventManager.fireEvent( EventManager.EVENT_FOCUS, this, new Integer(direction));
+		//#endif
 		return oldStyle;
 	}
 	
+
 	/**
 	 * Shows the commands on the screen.
 	 */
@@ -2959,6 +3728,21 @@ public abstract class Item extends Object
 		}
 		return false;
 	}
+	
+	
+	//#if polish.LibraryBuild
+		/**
+		 * Tries to handle the specified command.
+		 * The item checks if the command belongs to this item and if it has an associated ItemCommandListener.
+		 * Only then it handles the command.
+		 * @param cmd the command
+		 * @return true when the command has been handled by this item
+		 */
+		protected boolean handleCommand( javax.microedition.lcdui.Command cmd ) {
+			return false;
+		}
+	//#endif
+
 
 	/**
 	 * Removes the focus from this item.
@@ -2966,6 +3750,8 @@ public abstract class Item extends Object
 	 * @param originalStyle the original style which will be restored.
 	 */
 	protected void defocus( Style originalStyle ) {
+		//#debug
+		System.out.println("defocus " + this + " with style " + (originalStyle != null ? originalStyle.name : "<no style>"));
 		if (this.isPressed) {
 			notifyItemPressedEnd();
 		}
@@ -2985,6 +3771,9 @@ public abstract class Item extends Object
 				scr.removeItemCommands(this);
 			}
 		}
+		//#if tmp.handleEvents
+			EventManager.fireEvent( EventManager.EVENT_DEFOCUS, this, null); 
+		//#endif
 	}
 
 	/**
@@ -2997,7 +3786,13 @@ public abstract class Item extends Object
 	 */
 	protected void showNotify()
 	{
+		if (!this.isStyleInitialised && this.style != null) {
+			setStyle( this.style );
+		}
 		this.isShown = true;
+		if (this.label != null) {
+			this.label.showNotify();
+		}
 		if (this.background != null) {
 			this.background.showNotify();
 		}
@@ -3019,6 +3814,15 @@ public abstract class Item extends Object
 				this.completeBorder.showNotify();
 			}
 		//#endif
+		//#if polish.blackberry
+			if (this.isFocused  && this._bbField != null) {
+				getScreen().notifyFocusSet(this);
+			}
+		//#endif
+		//#if tmp.handleEvents
+			//System.out.println("triggering event 'show' for " + this + " with style " + (this.style != null ? this.style.name : "<null>") + ", animations=" + (this.style != null ? "" + this.style.getAnimations() : "<null>"));
+			EventManager.fireEvent( EventManager.EVENT_SHOW,  this, null );
+		//#endif
 	}
 
 	/**
@@ -3032,6 +3836,9 @@ public abstract class Item extends Object
 	protected void hideNotify()
 	{
 		this.isShown = false;
+		if (this.label != null) {
+			this.label.hideNotify();
+		}
 		if (this.background != null) {
 			this.background.hideNotify();
 		}
@@ -3056,6 +3863,9 @@ public abstract class Item extends Object
 		if (this.isPressed) {
 			notifyItemPressedEnd();
 		}
+		//#if tmp.handleEvents
+			EventManager.fireEvent( EventManager.EVENT_HIDE, this, null );
+		//#endif
 	}
 	
 	/**
@@ -3089,6 +3899,14 @@ public abstract class Item extends Object
 				this.view.releaseResources();
 			}
 		//#endif
+		//#if polish.css.filter && polish.midp2
+			if (this.filters != null) {
+				for (int i=0; i<this.filters.length; i++) {
+					RgbFilter filter = this.filters[i];
+					filter.releaseResources();
+				}
+			}
+		//#endif
 	}
 
 	/**
@@ -3116,6 +3934,22 @@ public abstract class Item extends Object
 		}
 		return this.attributes.get( key );
 	}
+	
+	/**
+	 * Removes an previously added attribute of this item.
+	 * 
+	 * @param key the key of the attribute
+	 * @return the attribute value, null if none has been registered under the given key before
+	 */
+	public Object removeAttribute(Object key)
+	{
+		if (this.attributes == null) {
+			return null;
+		}
+		return this.attributes.remove( key );
+	}
+
+
   
 	/**
 	* Returns a HashMap object with all registered attributes.
@@ -3154,14 +3988,22 @@ public abstract class Item extends Object
 	 */
 	public int getAbsoluteX() {
 		int absX = this.relativeX;
-		if (this.label != null && this.useSingleRow && !this.isLayoutCenter && !this.isLayoutRight) {
-			// hack for left align with additional label:
-			absX += this.contentX;
-		}
+//		if (this.label != null && this.useSingleRow && !this.isLayoutCenter && !this.isLayoutRight) {
+//			// hack for left align with additional label:
+//			absX += this.contentX;
+//		}
 		Item item = this.parent;
 		if (item != null && item.label == this) {
+			// this is the label of another item
 			absX -= item.contentX;
 		}
+		//#if polish.css.x-adjust
+			if (this.xAdjustment != null) {
+				int value = this.xAdjustment.getValue(this.itemWidth);
+				absX += value;
+			}
+		//#endif
+
 		while (item != null) {
 			absX += item.relativeX + item.contentX;
 			item = item.parent;
@@ -3180,6 +4022,11 @@ public abstract class Item extends Object
 		if (item != null && item.label == this) {
 			absY -= item.contentY;
 		}
+		//#if polish.css.y-adjust
+			if (this.yAdjustment != null) {
+				absY += this.yAdjustment.getValue(this.itemHeight);
+			}
+		//#endif
 		while (item != null) {
 			absY += item.relativeY + item.contentY;
 			if (item instanceof Container) {
@@ -3225,6 +4072,17 @@ public abstract class Item extends Object
 	{
 		return this.contentHeight;
 	}
+	
+	/**
+	 * Retrieves the height of the area that this item covers.
+	 * This can be different from the original itemHeight for items that have popups such as the POPUP ChoiceGroup
+	 * @return the height of the item's area in pixel
+	 */
+	public int getItemAreaHeight()
+	{
+		return Math.max( this.itemHeight, this.contentY + this.backgroundHeight );
+	}
+	
 	
 	/**
 	 * Retrieves the start of the background relative to this item's origin.
@@ -3307,14 +4165,14 @@ public abstract class Item extends Object
 	//#endif
 
 	
-	//#if tmp.invisible
 	/**
 	 * Sets the visible status of this item.
 	 * Invisible items occupy no space on the UI screen and cannot be focused/traversed. 
-	 * Note that you can call this method ONLY when the preprocessing variable polish.supportInvisibleItems is true.
+	 * Note that you can call this method ONLY when the preprocessing variable polish.supportInvisibleItems is true or when you use the CSS attribute 'visible' in your polish.css file.
 	 * @param visible true when this item should become visible.
 	 */
 	public void setVisible( boolean visible ) {
+		//#if tmp.invisible
 		boolean invisible = !visible;
 		if (invisible == this.isInvisible) {
 			return;
@@ -3335,6 +4193,7 @@ public abstract class Item extends Object
 				}
 				int itemIndex = parentContainer.indexOf( this );
 				boolean isFocusSet = parentContainer.focusClosestItemAbove( itemIndex );
+				this.isFocused = false;
 				//System.out.println("new focus set: " + isFocusSet + ", new index=" + parentContainer.focusedIndex + ", this.index=" + itemIndex );
 				if (isFocusSet) {
 					if (parentContainer.focusedIndex > itemIndex ) {
@@ -3349,8 +4208,12 @@ public abstract class Item extends Object
 					} else {
 						parentContainer.scroll( 0, parentContainer.focusedItem );
 					}
+				} else {
+					parentContainer.focusChild(-1);
 				}
-				
+				if (this instanceof Container) {
+					((Container)this).focusChild(-1);
+				}
 			} else if (!this.isFocused && parentContainer.focusedIndex > parentContainer.indexOf(this)) {
 				// adjust scrolling so that the focused element of the parent container stays in the current position:
 				int offset;
@@ -3367,7 +4230,7 @@ public abstract class Item extends Object
 						//System.out.println("visible getting height for available width of " + this.parent.contentWidth );
 						this.isInvisible = false;
 						this.isInitialized = false;
-						height = getItemHeight( this.parent.contentWidth, this.parent.contentWidth );
+						height = getItemHeight( this.parent.contentWidth, this.parent.contentWidth, this.parent.contentHeight );
 					} else {
 						this.itemHeight = height;
 					}
@@ -3396,7 +4259,7 @@ public abstract class Item extends Object
 					//visisble item
 					this.relativeY = 0;
 					parentContainer.setScrollYOffset(0);
-					parentContainer.focus(parentContainer.indexOf(this));
+					parentContainer.focusChild(parentContainer.indexOf(this));
 				}
 			}
 		}
@@ -3409,19 +4272,23 @@ public abstract class Item extends Object
 		}
 		this.isInvisible = invisible;
 		requestInit();
+		//#endif
 	}
-	//#endif
-	//#if tmp.invisible
 	/**
 	 * Gets the visible status of this item.
 	 * Invisible items occupy no space on the UI screen and cannot be focused/traversed. 
-	 * Note that you can call this method ONLY when the preprocessing variable polish.supportInvisibleItems is true.
+	 * Note that you can call this method ONLY when the preprocessing variable polish.supportInvisibleItems is true or when you use the 'visible' CSS attribute.
 	 * @return true when this item is visible.
 	 */
 	public boolean isVisible() {
-		return !this.isInvisible;
+		boolean result;
+		//#if !tmp.invisible
+			result = false;
+		//#else
+			result = !this.isInvisible;
+		//#endif
+		return result;
 	}
-	//#endif
 
 	//#if polish.debug.error || polish.keepToString
 	/**
@@ -3474,6 +4341,23 @@ public abstract class Item extends Object
 	}
 	
 	/**
+	 * Sets the item's complete height
+	 * @param height the height in pixel
+	 */
+	public void setItemHeight( int height ) {
+		int diff = height - this.itemHeight;
+		//#debug
+		System.out.println("setting item height " + height + ", diff=" + diff + ", vcenter=" +isLayoutVerticalCenter() + " for " + this );
+		this.itemHeight = height;
+		this.backgroundHeight += diff;
+		if (isLayoutVerticalCenter()) {
+			this.contentY += diff/2;
+		} else if (isLayoutBottom()) {
+			this.contentY += diff;
+		}
+	}
+	
+	/**
 	 * Retrieves the internal area's horizontal start relative to this item's content area
 	 * @return the horizontal start in pixels, -1 if it not set
 	 */
@@ -3517,8 +4401,137 @@ public abstract class Item extends Object
 		}
 		return this.internalHeight;
 	}
+	
+	/**
+	 * Fires an event for this item as well as its subitems like its label.
+	 * 
+	 * @param eventName the name of the event
+	 * @param eventData the event data
+	 * @see EventManager#fireEvent(String, Object, Object)
+	 */
+	public void fireEvent( String eventName, Object eventData ) {
+		if (this.label != null) {
+			EventManager.fireEvent(eventName, this.label, eventData);
+		}
+		EventManager.fireEvent(eventName, this, eventData);
+	}
 
+	/**
+	 * Updates the internal area on BB and similar platforms that contain native fields.
+	 */
+	public void updateInternalArea() {
+		// subclasses may override this.
+	}
 
+	/**
+	 * Determines the layout of this item.
+	 * Note that either setLayout() or init() has to be called before this method returns valid values.
+	 * 
+	 * @return true when the item has a right layout.
+	 * @see #setLayout(int)
+	 * @see #init(int,int,int)
+	 */
+	public boolean isLayoutRight()
+	{
+		return this.isLayoutRight;
+	}
+
+	/**
+	 * Determines the layout of this item.
+	 * Note that either setLayout() or init() has to be called before this method returns valid values.
+	 * 
+	 * @return true when the item has a left layout.
+	 * @see #setLayout(int)
+	 * @see #init(int,int,int)
+	 */
+	public boolean isLayoutLeft()
+	{
+		return !(this.isLayoutRight | this.isLayoutCenter);
+	}
+	
+	/**
+	 * Determines the layout of this item.
+	 * Note that either setLayout() or init() has to be called before this method returns valid values.
+	 * 
+	 * @return true when the item has a center layout.
+	 * @see #setLayout(int)
+	 * @see #init(int,int,int)
+	 */
+	public boolean isLayoutCenter()
+	{
+		return this.isLayoutCenter;
+	}
+	
+	/**
+	 * Determines the layout of this item.
+	 * Note that either setLayout() or init() has to be called before this method returns valid values.
+	 * 
+	 * @return true when the item has a top layout.
+	 * @see #setLayout(int)
+	 * @see #init(int,int,int)
+	 */
+	public boolean isLayoutTop()
+	{
+		return (this.layout & LAYOUT_BOTTOM) == 0;
+	}
+	
+	/**
+	 * Determines the layout of this item.
+	 * Note that either setLayout() or init() has to be called before this method returns valid values.
+	 * 
+	 * @return true when the item has a bottom layout.
+	 * @see #setLayout(int)
+	 * @see #init(int,int,int)
+	 */
+	public boolean isLayoutBottom()
+	{
+		return ((this.layout & LAYOUT_VCENTER) == LAYOUT_BOTTOM);
+	}
+
+	/**
+	 * Determines the layout of this item.
+	 * Note that either setLayout() or init() has to be called before this method returns valid values.
+	 * 
+	 * @return true when the item has a vcenter layout.
+	 * @see #setLayout(int)
+	 * @see #init(int,int,int)
+	 */
+	public boolean isLayoutVerticalCenter()
+	{
+		return ((this.layout & LAYOUT_VCENTER) == LAYOUT_VCENTER);
+	}
+	
+	public void setItemTransition( ItemTransition transition ) {
+		this.itemTransition = transition;
+	}
+
+	public Image toImage() {
+		Image img;
+		//#if polish.midp2
+			int[] pixels = new int[ this.itemWidth * this.itemHeight ];
+			img = Image.createRGBImage( pixels, this.itemWidth, this.itemHeight, true );
+		//#else
+			img = Image.createImage( this.itemWidth, this.itemHeight );
+		//#endif
+		Graphics g = img.getGraphics();
+		ItemTransition t = this.itemTransition;
+		this.itemTransition = null;
+		paint( 0, 0, 0, this.itemWidth, g );
+		this.itemTransition = t;
+		return img;
+	}
+	
+	public RgbImage toRgbImage() {
+		return new RgbImage( toImage(), true );
+	}
+	
+	/**
+	 * Determines whether this item is interactive and thus can be selected.
+	 * @return true when this item is deemed to be interactive
+	 */
+	public boolean isInteractive() {
+		return this.appearanceMode != PLAIN;
+	}
 
 //#ifdef polish.Item.additionalMethods:defined
 	//#include ${polish.Item.additionalMethods}

@@ -191,12 +191,13 @@ public final class Font extends Object
 				bbStyle |= net.rim.device.api.ui.Font.UNDERLINED;
 			}
 			int bbSize;
+			int defaultSize = net.rim.device.api.ui.Font.getDefault().getHeight();
 			if (size == SIZE_SMALL ) {
-				bbSize = 12;
+				bbSize = defaultSize - ((defaultSize * 30) / 100);
 			} else if (size == SIZE_MEDIUM) {
-				bbSize = 16; 
+				bbSize = defaultSize; 
 			} else {
-				bbSize = 20;
+				bbSize = defaultSize + ((defaultSize * 30) / 100);
 			}
 			this.font = family.getFont( bbStyle, bbSize, Ui.UNITS_px  );
 			if (this.font == null) {

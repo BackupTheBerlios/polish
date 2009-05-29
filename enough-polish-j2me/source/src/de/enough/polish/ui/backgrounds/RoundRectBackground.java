@@ -27,21 +27,23 @@
 package de.enough.polish.ui.backgrounds;
 
 import de.enough.polish.ui.Background;
+import de.enough.polish.ui.Color;
+import de.enough.polish.ui.Style;
 
 import javax.microedition.lcdui.Graphics;
 
 /**
  * <p>Paints a rectangle with round corners as a background.</p>
  *
- * <p>Copyright Enough Software 2004 - 2008</p>
+ * <p>Copyright Enough Software 2004 - 2009</p>
  * @author Robert Virkus, robert@enough.de
  */
 public class RoundRectBackground 
 extends Background 
 {
-	private final int color;
-	private final int arcWidth;
-	private final int arcHeight;
+	private int color;
+	private int arcWidth;
+	private int arcHeight;
 
 	/**
 	 * Creates a new round rectangle background.
@@ -64,5 +66,41 @@ extends Background
 		g.setColor( this.color );
 		g.fillRoundRect( x, y, width, height, this.arcWidth, this.arcHeight );
 	}
+
+	//#if polish.css.animations
+		/* (non-Javadoc)
+		 * @see de.enough.polish.ui.Background#setStyle(de.enough.polish.ui.Style)
+		 */
+		public void setStyle(Style style)
+		{
+			//#if polish.css.background-round-rect-color
+				Color col = style.getColorProperty("background-round-rect-color");
+				if (col != null) {
+					this.color = col.getColor();
+				}
+			//#endif
+			//#if polish.css.background-round-rect-arc
+				Integer arcInt = style.getIntProperty("background-round-rect-arc");
+				if (arcInt != null) {
+					this.arcWidth = arcInt.intValue();
+					this.arcHeight = arcInt.intValue();
+				}
+			//#endif
+			//#if polish.css.background-round-rect-arc-width
+				Integer arcWidthInt = style.getIntProperty("background-round-rect-arc-width");
+				if (arcWidthInt != null) {
+					this.arcWidth = arcWidthInt.intValue();
+				}
+			//#endif
+			//#if polish.css.background-round-rect-arc-height
+				Integer arcHeightInt = style.getIntProperty("background-round-rect-arc-height");
+				if (arcHeightInt != null) {
+					this.arcHeight = arcHeightInt.intValue();
+				}
+			//#endif
+		}
+	//#endif
+	
+	
 
 }

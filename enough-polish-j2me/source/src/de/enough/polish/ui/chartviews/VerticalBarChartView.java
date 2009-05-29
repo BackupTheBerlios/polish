@@ -2,7 +2,7 @@
 /*
  * Created on Jan 30, 2007 at 7:07:55 AM.
  * 
- * Copyright (c) 2006 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -37,7 +37,7 @@ import de.enough.polish.ui.Style;
 /**
  * <p>Visualizes the chart with vertical bars.</p>
  *
- * <p>Copyright Enough Software 2007 - 2008</p>
+ * <p>Copyright Enough Software 2007 - 2009</p>
  * <pre>
  * history
  *        Jan 30, 2007 - rob creation
@@ -53,8 +53,8 @@ public class VerticalBarChartView extends ItemView {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ItemView#initContent(de.enough.polish.ui.Item, int, int)
 	 */
-	protected void initContent(Item parent, int firstLineWidth, int lineWidth) {
-		initContentByParent(parent, firstLineWidth, lineWidth);
+	protected void initContent(Item parent, int firstLineWidth, int availWidth, int availHeight) {
+		initContentByParent(parent, firstLineWidth, availWidth, availHeight);
 	}
 
 	/* (non-Javadoc)

@@ -3,7 +3,7 @@
 /*
  * Created on 09.06.2006 at 15:41:12.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -30,6 +30,9 @@ package de.enough.polish.ui.backgrounds;
 import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.ui.Background;
+import de.enough.polish.ui.Color;
+import de.enough.polish.ui.Dimension;
+import de.enough.polish.ui.Style;
 import de.enough.polish.util.DrawUtil;
 /**
  * GradientVerticalBackground generates an nice Backgroundscreen,
@@ -39,12 +42,11 @@ import de.enough.polish.util.DrawUtil;
  * @author Robert Virkus refinements 
  */
 public class GradientVerticalBackground  extends Background {
-	private final int topColor;
-	private final int bottomColor;
+	private int topColor;
+	private int bottomColor;
 	private final int stroke;
-	private final int start;
-	private final int end;
-	private final boolean isPercent;
+	private Dimension start;
+	private Dimension end;
 
 	private int[] gradient;
 	private int lastHeight;
@@ -74,12 +76,28 @@ public class GradientVerticalBackground  extends Background {
 	 * @param isPercent true when the start and end settings should be counted in percent
 	 */
 	public GradientVerticalBackground( int topColor, int bottomColor, int stroke, int start, int end, boolean isPercent ) {
+		this( topColor, bottomColor, stroke, new Dimension( start, isPercent), new Dimension(end, isPercent));
+	}
+	/**
+	 * Creates a new gradient background
+	 * 
+	 * @param topColor the color at the top of the gradient
+	 * @param bottomColor the color at the bottom of the gradient
+	 * @param stroke the line stroke style
+	 * @param start the line counted from the top at which the gradient starts, either in pixels or in percent
+	 * @param end the line counted from the top at which the gradient ends, either in pixels or in percent
+	 */
+	public GradientVerticalBackground( int topColor, int bottomColor, int stroke, Dimension start, Dimension end ) {
 		this.topColor = topColor;
 		this.bottomColor = bottomColor;
 		this.stroke = stroke;
-		this.start = start;
-		this.end = end;
-		this.isPercent = isPercent;
+		if (start != null && end != null && start.getValue(100) != end.getValue( 100)) {
+	 		this.start = start;
+ 			if (end.getValue(100) < start.getValue(100)) {
+ 				end = new Dimension( 100, true);
+ 			}
+			this.end = end;
+		}
 	}
 	
 	/*
@@ -89,24 +107,17 @@ public class GradientVerticalBackground  extends Background {
 		if (height <= 0) {
 			return;
 		}
-		width--;
 		g.setStrokeStyle(this.stroke);
 		int startOffset = this.startLine;
 		int endOffset = this.endLine;
 		if (this.gradient == null || this.lastHeight != height ) {
 			int steps = height;
-			if (this.start != this.end) {
-				steps = this.end - this.start;
-				if (this.isPercent) {
-					this.startLine = (this.start * height) / 100;
-					this.endLine = (this.end * height) / 100;
-					steps = this.endLine - this.startLine;
-				} else {
-					this.startLine = this.start;
-					this.endLine = this.end;
-				}
+			if (this.start != null) {
+				this.startLine = this.start.getValue(height);
+				this.endLine = this.end.getValue(height);
+				steps = this.endLine - this.startLine;
 				startOffset = this.startLine;
-				endOffset = this.endLine;				
+				endOffset = this.endLine;									
 			} else {
 				this.endLine = height;
 				endOffset = height;
@@ -126,4 +137,46 @@ public class GradientVerticalBackground  extends Background {
 		}
 		g.setStrokeStyle( Graphics.SOLID );
 	}
+	
+
+	//#if polish.css.animations
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Background#setStyle(de.enough.polish.ui.Style)
+	 */
+	public void setStyle(Style style)
+	{
+		boolean hasChanged = false;
+		//#if polish.css.background-vertical-gradient-top-color
+			Color tbgColor = style.getColorProperty("background-vertical-gradient-top-color");
+			if (tbgColor != null) {
+				this.topColor = tbgColor.getColor();
+				hasChanged = true;
+			}
+		//#endif
+		//#if polish.css.background-vertical-gradient-bottom-color
+			Color bbgColor = style.getColorProperty("background-vertical-gradient-bottom-color");
+			if (bbgColor != null) {
+				this.bottomColor = bbgColor.getColor();
+				hasChanged = true;
+			}
+		//#endif
+		//#if polish.css.background-vertical-gradient-start
+			Dimension startObj = (Dimension) style.getObjectProperty("background-vertical-gradient-start");
+			if (startObj != null) {
+				this.start = startObj;
+				hasChanged = true;
+			}
+		//#endif
+		//#if polish.css.background-vertical-gradient-end
+			Dimension endObj = (Dimension) style.getObjectProperty("background-vertical-gradient-end");
+			if (endObj != null) {
+				this.end = endObj;
+				hasChanged = true;
+			}
+		//#endif
+		if (hasChanged) {
+			this.lastHeight = 0;
+		}
+	}
+	//#endif
 }

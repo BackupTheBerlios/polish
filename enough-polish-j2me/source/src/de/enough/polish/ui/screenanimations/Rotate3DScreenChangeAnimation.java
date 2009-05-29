@@ -3,7 +3,7 @@
 /*
  * Created on 29-May-2005 at 18:44:00.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -27,8 +27,8 @@
  */
 package de.enough.polish.ui.screenanimations;
 
-import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Displayable;
+import de.enough.polish.ui.Display;
+import de.enough.polish.ui.Displayable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.m3g.Appearance;
@@ -44,14 +44,13 @@ import javax.microedition.m3g.TriangleStripArray;
 import javax.microedition.m3g.VertexArray;
 import javax.microedition.m3g.VertexBuffer;
 
-import de.enough.polish.ui.AccessibleCanvas;
 import de.enough.polish.ui.ScreenChangeAnimation;
 import de.enough.polish.ui.Style;
 
 /**
  * <p></p>
  *
- * <p>Copyright (c) Enough Software 2005 - 2008</p>
+ * <p>Copyright (c) Enough Software 2005 - 2009</p>
  * <pre>
  * history
  *        29-May-2005 - rob creation
@@ -81,11 +80,11 @@ public class Rotate3DScreenChangeAnimation extends ScreenChangeAnimation {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#show(de.enough.polish.ui.Style, javax.microedition.lcdui.Display, int, int, javax.microedition.lcdui.Image, javax.microedition.lcdui.Image, de.enough.polish.ui.Screen)
 	 */
-	protected void show(Style style, Display dsplay, int width, int height,
-			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable, boolean isForward  ) 
+	protected void onShow(Style style, Display dsplay, int width, int height,
+			Displayable lstDisplayable, Displayable nxtDisplayable, boolean isForward  ) 
 	{
-		super.show(style, dsplay, width, height, lstScreenImage,
-				nxtScreenImage, nxtCanvas, nxtDisplayable, isForward );
+		super.onShow(style, dsplay, width, height, lstDisplayable,
+				nxtDisplayable, isForward );
 		// initialization of 3D settings:
 	    // Hole grafischen Context Graphics3D
 		this.g3D = Graphics3D.getInstance();
@@ -160,7 +159,7 @@ public class Rotate3DScreenChangeAnimation extends ScreenChangeAnimation {
 	    //Image textureImage = Image.createImage( maxWidth, maxHeight );
 	    Image textureImage = Image.createImage( 128, 128 );
 	    Graphics g = textureImage.getGraphics();
-	    g.drawImage( nxtScreenImage, 0, 0, Graphics.TOP | Graphics.LEFT );
+	    g.drawImage( this.nextCanvasImage, 0, 0, Graphics.TOP | Graphics.LEFT );
 	    texture2D = new Texture2D(new Image2D( Image2D.RGB, textureImage ) );
 
 	    // Definiere Material

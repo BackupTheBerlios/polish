@@ -2,7 +2,7 @@
 /*
  * Created on 13-Mar-2007 at 16:51:32.
  * 
- * Copyright (c) 2007 Michael / Enough Software
+ * Copyright (c) 2009 Michael / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -29,7 +29,7 @@ package de.enough.polish.ui;
 /**
  * <p>Is used to detect internal changes of TabbedForms, e.g. when the user changes the tab of a TabbedForm.</p>
  *
- * <p>Copyright (c) 2007 Enough Software</p>
+ * <p>Copyright (c) 2009 Enough Software</p>
  * <pre>
  * history
  *        12-Mar-2007 - mkoch creation

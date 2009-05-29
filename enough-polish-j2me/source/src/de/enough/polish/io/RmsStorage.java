@@ -5,7 +5,7 @@
 /*
  * Created on 13-Mar-2006 at 21:34:23.
  * 
- * Copyright (c) 2006 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -41,26 +41,27 @@ import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
 import javax.microedition.rms.RecordStoreNotOpenException;
 
+import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.HashMap;
 
 /**
  * <p>Stores serializable objects in the record store system.</p>
  *
- * <p>Copyright Enough Software 2006 - 2008</p>
+ * <p>Copyright Enough Software 2006 - 2009</p>
  * <pre>
  * history
  *        13-Mar-2006 - rob creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  * @author Begin Fabio (delete functions)
- * @param <K> when you use the enough-polish-client-java5.jar you can parameterize the RmsStorage, e.g. RmsStorage&lt;Vector&lt;Note&gt;&gt;>.
+ * @param <K> when you use the enough-polish-client-java5.jar you can parameterize the RmsStorage, e.g. RmsStorage&lt;Vector&lt;Note&gt;&gt;.
  */
 public class RmsStorage
 //#if polish.java5
-//#	<K>
-//#	implements Storage<K> 
+	<K>
+	implements Storage<K> 
 //#else
-	 implements Storage 
+	 //# implements Storage 
 //#endif
 {
 	
@@ -68,6 +69,8 @@ public class RmsStorage
 	private final HashMap masterRecordSetIdsByName;
 	private final HashMap masterRecordSetNameById;
 	private final int indexRecordId;
+	
+	static ArrayList masterRecordStores = new ArrayList();
 
 	/**
 	 * Creates a new RmsStorage that uses different record stores for each stored object
@@ -78,6 +81,29 @@ public class RmsStorage
 		this.masterRecordSetIdsByName = null;
 		this.masterRecordSetNameById = null;
 		this.indexRecordId = -1;
+	}
+	
+	/**
+	 * Closes all master recordstores. Should be called at the end of an 
+	 * application.
+	 */
+	public static void shutdown()
+	{
+		for (int i = 0; i < masterRecordStores.size(); i++) {
+			RecordStore store = (RecordStore)masterRecordStores.get(i);
+			try {
+				//#debug debug
+				System.out.println("closing master recordstore " + store.getName());
+				
+				store.closeRecordStore();
+			} catch (RecordStoreNotOpenException e) {
+				// its already closed
+			} 
+			catch (RecordStoreException e) {
+				//#debug error
+				System.out.println("unable to close master recordstore " + e.toString());
+			}
+		}
 	}
 	
 	/**
@@ -96,6 +122,12 @@ public class RmsStorage
 				this.masterRecordStore = RecordStore.openRecordStore(singleRecordStoreName, true);
 				this.masterRecordSetIdsByName = new HashMap();
 				this.masterRecordSetNameById = new HashMap();
+				
+				// add master recordstore to list
+				if(!masterRecordStores.contains(this.masterRecordStore))
+				{
+					masterRecordStores.add(this.masterRecordStore);
+				}
 				
 				// now read index record set:
 				RecordEnumeration enumeration = this.masterRecordStore.enumerateRecords( null, null, false );
@@ -325,9 +357,9 @@ public class RmsStorage
 	 * @see de.enough.polish.io.Storage#read(java.lang.String)
 	 */
 	//#if polish.java5
-	//#	public K read( String name )
+		public K read( String name )
 	//#else
-		 public Object read( String name )
+		//# public Object read( String name )
 	//#endif
 	throws IOException {
 		byte[] data;
@@ -350,9 +382,9 @@ public class RmsStorage
 		}
 		DataInputStream in = new DataInputStream( new ByteArrayInputStream( data ));
 		//#if polish.java5
-		//#	return (K)Serializer.deserialize( in );
+			return (K)Serializer.deserialize( in );
 		//#else
-			 return Serializer.deserialize( in );
+			 //# return Serializer.deserialize( in );
 		//#endif
 	}
 
@@ -408,7 +440,6 @@ public class RmsStorage
 	 * This method should be used only 
 	 * with RmsStorage that uses a single record store for several stored objects
 	 * @throws IOException  when the operation fails
-	 * @author F.Beghin 
 	 */
 	public void deleteAll() throws IOException {
 		if (this.masterRecordSetIdsByName != null
@@ -436,7 +467,6 @@ public class RmsStorage
 	 * @param name the name for the set
 	 * @throws IOException when the index record set could not be prepared
 	 * @throws RecordStoreException when the index record set could not be written
-	 * @author F.Beghin 
 	 */
 	private void registerAfterDeletingAKeyRecordSetId( )
 	throws IOException, RecordStoreException

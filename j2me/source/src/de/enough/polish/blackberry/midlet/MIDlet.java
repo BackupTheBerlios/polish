@@ -11,13 +11,14 @@ import java.util.Hashtable;
 import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.midlet.MIDletStateChangeException;
 
-import de.enough.polish.blackberry.ui.Display;
 import de.enough.polish.util.TextUtil;
 
-//#if polish.BlackBerry.enablePlatformRequest || blackberry.certificate.dir:defined
-	//#define tmp.blackberry.enablePlatformRequest
+//#if polish.BlackBerry.enablePlatformRequest
+	//|| blackberry.certificate.dir:defined
+	//#define tmp.enablePlatformRequest
 	import net.rim.blackberry.api.browser.Browser;
 	import net.rim.blackberry.api.invoke.Invoke;
+import net.rim.blackberry.api.invoke.MessageArguments;
 	import net.rim.blackberry.api.invoke.PhoneArguments;
 	import net.rim.blackberry.api.phone.Phone;
 	import net.rim.blackberry.api.phone.PhoneCall;
@@ -75,7 +76,7 @@ public abstract class MIDlet extends UiApplication
 	 */
 	protected MIDlet()
 	{
-		// Create protected default constructor for derived classes.
+		//TODO implement MIDlet
 	}
 
 	/**
@@ -166,7 +167,6 @@ public abstract class MIDlet extends UiApplication
 	 */
 	public final void notifyDestroyed()
 	{
-		Display.displaysByMIDlet.remove( this );
 		System.exit( 0 );
 	}
 
@@ -191,7 +191,7 @@ public abstract class MIDlet extends UiApplication
 	 */
 	public final void notifyPaused()
 	{
-		// Nothing to do here.
+		//TODO implement notifyPaused
 	}
 
 	/**
@@ -275,7 +275,7 @@ public abstract class MIDlet extends UiApplication
 	 */
 	public final void resumeRequest()
 	{
-		// Nothing to do here.
+		//TODO implement resumeRequest
 	}
 
 	/**
@@ -344,19 +344,19 @@ public abstract class MIDlet extends UiApplication
 	 * phone number fields, but not take the action until the user
 	 * explicitly clicks the load or dial buttons.</p>
 	 * 
-	 * @param URL - The URL for the platform to load. An empty string (not null) cancels any pending requests.
+	 * @param url - The URL for the platform to load. An empty string (not null) cancels any pending requests.
 	 * @return true if the MIDlet suite MUST first exit before the content can be fetched.
 	 * @throws ConnectionNotFoundException - if the platform cannot handle the URL requested.
 	 * @since  MIDP 2.0
 	 */
-	public final boolean platformRequest( String URL) throws ConnectionNotFoundException
+	public final boolean platformRequest( String url) throws ConnectionNotFoundException
 	{
-		//#if tmp.blackberry.enablePlatformRequest
-			if (URL.startsWith("http")) {
-				Browser.getDefaultSession().displayPage(URL);
+		//#if tmp.enablePlatformRequest
+			if (url.startsWith("http")) {
+				Browser.getDefaultSession().displayPage(url);
 				return false;
-			} else if (URL.startsWith("tel:")) {
-				String msisdn = URL.substring( "tel:".length() );
+			} else if (url.startsWith("tel:")) {
+				String msisdn = url.substring( "tel:".length() );
 				String dtmf = null;
 				int postCallArgumentsIndex = msisdn.indexOf('/');
 				if (postCallArgumentsIndex == -1) {
@@ -372,6 +372,41 @@ public abstract class MIDlet extends UiApplication
 					PhoneCall phoneCall = Phone.getActiveCall();
 					phoneCall.sendDTMFTones( dtmf );
 				}
+				return false;
+			} else if (url.startsWith("mailto:")) {
+				String to = url.substring("mailto:".length());
+				String rest = "";
+				int questionIndex = to.indexOf('?');
+				if (questionIndex != -1) {
+					rest = TextUtil.replace( url.substring(questionIndex), "&amp;", "&" );
+					to = to.substring(0, questionIndex );
+				}
+				String subject = "";
+				int subjectIndex = rest.indexOf("subject=");
+				if (subjectIndex != -1) {
+					int ampIndex = rest.indexOf('&', subjectIndex + 5);
+					if (ampIndex == -1) {
+						subject = rest.substring( subjectIndex + "subject=".length());
+						rest = rest.substring(0, subjectIndex -1 );
+					} else {
+						subject = rest.substring( subjectIndex + "subject=".length(), ampIndex);
+						rest = rest.substring(0, subjectIndex ) + rest.substring(ampIndex + 1);
+					}
+				}
+				String body = "";
+				int bodyIndex = rest.indexOf("body=");
+				if (bodyIndex != -1) {
+					int ampIndex = rest.indexOf('&', bodyIndex + 5);
+					if (ampIndex == -1) {
+						body = rest.substring( bodyIndex + "body=".length());
+						//rest = rest.substring(0, subjectIndex -1 );
+					} else {
+						body = rest.substring( bodyIndex + "body=".length(), ampIndex);
+						//rest = rest.substring(0, subjectIndex ) + rest.substring(ampIndex + 1);
+					}
+				}
+				
+				Invoke.invokeApplication(Invoke.APP_TYPE_MESSAGES, new MessageArguments(MessageArguments.ARG_NEW, to, subject, body));
 				return false;
 			} else {
 				throw new ConnectionNotFoundException();
@@ -407,12 +442,16 @@ public abstract class MIDlet extends UiApplication
 			midlet.startApp();	
 			midlet.enterEventDispatcher();
 		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (MIDletStateChangeException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

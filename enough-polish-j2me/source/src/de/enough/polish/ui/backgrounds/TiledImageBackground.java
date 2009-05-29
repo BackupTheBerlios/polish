@@ -32,8 +32,11 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 import de.enough.polish.ui.Background;
+import de.enough.polish.ui.Color;
+import de.enough.polish.ui.Dimension;
 import de.enough.polish.ui.ImageConsumer;
 import de.enough.polish.ui.Item;
+import de.enough.polish.ui.Style;
 import de.enough.polish.ui.StyleSheet;
 
 /**
@@ -59,7 +62,7 @@ import de.enough.polish.ui.StyleSheet;
  * </ul>
  * </p>
  *
- * <p>Copyright Enough Software 2004 - 2008</p>
+ * <p>Copyright Enough Software 2004 - 2009</p>
 
  * <pre>
  * history
@@ -78,7 +81,7 @@ implements ImageConsumer
 	public static final int REPEAT_Y = 3;
 	
 	private Image image;
-	private final int color;
+	private int color;
 	private final int repeatMode;
 	private boolean isLoaded;
 	private final String imageUrl;
@@ -86,8 +89,8 @@ implements ImageConsumer
 	private final int paddingHorizontal;
 	private final int paddingVertical;
 	private final boolean overlap;
-	private final int xOffset;
-	private final int yOffset;
+	private Dimension xOffset;
+	private Dimension yOffset;
 	
 	/**
 	 * Creates a new image background.
@@ -107,6 +110,7 @@ implements ImageConsumer
 	public TiledImageBackground( int color, String imageUrl, int repeatMode, int anchor, int paddingHorizontal, int paddingVertical, boolean overlap ) {
 		this(color, imageUrl, repeatMode, anchor, paddingHorizontal, paddingVertical, overlap, 0, 0 );
 	}
+	
 	/**
 	 * Creates a new image background.
 	 * 
@@ -116,7 +120,7 @@ implements ImageConsumer
 	 *        be repeated, either ImageBackground.REPEAT, REPEAT_X or REPEAT_Y
 	 * @param anchor the anchor of the image, either  "left", "right", 
 	 * 			"center" (="horizontal-center"), "vertical-center", "top" or "bottom" 
-	 * 			or any combinationof these values. Defaults to "horizontal-center | vertical-center"
+	 * 			or any combination of these values. Defaults to "horizontal-center | vertical-center"
 	 * @param paddingHorizontal the horizontal gap between tiles, can be negative for overlapping the tiles
 	 * @param paddingVertical the horizontal gap between tiles, can be negative for overlapping the tiles
 	 * @param overlap defines whether the tiles should overlap over the actual background-area when they don't
@@ -125,6 +129,28 @@ implements ImageConsumer
 	 * @param yOffset The number of pixels to move the image vertically, negative values move it to the top.
 	 */
 	public TiledImageBackground( int color, String imageUrl, int repeatMode, int anchor, int paddingHorizontal, int paddingVertical, boolean overlap, int xOffset, int yOffset ) {
+		this( color, imageUrl, repeatMode, anchor, paddingHorizontal, paddingVertical, overlap, new Dimension(xOffset), new Dimension(yOffset));
+	}
+
+	
+	/**
+	 * Creates a new image background.
+	 * 
+	 * @param color the background color or Item.TRANSPARENT
+	 * @param imageUrl the url of the image, e.g. "/bg.png", must not be null!
+	 * @param repeatMode indicates whether the background image should
+	 *        be repeated, either ImageBackground.REPEAT, REPEAT_X or REPEAT_Y
+	 * @param anchor the anchor of the image, either  "left", "right", 
+	 * 			"center" (="horizontal-center"), "vertical-center", "top" or "bottom" 
+	 * 			or any combination of these values. Defaults to "horizontal-center | vertical-center"
+	 * @param paddingHorizontal the horizontal gap between tiles, can be negative for overlapping the tiles
+	 * @param paddingVertical the horizontal gap between tiles, can be negative for overlapping the tiles
+	 * @param overlap defines whether the tiles should overlap over the actual background-area when they don't
+	 *        fit exactly into the actual background-area.
+	 * @param xOffset The number of pixels to move the image horizontally, negative values move it to the left.
+	 * @param yOffset The number of pixels to move the image vertically, negative values move it to the top.
+	 */
+	public TiledImageBackground( int color, String imageUrl, int repeatMode, int anchor, int paddingHorizontal, int paddingVertical, boolean overlap, Dimension xOffset, Dimension yOffset ) {
 		this.paddingHorizontal = paddingHorizontal;
 		this.paddingVertical = paddingVertical;
 		this.color = color;
@@ -136,6 +162,37 @@ implements ImageConsumer
 		this.yOffset = yOffset;
 	}
 
+
+	/**
+	 * Creates a new image background.
+	 * 
+	 * @param color the background color or Item.TRANSPARENT
+	 * @param imageUrl the url of the image, e.g. "/bg.png", must not be null!
+	 * @param repeatMode indicates whether the background image should
+	 *        be repeated, either ImageBackground.REPEAT, REPEAT_X or REPEAT_Y
+	 * @param anchor the anchor of the image, either  "left", "right", 
+	 * 			"center" (="horizontal-center"), "vertical-center", "top" or "bottom" 
+	 * 			or any combination of these values. Defaults to "horizontal-center | vertical-center"
+	 * @param paddingHorizontal the horizontal gap between tiles, can be negative for overlapping the tiles
+	 * @param paddingVertical the horizontal gap between tiles, can be negative for overlapping the tiles
+	 * @param overlap defines whether the tiles should overlap over the actual background-area when they don't
+	 *        fit exactly into the actual background-area.
+	 * @param xOffset The number of pixels to move the image horizontally, negative values move it to the left.
+	 * @param yOffset The number of pixels to move the image vertically, negative values move it to the top.
+	 */
+	public TiledImageBackground( int color, Image image, int repeatMode, int anchor, int paddingHorizontal, int paddingVertical, boolean overlap, Dimension xOffset, Dimension yOffset ) {
+		this.paddingHorizontal = paddingHorizontal;
+		this.paddingVertical = paddingVertical;
+		this.color = color;
+		this.repeatMode = repeatMode;
+		this.image = image;
+		this.anchor = anchor;
+		this.overlap = overlap;
+		this.xOffset = xOffset;
+		this.yOffset = yOffset;
+		this.imageUrl = null;
+		this.isLoaded = true;
+	}
 	//#ifdef polish.images.backgroundLoad
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ImageConsumer#setImage(java.lang.String, javax.microedition.lcdui.Image)
@@ -161,11 +218,11 @@ implements ImageConsumer
 		}
 		if (this.color != Item.TRANSPARENT) {
 			g.setColor( this.color );
-			g.fillRect( x, y, width + 1, height + 1 );
+			g.fillRect( x, y, width, height );
 		}
 		
-		x += this.xOffset;
-		y += this.yOffset;
+		x += this.xOffset.getValue(width);
+		y += this.yOffset.getValue(height);
 		if (this.image != null) {
 			int imgWidth = this.image.getWidth() + this.paddingHorizontal;
 			int imgHeight = this.image.getHeight() + this.paddingVertical;
@@ -252,5 +309,34 @@ implements ImageConsumer
 		this.isLoaded = false;
 		this.image = null;
 	}
+	
+
+
+	//#if polish.css.animations
+		/* (non-Javadoc)
+		 * @see de.enough.polish.ui.Background#setStyle(de.enough.polish.ui.Style)
+		 */
+		public void setStyle(Style style)
+		{
+			//#if polish.css.background-image-color
+				Color col = style.getColorProperty("background-image-color");
+				if (col != null) {
+					this.color = col.getColor();
+				}
+			//#endif
+			//#if polish.css.background-image-x-offset
+				Dimension xOffsetInt = (Dimension) style.getObjectProperty("background-image-x-offset");
+				if (xOffsetInt != null) {
+					this.xOffset = xOffsetInt;
+				}
+			//#endif
+			//#if polish.css.background-image-y-offset
+				Dimension yOffsetInt = (Dimension) style.getObjectProperty("background-image-y-offset");
+				if (yOffsetInt != null) {
+					this.yOffset = yOffsetInt;
+				}
+			//#endif
+		}
+	//#endif
 	
 }

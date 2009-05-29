@@ -2,12 +2,11 @@
 
 package de.enough.polish.ui.screenanimations;
 
-import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Displayable;
+import de.enough.polish.ui.Display;
+import de.enough.polish.ui.Displayable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
-import de.enough.polish.ui.AccessibleCanvas;
 import de.enough.polish.ui.ScreenChangeAnimation;
 import de.enough.polish.ui.Style;
 
@@ -19,21 +18,21 @@ public class RainScreenChangeAnimation extends ScreenChangeAnimation {
 	private int[] left ,right ,up,down;
 	//the rgb - images
 	private int[] rgbData ;
-	private int[] rgbbuffer ;
-	private int[] lstrgbbuffer ;
 	//the height of the columns
 	private int[] scaleableHeight;
 	private int[] scaleableWidth;
  	//the scale from the row
 //	//kann nachher weg nur zum testen
 //	private boolean first = true;
+	
 	public RainScreenChangeAnimation() {
 		super();
-		// TODO Auto-generated constructor stub
+		this.useLastCanvasRgb = true;
+		this.useNextCanvasRgb = true;
 	}
 	
-	protected void show(Style style, Display dsplay, int width, int height,
-			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable, boolean isForward  ) 
+	protected void onShow(Style style, Display dsplay, int width, int height,
+			Displayable lstDisplayable, Displayable nxtDisplayable, boolean isForward  ) 
 	{
 			System.gc();
 			this.id = 12;
@@ -56,13 +55,9 @@ public class RainScreenChangeAnimation extends ScreenChangeAnimation {
 				this.up[i] = 0;
 				this.down[i] = height;
 			}
-			this.rgbbuffer = new int[size];
-			this.lstrgbbuffer = new int [size];
 			this.rgbData = new int [size];
-			nxtScreenImage.getRGB(this.rgbbuffer, 0, width, 0, 0, width, height );
-			lstScreenImage.getRGB(this.lstrgbbuffer, 0, width, 0, 0, width, height );
-			lstScreenImage.getRGB(this.rgbData, 0, width, 0, 0, width, height );
-			super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable, isForward );
+			super.onShow(style, dsplay, width, height, lstDisplayable, nxtDisplayable, isForward );
+			System.arraycopy( this.lastCanvasRgb, 0, this.rgbData, 0, size );
 	}
 	
 	
@@ -128,7 +123,7 @@ public class RainScreenChangeAnimation extends ScreenChangeAnimation {
 					sH = this.scaleableHeight[x];
 					
 					if(left > x || right < x || this.down[x] < y || this.up[x] > y){
-						this.rgbData[column+x] = this.rgbbuffer[column+x];
+						this.rgbData[column+x] = this.nextCanvasRgb[column+x];
 					}
 					else{
 						c = y - (this.screenHeight - sH);
@@ -152,7 +147,7 @@ public class RainScreenChangeAnimation extends ScreenChangeAnimation {
 						if(newI >= length)newI = length;
 						if(newI < 0)newI = 0;
 
-						this.rgbData[x+column] = this.lstrgbbuffer[newI];
+						this.rgbData[x+column] = this.lastCanvasRgb[newI];
 					}	
 				}
 				
@@ -179,13 +174,13 @@ public class RainScreenChangeAnimation extends ScreenChangeAnimation {
 	}
 	
 	public void handleKeyPressed(int keyCode, Image next) {
-		next.getRGB( this.rgbbuffer, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
+		next.getRGB( this.nextCanvasRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
 	}
 
 	//#if polish.hasPointerEvents
 	public void pointerPressed(int x, int y) {
 		super.pointerPressed(x, y);
-		this.nextCanvasImage.getRGB( this.rgbbuffer, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
+		this.nextCanvasImage.getRGB( this.nextCanvasRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
 	}
 	//#endif
 	

@@ -2,7 +2,7 @@
 /*
  * Created on 26.08.2005 at 10:33:18.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -26,8 +26,8 @@
  */
 package de.enough.polish.ui.screenanimations;
 
-import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Displayable;
+import de.enough.polish.ui.Display;
+import de.enough.polish.ui.Displayable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.m3g.Appearance;
@@ -43,7 +43,6 @@ import javax.microedition.m3g.TriangleStripArray;
 import javax.microedition.m3g.VertexArray;
 import javax.microedition.m3g.VertexBuffer;
 
-import de.enough.polish.ui.AccessibleCanvas;
 import de.enough.polish.ui.ScreenChangeAnimation;
 import de.enough.polish.ui.Style;
 
@@ -68,9 +67,11 @@ public class CubeScreenChangeAnimation extends ScreenChangeAnimation {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#show(de.enough.polish.ui.Style, javax.microedition.lcdui.Display, int, int, javax.microedition.lcdui.Image, javax.microedition.lcdui.Image, de.enough.polish.ui.Screen)
 	 */
-	protected void show(Style style, Display dsplay, int width, int height,
-			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable, boolean isForward  ) 
+	protected void onShow(Style style, Display dsplay, int width, int height,
+			Displayable lstDisplayable, Displayable nxtDisplayable, boolean isForward  ) 
 	{
+		  super.onShow(style, dsplay, width, height, lstDisplayable, nxtDisplayable, isForward );
+		  
 		float wPercent = width / 256.0f;
 		float hPercent = height / 256.0f;
 		this.fWidth = (5.0f*wPercent); this.fHeight = (5.0f*hPercent);
@@ -145,10 +146,8 @@ public class CubeScreenChangeAnimation extends ScreenChangeAnimation {
 		  this.indexbuffer = new TriangleStripArray( indices, stripLen );
 		  int[] rgbData = new int[256*256];
 		  int[] lstrgbData = new int[256*256];
-		  int[] rgbbuffer = new int [nxtScreenImage.getWidth() * nxtScreenImage.getHeight()];
-		  int[] lstrgbbuffer = new int [lstScreenImage.getWidth() * lstScreenImage.getHeight()];
-		  nxtScreenImage.getRGB(rgbbuffer, 0, width, 0, 0, width, height );
-		  lstScreenImage.getRGB(lstrgbbuffer, 0, width, 0, 0, width, height );
+		  int[] rgbbuffer = new int [this.nextCanvasImage.getWidth() * this.nextCanvasImage.getHeight()];
+		  int[] lstrgbbuffer = new int [this.lastCanvasImage.getWidth() * this.lastCanvasImage.getHeight()];
 		  int row = 0,rgbCount=0;
 		  for(int i = 0; i < rgbData.length;i++){
 			  if(row < width && rgbCount < rgbbuffer.length){
@@ -192,7 +191,6 @@ public class CubeScreenChangeAnimation extends ScreenChangeAnimation {
 		  this.material.setShininess(100.0f);
 		  this.background.setColor(0xFFFFFFcc);
 		
-		  super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable, isForward );
 
 	}
 	

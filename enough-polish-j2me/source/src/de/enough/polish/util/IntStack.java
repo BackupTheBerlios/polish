@@ -1,7 +1,7 @@
 /*
  * Created on Aug 30, 2007 at 8:13:18 PM.
  * 
- * Copyright (c) 2007 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -28,11 +28,7 @@ package de.enough.polish.util;
 /**
  * <p>Provides a lifo stack for primitive int types</p>
  *
- * <p>Copyright Enough Software 2007 - 2008</p>
- * <pre>
- * history
- *        Aug 30, 2007 - rob creation
- * </pre>
+ * <p>Copyright Enough Software 2007 - 2009</p>
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class IntStack extends IntList {

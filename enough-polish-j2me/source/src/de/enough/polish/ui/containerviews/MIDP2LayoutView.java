@@ -97,19 +97,23 @@ extends ContainerView
      *      int, int)
      */
     protected void initContent(Item parent, int firstLineWidth,
-                    int lineWidth) 
+                    int availWidth, int availHeight) 
     {
     	Container parContainer = (Container) parent;
     	this.parentContainer = parContainer;
         Item[] myItems = parContainer.getItems();
-    	//#if polish.Container.allowCycling != false
-        	this.allowCycling = parContainer.allowCycling;
-			if ( (parent.getParent() instanceof Container)  && ((Container)parent.getParent()).getItems().length>1 )
-			{
-				this.allowCycling = false;
+		//#if polish.Container.allowCycling != false
+			this.allowCycling = parContainer.allowCycling;
+			Item ancestor = parContainer.getParent();
+			while (this.allowCycling && ancestor != null) {
+				if ( (ancestor instanceof Container)  && ((Container)ancestor).getNumberOfInteractiveItems()>1 ) {
+					this.allowCycling = false;
+					break;
+				}
+				ancestor = ancestor.getParent();
 			}
-        //#endif
-        this.contentHeight = this.contentWidth = this.rowWidth = this.rowHeight = 0;
+		//#endif 
+		this.contentHeight = this.contentWidth = this.rowWidth = this.rowHeight = 0;
         this.currentRow = new ArrayList();
         this.allRows = new ArrayList();
 
@@ -117,13 +121,13 @@ extends ContainerView
         this.currentContentHeight = 0;
         for (int i = 0; i < myItems.length; i++) {
             Item item = myItems[i];
-            appendItemToRow(i, item, firstLineWidth, lineWidth);
+            appendItemToRow(i, item, firstLineWidth, availWidth, availHeight);
             if (item.appearanceMode != Item.PLAIN) {
                 hasFocusableItem = true;
             }
         }
         // Make the remaining items a final line
-        rowBreak(lineWidth, 0 );
+        rowBreak(availWidth, availHeight,  0 );
         if (hasFocusableItem) {
         	this.appearanceMode = Item.INTERACTIVE;
         } else {
@@ -150,7 +154,7 @@ extends ContainerView
     }
     */
 
-    void appendItemToRow(int index, Item item, int firstLineWidth, int lineWidth) {
+    void appendItemToRow(int index, Item item, int firstLineWidth, int availWidth, int availHeight) {
     	//System.out.println("adding item to row: " + item);
     	int itemLayout = item.getLayout();
     	boolean isExpand = (itemLayout & Item.LAYOUT_EXPAND) == Item.LAYOUT_EXPAND;
@@ -158,25 +162,25 @@ extends ContainerView
     		item.setLayout( itemLayout ^ Item.LAYOUT_EXPAND );
     	}
     	// ensure that the style is set, so that style:hover styles are correctly applied:
-    	item.getItemWidth(firstLineWidth, lineWidth);
+    	item.getItemWidth(firstLineWidth, availWidth, availHeight);
         if (this.focusFirstElement && (item.appearanceMode != Item.PLAIN)) {
             focusItem(index, item);
             this.focusFirstElement = false;
         }
-        int width = item.getItemWidth(firstLineWidth, lineWidth);
-        int height = item.getItemHeight(firstLineWidth, lineWidth);
+        int width = item.getItemWidth(firstLineWidth, availWidth, availHeight);
+        int height = item.getItemHeight(firstLineWidth, availWidth, availHeight);
         if (isExpand) {
         	item.setLayout(itemLayout);
         }
         //System.out.println("appendItemToRow: newline=" + (Item.LAYOUT_NEWLINE_BEFORE == (itemLayout & Item.LAYOUT_NEWLINE_BEFORE)) + ", item=" + item);
 
         if ( Item.LAYOUT_NEWLINE_BEFORE == (itemLayout & Item.LAYOUT_NEWLINE_BEFORE) 
-                || (this.rowWidth + this.paddingHorizontal + width > lineWidth)) 
+                || (this.rowWidth + this.paddingHorizontal + width > availWidth)) 
         {
         	//System.out.println("adding linebreak: newline-before=" +  ( Item.LAYOUT_NEWLINE_BEFORE == (itemLayout & Item.LAYOUT_NEWLINE_BEFORE)) + ", width too big=" + (this.rowWidth + this.paddingHorizontal + width > lineWidth) + ", rowWidth=" + this.rowWidth + ", item.width=" + width + ", lineWidth=" + lineWidth + ", isExpand=" + isExpand + ", item=" + item );
             // Break if the NEWLINE_BEFORE is specified or not enough
             // room in the current row
-            rowBreak(lineWidth, itemLayout);
+            rowBreak(availWidth, availHeight, itemLayout);
         }
         this.rowWidth += width;
         if (this.currentRow.size() == 0) {
@@ -193,11 +197,11 @@ extends ContainerView
         if (Item.LAYOUT_NEWLINE_AFTER == (itemLayout & Item.LAYOUT_NEWLINE_AFTER) || isExpand) 
         {
         	//System.out.println("adding rowbreak for newline after");
-            rowBreak(lineWidth, itemLayout);
+            rowBreak(availWidth, availHeight, itemLayout);
         }
     }
 
-    private void rowBreak(int lineWidth, int itemLayout) {
+    private void rowBreak(int lineWidth, int availHeight, int itemLayout) {
         if (this.currentRow.size() == 0) {
             return; // Current row is empty
         }
@@ -222,8 +226,8 @@ extends ContainerView
             rowItem.relativeX = currentWidth;
             if (Item.LAYOUT_EXPAND == (rowItem.getLayout() & Item.LAYOUT_EXPAND)) {
             	//System.out.println("encountered expand layout - width before: " + rowItem.itemWidth + ", lineWidth="+ lineWidth + ", currentWidth=" + currentWidth );
-            	int availableWidth = lineWidth - this.rowWidth + rowItem.itemWidth;
-            	rowItem.getItemWidth( availableWidth, availableWidth );
+            	int availWidth = lineWidth - this.rowWidth + rowItem.itemWidth;
+            	rowItem.getItemWidth( availWidth, availWidth, availHeight );
             	//System.out.println("encountered expand layout - width now: " + rowItem.itemWidth + " for " + rowItem);
 //                        if (requiredExpanded == null) {
 ////                            requiredExpanded = new RowItem[this.currentRow.size() - i];
@@ -394,7 +398,7 @@ extends ContainerView
         Item focItem = items[this.focusedIndex];
         int rowIndex = 0;
         //int colIndex = 0;
-        int xOffset = 0;
+        int horizontalXOffset = 0;
         for (int i = 0; i < this.allRows.size(); i++) {
                 ArrayList row = (ArrayList) this.allRows.get(i);
                 for (int j = 0; j < row.size(); j++) {
@@ -402,7 +406,7 @@ extends ContainerView
                     if (rowItem == focItem) {
                             rowIndex = i;
                             //colIndex = j;
-                            xOffset = rowItem.relativeX + (rowItem.itemWidth >> 1);
+                            horizontalXOffset = rowItem.relativeX + (rowItem.itemWidth >> 1);
                             i = 10000;
                             break;
                     }
@@ -423,7 +427,7 @@ extends ContainerView
         if (gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) {
             // Going Up
             if (this.horizontalOffset == -1) {
-            	this.horizontalOffset = xOffset;
+            	this.horizontalOffset = horizontalXOffset;
             }
             while (rowIndex > 0) {
                     rowIndex--;
@@ -438,7 +442,7 @@ extends ContainerView
         } else if (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8) {
             // Going Down
             if (this.horizontalOffset == -1) {
-            	this.horizontalOffset = xOffset;
+            	this.horizontalOffset = horizontalXOffset;
             }
             
             while(rowIndex < (this.allRows.size() - 1)) {
@@ -494,7 +498,7 @@ extends ContainerView
         return item;
     }
 
-    private Item getItemByHorizontalOffset(ArrayList row, int xOffset) {
+    private Item getItemByHorizontalOffset(ArrayList row, int horizontalXOffset) {
         Item item = null;
         Item rowItem = null;
         int distance = 60000;
@@ -504,7 +508,7 @@ extends ContainerView
                 rowItem = (Item) row.get(i);
                 if (rowItem.appearanceMode != Item.PLAIN) {
                         itemOffset = rowItem.relativeX + (rowItem.itemWidth >> 1);
-                        itemDistance = xOffset - itemOffset;
+                        itemDistance = horizontalXOffset - itemOffset;
                         if(itemDistance < 0) {
                         	itemDistance = -itemDistance;
                         }

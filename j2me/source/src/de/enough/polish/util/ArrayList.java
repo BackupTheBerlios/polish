@@ -52,7 +52,7 @@ import de.enough.polish.io.Serializer;
  * </ul>
  * </p>
  * @param <K> when you use the enough-polish-client-java5.jar you can parameterize the ArrayList, e.g. ArrayList&lt;Integer&gt; = new ArrayList&lt;Integer&gt;(10); 
- * <p>Copyright (c) Enough Software 2005 - 2008</p>
+ * <p>Copyright (c) Enough Software 2005 - 2009</p>
  * @author Robert Virkus, robert@enough.de
  */
 public class ArrayList
@@ -73,7 +73,7 @@ implements Externalizable
 	}
 	
 	/**
-	 * creates an ArrayList with the given initial capacity and a growth factor of 75%
+	 * Creates an ArrayList with the given initial capacity and a growth factor of 75%
 	 * 
 	 * @param initialCapacity the capacity of this array list.
 	 */
@@ -159,11 +159,11 @@ implements Externalizable
 	 * @return the element stored at the given position
 	 * @throws IndexOutOfBoundsException when the index < 0 || index >= size()
 	 */
-		//#if polish.java5
-			public K get( int index ) {
-		//#else
-			//# public Object get( int index ) {
-		//#endif
+	//#if polish.java5
+		public K get( int index ) {
+	//#else
+		//# public Object get( int index ) {
+	//#endif
 		if (index < 0 || index >= this.size ) {
 			throw new IndexOutOfBoundsException("the index [" + index + "] is not valid for this list with the size [" + this.size + "].");
 		}
@@ -181,11 +181,11 @@ implements Externalizable
 	 * @return the element stored at the given position
 	 * @throws IndexOutOfBoundsException when the index < 0 || index >= size()
 	 */
-		//#if polish.java5
-			public K remove( int index ) {
-		//#else
-			//# public Object remove( int index ) {
-		//#endif
+	//#if polish.java5
+		public K remove( int index ) {
+	//#else
+		//# public Object remove( int index ) {
+	//#endif
 		if (index < 0 || index >= this.size ) {
 			throw new IndexOutOfBoundsException(
 					//#if polish.debug.error
@@ -214,11 +214,11 @@ implements Externalizable
 	 * @throws IllegalArgumentException when the given element is null
 	 * @see #contains(Object)
 	 */
-		//#if polish.java5
-			public boolean remove( K element ) {
-		//#else
-			//# public boolean remove( Object element ) {
-		//#endif
+	//#if polish.java5
+		public boolean remove( K element ) {
+	//#else
+		//# public boolean remove( Object element ) {
+	//#endif
 		if (element == null) {
 			throw new IllegalArgumentException( "ArrayList cannot contain null.");
 		}
@@ -422,16 +422,40 @@ implements Externalizable
 	 * @throws NullPointerException when the specified list is null
 	 */
 	public void addAll(ArrayList list) {
-		int addedSize = this.size + list.size();
+		addAll( list.storedObjects, 0, list.size );
+	}
+	
+	/**
+	 * Adds all elements to this list.
+	 * 
+	 * @param elements the array elements
+	 * @throws NullPointerException when an element is null or the array is null
+	 */
+	public void addAll(Object[] elements) {
+		addAll( elements, 0, elements.length );
+	}
+
+	
+	/**
+	 * Adds all elements to this list.
+	 * 
+	 * @param elements the array elements
+	 * @param offset the start index
+	 * @param len  the number of elements that should be copied
+	 * @throws NullPointerException when an element is null or the array is null
+	 */
+	public void addAll(Object[] elements, int offset, int len) {
+		int addedSize = this.size + len;
 		if (addedSize > this.storedObjects.length) {
 			Object[] newStore = new Object[ addedSize ];
 			System.arraycopy( this.storedObjects, 0, newStore, 0, this.size );
-			System.arraycopy( list.storedObjects, 0, newStore, this.size, list.size() );
+			System.arraycopy( elements, offset, newStore, this.size, len );
 			this.storedObjects = newStore;
 		} else {
-			System.arraycopy( list.storedObjects, 0, this.storedObjects, this.size, list.size() );
+			System.arraycopy(  elements, offset, this.storedObjects, this.size, len );
 		}
 		this.size = addedSize;		
+
 	}
 
 	/* (non-Javadoc)

@@ -24,7 +24,6 @@
  */
 package de.enough.polish.ui;
 
-import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 
@@ -457,11 +456,7 @@ public abstract class CustomItem extends Item
 	 */
 	protected static final int NONE = 0;
 
-	private static final int INTERACTION_MODES = KEY_PRESS | KEY_RELEASE | KEY_REPEAT | TRAVERSE_HORIZONTAL | TRAVERSE_VERTICAL
-	//#ifdef polish.hasPointerEvents
-	 	| POINTER_PRESS | POINTER_RELEASE
-	//#endif
-	 ;
+	private static final int INTERACTION_MODES = KEY_PRESS | KEY_RELEASE | KEY_REPEAT | TRAVERSE_HORIZONTAL | TRAVERSE_VERTICAL;
 	//#if polish.css.skip-set-clip
 		protected boolean skipClipping;
 	//#endif
@@ -534,7 +529,8 @@ public abstract class CustomItem extends Item
 	 *   KEY_PRESS | KEY_RELEASE | KEY_REPEAT | POINTER_PRESS | TRAVERSE_HORIZONTAL | TRAVERSE_VERTICAL
 	 *  </pre></p>
 	 *  <ul>
-	 *    <li><code>POINTER_PRESS</code> is only supported on devices that support pointers.</li>
+	 *    <li><code>POINTER_PRESS, POINTER_RELEASE</code> is only supported on devices that support pointers.</li>
+	 *    <li><code>POINTER_DRAG</code> is only supported on devices that support pointer motion events.</li>
 	 *    <li><code>KEY_REPEAT</code> events are supported where the native Canvas implementation supports these events.</li>
 	 *    <li><code></code> .</li>
 	 *    <li><code></code> .</li>
@@ -554,20 +550,29 @@ public abstract class CustomItem extends Item
 	 */
 	protected final int getInteractionModes()
 	{
-		Canvas canvas = getScreen();
-		if (canvas == null) {
-			canvas = StyleSheet.currentScreen;
-		}
-		if (canvas != null) {
-			if (canvas.hasRepeatEvents()) {
-				return INTERACTION_MODES | KEY_REPEAT;			
-			} else {
-				return INTERACTION_MODES;
+		Display display = Display.getInstance();
+		int modes = INTERACTION_MODES;
+		if (display != null) {
+			if (display.hasRepeatEvents()) {
+				modes |= KEY_REPEAT;			
 			}
+			//#ifdef polish.hasPointerEvents
+				if (display.hasPointerEvents()) {
+					modes |= POINTER_PRESS | POINTER_RELEASE;
+				}
+				if (display.hasPointerMotionEvents()) {
+					modes |= POINTER_DRAG;
+				}
+			//#endif
 		} else {
 			// assume REPEAT events are supported:
-			return INTERACTION_MODES | KEY_REPEAT;			
+			modes |= KEY_REPEAT
+			//#ifdef polish.hasPointerEvents
+			 	| POINTER_PRESS | POINTER_RELEASE | POINTER_DRAG
+			//#endif
+			;			
 		}
+		return modes;
 	}
 
 	/**
@@ -1199,13 +1204,13 @@ public abstract class CustomItem extends Item
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#initContent(int, int)
 	 */
-	protected void initContent(int firstLineWidth, int lineWidth) {
+	protected void initContent(int firstLineWidth, int availWidth, int availHeight) {
 		// intialising the content:
 		int prefWidth = getPrefContentWidth( -1 );
 		this.preferredWidth = prefWidth;
 		boolean resetSize = false;
-		if (prefWidth > lineWidth) {
-			prefWidth = lineWidth;
+		if (prefWidth > availWidth) {
+			prefWidth = availWidth;
 			resetSize = true;
 		}
 		int prefHeight = getPrefContentHeight(prefWidth);
@@ -1383,6 +1388,31 @@ public abstract class CustomItem extends Item
 		y -= this.contentY;
 		this.isEventHandled = false;
 		pointerReleased( x, y );
+		return (this.isEventHandled || this.isInitialized == false);
+	}
+	//#endif
+	
+	//#ifdef polish.hasPointerEvents
+	/**
+	 * Handles the dragging/movement of a pointer.
+	 * This method should be overwritten only when the polish.hasPointerEvents 
+	 * preprocessing symbol is defined.
+	 * The default implementation returns false.
+	 *  
+	 * @param relX the x position of the pointer pressing relative to this item's left position
+	 * @param relY the y position of the pointer pressing relative to this item's top position
+	 * @return true when the dragging of the pointer was actually handled by this item.
+	 */
+	protected boolean handlePointerDragged( int x, int y ) {
+		// translate the coordinates to the origin of this custom-item:
+		if ( !isInContentArea(x, y) ) {
+			// the content area has not been affected, so return false:
+			return false;
+		}
+		x -= this.contentX;
+		y -= this.contentY;
+		this.isEventHandled = false;
+		pointerDragged( x, y );
 		return (this.isEventHandled || this.isInitialized == false);
 	}
 	//#endif

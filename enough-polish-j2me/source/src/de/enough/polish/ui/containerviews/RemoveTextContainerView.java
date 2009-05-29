@@ -2,7 +2,7 @@
 /*
  * Created on May 17, 2008 at 2:04:13 AM.
  * 
- * Copyright (c) 2008 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -28,10 +28,6 @@ package de.enough.polish.ui.containerviews;
 
 import javax.microedition.lcdui.Graphics;
 
-import de.enough.polish.ui.AnimationThread;
-import de.enough.polish.ui.Background;
-import de.enough.polish.ui.Border;
-import de.enough.polish.ui.ClippingRegion;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.ContainerView;
 import de.enough.polish.ui.IconItem;
@@ -39,9 +35,6 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
-import de.enough.polish.ui.UiAccess;
-import de.enough.polish.util.DrawUtil;
-import de.enough.polish.util.ImageUtil;
 
 /**
  * <p>Arranges the items either in single rows or in a table layout.</p>
@@ -97,7 +90,7 @@ public class RemoveTextContainerView extends ContainerView {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#initContent(de.enough.polish.ui.Container, int, int)
 	 */
-	protected void initContent(Item parentContainerItem, int firstLineWidth, int lineWidth) {
+	protected void initContent(Item parentContainerItem, int firstLineWidth, int availWidth, int availHeight) {
 		this.isVertical = false;
 		this.isHorizontal = true;
 		Container parent = (Container) parentContainerItem;		
@@ -162,7 +155,7 @@ public class RemoveTextContainerView extends ContainerView {
 				}
 			}
 		}
-		super.initContent( parentContainerItem, firstLineWidth, lineWidth );
+		super.initContent( parentContainerItem, firstLineWidth, availWidth, availHeight );
 
 		if (this.removeTextItem != null) {
 			int height;
@@ -182,10 +175,10 @@ public class RemoveTextContainerView extends ContainerView {
 			}			
 			if (this.removeTextItem.getText() == null) {
 				this.removeTextItem.setText(longestText);
-				height = this.removeTextItem.getItemHeight(lineWidth, lineWidth);
+				height = this.removeTextItem.getItemHeight(availWidth, availWidth, availHeight);
 				this.removeTextItem.setText(null);
 			} else {
-				height = this.removeTextItem.getItemHeight(lineWidth, lineWidth);
+				height = this.removeTextItem.getItemHeight(availWidth, availWidth, availHeight);
 			}
 			//#if polish.css.view-remove-text-position
 				if (this.removeTextPosition == POSITION_BOTTOM) {

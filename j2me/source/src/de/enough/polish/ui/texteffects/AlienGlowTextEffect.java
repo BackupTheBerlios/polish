@@ -25,7 +25,7 @@ import de.enough.polish.util.DrawUtil;
  *   <li><b>font-color:</b>: You should set the font-color black in order to get an nice alien glow effect. </li>
  * </ul>
  * <p>Choosing the same inner and outer color and varying the transparency is recommended. Dropshadow just works, if the Text is opaque.</p>
- * <p>Copyright Enough Software 2006 - 2008</p>
+ * <p>Copyright Enough Software 2006 - 2009</p>
  * <pre>
  * history
  *        14-Jul-2006
@@ -46,6 +46,16 @@ public class AlienGlowTextEffect extends TextEffect {
 	private int outerColor = 0xFF00FF00;
 	
 	
+	
+	/**
+	 * Creates a new alien glow effect
+	 */
+	public AlienGlowTextEffect()
+	{
+		super();
+		this.isTextSensitive = true;
+	}
+
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.TextEffect#drawString(java.lang.String, int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
@@ -125,21 +135,26 @@ public class AlienGlowTextEffect extends TextEffect {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.TextEffect#setStyle(de.enough.polish.ui.Style)
 	 */
-	public void setStyle(Style style) {
-		super.setStyle(style);
-		this.lastText = null;
+	public void setStyle(Style style, boolean resetStyle) {
+		super.setStyle(style, resetStyle);
+		boolean hasChanged = false;
 		//#if polish.css.text-alien-glow-inner-color
 			Color sShadowColorObj = style.getColorProperty( "text-alien-glow-inner-color" );
 			if (sShadowColorObj != null) {
 				this.innerColor = sShadowColorObj.getColor();
+				hasChanged  = true;
 			}
 		//#endif
 		//#if polish.css.text-alien-glow-outer-color
 			Color eShadowColorObj = style.getColorProperty( "text-alien-glow-outer-color" );
 			if (eShadowColorObj != null) {
 				this.outerColor = eShadowColorObj.getColor();
+				hasChanged = true;
 			}
 		//#endif
+		if (resetStyle || hasChanged) {
+			this.lastText = null;
+		}
 			
 	}
 

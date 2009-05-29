@@ -1,7 +1,7 @@
 /*
  * Created on Dec 20, 2006 at 11:16:26 AM.
  * 
- * Copyright (c) 2006 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -25,17 +25,19 @@
  */
 package de.enough.polish.rmi;
 
+import java.io.IOException;
+
 /**
  * <p>An unchecked exception.</p>
  *
- * <p>Copyright Enough Software 2006 - 2008</p>
+ * <p>Copyright Enough Software 2006 - 2009</p>
  * <pre>
  * history
  *        Dec 20, 2006 - rob creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class RemoteException extends Exception {
+public class RemoteException extends IOException {
 	
 	private Throwable cause;
 

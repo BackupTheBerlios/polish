@@ -31,9 +31,9 @@ import de.enough.polish.ui.Border;
 import javax.microedition.lcdui.Graphics;
 
 /**
- * <p>Paints a plain border in one color at the bottom of the item.</p>
+ * <p>Paints a plain border in one color at the right side of the item.</p>
  *
- * <p>Copyright Enough Software 2005 - 2008</p>
+ * <p>Copyright Enough Software 2005 - 2009</p>
  * @author Robert Virkus, robert@enough.de
  */
 public class RightBorder extends Border {
@@ -47,9 +47,8 @@ public class RightBorder extends Border {
 	 * @param borderWidth the width of this border
 	 */
 	public RightBorder( int color, int borderWidth ) {
-		super();
+		super(0, borderWidth, 0, 0);
 		this.color = color;
-		this.borderWidth = borderWidth;
 	}
 
 	/* (non-Javadoc)
@@ -60,8 +59,8 @@ public class RightBorder extends Border {
 		x += width;
 		int endY = y + height;
 		g.drawLine( x, y, x, endY );
-		if (this.borderWidth > 1) {
-			int border = this.borderWidth - 1;
+		if (this.borderWidthRight > 1) {
+			int border = this.borderWidthRight - 1;
 			while ( border > 0) {
 				g.drawLine( x + border, y, x + border, endY );
 				border--;

@@ -1,7 +1,7 @@
 /*
  * Created on Apr 10, 2008 at 12:17:17 PM.
  * 
- * Copyright (c) 2007 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -90,6 +90,14 @@ public class TableData implements Externalizable
 	 */
 	public int getNumberOfRows() {
 		return this.numberOfRows;
+	}
+	
+	/**
+	 * Retrieves the size.
+	 * @return numberOfRows() * numberOfColumns()
+	 */
+	public int size() {
+		return this.numberOfRows * this.numberOfColumns;
 	}
 
 	
@@ -264,20 +272,37 @@ public class TableData implements Externalizable
 	 * @see #get(int, int)
 	 */
 	public void set( int column, int row, Object value ) {
+//		if (column < 0) {
+//			throw new ArrayIndexOutOfBoundsException("For column " + column);
+//		}
+//		if (row < 0) {
+//			throw new ArrayIndexOutOfBoundsException("For row " + row);
+//		}
 		this.data[column][row] = value;
 	}
 	
 
 	/**
-	 * Sets the value of the given table position.
+	 * Retrieves the value of the given table position.
 	 * @param column the horizontal position
 	 * @param row the vertical position
-	 * @return the value previously stored at the given position
+	 * @return the value stored at the given position
 	 * @throws ArrayIndexOutOfBoundsException when the column or row is invalid
 	 * @see #set(int, int, Object)
 	 */
 	public Object get( int column, int row ) {
 		return this.data[column][row];
+	}
+	
+	/**
+	 * Retrieves the value of the given table position.
+	 * @param index the position of the item
+	 * @return the value stored at the given position
+	 * @throws ArrayIndexOutOfBoundsException when the column or row is invalid
+	 * @see #get(int, int)
+	 */
+	public Object get( int index ) {
+		return get( index % this.numberOfColumns, index / this.numberOfColumns );
 	}
 	
 	/**

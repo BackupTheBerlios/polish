@@ -2,7 +2,7 @@
 /*
  * Created on 08-Apr-2005 at 11:17:51.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -35,6 +35,7 @@ import javax.microedition.lcdui.Image;
 import de.enough.polish.ui.Background;
 import de.enough.polish.ui.ChoiceGroup;
 import de.enough.polish.ui.ChoiceItem;
+import de.enough.polish.ui.ClippingRegion;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.ContainerView;
 import de.enough.polish.ui.Form;
@@ -46,11 +47,7 @@ import de.enough.polish.ui.StyleSheet;
  * <p>Shows  the available items of an ChoiceGroup or a horizontal list.</p>
  * <p>Apply this view by specifying "view-type: horizontal-choice;" in your polish.css file.</p>
  *
- * <p>Copyright (c) Enough Software 2005 - 2008</p>
- * <pre>
- * history
- *        02-March-2006 - rob creation
- * </pre>
+ * <p>Copyright (c) Enough Software 2006 - 2009</p>
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class HorizontalChoiceView extends ContainerView {
@@ -60,6 +57,7 @@ public class HorizontalChoiceView extends ContainerView {
 	private final static int POSITION_RIGHT = 1; 
 	private final static int POSITION_LEFT = 2; 
 	private final static int POSITION_NONE = 3;
+	protected int targetXOffset;
 	private int arrowColor;
 	//#ifdef polish.css.horizontalview-left-arrow
 		private Image leftArrow;
@@ -71,7 +69,7 @@ public class HorizontalChoiceView extends ContainerView {
 	//#endif
 	//#ifdef polish.css.horizontalview-arrows-image
 		private Image arrowsImage;
-		private int yOffset;
+		private int yArrowsAdjust;
 	//#endif 
 	//#ifdef polish.css.horizontalview-arrow-position
 		private int arrowPosition;
@@ -91,10 +89,14 @@ public class HorizontalChoiceView extends ContainerView {
 	private int leftArrowStartX;
 	private int leftArrowEndX;
 	private int rightArrowStartX;
-	//private int rightArrowEndX;
+	private int rightArrowEndX;
 	//private boolean isInitialized;
-	private int xOffset;
 	private int completeWidthOfItems;
+	private int pointerReleasedIndex = -1;
+	private boolean isPointerPressedHandled;
+	private int pointerPressedX;
+	private int innerContentWidth;
+	private int contentStart;
 
 	/**
 	 * Creates a new view
@@ -102,24 +104,31 @@ public class HorizontalChoiceView extends ContainerView {
 	public HorizontalChoiceView() {
 		super();
 		this.allowsAutoTraversal = false;
+		this.allowsDirectSelectionByPointerEvent = false;
 	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#initContent(de.enough.polish.ui.Container, int, int)
 	 */
-	protected void initContent(Item parentItm, int firstLineWidth,
-			int lineWidth) 
+	protected void initContent(Item parentItm, int firstLineWidth, int availWidth, int availHeight) 
 	{
 		//#debug
-		System.out.println("Initalizing HorizontalChoiceView with a lineWidth of " + lineWidth );
+		System.out.println("Initalizing HorizontalChoiceView with a lineWidth of " + availWidth );
 		Container parent = (Container) parentItm;
-		//TODO allow no selection for MULTIPLE
-		int selectedItemIndex = ((ChoiceGroup) parent).getSelectedIndex();
-		if (selectedItemIndex == -1) {
-			selectedItemIndex = 0;
-		}
-		if ( selectedItemIndex < parent.size() ) {
-			parent.focus (selectedItemIndex, parent.get( selectedItemIndex ), 0);
+		ChoiceGroup choiceGroup = (ChoiceGroup) parent;
+		int selectedItemIndex;
+		
+		boolean isMultiple = choiceGroup.getType() == ChoiceGroup.MULTIPLE;
+		if (!isMultiple) {
+			selectedItemIndex = choiceGroup.getSelectedIndex();
+			if (selectedItemIndex == -1) {
+				selectedItemIndex = 0;
+			}
+			if ( selectedItemIndex < parent.size() ) {
+				parent.focusChild (selectedItemIndex, parent.get( selectedItemIndex ), 0);
+			}
+		} else {
+			selectedItemIndex = parent.getFocusedIndex();
 		}
 		//parent.focusedIndex = selectedItemIndex;
 		int height = 0;
@@ -169,61 +178,85 @@ public class HorizontalChoiceView extends ContainerView {
 		//#if polish.css.horizontalview-arrows-image
 			}
 		//#endif
+		int contentStartX = 0;
 		//#ifdef polish.css.horizontalview-arrow-position
 			if (this.arrowPosition == POSITION_BOTH_SIDES) {
 		//#endif
 				this.leftArrowStartX = 0;
 				this.leftArrowEndX = this.arrowWidth;
-				this.rightArrowStartX = lineWidth - this.arrowWidth;
-				//this.rightArrowEndX = lineWidth;
+				this.rightArrowStartX = availWidth - this.arrowWidth;
+				this.rightArrowEndX = availWidth;
+				contentStartX = this.leftArrowEndX;
 		//#ifdef polish.css.horizontalview-arrow-position
 			} else if (this.arrowPosition == POSITION_RIGHT ){
-				this.leftArrowStartX = lineWidth - completeArrowWidth + this.paddingHorizontal;
+				this.leftArrowStartX = availWidth - completeArrowWidth + this.paddingHorizontal;
 				this.leftArrowEndX = this.leftArrowStartX + this.arrowWidth;
-				this.rightArrowStartX = lineWidth - this.arrowWidth;
-				//this.rightArrowEndX = lineWidth;
+				this.rightArrowStartX = availWidth - this.arrowWidth;
+				this.rightArrowEndX = availWidth;
 			} else if (this.arrowPosition == POSITION_LEFT ) {
 				this.leftArrowStartX = 0;
 				this.leftArrowEndX = this.arrowWidth;
 				this.rightArrowStartX = this.arrowWidth + this.paddingHorizontal;
-				//this.rightArrowEndX = this.rightArrowStartX + this.arrowWidth;
+				this.rightArrowEndX = this.rightArrowStartX + this.arrowWidth;
+				contentStartX = this.leftArrowEndX;
 			} else {
 				completeArrowWidth = 0;
 			}
 		//#endif
-		lineWidth -= completeArrowWidth;
+		this.contentStart = contentStartX;
+		availWidth -= completeArrowWidth;
 		int completeWidth = 0;
 		Item[] items = parent.getItems();
 		for (int i = 0; i < items.length; i++) {
 			Item item = items[i];
 			//TODO allow drawing of boxes as well
-			((ChoiceItem) item).drawBox = false;
-			int itemHeight = item.getItemHeight(lineWidth, lineWidth);
+			//if (!isMultiple) {
+				((ChoiceItem) item).drawBox = false;
+			//}
+			int itemHeight = item.getItemHeight(availWidth, availWidth, availHeight);
 			int itemWidth = item.itemWidth;
 			if (itemHeight > height ) {
 				height = itemHeight;
 			}
+			item.relativeX = completeWidth + contentStartX;
+			item.relativeY = 0;
 			int startX = completeWidth;
 			completeWidth += itemWidth + this.paddingHorizontal;
 			if ( i == selectedItemIndex) {
 				if ( startX + this.xOffset < 0 ) {
 					this.xOffset = -startX; 
-				} else if ( completeWidth + this.xOffset > lineWidth ) {
-					this.xOffset = lineWidth - completeWidth;
+				} else if ( completeWidth + this.xOffset > availWidth ) {
+					this.xOffset = availWidth - completeWidth;
 				}
+				this.targetXOffset = this.xOffset;
+			}
+		}
+		// now adjust vertical offsets:
+		for (int i = 0; i < items.length; i++) {
+			Item item = items[i];
+			int itemHeight = item.itemHeight;
+			if (height > itemHeight) {
+				int lo = item.getLayout();
+				if ((lo & Item.LAYOUT_VCENTER) == Item.LAYOUT_VCENTER ) {
+					item.relativeY += (height - item.itemHeight) / 2;
+				} else if ((lo & Item.LAYOUT_BOTTOM) == Item.LAYOUT_BOTTOM ) {
+					item.relativeY += (height - item.itemHeight);
+				}
+
 			}
 		}
 		this.completeWidthOfItems = completeWidth;
 	
 		this.contentHeight = height;
-		this.contentWidth = lineWidth + completeArrowWidth;
+		this.contentWidth = availWidth + completeArrowWidth;
+		this.innerContentWidth = availWidth;
 		
 		if (items.length > 0) {
 			this.appearanceMode = Item.INTERACTIVE;
 		} else {
 			this.appearanceMode = Item.PLAIN;
 		}
-		if (selectedItemIndex < items.length ) {
+		if (selectedItemIndex < items.length && selectedItemIndex != -1) {
 			this.focusedItem = items[ selectedItemIndex ];
 			this.currentItemIndex = selectedItemIndex;
 		}
@@ -235,7 +268,7 @@ public class HorizontalChoiceView extends ContainerView {
 		//#if polish.css.horizontalview-arrows-image
 			if (this.arrowsImage != null) {
 				int offset = (this.contentHeight - this.arrowsImage.getHeight()) / 2; // always center vertically
-				this.yOffset = offset;
+				this.yArrowsAdjust = offset;
 			}
 		//#endif
 		//#if polish.css.horizontalview-left-arrow			
@@ -331,25 +364,14 @@ public class HorizontalChoiceView extends ContainerView {
 	}
 	
 	
-	/**
-	 * Paints the content of this container view.
-	 * This method calls 
-	 * 
-	 * @param container the parent container
-	 * @param myItems the items that should be painted
-	 * @param x the left start position
-	 * @param y the upper start position
-	 * @param leftBorder the left border, nothing must be painted left of this position
-	 * @param rightBorder the right border, nothing must be painted right of this position
-	 * @param clipX absolute horizontal clipping start
-	 * @param clipY absolute verical clipping start
-	 * @param clipWidth clipping width
-	 * @param clipHeight clipping height
-	 * @param g the Graphics on which this item should be painted.
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.ContainerView#paintContent(de.enough.polish.ui.Container, de.enough.polish.ui.Item[], int, int, int, int, int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
 	protected void paintContent(Container container, Item[] myItems, int x, int y, int leftBorder, int rightBorder, int clipX, int clipY, int clipWidth, int clipHeight, Graphics g) {
 		//#debug
 		System.out.println("HorizontalView.start: x=" + x + ", y=" + y + ", leftBorder=" + leftBorder + ", rightBorder=" + rightBorder );
+		
 		int modifiedX = x;
 
 		//#ifdef polish.css.horizontalview-arrow-position
@@ -376,7 +398,7 @@ public class HorizontalChoiceView extends ContainerView {
 
 		
 		//#debug
-		System.out.println("HorizontalChoiceView.item: x=" + modifiedX + ", y=" + y + ", leftBorder=" + leftBorder + ", rightBorder=" + rightBorder + ", availableWidth=" + (rightBorder - leftBorder) + ", itemWidth=" + this.focusedItem.itemWidth  );
+		System.out.println("HorizontalChoiceView.item: x=" + modifiedX + ", y=" + y + ", leftBorder=" + leftBorder + ", rightBorder=" + rightBorder + ", availableWidth=" + (rightBorder - leftBorder) + ", itemWidth=" + (this.focusedItem != null ? this.focusedItem.itemWidth : -1) );
 //		g.setColor(0xff0000);
 //		g.drawLine( rightBorder, y, rightBorder, y + this.contentHeight);
 //		g.drawLine( leftBorder, y, leftBorder, y + this.contentHeight);
@@ -384,26 +406,26 @@ public class HorizontalChoiceView extends ContainerView {
 		if (setClip) {
 			g.clipRect(modifiedX, clipY, rightBorder - modifiedX, clipHeight );
 		}
-		
-		int itemX = modifiedX + this.xOffset;
-		int focusedX = 0;
-		int cHeight = this.contentHeight;
-		int vOffset = 0;
-		for (int i = 0; i < myItems.length; i++) {
-			Item item = myItems[i];
-			if ( item == this.focusedItem ) {
-				focusedX = itemX;				
-			} else {
-				//TODO allow explicit setting of top, vcenter and bottom for items (=layout)
-				vOffset = (cHeight - item.itemHeight) / 2;
-				item.paint(itemX, y + vOffset, itemX, itemX + item.itemWidth, g);
-			}
-			itemX += item.itemWidth + this.paddingHorizontal;
-		}
-		if (this.focusedItem != null) {
-			vOffset = (cHeight - this.focusedItem.itemHeight) / 2;
-			this.focusedItem.paint(focusedX, y + vOffset, leftBorder, rightBorder, g);			
-		}
+		super.paintContent(container, myItems, x + this.xOffset, y, leftBorder, rightBorder, clipX, clipY, clipWidth, clipHeight, g);
+//		int itemX = modifiedX + this.xOffset;
+//		int focusedX = 0;
+//		int cHeight = this.contentHeight;
+//		int vOffset = 0;
+//		for (int i = 0; i < myItems.length; i++) {
+//			Item item = myItems[i];
+//			if ( item == this.focusedItem ) {
+//				focusedX = itemX;				
+//			} else {
+//				//TODO allow explicit setting of top, vcenter and bottom for items (=layout)
+//				vOffset = (cHeight - item.itemHeight) / 2;
+//				item.paint(itemX, y + vOffset, itemX, itemX + item.itemWidth, g);
+//			}
+//			itemX += item.itemWidth + this.paddingHorizontal;
+//		}
+//		if (this.focusedItem != null) {
+//			vOffset = (cHeight - this.focusedItem.itemHeight) / 2;
+//			this.focusedItem.paint(focusedX, y + vOffset, leftBorder, rightBorder, g);			
+//		}
 		if (setClip) {
 			g.setClip( clipX, clipY, clipWidth, clipHeight );
 		}
@@ -422,9 +444,10 @@ public class HorizontalChoiceView extends ContainerView {
 			// draw left arrow
 			int startX = x + this.leftArrowStartX;
 			Image image = null;
+			int vOffset = 0;
 			//#if polish.css.horizontalview-arrows-image
 				image = this.arrowsImage;
-				vOffset = this.yOffset;
+				vOffset = this.yArrowsAdjust;
 			//#endif			
 			//#ifdef polish.css.horizontalview-left-arrow
 				if (image == null) {
@@ -505,91 +528,257 @@ public class HorizontalChoiceView extends ContainerView {
 		ChoiceGroup choiceGroup = (ChoiceGroup) this.parentContainer;
 		Item[] items = this.parentContainer.getItems();
 		ChoiceItem currentItem = (ChoiceItem) this.focusedItem;
+		int current = this.currentItemIndex;
 		if (currentItem == null) {
 			//#debug warn
 			System.out.println("HorizontalChoiceView: getNextItem(): no current item defined, it seems the initContent() has been skipped.");
-			this.currentItemIndex = choiceGroup.getSelectedIndex();
-			currentItem = (ChoiceItem) items[ this.currentItemIndex ];
+			current = choiceGroup.getSelectedIndex();
+			if (choiceGroup.getType() == ChoiceGroup.MULTIPLE) {
+				current = choiceGroup.getFocusedIndex();
+				if (current == -1) {
+					current = 0;
+				}
+			}
+			this.currentItemIndex = current;
+			currentItem = (ChoiceItem) items[ current ];
 			this.focusedItem = currentItem;
 		}
 		
 		ChoiceItem nextItem = null;
 	
 		//#ifdef polish.css.horizontalview-roundtrip
-			if ( gameAction == Canvas.LEFT && (this.allowRoundTrip || this.currentItemIndex > 0 )) {
+			if ( gameAction == Canvas.LEFT && (this.allowRoundTrip || current > 0 )) {
 		//#else
 			//# if ( gameAction == Canvas.LEFT && this.currentItemIndex > 0 ) {
 		//#endif
 			currentItem.select(false);
-			this.currentItemIndex--;
+			current--;
 			//#ifdef polish.css.horizontalview-roundtrip
-				if (this.currentItemIndex < 0) {
-					this.currentItemIndex = items.length - 1;
+				if (current < 0) {
+					current = items.length - 1;
 				}
 			//#endif
-			nextItem = (ChoiceItem) items[ this.currentItemIndex ];
+			nextItem = (ChoiceItem) items[ current ];
 			//nextItem.adjustProperties( lastItem );
 			//this.currentItem.select( true );
-			choiceGroup.setSelectedIndex( this.currentItemIndex, true );
+			choiceGroup.setSelectedIndex( current, true );
 			if (getScreen() instanceof Form) {
 				choiceGroup.notifyStateChanged();
 			}
 		//#ifdef polish.css.horizontalview-roundtrip
-			} else if ( gameAction == Canvas.RIGHT && (this.allowRoundTrip || this.currentItemIndex < items.length - 1  )) {
+			} else if ( gameAction == Canvas.RIGHT && (this.allowRoundTrip || current < items.length - 1  )) {
 		//#else
-			} else if ( gameAction == Canvas.RIGHT && this.currentItemIndex < items.length - 1 ) {
+			} else if ( gameAction == Canvas.RIGHT && current < items.length - 1 ) {
 		//#endif
 			currentItem.select(false);
-			this.currentItemIndex++;
+			current++;
 			//#ifdef polish.css.horizontalview-roundtrip
-				if (this.currentItemIndex >= items.length) {
-					this.currentItemIndex = 0;
+				if (current >= items.length) {
+					current = 0;
 				}
 			//#endif
-			nextItem = (ChoiceItem) items[ this.currentItemIndex ];
+			nextItem = (ChoiceItem) items[ current ];
 			//nextItemItem.adjustProperties( lastItem );
-			choiceGroup.setSelectedIndex( this.currentItemIndex, true );
+			choiceGroup.setSelectedIndex( current, true );
 			if (getScreen() instanceof Form) {
 				choiceGroup.notifyStateChanged();
 			}
 			//this.currentItem.select( true );			
 		}
+		this.currentItemIndex = current;
 		// in all other cases there is no next item:
 		return nextItem;
 	}
+	
 
 	//#ifdef polish.hasPointerEvents
-	/**
-	 * Handles pointer pressed events.
-	 * This is an optional feature that doesn't need to be implemented by subclasses.
-	 * 
-	 * @param x the x position of the event
-	 * @param y the y position of the event
-	 * @return true when the event has been handled. When false is returned the parent container
-	 *         will forward the event to the affected item.
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.ItemView#handlePointerDragged(int, int)
+	 */
+	public boolean handlePointerDragged(int x, int y) {
+		if (this.isPointerPressedHandled && this.completeWidthOfItems > this.contentWidth) {
+			int offset = this.xOffset + (x - this.pointerPressedX);
+			if (offset + this.completeWidthOfItems < this.innerContentWidth) {
+				offset = this.innerContentWidth - this.completeWidthOfItems;
+			} else if (offset > 0) {
+				offset = 0;
+			}
+			this.xOffset = offset;
+			this.targetXOffset = offset;
+			this.pointerPressedX = x;
+			return true;
+		}
+		return super.handlePointerDragged(x, y);
+	}
+	//#endif
+
+
+	//#ifdef polish.hasPointerEvents
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.ItemView#handlePointerPressed(int, int)
 	 */
 	public boolean handlePointerPressed(int x, int y) {
-		if (y < 0 || y > this.contentHeight ) {
-			return false;
+		//#debug
+		System.out.println("handlePointerPressed at " + x + ", " + y);
+		if (this.parentContainer.isInItemArea(x, y)) {
+			if ( this.completeWidthOfItems > this.contentWidth) {
+				this.isPointerPressedHandled = true;
+				this.pointerPressedX = x;
+			}
+			this.pointerReleasedIndex = -1;
+			int index = this.currentItemIndex;
+			int size = this.parentContainer.size();
+			boolean isMultiple = ((ChoiceGroup)this.parentContainer).getType() == ChoiceGroup.MULTIPLE;
+			if (x >= this.leftArrowStartX  && x <= this.leftArrowEndX ) {
+				if (isMultiple) {
+					this.pointerReleasedIndex = 0;
+					return true;
+				}
+				index--;
+				if (index < 0) {
+					index = size - 1;
+				}
+			} else if (x >= this.rightArrowStartX  && x <= this.rightArrowEndX ) {
+				if (isMultiple) {
+					this.pointerReleasedIndex = 0;
+					return true;
+				}
+				index++;
+				if (index >= size ) {
+					index = 0;
+				}
+			} else {
+				x -= this.xOffset;
+				for (int i = 0; i < size; i++) {
+					Item item = this.parentContainer.get(i);
+					//System.out.println("item=" + item + ", relativeX=" + item.relativeX  + ", x=" + x);
+					if (x >= item.relativeX && x <= item.relativeX + item.itemWidth) {
+						index = i;
+						break;
+					}
+				}
+
+			}
+			if (index != this.currentItemIndex) {
+				this.pointerReleasedIndex = index;
+				Item item = this.parentContainer.get(index);
+				notifyItemPressedStart(item);
+				return true;
+			} else {
+				this.pointerReleasedIndex = -1;
+			}
+		} else {
+			this.isPointerPressedHandled = false;
 		}
-		Item[] items = this.parentContainer.getItems();
-		if (this.currentItemIndex > 0 && x >= this.leftArrowStartX  && x <= this.leftArrowEndX ) {
-			this.currentItemIndex--;
-		} else  {
-			this.currentItemIndex++;
-			if (this.currentItemIndex >= items.length ) {
-				this.currentItemIndex = 0;
+		return super.handlePointerPressed(x, y);
+	}
+	//#endif
+	
+	private Item getItemAt( int x ) {
+		x -= this.xOffset - this.contentStart;
+		int size = this.parentContainer.size();
+		for (int i = 0; i < size; i++) {
+			Item item = this.parentContainer.get(i);
+			if (x >= item.relativeX && x <= item.relativeX + item.itemWidth) {
+				return item;
 			}
 		}
-		
-		((ChoiceItem)this.focusedItem).select( false );
-		this.focusedItem = items[ this.currentItemIndex ];
-		//this.currentItem.select( true );
-		((ChoiceGroup) this.parentContainer).setSelectedIndex( this.currentItemIndex, true );
-		this.parentContainer.focus (this.currentItemIndex, this.focusedItem, 0);
+		return null;
+	}
+
+	
+	//#ifdef polish.hasPointerEvents
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.ItemView#handlePointerReleased(int, int)
+	 */
+	public boolean handlePointerReleased(int x, int y)
+	{
+		//#debug
+		System.out.println("handlePointerReleased: x=" + x + ", y=" + y + ", pointerReleasedIndex=" + this.pointerReleasedIndex + ", instance=" + this);
+		int index = this.pointerReleasedIndex;
+		if (index == -1) {
+			return super.handlePointerReleased(x, y);
+		}
+		if (!(this.parentContainer.isInItemArea(x, y))) {
+			this.pointerReleasedIndex = -1;
+			//System.out.println("release: not int item area: " + x  + ", " + y);
+			return false;
+		}
+		boolean isMultiple = ((ChoiceGroup)this.parentContainer).getType() == ChoiceGroup.MULTIPLE;
+		if (x >= this.rightArrowStartX  && x <= this.rightArrowEndX ) {
+			if (isMultiple) {
+				if (this.targetXOffset + this.completeWidthOfItems > this.innerContentWidth) {
+					Item mostRightVisibleItem = getItemAt( this.innerContentWidth );
+					int offset;
+					if (mostRightVisibleItem != null) {
+						offset = this.contentStart - mostRightVisibleItem.relativeX; // - this.contentStart + this.paddingHorizontal);
+//						System.out.println("diff=" + diff + ", this.innerContentWidth/2=" + (this.innerContentWidth/2));
+						int diff = this.targetXOffset - offset;
+						if (diff < (this.innerContentWidth/2)) {
+							offset = this.targetXOffset - this.innerContentWidth/2;
+						}
+					} else {
+						offset = this.targetXOffset - this.innerContentWidth/2;
+					}
+					if (offset + this.completeWidthOfItems < this.innerContentWidth) {
+						offset = this.innerContentWidth - this.completeWidthOfItems;
+					}
+					//System.out.println("setting offset from " + this.targetXOffset + " to " + offset);
+					this.targetXOffset = offset;
+					return true;
+				} else {
+					// handle anyhow, we don't anything funny happening in the original choicegroup:
+					return true;
+				}
+			}
+		} else if (x <= this.leftArrowEndX && x >= this.leftArrowStartX) {
+			if (isMultiple) {
+				if (this.targetXOffset < 0) {
+					Item mostLeftVisibleItem = getItemAt( 0 );
+					int offset;
+					if (mostLeftVisibleItem != null) {
+						offset = this.contentStart + this.innerContentWidth - mostLeftVisibleItem.itemWidth - mostLeftVisibleItem.relativeX; // - this.contentStart + this.paddingHorizontal);
+//						System.out.println("diff=" + diff + ", this.innerContentWidth/2=" + (this.innerContentWidth/2));
+						int diff = offset - this.targetXOffset;
+						if (diff < (this.innerContentWidth/2)) {
+							offset = this.targetXOffset + this.innerContentWidth/2;
+						}
+					} else {
+						offset = this.targetXOffset + this.innerContentWidth/2;
+					}
+					if (offset > 0) {
+						offset = 0;
+					}
+					//System.out.println("setting offset from " + this.targetXOffset + " to " + offset);
+					this.targetXOffset = offset;
+					return true;
+				} else {
+					// handle anyhow, we don't anything funny happening in the original choicegroup:
+					return true;
+				}
+			}
+		}
+		this.pointerReleasedIndex = -1;
+		ChoiceGroup choiceGroup = (ChoiceGroup) this.parentContainer;
+		//boolean isMultiple = choiceGroup.getType() == ChoiceGroup.MULTIPLE;
+		if (!isMultiple) {
+			ChoiceItem choiceItem = (ChoiceItem)this.focusedItem;
+			choiceItem.select( false ); 
+		}
+		ChoiceItem item = (ChoiceItem) this.parentContainer.get( index );
+		this.focusedItem = item;
+		notifyItemPressedEnd(item);
+		this.parentContainer.focusChild (index, item, 0);
+		if (isMultiple) {
+			item.toggleSelect();			
+		} else {
+			choiceGroup.setSelectedIndex( index, !item.isSelected );
+		}
+		this.parentContainer.notifyStateChanged();
 		return true;
 	}
 	//#endif
+
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#defocus(de.enough.polish.ui.Style)
@@ -633,4 +822,33 @@ public class HorizontalChoiceView extends ContainerView {
 		return (parent instanceof ChoiceGroup);
 	}
 
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.ItemView#animate(long, de.enough.polish.ui.ClippingRegion)
+	 */
+	public void animate(long currentTime, ClippingRegion repaintRegion)
+	{
+		super.animate(currentTime, repaintRegion);
+		int target = this.targetXOffset;
+		int current = this.xOffset;
+		if (target != current) {
+			int diff = Math.abs( target - current );
+			int delta = diff / 3;
+			if (delta < 2) {
+				delta = 2;
+			}
+			if (target < current) {
+				current -= delta;
+				if (current < target) {
+					current = target;
+				}
+			} else {
+				current += delta;
+				if (current > target) {
+					current = target;
+				}
+			}
+			this.xOffset = current;
+			addFullRepaintRegion(this.parentItem, repaintRegion);
+		}
+	}
 }

@@ -2,7 +2,7 @@
 /*
  * Created on 10.07.2006 at 12:22:13.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -48,7 +48,7 @@ import de.enough.polish.util.DrawUtil;
  *   <li><b>text-drop-shadow-size:</b>: use this for finetuning the shadows radius.</li>
  * </ul>
  * <p>Choosing the same inner and outer color and varying the transparency is recommended. Dropshadow just works, if the Text is opaque.</p>
- * <p>Copyright Enough Software 2006 - 2008</p>
+ * <p>Copyright Enough Software 2006 - 2009</p>
  * <pre>
  * history
  *        11-Jul-2006
@@ -68,6 +68,16 @@ public class DropShadowTextEffect extends TextEffect {
 	private int xOffset=1, yOffset=2;
 	
 	
+	
+	/**
+	 * Creates a new drop shadow effect 
+	 */
+	public DropShadowTextEffect()
+	{
+		super();
+		this.isTextSensitive = true;
+	}
+
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.TextEffect#drawString(java.lang.String, int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
@@ -115,19 +125,21 @@ public class DropShadowTextEffect extends TextEffect {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.TextEffect#setStyle(de.enough.polish.ui.Style)
 	 */
-	public void setStyle(Style style) {
-		super.setStyle(style);
-		this.lastText = null;
+	public void setStyle(Style style, boolean resetStyle) {
+		super.setStyle(style, resetStyle);
+		boolean hasChanged = false;
 		//#if polish.css.text-drop-shadow-inner-color
 			Color sShadowColorObj = style.getColorProperty( "text-drop-shadow-inner-color" );
 			if (sShadowColorObj != null) {
 				this.innerColor = sShadowColorObj.getColor();
+				hasChanged = true;
 			}
 		//#endif
 		//#if polish.css.text-drop-shadow-outer-color
 			Color eShadowColorObj = style.getColorProperty( "text-drop-shadow-outer-color" );
 			if (eShadowColorObj != null) {
 				this.outerColor = eShadowColorObj.getColor();
+				hasChanged = true;
 			}
 		//#endif
 
@@ -135,21 +147,26 @@ public class DropShadowTextEffect extends TextEffect {
 			Integer sizeInt = style.getIntProperty( "text-drop-shadow-size" );
 			if (sizeInt != null) {
 				this.size = sizeInt.intValue();
+				hasChanged = true;
 			}
 		//#endif
 		//#if polish.css.text-drop-shadow-offsetx
 			Integer oXInt = style.getIntProperty( "text-drop-shadow-offsetx" );
 			if (oXInt != null) {
 				this.xOffset = oXInt.intValue();
+				hasChanged = true;
 			}
 		//#endif
 		//#if polish.css.text-drop-shadow-offsety
 			Integer oYInt = style.getIntProperty( "text-drop-shadow-offsety" );
 			if (oYInt != null) {
 				this.yOffset = oYInt.intValue();
+				hasChanged = true;
 			}
 		//#endif
-			
+		if (resetStyle || hasChanged) {
+			this.lastText = null;
+		}
 	}
 	
 	/* (non-Javadoc)

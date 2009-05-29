@@ -3,7 +3,7 @@
 /*
  * Created on 22-Aug-2005 at 12:53:15.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -41,7 +41,7 @@ import de.enough.polish.util.DrawUtil;
  * <p>Fades in the background from fully transparent to the target color, which might also be translucent.</p>
  * <p>This background is only available when the target device supports MIDP 2.0</p>
  *
- * <p>Copyright (c) Enough Software 2005 - 2008</p>
+ * <p>Copyright (c) Enough Software 2005 - 2009</p>
  * <pre>
  * history
  *        22-Aug-2005 - rob creation

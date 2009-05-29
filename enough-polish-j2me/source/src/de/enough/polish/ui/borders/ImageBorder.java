@@ -2,7 +2,7 @@
 /*
  * Created on 01-May-2007 at 11:34:15
  *
- * Copyright (c) 2007 Michael Koch / Enough Software
+ * Copyright (c) 2009 Michael Koch / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -38,7 +38,7 @@ import javax.microedition.lcdui.game.Sprite;
 /**
  * <p>Paints an border with customizable images for each edge and each side.</p>
  *
- * <p>Copyright (c) Enough Software 2007 - 2008</p>
+ * <p>Copyright (c) Enough Software 2007 - 2009</p>
  * @author Michael Koch, michael.koch@enough.de
  */
 public class ImageBorder extends Border
@@ -53,9 +53,11 @@ public class ImageBorder extends Border
 	private Image bottomCenterImage;
 	private Image bottomRightImage;
 	private boolean isLoaded;
+	private final int borderWidth;
 	
 	public ImageBorder(int borderWidth, Image image)
 	{
+		super( borderWidth, borderWidth, borderWidth, borderWidth );
 		this.borderWidth = borderWidth;
 		this.topLeftImage = getImagePart(image, 0, borderWidth);
 		this.topCenterImage = getImagePart(image, 1, borderWidth);
@@ -70,6 +72,7 @@ public class ImageBorder extends Border
 
 	public ImageBorder(int borderWidth, String imageUrl)
 	{
+		super( borderWidth, borderWidth, borderWidth, borderWidth );
 		this.borderWidth = borderWidth;
 		this.imageUrl = imageUrl;
 	}

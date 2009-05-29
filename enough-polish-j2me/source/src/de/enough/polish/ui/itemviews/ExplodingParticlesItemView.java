@@ -2,7 +2,7 @@
 /*
  * Created on Sep 16, 2007 at 3:09:31 PM.
  * 
- * Copyright (c) 2007 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -51,7 +51,7 @@ import de.enough.polish.util.ImageUtil;
  * </pre>
  * </p>
  *
- * <p>Copyright Enough Software 2007 - 2008</p>
+ * <p>Copyright Enough Software 2007 - 2009</p>
  * <pre>
  * history
  *        Sep 16, 2007 - rob creation
@@ -81,8 +81,8 @@ public class ExplodingParticlesItemView extends ItemView {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ItemView#initContent(de.enough.polish.ui.Item, int, int)
 	 */
-	protected void initContent(Item parent, int firstLineWidth, int lineWidth) {
-		initContentByParent(parent, firstLineWidth, lineWidth);
+	protected void initContent(Item parent, int firstLineWidth, int availWidth, int availHeight) {
+		initContentByParent(parent, firstLineWidth, availWidth, availHeight);
 		//#if polish.midp2
 			int width = (this.contentWidth * this.scaleFactor) / 100;
 			int height = (this.contentHeight * this.scaleFactor) / 100;

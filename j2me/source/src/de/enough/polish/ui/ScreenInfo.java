@@ -3,7 +3,7 @@
 /*
  * Created on 07-Jun-2005 at 16:20:01.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -28,7 +28,7 @@
 package de.enough.polish.ui;
 
 import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Displayable;
+import de.enough.polish.ui.Displayable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
@@ -56,7 +56,7 @@ import javax.microedition.lcdui.Image;
  * </pre>
  * </p>
  *
- * <p>Copyright (c) Enough Software 2005 - 2008</p>
+ * <p>Copyright (c) Enough Software 2005 - 2009</p>
  * <pre>
  * history
  *        07-Jun-2005 - rob creation
@@ -159,7 +159,6 @@ public class ScreenInfo {
 	 */
 	public static void setImage( Image image ) {
 		((IconItem)item).setImage( image );
-		repaint();
 	}
 
 	/**
@@ -170,7 +169,6 @@ public class ScreenInfo {
 	 */
 	public static void setImage( Image image, Style style ) {
 		((IconItem)item).setImage( image, style );
-		repaint();
 	}
 	
 	//#if polish.LibraryBuild

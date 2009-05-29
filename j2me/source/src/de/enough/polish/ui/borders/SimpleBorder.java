@@ -27,13 +27,15 @@
 package de.enough.polish.ui.borders;
 
 import de.enough.polish.ui.Border;
+import de.enough.polish.ui.Color;
+import de.enough.polish.ui.Style;
 
 import javax.microedition.lcdui.Graphics;
 
 /**
  * <p>Paints a plain border in one color.</p>
  *
- * <p>Copyright Enough Software 2004 - 2008</p>
+ * <p>Copyright Enough Software 2004 - 2009</p>
  * @author Robert Virkus, robert@enough.de
  */
 public class SimpleBorder extends Border {
@@ -47,10 +49,24 @@ public class SimpleBorder extends Border {
 	 * @param borderWidth the width of this border
 	 */
 	public SimpleBorder( int color, int borderWidth ) {
-		super();
+		super( borderWidth, borderWidth, borderWidth, borderWidth );
 		this.color = color;
-		this.borderWidth = borderWidth;
 	}
+	
+	/**
+	 * Creates a new simple border.
+	 * 
+	 * @param color the color of this border in RGB, e.g. 0xFFDD12
+	 * @param leftWidth the width of this border on the left side
+	 * @param rightWidth the width of this border on the right side
+	 * @param topWidth the width of this border at the top
+	 * @param bottomWidth the width of this border at the bottom
+	 */
+	public SimpleBorder( int color, int leftWidth, int rightWidth, int topWidth, int bottomWidth  ) {
+		super(leftWidth, rightWidth, topWidth, bottomWidth);
+		this.color = color;
+	}
+
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Border#paint(int, int, int, int, javax.microedition.lcdui.Graphics)
@@ -60,13 +76,64 @@ public class SimpleBorder extends Border {
 		height--;
 		g.setColor( this.color );
 		g.drawRect( x, y, width, height );
-		if (this.borderWidth > 1) {
-			int border = this.borderWidth - 1;
+		if (this.borderWidthLeft > 1) {
+			int border = this.borderWidthLeft - 1;
 			while ( border > 0) {
 				g.drawRect( x+border, y+border, width - (border<<1), height - (border<<1) );
 				border--;
 			}
 		}
 	}
+	
+
+	//#if polish.css.animations
+	/**
+	 * Allows borders to be animated using CSS attribute animations.
+	 * @param style the style containing typically only one element
+	 */
+	public void setStyle(Style style)
+	{
+		//#if polish.css.border-simple-color
+			Color col = style.getColorProperty("border-simple-color");
+			if (col != null) {
+				this.color = col.getColor();
+			}
+		//#endif
+		//#if polish.css.border-simple-width
+			Integer widthInt = style.getIntProperty("border-simple-width");
+			if (widthInt != null) {
+				int w = widthInt.intValue();
+				this.borderWidthBottom = w;
+				this.borderWidthTop = w;
+				this.borderWidthLeft = w;
+				this.borderWidthRight = w;
+			}
+		//#endif
+		//#if polish.css.border-simple-width-left
+			Integer widthLeftInt = style.getIntProperty("border-simple-width-left");
+			if (widthLeftInt != null) {
+				this.borderWidthLeft = widthLeftInt.intValue();
+			}
+		//#endif
+		//#if polish.css.border-simple-width-right
+			Integer widthRightInt = style.getIntProperty("border-simple-width-right");
+			if (widthRightInt != null) {
+				this.borderWidthRight = widthRightInt.intValue();
+			}
+		//#endif
+		//#if polish.css.border-simple-width-top
+			Integer widthTopInt = style.getIntProperty("border-simple-width-top");
+			if (widthTopInt != null) {
+				this.borderWidthTop = widthTopInt.intValue();
+			}
+		//#endif
+		//#if polish.css.border-simple-width-bottom
+			Integer widthBottomInt = style.getIntProperty("border-simple-width-bottom");
+			if (widthBottomInt != null) {
+				this.borderWidthBottom = widthBottomInt.intValue();
+			}
+		//#endif
+	}
+	//#endif
 
 }

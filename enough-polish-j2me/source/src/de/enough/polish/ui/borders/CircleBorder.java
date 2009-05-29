@@ -40,7 +40,7 @@ import de.enough.polish.ui.Border;
  * 	<li><b>stroke-style</b>: the stroke-style, either "dotted" or "solid". Defaults to "solid". </li>
  * </ul>
  *
- * <p>Copyright Enough Software 2004 - 2008</p>
+ * <p>Copyright Enough Software 2004 - 2009</p>
 
  * <pre>
  * history
@@ -54,9 +54,8 @@ public class CircleBorder extends Border {
 	private final int color;
 
 	public CircleBorder( int color, int width, int strokeStyle ) {
-		super();
+		super( width, width, width, width);
 		this.color = color;
-		this.borderWidth = width;
 		this.strokeStyle = strokeStyle;
 	}
 
@@ -70,8 +69,8 @@ public class CircleBorder extends Border {
 			g.setStrokeStyle( this.strokeStyle );
 		}
 		g.drawArc( x, y, width, height, 0, 360 );
-		if (this.borderWidth > 1) {
-			int bw = this.borderWidth;
+		if (this.borderWidthLeft > 1) {
+			int bw = this.borderWidthLeft;
 			while (bw > 0) {
 				g.drawArc( x + bw, y + bw, width - 2*bw, height - 2*bw, 0, 360 );
 				bw--;

@@ -51,7 +51,7 @@ import de.enough.polish.io.RecordingDataInputStream;
 /**
  * <p>Locale provides translations and format dates and currencies depending on the chosen localization.</p>
  *
- * <p>Copyright Enough Software 2004, 2005, 2006, 2007 - 2008</p>
+ * <p>Copyright Enough Software 2004, 2005, 2006, 2007 - 2009</p>
 
  * <pre>
  * history
@@ -501,6 +501,59 @@ public final class Locale {
 		//#endif	
 	}
 	
+	/**
+	 * Formats the given time as a time string, e.g. '13:45' or '1:45 PM'
+	 * @param time the time in milliseconds since 1.1.1970
+	 * @return the formatted time
+	 */
+	public static String formatTime(long time)
+	{
+		return formatTime( new Date(time) );
+	}
+
+	
+	/**
+	 * Formats the given time as a time string, e.g. '13:45' or '1:45 PM'
+	 * @param time the date
+	 * @return the formatted time
+	 */
+	public static String formatTime(Date time)
+	{
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(time);
+		return formatTime( calendar );
+	}
+	
+
+	/**
+	 * Formats the given time as a time string, e.g. '13:45' or '1:45 PM'
+	 * @param time the date
+	 * @return the formatted time
+	 */
+	public static String formatTime(Calendar time)
+	{
+		StringBuffer buffer = new StringBuffer();
+		formatTime( time, buffer );
+		return buffer.toString();
+	}
+	
+	/**
+	 * Formats the given time as a time string, e.g. '13:45' or '1:45 PM'
+	 * @param time the date
+	 * @param buffer the buffer to which the time should be added
+	 */
+	public static void formatTime(Calendar time, StringBuffer buffer)
+	{
+		//TODO right now only 24 hour system is supported
+		int hours = time.get(Calendar.HOUR_OF_DAY);
+		buffer.append( hours ).append(':');
+		int minutes = time.get( Calendar.MINUTE );
+		if (minutes < 10) {
+			buffer.append('0');
+		}
+		buffer.append( minutes );
+	}
+
 	//#if polish.i18n.useDynamicTranslations || polish.LibraryBuild
 	/**
 	 * Loads translations from the specified file which is embedded in the JAR file.
@@ -655,5 +708,7 @@ public final class Locale {
 	}
 	//#endif
 
+
+	
 	
 }

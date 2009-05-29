@@ -30,12 +30,14 @@ import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.ui.Background;
 import de.enough.polish.ui.ClippingRegion;
+import de.enough.polish.ui.Color;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.StyleSheet;
 import de.enough.polish.ui.UiAccess;
+import de.enough.polish.util.HashMap;
 
 /**
  * <p>Paints text in a background.</p>
@@ -54,7 +56,7 @@ import de.enough.polish.ui.UiAccess;
  * </ul>
  * </p>
  *
- * <p>Copyright Enough Software 2004 - 2008</p>
+ * <p>Copyright Enough Software 2004 - 2009</p>
 
  * <pre>
  * history
@@ -66,10 +68,12 @@ public class TextBackground
 extends Background
 {
 	
-	private final int color;
+	private static HashMap localizations;
+	
+	private int color;
 	private final int anchor;
-	private final int xOffset;
-	private final int yOffset;
+	private int xOffset;
+	private int yOffset;
 	private final transient StringItem item;
 	private final String textStyleName;
 
@@ -106,9 +110,9 @@ extends Background
 		x += this.xOffset;
 		y += this.yOffset;
 		if ( (this.anchor & Graphics.VCENTER) == Graphics.VCENTER) {
-			y += (height - this.item.getItemHeight(width, width)/ 2);
+			y += (height - this.item.getItemHeight(width, width, height)/ 2);
 		} else if ( (this.anchor & Graphics.BOTTOM) == Graphics.BOTTOM) {
-			y += height - this.item.getItemHeight(width, width);
+			y += height - this.item.getItemHeight(width, width, height);
 		}
 		this.item.paint( x, y, x, x + width, g );
 	}
@@ -144,6 +148,19 @@ extends Background
 				this.item.setStyle(style);
 			}
 		}
+		if (localizations != null) {
+			String originalText = (String) this.item.getAttribute("original");
+			if (originalText == null) {
+				originalText = this.item.getText();
+				this.item.setAttribute("original", originalText);
+			}
+			if (originalText != null) {
+				String translation = (String) localizations.get( originalText );
+				if (translation != null && !translation.equals(originalText)) {
+					this.item.setText(translation);
+				}
+			}
+		}
 	}
 
 
@@ -157,7 +174,45 @@ extends Background
 		this.item.animate(currentTime, repaintRegion);
 	}
 	
-	
+	//#if polish.css.animations
+		/* (non-Javadoc)
+		 * @see de.enough.polish.ui.Background#setStyle(de.enough.polish.ui.Style)
+		 */
+		public void setStyle(Style style)
+		{
+			//#if polish.css.background-text-color
+				Color col = style.getColorProperty("background-text-color");
+				if (col != null) {
+					this.color = col.getColor();
+				}
+			//#endif
+			//#if polish.css.background-text-x-offset
+				Integer xOffsetInt = style.getIntProperty("background-text-x-offset");
+				if (xOffsetInt != null) {
+					this.xOffset = xOffsetInt.intValue();
+				}
+			//#endif
+			//#if polish.css.background-text-y-offset
+				Integer yOffsetInt = style.getIntProperty("background-text-y-offset");
+				if (yOffsetInt != null) {
+					this.yOffset = yOffsetInt.intValue();
+				}
+			//#endif
+				
+		}
+	//#endif
 
+
+	/**
+	 * Specifies a translations. Use this for localizing a TextBackground.
+	 * @param original the original text
+	 * @param translation the translation
+	 */
+	public static void setLocalization( String original, String translation ) {
+		if (localizations == null) {
+			localizations = new HashMap();
+		}
+		localizations.put(original, translation);
+	}
 
 }

@@ -2,7 +2,7 @@
 /*
  * Created on Apr 24, 2008 at 2:10:00 AM.
  * 
- * Copyright (c) 2007 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -57,11 +57,11 @@ public class VerticalSplitTextEffect extends TextEffect
 	
 
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.TextEffect#setStyle(de.enough.polish.ui.Style)
+	 * @see de.enough.polish.ui.TextEffect#setStyle(de.enough.polish.ui.Style,boolean)
 	 */
-	public void setStyle(Style style)
+	public void setStyle(Style style, boolean resetStyle)
 	{
-		super.setStyle(style);
+		super.setStyle(style, resetStyle);
 		//#if polish.css.text-split-bottom-color
 			Color bottomColorObj = style.getColorProperty("text-split-bottom-color");
 			if (bottomColorObj != null) {
@@ -84,6 +84,7 @@ public class VerticalSplitTextEffect extends TextEffect
 	public void drawString(String text, int textColor, int x, int y,
 			int orientation, Graphics g)
 	{
+		//System.out.println("Drawing split with splitPos=" + this.splitPos + ", color=" + Integer.toHexString(this.bottomColor) + ", text=" + text);
 		g.setColor(textColor);
 		g.drawString(text, x, y, orientation);
 		

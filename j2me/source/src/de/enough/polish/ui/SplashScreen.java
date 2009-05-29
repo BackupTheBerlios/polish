@@ -21,8 +21,8 @@
  */
 
 package de.enough.polish.ui;
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.CommandListener;
+
+
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
@@ -231,6 +231,6 @@ public class SplashScreen extends Screen {
 	protected String createCssSelector() {
 		return "splashscreen";
 	}
-    
+
 
 }

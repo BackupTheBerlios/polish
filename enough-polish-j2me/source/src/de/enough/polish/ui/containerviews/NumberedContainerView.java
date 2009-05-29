@@ -2,7 +2,7 @@
 /*
  * Created on Jun 27, 2007 at 12:32:08 AM.
  * 
- * Copyright (c) 2007 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -33,7 +33,7 @@ import de.enough.polish.ui.Item;
 /**
  * <p>Sets a sequential number for each embedded item-label.</p>
  *
- * <p>Copyright Enough Software 2007 - 2008</p>
+ * <p>Copyright Enough Software 2007 - 2009</p>
  * <pre>
  * history
  *        Jun 27, 2007 - rob creation
@@ -45,7 +45,7 @@ public class NumberedContainerView extends ContainerView {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#initContent(de.enough.polish.ui.Item, int, int)
 	 */
-	protected void initContent(Item parentContainerItem, int firstLineWidth, int lineWidth) {
+	protected void initContent(Item parentContainerItem, int firstLineWidth, int availWidth, int availHeight) {
 		Container container = (Container) parentContainerItem;
 		int maxNumber = Math.min( container.size(), 9 );
 		Item[] myItems = container.getItems();
@@ -53,7 +53,7 @@ public class NumberedContainerView extends ContainerView {
 			Item item = myItems[i];
 			item.setLabel( Integer.toString( i + 1 ) );
 		}
-		super.initContent(parentContainerItem, lineWidth, lineWidth);
+		super.initContent(parentContainerItem, availWidth, availWidth, availHeight);
 	}
 
 }

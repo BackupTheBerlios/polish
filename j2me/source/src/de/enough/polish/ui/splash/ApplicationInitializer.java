@@ -2,7 +2,7 @@
 /*
  * Created on 23-Mar-2005 at 18:03:45.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -26,7 +26,11 @@
  */
 package de.enough.polish.ui.splash;
 
-import javax.microedition.lcdui.Displayable;
+//#if polish.usePolishGui
+	//# import de.enough.polish.ui.Displayable;
+//#else
+	import javax.microedition.lcdui.Displayable;
+//#endif
 
 /**
  * <p>Initalizes the actual application.
@@ -44,7 +48,7 @@ import javax.microedition.lcdui.Displayable;
  * </pre>
  * </p>
  *
- * <p>Copyright (c) Enough Software 2005 - 2008</p>
+ * <p>Copyright (c) Enough Software 2005 - 2009</p>
  * <pre>
  * history
  *        23-Mar-2005 - rob creation

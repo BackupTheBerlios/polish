@@ -1,7 +1,7 @@
 /*
  * Created on 02-May-2006 at 17:31:01.
  * 
- * Copyright (c) 2006 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -28,7 +28,7 @@ package de.enough.polish.util;
 /**
  * <p>Provides some helper methods missing in java.lang.Math</p>
  *
- * <p>Copyright Enough Software 2006 - 2008</p>
+ * <p>Copyright Enough Software 2006 - 2009</p>
  * <pre>
  * history
  *        02-May-2006 - rob creation

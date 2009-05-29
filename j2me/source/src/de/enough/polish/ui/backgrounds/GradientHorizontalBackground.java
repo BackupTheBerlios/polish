@@ -3,7 +3,7 @@
 /*
  * Created on 09.06.2006 at 15:41:12.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -30,6 +30,9 @@ package de.enough.polish.ui.backgrounds;
 import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.ui.Background;
+import de.enough.polish.ui.Color;
+import de.enough.polish.ui.Dimension;
+import de.enough.polish.ui.Style;
 import de.enough.polish.util.DrawUtil;
 /**
  * Generates a gradient from the left-color to the right-color.
@@ -37,12 +40,11 @@ import de.enough.polish.util.DrawUtil;
  * @author Robert Virkus 
  */
 public class GradientHorizontalBackground  extends Background {
-	private final int leftColor;
-	private final int rightColor;
+	private int leftColor;
+	private int rightColor;
 	private final int stroke;
-	private final int start;
-	private final int end;
-	private final boolean isPercent;
+	private Dimension start;
+	private Dimension end;
 
 	private int[] gradient;
 	private int lastWidth;
@@ -57,10 +59,11 @@ public class GradientHorizontalBackground  extends Background {
 	 * @param stroke the line stroke style
 	 */
 	public GradientHorizontalBackground(int leftColor, int rightColor,int stroke) {
-		this( leftColor, rightColor, stroke, 0, 0, false );
+		this( leftColor, rightColor, stroke, null, null );
 		
 	}
 	
+
 	/**
 	 * Creates a new gradient background
 	 * 
@@ -72,12 +75,27 @@ public class GradientHorizontalBackground  extends Background {
 	 * @param isPercent true when the start and end settings should be counted in percent
 	 */
 	public GradientHorizontalBackground( int leftColor, int rightColor, int stroke, int start, int end, boolean isPercent ) {
+		this( leftColor, rightColor, stroke, new Dimension(start, isPercent), new Dimension( end, isPercent ));
+	}
+	
+	
+	/**
+	 * Creates a new gradient background
+	 * 
+	 * @param leftColor the color at the top of the gradient
+	 * @param rightColor the color at the bottom of the gradient
+	 * @param stroke the line stroke style
+	 * @param start the line counted from the top at which the gradient starts, either in pixels or in percent
+	 * @param end the line counted from the top at which the gradient ends, either in pixels or in percent
+	 */
+	public GradientHorizontalBackground( int leftColor, int rightColor, int stroke, Dimension start, Dimension end ) {
 		this.leftColor = leftColor;
 		this.rightColor = rightColor;
 		this.stroke = stroke;
-		this.start = start;
-		this.end = end;
-		this.isPercent = isPercent;
+		if (start != null && end != null && start.getValue(100) != end.getValue( 100)) {
+			this.start = start;
+			this.end = end;
+		}
 	}
 	
 	/*
@@ -89,16 +107,10 @@ public class GradientHorizontalBackground  extends Background {
 		int endOffset = this.endLine;
 		if (this.gradient == null || this.lastWidth != width ) {
 			int steps = width;
-			if (this.start != this.end) {
-				steps = this.end - this.start;
-				if (this.isPercent) {
-					this.startLine = (this.start * width) / 100;
-					this.endLine = (this.end * width) / 100;
-					steps = this.endLine - this.startLine;
-				} else {
-					this.startLine = this.start;
-					this.endLine = this.end;
-				}
+			if (this.start != null) {
+				this.startLine = this.start.getValue( width );
+				this.endLine = this.end.getValue( width );
+				steps = this.endLine - this.startLine;
 				startOffset = this.startLine;
 				endOffset = this.endLine;				
 			} else {
@@ -120,4 +132,45 @@ public class GradientHorizontalBackground  extends Background {
 		}
 		g.setStrokeStyle( Graphics.SOLID );
 	}
+	
+	//#if polish.css.animations
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Background#setStyle(de.enough.polish.ui.Style)
+	 */
+	public void setStyle(Style style)
+	{
+		boolean hasChanged = false;
+		//#if polish.css.background-horizontal-gradient-left-color
+			Color lbgColor = style.getColorProperty("background-horizontal-gradient-left-color");
+			if (lbgColor != null) {
+				this.leftColor = lbgColor.getColor();
+				hasChanged = true;
+			}
+		//#endif
+		//#if polish.css.background-horizontal-gradient-right-color
+			Color rbgColor = style.getColorProperty("background-horizontal-gradient-right-color");
+			if (rbgColor != null) {
+				this.rightColor = rbgColor.getColor();
+				hasChanged = true;
+			}
+		//#endif
+		//#if polish.css.background-horizontal-gradient-start
+			Dimension startObj = (Dimension) style.getObjectProperty("background-horizontal-gradient-start");
+			if (startObj != null) {
+				this.start = startObj;
+				hasChanged = true;
+			}
+		//#endif
+		//#if polish.css.background-horizontal-gradient-end
+			Dimension endObj = (Dimension) style.getObjectProperty("background-horizontal-gradient-end");
+			if (endObj != null) {
+				this.end = endObj;
+				hasChanged = true;
+			}
+		//#endif
+		if (hasChanged) {
+			this.lastWidth = 0;
+		}
+	}
+	//#endif
 }

@@ -3,7 +3,7 @@
 /*
  * Created on 05-Jul-2005 at 23:45:29.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -27,7 +27,6 @@
  */
 package de.enough.polish.log.file;
 
-import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Enumeration;
 
@@ -74,7 +73,7 @@ import de.enough.polish.util.ArrayList;
  * </pre>
  * </p>
  *
- * <p>Copyright Enough Software 2006 - 2008</p>
+ * <p>Copyright Enough Software 2006 - 2009</p>
  * <pre>
  * history
  *        Jul 11, 2006 - rob creation
@@ -117,6 +116,7 @@ implements Runnable
 	public void exit() {
 		super.exit();
 		if (this.out != null) {
+			this.out.flush();
 			this.out.close();
 			this.out = null;
 		}
@@ -131,8 +131,8 @@ implements Runnable
 			Enumeration enumeration = FileSystemRegistry.listRoots();
 			String roots = "";
 			//#if polish.log.file.preferredRoot:defined
-				while( enumeration.hasMoreElements() ) {
-					root = (String) enumeration.nextElement();				
+				while (enumeration.hasMoreElements()) {
+					root = (String) enumeration.nextElement();
 					roots += root + "; ";
 					//#= if  ( root.startsWith( "${polish.log.file.preferredRoot}" )) {
 						break;
@@ -145,7 +145,7 @@ implements Runnable
 					try{
 						root = (String) enumeration.nextElement();
 						//#if polish.log.file.useUnqiueName == true
-						url = "file:///" + root + "j2melog" + System.currentTimeMillis() + ".txt";
+							url = "file:///" + root + "j2melog" + System.currentTimeMillis() + ".txt";
 						//#elif polish.log.file.fileName:defined
 							//#= url = "file:///" + root + "${polish.log.file.fileName}";
 						//#else
@@ -162,10 +162,6 @@ implements Runnable
 							this.out = new PrintStream( c.openOutputStream() );
 							break;
 						}
-					}catch (SecurityException e) {
-						//ignore
-					}catch (IOException e) {
-						//ignore
 					}catch (Exception e) {
 						//ignore
 					}finally{
@@ -187,7 +183,6 @@ implements Runnable
 			//#else
 				url = "file:///" + root + "j2melog.txt";
 			//#endif
-				
 			try {
 				connection = (FileConnection) Connector.open( url, Connector.READ_WRITE );
 				if (!connection.exists()) {
@@ -205,8 +200,6 @@ implements Runnable
 				e.printStackTrace();
 				System.err.println("Unable to open file log: " + e );
 				this.isPermanentLogError = true;
-				//#debug error
-				System.out.println("Unable to open file log: " + e);
 				return;
 			}
 			//this.out.println( roots );
@@ -230,7 +223,6 @@ implements Runnable
 						this.out = new PrintStream( connection.openOutputStream() );
 					//#endif
 					this.out.println( buffer.toString() );
-					
 					//#if polish.log.file.flushEachEntry == true
 						this.out.close();
 						this.out = null;
@@ -238,8 +230,6 @@ implements Runnable
 				} catch (Exception e) {
 					e.printStackTrace();
 					System.err.println("Unable to write log entry: " + e );
-					//#debug error
-					System.out.println("Unable to write log entry: " + e);
 				}
 			}
 			// wait for next log entry:

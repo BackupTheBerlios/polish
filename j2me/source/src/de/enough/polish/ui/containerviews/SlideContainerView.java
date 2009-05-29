@@ -2,7 +2,7 @@
 /*
  * Created on Aug 21, 2006 at 12:48:38 PM.
  * 
- * Copyright (c) 2006 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -50,7 +50,7 @@ import de.enough.polish.ui.Style;
  * }
  * </pre>
  *
- * <p>Copyright Enough Software 2006 - 2008</p>
+ * <p>Copyright Enough Software 2006 - 2009</p>
  * <pre>
  * history
  *        Aug 21, 2006 - rob creation
@@ -226,8 +226,8 @@ public class SlideContainerView extends ContainerView {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#initContent(de.enough.polish.ui.Item, int, int)
 	 */
-	protected void initContent(Item parentContainerItem, int firstLineWidth, int lineWidth) {
-		super.initContent(parentContainerItem, firstLineWidth, lineWidth);
+	protected void initContent(Item parentContainerItem, int firstLineWidth, int availWidth, int availHeight) {
+		super.initContent(parentContainerItem, firstLineWidth, availWidth, availHeight);
 		// not sufficient to check this only in the showNotify method,
 		// since the container dimensions might not yet be known:
 		if (this.restartAnimation) {

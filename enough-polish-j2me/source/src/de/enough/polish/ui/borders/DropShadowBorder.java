@@ -3,7 +3,7 @@
 /*
  * Created on 22-Aug-2005 at 16:50:12.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -35,7 +35,7 @@ import de.enough.polish.util.DrawUtil;
 /**
  * <p>Paints a translucent shadow on MIDP 2.0 and Nokia-UI-API devices.</p>
  *
- * <p>Copyright (c) Enough Software 2005 - 2008</p>
+ * <p>Copyright (c) Enough Software 2005 - 2009</p>
  * <pre>
  * history
  *        22-Aug-2005 - rob creation
@@ -56,25 +56,44 @@ public class DropShadowBorder extends Border {
 	
 	private final int[] shadowColors;
 	private final int orientation;
-	private final int offset;
+	private int borderWidth;
+//	private final int offset;
 //	private int innerColor;
 //	private int outerColor;
 
 	public DropShadowBorder( int innerColor, int outerColor, int width, int offset, int orientation ) {
-		super();
-		this.borderWidth = width;
-		this.offset = offset;
+		super(width, width, width, width);
+//		this.offset = offset;
 		this.orientation = orientation;
 //		this.innerColor = innerColor;
 //		this.outerColor = outerColor;
 		this.shadowColors = DrawUtil.getGradient(innerColor, outerColor, width);
+		this.borderWidth = width;
+		switch (orientation) {
+		case BOTTOM_RIGHT:
+			this.borderWidthLeft = 0;
+			this.borderWidthTop = 0;
+			break;
+		case TOP_RIGHT:
+			this.borderWidthLeft = 0;
+			this.borderWidthBottom = 0;
+			break;
+		case BOTTOM_LEFT:
+			this.borderWidthRight = 0;
+			this.borderWidthTop = 0;
+			break;
+		case TOP_LEFT:
+			this.borderWidthRight = 0;
+			this.borderWidthBottom = 0;
+			break;
+		}
 	}
 
 	public void paint(int x, int y, int width, int height, Graphics g) {
-		int left = x - 1 + this.borderWidth;
-		int top = y - 1 + this.borderWidth;
-		int right = x + width - this.borderWidth;
-		int bottom = y + height - this.borderWidth;
+		int left = x - 1 + this.borderWidthLeft;
+		int top = y - 1 + this.borderWidthTop;
+		int right = x + width - this.borderWidthRight;
+		int bottom = y + height - this.borderWidthBottom;
 		for (int i = 0; i < this.borderWidth; i++ ) {
 			int color = this.shadowColors[i];
 			

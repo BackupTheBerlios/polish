@@ -33,7 +33,7 @@ import javax.microedition.lcdui.Graphics;
 /**
  * <p>Paints a plain border in one color at the bottom of the item.</p>
  *
- * <p>Copyright Enough Software 2005 - 2008</p>
+ * <p>Copyright Enough Software 2005 - 2009</p>
  * @author Robert Virkus, robert@enough.de
  */
 public class BottomBorder extends Border {
@@ -47,9 +47,8 @@ public class BottomBorder extends Border {
 	 * @param borderWidth the width of this border
 	 */
 	public BottomBorder( int color, int borderWidth ) {
-		super();
+		super(0,0,0,borderWidth);
 		this.color = color;
-		this.borderWidth = borderWidth;
 	}
 
 	/* (non-Javadoc)
@@ -60,8 +59,8 @@ public class BottomBorder extends Border {
 		y += height;
 		int endX = x + width;
 		g.drawLine( x, y, endX, y );
-		if (this.borderWidth > 1) {
-			int border = this.borderWidth - 1;
+		if (this.borderWidthBottom > 1) {
+			int border = this.borderWidthBottom - 1;
 			while ( border > 0) {
 				g.drawLine( x, y - border, endX, y - border );
 				border--;

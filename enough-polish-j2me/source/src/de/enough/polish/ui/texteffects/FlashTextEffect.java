@@ -3,7 +3,7 @@
 /*
  * Created on Oct 28, 2007 at 8:55:24 PM.
  * 
- * Copyright (c) 2007 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -44,7 +44,7 @@ import de.enough.polish.ui.TextEffect;
  * </pre>
  * </p>
  *
- * <p>Copyright Enough Software 2007 - 2008</p>
+ * <p>Copyright Enough Software 2007 - 2009</p>
  * <pre>
  * history
  *        Oct 28, 2007 - rob creation
@@ -98,9 +98,9 @@ public class FlashTextEffect extends TextEffect
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.TextEffect#setStyle(de.enough.polish.ui.Style)
 	 */
-	public void setStyle(Style style)
+	public void setStyle(Style style, boolean resetStyle)
 	{
-		super.setStyle(style);
+		super.setStyle(style, resetStyle);
 		Integer intervalInt = style.getIntProperty("text-flash-interval");
 		if (intervalInt != null) {
 			this.interval = intervalInt.intValue();

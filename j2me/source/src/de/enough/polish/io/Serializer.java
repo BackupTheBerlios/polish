@@ -1,7 +1,7 @@
 /*
  * Created on Mar 31, 2006 at 4:18:12 PM.
  * 
- * Copyright (c) 2006 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -28,7 +28,7 @@ package de.enough.polish.io;
 //#if polish.JavaSE
 	// imports for the Java Standard Edition:
 	import java.awt.image.BufferedImage;
-  import java.lang.reflect.Array;
+    //# import java.lang.reflect.Array;
 	import java.lang.reflect.Field;
 	import javax.imageio.ImageIO;
 	import java.util.Map;
@@ -62,7 +62,7 @@ import javax.microedition.lcdui.Image;
  * <p>The serializer class is used for serializing and de-serializing objects in a unified way.</p>
  * <p>High level serialization components like the RmsStorage use this helper class for the actual serialization.</p>
  *
- * <p>Copyright Enough Software 2006 - 2008</p>
+ * <p>Copyright Enough Software 2006 - 2009</p>
  * <pre>
  * history
  *        Mar 31, 2006 - rob creation

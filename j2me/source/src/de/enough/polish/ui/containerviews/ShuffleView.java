@@ -37,7 +37,7 @@ import de.enough.polish.ui.Style;
 /**
  * <p>Shows the items in a normal list. During the beginning an animation is shown, in which the items are moved horizontally from left and right into their position.</p>
  *
- * <p>Copyright Enough Software 2004 - 2008</p>
+ * <p>Copyright Enough Software 2004 - 2009</p>
 
  * <pre>
  * history
@@ -66,9 +66,9 @@ public class ShuffleView extends ContainerView {
 	 * @see de.enough.polish.ui.ContainerView#initContent(de.enough.polish.ui.Container, int, int)
 	 */
 	protected void initContent(Item parentItm, int firstLineWidth,
-			int lineWidth) 
+			int availWidth, int availHeight) 
 	{
-		super.initContent(parentItm, firstLineWidth, lineWidth);
+		super.initContent(parentItm, firstLineWidth, availWidth, availHeight);
 		
 		if (!this.animationInitialised) {
 			Container parent = (Container) parentItm;

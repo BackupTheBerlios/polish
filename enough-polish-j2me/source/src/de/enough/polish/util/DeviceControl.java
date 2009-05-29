@@ -8,12 +8,12 @@ package de.enough.polish.util;
  * 
  * <p>Controls backlight and vibration in an device-independent manner</p>
  *
- * <p>Copyright Enough Software 2007 - 2008</p>
+ * <p>Copyright Enough Software 2007 - 2009</p>
  * @author Andre Schmidt
  * @author Robert Virkus
  */
 public class DeviceControl
-//#if polish.api.nokia-ui && !polish.Bugs.NoPermanentBacklight
+//#if polish.api.nokia-ui
 	//#define tmp.useNokiaUi
 //#elif polish.blackberry && (polish.BlackBerry.enableBackLight || blackberry.certificate.dir:defined)
 	//#define tmp.useBlackBerry
@@ -64,9 +64,6 @@ public class DeviceControl
 				//#endif
 				com.nokia.mid.ui.DeviceControl.setLights(0,100);
 			//#elif polish.midp2  && polish.usePolishGui
-				//#if polish.Bugs.BacklightRequiresLightOff
-				StyleSheet.display.flashBacklight(0);
-				//#endif
 				StyleSheet.display.flashBacklight(durationInMs);
 			//#endif
 		}
@@ -147,8 +144,8 @@ public class DeviceControl
 			isSupported = true;
 		//#elif polish.api.samsung
 			isSupported = com.samsung.util.LCDLight.isSupported();
-		//#elif polish.midp2 && polish.usePolishGui
-			isSupported = StyleSheet.display.flashBacklight(0);
+//		//#elif polish.midp2 && polish.usePolishGui
+//			isSupported = StyleSheet.display.flashBacklight(0);
 		//#endif
 		return isSupported;
 	}

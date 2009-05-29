@@ -33,12 +33,14 @@ import javax.microedition.lcdui.Graphics;
 //#endif
 
 import de.enough.polish.ui.Background;
+import de.enough.polish.ui.Color;
+import de.enough.polish.ui.Style;
 import de.enough.polish.util.DrawUtil;
 
 /**
  * <p>Paints a simple translucent background.</p>
  *
- * <p>Copyright Enough Software 2004 - 2008</p>
+ * <p>Copyright Enough Software 2004 - 2009</p>
 
  * <pre>
  * history
@@ -48,7 +50,7 @@ import de.enough.polish.util.DrawUtil;
  */
 public class TranslucentSimpleBackground extends Background {
 
-	private final int argbColor;
+	private int argbColor;
 	//#if polish.api.nokia-ui && !polish.Bugs.TransparencyNotWorkingInNokiaUiApi
 		//#define tmp.useNokiaUi
 		private transient int[] xCoords;
@@ -215,4 +217,19 @@ public class TranslucentSimpleBackground extends Background {
 			this.lastWidth = 0;
 		//#endif
 	}
+	
+	//#if polish.css.animations
+		/* (non-Javadoc)
+		 * @see de.enough.polish.ui.Background#setStyle(de.enough.polish.ui.Style)
+		 */
+		public void setStyle(Style style)
+		{
+			//#if polish.css.background-simple-translucent-argb-color
+				Color col = style.getColorProperty("background-simple-translucent-argb-color");
+				if (col != null) {
+					this.argbColor = col.getColor();
+				}
+			//#endif
+		}
+	//#endif	
 }

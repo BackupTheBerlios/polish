@@ -25,12 +25,10 @@
  */
 package de.enough.polish.ui;
 
-import de.enough.polish.util.BitMapFont;
-import de.enough.polish.util.BitMapFontViewer;
-import de.enough.polish.util.TextUtil;
-
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
+
+import de.enough.polish.util.TextUtil;
 
 /**
  * An item that can contain a string.
@@ -52,16 +50,12 @@ public class StringItem extends Item
 	protected String[] textLines;
 	protected int textColor;
 	protected Font font;
-	//#ifdef polish.css.font-bitmap
-		protected BitMapFont bitMapFont;
-		protected BitMapFontViewer bitMapFontViewer;
-	//#endif
 	//#ifdef polish.css.text-wrap
 		protected boolean useSingleLine;
 		protected boolean clipText;
 		protected int xOffset;
-		private int textWidth;
-		private boolean isHorizontalAnimationDirectionRight;
+		protected int textWidth;
+		protected boolean isHorizontalAnimationDirectionRight;
 		protected boolean animateTextWrap = true;
 		protected int availableTextWidth;
 		//#ifdef polish.css.text-wrap-animation-direction
@@ -77,8 +71,15 @@ public class StringItem extends Item
 	//#ifdef polish.css.text-vertical-adjustment
 		protected int textVerticalAdjustment;
 	//#endif
-	//#ifdef polish.css.text-effect
+	//#if polish.css.text-effect || polish.css.font-bitmap
+		//#define tmp.useTextEffect
 		protected TextEffect textEffect;
+	//#endif
+	//#ifdef polish.css.max-lines
+		protected int maxLines = TextUtil.MAXLINES_UNLIMITED;
+	//#endif
+	//#if polish.css.text-layout
+		private int textLayout;
 	//#endif
 
 	/**
@@ -193,7 +194,7 @@ public class StringItem extends Item
 	
 	
 	
-	//#if polish.css.text-effect
+	//#if tmp.useTextEffect
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#animate(long, de.enough.polish.ui.ClippingRegion)
 	 */
@@ -228,20 +229,20 @@ public class StringItem extends Item
 								offset = this.availableTextWidth;
 							}
 							this.xOffset = offset;
-						} else { // direction is right:
+						} else if (this.textWrapDirection == DIRECTION_RIGHT) { // direction is right:
 							int offset = this.xOffset + speed;
 							if (offset > this.availableTextWidth) {
 								offset = -this.textWidth;
 							}
 							this.xOffset = offset;							
-						}
+						} 
 					//#endif
 
 					addRelativeToContentRegion(repaintRegion, 0, 0, this.contentWidth, this.contentHeight );
 				}
 			}
 		//#endif
-		//#if polish.css.text-effect
+		//#if tmp.useTextEffect
 			if (this.textEffect != null) {
 				this.textEffect.animate( this, currentTime, repaintRegion );
 			}
@@ -263,7 +264,7 @@ public class StringItem extends Item
 	//#endif
 
 
-	//#ifdef polish.css.text-effect
+	//#ifdef tmp.useTextEffect
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#hideNotify()
 	 */
@@ -275,7 +276,7 @@ public class StringItem extends Item
 	}
 	//#endif
 
-	//#ifdef polish.css.text-effect
+	//#ifdef tmp.useTextEffect
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#showNotify()
 	 */
@@ -333,12 +334,21 @@ public class StringItem extends Item
 		if ( style != null ) {
 			setStyle( style );
 		}
-		this.text = text;
-		if (text == null) {
-			this.textLines = null;
+		if (text != this.text) {
+			this.text = text;
+			if (text == null) {
+				this.textLines = null;
+			}
+			requestInit();
 		}
-		requestInit();
 	}
+	
+	//#if tmp.useTextEffect
+	public void setTextEffect(TextEffect effect)
+	{
+		this.textEffect = effect;
+	}
+	//#endif
 	
 	/**
 	 * Sets the text color for contents of the <code>StringItem</code>.
@@ -388,7 +398,7 @@ public class StringItem extends Item
 	{
 		if (this.font == null) {
 			if (this.style != null) {
-				this.font = this.style.font;
+				this.font = this.style.getFont();
 			}
 			if (this.font == null) {
 				this.font = Font.getDefaultFont();
@@ -397,12 +407,12 @@ public class StringItem extends Item
 		return this.font;
 	}
 
-
-
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#paintContent(int, int, javax.microedition.lcdui.Graphics)
 	 */
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
+		//#debug
+		System.out.println("painting at left=" + leftBorder + ", right=" + rightBorder + ", x=" + x + ", text=" + this.text);
 		if (this.text != null) {
 			//#if polish.css.text-wrap
 				int clipX = 0;
@@ -420,124 +430,93 @@ public class StringItem extends Item
 			//#ifdef polish.css.text-vertical-adjustment
 				y += this.textVerticalAdjustment;
 			//#endif
-			//#ifdef polish.css.font-bitmap
-				if (this.bitMapFontViewer != null) {
-					//#if polish.css.text-wrap
-						if (this.useSingleLine && this.clipText ) {
-							x += this.xOffset;
-						} else {
-					//#endif
-							if (this.isLayoutCenter) {
-								x = leftBorder + (rightBorder - leftBorder) / 2;
-							} else if (this.isLayoutRight) {
-								x = rightBorder;
-							} 
-					//#if polish.css.text-wrap
-						}
-					//#endif
-					//#ifdef polish.css.text-horizontal-adjustment
-						x += this.textHorizontalAdjustment;
-					//#endif
-					this.bitMapFontViewer.paint( x, y, g );
-					//#if polish.css.text-wrap
-						if (this.useSingleLine && this.clipText ) {
-							g.setClip( clipX, clipY, clipWidth, clipHeight );
-						}
-					//#endif
-					return;
-				}
-			//#endif
 				
 			//#if polish.Bugs.needsBottomOrientiationForStringDrawing
-				y += this.font.getHeight();
+				y += getFontHeight();
 			//#endif
 
 			g.setFont( this.font );
 			g.setColor( this.textColor );
 			
 			int lineHeight = getFontHeight() + this.paddingVertical; 
-			int centerX = 0;
-			if (this.isLayoutCenter) {
-				centerX = leftBorder + (rightBorder - leftBorder) / 2;
-				//#ifdef polish.css.text-horizontal-adjustment
-					centerX += this.textHorizontalAdjustment;
-				//#endif
-//			} else if (!this.isLayoutRight) {
-//				x = leftBorder;
-			}
 			//#ifdef polish.css.text-horizontal-adjustment
 				x += this.textHorizontalAdjustment;
 				leftBorder += this.textHorizontalAdjustment;
 				rightBorder += this.textHorizontalAdjustment;
 			//#endif
 
-			//#if polish.css.text-effect
+			//#if tmp.useTextEffect
 				if (this.textEffect != null) {
 					//#if polish.css.text-wrap
 						if (this.useSingleLine && this.clipText ) {
 							x += this.xOffset;
-							//#if polish.Bugs.needsBottomOrientiationForStringDrawing
-								this.textEffect.drawStrings( this.textLines, this.textColor, x, y, leftBorder, rightBorder, lineHeight, this.contentWidth, Graphics.LEFT | Graphics.BOTTOM, g );
-							//#else
-								this.textEffect.drawStrings( this.textLines, this.textColor, x, y, leftBorder, rightBorder, lineHeight, this.contentWidth, Graphics.LEFT | Graphics.TOP, g );
-							//#endif
-						} else {
-					//#endif
-							this.textEffect.drawStrings( this.textLines, this.textColor, x, y, leftBorder, rightBorder, lineHeight, this.contentWidth, this.layout, g );
-					//#if polish.css.text-wrap
 						}
+					//#endif
+					int lo;
+					//#if polish.css.text-layout
+						lo = this.textLayout & ~Item.LAYOUT_VCENTER;
+					//#else
+						lo = this.layout & ~Item.LAYOUT_VCENTER;
+					//#endif
+					//#if polish.Bugs.needsBottomOrientiationForStringDrawing
+						this.textEffect.drawStrings( this.textLines, this.textColor, x, y, leftBorder, rightBorder, lineHeight, this.contentWidth, lo	 | Item.LAYOUT_BOTTOM, g );
+					//#else
+						this.textEffect.drawStrings( this.textLines, this.textColor, x, y, leftBorder, rightBorder, lineHeight, this.contentWidth, lo | Item.LAYOUT_TOP, g );
 					//#endif
 				} else {
 			//#endif
+					int centerX = 0;
+					boolean isCenter;
+					boolean isRight;
+					//#if polish.css.text-layout
+						int lo = this.textLayout;
+						isCenter = (lo & LAYOUT_CENTER) == LAYOUT_CENTER;
+						isRight = (lo & LAYOUT_CENTER) == LAYOUT_RIGHT;
+					//#else
+						isCenter = this.isLayoutCenter;
+						isRight = this.isLayoutRight;
+					//#endif
+					
+					if (isCenter) {
+						centerX = leftBorder + (rightBorder - leftBorder) / 2;
+						//#ifdef polish.css.text-horizontal-adjustment
+							centerX += this.textHorizontalAdjustment;
+						//#endif
+					}
+					int lineX = x;
+					int lineY = y;
+					int orientation;
+					// adjust the painting according to the layout:
+					if (isRight) {
+						lineX = rightBorder;
+						orientation = Graphics.RIGHT;
+					} else if (isCenter) {
+						lineX = centerX;
+						orientation = Graphics.HCENTER;
+					} else {
+						orientation = Graphics.LEFT;
+					}
+					
+					//#if polish.css.text-wrap
+						if (this.clipText) {
+							// when clipping (and therefore a scrolling animation) is needed,
+							// center and right layouts don't really make sense - this would
+							// start and stop the scrolling at wrong places outside of the clipping area: 
+							orientation = Graphics.LEFT;
+							lineX = x + this.xOffset;
+						}
+					//#endif
+					//#if polish.Bugs.needsBottomOrientiationForStringDrawing
+						orientation = Graphics.BOTTOM | orientation;
+					//#else
+						orientation = Graphics.TOP | orientation;
+					//#endif
 					for (int i = 0; i < this.textLines.length; i++) {
 						String line = this.textLines[i];
-						int lineX = x;
-						int lineY = y;
-						int orientation;
-						// adjust the painting according to the layout:
-						if (this.isLayoutRight) {
-							lineX = rightBorder;
-							//#if polish.Bugs.needsBottomOrientiationForStringDrawing
-								orientation = Graphics.BOTTOM | Graphics.RIGHT;
-							//#else
-								orientation = Graphics.TOP | Graphics.RIGHT;
-							//#endif
-							//g.drawString( line, rightBorder, y, Graphics.TOP | Graphics.RIGHT );
-						} else if (this.isLayoutCenter) {
-							lineX = centerX;
-							//#if polish.Bugs.needsBottomOrientiationForStringDrawing
-								orientation = Graphics.BOTTOM | Graphics.HCENTER;
-							//#else
-								orientation = Graphics.TOP | Graphics.HCENTER;
-							//#endif
-							//g.drawString( line, centerX, y, Graphics.TOP | Graphics.HCENTER );
-						} else {
-							//#if polish.Bugs.needsBottomOrientiationForStringDrawing
-								orientation = Graphics.BOTTOM | Graphics.LEFT;
-							//#else
-								orientation = Graphics.TOP | Graphics.LEFT;
-							//#endif
-							// left layout (default)
-							//g.drawString( line, x, y, Graphics.TOP | Graphics.LEFT );
-						}	
-						//#if polish.css.text-wrap
-							if (this.clipText) {
-								// when clipping (and therefore a scrolling animation) is needed,
-								// center and right layouts don't really make sense - this would
-								// start and stop the scrolling at wrong places outside of the clipping area: 
-								//#if polish.Bugs.needsBottomOrientiationForStringDrawing
-									orientation = Graphics.BOTTOM | Graphics.LEFT;
-								//#else
-									orientation = Graphics.TOP | Graphics.LEFT;
-								//#endif
-								lineX = x + this.xOffset;
-							}
-						//#endif
 						g.drawString( line, lineX, lineY, orientation );
-						x = leftBorder;
-						y += lineHeight;
+						lineY += lineHeight;
 					}
-			//#if polish.css.text-effect
+			//#if tmp.useTextEffect
 				}
 			//#endif
 			//#if polish.css.text-wrap
@@ -558,132 +537,78 @@ public class StringItem extends Item
 	 * @return the width of the text
 	 */
 	public int stringWidth( String str ) {
-		//#ifdef polish.css.font-bitmap
-			if (this.bitMapFont != null) {
-				return this.bitMapFont.stringWidth( str );
+		//#if tmp.useTextEffect
+			if (this.textEffect != null) {
+				return this.textEffect.stringWidth( str );
 			} else {
 		//#endif
-			//#if polish.css.text-effect
-				if (this.textEffect != null) {
-					return this.textEffect.stringWidth( str );
-				} else {
-			//#endif
-					return getFont().stringWidth(str);
-			//#if polish.css.text-effect
-				}
-			//#endif
-		//#ifdef polish.css.font-bitmap
+				return getFont().stringWidth(str);
+		//#if tmp.useTextEffect
 			}
 		//#endif
 	}
+	
+	/**
+	 * Retrieves the width of the given char
+	 * @param c the char
+	 * @return the width of that char
+	 */
+	public int charWidth( char c) {
+		return this.font.charWidth(c);
+	}
+	
 	/**
 	 * Retrieves the height necessary for displaying a row of text without the padding-vertical.
 	 * 
 	 * @return the font height (either from the bitmap, the text-effect or the font used)
 	 */
 	public int getFontHeight() {
-		//#ifdef polish.css.font-bitmap
-			if (this.bitMapFont != null) {
-				return this.bitMapFont.getFontHeight();
+		//#if tmp.useTextEffect
+			if (this.textEffect != null) {
+				return this.textEffect.getFontHeight();
 			} else {
 		//#endif
-			//#if polish.css.text-effect
-				if (this.textEffect != null) {
-					return this.textEffect.getFontHeight();
-				} else {
-			//#endif
-					return getFont().getHeight();
-			//#if polish.css.text-effect
-				}
-			//#endif
-		//#ifdef polish.css.font-bitmap
+				return getFont().getHeight();
+		//#if tmp.useTextEffect
 			}
 		//#endif
-		
 	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#initItem()
 	 */
-	protected void initContent(int firstLineWidth, int lineWidth){
-		if (this.text != null && this.font == null) {
+	protected void initContent(int firstLineWidth, int availWidth, int availHeight){
+		//#debug
+		System.out.println("initContent for " + this.text);
+		String body = this.text;
+		if (body != null && this.font == null) {
 			this.font = Font.getDefaultFont();
 		}
-		if (this.text == null) {
+		if (body == null) {
 			this.contentHeight = 0;
 			this.contentWidth = 0;
 			this.textLines = null;
 			return;
 		}
-		//#ifdef polish.css.font-bitmap
-			if (this.bitMapFont != null) {
-				int orientation = Graphics.LEFT;
-				if (this.isLayoutCenter) {
-					orientation = Graphics.HCENTER;
-				} else if (this.isLayoutRight) {
-					orientation = Graphics.RIGHT;
-				}
-				this.bitMapFontViewer = this.bitMapFont.getViewer(
-						//#if polish.i18n.rightToLeft
-							TextUtil.reverseForRtlLanguage(
-						//#endif
-								this.text 
-						//#if polish.i18n.rightToLeft
-							)
-						//#endif
-				);
-				if (this.bitMapFontViewer != null) {
-					//#if polish.css.text-wrap
-						this.availableTextWidth = lineWidth;
-						if (this.useSingleLine) {
-							this.contentHeight = this.bitMapFontViewer.getHeight();
-							int width = this.bitMapFontViewer.getWidth();
-							if (width > lineWidth) {
-								this.clipText = true;
-								this.textWidth = width;
-								width = lineWidth;
-								this.bitMapFontViewer.setHorizontalOrientation(Graphics.LEFT);
-							} else {
-								this.bitMapFontViewer.setHorizontalOrientation(orientation);
-								this.clipText = false;
-							}
-							this.contentWidth = width;
-						} else {
-					//#endif
-							// wrap the text:
-							this.bitMapFontViewer.layout( firstLineWidth, lineWidth, this.paddingVertical, orientation );
-							this.contentHeight = this.bitMapFontViewer.getHeight();
-							this.contentWidth = this.bitMapFontViewer.getWidth();
-					//#if polish.css.text-wrap
-						}
-					//#endif
-					return;
-				}
-			}
-		//#endif
+
 		//#if polish.css.text-wrap
 			if ( this.useSingleLine ) {
-				this.availableTextWidth = lineWidth;
+				this.availableTextWidth = availWidth;
 				this.textLines = new String[]{ 
 					//#if polish.i18n.rightToLeft
 						TextUtil.reverseForRtlLanguage(
 					//#endif
-							this.text 
+							body 
 					//#if polish.i18n.rightToLeft
 						)
 					//#endif
 				};
-				int myTextWidth = stringWidth(this.text);
-				if (myTextWidth > lineWidth) {
+				int myTextWidth = stringWidth(body);
+				if (myTextWidth > availWidth) {
 					this.clipText = true;
 					this.textWidth = myTextWidth;
 					this.isHorizontalAnimationDirectionRight = false;
-					this.contentWidth = lineWidth;
-					//TODO do this only when no animation should be used
-//					int numberOfChars = (this.text.length() * lineWidth) / myTextWidth - 1;
-//					if (numberOfChars > 1) {
-//						this.textLines = new String[] { this.text.substring( 0, numberOfChars ) + ".." };
-//					}
+					this.contentWidth = availWidth;
 				} else {
 					this.clipText = false;
 					this.contentWidth = myTextWidth;
@@ -691,57 +616,117 @@ public class StringItem extends Item
 				this.contentHeight = getFontHeight();
 			} else {
 		//#endif
-				String[] lines;
-				//#ifdef polish.css.text-effect
-					if (this.textEffect != null) {
-						lines = this.textEffect.wrap( this.text, 
-								this.font, firstLineWidth, lineWidth );
-					} else {
-				//#endif
-						lines = TextUtil.wrap(this.text, this.font, firstLineWidth, lineWidth);
-				//#ifdef polish.css.text-effect
-					}
-				//#endif
+				String[] lines = wrap(body, firstLineWidth, availWidth);
 						
 				int fontHeight = getFontHeight();
 				this.contentHeight = (lines.length * (fontHeight + this.paddingVertical)) - this.paddingVertical;
 				int maxWidth = 0;
-				for (int i = 0; i < lines.length; i++) {
-					String line = lines[i];
-					int width = stringWidth(line);
-					if (width > maxWidth) {
-						maxWidth = width;
-					}
-					//#if polish.i18n.rightToLeft
-						lines[i] =  TextUtil.reverseForRtlLanguage( line );
-					//#endif
-
+				//#ifdef tmp.useTextEffect
+				if(this.textEffect != null)
+				{
+					maxWidth = this.textEffect.getMaxWidth(lines);
 				}
+				else
+				{
+				//#endif
+					for (int i = 0; i < lines.length; i++) {
+						String line = lines[i];
+						int width = stringWidth(line);
+						if (width > maxWidth) {
+							maxWidth = width;
+						}
+						//#if polish.i18n.rightToLeft
+							lines[i] =  TextUtil.reverseForRtlLanguage( line );
+						//#endif
+					}
+				//#ifdef tmp.useTextEffect
+				}
+				//#endif
 				this.contentWidth = maxWidth;
 				this.textLines = lines;
 		//#if polish.css.text-wrap
 			}
 		//#endif
 	}
+	
+	String[] wrap(String body, int firstLineWidth, int availWidth)
+	{
+		//#ifdef tmp.useTextEffect
+		if (this.textEffect != null) {
+			return this.textEffect.wrap( body, this.textColor, this.font, firstLineWidth, availWidth );
+		} else {
+		//#endif
+			//#ifdef polish.css.max-lines
+			//#	return TextUtil.wrap(body, this.font, firstLineWidth, availWidth, maxLines);
+			//#else
+				return TextUtil.wrap(body, this.font, firstLineWidth, availWidth);
+			//#endif
+		//#ifdef tmp.useTextEffect
+			}
+		//#endif
+	}
+	
+	
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#setStyle(de.enough.polish.ui.Style)
 	 */
-	public void setStyle(Style style) {
+	public void setStyle(Style style)
+	{
 		super.setStyle(style);
-		this.textColor = style.getFontColor();
-		this.font = style.font;
-		//#ifdef polish.css.font-bitmap
-			String bitMapUrl = style.getProperty("font-bitmap");
-			if (bitMapUrl != null) {
-				//#debug
-				System.out.println("getting bitmapfont " + bitMapUrl );
-				this.bitMapFont = BitMapFont.getInstance( bitMapUrl );
-				//#debug
-				System.out.println("bitmap=" + this.bitMapFont + " for " + this );
+		//#ifdef tmp.useTextEffect
+			TextEffect effect = (TextEffect) style.getObjectProperty( "text-effect" );
+			if (effect != null)  {
+				if (this.textEffect == null || this.textEffect.getClass() != effect.getClass()) {
+					if (effect.isTextSensitive) {
+						try
+						{
+							effect = (TextEffect) effect.getClass().newInstance();
+						} catch (Exception e)
+						{
+							//#debug error
+							System.out.println("Unable to copy effect " + effect + e);
+						}
+					}
+					this.textEffect = effect;
+					this.textEffect.onAttach(this);
+				}
+				effect.setStyle(style);
 			} else {
-				this.bitMapFont = null;
-				this.bitMapFontViewer = null;
+				if (this.textEffect != null)
+				{
+					this.textEffect.onDetach(this);
+				}
+				this.textEffect = null;
+			}
+		//#endif
+		//#if polish.css.text-layout
+			Integer layoutInt = style.getIntProperty("text-layout");
+			if (layoutInt != null) {
+				this.textLayout = layoutInt.intValue();
+			} else {
+				this.textLayout = style.layout;
+			}
+		//#endif 
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#setStyle(de.enough.polish.ui.Style, boolean)
+	 */
+	public void setStyle(Style style, boolean resetStyle) {
+		
+		super.setStyle(style, resetStyle);
+		
+		if (resetStyle) {
+			this.textColor = style.getFontColor();
+			//System.out.println("reset style: color=" + Integer.toHexString(this.textColor) + " for " + this);
+			this.font = style.getFont();
+		}
+
+		//#ifdef polish.css.font-color
+			Color textColorObj = style.getColorProperty("font-color");
+			if ( textColorObj != null ) {
+				this.textColor = textColorObj.getColor();
 			}
 		//#endif
 		//#ifdef polish.css.text-horizontal-adjustment
@@ -756,19 +741,13 @@ public class StringItem extends Item
 				this.textVerticalAdjustment = textVerticalAdjustmentInt.intValue();		
 			}
 		//#endif
-		//#ifdef polish.css.text-effect
-			TextEffect effect = (TextEffect) style.getObjectProperty( "text-effect" );
-			if (effect != null) {
-				this.textEffect = effect;
-				effect.setStyle(style);
-			} else {
-				this.textEffect = null;
-			}
-		//#endif	
-		//#ifdef polish.css.text-wrap
+		// reset useSingleLine:
+		//#if polish.css.text-wrap
 			Boolean textWrapBool = style.getBooleanProperty("text-wrap");
 			if (textWrapBool != null) {
 				this.useSingleLine = !textWrapBool.booleanValue();
+			} else if (resetStyle) {
+				this.useSingleLine = false;
 			}
 			//#if polish.css.text-wrap-animate
 				Boolean animateTextWrapBool = style.getBooleanProperty("text-wrap-animate");
@@ -788,6 +767,17 @@ public class StringItem extends Item
 					this.textWrapSpeed = animationSpeedInt.intValue();
 				}
 			//#endif
+		//#endif
+		//#ifdef tmp.useTextEffect
+			if (!resetStyle && this.textEffect != null) {
+				this.textEffect.setStyle( style, false );
+			}
+		//#endif
+		//#ifdef polish.css.max-lines
+			Integer maxLinesInt = style.getIntProperty("max-lines");
+			if (maxLinesInt != null) {
+				this.maxLines = maxLinesInt.intValue();
+			}
 		//#endif
 	}
 
@@ -817,7 +807,7 @@ public class StringItem extends Item
 	 */
 	public void releaseResources() {
 		super.releaseResources();
-		//#ifdef polish.css.text-effect
+		//#ifdef tmp.useTextEffect
 			 if ( this.textEffect != null ) {
 				 this.textEffect.releaseResources();
 			 }

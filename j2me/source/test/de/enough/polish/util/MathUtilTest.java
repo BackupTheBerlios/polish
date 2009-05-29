@@ -140,4 +140,9 @@ public class MathUtilTest extends TestCase {
 		return x;
 	}
 
+//	public void testApxSinRange() {
+//		for (int i=0; i < 1000; i++) {
+//			System.out.println(i + "=" + MathUtil.apxSin(i));
+//		}
+//	}
 }

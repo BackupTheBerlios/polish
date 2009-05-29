@@ -2,7 +2,7 @@
 /*
  * Created on 02.02.2007 at 11:22:39.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -64,7 +64,7 @@ public class RecLineGaugeView extends ItemView{
 		return animated;
 	}
 	
-	protected void initContent(Item parent, int firstLineWidth, int lineWidth) {
+	protected void initContent(Item parent, int firstLineWidth, int availWidth, int availHeight) {
 		this.contentWidth = (this.width + this.paddingHorizontal) * this.number - (this.paddingHorizontal);
 		this.contentHeight = this.height ;
 	}

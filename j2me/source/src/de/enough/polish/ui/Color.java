@@ -2,7 +2,7 @@
 /*
  * Created on 06-Jun-2006 at 15:17:05.
  * 
- * Copyright (c) 2006 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -26,14 +26,13 @@
  */
 package de.enough.polish.ui;
 
-import javax.microedition.lcdui.Display;
 
 import de.enough.polish.io.Serializable;
 
 /**
  * <p>Wraps an (A)RGB color and can also contain dynamic references like Display.COLOR_BACKGROUND.</p>
  * <p>For compatibility with MIDP 1.0 devices, the color class also defines COLOR_BACKGROUND etc with the very same values.</p>
- * <p>Copyright Enough Software 2006 - 2008</p>
+ * <p>Copyright Enough Software 2006 - 2009</p>
  * <pre>
  * history
  *        06-Jun-2006 - rob creation

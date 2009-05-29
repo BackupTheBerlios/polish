@@ -1,7 +1,7 @@
 /*
  * Created on 08-Apr-2006 at 19:20:28.
  * 
- * Copyright (c) 2006 Richard Nkrumah / Enough Software
+ * Copyright (c) 2009 Richard Nkrumah / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -32,7 +32,7 @@ import de.enough.polish.util.ArrayList;
 /**
  * <p>Holds information about an XML node.</p>
  * <p>This is typically used for parsing XML documents using the XmlDomParser.</p>
- * <p>Copyright Enough Software 2006 - 2008</p>
+ * <p>Copyright Enough Software 2006 - 2009</p>
  * 
  * <pre>
  * history
@@ -232,5 +232,25 @@ public class XmlDomNode
 			return null;
 		}
 		return (String) this.attributes.get(attributeName);
+	}
+
+	/**
+	 * Retrieves the specified child's text 
+	 * @param childName the child's name
+	 * @return either the child's text or null when the child is unknown
+	 */
+	public String getChildText(String childName)
+	{
+		XmlDomNode child = getChild(childName);
+		return child != null ? child.getText() : null;
+	}
+
+	/**
+	 * Retrieves all children of this node.
+	 * @return all children in an array - may be empty but not null;
+	 */
+	public XmlDomNode[] getChildren()
+	{
+		return (XmlDomNode[]) this.childList.toArray( new XmlDomNode[ this.childList.size() ] );
 	}
 }

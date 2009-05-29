@@ -2,7 +2,7 @@
 /*
  * Created on 08-Apr-2005 at 11:17:51.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -45,7 +45,7 @@ import de.enough.polish.ui.StyleSheet;
  * <p>Shows only the currently selected item of an exclusive ChoiceGroup or an exclusive List.</p>
  * <p>Apply this view by specifying "view-type: exclusive-single-line;" in your polish.css file.</p>
  *
- * <p>Copyright (c) Enough Software 2005 - 2008</p>
+ * <p>Copyright (c) Enough Software 2005 - 2009</p>
  * <pre>
  * history
  *        08-Apr-2005 - rob creation
@@ -97,7 +97,7 @@ public class ExclusiveSingleLineView extends ContainerView {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#initContent(de.enough.polish.ui.Container, int, int)
 	 */
-	protected void initContent(Item parentItm, int firstLineWidth, int lineWidth) 
+	protected void initContent(Item parentItm, int firstLineWidth, int availWidth, int availHeight) 
 	{
 		//#debug
 		System.out.println("Initalizing ExclusiveSingleLineView");
@@ -148,14 +148,14 @@ public class ExclusiveSingleLineView extends ContainerView {
 		//#endif
 				this.leftArrowStartX = 0;
 				this.leftArrowEndX = this.arrowWidth;
-				this.rightArrowStartX = lineWidth - this.arrowWidth;
-				this.rightArrowEndX = lineWidth;
+				this.rightArrowStartX = availWidth - this.arrowWidth;
+				this.rightArrowEndX = availWidth;
 		//#ifdef polish.css.exclusiveview-arrow-position
 			} else if (this.arrowPosition == POSITION_RIGHT ){
-				this.leftArrowStartX = lineWidth - completeArrowWidth + this.paddingHorizontal;
+				this.leftArrowStartX = availWidth - completeArrowWidth + this.paddingHorizontal;
 				this.leftArrowEndX = this.leftArrowStartX + this.arrowWidth;
-				this.rightArrowStartX = lineWidth - this.arrowWidth;
-				this.rightArrowEndX = lineWidth;
+				this.rightArrowStartX = availWidth - this.arrowWidth;
+				this.rightArrowEndX = availWidth;
 			} else {
 				this.leftArrowStartX = 0;
 				this.leftArrowEndX = this.arrowWidth;
@@ -163,20 +163,20 @@ public class ExclusiveSingleLineView extends ContainerView {
 				this.rightArrowEndX = this.rightArrowStartX + this.arrowWidth;
 			}
 		//#endif
-		lineWidth -= completeArrowWidth;
+		availWidth -= completeArrowWidth;
 		int selectedItemHeight = 0;
 		if (selectedItemIndex < parent.size() ) {
 			ChoiceItem selectedItem = (ChoiceItem) parent.get( selectedItemIndex );
 			selectedItem.drawBox = false;
-			selectedItemHeight = selectedItem.getItemHeight(lineWidth, lineWidth);
-			this.contentWidth = selectedItem.getItemWidth( lineWidth, lineWidth ) + completeArrowWidth;
+			selectedItemHeight = selectedItem.getItemHeight(availWidth, availWidth, availHeight);
+			this.contentWidth = selectedItem.getItemWidth( availWidth, availWidth, availHeight ) + completeArrowWidth;
 			this.appearanceMode = Item.INTERACTIVE;
 			this.currentItem = selectedItem;
 			this.currentItemIndex = selectedItemIndex;
 		} else {
 			this.appearanceMode = Item.PLAIN;
 			if (this.isLayoutExpand()) {
-				this.contentWidth = lineWidth + completeArrowWidth;
+				this.contentWidth = availWidth + completeArrowWidth;
 			} else {
 				this.contentWidth = this.paddingHorizontal + completeArrowWidth;
 			}
@@ -487,7 +487,7 @@ public class ExclusiveSingleLineView extends ContainerView {
 		this.currentItem = (ChoiceItem) items[ index ];
 		//this.currentItem.select( true );
 		((ChoiceGroup) this.parentContainer).setSelectedIndex( this.currentItemIndex, true );
-		this.parentContainer.focus(this.currentItemIndex, this.currentItem, 0);
+		this.parentContainer.focusChild(this.currentItemIndex, this.currentItem, 0);
 		this.parentContainer.notifyStateChanged();
 		return true;
 	}

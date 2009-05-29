@@ -2,7 +2,7 @@
 /*
  * Created on 15-Feb-2005 at 01:39:10.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -32,7 +32,7 @@ import javax.microedition.lcdui.game.Sprite;
 /**
  * <p>Allows to use sprites within normal forms.</p>
  *
- * <p>Copyright (c) Enough Software 2005 - 2008</p>
+ * <p>Copyright (c) Enough Software 2005 - 2009</p>
  * <pre>
  * history
  *        15-Feb-2005 - rob creation

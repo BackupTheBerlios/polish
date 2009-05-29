@@ -30,20 +30,22 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 import de.enough.polish.ui.Background;
+import de.enough.polish.ui.Color;
+import de.enough.polish.ui.Style;
 import de.enough.polish.util.DrawUtil;
 
 /**
  * <p>Paints a translucent rectangle with round corners as a background.</p>
  *
- * <p>Copyright Enough Software 2007 - 2008</p>
+ * <p>Copyright Enough Software 2007 - 2009</p>
  * @author Robert Virkus, robert@enough.de
  */
 public class TranslucentRoundRectBackground 
 extends Background 
 {
-	private final int color;
-	private final int arcWidth;
-	private final int arcHeight;
+	private int color;
+	private int arcWidth;
+	private int arcHeight;
 	private final int borderColor; 
 	private int[] buffer;
 	private int lastWidth;
@@ -147,5 +149,40 @@ extends Background
 			g.fillRoundRect(x, y, width, height, this.arcWidth, this.arcHeight);
 		//#endif
 	}
+	
+
+	//#if polish.css.animations
+		/* (non-Javadoc)
+		 * @see de.enough.polish.ui.Background#setStyle(de.enough.polish.ui.Style)
+		 */
+		public void setStyle(Style style)
+		{
+			//#if polish.css.background-round-rect-translucent-color
+				Color col = style.getColorProperty("background-round-rect-translucent-color");
+				if (col != null) {
+					this.color = col.getColor();
+				}
+			//#endif
+			//#if polish.css.background-round-rect-translucent-arc
+				Integer arcInt = style.getIntProperty("background-round-rect-translucent-arc");
+				if (arcInt != null) {
+					this.arcWidth = arcInt.intValue();
+					this.arcHeight = arcInt.intValue();
+				}
+			//#endif
+			//#if polish.css.background-round-rect-translucent-arc-width
+				Integer arcWidthInt = style.getIntProperty("background-round-rect-translucent-arc-width");
+				if (arcWidthInt != null) {
+					this.arcWidth = arcWidthInt.intValue();
+				}
+			//#endif
+			//#if polish.css.background-round-rect-translucent-arc-height
+				Integer arcHeightInt = style.getIntProperty("background-round-rect-translucent-arc-height");
+				if (arcHeightInt != null) {
+					this.arcHeight = arcHeightInt.intValue();
+				}
+			//#endif
+		}
+	//#endif	
 
 }

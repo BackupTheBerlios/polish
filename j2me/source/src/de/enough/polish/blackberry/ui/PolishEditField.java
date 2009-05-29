@@ -25,6 +25,7 @@
  */
 package de.enough.polish.blackberry.ui;
 
+import de.enough.polish.ui.Style;
 import de.enough.polish.ui.StyleSheet;
 import net.rim.device.api.ui.component.EditField;
 
@@ -34,6 +35,9 @@ public class PolishEditField extends EditField implements PolishTextField {
         private boolean isFocused;
         public boolean processKeyEvents = true;
 		private int fontColor;
+		//#if ${ version(polish.JavaPlatform, BlackBerry) } >= ${version(4.6)}
+			private BackgroundWrapper backgroundWrapper;
+		//#endif
 
         public PolishEditField(String label, String text, int numChars, long style) {
                 super(label, text, numChars, style);
@@ -79,7 +83,6 @@ public class PolishEditField extends EditField implements PolishTextField {
 		}
 
 		public void setFont(javax.microedition.lcdui.Font font, int textColor) {
-			// never used anyhow, since javax.microedition.lcdui.Font is mapped to Font
 		}
 
 		public void setPaintPosition(int x, int y ) {
@@ -90,5 +93,39 @@ public class PolishEditField extends EditField implements PolishTextField {
 		public int getInsertPositionOffset() {
 			return getCursorPosition();
 		}
+
+		public void setStyle(Style style) {
+			Font font = (Font)(Object)style.getFont();
+			if (font == null) {
+				font = Font.getDefaultFont();
+			}
+			try {
+				super.setFont( font.font );
+			} catch (IllegalStateException e) {
+				//#debug error
+				System.out.println("Layout error: " + e );
+			}
+			this.fontColor = style.getFontColor();
+			//#if ${ version(polish.JavaPlatform, BlackBerry) } >= ${version(4.6)}
+				if (style.background != null) {
+					if (this.backgroundWrapper == null) {
+						this.backgroundWrapper = new BackgroundWrapper( style.background );
+						try {
+							setBackground(this.backgroundWrapper);
+						} catch (Exception e) {
+							//#debug error
+							System.out.println("Unable to set background" + e);
+						}
+					} else {
+						this.backgroundWrapper.setBackground(style.background);
+					}
+				}
+			//#endif
+		}
+
+//		public int drawText(Graphics arg0, int arg1, int arg2, int arg3, int arg4, DrawTextParam arg5) {
+//			// TODO Auto-generated method stub
+//			return 0;
+//		}
 
 }

@@ -17,7 +17,7 @@ import de.enough.polish.ui.Style;
  * </p>
  * 
  * <p>
- * Copyright (c) 2007-2008 Enough Software
+ * Copyright (c) 2009-2008 Enough Software
  * </p>
  * 
  * <pre>

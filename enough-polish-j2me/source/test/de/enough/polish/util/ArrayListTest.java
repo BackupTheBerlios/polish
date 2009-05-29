@@ -50,6 +50,7 @@ public class ArrayListTest extends TestCase {
 		super(name);
 	}
 	
+
 	public void testAdd() {
 		ArrayList list = new ArrayList(); // initial capacity == 10
 		assertEquals( 0, list.size() );

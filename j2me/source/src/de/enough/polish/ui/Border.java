@@ -2,7 +2,7 @@
 /*
  * Created on 04-Jan-2004 at 19:37:35.
  *
- * Copyright (c) 2004-2005 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -33,21 +33,34 @@ import de.enough.polish.io.Serializable;
 /**
  * <p>Provides an abstract  border.</p>
  *
- * <p>copyright Enough Software 2004 - 2008</p>
+ * <p>copyright Enough Software 2004 - 2009</p>
  * @author Robert Virkus, robert@enough.de
  */
 public abstract class Border implements Serializable 
 {
 	
-	/** general width of the border */
-	public int borderWidth;
+	/** width of the border at the top */
+	protected int borderWidthTop;
+	/** width of the border at the bottom */
+	protected int borderWidthBottom;
+	/** width of the border at the left side */
+	protected int borderWidthLeft;
+	/** width of the border at the right side */
+	protected int borderWidthRight;
 
 	/**
-	 * Creates a new border.
-	 * The width of this border is set to the default value 1 here. 
+	 * Creates a new border with the specified border widths.
+	 * 
+	 * @param left the border width on the left side
+	 * @param right the border width on the right side 
+	 * @param top the border width at the top
+	 * @param bottom the border width at the bottom
 	 */
-	public Border() {
-		this.borderWidth = 1;
+	public Border(int left, int right, int top, int bottom) {
+		this.borderWidthLeft = left;
+		this.borderWidthRight = right;
+		this.borderWidthTop = top;
+		this.borderWidthBottom = bottom;
 	}
 	
 	/**
@@ -112,6 +125,17 @@ public abstract class Border implements Serializable
 	 * The default implementation is empty.
 	 */
 	public void showNotify() {
+		// do nothing
+	}
+
+
+
+	/**
+	 * Allows borders to be animated using CSS attribute animations.
+	 * @param style the style containing typically only one element
+	 */
+	public void setStyle(Style style)
+	{
 		// do nothing
 	}
 

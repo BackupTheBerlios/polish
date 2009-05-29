@@ -1,9 +1,9 @@
-//#condition polish.usePolishGui && !polish.android
+//#condition polish.usePolishGui
 
 /*
  * Created on 24-Apr-2007 at 19:20:28.
  * 
- * Copyright (c) 2007 - 2008 Michael Koch / Enough Software
+ * Copyright (c) 2009 - 2009 Michael Koch / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -27,12 +27,12 @@
  */
 package de.enough.polish.browser.rss;
 
-import javax.microedition.lcdui.Command;
 
 import de.enough.polish.browser.Browser;
 import de.enough.polish.browser.TagHandler;
 import de.enough.polish.browser.html.HtmlTagHandler;
 import de.enough.polish.io.StringReader;
+import de.enough.polish.ui.Command;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.ItemCommandListener;
@@ -64,7 +64,7 @@ public class RssTagHandler
 	private static final String TAG_DIGG_USERIMAGE = "digg:userimage";
 	private static final String TAG_DIGG_CATEGORY = "digg:category";
 	private static final String TAG_DIGG_COMMENTCOUNT = "digg:commentCount";
-	
+
 	private static final String TAG_FEEDBURNER_ORIGLINK = "feedburner:origLink";
 
 	/** item attribute for storing the RSS item */
@@ -99,7 +99,7 @@ public class RssTagHandler
 	private ItemCommandListener itemListener;
 	private boolean includeDescriptions;
 
-	//#if polish.midp2
+	//#if polish.midp2 && !polish.android
 	public RssTagHandler(Command linkCommand, javax.microedition.lcdui.ItemCommandListener listener)
 	{
 		//#debug error
@@ -219,8 +219,8 @@ public class RssTagHandler
 			} else if (TAG_TITLE.equals(tagName)) {
 				if (opening) {
 					parser.next();
-					String title = parser.getText();
-					browser.getScreen().setTitle(title);
+					String text = parser.getText();
+					this.browser.getScreen().setTitle(text);
 				}
 				return true;
 			}

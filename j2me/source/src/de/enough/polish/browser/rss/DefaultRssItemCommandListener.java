@@ -1,8 +1,8 @@
-//#condition polish.usePolishGui && !polish.android
+//#condition polish.usePolishGui
 /*
  * Created on May 7, 2007 at 12:09:44 PM.
  * 
- * Copyright (c) 2007 - 2008 Robert Virkus / Enough Software
+ * Copyright (c) 2009 - 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -26,13 +26,13 @@
  */
 package de.enough.polish.browser.rss;
 
-import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.AlertType;
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.CommandListener;
-import javax.microedition.lcdui.Displayable;
 
 import de.enough.polish.browser.html.HtmlTagHandler;
+import de.enough.polish.ui.Alert;
+import de.enough.polish.ui.Command;
+import de.enough.polish.ui.CommandListener;
+import de.enough.polish.ui.Displayable;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.ItemCommandListener;
 import de.enough.polish.ui.StyleSheet;
@@ -41,7 +41,7 @@ import de.enough.polish.ui.UiAccess;
 /**
  * <p>Displays an alert showing the description of the currently selected RSS item.</p>
  *
- * <p>Copyright Enough Software 2007 - 2008</p>
+ * <p>Copyright Enough Software 2007 - 2009</p>
  * <pre>
  * history
  *        May 7, 2007 - rob creation

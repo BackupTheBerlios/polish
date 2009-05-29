@@ -2,7 +2,7 @@
 /*
  * Created on 16-Nov-2005 at 11:59:50.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -38,7 +38,7 @@ import de.enough.polish.util.TextUtil;
 /**
  * <p>Allows text effects for StringItems, IconItems and ChoiceItems.</p>
  *
- * <p>Copyright (c) Enough Software 2005 - 2008</p>
+ * <p>Copyright (c) Enough Software 2005 - 2009</p>
  * <pre>
  * history
  *        16-Nov-2005 - rob creation
@@ -47,8 +47,13 @@ import de.enough.polish.util.TextUtil;
  */
 public abstract class TextEffect implements Serializable
 {
-
 	protected transient Style style;
+	/**
+	 * Specifies if this effect needs a lot of texte dependent resources or processing power.
+	 * When this is the case, StringItems will create a StringItem specific copy of this effect instead of
+	 * using the effect from the Style (which may be used several times). 
+	 */
+	protected boolean isTextSensitive;
 
 	/**
 	 * Creates a new effect
@@ -59,13 +64,46 @@ public abstract class TextEffect implements Serializable
 	
 	/**
 	 * Sets the style of this item.
+	 * The implementation sets the style field and then calls setStyle( style, false ).
 	 * Subclasses can override this method for getting specific settings.
 	 * 
 	 * @param style the new style for this item.
 	 * @throws NullPointerException when style is null
+	 * @see #setStyle(Style, boolean)
 	 */
 	public void setStyle( Style style ) {
 		this.style = style;
+		setStyle( style, false );
+	}
+	
+	/**
+	 * Notifies the text effect that it has been attached to the specified item.
+	 * Subclasses can override this method to get access to the parent item.
+	 * @param parent the parent item
+	 */
+	public void onAttach(Item parent){
+		// subclasses may choose to override this.
+	}
+	
+	/**
+	 * Notifies the text effect that it has been detached to the specified item
+	 * Subclasses can override this method to get access to the parent item.
+	 * @param parent the parent item
+	 */
+	public void onDetach(Item parent){
+		// subclasses may choose to override this.
+	}
+	
+	/**
+	 * Sets the style of this item without assuming defaults for non-set style elements.
+	 * Subclasses can override this method for getting specific settings.
+	 * 
+	 * @param style the new style for this item.
+	 * @param resetStyle true when all style elements should be reset to their default when no CSS attributes are defined.
+	 * @throws NullPointerException when style is null
+	 */
+	public void setStyle( Style style, boolean resetStyle ) {
+		// subclasses may choose to override this.
 	}
 	
 	/**
@@ -126,30 +164,31 @@ public abstract class TextEffect implements Serializable
 			String line = textLines[i];
 			int lineX = x;
 			int lineY = y;
-			int orientation = 0;
+			int anchor = 0;
 			// adjust the painting according to the layout:
 			if (isLayoutRight) {
 				lineX = rightBorder;
 				//#if polish.Bugs.needsBottomOrientiationForStringDrawing
-					orientation = Graphics.BOTTOM | Graphics.RIGHT;
+					anchor = Graphics.BOTTOM | Graphics.RIGHT;
 				//#else
-					orientation = Graphics.TOP | Graphics.RIGHT;
+					anchor = Graphics.TOP | Graphics.RIGHT;
 				//#endif
 			} else if (isLayoutCenter) {
 				lineX = centerX;
 				//#if polish.Bugs.needsBottomOrientiationForStringDrawing
-					orientation = Graphics.BOTTOM | Graphics.HCENTER;
+					anchor = Graphics.BOTTOM | Graphics.HCENTER;
 				//#else
-					orientation = Graphics.TOP | Graphics.HCENTER;
+					anchor = Graphics.TOP | Graphics.HCENTER;
 				//#endif
 			} else {
 				//#if polish.Bugs.needsBottomOrientiationForStringDrawing
-					orientation = Graphics.BOTTOM | Graphics.LEFT;
+					anchor = Graphics.BOTTOM | Graphics.LEFT;
 				//#else
-					orientation = Graphics.TOP | Graphics.LEFT;
+					anchor = Graphics.TOP | Graphics.LEFT;
 				//#endif
 			}
-			drawString( line, textColor, lineX, lineY, orientation, g );
+			
+			drawString( line, textColor, lineX, lineY, anchor, g );
 			x = leftBorder;
 			y += lineHeight;
 		}
@@ -163,23 +202,23 @@ public abstract class TextEffect implements Serializable
 	 * @param textColor the color of the text
 	 * @param x x coordinate
 	 * @param y y coordinate
-	 * @param orientation the orientation, e.g. Graphics.TOP | Graphics.LEFT or Graphics.TOP | Graphics.HCENTER
+	 * @param anchor the orientation, e.g. Graphics.TOP | Graphics.LEFT or Graphics.TOP | Graphics.HCENTER
 	 * @param g the graphics context
 	 */
-	public abstract void drawString( String text, int textColor, int x, int y, int orientation, Graphics g );
+	public abstract void drawString( String text, int textColor, int x, int y, int anchor, Graphics g );
 
 	/**
 	 * Retrieves the left start position for a text.
 	 * 
 	 * @param x the x position given in drawString()
-	 * @param orientation the orientation given in drawString()
+	 * @param anchor the orientation given in drawString()
 	 * @param textWidth the width of the text given in drawString()
 	 * @return the left x position
 	 */
-	public int getLeftX( int x, int orientation, int textWidth  ) {
-		if ( (orientation & Graphics.LEFT) == Graphics.LEFT) {
+	public int getLeftX( int x, int anchor, int textWidth  ) {
+		if ( (anchor & Graphics.LEFT) == Graphics.LEFT) {
 			return x;
-		} else if ( (orientation & Graphics.RIGHT) == Graphics.RIGHT) {
+		} else if ( (anchor & Graphics.RIGHT) == Graphics.RIGHT) {
 			return x - textWidth;
 		} else {
 			return x - textWidth / 2;
@@ -190,27 +229,27 @@ public abstract class TextEffect implements Serializable
 	 * Retrieves the top y position for a text.
 	 *  
 	 * @param y the y position given in drawString()
-	 * @param orientation the orientation given in drawString()
+	 * @param anchor the orientation given in drawString()
 	 * @param font the used font, usually g.getFont()
 	 * @return the top y position.
 	 */
-	public int getTopY( int y, int orientation, Font font ) {
-		return getTopY(y, orientation, font.getHeight(), font.getBaselinePosition() );
+	public int getTopY( int y, int anchor, Font font ) {
+		return getTopY(y, anchor, font.getHeight(), font.getBaselinePosition() );
 	}
 
 	/**
 	 * Retrieves the top y position for a text.
 	 *  
 	 * @param y the y position given in drawString()
-	 * @param orientation the orientation given in drawString()
+	 * @param anchor the orientation given in drawString()
 	 * @param height the height of the used font
 	 * @param baseLine the base line of the used font
 	 * @return the top y position.
 	 */
-	public int getTopY( int y, int orientation, int height, int baseLine ) {
-		if ( (orientation & Graphics.TOP) == Graphics.TOP) {
+	public int getTopY( int y, int anchor, int height, int baseLine ) {
+		if ( (anchor & Graphics.TOP) == Graphics.TOP) {
 			return y;
-		} else if ( (orientation & Graphics.BOTTOM) == Graphics.BOTTOM) {
+		} else if ( (anchor & Graphics.BOTTOM) == Graphics.BOTTOM) {
 			return y - height;
 		} else {
 			return y - (height - baseLine);
@@ -358,6 +397,16 @@ public abstract class TextEffect implements Serializable
 	}
 	
 	/**
+	 * Retrieves the width of the given char
+	 * @param c the char
+	 * @return the width of that char
+	 */
+	public int charWidth( char c) {
+		return getFont().charWidth(c);
+	}
+
+	
+	/**
 	 * Retrieves the font height by default.
 	 * @return the height of the font
 	 */
@@ -370,8 +419,8 @@ public abstract class TextEffect implements Serializable
 	 * @return the font
 	 */
 	protected Font getFont() {
-		if (this.style != null && this.style.font != null) {
-			return this.style.font;
+		if (this.style != null && this.style.getFont() != null) {
+			return this.style.getFont();
 		}
 		return Font.getDefaultFont();
 	}
@@ -385,10 +434,44 @@ public abstract class TextEffect implements Serializable
 	 * @param lineWidth width of following lines
 	 * @return an arrays with strings all fitting into the specified dimensions
 	 */
-	public String[] wrap(String text, Font font, int firstLineWidth, int lineWidth) {
+	public String[] wrap(String text, int textColor, Font font, int firstLineWidth, int lineWidth) {
 		return TextUtil.wrap(text, font, firstLineWidth, lineWidth);
 	}
 
-	
+	/**
+	 * Draws the specified character using this effect.
+	 * Subclasses may override this - by default the character is just painted.
+	 * 
+	 * @param c the character 
+	 * @param x horizontal position
+	 * @param y vertical position
+	 * @param anchor anchor, e.g. Graphics.TOP | Graphics.LEFT
+	 * @param g the graphics context
+	 */
+	public void drawChar(char c, int x, int y, int anchor, Graphics g)
+	{
+		g.drawChar(c, x, y, anchor);		
+	}
 
+	/**
+	 * Returns the maximum width of the specified lines
+	 * @param lines the lines
+	 * @return the maximum width
+	 */
+	public int getMaxWidth(String[] lines)
+	{
+		int maxWidth = 0;
+		for (int i = 0; i < lines.length; i++) {
+			String line = lines[i];
+			int width = stringWidth(line);
+			if (width > maxWidth) {
+				maxWidth = width;
+			}
+			//#if polish.i18n.rightToLeft
+				lines[i] =  TextUtil.reverseForRtlLanguage( line );
+			//#endif
+		}
+		
+		return maxWidth;
+	}
 }

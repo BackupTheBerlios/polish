@@ -1,7 +1,7 @@
 /*
  * Created on 12-Jan-2006 at 12:18:43.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -31,7 +31,7 @@ package de.enough.polish.util;
  *    of the parent map/list, so no memory overhead occurs.
  * </p>
  *
- * <p>Copyright (c) Enough Software 2005 - 2008</p>
+ * <p>Copyright (c) Enough Software 2005 - 2009</p>
  * <pre>
  * history
  *        12-Jan-2006 - rob creation

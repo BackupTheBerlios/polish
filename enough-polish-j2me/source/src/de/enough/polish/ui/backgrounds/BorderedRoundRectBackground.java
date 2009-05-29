@@ -27,6 +27,8 @@
 package de.enough.polish.ui.backgrounds;
 
 import de.enough.polish.ui.Background;
+import de.enough.polish.ui.Color;
+import de.enough.polish.ui.Style;
 
 import javax.microedition.lcdui.Graphics;
 
@@ -36,15 +38,15 @@ import javax.microedition.lcdui.Graphics;
  *       when used instead of the RoundRectBackground and a RoundRectBorder together.
  * </p>
  *
- * <p>Copyright Enough Software 2005 - 2008</p>
+ * <p>Copyright Enough Software 2005 - 2009</p>
  * @author Robert Virkus, robert@enough.de
  */
 public class BorderedRoundRectBackground extends Background {
 
-	private final int color;
+	private int color;
 	private final int arcWidth;
 	private final int arcHeight;
-	private final int borderColor; 
+	private int borderColor; 
 
 	/**
 	 * Creates a new round rectangle background with a border.
@@ -71,15 +73,42 @@ public class BorderedRoundRectBackground extends Background {
 		g.fillRoundRect( x, y, width, height, this.arcWidth, this.arcHeight );
 		width--;
 		height--;
-		g.setColor( this.borderColor );
-		g.drawRoundRect( x, y, width, height, this.arcWidth, this.arcHeight );
-		if (this.borderWidth > 1) {
-			int border = this.borderWidth - 1;
-			while ( border > 0) {
-				g.drawRoundRect( x+border, y+border, width - 2*border, height - 2*border, this.arcWidth, this.arcHeight );
-				border--;
-			}
+//		g.setColor( this.borderColor );
+//		g.drawRoundRect( x, y, width, height, this.arcWidth, this.arcHeight );
+		int border = this.borderWidth;
+		while ( border > 0) {
+			g.drawRoundRect( x+border, y+border, width - 2*border, height - 2*border, this.arcWidth, this.arcHeight );
+			border--;
 		}
 	}
+
+	//#if polish.css.animations
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Background#setStyle(de.enough.polish.ui.Style)
+	 */
+	public void setStyle(Style style)
+	{
+		//#if polish.css.background-round-rect-bordered-color
+			Color col = style.getColorProperty("background-round-rect-bordered-color");
+			if (col != null) {
+				this.color = col.getColor();
+			}
+		//#endif
+		//#if polish.css.background-round-rect-bordered-border-color
+			Color bcol = style.getColorProperty("background-round-rect-bordered-border-color");
+			if (bcol != null) {
+				this.borderColor = bcol.getColor();
+			}
+		//#endif
+			//#if polish.css.background-round-rect-bordered-border-width
+			Integer brdWidth = style.getIntProperty("background-round-rect-bordered-border-width");
+			if (brdWidth != null) {
+				this.borderWidth = brdWidth.intValue();
+			}
+		//#endif
+	}
+	//#endif
+	
+	
 	
 }

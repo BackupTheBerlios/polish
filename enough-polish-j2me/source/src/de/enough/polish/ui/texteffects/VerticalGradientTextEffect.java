@@ -2,7 +2,7 @@
 /*
  * Created on May 20, 2006 at 7:45:30 PM.
  * 
- * Copyright (c) 2006 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -74,7 +74,7 @@ public class VerticalGradientTextEffect extends TextEffect {
 	 * Creates a new gradient text effect.
 	 */
 	public VerticalGradientTextEffect() {
-		// initialization is done upon request.
+		this.isTextSensitive = true;
 	}
 
 	/**
@@ -207,9 +207,11 @@ public class VerticalGradientTextEffect extends TextEffect {
 		//#endif
 	}
 
-	public void setStyle(Style style) {
-		super.setStyle(style);
-		this.lastText = null;
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.TextEffect#setStyle(de.enough.polish.ui.Style, boolean)
+	 */
+	public void setStyle(Style style, boolean resetStyle) {
+		super.setStyle(style, resetStyle);
 		boolean styleDefined = false; 
 		int startColor = 0xFFFFFFFF;
 		//#if polish.css.text-vertical-gradient-start-color
@@ -227,23 +229,32 @@ public class VerticalGradientTextEffect extends TextEffect {
 				styleDefined = true;
 			}
 		//#endif
-		this.useTransparency = ((startColor & 0xFF000000) != 0) || ((endColor & 0xFF000000) != 0);
 		int steps;
-		//#if polish.css.text-vertical-gradient-end-color
+		Font font = style.getFont();
+		if (font == null) {
+			font = Font.getDefaultFont();
+		}
+		//#if polish.css.text-vertical-gradient-end-steps
 			Integer stepsInt = style.getIntProperty("text-vertical-gradient-steps");
 			if (stepsInt != null) {
 				steps = stepsInt.intValue();
+				if (steps <= 0) {
+					steps = font.getHeight();
+				}
 				styleDefined = true;
 			} else {
-				steps = Font.getDefaultFont().getHeight();
+				steps = font.getHeight();
 			}
 		//#else
-			steps = Font.getDefaultFont().getHeight();
+			steps = font.getHeight();
 		//#endif
 		if (styleDefined || this.colors == null) {
 			this.colors = DrawUtil.getGradient(startColor, endColor, steps);
 		}
-		this.lastText = null;
+		if (styleDefined || resetStyle) {
+			this.useTransparency = ((startColor & 0xFF000000) != 0) || ((endColor & 0xFF000000) != 0);
+			this.lastText = null;
+		}
 	}
 	
 	

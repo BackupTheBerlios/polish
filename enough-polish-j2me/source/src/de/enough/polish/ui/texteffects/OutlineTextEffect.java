@@ -2,7 +2,7 @@
 /*
  * Created on 16-Nov-2005 at 14:20:45.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -41,7 +41,7 @@ import de.enough.polish.ui.TextEffect;
  * 	 <li><b>text-outline-inner-color</b>: The color with which the outline is filled inside, defaults to white. The outline itself will be painted in the specified font-color.</li>
  * </ul>
  *
- * <p>Copyright (c) Enough Software 2005 - 2008</p>
+ * <p>Copyright (c) Enough Software 2005 - 2009</p>
  * <pre>
  * history
  *        16-Nov-2005 - rob creation
@@ -64,8 +64,8 @@ public class OutlineTextEffect extends TextEffect {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.TextEffect#setStyle(de.enough.polish.ui.Style)
 	 */
-	public void setStyle(Style style) {
-		super.setStyle(style);
+	public void setStyle(Style style, boolean resetStyle) {
+		super.setStyle(style, resetStyle);
 		Integer colorInt = style.getIntProperty( "text-outline-inner-color" );
 		if (colorInt != null) {
 			this.innerColor = colorInt.intValue();
@@ -77,7 +77,9 @@ public class OutlineTextEffect extends TextEffect {
 
 	public void drawString(String text, int textColor, int x, int y, int orientation, Graphics g) {
 		g.drawString( text, x + 1, y + 1, orientation);
+		g.drawString( text, x + 1, y - 1, orientation);
 		g.drawString( text, x - 1, y - 1, orientation);
+		g.drawString( text, x - 1, y + 1, orientation);
 		g.setColor( this.innerColor );
 		g.drawString( text, x, y, orientation);
 		g.setColor( textColor );

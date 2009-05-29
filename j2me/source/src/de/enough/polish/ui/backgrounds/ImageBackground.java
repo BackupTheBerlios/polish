@@ -32,8 +32,11 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 import de.enough.polish.ui.Background;
+import de.enough.polish.ui.Color;
+import de.enough.polish.ui.Dimension;
 import de.enough.polish.ui.ImageConsumer;
 import de.enough.polish.ui.Item;
+import de.enough.polish.ui.Style;
 import de.enough.polish.ui.StyleSheet;
 
 /**
@@ -53,7 +56,7 @@ import de.enough.polish.ui.StyleSheet;
  * </ul>
  * </p>
  *
- * <p>Copyright Enough Software 2004 - 2008</p>
+ * <p>Copyright Enough Software 2004 - 2009</p>
 
  * <pre>
  * history
@@ -69,13 +72,13 @@ implements ImageConsumer
 {
 	
 	private Image image;
-	private final int color;
+	private int color;
 	private boolean isLoaded;
 	private final String imageUrl;
 	private final int anchor;
 	private final boolean doCenter;
-	private final int xOffset;
-	private final int yOffset;
+	private Dimension xOffset;
+	private Dimension yOffset;
 
 	/**
 	 * Creates a new image background.
@@ -97,11 +100,26 @@ implements ImageConsumer
 	 * @param imageUrl the url of the image, e.g. "/bg.png", must not be null!
 	 * @param anchor the anchor of the image, either  "left", "right", 
 	 * 			"center" (="horizontal-center"), "vertical-center", "top" or "bottom" 
-	 * 			or any combinationof these values. Defaults to "horizontal-center | vertical-center"
+	 * 			or any combination of these values. Defaults to "horizontal-center | vertical-center"
 	 * @param xOffset The number of pixels to move the image horizontally, negative values move it to the left.
 	 * @param yOffset The number of pixels to move the image vertically, negative values move it to the top.
 	 */
 	public ImageBackground( int color, String imageUrl, int anchor, int xOffset, int yOffset ) {
+		this( color, imageUrl, anchor, new Dimension(xOffset), new Dimension(yOffset) );
+	}
+	
+	/**
+	 * Creates a new image background.
+	 * 
+	 * @param color the background color or Item.TRANSPARENT
+	 * @param imageUrl the url of the image, e.g. "/bg.png", must not be null!
+	 * @param anchor the anchor of the image, either  "left", "right", 
+	 * 			"center" (="horizontal-center"), "vertical-center", "top" or "bottom" 
+	 * 			or any combination of these values. Defaults to "horizontal-center | vertical-center"
+	 * @param xOffset The number of pixels to move the image horizontally, negative values move it to the left.
+	 * @param yOffset The number of pixels to move the image vertically, negative values move it to the top.
+	 */
+	public ImageBackground( int color, String imageUrl, int anchor, Dimension xOffset, Dimension yOffset ) {
 		this.color = color;
 		this.imageUrl = imageUrl;
 		this.anchor = anchor;
@@ -118,7 +136,7 @@ implements ImageConsumer
 	 * @param image the image, must not be null!
 	 * @param anchor the anchor of the image, either  "left", "right", 
 	 * 			"center" (="horizontal-center"), "vertical-center", "top" or "bottom" 
-	 * 			or any combinationof these values. Defaults to "horizontal-center | vertical-center"
+	 * 			or any combination of these values. Defaults to "horizontal-center | vertical-center"
 	 */
 	public ImageBackground( int color, Image image, int anchor ) {
 		this(color, image, anchor, 0, 0 );
@@ -136,6 +154,21 @@ implements ImageConsumer
 	 * @param yOffset The number of pixels to move the image vertically, negative values move it to the top.
 	 */
 	public ImageBackground( int color, Image image, int anchor, int xOffset, int yOffset ) {
+		this( color, image, anchor, new Dimension(xOffset), new Dimension(yOffset));
+	}
+
+	/**
+	 * Creates a new image background.
+	 * 
+	 * @param color the background color or Item.TRANSPARENT
+	 * @param image the image, must not be null!
+	 * @param anchor the anchor of the image, either  "left", "right", 
+	 * 			"center" (="horizontal-center"), "vertical-center", "top" or "bottom" 
+	 * 			or any combinationof these values. Defaults to "horizontal-center | vertical-center"
+	 * @param xOffset The number of pixels to move the image horizontally, negative values move it to the left.
+	 * @param yOffset The number of pixels to move the image vertically, negative values move it to the top.
+	 */
+	public ImageBackground( int color, Image image, int anchor, Dimension xOffset, Dimension yOffset ) {
 		this.color = color;
 		this.image = image;
 		this.imageUrl = null;
@@ -173,8 +206,8 @@ implements ImageConsumer
 			g.setColor( this.color );
 			g.fillRect( x, y, width, height );
 		}
-		x += this.xOffset;
-		y += this.yOffset;
+		x += this.xOffset.getValue(width);
+		y += this.yOffset.getValue(height);
 		if (this.image != null) {
 			if (this.doCenter) {
 				int centerX = x + (width / 2);
@@ -226,5 +259,32 @@ implements ImageConsumer
 		}
 	}
 
+
+	//#if polish.css.animations
+		/* (non-Javadoc)
+		 * @see de.enough.polish.ui.Background#setStyle(de.enough.polish.ui.Style)
+		 */
+		public void setStyle(Style style)
+		{
+			//#if polish.css.background-image-color
+				Color col = style.getColorProperty("background-image-color");
+				if (col != null) {
+					this.color = col.getColor();
+				}
+			//#endif
+			//#if polish.css.background-image-x-offset
+				Dimension xOffsetInt = (Dimension) style.getObjectProperty("background-image-x-offset");
+				if (xOffsetInt != null) {
+					this.xOffset = xOffsetInt;
+				}
+			//#endif
+			//#if polish.css.background-image-y-offset
+				Dimension yOffsetInt = (Dimension) style.getObjectProperty("background-image-y-offset");
+				if (yOffsetInt != null) {
+					this.yOffset = yOffsetInt;
+				}
+			//#endif
+		}
+	//#endif
 
 }

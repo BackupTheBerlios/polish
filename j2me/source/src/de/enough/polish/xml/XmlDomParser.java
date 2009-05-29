@@ -1,7 +1,7 @@
 /*
  * Created on 08-Apr-2006 at 19:20:28.
  * 
- * Copyright (c) 2006 Michael Koch / Enough Software
+ * Copyright (c) 2009 Michael Koch / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -54,7 +54,7 @@ import java.util.Hashtable;
  * </pre>
  * 
  * 
- * <p>Copyright Enough Software 2006 - 2008</p>
+ * <p>Copyright Enough Software 2006 - 2009</p>
  * 
  * <pre>
  * history
@@ -137,7 +137,7 @@ public class XmlDomParser
                 }
             }
         } catch (Exception exception) {
-            throw new RuntimeException("Could not parse tree:"+exception);
+            throw new RuntimeException("parse error:"+exception);
         }
         if (root.getChildCount() == 1) {
         	return root.getChild(0);

@@ -3,7 +3,7 @@
 /*
  * Created on Nov 23, 2005 at 2:42:24 PM.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -34,14 +34,14 @@ import javax.microedition.lcdui.Graphics;
 
 //#if polish.api.nokia-ui
 	import com.nokia.mid.ui.DirectGraphics;
-	import com.nokia.mid.ui.DirectUtils;
+import com.nokia.mid.ui.DirectUtils;
 //#endif
 
 
 /**
  * <p>Provides functions for drawing shadows, polygons, gradients, etc.</p>
  *
- * <p>Copyright (c) Enough Software 2005 - 2008</p>
+ * <p>Copyright (c) Enough Software 2005 - 2009</p>
  * <p>
  * The implementation for filling a polygon on devices without Nokia-UI-API and without the BlackBerry API is based
  * upon JMicroPolygon: http://sourceforge.net/projects/jmicropolygon, which is licensed under the Apache Software License
@@ -926,8 +926,22 @@ public final class DrawUtil {
 				x2 = x1;
 				x1 = left;
 			}
+//			int[] rgb = new int[]{ color };
+//			if (y1 == y2) {
+//				int start = Math.max( x1, 0);
+//				for (int i = start; i < x2; i++ ) {
+//					g.drawRGB(rgb, 0, 0, start + i, y1, 1, 1, true ); 
+//				}
+//			} else if (x1 == x2) {
+//				int start = Math.max( y1, 0);
+//				for (int i = start; i < y2; i++ ) {
+//					g.drawRGB(rgb, 0, 0, x1, start + i, 1, 1, true ); 
+//				}				
+//			}
 			
 			if (x1 == x2 || y1 == y2) {
+//				int[] rgb = new int[]{ color };
+//				g.drawRGB( rgb, 0, 0, x1, y1, x2 - x1, y2 - y1, true );
 				int width = x2 - x1;
 				if (width == 0) {
 					width = 1;
@@ -950,7 +964,11 @@ public final class DrawUtil {
 				//                int width,
 				//                int height,
 				//                boolean processAlpha)
-				g.drawRGB( rgb, 0, width, x1, y1, width, height, true );
+				g.drawRGB( rgb, 0, width, x1, y1, width, height, true ); 
+			} else {
+				// TODO use alpha channel
+				g.setColor( color );
+				g.drawLine(x1, y1, x2, y2);
 			}
 		//#else
 			g.setColor( color );
@@ -1026,6 +1044,19 @@ public final class DrawUtil {
 		//#if polish.midp2
 			g.drawRGB(rgb, offset, scanlength, x, y, width, height,  processAlpha);
 		//#endif
+	}
+
+
+	/**
+	 * Draws an RGB Image
+	 * @param image the image
+	 * @param x the horizontal position
+	 * @param y the vertical position
+	 * @param g the graphics context
+	 */
+	public static void drawRgb(RgbImage image, int x, int y, Graphics g)
+	{
+		drawRgb( image.getRgbData(), x, y, image.getWidth(), image.getHeight(), image.isProcessTransparency(), g.getClipX(), g.getClipY(), g.getClipWidth(), g.getClipHeight(), g );
 	}
 	
 

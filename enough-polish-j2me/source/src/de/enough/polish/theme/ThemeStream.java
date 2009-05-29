@@ -14,7 +14,7 @@ import de.enough.polish.util.HashMap;
  * </p>
  * 
  * <p>
- * Copyright (c) 2008 Enough Software
+ * Copyright (c) 2009 Enough Software
  * </p>
  * 
  * <pre>

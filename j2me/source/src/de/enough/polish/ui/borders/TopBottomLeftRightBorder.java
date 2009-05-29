@@ -52,16 +52,12 @@ import javax.microedition.lcdui.Graphics;
  * </pre>
  * </p>
  *
- * <p>Copyright Enough Software 2005 - 2008</p>
+ * <p>Copyright Enough Software 2005 - 2009</p>
  * @author Robert Virkus, robert@enough.de
  */
 public class TopBottomLeftRightBorder extends Border {
 
 	private final int color;
-	private final int topWidth;
-	private final int bottomWidth;
-	private final int leftWidth;
-	private final int rightWidth;
 
 	/**
 	 * Creates a new simple border.
@@ -73,13 +69,8 @@ public class TopBottomLeftRightBorder extends Border {
 	 * @param rightWidth  the width of this border at the right
 	 */
 	public TopBottomLeftRightBorder( int color, int topWidth, int bottomWidth, int leftWidth, int rightWidth ) {
-		super();
+		super(leftWidth, rightWidth, topWidth, bottomWidth);
 		this.color = color;
-		this.topWidth = topWidth;
-		this.bottomWidth = bottomWidth;
-		this.leftWidth = leftWidth;
-		this.rightWidth = rightWidth;
-		this.borderWidth = Math.max(topWidth, Math.max( bottomWidth, Math.max( leftWidth, rightWidth ) ) );
 	}
 
 	/* (non-Javadoc)
@@ -88,27 +79,27 @@ public class TopBottomLeftRightBorder extends Border {
 	public void paint(int x, int y, int width, int height, Graphics g) {
 		g.setColor( this.color );
 		int rightX = x + width;
-		int bottomY = y + height;
+		int bottomY = y + height - 1;
 		// paint top border:
-		int border = this.topWidth - 1;
+		int border = this.borderWidthTop - 1;
 		while ( border >= 0) {
 			g.drawLine( x, y + border, rightX, y + border );
 			border--;
 		}
 		// paint bottom border:
-		border = this.bottomWidth - 1;
+		border = this.borderWidthBottom - 1;
 		while ( border >= 0) {
 			g.drawLine( x, bottomY - border, rightX, bottomY - border );
 			border--;
 		}
 		// paint left border:
-		border = this.leftWidth - 1;
+		border = this.borderWidthLeft - 1;
 		while ( border >= 0) {
 			g.drawLine( x + border, y, x + border, bottomY );
 			border--;
 		}
 		// paint right border:
-		border = this.rightWidth - 1;
+		border = this.borderWidthRight - 1;
 		while ( border >= 0) {
 			g.drawLine( rightX - border, y, rightX - border, bottomY );
 			border--;

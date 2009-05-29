@@ -2,7 +2,7 @@
 /*
  * Created on Dec 28, 2007 at 3:19:28 PM.
  * 
- * Copyright (c) 2007 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -29,6 +29,9 @@ package de.enough.polish.ui.backgrounds;
 import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.ui.Background;
+import de.enough.polish.ui.Color;
+import de.enough.polish.ui.Dimension;
+import de.enough.polish.ui.Style;
 
 /**
  * <p>Provides a partial background - this background will be usually used within a <code>combined</code> background.</p>
@@ -56,7 +59,7 @@ import de.enough.polish.ui.Background;
  * }
  * </pre>
  *
- * <p>Copyright Enough Software 2007 - 2008</p>
+ * <p>Copyright Enough Software 2007 - 2009</p>
  * <pre>
  * history
  *        Dec 28, 2007 - rob creation
@@ -66,8 +69,9 @@ import de.enough.polish.ui.Background;
 public class PartialSimpleBackground extends Background
 {
 	private int color;
-	private int start;
-	private int end;
+	private Dimension start;
+	private Dimension end;
+	
 	/**
 	 * Creates a new gradient background
 	 * 
@@ -76,6 +80,17 @@ public class PartialSimpleBackground extends Background
 	 * @param end the line counted from the top at which the gradient ends in percent
 	 */
 	public PartialSimpleBackground( int color, int start, int end ) {
+		this( color, new Dimension(start, true), new Dimension(end, true) );
+	}
+	
+	/**
+	 * Creates a new gradient background
+	 * 
+	 * @param color the color
+	 * @param start the line counted from the top at which the gradient starts in percent
+	 * @param end the line counted from the top at which the gradient ends in percent
+	 */
+	public PartialSimpleBackground( int color, Dimension start, Dimension end ) {
 		this.color = color;
 		this.start = start;
 		this.end = end;
@@ -86,10 +101,38 @@ public class PartialSimpleBackground extends Background
 	 */
 	public void paint(int x, int y, int width, int height, Graphics g)
 	{
-		int yStart = y + ((height * this.start) / 100);
-		int h = (height * (this.end - this.start)) / 100;
+		
+		int yStart = y + this.start.getValue(height);
+		int h = this.end.getValue(height) - this.start.getValue(height);
 		g.setColor( this.color );
 		g.fillRect(x, yStart, width, h );
 	}
+	
+	//#if polish.css.animations
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Background#setStyle(de.enough.polish.ui.Style)
+	 */
+	public void setStyle(Style style)
+	{
+		//#if polish.css.background-partial-color
+			Color tbgColor = style.getColorProperty("background-partial-color");
+			if (tbgColor != null) {
+				this.color = tbgColor.getColor();
+			}
+		//#endif
+		//#if polish.css.background-partial-start
+			Dimension startObj = (Dimension) style.getObjectProperty("background-partial-start");
+			if (startObj != null) {
+				this.start = startObj;
+			}
+		//#endif
+		//#if polish.css.background-partial-end
+			Dimension endObj = (Dimension) style.getObjectProperty("background-partial-end");
+			if (endObj != null) {
+				this.end = endObj;
+			}
+		//#endif
+	}
+	//#endif
 
 }

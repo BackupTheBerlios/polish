@@ -27,8 +27,10 @@
 package de.enough.polish.ui;
 
 
-import javax.microedition.lcdui.Displayable;
+import de.enough.polish.ui.Displayable;
 
+import de.enough.polish.event.EventListener;
+import de.enough.polish.event.EventManager;
 import de.enough.polish.util.ArrayList;
 
 /**
@@ -45,7 +47,7 @@ import de.enough.polish.util.ArrayList;
  *  sets the interval to 200 ms. When not specified, the default interval
  *  of 100 ms will be used. 
  * </p>
- * <p>Copyright Enough Software 2004 - 2008</p>
+ * <p>Copyright Enough Software 2004 - 2009</p>
 
  * <pre>
  * history
@@ -54,14 +56,22 @@ import de.enough.polish.util.ArrayList;
  * @author Robert Virkus, robert@enough.de
  */
 public class AnimationThread extends Thread
+//#if polish.css.animations
+	implements EventListener
+//#endif
 {
 	
 	//#ifdef polish.animationInterval:defined
 		//#= public final static int ANIMATION_INTERVAL = ${polish.animationInterval};
 	//#else
-		public final static int ANIMATION_INTERVAL = 100;
+		public final static int ANIMATION_INTERVAL = 50;
 	//#endif
-		//#ifdef polish.sleepInterval:defined
+	//#ifdef polish.animationMinimumInterval:defined
+		//#= public final static int ANIMATION_MINIMUM_INTERVAL = ${polish.animationMinimumInterval};
+	//#else
+		private static final int ANIMATION_MINIMUM_INTERVAL = 10;
+	//#endif
+	//#ifdef polish.sleepInterval:defined
 		//#= private final static int SLEEP_INTERVAL = ${polish.sleepInterval};
 	//#else
 		private final static int SLEEP_INTERVAL = 300;
@@ -82,6 +92,9 @@ public class AnimationThread extends Thread
 			super("AnimationThread");
 		//#else
 			//# super();
+		//#endif
+		//#if polish.css.animations
+			EventManager.getInstance().addEventListener(null, this);
 		//#endif
 	}
 	
@@ -108,11 +121,12 @@ public class AnimationThread extends Thread
 						if (animationList != null) {
 							Object[] animationItems = animationList.getInternalArray();
 							for (int i = 0; i < animationItems.length; i++) {
-								Item item = (Item) animationItems[i];
-								if (item == null) {
+								Animatable animatable = (Animatable) animationItems[i];
+								if (animatable == null) {
 									break;
 								}
-								item.animate(currentTime, repaintRegion);
+								//System.out.println("animating " + animatable);
+								animatable.animate(currentTime, repaintRegion);
 							}
 						}
 						if (repaintRegion.containsRegion()) {
@@ -122,10 +136,11 @@ public class AnimationThread extends Thread
 							//#if polish.Bugs.fullRepaintRequired
 								screen.requestRepaint();
 							//#else
-								screen.requestRepaint( repaintRegion.getX(), repaintRegion.getY(), repaintRegion.getWidth(), repaintRegion.getHeight() );
+								//System.out.println("repaint for " + repaintRegion.getX() + ", " + repaintRegion.getY() + ", " + repaintRegion.getWidth() + ", " + repaintRegion.getHeight()  );
+								screen.requestRepaint( repaintRegion.getX(), repaintRegion.getY(), repaintRegion.getWidth() + 1, repaintRegion.getHeight() + 1 );
 							//#endif
 							repaintRegion.reset();
-							sleeptime = ANIMATION_INTERVAL;
+							screen.serviceRepaints();
 						}
 					}
 
@@ -134,6 +149,12 @@ public class AnimationThread extends Thread
 						if (d != screen) {
 							StyleSheet.currentScreen = null;
 						}
+					}
+					long usedTime = System.currentTimeMillis() - currentTime;
+					if (usedTime >= (ANIMATION_INTERVAL-ANIMATION_MINIMUM_INTERVAL)) {
+						sleeptime = ANIMATION_MINIMUM_INTERVAL;
+					} else {
+						sleeptime = ANIMATION_INTERVAL - usedTime;
 					}
 				} else {
 					if (releaseResourcesOnScreenChange) {
@@ -157,9 +178,9 @@ public class AnimationThread extends Thread
 	 * then de-registers itself in the hideNotify() method.
 	 *  
 	 * @param item the item that needs to be animated regardless of it's focused state etc.
-	 * @see #removeAnimationItem(Item)
+	 * @see #removeAnimationItem(Animatable)
 	 */
-	public static void addAnimationItem( Item item ) {
+	public static void addAnimationItem( Animatable item ) {
 		if (animationList == null) {
 			animationList = new ArrayList();
 		}
@@ -188,9 +209,9 @@ public class AnimationThread extends Thread
 	 * then de-registers itself in the hideNotify() method.
 	 *  
 	 * @param item the item that does not need to be animated anymore
-	 * @see #addAnimationItem(Item)
+	 * @see #addAnimationItem(Animatable)
 	 */
-	public static void removeAnimationItem( Item item ) {
+	public static void removeAnimationItem( Animatable item ) {
 		if (animationList != null) {
 			animationList.remove(item);
 		}
@@ -207,6 +228,191 @@ public class AnimationThread extends Thread
 	 */
 	public static void removeAnimationItem( javax.microedition.lcdui.CustomItem item) {
 		// ignore
+	}
+	//#endif
+
+	//#if polish.css.animations
+	/**
+	 * Adds a new CSS animation into the processing queue.
+	 * @param animation the animation
+	 * @param item the corresponding UI element (either screen or item)
+	 */
+	public static void addAnimation(CssAnimation animation, UiElement item)
+	{
+		if (animationList == null) {
+			animationList = new ArrayList();
+		}
+		Object[] existingAnimations = animationList.getInternalArray();
+		for (int i = 0; i < existingAnimations.length; i++)
+		{
+			Object anim = existingAnimations[i];
+			if (anim == null) {
+				break;
+			}
+			if (anim instanceof CssAnimationRun) {
+				CssAnimationRun run = (CssAnimationRun) anim;
+				if (run.uiElement == item && run.animation.cssAttributeId == animation.cssAttributeId) {
+					run.exitOrRepeat( true, 0 );
+				}
+			}
+		}
+		CssAnimationRun cssAnimationRun = new CssAnimationRun( animation, item );
+		if (animation.duration != 0 || animation.delay != 0) {
+			animationList.add( cssAnimationRun);
+		}
+	}
+	//#endif
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.event.EventListener#handleEvent(java.lang.String, java.lang.Object, java.lang.Object)
+	 */
+	public void handleEvent(String name, Object source, Object data)
+	{
+		//#if polish.css.animations
+			if (source instanceof UiElement) {
+				UiElement uiElement = (UiElement) source;
+				Style style = uiElement.getStyle();
+				CssAnimation[] animations = style != null ?  style.getAnimations() : null;
+				if (animations != null) {
+					//System.out.println(name + ": checking animations from style " +  style.name + " of "+ uiElement );
+					for (int i = 0; i < animations.length; i++)
+					{
+						CssAnimation animation = animations[i];
+						//System.out.println( name + ": trigger=" + animation.triggerEventId);
+						if (animation.triggerEventId.equals(name)) {
+							//System.out.println("found animation in " + style.name + " for trigger " + name + " from " + animation.startValue + " to " + animation.endValue + " for " + uiElement);
+							if (animation.delay == 0) {
+								if (animation.duration == 0) {
+									animation.setEndValue( style );
+								} else {
+									animation.setStartValue( style );
+								}
+							}
+							if (animation.repeat == -2) {
+								// only use this animation once in a lifetime of the application:
+								animation.triggerEventId = "";
+							}
+							addAnimation( animation, uiElement);
+						}
+					}
+				}
+			}
+		//#endif				
+	}
+
+	//#if polish.css.animations
+	private static class CssAnimationRun implements Animatable{
+		private final CssAnimation animation;
+		private Object lastValue;
+		private UiElement uiElement;
+		private Style style;
+		private long startTime;
+		private final Style uiElementStyle;
+		private boolean isStarted;
+		private int repeats;
+		
+		public CssAnimationRun( CssAnimation animation, UiElement item ) {
+			this.animation = animation;
+			this.startTime = System.currentTimeMillis();
+			this.uiElement = item;
+			this.uiElementStyle = item.getStyle();
+			this.lastValue = this.uiElementStyle.getObjectProperty( animation.cssAttributeId );
+			this.style = new Style();
+			//this.style.font = this.itemStyle.font;
+			//this.style.name = item.getStyle().name;
+			this.isStarted = (animation.delay == 0);
+			this.repeats = animation.getRepeat();
+			if (this.isStarted) {
+				if (animation.duration != 0) {
+					this.style.addAttribute( animation.cssAttributeId, animation.getStartValue() );
+				} else {
+					this.style.addAttribute( animation.cssAttributeId, animation.getEndValue() );
+					if (animation.fireEvent != null) {
+						EventManager.fireEvent(animation.fireEvent, item, animation );
+					}
+				}
+				item.setStyle(this.style, false);
+			} else {
+				this.style.addAttribute( animation.cssAttributeId, this.lastValue);
+			}
+		}
+		
+		public void animate( long currentTime, ClippingRegion repaintArea ) {
+			this.uiElement.addRepaintArea(repaintArea);
+			if (!this.isStarted) {
+				if (currentTime - this.startTime >= this.animation.delay) {
+					this.isStarted = true;
+					this.startTime = currentTime;
+					if (this.animation.duration != 0) {
+						this.animation.setStartValue(this.style);
+					} else {
+						this.animation.setEndValue(this.style);
+					}
+					if (this.uiElement.getStyle() == this.uiElementStyle) {
+						this.uiElement.setStyle( this.style, false );
+						this.uiElement.addRepaintArea(repaintArea);
+					}
+					if (this.animation.duration == 0) {
+						exitOrRepeat(true, currentTime);
+					}
+				}
+				return;
+			}
+			long passedTime = currentTime - this.startTime;
+			Object newValue = this.animation.animate( this.style, this.lastValue, passedTime );
+			boolean animate = false;
+			if (newValue == CssAnimation.ANIMATION_FINISHED) {
+				exitOrRepeat( false, currentTime );
+				this.animation.setEndValue( this.uiElementStyle );
+				this.animation.setEndValue( this.style );
+				animate = true;
+				//System.out.println("finished animation in " + (passedTime) + "ms, expected=" + this.animation.duration + ", value=" + this.itemStyle.getObjectProperty(this.animation.cssAttributeId) + ", for item " + this.item);
+			} else if (newValue != null) {
+				//System.out.println("setting " + animation.cssAttributeId + " to " + newValue + " for " + this.itemStyle.name + " and item " +  this.item );
+				if (newValue != this.lastValue) {
+					this.style.addAttribute(this.animation.cssAttributeId, newValue);
+					this.lastValue = newValue;
+					animate = true;
+				}
+			} else {
+				this.style.removeAttribute( this.animation.cssAttributeId );
+				animate = true;
+			}
+			if (this.uiElement.getStyle() == this.uiElementStyle) {
+				if (animate) {
+					this.uiElement.setStyle( this.style, false );
+					this.uiElement.addRepaintArea(repaintArea);
+				}
+			} else {
+				// style has changed:
+				//System.out.println("style changed to " + this.item.getStyle().name  + ", value=" + this.itemStyle.getObjectProperty(this.animation.cssAttributeId) + ", for item " + this.item );
+				exitOrRepeat( true, currentTime );
+			}
+		}
+
+		/**
+		 * @param force
+		 */
+		protected void exitOrRepeat(boolean force, long currentTime)
+		{
+			//System.out.println("exit or repeat: force=" + force + ", repeat=" + this.repeats + ", passedTime=" + (currentTime - this.startTime) );
+			if (force || this.repeats == 0 || this.repeats  == -2) {
+				AnimationThread.animationList.remove(this);
+				if (this.animation.fireEvent != null) {
+					EventManager.fireEvent(this.animation.fireEvent, this.uiElement, this.animation );
+				}
+			} else  {
+				if (this.repeats != -1) {
+					this.repeats--;
+				}
+				//System.out.println("repeating animation: repeat=" + this.repeats );
+				if (this.animation.delay != 0) {
+					this.isStarted = false;
+				}
+				this.startTime = currentTime;
+			}
+		}
+		
 	}
 	//#endif
 

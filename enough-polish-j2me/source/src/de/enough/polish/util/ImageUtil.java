@@ -1,7 +1,7 @@
 /*
  * Created on 15-May-2005 at 21:28:30.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -30,11 +30,12 @@ package de.enough.polish.util;
 	import javax.microedition.lcdui.Image;
 //#endif
 
+import de.enough.polish.math.FP;
 
 /**
- * <p>Helps to transform images</p>
+ * Utility class for transforming images.
  *
- * <p>Copyright (c) Enough Software 2005 - 2008</p>
+ * <p>Copyright (c) Enough Software 2005 - 2009</p>
  * <pre>
  * history
  *        15-May-2005 - rob creation
@@ -43,6 +44,7 @@ package de.enough.polish.util;
  * @author Robert Virkus, j2mepolish@enough.de
  * @author Tim Muders, tim.muders@enough.de
  * @author Simon Schmitt, simon.schmitt@enough.de
+ * @author Anders Bo Pedersen, andersbo.pedersen@gmail.com
  */
 public final class ImageUtil {
 
@@ -50,7 +52,6 @@ public final class ImageUtil {
 	 * No instantiation is allowed
 	 */
 	private ImageUtil() {
-		super();
 	}
 	
 	/**
@@ -74,15 +75,15 @@ public final class ImageUtil {
 					scaledRgbData[(yTarget*width) + xTarget] = rgbData[(y*width)+x];
 				}
 			}
-			return;
-		}
-		int xStart = (width - width * 100 / scaleFactor ) / 2;
-		int yStart = ((height - height * 100 / scaleFactor ) / 2) * width;
-		for (int y = 0; y < height; y++) {
-			int c1 = y * width;
-			int c2 = yStart + (y * 100  / scaleFactor) * width;
-			for (int x = 0; x < width; x++) {
-				scaledRgbData[c1 + x] = rgbData[ c2 + xStart + x * 100/scaleFactor ];
+		} else {
+			int xStart = (width - width * 100 / scaleFactor ) / 2;
+			int yStart = ((height - height * 100 / scaleFactor ) / 2) * width;
+			for (int y = 0; y < height; y++) {
+				int c1 = y * width;
+				int c2 = yStart + (y * 100  / scaleFactor) * width;
+				for (int x = 0; x < width; x++) {
+					scaledRgbData[c1 + x] = rgbData[ c2 + xStart + x * 100/scaleFactor ];
+				}
 			}
 		}
 	}
@@ -95,8 +96,12 @@ public final class ImageUtil {
 	 * @param height the height of the target RGB
 	 * @param sourceRgb the source RGB data that has the original data
 	 * @param targetRgb the target array for storing the scaled image
+	 * @throws IllegalArgumentException when the factor is less than 100
 	 */
 	public static void particleScale(int factor, int width, int height, int[] sourceRgb, int[] targetRgb) {
+		if (factor < 100) {
+			throw new IllegalArgumentException();
+		}
 		for (int i = 0; i < targetRgb.length; i++) {
 			targetRgb[i] = 0;
 		}
@@ -545,7 +550,9 @@ public final class ImageUtil {
 					
 			}
 		}*/
-		long t = System.currentTimeMillis();
+		//#if polish.debug.debug
+			long t = System.currentTimeMillis();
+		//#endif
 		
 		for (int i = 0; i < dest.length; i++) {
 			dest[i]=0;
@@ -673,17 +680,17 @@ public final class ImageUtil {
 						}
 						
 						//	start
-						tmp=mixPixelIn(tmp,dest[y_width + srcX],(int)(xIntensityStart) ,0);
+						tmp=mixPixelIn(tmp,dest[y_width + srcX], xIntensityStart, 0);
 						// between
 						for (smallX =  srcX+1; smallX <= ((srcXdetailed+scaleX)>>PSEUDO_FLOAT)-1; smallX++) {
-							tmp=mixPixelIn(tmp,dest[y_width + smallX],PSEUDO_POW2 ,0);
+							tmp=mixPixelIn(tmp,dest[y_width + smallX],PSEUDO_POW2, 0);
 						}
 						// end
 						if (smallX<originalWidth){
-							tmp=mixPixelIn(tmp,dest[y_width + smallX],(int)(xIntensityEnd) ,0);
+							tmp=mixPixelIn(tmp,dest[y_width + smallX], xIntensityEnd, 0);
 						} else {
 							 //mix transparency in
-							tmp=mixPixelIn(tmp, 0 , (int)(xIntensityEnd),0);
+							tmp=mixPixelIn(tmp, 0, xIntensityEnd, 0);
 						}
 						
 						// assemble the pixel 
@@ -981,9 +988,60 @@ public final class ImageUtil {
 	 * @param oldHeight the height from the oiginal rgbdata
 	 * @return the scaled rgb data.
 	 */
-	public static final int[] scale(int[]rgbData,int newWidth,int newHeight,int oldWidth, int oldHeight){
-		int[]newRgbData = new int[newWidth*newHeight];
-		scale( rgbData, newWidth,newHeight, oldWidth, oldHeight, newRgbData);
+	public static final int[] scale(int[]rgbData, int newWidth, int newHeight, int oldWidth, int oldHeight) {
+		int[] newRgbData = new int[newWidth * newHeight];
+		scale( rgbData, newWidth, newHeight, oldWidth, oldHeight, newRgbData);
+		return newRgbData;
+	}
+	
+	/**
+	 * Scales an rgb data unproportional in every new size you want bigger or smaller than the given original. Returns the scaled rgb data.
+	 * 
+	 * @param rgbData the original rgbdata
+	 * @param newWidth the new width for the new rgbdata
+	 * @param newHeight the new height for the new rgbdata
+	 * @param oldWidth the width from the oiginal rgbdata
+	 * @param oldHeight the height from the oiginal rgbdata
+	 * @param keepAspectRatio set to true when the original aspect ratio should be maintained, even when newWidth and newHeight are in a different ratio.
+	 *        Keeping the aspect ratio may result in transparent areas on the sides of the scaled image.
+	 * @return the scaled rgb data.
+	 */
+	public static final int[] scale(int[]rgbData, int newWidth, int newHeight, int oldWidth, int oldHeight, boolean keepAspectRatio) {
+		int[] newRgbData = new int[ newWidth * newHeight ];
+		int[] tmpRgbData = newRgbData;
+		int tmpWidth = newWidth;
+		int tmpHeight = newHeight;
+		if (keepAspectRatio) {
+			/* keep the original aspect ratio, so oldWidth/oldHeight == (newWidth'/newHeight').
+			 * So we have to calculate the newWidth' and newHeight' (called tmpWidth and tmpHeight):
+			 */
+			tmpWidth = Math.min( newWidth, (oldWidth * newHeight)/oldHeight);
+			tmpHeight = Math.min( newHeight, (oldHeight * newWidth)/oldWidth);
+			keepAspectRatio = (tmpWidth != newWidth || tmpHeight != newHeight);
+			if (keepAspectRatio) {
+				tmpRgbData = new int[ tmpWidth * tmpHeight ];
+			}
+		}
+		scale( rgbData, tmpWidth, tmpHeight, oldWidth, oldHeight, tmpRgbData);
+		if (keepAspectRatio) {
+			if (tmpWidth < newWidth) {
+				// height is the same, but the width has changed,
+				// so move the rows into the middle:
+				for (int row=0; row<tmpHeight; row++) {
+					int startTmp = row * tmpWidth;
+					int startNew = (row * newWidth) + (newWidth - tmpWidth)/2;
+					System.arraycopy( tmpRgbData, startTmp, newRgbData, startNew, tmpWidth);
+				}
+			} else {
+				// width is the same, but the height has changed:
+				int startRowIndex = (newWidth * (newHeight - tmpHeight)) / 2; 
+				for (int row=0; row<tmpHeight; row++) {
+					int startTmp = row * tmpWidth;
+					int startNew = startTmp + startRowIndex;
+					System.arraycopy( tmpRgbData, startTmp, newRgbData, startNew, tmpWidth);
+				}
+			}
+		}
 		return newRgbData;
 	}
 	
@@ -1181,23 +1239,23 @@ public final class ImageUtil {
 	 * @param oldHeight the height from the oiginal rgbdata
 	 * @param newRgbData the new rgbdata has to be initialised
 	 */
-	public static final void scale(int[]rgbData,int newWidth,int newHeight,int oldWidth, int oldHeight,int[] newRgbData){	
+	public static final void scale(int[]rgbData,int newWidth,int newHeight,int oldWidth, int oldHeight, int[] newRgbData) {
 		int currentX = 0,currentY = 0;
 		int oldLenght = rgbData.length;
 		int newLength = newRgbData.length;	
 		int targetArrayIndex;
-		int verticalShrinkFactorPercent = ((newHeight*100) / oldHeight);
+		int verticalScaleFactorPercent = ((newHeight*100) / oldHeight);
 		int horizontalScaleFactorPercent = ((newWidth*100) / oldWidth);
-		for(int i = 0; i < newLength;i++){
+		for (int i = 0; i < newLength;i++) {
 			currentX = (currentX + 1) % newWidth;
-			if(currentX == 0){
-				currentY++;	
+			if (currentX == 0){
+				currentY++;
 			}				
-			targetArrayIndex = ((currentX*100)/horizontalScaleFactorPercent)+(oldWidth * ((currentY*100)/verticalShrinkFactorPercent));
-			if(targetArrayIndex >= oldLenght) {
+			targetArrayIndex = ((currentX*100)/horizontalScaleFactorPercent)+(oldWidth * ((currentY*100)/verticalScaleFactorPercent));
+			if (targetArrayIndex >= oldLenght) {
 				targetArrayIndex = oldLenght-1;
 			}
-			if(targetArrayIndex < 0) {
+			if (targetArrayIndex < 0) {
 				targetArrayIndex = 0;
 			}
 			newRgbData[i] = rgbData[targetArrayIndex];
@@ -1323,5 +1381,808 @@ public final class ImageUtil {
 			//# return color;
 		//#endif
 	}
+	
+	/*******************************************************************************
+	* Helper function for animation a HSL color change.
+	* <p>
+	* Linear interpolations will be done between sourceImage original colors and parameter
+	* HSL values in accordance to parameter permille.
+	* 
+	* @param sourceImg source image
+	* @param H Hue adjustment as int, must be [-360;360]
+	* @param S Saturation adjustment as int, must be [-100;100]
+	* @param L Light adjustment as int, must be [-100;100]
+	* @param permille intrepolations factor, must be [0;1000]
+	* @return the transfored RGB image
+	*******************************************************************************/
+	public static RgbImage animateColorByHSL(final RgbImage sourceImg, int H, int S, int L, int permille)
+	{
+		//linear interpolation
+		int 
+			tH = FP.round( FP.mul( FP.div( FP.intToFix(H), FP.intToFix(1000) ), FP.intToFix(permille)) ),
+			tS = FP.round( FP.mul( FP.div( FP.intToFix(S), FP.intToFix(1000) ), FP.intToFix(permille)) ),
+			tL = FP.round( FP.mul( FP.div( FP.intToFix(L), FP.intToFix(1000) ), FP.intToFix(permille)) );
+		
+		//#mdebug debug
+		System.out.println("tH: "+tH);
+		System.out.println("tS: "+tS);
+		System.out.println("tL: "+tL);
+		//#enddebug
+		
+		return changeColorByHSL(sourceImg, tH, tS, tL);
+	}
+	
+	/*******************************************************************************
+	* Changes the colors of a RgbImage according to HSL colorspace parameters.
+	*
+	* @param sourceImg source image
+	* @param H Hue adjustment as int, must be [-360;360]
+	* @param S Saturation adjustment as int, must be [-100;100]
+	* @param L Light adjustment as int, must be [-100;100]
+	* @return the transfored RGB image
+	*******************************************************************************/	
+	public static RgbImage changeColorByHSL (final RgbImage sourceImg, int H, int S, int L) 
+	{
+		return changeColorByHSL (sourceImg, H, S, L, 100);
+	}
+	
+	/*******************************************************************************
+	* Changes the colors of a RgbImage according to HSL colorspace parameters.
+	*
+	* @param sourceImg source image
+	* @param H Hue adjustment as int, must be [-360;360]
+	* @param S Saturation adjustment as int, must be [-100;100]
+	* @param L Light adjustment as int, must be [-100;100]
+	* @param alpha transparency to be applied, must be [0;100]
+	* @return the transfored RGB image
+	*******************************************************************************/		
+	public static RgbImage changeColorByHSL (final RgbImage sourceImg, int H, int S, int L, int alpha) 
+	{
+		if( null == sourceImg || null == sourceImg.getRgbData() || sourceImg.getRgbData().length == 0 )
+			return null;
+		
+		final int[] sourceRGB = sourceImg.getRgbData();
+		int[] outPutRGB = new int[sourceRGB.length];
+		
+		//Ensure that HSL values are properly constrained
+		int tH = H > 360 || H < -360  ? H%360 : H ,
+			tS = S > 100 || S < -100  ? S%100 : S ,
+			tL = L > 100 || L < -100  ? L%100 : L ,
+			alphaMask = Math.abs(alpha > 100 || alpha < -100  ? alpha%100 : alpha) ;
+		
+		//clamp to [0,1.0] values
+		tH = FP.clamp( FP.intToFix(tH), FP.FIX_360 );
+		tS = FP.clamp( FP.intToFix(tS), FP.intToFix(100) );
+		tL = FP.clamp( FP.intToFix(tL), FP.intToFix(100) );
+		
+		//alpha mask to apply
+		alphaMask = FP.round(FP.mul( FP.intToFix(alphaMask) , FP.div(FP.intToFix(255), FP.intToFix(100)) ) );
+		alphaMask = 0xFF000000 & (alphaMask << 24); 
+		
+		//init hash
+		IntHashMap ihm = new IntHashMap();
+		
+		try
+		{			
+			int[] rgb= new int[3],hsl= new int[3];
+			int argb = 0, argbOutput = 0;
+			int cMax_fix = FP.intToFix(255);
+			
+			for( int i = sourceRGB.length; --i>=0; )
+			{
+				argb = sourceRGB[i];
+				
+				//has color value already been processed and is therefore cashed?
+				if(null == ihm.get(argb))
+				{
+					//Clamping [0;255] bytes values to [0.0;1.0] fix values
+					rgb[0]=FP.clamp( FP.intToFix((argb>>16)&0xFF), cMax_fix);
+					rgb[1]=FP.clamp( FP.intToFix((argb>>8)&0xFF), cMax_fix);
+					rgb[2]=FP.clamp( FP.intToFix(argb&0xFF), cMax_fix);
+					
+					//#mdebug debug
+					System.out.println("clamp R: "+FP.toString(rgb[0]));
+					System.out.println("clamp G: "+FP.toString(rgb[1]));
+					System.out.println("clamp B: "+FP.toString(rgb[2]));
+					//#enddebug
+					
+					//Going to HSL colorspace
+					RGBtoHSL(rgb,0,hsl,0);
+					
+					hsl[0]+=tH;
+					hsl[1]+=tS;
+					hsl[2]+=tL;
+					
+					//ensure constraints
+					if(hsl[0] > FP.FIX_ONE)
+						hsl[0] -= FP.FIX_ONE;
+					if(hsl[0] < 0)
+						hsl[0] += FP.FIX_ONE;
+					
+					if(hsl[1] > FP.FIX_ONE)
+						hsl[1] = FP.FIX_ONE;
+					if(hsl[1] < 0)
+						hsl[1] = 0;
+					
+					if(hsl[2] > FP.FIX_ONE)
+						hsl[2] = FP.FIX_ONE;
+					if(hsl[2] < 0)
+						hsl[2] = 0;	
+					
+					//Back to RGB colorspace
+					HSLtoRGB(hsl,0,rgb,0);
+					
+					//#mdebug debug
+					System.out.println( "converted R: "+(FP.round(FP.mul(rgb[0], cMax_fix) ) & 0xFF ));
+					System.out.println( "converted G: "+(FP.round(FP.mul(rgb[1], cMax_fix) ) & 0xFF ));
+					System.out.println( "converted B: "+(FP.round(FP.mul(rgb[2], cMax_fix) ) ));
+					//#enddebug
+					
+					argbOutput =
+						alphaMask |
+						( FP.round(FP.mul(rgb[0], cMax_fix) ) & 0xFF ) << 16 | 
+						( FP.round(FP.mul(rgb[1], cMax_fix) ) & 0xFF ) << 8 | 
+						( FP.round(FP.mul(rgb[2], cMax_fix) ) )
+						;
+					outPutRGB[i] = argbOutput;
+					
+					//add to hash
+					ihm.put(argb, new Integer(argbOutput));
+				}
+				else
+				{
+					outPutRGB[i] = ((Integer)ihm.get(argb)).intValue();
+				}
+			}
+	    } 
+		catch(Throwable t)
+		{
+			//#mdebug error
+			System.out.println("Error adjusting RgbImage colorspace: "+t.getMessage());
+			t.printStackTrace();
+			//#enddebug
+			
+			//clean up
+			ihm = null;
+			outPutRGB = null;
+			System.gc();
+		}
+		
+		return new RgbImage(outPutRGB,sourceImg.getWidth());
+	}	
+	
+	/*******************************************************************************
+	* Converts a RGB color value to HSL.
+	* <p>
+	* Uses fixed point math
+	* 
+	* @param RGB_fix input array of RGB values clamped to [0.0;1.0] in fix
+	* @param rgbIndice array indice
+	* @param HSL_fix output array of HSL values clamped to [0.0;1.0] in fix
+	* @param hslIndice array indice
+	*******************************************************************************/	
+	public static void RGBtoHSL( int[] RGB_fix, int rgbIndice, int[] HSL_fix, int hslIndice )
+	{
+				
+		int H_fix=0,S_fix,L_fix;
+		
+		int R_fix=RGB_fix[rgbIndice],
+	   		G_fix=RGB_fix[rgbIndice+1],
+	   		B_fix=RGB_fix[rgbIndice+2];		
+			    
+		int colorMax_fix = FP.max(R_fix, FP.max(G_fix, B_fix)),
+	   		colorMin_fix = FP.min(R_fix, FP.min(G_fix, B_fix)),
+	   		colorDelta = colorMax_fix - colorMin_fix;
+	   
+		//Light
+		L_fix = (colorMin_fix + colorMax_fix) >> 1;
+	    
+	    if (colorDelta == 0) //is color gray or white?
+	    {
+	    	H_fix=0;S_fix=0; //HSL set grey	
+	    }
+	    else
+	    {  	
+			
+	    	//Saturation
+	    	if(L_fix < FP.FIX_HALF)
+	    		S_fix = FP.div(colorDelta, colorMax_fix + colorMin_fix);
+	    	else
+	    		S_fix = FP.div(colorDelta, FP.intToFix(2)-colorMax_fix-colorMin_fix);
+	    	
+	    	int six_fix = FP.intToFix(6);
+	    	int deltaHalf = colorDelta >> 1;
+			
+			int tR_fix=FP.div( FP.div(colorMax_fix - R_fix, six_fix ) + deltaHalf ,colorDelta),
+	   			tG_fix=FP.div( FP.div(colorMax_fix - G_fix, six_fix ) + deltaHalf ,colorDelta),
+	   			tB_fix=FP.div( FP.div(colorMax_fix - B_fix, six_fix ) + deltaHalf ,colorDelta);
 
+	        if( R_fix == colorMax_fix )
+	        	H_fix = tB_fix - tG_fix;
+	        else if( G_fix == colorMax_fix )
+	        	H_fix = FP.div(FP.FIX_ONE, FP.intToFix(3)) + tR_fix - tB_fix;
+	        else if ( B_fix == colorMax_fix )
+	        	H_fix = FP.div(FP.intToFix(2), FP.intToFix(3)) + tG_fix - tR_fix;	
+
+	        if ( H_fix < 0 )
+	        	H_fix += FP.FIX_ONE;
+
+	        if ( H_fix > FP.FIX_ONE )
+	        	H_fix -= FP.FIX_ONE;
+	    }	
+		
+	    HSL_fix[hslIndice] = H_fix;
+	    HSL_fix[hslIndice+1] = S_fix;
+	    HSL_fix[hslIndice+2] = L_fix;
+	}    
+	
+	/*******************************************************************************
+	* Converts a HSL color value to RGB.
+	* <p>
+	* Uses fixed point math
+	* 
+	* @param HSL_fix input array of HSL values clamped to [0.0;1.0] in fix
+	* @param hslIndice array indice
+	* @param RGB_fix output array of RGB values clamped to [0.0;1.0] in fix
+	* @param rgbIndice array indice
+	*******************************************************************************/	
+	public static void HSLtoRGB( int[] HSL_fix, int hslIndice, int[] RGB_fix, int rgbIndice )
+	{
+		
+		  int v1_fix, v2_fix;
+		  
+		  int L_fix = HSL_fix[hslIndice+2]; //light
+
+		  if(L_fix == 0 )  //is grey
+		  {
+			 RGB_fix[rgbIndice] = L_fix;                     //RGB results = From 0 to 255
+			 RGB_fix[rgbIndice+1] = L_fix;
+			 RGB_fix[rgbIndice+2] = L_fix;
+			 
+		  }
+		  else
+		  {
+
+			  int H_fix = HSL_fix[hslIndice]; //hue
+			  int S_fix = HSL_fix[hslIndice+1];	//saturation	  
+
+		     if ( L_fix < FP.FIX_HALF )
+		    	 v2_fix =FP.mul(L_fix, FP.FIX_ONE + S_fix );
+		     else          
+		    	 v2_fix = ( L_fix + S_fix ) -FP.mul( L_fix , S_fix );
+
+		     v1_fix = (L_fix << 1) - v2_fix;
+		     
+		     int onethird_fix = FP.div(FP.FIX_ONE, FP.intToFix(3));
+
+			 RGB_fix[rgbIndice] = HuetoRGB( v1_fix, v2_fix, H_fix + onethird_fix );                     //RGB results = From 0 to 255
+			 RGB_fix[rgbIndice+1] = HuetoRGB( v1_fix, v2_fix, H_fix );
+			 RGB_fix[rgbIndice+2] = HuetoRGB( v1_fix, v2_fix, H_fix - onethird_fix );
+		  }
+	}	
+	
+	/*******************************************************************************
+	* Intermediate function to help convert Hue (H) to RGB
+	* <p>
+	* Uses fixed point math
+	* 
+	* @param v1_fix
+	* @param v2_fix
+	* @param H_fix value of hue
+	* @param rgb single colorchannel value
+	*******************************************************************************/		
+	private final static int HuetoRGB( int v1_fix, int v2_fix, int H_fix )
+	{
+		if ( H_fix < 0 )
+			H_fix += FP.FIX_ONE;
+		if ( H_fix > FP.FIX_ONE )
+			H_fix -= FP.FIX_ONE;
+		if (FP.mul(FP.intToFix(6), H_fix) < FP.FIX_ONE )
+			return FP.mul(FP.mul(v1_fix + ( v2_fix - v1_fix ), FP.intToFix(6)), H_fix );
+		if ( H_fix << 1  < FP.FIX_ONE )
+			return v2_fix;
+		if (FP.mul(FP.intToFix(3), H_fix ) < FP.intToFix(2) )
+			return FP.mul( v1_fix + ( v2_fix - v1_fix ),  
+					FP.mul( FP.div(FP.intToFix(2), FP.intToFix(3)) - H_fix , FP.intToFix(6) ) );
+	 	
+	    return v1_fix;
+	}
+	
+	/*******************************************************************************
+	* Helper function for animating a RGB color balance change.
+	* <p>
+	* Linear interpolations will be done between sourceImage original colors and parameter
+	* RGB values in accordance to parameter permille.
+	*
+	* @param RgbImage source image
+	* @param R Red channel adjustment as int, must be [-100;100]
+	* @param G Green channel adjustment as int, must be [-100;100]
+	* @param B Blue adjustment as int, must be [-100;100]
+	* @param permille intrepolations factor, must be [0;1000]
+	*******************************************************************************/
+	public static RgbImage animateColorBalance(final RgbImage sourceImg, int R, int G, int B, int permille)
+	{
+		//linear interpolation
+		int 
+			tR = FP.round( FP.mul( FP.div( FP.intToFix(R), FP.intToFix(1000) ), FP.intToFix(permille)) ),
+			tG = FP.round( FP.mul( FP.div( FP.intToFix(G), FP.intToFix(1000) ), FP.intToFix(permille)) ),
+			tB = FP.round( FP.mul( FP.div( FP.intToFix(B), FP.intToFix(1000) ), FP.intToFix(permille)) );
+		
+		//#mdebug debug
+		System.out.println("tR: "+tR);
+		System.out.println("tG: "+tG);
+		System.out.println("tB: "+tB);
+		//#enddebug
+		
+		return changeColorByHSL(sourceImg, tR, tG, tB);
+	}	
+	
+	/*******************************************************************************
+	* Changes the color balance of a RgbImage.
+	*
+	* @param RgbImage source image
+	* @param R Red channel adjustment as int, must be [-100;100]
+	* @param G Green channel adjustment as int, must be [-100;100]
+	* @param B Blue adjustment as int, must be [-100;100]
+	*******************************************************************************/		
+	public static RgbImage changeColorBalance (final RgbImage sourceImg, int R, int G, int B) 
+	{
+		return changeColorBalance(sourceImg, R, G, B, 100);
+	}
+	
+	/*******************************************************************************
+	* Changes the color balance of a RgbImage.
+	* 
+	* @param RgbImage source image
+	* @param R Red channel adjustment as int, must be [-100;100]
+	* @param G Green channel adjustment as int, must be [-100;100]
+	* @param B Blue adjustment as int, must be [-100;100]
+	* @param alpha transparency to be applied, must be [0;100]
+	*******************************************************************************/		
+	public static RgbImage changeColorBalance (final RgbImage sourceImg, int R, int G, int B, int alpha) 
+	{
+		if( null == sourceImg || null == sourceImg.getRgbData() || sourceImg.getRgbData().length == 0 )
+			return null;
+		
+		final int[] sourceRGB = sourceImg.getRgbData();
+		int[] outPutRGB = new int[sourceRGB.length];
+		
+		//Ensure that RGB values are properly constrained
+		int tR = R > 100 || R < -100  ? R%100 : R ,
+			tG = G > 100 || G < -100  ? G%100 : G ,
+			tB = B > 100 || B < -100  ? B%100 : B ,
+			alphaMask = Math.abs(alpha > 100 || alpha < -100  ? alpha%100 : alpha) ;
+		
+		//alpha mask to apply
+		alphaMask = FP.round( FP.mul( FP.intToFix(alphaMask) , FP.div(FP.intToFix(255), FP.intToFix(100)) ) );
+		alphaMask = 0xFF000000 & (alphaMask << 24); 
+		
+		try
+		{			
+			int[] rgb= new int[3],newRgb= new int[3];
+			int argb = 0;
+			int cMax = 255;
+			
+			for( int i = sourceRGB.length; --i>=0; )
+			{
+				argb = sourceRGB[i];
+				
+				//extracting channels
+				rgb[0] = (argb>>16)&0xFF;
+				rgb[1] = (argb>>8)& 0xFF;
+				rgb[2] = argb&0xFF;
+					
+				//#mdebug debug
+				System.out.println("R: "+FP.toString(rgb[0]));
+				System.out.println("G: "+FP.toString(rgb[1]));
+				System.out.println("B: "+FP.toString(rgb[2]));
+				//#enddebug
+				
+				newRgb[0] = (rgb[0] + tR);
+				newRgb[1] = (rgb[1] + tG);
+				newRgb[2] = (rgb[2] + tB);
+					
+				//ensure constraints
+				if(newRgb[0] > cMax)
+					newRgb[0] = cMax;
+				if(newRgb[0] < 0)
+					newRgb[0] = 0;
+				
+				if(newRgb[1] > cMax)
+					newRgb[1] = cMax;
+				if(newRgb[1] < 0)
+					newRgb[1] = 0;
+				
+				if(newRgb[2] > cMax)
+					newRgb[2] = cMax;
+				if(newRgb[2] < 0)
+					newRgb[2] = 0;
+					
+				//#mdebug debug
+				System.out.println( "converted R: "+newRgb[0]);
+				System.out.println( "converted G: "+newRgb[1]);
+				System.out.println( "converted B: "+newRgb[2]);
+				//#enddebug
+					
+				outPutRGB[i] =
+					alphaMask |
+					( newRgb[0] & 0xFF ) << 16 | 
+					( newRgb[1] & 0xFF ) << 8 | 
+					( newRgb[2] )
+					;
+			}
+	    } 
+		catch(Throwable t)
+		{
+			//#mdebug error
+			System.out.println("Error balancing RgbImage: "+t.getMessage());
+			t.printStackTrace();
+			//#enddebug
+		}
+		
+		return new RgbImage(outPutRGB,sourceImg.getWidth());
+	}
+	
+	/*******************************************************************************
+	* Fixed point number representation of rgb channel desaturation factors
+	*******************************************************************************/
+	private static final int TO_GRAY_RED_DESATURATOR_FIX= 19595; //(int)(65536.0f*0.299);
+	private static final int TO_GRAY_GREEN_DESATURATOR_FIX= 38469; //(int)(65536.0f*0.587);
+	private static final int TO_GRAY_BLUE_DESATURATOR_FIX= 7471; //(int)(65536.0f*0.114);
+	
+	/*******************************************************************************
+	* Changes a RgbImage to grayscale colorspace
+	*
+	* @param rgbImg
+	* @return a new RgbImage object in grayscale colorspace
+	*******************************************************************************/	
+	public static RgbImage changeColorToGrayScale(RgbImage rgbImg)
+	{
+		RgbImage gray = null;
+		
+		if(null != rgbImg)
+		{
+			int[] copy = rgbImg.copyRgbData();
+			
+			for(int i = copy.length; --i>=0;)
+				copy[i]=pixelToGrayScale(copy[i]);
+			
+			gray = new RgbImage(copy, rgbImg.getWidth());
+		}
+		return gray;
+	}
+	
+	/*******************************************************************************
+	* Helper funciton for changeColorToGrayScale()
+	* <p>
+	* Converts a single ARGB pixel to gray scale
+	* <p>
+	* Luminance = 0.299 * R + 0.587 * G + 0.114 * B
+	* <p>
+	* Uses Fixed point math
+	* 
+	* @param pixel
+	* @return int grayscale pixel
+	*******************************************************************************/
+	private static int pixelToGrayScale(int pixel){
+		
+		int L_fix = 
+			FP.mul(FP.intToFix((byte)(pixel>>16)), TO_GRAY_RED_DESATURATOR_FIX) +
+			FP.mul(FP.intToFix((byte)(pixel>>8)), TO_GRAY_GREEN_DESATURATOR_FIX) +
+			FP.mul(FP.intToFix((byte)(pixel)), TO_GRAY_BLUE_DESATURATOR_FIX);
+		
+		byte grayValue = (byte)(FP.fixToInt(L_fix)&0xFF);
+		
+		return (pixel&0xFF000000)|(grayValue<<16)|(grayValue<<8)|grayValue;
+	}
+	
+	//#if polish.midp2
+	
+	/*******************************************************************************
+	* Draws one RgbImage onto another RgbImage. 
+	* <p>
+	* Alpha Composition is handled correctly making it possible to draw semi-transparent
+	* images ontop another one.
+	* 
+	* @param target the RgbImage that will be drawn onto
+	* @param other the RgbImage that will be drawn onto the target image
+	* @param x horizontal target coordinate of other picture. Anchor top|left. 
+	* @param y vertical target coordinate of other picture. Anchor top|left.
+	*******************************************************************************/
+	public static final void drawRgbImageOntoOther(RgbImage target, RgbImage other, int x, int y)
+	{
+		drawRgbImageOntoOther(target, other, x, y, 0, 0, target.getWidth(), target.getHeight());
+	}
+	
+	/*******************************************************************************
+	* Draws one RgbImage onto another RgbImage. 
+	* <p>
+	* Alpha Composition is handled correctly making it possible to draw semi-transparent
+	* images ontop another one.
+	* <p>
+	* Clipping area is optionally set & respected.
+	* 
+	* @param target the RgbImage that will be drawn onto
+	* @param other the RgbImage that will be drawn onto the target image
+	* @param x horizontal target coordinate of other picture. Anchor top|left. 
+	* @param y vertical target coordinate of other picture. Anchor top|left.
+	* @param clipX x coordinate of topleft corner of clipping rectangle
+	* @param clipY y coordinate of topleft corner of clipping rectangle
+	* @param clipW width of clipping rectangle
+	* @param clipH height of clipping rectangle 
+	*******************************************************************************/
+	public static final void drawRgbImageOntoOther(RgbImage target, RgbImage other, int x, int y, int clipX, int clipY, int clipW, int clipH){
+
+		int	localClipX, localClipY, localClipW, localClipH;
+
+		int subX=0,subY=0;
+
+		//is image outside clipping area bounds?
+		if(x >= clipX+clipW || y >= clipY+clipH || (x+other.getWidth())<clipX || (y+other.getHeight())<clipY)
+			return;
+
+		//is image enclosed by clipping area?
+		if(x+other.getWidth() < clipX+clipW && x > clipX && y+other.getHeight() < clipY+clipH && y > clipY){
+			localClipX = x; localClipY = y; localClipW = other.getWidth(); localClipH = other.getHeight();
+		}
+		else
+		{
+			//else, input image should be subregion'ed according to clipping area
+			int width = other.getWidth(), height = other.getHeight();
+			if(x < clipX){
+				subX = clipX - x;
+				localClipX = clipX;
+			}else{
+				localClipX = x;
+			}
+			if(y < clipY){
+				subY = clipY - y;
+				localClipY = clipY;
+			}
+			else
+			{
+				localClipY = y;
+			}
+			if((x+width)>(clipX+clipW)){
+				localClipW = (clipX+clipW) - x - subX;
+			}else{
+				localClipW = width-subX;
+			}
+			if((y+height)>(clipY+clipH)){
+				localClipH = (clipY+clipH) - y - subY;
+			}else{
+				localClipH = height-subY;
+			}
+		}
+
+		//fect subregion
+		int[] croppedOther = cropImage(other, subX, subY, localClipW, localClipH);
+
+		int sourceOffset = localClipY*target.getWidth() + localClipX,
+		targetOffset = 0;
+
+		//apply image using alpha composition 'over' operation
+		int j;
+		int[] argbSource = target.getRgbData();
+		for(int i = 0; i < localClipH; ++i){
+			for(j = 0; j < localClipW; ++j ){
+				argbSource[sourceOffset+j] = combineColors(argbSource, sourceOffset+j,croppedOther, targetOffset+j);
+			}
+			sourceOffset += target.getWidth();
+			targetOffset += localClipW;
+		}
+	}
+	
+	/*******************************************************************************
+	 * Helper function for drawRgbImageOntoOther()
+	 * <p>
+	 * Combines two color values using 'over' operator alpha composition.
+	 * 
+	 * @param argbSource int[] source image color array
+	 * @param sourceIndex index in source array
+	 * @param argbOverlay int[] target image color array
+	 * @param overlayIndex index in target array
+	 * @return combined color
+	*******************************************************************************/
+	private static final int combineColors(int[] argbSource, int sourceIndex, int[] argbOverlay, int overlayIndex){
+
+		int source = argbSource[sourceIndex];
+		int over = argbOverlay[overlayIndex];
+		
+		//is source fully transparent?
+		if(source == 0)
+			return over;
+		
+		//is over fully transparent?
+		if(over == 0)
+			return source;
+		
+		//is over fully opaque?
+		if((0xFF&(over>>24)) == 255)
+			return over;
+
+		//fetch, convert and clamp alpha channel of overlay picture
+		int alphaOver_fix = FP.clamp( FP.intToFix(0xFF&(over>>24)), FP.intToFix(255) );
+		
+		//compute 'over' operator for all channels
+		int alphaResult = overOperator(	0xFF&(source>>24), 0xFF&(over>>24), alphaOver_fix);
+		int redResult =   overOperator( 0xFF&(source>>16), 0xFF&(over>>16),	alphaOver_fix);
+		int greenResult = overOperator( 0xFF&(source>>8) , 0xFF&(over>>8),	alphaOver_fix);
+		int blueResult =  overOperator( 0xFF&source,       0xFF&over,    	alphaOver_fix);
+		
+ 		return (alphaResult << 24) | (redResult << 16) | (greenResult << 8) | blueResult;
+	}
+
+	/*******************************************************************************
+	 * Helper function for drawRgbImageOntoOther()
+	 * <p>
+	 * Alpha composition 'over' operation.
+	 * <p>
+	 * Cr: Color Result
+	 * Cs: Channel Source
+	 * Co: Channel Over
+	 * Ao: Alpha Over
+	 * Cr = Cs*(1-Ao) + Ao*Co
+	 * 
+	 * @param channelSource channel value of source color [0..255]
+	 * @param channelOver channel value of overlay color [0..255]
+	 * @param alpha_fix alpha value in fix point precision, clamped to [0.0..1.0]
+	 * @return resulting channel value [0..255]
+	*******************************************************************************/
+	private static final int overOperator(int channelSource, int channelOver, int alpha_fix)
+	{
+		return FP.fixToInt( FP.mul( FP.intToFix(channelSource), FP.FIX_ONE - alpha_fix ) + FP.mul( FP.intToFix(channelOver), alpha_fix )  );
+	}
+
+	/*******************************************************************************
+	 * Helper function for drawRgbImageOntoOther()
+	 * <p>
+	 * Crops the input image according to parameter clipping area.
+	 * 
+	 * @param rgbImg
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @return
+	*******************************************************************************/
+	private final static int[] cropImage(RgbImage rgbImg, int x, int y, int width, int height){
+
+		if(x==0&&y==0&&rgbImg.getWidth()==width&&rgbImg.getHeight()==height)
+			return rgbImg.getRgbData();
+
+		int sourceOffset = y*rgbImg.getWidth() + x, targetOffset = 0;
+		int[] sourceArgb = rgbImg.getRgbData();
+		int[] newArgb = new int[width*height];
+
+		for(int i = height; --i>=0;){
+			System.arraycopy(sourceArgb, sourceOffset, newArgb, targetOffset, width);
+			sourceOffset += rgbImg.getWidth();
+			targetOffset += width;
+		}
+		return newArgb;
+	}
+	//#endif
+	
+	//#if polish.midp2
+	
+	/**
+	 * Circular clipping effect on a RgbImage
+	 * 
+	 * @param rgbImg image that should be masked
+	 * @param circX horizontal center coordinate of circle
+	 * @param circY vertical center coordinate of circle
+	 * @param circRadius radius of circle in pixels
+	 * @param invert true if mask should invert 
+	 */
+	public final static void clipRgbImageCirkular(RgbImage rgbImg, int circX, int circY, int circWidth, int circHeight, boolean invert)
+	{
+		//produce circular mask
+		Image img = Image.createImage(rgbImg.getWidth(),rgbImg.getHeight());
+		Graphics g = img.getGraphics();
+		g.setColor(0xFFFFFFFF);
+		g.fillRect(0,0,img.getWidth(),img.getHeight());
+		g.setColor(0x00000000);
+		g.fillArc(circX - (circWidth >> 1), circY - (circHeight >> 1), circWidth, circHeight, 0, 360);
+		int[] maskRgb = new int[img.getWidth()*img.getHeight()];
+		img.getRGB(maskRgb, 0, img.getWidth(), 0, 0, img.getWidth(), img.getHeight());
+		RgbImage mask = new RgbImage(maskRgb,img.getWidth());
+		
+		//apply mask
+		applyMaskOntoRgbImage(rgbImg, mask, invert);
+	}
+	
+	/**
+	 * Applies an mask RgbImage onto another Rgbimage.
+	 * <p>
+	 * Mask MUST be in greyscale or B/W
+	 * 
+	 * @param source the RgbImage that is to be masked
+	 * @param mask the RgbImage mask, must be grey scale or B/W
+	 * @param invert true if black mask colors should be masked, false if white mask colors should be masked
+	 */
+	public final static void applyMaskOntoRgbImage(RgbImage source, RgbImage mask, boolean invert)
+	{
+		int[] maskRgb = mask.getRgbData();
+		int[] sourceRgb = source.getRgbData();
+		
+		for(int i = maskRgb.length; --i>=0;)
+		{
+			if(invert)
+				sourceRgb[i] = ( (0xFF&maskRgb[i])<<24 ) | (0x00FFFFFF&sourceRgb[i]);
+			else
+				sourceRgb[i] = (255-(0xFF&maskRgb[i]))<<24 | (0x00FFFFFF&sourceRgb[i]);
+		}
+	}
+	
+	//#endif
+	
+	//#if polish.usePolishGui && polish.hasFloatingPoint
+	/**
+	 * Scales an image to fit into the specified available width and height while maintaining the ratio. 
+	 * 
+	 * @param source the source image
+	 * @param availableWidth the new width for the new rgbdata
+	 * @param availableHeight the new height for the new rgbdata
+	 * @return the resulting image 
+	 */
+	public static final Image scaleToFit(Image source, int availableWidth, int availableHeight)
+	{
+		int sourceWidth = source.getWidth();
+		int sourceHeight = source.getHeight();
+		
+		if (sourceWidth > availableWidth || sourceHeight > availableHeight)
+		{
+			int[] rgbData = new int[sourceWidth * sourceHeight];
+			source.getRGB(rgbData, 0, sourceWidth, 0, 0, sourceWidth, sourceHeight);
+			
+			double availableRatio = (double)availableWidth / (double)availableHeight;
+	        double sourceRatio = (double)sourceWidth / (double)sourceHeight;
+	        
+	        int targetWidth = availableWidth;
+	        int targetHeight = availableHeight;
+	        
+	        if (availableRatio < sourceRatio) {
+	        	targetHeight = (int)(targetWidth / sourceRatio);
+	        } else {
+	        	targetWidth = (int)(targetHeight * sourceRatio);
+	        }
+	
+	        int[] newRgbData = new int[targetWidth * targetHeight];
+	        scale( rgbData, targetWidth, targetHeight, sourceWidth, sourceHeight, newRgbData);
+	        
+			return Image.createRGBImage(newRgbData, targetWidth, targetHeight, true);
+		}
+
+		return source;
+	}
+	//#endif
+
+	/**
+	 * Scales an image to the specified dimension
+	 * 
+	 * @param source the image
+	 * @param width the desired width of the resulting image
+	 * @param height the desired height of the resulting image
+	 * @return the (possibly) scaled image
+	 * @throws NullPointerException when source is null
+	 */
+	public static Image scale(Image source, int width, int height)
+	{
+		int sourceWidth = source.getWidth();
+		int sourceHeight = source.getHeight();
+		
+		if (sourceWidth != width || sourceHeight != height)
+		{
+			int[] rgbData = new int[sourceWidth * sourceHeight];
+			source.getRGB(rgbData, 0, sourceWidth, 0, 0, sourceWidth, sourceHeight);
+	        int[] newRgbData = new int[width * height];
+	        scale( rgbData, width, height, sourceWidth, sourceHeight, newRgbData);
+	        
+			return Image.createRGBImage(newRgbData, width, height, true);
+		}
+
+		return source;
+	}
 }
+ 

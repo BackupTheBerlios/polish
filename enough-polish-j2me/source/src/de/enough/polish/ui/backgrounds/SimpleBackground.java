@@ -28,13 +28,14 @@ package de.enough.polish.ui.backgrounds;
 
 import de.enough.polish.ui.Background;
 import de.enough.polish.ui.Color;
+import de.enough.polish.ui.Style;
 
 import javax.microedition.lcdui.Graphics;
 
 /**
  * <p>Paints a filled rectangle as a background in a specific color.</p>
  *
- * <p>Copyright Enough Software 2004 - 2008</p>
+ * <p>Copyright Enough Software 2004 - 2009</p>
  * @author Robert Virkus, robert@enough.de
  */
 public class SimpleBackground 
@@ -91,5 +92,20 @@ extends Background
 		}
 		return this.color;
 	}
+	
+	//#if polish.css.animations
+		/* (non-Javadoc)
+		 * @see de.enough.polish.ui.Background#setStyle(de.enough.polish.ui.Style)
+		 */
+		public void setStyle(Style style)
+		{
+			//#if polish.css.background-simple-color
+				Color col = style.getColorProperty("background-simple-color");
+				if (col != null) {
+					this.color = col.getColor();
+				}
+			//#endif
+		}
+	//#endif
 
 }

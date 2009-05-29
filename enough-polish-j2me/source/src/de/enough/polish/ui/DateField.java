@@ -24,11 +24,16 @@
  */
 package de.enough.polish.ui;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+
 import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.CommandListener;
-import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
+
+import de.enough.polish.ui.Displayable;
+import de.enough.polish.util.DrawUtil;
+import de.enough.polish.util.Locale;
 
 //#if polish.blackberry
 	import net.rim.device.api.ui.Field;
@@ -37,12 +42,8 @@ import javax.microedition.lcdui.Graphics;
 	import net.rim.device.api.ui.XYRect;
 	import de.enough.polish.blackberry.ui.PolishDateField;
 //#endif
-import de.enough.polish.util.BitMapFontViewer;
-import de.enough.polish.util.Locale;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
+	
+import de.enough.polish.calendar.CalendarItem;
 
 /**
  * A <code>DateField</code> is an editable component for presenting
@@ -79,13 +80,22 @@ import java.util.TimeZone;
  */
 public class DateField extends StringItem
 implements
-//#if polish.DateField.useDirectInput == true || polish.Bugs.dateFieldBroken || polish.blackberry
+//#if polish.DateField.useDirectInput == true || polish.Bugs.dateFieldBroken || polish.blackberry || polish.android
 	//#define tmp.directInput
+//#endif
+//#if (!tmp.directInput || (polish.hasPointerEvents && !polish.DateField.useDirectInputForPointer)) && polish.midp
+	//#define tmp.useMidp
+//#endif
+//#if polish.DateField.useDirectInputForPointer && polish.hasPointerEvents
+	//#define tmp.directInputPointer
+//#endif
+//#if tmp.directInput
 	ItemCommandListener
-//#else
-	//#if false
+//#endif
+//#if tmp.directInput && (tmp.useMidp || tmp.directInputPointer) 
 	,
-	//#endif
+//#endif
+//#if tmp.useMidp || tmp.directInputPointer
 	CommandListener
 //#endif
 //#if polish.blackberry
@@ -140,20 +150,21 @@ implements
 		private int currentField;
 		private int currentFieldStartIndex;
 		private ItemCommandListener additionalItemCommandListener;
-		//#if polish.css.font-bitmap
-			private int caretWidth;
-			private int caretX;
-			private int bitmapFontHeight;
-			private BitMapFontViewer caretViewer;
-		//#endif
-	//#else
-		private javax.microedition.lcdui.DateField midpDateField; 
-		private javax.microedition.lcdui.Form form;
 	//#endif
-
+	//#if (!tmp.directInput || polish.hasPointerEvents) && polish.midp
+		//#define tmp.useMidp
+		private javax.microedition.lcdui.DateField midpDateField; 
+		private de.enough.polish.midp.ui.Form form;
+	//#endif
+	//#if tmp.directInputPointer
+		private CalendarItem calendarItem;
+		private TimeEntryItem timeItem;
+	//#endif
 	//#if polish.blackberry
 		private PolishDateField blackberryDateField;
 	//#endif
+		
+		
 	/**
 	 * Creates a <code>DateField</code> object with the specified
 	 * label and mode. This call
@@ -240,12 +251,15 @@ implements
 			this.itemCommandListener = this;
 		//#endif
 		//#if polish.blackberry
-			
 			this.blackberryDateField = new PolishDateField( 
 					System.currentTimeMillis(),
-					this.inputMode );
+					PolishDateField.getDateFormat( getDateFormatPattern() ),
+					PolishDateField.getStyle(this.inputMode) );
 //					PolishDateField.getDateFormat( mode, this.timeZone ),
 //					PolishDateField.EDITABLE );
+			if (this.style != null) {
+				this.blackberryDateField.setStyle( this.style );
+			}
 			this.blackberryDateField.setChangeListener( this );
 			this._bbField = this.blackberryDateField;
 		//#endif
@@ -274,7 +288,7 @@ implements
 	public Date getDate()
 	{
 		//#if tmp.directInput
-			if (this.isFocused) {
+			if (this.isFocused && (this.date != null)) {
 				moveForward(false);
 				moveBackward(false);
 			}
@@ -346,7 +360,7 @@ implements
 			}
 		}
 		this.date = date;
-		//#if ! tmp.directInput
+		//#if tmp.useMidp
 		if (this.midpDateField != null) {
 			this.midpDateField.setDate( date );
 		}
@@ -551,6 +565,69 @@ implements
 			repaint();
 		}
 	}
+	
+	public String getDateFormatPattern() {
+		StringBuffer buffer = new StringBuffer(10);
+		if ((this.inputMode == DATE) || (this.inputMode == DATE_TIME)) {
+			//#if polish.DateFormat == us
+				buffer.append( "MM/dd/yyyy" );
+			//#elif polish.DateFormat == de
+				buffer.append( "dd.MM.yyyy" );
+			//#elif polish.DateFormat == fr
+				buffer.append( "dd/MM/yyyy" );
+			//#elif polish.DateFormat == mdy
+				buffer.append( "MM" )
+				//#if polish.DateFormatSeparator:defined
+					//#= .append("${polish.DateFormatSeparator}")
+				//#else
+				        .append("-")
+				//#endif
+				.append("dd")
+				//#if polish.DateFormatSeparator:defined
+					//#= .append("${polish.DateFormatSeparator}")
+				//#else
+				        .append("-")
+				//#endif
+				.append("yyyy");
+			//#elif polish.DateFormat == dmy
+				buffer.append( "dd" )
+				//#if polish.DateFormatSeparator:defined
+					//#= .append("${polish.DateFormatSeparator}")
+				//#else
+				        .append("-")
+				//#endif
+				.append("MM")
+				//#if polish.DateFormatSeparator:defined
+					//#= .append("${polish.DateFormatSeparator}")
+				//#else
+				        .append("-")
+				//#endif
+				.append("yyyy");
+			//#else
+				// default to YMD
+				buffer.append( "yyyy" )
+				//#if polish.DateFormatSeparator:defined
+					//#= .append("${polish.DateFormatSeparator}")
+				//#else
+				        .append("-")
+				//#endif
+				.append("MM")
+				//#if polish.DateFormatSeparator:defined
+					//#= .append("${polish.DateFormatSeparator}")
+				//#else
+				        .append("-")
+				//#endif
+				.append("dd");
+			//#endif
+			if  (this.inputMode == DATE_TIME) {
+				buffer.append(' ');
+			}
+		}
+		if ((this.inputMode == TIME) || (this.inputMode == DATE_TIME)) {			
+			buffer.append( "HH:mm" );
+		}
+		return buffer.toString();
+	}
 
 	/**
 	 * Gets input mode for this date field. Valid input modes are
@@ -580,7 +657,7 @@ implements
 			}
 		//#endif
 		this.inputMode = mode;
-		//#if !tmp.directInput
+		//#if tmp.useMidp
 		if (this.midpDateField != null) {
 			this.midpDateField.setInputMode(mode);
 		}
@@ -603,50 +680,35 @@ implements
 		//#endif
 		//#if tmp.directInput && !polish.blackberry
 			if ( this.isFocused ) {
-				//#if polish.css.font-bitmap
-					if (this.bitMapFontViewer != null) {
-						//System.out.println("this.editIndex="+ this.editIndex );
-						//#ifdef polish.css.text-horizontal-adjustment
-							x += this.textHorizontalAdjustment;
-						//#endif
-						if (this.isLayoutCenter) {
-							x = leftBorder + (rightBorder - leftBorder)/2 - this.bitMapFontViewer.getWidth()/2;
-						} else if (this.isLayoutRight) {
-							x = rightBorder - this.bitMapFontViewer.getWidth();
+				String head = this.text.substring( 0, this.editIndex );
+				int headWidth = stringWidth( head );
+				char editChar = this.text.charAt( this.editIndex );
+				int editWidth = charWidth( editChar );
+				if ( this.isLayoutCenter ) {
+					int centerX = leftBorder + (rightBorder - leftBorder) / 2;
+					//#ifdef polish.css.text-horizontal-adjustment
+						centerX += this.textHorizontalAdjustment;
+					//#endif
+					int completeWidth = stringWidth( this.text );
+					x = centerX - ( completeWidth / 2 );
+				} else if ( this.isLayoutRight ) {
+					int completeWidth = stringWidth( this.text );
+					x = rightBorder - completeWidth;					
+				}
+				g.fillRect( x + headWidth - 1, y  - 1, editWidth + 1, getFontHeight() );
+				
+				if (this.showCaret) {
+					g.setColor( this.textComplementColor );
+					//#if polish.css.text-effect
+						if (this.textEffect != null) {
+							this.textEffect.drawChar(editChar, x + headWidth, y + getFontHeight(), Graphics.BOTTOM | Graphics.LEFT, g );
+						} else {
+					//#endif
+							g.drawChar( editChar, x + headWidth, y + getFontHeight(), Graphics.BOTTOM | Graphics.LEFT );
+					//#if polish.css.text-effect
 						}
-						g.setColor( this.textComplementColor );
-						g.fillRect( x + this.caretX - 1, y  - 1, this.caretWidth + 1, this.bitmapFontHeight + 1 );
-						BitMapFontViewer viewer;
-						if (this.showCaret && (viewer = this.caretViewer) != null) {
-							//System.out.println("caretX=" + this.caretX + ", x=" + x);
-							viewer.paint(x + this.caretX, y, g);
-						}
-					} else {
-				//#endif
-						String head = this.text.substring( 0, this.editIndex );
-						int headWidth = this.font.stringWidth( head );
-						char editChar = this.text.charAt( this.editIndex );
-						int editWidth = this.font.charWidth( editChar );
-						if ( this.isLayoutCenter ) {
-							int centerX = leftBorder + (rightBorder - leftBorder) / 2;
-							//#ifdef polish.css.text-horizontal-adjustment
-								centerX += this.textHorizontalAdjustment;
-							//#endif
-							int completeWidth = this.font.stringWidth( this.text );
-							x = centerX - ( completeWidth / 2 );
-						} else if ( this.isLayoutRight ) {
-							int completeWidth = this.font.stringWidth( this.text );
-							x = rightBorder - completeWidth;					
-						}
-						g.fillRect( x + headWidth - 1, y  - 1, editWidth + 1, this.font.getHeight() );
-						
-						if (this.showCaret) {
-							g.setColor( this.textComplementColor );
-							g.drawChar( editChar, x + headWidth, y + this.font.getHeight(), Graphics.BOTTOM | Graphics.LEFT );
-						}
-				//#if polish.css.font-bitmap
-					}
-				//#endif
+					//#endif
+				}
 			}
 		//#elif !polish.blackberry
 			if (this.showCaret) {
@@ -662,15 +724,23 @@ implements
 						+ this.originalWidth / 2
 						+ 2;
 					if (this.originalHeight > 0) {
-						y += this.originalHeight - this.font.getHeight();
+						y += this.originalHeight - getFontHeight();
 					}
 					g.drawChar('|', centerX, y, Graphics.TOP | Graphics.LEFT );
 				} else {
 					x += this.originalWidth + 2;
 					if (this.originalHeight > 0) {
-						y += this.originalHeight - this.font.getHeight();
+						y += this.originalHeight - getFontHeight();
 					}
-					g.drawChar('|', x, y, Graphics.TOP | Graphics.LEFT );
+					//#if polish.css.text-effect
+						if (this.textEffect != null) {
+							this.textEffect.drawChar('|', x, y, Graphics.TOP | Graphics.LEFT, g );
+						} else {
+					//#endif
+							g.drawChar('|', x, y, Graphics.TOP | Graphics.LEFT );
+					//#if polish.css.text-effect
+						}
+					//#endif
 				}
 			}
 		//#endif
@@ -680,44 +750,41 @@ implements
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#initItem()
 	 */
-	protected void initContent(int firstLineWidth, int lineWidth) {
+	protected void initContent(int firstLineWidth, int availWidth, int availHeight) {
 		if (this.date == null) {
 			setDate( null );
 		}
 		// init StringItem:
-		super.initContent(firstLineWidth, lineWidth);
+		super.initContent(firstLineWidth, availWidth, availHeight);
 		this.originalWidth = this.contentWidth;
 		this.originalHeight = this.contentHeight;
-		if (this.contentWidth < this.minimumWidth) {
-			this.contentWidth = this.minimumWidth;
+		if (this.minimumWidth != null && this.contentWidth < this.minimumWidth.getValue(firstLineWidth)) {
+			this.contentWidth = this.minimumWidth.getValue(firstLineWidth);
 		} 
-		if (this.contentHeight < this.minimumHeight) {
-			this.contentHeight = this.minimumHeight;
-		} else  if (this.contentHeight < this.font.getHeight()) {
-			this.contentHeight = this.font.getHeight();
+		if (this.minimumHeight != null && this.contentHeight < this.minimumHeight.getValue(availWidth)) {
+			this.contentHeight = this.minimumHeight.getValue(availWidth);
+		} else  if (this.contentHeight < getFontHeight()) {
+			this.contentHeight = getFontHeight();
 			this.originalHeight = this.contentHeight;
 		}
-		//#if polish.css.font-bitmap && tmp.directInput
-			if (this.bitMapFontViewer != null) {			
-				if (this.caretViewer == null) {
-					char editChar = this.text.charAt( 0 );
-					BitMapFontViewer viewer = this.bitMapFont.getViewer( "" + editChar );
-					this.caretViewer = viewer;
-					this.caretWidth = viewer.getWidth();
-					this.caretX = 0;
-					this.bitmapFontHeight = viewer.getFontHeight();
-				}
-			}
-		//#endif
 		//#if polish.blackberry
 			if (!this.isFocused) {
 				return;
 			}
-			this.blackberryDateField.setFont( this.font, this.textColor );
+			// setFont() triggers a re-layout of the BlackBerry manager, so we need to prepare
+			// some position settings here:
+			int contX = this.contentX;
+			if (this.label != null && this.label.itemWidth + this.contentWidth <= availWidth) {
+				this.contentX += this.label.itemWidth;
+			}
+			if (this.style != null) {
+				this.blackberryDateField.setStyle( this.style );
+			}
 			// allow extra pixels for the cursor:
-			this.blackberryDateField.layout( this.contentWidth+8, this.contentHeight );
+			this.blackberryDateField.doLayout( this.contentWidth+8, this.contentHeight );
 			//System.out.println("TextField: editField.getText()="+ this.editField.getText() );
 			XYRect rect = this.blackberryDateField.getExtent();
+			this.contentX = contX;
 			this.contentWidth = rect.width;
 			this.contentHeight = rect.height;
 		//#endif			
@@ -737,26 +804,12 @@ implements
 	 */
 	public void setStyle(Style style) {
 		super.setStyle(style);
-		//#ifdef polish.css.datefield-width
-			Integer width = style.getIntProperty("datefield-width");
-			if (width != null) {
-				this.minimumWidth = width.intValue();
-			}
-		//#endif
-		//#ifdef polish.css.datefield-height
-			Integer height = style.getIntProperty("datefield-height");
-			if (height != null) {
-				this.minimumHeight = height.intValue();
-			}
-		//#endif
 		//#if tmp.directInput
-			this.textComplementColor = 
-				((255 - (( 0xFF0000 & this.textColor ) >> 16)) << 16)
-				| ((255 - (( 0x00FF00 & this.textColor ) >> 8)) << 8)
-				| (255 - ( 0x0000FF & this.textColor ) );				
+			this.textComplementColor = DrawUtil.getComplementaryColor( this.textColor );
 		//#endif
 	}
 	
+	//#if !polish.blackberry
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#animate()
 	 */
@@ -770,6 +823,7 @@ implements
 			return false;
 		}
 	}
+	//#endif
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#defocus(de.enough.polish.ui.Style)
@@ -778,8 +832,10 @@ implements
 		super.defocus(originalStyle);
 		this.showCaret = false;
 		//#if tmp.directInput
-			moveForward(false);
-			moveBackward(false);
+			if (this.date != null) {
+				moveForward(false);
+				moveBackward(false);
+			}
 		//#endif
 		//#if polish.blackberry
 			this.blackberryDateField.focusRemove();
@@ -796,20 +852,71 @@ implements
 			}
 		//#endif
 		//#if tmp.directInput
-			// there are several possble situations:
+			// there are several possible situations:
 			// backspace: delete last char, move internal focus left
 			// left, right: move internal focus left/right
 			// input of number: a) plausibility check, b) move internal focus right
 			// up, down: exit editing mode, set default values.
 			// 		parse time/date and so on.
-			
+
+			int foundNumber = -1;
+
+			//#if polish.TextField.numerickeys.1:defined
+				char insertChar = Integer.toString( keyCode - Canvas.KEY_NUM0 ).charAt( 0 );
+				String numericKeyStr = null;
+				//#= numericKeyStr = "${polish.TextField.numerickeys.1}";
+				if (numericKeyStr.indexOf(insertChar) != -1) {
+					foundNumber = 1;
+				}
+				//#= numericKeyStr = "${polish.TextField.numerickeys.2}";
+				if (numericKeyStr.indexOf(insertChar) != -1) {
+					foundNumber = 2;
+				}
+				//#= numericKeyStr = "${polish.TextField.numerickeys.3}";
+				if (numericKeyStr.indexOf(insertChar) != -1) {
+					foundNumber = 3;
+				}
+				//#= numericKeyStr = "${polish.TextField.numerickeys.4}";
+				if (numericKeyStr.indexOf(insertChar) != -1) {
+					foundNumber = 4;
+				}
+				//#= numericKeyStr = "${polish.TextField.numerickeys.5}";
+				if (numericKeyStr.indexOf(insertChar) != -1) {
+					foundNumber = 5;
+				}
+				//#= numericKeyStr = "${polish.TextField.numerickeys.6}";
+				if (numericKeyStr.indexOf(insertChar) != -1) {
+					foundNumber = 6;
+				}
+				//#= numericKeyStr = "${polish.TextField.numerickeys.7}";
+				if (numericKeyStr.indexOf(insertChar) != -1) {
+					foundNumber = 7;
+				}
+				//#= numericKeyStr = "${polish.TextField.numerickeys.8}";
+				if (numericKeyStr.indexOf(insertChar) != -1) {
+					foundNumber = 8;
+				}
+				//#= numericKeyStr = "${polish.TextField.numerickeys.9}";
+				if (numericKeyStr.indexOf(insertChar) != -1) {
+					foundNumber = 9;
+				}
+				//#= numericKeyStr = "${polish.TextField.numerickeys.0}";
+				if (numericKeyStr.indexOf(insertChar) != -1) {
+					foundNumber = 0;
+				}
+			//#endif
+
 			// check for input of numbers 
-			if ( keyCode >= Canvas.KEY_NUM0 && keyCode <= Canvas.KEY_NUM9  ) 
+			if ( ( keyCode >= Canvas.KEY_NUM0 && keyCode <= Canvas.KEY_NUM9 )
+				 || foundNumber != -1)
 			{
 				if (this.date == null) {
 					setDate( new Date( System.currentTimeMillis() ) );
 				}
 				char c = Integer.toString( keyCode - Canvas.KEY_NUM0 ).charAt( 0 );
+				if (foundNumber != -1) {
+					c = Integer.toString( foundNumber ).charAt( 0 );
+				}
 				String newText = this.text.substring( 0, this.editIndex ) + c;
 				if ( this.editIndex < this.text.length() -1 ) {
 					newText += this.text.substring( this.editIndex + 1 );
@@ -831,9 +938,6 @@ implements
 					this.currentField = 0;
 					this.currentFieldStartIndex = 0;
 					this.editIndex = 0;
-					//#if polish.css.font-bitmap
-						this.caretViewer = null;
-					//#endif
 				}
 				return false;
 			}
@@ -849,6 +953,23 @@ implements
 		return true;
 	}
 	
+	protected boolean handleKeyReleased(int keyCode, int gameAction) {
+		int clearKey =
+			//#if polish.key.ClearKey:defined
+				//#= ${polish.key.ClearKey};
+			//#else
+				-8;
+			//#endif
+		
+		if(keyCode == clearKey)
+		{
+			//handled in handleKeyPressed so just return true here
+			return true;
+		}
+		
+		return super.handleKeyReleased(keyCode, gameAction);
+	}
+
 	//#if tmp.directInput
 	private void moveBackward(boolean notifyStateListener) {
 		if (this.date == null) {
@@ -898,21 +1019,6 @@ implements
 			}
 			this.currentFieldStartIndex = newIndex + 1;
 		}
-		//#if polish.css.font-bitmap
-			if (this.bitMapFontViewer != null) {
-				char editChar = this.text.charAt( this.editIndex );
-				BitMapFontViewer viewer = this.bitMapFont.getViewer( "" + editChar );
-				this.caretViewer = viewer;
-				this.caretWidth = viewer.getWidth();
-				if (this.editIndex == 0) {
-					this.caretX = 0;
-				} else {
-					viewer = this.bitMapFont.getViewer( this.text.substring( 0, this.editIndex ));
-					this.caretX = viewer.getWidth();
-				}
-				this.bitmapFontHeight = viewer.getFontHeight();
-			}
-		//#endif
 	}
 	//#endif
 
@@ -938,26 +1044,6 @@ implements
 			this.currentField++;
 		}
 		this.editIndex = newIndex;
-		//#if polish.css.font-bitmap
-			if (this.bitMapFontViewer != null) {
-				if (newIndex == 0) {
-					this.caretX = 0;
-				} else {
-					String header = this.text.substring( 0, newIndex );
-					BitMapFontViewer viewer = this.bitMapFont.getViewer( header );
-					this.caretX = viewer.getWidth();
-					//System.out.println("Width of [" + header + "]=" + this.caretX );
-				}
-				
-				char editChar = this.text.charAt( newIndex );
-				//System.out.println("MoveForward: text[" + newIndex + "]=" + editChar );
-				BitMapFontViewer viewer = this.bitMapFont.getViewer( "" + editChar );
-				this.caretViewer = viewer;
-				this.caretWidth = viewer.getWidth();
-				this.bitmapFontHeight = viewer.getFontHeight();
-				//System.out.println("moveForward: caretX=" + this.caretX );
-			}
-		//#endif
 	}
 	//#endif
 	
@@ -969,7 +1055,12 @@ implements
 		} else {
 			fieldStr = this.text.substring( this.currentFieldStartIndex, newIndex );
 		}
-		int fieldValue = Integer.parseInt( fieldStr );
+		int fieldValue;
+		try {
+			fieldValue = Integer.parseInt( fieldStr );
+		} catch (NumberFormatException e) {
+			return;
+		}
 		
 		// check the actual value:
 		if (this.calendar == null) {
@@ -1082,7 +1173,7 @@ implements
 				}
 				//#endif
 			}
-			if ( notifyStateListener && changed) {
+			if ( notifyStateListener && changed ) {
 				notifyStateChanged();
 			}
 		}
@@ -1092,7 +1183,7 @@ implements
 	}
 	//#endif
 
-	//#if !tmp.directInput
+	//#if tmp.useMidp
 	/**
 	 * Shows the TextBox for entering texts.
 	 */
@@ -1112,34 +1203,45 @@ implements
 			//#else
 				this.midpDateField.setDate( this.date );
 			//#endif
-			this.form = new javax.microedition.lcdui.Form( StyleSheet.currentScreen.getTitle() );
+			this.form = new de.enough.polish.midp.ui.Form( StyleSheet.currentScreen.getTitle() );
 			this.form.append( this.midpDateField );
 			//TODO add i18n support
 			this.form.addCommand(StyleSheet.OK_CMD);
 			this.form.addCommand(StyleSheet.CANCEL_CMD);
-			/*
-			*/
-			//#if !tmp.directInput
-			//# this.form.setCommandListener( this );
-			//#endif
+			this.form.setCommandListener( this );
 		}
 		this.screen = StyleSheet.currentScreen;
-		StyleSheet.display.setCurrent( this.form );
+		Display.getInstance().setCurrent( this.form );
 	}
 	//#endif
 
-	//#if !tmp.directInput
+	//#if tmp.useMidp || tmp.directInputPointer
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.CommandListener#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)
 	 */
 	public void commandAction(Command cmd, Displayable box) {
 		if (cmd == StyleSheet.CANCEL_CMD) {
-			this.midpDateField.setDate( this.date );
+			//#if !tmp.directInputPointer && tmp.useMidp 
+				this.midpDateField.setDate( this.date );
+			//#endif
 		} else {
-			setDate( this.midpDateField.getDate() );
+			//#if tmp.directInputPointer
+				Calendar cal;
+				if (this.inputMode != TIME) {
+					cal = this.calendarItem.getSelectedCalendar();
+				} else {
+					cal = Calendar.getInstance();
+				}
+				if (this.inputMode != DATE) {
+					this.timeItem.updateCalendar( cal );
+				}
+				setDate( cal.getTime() );
+			//#else
+				setDate( this.midpDateField.getDate() );
+			//#endif
 			notifyStateChanged();
 		}
-		StyleSheet.display.setCurrent( this.screen );
+		Display.getInstance().setCurrent( this.screen );
 	}
 	//#endif
 	
@@ -1160,6 +1262,45 @@ implements
 		} else if (this.additionalItemCommandListener != null) {
 			this.additionalItemCommandListener.commandAction(c, item);
 		}
+	}
+	//#endif
+
+	//#if polish.hasPointerEvents && (tmp.useMidp || tmp.directInputPointer)
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#handlePointerReleased(int, int)
+	 */
+	protected boolean handlePointerReleased(int relX, int relY)
+	{
+		if (isInItemArea( relX, relY )) {
+			//#if tmp.directInputPointer
+				Calendar cal = Calendar.getInstance();
+				if (this.date != null) {
+					cal.setTime( this.date );
+				}
+				//#style calendarForm?
+				Form calForm = new Form( getLabel() );
+				calForm.addCommand( StyleSheet.OK_CMD );
+				calForm.addCommand( StyleSheet.CANCEL_CMD );
+				calForm.setCommandListener( this );
+				if (this.inputMode != TIME) {
+					//#style calendar?
+					CalendarItem item = new CalendarItem(cal);
+					this.calendarItem = item;
+					calForm.append( item );
+				}
+				if (this.inputMode != DATE) {
+					//#style time?
+					TimeEntryItem time = new TimeEntryItem( null, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE) );
+					calForm.append( time );
+					this.timeItem = time;
+				}
+				Display.getInstance().setCurrent( calForm );
+			//#else
+				showDateForm();
+			//#endif
+			return true;
+		}
+		return super.handlePointerReleased(relX, relY);
 	}
 	//#endif
 
