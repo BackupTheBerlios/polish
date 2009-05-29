@@ -73,8 +73,7 @@ public class BorderedRoundRectBackground extends Background {
 		g.fillRoundRect( x, y, width, height, this.arcWidth, this.arcHeight );
 		width--;
 		height--;
-//		g.setColor( this.borderColor );
-//		g.drawRoundRect( x, y, width, height, this.arcWidth, this.arcHeight );
+		g.setColor( this.borderColor );
 		int border = this.borderWidth;
 		while ( border > 0) {
 			g.drawRoundRect( x+border, y+border, width - 2*border, height - 2*border, this.arcWidth, this.arcHeight );
