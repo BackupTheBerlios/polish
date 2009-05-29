@@ -26,6 +26,113 @@ colors {
 	fontColor: rgb( 30, 85, 86 );
 }
 
+
+
+
+/********************** main screen ************************************************************************************/
+
+
+/**
+  * The title style is a predefined style which is used
+  * for all screen-titles.
+  */
+title {
+	padding: 2;
+	margin-top: 0;
+	margin-bottom: 5;
+	margin-left: 0;
+	margin-right: 0;
+	font-face: proportional;
+	font-size: large;
+	font-style: bold;
+	font-color: brightFontColor;
+	background-color: bgColor;
+	border: none;
+	layout: horizontal-center | horizontal-expand;
+}
+
+
+/** 
+  * The .mainScreen style is a static style, which
+  * is set in the MIDlet source-code with the //#style directive.
+  * If the source-code would not have defined this
+  * style, we could use the dynamic style "list" to design all
+  * list-screens. 
+  * An interesting attribute is the "columns" attribute which
+  * is used to use a table with two columns instead of the default
+  * layout.
+  */
+.mainScreen {
+	inherit: false;
+	padding: 5%;
+	background {
+		color: brightBgColor;
+	}
+	layout: horizontal-expand | horizontal-center | vertical-center;
+	columns: 2;
+	columns-width: equal; 
+	/* columns-width: 40%, 60%; */
+	
+}
+
+/**
+  * The .mainCommand style is also a static style, which
+  * is set in the MIDlet source-code with the //#style directive.
+  * If the source-code would not have defined this
+  * style, we could use the dynamic style "listitem" to design all
+  * items on the list-screens. 
+  * An interesting attribute is the "icon-image" URL, which uses
+  * the %INDEX% keyword. The first list-item will use the image
+  * "icon0.png", the second "icon1.png" and so on. 
+  */
+.mainCommand {
+	margin: 2px;
+	padding: 5px;
+	background: none;
+	font-color: fontColor;
+	font-style: bold;
+	font-size: small;
+	icon-image: url( icon%INDEX%.png );	
+	icon-image-align: top;
+	layout: center | expand;
+}
+
+.mainCommand:hover {
+	margin: 0px;
+	background {
+		type: round-rect;
+		arc: 8;
+		color: brightBgColor;
+		border-color: fontColor;
+		border-width: 2px;
+	}
+}
+
+/********************** alerts ************************************************************************************/
+
+alert extends .mainScreen {
+}
+
+alertcontent {
+	font-color: fontColor;
+	font-size: small;
+	font-style: bold;
+}
+
+.loadGameAlert {
+	margin: 20;
+	padding: 5;
+	padding-left: 15;
+	padding-right: 15;
+	layout: horizontal-expand | horizontal-center | vertical-center;
+	background-color: argb( 150, 255, 255, 255 ); /*translucentBgColor; */
+	show-dismiss-command: false;
+}
+
+
+
+/********************** commands menu ************************************************************************************/
+
 /**
   * the menu style is a predefined style for
   * designing the fullscreen-menu.
@@ -49,11 +156,11 @@ menu {
 		border-width: 2;
 		border-color: bgColor;
 	}
-	focused-style: .menuFocused;
 	font-color: brightFontColor;
 	font-style: bold;
 	menubar-color: bgColor;
 	view-type: slide-up;
+	min-width: 65%;
 }
 
 /**
@@ -79,115 +186,8 @@ menuItem {
   * menu items. It is used, because it has
   * been defined in the menu style. 
   */
-.menuFocused extends .menuItem {
+.menuItem:hover {
 	background-color: bgColor;
 	font-color: brightFontColor;
 	layout: left | horizontal-expand;
-}
-
-/**
-  * The title style is a predefined style which is used
-  * for all screen-titles.
-  */
-title {
-	padding: 2;
-	margin-top: 0;
-	margin-bottom: 5;
-	margin-left: 0;
-	margin-right: 0;
-	font-face: proportional;
-	font-size: large;
-	font-style: bold;
-	font-color: brightFontColor;
-	background-color: bgColor;
-	border: none;
-	layout: horizontal-center | horizontal-expand;
-}
-
-/**
-  * The focused style is a predefined style which
-  * is used by lists, forms, choice-groups and so on.
-  * This style will be used for highlighting the currently
-  * focused item.
-  */
-focused {
-	padding: 5;
-	background {
-		type: round-rect;
-		arc: 8;
-		color: brightBgColor;
-		border-color: fontColor;
-		border-width: 2;
-	}
-	font {
-		style: bold;
-		color: fontColor;
-		size: small;
-	}
-	layout: expand | center;	
-}
-
-/** 
-  * The .mainScreen style is a static style, which
-  * is set in the MIDlet source-code with the //#style directive.
-  * If the source-code would not have defined this
-  * style, we could use the dynamic style "list" to design all
-  * list-screens. 
-  * An interesting attribute is the "columns" attribute which
-  * is used to use a table with two columns instead of the default
-  * layout.
-  */
-.mainScreen {
-	padding: 5;
-	padding-left: 10;
-	padding-right: 10;
-	padding-vertical: 10;
-	background {
-		color: brightBgColor;
-	}
-	layout: horizontal-expand | horizontal-center | vertical-center;
-	columns: 2;
-	columns-width: equal;
-}
-
-/**
-  * The .mainCommand style is also a static style, which
-  * is set in the MIDlet source-code with the //#style directive.
-  * If the source-code would not have defined this
-  * style, we could use the dynamic style "listitem" to design all
-  * items on the list-screens. 
-  * An interesting attribute is the "icon-image" URL, which uses
-  * the %INDEX% keyword. The first list-item will use the image
-  * "icon0.png", the second "icon1.png" and so on. 
-  */
-.mainCommand {
-	margin: 2; /* for the missing border of the focused style */
-	padding: 5;
-	background: none;
-	font-color: fontColor;
-	font-style: bold;
-	font-size: small;
-	layout: center | expand;
-	max-width: 100;
-	icon-image: url( icon%INDEX%.png );
-	icon-image-align: top;
-}
-
-alert extends .mainScreen {
-}
-
-alertcontent {
-	font-color: fontColor;
-	font-size: small;
-	font-style: bold;
-}
-
-.loadGameAlert {
-	margin: 20;
-	padding: 5;
-	padding-left: 15;
-	padding-right: 15;
-	layout: horizontal-expand | horizontal-center | vertical-center;
-	background-color: argb( 150, 255, 255, 255 ); /*translucentBgColor; */
-	show-dismiss-command: false;
 }

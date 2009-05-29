@@ -31,3 +31,4 @@ var:menu.Quit=Exit
 
 messages.welcome=Welcome to the game, {0}!
 
+sms.send.successfully={0} send to {1}

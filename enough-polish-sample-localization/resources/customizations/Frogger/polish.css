@@ -22,7 +22,7 @@ colors {
 	bgColor:  rgb( 0, 3, 0 );
 	highlightedBgColor:  rgb(20,121,8);
 	highlightedFontColor: rgb(0,255,0);
-	fontColor: rgb( 0, 3, 0 );
+	fontColor: #6d6;
 }
 
 /**
@@ -53,44 +53,7 @@ title {
 }
 
 
-/**
-  * The focused style is a predefined style which
-  * is used by lists, forms, choice-groups and so on.
-  * This style will be used for highlighting the currently
-  * focused item.
-  */
-focused {
-	padding: 5;
-	background-color: argb( 150, 20, 121, 8);
-	/*
-	background {
-		type: round-rect-opening;
-		color: highlightedBgColor;
-		steps: 4;
-		border-color: bgColor;
-		border-width: 2;
-	}
-	*/
-	font {
-		bitmap: example;
-		style: bold;
-		color: highlightedFontColor;
-		size: small;
-	}
-	layout: expand | center;
-}
 
-.menuFocused extends focused {
-	padding: 0;
-	background {
-		type: round-rect;
-		color: bgColor;
-		steps: 4;
-		border-color: fontColor;
-		border-width: 2;
-	}
-	font-bitmap: none;
-}
 
 /** 
   * The .mainMenu style is a static style, which
@@ -100,17 +63,14 @@ focused {
   * list-screens. 
   */
 .mainScreen {
-	padding: 5;
-	padding-left: 15;
-	padding-right: 15;
+	padding: 5%;
+	padding-left: 10%;
+	padding-right: 10%;
 	background {
 		color: bgColor;
 		image: url( bg.png );
 	}
 	layout: horizontal-expand | horizontal-center | vertical-center;
-	/*
-	view-type: dropping;
-	*/
 }
 
 
@@ -126,15 +86,19 @@ focused {
   * "icon0.png", the second "icon1.png" and so on. 
   */
 .mainCommand {
-	margin: 2; /* for the missing border of the focused style */
-	padding: 5;
+	margin: 2px;
+	padding: 5px;
 	background: none;
 	font-color: fontColor;
 	font-style: bold;
 	font-size: small;
-	layout: center;
-	checkbox-plain: none;
-	checkbox-selected: url(checked.png);
+	layout: center | expand;
+	icon-image: none;
+}
+
+.mainCommand:hover {
+	font-bitmap: example.bmf;
+	background: none;
 }
 
 
@@ -164,7 +128,6 @@ menu {
 	font-color: highlightedFontColor;
 	font-style: bold;
 	menubar-color: transparent;
-	focused-style: .menuFocused;
 }
 
 /**
@@ -174,7 +137,7 @@ menu {
   * the menu style will be used instead. 
   */
 menuItem {
-	margin-top: 2;
+	margin: 2px;
 	padding: 2;
 	padding-left: 5;
 	font {
@@ -185,21 +148,13 @@ menuItem {
 	layout: left;
 }
 
-alert extends .mainScreen {
-}
-
-alertcontent {
-	font-color: highlightedFontColor;
-	font-size: small;
-	font-style: bold;
-}
-
-.loadGameAlert {
-	margin: 20;
-	padding: 5;
-	padding-left: 15;
-	padding-right: 15;
-	layout: horizontal-expand | horizontal-center | vertical-center;
-	background-color: argb( 100, 255, 0, 0 ); /*translucentBgColor; */
-	show-dismiss-command: false;
+.menuItem:hover {
+	margin: 0px;
+	background {
+		type: round-rect;
+		color: bgColor;
+		steps: 4;
+		border-color: fontColor;
+		border-width: 2;
+	}
 }

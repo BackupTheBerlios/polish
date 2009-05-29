@@ -37,7 +37,9 @@ import javax.microedition.midlet.MIDletStateChangeException;
 
 import de.enough.polish.util.Debug;
 import de.enough.polish.util.Locale;
-	
+
+
+
 /**
  * <p>Shows a demonstration of the possibilities of J2ME Polish.</p>
  *
@@ -60,6 +62,7 @@ public class MenuMidlet extends MIDlet implements CommandListener {
 	Display display;
 	
 	public MenuMidlet() {
+
 		super();
 		//#debug
 		System.out.println("starting MenuMidlet");
@@ -88,6 +91,9 @@ public class MenuMidlet extends MIDlet implements CommandListener {
 		
 		// You can also use further localization features like the following: 
 		//System.out.println("Today is " + Locale.formatDate( System.currentTimeMillis() ));
+			
+			String[] params = new String[] { "hello", "world" };
+			System.out.println( Locale.get("sms.send.successfully", params) ); 
 		
 		//#debug
 		System.out.println("initialisation done.");
@@ -162,3 +168,5 @@ public class MenuMidlet extends MIDlet implements CommandListener {
 	}
 	
 }
+
+

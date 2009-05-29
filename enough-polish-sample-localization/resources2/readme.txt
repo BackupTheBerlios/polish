@@ -1,1 +1,0 @@
-This folder contains a different design for the sample application.Just set the "dir"-attribute of the <resources>-element to"resources2" for having a look at this design.
