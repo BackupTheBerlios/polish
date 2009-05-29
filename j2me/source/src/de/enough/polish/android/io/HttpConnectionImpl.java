@@ -19,10 +19,10 @@ class HttpConnectionImpl implements HttpConnection {
 	
 	private int state = STATE_SETUP;
 		
-	private String url = null;
-	private String methodStr = GET;
+	private String urlString = null;
+	private String requestMethod = GET;
 		
-	private URL theUrl;
+	private URL url;
 	private HttpURLConnection theConnection = null;
 	private InputStream theInput = null;
 	private OutputStream theOutput = null;
@@ -32,10 +32,10 @@ class HttpConnectionImpl implements HttpConnection {
 		if(url == null) {
 			throw new NullPointerException();
 		}
-		this.url = url;
 		checkIsHttpUrl(url);
+		this.urlString = url;
 		try {
-			this.theUrl = new URL(url);
+			this.url = new URL(url);
 		} catch (MalformedURLException e) {
 			throw new IllegalArgumentException("invalid URL");
 		} 
@@ -78,19 +78,18 @@ class HttpConnectionImpl implements HttpConnection {
 	
 	
 	//only in setup state
-	public void setRequestMethod(String method) throws IOException {
+	public void setRequestMethod(String requestMethod) throws IOException {
 		if (this.state == STATE_SETUP) {
-			if (method.equals(GET)) {
-				this.methodStr = method;
-			} else if (method.equals(POST)) {
-				this.methodStr = method;
+			if (requestMethod.equals(GET)) {
+				this.requestMethod = requestMethod;
+			} else if (requestMethod.equals(POST)) {
+				this.requestMethod = requestMethod;
 			} else {
 				throw new IllegalArgumentException("illegal request method");
 			}
 		} else {
 			throw new IOException("already connected");
 		}
-		
 	}
 	
 	public void setRequestProperty(String key, String value) throws IOException {
@@ -100,7 +99,7 @@ class HttpConnectionImpl implements HttpConnection {
 	
 	//invoke at any time
 	public String getRequestMethod() {
-		return this.methodStr;
+		return this.requestMethod;
 	}
 	
 	public String getRequestProperty(String key) {
@@ -113,31 +112,31 @@ class HttpConnectionImpl implements HttpConnection {
 	}
 	
 	public String getURL() {
-		return this.url;
+		return this.urlString;
 	}
 	
 	public String getQuery() {
-		return this.theUrl.getQuery();
+		return this.url.getQuery();
 	}
 	
 	public int getPort() {
-		return this.theUrl.getPort();
+		return this.url.getPort();
 	}
 	
 	public String getHost() {
-		return this.theUrl.getHost();
+		return this.url.getHost();
 	}
 	
 	public String getProtocol() {
-		return this.theUrl.getProtocol();
+		return this.url.getProtocol();
 	}
 		
 	public String getFile() {
-		return this.theUrl.getFile();
+		return this.url.getFile();
 	}
 		
 	public String getRef() {
-		return this.theUrl.getRef();
+		return this.url.getRef();
 	}
 	
 	//these calls force transition to connected state
@@ -231,13 +230,14 @@ class HttpConnectionImpl implements HttpConnection {
 	private synchronized void connect() throws IOException {
 		if (this.state == STATE_CONNECTED) {
 			if(this.theConnection == null) {
-				throw new IOException("Invalid State");
+				throw new IOException("Invalid State. No connection in state STATE_CONNECTED");
 			}
 			return;
 		} else {
 			this.state = STATE_CONNECTED;
 		}
-		this.theConnection = (HttpURLConnection)this.theUrl.openConnection();
+		this.theConnection = (HttpURLConnection)this.url.openConnection();
+		this.theConnection.setRequestMethod(this.requestMethod);
 	}
 	
 }	
