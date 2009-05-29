@@ -52,9 +52,9 @@ import de.enough.polish.dataeditor.DataManager;
 public class CountCellEditor extends AbstractCellEditor implements
 		TableCellEditor, ActionListener {
 
-    private static final long serialVersionUID = -3429071280277525478L;
+	private static final long serialVersionUID = -3429071280277525478L;
 
-    private final JFrame parentFrame;
+	private final JFrame parentFrame;
 	private final DataManager manager;
 	private final JButton button;
 	private Object currentValue;

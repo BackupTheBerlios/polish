@@ -206,7 +206,7 @@ public class Java5PostCompiler extends BytecodePostCompiler {
             // TODO: Don't use a ClassWriter instance here. The stuff gets dropped
             // into nirvana anyway.
             ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-            Type type = Type.getType("L" + className + ";");
+            Type type = Type.getType("L" + className.replace('\\', '/') + ";");
             Java5CollectorClassVisitor visitor = new Java5CollectorClassVisitor(writer, type);
             classNode.accept(visitor);
           }

@@ -75,7 +75,6 @@ public class BuildSetting {
 
 	
 	private Environment environment;
-	private LogSetting debugSetting;
 	private MidletSetting midletSetting; 
 	private ArrayList obfuscatorSettings;
 	private boolean doObfuscate;
@@ -142,6 +141,7 @@ public class BuildSetting {
 	private ClassSetting dojaClassSetting;
 	private ArrayList serializers;
 	private FileSetting fileSetting;
+	private ArrayList debugSettings;
 	
 	/**
 	 * Creates a new build setting.
@@ -226,9 +226,10 @@ public class BuildSetting {
 	}
 	
 	public void addConfiguredDebug( LogSetting setting ) {
-		if (setting.isActive(this.antProject)) {
-			this.debugSetting = setting;
+		if (this.debugSettings == null) {
+			this.debugSettings = new ArrayList();
 		}
+		this.debugSettings.add( setting );
 	}
 	
 	public void addConfiguredVariables( Variables vars ) {
@@ -508,8 +509,17 @@ public class BuildSetting {
 		return this.fullScreenSetting;
 	}
 	
-	public LogSetting getDebugSetting() {
-		return this.debugSetting;
+	public LogSetting getDebugSetting(Environment environment) {
+		if (this.debugSettings == null) {
+			return null;
+		}
+		for (int i=0; i<this.debugSettings.size(); i++) {
+			LogSetting setting = (LogSetting) this.debugSettings.get(i);
+			if (setting.isActive(environment)) {
+				return setting;
+			}
+		}
+		return null;
 	}
 	
 	/**
@@ -546,13 +556,15 @@ public class BuildSetting {
 	/**
 	 * Determines whether debugging is enabled.
 	 * 
+	 * @param environment the environment
 	 * @return true when debugging is enabled for this project.
 	 */
-	public boolean isDebugEnabled() {
-		if (this.debugSetting == null) {
+	public boolean isDebugEnabled(Environment environment) {
+		LogSetting setting = getDebugSetting(environment);
+		if (setting == null) {
 			return false;
 		} else {
-			return this.debugSetting.isEnabled();
+			return setting.isEnabled();
 		}
 	}
 	
@@ -971,9 +983,9 @@ public class BuildSetting {
 	}
 		
 	/**
-	 * Sets compiling (used for android).
+	 * Determines whether the project should get compiled.
 	 * 
-	 * @param packaging the path to the preverify executable.
+	 * @param compile string to flag if we should compile or not
 	 */
 	public void setCompile( String compile ) {
 		if ( "true".equalsIgnoreCase(compile) || "yes".equalsIgnoreCase( compile)) {
@@ -1011,22 +1023,15 @@ public class BuildSetting {
 	/**
 	 * Retrieves all the defined MIDlet-class-names.
 	 * 
-	 * @param useDefaultPackage true when the default package should be used 
 	 * @param environment the environment
 	 * @return The names of all midlet-classes in a String array. 
 	 * 		The first midlet is also the first element in the returned array.
 	 */
-	public String[] getMidletClassNames( boolean useDefaultPackage, Environment environment ) {
+	public String[] getMidletClassNames( Environment environment ) {
 		Midlet[] midlets = getMidlets( environment );
 		String[] midletClassNames = new String[ midlets.length ];
 		for (int i = 0; i < midlets.length; i++) {
 			String className = midlets[i].getClassName();
-			if (useDefaultPackage) {
-				int dotIndex = className.lastIndexOf('.');
-				if (dotIndex != -1) {
-					className = className.substring( dotIndex + 1 );
-				}
-			}
 			midletClassNames[i] = className;
 		}
 		return midletClassNames;
@@ -1038,16 +1043,15 @@ public class BuildSetting {
 	 * and are used for the JAD and the manifest.
 	 * 
 	 * @param defaultIcon the url of the default icon.
-	 * @param useDefaultPackage true when the default package should be used 
 	 * @param environment environment settings
 	 * @return The infos of all midlets in a String array.
 	 * 		The first midlet is also the first element in the returned array.
 	 */
-	public String[] getMidletInfos( String defaultIcon, boolean useDefaultPackage, Environment environment ) {
+	public String[] getMidletInfos( String defaultIcon, Environment environment ) {
 		Midlet[] midlets = getMidlets( environment );
 		String[] midletInfos = new String[ midlets.length ];
 		for (int i = 0; i < midlets.length; i++) {
-			midletInfos[i] = midlets[i].getMidletInfo( defaultIcon, useDefaultPackage );
+			midletInfos[i] = midlets[i].getMidletInfo( defaultIcon );
 		}
 		return midletInfos;
 	}

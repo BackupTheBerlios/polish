@@ -206,12 +206,6 @@ public class Device extends PolishComponent {
 		this.vendorName = vendor.getIdentifier();
 		this.classPath = new ClassPath( this, libraryManager );
 
-		addCapability(NAME, this.name);
-		addCapability( "polish.name", this.name );
-		addCapability(VENDOR, this.vendorName);
-		addCapability( "polish.vendor", this.vendorName );
-		addCapability(IDENTIFIER, this.identifier);
-		addCapability( "polish.identifier", this.identifier );
 		
 		// load group features and capabilities:
 		String[] explicitGroupNames = loadGroups(definition, groupManager, INVALID_GROUP_NAME_MESSAGE);
@@ -304,6 +298,12 @@ public class Device extends PolishComponent {
 			addImplicitGroups( configuration, groupNamesList, groupsList, groupManager );
 		}
 		
+		addCapability(NAME, this.name);
+		addCapability( "polish.name", this.name );
+		addCapability(VENDOR, this.vendorName);
+		addCapability( "polish.vendor", this.vendorName );
+		addCapability(IDENTIFIER, this.identifier);
+		addCapability( "polish.identifier", this.identifier );
 
 
 		this.isVirtual = hasFeature("polish.isVirtual");

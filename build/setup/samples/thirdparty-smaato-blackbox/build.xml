@@ -40,7 +40,7 @@
 	
 	<taskdef name="j2mepolish" 
 		classname="de.enough.polish.ant.PolishTask" 
-		classpath="${polish.home}/lib/enough-j2mepolish-build.jar:${polish.home}/lib/jdom.jar"/>
+		classpath="${polish.home}/lib/enough-j2mepolish-build.jar"/>
 	
 		
 	<!-- build targets, each target can be called via "ant [name]", 

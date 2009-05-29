@@ -78,7 +78,7 @@ public class WindowsMobileFinalizer
 			return;
 		}
 		catch (SecurityException e) {
-			System.err.println("Cannot run Dotter main class");
+			System.err.println("Cannot find Dotter main  method due to security reasons");
 			return;
 		}
 
@@ -87,11 +87,11 @@ public class WindowsMobileFinalizer
 			startMethod.invoke(null, new Object[] { null });
 		}
 		catch (IllegalArgumentException e) {
-			System.err.println("Cannot run Dotter main class");
+			System.err.println("Cannot run Dotter main method due to illegal arguments");
 			return;
 		}
 		catch (IllegalAccessException e) {
-			System.err.println("Cannot run Dotter main class");
+			System.err.println("Cannot run Dotter main method due to security reasons");
 			return;
 		}
 		catch (InvocationTargetException e) {

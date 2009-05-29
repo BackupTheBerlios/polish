@@ -27,6 +27,8 @@ package de.enough.polish.devices;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.enough.polish.BuildException;
 
@@ -67,28 +69,46 @@ public class ClassPath {
 	}
 
 	private void initialize() {
-		initBootClassPath();
-		initClassPath();
+		Map duplicates = new HashMap();
+		initBootClassPath(duplicates);
+		initClassPath(duplicates);
+//		String[] paths = this.bootClassPaths;
+//		for (int i = 0; i < paths.length; i++)
+//		{
+//			String path = paths[i];
+//			System.out.println("bootcp=" + path);
+//		}
+//		paths = this.classPaths;
+//		for (int i = 0; i < paths.length; i++)
+//		{
+//			String path = paths[i];
+//			System.out.println("cp=" + path);
+//		}
 		this.isInitalised = true;
 	}
 	
-	private void initClassPath() {
+	private void initClassPath(Map duplicates) {
 		String[] paths = this.libraryManager.getClassPaths(this.device);
-		this.classPaths = paths;
-		
+		ArrayList pathList = new ArrayList();
 		StringBuffer buffer = new StringBuffer();
 		if (paths != null) {
 			for (int i = 0; i < paths.length; i++) {
-				buffer.append( paths[i].replace('\\', '/') );
-				if ( i != paths.length -1 ) {
-					buffer.append( File.pathSeparatorChar );
+				String path = paths[i].replace('\\', '/');
+				if (!duplicates.containsKey(path)) {
+					duplicates.put(path, Boolean.TRUE);
+					buffer.append( path );
+					pathList.add( path );
+					if ( i != paths.length -1 ) {
+						buffer.append( File.pathSeparatorChar );
+					}
 				}
 			}
 		}
+		this.classPaths = (String[]) pathList.toArray( new String[ pathList.size() ] );
 		this.classPath = buffer.toString();
 	}
 
-	private void initBootClassPath() {
+	private void initBootClassPath(Map duplicates) {
 		String bootPathStr = this.device.getCapability( "polish.build.bootclasspath" );
 		if (bootPathStr == null) {
 			throw new BuildException("IllegalState: device [" + this.device.identifier + "] has no build.BootClassPath defined!");
@@ -132,11 +152,14 @@ public class ClassPath {
 			}
 			if (lib != null) {
 				String path = lib.getAbsolutePath().replace('\\', '/');
-				cleanedPaths.add( path );
-				paths[i] = path;
-				buffer.append( path );
-				if ( i < paths.length - 1 ) {
-					buffer.append( File.pathSeparatorChar );
+				if (! duplicates.containsKey(path)) {
+					duplicates.put(path, Boolean.TRUE);
+					cleanedPaths.add( path );
+					paths[i] = path;
+					buffer.append( path );
+					if ( i < paths.length - 1 ) {
+						buffer.append( File.pathSeparatorChar );
+					}
 				}
 			}
 		}
@@ -149,19 +172,24 @@ public class ClassPath {
 			Library library = libraries[i];
 			if (library.getPosition() == Library.POSITION_BOOTCP_PREPPEND) {
 				String path = library.getPath().replace('\\', '/');
-				if (additionalPaths == null) {
-					additionalPaths = createList( paths );
+				if (! duplicates.containsKey(path)) {
+					duplicates.put(path, Boolean.TRUE);
+					if (additionalPaths == null) {
+						additionalPaths = createList( paths );
+					}
+					additionalPaths.add( 0, path );
+					buffer.insert(0, path + File.pathSeparatorChar );
 				}
-				additionalPaths.add( 0, path );
-				buffer.insert(0, path + File.pathSeparatorChar );
 			} else if (library.getPosition() == Library.POSITION_BOOTCP_APPEND) {
 				String path = library.getPath().replace('\\', '/');
-				if (additionalPaths == null) {
-					additionalPaths = createList( paths );
-				}
-				additionalPaths.add(  path );
-				buffer.append( File.pathSeparatorChar ).append( path );
-				
+				if (! duplicates.containsKey(path)) {
+					duplicates.put(path, Boolean.TRUE);
+					if (additionalPaths == null) {
+						additionalPaths = createList( paths );
+					}
+					additionalPaths.add(  path );
+					buffer.append( File.pathSeparatorChar ).append( path );
+				}			
 			}
 		}
 		if (additionalPaths != null) {

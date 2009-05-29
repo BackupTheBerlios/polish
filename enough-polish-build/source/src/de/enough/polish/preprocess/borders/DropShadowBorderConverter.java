@@ -25,7 +25,7 @@
  */
 package de.enough.polish.preprocess.borders;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import de.enough.polish.BuildException;
 
@@ -55,7 +55,7 @@ public class DropShadowBorderConverter extends BorderConverter {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.preprocess.BorderConverter#createNewStatement(java.util.HashMap, de.enough.polish.preprocess.Style, de.enough.polish.preprocess.StyleSheet)
 	 */
-	protected String createNewStatement(HashMap border, Style style,
+	protected String createNewStatement(Map border, Style style,
 			StyleSheet styleSheet) 
 	throws BuildException 
 	{

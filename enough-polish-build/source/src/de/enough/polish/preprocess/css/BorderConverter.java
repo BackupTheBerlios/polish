@@ -28,7 +28,7 @@ package de.enough.polish.preprocess.css;
 import de.enough.polish.BuildException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>Creates different borders from CSS declarations.</p>
@@ -70,7 +70,7 @@ public abstract class BorderConverter extends Converter {
 	 * @throws BuildException when there are invalid CSS declarations in the given background
 	 */
 	public void addBorder( ArrayList codeList, 
-			HashMap border, 
+			Map border, 
 			String borderName,
 			Style style, 
 			StyleSheet styleSheet,
@@ -89,7 +89,7 @@ public abstract class BorderConverter extends Converter {
 		if (this.width == null) {
 			this.width = "1";	// 1 is the default border width
 		} else {
-			parseInt( "width", this.width );
+			this.width = Integer.toString( parseInt( "width", this.width ) );
 		}
 		if (isStandalone) {
 			codeList.add( STANDALONE_MODIFIER + "Border " + borderName + "Border = ");
@@ -114,7 +114,7 @@ public abstract class BorderConverter extends Converter {
 	 * @throws BuildException when there are invalid CSS declarations in the given background
 	 */
 	protected abstract String createNewStatement( 
-			HashMap border, 
+			Map border, 
 			Style style, 
 			StyleSheet styleSheet )
 	throws BuildException;

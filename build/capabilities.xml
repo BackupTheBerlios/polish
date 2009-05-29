@@ -92,7 +92,7 @@
 
 	<capability>
 		<identifier>build.BootClassPath</identifier>
-		<extension-mode>append</extension-mode>
+		<extension-mode>prepend</extension-mode>
 		<group>Build</group>
 		<required>no</required>
 		<type>list</type>

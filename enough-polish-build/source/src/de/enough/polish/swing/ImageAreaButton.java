@@ -49,9 +49,9 @@ public class ImageAreaButton
 extends JLabel
 implements MouseListener
 {
-    private static final long serialVersionUID = 6256843509690643955L;
+	private static final long serialVersionUID = 6256843509690643955L;
 
-    private final Rectangle[] areas;
+	private final Rectangle[] areas;
 	private final ActionListener listener;
 	private int selectedArea;
 	private final Dimension minimumSize;

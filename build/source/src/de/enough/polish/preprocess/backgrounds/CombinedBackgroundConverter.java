@@ -26,7 +26,7 @@
  */
 package de.enough.polish.preprocess.backgrounds;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import de.enough.polish.BuildException;
 import de.enough.polish.preprocess.css.BackgroundConverter;
@@ -80,7 +80,7 @@ public class CombinedBackgroundConverter extends BackgroundConverter
 	/* (non-Javadoc)
 	 * @see de.enough.polish.preprocess.css.BackgroundConverter#createNewStatement(java.util.HashMap, de.enough.polish.preprocess.css.Style, de.enough.polish.preprocess.css.StyleSheet)
 	 */
-	protected String createNewStatement(HashMap background, Style style,
+	protected String createNewStatement(Map background, Style style,
 			StyleSheet styleSheet) throws BuildException
 	{
 		String foregroundReference = (String) background.get(this.attribute1);

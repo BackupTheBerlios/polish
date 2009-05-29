@@ -47,11 +47,9 @@ public class DefaultDescriptorCreator extends DescriptorCreator  {
 
     /** The max number of bytes of one line in a JAD */
     public static final int MAX_LINE_LENGTH = 72;
-    /** The max number of bytes without the line break */
-	private static final int MAX_SECTION_LENGTH = 70;
+
     /** The End-Of-Line marker in manifests */
     public static final String EOL = "\r\n";
-
 
 	/**
 	 * Creates a new instance

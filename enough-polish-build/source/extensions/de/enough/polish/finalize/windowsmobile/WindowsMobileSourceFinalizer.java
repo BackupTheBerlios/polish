@@ -14,6 +14,8 @@ public class WindowsMobileSourceFinalizer
 {
 	private static final String DOTTER_MAIN_CLASS = "de.enough.polish.dotter.Dotter";
 
+	private File userJar;
+
 	/* (non-Javadoc)
 	 * @see de.enough.polish.finalize.Finalizer#finalize(java.io.File, java.io.File, de.enough.polish.Device, java.util.Locale, de.enough.polish.Environment)
 	 */
@@ -28,6 +30,7 @@ public class WindowsMobileSourceFinalizer
 				sourceDir,
 				csSourceDir,
 				importDir,
+				this.userJar,
 		};
 
 		Class dotterClass = null;
@@ -44,14 +47,14 @@ public class WindowsMobileSourceFinalizer
 
 		// Find start method.
 		try {
-			startMethod = dotterClass.getMethod("doDotter", new Class[] { File.class, File.class, File.class });
+			startMethod = dotterClass.getMethod("doDotter", new Class[] { File.class, File.class, File.class, File.class });
 		}
 		catch (NoSuchMethodException e) {
 			System.err.println("Cannot find Dotter main method");
 			return;
 		}
 		catch (SecurityException e) {
-			System.err.println("Cannot run Dotter main class");
+			System.err.println("Cannot find Dotter main method due to security reasons");
 			return;
 		}
 
@@ -60,16 +63,23 @@ public class WindowsMobileSourceFinalizer
 			startMethod.invoke(null, arguments);
 		}
 		catch (IllegalArgumentException e) {
-			System.err.println("Cannot run Dotter main class");
+			System.err.println("Cannot run Dotter main method due to illegal arguments");
 			return;
 		}
 		catch (IllegalAccessException e) {
-			System.err.println("Cannot run Dotter main class");
+			System.err.println("Cannot run Dotter main method due to security reasons");
 			return;
 		}
 		catch (InvocationTargetException e) {
 			e.getCause().printStackTrace();
 			return;
 		}
+	}
+
+	public void setUserJar(String userJar)
+	{
+		System.out.println("Setting user jar: " + new File(userJar));
+
+		this.userJar = new File(userJar);
 	}
 }

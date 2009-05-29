@@ -49,9 +49,10 @@ public class Platform extends PolishComponent {
 	 * 
 	 * @param definition the XML definition of this platform.
 	 * @param capabilityManager manages capabilities
+	 * @param platformManager manages other (parent) platforms
 	 * @throws InvalidComponentException when the given definition contains errors
 	 */
-	public Platform( Element definition, CapabilityManager capabilityManager )
+	public Platform( Element definition, CapabilityManager capabilityManager, PlatformManager platformManager )
 	throws InvalidComponentException
 	{
 		super( null, capabilityManager, definition );
@@ -60,6 +61,15 @@ public class Platform extends PolishComponent {
 			System.out.println("platform-definition=" + definition.toString() );
 			throw new InvalidComponentException("Every platform needs to define the element <identifier> - please check your platforms.xml.");
 		}
+		String parentName = definition.getChildText("parent");
+		if (parentName != null) {
+			Platform parent = platformManager.getPlatform(parentName);
+			if (parent == null) {
+				throw new InvalidComponentException("The platform " + this.identifier + " references the unknown parent " + parentName + " - please check your custom-platforms.xml file." );
+			}
+			addComponent(parent);
+		}
+
 		// load all capabilities:
 		loadCapabilities(definition, this.identifier, "platforms.xml");
 	}

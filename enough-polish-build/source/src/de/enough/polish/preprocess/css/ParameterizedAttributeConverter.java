@@ -25,7 +25,7 @@
  */
 package de.enough.polish.preprocess.css;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import de.enough.polish.BuildException;
 import de.enough.polish.Environment;
@@ -45,7 +45,7 @@ public class ParameterizedAttributeConverter extends Converter {
 	public String createNewStatement( 
 			CssAttribute attribute,
 			ParameterizedCssMapping mapping,
-			HashMap cssValues, 
+			Map cssValues, 
 			Environment environment )
 	throws BuildException
 	{
@@ -67,10 +67,10 @@ public class ParameterizedAttributeConverter extends Converter {
 			if (paramValue == null) {
 				System.out.println("Parameters of " + attribute.getName() + ":");
 				for (int j = 0; j < parameters.length; j++) {
-					System.out.println( j + "=" + parameters[j] + "=" + parameters[j].getName() );
+					System.out.println( j + "=" + parameters[j].getType() + "=" + parameters[j].getName() );
 				}
 				System.out.println("CSS values for parameter " + i + ": " + cssValues.get(paramName));
-				throw new BuildException("Error: unable to get value for " + mapping.getFrom() + "-"  + paramName + " - please report this error to j2mepolish@enough.de along with your polish.css settings and possibly your custom-css-attributes.xml file.");
+				throw new BuildException("Invalid CSS: there is no value for \"" + mapping.getFrom() + "-"  + paramName + "\" specified - please adjust your design in polish.css accordingly.");
 			}
 			buffer.append( parameter.getValue(paramValue, environment));
 			if (i != parameters.length -1) {
@@ -90,7 +90,7 @@ public class ParameterizedAttributeConverter extends Converter {
 	 * @return
 	 */
 	private String getParamValue(CssAttribute parameter, String paramName,
-			ParameterizedCssMapping mapping, HashMap cssValues,
+			ParameterizedCssMapping mapping, Map cssValues,
 			Environment environment, int overflowIndex)
 	{
 		if (overflowIndex > 10) {

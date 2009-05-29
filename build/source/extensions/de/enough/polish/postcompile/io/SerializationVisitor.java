@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import org.apache.tools.ant.BuildException;
 import org.objectweb.asm.ClassAdapter;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
@@ -185,6 +184,8 @@ public class SerializationVisitor
       this.serializableObjectTypes.add("de/enough/polish/blackberry/ui/Image");
       this.serializableObjectTypes.add("de/enough/polish/doja/ui/Font");
       this.serializableObjectTypes.add("de/enough/polish/doja/ui/Image");
+      this.serializableObjectTypes.add("de/enough/polish/android/lcdui/Font");
+      this.serializableObjectTypes.add("de/enough/polish/android/lcdui/Image");
   }
 
   private String[] getSortedFields()
@@ -294,7 +295,8 @@ public class SerializationVisitor
               }
             else
               {
-                throw new BuildException("Cannot serialize field " + this.className + "." + name + ": use the \"transient\" modifier to exclude this field from serialization.");
+            	System.err.println("Cannot serialize field " + this.className + "." + name + ": use the \"transient\" modifier to exclude this field from serialization.");
+                //throw new BuildException("Cannot serialize field " + this.className + "." + name + ": use the \"transient\" modifier to exclude this field from serialization.");
               }
           }
       }

@@ -38,7 +38,7 @@
 	<!-- Definition of the J2ME Polish task:                      -->
 	<taskdef name="j2mepolish" 
 		classname="de.enough.polish.ant.PolishTask" 
-		classpath="${polish.home}/lib/enough-j2mepolish-build.jar:${polish.home}/lib/jdom.jar"
+		classpath="${polish.home}/lib/enough-j2mepolish-build.jar"
 	/>
 	
 		
@@ -89,16 +89,15 @@
 		    <!-- Have a look at the <jad>-section for setting specialised attributes.
 		         You can also define localized attributes in the resources/messages.txt files -->
 			<info
-				name="J2ME Polish"
+				name="Accessible"
 				version="1.3.4"
-				description="A simple project that uses localization."
+				description="Shows how to deactivate and activate User Interface components during runtime."
 				vendorName="Enough Software"
 				infoUrl="http://www.j2mepolish.org"
 				icon="dot.png"
-				jarName="${polish.vendor}-${polish.name}-${polish.locale}-menu.jar" 
+				jarName="${polish.vendor}-${polish.name}-${polish.locale}-accessible.jar" 
 				jarUrl="${deploy-url}${polish.jarName}"
-				copyright="Copyright 2005 - 2008 Enough Software. All rights reserved."
-				deleteConfirm="Do you really want to kill me?" 
+				copyright="Copyright 2005 - 2009 Enough Software. All rights reserved."
 			/>
 			<!-- selection of supported devices -->
             <deviceRequirements if="config.active:defined and (test or enableCompilerMode)" >		

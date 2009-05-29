@@ -29,14 +29,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -44,9 +40,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import de.enough.polish.io.Externalizable;
-import de.enough.polish.io.Serializer;
 
 /**
  * <p>A Servlet that tunnels any incoming requests to the RemoteServer, which in turn forwards any calls to the actual implementation object.</p>
@@ -65,24 +58,10 @@ public class RemoteHttpServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = -8191803948220688172L;
 	
-	/** The object that implements a specific Remote interface, which can actually be this servlet (when a user choses to extend this servlet). */
-	protected Object implementation;
-	/** A map used converting primitive classes into the appropriate primite TYPE types */
-	protected static final Map PRIMITIVES_TYPES_MAP = new HashMap();
-	static {
-		PRIMITIVES_TYPES_MAP.put( Byte.class, Byte.TYPE );
-		PRIMITIVES_TYPES_MAP.put( Short.class, Short.TYPE );
-		PRIMITIVES_TYPES_MAP.put( Integer.class, Integer.TYPE );
-		PRIMITIVES_TYPES_MAP.put( Long.class, Long.TYPE );
-		PRIMITIVES_TYPES_MAP.put( Float.class, Float.TYPE );
-		PRIMITIVES_TYPES_MAP.put( Double.class, Double.TYPE );
-		PRIMITIVES_TYPES_MAP.put( Boolean.class, Boolean.TYPE );
-		PRIMITIVES_TYPES_MAP.put( Character.class, Character.TYPE );
-	}
-	private static Logger logger = Logger.getLogger( "RemoteHttpServlet" );
-	
 	/** Contains a HttServletRequest for each thread. */
 	protected final Map requestsByThread;
+
+	private RmiResolver resolver;
 
 	/** Creates a new RemoteHttpServlet */
 	public RemoteHttpServlet() {
@@ -97,15 +76,16 @@ public class RemoteHttpServlet extends HttpServlet {
 	 */
 	public void init(ServletConfig cfg) throws ServletException {
 		super.init(cfg);
-		if (!getClass().getName().equals("RemoteHttpServlet")) {
-			// the user has extended this servlet, which is useful for getting sessions and so on.
-			// In this case, no further configuration is needed.
-			this.implementation = this;
-			return;
-		}
+		Remote implementation = null;
 		String implementationClassName = cfg.getInitParameter("polish.rmi.server");
 		if (implementationClassName == null) {
-			throw new ServletException("no \"polish.rmi.server\" parameter given.");
+			if (this instanceof Remote) {
+				implementation = (Remote) this;
+				this.resolver = new RmiResolver( implementation );
+				return;
+			} else {
+				throw new ServletException("no \"polish.rmi.server\" parameter given.");
+			}
 		}
 		Class implementationClass = null;
 		try {
@@ -115,20 +95,26 @@ public class RemoteHttpServlet extends HttpServlet {
 			throw new ServletException("\"polish.rmi.server\" cannot be resolved: " + e.toString() );
 		}
 		try {
-			this.implementation = implementationClass.newInstance();
+			implementation = (Remote) implementationClass.newInstance();
+			if (implementation.getClass().equals(getClass())){
+				implementation = (Remote) this;
+				this.resolver = new RmiResolver( implementation );
+				return;
+			}
 			try {
 				// check out if there is a init( java.util.Map ) method:
 				Method configureMethod = implementationClass.getMethod("init", new Class[]{ Map.class } );
-				configureMethod.invoke( this.implementation, new Object[]{ convertConfigurationToMap( cfg ) } );
+				configureMethod.invoke( implementation, new Object[]{ convertConfigurationToMap( cfg ) } );
 			} catch (NoSuchMethodException e) {
 				// check out if there is a init( ServletConfig ) method:
 				try {
 					Method configureMethod = implementationClass.getMethod("init", new Class[]{ ServletConfig.class } );
-					configureMethod.invoke( this.implementation, new Object[]{ cfg } );
+					configureMethod.invoke( implementation, new Object[]{ cfg } );
 				} catch (NoSuchMethodException e1) {
 					System.out.println("Note: if you want to configure your " + implementationClassName + " implementation upon startup, implement public void configure( java.util.Map ) or public void configure( javax.servlet.ServletConfig ).");
 				}
 			}
+			this.resolver = new RmiResolver( implementation );
 		} catch (InstantiationException e) {
 			e.printStackTrace();
 			throw new ServletException("\"polish.rmi.server\" cannot be instatiated: " + e.toString() );
@@ -172,7 +158,7 @@ public class RemoteHttpServlet extends HttpServlet {
 			//DataOutputStream out = new DataOutputStream( response.getOutputStream() );
 			ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
 			DataOutputStream out = new DataOutputStream( byteOut );
-			process(in, out);
+			this.resolver.process(in, out);
 			byte[] responseData = byteOut.toByteArray();
 			response.setContentLength( responseData.length );
 			response.setContentType( "application/octet-stream" );
@@ -191,179 +177,7 @@ public class RemoteHttpServlet extends HttpServlet {
 		}
 	}
 	
-	/**
-	 * Processes the actual method request.
-	 * 
-	 * @param in the input data stream that should contain the method invocation data
-	 * @param out the output stream to which the results of the method call are written
-	 * @throws IOException when data could not be read or written
-	 */
 	
-	protected void process( DataInputStream in, DataOutputStream out )
-	throws IOException
-	{
-		boolean useObfuscation = true;
-		try {			
-			int version = in.readInt();
-			if (logger.isLoggable(Level.FINE)) {
-				logger.log( Level.FINE, "using RMI version=" + version);
-			}
-			if (version > 101) {
-				useObfuscation = in.readBoolean();
-				if (logger.isLoggable(Level.FINER)) {
-					logger.log( Level.FINER, "using obfuscation: " + useObfuscation );
-				}
-			}
-			
-			String methodName = in.readUTF();
-			if (logger.isLoggable(Level.FINE)) {
-				logger.log( Level.FINE, "requested method: " + methodName );
-			}
-			long primitivesFlag = 0;
-			if (version > 100) {
-				primitivesFlag = in.readLong();
-				if (logger.isLoggable(Level.FINER)) {
-					logger.log( Level.FINER, "primitivesFlag=" + primitivesFlag );
-				}
-			}
-			Object[] parameters = (Object[]) Serializer.deserialize(in);
-			Class[] signature = null;
-			int flag = 1;
-			boolean hasNullParameter = false;
-			if (parameters != null) {
-				signature = new Class[ parameters.length ];
-				for (int i = 0; i < parameters.length; i++) {
-					Object param = parameters[i];
-					// check for primitive wrapper:
-					//System.out.println("primitiveFlag=" + primitivesFlag + ", flag=" + flag + ", (primitiveFlag & flag)=" + (primitivesFlag & flag) );
-					if (param == null) {
-						signature[i] = null;
-						hasNullParameter = true;
-					} else if ( (primitivesFlag & flag) == 0) {
-						// this is a normal class, not a primitive:
-						signature[i] = param.getClass();
-					} else {
-						// this is a primitive
-						Class primitiveType = (Class) PRIMITIVES_TYPES_MAP.get( param.getClass() );
-						if (primitiveType == null) {
-							throw new RemoteException("Invalid primitives flag, please report this error to j2mepolish@enough.de.");
-						}
-						//System.out.println("using primitive type " + primitiveType.getName() );
-						signature[i] = primitiveType;
-					}
-					flag <<= 1;
-				}
-			}
-			Method method = lookupMethod( methodName, signature, hasNullParameter ); 
-				
-			Object returnValue = method.invoke(this.implementation, parameters); // for void methods null is returned...
-			out.writeInt( Remote.STATUS_OK );
-			Serializer.serialize(returnValue, out, useObfuscation);
-		} catch (SecurityException e) {
-			e.printStackTrace();
-			processRemoteException( e, out, useObfuscation );
-		} catch (NoSuchMethodException e) {
-			e.printStackTrace();
-			processRemoteException( e, out, useObfuscation );
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-			processRemoteException( e, out, useObfuscation );
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-			processRemoteException( e, out, useObfuscation );
-		} catch (InvocationTargetException e) {
-			System.out.println("InvocationTargetException, cause=" + e.getCause() );
-			processRemoteException( e, out, useObfuscation );
-		} catch (RemoteException e) {
-			e.printStackTrace();
-			processRemoteException( e, out, useObfuscation );
-		} catch (Exception e) {
-			e.printStackTrace();
-			processRemoteException( e, out, useObfuscation );
-		} finally {
-			if (in != null) {
-				try {
-					in.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			if (out != null) {
-				try {
-					out.flush();
-					out.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-
-	protected Method lookupMethod(String methodName, Class[] signature,
-			boolean hasNullParameter) throws SecurityException, NoSuchMethodException 
-	{
-		if (!hasNullParameter) {
-			try {
-				return this.implementation.getClass().getMethod( methodName, signature );
-			} catch (NoSuchMethodException e) {
-				if (signature == null) {
-					throw e;
-				}
-				// when there is a signature, this can happen when the method accepts generic types and the caller
-				// provides specific subclasses. Continue below...
-			}
-		}
-		Method[] methods = this.implementation.getClass().getMethods();
-		for (int i = 0; i < methods.length; i++) {
-			Method method = methods[i];
-			if (method.getName().equals(methodName)) {
-				Class[] parameterTypes = method.getParameterTypes();
-				if ( parameterTypes.length == signature.length) {
-					boolean foundMatch = true;
-					for (int j = 0; j < signature.length; j++) {
-						Class signatureClass = signature[j];
-						if (signatureClass == null) {
-							continue;
-						}
-						Class parameterClass = parameterTypes[j];
-						if (!parameterClass.isAssignableFrom(signatureClass)) {
-							foundMatch = false;
-							break;
-						}
-					}
-					if (foundMatch) {
-						return method;
-					}
-				}
-			}
-		}
-		throw new NoSuchMethodException("method not found: name=" + methodName  + ", signature=" + (signature == null ? null : Arrays.toString(signature)) );
-	}
-
-
-
-	/**
-	 * Processes an exception which is thrown by the method or while accessing the method.
-	 * @param e the exception
-	 * @param out the stream to which the exception is written as a result
-	 * @param useObfuscation true when obfuscation should be used
-	 * @throws IOException when data could not be written
-	 */
-	protected void processRemoteException(Throwable e, DataOutputStream out, boolean useObfuscation)
-	throws IOException
-	{
-		Throwable cause = e.getCause();
-		if (cause instanceof Externalizable) {
-			out.writeInt( Remote.STATUS_CHECKED_EXCEPTION );
-			Serializer.serialize( cause, out, useObfuscation );
-		} else if (cause != null) {
-			out.writeInt( Remote.STATUS_UNCHECKED_EXCEPTION );
-			out.writeUTF( cause.toString() );
-		} else {
-			out.writeInt( Remote.STATUS_UNCHECKED_EXCEPTION );
-			out.writeUTF( e.toString() );
-		}
-	}
 	
 	/**
 	 * Retrieves the session and creates it if necessary.

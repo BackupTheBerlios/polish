@@ -64,6 +64,7 @@ public class ExtensionManager {
 	
 	public static final String TYPE_PLUGIN = "plugin";
 	public static final String TYPE_PROPERTY_FUNCTION = "propertyfunction";
+	public static final String TYPE_LIBRARYPROCESSOR = "libraryprocessor";
 	public static final String TYPE_PREPROCESSOR = "preprocessor";
 	public static final String TYPE_PRECOMPILER = "precompiler";
 	public static final String TYPE_POSTCOMPILER = "postcompiler";

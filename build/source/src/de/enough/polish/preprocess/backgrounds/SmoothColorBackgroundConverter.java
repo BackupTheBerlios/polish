@@ -25,10 +25,9 @@
  */
 package de.enough.polish.preprocess.backgrounds;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import de.enough.polish.BuildException;
-
 import de.enough.polish.preprocess.css.BackgroundConverter;
 import de.enough.polish.preprocess.css.Style;
 import de.enough.polish.preprocess.css.StyleSheet;
@@ -39,7 +38,7 @@ import de.enough.polish.preprocess.css.StyleSheet;
  */
 public class SmoothColorBackgroundConverter extends BackgroundConverter {
 
-	protected String createNewStatement(HashMap map, Style stlye,
+	protected String createNewStatement(Map map, Style stlye,
 			StyleSheet styleSheet) throws BuildException {
 		String result = "new de.enough.polish.ui.backgrounds.SmoothColorBackground(" 
 			+ this.color + ", ";

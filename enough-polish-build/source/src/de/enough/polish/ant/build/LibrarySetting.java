@@ -96,7 +96,7 @@ public class LibrarySetting extends Setting {
 	 */
 	public void setFile(File file) {
 		if (file.isDirectory()) {
-			throw new BuildException("The <library>-file [" + file.getAbsolutePath() + "] is a directory and not a file. Please use the \"dir\" attribute instead in your build.xml.");
+			throw new BuildException("The <library> file [" + file.getAbsolutePath() + "] is a directory and not a file. Please use the \"dir\" attribute instead in your build.xml.");
 		}
 		if (this.files != null) {
 			throw new BuildException("You cannot specify both the \"file\" as well as the \"dir\" attribute or \"files\" attribute in one <library>-element. Please correct this in your build.xml.");
@@ -157,6 +157,7 @@ public class LibrarySetting extends Setting {
 	/**
 	 * Copies this libary to it's cache position
 	 * @param cacheBaseDir
+	 * @param id the ID of this library
 	 * @param environment the environment
 	 * @return true when any libraries have been copied actually
 	 */
@@ -257,19 +258,27 @@ public class LibrarySetting extends Setting {
 		this.libraryChanged = changed;
 		return changed;
 	}
+//	
+//	/**
+//	 * @param targetDir
+//	 */
+//	public void copyFromCache( File targetDir ) {
+//		//targetDir = new File( targetDir, "" + this.id );
+//		//System.out.println("<<<<copyFromCache: copying " + this.cacheDir + " to " + targetDir );
+//		try {
+//			FileUtil.copyDirectoryContents( this.cacheDir, targetDir, true );
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			throw new BuildException( "Unable to copy binary library: " + e.toString() );
+//		}
+//	}
 	
 	/**
-	 * @param targetDir
+	 * Retrieves the directory that contains the cache.
+	 * @return the cache directory or null if copryToCache has not been called before.
 	 */
-	public void copyFromCache( File targetDir ) {
-		//targetDir = new File( targetDir, "" + this.id );
-		//System.out.println("<<<<copyFromCache: copying " + this.cacheDir + " to " + targetDir );
-		try {
-			FileUtil.copyDirectoryContents( this.cacheDir, targetDir, true );
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new BuildException( "Unable to copy binary library: " + e.toString() );
-		}
+	public File getCacheDirectory() {
+		return this.cacheDir;
 	}
 	
 	/**
@@ -330,6 +339,18 @@ public class LibrarySetting extends Setting {
 	 */
 	public boolean isValid() {
 		return this.files != null || this.isDynamic;
+	}
+	
+	public String toString() {
+		if (this.files == null) {
+			return "(no files in library)";
+		}
+		StringBuffer buffer = new StringBuffer();
+		for (int i = 0; i < this.files.length; i++)
+		{
+			buffer.append( this.files[i].getPath() ).append(", ");
+		}
+		return buffer.toString();
 	}
 }
 

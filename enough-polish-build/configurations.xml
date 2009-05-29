@@ -62,12 +62,19 @@
 	</configuration>
 
 	<configuration>
-		<identifier>android</identifier>
-		<features>android</features>
+		<identifier>Android/1.1</identifier>
+		<features>android, cldc, cldc11, cldc1.1, hasFloatingPoint</features>
 		<description>android</description>
-		<capability name="build.BootClassPath" value="android.jar" />
+		<capability name="build.BootClassPath" value="android-1.1.jar" />
 		<capability name="SupportFloatingPoint" value="true" />
 	</configuration>
 
+	<configuration>
+		<identifier>Android/1.5</identifier>
+		<features>android, cldc, cldc11, cldc1.1, hasFloatingPoint</features>
+		<description>android</description>
+		<capability name="build.BootClassPath" value="android-1.5.jar" />
+		<capability name="SupportFloatingPoint" value="true" />
+	</configuration>
 	
 </configurations>

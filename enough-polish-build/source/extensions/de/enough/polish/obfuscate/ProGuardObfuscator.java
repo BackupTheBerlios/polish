@@ -41,6 +41,7 @@ import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.ExtensionDefinition;
 import de.enough.polish.Variable;
+import de.enough.polish.preverify.Preverifier;
 import de.enough.polish.util.AbbreviationsGenerator;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.OrderedMultipleEntriesMap;
@@ -73,6 +74,7 @@ implements OutputFilter
 	
 	private Map furtherParameters;
 	private boolean isVerbose;
+	private boolean doPreverify;
 
 	/**
 	 * Creates a new pro guard obfuscator.
@@ -219,6 +221,10 @@ implements OutputFilter
 			}
 			params.put( "-defaultpackage", "\"\"" );
 			params.put( "-dontusemixedcaseclassnames", "" );			
+		}
+		if (this.doPreverify) {
+			params.put( "-microedition", "" );
+			env.addVariable(Preverifier.BUILDCONTROL_PREVERIFIER_ENABLED, "false");
 		}
 		
 		ArrayList argsList = new ArrayList();

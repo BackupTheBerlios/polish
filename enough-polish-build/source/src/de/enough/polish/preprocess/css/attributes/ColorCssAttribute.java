@@ -30,7 +30,9 @@ import org.jdom.Element;
 import de.enough.polish.BuildException;
 import de.enough.polish.Environment;
 import de.enough.polish.preprocess.css.ColorConverter;
+import de.enough.polish.preprocess.css.CssAnimationSetting;
 import de.enough.polish.preprocess.css.CssAttribute;
+import de.enough.polish.preprocess.css.Style;
 import de.enough.polish.ui.Color;
 
 /**
@@ -144,5 +146,15 @@ public class ColorCssAttribute extends CssAttribute {
 	
 		
 
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.preprocess.css.CssAttribute#generateAnimationSourceCode(de.enough.polish.preprocess.css.CssAnimationSetting, de.enough.polish.preprocess.css.Style, de.enough.polish.Environment)
+	 */
+	public String generateAnimationSourceCode(CssAnimationSetting cssAnimation, Style style, Environment environment)
+	{
+		return generateAnimationSourceCode("ColorCssAnimation", cssAnimation, style, environment);
+	}
+	
+	
 
 }

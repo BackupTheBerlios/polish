@@ -60,7 +60,6 @@ public class MeaFinalizer extends Finalizer{
         private File jadFile;
         private File jarFile;
         private Device device;
-        private Locale locale;
         private String croppedJadFilename;
         private String croppedJarFilename;
 		private String supportedLocales;
@@ -132,6 +131,10 @@ public class MeaFinalizer extends Finalizer{
     }
 
     public void finalize(File distFile, File jadFile, File jarFile, Device device, Locale locale, Environment env) {
+    	if( ! jarFile.canRead()) {
+    		// In case we are called for an Android phone which do not have a .jar file.
+    		return;
+    	}
         String distFilePath = distFile.getAbsolutePath();
         String croppedJadFilePath = jadFile.getAbsolutePath().substring( distFilePath.length() + 1 ).replace('\\', '/');// replaceFirst(distFilePath+"/","");
         String croppedJarFilePath = jarFile.getAbsolutePath().substring( distFilePath.length() + 1 ).replace('\\', '/');// replaceFirst(distFilePath+"/","");

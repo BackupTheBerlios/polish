@@ -1,7 +1,5 @@
-bin
-doc
-build
-dist
-resources
 tmp
-installer
+dist
+doc
+bin
+build

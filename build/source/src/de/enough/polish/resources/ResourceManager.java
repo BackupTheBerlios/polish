@@ -68,7 +68,7 @@ import de.enough.polish.util.StringUtil;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class ResourceManager {
-	private final static String[] DEFAULT_EXCLUDES = new String[]{ "polish.css", "*~", "*.bak", "Thumbs.db", ".DS_Store", "messages_*" };
+	private final static String[] DEFAULT_EXCLUDES = new String[]{ "polish.css", "*~", "*.bak", "Thumbs.db", ".DS_Store", "messages_*",".svn","CVS" };
 	private final ResourceSetting resourceSetting;
 	private final BooleanEvaluator booleanEvaluator;
 	private final Map resourceDirsByDevice;
@@ -313,6 +313,7 @@ public class ResourceManager {
 			if (files == null) {
 				throw new BuildException("Unable to add files from resource directory " + dir.getAbsolutePath() + ": exists=" + dir.exists() + ", is a directory=" + dir.isDirectory() );				
 			}
+			//System.out.println("adding " + files.length + " files from " + dir.getPath() );
 			addFiles(files, resourcesByName);
 		}
 		// also load resources from the filesets:
@@ -328,7 +329,7 @@ public class ResourceManager {
 			}
 			String[] fileNames = set.getDirectoryScanner( (Project)this.environment.get("ant.project")).getIncludedFiles();
 			//String[] fileNames = FileUtil.filterDirectory(dir, null, true );
-			//System.out.println("Adding resources from " + dir.getPath() );
+			//System.out.println("adding " + fileNames.length + " files from <fileset> " + dir.getPath() );
 			addFiles( dir, fileNames, resourcesByName );
 		}
 	
@@ -343,6 +344,7 @@ public class ResourceManager {
 	 * @param resourcesByName a map containing a file-reference for each found resource.
 	 */
 	private File[] filterResources(Map resourcesByName) {
+		//System.out.println("filter " + resourcesByName.size() + " resources");
 		String[] fileNames = (String[]) resourcesByName.keySet().toArray( new String[ resourcesByName.size()] );
 		String[] filteredNames = this.resourceFilter.filter(fileNames);
 		File[] filteredFiles = new File[ filteredNames.length ];

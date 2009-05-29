@@ -32,7 +32,7 @@
 		<type names="bool, boolean" class="de.enough.polish.preprocess.css.attributes.BooleanCssAttribute" />
 		<type names="integer, int" class="de.enough.polish.preprocess.css.attributes.IntegerCssAttribute" />
 		<type  name="percent" class="de.enough.polish.preprocess.css.attributes.PercentCssAttribute" />
-		<type  name="percentorabsolute" class="de.enough.polish.preprocess.css.attributes.PercentOrAbsoluteCssAttribute" />
+		<type  name="dimension" class="de.enough.polish.preprocess.css.attributes.DimensionCssAttribute" />
 		<type names="resourceurl,resource-url" class="de.enough.polish.preprocess.css.attributes.ResourceUrlCssAttribute" />
 		<type names="imageurl,image-url" class="de.enough.polish.preprocess.css.attributes.ImageUrlCssAttribute" />
 		<type names="imageurls,image-urls" class="de.enough.polish.preprocess.css.attributes.ImageUrlsCssAttribute" />
@@ -59,6 +59,7 @@
 		requiresMapping="true"
 		group="base"
 		default="left | top"
+		since="1.0"
 		>
 		<mapping from="left"               to="Item.LAYOUT_LEFT"     excludes="right, horizontal-center, h-center, hcenter, center" />
 		<mapping from="horizontal-center"  to="Item.LAYOUT_CENTER"   exludes="left, right" />
@@ -101,6 +102,7 @@
 		requiresMapping="true"
 		default="left | top"
 		group="base"
+		since="1.0"
 		>
 		<mapping from="left"               to="Graphics.LEFT"      excludes="right, horizontal-center, h-center, hcenter, center" />
 		<mapping from="horizontal-center"  to="Graphics.HCENTER"   exludes="left, right" />
@@ -120,6 +122,7 @@
 		type="parameterized"
 		appliesTo="Item, Screen"
 		description="The background of an item or screen. The default background for items is &quot;none&quot;, the default background for screens is a simple white background."
+		since="1.0"
 	>
 		<mapping from="simple"              to="de.enough.polish.ui.backgrounds.SimpleBackground"   converter="de.enough.polish.preprocess.backgrounds.SimpleBackgroundConverter">
 			<param name="color" type="color" primitive="true" default="white" />
@@ -144,8 +147,20 @@
 			<param name="color" type="color" primitive="true" default="white"  description="The color of the background or transparent."  />
 			<param name="image" type="image-url" default="none" description="URL of the image that might require scaling." />
 			<param name="anchor" type="anchor" primitive="true" default="hcenter | vcenter"  description="Position of the image within the background." />
-			<param name="x-offset" type="integer" primitive="true" default="0" description="Horizontal adjustment in pixels. A negative value moves the image to the left." />
-			<param name="y-offset" type="integer" primitive="true" default="0" description="Vertical adjustment in pixels. A negative value moves the image to the top." />
+			<param name="x-offset" type="dimension" primitive="true" default="0px" description="Horizontal adjustment in pixels. A negative value moves the image to the left." />
+			<param name="y-offset" type="dimension" primitive="true" default="0px" description="Vertical adjustment in pixels. A negative value moves the image to the top." />
+		</mapping>
+		<mapping from="tiled-image"               to="de.enough.polish.ui.backgrounds.TiledImageBackground"  >
+			<param name="color" type="color" primitive="true" default="white"  description="The color of the background or transparent."  />
+			<param name="image" type="image-url" default="none" description="URL of the image that might require scaling." />
+			<param name="repeat" type="integer" primitive="true" default="repeat" values="none, repeat, repeat-x, repeat-y" description="The repeat pattern for tiles." />
+			<param name="anchor" type="anchor" primitive="true" default="hcenter | vcenter"  description="Position of the image within the background." />
+			<param name="padding" type="integer" primitive="true" hidden="true" default="0" description="The padding between tiles, can be negative." />
+			<param name="padding-horizontal" type="integer" primitive="true" default="ref:padding" description="The horizontal padding between tiles, can be negative." />
+			<param name="padding-vertical" type="integer" primitive="true" default="ref:padding" description="The vertical padding between tiles, can be negative." />
+			<param name="overlap" type="boolean" primitive="true" default="false" description="Allows to overlap the tiles when the tiles don't fit in the background area exactly." />				
+			<param name="x-offset" type="dimension" primitive="true" default="0px" description="Horizontal adjustment in pixels. A negative value moves the image to the left." />
+			<param name="y-offset" type="dimension" primitive="true" default="0px" description="Vertical adjustment in pixels. A negative value moves the image to the top." />
 		</mapping>
 		<mapping from="scaling-image"               to="de.enough.polish.ui.backgrounds.ScalingImageBackground"  >
 			<param name="color" type="color" primitive="true" default="white" description="The color of the background or transparent." />
@@ -166,42 +181,58 @@
 		<mapping from="roundrect"           converter="de.enough.polish.preprocess.backgrounds.RoundRectBackgroundConverter" />
 		<mapping from="round-rect"          to="de.enough.polish.ui.backgrounds.RoundRectBackground" converter="de.enough.polish.preprocess.backgrounds.RoundRectBackgroundConverter" >
 			<param name="color" type="color" primitive="true" default="white" description="Color of the background." />
-			<param name="arc-width" type="integer" primitive="true" default="4" description="The width of the arc of the background corners." />
-			<param name="arc-height" type="integer" primitive="true" default="4" description="The height of the arc of the background corners." />
+			<param name="arc" type="integer" primitive="true" default="8" hidden="true" description="Use arc for defining the same arc-width and arc-height" />
+			<param name="arc-width" type="integer" primitive="true" default="ref:arc" description="The width of the arc of the background corners." />
+			<param name="arc-height" type="integer" primitive="true" default="ref:arc" description="The height of the arc of the background corners." />
 		</mapping>
+		<!-- 
 		<mapping from="round-rect-bordered"          to="de.enough.polish.ui.backgrounds.BorderedRoundRectBackground" converter="de.enough.polish.preprocess.backgrounds.RoundRectBackgroundConverter" >
+		 -->
+		<mapping from="round-rect-bordered"          to="de.enough.polish.ui.backgrounds.BorderedRoundRectBackground"  >
 			<param name="color" type="color" primitive="true" default="white" />
-			<param name="arc-width" type="integer" primitive="true" default="4" />
-			<param name="arc-height" type="integer" primitive="true" default="4" />			
+			<param name="arc" type="integer" primitive="true" default="8" hidden="true" description="The arc of the background corners."/>
+			<param name="arc-width" type="integer" primitive="true" default="ref:arc" description="The width of the arc of the background corners."/>
+			<param name="arc-height" type="integer" primitive="true" default="ref:arc" description="The height of the arc of the background corners."/>
 			<param name="border-color" type="color" primitive="true" default="black" />
 			<param name="border-width" type="integer" primitive="true" default="1" />
 		</mapping>
 		<mapping from="round-rect-translucent"       to="de.enough.polish.ui.backgrounds.TranslucentRoundRectBackground" converter="de.enough.polish.preprocess.backgrounds.RoundRectBackgroundConverter" >
 			<param name="color" type="color" primitive="true" translucent="true" default="#8fff" />
-			<param name="arc" type="integer" primitive="true" default="8" hidden="true" />
-			<param name="arc-width" type="integer" primitive="true" default="arc" />
-			<param name="arc-height" type="integer" primitive="true" default="arc" />
+			<param name="arc" type="integer" primitive="true" default="8" hidden="true" description="The arc of the background corners."/>
+			<param name="arc-width" type="integer" primitive="true" default="ref:arc" description="The width of the arc of the background corners."/>
+			<param name="arc-height" type="integer" primitive="true" default="ref:arc" description="The height of the arc of the background corners."/>
 		</mapping>
 		<mapping from="round-rect-cornered"          to="de.enough.polish.ui.backgrounds.RoundRectCorneredBackground" >
 			<param name="color" type="color" primitive="true" default="white" description="Color of the background." />
 			<param name="arc" type="integer" primitive="true" default="8" hidden="true" description="Use arc for defining the same arc-width and arc-height" />
 			<param name="arc-width" type="integer" primitive="true" default="ref:arc" description="The width of the arc of the background corners." />
 			<param name="arc-height" type="integer" primitive="true" default="ref:arc" description="The height of the arc of the background corners." />
-			<param name="corners" type="map" default="all"
-				  	values="all, left-top, top-left, right-top, top-right, left-bottom, bottom-left, right-bottom, bottom-right"
+			<param name="straight-corners" type="map" default="no"
+					primitive="true"
+				  	values="no, all, left-top, top-left, tl, lt,  right-top, top-right, rt, tr, left-bottom, bottom-left, lb, bl, right-bottom, bottom-right, rb, br"
 					allowsCombinations="true"
 					requiresMapping="true"
 					isCaseSensitive="false"
+					description="The corners that should not be rounded."
 			>
+				<mapping from="no"           to="de.enough.polish.ui.backgrounds.RoundRectCorneredBackground.CORNER_NONE"/>
 				<mapping from="all"          to="de.enough.polish.ui.backgrounds.RoundRectCorneredBackground.CORNER_ALL"/>
 				<mapping from="left-top"     to="de.enough.polish.ui.backgrounds.RoundRectCorneredBackground.CORNER_LEFT_TOP"/>
 				<mapping from="top-left"     to="de.enough.polish.ui.backgrounds.RoundRectCorneredBackground.CORNER_LEFT_TOP"/>
+				<mapping from="tl"           to="de.enough.polish.ui.backgrounds.RoundRectCorneredBackground.CORNER_LEFT_TOP"/>
+				<mapping from="lt"           to="de.enough.polish.ui.backgrounds.RoundRectCorneredBackground.CORNER_LEFT_TOP"/>
 				<mapping from="right-top"    to="de.enough.polish.ui.backgrounds.RoundRectCorneredBackground.CORNER_RIGHT_TOP"/>
 				<mapping from="top-right"    to="de.enough.polish.ui.backgrounds.RoundRectCorneredBackground.CORNER_RIGHT_TOP"/>
+				<mapping from="rt"           to="de.enough.polish.ui.backgrounds.RoundRectCorneredBackground.CORNER_RIGHT_TOP"/>
+				<mapping from="tr"           to="de.enough.polish.ui.backgrounds.RoundRectCorneredBackground.CORNER_RIGHT_TOP"/>
 				<mapping from="left-bottom"  to="de.enough.polish.ui.backgrounds.RoundRectCorneredBackground.CORNER_LEFT_BOTTOM"/>
 				<mapping from="bottom-left"  to="de.enough.polish.ui.backgrounds.RoundRectCorneredBackground.CORNER_LEFT_BOTTOM"/>
+				<mapping from="lb"           to="de.enough.polish.ui.backgrounds.RoundRectCorneredBackground.CORNER_LEFT_BOTTOM"/>
+				<mapping from="bl"           to="de.enough.polish.ui.backgrounds.RoundRectCorneredBackground.CORNER_LEFT_BOTTOM"/>
 				<mapping from="right-bottom" to="de.enough.polish.ui.backgrounds.RoundRectCorneredBackground.CORNER_RIGHT_BOTTOM"/>
 				<mapping from="bottom-right" to="de.enough.polish.ui.backgrounds.RoundRectCorneredBackground.CORNER_RIGHT_BOTTOM"/>
+				<mapping from="rb"           to="de.enough.polish.ui.backgrounds.RoundRectCorneredBackground.CORNER_RIGHT_BOTTOM"/>
+				<mapping from="br"           to="de.enough.polish.ui.backgrounds.RoundRectCorneredBackground.CORNER_RIGHT_BOTTOM"/>
 			</param>		
 		</mapping>
 		<mapping from="pulsating"           to="de.enough.polish.ui.backgrounds.PulsatingBackground" converter="de.enough.polish.preprocess.backgrounds.PulsatingBackgroundConverter" >
@@ -217,8 +248,9 @@
 			<param name="steps" type="integer" primitive="true" default="8" description="The number of animation phases." />
 			<param name="repeat" type="boolean" primitive="true" default="true" description="Indicates if the animation should start again." />
 			<param name="back-and-forth" type="boolean" primitive="true" default="true" description="Set to true if the color should move back from the end-color to the start-color when the animation reaches the end-color." />
-			<param name="arc-width" type="integer" primitive="true" default="4" description="The width of the arc of the background corners." />
-			<param name="arc-height" type="integer" primitive="true" default="4" description="The height of the arc of the background corners." />
+			<param name="arc" type="integer" primitive="true" default="8" hidden="true" description="The arc of the background corners."/>
+			<param name="arc-width" type="integer" primitive="true" default="ref:arc" description="The width of the arc of the background corners."/>
+			<param name="arc-height" type="integer" primitive="true" default="ref:arc" description="The height of the arc of the background corners."/>
 		</mapping>
 		<mapping from="pulsating-circle"    to="de.enough.polish.ui.backgrounds.PulsatingCircleBackground" >
 			<param name="color" type="color" primitive="true" default="white" description="Color of the background"/>
@@ -229,14 +261,14 @@
 		<mapping from="pulsating-circles"   to="de.enough.polish.ui.backgrounds.PulsatingCirclesBackground" >
 			<param name="first-color" type="color" primitive="true" default="white" description="First circle color." />
 			<param name="second-color" type="color" primitive="true" default="gray" description="Second circle color." />
-			<param name="min-diameter" type="integer" primitive="true" default="8" description="Minimum diameter of the background in pixels." />
-			<param name="max-diameter" type="integer" primitive="true" default="40" description="Maximum diameter of the background in pixels." />
+			<param name="min-diameter" type="dimension" primitive="false" default="10%" description="Minimum diameter of the background in percent or pixels." />
+			<param name="max-diameter" type="dimension" primitive="false" default="100%" description="Maximum diameter of the background in percent or pixels." />
 			<param name="number-of-circles" type="integer" primitive="true" default="3" description="Number of circles." />
 			<param name="step" type="integer" primitive="true" default="3" description="Number of pixels by which the diameter of the circles is increased in each animation phase." />
 		</mapping>
 		<mapping from="circle"              to="de.enough.polish.ui.backgrounds.CircleBackground" >
 			<param name="color" type="color" primitive="true" default="white" description="Color of the background." />
-			<param name="diameter" type="percentorabsolute" primitive="true" default="-1" description="Diameter of the background - use -1 to adjust it to the item's size."/>			
+			<param name="diameter" type="dimension" primitive="true" default="-1" description="Diameter of the background - use -1 to adjust it to the item's size."/>			
 			<param name="anchor" type="anchor" primitive="true" default="hcenter | vcenter" description="Position of the circle within the background." />
 			<param name="x-offset" type="integer" primitive="true" default="0" description="Horizontal adjustment in pixels. A negative value moves the circle to the left." />
 			<param name="y-offset" type="integer" primitive="true" default="0" description="Vertical adjustment in pixels. A negative value moves the circle to the top." />
@@ -250,21 +282,24 @@
 			<param name="color" type="color" primitive="true" default="white"  description="Color of the background." />
 			<param name="start-height" type="integer" primitive="true" default="1" description="Starting height of the background."/>			
 			<param name="speed" type="integer" primitive="true" default="-1" description="Constant speed of the animation - use -1 to use an acceleration mode."/>			
-			<param name="arc-width" type="integer" primitive="true" default="4" description="The width of the arc of the background corners." />
-			<param name="arc-height" type="integer" primitive="true" default="4" description="The height of the arc of the background corners." />
+			<param name="arc" type="integer" primitive="true" default="8" hidden="true" description="The arc of the background corners."/>
+			<param name="arc-width" type="integer" primitive="true" default="ref:arc" description="The width of the arc of the background corners."/>
+			<param name="arc-height" type="integer" primitive="true" default="ref:arc" description="The height of the arc of the background corners."/>
 			<param name="border-color" type="color" primitive="true" default="black" description="Color of the border." />
 			<param name="border-width" type="integer" primitive="true" default="0" description="Width of the border." />
 		</mapping>
 		<mapping from="opening-round-rect"  converter="de.enough.polish.preprocess.backgrounds.RoundRectOpeningBackgroundConverter" />
 		<mapping from="round-tab"           to="de.enough.polish.ui.backgrounds.RoundTabBackground" converter="de.enough.polish.preprocess.backgrounds.RoundTabBackgroundConverter" >
 			<param name="color" type="color" primitive="true" default="white" description="Color of the background." />
-			<param name="arc-width" type="integer" primitive="true" default="4" description="The width of the arc of the background corners." />
-			<param name="arc-height" type="integer" primitive="true" default="4" description="The height of the arc of the background corners." />
+			<param name="arc" type="integer" primitive="true" default="8" hidden="true" description="The arc of the background corners."/>
+			<param name="arc-width" type="integer" primitive="true" default="ref:arc" description="The width of the arc of the background corners."/>
+			<param name="arc-height" type="integer" primitive="true" default="ref:arc" description="The height of the arc of the background corners."/>
 		</mapping>
 		<mapping from="round-tab-bordered"  to="de.enough.polish.ui.backgrounds.BorderedRoundTabBackground" converter="de.enough.polish.preprocess.backgrounds.RoundTabBackgroundConverter" >
 			<param name="color" type="color" primitive="true" default="white" description="Color of the background." />
-			<param name="arc-width" type="integer" primitive="true" default="4" description="The width of the arc of the background corners." />
-			<param name="arc-height" type="integer" primitive="true" default="4" description="The height of the arc of the background corners." />
+			<param name="arc" type="integer" primitive="true" default="8" hidden="true" description="The arc of the background corners."/>
+			<param name="arc-width" type="integer" primitive="true" default="ref:arc" description="The width of the arc of the background corners."/>
+			<param name="arc-height" type="integer" primitive="true" default="ref:arc" description="The height of the arc of the background corners."/>
 			<param name="border-color" type="color" primitive="true" default="black" description="Color of the border." />
 			<param name="border-width" type="integer" primitive="true" default="0" description="Width of the border." />
 		</mapping>
@@ -297,8 +332,9 @@
 		</mapping>
 		<mapping from="web20"          		to="de.enough.polish.ui.backgrounds.Web20RoundRectBackground" converter="de.enough.polish.preprocess.backgrounds.Web20RoundRectBackgroundConverter" >
 			<param name="color" type="color" primitive="true" default="white" description="Color of the background." />
-			<param name="arc-width" type="integer" primitive="true" default="4" description="The width of the arc of the background corners." />
-			<param name="arc-height" type="integer" primitive="true" default="4" description="The height of the arc of the background corners." />
+			<param name="arc" type="integer" primitive="true" default="8" hidden="true" description="The arc of the background corners."/>
+			<param name="arc-width" type="integer" primitive="true" default="ref:arc" description="The width of the arc of the background corners."/>
+			<param name="arc-height" type="integer" primitive="true" default="ref:arc" description="The height of the arc of the background corners."/>
 			<param name="circle-color" type="color" primitive="true" default="silver" description="Color of the inner ellipse shaped background."/>
 			<param name="circle-anchor" type="anchor" primitive="true"  default="top" description="Position of the inner ellipse background"/>			
 			<param name="padding-left" type="integer" primitive="true" default="0" description="Padding between outer and inner background." />
@@ -306,8 +342,7 @@
 			<param name="padding-top" type="integer" primitive="true" default="0" description="Padding between outer and inner background." />	
 			<param name="padding-bottom" type="integer" primitive="true" default="0" description="Padding between outer and inner background." />
 		</mapping>
-		<mapping from="stripes"          	converter="de.enough.polish.preprocess.backgrounds.HorizontalStripesBackgroundConverter" />
-		<mapping from="horizontal-stripes"	to="de.enough.polish.ui.backgrounds.HorizontalStripesBackground" converter="de.enough.polish.preprocess.backgrounds.HorizontalStripesBackgroundConverter" >
+		<mapping from="horizontal-stripes"	to="de.enough.polish.ui.backgrounds.HorizontalStripesBackground" >
 			<param name="first-top-color" type="color" primitive="true" default="#ff6" />
 			<param name="first-bottom-color" type="color" primitive="true" default="#008000" />
 			<param name="second-top-color" type="color" primitive="true" default="white" />
@@ -318,32 +353,30 @@
 			<param name="top-color" type="color" primitive="true" default="white" />
 			<param name="bottom-color" type="color" primitive="true" default="gray" />
 			<param name="stroke" type="integer" primitive="true" default="solid" values="solid,dotted" />
-			<param name="start" type="integer" primitive="true" default="0" />
-			<param name="end" type="integer" primitive="true" default="100" />
-			<param name="is-percent" type="boolean" primitive="true" default="true" />
+			<param name="start" type="dimension" primitive="false" default="0%" />
+			<param name="end" type="dimension" primitive="false" default="100%" />
 		</mapping>
 		<mapping from="horizontal-gradient"   to="de.enough.polish.ui.backgrounds.GradientHorizontalBackground" converter="de.enough.polish.preprocess.backgrounds.GradientHorizontalBackgroundConverter" >
 			<param name="left-color" type="color" primitive="true" default="white" description="Color on the left side of the gradient." />
 			<param name="right-color" type="color" primitive="true" default="gray"  description="Color on the right side of the gradient."/>
 			<param name="stroke" type="integer" primitive="true" default="solid" values="solid,dotted" description="The line stroke style, either solid or dotted."/>
-			<param name="start" type="integer" primitive="true" default="0" description="The start position of the gradient on the left side."/>
-			<param name="end" type="integer" primitive="true" default="100" description="The end position of the gradient on the right side." />
-			<param name="is-percent" type="boolean" primitive="true" default="true" description="Set to true when the start/end positions should be interpretated as percentage values." />
+			<param name="start" type="dimension" primitive="false" default="0%" description="The start position of the gradient on the left side."/>
+			<param name="end" type="dimension" primitive="false" default="100%" description="The end position of the gradient on the right side." />
 		</mapping>
 		<mapping from="radial-gradient"   to="de.enough.polish.ui.backgrounds.GradientRadialBackground" >
 			<param name="inner-color" type="color" primitive="true" default="white" description="Color on the left side of the gradient." />
 			<param name="outer-color" type="color" primitive="true" default="gray"  description="Color on the right side of the gradient."/>
-			<param name="start" type="percent" primitive="true" default="0" description="The start position in percent of the gradient within the center."/>
-			<param name="end" type="percent" primitive="true" default="100" description="The end position in percent of the gradient on the outer sides." />
-			<param name="center-x" type="percent" primitive="true" default="0" description="The horizontal center of the circles in percent. 0 is the center, -100 is the very left, +100 the very right of the surrounding square."/>
-			<param name="center-y" type="percent" primitive="true" default="0" description="The vertical center of the circles in percent. 0 is the center, -100 is the very top +100 the very bottom of the surrounding square."/>
+			<param name="start" type="dimension" primitive="false" default="0%" description="The start position in percent or pixel of the gradient within the center."/>
+			<param name="end" type="dimension" primitive="false" default="100%" description="The end position in percent or pixel of the gradient on the outer sides." />
+			<param name="center-x" type="dimension" primitive="false" default="0%" description="The horizontal center of the circles in percent or pixel. 0% is the center, -100% is the very left, +100% the very right of the surrounding square."/>
+			<param name="center-y" type="dimension" primitive="false" default="0%" description="The vertical center of the circles in percent or pixel. 0% is the center, -100% is the very top +100% the very bottom of the surrounding square."/>
 		</mapping>
 		<mapping from="partial-gradient"   to="de.enough.polish.ui.backgrounds.PartialGradientBackground" >
 			<param name="top-color" type="color" primitive="true" default="white" />
 			<param name="bottom-color" type="color" primitive="true" default="gray" />
 			<param name="stroke" type="integer" primitive="true" default="solid" values="solid,dotted" />
-			<param name="start" type="percent" primitive="true" default="30" />
-			<param name="end" type="percent" primitive="true" default="70" />
+			<param name="start" type="dimension" primitive="false" default="30%" />
+			<param name="end" type="dimension" primitive="false" default="70%" />
 		</mapping>
 		<mapping from="partial"   to="de.enough.polish.ui.backgrounds.PartialSimpleBackground" >
 			<param name="color" type="color" primitive="true" default="white" />
@@ -383,8 +416,9 @@
 			<param name="start" type="integer" primitive="true" default="0" />
 			<param name="end" type="integer" primitive="true" default="100" />
 			<param name="is-percent" type="boolean" primitive="true" default="true" />
-			<param name="arc-width" type="integer" primitive="true" default="4" />
-			<param name="arc-height" type="integer" primitive="true" default="4" />			
+			<param name="arc" type="integer" primitive="true" default="8" hidden="true" description="The arc of the background corners."/>
+			<param name="arc-width" type="integer" primitive="true" default="ref:arc" description="The width of the arc of the background corners."/>
+			<param name="arc-height" type="integer" primitive="true" default="ref:arc" description="The height of the arc of the background corners."/>
 			<param name="border-color" type="color" primitive="true" default="black" />
 			<param name="border-width" type="integer" primitive="true" default="1" />
 		</mapping>
@@ -425,36 +459,40 @@
 		<mapping from="split"    to="de.enough.polish.ui.backgrounds.VerticalSplitBackground"  >
 			<param name="top-color" type="color" primitive="true" default="white" description="Top color of the background." />
 			<param name="bottom-color" type="color" primitive="true" default="gray" description="Bottom color of the background." />
-			<param name="split-pos" type="percentorabsolute" primitive="true" default="50%" description="The split position either in percent (0% - 100%) or in pixels." />
+			<param name="split-pos" type="dimension" primitive="true" default="50%" description="The split position either in percent (0% - 100%) or in pixels." />
 		</mapping>
 		<mapping from="horizontal-split"    to="de.enough.polish.ui.backgrounds.HorizontalSplitBackground"  >
 			<param name="left-color" type="color" primitive="true" default="white" description="Left color of the background." />
 			<param name="right-color" type="color" primitive="true" default="gray" description="Right color of the background." />
-			<param name="split-pos" type="percentorabsolute" primitive="true" default="50%" description="The split position either in percent (1% - 100%) or in pixels. 0 has a special meeting - it results in a rectangular split area." />
+			<param name="split-pos" type="dimension" primitive="true" default="50%" description="The split position either in percent (1% - 100%) or in pixels. 0 has a special meeting - it results in a rectangular split area." />
 			<param name="split-side" type="integer" primitive="true" values="left,right" default="left" description="The side of the split position - usually makes only sense when using an absolute pixel value, e.g. when you want to have a right side of 40 pixels." />
 		</mapping>
-		<mapping from="round-rect-split"    to="de.enough.polish.ui.backgrounds.VerticalSplitRoundRectBackground"  >
+		<mapping from="round-rect-split" to="ref:vertical-round-rect-split" />
+		<mapping from="vertical-round-rect-split"    to="de.enough.polish.ui.backgrounds.VerticalSplitRoundRectBackground"  >
 			<param name="top-color" type="color" primitive="true" default="white" description="Top color of the background." />
 			<param name="bottom-color" type="color" primitive="true" default="gray" description="Bottom color of the background." />
-			<param name="split-pos" type="percentorabsolute" primitive="true" default="50%" description="The split position either in percent (1% - 100%) or in pixels." />
-			<param name="arc-width" type="integer" primitive="true" default="4" description="The width of the arc of the background corners." />
-			<param name="arc-height" type="integer" primitive="true" default="4" description="The height of the arc of the background corners." />
+			<param name="split-pos" type="dimension" primitive="true" default="50%" description="The split position either in percent (1% - 100%) or in pixels." />
+			<param name="arc" type="integer" hidden="true" default="4" description="The width and height of the arc of the background corners." />
+			<param name="arc-width" type="integer" primitive="true" default="ref:arc" description="The width of the arc of the background corners." />
+			<param name="arc-height" type="integer" primitive="true" default="ref:arc" description="The height of the arc of the background corners." />
 		</mapping>
 		<mapping from="horizontal-round-rect-split"    to="de.enough.polish.ui.backgrounds.HorizontalSplitRoundRectBackground"  >
 			<param name="left-color" type="color" primitive="true" default="white" description="Left color of the background." />
 			<param name="right-color" type="color" primitive="true" default="gray" description="Right color of the background." />
-			<param name="split-pos" type="percentorabsolute" primitive="true" default="50%" description="The split position either in percent (1% - 100%) or in pixels. 0 has a special meeting - it results in a rectangular split area." />
+			<param name="split-pos" type="dimension" primitive="true" default="50%" description="The split position either in percent (1% - 100%) or in pixels. 0 has a special meeting - it results in a rectangular split area." />
 			<param name="split-side" type="integer" primitive="true" values="left,right" default="left" description="The side of the split position - usually makes only sense when using an absolute pixel value, e.g. when you want to have a right side of 40 pixels." />
-			<param name="arc-width" type="integer" primitive="true" default="4" description="The width of the arc of the background corners." />
-			<param name="arc-height" type="integer" primitive="true" default="4" description="The height of the arc of the background corners." />
+			<param name="arc" type="integer" hidden="true" default="4" description="The width and height of the arc of the background corners." />
+			<param name="arc-width" type="integer" primitive="true" default="ref:arc" description="The width of the arc of the background corners." />
+			<param name="arc-height" type="integer" primitive="true" default="ref:arc" description="The height of the arc of the background corners." />
 		</mapping>
 		<mapping from="round-rect-horizontal-split"    to="de.enough.polish.ui.backgrounds.HorizontalSplitRoundRectBackground"  >
 			<param name="left-color" type="color" primitive="true" default="white" description="Left color of the background." />
 			<param name="right-color" type="color" primitive="true" default="gray" description="Right color of the background." />
-			<param name="split-pos" type="percentorabsolute" primitive="true" default="50%" description="The split position either in percent (1% - 100%) or in pixels. 0 has a special meeting - it results in a rectangular split area." />
+			<param name="split-pos" type="dimension" primitive="true" default="50%" description="The split position either in percent (1% - 100%) or in pixels. 0 has a special meeting - it results in a rectangular split area." />
 			<param name="split-side" type="integer" primitive="true" values="left,right" default="left" description="The side of the split position - usually makes only sense when using an absolute pixel value, e.g. when you want to have a right side of 40 pixels." />
-			<param name="arc-width" type="integer" primitive="true" default="4" description="The width of the arc of the background corners." />
-			<param name="arc-height" type="integer" primitive="true" default="4" description="The height of the arc of the background corners." />
+			<param name="arc" type="integer" hidden="true" default="4" description="The width and height of the arc of the background corners." />
+			<param name="arc-width" type="integer" primitive="true" default="ref:arc" description="The width of the arc of the background corners." />
+			<param name="arc-height" type="integer" primitive="true" default="ref:arc" description="The height of the arc of the background corners." />
 		</mapping>
 		<mapping from="slideshow"               to="de.enough.polish.ui.backgrounds.SlideShowBackground" >
 			<param name="color" type="color" primitive="true" default="white" />
@@ -472,12 +510,19 @@
 			<param name="foreground" type="background" />
 			<param name="background" type="background" />		
 		</mapping>
-		<mapping from="horizontal"               to="de.enough.polish.ui.backgrounds.HorizontalBackground">
-			<param name="left" type="background" description="Reference to the background that is painted on the left side. Reference a background defined in the backgrounds section." />
-			<param name="right" type="background" description="Reference to the background that is painted on the right side. Reference a background defined in the backgrounds section." />
-			<param name="split-pos" type="percentorabsolute" primitive="true" default="50%" description="The split position either in percent (1% - 100%) or in pixels. 0 has a special meeting - it results in a rectangular split area." />
+		<mapping from="horizontal"               to="de.enough.polish.ui.backgrounds.CombinedHorizontalBackground">
+			<param name="left-background" type="background" description="Reference to the background that is painted on the left side. Reference a background defined in the backgrounds section." />
+			<param name="right-background" type="background" description="Reference to the background that is painted on the right side. Reference a background defined in the backgrounds section." />
+			<param name="split-pos" type="dimension" primitive="true" default="50%" description="The split position either in percent (1% - 100%) or in pixels. 0 has a special meeting - it results in a rectangular split area." />
 			<param name="split-side" type="integer" primitive="true" values="left,right" default="left" description="The side of the split position - usually makes only sense when using an absolute pixel value, e.g. when you want to have a right side of 40 pixels." />
 			<param name="margin" type="integer" primitive="true" default="0" description="The margin between the left and the right background" />
+		</mapping>
+		<mapping from="vertical"               to="de.enough.polish.ui.backgrounds.CombinedVerticalBackground">
+			<param name="top-background" type="background" description="Reference to the background that is painted on the left side. Reference a background defined in the backgrounds section." />
+			<param name="bottom-background" type="background" description="Reference to the background that is painted on the right side. Reference a background defined in the backgrounds section." />
+			<param name="split-pos" type="dimension" primitive="true" default="50%" description="The split position either in percent (1% - 100%) or in pixels. 0 has a special meeting - it results in a rectangular split area." />
+			<param name="split-side" type="integer" primitive="true" values="top,bottom" default="top" description="The side of the split position - usually makes only sense when using an absolute pixel value, e.g. when you want to have a top height of 40 pixels, e.g. for accomodating an image." />
+			<param name="margin" type="integer" primitive="true" default="0" description="The margin in pixels between the top and the nottom background" />
 		</mapping>
 		<mapping from="mask"                   to="de.enough.polish.ui.backgrounds.MaskBackground"  converter="de.enough.polish.preprocess.backgrounds.MaskBackgroundConverter">
 			<param name="mask" type="background" />
@@ -486,8 +531,13 @@
 			<!-- 
 			<param name="anti-alising" type="boolean" primitive="true" default="false" />
 			 -->
-			<param name="opacity" type="integer" primitive="true" default="255" />
+			<param name="opacity" type="dimension" primitive="false" default="100%" />
 		</mapping>
+		<mapping from="layer"               to="de.enough.polish.ui.backgrounds.LayerBackground" >
+			<param name="layers" type="background[]" array-type="Background" separator="," default="" description="Comma separated list of backgrounds that runs from top to bottom, e.g. layers: first, second, third, bg;"/>
+			<param name="margins" type="dimension[]" array-type="Dimension" separator="," default="" description="Comma separated list of margins that runs from top to bottom, e.g. margins: 10px, 6px, 4px, 0px;"/>
+		</mapping>
+		
 	</attribute>
 	
 	<attribute
@@ -495,10 +545,15 @@
 		type="parameterized"
 		appliesTo="Item, Screen"
 		description="The border of an item or screen. The default border is &quot;none&quot;."
+		since="1.0"
 	>
 		<mapping from="simple" 				to="de.enough.polish.ui.borders.SimpleBorder" converter="de.enough.polish.preprocess.borders.SimpleBorderConverter" >
 			<param name="color" type="color" primitive="true" default="black" description="The border color." />
-			<param name="width" type="integer" primitive="true" default="1" description="The width of the border." />
+			<param name="width" type="integer" hidden="true" primitive="true" default="1" description="The width of the border." />
+			<param name="width-left" type="integer" primitive="true" default="ref:width" description="The width of the border on the left side." />
+			<param name="width-right" type="integer" primitive="true" default="ref:width" description="The width of the border on the right side." />
+			<param name="width-top" type="integer" primitive="true" default="ref:width" description="The width of the border at the top." />
+			<param name="width-bottom" type="integer" primitive="true" default="ref:width" description="The width of the border at the bottom." />
 		</mapping>
 		<mapping from="plain" 				converter="de.enough.polish.preprocess.borders.SimpleBorderConverter" />
 		<mapping from="bottom-right-shadow" to="de.enough.polish.ui.borders.BottomRightShadowBorder" converter="de.enough.polish.preprocess.borders.ShadowBorderConverter" >
@@ -550,6 +605,15 @@
 			<param name="offset" type="integer" default="4" primitive="true" description="The distance between item and border in pixels." />		
 			<param name="orientation" type="integer" default="bottom-right" values="bottom-right,top-right,bottom-left,top-left,all" description="Position of the border." />
 		</mapping>
+		<mapping from="round-rect-drop-shadow"    to="de.enough.polish.ui.borders.DropShadowRoundRectBorder" >
+			<param name="inner-color" type="color" primitive="true" translucent="true" default="0xbb000000" description="The color closest to the content." />
+			<param name="outer-color" type="color" primitive="true" translucent="true" default="0x77333333" description="The color farthest away to the content." />
+			<param name="width" type="integer" primitive="true" default="4" description="The width of the border." />
+			<param name="orientation" type="integer"  primitive="true" default="bottom-right" values="bottom-right,top-right,bottom-left,top-left,all" description="Position of the border." />
+			<param name="arc" type="integer" primitive="true" default="8" hidden="true" description="The default arc used for arc-width and arc-height."/>
+			<param name="arc-width" type="integer" primitive="true" default="ref:arc"  description="The width of the arc in the rounded corners."/>
+			<param name="arc-height" type="integer" primitive="true" default="ref:arc" description="The height of the arc in the rounded corners." />
+		</mapping>
 		<mapping from="image"			to="de.enough.polish.ui.borders.ImageBorder" converter="de.enough.polish.preprocess.borders.ImageBorderConverter" >
 			<param name="width" type="integer" default="1" description="The width of the border." />
 			<param name="image" type="image-url" default="none" description="The URL of the image." />
@@ -599,20 +663,127 @@
 		<!--
 		<mapping from="" converter="" />
 		-->
-		
+	<attribute
+		name="margin"
+		type="dimension"
+		default="0"
+		id="-1"
+		since="1.0"		
+	/>
 	
+	<attribute
+		name="margin-left"
+		type="dimension"
+		default="ref:margin"
+		id="-2"
+		since="1.0"
+	/>
+	
+	<attribute
+		name="margin-right"
+		type="dimension"
+		default="ref:margin"
+		id="-3"
+		since="1.0"
+	/>
+	
+	<attribute
+		name="margin-top"
+		type="dimension"
+		default="ref:margin"
+		id="-4"
+		since="1.0"
+	/>
+	<attribute
+		name="margin-bottom"
+		type="dimension"
+		default="ref:margin"
+		id="-5"
+		since="1.0"
+	/>
+	
+	<attribute
+		name="padding"
+		type="dimension"
+		default="1"
+		id="-6"
+		since="1.0"
+	/>
+	
+	<attribute
+		name="padding-left"
+		type="dimension"
+		default="ref:padding"
+		id="-7"
+		since="1.0"
+	/>
+	
+	<attribute
+		name="padding-right"
+		type="dimension"
+		default="ref:padding"
+		id="-8"
+		since="1.0"
+	/>
+	
+	<attribute
+		name="padding-top"
+		type="dimension"
+		default="ref:padding"
+		id="-9"
+		since="1.0"
+	/>
+	
+	<attribute
+		name="padding-bottom"
+		type="dimension"
+		default="ref:padding"
+		id="-10"
+		since="1.0"
+	/>
+	
+	<attribute
+		name="padding-horizontal"
+		type="dimension"
+		default="ref:padding"
+		id="-11"
+		since="1.0"
+	/>
+	
+	<attribute
+		name="padding-vertical"
+		type="dimension"
+		default="ref:padding"
+		id="-12"
+		since="1.0"
+	/>
+	
+	
+
+	
+    <attribute
+		name="font"
+		appliesTo="StringItem"
+		description="The font reference for a StringItem, TextField, etc."
+		type="object"
+		default="none"
+		id="-13"
+		since="1.0"
+	/>
 	
     <attribute
 		name="font-style"
-		appliesTo="Screen,Item"
+		appliesTo="StringItem"
 		description="The font style of an item or screen element."
 		type="map"
 		values="plain, default, normal, bold, italic, cursive, underlined, underline"
 		allowsCombinations="true"
 		requiresMapping="true"
 		isCaseSensitive="false"
-		group="base"
 		default="plain"
+		shell="new Integer()"
+		id="-14"
+		since="1.0"
 		>
 		<mapping from="plain"      to="Font.STYLE_PLAIN" excludes="bold" />
 		<mapping from="default"    to="Font.STYLE_PLAIN" excludes="bold" />
@@ -627,51 +798,54 @@
 
     <attribute
 		name="font-size"
-		appliesTo="Screen,Item"
+		appliesTo="StringItem"
 		description="The font size of an item or screen element."
 		type="map"
 		values="small, little, medium, default, normal, large, big"
 		allowsCombinations="false"
 		requiresMapping="true"
 		isCaseSensitive="false"
-		group="base"
 		default="medium"
+		id="-15"
+		since="1.0"
 		>
-		<mapping from="small"      to="Font.SIZE_SMALL"  />
-		<mapping from="little"     to="Font.SIZE_SMALL"  />
-		<mapping from="medium"     to="Font.SIZE_MEDIUM" />
-		<mapping from="default"    to="Font.SIZE_MEDIUM" />
-		<mapping from="normal"     to="Font.SIZE_MEDIUM" />
-		<mapping from="large"      to="Font.SIZE_LARGE" />
-		<mapping from="big"        to="Font.SIZE_LARGE" />
+		<mapping from="small"      to="new Integer( Font.SIZE_SMALL )"  />
+		<mapping from="little"     to="new Integer( Font.SIZE_SMALL )"  />
+		<mapping from="medium"     to="new Integer( Font.SIZE_MEDIUM )" />
+		<mapping from="default"    to="new Integer( Font.SIZE_MEDIUM )" />
+		<mapping from="normal"     to="new Integer( Font.SIZE_MEDIUM )" />
+		<mapping from="large"      to="new Integer( Font.SIZE_LARGE )" />
+		<mapping from="big"        to="new Integer( Font.SIZE_LARGE )" />
 	</attribute>
 	
 	<attribute
 		name="font-face"
-		appliesTo="Screen,Item"
+		appliesTo="StringItem"
 		description="The font face of an item or screen element."
 		type="map"
 		values="system, default, normal, proportional, monospace"
 		allowsCombinations="false"
 		requiresMapping="true"
 		isCaseSensitive="false"
-		group="base"
 		default="medium"
+		id="-16"
+		since="1.0"
 		>
-		<mapping from="system"         to="Font.FACE_SYSTEM"  />
-		<mapping from="default"        to="Font.FACE_SYSTEM"  />
-		<mapping from="normal"         to="Font.FACE_SYSTEM"  />
-		<mapping from="proportional"   to="Font.FACE_PROPORTIONAL"  />
-		<mapping from="monospace"      to="Font.FACE_MONOSPACE"  />
+		<mapping from="system"         to="new Integer( Font.FACE_SYSTEM )"  />
+		<mapping from="default"        to="new Integer( Font.FACE_SYSTEM )"  />
+		<mapping from="normal"         to="new Integer( Font.FACE_SYSTEM )"  />
+		<mapping from="proportional"   to="new Integer( Font.FACE_PROPORTIONAL )"  />
+		<mapping from="monospace"      to="new Integer( Font.FACE_MONOSPACE )"  />
 	</attribute>
 
 	<attribute
 		name="font-color"
-		appliesTo="Screen,Item"
+		appliesTo="StringItem"
 		description="The font color of an item or screen element."
 		type="color"
-		group="base"
 		default="black"
+		id="-17"
+		since="1.0"
 	/>
 
 	<attribute
@@ -681,6 +855,7 @@
 		description="The name of the style for the currently focused item, usually applied with a [style-name]:hover construct."
 		default="focused"
 		id="1"
+		since="1.0"
 	/>
 
 	<attribute
@@ -690,6 +865,7 @@
 		description="The name of the style for the title of the corresponding Screen."
 		default="title"
 		id="2"
+		since="1.0"
 	/>
 
 	<attribute
@@ -699,6 +875,7 @@
 		description="The name of the style for the label of the corresponding Item."
 		default="label"
 		id="3"
+		since="1.0"
 	/>
 	
 	<attribute
@@ -708,6 +885,7 @@
 		description="The number of columns. This can be used to layout the items in a table."
 		default="1"
 		id="4"
+		since="1.0"
 	/>
 
 	<attribute
@@ -717,6 +895,7 @@
 		description="Either &quot;normal&quot;, &quot;equal&quot; or the width for each column in a comma separated list (e.g. &quot;columns-width: 60,60,10&quot;)."
 		default="normal"
 		id="5"
+		since="1.0"
 	/>
 
 	<attribute
@@ -726,6 +905,7 @@
 		description="The URL of the image. The keyword %INDEX% can be used for adding the position of the icon to the name, e.g.&quot;icon-image: url(icon%INDEX%.png);&quot;."
 		default="none"
 		id="6"
+		since="1.0"
 	/>
 
 	<attribute
@@ -736,6 +916,7 @@
 		default="left"
 		values="left,right,top,bottom,center"
 		id="7"
+		since="1.0"
 	/>
 
 	<attribute
@@ -745,6 +926,7 @@
 		description="The color in which the check- or radio-box will be painted."
 		default="black"
 		id="8"
+		since="1.0"
 	/>
 
 	<attribute
@@ -753,6 +935,7 @@
 		appliesTo="ChoiceItem"
 		description="The URL of the image for a selected item. This will be used only when the type of the list or of the choice group is multiple. Default is a simple image drawn in the defined choice-color."
 		id="9"
+		since="1.0"
 	/>
 
 	<attribute
@@ -761,6 +944,7 @@
 		appliesTo="ChoiceItem"
 		description="The URL of the image for a not-selected item. This will be used only when the type of the list or of the choice group is multiple. Default is a simple image drawn in the defined choice-color. When &quot;none&quot; is given, no image will be drawn for not-selected items. Only the image for selected items will be drawn in that case."
 		id="10"
+		since="1.0"
 	/>
 	
 	<attribute
@@ -769,6 +953,7 @@
 		appliesTo="ChoiceItem"
 		description="The URL of the image for a selected item. This will be used only when the type of the list or of the choice group is exclusive. Default is a simple image drawn in the defined choice-color."
 		id="11"
+		since="1.0"
 	/>
 
 	<attribute
@@ -777,6 +962,7 @@
 		appliesTo="ChoiceItem"
 		description="The URL of the image for a not-selected item. This will be used only when the type of the list or of the choice group is exclusive. Default is a simple image drawn in the defined choice-color. When &quot;none&quot; is given, no image will be drawn for not-selected items. Only the image for selected items will be drawn in that case."
 		id="12"
+		since="1.0"
 	/>
 	
 
@@ -786,6 +972,7 @@
 		appliesTo="ChoiceGroup"
 		description="The URL to the image which should be shown in the closed popup-group. Per default a simple dropdown image will be used."
 		id="13"
+		since="1.0"
 	/>
 
 	<attribute
@@ -795,6 +982,7 @@
 		description="The color for the arrow in the dropdown-image of a closed popup-group."
 		default="black"
 		id="14"
+		since="1.0"
 	/>
 
 	<attribute
@@ -804,6 +992,7 @@
 		description="The color for the background in the dropdown-image of a closed popup-group."
 		default="white"
 		id="15"
+		since="1.0"
 	/>
 	
 	<attribute
@@ -812,6 +1001,7 @@
 		appliesTo="Screen"
 		description="The color of the menu-bar. This overrides the settings in the predefined style &quot;menu&quot;. This attribute is only used, when the &quot;menu&quot; fullscreen setting is activated in the &quot;build.xml&quot; file."
 		id="16"
+		since="1.0"
 	/>
 
 	<attribute
@@ -820,6 +1010,7 @@
 		appliesTo="Gauge"
 		description="The URL of the image."
 		id="17"
+		since="1.0"
 	/>
 	
 	<attribute
@@ -829,6 +1020,7 @@
 		description="The color of the progress bar."
 		default="blue"
 		id="18"
+		since="1.0"
 	/>
 
 	<attribute
@@ -837,6 +1029,7 @@
 		appliesTo="Gauge"
 		description="The width of the progress bar."
 		id="19"
+		since="1.0"
 	/>
 
 	<attribute
@@ -845,6 +1038,7 @@
 		appliesTo="Gauge"
 		description="The height of the progress bar."
 		id="20"
+		since="1.0"
 	/>
 
 	<attribute
@@ -855,6 +1049,7 @@
 		default="chunked"
 		values="chunked,continuous"
 		id="21"
+		since="1.0"
 	/>
 	
 	<attribute
@@ -864,6 +1059,7 @@
 		description="The color of gaps between single chunks. Only used in the &quot;chunked&quot; gauge-mode or when a gauge with an indefinite range is used. In the latter case the provided color will be used to indicate the idle state."
 		default="white"
 		id="22"
+		since="1.0"
 	/>
 
 	<attribute
@@ -873,6 +1069,7 @@
 		description="The width of gaps in pixels between single chunks. Only used in the &quot;chunked&quot; gauge-mode."
 		default="3"
 		id="23"
+		since="1.0"
 	/>
 
 	<attribute
@@ -881,6 +1078,7 @@
 		appliesTo="Gauge"
 		description="The width of single chunks in pixels. Only used in the &quot;chunked&quot; gauge-mode."
 		id="24"
+		since="1.0"
 	/>
 	
 	<attribute
@@ -891,6 +1089,7 @@
 		default="true"
 		values="true,false"
 		id="25"
+		since="1.0"
 	/>
 
 	<attribute
@@ -901,22 +1100,29 @@
 		default="left"
 		values="left,right,center"
 		id="26"
+		since="1.0"
 	/>
 	
 	<attribute
 		name="textfield-width"
 		type="integer"
 		appliesTo=""
+		deprecated="Use min-width instead."
+		translateTo="min-width"
 		description="The minimum width of the textfield-element in pixels. (deprecated)"
 		id="27"
+		since="1.0"
 	/>
 
 	<attribute
 		name="textfield-height"
 		type="integer"
+		deprecated="Use min-height instead."
+		translateTo="min-height"
 		appliesTo=""
 		description="The minimum height of the textfield-element in pixels. Defaults to the height of the used font. (deprecated)"
 		id="28"
+		since="1.0"
 	/>
 
 	<attribute
@@ -926,6 +1132,7 @@
 		description="Defines whether input should be done with with J2ME Polish only instead of with the native input-system of the underlying OS."
 		default="false"
 		id="29"
+		since="1.1"
 	/>
 
 	<attribute
@@ -934,14 +1141,15 @@
 		appliesTo="TextField, TextBox"
 		description="Defines the color of the caret. This defaults to the color of the text (font-color)."
 		id="30"
+		since="1.1"
 	/>
 
 	<attribute
 		name="opacity"
-		type="integer"
+		type="dimension"
 		appliesTo="Item"
-		description="The opacity of an item between 0 (fully transparent) and 255 (fully opaque)."
-		default="255"
+		description="The opacity of an item between 0 (fully transparent) and 100% / 255 (fully opaque)."
+		default="100%"
 		id="31"
 	/>
 	
@@ -967,6 +1175,8 @@
 	
 	<attribute
 		name="datefield-width"
+		deprecated="use generic min-width attribute instead"
+		translateTo="min-width"
 		type="integer"
 		appliesTo=""
 		description="The minimum width of the datefield-element in pixels. (deprecated)"
@@ -975,6 +1185,8 @@
 
 	<attribute
 		name="datefield-height"
+		deprecated="use generic min-height attribute instead"
+		translateTo="min-height"
 		type="integer"
 		appliesTo=""
 		description="The minimum height of the datefield-element in pixels. Defaults to the height of the used font. (deprecated)"
@@ -1002,8 +1214,8 @@
 	<attribute
 		name="show-text-in-title"
 		type="boolean"
-		appliesTo="List,FishEyeContainerView"
-		description="Defines whether a list should show the text of the list-items in the title instead on the screen."
+		appliesTo="List,FishEyeContainerView,HorizontalContainerView"
+		description="Defines whether a screen should show the text of the affected items in the title instead on the screen."
 		default="false"
 		id="37"
 	/>
@@ -1032,7 +1244,6 @@
 		<mapping from="size-decrease" to="new de.enough.polish.ui.itemviews.SizeDecreaseItemView()" appliesTo="Item" />
 		<mapping from="particle" to="new de.enough.polish.ui.itemviews.ExplodingParticlesItemView()" appliesTo="Item" />
 		<!--  for Containers:  -->
-		<mapping from="scroll" to="new de.enough.polish.ui.containerviews.ScrollContainerView()" appliesTo="Container,FakeContainerCustomItem" deprecated="A J2ME Polish 2.0.x only view-type, will not be supported in J2ME Polish 2.1 anymore."  />
 		<mapping from="slide" to="new de.enough.polish.ui.containerviews.SlideContainerView()"  appliesTo="Container,FakeContainerCustomItem" />
 		<mapping from="slideup" to="new de.enough.polish.ui.containerviews.SlideContainerView()" />
 		<mapping from="slide-up" to="new de.enough.polish.ui.containerviews.SlideContainerView()" />
@@ -1040,8 +1251,8 @@
 		<mapping from="ShuffleView" to="new de.enough.polish.ui.containerviews.ShuffleView()" />
 		<mapping from="dropping" to="new de.enough.polish.ui.containerviews.DroppingView()" appliesTo="Screen"  />
 		<mapping from="DroppingView" to="new de.enough.polish.ui.containerviews.DroppingView()" />
-		<mapping from="midp2" to="new de.enough.polish.ui.containerviews.MIDP2LayoutView()" appliesTo="Screen,Container, FakeContainerCustomItem" />
-		<mapping from="midp2layout" to="new de.enough.polish.ui.containerviews.MIDP2LayoutView()" />
+		<mapping from="midp2" to="new de.enough.polish.ui.containerviews.Midp2ContainerView()" appliesTo="Screen,Container, FakeContainerCustomItem" />
+		<mapping from="midp2layout" to="new de.enough.polish.ui.containerviews.Midp2ContainerView()" />
 		<mapping from="relative" to="new de.enough.polish.ui.containerviews.RelativeLayoutView()" />
 		<mapping from="exclusive" to="new de.enough.polish.ui.containerviews.ExclusiveSingleLineView()" />
 		<mapping from="exclusive-choice" to="new de.enough.polish.ui.containerviews.ExclusiveSingleLineView()" appliesTo="ChoiceGroup" />
@@ -1065,6 +1276,11 @@
 		<mapping from="horizontal" to="new de.enough.polish.ui.containerviews.HorizontalContainerView()"  />
 		<mapping from="removetext" to="new de.enough.polish.ui.containerviews.RemoveTextContainerView()"  />
 		<mapping from="remove-text" to="new de.enough.polish.ui.containerviews.RemoveTextContainerView()"  />
+		<mapping from="alignatcontent" to="new de.enough.polish.ui.containerviews.AlignAtContentContainerView()"  />
+		<mapping from="align-at-content" to="new de.enough.polish.ui.containerviews.AlignAtContentContainerView()"  />
+		<mapping from="layer" to="new de.enough.polish.ui.containerviews.LayerContainerView()"  />
+		<mapping from="layers" to="new de.enough.polish.ui.containerviews.LayerContainerView()"  />
+		<mapping from="layered" to="new de.enough.polish.ui.containerviews.LayerContainerView()"  />
 		<!--  for Gauges: -->
 		<mapping from="gauge-recline" to="new de.enough.polish.ui.gaugeviews.RecLineGaugeView()"  appliesTo="Gauge" />
 		<mapping from="gauge-rotating-arcs" to="new de.enough.polish.ui.gaugeviews.RotatingArcsGaugeView()" appliesTo="Gauge" />
@@ -1072,6 +1288,9 @@
 		<mapping from="gauge-horizontal-spheres" to="new de.enough.polish.ui.gaugeviews.HorizontalSpheresGaugeView()" appliesTo="Gauge" />
 		<mapping from="gauge-cycling-icons" to="new de.enough.polish.ui.gaugeviews.CyclingIconsGaugeView()" appliesTo="Gauge" />
 		<mapping from="gauge-horizontal-icons" to="new de.enough.polish.ui.gaugeviews.HorizontalIconsGaugeView()" appliesTo="Gauge" />		
+    	<mapping from="gauge-rotating-circles" to="new de.enough.polish.ui.gaugeviews.RotatingCirclesGaugeView()" appliesTo="Gauge" />
+    	<mapping from="gauge-images" to="new de.enough.polish.ui.gaugeviews.ImagesGaugeView()" appliesTo="Gauge" />
+
 		<!-- 
 		<mapping from="gauge-tachometer" to="new de.enough.polish.ui.gaugeviews.TachometerGaugeView()" appliesTo="Gauge" />
 		<mapping from="gauge-equalizer" to="new de.enough.polish.ui.gaugeviews.EqualizerGaugeView()" appliesTo="Gauge" />
@@ -1244,7 +1463,7 @@
 
 	<attribute
 		name="min-width"
-		type="integer"
+		type="dimension"
 		appliesTo="Item"
 		description="The minimum width of an item."
 		id="58"
@@ -1252,7 +1471,7 @@
 
 	<attribute
 		name="max-width"
-		type="integer"
+		type="dimension"
 		appliesTo="Item"
 		description="The maximum width of an item."
 		id="59"
@@ -1358,6 +1577,7 @@
 		<mapping from="DanceBabyDance" to="new de.enough.polish.ui.screenanimations.DancingPixelScreenChangeAnimation()"  condition="polish.midp2"/>
 		<mapping from="gradient" to="new de.enough.polish.ui.screenanimations.GradientScreenChangeAnimation()"  condition="polish.midp2"/>
 		<mapping from="rotate" to="new de.enough.polish.ui.screenanimations.RotateScreenChangeAnimation()" condition="polish.midp2 and polish.hasFloatingPoint"/>
+		<mapping from="item" to="new de.enough.polish.ui.screenanimations.ItemScreenChangeAnimation()" />
 	</attribute>
 	
 	<attribute
@@ -1591,6 +1811,7 @@
 		description="Sets a text effect."
 		id="88"
 	>
+		<mapping from="bitmap" to="new de.enough.polish.ui.texteffects.BitmapFontTextEffect()" />
 		<mapping from="smiley" to="new de.enough.polish.ui.texteffects.SmileyTextEffect()" />
 		<mapping from="shadow" to="new de.enough.polish.ui.texteffects.ShadowTextEffect()" />
 		<mapping from="outline" to="new de.enough.polish.ui.texteffects.OutlineTextEffect()" />
@@ -1599,6 +1820,7 @@
 		<mapping from="lighthouse" to="new de.enough.polish.ui.texteffects.LighthouseTextEffect()" />
 		<mapping from="gradient" to="new de.enough.polish.ui.texteffects.VerticalGradientTextEffect()"/>
 		<mapping from="vertical-gradient" to="new de.enough.polish.ui.texteffects.VerticalGradientTextEffect()" />
+		<mapping from="vertical-scroll" to="new de.enough.polish.ui.texteffects.VerticalScrollTextEffect()" />
 		<mapping from="mirror-shadow" to="new de.enough.polish.ui.texteffects.VerticalMirrorTextEffect()" >
 			<condition>polish.midp2</condition>
 		</mapping>
@@ -1623,6 +1845,7 @@
 		<mapping from="flash" to="new de.enough.polish.ui.texteffects.FlashTextEffect()"/>
 		<mapping from="split" to="new de.enough.polish.ui.texteffects.VerticalSplitTextEffect()"/>		
 		<mapping from="vertical-split" to="new de.enough.polish.ui.texteffects.VerticalSplitTextEffect()"/>		
+		<mapping from="cycling" to="new de.enough.polish.ui.texteffects.CyclingTextEffect()"/>		
 	</attribute>
 	
 	<attribute
@@ -1889,6 +2112,7 @@
 		description="The name of the style for the menubar of the corresponding Screen."
 		default="menubar"
 		id="117"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -2126,7 +2350,7 @@
 	
 	<attribute
 		name="min-height"
-		type="integer"
+		type="dimension"
 		appliesTo="Item"
 		description="The minimum height of an item."
 		id="144"
@@ -2134,7 +2358,7 @@
 
 	<attribute
 		name="max-height"
-		type="integer"
+		type="dimension"
 		appliesTo="Item"
 		description="The maximum height of an item."
 		id="145"
@@ -2244,7 +2468,7 @@
 		type="integer"
 		appliesTo="TabBar"
 		description="The horizontal adjustment for the scrolling indicator arrows. Positive values move the indicators torwards the right." 
-		id="157"
+		id="260"
 	/>
 
 	<attribute
@@ -2828,28 +3052,28 @@
 	/>
 	<attribute
 		name="width"
-		type="percentorabsolute"
+		type="dimension"
 		appliesTo="relative view-type"
 		description="The width of an item either in pixels or in percent."
 		id="226"
 	/>
 	<attribute
 		name="height"
-		type="percentorabsolute"
+		type="dimension"
 		appliesTo="relative view-type"
 		description="The height of an item either in pixels or in percent."
 		id="227"
 	/>
 	<attribute
 		name="x"
-		type="percentorabsolute"
+		type="dimension"
 		appliesTo="relative view-type"
 		description="The horizontal position of an item either in pixels or in percent relative to it's parent."
 		id="228"
 	/>
 	<attribute
 		name="y"
-		type="percentorabsolute"
+		type="dimension"
 		appliesTo="relative view-type"
 		description="The vertical position of an item either in pixels or in percent relative to it's parent."
 		id="229"
@@ -2916,6 +3140,7 @@
 		appliesTo="MenuBar"
 		description="The style for the command shown on the right side of the menubar. Can only be used when the extended menubar is enabled."
 		id="237"
+		since="2.0"
 	/>
 	<attribute
 		name="leftcommand-style"
@@ -2923,6 +3148,7 @@
 		appliesTo="MenuBar"
 		description="The style for the command shown on the left side of the menubar. can only be used when the extended menubar is enabled."
 		id="238"
+		since="2.0"
 	/>
 	<attribute
 		name="middlecommand-style"
@@ -2930,6 +3156,7 @@
 		appliesTo="MenuBar"
 		description="The style for the (item) command shown in the middle of the menubar. Can only be used when the extended menubar is enabled."
 		id="239"
+		since="2.0"
 	/>
 	<attribute
 		name="menu-style"
@@ -2937,6 +3164,7 @@
 		appliesTo="MenuBar"
 		description="The style for the commands within the options command of the menubar. Can only be used when the extended menubar is enabled."
 		id="240"
+		since="2.0"
 	/>
 	<attribute
 		name="fisheyeview-scale"
@@ -2945,6 +3173,7 @@
 		appliesTo="FishEyeContainerView"
 		description="The factor by which the non-focused elements should be scaled. By default they are scaled to 50% of their original size."
 		id="241"
+		since="2.0"
 	/>
 	<attribute
 		name="fisheyeview-remove-text"
@@ -2953,6 +3182,7 @@
 		appliesTo="FishEyeContainerView"
 		description="Removes the text of the non-focused elements if set to true."
 		id="242"
+		since="2.0"
 	/>
 	<attribute
 		name="filter-position"
@@ -2962,6 +3192,7 @@
 		description="Position of the textfield used to filter the results."
 		values="top,bottom"
 		id="243"
+		since="2.0"
 	/>
 	<attribute
 		name="filter-style"
@@ -2969,6 +3200,7 @@
 		appliesTo="FilteredList,FilteredChoiceGroup"
 		description="The style for the filter textfield within a FilteredList."
 		id="244"
+		since="2.0"
 	/>
 	<attribute
 		name="popup-style"
@@ -2976,6 +3208,7 @@
 		appliesTo="FilteredChoiceGroup"
 		description="The style for the FilteredList that is shown when the user openes a FilteredChoiceGroup."
 		id="245"
+		since="2.0"
 	/>
 	<attribute
 		name="sizeincreaseview-amount"
@@ -2984,6 +3217,7 @@
 		appliesTo="SizeIncreaseItemView"
 		description="The percentual amount to increase the item."
 		id="246"
+		since="2.0"
 	/>
 	<attribute
 		name="sizeincreaseview-top"
@@ -2992,6 +3226,7 @@
 		appliesTo="SizeIncreaseItemView"
 		description="Declares if the item should build up from the top or from the bottom."
 		id="247"
+		since="2.0"
 	/>
 	<attribute
 		name="sizedecreaseview-amount"
@@ -3000,6 +3235,7 @@
 		appliesTo="SizeDecreaseItemView"
 		description="The percentual amount to decrease the item."
 		id="248"
+		since="2.0"
 	/>
 	<attribute
 		name="sizedecreaseview-top"
@@ -3008,6 +3244,7 @@
 		appliesTo="SizeDecreaseItemView"
 		description="Declares if the item should build down from the top or from the bottom."
 		id="249"
+		since="2.0"
 	/>
 	<attribute
 		name="tabbar-style"
@@ -3015,6 +3252,7 @@
 		appliesTo="TabbedList, TabbedForm"
 		description="The style for the tabbar at the top of a TabbedList or TabbedForm."
 		id="250"
+		since="2.0"
 	/>
 	<attribute
 		name="tabbar-position"
@@ -3024,6 +3262,7 @@
 		values="top,bottom"
 		default="top"
 		id="251"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3033,6 +3272,7 @@
 		description="Specifies if the value within the gauge should be shown as a percent value."
 		default="false"
 		id="252"
+		since="2.0"
 	/>
 
 	<attribute
@@ -3042,6 +3282,7 @@
 		description="You can deactivate animations for texts that should not be wrapped and which are too long for a single line."
 		default="true"
 		id="253"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3050,6 +3291,7 @@
 		appliesTo="TreeItem"
 		description="An image indicating the closed state of a tree node."
 		id="254"
+		since="2.0"
 	/>
 
 	<attribute
@@ -3058,6 +3300,7 @@
 		appliesTo="TreeItem"
 		description="An image indicating the opened state of a tree node."
 		id="255"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3066,6 +3309,7 @@
 		appliesTo="TextField"
 		description="Defines the style for the menu that contains the possible matches for the current user input."
 		id="256"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3074,6 +3318,7 @@
 		appliesTo="TextField"
 		description="Defines the style for single possible matches of the curent user input."
 		id="257"
+		since="2.0"
 	/>
 
 	<attribute
@@ -3083,6 +3328,7 @@
 		description="Can be used to deactivate the scrollbar for a specific screen. You need to activate scrollbar usage with polish.useScrollBar=true before using this CSS attribute."
 		default="true"
 		id="258"
+		since="2.0"
 	/>
 	
 	<attribute 
@@ -3092,26 +3338,17 @@
 		description="The factor by which the outer most non-focused elements should be scaled. By default they are scaled to 50% of their original size."
 		default="50%"
 		id="259"
+		since="2.0"
 	/>
-	
-	<!--  free slot
-	<attribute
-		name="focus-container"
-		type="boolean"
-		appliesTo="Container, FakeContainerCustomItem"
-		description="Can be used to use focus-styles for containers as well."
-		default="false"
-		id="260"
-	/>
-	 -->
 	
 	<attribute
 		name="always-include"
 		type="boolean"
 		appliesTo="Item, Screen, FakeCustomItem"
-		description="Defines if a style should always be included, even if not used."
+		description="Defines if a style should always be included, even if not used. This is useful for programmatically accessed and for HTML browser styles."
 		default="false"
 		id="261"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3121,6 +3358,7 @@
 		description="The color of the normal spheres."
 		default="white"
 		id="262"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3130,6 +3368,7 @@
 		description="The color of the hightlighted spheres."
 		default="black"
 		id="263"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3139,6 +3378,7 @@
 		description="The count of all spheres."
 		default="8"
 		id="264"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3148,6 +3388,7 @@
 		description="The count of the highlighted spheres."
 		default="3"
 		id="265"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3157,6 +3398,7 @@
 		description="The width of the spheres."
 		default="10"
 		id="266"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3166,6 +3408,7 @@
 		description="The color of the normal spheres."
 		default="white"
 		id="267"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3175,6 +3418,7 @@
 		description="The color of the hightlighted spheres."
 		default="black"
 		id="268"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3184,6 +3428,7 @@
 		description="The count of all spheres."
 		default="8"
 		id="269"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3193,6 +3438,7 @@
 		description="The count of the highlighted spheres."
 		default="3"
 		id="270"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3202,6 +3448,7 @@
 		description="The width of the spheres."
 		default="10"
 		id="271"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3211,6 +3458,7 @@
 		description="Specifies if a horizontal aligned image should be painted at the border (=default) or next to the content when the item has an expand layout."
 		default="false"
 		id="272"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3220,6 +3468,7 @@
 		description="The color of the centered hightlighted spheres."
 		default="black"
 		id="273"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3229,6 +3478,7 @@
 		description="The color of the centered hightlighted spheres."
 		default="black"
 		id="274"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3238,6 +3488,7 @@
 		description="The image for the normal icons."
 		default="white"
 		id="275"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3247,6 +3498,7 @@
 		description="The image for the hightlighted icons."
 		default="black"
 		id="276"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3256,6 +3508,7 @@
 		description="The count of all icons."
 		default="8"
 		id="277"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3265,6 +3518,7 @@
 		description="The count of the highlighted icons."
 		default="3"
 		id="278"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3274,6 +3528,7 @@
 		description="The image of the centered hightlighted icons."
 		default="black"
 		id="279"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3283,6 +3538,7 @@
 		description="The image for the normal icons."
 		default="white"
 		id="280"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3292,6 +3548,7 @@
 		description="The image for the hightlighted icons."
 		default="black"
 		id="281"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3301,6 +3558,7 @@
 		description="The count of all icons."
 		default="8"
 		id="282"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3310,6 +3568,7 @@
 		description="The count of the highlighted icons."
 		default="3"
 		id="283"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3319,6 +3578,7 @@
 		description="The image of the centered hightlighted icons."
 		default="black"
 		id="284"
+		since="2.0"
 	/>
 
 	<attribute
@@ -3329,6 +3589,7 @@
 		default="bottom"
 		values="bottom, top"
 		id="285"
+		since="2.0"
 	/>
 
 	
@@ -3339,6 +3600,7 @@
 		description="The padding between the image and the text of an icon."
 		default="1"
 		id="286"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3349,42 +3611,47 @@
 		default="trie"
 		values="trie, array"
 		id="287"
+		since="2.0"
 	/>
 	
 	<attribute
 		name="gauge-cycling-spheres-interval"
-		type="integer"
+		type="time"
 		appliesTo="CyclingSpheresGaugeView"
 		description="The interval of the animation in miliseconds."
 		default="0"
 		id="288"
+		since="2.0"
 	/>
 	
 	<attribute
 		name="gauge-cycling-icons-interval"
-		type="integer"
+		type="time"
 		appliesTo="CyclingIconsGaugeView"
 		description="The interval of the animation in miliseconds."
 		default="0"
 		id="289"
+		since="2.0"
 	/>
 	
 	<attribute
 		name="gauge-horizontal-spheres-interval"
-		type="integer"
+		type="time"
 		appliesTo="HorizontalSpheresGaugeView"
 		description="The interval of the animation in miliseconds."
 		default="0"
 		id="290"
+		since="2.0"
 	/>
 	
 	<attribute
 		name="gauge-horizontal-icons-interval"
-		type="integer"
+		type="time"
 		appliesTo="HorizontalIconsGaugeView"
 		description="The interval of the animation in miliseconds."
 		default="0"
 		id="291"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3393,6 +3660,7 @@
 		appliesTo="Item"
 		description="The style which indicates that an item is being pressed, usually applied with a [style-name]:pressed construct."
 		id="292"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3402,6 +3670,7 @@
 		appliesTo="FishEyeContainerView"
 		description="The factor by which the non-focused elements should be scaled. By default they are scaled to 50% of their original size."
 		id="293"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3411,6 +3680,7 @@
 		appliesTo="FishEyeContainerView"
 		description="The translucency between 0 and 255 for items directly next to the central item of the view. Higher values indicate more opaqueness, lower ones make it more translucent."
 		id="294"
+		since="2.0"
 	/>
 
 	<attribute
@@ -3420,6 +3690,7 @@
 		appliesTo="FishEyeContainerView"
 		description="The translucency between 0 and 255 for items at the outer edges of the view. Higher values indicate more opaqueness, lower ones make it more translucent."
 		id="295"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3429,6 +3700,7 @@
 		description="Sets transparency to true or false."
 		default="true"
 		id="296"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3437,15 +3709,17 @@
 		appliesTo="Alert"
 		description="The style for the text of an alert."
 		id="297"
+		since="2.0"
 	/>
 	
 	<attribute
 		name="text-flash-interval"
-		type="integer"
+		type="time"
 		default="700"
 		appliesTo="FlashTextEffect"
 		description="The interval in milliseconds for the flashing."
 		id="301"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3455,6 +3729,7 @@
 		appliesTo="FishEyeContainerView"
 		description="the maximum number of visible items, set to 0 for displaying all items."
 		id="302"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3464,6 +3739,7 @@
 		appliesTo="ScrollBar"
 		description="Defines if the scrollbar should automatically fade out. Additionally you have to define the opacity attribute."
 		id="303"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3472,6 +3748,7 @@
 		appliesTo="Item"
 		description="A border reference from the borders section. The border includes the label of the item and is independent of the item's normal border."
 		id="304"
+		since="2.0"
 	/>
 
 	<attribute
@@ -3480,8 +3757,8 @@
 		appliesTo="Item"
 		description="The padding that is added to the complete-background and/or complete-border. Note that this does not change the size of the item, so you might need to adapt margins or normal paddings for your design."
 		id="305"
+		since="2.0"
 	/>
-	
 	
 	<attribute
 		name="slideview-duration"
@@ -3490,6 +3767,7 @@
 		description="The maximum time in milliseconds until the slided item will be fully visible."
 		default="1600"
 		id="306"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3500,6 +3778,7 @@
 		default="up"
 		values="up,down,left,right,upleft,upright,downleft,downright"
 		id="307"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3509,6 +3788,7 @@
 		description="Defines if the cells of a table can only be traversered in sequential order. By default you can move to the next row by pressing down - when the sequential-traversal is enabled pressing down will move the focus to the next item instead. Only applicable when the columns attribute is being used."
 		default="false"
 		id="308"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3518,6 +3798,7 @@
 		description="Expands the items within  a screen or container to the width of the largest item - in contrast to the expand layout not the full available width is being used."
 		default="false"
 		id="309"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3527,6 +3808,7 @@
 		description="Allows to cycle through all items of a POPUP ChoiceGroup. When the user has arrieved at the last item and presses DOWN the focus will jump to the first item instead of closing the POPUP ChoiceGroup."
 		default="false"
 		id="310"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3536,6 +3818,7 @@
 		description="Toggles the visibility of an item. When an item is invisible, it will not occupy any space."
 		default="true"
 		id="311"
+		since="2.0"
 	/>
 
 	<attribute
@@ -3544,6 +3827,7 @@
 		appliesTo="Container,FakeContainerCustomItem"
 		description="Changes the styles of child items. Use the notation '[style1]>[style2]', e.g. visible>invisible for defining the style names."
 		id="312"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3552,6 +3836,7 @@
 		appliesTo="Screen"
 		description="Defines the animation that should be shown when the screen orientation is changed. Orientation changes need to be allowed by setting the preprocessing variable ScreenOrientationCanChangeManually to true."
 		id="313"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3560,6 +3845,7 @@
 		appliesTo="FramedForm"
 		description="The style for the left frame of a FramedForm."
 		id="314"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3568,6 +3854,7 @@
 		appliesTo="FramedForm"
 		description="The style for the right frame of a FramedForm."
 		id="315"
+		since="2.0"
 	/>
 
 	<attribute
@@ -3576,6 +3863,7 @@
 		appliesTo="FramedForm"
 		description="The style for the top frame of a FramedForm."
 		id="316"
+		since="2.0"
 	/>
 
 	<attribute
@@ -3584,6 +3872,7 @@
 		appliesTo="FramedForm"
 		description="The style for bottom top frame of a FramedForm."
 		id="317"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3593,6 +3882,7 @@
 		description="The color of the bottom part."
 		default="#cccccc"
 		id="318"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3602,6 +3892,7 @@
 		description="The vertical split position in percent - 0%..100%."
 		default="50%"
 		id="319"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3610,6 +3901,7 @@
 		appliesTo="Screen, Container, FakeContainerCustomItem"
 		description="The focused style for the first item in an Screen, ChoiceGroup, List, Container."
 		id="320"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3618,6 +3910,7 @@
 		appliesTo="Screen, Container, FakeContainerCustomItem"
 		description="The focused style for the last item in an Screen, ChoiceGroup, List, Container."
 		id="321"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3627,6 +3920,7 @@
 		description="The color of lines between cells."
 		default="black"
 		id="322"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3637,6 +3931,7 @@
 		appliesTo="TableItem"
 		description="The stroke style of lines between cells."
 		id="323"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3645,6 +3940,7 @@
 		appliesTo="TreeItem"
 		description="The style for nodes in a TreeItem. You can use any Container related styles for nodes."
 		id="324"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3654,6 +3950,7 @@
 		appliesTo="RemoveTextContainerView"
 		description="Removes the text of the non-focused elements if set to true."
 		id="325"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3664,6 +3961,7 @@
 		appliesTo="RemoveTextContainerView"
 		description="The position of the text that is extracted from the currently focused item."
 		id="326"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3672,6 +3970,7 @@
 		appliesTo="RemoveTextContainerView"
 		description="The style for the removed text, this defaults to the font-settings of the focused item."
 		id="327"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3682,6 +3981,7 @@
 		default="both"
 		values="both,left,right"
 		id="328"
+		since="2.0"
 	/>
 
 	<attribute
@@ -3691,6 +3991,7 @@
 		description="The speed of the animation when the text is too wide and wrapping is deactivated."
 		default="1"
 		id="329"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3700,6 +4001,7 @@
 		description="Style of the currently selected tab within a TabbedForm."
 		default="activetab"
 		id="330"
+		since="2.0"
 	/>
 		
 	<attribute
@@ -3709,6 +4011,7 @@
 		description="Style of the unselected tabs within a TabbedForm."
 		default="inactivetab"
 		id="331"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3717,6 +4020,7 @@
 		appliesTo="TableItem"
 		description="The background for selected cells of a table."
 		id="332"
+		since="2.0"
 	/>
 	
 	<attribute
@@ -3725,6 +4029,7 @@
 		appliesTo="TableItem"
 		description="The background for selected rows of a table."
 		id="333"
+		since="J2ME Polish 2.1"
 	/>
 
 	<attribute
@@ -3733,17 +4038,130 @@
 		appliesTo="TableItem"
 		description="The background for selected columns of a table."
 		id="334"
+		since="J2ME Polish 2.1"
 	/>
 	
 	
 	<attribute
 		name="x-adjust"
-		type="integer"
+		type="dimension"
 		appliesTo="Item"
-		description="The horizontal position adjustment."
-		default="0"
+		description="The horizontal position adjustment of an item, use a negative value to move it to the left."
+		default="0px"
 		id="335"
+		since="J2ME Polish 2.1"
 	/>
+	
+	<attribute
+		name="y-adjust"
+		type="dimension"
+		appliesTo="Item"
+		description="The vertical position adjustment of an item, use a negative value to move it to the top."
+		default="0px"
+		id="336"
+		since="J2ME Polish 2.1"
+	/>
+
+	<attribute
+		name="content-x-adjust"
+		type="dimension"
+		appliesTo="Item"
+		description="The horizontal position adjustment of an item's content, use a negative value to move it to the left."
+		default="0px"
+		id="337"
+		since="J2ME Polish 2.1"
+	/>
+	
+	<attribute
+		name="content-y-adjust"
+		type="dimension"
+		appliesTo="Item"
+		description="The vertical position adjustment of an item's content, use a negative value to move it to the top."
+		default="0px"
+		id="338"
+	/>
+
+	<attribute
+		name="background-width"
+		type="dimension"
+		appliesTo="Item"
+		description="The width of the background in pixel or percent, if it should differ from the the item's width."
+		default="0px"
+		id="339"
+		since="J2ME Polish 2.1"
+	/>
+	
+	<attribute
+		name="background-height"
+		type="dimension"
+		appliesTo="Item"
+		description="The height of the background in pixel or percent, if it should differ from the the item's width."
+		default="0px"
+		id="340"
+		since="J2ME Polish 2.1"
+	/>
+
+	<attribute
+		name="background-anchor"
+		type="anchor"
+		appliesTo="Item"
+		description="The orientation of the background in case either it's width or height is different from the item's dimensions."
+		default="top | left"
+		shell="new Integer()"
+		id="341"
+		since="J2ME Polish 2.1"
+	/>
+	
+	<attribute
+		name="filter"
+		type="map"
+		appliesTo="Screen,Item"
+		description="Defines a filter for the specified UI element."
+		allowsCombinations="true"
+		combinationsSeparator=","
+		shell="new RgbFilter[]{}"
+		id="342"
+		since="J2ME Polish 2.1"
+	>
+		<condition>polish.midp2</condition>
+		<mapping from="plain" to="null" />
+		<mapping from="opacity" to="new de.enough.polish.ui.rgbfilters.OpacityRgbFilter()" />
+		<mapping from="grayscale" to="new de.enough.polish.ui.rgbfilters.GrayscaleRgbFilter()" />
+		<mapping from="blur" to="new de.enough.polish.ui.rgbfilters.GaussianBlurRgbFilter()" />
+		<mapping from="scale" to="new de.enough.polish.ui.rgbfilters.ScaleRgbFilter()" />
+		
+	</attribute>
+	
+	
+	<attribute
+		name="filter-opacity"
+		type="dimension"
+		appliesTo="OpacityRgbFilter"
+		description="The opacity of the element between 0 (invisible) up to 100% or 255 (fully opaque)."
+		default="100%"
+		id="343"
+		since="J2ME Polish 2.1"
+	/>
+	
+	<attribute
+		name="filter-grayscale-grade"
+		type="dimension"
+		appliesTo="GrayscaleRgbFilter"
+		description="The grayscale of the element between 0% (fully colored) up to 100% (complete grayscale)."
+		default="100%"
+		id="344"
+		since="J2ME Polish 2.1"
+	/>
+	<!--  not yet implemented
+	<attribute
+		name="filter-grayscale-keep"
+		type="color"
+		appliesTo="GrayscaleRgbFilter"
+		description="The color which should be spared from grayscaling."
+		default="null"
+		id="345"
+	/>
+	 -->
 	
 	<attribute
 		name="scroll-background"
@@ -3752,6 +4170,7 @@
 		description="Specifies if the background should be expanded to the container of the screen."
 		default="false"
 		id="346"
+		since="J2ME Polish 2.1"
 	/>
 	
 	<attribute
@@ -3760,43 +4179,495 @@
 		appliesTo="CenterNavigationContainerView"
 		description="the offset to lighten up the grayscaling"
 		id="347"
+		since="J2ME Polish 2.1"
 	/>
 	
 	<attribute
-		name="scrollview-height"
-		type="percentorabsolute"
-		appliesTo="ScrollContainerView"
-		description="The maximum height of the container in either percent or pixels."
+		name="filter-blur-grade"
+		type="dimension"
+		appliesTo="GaussianBlurRgbFilter"
+		description="The blur of the element between 0% (not blurred) up to 100% (strongly blurred)."
+		default="100%"
 		id="348"
-		deprecated="Only valid for J2ME Polish 2.0.x"
+		since="J2ME Polish 2.1"
 	/>
+	
 	<attribute
-		name="scrollview-scrollbar-style"
-		type="style"
-		appliesTo="ScrollContainerView"
-		description="The style of the scrollbar."
+		name="filter-scale-grade"
+		type="dimension"
+		appliesTo="ScaleRgbFilter"
+		description="The scaling of the element."
+		default="100%"
 		id="349"
-		deprecated="Only valid for J2ME Polish 2.0.x"
+		since="J2ME Polish 2.1"
 	/>
-	
-	<!--
-	
+
 	<attribute
-		name="fullscreen-background"
+		name="content-background"
 		type="background"
 		appliesTo="Screen"
-		description="The background that is painted over the last screen. This can be used for dimming previous screens when tbe new screen does have margins." 
-		id="144"
+		description="The background of the content area of a screen. This needs to be a reference to a background defined in the backgrounds section."
+		id="350"
+		since="J2ME Polish 2.1"
 	/>
 	
 	<attribute
-		name="opened-menu-background"
-		type="background"
+		name="content-border"
+		type="border"
 		appliesTo="Screen"
-		description="The background that is painted over the rest of the screen when the menu is opened. This makes sense only when the &quot;fullscreen&quot; mode is activated." 
-		id="145"
+		description="The border of the content area of a screen. This needs to be a reference to a border defined in the borders section."
+		id="351"
+		since="J2ME Polish 2.1"
+	/>
+	
+	<attribute
+		name="content-bgborder"
+		type="border"
+		appliesTo="Screen"
+		description="The border of the content area of a screen which is painted before the background. This needs to be a reference to a border defined in the borders section."
+		id="352"
+		since="J2ME Polish 2.1"
+	/>
+	
+	
+	<attribute
+		name="gauge-background-color"
+		type="color"
+		appliesTo="Gauge"
+		description="the background color of the gauge progress bar"
+		default="white"
+		id="353"
+		since="J2ME Polish 2.1"
+	/>
+
+	<attribute
+		name="bgborder"
+		type="border"
+		appliesTo="Item,FakeCustomItem"
+		description="The border of an item which is painted before the background. This needs to be a reference to a border defined in the borders section."
+		id="354"
+		since="J2ME Polish 2.1"
+	/>
+	
+	<attribute
+		name="gauge-rotating-circles-start-color"
+		type="color"
+		appliesTo="RotaingCirclesGaugeView"
+		description="The color of the biggest circle"
+		default="black"
+		id="355"
+		since="J2ME Polish 2.1"
+	/>
+	
+	<attribute
+		name="gauge-rotating-circles-end-color"
+		type="color"
+		appliesTo="RotaingCirclesGaugeView"
+		description="The color of the smallest circle"
+		default="#666666"
+		id="356"
+		since="J2ME Polish 2.1"
+	/>
+	
+	<attribute
+		name="horizontalview-align-heights"
+		type="boolean"
+		appliesTo="HorizontalContainerView"
+		description="Specifies if all items should have the same height as the highest item in the group."
+		default="false"
+		id="357"
+		since="J2ME Polish 2.1"
+	/>
+	
+	<attribute
+		name="scrollbar-slider-background"
+		type="background"
+		appliesTo="ScrollBar"
+		description="The background that renders the slider instead of the default monocolored rectangular slider."
+		id="358"
+		since="J2ME Polish 2.1"
+	/>
+	
+	<attribute
+		name="focus-all"
+		type="boolean"
+		appliesTo="Container,FakeContainerCustomItem"
+		description="Focusses all children items with their specific :hover style when the parent container is focused, even when such item's are not interactive."
+		default="false"
+		id="359"
+		since="J2ME Polish 2.1"
+	/>
+	
+	<attribute
+		name="content-visible"
+		type="boolean"
+		appliesTo="Item,FakeCustomItem"
+		description="Activates or deactives the visibility of the item's contents. When the content is not visible, only the label as well as before and after attributes are visible."
+		default="true"
+		id="360"
+		since="J2ME Polish 2.1"
+	/>
+
+	<attribute
+		name="separate-title"
+		type="boolean"
+		appliesTo="Screen"
+		description="Ensures that the title is painted separately from the screen's content. This attribute makes only sense when combining it with the repaint-previous-screen CSS attribute."
+		default="false"
+		id="361"
+		since="J2ME Polish 2.1"
+	/>
+
+	<attribute
+		name="content-background-width"
+		type="dimension"
+		appliesTo="Screen"
+		description="The width of the content-background in pixel or percent, if it should differ from the the item's content width."
+		default="0px"
+		id="362"
+		since="J2ME Polish 2.1"
+	/>
+	
+	<attribute
+		name="content-background-height"
+		type="dimension"
+		appliesTo="Screen"
+		description="The height of the content-background in pixel or percent, if it should differ from the the item's content width."
+		default="0px"
+		id="363"
+		since="J2ME Polish 2.1"
+	/>
+
+	<attribute
+		name="content-background-anchor"
+		type="anchor"
+		appliesTo="Screen"
+		description="The orientation of the content-background in case either it's width or height is different from the item's content dimensions."
+		default="horizontal-center | vertical-center"
+		shell="new Integer()"
+		id="364"
+		since="J2ME Polish 2.1"
+	/>
+
+	<attribute
+		name="subtitle-position"
+		type="integer"
+		appliesTo="Screen,TabbedForm"
+		description="You can specify the position of the subtitle on the screen. Since a TabbedForm uses the subtitle element for rendering the tabbar, you can also use this for positioning a tabbar at the botom."
+		default="top"
+		values="top, bottom"
+		id="365"
+		since="J2ME Polish 2.1"
+	/>
+	
+	<attribute
+		name="text-visible"
+		type="boolean"
+		appliesTo="IconItem"
+		description="Set the text of an IconItem to visible or invisible"
+		default="true"
+		id="366"
+		since="J2ME Polish 2.1"
+	/>
+	
+	<attribute
+		name="gauge-images-sources"
+		type="string"
+		appliesTo="Gauge"
+		description="The images to use in a ImagesGaugeView, separated by a comma (e.g. 1.png,2.png)"
+		id="367"
+		since="J2ME Polish 2.1"
+	/>
+	
+	<attribute
+		name="gauge-images-interval"
+		type="integer"
+		appliesTo="Gauge"
+		description="The interval to change the images in a ImagesGaugeView"
+		id="368"
+		since="J2ME Polish 2.1"
+	/>
+	
+	<attribute
+		name="max-lines"
+		type="integer"
+		appliesTo="StringItem"
+		description="the maximum lines to show in a stringitem"
+		id="369"
+		since="J2ME Polish 2.1"
+	/>
+	
+	<attribute
+		name="focus-all-style"
+		type="style"
+		appliesTo="Container"
+		description="the style to style the real focused item"
+		id="370"
+		since="J2ME Polish 2.1"
+	/>
+	
+	<attribute
+		name="text-cycling-interval"
+		type="time"
+		appliesTo="CyclingTextEffect"
+		description="The time interval that has to pass before the next text chunk is shown."
+		default="1s"
+		id="371"
+		since="J2ME Polish 2.1"
+	/>
+	
+	<attribute
+		name="icon-filter"
+		type="filter"
+		appliesTo="IconItem,IconCustomItem"
+		description="Specifies an RGB filter for the image of an icon item"
+		default="none"
+		id="372"
+		since="J2ME Polish 2.1"
+	/>
+
+	<attribute
+		name="align-content-x"
+		type="dimension"
+		appliesTo="AlignAtContentContainerView"
+		description="The horizontal start position for the content either in pixels or in percent."
+		default="0"
+		id="373"
+		since="J2ME Polish 2.1"
+	/>
+	
+	<attribute
+		name="force-lines"
+		type="boolean"
+		appliesTo="StringItem"
+		description="forces the StringItem to display the lines stated in max-lines"
+		id="374"
+		since="J2ME Polish 2.1"
+	/>
+	
+	<attribute
+		name="bottomframe-height"
+		type="dimension"
+		appliesTo="FramedForm"
+		description="forces the bottomframe to the specified height"
+		id="375"
+		since="J2ME Polish 2.1"
+	/>
+
+	<attribute
+		name="topframe-height"
+		type="dimension"
+		appliesTo="FramedForm"
+		description="forces the toprame to the specified height"
+		id="376"
+		since="J2ME Polish 2.1"
+	/>
+	
+	<attribute
+		name="content-expand"
+		type="boolean"
+		appliesTo="Screen"
+		description="expand the drawn content area to the bottom"
+		id="377"
+		since="J2ME Polish 2.1"
+	/>
+
+
+	<attribute
+		name="time-arrow-up"
+		type="background"
+		appliesTo="TimeEntryItem"
+		description="A square background that can be clicked for increasing the hour or minute setting of a TimeEntryItem. Use a reference from the backgrounds section."
+		default="none"
+		id="378"
+		since="J2ME Polish 2.1"
 	/>
 		
-	-->
+	<attribute
+		name="time-arrow-down"
+		type="background"
+		appliesTo="TimeEntryItem"
+		description="A square background that can be clicked for decreasing the hour or minute setting of a TimeEntryItem. Use a reference from the backgrounds section."
+		default="none"
+		id="379"
+		since="J2ME Polish 2.1"
+	/>
 
+	<attribute
+		name="time-arrow-width"
+		type="dimension"
+		appliesTo="TimeEntryItem"
+		description="The width of the arrows for altering the time with pointer events, which defaults to the width of '99' in the time item's font."
+		default="12px"
+		id="380"
+		since="J2ME Polish 2.1"
+	/>
+		
+	<attribute
+		name="align-heights"
+		type="boolean"
+		appliesTo="ContainerView"
+		description="Specifies if all items should have the same height as the highest item in the respective row."
+		default="false"
+		id="381"
+		since="J2ME Polish 2.1"
+	/>
+	
+	<attribute
+		name="suppress-indicator"
+		type="boolean"
+		appliesTo="CommandItem"
+		description="suppresses the indicator of a CommandItem"
+		default="false"
+		id="382"
+		since="J2ME Polish 2.1"
+	/>
+	
+	<attribute
+		name="inline-label"
+		type="boolean"
+		appliesTo="Item"
+		description="Inlines the label of an item, so that the content will be on the same row (or at least start on the same row). The label can only occupy 90% or less of the available width, otherwise this setting is ignored."
+		default="false"
+		id="383"
+		since="J2ME Polish 2.1"
+	/>
+
+	<attribute
+		name="item-transition"
+		type="map"
+		appliesTo="ItemScreenChangeAnimation"
+		description="Defines a transition for an item, e.g. within the item screen-change-animation."
+		id="384"
+	>
+		<mapping from="position" to="new de.enough.polish.ui.itemtransitions.PositionItemTransition()" />
+	</attribute>
+	
+	<attribute
+		name="item-screen-change-animation-container-transition"
+		type="item-transition"
+		appliesTo="ItemScreenChangeAnimation"
+		description="The transition for the container"
+		default="none"
+		id="385"
+		since="J2ME Polish 2.1"
+	/>
+	
+	<attribute
+		name="title-menu"
+		type="boolean"
+		appliesTo="Screen"
+		description="A flag to show the menubar as the title"
+		default="false"
+		id="386"
+		since="J2ME Polish 2.1"
+	/>
+	
+	<attribute
+		name="vertical-scroll-interval"
+		type="time"
+		appliesTo="VerticalScrollTextEffect"
+		description="The interval to show and scroll lines in the VerticalScrollTextEffect"
+		id="387"
+		default="2s"
+		since="J2ME Polish 2.1"
+	/>
+
+	<attribute
+		name="text-layout"
+		type="layout"
+		appliesTo="StringItem, FakeStringCustomItem"
+		description="The layout of the text, this is useful in combination with min-width or max-width and an item layout that differs from the desired text layout."
+		default="left"
+		shell="new Integer()"
+		id="388"
+		since="J2ME Polish 2.1"
+	/>
+	
+	<attribute
+		name="checked-style"
+		type="style"
+		appliesTo="ChoiceItem"
+		description="The style for a checked element of a ChoiceGroup. You should also define a corresponding focused-style."
+		default="none"
+		id="389"
+		since="J2ME Polish 2.1"
+	/>
+	
+	<attribute
+		name="ticker-direction"
+		type="integer"
+		appliesTo="Ticker"
+		description="The direction of the ticker - this defaults to 'left' meaning moving from right to left."
+		default="left"
+		values="left,right"
+		id="390"
+		since="J2ME Polish 2.1"
+	/>
+	
+	<attribute
+		name="scroll-up-background"
+		type="background"
+		appliesTo="Screen"
+		description="A background that is painted over the normal background when the container can scroll up/is scrolled down. Use a reference from the backgrounds section."
+		default="none"
+		id="391"
+		since="J2ME Polish 2.1"
+	/>
+	
+	<attribute
+		name="scroll-down-background"
+		type="background"
+		appliesTo="Screen"
+		description="A background that is painted over the normal background when the container can scroll down. Use a reference from the backgrounds section."
+		default="none"
+		id="392"
+		since="J2ME Polish 2.1"
+	/>
+	
+	<attribute
+		name="overlay-background"
+		type="background"
+		appliesTo="Screen"
+		description="A background that is painted between the previous screen and the current screen. This makes only sense in combination with repaint-previous-screen."
+		default="none"
+		id="393"
+		since="J2ME Polish 2.1"
+	/>
+	
+	<attribute
+		name="show-delay"
+		type="time"
+		appliesTo="Container,FakeContainerCustomItem,ListItem,Screen"
+		description="Delays a show notification for the included items, this is typically used in combination with CSS animations that are triggered on show."
+		default="0ms"
+		id="394"
+		since="J2ME Polish 2.1"
+	/>
+
+<!-- 
+	<attribute
+		name="content-layout"
+		type="layout"
+		appliesTo="Item, FakeCustomItem"
+		description="The layout of the content, this is useful in combination with min-width or max-width and an item layout that differs from the desired content layout."
+		default="left"
+		shell="new Integer()"
+		id="389"
+		since="J2ME Polish 2.1"
+	/>
+	
+	<attribute
+		name=""
+		type=""
+		appliesTo=""
+		description=""
+		default=""
+		values=""
+		id=""
+		since="J2ME Polish 2.1"
+	/>
+ -->
+	
+	
 </attributes>

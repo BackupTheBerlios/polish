@@ -11,13 +11,21 @@ public final class ClassRenamingHelper
       {
         return null;
       }
+
+    // Try a shortcut.
+    if (renamingMap.get(str) != null) {
+    	return renamingMap.get(str).toString();
+    }
     
     Iterator it = renamingMap.entrySet().iterator();
     
+    // Loop through all remappings.
     while (it.hasNext())
       {
         Map.Entry entry = (Map.Entry) it.next();
-        str = str.replaceAll((String) entry.getKey(), (String) entry.getValue());
+        String key = "L" + entry.getKey() + ";";
+        String value = "L" + entry.getValue() + ";";
+        str = str.replaceAll(key, value);
       }
     
     return str;

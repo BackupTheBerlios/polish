@@ -63,7 +63,7 @@ public class CodeEditor
 extends JFrame 
 implements ActionListener, ClipboardOwner 
 {
-    private static final long serialVersionUID = 2486441360577961200L;
+	private static final long serialVersionUID = 2486441360577961200L;
 
 	private final JEditorPane editor;
 	private final JButton copyToClipboardButton;

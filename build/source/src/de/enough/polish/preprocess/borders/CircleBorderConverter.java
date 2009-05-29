@@ -26,7 +26,7 @@
  */
 package de.enough.polish.preprocess.borders;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import de.enough.polish.BuildException;
 
@@ -62,7 +62,7 @@ public class CircleBorderConverter extends BorderConverter {
 	 * @see de.enough.polish.preprocess.BorderConverter#createNewStatement(java.util.HashMap, de.enough.polish.preprocess.Style, de.enough.polish.preprocess.StyleSheet)
 	 */
 	protected String createNewStatement(
-			HashMap border, 
+			Map border, 
 			Style style,
 			StyleSheet styleSheet ) 
 	throws BuildException 

@@ -16,7 +16,6 @@
 	columns-width: equal;
 	layout: center | vertical-center;
 	background-color: white;
-	focused-style: .textFieldSymbolListFocused;
 }
 
 .textFieldSymbolItem {
@@ -29,6 +28,7 @@
 		style: bold;
 	}
 	layout: center;
+	focused-style: .textFieldSymbolListFocused;
 }
 
 .textFieldSymbolListFocused {
@@ -84,6 +84,11 @@ centercommand {
 .browserTextBoldItalic {
 	inherit: false;
 	font-style: bold | italic;
+}
+
+.browserTextCode {
+	inherit: false;
+	font-face: monospace;
 }
 
 
@@ -145,9 +150,40 @@ centercommand {
 }
 
 .browserChoiceGroup {
+	inherit: false;
 }
 
+
 .browserChoiceItem {
+	inherit: false;
+}
+
+.browserChoiceGroupMultiple {
+	inherit: false;
+}
+
+.browserChoiceGroupExclusive {
+	inherit: false;
+}
+
+.browserChoiceGroupPopup {
+	background-color: white;
+	inherit: false;
+	focused-style: .browserChoiceGroupPopupFocused;
+}
+
+.browserChoiceGroupPopupFocused {
+	background-color: silver;
+	inherit: false;
+}
+
+
+.browserCheckBox {
+	inherit: false;
+}
+
+.browserRadio {
+	inherit: false;
 }
 
 .browserOption {

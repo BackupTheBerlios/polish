@@ -116,7 +116,11 @@ public class CssAttributesManager {
 				CssAttribute existingAttribute = (CssAttribute) this.attributesByName.get( name );
 				if (existingAttribute != null) {
 					definition.setAttribute("type", existingAttribute.getType() );
-					existingAttribute.add( createCssAttribute( definition ) );
+					CssAttribute attr = createCssAttribute( definition );
+					if (attr.mappingsByName == null) {
+						throw new BuildException("Unable to read [custom-css-attributes.xml]: atribute " + name + " is defined more than once.");
+					}
+					existingAttribute.add( attr );
 					continue;
 				}
 			}
@@ -264,6 +268,7 @@ public class CssAttributesManager {
 			}
 			for (int j = 0; j < classNames.length; j++) {
 				if ( attribute.appliesTo( classNames[j] ) || attribute.appliesTo( fullClassNames[j] ) ) {
+					System.out.println("attribute " + attribute.getName() + " applies to " + classNames[j] + ", j=" + j);
 					if (j == 0) {
 						firstClassAttributes.add( attribute );
 					} else {
@@ -304,7 +309,7 @@ public class CssAttributesManager {
 	 * Retrieves an attribute manager instance for the given arguments.
 	 * 
 	 * @param polishHome the J2ME Polish installation directory
-	 * @param resourceUtil
+	 * @param resourceUtil resourc utility for loading resources from the classpath
 	 * @return the attribute manager instance
 	 */
 	public static CssAttributesManager getInstance(File polishHome, ResourceUtil resourceUtil) 
@@ -322,10 +327,34 @@ public class CssAttributesManager {
 			}
 			return manager;
 		} catch (FileNotFoundException e) {
-			// TODO robertvirkus handle FileNotFoundException
-			e.printStackTrace();
 			throw new IllegalArgumentException("Unable to load css attributes: " + e );
 		}
+	}
+
+	/**
+	 * Adds an implicit attribute definition for a background or border parameter
+	 * @param param the parameter attribute
+	 * @param mappingFrom the from attribute of the mapping
+	 * @param paramParent the parent attribute of the parameter
+	 */
+	public void addImplicitAttribute(CssAttribute param, String mappingFrom, CssAttribute paramParent)
+	{
+		if (param.isHidden()) {
+			// hidden parameters cannot be animated
+			return;
+		}
+		String name = paramParent.getName() + "-" + mappingFrom + "-" + param.getName();
+		try
+		{
+			CssAttribute implicitAttribute = (CssAttribute) param.getClass().newInstance();
+			implicitAttribute.setImplicitDefinition( name, param );
+			this.attributesByName.put( name, implicitAttribute);
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			throw new BuildException("Unable to register implicit attribute \"" + name + "\": " + e.toString() + ". Please report this error to j2mepolish@enough.de.");
+		}
+		
 	}
 
 }

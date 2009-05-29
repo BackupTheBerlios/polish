@@ -26,7 +26,6 @@
 package de.enough.polish.website;
 
 import de.enough.polish.preprocess.css.CssAttribute;
-import de.enough.polish.preprocess.css.CssAttributesManager;
 import de.enough.polish.preprocess.css.CssMapping;
 import de.enough.polish.preprocess.css.ParameterizedCssMapping;
 import de.enough.webprocessor.util.StringList;

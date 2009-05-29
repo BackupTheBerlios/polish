@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import de.enough.polish.BuildException;
+
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.Extension;
@@ -62,7 +63,7 @@ implements Runnable, OutputFilter
 {
 
 	protected EmulatorSetting emulatorSetting;
-	private boolean isFinished = false;
+	protected boolean isFinished = false;
 	private File[] sourceDirs;
 	private String preprocessedSourcePath;
 	private String classPath;
@@ -71,9 +72,6 @@ implements Runnable, OutputFilter
 	private boolean decompilerInstalled;
 	private String header;
 	private String ignoreMessagePattern;
-	private String applicationName;
-	private Process[] processProxy;
-	private boolean logOutput = true;
 	
 	/**
 	 * Creates a new emulator instance.
@@ -102,22 +100,6 @@ implements Runnable, OutputFilter
 	 */
 	public abstract String[] getArguments();
 	
-	public void setApplicationName(String applicationName) {
-		this.applicationName = applicationName;
-	}
-	
-	protected String[] doGetArguments() {
-		String[] arguments = getArguments();
-		if(this.applicationName == null) {
-			return arguments;
-		}
-		String[] result;
-		int argumentCount = arguments.length;
-		result = new String[argumentCount+1];
-		System.arraycopy(arguments, 0, result, 0, argumentCount);
-		result[argumentCount] = this.applicationName;
-		return result;
-	}
 	
 	/**
 	 * Sets the minimum settings.
@@ -127,7 +109,7 @@ implements Runnable, OutputFilter
 	 * @param sourceDirs the directories containing the original source files.
 	 * @param environment the J2ME Polish and Ant-properties
 	 */
-	public void setBasicSettings( Device device, EmulatorSetting setting, File[] sourceDirs, Environment environment ) {
+	private void setBasicSettings( Device device, EmulatorSetting setting, File[] sourceDirs, Environment environment ) {
 		this.device = device;
 		this.emulatorSetting = setting;
 		this.environment = environment;
@@ -141,7 +123,7 @@ implements Runnable, OutputFilter
 	 * @see java.lang.Runnable#run()
 	 */
 	public void run() {
-		String[] arguments = doGetArguments();
+		String[] arguments = getArguments();
 		run( arguments, true );
 	}
 	
@@ -235,7 +217,6 @@ implements Runnable, OutputFilter
 	 * @param wait true when the current thread should block
 	 * @param filter the output filter
 	 * @param executionDir the director for executing the emulator
-	 * @param processProxy an array to retrieve the underlying process. May be null or an array with at a size of at least one.
 	 * @return the result code from the emulator
 	 * @throws IOException when the emulator process could not be invoked
 	 */
@@ -245,7 +226,7 @@ implements Runnable, OutputFilter
 		System.out.println( "Starting emulator " + arguments[0] );
 		this.decompilerInstalled = true;
 		this.header = info;
-		return ProcessUtil.exec( arguments, info, wait, filter,  executionDir,this.processProxy,this.logOutput );
+		return ProcessUtil.exec( arguments, info, wait, filter,  executionDir );
 	}
 
 	/**
@@ -421,6 +402,13 @@ implements Runnable, OutputFilter
 				//System.out.println( "emulator.environment == null: " + (emulator.environment == null) );
 				okToStart = emulator.init(device, setting, environment);
 			}
+			if (!okToStart) {
+				emulator = new MicroEmulator();
+				emulator.init(null, null, setting, null, extensionManager, environment); // extension call
+				// for some reason the environment is not set correctly in the init() method... weird.
+				emulator.environment = environment;
+				okToStart = emulator.init(device, setting, environment);				
+			}
 			if (!okToStart) {			
 				return null;
 			}
@@ -439,19 +427,8 @@ implements Runnable, OutputFilter
 	public void execute(Device dev, Locale locale, Environment env)
 			throws BuildException 
 	{
-		execute(dev,locale,env,null,true);
-	}
-	
-	/* (non-Javadoc)
-	 * @see de.enough.polish.Extension#execute(de.enough.polish.devices.Device, java.util.Locale, de.enough.polish.Environment)
-	 */
-	public void execute(Device dev, Locale locale, Environment env,Process[] aProcessProxy, boolean shouldLogOutput)
-			throws BuildException 
-	{
 		this.device = dev;
 		this.environment = env;
-		this.processProxy = aProcessProxy;
-		this.logOutput = shouldLogOutput;
 		Thread t = new Thread( this );
 		t.start();
 	}

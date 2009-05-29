@@ -5,6 +5,9 @@ import java.util.Map;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodAdapter;
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+
+import de.enough.polish.libraryprocessor.ImportConversionMap.ConversionTarget;
 
 public class ClassRenamingMethodVisitor
     extends MethodAdapter
@@ -42,6 +45,19 @@ public class ClassRenamingMethodVisitor
    */
   public void visitMethodInsn(int opcode, String owner, String name, String desc)
   {
+	ConversionTarget target = (ConversionTarget) this.renamingMap.get(owner);
+
+	if (target != null) {
+		if (opcode == Opcodes.INVOKEVIRTUAL
+			&& target.isInterface()) {
+			opcode = Opcodes.INVOKEINTERFACE;
+		}
+		else if (opcode == Opcodes.INVOKEINTERFACE
+				 && !target.isInterface()) {
+			opcode = Opcodes.INVOKEVIRTUAL;
+		}
+	}
+
     owner = ClassRenamingHelper.doRenaming(owner, this.renamingMap);
     desc = ClassRenamingHelper.doRenaming(desc, this.renamingMap);
     this.mv.visitMethodInsn(opcode, owner, name, desc);

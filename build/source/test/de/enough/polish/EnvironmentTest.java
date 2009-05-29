@@ -82,6 +82,10 @@ public class EnvironmentTest extends TestCase {
 		assertTrue( matcher.find() );
 		assertEquals( "${ bytes( 100 kb ) }", matcher.group() );
 
+		input = "]${ replace(polish.identifier,A,\\u0020) }";
+		matcher = Environment.PROPERTY_PATTERN.matcher( input );
+		assertTrue( matcher.find() );
+		assertEquals( "${ replace(polish.identifier,A,\\u0020) }", matcher.group() );
 	}
 	
 	public void testFunctionPattern() {
@@ -133,7 +137,13 @@ public class EnvironmentTest extends TestCase {
 		matcher = Environment.FUNCTION_PATTERN.matcher( input );
 		assertTrue( matcher.find() );
 		assertEquals( "calculate(3/5)", matcher.group() );
-}
+		
+		input = "]${ replace(polish.identifier,A,\\u0020) }[";
+		matcher = Environment.FUNCTION_PATTERN.matcher( input );
+		assertTrue( matcher.find() );
+		assertEquals( "replace(polish.identifier,A,\\u0020)", matcher.group() );
+	}
 
+	
 
 }

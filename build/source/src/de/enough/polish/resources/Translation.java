@@ -136,7 +136,7 @@ public class Translation {
 	 * Creates a new multiple param translation.
 	 * @param key the key
 	 * @param chunks the value chunks 
-	 * @param indeces  the indeces of the parameters
+	 * @param indeces  the indices of the parameters
 	 * @param id the integer ID
 	 */
 	public Translation(String key, String[] chunks, int[] indeces, int id)

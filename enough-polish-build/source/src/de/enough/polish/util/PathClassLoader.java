@@ -217,10 +217,10 @@ public class PathClassLoader extends ClassLoader {
      */
     private static final int BUFFER_SIZE = 8192;
 
-    /**
-     * Number of array elements in a test array of strings
-     */
-    private static final int NUMBER_OF_STRINGS = 256;
+//    /**
+//     * Number of array elements in a test array of strings
+//     */
+//    private static final int NUMBER_OF_STRINGS = 256;
 
     /**
      * The components of the classpath that the classloader searches
@@ -269,16 +269,16 @@ public class PathClassLoader extends ClassLoader {
     /** Static map of jar file/time to manifiest class-path entries */
     private static Map/*<String,String>*/ pathMap = Collections.synchronizedMap(new HashMap());
 
-    /**
-     * The context loader saved when setting the thread's current
-     * context loader.
-     */
-    private ClassLoader savedContextLoader = null;
+//    /**
+//     * The context loader saved when setting the thread's current
+//     * context loader.
+//     */
+//    private ClassLoader savedContextLoader = null;
 
-    /**
-     * Whether or not the context loader is currently saved.
-     */
-    private boolean isContextLoaderSaved = false;
+//    /**
+//     * Whether or not the context loader is currently saved.
+//     */
+//    private boolean isContextLoaderSaved = false;
 
     /**
      * Create an PathClassLoader with a parent classloader and an initial classpath.

@@ -77,6 +77,25 @@
 	</api>
 	
 	<api>
+		<name>Mobile Media API 1.2</name>
+		<description>The Mobile Media API 1.2 provides
+			functionalities for playing and capturing sounds and videos.
+		</description>
+		<!-- 
+		     The MIDP 2.0 standard supports a subset of the MMAPI, so when the 
+		     MMAPI is present, it needs to be prepended to the bootclasspath
+		     otherwise there will be compile errors when MMAPI-only features
+		     are used such as the Manager.MIDI_DEVICE_LOCATOR constant.
+		-->
+		<position>bootclasspath/p</position>
+		<parent>mmapi</parent>
+		<names>mmapi1.2,mm-api1.2,mmapi-1.2</names>
+		<symbol>mmapi1.2</symbol>
+		<files>mmapi.jar,j2me-mmapi.jar, mma.zip</files>
+		<path>import/mmapi.jar</path>
+	</api>
+	
+	<api>
 		<name>Wireless Messaging API</name>
 		<description>The Wireless Messaging API provides
 			functionalities for sending and receiving messages (SMS).
@@ -104,7 +123,7 @@
 		<description>The Location API provides
 			functionalities for determing the position of the user.
 		</description>
-		<names>location api, location-api, JSR-179,location,JSR179</names>
+		<names>locationapi, location-api, JSR-179,location,JSR179</names>
 		<symbol>locationapi</symbol>
 		<files>j2me-locationapi.jar, location.jar, locationapi-1.0.jar</files>
 		<path>import/locationapi-1.0.jar</path>
@@ -139,7 +158,7 @@
 		as well as the MIDP/2.0 platform. The MMAPI is only conditionally
 		required (when the device has J2ME Multimedia APIs). 
 		</description>
-		<names>JSR-185, JSR185, JTWI, jtwi, jsr-185</names>
+		<names>JSR-185, JSR185, JTWI</names>
 		<symbol>jtwi</symbol>
 	</api>
 
@@ -199,12 +218,24 @@
 	</api>
 
 	<api>
+		<name>Vodafone Service Class Library 1.0</name>
+		<description>
+		A JBlend extension for some devices of the Vodafone operator.
+		</description>
+		<names>VSCL-1.0</names>
+		<parent>VSCL</parent>
+		<symbol>vscl-1.0</symbol>
+		<files>vscl-1.0.jar</files>
+		<path>import/vscl-1.0.jar</path>
+	</api>
+
+	<api>
 		<name>Vodafone Service Class Library 1.0.1</name>
 		<description>
 		A JBlend extension for some devices of the Vodafone operator.
 		</description>
 		<names>VSCL-1.0.1</names>
-		<parent>VSCL</parent>
+		<parent>VSCL-1.0</parent>
 		<symbol>vscl-1.0.1</symbol>
 		<files>vscl-1.0.1.jar</files>
 		<path>import/vscl-1.0.1.jar</path>
@@ -232,6 +263,18 @@
 		<symbol>vscl-2.0</symbol>
 		<files>vscl-2.0.jar</files>
 		<path>import/vscl-2.0.jar</path>
+	</api>
+
+	<api>
+		<name>Vodafone Service Class Library 2.1</name>
+		<description>
+		A JBlend extension for some devices of the Vodafone operator.
+		</description>
+		<names>VSCL-2.1, vslc2.1</names>
+		<parent>VSCL-2.0</parent>
+		<symbol>vscl-2.1</symbol>
+		<files>vscl-2.1.jar</files>
+		<path>import/vscl-2.1.jar</path>
 	</api>
 
 	<api>
@@ -327,6 +370,50 @@
 		<files>security.jar</files>
 		<path>import/jsr177.jar</path>
 	</api>
+
+	<api>
+		<name>Security and Trust Services API - APDU</name>
+		<description>
+		Provides J2ME applications with APDU APIs for security and trust services through the integration of a Security Element.
+		</description>
+		<names>satsa-apdu</names>
+		<symbol>satsa-apdu</symbol>
+		<files>satsa-apdu.jar</files>
+		<path>import/satsa-apdu.jar</path>
+	</api>
+	
+	<api>
+		<name>Security and Trust Services API - CRYPTO</name>
+		<description>
+		Provides J2ME applications with CRYPTO APIs for security and trust services through the integration of a Security Element.
+		</description>
+		<names>satsa-crypto</names>
+		<symbol>satsa-crypto</symbol>
+		<files>satsa-crypto.jar</files>
+		<path>import/satsa-crypto.jar</path>
+	</api>
+	
+	<api>
+		<name>Security and Trust Services API - JCRMI</name>
+		<description>
+		Provides J2ME applications with JCRMI APIs for security and trust services through the integration of a Security Element.
+		</description>
+		<names>satsa-jcrmi</names>
+		<symbol>satsa-jcrmi</symbol>
+		<files>satsa-jcrmi.jar</files>
+		<path>import/satsa-jcrmi.jar</path>
+	</api>
+	
+	<api>
+		<name>Security and Trust Services API - PKI</name>
+		<description>
+		Provides J2ME applications with PKI APIs for security and trust services through the integration of a Security Element.
+		</description>
+		<names>satsa-pki</names>
+		<symbol>satsa-pki</symbol>
+		<files>satsa-pki.jar</files>
+		<path>import/satsa-pki.jar</path>
+	</api>
 	
 	<api>
 		<name>SIP API</name>
@@ -399,12 +486,65 @@
 		<description>
 		Classes for sensors
 		</description>
-		<names>sensor</names>
+		<names>sensor, sensorapi, JSR256, JSR-256</names>
 		<symbol>sensor</symbol>
 		<files>sensor.jar</files>
 		<path>import/sensor.jar</path>
 	</api>
+
+	<api>
+		<name>Sprint API</name>
+		<description>
+		Classes for sms, audio, light, etc. for Sprint devices
+		</description>
+		<names>sprint-api</names>
+		<symbol>sprint</symbol>
+		<files>SprintApi.jar</files>
+		<path>import/SprintApi.jar</path>
+	</api>
+
+	<api>
+		<name>Motorola game API</name>
+		<description>
+		Classes for sms, audio, light, etc. for Motorola devices
+		</description>
+		<names>motorola-game</names>
+		<symbol>motogame</symbol>
+		<files>motogame.jar</files>
+		<path>import/motogame.jar</path>
+	</api>
 	
+	<api>
+		<name>LG API</name>
+		<description>
+		Classes for light, graphical effects, etc. for LG devices
+		</description>
+		<names>lg,lgapi,lgextension,lg-api</names>
+		<symbol>lg</symbol>
+		<files>lg.jar</files>
+		<path>import/lgapi.jar</path>
+	</api>
+	
+	<api>
+		<name>Contactless Communication API</name>
+		<description>Contactless communication can be used to provide a small amount of information to applications from some other medium, for example, links to some content or identifiers for services etc. Contactless communication can be based on e.g. Radio Frequency Identification (RFID), Near Field Communication (NFC) or bar codes.
+		</description>
+		<names>JSR257,JSR-257,contactless,nfc,rfid</names>
+		<symbol>nfc</symbol>
+		<files>jsr257.jar,jsr257-1.0.jar</files>
+		<path>import/jsr257.jar</path>
+	</api>
+
+	<api>
+		<name>Contactless Communication API Extension</name>
+		<description>Extension of JSR 257.
+		</description>
+		<names>JSR257extension,JSR-257extension,contactlessextension,nfcextension</names>
+		<symbol>nfcextension</symbol>
+		<files>jsr257extension.jar</files>
+		<path>import/jsr257extension.jar</path>
+	</api>
+		
 	<api>
 		<name>Enough Software Windows Helper API</name>
 		<description>
@@ -414,6 +554,17 @@
 		<symbol>windows</symbol>
 		<files>windows.jar</files>
 		<path>import/windows.jar</path>
+	</api>
+
+	<api>
+		<name>Enough Software iPhone Helper API</name>
+		<description>
+		Classes to interact with Apple iPhone environment from within Java.
+		</description>
+		<names>iphone</names>
+		<symbol>iphone</symbol>
+		<files>iphone.jar</files>
+		<path>import/iphone.jar</path>
 	</api>
 
 <!--

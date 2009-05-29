@@ -99,7 +99,9 @@ public class CssBlockTest extends TestCase
 		matcher = CssBlock.INNER_BLOCK_PATTERN.matcher(input);
 		assertTrue( matcher.find() );
 		assertEquals("background {            type: vertical-gradient;                top-color: #ccc;                bottom-color: #fff;             start: 10%;               end: 90%;       }", matcher.group() );
-
+		
+		input = ".itemMain:hover { font-color: white;      font-style: bold;       background {            type: round-rect;               color: #150020; }                       text-color: white;                                                      text-effect: split;        text-split-bottom-color: white; text-split-split-pos: 50%;      text-split-split-pos-animation {                on: focus-down;         duration: 600ms;                range: 0%..100%;        }       text-split-split-pos-animation {           on: focus-up;           duration: 600ms;                range: 100%..0%;        }               text-color-animation {          on: focus-down;         duration: 200ms;                range: white..red;              function: linear; }}";
+		new CssBlock(input);
 	}
 
 }

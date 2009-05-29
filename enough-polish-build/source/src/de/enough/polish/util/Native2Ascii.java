@@ -157,21 +157,30 @@ public class Native2Ascii {
 		StringBuffer buffer = new StringBuffer( input.length() + 60 );
 		for (int i = 0; i < input.length(); i++) {
             char c = input.charAt(i);
-            if (c <= 0x7E) { 
-                buffer.append(c);
-            }
-            else {
-            	buffer.append("\\u");
-            	String hex = Integer.toHexString(c);
-            	for (int j = hex.length(); j < 4; j++ ) {
-            		buffer.append( '0' );
-            	}
-            	buffer.append( hex );
-            }
+            nativeToAscii( c, buffer );
         }
 		return buffer.toString();
 	}
 	
+	/**
+	 * Translates the given character into ASCII code.
+	 * 
+	 * @param c the character that should be added
+	 * @param buffer the buffer to which the character is added
+	 */
+	public static void nativeToAscii( char c, StringBuffer buffer ) {
+        if (c <= 0x7E) { 
+            buffer.append(c);
+        }
+        else {
+        	buffer.append("\\u");
+        	String hex = Integer.toHexString(c);
+        	for (int j = hex.length(); j < 4; j++ ) {
+        		buffer.append( '0' );
+        	}
+        	buffer.append( hex );
+        }
+	}
 	
 	/**
 	 * Translates the given String into ASCII code.

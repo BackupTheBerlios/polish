@@ -59,10 +59,9 @@ public class Java5CollectorClassVisitor
   public FieldVisitor visitField(int access, String name, String desc, String signature, Object value)
   {
     if (this.isEnumClass
-        && (this.manager.isEnumClass(desc))
-            || "I".equals(desc))
+        && (this.manager.isEnumClass(desc)))
       {
-        String fieldName = this.owner.getDescriptor() + "." + name;
+        String fieldName = this.owner.getDescriptor().replace('\\', '/') + "." + name;
         this.manager.addEnumValue(fieldName, Integer.valueOf(this.nextEnumValue));
         this.nextEnumValue++;
       }

@@ -133,6 +133,7 @@ public class LibraryManager {
 							+ "]. Please adjust your settings in [apis.xml].");
 				}
 				this.librariesByName.put( name, lib );
+				this.librariesByName.put( name.toLowerCase(), lib );
 			}
 			this.librariesByName.put( lib.getSymbol(), lib );
 			this.libraries.add( lib );
@@ -182,7 +183,7 @@ public class LibraryManager {
 		ArrayList libPaths = new ArrayList();
 		for (int i = 0; i < libNames.length; i++) {
 			String libName = libNames[i];
-			Library lib = (Library) this.librariesByName.get( libName );
+			Library lib = getLibrary( libName );
 			String libPath = null;
 			if (lib != null ) {
 				libPath = lib.getPath();
@@ -263,7 +264,11 @@ public class LibraryManager {
 	 * @return the library. When the library is not known, null is returned.
 	 */
 	public Library getLibrary(String libName) {
-		return (Library) this.librariesByName.get( libName );
+		Library lib = (Library) this.librariesByName.get( libName );
+		if (lib == null) {
+			lib = (Library) this.librariesByName.get( libName.toLowerCase() );
+		}
+		return lib;
 	}
 
 	/**

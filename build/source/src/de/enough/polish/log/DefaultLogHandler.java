@@ -73,7 +73,7 @@ public class DefaultLogHandler extends LogHandler {
 		}
 		String name = setting.getName();
 		if (name == null) {
-			System.out.println("Warning: default loghandler has not name and is unable to set up environment/preprocessing variables.");
+			System.out.println("Warning: default loghandler has no name and is unable to set up environment/preprocessing variables.");
 			return;
 		}
 		String value = env.getVariable( "polish.log.handlers" );
@@ -82,6 +82,8 @@ public class DefaultLogHandler extends LogHandler {
 		} else {
 			env.addVariable( "polish.log.handlers", value + "," + getClientLogHandlerClass(env) );
 		}
+		env.addVariable( "polish.log." + name, "true" );
+		//System.out.println("Setting log.handlers to " + env.getVariable( "polish.log.handlers" ));
 		if (this.parameters != null) {
 			for (int i = 0; i < this.parameters.length; i++) {
 				Variable parameter = this.parameters[i];

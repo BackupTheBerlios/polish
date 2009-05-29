@@ -233,4 +233,36 @@ public final class ConvertUtil {
 		}
 	}
 	
+	public final static long convertToMilliseconds( String value ) {
+		long multiplier = 1;
+		if (value.endsWith("ms")) {
+			value = value.substring(0, value.length() - 2).trim();
+		} else if (value.endsWith("min")) {
+			value  = value.substring(0, value.length() - 3).trim();
+			multiplier = 60 * 1000;
+		} else if (value.endsWith("mins")) {
+			value  = value.substring(0, value.length() - 4).trim();
+			multiplier = 60 * 1000;
+		} else if (value.endsWith("m")) {
+			value  = value.substring(0, value.length() - 1).trim();
+			multiplier = 60 * 1000;
+		} else if (value.endsWith("sec")) {
+			value  = value.substring(0, value.length() - 3).trim();
+			multiplier = 1000;
+		} else if (value.endsWith("h")) {
+			value  = value.substring(0, value.length() - 1).trim();
+			multiplier = 60 * 60 * 1000;
+		} else if (value.endsWith("hour")) {
+			value  = value.substring(0, value.length() - 4).trim();
+			multiplier = 60 * 60 * 1000;
+		} else if (value.endsWith("hours")) {
+			value  = value.substring(0, value.length() - 5).trim();
+			multiplier = 60 * 60 * 1000;
+		} else if (value.endsWith("s")) {
+			value  = value.substring(0, value.length() - 1).trim();
+			multiplier = 1000;
+		}
+		return Long.parseLong( value ) * multiplier;
+	}
+	
 }

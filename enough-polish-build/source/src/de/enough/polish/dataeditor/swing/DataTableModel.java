@@ -47,9 +47,9 @@ import de.enough.polish.dataeditor.DataType;
 public class DataTableModel 
 extends AbstractTableModel
 {
-    private static final long serialVersionUID = 1447486151953084724L;
+	private static final long serialVersionUID = 1447486151953084724L;
 
-    private final DataManager dataManager;
+	private final DataManager dataManager;
 	private final SwingDataEditor parentFrame;
 
 	/**

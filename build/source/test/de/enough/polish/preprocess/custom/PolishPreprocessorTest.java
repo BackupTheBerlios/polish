@@ -131,4 +131,37 @@ public class PolishPreprocessorTest extends TestCase {
 	}
 	
 	
+	public void testIsPrimitiveArray() {
+		String test;
+		
+		test = "int[]";
+		assertTrue( PolishPreprocessor.isPrimitiveArray(test));
+		test = "int []";
+		assertTrue( PolishPreprocessor.isPrimitiveArray(test));
+		test = "long[]";
+		assertTrue( PolishPreprocessor.isPrimitiveArray(test));
+		test = "long []";
+		assertTrue( PolishPreprocessor.isPrimitiveArray(test));
+		test = "short[]";
+		assertTrue( PolishPreprocessor.isPrimitiveArray(test));
+		test = "short [ ]";
+		assertTrue( PolishPreprocessor.isPrimitiveArray(test));
+		test = "byte    [ ]";
+		assertTrue( PolishPreprocessor.isPrimitiveArray(test));
+		test = "byte []";
+		assertTrue( PolishPreprocessor.isPrimitiveArray(test));
+		test = "boolean[]";
+		assertTrue( PolishPreprocessor.isPrimitiveArray(test));
+		test = "boolean []";
+		assertTrue( PolishPreprocessor.isPrimitiveArray(test));
+		test = "double[]";
+		assertTrue( PolishPreprocessor.isPrimitiveArray(test));
+		test = "double []";
+		assertTrue( PolishPreprocessor.isPrimitiveArray(test));
+		test = "float[]";
+		assertTrue( PolishPreprocessor.isPrimitiveArray(test));
+		test = "float []";
+		assertTrue( PolishPreprocessor.isPrimitiveArray(test));
+	}
+	
 }

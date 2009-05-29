@@ -63,10 +63,12 @@ polish.predictive.setup.cmd.exit=Exit
 polish.predictive.setup.cmd.yes=Yes
 polish.predictive.setup.cmd.no=No
 
+
+
 im.presence.available=Available
 im.presence.chat=Chat
 im.presence.away=Away
 im.presence.dnd=DND
 im.presence.unavailable=Unavailable
-
 im.error.notconnected=Not connected to RMI server
+

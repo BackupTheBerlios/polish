@@ -70,7 +70,7 @@ import de.enough.polish.util.StringUtil;
 public class HtmlExporterTask extends Task {
 	private static final String[] CSS_TABLE_ROW_CLASSES = new String[]{"oddRow", "evenRow" };
 
-	private File wtkHome = new File( "/home/enough/dev/WTK2.1" );
+//	private File wtkHome = new File( "/home/enough/dev/WTK2.1" );
 	private String targetDir = "../enough-polish-website/tmp/devices/";
 	private HashMap deviceLinks = new HashMap();
 	private Comparator caseInsensitiveComparator = new CaseInsensitiveComparator();

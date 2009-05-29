@@ -25,9 +25,7 @@
  */
 package de.enough.polish.preprocess.css.attributes;
 
-import de.enough.polish.BuildException;
-import de.enough.polish.Environment;
-import de.enough.polish.preprocess.css.CssAttribute;
+import de.enough.polish.util.ConvertUtil;
 
 /**
  * <p>A time interval in milliseonds - sample value: 2s == 2000 ms == 2000.</p>
@@ -39,7 +37,7 @@ import de.enough.polish.preprocess.css.CssAttribute;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class TimeMsCssAttribute extends CssAttribute {
+public class TimeMsCssAttribute extends IntegerCssAttribute {
 	
 	
 	/**
@@ -50,76 +48,14 @@ public class TimeMsCssAttribute extends CssAttribute {
 	}
 	
 
-
-	/**
-	 * Checks and transforms the given CSS value for this attribute.
-	 * 
-	 * @param value the attribute value
-	 * @param environment the environment
-	 * @return the transformed value or the same value if no transformation is required.
-	 * @throws BuildException when a condition is not met or when the value contains conflicting values
-	 */
-	public String getValue(String value, Environment environment ) {
-		try {
-			long multiplier = 1;
-			if (value.endsWith("ms")) {
-				value = value.substring(0, value.length() - 2).trim();
-			} else if (value.endsWith("min")) {
-				value  = value.substring(0, value.length() - 3).trim();
-				multiplier = 60 * 1000;
-			} else if (value.endsWith("mins")) {
-				value  = value.substring(0, value.length() - 4).trim();
-				multiplier = 60 * 1000;
-			} else if (value.endsWith("m")) {
-				value  = value.substring(0, value.length() - 1).trim();
-				multiplier = 60 * 1000;
-			} else if (value.endsWith("sec")) {
-				value  = value.substring(0, value.length() - 3).trim();
-				multiplier = 1000;
-			} else if (value.endsWith("h")) {
-				value  = value.substring(0, value.length() - 1).trim();
-				multiplier = 60 * 60 * 1000;
-			} else if (value.endsWith("hour")) {
-				value  = value.substring(0, value.length() - 4).trim();
-				multiplier = 60 * 60 * 1000;
-			} else if (value.endsWith("hours")) {
-				value  = value.substring(0, value.length() - 5).trim();
-				multiplier = 60 * 60 * 1000;
-			} else if (value.endsWith("s")) {
-				value  = value.substring(0, value.length() - 1).trim();
-				multiplier = 1000;
-			}
-			long intValue;
-			try {
-				intValue = Long.parseLong( value ) * multiplier;
-			} catch (NumberFormatException e) {
-				String processedValue = environment.getProperty( "calculate(" + value + ")", true);
-				intValue = Long.parseLong( processedValue );
-			}
-			if (this.isBaseAttribute ) {
-				return "" + intValue;
-			} else {
-				return "new Long(" + intValue + ")";
-			}
-		} catch (NumberFormatException e) {
-			throw new BuildException("Invalid CSS: The attribute [" + this.name + "] needs an integer value. The value [" + value + "] cannot be accepted.");
-		} catch (BuildException e) {
-			throw new BuildException("Unable to parse integer value \"" + value + "\" of CSS attribute " + this.name + ": " + e.getMessage() );
-		}
-	}
-
-
+	
 
 	/* (non-Javadoc)
-	 * @see de.enough.polish.preprocess.css.CssAttribute#instantiateValue(java.lang.String)
+	 * @see de.enough.polish.preprocess.css.attributes.IntegerCssAttribute#parseInt(java.lang.String)
 	 */
-	public Object instantiateValue(String sourceCode) {
-		if (this.isBaseAttribute) {
-			return new Long( Long.parseLong(sourceCode));
-		}
-		return super.instantiateValue(sourceCode);
+	protected int parseInt(String value)
+	{
+		return (int) ConvertUtil.convertToMilliseconds(value);
 	}
-	
-	
 
 }

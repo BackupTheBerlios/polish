@@ -66,7 +66,7 @@ implements Comparable
 	protected String appliesTo;
 	protected String description;
 	protected int id;
-	private Map appliesToMap;
+	protected Map appliesToMap;
 	protected Map mappingsByName;
 	protected String group;
 	protected boolean isBaseAttribute;
@@ -75,6 +75,13 @@ implements Comparable
 	protected boolean requiresMapping;
 	protected String type;
 	private boolean isHidden;
+	protected String shell;
+
+	private boolean isImplicit;
+
+	private String deprecatedMessage;
+
+	protected String since;
 	
 	protected CssAttribute() {
 		// do nothing
@@ -179,6 +186,9 @@ implements Comparable
 		} else {
 			this.requiresMapping = false;
 		}
+		this.shell = definition.getAttributeValue("shell");
+		this.deprecatedMessage = definition.getAttributeValue("deprecated");
+		this.since = definition.getAttributeValue("since");
 	}
 
 	/**
@@ -258,6 +268,11 @@ implements Comparable
 					if (i != values.length - 1) {
 						convertedValueBuffer.append(" | ");
 					}
+				}
+				if (this.shell != null) {
+					int strtInde = this.shell.indexOf(')');
+					convertedValueBuffer.insert(0, this.shell.substring(0, strtInde) );
+					convertedValueBuffer.append( this.shell.substring(strtInde));
 				}
 				return convertedValueBuffer.toString();
 //				if (this.isBaseAttribute) {
@@ -584,6 +599,9 @@ implements Comparable
 			if (lastDotIndex != -1) {
 				shortClassName = className.substring(lastDotIndex + 1);
 			}
+			if (this.name.equals("text-layout")) {
+				System.out.println("appliesToMap=" + appliesToMap);
+			}
 			return (this.appliesToMap.get( shortClassName ) != null) || (this.appliesToMap.get( className ) != null);
 		}
 	}
@@ -775,5 +793,114 @@ implements Comparable
 		return null;
 	}
 	
+	/**
+	 * Creates the base source code for instantiating an animation - the subclasse then still needs to add range settings 
+	 * @param className
+	 * @param cssAnimation
+	 * @param style
+	 * @param environment
+	 * @return a string buffer with the generated source code
+	 */
+	protected StringBuffer generateAnimationSourceCodeStart(String className, CssAnimationSetting cssAnimation, Style style, Environment environment)
+	{
+		StringBuffer buffer = new StringBuffer();
+		buffer.append( "new " );
+		buffer.append( ANIMATION_PACKAGE );
+		buffer.append( className ).append("(");
+		buffer.append( this.id ).append(", ");
+		buffer.append( '"').append( cssAnimation.getOn() ).append("\", ");
+		buffer.append( cssAnimation.getDuration() ).append(", ");
+		buffer.append( cssAnimation.getDelay() ).append(", ");
+		buffer.append( cssAnimation.getFunction() ).append(", ");
+		buffer.append( cssAnimation.getRepeat() ).append(", ");
+		String fireEvent = cssAnimation.getFireEvent();
+		if (fireEvent  == null) {
+			buffer.append( "null, ");
+		} else {
+			buffer.append('"').append( fireEvent ).append("\", ");
+		}
+		CssAnimationRange range = cssAnimation.getRange();
+		if (range == null) {
+			throw new BuildException("No \"range\" specified for CSS animation for attribute " + cssAnimation.getCssAttributeName() + " in style " + style.getSelector() + ": check your polish.css.");
+		}
+		return buffer;
+	}
+	
 
+	/**
+	 * Creates the base source code for instantiating an animation - the subclasse then still needs to add range settings 
+	 * @param className
+	 * @param cssAnimation
+	 * @param style
+	 * @param environment
+	 * @return a string with the generated source code
+	 */
+	protected String generateAnimationSourceCode(String className, CssAnimationSetting cssAnimation, Style style, Environment environment)
+	{
+		StringBuffer buffer = generateAnimationSourceCodeStart(className, cssAnimation, style, environment);
+		CssAnimationRange range = cssAnimation.getRange();
+		buffer.append( getValue(range.getFrom(), environment)  ).append(", ");
+		buffer.append( getValue(range.getTo(), environment) );
+		buffer.append(')');
+		return buffer.toString();
+	}
+
+	/**
+	 * @param implicitName the name of this attribute
+	 * @param param the implicit parent
+	 */
+	public void setImplicitDefinition(String implicitName, CssAttribute param)
+	{
+		this.isImplicit = true;
+		this.name = implicitName;
+		this.type = param.type;
+		this.allowsCombinations = param.allowsCombinations;
+		this.allowedValues = param.allowedValues;
+		this.defaultValue = param.defaultValue;
+		this.description = param.description;
+		this.group = param.group;
+		if (param.id != -1) {
+			this.id = param.id;
+		} else {
+			int hashCode = implicitName.hashCode();
+			short hash = (short) (hashCode >> 16 ^ hashCode);
+			this.id = (short) (10000 + hash);
+		}
+		this.isCaseSensitive = param.isCaseSensitive;
+		this.requiresMapping = param.requiresMapping;
+		this.mappingsByName =  param.mappingsByName;
+		this.isBaseAttribute = false;
+	}
+	
+	/**
+	 * Determines whether this CSS attribute has been defined indirectoy or directly within css-attributes.xml
+	 * @return true when it has been defined indirectly
+	 */
+	public boolean isImplicit() {
+		return this.isImplicit;
+	}
+
+	/**
+	 * @return the shell
+	 */
+	public String getShell()
+	{
+		return this.shell;
+	}
+
+	public boolean isDeprecated() {
+		return (this.deprecatedMessage != null);
+	}
+	
+	public String getDeprecatedMessage() {
+		return this.deprecatedMessage;
+	}
+
+	/**
+	 * Retrieves the version since this attribute is supported. 
+	 * @return the version or null, when not specified.
+	 */
+	public String getSince() {
+		return this.since;
+	}
 }

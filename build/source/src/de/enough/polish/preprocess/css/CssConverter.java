@@ -28,10 +28,10 @@ package de.enough.polish.preprocess.css;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import de.enough.polish.BuildException;
-
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.preprocess.Preprocessor;
@@ -52,6 +52,7 @@ import de.enough.polish.util.StringUtil;
  */
 public class CssConverter extends Converter {
 	
+	private static final int BLOCKSIZE = 100;
 	private static final String INCLUDE_MARK = "//$$IncludeStyleSheetDefinitionHere$$//";
 
 	protected ArrayList referencedStyles;
@@ -64,6 +65,8 @@ public class CssConverter extends Converter {
 	private CssAttribute backgroundAttribute;
 	private CssAttribute borderAttribute;
 	private final ParameterizedAttributeConverter parameterizedAttributeConverter;
+
+	private String[] backgroundAttributeNames;
 	
 	/**
 	 * Creates a new CSS converter
@@ -87,6 +90,17 @@ public class CssConverter extends Converter {
 		this.layoutAttribute = attributesManager.getAttribute("layout");
 		this.backgroundAttribute = attributesManager.getAttribute("background");
 		this.borderAttribute = attributesManager.getAttribute("border");
+		// save all external background attributes:
+		ArrayList bgAttributesList = new ArrayList();
+		CssAttribute[] attributes = attributesManager.getAttributes();
+		for (int i = 0; i < attributes.length; i++)
+		{
+			CssAttribute attribute = attributes[i];
+			if ( (!attribute.isImplicit()) && attribute.getName().startsWith("background-")) {
+				bgAttributesList.add( attribute.getName().substring("background-".length()) );
+			}
+		}
+		this.backgroundAttributeNames = (String[])bgAttributesList.toArray( new String[ bgAttributesList.size() ] );
 	}
 	
 
@@ -146,6 +160,8 @@ public class CssConverter extends Converter {
 		boolean defaultBackgroundDefined = false;
 		HashMap backgrounds = styleSheet.getBackgrounds();
 		Object[] backgroundKeys = BackgroundComparator.sort( backgrounds, (ParameterizedCssAttribute) this.backgroundAttribute );
+		
+		//Arrays.sort( backgroundKeys, new BackgroundComparator( backgrounds, (ParameterizedCssAttribute) this.backgroundAttribute ));
 		for (int i = 0; i < backgroundKeys.length; i++)
 		{
 			String groupName = (String) backgroundKeys[i];
@@ -169,10 +185,11 @@ public class CssConverter extends Converter {
 			processBorder(groupName, group, null, codeList, styleSheet, true, env );
 		}
 		ArrayList staticCodeList = new ArrayList();
+		ArrayList styleCodeList = new ArrayList();
 		// add the default style:
 		processDefaultStyle( defaultFontDefined,  
 				defaultBackgroundDefined, defaultBorderDefined,
-				codeList, staticCodeList, styleSheet, device, env  );
+				styleCodeList, codeList, styleSheet, device, env  );
 		
 		
 		// now add all other static and referenced styles:
@@ -200,8 +217,66 @@ public class CssConverter extends Converter {
 				if ("label".equals(style.getSelector())) {
 					isLabelStyleReferenced = true;
 				}
-				processStyle( style, codeList, staticCodeList, styleSheet, device, env );
+				processStyle( style, styleCodeList, codeList, styleSheet, device, env );
 			}
+		}
+		// register referenced and dynamic styles:
+		codeList.add("\tstatic final Hashtable stylesByName = new Hashtable(" + styles.length + ");");
+
+		int blocks = styles.length / BLOCKSIZE +  (styles.length % BLOCKSIZE == 0 ? 0 : 1);
+		codeList.add("static { // init styles:" );
+		for (int i=0; i<blocks; i++) {
+			codeList.add("\tinitStyles" + i + "();");
+		}
+		codeList.add("}");
+		int lineIndex = 0;
+		for (int i=0; i<blocks; i++) {
+			int start = i * BLOCKSIZE;
+			int end = Math.min(  (i+1) * BLOCKSIZE, styles.length);
+			codeList.add( "private static final void initStyles" + i + "(){");
+			for (int j=start; j<end;) {
+				String line = (String) styleCodeList.get(lineIndex);
+				codeList.add( line );
+				if (line.indexOf(';') != -1) {
+					j++;
+				}
+				lineIndex++;
+			}
+			if (i == blocks -1) {
+				// register all styles in the last static method:
+				// process dynamic styles:
+				if (styleSheet.containsDynamicStyles()) {
+					Style[] dynamicStyles = styleSheet.getDynamicStyles(); 
+					for (int j = 0; j < dynamicStyles.length; j++) {
+						Style style = dynamicStyles[j];
+						this.referencedStyles.add( style );
+					}
+				}
+				codeList.add("");
+				codeList.add("\t//register referenced and dynamic styles:");
+				for (int j = 0; j < styles.length; j++) {
+					Style style = styles[j];
+					String selector = style.getSelector();
+					codeList.add("\tstylesByName.put( \"" + selector + "\", " + style.getStyleName() + "Style );");
+				}
+				styles = (Style[]) this.referencedStyles.toArray( new Style[ this.referencedStyles.size() ] );
+				for (int j = 0; j < styles.length; j++) {
+					Style style = styles[j];
+					String name = style.getAbbreviation();
+					if (name == null) {
+						// quickfix 2009-02-24: 
+						// only when there is no abbreviation, this style is a truly dynamic
+						// one... Or so we hope.
+						name = style.getSelector();
+						codeList.add("\tstylesByName.put( \"" + name + "\", " + style.getStyleName() + "Style );");
+					}
+				}
+				for (Iterator iter = staticCodeList.iterator(); iter.hasNext();) {
+					String line  = (String) iter.next();
+					codeList.add( line );
+				}
+			}
+			codeList.add( "}");
 		}
 		
 		/*
@@ -263,51 +338,12 @@ public class CssConverter extends Converter {
 		}
 		*/
 		
-		// process dynamic styles:
-		if (styleSheet.containsDynamicStyles()) {
-			codeList.add("\t//dynamic styles:");
-			Style[] dynamicStyles = styleSheet.getDynamicStyles(); 
-			for (int i = 0; i < dynamicStyles.length; i++) {
-				Style style = dynamicStyles[i];
-				//processStyle( style, codeList, styleSheet, device );
-				this.referencedStyles.add( style );
-			}
-		}
-		
-		
-		// register referenced and dynamic styles:
-		codeList.add("\tstatic final Hashtable stylesByName = new Hashtable(" + styles.length + ");");
-		
-		//if (this.referencedStyles.size() > 0) {
-			codeList.add("\tstatic { \t//register referenced and dynamic styles:");
-			for (int i = 0; i < styles.length; i++) {
-				Style style = styles[i];
-				String name = style.getSelector();
-				codeList.add("\t\tstylesByName.put( \"" + name + "\", " + style.getStyleName() + "Style );");
-			}
-			styles = (Style[]) this.referencedStyles.toArray( new Style[ this.referencedStyles.size() ] );
-			for (int i = 0; i < styles.length; i++) {
-				Style style = styles[i];
-				String name = style.getAbbreviation();
-				if (name == null) {
-					name = style.getSelector();
-				}
-				codeList.add("\t\tstylesByName.put( \"" + name + "\", " + style.getStyleName() + "Style );");
-			}
-			
-			for (Iterator iter = staticCodeList.iterator(); iter.hasNext();) {
-				String line  = (String) iter.next();
-				codeList.add( line );
-			}
-			codeList.add("\t}");
-		//}
-
 		
 		// create focused style if necessary:
 		Style focusedStyle = styleSheet.getStyle("focused"); 
 		if (focusedStyle == null) {
-			System.out.println("Warning: CSS-Style [focused] not found, now using the default style instead. If you use Forms or Lists, you should define the style [focused].");
-			codeList.add(  "\tpublic static Style focusedStyle = defaultStyle;\t// the focused-style is not defined.");
+			//System.out.println("Warning: CSS-Style [focused] not found, now using the default style instead. If you use Forms or Lists, you should define the style [focused].");
+			codeList.add(  "\tpublic static Style focusedStyle = new Style(\"focused\", 0, new de.enough.polish.ui.backgrounds.SimpleBackground(0), null, new short[]{-17}, new Object[]{new Color(0xffffff, false)} );\t// the focused-style is not defined.");
 		//} else {
 		//	processStyle( focusedStyle, codeList, styleSheet, device );
 		}
@@ -342,38 +378,37 @@ public class CssConverter extends Converter {
 		//System.out.println("PROCESSSING DEFAULT STYLE " + styleSheet.getStyle("default").toString() );
 		Style copy = new Style( styleSheet.getStyle("default"));
 		HashMap group = copy.getGroup("font");
-		if (!defaultFontDefined) {
-			if (group == null) {
-				codeList.add( STANDALONE_MODIFIER + "int defaultFontColor = 0x000000;");
-				codeList.add( STANDALONE_MODIFIER + "Font defaultFont = Font.getDefaultFont();");
-			} else {
-				processFont(group, "default", copy, codeList, styleSheet, true, environment );
-			}
-		}
+//		if (!defaultFontDefined) {
+//			if (group == null) {
+//				codeList.add( STANDALONE_MODIFIER + "int defaultFontColor = 0x000000;");
+//				codeList.add( STANDALONE_MODIFIER + "Font defaultFont = Font.getDefaultFont();");
+//			} else {
+//				processFont(group, "default", copy, codeList, styleSheet, true, environment );
+//			}
+//		}
 		group = copy.getGroup("background");
 		if (!defaultBackgroundDefined) {
 			if (group == null) {
-				codeList.add( STANDALONE_MODIFIER + "Background defaultBackground = null;");
+				staticCodeList.add( STANDALONE_MODIFIER + "Background defaultBackground = null;");
 			} else {
-				processBackground("default", group, copy, codeList, styleSheet, true, environment );
+				processBackground("default", group, copy, staticCodeList, styleSheet, true, environment );
 			}
 		}
 		group = copy.getGroup("border");
 		if (!defaultBorderDefined) {
 			if (group == null) {
-				codeList.add( STANDALONE_MODIFIER + "Border defaultBorder = null;");
+				staticCodeList.add( STANDALONE_MODIFIER + "Border defaultBorder = null;");
 			} else {
-				processBorder("default", group, copy, codeList, styleSheet, true, environment );
+				processBorder("default", group, copy, staticCodeList, styleSheet, true, environment );
 			}
 		}
 		// set default values:
 		//copy.setSelector("defaultStyle");
 		group = new HashMap();
-		group.put("font", "default");
+		if (defaultFontDefined) {
+			group.put("font", "default");
+		}
 		copy.addGroup("font", group );
-		group = new HashMap();
-		group.put("label", "default");
-		copy.addGroup("label", group );
 		group = new HashMap();
 		group.put("background", "default");
 		copy.addGroup("background", group );
@@ -397,111 +432,170 @@ public class CssConverter extends Converter {
 	protected void processStyle(Style style, ArrayList codeList, ArrayList staticCodeList, StyleSheet styleSheet, Device device, Environment environment ) {
 		String styleName = style.getStyleName();
 		//System.out.println("processing style " + style.getStyleName() + ": " + style.toString() );
+		// create a new style field:
+		staticCodeList.add( STANDALONE_MODIFIER_NON_FINAL + "Style " + styleName + "Style;");
 		// create a new style:
-		codeList.add( STANDALONE_MODIFIER + "Style " + styleName + "Style = new Style (");
-		
+		codeList.add( "\t" + styleName + "Style = new Style (");
+		codeList.add("\t\t\"" + style.getSelector() + "\", ");
 		// process all animations, do this here so animations can also be done for margins, paddings, font settings etc:
-		CssAnimationSetting cssAnimation;
+		CssAnimationSetting[] cssAnimations = extractAnimationSettings(style);
 		ArrayList animationsList = new ArrayList();
-		if (false) { // outcommented for 2.0.3 release
-		while ((cssAnimation = extractAnimationGroup(style)) != null) {
-//			System.out.println("got animation for " + cssAnimation.getCssAttributeName()  + " in style " + styleName);
-			CssAttribute  attribute = this.attributesManager.getAttribute( cssAnimation.getCssAttributeName() );
+		for (int g=0; g<cssAnimations.length; g++) {
+			CssAnimationSetting cssAnimation = cssAnimations[g];
+			//System.out.println("got animation for " + cssAnimation.getCssAttributeName()  + " in style " + styleName + " with trigger " + cssAnimation.getOn() );
+			String cssAttributeName = cssAnimation.getCssAttributeName();
+			CssAttribute  attribute = this.attributesManager.getAttribute( cssAttributeName );
+			if (attribute == null) {
+				throw new BuildException("Invalid CSS: the attribute \"" + cssAttributeName + "\" is unknown and cannot be animated. Check the animation in style \"" + style.getSelector() + "\" in your polish.css file.");
+			}
 			if (attribute.getId() == -1) {
 				if (attribute.isBaseAttribute()) {
-					throw new BuildException("Sorry, but at the moment you cannot aniamte the base CSS attribute \"" + cssAnimation.getCssAttributeName() + "\".");
+					throw new BuildException("Invalid CSS: Sorry, but at the moment you cannot animate the base CSS attribute \"" + cssAttributeName + "\".");
 				}
-				throw new BuildException("Unable to process animation for CSS attribute \"" + cssAnimation.getCssAttributeName() + "\" with an unknown id: please register the \"id\" attribute in custom-css-attributes.xml.");
+				throw new BuildException("Invalid CSS: Unable to process animation for CSS attribute \"" + cssAttributeName + "\" with an unknown id: please register the \"id\" attribute in custom-css-attributes.xml.");
 			}
-			String animationSourceCode = attribute.generateAnimationSourceCode( cssAnimation, style, environment );
-			if (animationSourceCode == null) {
-				throw new BuildException("Animations for " + cssAnimation.getCssAttributeName() + " are not supported - check your polish.css for style " + style.getSelector() + ".");
+			CssAnimationRange[] ranges = cssAnimation.getRanges();
+			if (ranges != null && ranges.length > 1) {
+				// okay, there are several css animations within one setting, so used a combined CssAnimation:
+				StringBuffer animationSourceBuffer = attribute.generateAnimationSourceCodeStart("CombinedCssAnimation", cssAnimation, style, environment);
+				animationSourceBuffer.append( "new CssAnimation[]{");
+				for (int i = 0; i < ranges.length; i++)
+				{
+					CssAnimationRange cssAnimationRange = ranges[i];
+					CssAnimationSetting setting = cssAnimation.getSubSetting( i, ranges.length, cssAnimationRange );
+					String animationSourceCode = attribute.generateAnimationSourceCode( setting, style, environment );
+					if (animationSourceCode == null) {
+						throw new BuildException("Animations for " + cssAttributeName + " are not supported - check your polish.css for style " + style.getSelector() + ".");
+					}
+					animationSourceBuffer.append( animationSourceCode );
+					if (i < ranges.length - 1) {
+						animationSourceBuffer.append(", ");
+					}
+				}
+				animationSourceBuffer.append( "} )");
+				animationsList.add( animationSourceBuffer.toString() );
+				//System.out.println("adding combined animation: " + animationSourceBuffer.toString() );
+			} else {
+				String animationSourceCode = attribute.generateAnimationSourceCode( cssAnimation, style, environment );
+				if (animationSourceCode == null) {
+					throw new BuildException("Animations for " + cssAttributeName + " are not supported - check your polish.css for style " + style.getSelector() + ".");
+				}
+				//System.out.println("adding single animation: " + animationSourceCode);
+				animationsList.add( animationSourceCode );
 			}
-			animationsList.add( animationSourceCode );
-		}
 		}
 		
+		// backwards compatibility hack: in previous versions bitmap fonts were implemented without using
+		// a text effect:
+		String fontBitmap = style.getAttributeValue("font-bitmap");
+		if (fontBitmap != null && style.getAttributeValue("text-effect") == null && !"none".equals(fontBitmap) ) {
+			style.addAttribute("text-effect", "bitmap");
+		}
 
-		// process the margins:
-		HashMap group = style.removeGroup("margin");
-		if ( group != null ) {
-			processFields( 0, false, group, "margin", style, codeList, styleSheet, device );
-		} else {
-			codeList.add("\t\t0,0,0,0,\t// default margin");
-		}
-		// process the paddings:
-		group = style.removeGroup("padding");
-		if ( group != null ) {
-			processFields( 1, true, group, "padding", style, codeList, styleSheet, device );
-		} else {
-			codeList.add("\t\t1,1,1,1,1,1,\t// default padding");
-		}
+//		// process the margins:
+//		HashMap group = style.removeGroup("margin");
+//		if ( group != null ) {
+//			processFields( 0, false, group, "margin", style, codeList, styleSheet, device );
+//		} else {
+//			codeList.add("\t\t0,0,0,0,\t// default margin");
+//		}
+//		// process the paddings:
+//		group = style.removeGroup("padding");
+//		if ( group != null ) {
+//			processFields( 1, true, group, "padding", style, codeList, styleSheet, device );
+//		} else {
+//			codeList.add("\t\t1,1,1,1,1,1,\t// default padding");
+//		}
 		// process the layout:
-		group = style.removeGroup("layout");
+		Map group = style.removeGroup("layout");
 		if ( group != null ) {
 			processLayout( group, style, codeList, styleSheet, environment );
 		} else {
 			codeList.add("\t\tItem.LAYOUT_DEFAULT,\t// default layout");
 		}
-		// process the content-font:
-		group = style.removeGroup("font");
-		String bitMapFontUrl = null;
-		if ( group != null ) {
-			// if a bitmap-font is defined,
-			// add a extended (string) attribute:
-			bitMapFontUrl = (String) group.get("bitmap");
-			if (bitMapFontUrl != null && !"none".equals( bitMapFontUrl)) {
-				if (!bitMapFontUrl.endsWith(".bmf")) {
-					bitMapFontUrl += ".bmf";
+		
+		// process font references:
+		group = style.getGroup("font");
+		if (group != null) {
+			String font = (String) group.get("font");
+			if (font != null) {
+				Map fontGroup = (Map) styleSheet.getFonts().get(font);
+				if (fontGroup == null) {
+					fontGroup = (Map) styleSheet.getFonts().get(font + "Font");
+					if (fontGroup == null) {
+						if ("default".equals(font)) {
+							fontGroup = new HashMap();
+							styleSheet.getFonts().put("default", fontGroup);
+						} else {
+							throw new BuildException("Invalid CSS: invalid font-reference \"font: " + font + "\" - please check your polish.css style " + style.getSelector() + "." );
+						}
+					}
 				}
-				if (bitMapFontUrl.charAt(0) != '/') {
-					bitMapFontUrl = "/" + bitMapFontUrl;
+				group.remove("font");
+				Object[] keys = fontGroup.keySet().toArray();
+				for (int j = 0; j < keys.length; j++)
+				{
+					String key = (String) keys[j];
+					if (!group.containsKey(key)) {
+						String name = key;
+						if (name.startsWith("font-")) {
+							name = name.substring("font-".length());
+						}
+						//System.out.println("adding key " + name + "=" + fontGroup.get(key));
+						group.put( name, fontGroup.get(key));
+					}
 				}
-				HashMap bitMapFontGroup = new HashMap(1);
-				bitMapFontGroup.put("bitmap", bitMapFontUrl );
-				style.addGroup( "font", bitMapFontGroup );
-				//System.out.println("adding bitmap-font " + bitMapFontUrl);
 			}
-			processFont( group, "font", style, codeList, styleSheet, false, environment );
-		} else {
-			codeList.add("\t\tdefaultFontColor,\t// font-color is not defined");
-			codeList.add("\t\tnull,\t// font-color is not defined");
-			codeList.add("\t\tdefaultFont,");
 		}
 		
-		// process the content-font:
-		boolean removeLabelGroup = true;
-		group = style.getGroup("label");
-		if (group != null) {
-			String labelStyle = (String) group.get("style"); 
-			if ( labelStyle != null ) {
-				if (styleSheet.isDefined(labelStyle)) {
-					// okay this is a valid reference:
-					removeLabelGroup = false;
-				}
-			}
-		}
-		if (removeLabelGroup) {
-			style.removeGroup("label");			
-		}
+//		// process the content-font:
+//		group = style.removeGroup("font");
+//		String bitMapFontUrl = null;
+//		if ( group != null ) {
+//			// if a bitmap-font is defined,
+//			// add a extended (string) attribute:
+//			bitMapFontUrl = (String) group.get("bitmap");
+//			if (bitMapFontUrl != null && !"none".equals( bitMapFontUrl)) {
+//				if (!bitMapFontUrl.endsWith(".bmf")) {
+//					bitMapFontUrl += ".bmf";
+//				}
+//				if (bitMapFontUrl.charAt(0) != '/') {
+//					bitMapFontUrl = "/" + bitMapFontUrl;
+//				}
+//				HashMap bitMapFontGroup = new HashMap(1);
+//				bitMapFontGroup.put("bitmap", bitMapFontUrl );
+//				style.addGroup( "font", bitMapFontGroup );
+//				//System.out.println("adding bitmap-font " + bitMapFontUrl);
+//			}
+//			processFont( group, "font", style, codeList, styleSheet, false, environment );
+//		} else {
+//			codeList.add("\t\tdefaultFontColor,\t// font-color is not defined");
+//			codeList.add("\t\tnull,\t// font-color is not defined");
+//			codeList.add("\t\tdefaultFont,");
+//		}
+		
+//		// process the content-font:
+//		boolean removeLabelGroup = true;
+//		group = style.getGroup("label");
+//		if (group != null) {
+//			String labelStyle = (String) group.get("style"); 
+//			if ( labelStyle != null ) {
+//				if (styleSheet.isDefined(labelStyle)) {
+//					// okay this is a valid reference:
+//					removeLabelGroup = false;
+//				}
+//			}
+//		}
+//		if (removeLabelGroup) {
+//			style.removeGroup("label");			
+//		}
 		
 		// process the background:
 		group = style.removeGroup("background");
 		if ( group != null ) {
 			processBackground( style.getSelector(), group, style, codeList, styleSheet, false, environment );
-			// ugly hack to preserve background-bottom and background-top values:
-			if ( group.get("bottom") != null || group.get("top") != null) {
-				HashMap newGroup = new HashMap(2);
-				String value = (String) group.get("bottom");
-				if (value != null) {
-					newGroup.put("bottom", value);
-				}
-				value = (String) group.get("top");
-				if (value != null) {
-					newGroup.put("top", value);
-				}
-				style.addGroup("background", newGroup);
-			}
+			// ugly hack to preserve background-bottom and background-top, etc. attributes:
+			preserveAttributes( group, style, "background", this.backgroundAttributeNames );
 		} else {
 			codeList.add("\t\tnull,\t// no background");
 		}
@@ -519,7 +613,7 @@ public class CssConverter extends Converter {
 		if (groupNames.length == 0) {
 			codeList.add( "\t\tnull, null\t// no additional attributes have been defined" );
 		} else {
-			// counting the number of special attributes:
+			// count the number of CSS attributes:
 			int numberOfAttributes = 0;
 			for (int i = 0; i < groupNames.length; i++) {
 				String groupName = groupNames[i];
@@ -549,11 +643,12 @@ public class CssConverter extends Converter {
 						attributeName = groupName + "-" + key;
 					}
 					short attributesId = styleSheet.getAttributeId(attributeName);
+					CssAttribute attribute = this.attributesManager.getAttribute( attributeName );
 					if (attributesId == -1) {
 						// the CSS attribute is nowhere used in the preprocessing code,
-						// now check if it has been registerd in css-attributes.xml/custom-css-attributes.xml:
-						if (this.attributesManager.getAttribute( attributeName ) == null) {
-							throw new BuildException("Invalid CSS: The CSS-attribute [" + attributeName + "] is not supported. Please check your \"polish.css\" file(s).");
+						// now check if it has been registered in css-attributes.xml/custom-css-attributes.xml:
+						if (attribute == null) {
+							throw new BuildException("Invalid CSS: The CSS setting \"" + attributeName + ": " + value + ";\" is not supported. Please check style \"" + style.getSelector() + "\" in your \"polish.css\" file(s).");
 						}
 					}
 					keyList.append( attributesId );
@@ -561,8 +656,10 @@ public class CssConverter extends Converter {
 						keyList.append(", ");
 					}
 					
-					CssAttribute attribute = this.attributesManager.getAttribute( attributeName );
 					if (attribute != null) {
+						if (attribute.isDeprecated()) {
+							System.out.println("Warning: CSS attribute \"" + attributeName + "\" is deprecated: " + attribute.getDeprecatedMessage() );
+						}
 						value = attribute.getValue( value, environment );
 //						if ("none".equals(value) && !("plain".equals(key) || "selected".equals(key)) ) {
 //							System.out.println("setting value from none to null for key " + key);
@@ -633,53 +730,61 @@ public class CssConverter extends Converter {
 		
 		// add the selector of the style, but only when dynamic styles are used:
 		//TODO: hack for WYSIWYG designer:
-		//if (styleSheet.containsDynamicStyles()) {
-			staticCodeList.add("\t" + styleName + "Style.name = \"" + style.getSelector() + "\"; \t// the selector of the above style");
-		//}
+//		//if (styleSheet.containsDynamicStyles()) {
+//			staticCodeList.add("\t" + styleName + "Style.name = \"" + style.getSelector() + "\"; \t// the selector of the above style");
+//		//}
 
 	}
 
 
 	
 	/**
+	 * @param group
 	 * @param style
-	 * @return
+	 * @param string
+	 * @param backgroundAttributeNames2
 	 */
-	protected CssAnimationSetting extractAnimationGroup(Style style)
+	private void preserveAttributes(Map group, Style style, String groupName,
+			String[] names)
 	{
-		String[] names = style.getGroupNames();
+		HashMap preserveGroup = new HashMap();
 		for (int i = 0; i < names.length; i++)
 		{
 			String name = names[i];
-			//System.out.println("found group: " + name + ": " + style.getGroup(name));
-			HashMap group = style.getGroup(name);
-			Object[] keys = group.keySet().toArray();
-			CssAnimationSetting cssAnimation = null;
-			for (int j = 0; j < keys.length; j++)
-			{
-				String key = (String) keys[j];
-				int startIndex;
-				if ( (startIndex = key.indexOf("-animation-")) != -1) {
-					if (cssAnimation == null) {
-						String attributeName = name + "-" + key.substring(0, startIndex);
-						if (this.attributesManager.getAttribute(attributeName) == null) {
-							// this is not an attribute that can be animated:
-							System.out.println("Discarding attribute " + attributeName );
-							continue;
-						}
-						cssAnimation = new CssAnimationSetting(attributeName);
-					} 
-					String realKey = key.substring( startIndex + "-animation-".length() );
-					cssAnimation.addAnimationSetting(realKey, (String)group.get(key) );
-					group.remove(key);
-				}
-			}
-			if (cssAnimation != null) {
-				//System.out.println("found animation: " + animationGroup);
-				return cssAnimation;
+			Object value = group.get(name);
+			if (value != null) {
+				preserveGroup.put( name, value );
 			}
 		}
-		return null;
+		if (preserveGroup.size() > 0) {
+			style.addGroup(groupName, preserveGroup);
+		}
+	}
+
+	/**
+	 * @param style
+	 * @return an array of animation settings
+	 */
+	protected CssAnimationSetting[] extractAnimationSettings(Style style)
+	{
+		CssDeclarationBlock[] animationBlocks = style.removeDeclarationBlocksEndingWith("-animation");
+		// since several animations for the same CSS attribute are allowed when
+		// they use different "on" trigger, we can end up with more than one
+		// animation for the same CSS attribute and the same trigger. We use a 
+		// hashtable for only instantiating the first animation:
+		ArrayList settingsList = new ArrayList();
+		HashMap settingsMap = new HashMap();
+		for (int i = 0; i < animationBlocks.length; i++)
+		{
+			CssDeclarationBlock cssDeclarationBlock = animationBlocks[i];
+			CssAnimationSetting setting = new CssAnimationSetting(cssDeclarationBlock);
+			String key = setting.getCssAttributeName() + setting.getOn();
+			if (settingsMap.get(key) == null) {
+				settingsList.add( setting );
+				settingsMap.put(key, setting);
+			}
+		}
+		return (CssAnimationSetting[]) settingsList.toArray( new CssAnimationSetting[ settingsList.size() ] );
 	}
 
 	/**
@@ -747,7 +852,7 @@ public class CssConverter extends Converter {
 	 * @param codeList the source code
 	 * @param styleSheet the parent style sheet
 	 */
-	protected void processLayout(HashMap group, Style style, ArrayList codeList, 
+	protected void processLayout(Map group, Style style, ArrayList codeList, 
 			StyleSheet styleSheet, Environment env) 
 	{
 		String layoutValue = (String) group.get("layout");
@@ -813,7 +918,7 @@ public class CssConverter extends Converter {
 	 * @param isStandalone true when a new public border-field should be created,
 	 *        otherwise the border will be embedded in a style instantiation. 
 	 */
-	protected void processBorder(String borderName, HashMap group, Style style, ArrayList codeList, StyleSheet styleSheet, boolean isStandalone, Environment env ) {
+	protected void processBorder(String borderName, Map group, Style style, ArrayList codeList, StyleSheet styleSheet, boolean isStandalone, Environment env ) {
 		//System.out.println("processing border " + borderName + " = "+ group.toString() );
 		String reference = (String) group.get("border");
 		if (reference != null && group.size() == 1) {
@@ -887,7 +992,7 @@ public class CssConverter extends Converter {
 	 * @param isStandalone true when a new public background-field should be created,
 	 *        otherwise the background will be embedded in a style instantiation. 
 	 */
-	protected void processBackground(String backgroundName, HashMap group, Style style, ArrayList codeList, StyleSheet styleSheet, boolean isStandalone, Environment env ) {
+	protected void processBackground(String backgroundName, Map group, Style style, ArrayList codeList, StyleSheet styleSheet, boolean isStandalone, Environment env ) {
 		//System.out.println("processing background " + backgroundName + " = " + group.toString() );
 		// check if the background is just a reference to another background:
 		String reference = (String) group.get("background");
@@ -935,6 +1040,10 @@ public class CssConverter extends Converter {
 		}
 		//String className = (String) BACKGROUND_TYPES.get(type);
 		CssMapping mapping = this.backgroundAttribute.getMapping(type);
+		if (mapping != null && mapping.getTo().startsWith("ref:")) {
+			type = mapping.getTo().substring("ref:".length()).trim();
+			mapping = this.backgroundAttribute.getMapping( type );
+		}
 		if (mapping != null && mapping.getConverter() == null) {
 			String code = this.parameterizedAttributeConverter.createNewStatement(this.backgroundAttribute, (ParameterizedCssMapping)mapping, group, env);
 			if (isStandalone) {
@@ -1052,7 +1161,7 @@ public class CssConverter extends Converter {
 	 * @param group the attribute group
 	 * @return the value or null when not defined
 	 */
-	protected String getAttributeValue( String groupName, String attributeName, HashMap group) {
+	protected String getAttributeValue( String groupName, String attributeName, Map group) {
 		 String result = (String) group.get(attributeName);
 		 if (result == null) {
 			 result = (String) group.get( groupName + "-" + attributeName );

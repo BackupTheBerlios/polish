@@ -25,10 +25,6 @@
  */
 package de.enough.polish.preprocess.css.attributes;
 
-import de.enough.polish.BuildException;
-import de.enough.polish.Environment;
-import de.enough.polish.preprocess.css.CssAttribute;
-
 /**
  * <p>A numerical attribute given in percent, negative and values over 100% are also allowed. The percent sign is optional.</p>
  *
@@ -39,7 +35,7 @@ import de.enough.polish.preprocess.css.CssAttribute;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class PercentCssAttribute extends CssAttribute {
+public class PercentCssAttribute extends IntegerCssAttribute {
 	
 	/**
 	 * Creates a new instance.
@@ -47,70 +43,83 @@ public class PercentCssAttribute extends CssAttribute {
 	public PercentCssAttribute() {
 		super();
 	}
-	
-	/**
-	 * Checks and transforms the given CSS value for this attribute.
-	 * 
-	 * @param value the attribute value
-	 * @param environment the environment
-	 * @return the transformed value or the same value if no transformation is required.
-	 * @throws BuildException when a condition is not met or when the value contains conflicting values
+//	
+//	/**
+//	 * Checks and transforms the given CSS value for this attribute.
+//	 * 
+//	 * @param value the attribute value
+//	 * @param environment the environment
+//	 * @return the transformed value or the same value if no transformation is required.
+//	 * @throws BuildException when a condition is not met or when the value contains conflicting values
+//	 */
+//	public String getValue(String value, Environment environment ) {
+//		if (value.endsWith("%")) {
+//			try {
+//				int intValue = Integer.parseInt( value.substring( 0, value.length() - 1) );
+//				if (this.isBaseAttribute) {
+//					return "" + intValue;
+//				} else {
+//					return "new Integer( " + intValue + " )";
+//				}
+//			} catch (NumberFormatException e) {
+//				throw new BuildException("Invalid CSS: The attribute [" + this.name + "] needs an percent value. The value [" + value + "] cannot be accepted.");			
+//			}
+//		}
+//		if (this.allowedValues == null) {
+//			try {
+//				int intValue;
+//				try {
+//					intValue = Integer.parseInt( value );
+//				} catch (NumberFormatException e) {
+//					String processedValue = environment.getProperty( "calculate(" + value + ")", true);
+//					intValue = Integer.parseInt( processedValue );
+//				}
+//				if (this.isBaseAttribute) {
+//					return "" + intValue;
+//				} else {
+//					return "new Integer(" + intValue + ")";
+//				}
+//			} catch (NumberFormatException e) {
+//				throw new BuildException("Invalid CSS: The attribute [" + this.name + "] needs an integer value. The value [" + value + "] cannot be accepted.");
+//			}
+//		} else {
+//			// there are fixed allowed values defined:
+//			for (int i = 0; i < this.allowedValues.length; i++) {
+//				if (!this.isCaseSensitive) {
+//					value = value.toLowerCase();
+//				}
+//				if (value.equals( this.allowedValues[i])) {
+//					if (this.isBaseAttribute) {
+//						return "" + i;
+//					} else {
+//						return "new Integer(" + i + ")";
+//					}
+//				}
+//			}
+//			String message = "Invalid CSS: the attribute [" + this.name + "] needs to be one "
+//						+ "of the following values: [";
+//			for (int i = 0; i < this.allowedValues.length; i++) {
+//				message += this.allowedValues[i];
+//				if (i < this.allowedValues.length - 1) {
+//					message += "], [";
+//				}
+//			}		
+//			message += "]. The value [" + value + "] is not supported.";
+//			throw new BuildException( message );
+//		}
+//	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.preprocess.css.attributes.IntegerCssAttribute#parseInt(java.lang.String)
 	 */
-	public String getValue(String value, Environment environment ) {
+	protected int parseInt(String value)
+	{
 		if (value.endsWith("%")) {
-			try {
-				int intValue = Integer.parseInt( value.substring( 0, value.length() - 1) );
-				if (this.isBaseAttribute) {
-					return "" + intValue;
-				} else {
-					return "new Integer( " + intValue + " )";
-				}
-			} catch (NumberFormatException e) {
-				throw new BuildException("Invalid CSS: The attribute [" + this.name + "] needs an percent value. The value [" + value + "] cannot be accepted.");			
-			}
+			value = value.substring(0, value.length() - 1).trim();
 		}
-		if (this.allowedValues == null) {
-			try {
-				int intValue;
-				try {
-					intValue = Integer.parseInt( value );
-				} catch (NumberFormatException e) {
-					String processedValue = environment.getProperty( "calculate(" + value + ")", true);
-					intValue = Integer.parseInt( processedValue );
-				}
-				if (this.isBaseAttribute) {
-					return "" + intValue;
-				} else {
-					return "new Integer(" + intValue + ")";
-				}
-			} catch (NumberFormatException e) {
-				throw new BuildException("Invalid CSS: The attribute [" + this.name + "] needs an integer value. The value [" + value + "] cannot be accepted.");
-			}
-		} else {
-			// there are fixed allowed values defined:
-			for (int i = 0; i < this.allowedValues.length; i++) {
-				if (!this.isCaseSensitive) {
-					value = value.toLowerCase();
-				}
-				if (value.equals( this.allowedValues[i])) {
-					if (this.isBaseAttribute) {
-						return "" + i;
-					} else {
-						return "new Integer(" + i + ")";
-					}
-				}
-			}
-			String message = "Invalid CSS: the attribute [" + this.name + "] needs to be one "
-						+ "of the following values: [";
-			for (int i = 0; i < this.allowedValues.length; i++) {
-				message += this.allowedValues[i];
-				if (i < this.allowedValues.length - 1) {
-					message += "], [";
-				}
-			}		
-			message += "]. The value [" + value + "] is not supported.";
-			throw new BuildException( message );
-		}
+		return super.parseInt(value);
 	}
+	
+	
 
 }

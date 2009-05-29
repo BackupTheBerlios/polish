@@ -25,15 +25,14 @@
  */
 package de.enough.polish.preprocess.backgrounds;
 
+import java.awt.Color;
+import java.util.Map;
+
+import de.enough.polish.BuildException;
 import de.enough.polish.preprocess.css.BackgroundConverter;
 import de.enough.polish.preprocess.css.Style;
 import de.enough.polish.preprocess.css.StyleSheet;
 import de.enough.polish.util.CastUtil;
-
-import de.enough.polish.BuildException;
-
-import java.awt.Color;
-import java.util.HashMap;
 
 /**
  * <p>Creates the PulsatingBackground from CSS values.</p>
@@ -56,7 +55,7 @@ public class PulsatingBackgroundConverter extends BackgroundConverter {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.preprocess.BackgroundConverter#createNewStatement(java.util.HashMap, de.enough.polish.preprocess.Style, de.enough.polish.preprocess.StyleSheet)
 	 */
-	protected String createNewStatement(HashMap background, Style style,
+	protected String createNewStatement(Map background, Style style,
 			StyleSheet styleSheet) 
 	throws BuildException 
 	{

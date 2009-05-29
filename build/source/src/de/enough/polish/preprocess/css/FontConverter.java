@@ -76,20 +76,33 @@ public class FontConverter extends Converter {
 	 * @param face The face to set.
 	 */
 	public void setFace(String face) {
-		this.face = face;
+		this.face = strip(face);
 	}
 	
+	/**
+	 * @param value
+	 * @return
+	 */
+	private String strip(String value)
+	{
+		if (value.startsWith("new Integer(")) {
+			value = value.substring("new Integer(".length(), value.length() - 1);
+		}
+		return value;
+	}
+
+
 	/**
 	 * @param size The size to set.
 	 */
 	public void setSize(String size) {
-		this.size = size;
+		this.size = strip(size);
 	}
 	/**
 	 * @param style The style to set.
 	 */
 	public void setStyle(String style) {
-		this.style = style;
+		this.style = strip(style);
 	}
 
 }

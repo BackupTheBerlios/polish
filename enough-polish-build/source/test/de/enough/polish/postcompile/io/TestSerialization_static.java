@@ -7,5 +7,10 @@ public class TestSerialization_static
 {
 	public static final int CONSTANT_VALUE = 5;
   
-  private int i;
+	private int i;
+
+	public int getValue()
+	{
+		return i;
+	}
 }

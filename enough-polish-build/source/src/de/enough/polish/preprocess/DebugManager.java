@@ -39,7 +39,7 @@ import java.util.HashMap;
 /**
  * <p>Administers the debug-level for all classes.</p>
  *
- * <p>Copyright Enough Software 2004, 2005</p>
+ * <p>Copyright Enough Software 2004 - 2008</p>
 
  * <pre>
  * history
@@ -50,12 +50,13 @@ import java.util.HashMap;
 public class DebugManager {
 	
 	public static final int UNDEFINED = -1;
-	public static final int DEBUG = 0;
-	public static final int INFO = 1;
-	public static final int WARN = 2;
-	public static final int ERROR = 3;
-	public static final int FATAL = 4;
-	public static final int USER_DEFINED = 5;
+	public static final int TRACE = 0;
+	public static final int DEBUG = 1;
+	public static final int INFO = 2;
+	public static final int WARN = 3;
+	public static final int ERROR = 4;
+	public static final int FATAL = 5;
+	public static final int USER_DEFINED = 6;
 	
 	private HashMap classPatterns;
 	private int debugLevel;
@@ -74,6 +75,7 @@ public class DebugManager {
 		this.levelOrder.put( "warning", new Integer(WARN));
 		this.levelOrder.put( "error", new Integer(ERROR));
 		this.levelOrder.put( "fatal", new Integer(FATAL));
+		this.levelOrder.put( "trace", new Integer(TRACE));
 	}
 
 	/**
@@ -180,6 +182,7 @@ public class DebugManager {
 	public void addDebugSetting( String pattern, String level ) 
 	throws BuildException 
 	{
+		//System.out.println("adding log level " + level + " for " + pattern);
 		if (pattern.endsWith(".*")) {
 			pattern = pattern.substring(0, pattern.length() - 2);
 		} else if (pattern.indexOf('*') != -1) {

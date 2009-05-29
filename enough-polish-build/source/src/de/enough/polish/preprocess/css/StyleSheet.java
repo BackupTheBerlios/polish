@@ -540,7 +540,7 @@ public class StyleSheet {
 				}
 			} else {
 				// this could be a DYNAMIC style:
-				if (PSEUDO_CLASSES.get(selector) == null) {
+				if (PSEUDO_CLASSES.get(selector) == null && selector.indexOf(':') == -1) {
 					isDynamicStyle = true;
 				}
 			}
@@ -629,7 +629,7 @@ public class StyleSheet {
 	
 	/**
 	 * Removes the style of the given index
-	 * @param name the index of the style
+	 * @param index the index of the style
 	 */
 	public void removeStyle(int index)
 	{
@@ -668,7 +668,7 @@ public class StyleSheet {
 	}
 	
 	 public void inherit() {
-//		 create default-style when not explicitely defined:
+//		 create default-style when not explicitly defined:
 		if (this.stylesByName.get("default") == null )
 		{
 			addCssBlock(DEFAULT_STYLE);
@@ -882,11 +882,11 @@ public class StyleSheet {
 	 *        having a Boolean.TRUE as value.
 	 */
 	public HashMap getCssPreprocessingSymbols( Device device ) {
+		CssAttributesManager cssAttributesManager = CssAttributesManager.getInstance();
 		if (this.cssPreprocessingSymbols == null) {
 			HashMap symbols = new HashMap();
 			HashMap attributesByName = new HashMap();
 			Style[] myStyles = getAllStyles();
-			boolean hasAnimations  = false;
 			for (int i = 0; i < myStyles.length; i++) {
 				Style style = myStyles[i];
 				symbols.put( "polish.css.style." + style.getStyleName(), Boolean.TRUE );
@@ -896,9 +896,35 @@ public class StyleSheet {
 					//System.out.println("adding symbol polish.css." + attribute + " of style " + style.getSelector() );
 					symbols.put( "polish.css." + attribute, Boolean.TRUE );
 					attributesByName.put( attribute, Boolean.TRUE );
-					if (!hasAnimations && attribute.endsWith("-animation")) {
-						symbols.put( "polish.css.animations", Boolean.TRUE );
-						hasAnimations = true;
+				}
+				CssDeclarationBlock[] blocks = style.getDeclarationBlocksEndingWith("-animation");
+				if (blocks.length > 0) {
+					symbols.put( "polish.css.animations", Boolean.TRUE );
+				}
+				for (int j = 0; j < blocks.length; j++)
+				{
+					CssDeclarationBlock block = blocks[j];						
+					String cssAttributeName = block.getBlockName().substring(0, block.getBlockName().length() - "-animation".length());
+					CssAttribute cssAttribute = cssAttributesManager.getAttribute( cssAttributeName );
+					if (cssAttribute == null) {
+						int hyphenPos = cssAttributeName.indexOf('-');
+						if (hyphenPos != -1) {
+							String groupName = cssAttributeName.substring(0, hyphenPos);
+							String type = style.getValue(groupName, "type");
+							if (type == null) {
+								type = "simple";
+							}
+							String alternativeCssAttributeName = groupName + "-" + type + cssAttributeName.substring(hyphenPos);
+							cssAttribute = cssAttributesManager.getAttribute( alternativeCssAttributeName );
+							if (cssAttribute != null) {
+								cssAttributeName = alternativeCssAttributeName;
+								block.setBlockName( cssAttributeName + "-animation");
+							}
+						}
+
+					}
+					if (cssAttribute != null) {
+						symbols.put( "polish.css." + cssAttributeName, Boolean.TRUE );
 					}
 				}
 			}

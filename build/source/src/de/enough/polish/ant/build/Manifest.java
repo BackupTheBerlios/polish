@@ -40,13 +40,12 @@ public class Manifest {
     public static final String EOL = "\r\n";
     public static final int MAX_SECTION_LENGTH = MAX_LINE_LENGTH - EOL.length(); // max length when there is a line break 
 
-	private final Environment environment;
+//	private final Environment environment;
 	private final String encoding;
 	private Attribute[] attributes;
 
 	public Manifest( Environment environment, String encoding ) {
-		super();
-		this.environment = environment;
+//		this.environment = environment;
 		this.encoding = encoding;
 	}
   

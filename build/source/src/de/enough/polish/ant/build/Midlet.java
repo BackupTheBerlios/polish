@@ -134,25 +134,15 @@ public class Midlet extends Setting {
 	 * Retrieves the info for the manifest and JAD file of this midlet.
 	 * 
 	 * @param defaultIcon the name of the default icon.
-	 * @param useDefaultPackage true when all classes should be moved
-	 *        into the default package
 	 * @return The info containing the name, icon and class of this midlet.
 	 */
-	public String getMidletInfo( String defaultIcon, boolean useDefaultPackage ) {
+	public String getMidletInfo( String defaultIcon ) {
 		String myClassName = this.className;
-		if (useDefaultPackage) {
-			int dotPos = myClassName.lastIndexOf('.');
-			if (dotPos != -1) {
-				myClassName = myClassName.substring( dotPos + 1);
-			}
-		}
 		if (this.name == null) {
 			String altName = myClassName;
-			if (!useDefaultPackage) {
-				int dotPos = altName.lastIndexOf('.');
-				if (dotPos != -1) {
-					altName = altName.substring( dotPos + 1);
-				}
+			int dotPos = altName.lastIndexOf('.');
+			if (dotPos != -1) {
+				altName = altName.substring( dotPos + 1);
 			}
 			this.name = altName; 
 		}

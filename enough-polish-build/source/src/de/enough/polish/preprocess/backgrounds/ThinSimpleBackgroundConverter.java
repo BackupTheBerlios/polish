@@ -25,10 +25,9 @@
  */
 package de.enough.polish.preprocess.backgrounds;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import de.enough.polish.BuildException;
-
 import de.enough.polish.preprocess.css.BackgroundConverter;
 import de.enough.polish.preprocess.css.Style;
 import de.enough.polish.preprocess.css.StyleSheet;
@@ -48,7 +47,7 @@ public class ThinSimpleBackgroundConverter extends BackgroundConverter {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.preprocess.css.BackgroundConverter#createNewStatement(java.util.HashMap, de.enough.polish.preprocess.css.Style, de.enough.polish.preprocess.css.StyleSheet)
 	 */
-	protected String createNewStatement(HashMap background, Style style,
+	protected String createNewStatement(Map background, Style style,
 			StyleSheet styleSheet) 
 	throws BuildException 
 	{

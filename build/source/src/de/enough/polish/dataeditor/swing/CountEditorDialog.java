@@ -58,9 +58,9 @@ public class CountEditorDialog
 extends JDialog
 implements ActionListener
 {
-    private static final long serialVersionUID = 7291283200939987740L;
+	private static final long serialVersionUID = 7291283200939987740L;
 
-    private final static char[] OPERATION_CHARS = new char[]{ '*', '/', '+', '-' };
+	private final static char[] OPERATION_CHARS = new char[]{ '*', '/', '+', '-' };
 	
 	private final JTextField editor;
 	private final JButton okButton;

@@ -40,8 +40,7 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 
-
-import sun.misc.BASE64Encoder;
+import de.enough.polish.util.base64.Base64;
 
 /**
  * <p>Exports both the private as well as the public key from a J2SE keystore.</p>
@@ -68,8 +67,6 @@ public class KeyExporter {
 		String fileName = "testkeys";
 	 
 		char[] passPhrase = "passphrase".toCharArray();
-		BASE64Encoder myB64 = new BASE64Encoder();
-		
 	 
 		File certificateFile = new File(fileName);
 		ks.load(new FileInputStream(certificateFile), passPhrase);
@@ -78,8 +75,7 @@ public class KeyExporter {
 			
 		PrivateKey privKey = kp.getPrivate();
 		
-	 
-		String b64 = myB64.encode(privKey.getEncoded());
+		String b64 = Base64.encodeBytes(privKey.getEncoded());
 	 
 		System.out.println("-----BEGIN PRIVATE KEY-----");
 		System.out.println(b64);

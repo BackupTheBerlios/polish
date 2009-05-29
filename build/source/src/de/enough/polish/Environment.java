@@ -61,19 +61,15 @@ public class Environment {
 
 	private final static String PROPERTY_CHARS_STR = "\\w|\\.|\\-|,|\\(|\\)|\\s|/|\\\\";
 
-	private final static String PROPERTY_PATTERN_STR = "\\$\\{\\s*["
-			+ PROPERTY_CHARS_STR + "]+\\s*\\}";
+	private final static String PROPERTY_PATTERN_STR = "\\$\\{\\s*[" + PROPERTY_CHARS_STR + "]+\\s*\\}";
 
-	protected final static Pattern PROPERTY_PATTERN = Pattern
-			.compile(PROPERTY_PATTERN_STR);
+	protected final static Pattern PROPERTY_PATTERN = Pattern.compile(PROPERTY_PATTERN_STR);
 
 	private final static String PROPERTY_FUNCTION_CHARS_STR = "\\w|\\.|\\-|,|\\s|/|\\s|,|\\+|\\*|:|\\\\";
 
-	private final static String FUNCTION_PATTERN_STR = "\\w+\\s*\\(\\s*["
-			+ PROPERTY_FUNCTION_CHARS_STR + "]+\\s*\\)";
+	private final static String FUNCTION_PATTERN_STR = "\\w+\\s*\\(\\s*[" + PROPERTY_FUNCTION_CHARS_STR + "]+\\s*\\)";
 
-	protected final static Pattern FUNCTION_PATTERN = Pattern
-			.compile(FUNCTION_PATTERN_STR);
+	protected final static Pattern FUNCTION_PATTERN = Pattern.compile(FUNCTION_PATTERN_STR);
 
 	private final Map symbols;
 
@@ -530,7 +526,7 @@ public class Environment {
 				String group = matcher.group(); // == function ( propertyname [,
 												// arg, arg, ...] )
 				int propertyNameStart = group.indexOf('(');
-				int propertyNameEnd = group.indexOf(',');
+				int propertyNameEnd = group.indexOf(',', propertyNameStart);
 				boolean hasParameters = true;
 				if (propertyNameEnd == -1) {
 					propertyNameEnd = group.length() - 1;
@@ -549,8 +545,10 @@ public class Environment {
 				}
 				String[] parameters = null;
 				if (hasParameters) {
-					String parametersStr = property.substring(
-							propertyNameEnd + 1, property.length() - 1).trim();
+//					String parametersStr = property.substring(
+//							propertyNameEnd + 1, property.length() - 1).trim();
+					String parametersStr = group.substring(
+							propertyNameEnd + 1, group.length() - 1).trim();
 					parameters = StringUtil.splitAndTrim(parametersStr, ',');
 				}
 				String functionName = group.substring(0, propertyNameStart)
@@ -582,8 +580,7 @@ public class Environment {
 							+ propertyName + "] is not defined.");
 				}
 				try {
-					String replacement = function.process(propertyValue,
-							parameters, this);
+					String replacement = function.process(propertyValue, parameters, this);
 					property = StringUtil.replace(property, group, replacement);
 					matcher = FUNCTION_PATTERN.matcher(property);
 				} catch (RuntimeException e) {

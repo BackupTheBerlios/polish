@@ -108,7 +108,11 @@ public abstract class Extension {
 	}
 	
 	public Environment getEnvironment() {
-		return this.environment;
+		Environment env = this.environment;
+		if (env == null) {
+			env = Environment.getInstance();
+		}
+		return env;
 	}
 	
 	/**
@@ -320,10 +324,7 @@ public abstract class Extension {
 			classLoader = definition.getClass().getClassLoader();
 		}
 		if (classPath != null) {
-			// add enough-j2mepolish-extensions.jar to the path:
-			String extensionsPath = environment.writeProperties("${polish.home}/lib/enough-j2mepolish-extensions.jar:${polish.home}/bin/extensions");
-			//System.out.println("using classpath=" + classPath );
-			classPath.add( new Path( antProject, extensionsPath ));
+//			System.out.println("using classpath=" + classPath );
 			classLoader = new AntClassLoader(
 	    			classLoader,
 	    			antProject,  
@@ -340,7 +341,7 @@ public abstract class Extension {
 			//} else {
 			//	System.out.println("Extension [" + className + "]: setting no parameters - setting == null: " + (setting == null) );
 			}
-		return extension;
+			return extension;
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 			throw new BuildException( "Unable to load " 
@@ -388,6 +389,12 @@ public abstract class Extension {
 		if (classPath == null && typeDefinition != null && typeDefinition.getDefaultClassPath() != null ) {
 			classPath = new Path( antProject, environment.writeProperties( typeDefinition.getDefaultClassPath() ) );
 		}
+		if (classPath == null) {
+			classPath = new Path( antProject );
+		}
+		// add enough-j2mepolish-extensions.jar to the path:
+		String extensionsPath = environment.writeProperties("${polish.home}/lib/enough-j2mepolish-extensions.jar:${polish.home}/bin/extensions:${polish.home}/build/extensionsclasses");
+		classPath.add( new Path( antProject, extensionsPath ));
 		/*
 		if (classPath != null) {
 			System.out.println("Using classpath [" + classPath.toString() + "]");

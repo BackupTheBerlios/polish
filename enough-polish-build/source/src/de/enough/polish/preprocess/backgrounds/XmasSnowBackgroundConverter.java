@@ -25,7 +25,7 @@
  */
 package de.enough.polish.preprocess.backgrounds;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import de.enough.polish.BuildException;
 
@@ -40,7 +40,7 @@ public class XmasSnowBackgroundConverter extends BackgroundConverter {
 		super();
 	}
 	
-	protected String createNewStatement(HashMap map, Style stlye,
+	protected String createNewStatement(Map map, Style stlye,
 			StyleSheet styleSheet) throws BuildException {
 		String result = "new de.enough.polish.ui.backgrounds.XmasSnowBackground(" 
 			+ this.color + ", ";

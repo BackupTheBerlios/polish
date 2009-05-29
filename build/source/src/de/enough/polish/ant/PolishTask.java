@@ -96,15 +96,16 @@ import de.enough.polish.devices.DeviceDatabase;
 import de.enough.polish.devices.LibraryManager;
 import de.enough.polish.emulator.Emulator;
 import de.enough.polish.finalize.Finalizer;
+import de.enough.polish.growl.GrowlNotifier;
 import de.enough.polish.jar.DefaultPackager;
 import de.enough.polish.jar.Packager;
+import de.enough.polish.libraryprocessor.LibraryProcessor;
 import de.enough.polish.manifest.ManifestCreator;
 import de.enough.polish.obfuscate.Obfuscator;
 import de.enough.polish.postcompile.PostCompiler;
 import de.enough.polish.precompile.PreCompiler;
 import de.enough.polish.preprocess.CustomPreprocessor;
 import de.enough.polish.preprocess.DebugManager;
-import de.enough.polish.preprocess.ImportConverter;
 import de.enough.polish.preprocess.Preprocessor;
 import de.enough.polish.preprocess.css.CssAttribute;
 import de.enough.polish.preprocess.css.CssAttributesManager;
@@ -113,6 +114,7 @@ import de.enough.polish.preprocess.css.StyleSheet;
 import de.enough.polish.preprocess.custom.TranslationPreprocessor;
 import de.enough.polish.preverify.CldcPreverifier;
 import de.enough.polish.preverify.Preverifier;
+import de.enough.polish.preverify.ProGuardPreverifier;
 import de.enough.polish.resources.ResourceManager;
 import de.enough.polish.resources.TranslationManager;
 import de.enough.polish.util.FileUtil;
@@ -180,7 +182,6 @@ public class PolishTask extends ConditionalTask {
 	protected String sourceCompatibility = "1.3";
 	protected Obfuscator[] obfuscators;
 	protected boolean doObfuscate;
-	protected ImportConverter importConverter;
 	protected TextFile styleSheetSourceFile;
 	protected TextFile styleCacheSourceFile;
 	protected ResourceUtil resourceUtil;
@@ -221,10 +222,6 @@ public class PolishTask extends ConditionalTask {
 
 	private StringList localeCode;
 	
-	// move all classes into the default package
-	// during the preprocessing phase:
-	protected boolean useDefaultPackage;
-
 	protected LocalizationSetting localizationSetting;
 
 	protected String polishHomePath;
@@ -369,6 +366,7 @@ public class PolishTask extends ConditionalTask {
 		if (!isActive()) {
 			return;
 		}
+		StringBuffer buildFinishedMessage = new StringBuffer();
 		try {
 			long startTime = System.currentTimeMillis();
 			if (!this.isInitialized) {
@@ -468,38 +466,36 @@ public class PolishTask extends ConditionalTask {
 			
 			if (abortOnError || failures.size() == 0 ) {
 				int timeInSeconds = (int)((System.currentTimeMillis() - startTime) / 1000);
-				StringBuffer message = new StringBuffer();
 				if (numberOfDevices > 1 || successCount > 1 ) {
 					if ( successCount == numberOfDevices ) {
-						message.append("successfully processed [").append( numberOfDevices ).append( "] devices");
+						buildFinishedMessage.append("successfully processed [").append( numberOfDevices ).append( "] devices");
 					} else {
 						if ( numberOfDevices == 1 ) {
-							message.append("successfully processed one device with [").append( successCount ).append( "] builds");
+							buildFinishedMessage.append("successfully processed one device with [").append( successCount ).append( "] builds");
 						} else {
-							message.append("successfully processed [").append( numberOfDevices ).append( "] devices with [" ).append( successCount ).append( "] builds");
+							buildFinishedMessage.append("successfully processed [").append( numberOfDevices ).append( "] devices with [" ).append( successCount ).append( "] builds");
 						}
 					}
 				} else if (this.devices != null && this.devices.length > 0){
-					message.append("successfully processed " ).append( this.devices[0]);
+					buildFinishedMessage.append("successfully processed " ).append( this.devices[0]);
 				}
-				message.append( " on ").append( (new Date()).toString() ).append( " in " ).append( timeInSeconds ).append( " seconds.");
-				System.out.println(message.toString());
+				buildFinishedMessage.append( " on ").append( (new Date()).toString() ).append( " in " ).append( timeInSeconds ).append( " seconds.");
+				System.out.println(buildFinishedMessage.toString());
 			} else {
-				StringBuffer buffer = new StringBuffer();
-				buffer.append("processed [" ).append( numberOfDevices ).append( "] devices with [" )
+				buildFinishedMessage.append("processed [" ).append( numberOfDevices ).append( "] devices with [" )
 					.append( successCount ).append( "] successful builds and [" ).append( failures.size() ).append( "] errors:\n" );
 				FailureInfo[] infos  = (FailureInfo[]) failures.toArray( new FailureInfo[ failures.size() ] );
 				for (int i = 0; i < infos.length; i++) {
 					FailureInfo info = infos[i];
-					info.appendInfo( buffer );
-					buffer.append('\n');
+					info.appendInfo( buildFinishedMessage );
+					buildFinishedMessage.append('\n');
 				}
-				String message = buffer.toString();
-				System.out.println( message );
+				String msg = buildFinishedMessage.toString();
+				System.out.println( msg );
 				
 				Project antProject = getProject();
 				antProject.setProperty("j2mepolish.error", "true");
-				antProject.setProperty("j2mepolish.error.message",  message );
+				antProject.setProperty("j2mepolish.error.message",  msg );
 				
 				executeErrorTarget( this.buildSetting.getOnError(), null );
 			}
@@ -535,6 +531,8 @@ public class PolishTask extends ConditionalTask {
 					}
 				}
 			}
+		} else if (GrowlNotifier.isGrowlAvailable()) {
+			GrowlNotifier.publish("J2ME Polish Finished", buildFinishedMessage.toString());
 		}
 	}
 
@@ -689,9 +687,9 @@ public class PolishTask extends ConditionalTask {
 					// probably the wtk.home path is wrong:
 					File file = new File( this.wtkHome );
 					if (!file.exists()) {
-						throw new BuildException("The Ant-property [wtk.home] points to the non-existing directory [" + this.wtkHome + "]. Please adjust his setting in the build.xml file.");
+						System.out.println("Warning: The Ant-property [wtk.home] points to the non-existing directory [" + this.wtkHome + "]. Please adjust his setting in the build.xml file if you encounter problems.");
 					} else {
-						throw new BuildException("Unable to find the preverify tool at the default location [" + preverifyFile.getAbsolutePath() + "]. Please specify where to find it with the \"preverify\"-attribute of the <build> element (in the build.xml file) or specify the \"wtk.home\" property.");
+						System.out.println("Warning: Unable to find the preverify tool at the default location [" + preverifyFile.getAbsolutePath() + "]. Please specify where to find it with the \"preverify\"-attribute of the <build> element (in the build.xml file) or specify the \"wtk.home\" property.");
 					}
 				}
 			}
@@ -834,9 +832,9 @@ public class PolishTask extends ConditionalTask {
 		}
 		
 		// create debug manager:
-		boolean isDebugEnabled = this.buildSetting.isDebugEnabled(); 
+		boolean isDebugEnabled = this.buildSetting.isDebugEnabled(this.environment);
 		DebugManager debugManager = null;
-		LogSetting debugSetting = this.buildSetting.getDebugSetting();
+		LogSetting debugSetting = this.buildSetting.getDebugSetting(this.environment);
 		if (isDebugEnabled) {
 			try {
 				debugManager = new DebugManager( debugSetting, this.extensionManager, this.environment );
@@ -863,7 +861,7 @@ public class PolishTask extends ConditionalTask {
 			this.polishProject.addFeature("debug.verbose");
 			this.polishProject.addDirectCapability("polish.debug.Verbose", "enabled");
 		}
-		if (debugManager != null && this.buildSetting.getDebugSetting().showLogOnError()) {
+		if (debugManager != null && this.buildSetting.getDebugSetting(this.environment).showLogOnError()) {
 			this.polishProject.addFeature("showLogOnError");
 		}
 		this.polishProject.addCapability("license", getLicense() );
@@ -873,7 +871,7 @@ public class PolishTask extends ConditionalTask {
 		// specify some preprocessing symbols depending on the selected features:
 		this.polishProject.addFeature(this.buildSetting.getImageLoadStrategy());
 		// this is actually outdated and only kept for backwards-compatibility:
-		if (debugManager != null && this.buildSetting.getDebugSetting().useGui()) {
+		if (debugManager != null && this.buildSetting.getDebugSetting(this.environment).useGui()) {
 			this.polishProject.addFeature("useDebugGui");
 		}
 		// add all system properties:
@@ -1137,9 +1135,6 @@ public class PolishTask extends ConditionalTask {
 			}
 		}
 		
-		// init import manager:
-		this.importConverter = new ImportConverter();
-		
 		// init base style sheet:
 //		if (this.buildSetting.usePolishGui()) {
 //			ResourceSetting resourceSetting = this.buildSetting.getResourceSetting();
@@ -1151,7 +1146,7 @@ public class PolishTask extends ConditionalTask {
 		
 		// set the names of the midlets:
 		this.midletClassesByName = new HashMap();
-		String[] midletClassNames = this.buildSetting.getMidletClassNames( false, this.environment );
+		String[] midletClassNames = this.buildSetting.getMidletClassNames( this.environment );
 		for (int i = 0; i < midletClassNames.length; i++) {
 			String midletClassName = midletClassNames[i];
 			this.midletClassesByName.put( midletClassName, Boolean.TRUE );
@@ -1468,7 +1463,11 @@ public class PolishTask extends ConditionalTask {
 	}
 	
 	
-	
+	/**
+	 * Starts the build for a new device and/or locale
+	 * @param device the new device
+	 * @param locale the new locale
+	 */
 	public void initialize( Device device, Locale locale ) {
 		if (this.configurationManager != null) {
 			this.configurationManager.preInitialize( device, locale, this.environment );
@@ -1604,6 +1603,7 @@ public class PolishTask extends ConditionalTask {
 		}
 		device.setBaseDir( buildPath );
 		this.environment.addVariable("polish.base.dir", buildPath );
+		
 		String sourceDir = buildPath + File.separatorChar + "source";
 		device.setSourceDir(sourceDir);
 		this.environment.addVariable("polish.sourcedir", sourceDir);
@@ -1615,39 +1615,21 @@ public class PolishTask extends ConditionalTask {
 		device.setThemeDir( themeDir );
 		this.environment.addVariable("polish.resources.dir", resourceDir.getAbsolutePath() );
 
-
-		
 		// okay, now initialize extension manager:
 		this.extensionManager.initialize(device, locale, this.environment);
 		
-		// check if there is an active obfuscator with the "useDefaultPackage" option:
-		this.useDefaultPackage =  "true".equals( this.environment.getVariable("polish.useDefaultPackage"));
-		if (this.useDefaultPackage && this.environment.hasSymbol("polish.api.j2mepolish")) {
-			this.useDefaultPackage = false;
-			this.environment.removeVariable("polish.useDefaultPackage");
-			this.environment.removeSymbol("polish.useDefaultPackage");
-		}
-		this.preprocessor.setUseDefaultPackage( this.useDefaultPackage );
-		// adjust polish.classes.ImageLoader in case the default package is used:
-		if (this.useDefaultPackage) {
-			String imageLoaderClass = this.environment.getVariable("polish.classes.ImageLoader");
-			if (imageLoaderClass != null) {
-				int classStartIndex = imageLoaderClass.lastIndexOf('.');
-				if (classStartIndex != -1) {
-					imageLoaderClass = imageLoaderClass.substring( classStartIndex + 1 );
-					this.environment.addVariable("polish.classes.ImageLoader", imageLoaderClass );
-				}
-			}
-		}
-
 		// add primary midlet-class-definition:
-		String[] midletClassNames = this.buildSetting.getMidletClassNames( this.useDefaultPackage, this.environment );
+		String[] midletClassNames = this.buildSetting.getMidletClassNames(  this.environment );
 		if (midletClassNames.length > 0) {
 			this.environment.addVariable("polish.midlet.class", midletClassNames[0] );
 			for (int i = 0; i < midletClassNames.length; i++) {
 				this.environment.addVariable("polish.classes.midlet-" + (i+1), midletClassNames[i] );			
 			}
 		}
+		
+		// set javac directories:
+		getJavacSourceDir(device);
+		getJavacDestDir(device);
 		
 		
 		// check settings:
@@ -1695,6 +1677,7 @@ public class PolishTask extends ConditionalTask {
 		if (this.configurationManager != null) {
 			this.configurationManager.postInitialize( device, locale, this.environment );
 		}
+		this.environment.addVariable( "polish.license", getLicense() );
 		//TODO call initialialize on all active extensions
 		// add settings of active postcompilers:
 		// let postcompilers adjust the bootclasspath:
@@ -1828,7 +1811,7 @@ public class PolishTask extends ConditionalTask {
 				if (deviceSupportsJ2mePolishApi) {
 					stylesFile = this.styleCacheSourceFile;
 				}
-				File targetFile =  stylesFile.getTargetFile( baseDirectory, this.useDefaultPackage );
+				File targetFile =  stylesFile.getTargetFile( baseDirectory );
 					//new File( targetDir + File.separatorChar + this.styleSheetSourceFile.getFilePath() );				
 				boolean cssIsNew = this.lastRunFailed
 					|| (!targetFile.exists())
@@ -1877,12 +1860,6 @@ public class PolishTask extends ConditionalTask {
 								this.environment );
 					}
 					//this.styleSheetSourceFile.saveToDir(targetDir, this.styleSheetCode.getArray(), false );
-					if (!deviceSupportsJ2mePolishApi && this.useDefaultPackage) {
-						this.styleSheetCode.reset();
-						this.importConverter.processImports(true, device.isMidp1(), this.styleSheetCode, device, this.preprocessor);
-						this.styleSheetCode.reset();
-						this.importConverter.removeDirectPackages( this.styleSheetCode, this.preprocessor.getTextFileManager() );
-					}
 					FileUtil.writeTextFile(targetFile, styleCode.getArray());
 					this.numberOfChangedFiles++;
 				//} else {
@@ -1892,7 +1869,7 @@ public class PolishTask extends ConditionalTask {
 			}
 			// now check if the de.enough.polish.util.Locale.java needs to be rewritten:
 			//if (locale != null) {
-				File targetFile =  this.localeSourceFile.getTargetFile( baseDirectory, this.useDefaultPackage );
+				File targetFile =  this.localeSourceFile.getTargetFile( baseDirectory );
 				//File targetFile = new File( targetDir + File.separatorChar + this.localeSourceFile.getFilePath() );				
 				boolean localizationIsNew = (!targetFile.exists())
 					|| ( lastLocaleModification > targetFile.lastModified() )
@@ -1909,10 +1886,6 @@ public class PolishTask extends ConditionalTask {
 					// now insert the localozation data for this device
 					// into the Locale.java source-code:					
 					translationManager.processLocaleCode( this.localeCode );
-					if (this.useDefaultPackage) {
-						this.localeCode.reset();
-						this.importConverter.processImports(true, device.isMidp1(), this.localeCode, device, this.preprocessor);
-					}
 					FileUtil.writeTextFile(targetFile, this.localeCode.getArray());
 					this.numberOfChangedFiles++;
 				}
@@ -1954,7 +1927,7 @@ public class PolishTask extends ConditionalTask {
 			//System.out.println("processing [" + file.getFileName() + "]");
 			// check if file needs to be preprocessed at all:
 			long sourceLastModified = file.lastModified();
-			File targetFile = file.getTargetFile(baseDirectory, this.useDefaultPackage );
+			File targetFile = file.getTargetFile(baseDirectory );
 			long targetLastModified = targetFile.lastModified();
 			// preprocess this file, but only when there can
 			// be changes at all - this could be when
@@ -1985,15 +1958,9 @@ public class PolishTask extends ConditionalTask {
 				if (usePolishGui && result != Preprocessor.SKIP_FILE) {
 					// set the StyleSheet.display variable in all MIDlets:
 					String adjustedClassName = className;
-					if (this.useDefaultPackage) {
-						int lastDotPos = className.lastIndexOf('.');
-						if (lastDotPos != -1) {
-							adjustedClassName = className.substring( lastDotPos + 1 );
-						}
-					}
 					if ( (this.midletClassesByName.get( adjustedClassName ) != null) ) {
 						sourceCode.reset();
-						insertDisplaySetting( className, sourceCode );
+						//insertDisplaySetting( className, sourceCode );
 						sourceCode.reset();
 						insertExitSetting( className, sourceCode );
 					}
@@ -2041,75 +2008,75 @@ public class PolishTask extends ConditionalTask {
 		
 	}
 	
-	/**
-	 * Sets the StyleSheet.display variable in a MIDlet class.
-	 * 
-	 * @param className the name of the class
-	 * @param sourceCode the source code
-	 * @throws BuildException when the startApp()-method could not be found
-	 */
-	protected void insertDisplaySetting( String className, StringList sourceCode ) {
-		// at first try to find the startApp method:
-		while (sourceCode.next()) {
-			String line = sourceCode.getCurrent();
-			Matcher matcher = START_APP_PATTERN.matcher(line);
-			if (matcher.find()) {
-				int lineIndex = sourceCode.getCurrentIndex();
-				while ((line.indexOf('{') == -1) && (sourceCode.next()) ) {
-					line = sourceCode.getCurrent();
-				}
-				if (!sourceCode.next()) {
-					throw new BuildException("Unable to process MIDlet [" + className + "]: startApp method is not opened with '{': line [" + (++lineIndex) + "].");
-				}
-				line  = sourceCode.getCurrent();
-				String displayVar;
-				if (this.useDefaultPackage) {
-					displayVar = "StyleSheet.display";
-				} else {
-					displayVar = "de.enough.polish.ui.StyleSheet.display";
-				}
-				/*
-				System.out.println( className + ": changing line [" + line + "] to ["
-						+ displayVar + " = javax.microedition.lcdui.Display.getDisplay( this );"
-						+ line + "]"
-						);
-				*/
-				//TODO use import() preprocessing directive for such stuff!!
-				String displayClassName = "javax.microedition.lcdui.Display";
-				if ( this.environment.hasSymbol("polish.blackberry")) {
-					if (this.useDefaultPackage) {
-						displayClassName = "Display";
-					} else {
-						displayClassName = "de.enough.polish.blackberry.ui.Display";
-					}
-				} else if ( this.environment.hasSymbol("polish.doja")) {
-					if (this.useDefaultPackage) {
-						displayClassName = "Display";
-					} else {
-						displayClassName = "de.enough.polish.doja.ui.Display";
-					}
-				} else if ( this.environment.hasSymbol("polish.android")) {
-					if (this.useDefaultPackage) {
-						displayClassName = "Display";
-					} else {
-						displayClassName = "de.enough.polish.drone.lcdui.Display";
-					}
-				}
-				String displayVariableSetting = displayVar + " = " + displayClassName + ".getDisplay( this ); ";
-				if (this.useDefaultPackage) {
-					displayVar = "StyleSheet.midlet";
-				} else {
-					displayVar = "de.enough.polish.ui.StyleSheet.midlet";
-				}
-				displayVariableSetting += displayVar + " = this;";
-				sourceCode.setCurrent( displayVariableSetting + line );
-				return;
-			}
-		}
-		System.out.println(START_APP_PATTERN.pattern());
-		throw new BuildException("Unable to find startApp method in MIDlet [" + className + "].");
-
-	}
+//	/**
+//	 * Sets the StyleSheet.display variable in a MIDlet class.
+//	 * 
+//	 * @param className the name of the class
+//	 * @param sourceCode the source code
+//	 * @throws BuildException when the startApp()-method could not be found
+//	 */
+//	protected void insertDisplaySetting( String className, StringList sourceCode ) {
+//		// at first try to find the startApp method:
+//		while (sourceCode.next()) {
+//			String line = sourceCode.getCurrent();
+//			Matcher matcher = START_APP_PATTERN.matcher(line);
+//			if (matcher.find()) {
+//				int lineIndex = sourceCode.getCurrentIndex();
+//				while ((line.indexOf('{') == -1) && (sourceCode.next()) ) {
+//					line = sourceCode.getCurrent();
+//				}
+//				if (!sourceCode.next()) {
+//					throw new BuildException("Unable to process MIDlet [" + className + "]: startApp method is not opened with '{': line [" + (++lineIndex) + "].");
+//				}
+//				line  = sourceCode.getCurrent();
+//				String displayVar;
+//				if (this.useDefaultPackage) {
+//					displayVar = "StyleSheet.display";
+//				} else {
+//					displayVar = "de.enough.polish.ui.StyleSheet.display";
+//				}
+//				/*
+//				System.out.println( className + ": changing line [" + line + "] to ["
+//						+ displayVar + " = javax.microedition.lcdui.Display.getDisplay( this );"
+//						+ line + "]"
+//						);
+//				*/
+//				//TODO use import() preprocessing directive for such stuff!!
+//				String displayClassName = "javax.microedition.lcdui.Display";
+//				if ( this.environment.hasSymbol("polish.blackberry")) {
+//					if (this.useDefaultPackage) {
+//						displayClassName = "Display";
+//					} else {
+//						displayClassName = "de.enough.polish.blackberry.ui.Display";
+//					}
+//				} else if ( this.environment.hasSymbol("polish.doja")) {
+//					if (this.useDefaultPackage) {
+//						displayClassName = "Display";
+//					} else {
+//						displayClassName = "de.enough.polish.doja.ui.Display";
+//					}
+//				} else if ( this.environment.hasSymbol("polish.android")) {
+//					if (this.useDefaultPackage) {
+//						displayClassName = "Display";
+//					} else {
+//						displayClassName = "de.enough.polish.drone.lcdui.Display";
+//					}
+//				}
+//				String displayVariableSetting = displayVar + " = " + displayClassName + ".getDisplay( this ); ";
+//				if (this.useDefaultPackage) {
+//					displayVar = "StyleSheet.midlet";
+//				} else {
+//					displayVar = "de.enough.polish.ui.StyleSheet.midlet";
+//				}
+//				displayVariableSetting += displayVar + " = this;";
+//				sourceCode.setCurrent( displayVariableSetting + line );
+//				return;
+//			}
+//		}
+//		System.out.println(START_APP_PATTERN.pattern());
+//		throw new BuildException("Unable to find startApp method in MIDlet [" + className + "].");
+//
+//	}
 	
 	/**
 	 * Sets the StyleSheet.display variable in a MIDlet class.
@@ -2131,12 +2098,7 @@ public class PolishTask extends ConditionalTask {
 				while ((line.indexOf('{') == -1) && (sourceCode.next()) ) {
 					line = sourceCode.getCurrent();
 				}
-				String debugExit;
-				if (this.useDefaultPackage) {
-					debugExit = "Debug.exit();";
-				} else {
-					debugExit = "de.enough.polish.util.Debug.exit();";
-				}
+				String debugExit = "de.enough.polish.util.Debug.exit();";
 				int closePos = line.indexOf('}');
 				if (closePos != -1 ) {
 					// the destroyApp() method is empty!
@@ -2179,10 +2141,29 @@ public class PolishTask extends ConditionalTask {
 			if (this.binaryLibrariesUpdated || (!targetDir.exists() && this.binaryLibraries != null) ) {
 				System.out.println("copying binary libraries to [" + targetDirName + "]...");
 				LibrarySetting[] settings = this.binaryLibraries.getLibraries();
+				LibraryProcessor[] processors = getLibraryProcessors( device, locale, this.environment );
+				boolean processLibraries = (processors != null && processors.length > 0);
+				String[] fileNames = null;
 				for (int i = 0; i < settings.length; i++) {
 					LibrarySetting setting = settings[i];
 					if (setting.isActive( this.environment )) {
-						setting.copyFromCache( targetDir );
+						
+						try
+						{
+							FileUtil.copyDirectoryContents( setting.getCacheDirectory(), targetDir, true );
+							if (processLibraries) {
+								fileNames = FileUtil.filterDirectory( setting.getCacheDirectory(), ".class", true );
+								for (int j = 0; j < processors.length; j++)
+								{
+									LibraryProcessor processor = processors[j];
+									processor.processLibrary( targetDir, fileNames, device, locale, this.environment );
+								}
+							}
+						} catch (IOException e)
+						{
+							e.printStackTrace();
+							throw new BuildException("Unable to copy or process binary library " + setting + ": " + e );
+						}
 					}
 				}
 			}
@@ -2192,6 +2173,21 @@ public class PolishTask extends ConditionalTask {
 
 
 	/**
+	 * @param device
+	 * @param locale
+	 * @param env
+	 * @return
+	 */
+	private LibraryProcessor[] getLibraryProcessors(Device device,
+			Locale locale, Environment env)
+	{
+		Extension[] extensions = this.extensionManager.getAutoStartExtensions(ExtensionManager.TYPE_LIBRARYPROCESSOR, device, locale, env );
+		LibraryProcessor[] processors = new LibraryProcessor[ extensions.length ];
+		System.arraycopy( extensions, 0, processors, 0, extensions.length );
+		return processors;
+	}
+
+	/**
 	 * Compiles the source code.
 	 *  
 	 * @param device The device for which the obfuscation should be done.
@@ -2199,6 +2195,7 @@ public class PolishTask extends ConditionalTask {
 	 */
 	public void compile( Device device, Locale locale ) {
 		// setting target directory:
+		
 		String targetDirName = device.getBaseDir() + File.separatorChar + "classes";
 		File targetDir; // = new File( targetDirName );
 		if ( this.buildSetting.isInCompilerMode()) { //  && ! this.buildSetting.doPreverifyInCompilerMode() && !this.doObfuscate is not needed
@@ -2214,7 +2211,7 @@ public class PolishTask extends ConditionalTask {
 		
 		String showSourceDirVariable = this.environment.getVariable("polish.buildcontrol.compile.showSourceDir");
 		if("true".equals(showSourceDirVariable)) {
-			System.out.println("Using source directory:"+new Path(getProject(),  device.getSourceDir()).toString());
+			System.out.println("Using source directory:" + new Path(getProject(),  device.getSourceDir()).toString());
 		}
 		
 		if (device.getNumberOfChangedFiles() == 0 && !this.lastRunFailed) {
@@ -2234,6 +2231,7 @@ public class PolishTask extends ConditionalTask {
 		if (!compiler.isTaskNameSet()) {
 			compiler.setDirectTaskName(getTaskName() + "-javac-" + device.getIdentifier() );
 		}
+		
 		//javac.target=1.1 or javac.target=1.2 is needed for the preverification:
 		if (!compiler.isTargetSet()) {
 			//System.out.println("setting javac-target " + getJavacTarget() );
@@ -2244,6 +2242,7 @@ public class PolishTask extends ConditionalTask {
 			//System.out.println("setting javac-source " + getJavacSource() );
 			compiler.setDirectSource( getJavacSource() );
 		}
+		
 		//if (this.buildSetting.isDebugEnabled() && !compiler.isDebugSet()) {
 		// always add debugging settings, since the obfuscator removes them anyhow:
 		compiler.setDirectDebug(true);
@@ -2251,13 +2250,33 @@ public class PolishTask extends ConditionalTask {
 		if (!targetDir.exists()) {
 			targetDir.mkdirs();
 		}
-		if (!compiler.isDestDirSet()) {
-			compiler.setDirectDestdir( targetDir );
-		}
-		if (!compiler.isSourceDirSet()) {
-			compiler.setDirectSrcdir(new Path( getProject(),  device.getSourceDir() ) );
+		
+		String javacDestDir = getJavacDestDir(device);
+		if (!compiler.isDestDirSet() || javacDestDir != null) {
+			if(javacDestDir != null)
+			{
+				compiler.setDirectDestdir(new File(javacDestDir));
+			}
+			else
+			{
+				compiler.setDirectDestdir(targetDir);
+			}
+			compiler.getDestdir().mkdirs();
 		}
 		
+		String javacSrcDir = getJavacSourceDir(device);
+		if (!compiler.isSourceDirSet() || javacSrcDir != null) {
+			if(javacSrcDir != null)
+			{
+				
+				compiler.setDirectSrcdir(new Path(getProject(), javacSrcDir));
+			}
+			else
+			{
+				compiler.setDirectSrcdir(new Path( getProject(),  device.getSourceDir() ) );
+			}	
+		}
+				
 		//javac.setSourcepath(new Path( getProject(),  "" ));
 		String classPath = device.getClassPath();
 		String completePath = classPath; // just used for printing out the classpath in case of an error
@@ -2343,17 +2362,65 @@ public class PolishTask extends ConditionalTask {
 		}
 	}
 	
+	private String getJavacSourceDir(Device device) {
+		String source = this.environment.getVariable("javac.srcdir");
+		
+		if(source == null)
+		{
+			source = this.environment.getVariable("polish.javac.srcdir");
+		}
+		
+		if (source == null) {
+			return null; 
+		}
+		else
+		{
+			return device.getBaseDir() + File.separatorChar + source;
+		}
+	}
+	
+	private String getJavacDestDir(Device device) {
+		String dest = this.environment.getVariable("javac.destdir");
+		
+		if(dest == null)
+		{
+			dest = this.environment.getVariable("polish.javac.destdir");
+		}
+		
+		if (dest == null) {
+			return null;
+		}
+		else
+		{
+			String path = device.getBaseDir() + File.separatorChar + dest;
+			device.setClassesDir( path );
+			return path;
+		}
+	}
 	
 	private String getJavacSource() {
 		String source = this.environment.getVariable("javac.source");
+		
+		if(source == null)
+		{
+			source = this.environment.getVariable("polish.javac.source");
+		}
+		
 		if (source == null) {
 			source = this.sourceCompatibility; 
 		}
+		
 		return source;
 	}
 
 	private String getJavacTarget() {
 		String jTarget = this.environment.getVariable("javac.target");
+		
+		if(jTarget == null)
+		{
+			jTarget = this.environment.getVariable("polish.javac.target");
+		}
+		
 		if (jTarget == null) {
 			jTarget = this.javacTarget;
 		}
@@ -2389,17 +2456,12 @@ public class PolishTask extends ConditionalTask {
 	 */
 	protected void precompile(Device device, Locale locale) {
 		// deactivate logging:
-		String className;
-		if (this.useDefaultPackage) {
-			className = "Debug";
-		} else {
-			className = "de.enough.polish.util.Debug";
-		}
+		String className = "de.enough.polish.util.Debug";
 		ClassLoader classLoader = device.getClassLoader();
 		try {
 			Class debugClass = classLoader.loadClass(className);
 			ReflectionUtil.setStaticField( debugClass, "suppressMessages", Boolean.TRUE );
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			//System.err.println("Precompile: Unable to deactivate logging in Debug class: " + e.toString() );
 			//e.printStackTrace();
 		}
@@ -2440,18 +2502,17 @@ public class PolishTask extends ConditionalTask {
 	 * @param locale the current localization
 	 */
 	protected void postCompile( Device device, Locale locale ) {
-		// deactivate logging:
-		String className;
-		if (this.useDefaultPackage) {
-			className = "Debug";
-		} else {
-			className = "de.enough.polish.util.Debug";
+		if (device.getNumberOfChangedFiles() == 0 && !this.lastRunFailed) {
+			System.out.println("Skipping postcompile step (no compilation)." );
+			return;			
 		}
+		// deactivate logging:
+		String className = "de.enough.polish.util.Debug";
 		ClassLoader classLoader = device.getClassLoader();
 		try {
 			Class debugClass = classLoader.loadClass(className);
 			ReflectionUtil.setStaticField( debugClass, "suppressMessages", Boolean.TRUE );
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			//System.err.println("Postcompile: Unable to deactivate logging in Debug class: " + e.toString() );
 			//e.printStackTrace();
 			// ignore - this is just because there is no compiled Debug class yet...
@@ -2473,6 +2534,7 @@ public class PolishTask extends ConditionalTask {
 	 * Obfuscates the compiled source code.
 	 * The obfuscation can be omitted if the property 'polish.buildcontrol.obfucation.enabled' is set to 'false'.
 	 * The default behavior is to use the obfuscation options given in the build.xml file.
+	 *  
 	 * @param device The device for which the obfuscation should be done.
 	 * @param locale the current localization
 	 */
@@ -2482,14 +2544,22 @@ public class PolishTask extends ConditionalTask {
 			return;
 		}
 		
+		if (device.getNumberOfChangedFiles() == 0 && !this.lastRunFailed) {
+			System.out.println("Skipping obfuscate step (no compilation)." );
+			String targetPath = device.getBaseDir() + File.separatorChar + "obfuscated";
+			File targetDir = new File( targetPath );
+			if (targetDir.exists()) {
+				device.setClassesDir(targetPath);
+			}
+			return;			
+		}
 		if (this.polishLogger != null) {
 			this.polishLogger.setObfuscateMode( true );
 		}
 		Path bootPath = new Path( getProject(), device.getBootClassPath() );
 		// create the initial jar-file: only include to class files,
 		// for accelerating the obfuscation:
-		File sourceFile = new File( this.buildSetting.getWorkDir().getAbsolutePath()
-				+ File.separatorChar + "source.jar");
+		File sourceFile = new File( this.buildSetting.getWorkDir(), "source.jar");
 		//long time = System.currentTimeMillis();
 		try {
 			JarUtil.jar( new File( device.getClassesDir()), sourceFile, false );
@@ -2512,7 +2582,7 @@ public class PolishTask extends ConditionalTask {
 				System.out.println("obfuscating for device [" + device.getIdentifier() + "].");
 				hasBeenObfuscated = true;
 			}
-			obfuscator.obfuscate(device, sourceFile, destFile, getObfuscationPreserveClassNames(this.useDefaultPackage), bootPath );
+			obfuscator.obfuscate(device, sourceFile, destFile, getObfuscationPreserveClassNames(), bootPath );
 			if ( i != activeObfuscators.length -1 ) {
 				sourceFile = destFile;
 				destFile = new File( this.buildSetting.getWorkDir().getAbsolutePath()
@@ -2576,21 +2646,21 @@ public class PolishTask extends ConditionalTask {
 	 * Retrieves all class names that should be spared from the obfuscation.
 	 * @return an array of all names that should be spared
 	 */
-	protected String[] getObfuscationPreserveClassNames( boolean isDefaultPackage )
+	protected String[] getObfuscationPreserveClassNames()
 	{
 		ArrayList preserveList = new ArrayList();
-		String[] midletClasses = this.buildSetting.getMidletClassNames( isDefaultPackage, this.environment );
-		addObfuscationPreserveClassNames( midletClasses, preserveList, isDefaultPackage );
+		String[] midletClasses = this.buildSetting.getMidletClassNames( this.environment );
+		addObfuscationPreserveClassNames( midletClasses, preserveList );
 		if (this.keepClasses != null) {
-			addObfuscationPreserveClassNames( this.keepClasses, preserveList, isDefaultPackage );
+			addObfuscationPreserveClassNames( this.keepClasses, preserveList );
 		}
 		if (this.buildSetting.getDojaClassSetting() != null) {
 			String className = this.buildSetting.getDojaClassSetting().getClassName(); 
-			addObfuscationPreserveClassName(className, preserveList, isDefaultPackage);
+			addObfuscationPreserveClassName(className, preserveList);
 		}
 		if (this.buildSetting.getMainClassSetting() != null) {
 			String className = this.buildSetting.getMainClassSetting().getClassName(); 
-			addObfuscationPreserveClassName(className, preserveList, isDefaultPackage);
+			addObfuscationPreserveClassName(className, preserveList);
 		}
 		return (String[]) preserveList.toArray( new String[ preserveList.size() ] );	
 	}
@@ -2599,13 +2669,12 @@ public class PolishTask extends ConditionalTask {
 	 * Adds all class names to the list of to be preserved class names  for the obfuscation process.
 	 * @param classNames the names of classes
 	 * @param preserveList the list
-	 * @param isDefaultPackage true when the default package is used
 	 */
-	private void addObfuscationPreserveClassNames(String[] classNames, ArrayList preserveList, boolean isDefaultPackage)
+	private void addObfuscationPreserveClassNames(String[] classNames, ArrayList preserveList)
 	{
 		for (int i = 0; i < classNames.length; i++)
 		{
-			addObfuscationPreserveClassName( classNames[i], preserveList, isDefaultPackage );
+			addObfuscationPreserveClassName( classNames[i], preserveList);
 		}		
 	}
 
@@ -2614,20 +2683,10 @@ public class PolishTask extends ConditionalTask {
 	 * 
 	 * @param className the name of the class
 	 * @param preserveList the list of names that should be preserved
-	 * @param isDefaultPackage true when the default package is used on the source code level
 	 */
-	private void addObfuscationPreserveClassName(String className, ArrayList preserveList, boolean isDefaultPackage)
+	private void addObfuscationPreserveClassName(String className, ArrayList preserveList)
 	{
-		if (!isDefaultPackage) {
-			preserveList.add( className );
-		} else {
-			int lastDotPos = className.lastIndexOf( '.' );
-			if ( lastDotPos != -1 && className.charAt( className.length() -1) != '*') {
-				preserveList.add( className.substring( lastDotPos + 1 ) );							
-			} else {
-				preserveList.add( className );
-			}
-		}
+		preserveList.add( className );
 	}
 
 	/**
@@ -2637,6 +2696,10 @@ public class PolishTask extends ConditionalTask {
 	 * @param locale the current localization
 	 */
 	protected void preverify( Device device, Locale locale ) {
+		if ("false".equals(this.environment.getVariable(Preverifier.BUILDCONTROL_PREVERIFIER_ENABLED))) {
+			System.out.println("Skipping second preverification phase.");
+			return;
+		}
 		System.out.println("preverifying for device [" + device.getIdentifier() + "].");
 		
 		// add environment settings:
@@ -2682,8 +2745,10 @@ public class PolishTask extends ConditionalTask {
 					e.printStackTrace();
 					throw new BuildException("Unable to preverify for device [" + device.getIdentifier() + "], preverifier [" + preverifierName + "]: " + e.toString(), e );
 				}
-			} else {
+			} else if (preverifyExecutable != null){
 				preverifier = new CldcPreverifier();
+			} else {
+				preverifier = new  ProGuardPreverifier();
 			}
 		}
 		
@@ -2763,7 +2828,7 @@ public class PolishTask extends ConditionalTask {
 			attributesByName.put( "Main-Class", new Attribute( "Main-Class", mainClassName ) );
 			attributesByName.put( "MIDlet-1", new Attribute( "MIDlet-1", ",," ) );
 		} else {
-			String[] midletInfos = this.buildSetting.getMidletInfos( this.infoSetting.getIcon(), this.useDefaultPackage, this.environment );
+			String[] midletInfos = this.buildSetting.getMidletInfos( this.infoSetting.getIcon(), this.environment );
 			for (int i = 0; i < midletInfos.length; i++) {
 				String key = InfoSetting.NMIDLET + (i+1);
 				String midletDefinition = this.environment.getVariable(key); 
@@ -2773,10 +2838,6 @@ public class PolishTask extends ConditionalTask {
 								new Attribute(key, info) );
 					this.environment.setVariable( key, info );
 				} else {
-					if (this.useDefaultPackage) {
-						Midlet midlet = new Midlet( midletDefinition );
-						midletDefinition =  midlet.getMidletInfo(null, this.useDefaultPackage );
-					}
 					attributesByName.put( key, 
 							new Attribute(key, midletDefinition) );	
 				}
@@ -2866,7 +2927,7 @@ public class PolishTask extends ConditionalTask {
 //			//attributesByName.put( "Main-Class", new Attribute( "Main-Class", mainClassName ) );
 //			attributesByName.put( "MIDlet-1", new Attribute( "MIDlet-1", ",," ) );
 //		} else {
-			String[] midletInfos = this.buildSetting.getMidletInfos( this.infoSetting.getIcon(), this.useDefaultPackage, this.environment );
+			String[] midletInfos = this.buildSetting.getMidletInfos( this.infoSetting.getIcon(), this.environment );
 			for (int i = 0; i < midletInfos.length; i++) {
 				String key = InfoSetting.NMIDLET + (i+1);
 				String midletDefinition = this.environment.getVariable(key); 
@@ -2876,10 +2937,6 @@ public class PolishTask extends ConditionalTask {
 								new Attribute(key, info) );
 					this.environment.setVariable( key, info );
 				} else {
-					if (this.useDefaultPackage) {
-						Midlet midlet = new Midlet( midletDefinition );
-						midletDefinition =  midlet.getMidletInfo(null, this.useDefaultPackage );
-					}
 					attributesByName.put( key, 
 							new Attribute(key, midletDefinition) );	
 				}

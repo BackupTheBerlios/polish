@@ -31,7 +31,7 @@ import de.enough.polish.preprocess.css.StyleSheet;
 
 import de.enough.polish.BuildException;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>Creates the source code for a simple border.</p>
@@ -56,7 +56,7 @@ public class LeftBorderConverter extends BorderConverter {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.preprocess.BorderConverter#createNewStatement(java.util.HashMap, de.enough.polish.preprocess.Style, de.enough.polish.preprocess.StyleSheet)
 	 */
-	protected String createNewStatement(HashMap border, Style style, StyleSheet styleSheet) throws BuildException {
+	protected String createNewStatement(Map border, Style style, StyleSheet styleSheet) throws BuildException {
 		return "new " + BORDERS_PACKAGE + "LeftBorder( " + this.color 
 													+ ", " + this.width + ")";	
 	}

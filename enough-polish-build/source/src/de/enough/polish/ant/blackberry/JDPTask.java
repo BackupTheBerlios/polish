@@ -9,6 +9,8 @@ import java.util.List;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 
+import de.enough.polish.util.StringUtil;
+
 public class JDPTask extends Task {
 	private static final String TEMPLATE = 
 		"## RIM Java Development Environment\n" +
@@ -71,7 +73,7 @@ public class JDPTask extends Task {
 		try {
 			System.out.println("jdp: Reading template...");
 			
-			String fullPath = path.trim() + "\\" + name.trim() + ".jdp";
+			String fullPath = path.trim() + "\\" + this.name + ".jdp";
 
 			String content;
 			
@@ -101,8 +103,8 @@ public class JDPTask extends Task {
 
 			String list = getFileList(sourceFiles, resourceFiles).trim();
 			
-			content = content.replaceAll(FILES, list);
-			content = content.replace(NAME, name);
+			content = StringUtil.replace(content, FILES, list);
+			content = StringUtil.replace(content, NAME, name);
 			
 			writeFile(new File(fullPath),content);
 			
@@ -146,14 +148,18 @@ public class JDPTask extends Task {
 
 		for (int i = 0; i < classes.size(); i++) {
 			File file = (File) classes.get(i);
-			filename = file.getAbsolutePath().replace("\\", "\\\\");
-			result += filename + "\r\n";
+			if (file.getName().charAt(0) != '.') {
+				filename = file.getAbsolutePath().replace("\\", "\\\\");
+				result += filename + "\r\n";
+			}
 		}
 
 		for (int i = 0; i < resources.size(); i++) {
 			File file = (File) resources.get(i);
-			filename = file.getAbsolutePath().replace("\\", "\\\\");
-			result += filename + "\r\n";
+			if (file.getName().charAt(0) != '.' && !file.getName().endsWith(".class")) {
+				filename = file.getAbsolutePath().replace("\\", "\\\\");
+				result += filename + "\r\n";
+			}
 		}
 
 		return result;
@@ -188,7 +194,7 @@ public class JDPTask extends Task {
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		this.name = name.trim().replace(' ', '_');
 	}
 
 }

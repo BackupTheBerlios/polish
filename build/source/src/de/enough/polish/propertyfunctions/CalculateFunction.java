@@ -169,6 +169,7 @@ public class CalculateFunction extends PropertyFunction {
 			}
 			return Integer.toString( result );
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new BuildException("Unable to calculate input from term \"" + term + "\": " + e.toString() );
 		}
 	}

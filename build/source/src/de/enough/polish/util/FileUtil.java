@@ -33,6 +33,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -815,11 +816,15 @@ public final class FileUtil {
 	 * @return an String array with the file-names relative to the given directory that do have the given extension
 	 */
 	public static String[] filterDirectory(File dir, String extension, boolean recursive) {
+		return filterDirectory(dir,extension,null,recursive);
+	}
+	
+	public static String[] filterDirectory(File dir, String extension, FilenameFilter filenameFilter, boolean recursive) {
 		if (dir == null || !dir.exists()) {
 			return new String[0];
 		}
 		ArrayList fileNamesList = new ArrayList();
-		filterDirectory( "", dir, extension, recursive, fileNamesList );
+		filterDirectory( "", dir, extension, recursive, filenameFilter, fileNamesList );
 		return (String[]) fileNamesList.toArray( new String[ fileNamesList.size() ] );
 	}
 	
@@ -831,14 +836,14 @@ public final class FileUtil {
 	 * @param extension the file extension
 	 * @param recursive true when subdirectories should also be read.
 	 */
-	private static void filterDirectory( String path, File dir, String extension, boolean recursive, List fileNamesList ) {
-		String[] names = dir.list();
+	private static void filterDirectory( String path, File dir, String extension, boolean recursive, FilenameFilter fileNameFilter, List fileNamesList ) {
+		String[] names = dir.list(fileNameFilter);
 		for (int i = 0; i < names.length; i++) {
 			String name = names[i];
 			File file = new File( dir, name );
 			if (file.isDirectory()) {
 				if (recursive) {
-					filterDirectory(path + name + File.separatorChar, file, extension, recursive, fileNamesList );
+					filterDirectory(path + name + File.separatorChar, file, extension, recursive, null, fileNamesList );
 				}
 			} else if (extension == null || name.endsWith(extension)) {
 				fileNamesList.add( path + name );

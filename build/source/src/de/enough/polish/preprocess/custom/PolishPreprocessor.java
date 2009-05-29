@@ -1,7 +1,7 @@
 /*
  * Created on 21-Jun-2004 at 13:05:20.
  * 
- * Copyright (c) 2004-2008 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -53,7 +53,7 @@ import de.enough.polish.util.StringUtil;
 /**
  * <p>Makes some standard preprocessing like the determination whether the Ticker-class is used etc.</p>
  *
- * <p>Copyright Enough Software 2004, 2005</p>
+ * <p>Copyright Enough Software 2004 - 2008</p>
 
  * <pre>
  * history
@@ -386,9 +386,29 @@ public class PolishPreprocessor extends CustomPreprocessor {
 						methodName = "tyle.getColorProperty(";
 						startPos = line.indexOf(methodName);
 					}
+					if (startPos == -1) {
+						methodName = "getStyle().getProperty(";
+						startPos = line.indexOf(methodName);
+						if (startPos == -1) {
+							methodName = "getStyle().getIntProperty(";
+							startPos = line.indexOf(methodName);
+						}
+						if (startPos == -1) {
+							methodName = "getStyle().getBooleanProperty(";
+							startPos = line.indexOf(methodName);
+						}
+						if (startPos == -1) {
+							methodName = "getStyle().getObjectProperty(";
+							startPos = line.indexOf(methodName);
+						}
+						if (startPos == -1) {
+							methodName = "getStyle().getColorProperty(";
+							startPos = line.indexOf(methodName);
+						}
+					}
 				}
 				if (startPos != -1) {
-					int endPos = line.indexOf( ')', startPos );
+					int endPos = line.indexOf( ')', startPos + methodName.length() );
 					if (endPos == -1) {
 						if (!this.isInJ2MEPolishPackage) {
 							System.out.println( getErrorStart(className, lines) + "Unsupported style-usage: "
@@ -429,6 +449,51 @@ public class PolishPreprocessor extends CustomPreprocessor {
 					lines.setCurrent( line );
 					continue;
 				}
+				
+				//if (!this.isInJ2MEPolishPackage) {
+					methodName = "tyle.addAttribute(";
+					startPos = line.indexOf(methodName);
+					if (startPos == -1) {
+						methodName = "getStyle().addAttribute(";
+						startPos = line.indexOf(methodName);
+					}
+					if (startPos != -1) {
+						int endPos = line.indexOf( ')', startPos + methodName.length() );
+						if (endPos == -1) {
+								System.out.println( getErrorStart(className, lines) + "Unsupported style-usage: "
+										+ "style.addAttribute( \"name\", Object ); always needs to be on a single line. "
+										+ " This line might be invalid: " + line );
+							continue;
+						}
+						
+						String propertyNameAndValue = line.substring( startPos + methodName.length(),
+								endPos ).trim();
+						int commaIndex = propertyNameAndValue.indexOf(',');
+						if (commaIndex == -1) {
+							System.out.println(getErrorStart(className, lines) + "Unsupported style-usage: "
+									+ "style.addAttribute(String name, Object value) require two arguments." );
+							continue;
+						}
+						if (propertyNameAndValue.charAt(0) != '"' ) {
+							// the user has used addAttribute(int, Object), so no need
+							// to adjust this line:
+							continue;
+						}
+						int quoteIndex = propertyNameAndValue.indexOf('"', 1);
+						if (quoteIndex > commaIndex) {
+							throw new BuildException( getErrorStart(className, lines) + ": style.addProperty(String,Object) method found with illegal comma in property name: " + line);
+						} else if (quoteIndex == -1) {
+							throw new BuildException( getErrorStart(className, lines) + ": style.addProperty(String,Object) method found without closing quotation marks for the property name: " + line);
+						}
+						String key = propertyNameAndValue.substring( 1, quoteIndex);
+						int id = this.idGenerator.getId(
+								key, this.environment.hasSymbol("polish.css." + key) );
+						line = StringUtil.replace( line, '"' + key + '"', "" + id );
+						//System.out.println("style: setting line[" + lines.getCurrentIndex() + " to = [" + line + "]");
+						lines.setCurrent( line );
+						continue;
+					}
+				//}
 				
 				// check for usage of java.lang.IllegalStateException:
 				if (!this.usesDefaultPackage && this.usesDoJa && !isIllegalStateExceptionClass) {
@@ -598,17 +663,18 @@ public class PolishPreprocessor extends CustomPreprocessor {
 			return false;
 		}
 		//boolean callSynchronly = "true".equals( this.environment.getVariable("polish.rmi.synchrone") );
-		boolean useXmlRpc = "true".equals( this.environment.getVariable("polish.rmi.xmlrpc"));
 		String newImplements = sourceClass.getClassName();
 		sourceClass.setClassName(newImplements + "RemoteClient");
 		sourceClass.setImplementedInterfaces( new String[]{ newImplements } );
-		sourceClass.addImport("de.enough.polish.io.Externalizable");			
-		if (useXmlRpc) {
-			sourceClass.setExtendsStatement("XmlRpcRemoteClient");
-			sourceClass.addImport("de.enough.polish.rmi.xmlrpc.XmlRpcRemoteClient");
+		sourceClass.addImport("de.enough.polish.io.Externalizable");
+		String extendsClassName = getRemoteBaseClass( this.environment );
+		int lastDotIndex = extendsClassName.lastIndexOf('.');
+		if (lastDotIndex != -1) {
+			String name = extendsClassName.substring(lastDotIndex+1);
+			sourceClass.setExtendsStatement(name);
+			sourceClass.addImport( extendsClassName );
 		} else {
-			sourceClass.setExtendsStatement("RemoteClient");
-			sourceClass.addImport("de.enough.polish.rmi.RemoteClient");			
+			sourceClass.setExtendsStatement(extendsClassName);
 		}
 		sourceClass.setClass( true );
 		
@@ -654,16 +720,32 @@ public class PolishPreprocessor extends CustomPreprocessor {
 
 
 
+	/**
+	 * @param environment
+	 * @return
+	 */
+	private String getRemoteBaseClass(Environment env)
+	{
+		if ("true".equals( env.getVariable("polish.rmi.xmlrpc"))) {
+			return "de.enough.polish.rmi.xmlrpc.XmlRpcRemoteClient";
+		} else if ("true".equals( env.getVariable("polish.rmi.l2cap"))) {
+			return "de.enough.polish.rmi.bluetooth.L2CapRemoteClient";						
+		} else if ("true".equals( env.getVariable("polish.rmi.spp")) || "true".equals( env.getVariable("polish.rmi.rfcomm")) ) {
+			return "de.enough.polish.rmi.bluetooth.SppRemoteClient";						
+		} else if ("true".equals( env.getVariable("polish.rmi.obex")) ) {
+			return "de.enough.polish.rmi.bluetooth.ObexRemoteClient";						
+		} else {
+			return "de.enough.polish.rmi.RemoteClient";			
+		}
+	}
+
+
+
 	private void createRemoteMethodImplementation(JavaSourceMethod method ) {
 		if (!(method.throwsException("RemoteException") || method.throwsException("de.enough.polish.rmi.RemoteException")) ) {
 			throw new BuildException("RMI method " + method.getName() + " does not throw RemoteException. Please correct this in your class " + method.getSourceClass().getClassName() );
 		}
-		String methodCall;
-		//if (callSynchronly) {
-			methodCall = "callMethodSynchrone";
-		//} else {
-		//	methodCall = "callMethodAsynchrone";
-		//}
+		String methodCall = "callMethod";
 		ArrayList methodCode = new ArrayList();
 		methodCode.add("String _methodName= \"" + method.getName() + "\";" );
 		if (method.getParameterNames() == null) {
@@ -732,7 +814,7 @@ public class PolishPreprocessor extends CustomPreprocessor {
 				String exceptionName = thrownExceptions[i];
 				if (!(exceptionName.equals("RemoteException") || exceptionName.equals("de.enough.polish.rmi.RemoteException"))) {
 					methodCode.add("if (_cause instanceof " + exceptionName + ") {");
-					methodCode.add( "\tthrow (" + exceptionName + ") _cause;");
+					methodCode.add( "throw (" + exceptionName + ") _cause;");
 					methodCode.add("}");
 				}
 			}
@@ -742,7 +824,33 @@ public class PolishPreprocessor extends CustomPreprocessor {
 		method.setMethodCode( (String[]) methodCode.toArray( new String[methodCode.size()]));
 	}
 
-	
+	/**
+	 * Checks if the given type is a primitive array type like long[] or boolean[]
+	 * @param type the type
+	 * @return true when this is a primitive array
+	 */
+	protected static boolean isPrimitiveArray(String type)
+	{
+		int arrayIndex = type.indexOf('[');
+		int stopIndex = type.indexOf(']');
+		if (arrayIndex != -1 && stopIndex != -1) {
+			String primitiveType = type.substring(0, arrayIndex).trim();
+			return isPrimitive(primitiveType);
+		}
+		return false;
+	}
+
+
+
+	/**
+	 * Checks if the specified type constitutes an array
+	 * @param type the type, e.g. "String[]"
+	 * @return true when this is an array
+	 */
+	protected static boolean isArray(String type)
+	{
+		return type.indexOf('[') != -1 && type.indexOf(']') != -1;
+	}
 
 
 
@@ -753,7 +861,7 @@ public class PolishPreprocessor extends CustomPreprocessor {
 	 * @param methodCall the code for calling the server
 	 * @param methodCode the code to which the primitive cast is added
 	 */
-	private void addPrimitiveReturnCast(String returnType, String methodCall, ArrayList methodCode) {
+	protected static void addPrimitiveReturnCast(String returnType, String methodCall, ArrayList methodCode) {
 		// methodCode.add( "return (" + returnType + ") " + methodCall ) is not working for primitive returns,
 		// required is for example following code for int return types:
 		// methodCode.add( "Object _returnObject = " + methodCall );  
@@ -780,16 +888,8 @@ public class PolishPreprocessor extends CustomPreprocessor {
 			throw new IllegalArgumentException("return type [" + returnType + "] is not primitive.");
 		}
 	}
-	
-	/**
-	 * Checks if the specified type constitutes an array
-	 * @param type the type, e.g. "String[]"
-	 * @return true when this is an array
-	 */
-	protected static boolean isArray(String type)
-	{
-		return type.indexOf('[') != -1 && type.indexOf(']') != -1;
-	}
+
+
 
 	/**
 	 * Determines whether the given type is a primitive one like byte, int, float etc.
@@ -797,27 +897,9 @@ public class PolishPreprocessor extends CustomPreprocessor {
 	 * @param paramType the type, for example "int", "String" or similar
 	 * @return true when the given type is primitive
 	 */
-	private static boolean isPrimitive(String paramType) {
+	protected static boolean isPrimitive(String paramType) {
 		return (PRIMITIVES_BY_NAME.get(paramType) != null);
 	}
-
-
-	/**
-	 * Checks if the given type is a primitive array type like long[] or boolean[]
-	 * @param type the type
-	 * @return true when this is a primitive array
-	 */
-	protected static boolean isPrimitiveArray(String type)
-	{
-		int arrayIndex = type.indexOf('[');
-		int stopIndex = type.indexOf(']');
-		if (arrayIndex != -1 && stopIndex != -1) {
-			String primitiveType = type.substring(0, arrayIndex).trim();
-			return isPrimitive(primitiveType);
-		}
-		return false;
-	}
-
 
 
 	/**
@@ -826,7 +908,7 @@ public class PolishPreprocessor extends CustomPreprocessor {
 	 * @param paramName the parameter name
 	 * @param buffer the StringBuffer to which the code is added
 	 */
-	private void appendPrimitiveWrapper(String paramType, String paramName, StringBuffer buffer) {
+	protected static void appendPrimitiveWrapper(String paramType, String paramName, StringBuffer buffer) {
 		String wrapperClassName = (String) PRIMITIVES_BY_NAME.get(paramType);
 		buffer.append("new ").append( wrapperClassName ).append("( ").append( paramName ).append(" )");
 	}

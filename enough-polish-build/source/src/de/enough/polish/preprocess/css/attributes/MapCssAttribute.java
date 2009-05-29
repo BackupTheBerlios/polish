@@ -25,6 +25,8 @@
  */
 package de.enough.polish.preprocess.css.attributes;
 
+import org.jdom.Element;
+
 import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.BuildException;
 import de.enough.polish.Environment;
@@ -44,6 +46,10 @@ import de.enough.polish.util.StringUtil;
  */
 public class MapCssAttribute extends CssAttribute {
 	
+	private char separator = '|';
+
+
+
 	/**
 	 * Creates a new instance.
 	 */
@@ -51,6 +57,22 @@ public class MapCssAttribute extends CssAttribute {
 		super();
 	}
 	
+	
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.preprocess.css.CssAttribute#setDefinition(org.jdom.Element)
+	 */
+	public void setDefinition(Element definition)
+	{
+		super.setDefinition(definition);
+		String separatorStr = definition.getAttributeValue("combinationsSeparator");
+		if (separatorStr != null) {
+			this.separator  = separatorStr.charAt(0);
+		}
+	}
+
+
+
 	/**
 	 * Checks and transforms the given CSS value for this attribute.
 	 * 
@@ -87,9 +109,14 @@ public class MapCssAttribute extends CssAttribute {
 			value = StringUtil.replace(value, " and ", " | ");
 			value = StringUtil.replace(value, " || ", " | ");
 			value = StringUtil.replace(value, " && ", " | ");
-			value = value.replace('&', '|');
-			value = value.replace(',', '|');
-			String[] values = StringUtil.splitAndTrim(value, '|');
+			value = value.replace('&', this.separator);
+			if (this.separator != ',') {
+				value = value.replace(',', this.separator);
+			}
+			if (this.separator != '|') {
+				value = value.replace('|', this.separator);
+			}
+			String[] values = StringUtil.splitAndTrim(value, this.separator);
 			StringBuffer convertedValueBuffer = new StringBuffer();
 			for (int i = 0; i < values.length; i++) {
 				String singleValue = values[i];
@@ -103,8 +130,19 @@ public class MapCssAttribute extends CssAttribute {
 					convertedValueBuffer.append( singleValue );
 				}
 				if (i != values.length - 1) {
-					convertedValueBuffer.append(" | ");
+					convertedValueBuffer.append(this.separator);
 				}
+			}
+			if (this.shell != null) {
+				int startIndex = this.shell.indexOf(')');
+				if (startIndex == -1) {
+					startIndex = this.shell.indexOf('}');
+					if (startIndex == -1) {
+						throw new BuildException("Invalid css definition - the shell value " + this.shell + " is  invalid, neither ')' nor '}' found. Check the CSS attribute definition of " + this.name + " in your custom-css-attributes.xml.");
+					}
+				}
+				convertedValueBuffer.insert(0, this.shell.substring(0, startIndex) );
+				convertedValueBuffer.append( this.shell.substring(startIndex));
 			}
 			return convertedValueBuffer.toString();
 //				if (this.isBaseAttribute) {
@@ -114,6 +152,8 @@ public class MapCssAttribute extends CssAttribute {
 //				}
 		}
 	}
+	
+	
 
 //	/* (non-Javadoc)
 //	 * @see de.enough.polish.preprocess.css.CssAttribute#getAllowedValues()

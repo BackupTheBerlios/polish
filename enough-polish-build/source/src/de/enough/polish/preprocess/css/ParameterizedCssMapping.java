@@ -55,7 +55,7 @@ public class ParameterizedCssMapping extends CssMapping {
 	 * 
 	 * @param definition the definition 
 	 */
-	public ParameterizedCssMapping( Element definition ) {
+	public ParameterizedCssMapping( CssAttribute parent, Element definition ) {
 		super(definition);
 		CssAttributesManager manager = CssAttributesManager.getInstance();
 		if (manager == null) {
@@ -69,6 +69,7 @@ public class ParameterizedCssMapping extends CssMapping {
 			CssAttribute attribute = manager.createCssAttribute(parameterDefinition);
 			this.parameters.add( attribute );
 			this.parametersByName.put( attribute.getName(), attribute );
+			manager.addImplicitAttribute( attribute, getFrom(), parent );
 		}
 	}
 

@@ -49,9 +49,9 @@ public class ActiveTextField
 extends JFormattedTextField
 implements CaretListener, ActionListener //, FocusListener
 {
-    private static final long serialVersionUID = 3877268458402335970L;
+	private static final long serialVersionUID = 3877268458402335970L;
 
-    private final ChangeListener changeListener;
+	private final ChangeListener changeListener;
 	private String originalValue;
 
 	/**

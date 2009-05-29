@@ -60,6 +60,7 @@ public class Style {
 	private boolean isReferenced;
 	private boolean hasReferences;
 	private ArrayList referencedStyles;
+	private final ArrayList declarationBlocks;
 
 	
 	public Style( String selector, String styleName, boolean isDynamic, String parent, CssBlock cssBlock ) {
@@ -70,6 +71,7 @@ public class Style {
 		this.properties = new HashMap();
 		this.groupsByName = new HashMap();
 		this.groupNamesList = new ArrayList();
+		this.declarationBlocks = new ArrayList();
 		add( cssBlock );
 	}
 
@@ -81,6 +83,7 @@ public class Style {
 	public Style(Style style) {
 		this.properties = new HashMap( style.properties );
 		this.groupNamesList = new ArrayList( style.groupNamesList );
+		this.declarationBlocks = new ArrayList( style.declarationBlocks );
 		this.selector = style.selector;
 		this.styleName = style.styleName;
 		this.isDynamic = style.isDynamic;
@@ -114,6 +117,7 @@ public class Style {
 //			System.out.println("setting parent [" + parent.getSelector() + "] for style [" + this.selector + "].");
 //		}
 		// set the standard properties:
+		this.declarationBlocks.addAll( parent.declarationBlocks );
 		Set set = parent.properties.keySet();
 		for (Iterator iter = set.iterator(); iter.hasNext();) {
 			String key = (String) iter.next();
@@ -243,13 +247,15 @@ public class Style {
 	public void add(CssBlock cssBlock) {
 		// check if this style disallows inheritance - in that case all former CSS attribute are forgotten.
 		// this is done when the basic style has defined "inherit: false;"
-		 Map inheritGroup = this.getGroup("inherit");
-		boolean disallowInheritance = (inheritGroup != null) && ("false".equals(inheritGroup.get("inherit")));
+		Map inheritGroup = getGroup("inherit");
+		boolean disallowInheritance = (inheritGroup != null) && (("false".equals(inheritGroup.get("inherit")) || ("false".equals(cssBlock.getDeclarationsMap().get("inherit")))) );
 		if (disallowInheritance) {
 			this.groupsByName.clear();
 			this.groupNamesList.clear();
+			this.declarationBlocks.clear();
 		}
 		this.properties.putAll( cssBlock.getDeclarationsMap() );
+		this.declarationBlocks.addAll( cssBlock.getDeclarationBlocksAsList() );
 		String[] groupNames = cssBlock.getGroupNames();
 		for (int i = 0; i < groupNames.length; i++) {
 			String groupName = groupNames[i];
@@ -276,6 +282,7 @@ public class Style {
 				targetGroup.putAll( group );
 			}
 		}
+		
 	}
 
 	/**
@@ -362,7 +369,7 @@ public class Style {
 	 * @param groupName the name of the group
 	 * @param group the group
 	 */
-	public void addGroup(String groupName, HashMap group) {
+	public void addGroup(String groupName, Map group) {
 		boolean addName = (this.groupsByName.get( groupName ) == null);
 		this.groupsByName.put( groupName, group );
 		if (addName) {
@@ -541,4 +548,118 @@ public class Style {
 		}
 		return (String) group.get( attributeName.substring( splitPos + 1 ) );
 	}
+	
+	/**
+	 * Adds the specified attribute to this style
+	 * @param attributeName the attribute name
+	 * @param attributeValue  the value
+	 */
+	public void addAttribute(String attributeName, String attributeValue)
+	{
+		
+		int splitPos = attributeName.indexOf('-');
+		if (splitPos == -1) {
+			this.properties.put( attributeName, attributeValue );
+		}
+		String groupName = attributeName.substring(0, splitPos );
+		HashMap group = getGroup(groupName);
+		if (group == null) {
+			group = new HashMap();
+			this.groupsByName.put( groupName, group);
+			this.groupNamesList.add( groupName );
+		}
+		String groupSubname = attributeName.substring( splitPos + 1 );
+		group.put( groupSubname, attributeValue );
+		
+	}
+
+	
+	/**
+	 * Gets all CSS declaration blocks ending with the specified name.
+	 * 
+	 * @param attributeBlockEnding the desired ending, e.g. "-animation"
+	 * @return all matching declaration blocks 
+	 */
+	public CssDeclarationBlock[] getDeclarationBlocksEndingWith(String attributeBlockEnding)
+	{
+		ArrayList blocks = new ArrayList();
+		for (int i=0; i<this.declarationBlocks.size(); i++) {
+			CssDeclarationBlock block = (CssDeclarationBlock) this.declarationBlocks.get(i);
+			if (block.getBlockName().endsWith(attributeBlockEnding)) {
+				blocks.add(block);
+			}
+		}
+		return (CssDeclarationBlock[]) blocks.toArray( new CssDeclarationBlock[ blocks.size() ] );
+	}
+	
+	/**
+	 * Extracts all CSS declaration blocks ending with the specified name.
+	 * This is used for extracting animations from the normal processing, for example.
+	 * References within the normal CSS groups are removed afterwards.
+	 * 
+	 * @param attributeBlockEnding the desired ending, e.g. "-animation"
+	 * @return all matching declaration blocks 
+	 */
+	public CssDeclarationBlock[] removeDeclarationBlocksEndingWith( String attributeBlockEnding ) {
+		CssDeclarationBlock[] blocks = getDeclarationBlocksEndingWith(attributeBlockEnding);
+		for (int i = 0; i < blocks.length; i++)
+		{
+			CssDeclarationBlock block = blocks[i];
+			removeReferences( block );
+		}
+		return blocks;
+	}
+
+	/**
+	 * Removes references in the CSS groups for the given block
+	 * @param block the CSS declaration block
+	 */
+	public void removeReferences(CssDeclarationBlock block)
+	{
+		String blockName = block.getBlockName();
+		String groupName = blockName;
+		int hyphenIndex = groupName.indexOf('-');
+		if (hyphenIndex != -1) {
+			groupName = groupName.substring(0, hyphenIndex);
+			blockName = blockName.substring(hyphenIndex + 1) + '-';
+		} else {
+			blockName = "";
+		}
+		HashMap group = getGroup( groupName );
+		if (group == null) {
+			System.err.println("Warning: unable to remove references for CSS block " + blockName + ", group is unknown: " + groupName );
+			return;
+		}
+		String[] attributes = block.getAttributes();
+		for (int i = 0; i < attributes.length; i++)
+		{
+			String attribute = blockName + attributes[i];
+			group.remove(attribute);
+//			Object removed = group.remove(attribute);
+//			System.out.println("removing " + attribute + ": " + removed);
+		}
+	}
+
+	/**
+	 * Retrieves a value from the specified group
+	 * 
+	 * @param groupName the name of the group, e.g. "background"
+	 * @param key the attribute key, e.g. "type"
+	 * @return the associated value or null when the group does not exist or when the key is not registered
+	 */
+	public String getValue(String groupName, String key)
+	{
+		HashMap group = getGroup(groupName);
+		if (group == null) {
+			return null;
+		}
+		String value = (String) group.get(key);
+		if (value == null) {
+			value = (String) group.get(groupName + "-" + key);
+		}
+		return value;
+	}
+
+
+	
 }

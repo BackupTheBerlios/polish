@@ -28,7 +28,7 @@ package de.enough.polish.preprocess.css;
 import de.enough.polish.BuildException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>The base class for all backgrounds.</p>
@@ -77,7 +77,7 @@ public abstract class BackgroundConverter extends Converter {
 	 * @throws BuildException when there are invalid CSS declarations in the given background
 	 */
 	public void addBackground( ArrayList codeList, 
-			HashMap background,
+			Map background,
 			String backgroundName,
 			Style style, 
 			StyleSheet styleSheet,
@@ -107,7 +107,7 @@ public abstract class BackgroundConverter extends Converter {
 		this.borderWidth = (String) background.get("border-width");
 		if (this.borderWidth != null) {
 			// check if the border with is a correct value:
-			parseInt( "border-width", this.borderWidth );
+			this.borderWidth = Integer.toString( parseInt( "border-width", this.borderWidth ) );
 			this.hasBorder = true;
 		}
 		this.borderColor = (String) background.get("border-color");
@@ -145,7 +145,7 @@ public abstract class BackgroundConverter extends Converter {
 	 * @throws BuildException when there are invalid CSS declarations in the given background
 	 */
 	protected abstract String createNewStatement( 
-			HashMap background, 
+			Map background, 
 			Style style, 
 			StyleSheet styleSheet )
 	throws BuildException;

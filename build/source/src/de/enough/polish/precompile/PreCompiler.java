@@ -40,10 +40,10 @@ import de.enough.polish.ant.build.PreCompilerSetting;
 import de.enough.polish.util.FileUtil;
 
 /**
- * <p>Is the base class for any custom post compilers.</p>
+ * <p>Is the base class for any custom pre compilers.</p>
  * <p>
- * Custom post compilers can modify the bytecode of an application before the 
- * application is obfuscated and then preverified.
+ * Custom pre compilers can modify the bytecode of application classes - this is done for all classes of all binary libraries and all classes that have been build in the last build.
+ * In most cases a LibraryProcessor should be extended instead.
  * </p>
  *
  * <p>Copyright Enough Software 2005</p>
@@ -65,7 +65,7 @@ public abstract class PreCompiler extends Extension {
 	
 	
 	/**
-	 * Retrieves a new PostCompiler
+	 * Retrieves a new PreCompiler
 	 *  
 	 * @param preCompilerSetting the ant settings
 	 * @param manager the extension manager 

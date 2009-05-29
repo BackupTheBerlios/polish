@@ -31,7 +31,7 @@ import de.enough.polish.preprocess.css.StyleSheet;
 
 import de.enough.polish.BuildException;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /*
  * <p>Creates am image border.</p>
@@ -56,13 +56,13 @@ public class MultiImageBorderConverter
 	/* (non-Javadoc)
 	 * @see de.enough.polish.preprocess.BorderConverter#createNewStatement(java.util.HashMap, de.enough.polish.preprocess.Style, de.enough.polish.preprocess.StyleSheet)
 	 */
-	protected String createNewStatement(HashMap border, Style style, StyleSheet styleSheet)
+	protected String createNewStatement(Map border, Style style, StyleSheet styleSheet)
 		throws BuildException
 	{
 		String borderWidthStr = (String) border.get("border-width");
 
 		if (borderWidthStr == null) {
-			throw new BuildException("no width attribute found");
+			borderWidthStr = "0";
 		}
 
 		String topLeft = (String) border.get("top-left");

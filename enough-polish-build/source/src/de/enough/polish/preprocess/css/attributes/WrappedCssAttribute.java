@@ -25,11 +25,16 @@
  */
 package de.enough.polish.preprocess.css.attributes;
 
+import java.util.HashMap;
+
 import org.jdom.Element;
 
 import de.enough.polish.Environment;
+import de.enough.polish.preprocess.css.CssAnimationSetting;
 import de.enough.polish.preprocess.css.CssAttribute;
 import de.enough.polish.preprocess.css.CssMapping;
+import de.enough.polish.preprocess.css.Style;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Wraps an existing CssAttribute under a new name.</p>
@@ -44,7 +49,7 @@ import de.enough.polish.preprocess.css.CssMapping;
 public class WrappedCssAttribute extends CssAttribute
 {
 
-	private CssAttribute parent;
+	protected CssAttribute parent;
 
 	/**
 	 * Creates an empty css attribute
@@ -64,11 +69,24 @@ public class WrappedCssAttribute extends CssAttribute
 		this.name = definition.getAttributeValue("name");
 		this.type = definition.getAttributeValue("type");
 		this.description = definition.getAttributeValue("description");
+		this.since = definition.getAttributeValue("since");
 		String idStr = definition.getAttributeValue("id");
 		if (idStr == null) {
 			this.id = parent.getId();
 		} else {
 			this.id = Integer.parseInt(idStr);
+		}
+		this.shell = definition.getAttributeValue("shell");
+		this.appliesTo = definition.getAttributeValue("appliesTo");
+		if ( this.appliesTo != null ) {
+			String[] appliesChunks = StringUtil.splitAndTrim( this.appliesTo, ',');
+			this.appliesToMap = new HashMap();
+			for (int i = 0; i < appliesChunks.length; i++) {
+				String chunk = appliesChunks[i];
+				this.appliesToMap.put( chunk, Boolean.TRUE );
+			}
+		} else {
+			this.appliesToMap = null;
 		}
 	}
 	
@@ -80,14 +98,6 @@ public class WrappedCssAttribute extends CssAttribute
 	public void add(CssAttribute extension)
 	{
 		this.parent.add(extension);
-	}
-
-	/* (non-Javadoc)
-	 * @see de.enough.polish.preprocess.css.CssAttribute#appliesTo(java.lang.String)
-	 */
-	public boolean appliesTo(String className)
-	{
-		return this.parent.appliesTo(className);
 	}
 
 	/* (non-Javadoc)
@@ -114,13 +124,6 @@ public class WrappedCssAttribute extends CssAttribute
 		return this.parent.getApplicableMappings(targetClass);
 	}
 
-	/* (non-Javadoc)
-	 * @see de.enough.polish.preprocess.css.CssAttribute#getAppliesTo()
-	 */
-	public String getAppliesTo()
-	{
-		return this.parent.getAppliesTo();
-	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.preprocess.css.CssAttribute#getDefaultValue()
@@ -141,13 +144,13 @@ public class WrappedCssAttribute extends CssAttribute
 		return this.parent.getDescription();
 	}
 
-	/* (non-Javadoc)
-	 * @see de.enough.polish.preprocess.css.CssAttribute#getGroup()
-	 */
-	public String getGroup()
-	{
-		return this.parent.getGroup();
-	}
+//	/* (non-Javadoc)
+//	 * @see de.enough.polish.preprocess.css.CssAttribute#getGroup()
+//	 */
+//	public String getGroup()
+//	{
+//		return this.parent.getGroup();
+//	}
 
 //	/* (non-Javadoc)
 //	 * @see de.enough.polish.preprocess.css.CssAttribute#getId()
@@ -195,7 +198,12 @@ public class WrappedCssAttribute extends CssAttribute
 	 */
 	public String getValue(String value, Environment environment)
 	{
-		return this.parent.getValue(value, environment);
+		String code = this.parent.getValue(value, environment);
+		if (this.shell != null) {
+			int strtInde = this.shell.indexOf(')');
+			code = this.shell.substring(0, strtInde) + code + this.shell.substring(strtInde);
+		}
+		return code;
 	}
 
 	/* (non-Javadoc)
@@ -230,13 +238,13 @@ public class WrappedCssAttribute extends CssAttribute
 		return this.parent.instantiateValue(sourceCode);
 	}
 
-	/* (non-Javadoc)
-	 * @see de.enough.polish.preprocess.css.CssAttribute#isBaseAttribute()
-	 */
-	public boolean isBaseAttribute()
-	{
-		return this.parent.isBaseAttribute();
-	}
+//	/* (non-Javadoc)
+//	 * @see de.enough.polish.preprocess.css.CssAttribute#isBaseAttribute()
+//	 */
+//	public boolean isBaseAttribute()
+//	{
+//		return this.parent.isBaseAttribute();
+//	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.preprocess.css.CssAttribute#isDefault(java.lang.String)
@@ -261,6 +269,17 @@ public class WrappedCssAttribute extends CssAttribute
 	{
 		this.parent.setDefinition(definition);
 	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.preprocess.css.CssAttribute#generateAnimationSourceCode(de.enough.polish.preprocess.css.CssAnimationSetting, de.enough.polish.preprocess.css.Style, de.enough.polish.Environment)
+	 */
+	public String generateAnimationSourceCode(CssAnimationSetting cssAnimation,
+			Style style, Environment environment)
+	{
+		return this.parent.generateAnimationSourceCode(cssAnimation, style, environment);
+	}
+	
+	
 
 //	/* (non-Javadoc)
 //	 * @see de.enough.polish.preprocess.css.CssAttribute#setId(int)

@@ -50,7 +50,6 @@ extends ExtensionSetting
 	
 	private ArrayList keeps;
 	private boolean enable = true;
-	private boolean useDefaultPackage;
 	private boolean renameMidlets;
 
 	/**
@@ -117,14 +116,6 @@ extends ExtensionSetting
 		this.renameMidlets = renameMidlets;
 	}
 	
-	/**
-	 * Determines whether all classes should be moved into the default package ("").
-	 * 
-	 * @return true when all classes should be moved into the default package.
-	 */
-	public boolean useDefaultPackage() {
-		return this.useDefaultPackage;
-	}
 	
 	/**
 	 * Sets whether all classes should be moved into the default package ("").
@@ -132,6 +123,8 @@ extends ExtensionSetting
 	 * @param useDefaultPackage true when all classes should be moved into the default package.
 	 */
 	public void setUseDefaultPackage(boolean useDefaultPackage) {
-		this.useDefaultPackage = useDefaultPackage;
+		if (useDefaultPackage) {
+			System.out.println("Warning: the \"useDefaultPackage\" option of the <obfuscator> element will be ignored. Please change your build.xml script: <obfuscator useDefaultPackage=\"true\".../>." );
+		}
 	}
 }

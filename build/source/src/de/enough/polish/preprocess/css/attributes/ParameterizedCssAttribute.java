@@ -77,7 +77,7 @@ public class ParameterizedCssAttribute extends CssAttribute {
 	 * @see de.enough.polish.preprocess.css.CssAttribute#createMapping(org.jdom.Element)
 	 */
 	protected CssMapping createMapping(Element element) {
-		return new ParameterizedCssMapping( element );
+		return new ParameterizedCssMapping( this, element );
 	}
 	
 	

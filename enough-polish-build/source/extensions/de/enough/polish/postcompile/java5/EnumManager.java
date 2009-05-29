@@ -74,7 +74,7 @@ public class EnumManager
         className = className.substring(1, className.length() - 1);
       }
     
-    return className;
+    return className.replace('\\', '/');
   }
   
   public void addEnumClass(String className)

@@ -62,26 +62,32 @@ public class ColumnsWidthCssAttribute extends CssAttribute {
 		value = StringUtil.replace( value, " ", "" );
 		if (value.equals("equal")) {
 			return "\"equal\"";
+		} else if (value.equals("normal")) {
+			return "\"normal\"";
 		}
 		String[] values = StringUtil.split(value, ',');
 		StringBuffer result = new StringBuffer();
 		result.append('"');
 		for (int i = 0; i < values.length; i++) {
-			String string = values[i];
-			if ("*".equals(string)) {
-				result.append(string);
+			String part = values[i];
+			if ("*".equals(part)) {
+				result.append(part);
 			} else {
 				try {
-					Integer.parseInt(string);
-					result.append(string);
-				} catch (NumberFormatException e) {
-					if (string.startsWith("(")) {
-						string = "calculate" + string;
-					} else {
-						string = "calculate(" + string + ")";
+					String parsedPart = part;
+					if (part.charAt(part.length()-1) == '%') {
+						parsedPart = part.substring(0, part.length() - 1);
 					}
-					string = environment.getProperty(string, true);
-					result.append(string);
+					Integer.parseInt(parsedPart);
+					result.append(part);
+				} catch (NumberFormatException e) {
+					if (part.startsWith("(")) {
+						part = "calculate" + part;
+					} else {
+						part = "calculate(" + part + ")";
+					}
+					part = environment.getProperty(part, true);
+					result.append(part);
 				}
 			}
 			if (i < values.length -1) {

@@ -208,9 +208,7 @@ implements Comparable
 
 
 	/**
-	 * Adds a sub-component to this component.
-	 * All capabilities will only be set when they have not been defined so far.
-	 * JavaPackage- and JavaProtocol-definitions will be added, though.
+	 * Adds a sub-component to this component, replacing or appending to existing capabilities during the process.
 	 * 
 	 * @param component The component which definitions should be added 
 	 */
@@ -219,23 +217,8 @@ implements Comparable
 		HashMap caps = component.getCapabilities();
 		for (Iterator iter = caps.keySet().iterator(); iter.hasNext();) {
 			String name = (String) iter.next();
-			//System.out.println("adding component-key " + key);
-			//sString currentValue = (String) this.capabilities.get( name);
-			//System.out.println("current value: " + currentValue);
 			String componentValue = (String) caps.get( name );
-			//System.out.println("component value: " + componentValue);
-			//if (currentValue == null) {
-				// okay, this capability has not been defined so far:
 			addCapability( name, componentValue );
-			//} else if ( (Device.JAVA_PACKAGE.equalsIgnoreCase(name) ) 
-			//		|| (Device.JAVA_PROTOCOL.equalsIgnoreCase(name)) 
-			//		|| (Device.VIDEO_FORMAT.equalsIgnoreCase(name))
-			//		|| (Device.SOUND_FORMAT.equalsIgnoreCase(name)) 
-			//		|| (Device.BUGS.equalsIgnoreCase(name)) ) {
-				// add additional package/protocol definitions:
-			//	String newValue = currentValue + "," + componentValue;
-			//	addCapability(name, newValue);
-			//} // else do not overwrite weaker capability
 		}
 		
 		// 2. set all features (overwriting will do no harm):

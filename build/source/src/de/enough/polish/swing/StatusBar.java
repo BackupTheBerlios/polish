@@ -42,9 +42,9 @@ import javax.swing.JLabel;
  */
 public class StatusBar extends JLabel {
 
-    private static final long serialVersionUID = 2748506651711151711L;
+	private static final long serialVersionUID = 2748506651711151711L;
 
-    private Color messageBackground;
+	private Color messageBackground;
 	private Color messageForeground;
 	private Color warnBackground;
 	private Color warnForeground;

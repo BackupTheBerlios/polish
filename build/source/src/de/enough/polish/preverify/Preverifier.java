@@ -48,6 +48,9 @@ import de.enough.polish.Extension;
  */
 public abstract class Preverifier extends Extension {
 	
+	public static final String BUILDCONTROL_PREVERIFIER_ENABLED = "polish.buildcontrol.preverifier.enabled";
+
+	
 	/**
 	 * The executable of the WTK that preverifies the project.
 	 * Beware: this can be null in the preverify( ... ) method!

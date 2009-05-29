@@ -37,6 +37,8 @@ import de.enough.polish.preprocess.css.CssAttributesManager;
 import de.enough.polish.preprocess.css.CssMapping;
 import de.enough.polish.preprocess.css.attributes.BooleanCssAttribute;
 import de.enough.polish.preprocess.css.attributes.ColorCssAttribute;
+import de.enough.polish.preprocess.css.attributes.DimensionCssAttribute;
+import de.enough.polish.preprocess.css.attributes.ImageUrlOrNoneCssAttribute;
 import de.enough.polish.preprocess.css.attributes.MapCssAttribute;
 import de.enough.polish.preprocess.css.attributes.ParameterizedCssAttribute;
 import de.enough.webprocessor.DirectiveHandler;
@@ -143,7 +145,7 @@ public class CssDirectiveHandler extends DirectiveHandler
 	protected void addAttributes(CssAttribute[] attributes, StringBuffer html, String uiElementClassName, Class uiElementClass)
 	{
 		html.append("<table class=\"borderedTable\"  cellspacing=\"0\" cellpadding=\"3\" border=\"1\">\n");
-		html.append( "<tr><th>CSS Attribute&nbsp;&nbsp;</th><th>Default</th><th>Values</th><th>Explanation</th></tr>\n");
+		html.append( "<tr><th>CSS Attribute&nbsp;&nbsp;</th><th>Default</th><th>Values</th><th>Explanation</th><th>Since</th></tr>\n");
 		boolean isInFirstClassMatches = true;
 		for (int i = 0; i < attributes.length; i++)
 		{
@@ -151,7 +153,7 @@ public class CssDirectiveHandler extends DirectiveHandler
 			if (isInFirstClassMatches && !attribute.appliesTo(uiElementClassName)) {
 				isInFirstClassMatches = false;
 				if (i != 0) {
-					html.append( "<tr><th>Further CSS Attribute&nbsp;&nbsp;</th><th>Default</th><th>Values</th><th>Explanation</th></tr>\n");
+					html.append( "<tr><th>Further CSS Attribute&nbsp;&nbsp;</th><th>Default</th><th>Values</th><th>Explanation</th><th>Since</th></tr>\n");
 				}
 			}
 			addAttribute(html, attribute, uiElementClass);
@@ -183,6 +185,10 @@ public class CssDirectiveHandler extends DirectiveHandler
 				}
 			} else if (attribute instanceof BooleanCssAttribute) {
 				html.append( "		<td>true, false</td>\n");
+			} else if (attribute instanceof DimensionCssAttribute) {
+				html.append( "		<td>dimension (px, %), e.g. 3.5%</td>\n");
+			} else if (attribute instanceof ImageUrlOrNoneCssAttribute) {
+				html.append( "		<td>URL or &quot;none&quot;</td>\n");
 			} else if (attribute instanceof MapCssAttribute) {
 				html.append( "		<td>");
 				CssMapping[] mappings = attribute.getApplicableMappings(uiElementClass);
@@ -217,6 +223,15 @@ public class CssDirectiveHandler extends DirectiveHandler
 			html.append( "		<td>-</td>\n");
 		} else {
 			html.append( "		<td>").append( attribute.getDescription() ).append("</td>\n");
+		}
+		String since = attribute.getSince();
+		if (since == null) {
+			html.append( "		<td>1.3</td>\n");
+		} else {
+			if (since.startsWith("J2ME Polish")) {
+				since = since.substring( "J2ME Polish ".length() );
+			}
+			html.append( "		<td>").append( since ).append("</td>\n");
 		}
 		html.append("	</tr>\n");
 	}

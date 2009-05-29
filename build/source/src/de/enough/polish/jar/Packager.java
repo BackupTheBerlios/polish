@@ -40,7 +40,7 @@ import de.enough.polish.ant.build.PackageSetting;
 /**
  * <p>Is responsible for packaging files.</p>
  *
- * <p>Copyright Enough Software 2004, 2005</p>
+ * <p>Copyright Enough Software 2004 - 2009</p>
 
  * <pre>
  * history

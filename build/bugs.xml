@@ -694,6 +694,41 @@
 		</solution>
 	</bug>
 	
+	<bug>
+		<name>BacklightRequiresLightOff</name>
+		<area>ui</area>
+		<description>
+			Before turning on the backlight it needs to be switched off.
+		</description>
+		<solution>
+			Switch off the backlight shortly before turning it on again.
+		</solution>
+	</bug>
+	
+	<bug>
+		<name>keyRepeatOverload</name>
+		<area>UI</area>
+		<description>
+			When pressing more than 3 keys simultanously, the currently shown canvas receives a never ending stream of
+			keyRepeat events, even though no physical keys are pressed. 
+		</description>
+		<solution>
+			To workaround this set a new native displayable
+			(which might result in flickering) or use J2ME Polish.
+		</solution>
+	</bug>
+
+	<bug>
+		<name>SnapshotRequiresScreenChange</name>
+		<area>UI</area>
+		<description>
+			When starting a capture://video player, no preview window is shown when no new canvas is being used. 
+		</description>
+		<solution>
+			Show another physical screen and then return to the snapshot screen or use the J2ME Polish SnapshotScreen.
+		</solution>
+	</bug>
+	
 	<!--
 	<bug>
 		<name></name>

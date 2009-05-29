@@ -55,6 +55,7 @@ import de.enough.polish.ant.build.LocaleSetting;
 import de.enough.polish.ant.build.LocalizationSetting;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.IntegerIdGenerator;
+import de.enough.polish.util.Native2Ascii;
 import de.enough.polish.util.PropertyUtil;
 import de.enough.polish.util.ResourceUtil;
 import de.enough.polish.util.StringList;
@@ -120,12 +121,15 @@ implements Comparator
 		this.multipleParametersTranslations = new ArrayList();
 		this.singleParameterTranslations = new ArrayList();
 		this.plainTranslations = new ArrayList();
+		//System.out.println("loading raw translations");
 		Map rawTranslations = loadRawTranslations(resourceDirs, localizationSetting.getMessagesFileName(), false);
 		Map externalRawTranslations = null;
 		// load IDs for variables with multiple parameters or when dynamic translations are used:
+		//System.out.println("loading ids");
 		loadIdsMap( false );
 		if (this.isDynamic) {
 			// load translations that can be loaded at a later stage, e.g. via HTTP:
+			//System.out.println("loading external messages");
 			externalRawTranslations = loadRawTranslations(resourceDirs, localizationSetting.getExternalMessagesFileName(), true);
 			if (externalRawTranslations.size() == 0) {
 				externalRawTranslations = null;
@@ -165,6 +169,7 @@ implements Comparator
 			}
 			//System.out.println("found " + sharedTranslations.size() + " shared translations");
 			// process shared keys:
+			//System.out.println("process raw translations");
 			processRawTranslations( sharedInternalTranslations, this.plainTranslations, this.singleParameterTranslations, this.multipleParametersTranslations, this.idGeneratorPlain, this.idGeneratorSingleParameter, this.idGeneratorMultipleParameters );
 			for (Iterator iter = sharedTranslations.iterator(); iter.hasNext();)
 			{
@@ -442,6 +447,7 @@ implements Comparator
 			String key = keys[i];
 			//String originalKey = key;
 			String value = (String) rawTranslations.get( key );
+			//System.out.println(key + "=" + value);
 			if (value.indexOf('$') != -1) {
 				value = PropertyUtil.writeProperties(value, variables);
 			}
@@ -473,7 +479,7 @@ implements Comparator
 				this.environment.addVariable(key, value );
 				this.preprocessingVariablesByKey.put( key, value );
 			}
-		}		
+		}
 		// in the second round set the actual translations as well:
 		keys = (String[]) rawTranslations.keySet().toArray( new String[ rawTranslations.size()] );
 		Arrays.sort( keys );
@@ -499,19 +505,19 @@ implements Comparator
 			// check if any translations have been removed - in that case empty strings need to be included,
 			// otherwise the dynamic translations are not backwards compatible anymore:
 			if (translationsPlain.size() < idsPlain.getIdsMap().size()) {
-//				System.out.println("it appears that a translation is not used anymore");
+				//System.out.println("it appears that a translation is not used anymore");
 				Translation[] translations = getTranslations( translationsPlain );
-				int index = 1;
-				for (int i = 1; i < translations.length; i++)
+				int index = 0;
+				for (int i = 0; i < translations.length; i++)
 				{
 					Translation translation = translations[i];
-//					System.out.println(translation.getId() + "=" +  (index+1) );
+					//System.out.println(translation.getId() + "=" +  (index+1) );
 					while (translation.getId() != (index+1)) {
 						String key = idsPlain.getKey(index);
 						if (key == null) {
-						    break;
+							throw new BuildException("Error while auto-conceiling with unused translation " + index + ". Please remove ${project.home}/.polishSettings and restart J2ME Polish.");
 						}
-//						System.out.println("adding empty translation for " + index + "=" + key );
+						//System.out.println("adding empty translation for " + index + "=" + key );
 						Translation plain = new Translation(key, "", index);
 						this.translationsByKey.put(key, plain);
 						translationsPlain.add(plain);
@@ -522,8 +528,8 @@ implements Comparator
 			}
 			if (translationsSingle.size() < idsSingle.getIdsMap().size()) {
 				Translation[] translations = getTranslations(translationsSingle);
-				int index = 1;
-				for (int i = 1; i < translations.length; i++)
+				int index = 0;
+				for (int i = 0; i < translations.length; i++)
 				{
 					Translation translation = translations[i];
 					while (translation.getId() != (index+1)) {
@@ -537,16 +543,18 @@ implements Comparator
 				}
 			}
 			if (translationsMultiple.size() < idsMultiple.getIdsMap().size()) {
+				//System.out.println("there are more multiple translation IDs than translations");
 				Translation[] translations = getTranslations(translationsMultiple);
-				int index = 1;
-				for (int i = 1; i < translations.length; i++)
+				int index = 0;
+				for (int i = 0; i < translations.length; i++)
 				{
 					Translation translation = translations[i];
 					while (translation.getId() != (index+1)) {
-						String key = idsMultiple.getKey(index);
-						Translation single = new Translation(key, "", "", index);
-						this.translationsByKey.put(key, single);
-						translationsMultiple.add(single);
+						String key = idsMultiple.getKey(index+1);
+						//System.out.println("found former key " + key + " at index " + 0);
+						Translation multiple = new Translation(key, (String[]) null,  (int[])null, index);
+						this.translationsByKey.put(key, multiple);
+						translationsMultiple.add(multiple);
 						index++;
 					}
 					index++;
@@ -1054,7 +1062,7 @@ implements Comparator
 		} else if (c == '\\') {
 			buffer.append( "\\\\");
 		} else {
-			buffer.append( c );
+			Native2Ascii.nativeToAscii( c, buffer );
 		}
 	}
 
@@ -1104,6 +1112,7 @@ implements Comparator
 	public void saveTranslations(File targetDir, Device currentDevice, LocaleSetting dynamicLocaleSetting, boolean isForExternalUsage )
 	throws IOException
 	{
+		//System.out.println("saveTranslations, external=" + isForExternalUsage + ", plainTranslationsExternal=" + this.plainTranslationsExternal);
 		if (isForExternalUsage) {
 			if (this.plainTranslationsExternal != null) {
 				saveTranslations( targetDir, currentDevice, dynamicLocaleSetting, this.plainTranslationsExternal, this.singleParameterTranslationsExternal, this.multipleParametersTranslationsExternal);
@@ -1141,6 +1150,7 @@ implements Comparator
 //			System.out.println( i + "=" + translation.getKey() + "=" + translation.getValue() );
 			out.writeUTF( translation.getValue() );
 		}
+		
 		// translations with a single parameter:
 		translations = getTranslations(translationsSingle);
 		setIdsAndSort( translations );
@@ -1150,6 +1160,7 @@ implements Comparator
 			out.writeUTF( translation.getOneValueStart() );
 			out.writeUTF( translation.getOneValueEnd() );
 		}
+		
 		// translations with a multiple parameters:
 		translations = getTranslations(translationsMultiple);
 		setIdsAndSort( translations );
@@ -1158,20 +1169,25 @@ implements Comparator
 			Translation translation = translations[i];
 			try {
 				int[] orders = translation.getParameterIndices();
-				String[] chunks = translation.getValueChunks();
-				if (orders.length != chunks.length - 1) {
-					throw new IllegalStateException("TranslationManager: unable to save translation file: (orders.length != chunks.length - 1) for translation [" + translation.getValue() + "], please report this error to j2mepolish@enough.org");
+				if (orders == null || orders.length == 0) {
+					//System.out.println("adding key " + translation.getKey() + " with ID " + translation.getId() +  " at position " + i);
+					out.writeByte(1);
+					out.writeUTF("");
+				} else {
+					String[] chunks = translation.getValueChunks();
+					if (orders.length != chunks.length - 1) {
+						throw new IllegalStateException("TranslationManager: unable to save translation file: (orders.length != chunks.length - 1) for translation [" + translation.getValue() + "], please report this error to j2mepolish@enough.org");
+					}
+					out.writeByte( chunks.length );
+					for (int j = 0; j < chunks.length; j++) {
+						String chunk = chunks[j];
+						out.writeUTF( chunk );
+					}
+					for (int j = 0; j < orders.length; j++) {
+						int order = orders[j]; 
+						out.writeByte( order );
+					}
 				}
-				out.writeByte( chunks.length );
-				for (int j = 0; j < chunks.length; j++) {
-					String chunk = chunks[j];
-					out.writeUTF( chunk );
-				}
-				for (int j = 0; j < orders.length; j++) {
-					int order = orders[j]; 
-					out.writeByte( order );
-				}
-				//out.writeUTF( translation.getValue() );
 			} catch (RuntimeException e) {
 				System.err.println("Unable to process translation [" + translation.getKey() + "]: " + e.toString() );
 				throw e;

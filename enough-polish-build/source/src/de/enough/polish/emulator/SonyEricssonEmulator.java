@@ -27,7 +27,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
-
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.ant.emulator.EmulatorSetting;
@@ -144,47 +143,35 @@ public class SonyEricssonEmulator extends WtkEmulator {
 				home = new File( sonyHomePath );
 				if (!home.exists()) {
 					sonyHomePath = null;
-					// try to start emulators from the standard WTK directory.
+					// try to start emulators from the standard WTK directory. [how?]
+					return false;
 				}
 			}
 		} else {
 			home = new File( sonyHomePath );
 			if (!home.exists()) {
-				System.err.println("Unable to start emulator for device [" + dev.getIdentifier() + "]: Please adjust the ${sony-ericsson.home}-property in your build.xml. The path [" + sonyHomePath + "] does not exist.");
+				System.err.println("Unable to start emulator for device [" + dev.getIdentifier() + "]: Please adjust the \"sony-ericsson.home\" property in ${polish.home}/global.properties or in your build.xml. The path [" + sonyHomePath + "] does not exist.");
+				return false;
 			}
 		}
+		
+		boolean foundSdk = false;
+		
 		if (home != null) {
-			boolean foundSdk = false;
-			File pcEmulation;
-			pcEmulation = new File( home, "PC_Emulation");
-			if (pcEmulation.exists()) {
-				sonyHomePath = home.getAbsolutePath();
-				foundSdk = true;
-			}
-			File wtk2Folder;
-			if(!foundSdk){
-				wtk2Folder = new File( home, "WTK2");
-				if (wtk2Folder.exists()) {
-					sonyHomePath = home.getAbsolutePath();
-					foundSdk = true;
-				}
-			}
-			if(!foundSdk) {
+			File pcEmulation = new File( home, "PC_Emulation");
+			if (!pcEmulation.exists()) {
 				File[] files = home.listFiles();
+				if (files == null) {
+					System.err.println("Unable to find Sony Ericsson SDK directory in " + home.getAbsolutePath() + " - please specify the \"sony-ericsson.home\" property in ${polish.home}/global.properties or in your build.xml script.");
+					return false;
+				}
 				Arrays.sort( files );
 				for (int i = files.length; --i >= 0; ) {
-					File possibleHome = files[i];
-					if (possibleHome.isDirectory()) {
-						pcEmulation = new File( possibleHome, "PC_Emulation");
+					File file = files[i];
+					if (file.isDirectory()) {
+						pcEmulation = new File( file, "PC_Emulation");
 						if (pcEmulation.exists()) {
-							home = possibleHome;
-							sonyHomePath = home.getAbsolutePath();
-							foundSdk = true;
-							break;
-						}
-						wtk2Folder = new File( possibleHome, "WTK2");
-						if(wtk2Folder.exists()) {
-							home = possibleHome;
+							home = file;
 							sonyHomePath = home.getAbsolutePath();
 							foundSdk = true;
 							break;
@@ -192,6 +179,23 @@ public class SonyEricssonEmulator extends WtkEmulator {
 					}
 				}
 			}
+			else
+			{
+				sonyHomePath = home.getAbsolutePath();
+				foundSdk = true;
+			}
+			
+			// for the new sdk
+			if(!foundSdk)
+			{
+				File wtk2 = new File( home, "WTK2");
+				if(wtk2.exists())
+				{
+					sonyHomePath = home.getAbsolutePath();
+					foundSdk = true;
+				}
+			}
+			
 			if (!foundSdk) {
 				System.out.println("Warning: unable to find correct Sony Ericsson SDK in " + home.getAbsolutePath() + ": please specify the sony-ericsson.home property in ${polish.home}/global.properties. Now trying to use default WTK.");
 				sonyHomePath = null;

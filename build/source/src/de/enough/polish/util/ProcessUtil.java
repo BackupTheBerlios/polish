@@ -25,8 +25,10 @@
  */
 package de.enough.polish.util;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 
 
@@ -156,36 +158,12 @@ public final class ProcessUtil {
 	public static final int exec( String[] arguments, String info, boolean wait, OutputFilter filter, File dir ) 
 	throws IOException 
 	{
-		return exec(arguments,info,wait, filter,dir,null,true);
-	}
-	
-	/**
-	 * Executes an external process and logs the output of it.
-	 * 
-	 * @param arguments the arguments, e.g. { "java", "-jar", "home/lib/Blubb.jar" }
-	 * @param info the information that should be printed before each log output, e.g. "process: "
-	 * @param wait true when this method should wait for the return of the process.
-	 * @param filter the filter for messages of the processs
-	 * @param dir the current directory for the started process
-	 * @param processProxy an array to retrieve the underlying process. May be null or an array with at a size of at least one.
-	 * @return always 0, when wait == false; -1 when the waiting was interrupted; in all other cases the return value
-	 *         of the process is returned, 0 usally indicates success.
-	 * @throws IOException when the process could not be started
-	 */
-	public static final int exec( String[] arguments, String info, boolean wait, OutputFilter filter, File dir,Process[] processProxy,boolean logOutput ) 
-	throws IOException 
-	{
 		Runtime runtime = Runtime.getRuntime();
 		Process process = runtime.exec( arguments, null, dir );
-		if(processProxy != null && processProxy.length > 0) {
-			processProxy[0] = process;
-		}
-		if(logOutput) {
-			LoggerThread errorLog = new LoggerThread( process.getErrorStream(), System.err, info, true, filter );
-			errorLog.start();
-			LoggerThread outputLog = new LoggerThread( process.getInputStream(), System.out, info, true, filter );
-			outputLog.start();
-		}
+		LoggerThread errorLog = new LoggerThread( process.getErrorStream(), System.err, info, true, filter );
+		errorLog.start();
+		LoggerThread outputLog = new LoggerThread( process.getInputStream(), System.out, info, true, filter );
+		outputLog.start();
 		int result = 0;
 		if (wait) {
 			try {
@@ -197,6 +175,48 @@ public final class ProcessUtil {
 			}
 		}
 		return result;
+	}
+
+
+	/**
+	 * Records the output of the specified process and returns the output as a string array.
+	 * @param arguments the process arguments
+	 * @return the output as a string array
+	 * @throws IOException 
+	 * @throws IOException when the process could not be started
+	 */
+	public static String[] toStringArray(String[] arguments) 
+	throws IOException 
+	{
+		return toStringArray(arguments, null);
+	}
+	
+	/**
+	 * Records the output of the specified process and returns the output as a string array.
+	 * @param arguments the process arguments
+	 * @param dir the current directory for the process
+	 * @return the output as a string array
+	 * @throws IOException when the process could not be started
+	 */
+	public static String[] toStringArray(String[] arguments, File dir) 
+	throws IOException 
+	{
+		Runtime runtime = Runtime.getRuntime();
+		Process process = runtime.exec( arguments, null, dir );
+		ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+		PrintStream output = new PrintStream(byteOut);
+		LoggerThread errorLog = new LoggerThread( process.getErrorStream(), output, null, false, null );
+		errorLog.start();
+		LoggerThread outputLog = new LoggerThread( process.getInputStream(), output, null, false, null );
+		outputLog.start();
+		try {
+			process.waitFor();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			System.err.println("Unable to wait for process [" + arguments[0] + "]: " + e.toString() );
+		}
+		String text = new String( byteOut.toByteArray() );
+		return StringUtil.split(text, '\n');
 	}
 
 }

@@ -32,6 +32,7 @@ import de.enough.polish.preprocess.css.StyleSheet;
 import de.enough.polish.BuildException;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>Creates a shadow-like border.</p>
@@ -46,7 +47,7 @@ import java.util.HashMap;
  */
 public class ShadowBorderConverter extends BorderConverter {
 	
-	private static final HashMap TYPES = new HashMap();
+	private static final Map TYPES = new HashMap();
 	static {
 		TYPES.put("bottom-right-shadow", BORDERS_PACKAGE + "BottomRightShadowBorder");
 		TYPES.put("right-bottom-shadow", BORDERS_PACKAGE + "BottomRightShadowBorder");
@@ -63,7 +64,7 @@ public class ShadowBorderConverter extends BorderConverter {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.preprocess.BorderConverter#createNewStatement(java.util.HashMap, de.enough.polish.preprocess.Style, de.enough.polish.preprocess.StyleSheet)
 	 */
-	protected String createNewStatement(HashMap border, Style style, StyleSheet styleSheet) throws BuildException {
+	protected String createNewStatement(Map border, Style style, StyleSheet styleSheet) throws BuildException {
 		String typeName = (String) border.get("type");
 		String type = (String) TYPES.get( typeName );
 		if (type == null) {

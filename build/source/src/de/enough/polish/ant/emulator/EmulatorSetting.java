@@ -52,7 +52,7 @@ public class EmulatorSetting extends ExtensionSetting {
 	private boolean wait = true;
 	private String trace;
 	private File preferences;
-	private String securityDomain;
+	private String securityDomain = "maximum";
 	private boolean writePreferencesFile;
 	private boolean enableProfiler;
 	private boolean enableMemoryMonitor;

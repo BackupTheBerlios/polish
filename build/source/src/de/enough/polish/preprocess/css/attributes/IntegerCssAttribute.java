@@ -66,13 +66,13 @@ public class IntegerCssAttribute extends CssAttribute {
 			try {
 				int intValue;
 				try {
-					intValue = Integer.parseInt( value );
+					intValue = parseInt(value);
 				} catch (NumberFormatException e) {
 					String processedValue = environment.getProperty( "calculate(" + value + ")", true);
-					intValue = Integer.parseInt( processedValue );
+					intValue = parseInt(processedValue);
 				}
 				if (this.isBaseAttribute ) {
-					return "" + intValue;
+					return Integer.toString( intValue );
 				} else {
 					return "new Integer(" + intValue + ")";
 				}
@@ -110,12 +110,27 @@ public class IntegerCssAttribute extends CssAttribute {
 
 
 
+	/**
+	 * @param value
+	 * @return the parsed value
+	 */
+	protected int parseInt(String value)
+	{
+		int l = value.length();
+		if (l > 2 && value.endsWith("px")) {
+			value = value.substring(0, l - 2);
+		}
+		return Integer.parseInt( value );
+	}
+
+
+
 	/* (non-Javadoc)
 	 * @see de.enough.polish.preprocess.css.CssAttribute#instantiateValue(java.lang.String)
 	 */
 	public Object instantiateValue(String sourceCode) {
 		if (this.isBaseAttribute) {
-			return new Integer( Integer.parseInt(sourceCode));
+			return new Integer( parseInt(sourceCode));
 		}
 		return super.instantiateValue(sourceCode);
 	}
@@ -127,27 +142,7 @@ public class IntegerCssAttribute extends CssAttribute {
 	 */
 	public String generateAnimationSourceCode(CssAnimationSetting cssAnimation, Style style, Environment environment)
 	{
-		StringBuffer buffer = new StringBuffer();
-		buffer.append( "new " );
-		buffer.append( ANIMATION_PACKAGE );
-		buffer.append( "IntegerCssAnimation(");
-		buffer.append( this.id ).append(", ");
-		buffer.append( '"').append(cssAnimation.getOn() ).append("\", ");
-		buffer.append( cssAnimation.getDuration() ).append(", ");
-		buffer.append( cssAnimation.getDelay() ).append(", ");
-		buffer.append( cssAnimation.getTimingFunction() ).append(", ");
-		String start = cssAnimation.getValue("start");
-		if (start == null) {
-			start = "-1";
-		}
-		buffer.append( start ).append(", ");
-		String end = cssAnimation.getValue("end");
-		if (end == null) {
-			throw new BuildException("CSS animation for " + this.name + " does not specify and \"end\" value - check style " + style.getSelector() + " in your polish.css");
-		}
-		buffer.append( end );
-		buffer.append(')');
-		return buffer.toString();
+		return generateAnimationSourceCode("IntegerCssAnimation", cssAnimation, style, environment);
 	}
 	
 	

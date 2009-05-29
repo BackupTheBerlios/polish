@@ -51,9 +51,9 @@ public class ProgressFrame
 extends JFrame
 implements Runnable
 {
-    private static final long serialVersionUID = -6353535564417065394L;
+	private static final long serialVersionUID = -6353535564417065394L;
 
-    private final BackgroundProcess process;
+	private final BackgroundProcess process;
 	private final JLabel statusText;
 	private final JProgressBar progressBar;
 	private int step;

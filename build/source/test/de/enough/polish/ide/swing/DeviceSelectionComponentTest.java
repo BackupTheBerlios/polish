@@ -30,8 +30,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-import javax.swing.JComponent;
-
 public class DeviceSelectionComponentTest {
 
 	/**
@@ -65,7 +63,7 @@ public class DeviceSelectionComponentTest {
         URLClassLoader urlClassLoader = new URLClassLoader( urls, DeviceSelectionComponentTest.class.getClassLoader() );
         Class componentClass = urlClassLoader.loadClass("de.enough.polish.ide.swing.DeviceSelectionComponent");
         Constructor constructor = componentClass.getConstructor( new Class[]{ String.class } );
-        JComponent component = (JComponent) constructor.newInstance( new Object[]{ polishHome} );
+        constructor.newInstance( new Object[]{ polishHome} );
         System.out.println("component class loaded successfully :-)");
         
 	}

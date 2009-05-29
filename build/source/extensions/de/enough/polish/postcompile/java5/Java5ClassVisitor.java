@@ -73,7 +73,7 @@ public class Java5ClassVisitor
   {
     // We keep only the values() method in enum classes.
     if (this.isEnumClass
-        && ! "values".equals(name))
+        && ! METHOD_VALUES.equals(name))
       {
         return null;
       }

@@ -224,7 +224,7 @@
     <features />
   </vendor>
   <vendor>
-    <name>Voxtel</name>
+    <name>Elson</name>
     <features />
   </vendor>
   <vendor>
@@ -232,23 +232,7 @@
     <features />
   </vendor>
   <vendor>
-    <name>Fly</name>
-    <features />
-  </vendor>
-  <vendor>
-    <name>Lenovo</name>
-    <features />
-  </vendor>
-  <vendor>
-    <name>ZTE</name>
-    <features />
-  </vendor>
-  <vendor>
-    <name>Philips</name>
-    <features />
-  </vendor>
-  <vendor>
-    <name>Vitelcom</name>
+    <name>Dopod</name>
     <features />
   </vendor>
   <vendor>
@@ -256,75 +240,15 @@
     <features />
   </vendor>
   <vendor>
-    <name>SPV</name>
+    <name>i-mate</name>
     <features />
   </vendor>
   <vendor>
-    <name>Elson</name>
+    <name>Spice</name>
     <features />
   </vendor>
   <vendor>
-    <name>UTStarcom</name>
-    <features />
-  </vendor>
-  <vendor>
-    <name>Onda</name>
-    <features />
-  </vendor>
-  <vendor>
-    <name>Modelabs</name>
-    <features />
-  </vendor>
-  <vendor>
-    <name>Audiovox</name>
-    <features />
-  </vendor>
-  <vendor>
-    <name>Innostream</name>
-    <features />
-  </vendor>
-  <vendor>
-    <name>Neonode</name>
-    <features />
-  </vendor>
-  <vendor>
-    <name>Medion</name>
-    <features />
-  </vendor>
-  <vendor>
-    <name>Grundig</name>
-    <features />
-  </vendor>
-  <vendor>
-    <name>ASUS</name>
-    <features />
-  </vendor>
-  <vendor>
-    <name>Asus</name>
-    <features />
-  </vendor>
-  <vendor>
-    <name>MIO</name>
-    <features />
-  </vendor>
-  <vendor>
-    <name>Toplux</name>
-    <features />
-  </vendor>
-  <vendor>
-    <name>Asmobile</name>
-    <features />
-  </vendor>
-  <vendor>
-    <name>Haier</name>
-    <features />
-  </vendor>
-  <vendor>
-    <name>Ezze</name>
-    <features />
-  </vendor>
-  <vendor>
-    <name>Gradiente</name>
+    <name>Cingular</name>
     <features />
   </vendor>
   <vendor>
@@ -332,11 +256,23 @@
     <features />
   </vendor>
   <vendor>
-    <name>MiTAC</name>
+    <name>Grundig</name>
     <features />
   </vendor>
   <vendor>
-    <name>Orange</name>
+    <name>Asmobile</name>
+    <features />
+  </vendor>
+  <vendor>
+    <name>SoftBank</name>
+    <features />
+  </vendor>
+  <vendor>
+    <name>Voxtel</name>
+    <features />
+  </vendor>
+  <vendor>
+    <name>Asus</name>
     <features />
   </vendor>
   <vendor>
@@ -344,23 +280,39 @@
     <features />
   </vendor>
   <vendor>
+    <name>Medion</name>
+    <features />
+  </vendor>
+  <vendor>
+    <name>Fly</name>
+    <features />
+  </vendor>
+  <vendor>
+    <name>Orange</name>
+    <features />
+  </vendor>
+  <vendor>
+    <name>Innostream</name>
+    <features />
+  </vendor>
+  <vendor>
+    <name>Emobile</name>
+    <features />
+  </vendor>
+  <vendor>
+    <name>Toplux</name>
+    <features />
+  </vendor>
+  <vendor>
+    <name>Vitelcom</name>
+    <features />
+  </vendor>
+  <vendor>
+    <name>Lenovo</name>
+    <features />
+  </vendor>
+  <vendor>
     <name>Uriver</name>
-    <features />
-  </vendor>
-  <vendor>
-    <name>V3m (Metro PCS)</name>
-    <features />
-  </vendor>
-  <vendor>
-    <name>Dallab</name>
-    <features />
-  </vendor>
-  <vendor>
-    <name>Access</name>
-    <features />
-  </vendor>
-  <vendor>
-    <name>Skyspring Vitelcom</name>
     <features />
   </vendor>
   <vendor>
@@ -368,11 +320,111 @@
     <features />
   </vendor>
   <vendor>
+    <name>Ezze</name>
+    <features />
+  </vendor>
+  <vendor>
+    <name>Onda</name>
+    <features />
+  </vendor>
+  <vendor>
+    <name>Bird</name>
+    <features />
+  </vendor>
+  <vendor>
+    <name>TCL</name>
+    <features />
+  </vendor>
+  <vendor>
+    <name>Amoi</name>
+    <features />
+  </vendor>
+  <vendor>
+    <name>UTStarcom</name>
+    <features />
+  </vendor>
+  <vendor>
+    <name>Lexus</name>
+    <features />
+  </vendor>
+  <vendor>
+    <name>ZTE</name>
+    <features />
+  </vendor>
+  <vendor>
+    <name>PhoneOne</name>
+    <features />
+  </vendor>
+  <vendor>
+    <name>B-Mobile</name>
+    <features />
+  </vendor>
+  <vendor>
+    <name>Audiovox</name>
+    <features />
+  </vendor>
+  <vendor>
+    <name>RT</name>
+    <features />
+  </vendor>
+  <vendor>
+    <name>CHT</name>
+    <features />
+  </vendor>
+  <vendor>
+    <name>Konka</name>
+    <features />
+  </vendor>
+  <vendor>
+    <name>Haier</name>
+    <features />
+  </vendor>
+  <vendor>
+    <name>Myphone</name>
+    <features />
+  </vendor>
+  <vendor>
+    <name>Philips</name>
+    <features />
+  </vendor>
+  <vendor>
     <name>KPT</name>
     <features />
   </vendor>
   <vendor>
+    <name>Neonode</name>
+    <features />
+  </vendor>
+  <vendor>
+    <name>Kisen</name>
+    <features />
+  </vendor>
+  <vendor>
+    <name>Sprint</name>
+    <features />
+  </vendor>
+  <vendor>
     <name>Capitel</name>
+    <features />
+  </vendor>
+  <vendor>
+    <name>DoCoMo</name>
+    <features />
+  </vendor>
+  <vendor>
+    <name>IM</name>
+    <features />
+  </vendor>
+  <vendor>
+    <name>Gradiente</name>
+    <features />
+  </vendor>
+  <vendor>
+    <name>Dallab</name>
+    <features />
+  </vendor>
+  <vendor>
+    <name>Modelabs</name>
     <features />
   </vendor>
 </vendors>

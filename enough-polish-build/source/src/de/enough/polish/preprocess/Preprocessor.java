@@ -119,7 +119,6 @@ public class Preprocessor {
 
 	public static final String ENVIRONMENT_KEY = "Key_Preprocessor";
 	private HashMap preprocessQueue;
-	private boolean useDefaultPackage;
 	private TextFileManager textFileManager;
 	private CssAttributesManager cssAttributesManager;
 	private final Environment environment;
@@ -127,6 +126,7 @@ public class Preprocessor {
 	private boolean isNetBeans;
 	private boolean isDeviceSupportsJ2mePolishApi;
 	private boolean isLibraryBuild;
+	private boolean isDebugTrace;
 
 	/**
 	 * Creates a new Preprocessor - usually for a specific device or a device group.
@@ -525,6 +525,7 @@ public class Preprocessor {
 				String symbol = debuggingSymbols[i];
 				this.environment.addTemporarySymbol( symbol );
 			}
+			this.isDebugTrace = (this.debugManager.getClassLevel(className) == DebugManager.TRACE);
 		}
 		// adding all normal variables and symbols to the temporary ones:
 		/*
@@ -1278,9 +1279,7 @@ public class Preprocessor {
 			if (openingParenthesisPos != parenthesisPos -1 ) {
 				buffer.append(", ");
 			} 
-			if (!this.useDefaultPackage) {
-				buffer.append("de.enough.polish.ui.");
-			}
+			buffer.append("de.enough.polish.ui.");
 			if (this.isDeviceSupportsJ2mePolishApi) {
 				buffer.append( "StyleCache." );
 			} else {
@@ -1292,11 +1291,7 @@ public class Preprocessor {
 			lines.setCurrent( buffer.toString() );
 		} else { // either there is no next line or the next line has no new operator
 			lines.prev();
-			if (this.useDefaultPackage) {
-				lines.insert( "\tStyleSheet.currentStyle = StyleSheet." + style + "Style;"  );
-			} else {
-				lines.insert( "\tde.enough.polish.ui.StyleSheet.currentStyle = de.enough.polish.ui.StyleSheet." + style + "Style;"  );
-			}
+			lines.insert( "\tde.enough.polish.ui.StyleSheet.currentStyle = de.enough.polish.ui.StyleSheet." + style + "Style;"  );
 		}
 		// mark the style as beeing used:
 		this.styleSheet.addUsedStyle( style );
@@ -1540,11 +1535,7 @@ public class Preprocessor {
 	 */
 	private boolean convertSystemOut(StringList lines, String debugLevel, String className ) {
 		String debugCall;
-		if (this.useDefaultPackage) {
-			debugCall = "Debug.debug(";
-		} else {
-			debugCall = "de.enough.polish.util.Debug.debug(";
-		}
+		debugCall = "de.enough.polish.util.Debug.debug(";
 		debugCall += "\"" + debugLevel + "\", \"" + className + "\", " + (lines.getCurrentIndex() + 1) + ", ";
 		String line = lines.getCurrent().trim();
 		try {
@@ -1790,25 +1781,6 @@ public class Preprocessor {
 		return className + " line [" + (lines.getCurrentIndex() + 1) + "]: ";
 	}
 
-	/**
-	 * Sets if all classes should be moved into the default package.
-	 * 
-	 * @param useDefaultPackage true when all classes should be moved
-	 *        into the default package
-	 */
-	public void setUseDefaultPackage(boolean useDefaultPackage ) {
-		this.useDefaultPackage = useDefaultPackage;
-	}
-
-	/**
-	 * Determines if all classes should be moved into the default package.
-	 * 
-	 * @return true when all classes should be moved
-	 *        into the default package
-	 */
-	public boolean useDefaultPackage() {
-		return this.useDefaultPackage;
-	}
 	
 	public void setTextFileManager( TextFileManager textFileManager ) {
 		this.textFileManager = textFileManager;

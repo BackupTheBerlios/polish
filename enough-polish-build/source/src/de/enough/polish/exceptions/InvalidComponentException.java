@@ -38,7 +38,7 @@ package de.enough.polish.exceptions;
  */
 public class InvalidComponentException extends Exception {
 	
-    private static final long serialVersionUID = -8735541615819392654L;
+	private static final long serialVersionUID = -8735541615819392654L;
 
 	public InvalidComponentException() {
 		super();

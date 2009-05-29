@@ -408,4 +408,36 @@ public class JavaSourceClassTest extends TestCase {
 
 	}
 
+	public void testGenerics()
+	{
+		String[] lines = new String[] {
+				"package de.enough.polish.util;",
+				"",
+				"import java.util.Vector;",
+				"",
+				"public interface MyClass extends Remote {",
+				"	public Vector<String> getData();",
+				"	public void setData(Vector<String> data);",
+				"}"
+		};
+		JavaSourceClass file = new JavaSourceClass(lines);
+		JavaSourceMethod[] methods = file.getMethods();
+
+		assertNotNull( methods );
+		assertEquals( 2, methods.length );
+
+		assertEquals("public", methods[0].getModifier() );
+		assertEquals("Vector<String>", methods[0].getReturnType() );
+		assertEquals("getData", methods[0].getName() );
+		assertEquals(null, methods[0].getParameterNames() );
+		assertEquals(null, methods[0].getThrownExceptions() );
+
+		assertEquals("public", methods[1].getModifier() );
+		assertEquals("void", methods[1].getReturnType() );
+		assertEquals("setData", methods[1].getName() );
+		assertEquals(1, methods[1].getParameterNames().length );
+		assertEquals("Vector<String>", methods[1].getParameterTypes()[0] );
+		assertEquals("data", methods[1].getParameterNames()[0] );
+		assertEquals(null, methods[1].getThrownExceptions() );
+	}
 }

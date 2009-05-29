@@ -76,4 +76,19 @@ public class CloneMethodVisitor
 
     super.visitMethodInsn(opcode, owner, name, desc);
   }
+
+	/* (non-Javadoc)
+	 * @see org.objectweb.asm.MethodAdapter#visitTypeInsn(int, java.lang.String)
+	 */
+	public void visitTypeInsn(int opcode, String type)
+	{
+	    // JDK 6u10 and up use already System.arraycopy() instead of clone()
+	    // inside the values() method of an enum type but need to be fixed.
+	    if (ANEWARRAY == opcode) {
+	    	visitIntInsn(NEWARRAY, T_INT);
+	    	return;
+	    }
+
+		super.visitTypeInsn(opcode, type);
+	}
 }

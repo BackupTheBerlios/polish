@@ -192,6 +192,63 @@ public final class StringUtil {
 	}
 
 	/**
+	 * Splits the given String around the matches defined by the given delimiter into an array while not breaking up areas that are marked with parentheses ().
+	 * Example:
+	 * <value>TextUtil.split("one; two; three(test;test2)", ';')</value> results into the array
+	 * <value>{"one", " two", " three(test;test2)"}</value>.
+	 *
+	 * @param value the String which should be split into an array
+	 * @param delimiter the delimiter which marks the boundaries of the array 
+	 * @return an array, when the delimiter was not found, the array will only have a single element.
+	 */
+	public static String[] splitWhileKeepingParentheses(String value, char delimiter)
+	{
+		char[] valueChars = value.toCharArray();
+		int lastIndex = 0;
+		ArrayList strings = null;
+		boolean isParenthesesOpened = false;
+		for (int i = 0; i < valueChars.length; i++) {
+			char c = valueChars[i];
+			if (c == delimiter && !isParenthesesOpened) {
+				if (strings == null) {
+					strings = new ArrayList();
+				}
+				strings.add( new String( valueChars, lastIndex, i - lastIndex ) );
+				lastIndex = i + 1;
+			} else if ( c == ')' ) {
+				isParenthesesOpened = false;
+			} else if ( c== '(' ) {
+				isParenthesesOpened = true;
+			}
+		}
+		if (strings == null) {
+			return new String[]{ value };
+		}
+		// add tail:
+		strings.add( new String( valueChars, lastIndex, valueChars.length - lastIndex ) );
+		return (String[]) strings.toArray( new String[ strings.size() ] );
+	}
+
+	/**
+	 * Splits the given String around the matches defined by the given delimiter into an array while not breaking up areas that are marked with parentheses ().
+	 * Example:
+	 * <value>TextUtil.split("one; two; three(test;test2)", ';')</value> results into the array
+	 * <value>{"one", "two", "three(test;test2)"}</value>.
+	 *
+	 * @param value the String which should be split into an array
+	 * @param delimiter the delimiter which marks the boundaries of the array 
+	 * @return an array, when the delimiter was not found, the array will only have a single element.
+	 */
+	public static String[] splitWhileKeepingParenthesesAndTrim(String value, char delimiter)
+	{
+		String[] result = splitWhileKeepingParentheses( value, delimiter );
+		for (int i = 0; i < result.length; i++) {
+			result[i] = result[i].trim();
+		}
+		return result;
+	}
+
+	/**
 	 * Splits the given String around the matches defined by the given delimiter into an array.
 	 * The resulting text-chunks will be trimmed afterwards.
 	 * Example:
@@ -323,6 +380,5 @@ public final class StringUtil {
 		}
 		return buffer.toString();
 	}
-
 
 }

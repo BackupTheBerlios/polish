@@ -116,17 +116,17 @@ public class ProGuardObfuscationMap
 		return line.indexOf(":") != -1 && line.indexOf("->") != -1;
 	}
 	
-	private boolean isField(String line)
-	{
-		String name = line.split("->")[0].trim();
-		return name.indexOf(" ") != -1 && name.indexOf("(") == -1;
-	}
+//	private boolean isField(String line)
+//	{
+//		String name = line.split("->")[0].trim();
+//		return name.indexOf(" ") != -1 && name.indexOf("(") == -1;
+//	}
 	
-	private boolean isMethod(String line)
-	{
-		String name = line.split("->")[0].trim();
-		return name.indexOf(" ") != -1 && name.indexOf("(") != -1;
-	}
+//	private boolean isMethod(String line)
+//	{
+//		String name = line.split("->")[0].trim();
+//		return name.indexOf(" ") != -1 && name.indexOf("(") != -1;
+//	}
 	
 	public String[] getClassNames() {
 		return (String[]) this.classEntriesByName.keySet().toArray( new String[ this.classEntriesByName.size() ] );

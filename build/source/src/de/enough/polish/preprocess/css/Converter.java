@@ -47,6 +47,7 @@ import de.enough.polish.util.StringUtil;
  */
 public class Converter {
 	protected final static String STANDALONE_MODIFIER = "\tpublic final static ";
+	protected final static String STANDALONE_MODIFIER_NON_FINAL = "\tpublic static ";
 	protected ColorConverter colorConverter;
 
 	public static final Map ANCHORS = new HashMap();
@@ -92,6 +93,10 @@ public class Converter {
 	 */
 	public static final int parseInt(String styleName, String groupName, String name, String value) {
 		try {
+			int l = value.length();
+			if (l > 2 && value.endsWith("px")) {
+				value = value.substring(0, l - 2);
+			}
 			return Integer.parseInt( value );
 		} catch (Exception e) {
 			// check for property functions:

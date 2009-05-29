@@ -246,16 +246,10 @@ public class TextFile {
 	 * Retrieves the target file for this text file (in a different folder).
 	 * 
 	 * @param baseDirectory the base directory for the target file
-	 * @param useDefaultPackage true when the target-file should be in the base-directory
 	 * @return the target file
 	 */
-	public File getTargetFile( File baseDirectory, boolean useDefaultPackage ) {
-		if (useDefaultPackage) {
-			//System.out.println("target-dir=" + new File( baseDirectory, this.fileName ) );
-			return new File( baseDirectory, this.fileName );
-		} else {
-			return new File( baseDirectory, this.filePath );
-		}
+	public File getTargetFile( File baseDirectory) {
+		return new File( baseDirectory, this.filePath );
 	}
 
 	/**

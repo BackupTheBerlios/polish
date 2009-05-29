@@ -62,9 +62,9 @@ public class ImageEditorDialog
 extends JDialog 
 implements ActionListener 
 {
-    private static final long serialVersionUID = -4574658971912104600L;
+	private static final long serialVersionUID = -4574658971912104600L;
 
-    private BufferedImage image;
+	private BufferedImage image;
 	private final JButton saveButton;
 	private final JButton loadButton;
 	private final JButton okButton;

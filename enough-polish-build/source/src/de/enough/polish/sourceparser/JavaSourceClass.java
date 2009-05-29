@@ -43,7 +43,7 @@ import de.enough.polish.util.StringUtil;
  */
 public class JavaSourceClass {
 	
-	protected static final String JAVA_VAR_STR = "\\w+[\\w|\\.|_]*(\\[\\s*\\])?";
+	protected static final String JAVA_VAR_STR = "\\w+[\\w|\\.|_]*(<\\w*>)?(\\[\\s*\\])?";
 
 	protected static final String PACKAGE_STR = "package\\s+" + JAVA_VAR_STR;
 	protected static final Pattern PACKAGE_PATTERN = Pattern.compile( PACKAGE_STR );

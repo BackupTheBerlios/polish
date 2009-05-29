@@ -21,9 +21,9 @@ import de.enough.polish.postcompile.BytecodePostCompiler;
  * This post compiler adds the needed serialization methods for classes
  * implementing de.enough.polish.serialization.Serializable.
  * 
- * @see de.enough.polish.postcompile.io.Externalizable
- * @see de.enough.polish.postcompile.io.Serializable
- * @see de.enough.polish.postcompile.io.Serializer
+ * @see de.enough.polish.io.Externalizable
+ * @see de.enough.polish.io.Serializable
+ * @see de.enough.polish.io.Serializer
  */
 public class SerializationPostCompiler extends BytecodePostCompiler
 {
@@ -81,7 +81,7 @@ public class SerializationPostCompiler extends BytecodePostCompiler
           }
         catch (ClassNotFoundException e)
           {
-            System.out.println("Serialization: error loading class " + className + ": " + e.toString() );
+            System.err.println("Serialization: error loading class " + className + ": " + e.toString() );
           }
         catch (Exception e)
         {
