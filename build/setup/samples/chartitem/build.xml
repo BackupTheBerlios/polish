@@ -148,7 +148,7 @@
 					-->
 				</obfuscator>
 				<!-- log settings: only use debug setting when the test-property is true -->
-				<debug if="test" showLogOnError="true" verbose="true" level="error">
+				<debug if="test or log" verbose="true" level="error">
 					<filter package="de.enough.polish.sample.chartitem" level="debug" />
 					<filter package="de.enough.polish.ui" level="warn" />
 					<!-- example for writing log entries to the Recordstore Management System: 

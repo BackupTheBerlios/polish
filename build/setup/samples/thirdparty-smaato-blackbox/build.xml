@@ -152,7 +152,7 @@
 				<!-- debug settings: only include debug setting when the test-property is true 
 				if="test" 
 				-->
-				<debug showLogOnError="true" verbose="true" level="error" if="test" >
+				<debug verbose="true" level="error" if="test" >
 					<filter package="com.smaato.blackbox" level="debug" />
 				</debug>
 				

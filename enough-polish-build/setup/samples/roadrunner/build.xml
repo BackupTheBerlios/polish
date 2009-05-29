@@ -93,7 +93,7 @@
 				<!-- obfuscator settings: do not obfuscate when the test-property is true -->
 				<obfuscator name="ProGuard" unless="test or polish.blackberry" />
 				<!-- debug settings: only include debug setting when the test-property is true -->
-				<debug level="error" showLogOnError="true" verbose="true" if="test">
+				<debug level="error" verbose="true" if="test">
 					<filter level="debug" pattern="de.enough.roadrunner.*"/>
 					<filter level="info" pattern="de.enough.polish.ui.*"/>
 					<filter level="debug" pattern="de.enough.polish.ui.game.*"/>

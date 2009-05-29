@@ -71,9 +71,11 @@
 			
 	<target name="init">
 	  	<property name="test" value="false" />
-		<property name="dir.work" value="build/real" />
 		<property name="deploy-url" value="" />
 		<property name="resource.dir" value="resources" />
+		<property name="customization" value="" />
+		<property name="dir.work" value="build/real/${customization}" />
+		<property name="dir.dist" value="dist/${customization}" />
 	</target>
 	 
 	<!-- In this target the J2ME Polish task is used.             -->
@@ -125,10 +127,10 @@
 			<!-- 
 			 -->
 			<build
-				symbols="ExampleSymbol, AnotherExample"
 				fullscreen="menu"
 				usePolishGui="true"
 				workDir="${dir.work}"
+				destDir="${dir.dist}"
 			>
 				<!-- midlets definition -->
 				<midlet class="de.enough.polish.example.MenuMidlet" name="Example" />
@@ -143,32 +145,13 @@
 					<variable name="update-url" value="http://www.enough.de/update" />
 					<variable name="title" value="J2ME Polish" />
 				</variables>
-				<!-- Here you can set the dir attribute to "resources2" for an alternative design. -->
+				<!-- Configure the resource assembling: -->
 				<resources
-					dir="${resource.dir}"
+					dir="resources/base"
 					defaultexcludes="yes"
 					excludes="readme.txt"
 				>
-					<!-- you can add resources based on complex criterias: 
-					<fileset 
-						dir="resources/multimedia" 
-						includes="*.wav" 
-						if="polish.audio.wav" 
-					/>
-					<fileset 
-						dir="resources/multimedia" 
-						includes="*.mid" 
-						if="polish.audio.midi and not polish.audio.wav" 
-					/>
-					-->
-					<!-- you can also use several root directories for your resource assembling.
-					     This is useful for customizations and for having a cleanly structured 
-					     resources directory (for example seperating images from sounds, etc):
-					<root dir="resources/images" />
-					<root dir="resources/sounds" />
-					<root dir="resources/customer1" if="customer1" />
-					<root dir="resources/customer2" if="customer2" />
-					-->
+					<root dir="resources/customizations/${customization}" if="${customization}.enabled" />
 					<!-- add the localization element for created localized
 					     versions of your application: -->
 					<localization locales="de_DE, en_US" unless="test" />
@@ -182,9 +165,12 @@
 					-->
 				</obfuscator>
 				<!-- debug settings: only include debug setting when the test-property is true -->
-				<debug if="test" showLogOnError="true" verbose="true" level="error">
+				<debug if="test or log" verbose="true" level="error">
 					<filter pattern="de.enough.polish.example.*" level="debug" />
 					<filter pattern="de.enough.polish.ui.*" level="warn" />
+					<!-- activate display handler to see log entries in real time:
+					<handler name="display" />
+					-->
 				</debug>
 				<!-- user defined JAD attributes can also be used: -->
 				<jad>
@@ -261,20 +247,34 @@
 		depends="clean, j2mepolish"
 	/>
 
-	<target name="enableBarbie" >
-		<property name="resource.dir" value="resources2" />
-		<property name="dir.work" value="build/barbie" />
+	<target name="enableBarbie">
+		<property name="customization" value="Barbie" />
+		<property name="Barbie.enabled" value="true" />
 	</target>
-	
-    <target name="barbie" description="launches the application with the barbie design" depends="enableBarbie, test, j2mepolish" />
+		
+	<target name="barbie"
+			description="customizes this project with the settings found in resources/customizations/Barbie"
+			depends="enableBarbie, j2mepolish"
+	/>
 
-	<target name="enableFrog" >
-		<property name="resource.dir" value="resources3" />
-		<property name="dir.work" value="build/frog" />
+	
+	<target name="enableFrogger">
+		<property name="customization" value="Frogger" />
+		<property name="Frogger.enabled" value="true" />
 	</target>
-	
-    <target name="frog" description="launches the application with the frog design" depends="enableFrog, test, j2mepolish" />
-	
-    <target name="debug" description="debugs the project" depends="enableDebug, test, j2mepolish" />
+		
+	<target name="frogger"
+			description="customizes this project with the settings found in resources/customizations/Barbie"
+			depends="enableFrogger, j2mepolish"
+	/>
+
+	<target 
+		name="build-all"
+		description="Builds your application in all customizations." 
+		>
+		<subant target="j2mepolish" buildpath="." genericantfile="build.xml" inheritall="false" ></subant>
+		<subant target="frogger" buildpath="." genericantfile="build.xml" inheritall="false" ></subant>
+		<subant target="barbie" buildpath="." genericantfile="build.xml" inheritall="false" ></subant>
+	</target>
 
 </project>

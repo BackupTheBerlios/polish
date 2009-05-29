@@ -155,7 +155,7 @@
 				<!-- obfuscator settings: always obfuscate -->
 				<obfuscator name="ProGuard" unless="polish.blackberry or dontobfuscate" />
 				<!-- debug/log settings: only include debug setting when the test-property is true -->
-				<debug level="info" showLogOnError="true" verbose="true" logTimestamp="true" if="test">
+				<debug level="info" verbose="true" logTimestamp="true" if="test">
 					<filter level="debug" package="de.enough.polish.sample.rmi"/>
 					<!--
 					<filter level="debug" class="de.enough.polish.ui.TabbedForm"/>

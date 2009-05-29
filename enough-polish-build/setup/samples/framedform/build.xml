@@ -150,7 +150,7 @@
 					-->
 				</obfuscator>
 				<!-- debug settings: only include debug setting when the test-property is true -->
-				<debug if="test" showLogOnError="true" verbose="true" level="error">
+				<debug if="test or log" verbose="true" level="error">
 					<filter pattern="de.enough.polish.example.*" level="debug" />
 					<filter pattern="de.enough.polish.ui.*" level="warn" />
 				</debug>
