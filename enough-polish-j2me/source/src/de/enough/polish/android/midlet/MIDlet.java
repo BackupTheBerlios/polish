@@ -207,23 +207,10 @@ public abstract class MIDlet extends Activity {
 		//#debug
 		System.out.println("onResume().");
 		super.onResume();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see android.app.Activity#onStart()
-	 */
-	
-	protected void onStart() {
-		//#debug
-		System.out.println("onStart().");
-		super.onStart();
 		AndroidDisplay display = AndroidDisplay.getDisplay(this);
 		setContentView(display);
 		// This should allow to control the audio volume with the volume keys on the handset when the application has focus.
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
-		//Debug.startMethodTracing("skobbler");
 		this.shuttingDown = false;
 		// Needed to redraw the any previous screens of a previous run. So the application need not call setCurrent in the case of a rerun.
 		display.refresh();
@@ -237,6 +224,13 @@ public abstract class MIDlet extends Activity {
 		}
 	}
 
+	protected void onStart() {
+		//#debug
+		System.out.println("onStart().");
+		super.onStart();
+		//Debug.startMethodTracing("skobbler");
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -247,16 +241,17 @@ public abstract class MIDlet extends Activity {
 		//#debug
 		System.out.println("onStop().");
 		//Debug.stopMethodTracing();
-		AndroidDisplay display = AndroidDisplay.getDisplay(this);
-		display.shutdown();
-		if ( ! this.shuttingDown) {
-			this.shuttingDown = true;
-			try {
-				destroyApp(true);
-			} catch (MIDletStateChangeException e) {
-				//
-			}
-		}
+//		AndroidDisplay display = AndroidDisplay.getDisplay(this);
+//		display.shutdown();
+//		if ( ! this.shuttingDown) {
+//			this.shuttingDown = true;
+//			try {
+//				destroyApp(true);
+//			} catch (MIDletStateChangeException e) {
+//				//
+//			}
+//		}
+		pauseApp();
 		super.onStop();
 	}
 
@@ -273,6 +268,12 @@ public abstract class MIDlet extends Activity {
 		super.onDestroy();
 		//TODO: Use listener pattern to register and unregister Lifecycle listeners.
 //		deregisterSqlDao();
+		try {
+			destroyApp(true);
+		} catch (MIDletStateChangeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	// TODO:
