@@ -1057,7 +1057,6 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 		}
 	}
 
-	// TODO: Not needed anymore as the lifecycle is now more android like. Remove this one and the stuff in polish.ui.Display.
 	public void shutdown() {
 		if(this.currentPolishCanvas != null) {
 			this.currentPolishCanvas._hideNotify();

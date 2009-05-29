@@ -241,16 +241,6 @@ public abstract class MIDlet extends Activity {
 		//#debug
 		System.out.println("onStop().");
 		//Debug.stopMethodTracing();
-//		AndroidDisplay display = AndroidDisplay.getDisplay(this);
-//		display.shutdown();
-//		if ( ! this.shuttingDown) {
-//			this.shuttingDown = true;
-//			try {
-//				destroyApp(true);
-//			} catch (MIDletStateChangeException e) {
-//				//
-//			}
-//		}
 		pauseApp();
 		super.onStop();
 	}
@@ -268,11 +258,15 @@ public abstract class MIDlet extends Activity {
 		super.onDestroy();
 		//TODO: Use listener pattern to register and unregister Lifecycle listeners.
 //		deregisterSqlDao();
-		try {
-			destroyApp(true);
-		} catch (MIDletStateChangeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		AndroidDisplay display = AndroidDisplay.getDisplay(this);
+		display.shutdown();
+		if ( ! this.shuttingDown) {
+			this.shuttingDown = true;
+			try {
+				destroyApp(true);
+			} catch (MIDletStateChangeException e) {
+				//
+			}
 		}
 	}
 
