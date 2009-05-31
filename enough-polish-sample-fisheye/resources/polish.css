@@ -29,45 +29,7 @@ colors {
 }
 
 backgrounds {
-	titleForeground {
-		type: polygon;
-		points: 10,50 50,10 90,50 50,90;
-		color: #00f;
-		scale-mode: proportional;
-		anchor: right | vcenter;
-		/*
-		type: partial-gradient;
-		top-color: white;
-		bottom-color: blue;
-		start: 0%;
-		end: 30%;
-		*/
-		/*
-		type: partial;
-		start: 0%;
-		end: 40%;
-		color: #0f0;
-		*/
-	}
-	titleBackground {
-		type: combined;
-		foreground: titlePolygonLeft;
-		background: titleGradient;
-		/*
-		type: partial;
-		start: 40%;
-		end: 100%;
-		color: blue;
-		*/
-	}
-	
-	titlePolygonLeft {
-		type: polygon;
-		points: 10,50 50,10 90,50 50,90;
-		color: #00f;
-		scale-mode: proportional;
-		anchor: left | vcenter;
-	}
+
 	titleGradient {
 		type: vertical-gradient;
 		top-color: white;
@@ -81,6 +43,20 @@ backgrounds {
 		reference-height: 100;
 		scale-mode: scale;
 		color: maskColor;
+	}
+	
+	alertTop {
+		type: round-rect;
+		color: #fff;
+	}
+	
+	alertBg {
+		type: round-rect;
+		color: #a333;
+	}
+	
+	alertOverlay {
+		color: #9fff;
 	}
 }
 
@@ -101,11 +77,7 @@ title {
 	background-color: bgColor;
 	*/
 	
-	background {
-		type: combined;
-		foreground: titleForeground;
-		background: titleBackground;
-	}
+	background: titleGradient;
 }
 
 /**
@@ -155,6 +127,7 @@ focused {
 	fisheyeview-scale: 60%;
 	fisheyeview-scale-end: 20%;
 	fisheyeview-remove-text: true;		
+	view-type: horizontal-gray-out;
 	*/
 	view-type: fisheye;
 	fisheyeview-scale-start: 70%;
@@ -196,20 +169,36 @@ focused {
 
 
 
-.messageAlert extends .mainScreen {
-	padding: 5;
-	padding-left: 15;
-	padding-right: 15;
+.messageAlert {
+	padding: 20px;
+	padding-top: 1px;
 	view-type: none;
-	layout: horizontal-shrink | vertical-shrink | horizontal-center | bottom;
-	background-type: simple;
-	background-color: argb( 150, 255, 255, 255 ); /*translucentBgColor; */
+	layout: horizontal-shrink | vertical-shrink | horizontal-center | vertical-center;
+	background {
+		type: layer;
+		layers: alertTop, alertBg;
+		margins: 10px, 0px;
+	}
 	repaint-previous-screen: true;
+	overlay-background: alertOverlay;
+	title-style: messageAlertTitle;
+	menubar-style: messageAlertMenuBar;
 	//#if polish.midp2
 		screen-change-animation: fade;
 	//#else
 		screen-change-animation: right;
 	//#endif
+}
+
+.messageAlertTitle {
+	padding-top: 20px;
+	font-color: #333;
+	font-style: bold;
+	font-size: normal;
+}
+
+.messageAlertMenuBar {
+	background-color: #333;
 }
 
 alertcontent {
@@ -243,21 +232,12 @@ menubar {
 	margin: 0;
 	padding-top: 3;
 	padding: 2;
-		/*
 	background {
 		type: vertical-gradient;
 		top-color: blue;
 		bottom-color: #fff;
 		start: 10%;
 		end: 100%;
-	}
-		*/
-	background {
-		type: mask;
-		mask: maskBackground;
-		mask-color: maskColor;
-		background: titleGradient;
-		opacity: 150;
 	}
 }
 
@@ -267,7 +247,6 @@ menubar {
 leftcommand
 {
 	margin: 0;
-    margin-horizontal: 10;
     //#if polish.key.MiddleSoftKey:defined or polish.MenuBar.useMiddleCommand
     	/* the middle command is used, so lower the left and right commands relatively */
 		padding-top: 7;

@@ -69,7 +69,6 @@
 			-->
 			<sources>
 				<source dir="source/src" />
-				<source dir="../enough-polish-j2me-incubator/source/src" />
 			</sources>
 			<!-- midlets definition -->
 			<midlet class="de.enough.polish.example.MenuMidlet" name="FishEye"/>
