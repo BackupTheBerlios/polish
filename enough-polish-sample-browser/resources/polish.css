@@ -43,9 +43,35 @@ backgrounds {
 		type: round-rect;
 		color: #ccc;
 	}
+	gradientTop {
+		type: partial-gradient;
+		start: 0%;
+		end: 10%;
+		top-color: rgb(132,143,96);
+		bottom-color: #ccc;
+	}
+	gradientBottom {
+		type: partial-gradient;
+		start: 90%;
+		end: 100%;
+		top-color: #ccc;
+		bottom-color: rgb(132,143,96);
+	}
 }
 
 /*************   Browser specific styles - the outcommented styles just replicate the default behavior  *************/
+
+.browserScreen {
+	padding: 0;
+	padding-left: 5;
+	padding-right: 5;
+	background-color: #ccc;
+	background-top: title;
+	background-bottom: menubar;
+	scroll-up-background: gradientTop;
+	scroll-down-background: gradientBottom;
+	layout: horizontal-expand | horizontal-center | top;
+}
 
 .illustrate {
 	always-include: true; /* include this style even though it is not referenced in the source code, but only within HTML pages */
@@ -94,15 +120,6 @@ backgrounds {
 	font-size: small;
 }
 
-.browserScreen {
-	padding: 0;
-	padding-left: 5;
-	padding-right: 5;
-	background {
-		color: white;
-	}
-	layout: horizontal-expand | horizontal-center | top;
-}
  
 .browserChart {
 	background-color: white;
@@ -139,6 +156,16 @@ backgrounds {
 .browserChoiceGroupMultiple {
 	label-style: choiceGroupLabel;
 }
+
+.browserChoiceGroupPopup {
+	label-style: choiceGroupLabel;
+	background-color: white;
+}
+
+.browserChoiceGroupPopup:hover {
+	background-color: silver;
+}
+
 
 .browserCheckBox {
 	padding-horizontal: 6px;
@@ -311,11 +338,8 @@ focused {
   * for all screen-titles.
   */
 title {
-	padding: 2;
-	margin-top: 0;
-	margin-bottom: 5;
-	margin-left: 0;
-	margin-right: 0;
+	padding: 2px;
+	padding-bottom: 4px;
 	font-face: proportional;
 	font-size: large;
 	font-style: bold;

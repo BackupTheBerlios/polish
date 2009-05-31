@@ -179,8 +179,8 @@
 			<!-- debug settings: only include debug setting when the test-property is true -->
 			<debug if="test or log" showLogOnError="true" verbose="true" level="error">
 				<filter pattern="de.enough.polish.ui.*" level="warn" />
-				<filter class="de.enough.polish.ui.ChoiceGroup" level="debug" />
 				<!--
+				<filter class="de.enough.polish.ui.ChoiceGroup" level="debug" />
 				<filter package="de.enough.polish.sample.browser" level="debug" />
 				<filter class="de.enough.polish.browser.Browser" level="debug" />
 				<filter class="de.enough.polish.browser.html.HtmlBrowser" level="debug" />
