@@ -225,7 +225,7 @@ implements DynamicTestView
 	        /* send */
 	        /*
 	        try{
-	        	SysInfoServer remoteServer = (SysInfoServer) RemoteClient.open("de.enough.sysinfo.SysInfoServer","http://enough.dyndns.org:8180/sysinfoserver");
+	        	SysInfoServer remoteServer = (SysInfoServer) RemoteClient.open("de.enough.sysinfo.SysInfoServer","http://sysinfo.j2mepolish.org/sysinfoserver");
 	        	Hashtable infos = new Hashtable();
 	        	Info[] infoArray = getInfos();
 	        	int infoSize = getInfos().length;

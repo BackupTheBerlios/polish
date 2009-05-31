@@ -296,7 +296,7 @@ public class MIDPSysInfoMIDlet extends MIDlet implements CommandListener {
 					//#if localbuild==true
 					this.remoteServer = (SysInfoServer) RemoteClient.open("de.enough.sysinfo.SysInfoServer","http://localhost:8080/sysinfoserver");
 					//#elif remotebuild==true
-					this.remoteServer = (SysInfoServer) RemoteClient.open("de.enough.sysinfo.SysInfoServer","http://enough.dyndns.org:8180/sysinfoserver");
+					this.remoteServer = (SysInfoServer) RemoteClient.open("de.enough.sysinfo.SysInfoServer","http://sysinfo.j2mepolish.org/sysinfoserver");
 					//#endif
 				} catch (Exception e) {
 					//#debug error
