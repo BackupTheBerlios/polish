@@ -30,17 +30,14 @@ import javax.microedition.lcdui.Form;
 
 import de.enough.sysinfo.MIDPSysInfoMIDlet;
 
-
 /**
- * <p></p>
+ * Tests MIDP platform request.
  *
  * <p>Copyright Enough Software 2008</p>
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class PlatformRequestViewer extends Form
 {
-	
-	
 	private final MIDPSysInfoMIDlet sysInfoMIDlet;
 	
 	public PlatformRequestViewer(MIDPSysInfoMIDlet sysInfoMIDlet) {
@@ -65,6 +62,4 @@ public class PlatformRequestViewer extends Form
 			append("tel platformRequest results in " + e.toString() );
 		}
 	}
- 	
-
 }
