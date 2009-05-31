@@ -390,6 +390,7 @@ public abstract class Item implements UiElement, Animatable
 {
 //#if polish.handleEvents || polish.css.animations
 	//#define tmp.handleEvents
+	private boolean hasBeenShownBefore;
 //#endif
 	
 	/**
@@ -3821,6 +3822,10 @@ public abstract class Item implements UiElement, Animatable
 		//#endif
 		//#if tmp.handleEvents
 			//System.out.println("triggering event 'show' for " + this + " with style " + (this.style != null ? this.style.name : "<null>") + ", animations=" + (this.style != null ? "" + this.style.getAnimations() : "<null>"));
+			if (!this.hasBeenShownBefore) {
+				EventManager.fireEvent( EventManager.EVENT_SHOW_FIRST_TIME,  this, null );
+				this.hasBeenShownBefore = true;
+			}
 			EventManager.fireEvent( EventManager.EVENT_SHOW,  this, null );
 		//#endif
 	}

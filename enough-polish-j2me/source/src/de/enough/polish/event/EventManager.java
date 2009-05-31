@@ -51,6 +51,8 @@ public class EventManager {
 	public static final String EVENT_DEFOCUS = "defocus";
 	/** name of the show notify event **/
 	public static final String EVENT_SHOW = "show";
+	/** name of the show notify event when a UI element is shown for the first time **/
+	public static final String EVENT_SHOW_FIRST_TIME = "show-first";
 	/** name of the hide notify event **/
 	public static final String EVENT_HIDE = "hide";
 	/** name of the event when a value of an item is changed **/

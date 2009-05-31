@@ -89,9 +89,6 @@ public abstract class Screen
 //#if polish.Bugs.needsNokiaUiForSystemAlerts && !polish.SystemAlertNotUsed
 	//#define tmp.needsNokiaUiForSystemAlerts
 //#endif
-//#if polish.handleEvents || polish.css.animations
-	//#define tmp.handleEvents
-//#endif
 //#if polish.hasCommandKeyEvents || (polish.key.LeftSoftKey:defined && polish.key.RightSoftKey:defined)
 	//#define tmp.hasCommandKeyEvents
 //#endif
@@ -112,6 +109,10 @@ implements UiElement, Animatable
 	private final static int POSITION_TOP = 0;
 	private final static int POSITION_LEFT = 1;
 	
+	//#if polish.handleEvents || polish.css.animations
+		//#define tmp.handleEvents
+		private boolean hasBeenShownBefore;
+	//#endif
 	
 	//#if tmp.fullScreen || polish.midp1 || (polish.usePolishTitle == true)
 		//#define tmp.usingTitle
@@ -1240,6 +1241,10 @@ implements UiElement, Animatable
 			//#endif
 			
 			//#if tmp.handleEvents
+				if (!this.hasBeenShownBefore) {
+					EventManager.fireEvent( EventManager.EVENT_SHOW_FIRST_TIME,  this, null );
+					this.hasBeenShownBefore = true;
+				}
 				EventManager.fireEvent( EventManager.EVENT_SHOW,  this, null );
 			//#endif
 			// inform all root items that they belong to this screen
@@ -3211,6 +3216,9 @@ implements UiElement, Animatable
 										return;
 									} else {
 										gameAction = Canvas.FIRE;
+										//#if polish.Bugs.SoftKeyMappedToFire
+											keyCode = 0;
+										//#endif
 									}
 								}
 							} else if ( isSoftKeyRight(keyCode, gameAction)) {
@@ -3405,6 +3413,9 @@ implements UiElement, Animatable
 							if (this.menuOpened  && this.menuContainer != null ) {
 								if ( isSoftKeyLeft(keyCode, gameAction)) {
 									gameAction = FIRE;
+									//#if polish.Bugs.SoftKeyMappedToFire
+										keyCode = 0;
+									//#endif
 								}
 								processed = this.menuContainer.handleKeyReleased(keyCode, gameAction);
 								if (processed) {
