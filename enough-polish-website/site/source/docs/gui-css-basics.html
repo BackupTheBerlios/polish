@@ -5,38 +5,48 @@
 <%include start.txt %>
 	
 	<h1 id="top">CSS Syntax</h1>
-	<p>Following rules do apply for CSS styles:</p>
+	
+	<ul class="relatedtechnologies">
+	<li class="relatedtechnologiesheader">Related Topics:</li>
+	<li><a href="../lush/index.html">Lush (UI)</a></li>
+	<li><a href="gui-visualguide.html">Visual Guide</a></li>
+	</ul>
+	
+	<%index %>
+	
+	<p><br />J2ME Polish uses the same syntax for CSS declarations as web browsers.</p>
 	<h2>Structure of a CSS Declaration</h2>
-	<p>
 <pre>
 .myStyle   {   font-color: black;   }
 
 SELECTOR/      ATTRIBUTE   VALUE
 NAME
-</pre></p>
+</pre>
 	<p>
 Every style starts with the selector followed by an opening curved parenthesis, a number of attribute-value pairs and a closing  curved parenthesis.
 The selector can consist of several item-names and contain an &quot;extends&quot; clause.
 Each attribute-value pair needs to be finished by a semicolon.
 </p>
-<h2>Naming</h2>
+<h2 id="css-naming">Naming</h2>
 <p>
-Styles can use any names, as long as they consist of alphanumeric and underline (_) characters only. Names are not case-sensitive. Static styles need to start with a dot. Static styles must not use the names of dynamic or predefined styles. All Java keywords like &quot;class&quot;, &quot;int&quot; or &quot;boolean&quot; etcetera are not allowed as style names.
+Styles can use any names, as long as they consist of alphanumeric and underline (_) characters only. Names are not case-sensitive. 
+Static styles - styles that are referenced with the <code>#style</code> preprocessing directive - need to start with a dot. Static styles must not use the names of dynamic or predefined styles. All Java keywords like &quot;class&quot;, &quot;int&quot; or &quot;boolean&quot; etcetera are not allowed as style names.
 </p>
-<h2>Grouping of Attributes</h2>
+<h2 id ="css-grouping">Grouping of Attributes</h2>
 <p>Attributes can be grouped for easier handling:
+</p>
 <pre>
-.mainScreen {
+.mainItem {
 	font-color: black;
 	font-size: medium;
 	font-style: italic;
 	font-face: system;
 }
 </pre>
-</p><p>
+<p>
 The above code is equivalent with the following:
 <pre>
-.mainScreen {
+.mainItem {
 	font {
 		color: black;
 		size: medium;
@@ -48,26 +58,361 @@ The above code is equivalent with the following:
 </p><p>
 The grouping makes the declarations better readable for humans.
 </p>
-<h2>Referring to Other Styles</h2>
+<h2 id="css-referrals">Referring to Other Styles</h2>
 <p>
-When another style is referred, the dots of static styles do not need to be written. Styles can be referred in attributes or after the extends keyword in the selector of a style.
+When another style is referred, the dots of static styles do not need to be written. Styles can be referred in attributes or after the <code>extends</code> keyword in the selector of a style.
 </p>
-<h2>Comments</h2>
+<pre>
+.mainItem {
+	font-color: black;
+	font-size: medium;
+}
+
+.menuItem extends mainItem {
+	font-color: #333;
+}
+</pre>
+<h2 id="css-comments">Comments</h2>
 <p>
 Comments can be inserted at any place and start with &quot;/*&quot; and stop with &quot;*/&quot;. Everything between these boundaries is ignored:
+</p>
 <pre>
-/* this style designs the main screen: */
-.mainScreen {
+/**
+  * this style designs the items in the main screen, 
+  * use //#style mainItem to bind this style to a UI element in your Java code: 
+  */
+.mainItem {
 	/* defining the color of a font: */
 	font-color: black;
 	/* sizes are small, medium and large: */
 	font-size: medium;
-	/* styles are plain, bold, italic or underlined: */
+	/* styles are plain, bold, italic or underlined, combine them using | or &amp; : */
 	font-style: italic;
 	/* the face can either be system, proportional or monospace: */
 	font-face: system;
 }	
 </pre>
+
+<h2 id="css-boxmodel">CSS Box Model</h2>
+<p>
+J2ME Polish supports the same box model as HTML browsers:
+<br />
+<img src="<%= basedir%>images/cssboxmodel.gif" width="433" height="317" alt="CSS box model" />
+<br />
+The <code>margin</code> describes the gap to other UI elements. The <code>padding</code> describes the gap between the border of the item and the actual content of that item. 
+The <code>margin</code> defaults to 0&nbsp;pixels, whereas any <code>padding</code> defaults to 1&nbsp;pixel. 
+Next to the left, right, top and bottom padding, J2ME Polish also knows the vertical and the horizontal paddings. 
+These define the gaps between different content sections. The gap between the label of an item and the actual content is defined by the horizontal padding. 
+Another example is an icon (IconCustomItem/IconItem), which consists of an image and a text. Depending on the align of the image, either the vertical or the horizontal padding 
+fills the space between the icon-image and the icon-text.
+In the following example, the top, right and bottom margin is 5&nbsp;pixels, whereas the left margin is 10&nbsp;pixels:
+<pre>
+.myStyle {
+	margin: 5px;
+	margin-left: 10px;
+	font-color: black;
+}
+</pre>
 </p>
+<p>
+Percentage values can also be used. Like in the standard CSS 2.1, percentage values are calculated relative to the available width of the corresponding UI element, 
+even for top and bottom values.
+</p>
+<pre>
+.myStyle {
+	padding: 2.8%;
+	padding-left: 2%;
+	padding-right: 2%;
+	padding-vertical: 1%;
+	font-color: black;
+}
+</pre>
+<p>
+</p>
+
+<h2 id="polishcss">Structure of polish.css</h2>
+	<p>
+	You specify the design your application in the <i>polish.css</i> file, which by default is located in <i>resources/polish.css</i>. 
+	This file can contain different sections:
+	</p>
+<ul>
+ <li><code>colors</code>: The colors section contains the definition of colors.</li>
+ <li><code>fonts</code>: The fonts section contains font definitions.</li>
+ <li><code>backgrounds</code>: The backgrounds section contains background definitions that are referenced in other styles.</li>
+ <li><code>borders</code>: The borders section contains definition of borders.</li>
+ <li>rest: The rest of polish.css contains the actual style definitions.</li>
+</ul>
+<p>
+The defined colors, fonts, backgrounds and borders can be referenced in the actual style definitions. This makes changes very easy, since you need to change the value only in one position.
+</p>
+
+<h2 id="layout">The Layout Attribute</h2>
+<p>
+The <code>layout</code> attribute defines how the affected item should be aligned and laid out. 
+Possible layout values are for example left, right or center. All layout values of the MIDP 2.0 standard can be used:
+</p>
+	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>Layout&nbsp;&nbsp;</th><th>Alternative-Names&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><td>left</td>
+	 <td>-</td>
+	 <td>The affected items should be left-aligned. </td>
+	</tr>
+	<tr><td>right</td>
+	 <td>-</td>
+	 <td>The affected items should be right-aligned. </td>
+	</tr>
+	<tr><td>center</td>
+	 <td>horizontal-center, hcenter</td>
+	 <td>The affected items should be centered horizontally.</td>
+	</tr>
+	<tr><td>expand</td>
+	 <td>horizontal-expand, hexpand</td>
+	 <td>The affected items should use the whole available width (i.e. should fill the complete row).</td>
+	</tr>
+	<tr><td>shrink</td>
+	 <td>horizontal-shrink, hshrink</td>
+	 <td>The affected items should use the minimum width possible.</td>
+	</tr>
+	<tr><td>top</td>
+	 <td>-</td>
+	 <td>The affected items should be top-aligned. </td>
+	</tr>
+	<tr><td>bottom</td>
+	 <td>-</td>
+	 <td>The affected items should be bottom-aligned. </td>
+	</tr>
+	<tr><td>vcenter</td>
+	 <td>vertical-center</td>
+	 <td>The affected items should be centered vertically.</td>
+	</tr>
+	<tr><td>vexpand</td>
+	 <td>vertical-expand</td>
+	 <td>The affected items should use the whole available height (i.e. should fill the complete column).</td>
+	</tr>
+	<tr><td>vshrink</td>
+	 <td>vertical-shrink</td>
+	 <td>The affected items should use the minimum height possible.</td>
+	</tr>
+	<tr><td>newline-after</td>
+	 <td>-</td>
+	 <td>Items following an item with a newline-after layout should be placed on the next line. This can be used for labels or for item within a <code>midp2</code> <code>view-type</code>, for example.</td>
+	</tr>
+	<tr><td>newline-before</td>
+	 <td>-</td>
+	 <td>The affected items should always start on a new line (when there are any items in front of it). This can be used for labels or for item within a <code>midp2</code> <code>view-type</code>, for example.</td>
+	</tr>
+	</table>
+<p>
+Layout values can also be combined, using either the &quot;||&quot;, &quot;|&quot;, &quot;or&quot; or &quot;and&quot; operators. All operators result in the same combination. An item can be centered and using the whole available width with following example:
+</p>
+<pre>
+.myStyle {
+	layout: center | expand;
+}
+</pre>
+
+<h2 id="colors">Colors</h2>
+<p>
+Colors can be defined in the colors section and in each attribute which ends on &quot;-color&quot;, e.g. &quot;font-color&quot;, &quot;border-color&quot; etc.
+</p>
+<h3>Predefined Colors</h3>
+<p>
+The 16 standard windows colors are predefined:
+</p>
+<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>Name&nbsp;&nbsp;</th><th>Hex-Value&nbsp;&nbsp;</th><th>Color</th><th>Name&nbsp;&nbsp;</th><th>Hex-Value&nbsp;&nbsp;</th><th>Color</th></tr>
+	<tr><td>white</td><td>#FFFFFF</td><td bgcolor="white">&nbsp;</td>
+	<td>yellow</td><td>#FFFF00</td><td bgcolor="yellow">&nbsp;</td></tr>
+	<tr><td>black</td><td>#000000</td><td bgcolor="black">&nbsp;</td>
+	<td>maroon</td><td>#800000</td><td bgcolor="maroon">&nbsp;</td></tr>
+	<tr><td>red</td><td>#FF0000</td><td bgcolor="red">&nbsp;</td>
+	<td>purple</td><td>#800080</td><td bgcolor="purple">&nbsp;</td></tr>
+	<tr><td>lime</td><td>#00FF00</td><td bgcolor="lime">&nbsp;</td>
+	<td>fuchsia</td><td>#FF00FF</td><td bgcolor="fuchsia">&nbsp;</td></tr>
+	<tr><td>blue</td><td>#0000FF</td><td bgcolor="blue">&nbsp;</td>
+	<td>olive</td><td>#808000</td><td bgcolor="olive">&nbsp;</td></tr>
+	<tr><td>green</td><td>#008000</td><td bgcolor="green">&nbsp;</td>
+	<td>navy</td><td>#000080</td><td bgcolor="navy">&nbsp;</td></tr>
+	<tr><td>silver</td><td>#C0C0C0</td><td bgcolor="silver">&nbsp;</td>
+	<td>teal</td><td>#008080</td><td bgcolor="teal">&nbsp;</td></tr>
+	<tr><td>gray</td><td>#808080</td><td bgcolor="gray">&nbsp;</td>
+	<td>aqua</td><td>#00FFFF</td><td bgcolor="aqua">&nbsp;</td></tr>
+</table>
+<p>
+Another predefined color is <code>transparent</code>, which results in an transparent area. <code>transparent</code> is only supported by some UI elements like a <a href="gui-background-image.html">image background</a>. 
+</p>
+<h3>The colors Section</h3>
+<p>
+The colors section of the <i>polish.css</i> file can contain colors, which can be referenced in the styles, fonts, border and background sections. You can even overwrite the predefined colors to confuse other designers!
+<pre>
+colors {
+	bgColor: #50C7C7;
+	bgColorFocused: #50D9D9;
+	textColor: #7F7F7F;
+}
+</pre>
+</p>
+<h3>How to Define Colors</h3>
+<p>
+A color can be defined in many different ways:
+<pre>
+.myStyle {
+	font-color: white; 	/* the name of the color */
+	border-color: #80FF80; 	/* a rgb hex value */
+	start-color: #F00; 	/* a short rgb-hex-value - this is red */
+	menu-color: #7F80FF80; 	/* an alpha-rgb hex value */
+	background-color: rgb( 255, 50, 128 );  /* a rrr,ggg,bbb value */
+	fill-color: rgb( 100%, 30%, 50% ); 	    /* a rgb-value with percentage */
+	label-color: argb( 128, 255, 50, 128 ); /* a aaa, rrr, ggg, bbb value */
+}
+</pre></p><p>
+Color names refer to one of the predefined colors or a color which has been defined in the colors-section:
+<pre>
+color: black; or 
+color: darkBackgroundColor;
+</pre>
+</p><p>
+The hex-value defines a color with two hexadecimal digits for each color (RRGGBB). Additionally the alpha blending-component can be added (AARRGGBB).  
+<pre>
+color: #FF000;     /*  defines red.                    */
+color: #7FFF0000;  /*  defines a half transparent red. */
+</pre></p>
+</p><p>
+The shortened hex-value defines a color by a RGB-value in hexadecimal. Every digit will be doubled to retrieve the full hex-value: 
+<pre>
+color: #F00; is equivalent with color: #FF0000; 
+color: #0D2; is equivalent with color: #00DD22;  /* and so on. */
+</pre>
+</p><p>
+A rgb-value starts with &quot;rgb(&quot; and then lists the decimal value of each color from 0 up to 255: 
+<pre>
+color: rgb( 255, 0, 0 );  /*  defines red.            */
+color: rbg( 0, 0, 255);   /*  defines blue and so on.  */
+</pre>
+</p><p>
+Alternatively percentage values can be used for rgb-colors:
+<pre>
+color: rgb( 100%, 0%, 0% );         /* defines red as well as */
+color: rgb( 100.00%, 0.00%, 0.00% );
+</pre></p><p>
+Alpha-RGB colors can be defined with the argb()-construct:
+<pre>
+color: argb( 128, 255, 0, 0 ); 
+</pre>
+</p><p>
+defines a half transparent red. For the argb-construct percentage values can be used as well.
+</p>
+
+<h3>Alpha Blending</h3>
+<p>
+Colors with alpha blending can be defined with hexadecimal or argb-definitions (see above). An alpha value of 0 results in fully transparent pixels, 
+whereas the value FF (or 255 or 100%) results in fully opaque pixels. Some devices support values between 0 and FF, which results in 
+translucent colors. Colors with a specified alpha channel can only be used by specific GUI items. Please refer to the <a href="gui-visualguide.html">documentation</a> of the specific design attributes. 
+</p>
+
+<h2 id="fonts">Text Rendering</h2>
+<p>
+The base class for rendering texts in J2ME Polish is a <code>StringItem</code>, please refer to the <a href="gui-item-strigitem.html">String Item documentation</a> for all design options.
+</p>
+<p>
+The most important settings are:
+</p>
+	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>Attribute&nbsp;&nbsp;</th><th>Possible Values&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><td>font-color</td>
+	 <td>Reference to a color or direct declaration of the color.</td>
+	 <td>Depending on the number of colors the device supports, colors can look differently on the actual device.</td>
+	</tr>
+	<tr><td>font-face</td>
+	 <td>system (default, normal)</td>
+	 <td>The default font-face which is used when the font-face or label-face attribute is not set.</td>
+	</tr>
+	<tr><td></td>
+	 <td>proportional</td>
+	 <td>A proportional face. This is on some devices actually the same font-face as the system-font.</td>
+	</tr>
+	<tr><td></td>
+	 <td>monospace</td>
+	 <td>A font-face in which each character has the same width.</td>
+	</tr>
+	<tr><td>font-size</td>
+	 <td>small</td>
+	 <td>The smallest possible font.</td>
+	</tr>
+	<tr><td></td>
+	 <td>medium (default, normal)</td>
+	 <td>The default size for texts.</td>
+	</tr>
+	<tr><td></td>
+	 <td>large (big)</td>
+	 <td>The largest possible font size.</td>
+	</tr>
+	<tr><td>font-style</td>
+	 <td>plain (default, normal)</td>
+	 <td>The default style.</td>
+	</tr>
+	<tr><td></td>
+	 <td>bold</td>
+	 <td>A bold thick style</td>
+	</tr>
+	<tr><td></td>
+	 <td>italic (cursive)</td>
+	 <td>A cursive style.</td>
+	</tr>
+	<tr><td></td>
+	 <td>underlined</td>
+	 <td>Not really a style, just an underlined text.</td>
+	</tr>
+	<tr><td>font-bitmap</td>
+	 <td>The name of the bitmap font.</td>
+	 <td>With the <code>bitmap</code> attribute a bitmap font can be used instead of the system, proportional and monospace fonts. Please note that bitmap fonts cannot be changed in neither size or style. You can only change the color of a bitmap font when it has been saved with a black color.</td>
+	</tr>
+	<tr><td>text-effect</td>
+	 <td>The name of effect for the text.</td>
+	 <td>You can apply a large number of <a href="gui-visualguide-texteffects.html">text-effects</a>.</td>
+	</tr>
+
+	</table>
+
+<h2 id="sample">Sample polish.css</h2>
+<p>
+Let's have a look at a full example:
+</p>
+<pre>
+colors {
+	fontColor: #333;
+	fontColorFocused: #ddd; 
+}
+
+backgrounds {
+	screenBg {
+		type: vertical-gradient;
+		top-color: #fff;
+		bottom-color: #ccc;
+	}
+}
+
+.mainScreen {
+	background: screenBg;
+}
+
+.mainItem {
+	font-color: fontColor;
+	font-style: bold;
+	layout: expand;
+	padding-left: 10%;
+}
+.mainItem:hover {
+	font-color: fontColorFocused;
+	background-color: #333;
+}
+
+title {
+	background-color: #333;
+	font-color: fontColorFocused;
+	layout: expand | center;  
+}
+</pre>
+
 
 <%include end.txt %>

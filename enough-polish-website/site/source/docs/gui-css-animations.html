@@ -1,10 +1,12 @@
 <%define inDocumentationSection %>
+<%define inDocumentationSection.gui %>
 <%define inDocumentationSection.css %>
 <%set title = J2ME Polish: Documentation: CSS Animations %>
 <%set basedir = ../ %>
 <%include start_flash.txt %>
 	
 	<h1 id="top">CSS Animations</h1>
+	<%index %>
 	<p>With J2ME Polish you can animate the user interface by animating CSS attributes.
 	<br />Without further ado let's have a look at an example that shows a form with 4 StringItems and 1 ImageItem:
 		<div id="id_animations_intro">
@@ -43,7 +45,7 @@ menuitem:hover {
 	<p>You can animate any color, integer and percentage CSS attributes. Each animations supports following attributes:
 	</p>
 	<ul>
-		<li><b>on</b>: name of the event that triggers the animation like <code>focus</code>, <code>defocus</code>, <code>show</code> or your own application specific event names.</li>
+		<li><b>on</b>: name of the event that triggers the animation like <code>focus</code> (gains focus), <code>defocus</code> (loses focus), <code>show</code> (element is shown), <code>show-first</code> (shown for the very first time), <code>hide</code> (element is hidden) or your own application specific event names.</li>
 		<li><b>range</b>: the start and end point of the animation separated by two dots, e.g. <code>blue..red</code> or <code>0%..50%</code>.
 		The allowed values depend on the CSS attribute in question.
 		You can separate several animation phases by using commas, e.g.
@@ -64,7 +66,7 @@ font-color-animation {
 		<code>delay: 2s, 200ms;</code>. By default there is no <code>delay</code> (<code>0ms</code>).
 		</li>
 		<li><b>repeat</b>:
-		The number of times this animation should be repeated. Use once if it only should run at the first occurrence of the event. 
+		The number of times this animation should be repeated. Use <code>once</code> if it only should run at the first occurrence of the event. 
 		Use <code>always</code> to run this animation until the affected UI element receives a new style. 
 		Use a numeric value <code>n</code> to repeat the animation n times.The default value for <code>repeat</code> is 0, meaning
 		that the animation is processed once and not repeated afterwards.
@@ -416,6 +418,78 @@ private void showIntro() {
 				swfobject.embedSWF("<%= basedir%>scripts/videoplayer.swf", "id_animations_intro", "240", "240", "9.0.0", false, flashvars, params, attributes);
 		</script>
 	</p>
+	
+	<h2 id="simple">Simple CSS Animations</h2>
+	<p>
+Let's have a look at a simple example:
+</p>
+<pre>
+.mainCommand {
+	margin-top: 2px;
+	padding: 5px;
+	padding-left: 20%;
+	font-color: #333;
+	font-style: bold;
+	font-size: medium;
+	layout: expand;
+}
+
+.mainCommand:hover {
+	font-color: #ccc;
+	background-color: #ddd;
+	<b>background-color-animation {
+		on: focus;
+		range: #ddd..#333;
+		duration: 1s;
+	} </b>
+}</pre>
+	
+<p>
+The above example animates the background color of elements from a light to very dark gray (<code>range: #ddd..#eee;</code>) when they receive the 
+focus (<code>on: focus;</code>) in 1 second (<code>duration: 1s;</code>):
+<br />
+<object width="425" height="344"><param name="movie" value="http://www.youtube-nocookie.com/v/QazhFHOV-g4&hl=en&fs=1&rel=0"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube-nocookie.com/v/QazhFHOV-g4&hl=en&fs=1&rel=0" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="425" height="344"></embed></object>
+</p>
+<p>
+You can also also animate normal numerical values, in the following example we animate the horizontal position of all elements. This animation is triggered when
+the elements are shown for the first time (<code>on: show-first</code>). We delay the 'show' event that is triggered for each element by 200ms by using <code>show-delay: 200ms;</code> in the corresponding screen's style. 
+This delays the start of the animations, so that not all elements are moved at the same time. 
+</p>
+<pre>
+.mainScreen {
+	background-color: #ddd;
+	layout: vertical-center;
+	<b>show-delay: 200ms;</b>
+}
+
+.mainCommand {
+	margin-top: 2px;
+	padding: 5px;
+	padding-left: 20%;
+	font-color: #333;
+	font-style: bold;
+	font-size: medium;
+	layout: expand;
+	<b>x-adjust: -100%;
+	x-adjust-animation {
+		on: show-first;
+		range: -100%..0%;
+	}</b>
+}
+
+.mainCommand:hover {
+	font-color: #ccc;
+	background-color: #ddd;
+	background-color-animation {
+		on: focus;
+		range: #ddd..#333;
+		duration: 1s;
+	}
+}
+</pre>
+<p>
+<object width="425" height="344"><param name="movie" value="http://www.youtube-nocookie.com/v/ZLkW5Ldhow0&hl=en&fs=1&rel=0"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube-nocookie.com/v/ZLkW5Ldhow0&hl=en&fs=1&rel=0" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="425" height="344"></embed></object>
+</p>
 	
 	<h2 id="sample">Sample Application</h2>
 	<p>
