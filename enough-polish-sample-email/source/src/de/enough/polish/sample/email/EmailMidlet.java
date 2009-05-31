@@ -29,6 +29,7 @@ import java.io.IOException;
 
 import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.AlertType;
+import javax.microedition.lcdui.ChoiceGroup;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
@@ -137,9 +138,10 @@ implements CommandListener, ItemStateListener
 		
 		this.display = Display.getDisplay( this );
 		this.display.setCurrent( form );
-		
-//		de.enough.polish.ui.Screen scr = (de.enough.polish.ui.Screen)  form;
-//		scr.setScreenOrientation( 90 );
+		// you need to specify the preprocessing variable polish.Screen.ManualOrientationChange in your build.xml script
+		// for rotating screens:
+		// <variable name="polish.Screen.ManualOrientationChange" value="true" />
+		// UiAccess.setScreenOrientation(90);
 	}
 
 	private void addMessage(TreeItem tree, Item node, String from, String subject, String text ) {
@@ -247,6 +249,9 @@ implements CommandListener, ItemStateListener
 
 	public void itemStateChanged(Item item) {
 		System.out.println("ItemStateChanged " + item);
+		if (item instanceof ChoiceGroup) {
+			try { throw new RuntimeException(); } catch (Exception e) { e.printStackTrace(); }
+		}
 	}
 
 }

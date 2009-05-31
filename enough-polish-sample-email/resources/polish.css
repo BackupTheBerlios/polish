@@ -31,10 +31,16 @@ colors {
 	focusedBorderColor: #444;
 }
 
+backgrounds {
+	inputComplete {
+		type: round-rect;
+		color: silver;
+	}
+}
+
+
 .mailForm {
-	padding: 5;
-	padding-left: 5;
-	padding-right: 5;
+	padding: 5px;
 	background-color: black;
 	layout: horizontal-expand | horizontal-center | top;
 	//#if !polish.useScrollBar
@@ -46,39 +52,6 @@ colors {
 		title-style: .mailFormTitle;
 	//#endif
 	*/
-	
-		 /* 
-	background {
-		type: horizontal-stripes;
-		bottom: menubar;
-		first-top-color: screenColorTop1;
-		first-bottom-color: screenColorBottom1;
-		second-top-color: screenColorTop2;
-		second-bottom-color: screenColorBottom2;
-	}
-		 */
-		/*
-	background {
-		type: gradient;
-		top: title;
-		bottom: menubar;
-		top-color: screenColorTop;
-		bottom-color: screenColorBottom;
-		start: 30%;
-		end: 90%;
-		bottom: menubar;
-	}
-	*/
-	/*
-	background {
-		type: scaling-image;
-		scale-mode: expand;
-		image: url(search.png);
-		anchor: right | bottom;
-		bottom: menubar;
-	}
-	*/
-	
 }
 
 //#if polish.api.mmapi
@@ -234,12 +207,6 @@ info {
 	background-color: argb( 170, 255, 255, 255 );
 }
 
-backgrounds {
-	inputComplete {
-		type: round-rect;
-		color: silver;
-	}
-}
 
 .input {
 	margin: 3;
@@ -252,6 +219,10 @@ backgrounds {
 	predictive-choice-orientation: top;
 	complete-background: inputComplete;
 	complete-background-padding: 3;
+	/*
+	font-bitmap: /arial_12b.bmf;
+	text-wrap: false;
+	*/
 }
 
 .input:hover {
@@ -260,6 +231,10 @@ backgrounds {
 		type: round-rect;
 		color: white;
 	}
+}
+
+.messageInput extends .input {
+	min-height: 20%;
 }
 
 .addressInput {
@@ -386,12 +361,11 @@ focused {
 /*************    Alert             ***************************************************************************************************/
 
 .mailAlert extends .mailForm {
-	title-style: none;
-	margin-right: 10;
-	margin-left: 10;
-	padding-left: 5;
-	padding-right: 5;
-	layout: horizontal-center | bottom | horizontal-shrink | vertical-shrink;
+	margin-right: 5%;
+	margin-left: 5%;
+	padding-left: 1px;
+	padding-right: 1px;
+	layout: horizontal-center | vcenter | horizontal-shrink | vertical-shrink;
 	repaint-previous-screen: true;
 	//#if polish.midp2 || polish.api.nokia-ui
 		border {
@@ -402,15 +376,20 @@ focused {
 			orientation: top-right;
 		}
 	//#endif
+	/*
 	//#if polish.midp2
 		screen-change-animation: fade;
 	//#endif
+	*/
+	screen-change-animation: right;
 	background {
 		type: vertical-gradient;
 		top-color: #222;
+		top-color: red;
 		bottom-color: #888;
 	}
 }
+
 
 alertcontent {
 	font-color: white;
@@ -433,7 +412,7 @@ scrollbar {
   * for all screen-titles.
   */
 title {
-	padding: 2;
+	padding: 2px;
 	font-face: proportional;
 	font-size: large;
 	font-style: bold | italic;
@@ -454,6 +433,13 @@ title {
 	*/
 	text-effect: shadow;
 	text-shadow-color: fontShadowColor;
+}
+
+.titleClock {
+	clock-format: hh:mm;
+	font-size: small;
+	font-color: #222;
+	layout: right | vertical-center;
 }
 
 /*************    Menubar         ***************************************************************************************************/

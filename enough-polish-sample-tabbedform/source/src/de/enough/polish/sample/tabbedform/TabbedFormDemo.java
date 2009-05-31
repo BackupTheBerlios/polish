@@ -93,7 +93,7 @@ implements ScreenStateListener, CommandListener
 		//#style label
 		StringItem label = new StringItem( null, Locale.get("txt.introduction") );
 		form.append( 0, label );
-
+		
 		//#style settingsChoice
 		ChoiceGroup group = new ChoiceGroup( Locale.get("label.setting"), ChoiceGroup.EXCLUSIVE );
 		//#style settingsItem
@@ -104,10 +104,15 @@ implements ScreenStateListener, CommandListener
 		group.append( Locale.get("label.setting.slow"), null);
 		group.setSelectedIndex(0, true);
 		form.append( 1, group );
+//		label = new StringItem( null, "click me", StringItem.BUTTON );
+//		form.append( 1, label );
 		
 		//#style input
 		TextField field = new TextField( Locale.get("label.input"), "\n", 30, TextField.ANY );
 		UiAccess.setInputMode(field, UiAccess.MODE_NATIVE);
+		form.append( 2, field );
+		//#style input
+		field = new TextField( "Nick: ", "", 30, TextField.ANY );
 		form.append( 2, field );
 		
 		form.addCommand( this.exitCmd );

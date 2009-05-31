@@ -108,6 +108,7 @@ implements ItemCommandListener
 		append( this.receiver );
 		//#style addressInput
 		this.sender = new FilteredChoiceGroup( "from: ", "select sender...", Choice.MULTIPLE );
+		//this.sender.setFilterText("");
 		this.sender.addCommand(this.cmdChoose);
 		this.sender.setItemCommandListener( this );
 		for (int i = 0; i < SENDERS.length; i++) {
@@ -129,7 +130,7 @@ implements ItemCommandListener
 		append( this.priority );
 		
 		
-		//#style input, addressInput
+		//#style messageInput, input, addressInput
 		this.text = new TextField( "message: ", "Hello J2ME Polish World!", 255, TextField.ANY );
 		append( this.text );
 	

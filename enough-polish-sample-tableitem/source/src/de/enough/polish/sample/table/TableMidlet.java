@@ -96,19 +96,20 @@ implements CommandListener
 		table.set( 2, 0, "2,0");
 		table.set( 0, 1, "0,1");
 		//#style textinput
-		TextField tf = new TextField("Name: ", null, 30, TextField.ANY);
+		TextField tf = new TextField("Name: ", null, 3000, TextField.ANY);
 		table.set( 1, 1, tf);
 		//#style textinput
 		tf = new TextField("Age: ", "18", 3, TextField.NUMERIC);
-		table.set( 2, 1, tf);
+		table.set( 2, 2, tf);
 		//#style popupChoice
 		ChoiceGroup group = new ChoiceGroup(null, ChoiceGroup.POPUP);
-		for (int i=0; i<4; i++) {
+		for (int i=0; i<34; i++) {
 			//#style popupChoiceItem
 			group.append("entry " + i, null);
 		}
-		table.set( 2, 2, group );
+		table.set( 2, 1, group );
 		table.setSelectionMode( TableItem.SELECTION_MODE_CELL | TableItem.SELECTION_MODE_INTERACTIVE );
+		//table.setSelectionMode( TableItem.SELECTION_MODE_ROW | TableItem.SELECTION_MODE_INTERACTIVE );
 		this.form.append( table );
 	}
 

@@ -16,7 +16,7 @@
 	<taskdef 
 		name="j2mepolish"
 		classname="de.enough.polish.ant.PolishTask" 
-		classpath="${polish.home}/bin/classes:${polish.home}/lib/enough-j2mepolish-build.jar:${polish.home}/lib/jdom.jar" 
+		classpath="${polish.home}/bin/classes:${polish.home}/lib/jdom.jar" 
 	/>
 
 		
@@ -50,7 +50,9 @@
 			version="1.0.4"
 			icon="icon.png"
 	    />
+	    <!--
 		<lifeCycleManager name="mea" />
+		-->
 		<!-- selection of supported devices -->
 		<deviceRequirements if="test">
 			<requirement name="Identifier" value="${device}"/>
@@ -76,7 +78,7 @@
 				<variable name="polish.TextField.usePredictiveInput" value="true" />
 				<variable name="polish.TextField.useDirectInput" value="true" />
 				<variable name="polish.TextField.supportSymbolsEntry" value="true" />
-				<variable name="polish.ScreenOrientationCanChangeManually" value="true" />
+				<variable name="polish.Screen.ManualOrientationChange" value="true" />
 				<!--
 				<variable name="polish.TextField.suppressCommands" value="true"/>
 				<variable name="polish.MenuBar.PaddingLeft" value="5" />
@@ -137,7 +139,7 @@
 		</emulator>
 	
 		<emulator
-			wait="true"
+			wait="false"
 			securityDomain="trusted"
 			enableProfiler="false"
 			enableMemoryMonitor="false"

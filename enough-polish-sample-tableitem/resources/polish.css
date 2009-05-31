@@ -183,6 +183,7 @@ menu {
 		type: round-tab;
 		color: #301e3a;
 	}
+	expand-items: true;
 	focused-style-first: menuItemFocusedFirst;
 }
 
@@ -201,6 +202,10 @@ menuItem {
 		style: bold;
 	}
 	layout: left;
+	border {
+		type: bottom;
+		color: #999;
+	}
 }
 
 /**

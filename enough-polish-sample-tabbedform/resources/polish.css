@@ -33,6 +33,9 @@ colors {
 	scrollindicator-up-image: url( arrowU.png );
 	scrollindicator-down-image: url( arrowD.png );
 	title-style: solidTitle;
+	/* position the tabbar at the bottom: 
+	subtitle-position: bottom;
+	*/
 }
 
 tabbar {
@@ -46,6 +49,10 @@ tabbar {
 	/* not supported, since we use arrow images:
 	tabbar-scrolling-indicator-color: COLOR_FOREGROUND;
 	*/
+}
+
+tabbar:hover {
+	background-color: red;
 }
 
 activetab {
@@ -133,13 +140,28 @@ label {
 }
 
 .input {
-	background-color: white;
-	border-color: black;
-	border-width: 1;
-	font-color: fontColor;
-	/*
-	text-wrap: false;
-	*/
+	label-style: inputLabel;
+	padding: 1px;
+	margin: 1px;
+	background-color: silver;
+	font-color: #333;
+	layout: expand | left;
+	font-size: small;
+	font-style: bold;
+}
+
+.input:hover {
+	margin: 0px;
+	font-color: #000;
+	background-color: #fff;
+	border {
+		color: #000;
+		width: 1;
+	}
+}
+
+.inputLabel{
+	min-width: 30%;
 }
 
 info {
@@ -173,7 +195,11 @@ menuitem {
 	font-style: bold;
 	font-size: small;
 	font-color: COLOR_FOREGROUND;	
+	/*
 	command-child-indicator: url( arrowR.png );
+	*/
+	command-child-indicator-width: 4;
+	command-child-indicator-height: 4;
 }
 
 menubar {
