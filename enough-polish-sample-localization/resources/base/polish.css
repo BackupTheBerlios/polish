@@ -37,6 +37,7 @@ colors {
   * for all screen-titles.
   */
 title {
+	inherit: false;
 	padding: 2;
 	margin-top: 0;
 	margin-bottom: 5;
@@ -75,20 +76,10 @@ title {
 	
 }
 
-/**
-  * The .mainCommand style is also a static style, which
-  * is set in the MIDlet source-code with the //#style directive.
-  * If the source-code would not have defined this
-  * style, we could use the dynamic style "listitem" to design all
-  * items on the list-screens. 
-  * An interesting attribute is the "icon-image" URL, which uses
-  * the %INDEX% keyword. The first list-item will use the image
-  * "icon0.png", the second "icon1.png" and so on. 
-  */
 .mainCommand {
+	inherit: false;
 	margin: 2px;
 	padding: 5px;
-	background: none;
 	font-color: fontColor;
 	font-style: bold;
 	font-size: small;
@@ -98,6 +89,7 @@ title {
 }
 
 .mainCommand:hover {
+	inherit: false;
 	margin: 0px;
 	background {
 		type: round-rect;
@@ -111,21 +103,24 @@ title {
 /********************** alerts ************************************************************************************/
 
 alert extends .mainScreen {
+	inherit: false;
 }
 
 alertcontent {
+	inherit: false;
 	font-color: fontColor;
 	font-size: small;
 	font-style: bold;
 }
 
 .loadGameAlert {
+	inherit: false;
 	margin: 20;
 	padding: 5;
 	padding-left: 15;
 	padding-right: 15;
 	layout: horizontal-expand | horizontal-center | vertical-center;
-	background-color: argb( 150, 255, 255, 255 ); /*translucentBgColor; */
+	background-color: argb( 200, 255, 255, 255 ); /*translucentBgColor; */
 	show-dismiss-command: false;
 }
 
@@ -140,14 +135,12 @@ alertcontent {
   * font-face, font-style and font-size)
   * are used to design the menu-texts
   * (like Options, Select, or Cancel).
-  * With the focused-style attribute
-  * another style than the default "focused"
-  * style is used for the menu. 
   * The menubar-color can be set to any
   * color. When "transparent" is used,
   * the background shines through.
   */
 menu {
+	inherit: false;
 	margin-left: 2;
 	padding: 2;
 	background {
@@ -170,6 +163,7 @@ menu {
   * the menu style will be used instead. 
   */
 menuItem {
+	inherit: false;
 	margin-top: 2;
 	padding: 2;
 	padding-left: 5;
@@ -187,6 +181,7 @@ menuItem {
   * been defined in the menu style. 
   */
 .menuItem:hover {
+	inherit: false;
 	background-color: bgColor;
 	font-color: brightFontColor;
 	layout: left | horizontal-expand;

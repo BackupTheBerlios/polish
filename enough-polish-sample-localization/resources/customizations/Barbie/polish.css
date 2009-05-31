@@ -31,7 +31,7 @@ colors {
   * the background shines through.
   */
 menu {
-	inherit: false;
+	max-width: 65%;
 	margin-left: 2;
 	padding: 2;
 	background {
@@ -52,7 +52,6 @@ menu {
   * the menu style will be used instead. 
   */
 menuItem {
-	inherit: false;
 	margin-top: 2;
 	padding: 2;
 	padding-left: 5;
@@ -61,7 +60,7 @@ menuItem {
 		size: medium;
 		style: bold;
 	}
-	layout: left;
+	layout: left | expand;
 }
 
 /**

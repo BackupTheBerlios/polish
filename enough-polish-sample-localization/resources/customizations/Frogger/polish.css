@@ -117,6 +117,7 @@ title {
   * the background shines through.
   */
 menu {
+	max-width: 65%;
 	margin-left: 2;
 	padding: 2;
 	background {
@@ -137,7 +138,6 @@ menu {
   * the menu style will be used instead. 
   */
 menuItem {
-	margin: 2px;
 	padding: 2;
 	padding-left: 5;
 	font {
@@ -145,16 +145,12 @@ menuItem {
 		size: small;
 		style: bold;
 	}
-	layout: left;
+	layout: expand;
 }
 
 .menuItem:hover {
-	margin: 0px;
 	background {
 		type: round-rect;
 		color: bgColor;
-		steps: 4;
-		border-color: fontColor;
-		border-width: 2;
 	}
 }
