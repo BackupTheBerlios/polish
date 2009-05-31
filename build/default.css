@@ -46,17 +46,16 @@
 	}
 	layout: center;
 }
-
-/* inherit is true for this style, since
- * people tend to forget to set this layout 	
+/*
 rightcommand {
+	inherit: false;
 	layout: right;
 }
 centercommand {
+	inherit: false;
 	layout: center;
 }
 */
-
 
 .browser {
 	inherit: false;

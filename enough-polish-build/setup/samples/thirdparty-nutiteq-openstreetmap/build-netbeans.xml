@@ -1,3 +1,7 @@
+<!-- When you are using NetBeans 5+, just rename this file    -->
+<!-- to build.xml. You can then use the normal menu items     -->
+<!-- run, debug, build and so forth from within NetBeans.     -->
+
 <!-- This file controls the build process.                    -->
 <!-- The most important target is the j2mepolish-target,      -->
 <!-- which controls for what devices the application should   -->
@@ -8,8 +12,11 @@
 <!--                                                          -->
 <!-- Have fun!                                                -->
 <project 
-	name="enough-polish-tableitem" 
+	name="thirdparty-nutiteq-openstreetmap" 
 	default="j2mepolish">
+	
+	<!-- extend the default NetBeans build script:           -->
+	<import file="nbproject/build-impl.xml"/>
 	
 	<!-- import user specific properties                          -->
 	<property file="${user.name}.properties" />
@@ -21,13 +28,6 @@
 	<!-- import global properties                                 -->
 	<property file="${polish.home}/global.properties" />
 
-		
-	<!-- the device for the test mode - you can define it on the command-line
-	     using the -D switch, e.g. ant -Ddevice=Generic/midp2 emulator -->
-	<property name="device" value="Generic/AnyPhone"/>
-	<property name="devices" value="${device},Generic/jtwi,Generic/Midp2Cldc11,Nokia/Series40E3,Nokia/Series60E2,Nokia/Series60E3,Sony-Ericsson/JavaPlatform7,Sony-Ericsson/JavaPlatform8"/>
-	
-	
 
 	<!-- Definition of the J2ME Polish task:                      -->
 	<taskdef name="j2mepolish" 
@@ -59,7 +59,9 @@
 		<property name="dir.work" value="build/test" />
 	</target>
 			
-	<target name="init">
+	<target name="j2mepolish-init"
+		    depends="init"
+		>
 	  	<property name="test" value="false" />
 		<property name="dir.work" value="build/real" />
 		<property name="deploy-url" value="" />
@@ -73,114 +75,66 @@
 	<!--    3. The build-section controls the actual build        -->
 	<!--       process.                                           -->	
 	<target name="j2mepolish" 
-			depends="init"
+			depends="j2mepolish-init"
 			description="This is the controller for the J2ME build process." 
 			>
 		<j2mepolish>
-		    <!-- general settings, these settings basically form the JAD-attributes. -->
-		    <!-- Have a look at the <jad>-section for setting specialised attributes.
-		         You can also define localized attributes in the resources/messages.txt files -->
-			<info
-				name="Table"
+		    <!-- general settings -->
+			<info name="J2ME Polish Map" 
+				vendorName="Nutiteq" 
+				jarName="J2MEPolishMap_${polish.vendor}_${polish.name}_${polish.locale}.jar" 
+				icon="/nutiteq.png" 
+				jarUrl="${polish.jarName}" 
 				version="1.0.0"
-				description="A demonstration of the J2ME Polish TableItem."
-				vendorName="Enough Software"
-				infoUrl="http://www.j2mepolish.org"
-				jarName="${polish.vendor}-${polish.name}-${polish.locale}-tableitem.jar" 
-				jarUrl="${deploy-url}${polish.jarName}"
-				copyright="Copyright 2008 Enough Software. All rights reserved."
+				copyright="Nutiteq 2009"
 			/>
 			<!-- selection of supported devices -->
-			<deviceRequirements if="test">
+            <deviceRequirements if="config.active:defined and (test or enableCompilerMode)" >		
+                <requirement name="Identifier" value="${config.active}" />
+			</deviceRequirements>
+			<deviceRequirements if="device:defined and (test or enableCompilerMode)" unless="config.active:defined">
 				<requirement name="Identifier" value="${device}" />
 			</deviceRequirements>
-			<deviceRequirements unless="test">
+			<deviceRequirements unless="test or enableCompilerMode">
 				<requirement name="Identifier" value="${devices}" />
-				<!-- on could use other devices for real builds, e.g. :
-				<requirement name="Term" value="polish.api.nokia-ui and polish.midp2" />
-				or:
-				<or>
-					<and>
-						<requirement name="JavaPackage" value="nokia-ui" />
-						<requirement name="BitsPerPixel" value="16+" />
-					</and>
-				</or>
-				 -->
 			</deviceRequirements>
 		    <!-- build settings -->
-			<build
-				symbols="ExampleSymbol, AnotherExample"
-				fullscreen="menu"
+			<build 
+				fullscreen="menu" 
 				usePolishGui="true"
 				workDir="${dir.work}"
-			>
-				<!-- midlets definition -->
-				<midlet class="de.enough.polish.sample.table.TableMidlet" name="Table" />
-				<!-- project-wide variables - used for preprocessing.  -->
-				<!-- You can set localized variables in the resources/messages.txt files as well.  -->
-				<variables includeAntProperties="true" >
-					<!-- Sample configuration options for J2ME Polish
-					<variable name="polish.TextField.useDirectInput" value="true" />
-					<variable name="polish.TextField.supportSymbolsEntry" value="true" />
-					-->
+				>
+				<jad>
+					<attribute name="MIDlet-Web-Session" value="EMT WAP" if="polish.vendor == Motorola" />
+				</jad>
+				
+				<sources>
+					<source dir="source/src" />
+					<!-- include nutiteq sources: -->
+					<source dir="${nutiteq.home}/src" />
+					<source dir="${nutiteq.home}/thirdparty/src" />
+				</sources>
+
+				<!-- NetBeans defines this property automatically:  -->
+				<midlets definition="${manifest.midlets}" if="manifest.midlets:defined" />
+				<midlets unless="manifest.midlets:defined">
+					<midlet class="com.nutiteq.polish.J2MEPolishSample" name="J2ME Polish Map" 	/>
+				</midlets>
+				
+				<variables>
 					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
 					<variable name="polish.useScrollBar" value="true" />
 				</variables>
-				<!-- Configure the customization settings here: -->
-				<resources
-					dir="resources"
-					defaultexcludes="yes"
-					excludes="readme.txt"
-				>
-					<!-- add the localization element for created localized
-					     versions of your application: 
-					<localization>
-						<locale name="en_US" />
-						<locale name="de_DE" encoding="utf-8" unless="test" />
-					</localization>
-					-->
+
+				<resources dir="resources" defaultexcludes="yes">
+					<localization locales="en_US" />
 				</resources>
-				<!-- obfuscator settings: do not obfuscate when the test-property is true -->
-				<obfuscator name="ProGuard" unless="test or polish.blackberry" >
-					<!--
-					You can set additional parameters here, e.g.:
-					<parameter name="optimize" value="false" />
-					-->
-				</obfuscator>
-				<!-- log settings: only use debug setting when the test-property is true -->
-				<debug if="test or log" verbose="true" level="error">
-					<filter package="de.enough.polish.sample.tableitem" level="debug" />
-					<filter package="de.enough.polish.ui" level="warn" />
-					<!-- example for writing log entries to the Recordstore Management System: 
-					<handler name="rms" />
-					-->
-				</debug>
-				<!-- user defined JAD attributes can also be used: -->
-				<jad>
-					<!--
-					<attribute name="Nokia-MIDlet-Category" value="Game" if="polish.group.Series40" />
-					-->
-				</jad>	
+
+				<obfuscator name="ProGuard" unless="test || polish.blackberry" />
 			</build>
+
 			
 			<!-- execution of emulator(s) -->
-			<emulator
-				wait="true"
-				securityDomain="trusted"
-				enableProfiler="true"
-				enableMemoryMonitor="true"
-				enableNetworkMonitor="true"
-				if="debug"
-				>
-				<!-- this is an example for connecting to a debugger - use the ${polish.debug.port} Ant property
-				     for getting to know the port of the debugger. In this example the 
-				     "connect-debugger" target is also required.
-				-->
-				<!--
-				<debugger name="antcall" target="connect-debugger" port="6001" />
-				-->
-			</emulator>
-                        
 			<emulator
 				wait="true"
 				trace="none"
@@ -190,9 +144,22 @@
 				enableNetworkMonitor="false"
 				if="test and not debug"
 				>
+				<!--
+				<parameter name="-Xjam" value="transient=http://localhost:8080/${polish.jadName}" />
+				-->
 			</emulator>
-
-		
+                        
+			<emulator
+				wait="true"
+				securityDomain="trusted"
+				enableProfiler="false"
+				enableMemoryMonitor="false"
+				enableNetworkMonitor="false"
+				if="debug"
+				>
+				<!-- Attach the emulator to the NetBeans debugger:	-->
+				<debugger name="antcall" target="connect-debugger" port="6001" />
+			</emulator>
 		</j2mepolish>
 	</target>
 	
@@ -206,7 +173,6 @@
 	<target name="clean" 
 	  		description="allows a clean build. You should call [ant clean] whenever you made changes to devices.xml, vendors.xml or groups.xml">
 		<delete dir="build" />
-		<mkdir dir="dist" />
 		<delete dir="dist" includes="**/*" />
 	</target>
 
@@ -217,5 +183,84 @@
 	/>
 	
     <target name="debug" description="debugs the project" depends="enableDebug, test, j2mepolish" />
+	
+	<target name="deploy"
+			description="Deploys the applications. Currently empty."
+			depends="j2mepolish"
+	/>
+	        
+
+	        
+	<!-- NetBeans specific build targets: -->
+	        
+	        <target name="run" 
+	                depends="test, j2mepolish"
+	        >
+	        </target>
+
+	        <target name="rebuild" 
+	                depends="clean, j2mepolish"
+	        >
+	        </target>
+
+	        <target name="rebuild-all" 
+	                depends="clean, j2mepolish"
+	        >
+	        </target>
+	        
+	        <target name="jar" 
+	                depends="j2mepolish"
+	        >
+	        </target>
+
+	        <target name="jar-all" 
+	                depends="j2mepolish"
+	        >
+	        </target>
+
+	        <target name="clean-all" 
+	                depends="clean"
+	        >
+	        </target>
+	                
+	        <target name="deploy-all" 
+	                depends="deploy"
+	        >
+	        </target>
+	        
+	        <target name="enable-compiler-mode">
+	            <property name="enableCompilerMode" value="true" />
+	        </target>
+
+	        <target name="compile-single" 
+	                depends="enable-compiler-mode, j2mepolish"
+	        >
+	        </target>
+	        
+	    <target name="connect-debugger">
+	        <property name="jpda.port" value="${polish.debug.port}" />
+	        <antcall target="nbdebug"/>
+	    </target>
+
+
+	<target name="enableCustomization1">
+		<property name="dir.work" value="build/customization1" />
+		<property name="cfg.customization1" value="true" />
+	</target>
+		
+	<target name="customization1"
+			description="customizes this project with the settings found in resources/customization1"
+			depends="enableCustomization1, j2mepolish"
+	/>
+	
+	<target name="enableCustomization2">
+		<property name="dir.work" value="build/customization2" />
+		<property name="cfg.customization2" value="true" />
+	</target>
+		
+	<target name="customization2"
+			description="customizes this project with the settings found in resources/customization2"
+			depends="enableCustomization2, j2mepolish"
+	/>
 	
 </project>

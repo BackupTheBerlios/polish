@@ -795,7 +795,7 @@
 			<fileset dir="setup/samples/doja" excludes="**/macosx/**,**/CVS" />
 			<fileset dir="../enough-polish-sample-doja" includes="resources/**/*.*" excludes="CVS"/>
 		</copy>
-		<!-- copy thirdparty-smaato-blackbox application -->
+		<!-- copy thirdparty-smaato-blackbox application 
 		<mkdir dir="tmp/samples/thirdparty-smaato-blackbox/source/src" />
 		<copy todir="tmp/samples/thirdparty-smaato-blackbox/source/src">
 			<fileset dir="../smaato-blackbox/source/src" includes="**/*.java" />
@@ -805,6 +805,19 @@
 			<fileset dir="setup/samples/thirdparty-smaato-blackbox" excludes="**/macosx/**,**/CVS" />
 			<fileset dir="../smaato-blackbox" includes="resources/**/*.*" excludes="**/CVS"/>
 		</copy>
+		-->
+		<!-- copy thirdparty-nutiteq-openstreetmap application -->
+		<mkdir dir="tmp/samples/thirdparty-nutiteq-openstreetmap/source/src" />
+		<copy todir="tmp/samples/thirdparty-nutiteq-openstreetmap/source/src">
+			<fileset dir="../enough-polish-sample-nutiteq/src" includes="**/*.java" />
+		</copy>
+		<copy todir="tmp/samples/thirdparty-nutiteq-openstreetmap/" 
+			>
+			<fileset dir="setup/samples/thirdparty-nutiteq-openstreetmap" excludes="**/macosx/**,**/CVS" />
+			<fileset dir="../enough-polish-sample-nutiteq" includes="resources/**/*.*" excludes="**/CVS"/>
+			<fileset dir="../enough-polish-sample-nutiteq" includes="nutiteq_maps_library_0.10.0_src/**/*.*" excludes="**/CVS"/>
+		</copy>
+		
 	</target>
 
 	<target name="copyosx" 
