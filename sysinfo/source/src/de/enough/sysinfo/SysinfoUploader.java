@@ -25,7 +25,6 @@
  */
 package de.enough.sysinfo;
 
-import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
@@ -45,8 +44,7 @@ import com.grimo.me.product.midpsysinfo.SystemInfoCollector;
 import de.enough.polish.util.Locale;
 
 /**
- * 
- * <p>collects infos and uploads them to the enough sysinfo database</p>
+ * Collects infos and uploads them to the enough sysinfo database.
  *
  * <p>Copyright Enough Software 2007, 2008</p>
  * <pre>
