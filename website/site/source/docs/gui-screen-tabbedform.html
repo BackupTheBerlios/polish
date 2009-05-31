@@ -5,6 +5,11 @@
 <%include start.txt %>
 
 	<h1 id="top">Using TabbedForms</h1>
+		<ul class="relatedtechnologies">
+		<li class="relatedtechnologiesheader">Related Topics:</li>
+		<li><a href="gui-screen-tabbedpane.html">TabbedPane</a></li>
+	</ul>
+	<%index %>
 	<p>
 	
 </p>
@@ -98,8 +103,8 @@ options for managing items on specific tabs and tab interaction.
 </p>
 <ul>
 	<li><code>TabbedForm(String title, String[] tabNames, Image[] tabImages )</code>: Creates a new TabbedForm with the specified tabs - can be used with a <code>style</code> preprocessing directive..</li>
-	<li><code>append( int tabIndex, Item item )</code>: Apppends an item to the specified tab - can be used together with a <code>style</code> preprocessing directive.</li>
-	<li><code>append( int tabIndex, Item item, Style itemStyle )</code>: Appends an item with a programmatily choses style.</li>
+	<li><code>append( int tabIndex, Item item )</code>: Appends an item to the specified tab - can be used together with a <code>style</code> preprocessing directive.</li>
+	<li><code>append( int tabIndex, Item item, Style itemStyle )</code>: Appends an item with a programatically chosen style.</li>
 	<li><code>set( int tabIndex, int itemIndex, Item item )</code>: Exchanges an existing item in the specified tab.</li>
 	<li><code>Item get(int tabIndex, int itemNum)</code>: Retrieves an item from the specified tab.</li>
 	<li><code>delete( int tabIndex, Item item )</code>, <code>delete( int tabIndex, int itemIndex )</code>: Deletes an item from a specific tab.</li>
