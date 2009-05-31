@@ -82,7 +82,8 @@
 			</obfuscator>
 			<!-- debug settings: only include debug setting when the test-property is true -->
 			<debug if="test" level="error" showLogOnError="true" verbose="true">
-				<filter level="debug" package="de.enough.polish.sample.mail"/>
+				<handler name="rms" />
+				<filter level="debug" package="de.enough.polish.sample.serialization"/>
 				<filter level="info" pattern="de.enough.polish.ui.*"/>
 			</debug>
 			<resources
