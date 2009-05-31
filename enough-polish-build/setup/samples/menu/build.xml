@@ -268,6 +268,17 @@
 			depends="enableFrogger, j2mepolish"
 	/>
 
+	<target name="enableAnimations">
+		<property name="customization" value="Animations" />
+		<property name="Animations.enabled" value="true" />
+		<property name="polish.MenuBar.useExtendedMenubar" value="true" />
+	</target>
+		
+	<target name="animations"
+			description="customizes this project with the settings found in resources/customizations/Animations"
+			depends="enableAnimations, j2mepolish"
+	/>
+	
 	<target 
 		name="build-all"
 		description="Builds your application in all customizations." 
@@ -275,6 +286,7 @@
 		<subant target="j2mepolish" buildpath="." genericantfile="build.xml" inheritall="false" ></subant>
 		<subant target="frogger" buildpath="." genericantfile="build.xml" inheritall="false" ></subant>
 		<subant target="barbie" buildpath="." genericantfile="build.xml" inheritall="false" ></subant>
+		<subant target="animations" buildpath="." genericantfile="build.xml" inheritall="false" ></subant>
 	</target>
 
 </project>
