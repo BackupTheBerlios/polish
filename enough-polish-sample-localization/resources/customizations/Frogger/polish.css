@@ -1,13 +1,5 @@
-/** 
-  * The polish.css files contains all
-  * design information about a project.
-  * It can be adjusted for specific devices
-  * or device groups by putting it in the 
-  * appropriate sub-folder.
-  * If you want to adjust a design for all
-  * Nokia devices, define it in "resources/Nokia/polish.css"
-  * and so on. Only new and different settings
-  * need to be specified in such polish.css files. 
+/**
+  * In this file we change the base styles taken from resources/base/polish.css
   */
 
 /**
@@ -25,17 +17,11 @@ colors {
 	fontColor: #6d6;
 }
 
-/**
-  * the fonts-section defines fonts for later re-use.
-  */
-fonts {
-
-}
 
 
 /**
   * The title style is a predefined style which is used
-  * for all screen-titles.
+  * for all screen-titles (unless you specify the 'title-style' attribute).
   */
 title {
 	padding: 2;
@@ -81,9 +67,6 @@ title {
   * If the source-code would not have defined this
   * style, we could use the dynamic style "listitem" to design all
   * items on the list-screens. 
-  * An interesting attribute is the "icon-image" URL, which uses
-  * the %INDEX% keyword. The first list-item will use the image
-  * "icon0.png", the second "icon1.png" and so on. 
   */
 .mainCommand {
 	margin: 2px;
@@ -101,11 +84,14 @@ title {
 	background: none;
 }
 
+/****************  Commands Menu ******************************************************************************************************/
+
 
 /**
-  * the menu style is a predefined style for
+  * The menu style is a predefined style for
   * designing the fullscreen-menu.
-  * The font-settings (font-color,
+  * Since we are not using an extended menubar, 
+  * the font-settings (font-color,
   * font-face, font-style and font-size)
   * are used to design the menu-texts
   * (like Options, Select, or Cancel).
@@ -134,8 +120,6 @@ menu {
 /**
   * The menuItem style is a predefined style
   * for the actual commands in a fullscreen-menu.
-  * When the menuItem style is not defined,
-  * the menu style will be used instead. 
   */
 menuItem {
 	padding: 2;

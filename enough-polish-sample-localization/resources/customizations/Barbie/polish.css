@@ -1,6 +1,5 @@
 /**
   * In this file we change the base styles taken from resources/base/polish.css
-  * You need to look at both files to understand the differences between the styling here and in the original file.
   */
 
 /**
@@ -16,64 +15,6 @@ colors {
 	highlightedBgColor:  rgb(185,26,138);
 }
 
-/**
-  * the menu style is a predefined style for
-  * designing the fullscreen-menu.
-  * The font-settings (font-color,
-  * font-face, font-style and font-size)
-  * are used to design the menu-texts
-  * (like Options, Select, or Cancel).
-  * With the focused-style attribute
-  * another style than the default "focused"
-  * style is used for the menu. 
-  * The menubar-color can be set to any
-  * color. When "transparent" is used,
-  * the background shines through.
-  */
-menu {
-	max-width: 65%;
-	margin-left: 2;
-	padding: 2;
-	background {
-		type: round-rect;
-		color: white;
-		border-width: 2;
-		border-color: yellow;
-	}
-	menubar-color: highlightedBgColor;
-	font-color: white;
-	font-style: bold;
-}
-
-/**
-  * The menuItem style is a predefined style
-  * for the actual commands in a fullscreen-menu.
-  * When the menuItem style is not defined,
-  * the menu style will be used instead. 
-  */
-menuItem {
-	margin-top: 2;
-	padding: 2;
-	padding-left: 5;
-	font {
-		color: black;
-		size: medium;
-		style: bold;
-	}
-	layout: left | expand;
-}
-
-/**
-  * This is a custom style for selected
-  * menu items. It is used, because it has
-  * been defined in the menu style. 
-  */
-menuItem:hover {
-	background-color: black;
-	font-color: white;
-	layout: left | horizontal-expand;
-	after: url(dot.png);
-}
 
 /**
   * The title style is a predefined style which is used
@@ -123,9 +64,6 @@ title {
 /**
   * The .mainCommand style is also a static style, which
   * is set in the MIDlet source-code with the //#style directive.
-  * If the source-code would not have defined this
-  * style, we could use the dynamic style "listitem" to design all
-  * items on the list-screens. 
   * An interesting attribute is the "icon-image" URL, which uses
   * the %INDEX% keyword. The first list-item will use the image
   * "icon0.png", the second "icon1.png" and so on. 
@@ -163,4 +101,65 @@ title {
 	}
 	layout: expand | left;
 	after: url(dot.png); 
+}
+
+
+
+/****************  Commands Menu ******************************************************************************************************/
+
+/**
+  * the menu style is a predefined style for
+  * designing the fullscreen-menu.
+  * The font-settings (font-color,
+  * font-face, font-style and font-size)
+  * are used to design the menu-texts
+  * (like Options, Select, or Cancel).
+  * With the focused-style attribute
+  * another style than the default "focused"
+  * style is used for the menu. 
+  * The menubar-color can be set to any
+  * color. When "transparent" is used,
+  * the background shines through.
+  */
+menu {
+	max-width: 65%;
+	margin-left: 2;
+	padding: 2;
+	background {
+		type: round-rect;
+		color: white;
+		border-width: 2;
+		border-color: yellow;
+	}
+	menubar-color: highlightedBgColor;
+	font-color: white;
+	font-style: bold;
+}
+
+/**
+  * The menuItem style is a predefined style
+  * for the actual commands in a fullscreen-menu.
+  */
+menuItem {
+	margin-top: 2;
+	padding: 2;
+	padding-left: 5;
+	font {
+		color: black;
+		size: medium;
+		style: bold;
+	}
+	layout: left | expand;
+}
+
+/**
+  * This is a custom style for selected
+  * menu items. It is used, because it has
+  * been defined in the menu style. 
+  */
+menuItem:hover {
+	background-color: black;
+	font-color: white;
+	layout: left | horizontal-expand;
+	after: url(dot.png);
 }

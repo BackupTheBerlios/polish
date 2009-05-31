@@ -1,8 +1,6 @@
-/** 
-  * The polish.css files contains all
-  * design information about a project.
+/**
+  * In this file we change the base styles taken from resources/base/polish.css
   */
-
 
 
 
@@ -81,6 +79,22 @@ title {
 	x-adjust: 0%;
 }
 
+/****************  Alert  ******************************************************************************************************/
+
+
+.loadGameAlert {
+	margin: 20px;
+	padding: 5px;
+	padding-left: 15px;
+	padding-right: 15px;
+	layout: horizontal-expand | horizontal-center | vertical-center;
+	background-color: #aeee;
+	show-dismiss-command: false;
+}
+
+
+/****************  Commands Menu ******************************************************************************************************/
+
 
 /**
   * the menu style is a predefined style for
@@ -118,8 +132,6 @@ rightcommand:pressed {
 /**
   * The menuItem style is a predefined style
   * for the actual commands in a fullscreen-menu.
-  * When the menuItem style is not defined,
-  * the menu style will be used instead. 
   */
 menuItem {
 	padding: 2px;
@@ -147,12 +159,3 @@ menuItem {
 	background-color: #333;
 }
 
-.loadGameAlert {
-	margin: 20px;
-	padding: 5px;
-	padding-left: 15px;
-	padding-right: 15px;
-	layout: horizontal-expand | horizontal-center | vertical-center;
-	background-color: #aeee;
-	show-dismiss-command: false;
-}
