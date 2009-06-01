@@ -446,6 +446,7 @@ public final class TextUtil {
 	}
 	//#endif
 	
+	//#if polish.midp || polish.usePolishGui
 	/**
 	 * Adds the specified appendix to the give line of text
 	 * and shortens the text to fit the available width 
@@ -488,6 +489,7 @@ public final class TextUtil {
 			return "";
 		}
 	}
+	//#endif
 	
 //	 Unreserved punctuation mark/symbols
 

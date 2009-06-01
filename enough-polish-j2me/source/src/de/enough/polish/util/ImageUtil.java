@@ -2158,6 +2158,7 @@ public final class ImageUtil {
 	}
 	//#endif
 
+	//#if polish.midp || polish.usePolishGui
 	/**
 	 * Scales an image to the specified dimension
 	 * 
@@ -2184,5 +2185,6 @@ public final class ImageUtil {
 
 		return source;
 	}
+	//#endif
 }
  
