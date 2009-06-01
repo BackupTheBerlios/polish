@@ -1,40 +1,50 @@
+colors {
+	borderColor: #1e5556;
+	browserFontColor: #1e5556;
+	focusedBorderColor: #000000;
+	fontColor: #1e5556;
+	focusedBgColor: #ffffff;
+	browserFontColorFocused: #142850;
+	focusedFontColor: #000000;
+	bgColor: #eeeeee;
+}
+
 backgrounds {
 	mainBackground {
-		color: black;
+		type: horizontal-stripes;
+		first-top-color: #ffff66;
+		first-bottom-color: #008000;
+		second-top-color: #ffffff;
+		second-bottom-color: #33ff00;
 	}
 	
-	rssScrollUpBg {
-		type: partial-gradient;
-		top-color: #2f2f2f;
-		bottom-color: #ececec;
-		start: 0%;
-		end: 6%;
-	}
-	
-	rssScrollDownBg {
-		type: partial-gradient;
-		top-color: #ececec;
-		bottom-color: #2f2f2f;
-		start: 94%;
-		end: 100%;
-	}
 }
 
 /************************** general styles  ********************************************************************************/
 
 title {
-	layout: left | horizontal-expand;
-	padding-left: 4%;
+	layout: horizontal-center | horizontal-expand;
 	font {
 		face: proportional;
 		size: large;
 		style: bold;
-		color: #00aeef;
+		color: #222;
 	}
+	text-effect: alien-glow;
 	background {
-		type: split;
-		top-color: #fff;
-		bottom-color: #c8c8c8; 
+		type: simple;
+		color: #fff;
+	}
+}
+
+focused {
+	layout: expand | left;
+	font-style: bold;
+	background {
+		type: round-rect-translucent;
+		color: #adffffff;
+		arc-width: 8;
+		arc-height: 8;
 	}
 }
 
@@ -43,15 +53,15 @@ label {
 	font {
 		size: small;
 		style: plain;
-		color: #00aeef;
 	}
 }
 
 /************************** main screen  **********************************************************************************/
 .screenMain {
 	layout: horizontal-center | vertical-center;
-	padding: 0px;
-	padding-vertical: 2%;
+	margin: 0;
+	padding: 10;
+	padding-vertical: 5;
 	background: mainBackground;
 	/*
 	screen-orientation-change-animation: fade-out-fade-in;
@@ -62,40 +72,52 @@ label {
 	layout: expand | left;
 	padding: 2px;
 	padding-left: 10%;
-	padding-right: 10%;
-	//#if polish.hasPointerEvents
-		padding-top: 4%;
-		padding-bottom: 4%;
+	font-color: #222;
+	//#if polish.name==iPhone
+		font-style: bold;
+		background {
+			type: round-rect-translucent;
+			color: #adffffff;
+			arc-width: 8;
+			arc-height: 8;
+		}
 	//#endif
-	font-color: #00aeef;
-	font-style: bold;
 }
 
 .itemMain:hover {
-	font-color: #fff;
-	background-color: #f26522;
-	background-width-animation {
-		on: show;
-		range: 0%..100%;
-	}
-	background-width-animation {
-		on: focus;
-		range: 100%..90%..100%;
-		duration: 140ms, 140ms;
+	font-style: bold;
+	background {
+		type: round-rect-translucent;
+		color: #adffffff;
+		arc-width: 8;
+		arc-height: 8;
 	}
 }
 
 .itemMain:pressed {
-	font-color: #222;
-	background-color: #f26522;
+	font-style: bold;
+	font-color: #eee;
+	background {
+		type: round-rect-translucent;
+		color: #a333;
+		arc-width: 8;
+		arc-height: 8;
+	}
 }
 
 /************************** about screen  *********************************************************************************/
 
 .aboutAlert {
 	layout: horizontal-center | vertical-center;
-	padding: 5%;
-	background-color: #000;
+	margin: 0;
+	padding: 1;
+	background {
+		type: horizontal-stripes;
+		first-top-color: #ffff66;
+		first-bottom-color: #008000;
+		second-top-color: #ffffff;
+		second-bottom-color: #33ff00;
+	}
 	//#if polish.midp2
 	    screen-change-animation: zoomInAndHide;
 	//#else
@@ -104,9 +126,9 @@ label {
 }
 
 alertcontent {
-	font-color: #00aeef;
-	icon-image-align: top;
-	layout: expand | center;
+	font-color: white;
+	text-effect: shadow;
+	text-shadow-color: #222;
 }
 
 /************************** settings screen  ******************************************************************************/
@@ -115,36 +137,31 @@ alertcontent {
 }
 
 .itemInput {
-	layout: left | horizontal-expand;
-	padding: 2px;
-	font-color: #00aeef;
+	layout: left | top | horizontal-expand;
+	margin: 0;
+	padding: 2;
 	background {
 		type: simple;
-		color: #c8c8c8;
+		color: #ffffff;
 	}
-}
-
-
-.itemInput:hover {
-	font-color: #fff;
-	background-color: #f26522;
 }
 
 /************************** RSS browser screen ****************************************************************************/
 
 
 .rssBrowserForm {
-	padding-top: 3%;
-	padding: 0px;
-	background-color: #ececec;
-	background-top: title;
-	background-bottom: menubar;
-	scroll-up-background: rssScrollUpBg;
-	scroll-down-background: rssScrollDownBg;	
+	padding-left: 10;
+	padding-right: 10;
+	padding-top: 10;
+	background-color: #cec;
+	title-style: rssBrowserTitle;
 	screen-change-animation: right;	
 }
 
 .rssBrowserTitle extends title {
+	text-wrap: false;
+	text-wrap-animate: false;
+	layout: left;
 }
 
 .rssBrowser {
@@ -156,28 +173,21 @@ alertcontent {
 }
 
 .browserlink {
-	padding-left: 4%;
-	padding-right: 4%;
-	layout: expand;
 	font {
 		face: system;
 		size: medium;
 		style: bold;
-		color: #00aeef;
+		color: #ff4f4fe3;
 	}
 }
 
 .browserlink:hover {
 	//#if polish.name != iPhone
-		font-color: #fff;
-		background-color: #f26522;
+		font-color: #f00;
 	//#endif
 }
 
 .browserlink:pressed {
-	//#if polish.name != iPhone
-		background-color: #f26522;
-	//#endif
 	font-color: #333;
 }
 
@@ -185,15 +195,9 @@ alertcontent {
 /************************** RSS item alert screen ****************************************************************************/
 
 .rssDescriptionAlert extends aboutAlert {
+	title-style: .rssDescriptionAlertTitle;
 	content-style: .rssDescriptionAlertContent;
 	screen-change-animation: right;
-	background {
-		type: vertical-gradient;
-		top-color: #fff;
-		bottom-color: #000;
-		start: 95%;
-		bottom: menubar;
-	}
 }
 
 .rssDescriptionAlertTitle  {
@@ -215,19 +219,19 @@ alertcontent {
 
 /*************    Scrollbar          ***************************************************************************************************/
 scrollbar {
-	scrollbar-slider-color: #00aeef;
+	scrollbar-slider-color: #2d2;
 	scrollbar-slider-width: 6;
 	scrollbar-fadeout: true;
 	opacity: 180;
+	background-color: white;
 }
 
 
 /****************   commands menu          **********************************************************************************************/
 menubar {
 	background {
-		type: split;
-		top-color: #2f2f2f;
-		bottom-color: #000;
+		type: simple;
+		color: bgColor;
 	}
 }
 
@@ -236,27 +240,11 @@ leftcommand {
 	layout: left;
 	font {
 		style: bold;
-		color: #00aeef;
+		color: black;
 	}
 }
 rightcommand extends leftcommand {
 	layout: right;
-}
-
-middlecommand extends leftcommand {
-	layout: center;
-}
-
-leftcommand:pressed {
-	font-color: #fff;
-}
-
-rightcommand:pressed {
-	font-color: #fff;
-}
-
-middlecommand:pressed {
-	font-color: #fff;
 }
 
 menu {
@@ -276,20 +264,18 @@ menu {
 menuItem {
 	padding: 2px;
 	layout: left;
-	font-color: #00aeef;
+	font-color: #333;
+	border {
+		type: bottom;
+		color: #666;
+	}
 }
 
 
 menuItem:hover {
 	layout: left | horizontal-expand;
-	font-color: #fff;
-	background-color: #f26522;
-}
-
-menuItem:pressed {
-	layout: left | horizontal-expand;
-	font-color: #222;	
-	background-color: #f26522;
+	font-color: #eee;
+	background-color: #111;
 }
 
 
@@ -298,19 +284,10 @@ menuItem:pressed {
   */
 .menuItemFocusedFirst extends menuItem {
 	layout: left | horizontal-expand;
-	font-color: #fff;
+	font-color: #eee;
 	background {
 		type: round-tab;
-		color: #f26522;
-	}
-}
-
-.menuItemFocusedFirst:pressed {
-	layout: left | horizontal-expand;
-	font-color: #222;
-	background {
-		type: round-tab;
-		color: #f26522;
+		color: #111;
 	}
 }
 
