@@ -967,7 +967,13 @@ implements
 			return true;
 		}
 		
-		return super.handleKeyReleased(keyCode, gameAction);
+		boolean handled = super.handleKeyReleased(keyCode, gameAction);
+		//#if tmp.directInputPointer
+			if (!handled && gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) {
+				showPolishCalendar();
+			}
+		//#endif
+		return handled;
 	}
 
 	//#if tmp.directInput
@@ -1273,34 +1279,43 @@ implements
 	{
 		if (isInItemArea( relX, relY )) {
 			//#if tmp.directInputPointer
-				Calendar cal = Calendar.getInstance();
-				if (this.date != null) {
-					cal.setTime( this.date );
-				}
-				//#style calendarForm?
-				Form calForm = new Form( getLabel() );
-				calForm.addCommand( StyleSheet.OK_CMD );
-				calForm.addCommand( StyleSheet.CANCEL_CMD );
-				calForm.setCommandListener( this );
-				if (this.inputMode != TIME) {
-					//#style calendar?
-					CalendarItem item = new CalendarItem(cal);
-					this.calendarItem = item;
-					calForm.append( item );
-				}
-				if (this.inputMode != DATE) {
-					//#style time?
-					TimeEntryItem time = new TimeEntryItem( null, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE) );
-					calForm.append( time );
-					this.timeItem = time;
-				}
-				Display.getInstance().setCurrent( calForm );
+				showPolishCalendar();
 			//#else
 				showDateForm();
 			//#endif
 			return true;
 		}
 		return super.handlePointerReleased(relX, relY);
+	}
+	//#endif
+
+	//#if tmp.directInputPointer
+	/**
+	 * 
+	 */
+	private void showPolishCalendar() {
+		Calendar cal = Calendar.getInstance();
+		if (this.date != null) {
+			cal.setTime( this.date );
+		}
+		//#style calendarForm?
+		Form calForm = new Form( getLabel() );
+		calForm.addCommand( StyleSheet.OK_CMD );
+		calForm.addCommand( StyleSheet.CANCEL_CMD );
+		calForm.setCommandListener( this );
+		if (this.inputMode != TIME) {
+			//#style calendar?
+			CalendarItem item = new CalendarItem(cal);
+			this.calendarItem = item;
+			calForm.append( item );
+		}
+		if (this.inputMode != DATE) {
+			//#style time?
+			TimeEntryItem time = new TimeEntryItem( null, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE) );
+			calForm.append( time );
+			this.timeItem = time;
+		}
+		Display.getInstance().setCurrent( calForm );
 	}
 	//#endif
 
