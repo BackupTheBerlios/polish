@@ -127,6 +127,7 @@
 					defaultexcludes="yes"
 					excludes="readme.txt"
 				>
+					<root dir="resources/images" />
 					<!-- add the localization element for created localized
 					     versions of your application: 
 					<localization>
