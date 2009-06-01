@@ -101,7 +101,8 @@ label {
 		start: 70%;
 		end: 100%;
 	}
-	layout: hcenter | vcenter;
+	layout: hcenter | top;
+	padding-top: 3px;
 }
 
 .calendar {
@@ -124,6 +125,7 @@ label {
 .calendarWeekday {
 	layout: center;
 	font-style: italic | bold;
+	min-width: 12%;
 }
 
 .calendarDay {
