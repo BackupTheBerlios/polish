@@ -51,7 +51,7 @@
 		     are used such as the Manager.MIDI_DEVICE_LOCATOR constant.
 		-->
 		<position>bootclasspath/p</position>
-		<names>mmapi,mm-api, JSR-135, JSR135, jsr135</names>
+		<names>mmapi,mm-api, JSR-135, JSR135</names>
 		<symbol>mmapi</symbol>
 		<files>mmapi.jar,j2me-mmapi.jar, mma.zip</files>
 		<path>import/mmapi.jar</path>
@@ -100,7 +100,7 @@
 		<description>The Wireless Messaging API provides
 			functionalities for sending and receiving messages (SMS).
 		</description>
-		<names>wmapi, wm-api, JSR-120, JSR120, jsr120, wma, wmapi-1.1, wmapi1.1,wmapi-1.0,wmapi1.0</names>
+		<names>wmapi, wm-api, JSR-120, JSR120, wma, wmapi-1.1, wmapi1.1,wmapi-1.0,wmapi1.0</names>
 		<symbol>wmapi</symbol>
 		<files>j2me-wmapi.jar, wma.zip</files>
 		<path>import/wmapi.jar</path>
@@ -111,7 +111,7 @@
 		<description>The Wireless Messaging API 2.0 provides
 			functionalities for sending and receiving text and multimedia messages (SMS and MMS).
 		</description>
-		<names>wmapi2.0, wmapi2, JSR-205, JSR205, jsr205</names>
+		<names>wmapi2.0, wmapi2, JSR-205, JSR205</names>
 		<symbol>wmapi2.0</symbol>
 		<parent>wmapi</parent>
 		<files>wmapi-2.0.jar,j2me-wmapi-2.0.jar, wma_2_0.zip</files>
@@ -123,7 +123,7 @@
 		<description>The Location API provides
 			functionalities for determing the position of the user.
 		</description>
-		<names>locationapi, location-api, JSR-179,location,JSR179, jsr179</names>
+		<names>locationapi, location-api, JSR-179,location,JSR179</names>
 		<symbol>locationapi</symbol>
 		<files>j2me-locationapi.jar, location.jar, locationapi-1.0.jar</files>
 		<path>import/locationapi-1.0.jar</path>
@@ -134,7 +134,7 @@
 		<description>The Bluetooth API provides
 			functionalities for data exchange with other bluetooth devices.
 		</description>
-		<names>btapi,bt-api, bluetooth, bluetooth-api, JSR-082, JSR-82, JSR82, jsr82</names>
+		<names>btapi,bt-api, bluetooth, bluetooth-api, JSR-082, JSR-82, JSR82</names>
 		<symbol>btapi</symbol>
 		<files>btapi.jar, j2me-btapi.jar, bluetooth.zip</files>
 		<path>import/btapi.jar</path>
@@ -144,7 +144,7 @@
 		<name>3D API</name>
 		<description>The Mobile 3D Graphics API provides 3D functions for J2ME.
 		</description>
-		<names>3d, 3d-api,3dapi, JSR-184, JSR184, jsr184, m3g, m3gapi</names>
+		<names>3d, 3d-api,3dapi, JSR-184, JSR184, m3g, m3gapi</names>
 		<symbol>3dapi</symbol>
 		<features>api.m3g</features>
 		<files>j2me-3dapi.jar, m3g.jar, jsr184.jar</files>
@@ -167,7 +167,7 @@
 		<description>The PDA Optional Packages API defines one package for Personal Information Management (PIM) access, and one package for accessing file systems through the Generic Connection Framework (GCF).
 		</description>
 		<features>api.pimapi, api.pim, api.fileconnectionapi, api.fileconnection</features>
-		<names>pdaapi, pda-api, JSR-075, JSR-75, JSR75,jsr75, pdapi</names>
+		<names>pdaapi, pda-api, JSR-075, JSR-75, JSR75,pdapi</names>
 		<symbol>pdaapi</symbol>
 		<files>j2me-pdaapi.jar</files>
 		<path>import/pdaapi.jar</path>
@@ -314,7 +314,7 @@
 		<description>
 		A library that allows you to use vector graphics in your application.
 		</description>
-		<names>JSR-226, JSR226, jsr226, S2VG, m2g, svg, svgapi, svg-api</names>
+		<names>JSR-226, JSR226, S2VG, m2g, svg, svgapi, svg-api</names>
 		<symbol>svg</symbol>
 		<files>m2g.jar</files>
 		<path>import/m2g.jar</path>
@@ -325,7 +325,7 @@
 		<description>
 		Extensions for handling multimedia content as a supplement to the MMAPI.
 		</description>
-		<names>JSR-234, JSR234, jsr234, advancedmultimedia, advanced-multimedia, advancedmmapi, ams</names>
+		<names>JSR-234, JSR234, advancedmultimedia, advanced-multimedia, advancedmmapi, ams</names>
 		<symbol>advancedmultimedia</symbol>
 		<files>advancedmultimedia.jar</files>
 		<path>import/jsr234.jar</path>
@@ -354,7 +354,7 @@
 		<description>
 		Allows to access SOAP webservices.
 		</description>
-		<names>webservice, webservices, webserviceapi, JSR-172, JSR172, jsr172</names>
+		<names>webservice, webservices, webserviceapi, JSR-172, JSR172</names>
 		<symbol>webservice</symbol>
 		<files>webservice.jar</files>
 		<path>import/jsr172.jar</path>
@@ -365,7 +365,7 @@
 		<description>
 		Provides J2ME applications with APIs for security and trust services through the integration of a Security Element.
 		</description>
-		<names>security, security-api, security-and-trust-api, JSR-177, JSR177, jsr177</names>
+		<names>security, security-api, security-and-trust-api, JSR-177, JSR177</names>
 		<symbol>security</symbol>
 		<files>security.jar</files>
 		<path>import/jsr177.jar</path>
@@ -420,7 +420,7 @@
 		<description>
 		The SIP API enables SIP applications to be executed in memory limited terminals, especially targeting to mobile phones.
 		</description>
-		<names>sip, sipapi, sip-api, JSR-180, JSR180, jsr180</names>
+		<names>sip, sipapi, sip-api, JSR-180, JSR180</names>
 		<symbol>sip</symbol>
 		<files>sip.jar, sip-1.0.jar</files>
 		<path>import/jsr180.jar</path>
@@ -431,7 +431,7 @@
 		<description>
 		Enabling J2ME applications to handle multi-media and web content can give developers and users a seamless and integrated user environment on mobile phones and wireless devices.
 		</description>
-		<names>content, contentapi, content-api, contenthandlerapi,chapi, contenthandler, contenthandler-api, JSR-211, JSR211, jsr211</names>
+		<names>content, contentapi, content-api, contenthandlerapi,chapi, contenthandler, contenthandler-api, JSR-211, JSR211</names>
 		<symbol>contenthandler</symbol>
 		<files>contenthandler.jar,contenthandler-1.0.jar</files>
 		<path>import/jsr211.jar</path>
@@ -442,7 +442,7 @@
 		<description>
 		Enabling application developers to initiate mobile payment transactions in J2ME applications.
 		</description>
-		<names>payment, paymentapi, payment-api, JSR-229, JSR229, jsr229</names>
+		<names>payment, paymentapi, payment-api, JSR-229, JSR229</names>
 		<symbol>payment</symbol>
 		<files>payment.jar,payment-1.0.jar</files>
 		<path>import/jsr229.jar</path>
@@ -453,7 +453,7 @@
 		<description>
 		Enabling application developers to initiate mobile payment transactions in J2ME applications.
 		</description>
-		<names>internationalization, internationalization-api, i18n, i18n-api, JSR-238, JSR238, jsr238,global, global-api</names>
+		<names>internationalization, internationalization-api, i18n, i18n-api, JSR-238, JSR238,global, global-api</names>
 		<symbol>i18n</symbol>
 		<files>i18n.jar,i18n-1.0.jar,global.jar</files>
 		<path>import/jsr238.jar</path>
@@ -464,7 +464,7 @@
 		<description>
 		Java bindings to the OpenGL ES (Embedded Subset) native 3D graphics library.
 		</description>
-		<names>JSR239, jsr239,JSR-239,opengl,opengles,openglesbindings</names>
+		<names>JSR239,JSR-239,opengl,opengles,openglesbindings</names>
 		<symbol>opengl</symbol>
 		<files>opengl-1.0.jar</files>
 		<path>import/jsr239.jar</path>
@@ -486,7 +486,7 @@
 		<description>
 		Classes for sensors
 		</description>
-		<names>sensor, sensorapi, JSR256, jsr256, JSR-256</names>
+		<names>sensor, sensorapi, JSR256, JSR-256</names>
 		<symbol>sensor</symbol>
 		<files>sensor.jar</files>
 		<path>import/sensor.jar</path>
