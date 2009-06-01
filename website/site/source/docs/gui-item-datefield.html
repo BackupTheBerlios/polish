@@ -7,6 +7,7 @@
 	<h1 id="top">DateField</h1>
 	<ul class="relatedtechnologies">
 		<li class="relatedtechnologiesheader">Related Topics:</li>
+		<li><a href="gui-item-calendaritem.html">CalendarItem</a></li>
 		<li><a href="gui-item-textfield.html">TextField</a></li>
 		<li><a href="gui-item-clockitem.html">ClockItem</a></li>
 		<li><a href="localization.html">Localization</a></li>
@@ -84,6 +85,9 @@ polish.command.clear=Reset
 this.birthdate = new DateField( "birthday:", DateField.DATE );
 this.birthdate.setDate( new Date( System.currentTimeMillis() ) );
 </pre>	
+	<p>
+	Please refer to the &quot;datefield&quot; sample application for a working example.
+	</p>
 
 	<h2 id="datefield-Configuration">Configuration</h2>
 	<p>
@@ -117,6 +121,12 @@ this.birthdate.setDate( new Date( System.currentTimeMillis() ) );
 		<td>polish.DateFormatSeparator</td>
 		<td>-</td>
 		<td>The separator between years, months and days of a <code>DATE</code> or <code>DATE_TIME</code> DateField.</td>
+	</tr>
+	
+	<tr>
+		<td>polish.DateField.useDirectInputForPointer</td>
+		<td>false</td>
+		<td>Enables the usage of a <a href="gui-item-calendaritem.html">CalendarItem</a> when a DateField is clicked on a touch device. By default the native implementation is used.</td>
 	</tr>
 	
 	<!-- 
