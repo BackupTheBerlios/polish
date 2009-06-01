@@ -405,6 +405,9 @@ public class ChoiceItem extends IconItem
 					}
 				}
 			//#endif
+			//#ifdef polish.css.font-color
+				this.boxColor = style.getFontColor();
+			//#endif
 			//#ifdef polish.css.choice-color
 				Color color = style.getColorProperty("choice-color");
 				if (color == null && parentStyle != null) {
