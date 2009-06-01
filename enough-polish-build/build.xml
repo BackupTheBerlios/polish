@@ -545,6 +545,10 @@
 			<fileset dir="lib" includes="${all.library.jars}" />
 			<fileset dir="dist" includes="*.jar" />
 		</copy>
+		<mkdir dir="tmp/lib/microemulator" />
+		<copy todir="tmp/lib/microemulator">
+			<fileset dir="lib/microemulator" excludes="**/*CVS" />
+		</copy>
 		<!-- copy android files -->
 		<mkdir dir="tmp/android" />
 		<copy todir="tmp/android">
