@@ -729,6 +729,16 @@
 			<fileset dir="setup/samples/chartitem" excludes="**/macosx/**, **/CVS" />
 			<fileset dir="../enough-polish-sample-chartitem" includes="resources/**/*.*" excludes="**/CVS"/>
 		</copy>
+		<!-- copy datefield sample application -->
+		<mkdir dir="tmp/samples/datefield/source/src" />
+		<copy todir="tmp/samples/datefield/source/src">
+			<fileset dir="../enough-polish-sample-datefield/source/src" includes="**/*.java" />
+		</copy>
+		<copy todir="tmp/samples/datefield/" 
+			>
+			<fileset dir="setup/samples/datefield" excludes="**/macosx/**, **/CVS" />
+			<fileset dir="../enough-polish-sample-datefield" includes="resources/**/*.*" excludes="**/CVS"/>
+		</copy>
 		<!-- copy roadrunner sample application -->
 		<mkdir dir="tmp/samples/roadrunner/source/src" />
 		<copy todir="tmp/samples/roadrunner/source/src">

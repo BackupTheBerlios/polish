@@ -226,6 +226,15 @@ This sample application shows how to use the browser technology of J2ME Polish.
             <parsable targetfile="$INSTALL_PATH/samples/chartitem/build-netbeans.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/chartitem/nbproject/project.properties" type="shell" /> 
         </pack>
+        <pack name="CalendarItem and DateField Sample Application" required="no" preselected="yes">
+            <description>Use the CalendarItem or DateField for showing and editing dates.
+            </description>
+            <file src="samples/datefield" targetdir="$INSTALL_PATH/samples"/>
+            <parsable targetfile="$INSTALL_PATH/samples/datefield/build.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/datefield/.classpath" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/datefield/build-netbeans.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/datefield/nbproject/project.properties" type="shell" /> 
+        </pack>
         <pack name="TableItem Sample Application" required="no" preselected="yes">
             <description>Demonstrates the usage of the J2ME Polish TableItem.
             </description>
