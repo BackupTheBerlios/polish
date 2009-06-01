@@ -765,6 +765,16 @@
 			<fileset dir="setup/samples/tabbedform" excludes="**/macosx/**" />
 			<fileset dir="../enough-polish-sample-tabbedform" includes="resources/**/*.*" excludes="CVS"/>
 		</copy>
+		<!-- copy tabbedpane sample application -->
+		<mkdir dir="tmp/samples/tabbedpane/source/src" />
+		<copy todir="tmp/samples/tabbedpane/source/src">
+			<fileset dir="../enough-polish-sample-tabbedpane/source/src" includes="**/*.java" />
+		</copy>
+		<copy todir="tmp/samples/tabbedpane/" 
+			>
+			<fileset dir="setup/samples/tabbedpane" excludes="**/macosx/**" />
+			<fileset dir="../enough-polish-sample-tabbedpane" includes="resources/**/*.*" excludes="CVS"/>
+		</copy>
 		<!-- copy accessible application -->
 		<mkdir dir="tmp/samples/accessible/source/src" />
 		<copy todir="tmp/samples/accessible/source/src">

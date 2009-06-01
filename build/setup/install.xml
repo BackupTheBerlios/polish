@@ -294,6 +294,14 @@ This sample application shows how to use the browser technology of J2ME Polish.
             <parsable targetfile="$INSTALL_PATH/samples/tabbedform/build-netbeans.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/tabbedform/nbproject/project.properties" type="shell" /> 
         </pack>
+        <pack name="TabbedPane Sample Application" required="no" preselected="yes">
+            <description>A sample application that shows how to use the TabbedPane.</description>
+            <file src="samples/tabbedpane" targetdir="$INSTALL_PATH/samples"/>
+            <parsable targetfile="$INSTALL_PATH/samples/tabbedpane/build.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/tabbedpane/.classpath" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/tabbedpane/build-netbeans.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/tabbedpane/nbproject/project.properties" type="shell" /> 
+        </pack>
         <pack name="MIDP SysInfo" required="no" preselected="yes">
             <description>An application that checks the capabilities of your device. This application is based on Grimo Software's MIDP SysInfo MIDlet and is a co-effort of Grimo Software, Enough Software and Mark Schriejver.</description>
             <file src="samples/sysinfo" targetdir="$INSTALL_PATH/samples"/>
