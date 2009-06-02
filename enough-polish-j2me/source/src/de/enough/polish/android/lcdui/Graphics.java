@@ -1147,6 +1147,8 @@ public class Graphics
 	 */
 	public void drawString( String str, int x, int y, int anchor)
 	{
+		x += this.translateX;
+		y += this.translateY;
 		int horizontalLayout = anchor & (Graphics.LEFT | Graphics.RIGHT | Graphics.HCENTER);
 		switch (horizontalLayout) {
 		case LEFT:
