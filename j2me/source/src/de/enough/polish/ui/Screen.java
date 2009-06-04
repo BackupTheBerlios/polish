@@ -1058,7 +1058,7 @@ implements UiElement, Animatable
 		this.backgroundX = this.marginLeft + borderWidthL;
 		this.backgroundY = this.marginTop + borderWidthT;
 		this.backgroundWidth = this.screenWidth - this.backgroundX - borderWidthR - this.marginRight;
-		//#if tmp.fullscreen
+		//#if tmp.menuFullScreen
 			this.backgroundHeight = this.fullScreenHeight - this.backgroundY - borderWidthB - this.marginBottom;
 			//#if polish.css.background-bottom
 				if (this.excludeMenuBarForBackground) {
