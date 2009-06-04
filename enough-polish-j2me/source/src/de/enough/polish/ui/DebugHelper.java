@@ -48,6 +48,15 @@ public class DebugHelper {
 				return true;
 			}
 		}
+		else
+		{
+			if(item.getLabel() != null && item.getLabel().indexOf(text) != -1)
+			{
+				callback(callback);
+				return true;
+			}
+		}
+			
 		
 		return false;
 	}
@@ -95,6 +104,10 @@ public class DebugHelper {
 		if(callback != null)
 		{
 			callback.onDebug();
+		}
+		else
+		{
+			System.out.println("BREAK");
 		}
 	}
 	
