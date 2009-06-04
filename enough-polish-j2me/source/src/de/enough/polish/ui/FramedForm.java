@@ -636,6 +636,24 @@ public class FramedForm extends Form {
 			if ( newFrame != null && newFrame != this.currentlyActiveContainer ) {
 				setActiveFrame(newFrame);
 				handled = true;
+				
+				//#if polish.FramedForm.allowCycling
+				if(this.allowCycling)
+				{
+					// make sure that the right item is focused i.e.
+					// if the direction is UP the last item of
+					// the resulting container should be focused
+					int lastItem = newFrame.size() - 1;
+					int firstItem = 0;
+					switch(gameAction)
+					{
+						case LEFT : 
+						case RIGHT : 
+						case DOWN : newFrame.focusChild(firstItem); break;
+						case UP : newFrame.focusChild(lastItem); break;
+					}
+				}
+				//#endif
 			}
 			else
 			{
