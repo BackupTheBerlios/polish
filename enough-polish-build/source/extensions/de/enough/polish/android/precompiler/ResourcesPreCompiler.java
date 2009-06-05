@@ -120,6 +120,7 @@ public class ResourcesPreCompiler extends PreCompiler {
 				,"android.permission.SEND_SMS"
 				,"android.permission.READ_CONTACTS"
 				,"android.permission.WRITE_CONTACTS"
+				,"android.permission.READ_PHONE_STATE"
 		};
 		
 		for (int i = 0; i < permissions.length; i++) {
