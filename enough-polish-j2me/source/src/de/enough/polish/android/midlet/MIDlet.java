@@ -2,6 +2,7 @@
 package de.enough.polish.android.midlet;
 
 import java.util.HashMap;
+import java.util.Locale;
 
 import javax.microedition.lcdui.Display;
 
@@ -92,7 +93,7 @@ public abstract class MIDlet extends Activity {
 	protected void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		
+		//TODO: Extract all strings to constants.
 		TelephonyManager telephonyManager = (TelephonyManager)MIDlet.midletInstance.getSystemService(Context.TELEPHONY_SERVICE);
 		PhoneStateListener listener = new PhoneStateListener() {
 			@Override
@@ -124,10 +125,14 @@ public abstract class MIDlet extends Activity {
 		setSystemProperty("Cell-Id","-1");
 		setSystemProperty("Cell-lac","-1");
 		setSystemProperty("SignalStrength","0");
+		String subscriberId = telephonyManager.getSubscriberId();
+		setSystemProperty("IMSI", subscriberId);
+		String deviceId = telephonyManager.getDeviceId();
+		setSystemProperty("IMEI", deviceId);
 		
-		//TODO: Get the system locale from the system.
-		String systemLocale = "en";
-		setSystemProperty("microedition.locale",systemLocale);
+		Locale locale = getBaseContext().getResources().getConfiguration().locale;
+		String language = locale.getLanguage();
+		setSystemProperty("microedition.locale", language);
 		if(this.contentResolver == null) {
 			this.contentResolver = getContentResolver();
 		}
@@ -151,6 +156,9 @@ public abstract class MIDlet extends Activity {
 		super.onConfigurationChanged(newConfig);
 		//#debug
 		System.out.println("Config changed:"+newConfig);
+		Locale locale = newConfig.locale;
+		String language = locale.getLanguage();
+		setSystemProperty("microedition.locale", language);
 	}
 
 	/* (non-Javadoc)
