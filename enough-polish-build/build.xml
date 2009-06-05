@@ -1044,6 +1044,13 @@
 			<arg line="&quot;Build Finished&quot;" />
 			<arg line="&quot;Finished J2ME Polish installer on ${builddate} at ${buildtime}.&quot;" />
 		</exec>
+		<exec executable="java" osfamily="unix">
+			<arg line="-cp" />
+			<arg line="dist/enough-j2mepolish-build.jar" />
+			<arg line="de.enough.polish.linuxnotify.LinuxNotifier" />
+			<arg line="&quot;Build Finished&quot;" />
+			<arg line="&quot;Finished J2ME Polish installer on ${builddate} at ${buildtime}.&quot;" />
+		</exec>
 	</target>
 		
 	<target name="izpack" description="calls only IzPack for generating the installer">
