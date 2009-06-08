@@ -270,6 +270,7 @@ public class StringItem extends Item
 	 */
 	protected void hideNotify() {
 		if (this.textEffect != null) {
+			this.textEffect.onDetach(this);
 			this.textEffect.hideNotify();
 		}
 		super.hideNotify();
@@ -282,6 +283,7 @@ public class StringItem extends Item
 	 */
 	protected void showNotify() {
 		if (this.textEffect != null) {
+			this.textEffect.onAttach(this);
 			this.textEffect.showNotify();
 		}
 		super.showNotify();
@@ -689,14 +691,9 @@ public class StringItem extends Item
 						}
 					}
 					this.textEffect = effect;
-					this.textEffect.onAttach(this);
 				}
 				effect.setStyle(style);
 			} else {
-				if (this.textEffect != null)
-				{
-					this.textEffect.onDetach(this);
-				}
 				this.textEffect = null;
 			}
 		//#endif

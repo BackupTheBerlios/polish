@@ -111,9 +111,18 @@ public abstract class TextEffect implements Serializable
 	 * @param parent the parent item
 	 * @param data the data
 	 */
-	public void setData(Item parent, Object data)
+	public Object setData(Item parent, Object data)
 	{
-		parent.setAttribute(getClass().getName(),data);
+		if(data == null)
+		{
+			parent.removeAttribute(getClass().getName());
+		}
+		else
+		{
+			parent.setAttribute(getClass().getName(),data);
+		}
+
+		return data;
 	}
 	
 	/**
