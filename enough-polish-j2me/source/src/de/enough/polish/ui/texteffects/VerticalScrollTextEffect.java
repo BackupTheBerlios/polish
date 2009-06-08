@@ -33,6 +33,7 @@ import de.enough.polish.ui.AnimationThread;
 import de.enough.polish.ui.ClippingRegion;
 import de.enough.polish.ui.CommandItem;
 import de.enough.polish.ui.Item;
+import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.TextEffect;
 
@@ -48,44 +49,58 @@ import de.enough.polish.ui.TextEffect;
  */
 public class VerticalScrollTextEffect extends TextEffect{
 
-	transient Item parent;
+	//transient Item parent;
+
+	public static final int STAGE_SHOW = 0x00;
+	public static final int STAGE_SCROLL = 0x01;
 	
-	String[] textLines = null;
-	String[] firstLine = null;
-	
-	String[] drawLines = new String[2];
-	int lineHeight = 0;
-	
-	static final int STAGE_SHOW = 0x00;
-	static final int STAGE_SCROLL = 0x01;
-	
-	long stageTime = 0;
 	int stageInterval = 2000;
-	int stageCurrent = STAGE_SHOW;
 	
-	int lineIndex = 0;
-	int lineOffset = 0;
+	class Data
+	{
+		public int lineHeight = 0;
+		
+		public String[] textLines = null;
+		public String[] firstLine = null;
+		
+		public String[] drawLines = new String[2];
+		
+		public long stageTime = 0;
+		public int stageCurrent = STAGE_SHOW;
+		
+		public int lineIndex = 0;
+		public int lineOffset = 0;
+		
+		public int lastLineWidth = -1;
+	}
 	
-	int lastLineWidth = -1;
-	
+	public void onAttach(Item parent) {
+		setData(parent, new Data());
+		AnimationThread.addAnimationItem(parent);
+	}
+
+	public void onDetach(Item parent) {
+		AnimationThread.removeAnimationItem(parent);
+	}
+
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.TextEffect#animate(de.enough.polish.ui.Item, long, de.enough.polish.ui.ClippingRegion)
 	 */
 	public void animate(Item parent, long currentTime,
 			ClippingRegion repaintRegion) {
 		super.animate(parent, currentTime, repaintRegion);
-		
-		if(this.textLines != null && this.textLines.length == 1)
+		Data data = (Data)getData(parent);
+		if(data.textLines != null && data.textLines.length == 1)
 		{
 			// there's only one line to draw so the parent item
 			// can be removed from the AnimationThread
-			AnimationThread.removeAnimationItem(this.parent);
+			AnimationThread.removeAnimationItem(parent);
 			return;
 		}
 		
 		boolean addRepaintRegion = false;
-		if (this.stageTime == 0) {
-			this.stageTime = currentTime;
+		if (data.stageTime == 0) {
+			data.stageTime = currentTime;
 			addRepaintRegion = true;
 		}
 		
@@ -95,40 +110,40 @@ public class VerticalScrollTextEffect extends TextEffect{
 			CommandItem item = (CommandItem)parent;
 			if(item.isOpen())
 			{
-				this.lineOffset = 0;
-				this.stageCurrent = STAGE_SHOW;
+				data.lineOffset = 0;
+				data.stageCurrent = STAGE_SHOW;
 				return;
 			}
 		}
 		
 		// get the time passed since last animation
-		long timePassed = currentTime - this.stageTime;
+		long timePassed = currentTime - data.stageTime;
 		
-		switch(stageCurrent)
+		switch(data.stageCurrent)
 		{
 			case STAGE_SHOW : 
 				if (timePassed > this.stageInterval) {
 					//#debug debug
 					System.out.println("stage changed to STAGE_SCROLL");
 
-					this.stageCurrent = STAGE_SCROLL;
-					this.stageTime = currentTime;
+					data.stageCurrent = STAGE_SCROLL;
+					data.stageTime = currentTime;
 					addRepaintRegion = true;
 				}
 				break;
 			case STAGE_SCROLL : 
-				this.lineOffset = getLineOffset(timePassed, this.lineHeight );
+				data.lineOffset = getLineOffset(data,timePassed, data.lineHeight );
 				addRepaintRegion = true;
 				// if the interval time has passed ... 
 				if (timePassed > this.stageInterval) {
 					//#debug debug
 					System.out.println("stage change to STAGE_SHOW");
 					
-					this.lineIndex = (lineIndex + 1) % this.textLines.length;
-					this.lineOffset = 0;
+					data.lineIndex = (data.lineIndex + 1) % data.textLines.length;
+					data.lineOffset = 0;
 					
-					this.stageCurrent = STAGE_SHOW;
-					this.stageTime = currentTime;
+					data.stageCurrent = STAGE_SHOW;
+					data.stageTime = currentTime;
 				}
 				break;
 		};
@@ -145,7 +160,7 @@ public class VerticalScrollTextEffect extends TextEffect{
 	 * @param lineHeight the line height
 	 * @return the offset
 	 */
-	public int getLineOffset(long timePassed, int lineHeight)
+	public int getLineOffset(Data data, long timePassed, int lineHeight)
 	{
 		int progress = (int)(timePassed * 1000 / this.stageInterval) * 100 / 1000;
 		return (lineHeight * 1000 / 100) * progress / 1000;
@@ -154,13 +169,16 @@ public class VerticalScrollTextEffect extends TextEffect{
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.TextEffect#drawStrings(java.lang.String[], int, int, int, int, int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
-	public void drawStrings(String[] textLines, int textColor, int x, int y,
+	public void drawStrings(Item parent, String[] textLines, int textColor, int x, int y,
 			int leftBorder, int rightBorder, int lineHeight, int maxWidth,
 			int layout, Graphics g) {
-		this.lineHeight = lineHeight;
+		Data data = (Data)getData(parent);
+		System.out.println(data.textLines[data.textLines.length - 1]);
 		
-		this.drawLines[0] = this.textLines[lineIndex];
-		this.drawLines[1] = this.textLines[(lineIndex + 1) % this.textLines.length];
+		data.lineHeight = lineHeight;
+		
+		data.drawLines[0] = data.textLines[data.lineIndex];
+		data.drawLines[1] = data.textLines[(data.lineIndex + 1) % data.textLines.length];
 		
 		int clipX = g.getClipX();
 		int clipY = g.getClipY();
@@ -175,7 +193,7 @@ public class VerticalScrollTextEffect extends TextEffect{
 		
 		leftBorder = x;
 		
-		super.drawStrings(this.drawLines, textColor, x, y - this.lineOffset, leftBorder, rightBorder,
+		super.drawStrings(data.drawLines, textColor, x, y - data.lineOffset, leftBorder, rightBorder,
 				lineHeight, maxWidth, layout, g);
 		
 		g.setClip(clipX, clipY, clipWidth, clipHeight);
@@ -184,16 +202,17 @@ public class VerticalScrollTextEffect extends TextEffect{
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.TextEffect#wrap(java.lang.String, int, javax.microedition.lcdui.Font, int, int)
 	 */
-	public String[] wrap(String text, int textColor, Font font,
+	public String[] wrap(Item parent, String text, int textColor, Font font,
 			int firstLineWidth, int lineWidth) {
-		if(firstLine == null || this.lastLineWidth != firstLineWidth)
+		Data data = (Data)getData(parent);
+		if(data.firstLine == null || data.lastLineWidth != firstLineWidth)
 		{
-			this.textLines = super.wrap(text, textColor, font, firstLineWidth, lineWidth);
-			this.firstLine = new String[]{this.textLines[0]};
-			this.lastLineWidth = firstLineWidth;
+			data.textLines = super.wrap(text, textColor, font, firstLineWidth, lineWidth);
+			data.firstLine = new String[]{data.textLines[0]};
+			data.lastLineWidth = firstLineWidth;
 		}
 		
-		return this.firstLine;
+		return data.firstLine;
 	}
 
 	/* (non-Javadoc)
@@ -205,26 +224,6 @@ public class VerticalScrollTextEffect extends TextEffect{
 		g.drawString(text, x, y, anchor);
 	}
 	
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.TextEffect#onAttach(de.enough.polish.ui.Item)
-	 */
-	public void onAttach(Item parent) {
-		this.parent = parent;
-		this.stageTime = 0;
-		this.stageCurrent = STAGE_SHOW;
-		this.lineIndex = 0;
-		this.lineOffset = 0;
-		this.firstLine = null;
-		AnimationThread.addAnimationItem(parent);
-	}
-
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.TextEffect#onDetach(de.enough.polish.ui.Item)
-	 */
-	public void onDetach(Item parent) {
-		AnimationThread.removeAnimationItem(parent);
-	}
-
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.TextEffect#setStyle(de.enough.polish.ui.Style)
 	 */
@@ -243,8 +242,10 @@ public class VerticalScrollTextEffect extends TextEffect{
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.TextEffect#getMaxWidth(java.lang.String[])
 	 */
-	public int getMaxWidth(String[] lines) {
-		return super.getMaxWidth(this.textLines);
+	public int getMaxWidth(Item parent, String[] lines) {
+		Data data = (Data)getData(parent);
+		
+		return super.getMaxWidth(parent, data.textLines);
 	}
 	
 	

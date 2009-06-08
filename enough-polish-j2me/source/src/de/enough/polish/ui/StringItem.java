@@ -459,9 +459,9 @@ public class StringItem extends Item
 						lo = this.layout & ~Item.LAYOUT_VCENTER;
 					//#endif
 					//#if polish.Bugs.needsBottomOrientiationForStringDrawing
-						this.textEffect.drawStrings( this.textLines, this.textColor, x, y, leftBorder, rightBorder, lineHeight, this.contentWidth, lo	 | Item.LAYOUT_BOTTOM, g );
+						this.textEffect.drawStrings( this, this.textLines, this.textColor, x, y, leftBorder, rightBorder, lineHeight, this.contentWidth, lo	 | Item.LAYOUT_BOTTOM, g );
 					//#else
-						this.textEffect.drawStrings( this.textLines, this.textColor, x, y, leftBorder, rightBorder, lineHeight, this.contentWidth, lo | Item.LAYOUT_TOP, g );
+						this.textEffect.drawStrings( this, this.textLines, this.textColor, x, y, leftBorder, rightBorder, lineHeight, this.contentWidth, lo | Item.LAYOUT_TOP, g );
 					//#endif
 				} else {
 			//#endif
@@ -624,7 +624,7 @@ public class StringItem extends Item
 				//#ifdef tmp.useTextEffect
 				if(this.textEffect != null)
 				{
-					maxWidth = this.textEffect.getMaxWidth(lines);
+					maxWidth = this.textEffect.getMaxWidth(this,lines);
 				}
 				else
 				{
@@ -653,7 +653,7 @@ public class StringItem extends Item
 	{
 		//#ifdef tmp.useTextEffect
 		if (this.textEffect != null) {
-			return this.textEffect.wrap( body, this.textColor, this.font, firstLineWidth, availWidth );
+			return this.textEffect.wrap( this, body, this.textColor, this.font, firstLineWidth, availWidth );
 		} else {
 		//#endif
 			//#ifdef polish.css.max-lines

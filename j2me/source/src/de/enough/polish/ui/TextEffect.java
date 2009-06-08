@@ -95,6 +95,28 @@ public abstract class TextEffect implements Serializable
 	}
 	
 	/**
+	 * Gets the data of a text effect
+	 * for complex effects
+	 * @param parent the parent item
+	 * @return the data
+	 */
+	public Object getData(Item parent)
+	{
+		return parent.getAttribute(getClass().getName());
+	}
+	
+	/**
+	 * Sets the data of a text effect
+	 * for complex effects
+	 * @param parent the parent item
+	 * @param data the data
+	 */
+	public void setData(Item parent, Object data)
+	{
+		parent.setAttribute(getClass().getName(),data);
+	}
+	
+	/**
 	 * Sets the style of this item without assuming defaults for non-set style elements.
 	 * Subclasses can override this method for getting specific settings.
 	 * 
@@ -132,7 +154,50 @@ public abstract class TextEffect implements Serializable
 			parent.addRelativeToContentRegion( repaintRegion, 0, 0, parent.contentWidth, parent.contentHeight );
 		}
 	}
+	
+	//#if polish.LibraryBuild
+	/**
+	 * Paints the text and applies the text effect.
+	 * The default implementation calls drawText( String, int, int, int, int, int, Graphics)
+	 * 
+	 * @param parent the parent item
+	 * @param textLines the text
+	 * @param textColor the color of the text
+	 * @param x horizontal start coordinate
+	 * @param y vertical start coordinate
+	 * @param leftBorder the left border, nothing must be painted left of this position
+	 * @param rightBorder the right border, nothing must be painted right of this position
+	 * @param lineHeight the height of a single text line
+	 * @param maxWidth the width of the longest line
+	 * @param layout the anchor or the text, e.g. Item.LAYOUT_CENTER or Item.LAYOUT_RIGHT
+	 * @param g the graphics context
+	 * @see #drawString( String,int,int,int,int,Graphics)
+	 */
+	public void drawStrings( FakeCustomItem parent, String[] textLines, int textColor, int x, int y, int leftBorder, int rightBorder, int lineHeight, int maxWidth, int layout, Graphics g ) {
+		drawStrings(textLines, textColor, x, y, leftBorder, rightBorder, lineHeight, maxWidth, layout, g);
+	}
+	//#endif
 
+	/**
+	 * Paints the text and applies the text effect.
+	 * The default implementation calls drawText( String, int, int, int, int, int, Graphics)
+	 * 
+	 * @param parent the parent item
+	 * @param textLines the text
+	 * @param textColor the color of the text
+	 * @param x horizontal start coordinate
+	 * @param y vertical start coordinate
+	 * @param leftBorder the left border, nothing must be painted left of this position
+	 * @param rightBorder the right border, nothing must be painted right of this position
+	 * @param lineHeight the height of a single text line
+	 * @param maxWidth the width of the longest line
+	 * @param layout the anchor or the text, e.g. Item.LAYOUT_CENTER or Item.LAYOUT_RIGHT
+	 * @param g the graphics context
+	 * @see #drawString( String,int,int,int,int,Graphics)
+	 */
+	public void drawStrings( Item parent, String[] textLines, int textColor, int x, int y, int leftBorder, int rightBorder, int lineHeight, int maxWidth, int layout, Graphics g ) {
+		drawStrings(textLines, textColor, x, y, leftBorder, rightBorder, lineHeight, maxWidth, layout, g);
+	}
 	
 	/**
 	 * Paints the text and applies the text effect.
@@ -424,6 +489,36 @@ public abstract class TextEffect implements Serializable
 		}
 		return Font.getDefaultFont();
 	}
+	
+	//#if polish.LibraryBuild
+	/**
+	 * Wraps the text into several lines.
+	 * 
+	 * @param parent the parent item
+	 * @param text the text
+	 * @param font used font
+	 * @param firstLineWidth width of the first line
+	 * @param lineWidth width of following lines
+	 * @return an arrays with strings all fitting into the specified dimensions
+	 */
+	public String[] wrap(FakeCustomItem parent, String text, int textColor, Font font, int firstLineWidth, int lineWidth) {
+		return wrap(text,textColor,font,firstLineWidth,lineWidth);
+	}
+	//#endif
+	
+	/**
+	 * Wraps the text into several lines.
+	 * 
+	 * @param parent the parent item
+	 * @param text the text
+	 * @param font used font
+	 * @param firstLineWidth width of the first line
+	 * @param lineWidth width of following lines
+	 * @return an arrays with strings all fitting into the specified dimensions
+	 */
+	public String[] wrap(Item parent, String text, int textColor, Font font, int firstLineWidth, int lineWidth) {
+		return wrap(text,textColor,font,firstLineWidth,lineWidth);
+	}
 
 	/**
 	 * Wraps the text into several lines.
@@ -458,7 +553,7 @@ public abstract class TextEffect implements Serializable
 	 * @param lines the lines
 	 * @return the maximum width
 	 */
-	public int getMaxWidth(String[] lines)
+	public int getMaxWidth(Item parent, String[] lines)
 	{
 		int maxWidth = 0;
 		for (int i = 0; i < lines.length; i++) {

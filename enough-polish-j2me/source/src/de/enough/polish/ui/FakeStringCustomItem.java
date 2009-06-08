@@ -484,13 +484,13 @@ public class FakeStringCustomItem extends FakeCustomItem
 						if (this.useSingleLine && this.clipText ) {
 							x += this.xOffset;
 							//#if polish.Bugs.needsBottomOrientiationForStringDrawing
-								this.textEffect.drawStrings( this.textLines, this.textColor, x, y, leftBorder, rightBorder, lineHeight, this.contentWidth, Graphics.LEFT | Graphics.BOTTOM, g );
+								this.textEffect.drawStrings( this, this.textLines, this.textColor, x, y, leftBorder, rightBorder, lineHeight, this.contentWidth, Graphics.LEFT | Graphics.BOTTOM, g );
 							//#else
-								this.textEffect.drawStrings( this.textLines, this.textColor, x, y, leftBorder, rightBorder, lineHeight, this.contentWidth, Graphics.LEFT | Graphics.TOP, g );
+								this.textEffect.drawStrings( this, this.textLines, this.textColor, x, y, leftBorder, rightBorder, lineHeight, this.contentWidth, Graphics.LEFT | Graphics.TOP, g );
 							//#endif
 						} else {
 					//#endif
-							this.textEffect.drawStrings( this.textLines, this.textColor, x, y, leftBorder, rightBorder, lineHeight, this.contentWidth, this.layout, g );
+							this.textEffect.drawStrings( this, this.textLines, this.textColor, x, y, leftBorder, rightBorder, lineHeight, this.contentWidth, this.layout, g );
 					//#if polish.css.text-wrap
 						}
 					//#endif
@@ -700,7 +700,7 @@ public class FakeStringCustomItem extends FakeCustomItem
 				String[] lines;
 				//#ifdef polish.css.text-effect
 					if (this.textEffect != null) {
-						lines = this.textEffect.wrap( this.text, this.textColor,
+						lines = this.textEffect.wrap( this, this.text, this.textColor,
 								this.font, firstLineWidth, availWidth );
 					} else {
 				//#endif
