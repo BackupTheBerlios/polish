@@ -75,8 +75,6 @@ public class VerticalScrollTextEffect extends TextEffect{
 	}
 	
 	public void onAttach(Item parent) {
-		setData(parent, new Data());
-		AnimationThread.addAnimationItem(parent);
 	}
 
 	public void onDetach(Item parent) {
@@ -90,11 +88,9 @@ public class VerticalScrollTextEffect extends TextEffect{
 			ClippingRegion repaintRegion) {
 		super.animate(parent, currentTime, repaintRegion);
 		Data data = (Data)getData(parent);
-		if(data.textLines != null && data.textLines.length == 1)
+		
+		if(data == null || (data.textLines != null && data.textLines.length == 1))
 		{
-			// there's only one line to draw so the parent item
-			// can be removed from the AnimationThread
-			AnimationThread.removeAnimationItem(parent);
 			return;
 		}
 		
@@ -173,7 +169,6 @@ public class VerticalScrollTextEffect extends TextEffect{
 			int leftBorder, int rightBorder, int lineHeight, int maxWidth,
 			int layout, Graphics g) {
 		Data data = (Data)getData(parent);
-		System.out.println(data.textLines[data.textLines.length - 1]);
 		
 		data.lineHeight = lineHeight;
 		
@@ -205,11 +200,26 @@ public class VerticalScrollTextEffect extends TextEffect{
 	public String[] wrap(Item parent, String text, int textColor, Font font,
 			int firstLineWidth, int lineWidth) {
 		Data data = (Data)getData(parent);
-		if(data.firstLine == null || data.lastLineWidth != firstLineWidth)
+		
+		if(data == null || data.lastLineWidth != firstLineWidth)
 		{
+			if(data == null)
+			{
+				data = (Data)setData(parent, new Data());
+			}
+			
 			data.textLines = super.wrap(text, textColor, font, firstLineWidth, lineWidth);
 			data.firstLine = new String[]{data.textLines[0]};
 			data.lastLineWidth = firstLineWidth;
+			
+			if(data.textLines != null && data.textLines.length > 1)
+			{
+				AnimationThread.addAnimationItem(parent);
+			}
+			else
+			{
+				AnimationThread.removeAnimationItem(parent);
+			}
 		}
 		
 		return data.firstLine;
@@ -247,7 +257,4 @@ public class VerticalScrollTextEffect extends TextEffect{
 		
 		return super.getMaxWidth(parent, data.textLines);
 	}
-	
-	
-	
 }
