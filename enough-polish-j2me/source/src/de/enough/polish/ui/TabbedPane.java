@@ -1115,37 +1115,51 @@ public class TabbedPane extends Screen
 		}
 	}
 
-	public void keyPressed(int keyCode) {
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#handleKeyPressed(int, int)
+	 */
+	protected boolean handleKeyPressed(int keyCode, int gameAction) {
 		if (this.currentScreen != null) {
 			this.lastInteractionTime = System.currentTimeMillis();
-			this.currentScreen.keyPressed(keyCode);
+			return this.currentScreen.handleKeyPressed(keyCode, gameAction);
 		} else {
-			super.keyPressed(keyCode);	
+			return super.handleKeyPressed(keyCode, gameAction);	
 		}
 	}
 
-	public void keyReleased(int keyCode) {
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#handleKeyReleased(int, int)
+	 */
+	protected boolean handleKeyReleased(int keyCode, int gameAction) {
 		if (this.currentScreen != null) {
-			this.currentScreen.keyReleased(keyCode);
-			int gameAction = getGameAction( keyCode );
-			if (gameAction == RIGHT && this.currentDisplayableIndex < this.tabDisplayables.size()-1) {
-				setFocus( this.currentDisplayableIndex + 1 );
-			} else if (gameAction == LEFT && this.currentDisplayableIndex > 0) {
-				setFocus( this.currentDisplayableIndex - 1 );
+			boolean handled = this.currentScreen.handleKeyReleased(keyCode, gameAction);
+			if(!handled)
+			{
+				if (gameAction == RIGHT && this.currentDisplayableIndex < this.tabDisplayables.size()-1) {
+					setFocus( this.currentDisplayableIndex + 1 );
+				} else if (gameAction == LEFT && this.currentDisplayableIndex > 0) {
+					setFocus( this.currentDisplayableIndex - 1 );
+				}
+				return true;
 			}
+			return handled;
 		} else {
-			super.keyReleased(keyCode);	
+			return super.handleKeyReleased(keyCode, gameAction);
 		}
 	}
-
-	public void keyRepeated(int keyCode) {
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#handleKeyRepeated(int, int)
+	 */
+	protected boolean handleKeyRepeated(int keyCode, int gameAction) {
 		if (this.currentScreen != null) {
-			this.currentScreen.keyRepeated(keyCode);
+			this.lastInteractionTime = System.currentTimeMillis();
+			return this.currentScreen.handleKeyRepeated(keyCode, gameAction);
 		} else {
-			super.keyRepeated(keyCode);	
+			return super.handleKeyRepeated(keyCode, gameAction);	
 		}
 	}
-
+	
 	//#ifdef polish.hasPointerEvents
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#pointerDragged(int, int)
