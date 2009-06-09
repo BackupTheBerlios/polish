@@ -4644,6 +4644,17 @@
 		id="394"
 		since="J2ME Polish 2.1"
 	/>
+	
+	<attribute
+		name="visited-style"
+		type="style"
+		appliesTo="Item"
+		description="The name of the style for an item that has been visited - meaning that it's default command has been triggered. This is usually applied with a [style-name]:visited style definition."
+		default="null"
+		id="395"
+		since="J2ME Polish 2.1.1"
+	/>
+	
 
 <!-- 
 	<attribute

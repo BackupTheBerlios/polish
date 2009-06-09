@@ -44,6 +44,7 @@ public class MicroEmulator extends Emulator {
 
 	private String microemulatorPlayerPath;
 	private String microemulatorHomePath;
+	private String librariesPath;
 
 	/**
 	 * Creates a new emulator launcher.
@@ -66,22 +67,20 @@ public class MicroEmulator extends Emulator {
 			return false;
 		}
 		this.microemulatorHomePath = microemulatorHome;
-		/*
-		if (screenWidth != null && screenHeight != null) {
-			File jadFile = new File( env.getVariable("polish.jadPath") );
-			try {
-				FileUtil.addLines( jadFile, new String[] {
-						"MPP-Width: " + screenWidth,
-						"MPP-Height: " + screenHeight,
-						"MPP-Scale: 1.0"
-				} );
-			} catch (IOException e) {
-				e.printStackTrace();
-				System.err.println("Error: Unable to add MPP attributes to JAD file [" + jadFile.getAbsolutePath() + "]: " + e.toString() );
-				return false;
+		File libHome = new File( microemulatorHome + "/lib");
+		String[] libraries = libHome.list();
+		if (libraries == null) {
+			System.err.println("Warning: unable to find additional libraries of microemulator at \"" +  microemulatorHome + "/lib\".");
+		} else {
+			StringBuffer libsBuffer = new StringBuffer();
+			for (int i = 0; i < libraries.length; i++) {
+				String lib = libraries[i];
+				if (lib.startsWith("micro") && lib.endsWith(".jar")) {
+					libsBuffer.append("lib" + File.separatorChar + lib + File.pathSeparatorChar);
+				}
 			}
+			this.librariesPath = libsBuffer.toString();
 		}
-		*/
 		this.microemulatorPlayerPath = playerJar.getAbsolutePath();
 		return true;
 	}
@@ -109,6 +108,8 @@ public class MicroEmulator extends Emulator {
 			"org.microemu.app.Main",
 			"--resizableDevice", screenWidth, screenHeight,
 			"--device",  "org/microemu/device/resizable/device.xml",
+			//"--classpath", this.librariesPath,
+			"--appclasspath", this.librariesPath,
 			this.environment.getVariable("polish.jadPath")
 		};
 	}
@@ -129,6 +130,14 @@ public class MicroEmulator extends Emulator {
 			argsList.add(index, arg);
 			index++;
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.emulator.Emulator#getExecutionDir()
+	 */
+	protected File getExecutionDir() {
+		return new File( this.microemulatorHomePath );
 	}
 
 
