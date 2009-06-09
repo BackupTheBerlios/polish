@@ -35,6 +35,7 @@ import javax.microedition.lcdui.Graphics;
 import de.enough.polish.ui.Background;
 import de.enough.polish.ui.Color;
 import de.enough.polish.ui.Style;
+import de.enough.polish.util.DeviceInfo;
 import de.enough.polish.util.DrawUtil;
 
 /**
@@ -59,11 +60,11 @@ public class TranslucentSimpleBackground extends Background {
 		// int MIDP/2.0 the buffer is always used:
 		private transient int[] buffer;
 		private transient int lastWidth;
-		//#if polish.Bugs.drawRgbNeedsFullBuffer || polish.isDynamic
+		//#if polish.Bugs.drawRgbNeedsFullBuffer || polish.vendor == Generic
 			private int lastHeight;
 		//#endif
-		//#if polish.isDynamic
-			private boolean needsFullBuffer;
+		//#if polish.vendor == Generic
+			private boolean needsFullBuffer = DeviceInfo.requiresFullRgbArrayForDrawRgb();
 		//#endif
 	//#endif
 
@@ -127,8 +128,8 @@ public class TranslucentSimpleBackground extends Background {
 				
 			// check if the buffer needs to be created:
 			
-			//#if polish.Bugs.drawRgbNeedsFullBuffer || polish.isDynamic
-				//#if polish.isDynamic
+			//#if polish.Bugs.drawRgbNeedsFullBuffer || polish.vendor == Generic
+				//#if polish.vendor == Generic && !polish.Bugs.drawRgbNeedsFullBuffer
 					if (this.needsFullBuffer) {
 				//#endif
 						if (width != this.lastWidth || height != this.lastHeight) {
@@ -140,7 +141,7 @@ public class TranslucentSimpleBackground extends Background {
 							}
 							this.buffer = newBuffer;
 						}
-				//#if polish.isDynamic
+				//#if polish.vendor == Generic && !polish.Bugs.drawRgbNeedsFullBuffer
 					}
 				//#endif
 			//#endif
@@ -154,12 +155,12 @@ public class TranslucentSimpleBackground extends Background {
 					this.buffer = newBuffer;
 				}
 			//#endif
-			//#if polish.Bugs.drawRgbNeedsFullBuffer || polish.isDynamic
-				//#if polish.isDynamic
+			//#if polish.Bugs.drawRgbNeedsFullBuffer || polish.vendor == Generic
+				//#if polish.vendor == Generic && !polish.Bugs.drawRgbNeedsFullBuffer
 					if (this.needsFullBuffer) {
 				//#endif
 						DrawUtil.drawRgb( this.buffer, x, y, width, height, true, g );
-				//#if polish.isDynamic
+				//#if polish.vendor == Generic && !polish.Bugs.drawRgbNeedsFullBuffer
 						return;
 					}
 				//#endif
@@ -179,11 +180,11 @@ public class TranslucentSimpleBackground extends Background {
 				if (height <= 0) {
 					return;
 				}
-				//#if polish.isDynamic
+				//#if polish.vendor == Generic
 					try {
 				//#endif
 						g.drawRGB(this.buffer, 0, 0, x, y, width, height, true);
-				//#if polish.isDynamic
+				//#if polish.vendor == Generic
 					} catch (Exception e) {
 						//#debug error
 						System.out.println("problem while rendering RGB array: " + e.toString() + ": " + e.getMessage() );

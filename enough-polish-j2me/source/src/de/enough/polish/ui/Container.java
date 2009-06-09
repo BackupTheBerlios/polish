@@ -998,7 +998,7 @@ public class Container extends Item {
 		if (item.style != null && !item.isStyleInitialised) {
 			item.setStyle(  item.style );
 		}
-		Style newStyle = item.focusedStyle;
+		Style newStyle = item.getFocusedStyle();
 		//#if polish.css.focused-style-first
 			if (index == 0 && this.focusedStyleFirst != null) {
 				newStyle = this.focusedStyleFirst;
@@ -1009,9 +1009,6 @@ public class Container extends Item {
 				newStyle = this.focusedStyleLast;
 			}
 		//#endif
-		if (newStyle == null) {
-			newStyle = item.getFocusedStyle();
-		}
 		return newStyle;
 	}
 

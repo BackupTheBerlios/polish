@@ -27,6 +27,8 @@ package de.enough.polish.util;
 
 //#if polish.midp
 	import javax.microedition.lcdui.Canvas;
+import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
 //#endif
 
 /**
@@ -60,6 +62,8 @@ public class DeviceInfo
 	public static final int VENDOR_BLACKBERRY = 9;
 	/** The vendor of this device is Sagem */
 	public static final int VENDOR_SAGEM = 10;
+	private static boolean requiresFullRgbArrayForDrawRgb;
+	private static boolean requiresFullRgbArrayForDrawRgbResolved;
 	/** The vendor of this device is  * /
 	public static final int VENDOR_ = ;
 	*/
@@ -106,6 +110,11 @@ public class DeviceInfo
 		if (platform.startsWith("blackberry")) {
 			return VENDOR_BLACKBERRY;
 		}
+		String model = System.getProperty( "device.model" );
+		if (model != null) {
+			//TODO: note this is a rather wild guess:
+			return VENDOR_SAMSUNG;
+		}
 		return VENDOR_UNKNOWN;
 	}
 	
@@ -139,7 +148,8 @@ public class DeviceInfo
 	public static int getKeyInputModeSwitch() {
 		int key = 35; // == Canvas.KEY_POUND
 		//#if polish.midp
-			if (getVendor() == VENDOR_SONY_ERICSSON) {
+			int vendor = getVendor();
+			if (vendor == VENDOR_SONY_ERICSSON || vendor == VENDOR_SAMSUNG) {
 				key = Canvas.KEY_STAR;
 			}
 		//#endif
@@ -154,12 +164,44 @@ public class DeviceInfo
 	public static int getKeySpace() {
 		int key = 48; // == Canvas.KEY_NUM0
 		//#if polish.midp
-			if (getVendor() == VENDOR_SONY_ERICSSON) {
+			int vendor = getVendor();
+			if (vendor == VENDOR_SONY_ERICSSON || vendor == VENDOR_SAMSUNG) {
 				key = Canvas.KEY_POUND;
 			}
 		//#endif
 		return key;
 	}
 
+	/**
+	 * Checks if the device requires a full RGB array consisting of the width x height of the covered area
+	 * @return true when a full RGB array is required, false when the width of the covered area is sufficient
+	 */
+	public static boolean requiresFullRgbArrayForDrawRgb() {
+		//#if polish.midp2
+			if (!requiresFullRgbArrayForDrawRgbResolved) {
+				int[] rgb = new int[10];
+				for (int i = 0; i < rgb.length; i++) {
+					rgb[i] = 0x99000000;
+				}
+				try {
+					Image image = Image.createImage(10, 10);
+					Graphics g = image.getGraphics();
+					g.drawRGB(rgb, 0, 0, 0, 0, 10, 10, true );
+					// retrieve the seventh pixel-row (anyone will do):
+					image.getRGB(rgb, 0, 10, 0, 7, 10, 1);
+					int pixel = rgb[4];
+					//#debug
+					System.out.println("pixel color is " + Integer.toHexString(pixel));
+					if (pixel == 0xffffffff) {
+						requiresFullRgbArrayForDrawRgb = true;
+					}
+				} catch (Exception e) {
+					requiresFullRgbArrayForDrawRgb = true;
+				}
+				requiresFullRgbArrayForDrawRgbResolved = true;
+			}
+		//#endif
+		return requiresFullRgbArrayForDrawRgb;
+	}
 
 }

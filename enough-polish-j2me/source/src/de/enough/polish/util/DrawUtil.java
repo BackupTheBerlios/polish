@@ -57,12 +57,12 @@ public final class DrawUtil {
 	/**
 	 * Draws a (translucent) filled out rectangle.
 	 * Please note that this method has to create temporary arrays for pure MIDP 2.0 devices each time it is called, using a TranslucentSimpleBackground
-	 * is probably less resource intensiv.
+	 * is probably less resource intensive.
 	 * 
 	 * @param x the horizontal start position
 	 * @param y the vertical start position 
 	 * @param width the width of the rectangle
-	 * @param height the heigh of the rectanglet 
+	 * @param height the height of the rectangle 
 	 * @param color the argb color of the rectangle, when there is no alpha value (color & 0xff000000 == 0), the traditional g.fillRect() method is called
 	 * @param g the graphics context
 	 * @see de.enough.polish.ui.backgrounds.TranslucentSimpleBackground
@@ -101,21 +101,40 @@ public final class DrawUtil {
 			//#endif
 				
 			// check if the buffer needs to be created:
-			int[] buffer;
-			//#if polish.Bugs.drawRgbNeedsFullBuffer
-				buffer = new int[ width * height ];
-				for (int i = buffer.length - 1; i >= 0 ; i--) {
-					buffer[i] = color;
-				}
-			//#else
-				buffer = new int[ width ];
-				for (int i = buffer.length - 1; i >= 0 ; i--) {
-					buffer[i] = color;
-				}
+			int[] buffer = null;
+			//#if polish.Bugs.drawRgbNeedsFullBuffer || polish.vendor == Generic
+				//#if polish.vendor == Generic
+					if (DeviceInfo.requiresFullRgbArrayForDrawRgb()) {
+				//#endif
+						buffer = new int[ width * height ];
+						for (int i = buffer.length - 1; i >= 0 ; i--) {
+							buffer[i] = color;
+						}
+				//#if polish.vendor == Generic
+					}
+				//#endif
+			//#endif
+			//#if !polish.Bugs.drawRgbNeedsFullBuffer
+				//#if polish.vendor == Generic
+					if (buffer == null) {
+				//#endif
+						buffer = new int[ width ];
+						for (int i = buffer.length - 1; i >= 0 ; i--) {
+							buffer[i] = color;
+						}
+				//#if polish.vendor == Generic
+					}
+				//#endif
 			//#endif
 			//#if polish.Bugs.drawRgbNeedsFullBuffer
 				drawRgb(buffer, x, y, width, height, true, g);
 			//#else
+				//#if polish.vendor == Generic
+					if (DeviceInfo.requiresFullRgbArrayForDrawRgb()) {
+						drawRgb(buffer, x, y, width, height, true, g);
+						return;
+					}
+				//#endif
 				if (x < 0) {
 					width += x;
 					x = 0;

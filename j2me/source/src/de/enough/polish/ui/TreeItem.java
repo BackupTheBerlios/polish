@@ -65,6 +65,7 @@ public class TreeItem
 	private Style nodeStyle;
 	private Object focusPathKey;
 	private Object[] focusPathValues;
+	private TreeModel treeModel;
 
 	
 	/**
@@ -73,7 +74,7 @@ public class TreeItem
 	 * @param label the label of this item
 	 */
 	public TreeItem(String label ) {
-		this( label, null );
+		this( label, (Style)null );
 	}
 
 	/**
@@ -85,6 +86,42 @@ public class TreeItem
 	public TreeItem(String label, Style style) {
 		super( false, style );
 		setLabel( label );
+	}
+	
+	/**
+	 * Creates a new tree item.
+	 * 
+	 * @param label the label of this item
+	 * @param model the data model for this tree
+	 */
+	public TreeItem(String label, TreeModel model ) {
+		this( label, model, null );
+	}
+
+	/**
+	 * Creates a new tree item.
+	 * 
+	 * @param label the label of this item
+	 * @param model the data model for this tree
+	 * @param style the style
+	 */
+	public TreeItem(String label, TreeModel model, Style style) {
+		super( false, style );
+		setLabel( label );
+		this.treeModel = model;
+		Object root = model.getRoot();
+		if (root != null) {
+			 int count = model.getChildCount(root);
+			 for (int i=0; i<count; i++) {
+				 Object node = model.getChild(root, i);
+				 if (node instanceof Item) {
+					 appendToRoot((Item)node);
+				 } else if (node != null) {
+					 Item item = UiAccess.cast( appendToRoot(node.toString(), null) );
+					 item.setAttribute(this, node);
+				 }
+			 }
+		}
 	}
 	
 	//#if polish.LibraryBuild
@@ -185,6 +222,15 @@ public class TreeItem
 	 */
 	public void appendToRoot( Item item ) {
 		add(item);
+		if (this.treeModel != null) {
+			Object data = item.getAttribute(this);
+			if (data == null) {
+				data = item;
+			}
+			if (!this.treeModel.isLeaf(data)) {
+				convertToNode(item);
+			}
+		}
 //		this.lastAddedItem = item;
 	}
 
@@ -240,6 +286,44 @@ public class TreeItem
 	}
 	
 	/**
+	 * Converts a TreeItem into a node (if not realized before)
+	 * @param treeElement an item within this tree
+	 * @return the parent node for the the TreeItem
+	 */
+	protected Node convertToNode( Item treeElement) {
+		Node parentNode;
+		if ( !(treeElement.parent instanceof Node) ) {
+			// the item has to be converted into a node:
+			Container parentContainer;
+			//#if polish.LibraryBuild
+				if ( (Object)treeElement.parent == this) {
+					// this is a root item:
+					parentContainer = (Container) ((Object)this);
+			//#else
+				//# if (treeElement.parent == this) {
+				// this is a root item:
+				//# parentContainer = this;
+			//#endif
+			} else {
+				parentContainer = (Container) treeElement.parent;
+			}
+			parentNode = new Node( treeElement, this.nodeStyle );
+			Item[] myItems = parentContainer.getItems();
+			for (int i = 0; i < myItems.length; i++) {
+				Item rootItem = myItems[i];
+				if ( treeElement == rootItem ) {
+					parentContainer.set(i, parentNode);
+					treeElement.parent = parentNode;
+					break;
+				}
+			}
+		} else {
+			parentNode = ((Node)treeElement.parent);
+		}
+		return parentNode;
+	}
+	
+	/**
 	 * Adds the specified item to this tree.
 	 * 
 	 * @param node the parent node that has been previously added to this tree
@@ -251,35 +335,7 @@ public class TreeItem
 			item.setStyle( childStyle );
 		}
 		// find correct Node:
-		Node parentNode;
-		if ( !(node.parent instanceof Node) ) {
-			// the item has to be converted into a node:
-			Container parentContainer;
-			//#if polish.LibraryBuild
-				if ( (Object)node.parent == this) {
-					// this is a root item:
-					parentContainer = (Container) ((Object)this);
-			//#else
-				//# if (node.parent == this) {
-				// this is a root item:
-				//# parentContainer = this;
-			//#endif
-			} else {
-				parentContainer = (Container) node.parent;
-			}
-			parentNode = new Node( node, this.nodeStyle );
-			Item[] myItems = parentContainer.getItems();
-			for (int i = 0; i < myItems.length; i++) {
-				Item rootItem = myItems[i];
-				if ( node == rootItem ) {
-					parentContainer.set(i, parentNode);
-					node.parent = parentNode;
-					break;
-				}
-			}
-		} else {
-			parentNode = ((Node)node.parent);
-		}
+		Node parentNode = convertToNode( node );
 		item.parent = parentNode;
 		parentNode.addChild(item);
 //		this.lastAddedItem = item;
@@ -778,7 +834,7 @@ public class TreeItem
 		private void setExpanded( boolean expand ) {
 			if (!expand) {
 				this.internalX = NO_POSITION_SET;
-				// close down all chidren nodes as well when closing:
+				// close down all children nodes as well when closing:
 				Item[] myItems = this.children.getItems();
 				for (int i = 0; i < myItems.length; i++) {
 					Item item = myItems[i];
@@ -787,6 +843,9 @@ public class TreeItem
 					}
 				}
 				this.children.hideNotify();
+				if (TreeItem.this.treeModel != null) {
+					this.children.clear();
+				}
 				//if (this.isChildrenFocused) {
 				focusRoot();
 //			} else if (!this.isExpanded) {
@@ -797,6 +856,28 @@ public class TreeItem
 			}
 			if (expand != this.isExpanded) {
 				this.isExpanded = expand;
+				if (expand && TreeItem.this.treeModel != null) {
+					Object data = this.root.getAttribute(this);
+					if (data == null) {
+						data = this.root;
+					}
+					TreeModel model = TreeItem.this.treeModel;
+					int count = model.getChildCount(data);
+					for (int i=0; i<count; i++) {
+						Object child = model.getChild(data, i);
+						Item childItem = null;
+						if (child instanceof Item) {
+							childItem = (Item)child;
+							appendToNode(this.root, childItem);
+						} else if (child != null) {
+							childItem = appendToNode( this.root, child.toString(), null );
+							childItem.setAttribute(this, child);
+						}
+						if (childItem != null && !model.isLeaf(child)) {
+							convertToNode(childItem);
+						}
+					}
+				}
 				requestInit();
 				if (expand) {
 					this.children.showNotify();

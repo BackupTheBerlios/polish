@@ -836,6 +836,9 @@ public abstract class Item implements UiElement, Animatable
 
 	private boolean preserveBackground;
 	private boolean preserveBorder;
+	//#if polish.css.visited-style
+		private boolean hasBeenVisited;
+	//#endif
 
 
 
@@ -3210,6 +3213,26 @@ public abstract class Item implements UiElement, Animatable
 						scr.callCommandListener(item.defaultCommand);
 					}
 				}
+				//#if polish.css.visited-style
+					if (this.style != null) {
+						Style visitedStyle = (Style) this.style.getObjectProperty("visited-style");
+						if (visitedStyle != null) {
+							this.hasBeenVisited = true;
+							//#debug
+							System.out.println("found visited style " + visitedStyle.name + " in " + this.style.name);
+							setStyle( visitedStyle );
+						} 
+						if (this.parent instanceof Container) {
+							Container cont = (Container) this.parent;
+							visitedStyle = (Style) cont.itemStyle.getObjectProperty("visited-style");
+							if (visitedStyle != null) {
+								//#debug
+								System.out.println("found visited style " + visitedStyle.name + " in " + cont.itemStyle.name);								
+								cont.itemStyle = visitedStyle;
+							}
+						}
+					}
+				//#endif
 				return true;
 			}
 		}
@@ -3613,13 +3636,25 @@ public abstract class Item implements UiElement, Animatable
 		if (!this.isStyleInitialised && this.style != null) {
 			setStyle( this.style );
 		}
+		Style focStyle;
 		if (this.focusedStyle != null) {
-			return this.focusedStyle;
+			focStyle = this.focusedStyle;
 		} else if (this.parent != null) {
-			return this.parent.getFocusedStyle();
+			focStyle = this.parent.getFocusedStyle();
 		} else {
-			return StyleSheet.focusedStyle;
+			focStyle= StyleSheet.focusedStyle;
 		}
+		//#if polish.css.visited-style
+			if (this.hasBeenVisited && focStyle != null) {
+				Style visitedStyle = (Style) focStyle.getObjectProperty("visited-style");
+				//#debug
+				System.out.println("found visited style " + (visitedStyle != null ? visitedStyle.name : "<none>") + " in " + focStyle.name);
+				if (visitedStyle != null) {
+					focStyle = visitedStyle;
+				}
+			}
+		//#endif
+		return focStyle;
 	}
 
 	/**
