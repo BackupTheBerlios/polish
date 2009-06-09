@@ -270,7 +270,7 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 		
 		int key = this.util.handleKey(keyCode, event, this.currentPolishCanvas);
 		//#debug
-		System.out.println("onKeyDown : " + key);
+		System.out.println("onKeyDown:converted android key code '" + keyCode+"' to ME code '"+key+"'");
 		
 		this.currentPolishCanvas.keyPressed(key);
 		
@@ -278,8 +278,6 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 	}
 
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
-		//#debug
-		System.out.println("onKeyUp : " + keyCode);
 		if(this.currentPolishCanvas == null) {
 			return false;
 		}
@@ -289,7 +287,8 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 		}
 		
 		int key = this.util.handleKey(keyCode, event, this.currentPolishCanvas);
-		
+		//#debug
+		System.out.println("onKeyUp:converted android key code '" + keyCode+"' to ME code '"+key+"'");
 		this.currentPolishCanvas.keyReleased(key);
 		
 		return true;
