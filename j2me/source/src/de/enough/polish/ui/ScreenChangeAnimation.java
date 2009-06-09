@@ -135,7 +135,6 @@ implements Runnable
 		//System.out.println("screen change animation initialized with width=" + width + ", height=" + height);
 		this.screenWidth = width;
 		this.screenHeight = height;
-		System.out.println("onshow : " + dsplay);
 		this.display = dsplay;
 		this.nextCanvas = (Canvas) nxtDisplayable;
 		this.nextDisplayable = nxtDisplayable;
