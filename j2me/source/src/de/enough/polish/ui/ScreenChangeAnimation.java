@@ -135,6 +135,7 @@ implements Runnable
 		//System.out.println("screen change animation initialized with width=" + width + ", height=" + height);
 		this.screenWidth = width;
 		this.screenHeight = height;
+		System.out.println("onshow : " + dsplay);
 		this.display = dsplay;
 		this.nextCanvas = (Canvas) nxtDisplayable;
 		this.nextDisplayable = nxtDisplayable;
@@ -313,11 +314,23 @@ implements Runnable
 		try {			
 			if (this.nextCanvasImage != null) {
 				paintAnimation( g );
-				this.display.callSerially( this );
+				//TODO temporary fix for NPEs. assumed root cause
+				//is that Display.currentCanvas (this animation) is set before
+				//the ScreenAnimation.display is set in onShow()
+				if(this.display == null)
+				{
+					StyleSheet.display.callSerially( this );
+				}
+				else
+				{
+					this.display.callSerially( this );
+				}
 			}	
 		} catch (Exception e) {
 			//#debug error
 			System.out.println("Unable to paint animation" + e );
+			System.out.println(this.display);
+			System.out.println(this.nextCanvasImage);
 		}
 	}
 
