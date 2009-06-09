@@ -31,22 +31,17 @@ public class DisplayUtil {
 		int meta = event.getMetaState();
 		
 		int ascii = this.characterMap.get(key, meta);
-		
-		if( ascii == 0 && 
-			(canvas.getGameAction(keyCode) != 0 ||
-			isClear(keyCode) || 
-			isReturn(keyCode) ||
-			isMenu(keyCode))
-		)
-		{
-			if(isClear(keyCode))
-			{
-				return -8;
-			}
-			else
-			{
-				return keyCode;
-			}
+		//#debug
+		System.out.println("Mapped keycode '"+keyCode+"' to ascii char '"+ascii+"'");
+		boolean isClearKey = isClear(keyCode);
+		boolean isReturnKey = isReturn(keyCode);
+		boolean isMenuKey = isMenu(keyCode);
+		int gameActionKey = canvas.getGameAction(keyCode);
+		boolean isGameActionKey = gameActionKey != 0;
+		boolean notAsciiKey = ascii == 0;
+		if( notAsciiKey && (isGameActionKey || isClearKey || isReturnKey ||	isMenuKey)
+		){
+			return keyCode;
 		}
 		else
 		{
@@ -56,8 +51,8 @@ public class DisplayUtil {
 	
 	public boolean isClear(int keyCode)
 	{
-		//#ifdef polish.android.key.ClearKey:defined
-		//#= if (keyCode == ${polish.android.key.ClearKey})
+		//#ifdef polish.key.ClearKey:defined
+		//#= if (keyCode == ${polish.key.ClearKey})
 		//# {
 		//#		return true; 
 		//# }
