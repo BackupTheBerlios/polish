@@ -126,8 +126,14 @@ public abstract class MIDlet extends Activity {
 		setSystemProperty("Cell-lac","-1");
 		setSystemProperty("SignalStrength","0");
 		String subscriberId = telephonyManager.getSubscriberId();
+		if(subscriberId == null) {
+			subscriberId = "";
+		}
 		setSystemProperty("IMSI", subscriberId);
 		String deviceId = telephonyManager.getDeviceId();
+		if(deviceId == null) {
+			deviceId = "";
+		}
 		setSystemProperty("IMEI", deviceId);
 		
 		Locale locale = getBaseContext().getResources().getConfiguration().locale;
@@ -147,6 +153,9 @@ public abstract class MIDlet extends Activity {
 	}
 
 	protected void setSystemProperty(String name, String value) {
+		if(value == null) {
+			value = "";
+		}
 		// Hidden because midp does not like this method
 		//#= System.setProperty(name,value);
 	}
