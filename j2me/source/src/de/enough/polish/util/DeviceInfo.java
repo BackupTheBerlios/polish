@@ -25,7 +25,7 @@
  */
 package de.enough.polish.util;
 
-//#if polish.midp
+//#if polish.midp || polish.android
 	import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
