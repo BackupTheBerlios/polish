@@ -14,6 +14,7 @@ import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.telephony.CellLocation;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
@@ -24,6 +25,7 @@ import android.view.Window;
 import de.enough.polish.android.io.ConnectionNotFoundException;
 import de.enough.polish.android.lcdui.AndroidDisplay;
 import de.enough.polish.android.lcdui.Canvas;
+import de.enough.polish.util.DeviceControl;
 
 /**
  * A MIDlet is a MID Profile application.
@@ -71,6 +73,8 @@ public abstract class MIDlet extends Activity {
 	private ContentResolver contentResolver;
 
 	private boolean shuttingDown;
+
+	private PowerManager.WakeLock wakeLock;
 
 	/**
 	 * Protected constructor for subclasses. The application management software
@@ -152,6 +156,26 @@ public abstract class MIDlet extends Activity {
 		setSystemProperty("fileconn.dir.private", appDirectory);
 	}
 
+	public void backlightOn() {
+		if(this.wakeLock != null) {
+			return;
+		}
+		PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+		this.wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK|PowerManager.ACQUIRE_CAUSES_WAKEUP, "Skobbler Wake Lock");
+		this.wakeLock.acquire();
+		//#debug
+		System.out.println("WakeLock acquired?"+this.wakeLock.isHeld());
+	}
+	
+	/**
+	 * You need to call this method when you switched on the light with {@link #backlightOn()}.
+	 */
+	public void backlightRelease() {
+		if(this.wakeLock != null) {
+			this.wakeLock.release();
+		}
+	}
+	
 	protected void setSystemProperty(String name, String value) {
 		if(value == null) {
 			value = "";
@@ -259,6 +283,8 @@ public abstract class MIDlet extends Activity {
 		System.out.println("onStop().");
 		//Debug.stopMethodTracing();
 		pauseApp();
+		// Release the wake lock if it was acquired.
+		backlightRelease();
 		super.onStop();
 	}
 
