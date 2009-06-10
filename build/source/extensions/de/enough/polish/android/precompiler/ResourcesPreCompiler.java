@@ -121,6 +121,7 @@ public class ResourcesPreCompiler extends PreCompiler {
 				,"android.permission.READ_CONTACTS"
 				,"android.permission.WRITE_CONTACTS"
 				,"android.permission.READ_PHONE_STATE"
+				,"android.permission.WAKE_LOCK"
 		};
 		
 		for (int i = 0; i < permissions.length; i++) {
