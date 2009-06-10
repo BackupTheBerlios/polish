@@ -2954,20 +2954,6 @@ public class TextField extends StringItem
                         }
                         //#endif
 
-                        //#ifdef polish.key.ChangeNumericalAlphaInputModeKey:defined
-                        //#= if(!handled &&
-                        //#=     !(keyCode == KEY_CHANGE_MODE && !this.isNumeric &&
-                        //#=       !(KEY_CHANGE_MODE == Canvas.KEY_NUM0 &&
-                        //#=         this.inputMode == MODE_NUMBERS)) &&
-                        //#=     !(keyCode == ${polish.key.ChangeNumericalAlphaInputModeKey} &&
-                        //#=       !this.isNumeric))
-                        //#else
-                        if(!handled && keyCode != KEY_CHANGE_MODE)
-                        //#endif
-                        {
-                                handled = handleKeyInsert(keyCode, gameAction);
-                        }
-						
 						// Backspace
 						//#ifdef polish.key.ClearKey:defined
 							//#= if (keyCode == ${polish.key.ClearKey}
@@ -2981,7 +2967,31 @@ public class TextField extends StringItem
 						{
 							handled = handleKeyClear(keyCode, gameAction);
 						}
+						
+						// rickyn: Prevent the menu key on android to print a "R" key.
+						//#if polish.key.Menu:defined
+							int menuKey = 0;
+							//#= menuKey = ${polish.key.Menu};
+							if(keyCode == menuKey) {
+								handled = true;
+							}
+						//#endif
 							
+							
+						//#ifdef polish.key.ChangeNumericalAlphaInputModeKey:defined
+                        //#= if(!handled &&
+                        //#=     !(keyCode == KEY_CHANGE_MODE && !this.isNumeric &&
+                        //#=       !(KEY_CHANGE_MODE == Canvas.KEY_NUM0 &&
+                        //#=         this.inputMode == MODE_NUMBERS)) &&
+                        //#=     !(keyCode == ${polish.key.ChangeNumericalAlphaInputModeKey} &&
+                        //#=       !this.isNumeric))
+                        //#else
+                        if(!handled && keyCode != KEY_CHANGE_MODE)
+                        //#endif
+                        {
+                                handled = handleKeyInsert(keyCode, gameAction);
+                        }
+	                        
 						// Navigate the caret
 						if (   (gameAction == Canvas.UP 	|| 
 								gameAction == Canvas.DOWN 	||
