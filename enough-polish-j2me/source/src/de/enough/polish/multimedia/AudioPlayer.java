@@ -26,17 +26,20 @@
  */
 package de.enough.polish.multimedia;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Hashtable;
 
 import javax.microedition.media.Manager;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
 import javax.microedition.media.PlayerListener;
 import javax.microedition.media.control.VolumeControl;
+import java.util.Hashtable;
+import java.io.IOException;
+import java.io.InputStream;
 
 //#if polish.android
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
 import de.enough.polish.android.helper.ResourceInputStream;
 import de.enough.polish.android.helper.ResourcesHelper;
 import de.enough.polish.android.midlet.MIDlet;
@@ -57,7 +60,7 @@ import android.media.MediaPlayer;
  */
 public class AudioPlayer implements PlayerListener
 //#if polish.android
-	, MediaPlayer.OnCompletionListener 
+	, MediaPlayer.OnCompletionListener
 //#endif
 {
 
@@ -73,11 +76,12 @@ public class AudioPlayer implements PlayerListener
 
 	private final String defaultContentType;
 
-	private int volumeLevel = -1;
+	// -1 means the user has not set a volume level. Use the system default, i.e. alter nothing.
+	private int userJ2MeLevel = -1;
 
-	private int previousVolumeLevel;
+	private int previousVolumeLevel = -1;
 
-	private int androidMaxVolume;
+	private int androidMaxVolume = -1;
 
 	/**
 	 * Creates a new audio player with no default content type and no caching.
@@ -169,15 +173,29 @@ public class AudioPlayer implements PlayerListener
 	public void play(String url, String type) throws MediaException, IOException
 	{
 		//#if polish.android
-			if(url.startsWith("file://")) {
-				this.androidPlayer = new MediaPlayer();
-				this.androidPlayer.setDataSource(url);
-			} else {
-				int resourceID = ResourcesHelper.getResourceID(url);
-				this.androidPlayer = MediaPlayer.create(MIDlet.midletInstance, resourceID);
+		if(url.startsWith("file://")) {
+			this.androidPlayer = new MediaPlayer();
+			String path = url.substring("file://".length());
+			File file = new File(path);
+			if(!file.exists()) {
+				throw new IOException("Could not find file at url '"+url+"'");
 			}
-			this.androidPlayer.setOnCompletionListener(this);
-			this.androidPlayer.start();
+			System.out.println("The file is "+file.getAbsolutePath());
+			FileInputStream fileInputStream = new FileInputStream(file);
+			FileDescriptor fileDescriptor = fileInputStream.getFD();
+			//TODO: Do we need to close the stream?
+//			fileInputStream.close();
+			// rickyn: Do not use setDataSource(String) as it does not work. Use setDataSource(FileDescriptor) instead.
+			this.androidPlayer.setDataSource(fileDescriptor);
+			this.androidPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+			this.androidPlayer.prepare();
+		} else {
+			int resourceID = ResourcesHelper.getResourceID(url);
+			this.androidPlayer = MediaPlayer.create(MIDlet.midletInstance, resourceID);
+			
+		}
+		this.androidPlayer.setOnCompletionListener(this);
+		this.androidPlayer.start();
 		//#else
 			InputStream in = getClass().getResourceAsStream(url);
 			if (in == null) {
@@ -226,8 +244,8 @@ public class AudioPlayer implements PlayerListener
 			this.player.addPlayerListener(this);
 			this.player.start();
 		//#endif
-		if (this.volumeLevel != -1) {
-			setVolumeLevel(this.volumeLevel);
+		if(this.userJ2MeLevel != -1) {
+			setVolumeLevel(this.userJ2MeLevel);
 		}
 	}
 
@@ -242,7 +260,20 @@ public class AudioPlayer implements PlayerListener
 		//#if polish.android
 			if(url.startsWith("file://")) {
 				this.androidPlayer = new MediaPlayer();
-				this.androidPlayer.setDataSource(url);
+				String path = url.substring("file://".length());
+				File file = new File(path);
+				if(!file.exists()) {
+					throw new IOException("Could not find file at url '"+url+"'");
+				}
+				System.out.println("The file is "+file.getAbsolutePath());
+				FileInputStream fileInputStream = new FileInputStream(file);
+				FileDescriptor fileDescriptor = fileInputStream.getFD();
+				//TODO: Do we need to close the stream?
+//				fileInputStream.close();
+				// rickyn: Do not use setDataSource(String) as it does not work.
+				this.androidPlayer.setDataSource(fileDescriptor);
+				this.androidPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+				this.androidPlayer.prepare();
 			} else {
 				int resourceID = ResourcesHelper.getResourceID(url);
 				this.androidPlayer = MediaPlayer.create(MIDlet.midletInstance, resourceID);
@@ -257,10 +288,8 @@ public class AudioPlayer implements PlayerListener
 			}
 			play(in);
 		//#endif
-		if (this.volumeLevel != -1) {
-			setVolumeLevel(this.volumeLevel);
-//		} else {
-//			this.volumeLevel = getVolumeLevel();
+		if(this.userJ2MeLevel != -1) {
+			setVolumeLevel(this.userJ2MeLevel);
 		}
 	}
 
@@ -291,6 +320,9 @@ public class AudioPlayer implements PlayerListener
 			this.player.addPlayerListener(this);
 			this.player.start();
 		//#endif
+			if(this.userJ2MeLevel != -1) {
+				setVolumeLevel(this.userJ2MeLevel);
+			}
 	}
 
 	/**
@@ -443,8 +475,7 @@ public class AudioPlayer implements PlayerListener
 	 * Closes and deallocates the player.
 	 */
 	public void cleanUpPlayer() {
-		//TODO: rickyn: do we need to reset the volume?
-		this.volumeLevel = -1;
+		this.userJ2MeLevel = -1;
 		//#if !polish.android
 			if (this.player != null) {
 				this.player.deallocate();
@@ -471,8 +502,10 @@ public class AudioPlayer implements PlayerListener
 			if (this.androidMaxVolume == -1) {
 				this.androidMaxVolume = audioManager.getStreamMaxVolume( AudioManager.STREAM_MUSIC);
 			}
-			int current = audioManager.getStreamVolume( AudioManager.STREAM_MUSIC);
-			volume = (int) (((float)current * 100f) / this.androidMaxVolume);
+			// TODO: rickyn: This is nonsense. getStreamVolume returns overall volume, not of the currently playing stream.
+//			int current = audioManager.getStreamVolume( AudioManager.STREAM_MUSIC);
+//			volume = (int) (100f / this.androidMaxVolume * current);
+			volume = this.userJ2MeLevel;
 		//#else
 			Player pl = this.player;
 			if (pl != null) {
@@ -481,7 +514,7 @@ public class AudioPlayer implements PlayerListener
 					return volumeControl.getLevel();
 				}
 			}
-			volume = this.volumeLevel;
+			volume = this.userJ2MeLevel;
 		//#endif
 		return volume;
 	}
@@ -491,23 +524,18 @@ public class AudioPlayer implements PlayerListener
 	 * 0 is silence; 100 is the loudest useful level that this VolumeControl supports. If the given level is less than 0 or greater than 100, the level will be set to 0 or 100 respectively.
 	 * When setLevel results in a change in the volume level, a VOLUME_CHANGED event will be delivered through the PlayerListener.
 	 *  
-	 * @param level the volume level between 0 and 100
+	 * @param j2MeLevel the volume level between 0 and 100
 	 */
-	public void setVolumeLevel(int level) {
+	public void setVolumeLevel(int j2MeLevel) {
 		//#if polish.android
-			if (this.androidPlayer != null) {
-				if (this.androidMaxVolume == -1) {
-					AudioManager audioManager = (AudioManager) MIDlet.midletInstance.getSystemService(Context.AUDIO_SERVICE);			
-					this.androidMaxVolume = audioManager.getStreamMaxVolume( AudioManager.STREAM_MUSIC);
-				}
-				if (level < 0) {
-					level = 0;
-				} else if (level > 100) {
-					level = 100;
-				}
-				float levelF = ((float)level * this.androidMaxVolume) / 100f;
-				this.androidPlayer.setVolume(levelF,levelF);
-			}
+		int boundJ2MeLevel = boundJ2MeLevel(j2MeLevel);
+		this.userJ2MeLevel = boundJ2MeLevel;
+		int androidLevel = scaleJ2MeLevelToAndroidLevel(boundJ2MeLevel);
+		AudioManager audioManager = (AudioManager) MIDlet.midletInstance.getSystemService(Context.AUDIO_SERVICE);
+		audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,androidLevel,0);
+//			if (this.androidPlayer != null) {
+//				this.androidPlayer.setVolume(androidLevel,androidLevel);
+//			}
 		//#else
 			Player pl = this.player;
 			if (pl != null) {
@@ -518,7 +546,7 @@ public class AudioPlayer implements PlayerListener
 				}
 			}
 		//#endif
-		this.volumeLevel = level;
+		this.userJ2MeLevel = j2MeLevel;
 	}
 	
 	/**
@@ -550,6 +578,25 @@ public class AudioPlayer implements PlayerListener
 	 */
 	public void onCompletion(MediaPlayer mp) {
 		playerUpdate( this.player, PlayerListener.END_OF_MEDIA, null );
+	}
+	private int scaleJ2MeLevelToAndroidLevel(int aJ2MeLevel) {
+		if (this.androidMaxVolume == -1) {
+			AudioManager audioManager = (AudioManager) MIDlet.midletInstance.getSystemService(Context.AUDIO_SERVICE);			
+			this.androidMaxVolume = audioManager.getStreamMaxVolume( AudioManager.STREAM_MUSIC);
+		}
+		aJ2MeLevel = boundJ2MeLevel(aJ2MeLevel);
+		float androidLevel = this.androidMaxVolume / 100f * aJ2MeLevel;
+//		float androidLevel = aJ2MeLevel / 100f;
+		return (int)androidLevel;
+	}
+
+	private int boundJ2MeLevel(int aJ2MeLevel) {
+		if (aJ2MeLevel < 0) {
+			aJ2MeLevel = 0;
+		} else if (aJ2MeLevel > 100) {
+			aJ2MeLevel = 100;
+		}
+		return aJ2MeLevel;
 	}
 	//#endif
 
