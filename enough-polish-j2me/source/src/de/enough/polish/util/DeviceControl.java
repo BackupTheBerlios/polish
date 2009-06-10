@@ -1,7 +1,11 @@
 package de.enough.polish.util;
 
 //#if polish.usePolishGui
-	import de.enough.polish.ui.StyleSheet;
+import de.enough.polish.ui.StyleSheet;
+//#endif
+
+//#if polish.android
+import de.enough.polish.android.midlet.MIDlet;
 //#endif
 
 /**
@@ -88,6 +92,11 @@ public class DeviceControl
 	 */
 	public static boolean lightOn()
 	{
+		
+		//#if polish.android
+			MIDlet.midletInstance.backlightOn();
+			//# return true;
+		//#else
 		synchronized(lightsLock) {
 			boolean success = false;
 			//#if tmp.useNokiaUi 
@@ -107,6 +116,7 @@ public class DeviceControl
 			//#endif
 			return success;
 		}
+		//#endif
 	}
 	
 	/**
@@ -115,6 +125,9 @@ public class DeviceControl
 	 */
 	public static void lightOff()
 	{
+		//#if polish.android
+			MIDlet.midletInstance.backlightRelease();
+		//#else
 		synchronized(lightsLock) {
 			//#if tmp.useNokiaUi
 				com.nokia.mid.ui.DeviceControl.setLights(0,0);
@@ -128,6 +141,7 @@ public class DeviceControl
 				}
 			//#endif
 		}
+		//#endif
 	}
 	
 	/**
