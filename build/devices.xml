@@ -479,7 +479,7 @@ These namespaces/schemas will be used soon.
     <capability name="key.Menu" value="82" />
     <capability name="key.enter" value="10" />
     <capability name="key.ReturnKey" value="4" />
-    <capability name="key.ClearKey" value="0" />
+    <capability name="key.ClearKey" value="67" />
     <capability name="key.supportsAsciiKeyMap" value="true" />
   </device>
   
@@ -494,7 +494,7 @@ These namespaces/schemas will be used soon.
     <capability name="key.Menu" value="82" />
     <capability name="key.enter" value="10" />
     <capability name="key.ReturnKey" value="4" />
-    <capability name="key.ClearKey" value="0" />
+    <capability name="key.ClearKey" value="67" />
     <capability name="key.supportsAsciiKeyMap" value="true" />
   </device>
   
@@ -622,7 +622,7 @@ These namespaces/schemas will be used soon.
     <capability name="key.Menu" value="82" />
     <capability name="key.enter" value="10" />
     <capability name="key.ReturnKey" value="4" />
-    <capability name="key.ClearKey" value="0" />
+    <capability name="key.ClearKey" value="67" />
     <capability name="key.supportsAsciiKeyMap" value="true" />
     <capability name="IconSize" value="48x48" />
   </device>
