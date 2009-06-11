@@ -66,6 +66,7 @@ public class TreeItem
 	private Object focusPathKey;
 	private Object[] focusPathValues;
 	private TreeModel treeModel;
+	public ArrayList treeModelChildrenList;
 
 	
 	/**
@@ -109,18 +110,23 @@ public class TreeItem
 		super( false, style );
 		setLabel( label );
 		this.treeModel = model;
-		Object root = model.getRoot();
-		if (root != null) {
-			 int count = model.getChildCount(root);
-			 for (int i=0; i<count; i++) {
-				 Object node = model.getChild(root, i);
-				 if (node instanceof Item) {
-					 appendToRoot((Item)node);
-				 } else if (node != null) {
-					 Item item = UiAccess.cast( appendToRoot(node.toString(), null) );
-					 item.setAttribute(this, node);
-				 }
-			 }
+		if (model != null) {
+			this.treeModelChildrenList = new ArrayList();
+			Object root = model.getRoot();
+			if (root != null) {
+				ArrayList list = this.treeModelChildrenList;
+				model.addChildren(root, list);
+				for (int i=0; i<list.size(); i++) {
+					Object node = list.get(i);
+					if (node instanceof Item) {
+						appendToRoot((Item)node);
+					} else if (node != null) {
+						IconItem item = new IconItem( node.toString(), null );
+						item.setAttribute(this, node);
+						appendToRoot( item );
+					}
+				}
+			}
 		}
 	}
 	
@@ -642,6 +648,13 @@ public class TreeItem
 				y += this.root.itemHeight + this.paddingVertical;
 				this.children.paint(x, y, leftBorder, rightBorder, g);
 			}
+//			if (this.internalX != Item.NO_POSITION_SET) {
+//				if (this.isExpanded) {
+//					y -= this.root.itemHeight + this.paddingVertical;
+//				}
+//				g.setColor( 0xff0000 );
+//				g.drawRect( x + this.internalX, y + this.internalY, this.internalWidth, this.internalHeight );
+//			}
 		}
 
 		//#ifdef polish.useDynamicStyles	
@@ -660,6 +673,7 @@ public class TreeItem
 			if (this.isExpanded) {
  				if (this.children.isFocused) {
 					handled = this.children.handleKeyPressed(keyCode, gameAction);
+					//System.out.println("TreeItem: children handled key pressed: " + handled);
 					if (handled) {
 						if (this.children.internalX != NO_POSITION_SET) {
 							this.internalX = this.children.relativeX + this.children.contentX + this.children.internalX;
@@ -690,7 +704,7 @@ public class TreeItem
 
 			}
 			if (!handled && getScreen().isGameActionFire(keyCode, gameAction) ) {
-				handled = this.root.notifyItemPressedStart() || this.children.size() > 0;
+				handled = this.root.notifyItemPressedStart() || (this.children.size() > 0 || TreeItem.this.treeModel != null);
 				if (this.isExpanded) { //will be closed in keyReleased
 					this.internalX = 0;
 					this.internalY = 0;
@@ -857,21 +871,24 @@ public class TreeItem
 			if (expand != this.isExpanded) {
 				this.isExpanded = expand;
 				if (expand && TreeItem.this.treeModel != null) {
-					Object data = this.root.getAttribute(this);
+					Object data = this.root.getAttribute(TreeItem.this);
 					if (data == null) {
 						data = this.root;
 					}
 					TreeModel model = TreeItem.this.treeModel;
-					int count = model.getChildCount(data);
-					for (int i=0; i<count; i++) {
-						Object child = model.getChild(data, i);
+					ArrayList list = TreeItem.this.treeModelChildrenList;
+					list.clear();
+					model.addChildren(data, list);
+					for (int i=0; i<list.size(); i++) {
+						Object child = list.get(i);
 						Item childItem = null;
 						if (child instanceof Item) {
 							childItem = (Item)child;
 							appendToNode(this.root, childItem);
 						} else if (child != null) {
-							childItem = appendToNode( this.root, child.toString(), null );
-							childItem.setAttribute(this, child);
+							childItem = new IconItem( child.toString(), null );
+							childItem.setAttribute(TreeItem.this, child);
+							appendToNode( this.root, childItem );
 						}
 						if (childItem != null && !model.isLeaf(child)) {
 							convertToNode(childItem);

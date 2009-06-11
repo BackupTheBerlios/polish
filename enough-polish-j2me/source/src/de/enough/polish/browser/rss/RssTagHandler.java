@@ -98,6 +98,7 @@ public class RssTagHandler
 	private Command linkCommand;
 	private ItemCommandListener itemListener;
 	private boolean includeDescriptions;
+	private Style rssLinkStyle;
 
 	//#if polish.midp2 && !polish.android
 	public RssTagHandler(Command linkCommand, javax.microedition.lcdui.ItemCommandListener listener)
@@ -250,23 +251,66 @@ public class RssTagHandler
 		return false;
 	}
 
-	protected void addRssItem(String title, String description, String url)
+	/**
+	 * Creates a new RSS item and it's link to the entry.
+	 * 
+	 * @param rssTitle the title of the RSS entry
+	 * @param rssDescription the description
+	 * @param rssUrl the URL for the complete article
+	 */
+	protected void addRssItem(String rssTitle, String rssDescription, String rssUrl)
 	{
 		//#style browserLink
-		StringItem item = new StringItem(null, title);
+		StringItem item = new StringItem(null, rssTitle);
 		item.setAppearanceMode(Item.HYPERLINK);
 		item.setDefaultCommand(CMD_RSS_ITEM_SELECT);
 		item.setItemCommandListener(this.itemListener);
-		item.setAttribute(ATTR_RSS_ITEM, new RssItem(title, description, this.url));
+		item.setAttribute(ATTR_RSS_ITEM, new RssItem(rssTitle, rssDescription, this.url));
 		item.addCommand(this.linkCommand);
 
 		if (this.url != null) {
-			item.setAttribute(HtmlTagHandler.ATTR_HREF, url);
+			item.setAttribute(HtmlTagHandler.ATTR_HREF, rssUrl);
 		}
+		applyStylingForRssLink( item );
 
 		this.browser.add(item);
 	}
 
+	/**
+	 * Subclasses can override this method for adding complex styles to RSS links.
+	 * If a style has been set using the setRssLinkStyle() method, that style is applied here
+	 * by the default implementation. Otherwise the default implementation does not change anything.
+	 *   
+	 * @param item a StringItem that contains a link to the article
+	 */
+	protected void applyStylingForRssLink(StringItem item) {
+		// subclasses may want to override this
+		if (this.rssLinkStyle != null) {
+			item.setStyle(this.rssLinkStyle);
+		}
+	}
+	
+	/**
+	 * Sets a style different from <code>.browserLink</code> for items that point to RSS entries.
+	 * This method needs to be used with a #style preprocessing directive, e.g.
+	 * <pre>
+	 *  //#style rssLink
+	 *  myRssTagHandler.setRssLinkStyle();
+	 * </pre>
+	 */
+	public void setRssLinkStyle() {
+		// empty
+	}
+	
+	/**
+	 * Sets a style different from <code>.browserLink</code> for items that point to RSS entries.
+	 * 
+	 * @param style the style
+	 */
+	public void setRssLinkStyle( Style style ) {
+		this.rssLinkStyle = style;
+	}
+	
 	/**
 	 * Determines whether RSS descriptions should be included directly on the overview page
 	 * 

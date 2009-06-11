@@ -1541,7 +1541,10 @@ public class Container extends Item {
 		//#ifdef tmp.supportViewType
 			}
 		//#endif
-
+//		if (this.internalX != NO_POSITION_SET) {
+//			g.setColor(0xff00);
+//			g.drawRect( x + this.internalX, y + this.internalY, this.internalWidth, this.internalHeight );
+//		}
 	}
 	
 	//#if tmp.supportViewType
@@ -1797,12 +1800,23 @@ public class Container extends Item {
 		}
 		Item item = this.focusedItem;
 		if (item != null) {
-			//int scrollOffset= getScrollYOffset();
+			int scrollOffset = getScrollYOffset();
 			if ( item.handleKeyReleased( keyCode, gameAction ) ) {
-				
-				if (this.enableScrolling && item.internalX != NO_POSITION_SET) {
-					scroll(gameAction, item);
+				if (this.enableScrolling) {
+					if (getScrollYOffset() == scrollOffset) {
+						//#debug
+						System.out.println("scrolling focused item that has handled key released, item=" + item + ", item.internalY=" + item.internalY);
+						scroll(gameAction, item);
+					}
+				} else  {
+					updateInternalPosition(item);
 				}
+
+//				2009-06-10:
+//				if (this.enableScrolling && item.internalX != NO_POSITION_SET) {
+//					scroll(gameAction, item);
+//				}
+				
 //				if (this.enableScrolling) {
 //					if (getScrollYOffset() == scrollOffset) {
 //						// #debug

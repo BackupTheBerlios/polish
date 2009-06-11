@@ -1,4 +1,3 @@
-//#condition polish.usePolishGui
 /*
  * Copyright (c) 2009 Robert Virkus / Enough Software
  *
@@ -25,9 +24,13 @@
 
 package de.enough.polish.ui;
 
+import de.enough.polish.util.ArrayList;
+
 /**
  * Provides data for a TreeItem.
  * The TreeModel is read when needed, meaning this model allows to realize a lazy loading mechanism of structured data.
+ * The J2ME Polish TreeModel is a more convenient model than the Java Swing one, as the model implementation does not need so many lookups
+ * (there is no getChild( Object parent, int index ) method that requires getChildCount( Object parent), for example). 
  * 
  * @author Robert Virkus
  * @see TreeItem
@@ -46,19 +49,10 @@ public interface TreeModel {
 	 * Returns 0 if the node is a leaf or if it has no children. parent must be a node previously obtained from this TreeModel.
 	 *  
 	 * @param parent a node in the tree, obtained from this TreeModel
-	 * @return the number of children of the node parent
+	 * @param childrenList the ArrayList into which the children should be added
 	 */
-	public int getChildCount( Object parent );
+	public void addChildren( Object parent, ArrayList childrenList );
 	
-	/**
-	 * Returns the child of parent at index index  in the parent's child array. parent must be a node previously obtained from this TreeModel. 
-	 * This should not return null  if index  is a valid index for parent (that is index &gt;= 0 &&  index &lt; getChildCount(parent)).
-	 * 
-	 * @param parent a node in the tree, obtained from this TreeModel
-	 * @param index the position of the item: index &gt;= 0 &&  index &lt; getChildCount(parent)
-	 * @return the child node
-	 */
-	public Object getChild( Object parent, int index );
 	
 	/**
 	 * Returns true if node is a leaf. 
@@ -66,6 +60,6 @@ public interface TreeModel {
 	 * @param node a node in the tree, obtained from this TreeModel
 	 * @return true if the node is a leaf
 	 */
-	public boolean isLeaf( Object node);
+	public boolean isLeaf( Object node );
 
 }

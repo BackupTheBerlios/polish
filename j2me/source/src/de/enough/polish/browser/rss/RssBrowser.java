@@ -51,13 +51,13 @@ public class RssBrowser
 		this(new DefaultRssItemCommandListener(), style); 
 	}
 
-	//#if polish.midp2 && !polish.android
+	//#if polish.midp2
 	public RssBrowser(javax.microedition.lcdui.ItemCommandListener listener) {
 		this( listener, null ); 
 	}
 	//#endif
 
-	//#if polish.midp2 && !polish.android
+	//#if polish.midp2
 	public RssBrowser(javax.microedition.lcdui.ItemCommandListener listener, Style style ) {
 		super( style );
 		this.rssTagHandler = new RssTagHandler(HtmlTagHandler.CMD_LINK, (ItemCommandListener) null); 
@@ -81,6 +81,16 @@ public class RssBrowser
 			rssListener.setRssBrowser(this);
 			rssListener.setCommandListener(this);
 		}
+	}
+	
+	/**
+	 * Sets a handler different from the default RSS tag handler.
+	 * @param handler the new RSS tag handler.
+	 * @throws NullPointerException when handler is null
+	 */
+	public void setRssTagHandler( RssTagHandler handler ) {
+		this.rssTagHandler = handler;
+		handler.register(this);
 	}
 
 	/**
