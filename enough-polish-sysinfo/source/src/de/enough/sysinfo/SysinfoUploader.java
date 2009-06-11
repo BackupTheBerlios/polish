@@ -157,8 +157,9 @@ public class SysinfoUploader implements Runnable{
 		spCollector.collectInfos(this.sysinfoMidlet, this.display);
 		Info[] spInfos = spCollector.getInfos();
 		for (int i = 0; i < spInfos.length; i++) {
-			if ( (spInfos[i].value.compareTo("<unknown>")) != 0 && (spInfos[i].value.compareTo("N/A") != 0) )
-				this.infoTable.put(spInfos[i].name, spInfos[i].value);
+			Info info = spInfos[i];
+			if ( (info.value.compareTo("<unknown>")) != 0 && (info.value.compareTo("N/A") != 0) )
+				this.infoTable.put(info.name, info.value);
 		}
 
 		/* collect memory infos */

@@ -127,6 +127,11 @@
 	<delete dir="dist"/>
 </target>
 	
+<target name="cleanbuild"
+		description="Creates a clean build."
+		depends="clean, j2mepolish"
+/>
+	
 <target name="emulator"
 	description="Builds and starts the emulator" 
 	depends="test, j2mepolish"

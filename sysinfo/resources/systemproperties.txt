@@ -13,21 +13,20 @@ microedition.jtwi.version:JavaPlatform + $value
 microedition.msa.version
 
 #Package discovery
-microedition.media.version
+microedition.media.version:JavaPackage + mmapi
 microedition.pim.version:JavaPackage + pim
 microedition.m3g.version:JavaPackage + m3gapi
-microedition.location.version
+microedition.location.version:JavaPackage + locationapi
 bluetooth.api.version:JavaPackage + btapi
-microedition.io.file.FileConnection.version
-microedition.global.version
-microedition.chapi.version
-microedition.sip.version
-wireless.messaging.version
-microedition.amms.version
-microedition.m2g.version
-microedition.payment.version
-microedition.contactless.version
-microedition.sensor.version
+microedition.io.file.FileConnection.version:JavaPackage + fileconnection
+microedition.global.version:JavaPackage + global
+microedition.chapi.version:JavaPackage + contenthandler
+microedition.sip.version:JavaPackage + sip
+wireless.messaging.version:JavaPackage + wmapi
+microedition.amms.version:JavaPackage + advancedmultimedia
+microedition.m2g.version:JavaPackage + m2g
+microedition.payment.version:JavaPackage + payment
+microedition.sensor.version:JavaPackage + sensor
 obex.api.version
 microedition.contactless.version:JavaPackage + nfc
 

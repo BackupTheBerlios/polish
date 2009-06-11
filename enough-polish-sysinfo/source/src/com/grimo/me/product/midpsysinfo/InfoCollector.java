@@ -67,14 +67,20 @@ public abstract class InfoCollector {
 	/**
 	 * @param propName
 	 */
-	protected void addSystemPropertyInfo(String propName) {
-		String value = null;
+	protected String getSystemPropertyInfo(String propName) {
 		try {
-			value = System.getProperty( propName );
+			return System.getProperty( propName );
 		} catch (Exception e) {
 			//#debug error
 			System.out.println("unable to query " + propName + e );
 		}
+		return null;
+	}
+	/**
+	 * @param propName
+	 */
+	protected void addSystemPropertyInfo(String propName) {
+		String value = getSystemPropertyInfo(propName);
 		if (value != null) {
 			addInfo( propName + ":", value );
 		}

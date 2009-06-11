@@ -31,21 +31,22 @@ public class SystemInfoCollector extends InfoCollector {
 	 * @see com.grimo.me.product.midpsysinfo.InfoCollector#collectInfos(com.grimo.me.product.midpsysinfo.MIDPSysInfoMIDlet, javax.microedition.lcdui.Display)
 	 */
 	public void collectInfos(MIDPSysInfoMIDlet midlet, Display display) {
-		addSystemPropertyInfo("property.microedition.configuration");
+		addSystemPropertyInfo("microedition.configuration");
         
-        addSystemPropertyInfo("property.microedition.profiles");
+        addSystemPropertyInfo("microedition.profiles");
         
-        addSystemPropertyInfo( "property.microedition.jtwi.version" );
+        addSystemPropertyInfo( "microedition.jtwi.version" );
         
-        addSystemPropertyInfo("property.microedition.platform");
-        addSystemPropertyInfo("property.device.model");
-        addSystemPropertyInfo( "property.com.sonyericsson.java.platform" );
-        //addSystemPropertyInfo("microedition.platform");
+        addSystemPropertyInfo("microedition.platform");
+        addSystemPropertyInfo("device.model");
+        addSystemPropertyInfo("device.vendor");
+        addSystemPropertyInfo("vendor");
+        addSystemPropertyInfo( "com.sonyericsson.java.platform" );
 
-        addSystemPropertyInfo( "property.microedition.locale" );
+        addSystemPropertyInfo( "microedition.locale" );
 
-        addSystemPropertyInfo( "property.microedition.encoding" );
-        addSystemPropertyInfo( "property.microedition.commports" );
+        addSystemPropertyInfo( "microedition.encoding" );
+        addSystemPropertyInfo( "microedition.commports" );
         
 
         String[] timeZoneIDs = java.util.TimeZone.getAvailableIDs();
@@ -60,6 +61,6 @@ public class SystemInfoCollector extends InfoCollector {
         
         addInfo( "Default TimeZone:", java.util.TimeZone.getDefault().getID());
 	}
-    
+
 
 }
