@@ -101,11 +101,15 @@ public class UiFileSystemTreeModel extends FileSystemTreeModel {
 	protected Style getStyle(FileSystemNode node) {
 		Style nodeStyle = null;
 		if (node.isDirectory()) {
-			//#style directory?
-			//#= nodeStyle = ();
+			//#if polish.css.style.directory
+				//#style directory?
+				//#= nodeStyle = ();
+			//#endif
 		} else {
-			//#style file?
-			//#= nodeStyle = ();			
+			//#if polish.css.style.file
+				//#style file?
+				//#= nodeStyle = ();
+			//#endif
 		}
 		return nodeStyle;
 	}
