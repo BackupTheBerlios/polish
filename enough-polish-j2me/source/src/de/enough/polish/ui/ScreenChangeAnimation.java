@@ -106,6 +106,7 @@ implements Runnable
 	protected int lastContentX;
 	protected int lastContentY;
 	protected boolean supportsDifferentScreenSizes;
+	protected boolean abort = false;
 	
 
 	/**
@@ -132,7 +133,9 @@ implements Runnable
 	 * @param isForward true when the animation should run in the normal direction/mode - false if it should run backwards
 	 */
 	protected void onShow( Style style, Display dsplay, final int width, final int height, Displayable lstDisplayable, Displayable nxtDisplayable, boolean isForward ) {
-		//System.out.println("screen change animation initialized with width=" + width + ", height=" + height);
+		// reset the abort flag
+		this.abort = false;
+		
 		this.screenWidth = width;
 		this.screenHeight = height;
 		this.display = dsplay;
@@ -328,8 +331,6 @@ implements Runnable
 		} catch (Exception e) {
 			//#debug error
 			System.out.println("Unable to paint animation" + e );
-			System.out.println(this.display);
-			System.out.println(this.nextCanvasImage);
 		}
 	}
 
@@ -523,13 +524,22 @@ implements Runnable
 	}
 	
 	/**
+	 * Aborts this screen change animation by setting the abort flag
+	 * which is checked for in the run() method. 
+	 */
+	public void abort()
+	{
+		this.abort = true;
+	}
+	
+	/**
 	 * Runs this animation - subclasses need to ensure to call this.display.callSerially( this ); at the end of the paint method.
 	 * 
 	 * @see java.lang.Runnable#run()
 	 */
 	public void run() {
 		try {
-			if (this.nextCanvas != null && animate()) {
+			if (this.nextCanvas != null && animate() && !abort) {
 				repaint();
 			} else {
 				//#debug
@@ -544,7 +554,7 @@ implements Runnable
 				Displayable next = this.nextDisplayable;
 				this.nextDisplayable = null;
 				System.gc();
-				if (disp != null) {
+				if (disp != null && !abort) {
 					// checking out if the animation is still shown is sweet in theory but it fails when there are security dialogs and the like in the way..
 					//Displayable current = disp.getCurrent();
 					//if (current == this && next != null) {

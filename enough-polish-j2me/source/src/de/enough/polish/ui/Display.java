@@ -892,6 +892,7 @@ implements javax.microedition.lcdui.CommandListener
 	{
 		//#debug
 		System.out.println("Display.setCurrent " + nextDisplayable + ", current=" + this.currentDisplayable);
+		
 		//#if tmp.displayInfo
 			if (this.showInfo) {
 				this.infoNextDisplayable = nextDisplayable;
@@ -933,6 +934,16 @@ implements javax.microedition.lcdui.CommandListener
 		Canvas canvas = (Canvas) nextDisplayable;
 		
 		//#if tmp.screenTransitions
+			// This has been introduced
+			// to prevent the run() / callSerially() combo of 
+			// ScreenChangeAnimation to set its next Displayable
+			// while another Displayable has already been set
+			if(this.currentCanvas instanceof ScreenChangeAnimation)
+			{
+				ScreenChangeAnimation animation = (ScreenChangeAnimation)this.currentCanvas;
+				animation.abort();
+			}
+		
 			// check if a screen transition should be played:
 			if (this.enableScreenChangeAnimations && !(this.currentCanvas instanceof ScreenChangeAnimation)) {
 				try {
