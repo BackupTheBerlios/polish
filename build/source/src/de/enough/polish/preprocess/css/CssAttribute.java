@@ -903,4 +903,8 @@ implements Comparable
 	public String getSince() {
 		return this.since;
 	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 }

@@ -535,7 +535,7 @@
 		</mapping>
 		<mapping from="layer"               to="de.enough.polish.ui.backgrounds.LayerBackground" >
 			<param name="layers" type="background[]" array-type="Background" separator="," default="" description="Comma separated list of backgrounds that runs from top to bottom, e.g. layers: first, second, third, bg;"/>
-			<param name="margins" type="dimension[]" array-type="Dimension" separator="," default="" description="Comma separated list of margins that runs from top to bottom, e.g. margins: 10px, 6px, 4px, 0px;"/>
+			<param name="margins" type="dimension[]" array-type="Dimension" separator="," default="none" description="Comma separated list of margins that runs from top to bottom, e.g. margins: 10px, 6px, 4px, 0px;"/>
 		</mapping>
 		
 	</attribute>

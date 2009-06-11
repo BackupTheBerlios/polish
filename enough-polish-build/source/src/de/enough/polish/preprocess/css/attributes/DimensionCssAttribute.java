@@ -101,7 +101,8 @@ public class DimensionCssAttribute extends CssAttribute {
 					String processedValue = environment.getProperty( "calculate(" + value + ")", true);
 					intValue = Integer.parseInt( processedValue );
 				} catch (Exception e2) {
-					throw new BuildException("Invalid CSS: unable to parse percent/absolute value \"" + value + "\". A numerical value or calculation is expected. Check your polish.css file."); 
+					try { throw new RuntimeException(); } catch (Exception e3) { e3.printStackTrace(); }
+					throw new BuildException("Invalid CSS: unable to parse percent/absolute value \"" + value + "\" for attribute \"" + this.name + "\". A numerical value or calculation is expected. Check your polish.css file.");
 				}
 			}
 			if (this.isBaseAttribute) {

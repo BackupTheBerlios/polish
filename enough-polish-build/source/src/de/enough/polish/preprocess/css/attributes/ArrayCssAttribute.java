@@ -86,6 +86,9 @@ public class ArrayCssAttribute extends CssAttribute {
 		if (attribute == null) {
 			throw new BuildException("Invalid CSS attribute: unknown base type for array attribute: \"" + type + "\" - please check custom-css-attributes.xml" );
 		}
+		if (attribute.getName() == null) {
+			attribute.setName( this.name );
+		}
 		this.baseAttribute = attribute;
 	}
 
@@ -93,6 +96,9 @@ public class ArrayCssAttribute extends CssAttribute {
 	 * @see de.enough.polish.preprocess.css.CssAttribute#getValue(java.lang.String, de.enough.polish.Environment)
 	 */
 	public String getValue(String value, Environment environment) {
+		if ("null".equals(value) || "none".equals(value)) {
+			return "null";
+		}
 		String[] values = StringUtil.splitAndTrim(value, this.separator);
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("new " + this.arrayType + "[]{ ");
