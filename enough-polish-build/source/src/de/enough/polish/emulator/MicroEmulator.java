@@ -104,7 +104,7 @@ public class MicroEmulator extends Emulator {
 		return new String[] {
 			"java",
 			"-cp",
-			this.microemulatorPlayerPath + File.pathSeparatorChar + this.microemulatorHomePath + "/devices/microemu-device-resizable.jar",
+			this.microemulatorPlayerPath + File.pathSeparatorChar + this.microemulatorHomePath + "/devices/microemu-device-resizable.jar" + File.pathSeparatorChar + this.librariesPath,
 			"org.microemu.app.Main",
 			"--resizableDevice", screenWidth, screenHeight,
 			"--device",  "org/microemu/device/resizable/device.xml",
