@@ -1023,13 +1023,17 @@ implements javax.microedition.lcdui.CommandListener
 							width = getScreenWidth();
 							height = getScreenHeight();
 						}
+						screenAnimation.onShow( screenstyle, this, width, height, lastDisplayable, nextDisplayable, isForwardAnimation );
+						
 						this.currentCanvas = screenAnimation;
 						this.currentDisplayable = screenAnimation;
+						
 						if ( screenstyle == null ) {
 							screenstyle = StyleSheet.defaultStyle;
 						}
+						
 						nextScreen.showNotify();
-						screenAnimation.onShow( screenstyle, this, width, height, lastDisplayable, nextDisplayable, isForwardAnimation );
+						this.setCurrent(screenAnimation);
 						lastScreen.hideNotify();
 						if ( !isShown() ) {
 							this.nativeDisplay.setCurrent( this );

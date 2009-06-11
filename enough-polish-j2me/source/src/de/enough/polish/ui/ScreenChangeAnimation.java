@@ -200,7 +200,6 @@ implements Runnable
 		}
 		this.isForwardAnimation = isForward;
 		setStyle( style );
-		dsplay.setCurrent( this );
 	}
 	
 	protected Image toImage(Displayable displayable, Screen nextScreen, Screen lastScreen, int width, int height) {
@@ -316,17 +315,7 @@ implements Runnable
 		try {			
 			if (this.nextCanvasImage != null) {
 				paintAnimation( g );
-				//TODO temporary fix for NPEs. assumed root cause
-				//is that Display.currentCanvas (this animation) is set before
-				//the ScreenAnimation.display is set in onShow()
-				if(this.display == null)
-				{
-					StyleSheet.display.callSerially( this );
-				}
-				else
-				{
-					this.display.callSerially( this );
-				}
+				this.display.callSerially( this );
 			}	
 		} catch (Exception e) {
 			//#debug error
