@@ -2403,6 +2403,7 @@ public abstract class Item implements UiElement, Animatable
 		if (this.label != null) {
 			if (this.useSingleRow) {
 				this.label.paint( x, y, leftBorder, rightBorder - (this.contentWidth + this.paddingHorizontal), g );
+				leftBorder += this.label.itemWidth;
 			} else {
 				this.label.paint( x, y, leftBorder, rightBorder, g );
 				y += this.label.itemHeight;
@@ -2566,7 +2567,7 @@ public abstract class Item implements UiElement, Animatable
 					this.view.paintContent( this, x, y, leftBorder, rightBorder, g);
 				} else {
 			//#endif
-					paintContent( x, y, leftBorder, rightBorder, g );				
+					paintContent( x, y, leftBorder, rightBorder, g );
 			//#ifdef polish.css.view-type
 				}
 			//#endif

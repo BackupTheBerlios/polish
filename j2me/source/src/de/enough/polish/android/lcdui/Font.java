@@ -205,7 +205,7 @@ public final class Font extends Object
 			//#endif
 		} else {
 			//#if polish.android.font.LargeFactor:defined
-				//#= factor = ${polish.android.font.LFactor};
+				//#= factor = ${polish.android.font.LargeFactor};
 			//#else
 				factor = 2.35;
 			//#endif

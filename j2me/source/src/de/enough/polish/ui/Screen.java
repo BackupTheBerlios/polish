@@ -155,7 +155,7 @@ implements UiElement, Animatable
 	protected int backgroundHeight;
 	protected Border border;
 	protected Style style;
-	//#if (polish.content-background-width || polish.css.content-background-height) && (polish.css.content-bgborder || polish.css.content-background || polish.css.content-border)
+	//#if (polish.css.content-background-width || polish.css.content-background-height) && (polish.css.content-bgborder || polish.css.content-background || polish.css.content-border)
 		protected Dimension contentBackgroundWidth;
 		protected Dimension contentBackgroundHeight;
 		protected int contentBackgroundAnchor = Graphics.HCENTER | Graphics.VCENTER;
@@ -2647,7 +2647,7 @@ implements UiElement, Animatable
 				int bY = cont.relativeY;
 				int bW = cont.itemWidth;
 				int bH = cont.itemHeight; 
-				//#if (polish.content-background-width || polish.css.content-background-height)
+				//#if (polish.css.content-background-width || polish.css.content-background-height)
 					if (this.contentBackgroundWidth != null) {
 						int prev = bW;
 						bW = this.contentBackgroundWidth.getValue(bW);
