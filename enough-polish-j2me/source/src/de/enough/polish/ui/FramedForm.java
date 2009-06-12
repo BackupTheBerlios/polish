@@ -634,6 +634,7 @@ public class FramedForm extends Form {
 			Container newFrame = getNextFrame(gameAction);
 			
 			if ( newFrame != null && newFrame != this.currentlyActiveContainer ) {
+				
 				setActiveFrame(newFrame);
 				handled = true;
 				
@@ -846,7 +847,7 @@ public class FramedForm extends Form {
 	 * @param newFrame the next frame
 	 * @param keepMainFocus true when the focus should be kept on the main container at the same time.
 	 */
-	private void  setActiveFrame(Container newFrame, boolean keepMainFocus ) {
+	protected void  setActiveFrame(Container newFrame, boolean keepMainFocus ) {
 		if (newFrame == null || newFrame == this.currentlyActiveContainer) {
 			return;
 		}
