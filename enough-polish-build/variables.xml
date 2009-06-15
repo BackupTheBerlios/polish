@@ -426,6 +426,7 @@
 		default=""
 		condition=""
 		appliesTo="de.enough.polish.util.Locale"
+		invisible="true"
 	/>
 	<variable 
 		name="polish.Map.dropInterface"

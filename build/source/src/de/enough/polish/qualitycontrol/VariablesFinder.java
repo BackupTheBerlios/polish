@@ -23,7 +23,7 @@
  * http://www.j2mepolish.org for details.
  */
 
-package de.enough.polish.website;
+package de.enough.polish.qualitycontrol;
 
 import java.io.File;
 import java.io.IOException;
@@ -145,46 +145,7 @@ public class VariablesFinder {
 	private boolean isStopSign(char c) {
 		return (c == ' ') || (c == '{') || (c == '}') || (c == '\t') || (c == '"') || (c == ':') || (c == '(') || (c == ')') || (c == '=') || (c == '>') || (c == '<') || (c == ',') || (c == '\\');
 	}
-
-	/**
-	 * @param args
-	 * @throws IOException 
-	 */
-	public static void main(String[] args) throws IOException {
-		String polishHome = null;
-		String j2meSourcesHome = null;
-		boolean isVerbose = false;
-		if (args.length > 1) {
-			for (int i = 0; i < args.length; i++) {
-				String arg = args[i];
-				if (arg.startsWith("polish.home=")) {
-					polishHome = arg.substring("polish.home=".length());
-				} else if (arg.startsWith("polish.client.source=")) {
-					j2meSourcesHome = arg.substring("polish.client.source=".length());
-				} else if (arg.equals("-verbose")) {
-					isVerbose = true;
-				}
-			}
-		} else {
-			polishHome = System.getProperty("polish.home");
-			j2meSourcesHome = System.getProperty("polish.client.source");
-		}
-		if (polishHome == null || j2meSourcesHome == null ) {
-			usage();
-			System.exit(1);
-		}
-		if (isVerbose) {
-			System.out.println("Initializing search...");
-		}
-		VariablesFinder finder = new VariablesFinder( polishHome, j2meSourcesHome );
-		finder.isVerbose = isVerbose;
-		if (isVerbose) {
-			System.out.println("Searching...");
-		}
-		finder.find();
-		System.out.println("Found " + finder.foundVariables.size() + " preprocessing variables");
-		finder.store( new File( "generated-variables.xml" ));
-	}
+	
 
 	
 
@@ -254,9 +215,50 @@ public class VariablesFinder {
 		lines.add("\t/>");
 	}
 
+	/**
+	 * @param args
+	 * @throws IOException 
+	 */
+	public static void main(String[] args) throws IOException {
+		String polishHome = null;
+		String j2meSourcesHome = null;
+		boolean isVerbose = false;
+		if (args.length > 1) {
+			for (int i = 0; i < args.length; i++) {
+				String arg = args[i];
+				if (arg.startsWith("polish.home=")) {
+					polishHome = arg.substring("polish.home=".length());
+				} else if (arg.startsWith("polish.client.source=")) {
+					j2meSourcesHome = arg.substring("polish.client.source=".length());
+				} else if (arg.equals("-verbose")) {
+					isVerbose = true;
+				}
+			}
+		} else {
+			polishHome = System.getProperty("polish.home");
+			j2meSourcesHome = System.getProperty("polish.client.source");
+		}
+		if (polishHome == null || j2meSourcesHome == null ) {
+			usage();
+			System.exit(1);
+		}
+		if (isVerbose) {
+			System.out.println("Initializing search...");
+		}
+		VariablesFinder finder = new VariablesFinder( polishHome, j2meSourcesHome );
+		finder.isVerbose = isVerbose;
+		if (isVerbose) {
+			System.out.println("Searching...");
+		}
+		finder.find();
+		System.out.println("Found " + finder.foundVariables.size() + " preprocessing variables");
+		finder.store( new File( "generated-variables.xml" ));
+	}
+
+
 	private static void usage() {
 		System.out.println("Usage:");
-		System.out.println("java de.enough.polish.website.VariablesFinder [-verbose] polish.home=${polish.home} polish.client.source=${path to J2ME Polish sources}");
+		System.out.println("java de.enough.polish.qualitycontrol.VariablesFinder [-verbose] polish.home=${polish.home} polish.client.source=${path to J2ME Polish sources}");
 		System.out.println("Order of parameters does not matter, parameter can also be given as environment variables.");
 	}
 

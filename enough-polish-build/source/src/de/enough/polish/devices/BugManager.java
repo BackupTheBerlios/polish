@@ -25,6 +25,8 @@
  */
 package de.enough.polish.devices;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -60,6 +62,21 @@ public class BugManager {
 	private final HashMap bugsByName = new HashMap();
 	private final HashMap areasMap = new HashMap();
 	//private Hashtable antProperties;
+	
+	/**
+	 * Creates a new BugManager.
+	 * 
+	 * @param antProperties all properties which have been defined in Ant
+	 * @param is input stream for reading the bugs.xml file
+	 * @throws JDOMException when there are syntax errors in bugs.xml
+	 * @throws IOException when bugs.xml could not be read
+	 * @throws InvalidComponentException when an issue definition has errors
+	 */
+	public BugManager( File polishHome) 
+	throws JDOMException, IOException, InvalidComponentException 
+	{
+		loadBugs( new FileInputStream( new File( polishHome, "bugs.xml")) );
+	}
 
 	/**
 	 * Creates a new BugManager.
