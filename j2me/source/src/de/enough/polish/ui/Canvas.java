@@ -483,8 +483,7 @@ implements Displayable
      */
     public static final int KEY_POUND = 35;
 
-	private CommandListener commandListener;
-
+	private CommandListener _commandListener;
 	boolean _isShown;
 	public ArrayList _commands;
 	String _title;
@@ -845,6 +844,43 @@ implements Displayable
 	    //# 	Display.getInstance().serviceRepaints();
 	    //# }
     //#endif
+    
+    protected void _showNotify() {
+    	if (this._commands != null) {
+    		Object[] commands = this._commands.getInternalArray();
+    		Display instance = Display.getInstance();
+    		instance.setFullScreenMode(false);
+    		for (int i = 0; i < commands.length; i++) {
+				Command cmd = (Command) commands[i];
+				if (cmd == null) {
+					break;
+				}
+				instance.addCommand(cmd);
+			}
+    		instance.setCommandListener(this._commandListener);
+    	}
+    	if (this._title != null) {
+    		Display.getInstance().setTitle(this._title);
+    	}
+    	this._isShown = true;
+    	showNotify();
+    }
+    
+    protected void _hideNotify() {
+    	if (this._commands != null) {
+    		Object[] commands = this._commands.getInternalArray();
+    		Display instance = Display.getInstance();
+    		for (int i = 0; i < commands.length; i++) {
+				Command cmd = (Command) commands[i];
+				if (cmd == null) {
+					break;
+				}
+				instance.removeCommand(cmd);
+			}
+    	}
+    	this._isShown = false;
+    	hideNotify();
+    }
 
     /**
      * The implementation calls <code>showNotify()</code>
@@ -1039,6 +1075,9 @@ implements Displayable
      * @return the height in pixels
      */
     public int getHeight() {
+    	if (this._commands != null) {
+    		return Display.getInstance().nonFullScreenHeight;
+    	}
     	return Display.getScreenHeight();
     }
     
@@ -1063,11 +1102,11 @@ implements Displayable
 	}
 	
 	public void setCommandListener( CommandListener l) {
-		this.commandListener = l;
+		this._commandListener = l;
 	}
 	
 	public CommandListener getCommandListener() {
-		return this.commandListener;
+		return this._commandListener;
 	}
 
 	/* (non-Javadoc)

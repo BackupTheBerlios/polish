@@ -604,6 +604,8 @@ implements javax.microedition.lcdui.CommandListener
 	//#if tmp.wrapperScreen
 		private boolean ignoreShowHide;
 	//#endif
+	private CommandListener commandListener;
+	protected int nonFullScreenHeight;
 		
 	//#if polish.build.classes.NativeDisplay:defined
 		//#= private Display( MIDlet midlet, ${polish.build.classes.NativeDisplay} nativeDisplay ) {
@@ -612,6 +614,7 @@ implements javax.microedition.lcdui.CommandListener
 	//#endif
 		this.midlet = midlet;
 		this.nativeDisplay = nativeDisplay;
+		this.nonFullScreenHeight = super.getHeight();
 		//#if tmp.useCanvasFullScreen
 			// calling setFullScreenMode(true) in showNotify() is not sufficient for some
 			// Samsung devices, e.g. the SGH-U600
@@ -910,7 +913,7 @@ implements javax.microedition.lcdui.CommandListener
 			if (nextDisplayable == null || !(nextDisplayable instanceof Canvas)) {
 				// this is a native Displayable
 				if (this.currentCanvas != null) {
-					this.currentCanvas.hideNotify();
+					this.currentCanvas._hideNotify();
 					this.currentCanvas = null;
 				}
 				this.currentDisplayable = nextDisplayable;
@@ -1032,9 +1035,9 @@ implements javax.microedition.lcdui.CommandListener
 							screenstyle = StyleSheet.defaultStyle;
 						}
 						
-						nextScreen.showNotify();
+						nextScreen._showNotify();
 						this.setCurrent(screenAnimation);
-						lastScreen.hideNotify();
+						lastScreen._hideNotify();
 						if ( !isShown() ) {
 							this.nativeDisplay.setCurrent( this );
 						} else {
@@ -1051,9 +1054,12 @@ implements javax.microedition.lcdui.CommandListener
 		
 			
 		if (isShown()) {
+			if (this.commandListener != null) {
+				this.commandListener = null;
+				super.setFullScreenMode(true);
+			}
 			if (canvas != null) {
-				canvas.showNotify();
-				canvas._isShown = true;
+				canvas._showNotify();
 			}
 			if (this.screenWidth != 0) {
 				nextDisplayable.sizeChanged( this.screenWidth, this.screenHeight);
@@ -1064,8 +1070,7 @@ implements javax.microedition.lcdui.CommandListener
 		this.currentDisplayable = nextDisplayable;
 		
 		if ( oldCanvas != null ) {
-			oldCanvas.hideNotify();
-			oldCanvas._isShown = false;
+			oldCanvas._hideNotify();
 			//#if !tmp.fullScreen
 				Object[] commands = oldCanvas._commands == null ? null : oldCanvas._commands.getInternalArray();
 				if (commands != null) {
@@ -1840,7 +1845,10 @@ implements javax.microedition.lcdui.CommandListener
 		return false;
 	}
 
-	
+	public void setCommandListener( CommandListener listener) {
+		this.commandListener = listener;
+		super.setCommandListener(this);
+	}
 	
 	
 	/********************** MIDP Event Forwarding *********************************************************************/
@@ -1855,8 +1863,7 @@ implements javax.microedition.lcdui.CommandListener
 			}
 		//#endif
 		if (this.currentCanvas != null) { 
-			this.currentCanvas.hideNotify();
-			this.currentCanvas._isShown = false;
+			this.currentCanvas._hideNotify();
 		}
 	}
 	
@@ -1871,6 +1878,9 @@ implements javax.microedition.lcdui.CommandListener
 				return;
 			}
 		//#endif
+		if (this.nonFullScreenHeight == 0) {
+			this.nonFullScreenHeight = getHeight();
+		}
 		//#if polish.midp2 && tmp.fullScreen
 			setFullScreenMode( true );
 		//#endif
@@ -1882,8 +1892,7 @@ implements javax.microedition.lcdui.CommandListener
 		getScreenWidth();
 		getScreenHeight();
 		if (this.currentCanvas != null) { 
-			this.currentCanvas.showNotify();
-			this.currentCanvas._isShown = true;
+			this.currentCanvas._showNotify();
 			if (this.screenWidth != 0) {
 				this.currentCanvas.sizeChanged( this.screenWidth, this.screenHeight );
 			}
@@ -2420,8 +2429,12 @@ implements javax.microedition.lcdui.CommandListener
 	 */
 	public void commandAction(javax.microedition.lcdui.Command c, javax.microedition.lcdui.Displayable d)
 	{
-		if (c instanceof Command && this.currentCanvas instanceof Screen) {
-			((Screen)this.currentCanvas).handleCommand( (Command)c);
+		if (c instanceof Command) {
+			if (this.commandListener != null) {
+				this.commandListener.commandAction((Command)c, this.currentDisplayable );
+			} else if (this.currentCanvas instanceof Screen) {
+				((Screen)this.currentCanvas).handleCommand( (Command)c);
+			}
 		}
 	}
 	//#endif
