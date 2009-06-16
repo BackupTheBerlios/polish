@@ -4,8 +4,6 @@ package de.enough.polish.android.midlet;
 import java.util.HashMap;
 import java.util.Locale;
 
-import javax.microedition.lcdui.Display;
-
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -24,8 +22,6 @@ import android.view.MotionEvent;
 import android.view.Window;
 import de.enough.polish.android.io.ConnectionNotFoundException;
 import de.enough.polish.android.lcdui.AndroidDisplay;
-import de.enough.polish.android.lcdui.Canvas;
-import de.enough.polish.util.DeviceControl;
 
 /**
  * A MIDlet is a MID Profile application.
@@ -98,7 +94,7 @@ public abstract class MIDlet extends Activity {
 		super.onCreate(icicle);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		//TODO: Extract all strings to constants.
-		TelephonyManager telephonyManager = (TelephonyManager)MIDlet.midletInstance.getSystemService(Context.TELEPHONY_SERVICE);
+		TelephonyManager telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
 		PhoneStateListener listener = new PhoneStateListener() {
 			@Override
 			public void onCellLocationChanged(CellLocation location) {
@@ -149,6 +145,7 @@ public abstract class MIDlet extends Activity {
 		this.appProperties = new HashMap<String,String>();
 		//#= this.appProperties.put("MIDlet-Name", "${MIDlet-Name}");
 		//#= this.appProperties.put("MIDlet-Vendor", "${MIDlet-Vendor}");
+		//#= this.appProperties.put("MIDlet-Version", "${MIDlet-Version}");
 		
 		
 		// read files directory and save it as a system property
@@ -623,6 +620,22 @@ public abstract class MIDlet extends Activity {
 	public final int checkPermission(String permission) {
 		return -1;
 		// TODO implement checkPermission
+	}
+
+	public void showSoftKeyboard() {
+		//FIXME: Guard this stuff as it is only available on android 1.5
+//		InputMethodManager inputMethodManager = (InputMethodManager)getSystemService( Context.INPUT_METHOD_SERVICE);
+//		List<InputMethodInfo> inputMethodList = inputMethodManager.getInputMethodList();
+//		System.out.println("InputMethods in the system:");
+//		for (InputMethodInfo inputMethodInfo : inputMethodList) {
+//			System.out.println("Inputmethod:"+inputMethodInfo);
+//		}
+//		AndroidDisplay display = AndroidDisplay.getDisplay(this);
+//		if(display != null) {
+//			boolean softInputShown = inputMethodManager.showSoftInput(display, InputMethodManager.SHOW_FORCED);
+//			inputMethodManager.showSoftInputFromInputMethod(display.getApplicationWindowToken(),InputMethodManager.SHOW_FORCED);
+//			System.out.println("The softInput was shown:"+softInputShown);
+//		}
 	}
 
 }
