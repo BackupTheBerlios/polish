@@ -1,5 +1,6 @@
 package de.enough.polish.qualitycontrol;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.jdom.Element;
@@ -38,6 +39,7 @@ public class PolishVariable {
 		this.defaultValue = definition.getAttributeValue("default");
 		String[] applies = StringUtil.splitAndTrim( definition.getAttributeValue("appliesTo"), ',' );
 		this.appliesTo = applies;
+		this.appliesToMap = new HashMap();
 		for (int i = 0; i < applies.length; i++) {
 			String apply = applies[i];
 			this.appliesToMap.put(apply, Boolean.TRUE);

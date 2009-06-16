@@ -3,7 +3,7 @@
 		name="polish.Animation.MaxIdleTime"
 		type="time"
 		description="Interval in milliseconds until animations are stopped when there is no activity. This defaults to 3 minutes."
-		default="3 * 60 * 1000"
+		default="5400000"
 		appliesTo="AnimationThread"
 	/>
 	<variable 
@@ -78,7 +78,7 @@
 		name="polish.Browser.MemorySaver.Amount"
 		type="integer"
 		description="The amount of memory which should be kept free at any stage during loading of webpages. This defaults to 50kb."
-		default="50 * 1024"
+		default="51200"
 		condition="polish.Browser.MemorySaver=true"
 		appliesTo="de.enough.polish.browser.Browser"
 	/>

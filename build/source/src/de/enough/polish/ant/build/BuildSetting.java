@@ -390,7 +390,7 @@ public class BuildSetting {
 	}
 	
 	public Variables getVariables() {
-		if (this.variables == null) {
+		if (this.variables == null || "false".equals(this.environment.get("polish.buildcontrol.variables.enabled"))) {
 			this.variables = new Variables();
 		}
 		return this.variables;
