@@ -9,6 +9,8 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputConnection;
 import de.enough.polish.android.midlet.MIDlet;
 import de.enough.polish.ui.Display;
 import de.enough.polish.ui.NativeDisplay;
@@ -203,11 +205,14 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 
 	@Override
 	protected void onRestoreInstanceState(Parcelable state) {
+		//#debug
 		System.out.println("onRestoreInstanceState");
+		
 	}
 
 	@Override
 	protected Parcelable onSaveInstanceState() {
+		//#debug
 		System.out.println("onSaveInstanceState");
 		return null;
 	}
@@ -251,6 +256,9 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 		super.onSizeChanged(w, h, oldw, oldh);
+		if(this.bitmap != null) {
+			this.bitmap.recycle();
+		}
 		this.bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
 		if(this.currentPolishCanvas != null) {
 			//#debug
@@ -1072,5 +1080,5 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 			setCurrent(this.currentPolishCanvas);
 		}
 	}
-	
+
 }

@@ -232,7 +232,7 @@ import android.graphics.Canvas;
 public class Image extends Object
 {
 	//following variables are implicitely defined by getter- or setter-methods:
-	protected Bitmap bitmap;
+	private Bitmap bitmap;
 	
 	/**
 	 * buffer for getGraphics()

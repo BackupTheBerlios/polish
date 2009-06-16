@@ -1282,8 +1282,7 @@ public class Graphics
 	 */
 	public void drawImage( Image img, int x, int y, int anchor)
 	{
-//		this.canvas.drawBitmap(img.getBitmap(), x, y, this.paint);
-		Bitmap bitmap = img.bitmap;
+		Bitmap bitmap = img.getBitmap();
 		int width = bitmap.getWidth();
 		if ( (anchor & RIGHT) == RIGHT ) {
 			x -= width;
@@ -1297,7 +1296,7 @@ public class Graphics
 			y -= height / 2;
 		}
 		
-		this.canvas.drawBitmap(img.getBitmap(), x+this.translateX, y+this.translateY, this.paint);
+		this.canvas.drawBitmap(bitmap, x+this.translateX, y+this.translateY, this.paint);
 	}
 
 	/**
