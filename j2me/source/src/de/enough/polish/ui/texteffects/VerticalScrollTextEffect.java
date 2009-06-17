@@ -86,8 +86,14 @@ public class VerticalScrollTextEffect extends TextEffect{
 	 */
 	public void animate(Item parent, long currentTime,
 			ClippingRegion repaintRegion) {
-		super.animate(parent, currentTime, repaintRegion);
 		Data data = (Data)getData(parent);
+		
+		if(isParentActive(parent, data))
+		{
+			return;
+		}
+		
+		super.animate(parent, currentTime, repaintRegion);
 		
 		if(data == null || (data.textLines != null && data.textLines.length == 1))
 		{
@@ -101,16 +107,7 @@ public class VerticalScrollTextEffect extends TextEffect{
 		}
 		
 		// dirty hack
-		if(parent instanceof CommandItem)
-		{
-			CommandItem item = (CommandItem)parent;
-			if(item.isOpen())
-			{
-				data.lineOffset = 0;
-				data.stageCurrent = STAGE_SHOW;
-				return;
-			}
-		}
+		
 		
 		// get the time passed since last animation
 		long timePassed = currentTime - data.stageTime;
@@ -149,6 +146,22 @@ public class VerticalScrollTextEffect extends TextEffect{
 		}
 	}
 	
+	boolean isParentActive(Item parent, Data data)
+	{
+		if(parent instanceof CommandItem)
+		{
+			CommandItem item = (CommandItem)parent;
+			if(item.isOpen())
+			{
+				data.lineOffset = 0;
+				data.stageCurrent = STAGE_SHOW;
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	/**
 	 * Calculates and returns the offset to draw the textlines
 	 * for the animation  
@@ -169,6 +182,11 @@ public class VerticalScrollTextEffect extends TextEffect{
 			int leftBorder, int rightBorder, int lineHeight, int maxWidth,
 			int layout, Graphics g) {
 		Data data = (Data)getData(parent);
+		
+		if(isParentActive(parent, data))
+		{
+			return;
+		}
 		
 		data.lineHeight = lineHeight;
 		
