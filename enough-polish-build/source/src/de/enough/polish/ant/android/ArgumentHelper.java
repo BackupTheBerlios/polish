@@ -30,6 +30,7 @@ import java.util.Arrays;
 
 import de.enough.polish.BuildException;
 import de.enough.polish.Environment;
+import de.enough.polish.util.OsUtil;
 
 
 /**
@@ -201,7 +202,7 @@ public class ArgumentHelper {
 	 */
 	public static String activityCreator(Environment env)
 	{
-		if(isRunningWindows())
+		if(OsUtil.isRunningWindows())
 		{
 			return resolve( getTools(env) + "\\activitycreator.bat" );
 		}
@@ -221,7 +222,7 @@ public class ArgumentHelper {
 	}
 
 	public static String android(Environment env) {
-		if(isRunningWindows())
+		if(OsUtil.isRunningWindows())
 		{
 			return resolve( getHome(env) + "\\tools\\android.bat");
 		} else {
@@ -235,7 +236,7 @@ public class ArgumentHelper {
 	 */
 	public static String adb(Environment env)
 	{
-		if(isRunningWindows())
+		if(OsUtil.isRunningWindows())
 		{
 			return getHome(env) + "\\tools\\adb.exe";
 		}
@@ -251,7 +252,7 @@ public class ArgumentHelper {
 	 */
 	public static String aidl(Environment env)
 	{
-		if(isRunningWindows())
+		if(OsUtil.isRunningWindows())
 		{
 			return getTools(env) + "\\aidl.exe";
 		}
@@ -267,7 +268,7 @@ public class ArgumentHelper {
 	 */
 	public static String aapt(Environment env)
 	{
-		if(isRunningWindows())
+		if(OsUtil.isRunningWindows())
 		{
 			return getTools(env) + "\\aapt.exe";
 		}
@@ -283,7 +284,7 @@ public class ArgumentHelper {
 	 */
 	public static String dx(Environment env)
 	{
-		if(isRunningWindows())
+		if(OsUtil.isRunningWindows())
 		{
 			return getTools(env) + "\\dx.bat";
 		}
@@ -299,7 +300,7 @@ public class ArgumentHelper {
 	 */
 	public static String getPathForApkbuilder(Environment env)
 	{
-		if(isRunningWindows())
+		if(OsUtil.isRunningWindows())
 		{
 			return getHome(env) +  "\\tools\\apkbuilder.bat";
 		}
@@ -315,7 +316,7 @@ public class ArgumentHelper {
 	 */
 	public static String emulator(Environment env)
 	{
-		if(isRunningWindows())
+		if(OsUtil.isRunningWindows())
 		{
 			return getHome(env) + "\\tools\\emulator.exe";
 		}
@@ -340,17 +341,6 @@ public class ArgumentHelper {
 		return isAndroidVersionHigherOrEquals15;
 	}
 	
-	/**
-	 * Indicates if the system is running Windows/Vista as OS 
-	 * @return true, if the system is running Windows/Vista, otherwise false
-	 */
-	static boolean isRunningWindows()
-	{
-		return (File.separatorChar == '\\' );
-//		String os = System.getProperty("os.name").toLowerCase();
-//		return (os.indexOf("windows") != -1 || os.indexOf("vista") != -1);
-	}
-
 	public static String getAndroidJar(Environment env) {
 		return getPlatformHome(env) + File.separatorChar + "android.jar";
 	}

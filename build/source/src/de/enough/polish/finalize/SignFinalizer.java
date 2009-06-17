@@ -36,6 +36,7 @@ import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.ant.android.ArgumentHelper;
 import de.enough.polish.ant.build.SignSetting;
+import de.enough.polish.util.OsUtil;
 import de.enough.polish.util.ProcessUtil;
 
 /**
@@ -70,22 +71,38 @@ public class SignFinalizer extends Finalizer {
 	 * @see de.enough.polish.finalize.Finalizer#finalize(java.io.File, java.io.File, de.enough.polish.Device, java.util.Locale, de.enough.polish.Environment)
 	 */
 	public void finalize(File jadFile, File jarFile, Device device,
-			Locale locale, Environment env) 
-	{
+			Locale locale, Environment env) {
 		
 		SignSetting setting = (SignSetting) getExtensionSetting();
 
 		Object feature = device.getFeatures().get("polish.android");
 		boolean isAndroidDevice = feature != null;
 		String alias = setting.getKey();
+		
 		if(isAndroidDevice) {
 			
-			File jarSigner = env.resolveFile("${java.home}/bin/jarsigner");
+			File jarSigner;
+			String path;
+			
+			if(OsUtil.isRunningWindows()) {
+				path = "${java.home}/bin/jarsigner.exe";
+			} else {
+				path = "${java.home}/bin/jarsigner";
+			}
+			jarSigner = env.resolveFile(path);
 			if( ! jarSigner.exists()) {
-				System.out.println("Warning: Could not find file '"+jarSigner.getAbsolutePath()+"'. Trying the directory above.");
-				jarSigner = env.resolveFile("${java.home}/../bin/jarsigner");
+				System.out.println("Could not find jarsigner at path '"+path+"'. Searching one directory above.");
+				if(OsUtil.isRunningWindows()) {
+					path = "${java.home}/../bin/jarsigner.exe";
+				} else {
+					path = "${java.home}/../bin/jarsigner";
+				}
+				jarSigner = env.resolveFile(path);
+
 				if( ! jarSigner.exists()) {
-					throw new BuildException("Could not find jarsigner tool with path '"+jarSigner.getAbsolutePath()+"'. Make sure the java.home variable is set to the directory where the JDK/ JRE is.");
+					if( ! jarSigner.exists()) {
+						throw new BuildException("Could not find jarsigner tool with path '"+jarSigner.getAbsolutePath()+"'. Make sure the 'java.home' variable is set in the build.xml file to the directory where the JDK is.");
+					}
 				}
 			}
 			
