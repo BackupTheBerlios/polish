@@ -155,6 +155,8 @@ alertcontent {
 	layout: vertical-shrink | horizontal-shrink | top | right;
 }
 
+/** style for the RSS elements: */
+
 .browserlink {
 	padding-left: 4%;
 	padding-right: 4%;
@@ -166,6 +168,8 @@ alertcontent {
 		color: #00aeef;
 	}
 }
+
+/** a focused RSS element: */
 
 .browserlink:hover {
 	//#if polish.name != iPhone
@@ -179,6 +183,19 @@ alertcontent {
 		background-color: #f26522;
 	//#endif
 	font-color: #333;
+}
+
+/** define visited styles for focused and unfocused RSS items: **/
+.browserlink:visited {
+	font-color: #999;
+}
+
+/** 
+  * Note: the pseudo style 'browserlink:hover' is named 'browserlinkFocused'.
+  * Here we define a visited style for the currently selected item (which is focused):
+  */
+.browserlinkFocused:visited {
+	font-color: #999;
 }
 
 
