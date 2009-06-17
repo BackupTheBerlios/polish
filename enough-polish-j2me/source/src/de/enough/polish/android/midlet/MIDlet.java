@@ -602,6 +602,11 @@ public abstract class MIDlet extends Activity {
 			startActivity(i);
 			return false;
 		}
+		if(url.startsWith("http:")) {
+			Uri uri = Uri.parse(url);
+			Intent intent = new Intent(Intent.ACTION_VIEW,uri);
+			startActivity(intent);
+		}
 		throw new ConnectionNotFoundException("The url '"+url+"' can not behandled. The url scheme is not supported");
 	}
 
