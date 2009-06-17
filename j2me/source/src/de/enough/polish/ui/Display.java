@@ -1056,7 +1056,9 @@ implements javax.microedition.lcdui.CommandListener
 		if (isShown()) {
 			if (this.commandListener != null) {
 				this.commandListener = null;
-				super.setFullScreenMode(true);
+				//#if polish.midp2
+					super.setFullScreenMode(true);
+				//#endif
 			}
 			if (canvas != null) {
 				canvas._showNotify();
