@@ -142,6 +142,7 @@ public class BuildSetting {
 	private ArrayList serializers;
 	private FileSetting fileSetting;
 	private ArrayList debugSettings;
+	private SignSetting signSetting;
 	
 	/**
 	 * Creates a new build setting.
@@ -282,7 +283,8 @@ public class BuildSetting {
 	}
 	
 	public void addConfiguredSign( SignSetting setting ) {
-//		if (setting.getKeystore() == null) {
+		this.signSetting = setting;
+		//		if (setting.getKeystore() == null) {
 //			throw new BuildException("The \"keystore\" attribute of the <sign> element is mandatory.");
 //		}
 		if (setting.getKeystore() != null && !setting.getKeystore().exists()) {
@@ -304,6 +306,10 @@ public class BuildSetting {
 		this.preverifiers.add( setting );
 	}
 	
+	public SignSetting getSignSetting() {
+		return this.signSetting;
+	}
+
 	/**
 	 * @param setting
 	 */
