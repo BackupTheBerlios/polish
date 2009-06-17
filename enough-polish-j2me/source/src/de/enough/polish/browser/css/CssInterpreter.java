@@ -321,7 +321,12 @@ public class CssInterpreter {
 			Image image = null;
 			if (this.resourceLoader != null) {
 				try {
-					image = Image.createImage( this.resourceLoader.getResourceAsStream(imageUrl) );
+					//#if polish.midp2
+						image = Image.createImage( this.resourceLoader.getResourceAsStream(imageUrl) );
+					//#else
+						byte[] data = StreamUtil.readFully( this.resourceLoader.getResourceAsStream(imageUrl) );
+						image = Image.createImage( data, 0, data.length );
+					//#endif
 				} catch (IOException e) {
 					//#debug error
 					System.out.println("Unable to load background-image " + imageValue + e);

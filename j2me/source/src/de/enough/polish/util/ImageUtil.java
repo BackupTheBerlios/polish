@@ -26,6 +26,7 @@
 package de.enough.polish.util;
 
 //#if polish.midp2 || (!polish.midp && polish.usePolishGui)
+	//#define tmp.supportImageOperations
 	import javax.microedition.lcdui.Graphics;
 	import javax.microedition.lcdui.Image;
 //#endif
@@ -2064,8 +2065,7 @@ public final class ImageUtil {
 	}
 	//#endif
 	
-	//#if polish.midp2
-	
+	//#if tmp.supportImageOperations
 	/**
 	 * Circular clipping effect on a RgbImage
 	 * 
@@ -2091,7 +2091,9 @@ public final class ImageUtil {
 		//apply mask
 		applyMaskOntoRgbImage(rgbImg, mask, invert);
 	}
+	//#endif
 	
+	//#if tmp.supportImageOperations
 	/**
 	 * Applies an mask RgbImage onto another Rgbimage.
 	 * <p>
@@ -2108,16 +2110,17 @@ public final class ImageUtil {
 		
 		for(int i = maskRgb.length; --i>=0;)
 		{
-			if(invert)
+			if(invert) {
 				sourceRgb[i] = ( (0xFF&maskRgb[i])<<24 ) | (0x00FFFFFF&sourceRgb[i]);
-			else
+			} else {
 				sourceRgb[i] = (255-(0xFF&maskRgb[i]))<<24 | (0x00FFFFFF&sourceRgb[i]);
+			}
 		}
 	}
-	
 	//#endif
 	
-	//#if polish.usePolishGui && polish.hasFloatingPoint
+	
+	//#if tmp.supportImageOperations && polish.hasFloatingPoint
 	/**
 	 * Scales an image to fit into the specified available width and height while maintaining the ratio. 
 	 * 
@@ -2158,7 +2161,7 @@ public final class ImageUtil {
 	}
 	//#endif
 
-	//#if polish.midp || polish.usePolishGui
+	//#if tmp.supportImageOperations
 	/**
 	 * Scales an image to the specified dimension
 	 * 

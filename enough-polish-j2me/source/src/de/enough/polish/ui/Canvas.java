@@ -849,7 +849,9 @@ implements Displayable
     	if (this._commands != null) {
     		Object[] commands = this._commands.getInternalArray();
     		Display instance = Display.getInstance();
-    		instance.setFullScreenMode(false);
+    		//#if polish.midp2
+    			instance.setFullScreenMode(false);
+    		//#endif
     		for (int i = 0; i < commands.length; i++) {
 				Command cmd = (Command) commands[i];
 				if (cmd == null) {
@@ -859,9 +861,11 @@ implements Displayable
 			}
     		instance.setCommandListener(this._commandListener);
     	}
-    	if (this._title != null) {
-    		Display.getInstance().setTitle(this._title);
-    	}
+    	//#if polish.midp2
+	    	if (this._title != null) {
+	    		Display.getInstance().setTitle(this._title);
+	    	}
+    	//#endif
     	this._isShown = true;
     	showNotify();
     }
