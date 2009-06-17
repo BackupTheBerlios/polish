@@ -62,7 +62,7 @@ public class ApkPackager extends Packager{
 		String pathToApkbuilder = ArgumentHelper.getPathForApkbuilder(env);
 		if (pathToApkbuilder != null) {
 			SignSetting signSetting = env.getBuildSetting().getSignSetting();
-			boolean signApplication = signSetting.isActive(env);
+			boolean signApplication = signSetting != null && signSetting.isActive(env);
 			ArrayList arguments = getDefaultArguments(pathToApkbuilder,env,signApplication);
 			String tools = ArgumentHelper.getTools(env);
 			File directory = new File(tools);
