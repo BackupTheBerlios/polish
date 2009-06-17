@@ -297,7 +297,7 @@ public class ArgumentHelper {
 	 * Returns the os-dependent executable for apk
 	 * @return the os-dependent executable for apk
 	 */
-	public static String apk(Environment env)
+	public static String getPathForApkbuilder(Environment env)
 	{
 		if(isRunningWindows())
 		{
