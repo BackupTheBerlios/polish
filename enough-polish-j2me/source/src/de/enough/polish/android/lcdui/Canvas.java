@@ -304,7 +304,7 @@ import de.enough.polish.android.midlet.MIDlet;
  * 
  * @since MIDP 1.0
  */
-public abstract class Canvas
+public abstract class Canvas implements CommandListener
 {
 	protected android.graphics.Canvas androidCanvas = new android.graphics.Canvas();
 	private boolean _isShown;
@@ -1248,6 +1248,10 @@ public abstract class Canvas
 	protected void sizeChanged(int w, int h)
 	{
 		//TODO implement sizeChanged
+	}
+	
+	public void commandAction( Command c, Canvas d) {
+		
 	}
 
 }
