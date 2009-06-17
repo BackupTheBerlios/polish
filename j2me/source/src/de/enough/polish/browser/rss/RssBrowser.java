@@ -51,13 +51,13 @@ public class RssBrowser
 		this(new DefaultRssItemCommandListener(), style); 
 	}
 
-	//#if polish.midp2
+	//#if polish.LibraryBuild
 	public RssBrowser(javax.microedition.lcdui.ItemCommandListener listener) {
 		this( listener, null ); 
 	}
 	//#endif
 
-	//#if polish.midp2
+	//#if polish.LibraryBuild
 	public RssBrowser(javax.microedition.lcdui.ItemCommandListener listener, Style style ) {
 		super( style );
 		this.rssTagHandler = new RssTagHandler(HtmlTagHandler.CMD_LINK, (ItemCommandListener) null); 
