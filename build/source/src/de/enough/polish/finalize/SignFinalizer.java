@@ -75,16 +75,17 @@ public class SignFinalizer extends Finalizer {
 		
 		SignSetting setting = (SignSetting) getExtensionSetting();
 
-		Object o = device.getFeatures().get("polish.android");
+		Object feature = device.getFeatures().get("polish.android");
+		boolean isAndroidDevice = feature != null;
 		String alias = setting.getKey();
-		if(o != null) {
+		if(isAndroidDevice) {
 			
 			File jarSigner = env.resolveFile("${java.home}/bin/jarsigner");
 			if( ! jarSigner.exists()) {
-				System.out.println("Could not find file '"+jarSigner.getAbsolutePath()+"'. Trying somewhere else.");
+				System.out.println("Warning: Could not find file '"+jarSigner.getAbsolutePath()+"'. Trying the directory above.");
 				jarSigner = env.resolveFile("${java.home}/../bin/jarsigner");
 				if( ! jarSigner.exists()) {
-					throw new BuildException("Could not find jarsigner tool with path '"+jarSigner.getAbsolutePath()+"'. Make sure the java.home variable is set.");
+					throw new BuildException("Could not find jarsigner tool with path '"+jarSigner.getAbsolutePath()+"'. Make sure the java.home variable is set to the directory where the JDK/ JRE is.");
 				}
 			}
 			
