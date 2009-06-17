@@ -220,7 +220,7 @@ public class Display
 	extends javax.microedition.lcdui.Canvas
 //#endif
 
-//#if polish.midp
+//#if polish.midp && ! polish.android
 implements javax.microedition.lcdui.CommandListener
 //#endif
 	
