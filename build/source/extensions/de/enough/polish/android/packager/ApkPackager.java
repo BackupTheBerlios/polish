@@ -34,6 +34,7 @@ import de.enough.polish.BuildException;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.ant.android.ArgumentHelper;
+import de.enough.polish.ant.build.SignSetting;
 import de.enough.polish.jar.Packager;
 import de.enough.polish.util.ProcessUtil;
 
@@ -58,12 +59,21 @@ public class ApkPackager extends Packager{
 			Locale locale, Environment env) 
 	throws IOException, BuildException 
 	{
-		String apk = ArgumentHelper.apk(env);
-		if (apk != null) {
-			ArrayList arguments = getDefaultArguments(apk,env);
-			File directory = new File(ArgumentHelper.getTools(env));
+		String pathToApkbuilder = ArgumentHelper.getPathForApkbuilder(env);
+		if (pathToApkbuilder != null) {
+			SignSetting signSetting = env.getBuildSetting().getSignSetting();
+			boolean signApplication = signSetting.isActive(env);
+			ArrayList arguments = getDefaultArguments(pathToApkbuilder,env,signApplication);
+			String tools = ArgumentHelper.getTools(env);
+			File directory = new File(tools);
 
-			System.out.println("apk: Packaging " + ArgumentHelper.getPackage("apk", env) + ", and signing it with a debug key...");
+			String package1 = ArgumentHelper.getPackage("apk", env);
+			System.out.println("apk: Packaging " + package1);
+			if(signApplication) {
+				System.out.println("apk: The application will not be signed with a debug signature.");
+			} else {
+				System.out.println("apk: The application will be signed with a debug signature.");
+			}
 
 			try {
 				int result = ProcessUtil.exec( arguments, "apk: ", true, null, directory );
@@ -81,13 +91,17 @@ public class ApkPackager extends Packager{
 	 * Returns the default arguments for executable
 	 * @param executable the executable
 	 * @param env the environment
+	 * @param signApplication true if the application should be signed with a real signature. The applciation will not be signed with the default debug signature.
 	 * @return the ArrayList
 	 */
-	static ArrayList getDefaultArguments(String executable, Environment env)
+	static ArrayList getDefaultArguments(String executable, Environment env, boolean signApplication)
 	{
 		ArrayList arguments = new ArrayList();
 		arguments.add(executable);
 		arguments.add(ArgumentHelper.getPackage(extension,env));
+		if(signApplication) {
+			arguments.add("-u");
+		}
 		arguments.add("-z");
 		arguments.add(ArgumentHelper.getPackage("ap_",env));
 		arguments.add("-f");

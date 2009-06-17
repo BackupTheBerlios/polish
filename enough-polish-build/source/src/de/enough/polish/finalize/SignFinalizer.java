@@ -34,6 +34,7 @@ import de.enough.polish.BuildException;
 
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
+import de.enough.polish.ant.android.ArgumentHelper;
 import de.enough.polish.ant.build.SignSetting;
 import de.enough.polish.util.ProcessUtil;
 
@@ -71,6 +72,60 @@ public class SignFinalizer extends Finalizer {
 	public void finalize(File jadFile, File jarFile, Device device,
 			Locale locale, Environment env) 
 	{
+		
+		SignSetting setting = (SignSetting) getExtensionSetting();
+
+		Object o = device.getFeatures().get("polish.android");
+		String alias = setting.getKey();
+		if(o != null) {
+			
+			File jarSigner = env.resolveFile("${java.home}/bin/jarsigner");
+			if( ! jarSigner.exists()) {
+				System.out.println("Could not find file '"+jarSigner.getAbsolutePath()+"'. Trying somewhere else.");
+				jarSigner = env.resolveFile("${java.home}/../bin/jarsigner");
+				if( ! jarSigner.exists()) {
+					throw new BuildException("Could not find jarsigner tool with path '"+jarSigner.getAbsolutePath()+"'. Make sure the java.home variable is set.");
+				}
+			}
+			
+			File keystore = setting.getKeystore();
+			if(keystore == null || ! keystore.exists()) {
+				throw new BuildException("No keystore given.");
+			}
+			String keystorePath = keystore.getAbsolutePath();
+			
+			ArrayList parametersList = new ArrayList();
+			parametersList.add(jarSigner.getAbsolutePath());
+			parametersList.add("-verbose");
+			parametersList.add("-keystore");
+			parametersList.add(keystorePath);
+			parametersList.add( "-storepass" );
+			parametersList.add( setting.getPassword() );
+			String apkFile = ArgumentHelper.getPackage("apk", env);
+			parametersList.add(apkFile);
+			parametersList.add(alias);
+			String[] parameters = (String[]) parametersList.toArray( new String[ parametersList.size() ] );
+			int result;
+			try {
+				System.out.println( "Adding signature for " + device.getIdentifier() );
+				result = ProcessUtil.exec( parameters, "sign: ", true );
+			} catch (IOException e) {
+				e.printStackTrace();
+				throw new BuildException("Unable to sign application: unable to execute jarsigner: " + e.toString() );
+			}
+			if (result != 0) {
+				System.out.println("Signing returned " + result + ", paramters were: ");
+				for (int i = 0; i < parameters.length; i++) {
+					String param = parameters[i];
+					System.out.print( quote( param ) );
+					System.out.print( " " );
+				}
+				System.out.println();
+				throw new BuildException("Unable to sign application: unable to execute jarsigner. Returncode was '" + result + "'." );
+			}
+			return;
+		}
+		
 		// locate the JadTool:
 		File jadTool = env.resolveFile("${wtk.home}/bin/JadTool.jar");
 		if (! jadTool.exists() ) {
@@ -80,7 +135,6 @@ public class SignFinalizer extends Finalizer {
 			}
 		}
 		ArrayList parametersList = new ArrayList();
-		SignSetting setting = (SignSetting) getExtensionSetting();
 		// sign the JAR file:
 		parametersList.add( "java" );
 		parametersList.add( "-jar" );
@@ -89,7 +143,7 @@ public class SignFinalizer extends Finalizer {
 		parametersList.add( "-keypass" );
 		parametersList.add( setting.getPassword() );
 		parametersList.add( "-alias" );
-		parametersList.add( setting.getKey() );
+		parametersList.add( alias );
 		if (setting.getKeystore() != null) {
 			parametersList.add( "-keystore" );
 			parametersList.add( setting.getKeystore().getAbsolutePath() );
@@ -126,7 +180,7 @@ public class SignFinalizer extends Finalizer {
 			parametersList.add( jadTool.getAbsolutePath() );
 			parametersList.add( "-addcert" );
 			parametersList.add( "-alias" );
-			parametersList.add( setting.getKey() );
+			parametersList.add( alias );
 			if (setting.getKeystore() != null) {
 				parametersList.add( "-keystore" );
 				parametersList.add( setting.getKeystore().getAbsolutePath() );
