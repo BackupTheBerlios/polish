@@ -340,7 +340,7 @@ import de.enough.polish.windows.Keyboard;
  * @since MIDP 1.0
  */
 public class TextField extends StringItem
-//#if polish.TextField.useDirectInput && !polish.blackberry
+//#if (polish.TextField.useDirectInput || polish.android) && !polish.blackberry
 	//#define tmp.forceDirectInput
 	//#define tmp.directInput
 //#elif polish.css.textfield-direct-input && !polish.blackberry
