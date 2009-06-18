@@ -17,7 +17,7 @@ public class LinuxNotifier {
 	public static boolean publish(String title, String text)
 	{
 		try {
-			String[] cmd = new String[] {"notify-send", "-t", "0", title, text };
+			String[] cmd = new String[] {"notify-send", title, text };
 			Runtime.getRuntime().exec(cmd);
 			return true;
 		}
