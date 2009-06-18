@@ -91,7 +91,7 @@ public class SignFinalizer extends Finalizer {
 			}
 			jarSigner = env.resolveFile(path);
 			if( ! jarSigner.exists()) {
-				System.out.println("Could not find jarsigner at path '"+path+"'. Searching one directory above.");
+				String incorrectPath = jarSigner.getAbsolutePath();
 				if(OsUtil.isRunningWindows()) {
 					path = "${java.home}/../bin/jarsigner.exe";
 				} else {
@@ -100,9 +100,7 @@ public class SignFinalizer extends Finalizer {
 				jarSigner = env.resolveFile(path);
 
 				if( ! jarSigner.exists()) {
-					if( ! jarSigner.exists()) {
-						throw new BuildException("Could not find jarsigner tool with path '"+jarSigner.getAbsolutePath()+"'. Make sure the 'java.home' variable is set in the build.xml file to the directory where the JDK is.");
-					}
+					throw new BuildException("Could not find jarsigner tool at path '"+incorrectPath+"' or '"+jarSigner.getAbsolutePath()+"'. Make sure the 'java.home' variable is set in the build.xml file to the directory where the JDK is located.");
 				}
 			}
 			
