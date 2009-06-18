@@ -1243,7 +1243,7 @@ public class TabbedPane extends Screen
 	 * @see de.enough.polish.ui.Screen#hideNotify()
 	 */
 	public void hideNotify() {
-		if(this.currentScreen != null) {
+		if (this.currentScreen != null) {
 			this.currentScreen.hideNotify();
 		}
 		super.hideNotify();
@@ -1254,10 +1254,22 @@ public class TabbedPane extends Screen
 	 * @see de.enough.polish.ui.Screen#showNotify()
 	 */
 	public void showNotify() {
-		if(this.currentScreen != null) {
+		if (this.currentScreen != null) {
 			this.currentScreen.showNotify();
 		}
 		super.showNotify();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#sizeChanged(int, int)
+	 */
+	public void sizeChanged(int width, int height) {
+		if (this.currentScreen != null) {
+			int tabAdjustedHeight = height - this.tabIconsContainer.itemHeight;
+			this.currentScreen.sizeChanged(width, tabAdjustedHeight);
+		}
+		super.sizeChanged(width, height);
 	}
 	
 	
