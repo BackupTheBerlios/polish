@@ -4435,13 +4435,20 @@ implements UiElement, Animatable
 					}
 				//#else
 					// check if one of the command buttons has been pressed:
-					if (this.menuOpened && y <= this.screenHeight) {
-						// a menu-item could have been selected:
-						if (this.menuContainer.handlePointerPressed( x - this.menuContainer.relativeX, y - this.menuContainer.relativeY )) {
-							//openMenu( false ); close the menu in pointerReleased so that the user can scroll within large commands menu
+					if (this.menuOpened) {
+						if (y <= this.screenHeight) {
+							// a menu-item could have been selected:
+							if (this.menuContainer.handlePointerPressed( x - this.menuContainer.relativeX, y - this.menuContainer.relativeY )) {
+								//openMenu( false ); close the menu in pointerReleased so that the user can scroll within large commands menu
+								repaint();
+							}
+							return;
+						} else if (x <= this.menuLeftCommandX){
+							// the "SELECT" command has been clicked:
+							this.menuContainer.handleKeyPressed(0, Canvas.FIRE);
 							repaint();
+							return;
 						}
-						return;
 					}
 				//#endif
 			//#endif
@@ -4572,7 +4579,7 @@ implements UiElement, Animatable
 		//					System.out.println("x <= this.menuLeftCommandX: open=" + this.menuOpened );
 							if (this.menuOpened ) {
 								// the "SELECT" command has been clicked:
-								this.menuContainer.handleKeyPressed(0, Canvas.FIRE);
+								this.menuContainer.handleKeyReleased(0, Canvas.FIRE);
 								openMenu( false );
 							} else if (this.menuSingleLeftCommand != null) {								
 								this.callCommandListener(this.menuSingleLeftCommand);
