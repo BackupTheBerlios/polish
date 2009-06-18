@@ -24,15 +24,10 @@ public class GrowlNotifier {
 		+ "-- Register our script with growl.\n"
 		+ "-- You can optionally (as here) set a default icon\n" 
 		+ "-- for this script's notifications.\n"
-		+ "register as application Â\n"
-		+ "	\"J2ME Polish\" all notifications allNotificationsList Â\n"
-		+ "	default notifications enabledNotificationsList Â\n"
-		+ "	icon of application \"Script Editor\"\n"
+		+ "register as application 	\"J2ME Polish\" all notifications allNotificationsList 	default notifications enabledNotificationsList	icon of application \"Script Editor\"\n"
 	
 		+ "--	Send a Notification...\n"
-		+ "notify with name Â\n"
-		+ "	\"Message\" title \"${title}\" description Â\n"
-		+ "	\"${description}\" application name \"J2ME Polish\"\n"
+		+ "notify with name \"Message\" title \"${title}\" description 	\"${description}\" application name \"J2ME Polish\"\n"
 	
 		+ "end tell"
 		;
