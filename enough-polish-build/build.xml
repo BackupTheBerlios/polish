@@ -69,9 +69,39 @@
 		<mkdir dir="dist" />
 	</target>
 
+	<target name="build-client-dummy"
+		depends="build-init"
+		description="compiles some needed classes from client side for build side">
+		<mkdir dir="build/clientdummy" />
+		<javac
+			srcdir="../enough-polish-j2me/source/src"
+			destdir="build/clientdummy"
+			encoding="latin1"
+			source="1.5"
+			target="1.5">
+			<classpath>
+				<pathelement path="import/cldc-1.1.jar" />
+				<pathelement path="import/midp-2.1.jar" />
+				<pathelement path="import/advancedmultimedia-1.0.jar" />
+				<pathelement path="import/android.jar" />
+				<pathelement path="import/btapi.jar" />
+				<pathelement path="import/blackberry-4.7.0.jar" />
+				<pathelement path="import/doja-2.5.jar" />
+				<pathelement path="import/m3g.jar" />
+				<pathelement path="import/mmapi.jar" />
+				<pathelement path="import/nokia-ui.jar" />
+				<pathelement path="import/samsung-api.jar" />
+				<pathelement path="import/sensor.jar" />
+				<pathelement path="import/siemens-extension-api.jar" />
+				<pathelement path="import/windows.jar" />
+				<pathelement path="import/wmapi-2.0.jar" />
+				<pathelement path="import/android-1.5.jar" />
+			</classpath>
+		</javac>
+	</target>
 	
 	<target name="build-build" 
-		depends="build-init"
+		depends="build-client-dummy"
 		description="builds the enough-j2mepolish-build.jar">
 		<!-- create a list of all J2ME source files: -->
 		<indexWriter 
@@ -81,6 +111,24 @@
 		</indexWriter>
 		<!-- update the version -->
 		<appendDateToProperties source="version.properties" target="tmp/version.properties" />
+		<!-- compile the core code -->
+		<mkdir dir="build/coreclasses" />
+		<javac
+			srcdir="source/src"
+			destdir="build/coreclasses"
+			debug="true"
+			source="1.4"
+			target="1.4">
+			<classpath>
+				<pathelement path="lib/jdom.jar" />
+				<pathelement path="lib/javax.servlet.jar" />
+				<pathelement path="lib/bluecove-2.0.3.jar" />
+				<pathelement path="lib/swing-layout-1.0.jar" />
+				<pathelement path="lib/osgi-3.0.1.jar" />
+				<pathelement path="lib/AppleJavaExtensions.jar" />
+				<pathelement path="build/clientdummy" />
+			</classpath>
+		</javac>
 		<!-- compile the legacy code 
 		<javac 
 			srcdir="source/legacy"
@@ -91,7 +139,7 @@
 			
 		<!-- create the binary build distribution -->
 		<jar destfile="dist/enough-j2mepolish-build.jar"
-		     basedir="bin/classes"
+		     basedir="build/coreclasses"
 			 excludes="**/*.html"
 			 index="true"
 			 manifest="META-INF/MANIFEST.MF"
@@ -121,9 +169,31 @@
 	<target name="build-extension" 
 		depends="build-init"
 		description="builds the enough-j2mepolish-extension.jar">
+		<!-- compile extensions -->
+		<mkdir dir="build/extensionsclasses" />
+		<javac
+			srcdir="source/extensions"
+			destdir="build/extensionsclasses"
+			debug="true"
+			source="1.4"
+			target="1.4">
+			<classpath>
+				<pathelement path="lib/asm-all.jar" />
+				<pathelement path="lib/enough-bytecode.jar" />
+				<pathelement path="lib/enough-license.jar" />
+				<pathelement path="lib/jdom.jar" />
+				<pathelement path="lib/jode-1.1.2-pre1.jar" />
+				<pathelement path="lib/kenv.zip" />
+				<pathelement path="lib/retroweaver-all.jar" />
+				<pathelement path="lib/svgSalamander.jar" />
+				<pathelement path="lib/yguard-lib.jar" />
+				<pathelement path="lib/ZKM.jar" />
+				<pathelement path="build/coreclasses" />
+			</classpath>
+		</javac>
 		<!-- create the binary extensions distribution -->
 		<jar destfile="dist/enough-j2mepolish-extensions.jar"
-		     basedir="bin/extensions"
+		     basedir="build/extensionsclasses"
 			 excludes="**/*.html"
 			 index="true"
 		     >
@@ -368,24 +438,81 @@
 		<delete file="tmp/core/runtime/META-INF/INDEX.LIST" />
 		<!-- create the binary rmi distribution -->
 		<jar destfile="dist/enough-j2mepolish-rmi.jar"
-		     basedir="bin/classes"
+		     basedir="build/coreclasses"
 			 excludes="**/*.html"
 			 includes="de/enough/polish/rmi/*"
 			 index="true"
 		     >
 			<!--
-			<fileset dir="bin/classes" includes="de/enough/polish/util/*" />
+			<fileset dir="build/coreclasses" includes="de/enough/polish/util/*" />
 			-->
-			<fileset dir="bin/classes" includes="de/enough/polish/rmi/bluetooth/*" />
+			<fileset dir="build/coreclasses" includes="de/enough/polish/rmi/bluetooth/*" />
 			<fileset dir="build/clientclasses" includes="de/enough/polish/rmi/*" />
 			<!-- keep original Serializer, so that JavaSE components are not missing... 
 			<fileset dir="build/clientclasses" includes="de/enough/polish/io/*" />
 			-->
-			<fileset dir="../enough-polish-j2me/bin/classes" includes="de/enough/polish/io/*" />
+			<fileset dir="build/clientclasses" includes="de/enough/polish/io/*" />
 			<fileset dir="tmp/core/runtime" />
 		</jar>
 	</target>
 
+	<target name="bootstrap"
+		depends="build-client-dummy"
+		description="bootstraps the core framework"
+		>
+		<!-- compile the core code for bootstrap -->
+		<mkdir dir="build/bootstrapclasses" />
+		<javac
+			srcdir="source/src"
+			destdir="build/bootstrapclasses"
+			debug="true"
+			source="1.4"
+			target="1.4">
+			<classpath>
+				<pathelement path="lib/jdom.jar" />
+				<pathelement path="lib/javax.servlet.jar" />
+				<pathelement path="lib/bluecove-2.0.3.jar" />
+				<pathelement path="lib/swing-layout-1.0.jar" />
+				<pathelement path="lib/osgi-3.0.1.jar" />
+				<pathelement path="lib/AppleJavaExtensions.jar" />
+				<pathelement path="build/clientdummy" />
+			</classpath>
+		</javac>
+		<!-- compile extensions for bootstrap -->
+		<javac
+			srcdir="source/extensions"
+			destdir="build/bootstrapclasses"
+			debug="true"
+			source="1.4"
+			target="1.4">
+			<classpath>
+				<pathelement path="lib/asm-all.jar" />
+				<pathelement path="lib/enough-bytecode.jar" />
+				<pathelement path="lib/enough-license.jar" />
+				<pathelement path="lib/jdom.jar" />
+				<pathelement path="lib/jode-1.1.2-pre1.jar" />
+				<pathelement path="lib/kenv.zip" />
+				<pathelement path="lib/retroweaver-all.jar" />
+				<pathelement path="lib/svgSalamander.jar" />
+				<pathelement path="lib/yguard-lib.jar" />
+				<pathelement path="lib/ZKM.jar" />
+				<pathelement path="build/bootstrapclasses" />
+			</classpath>
+		</javac>
+		<!-- compile website for bootstrap -->
+		<mkdir dir="build/bootstrapwebsite" />
+		<javac
+			srcdir="source/website"
+			destdir="build/bootstrapwebsite"
+			debug="true"
+			source="1.4"
+			target="1.4">
+			<classpath>
+				<pathelement path="lib/enough-webprocessor.jar" />
+				<pathelement path="build/bootstrapclasses" />
+			</classpath>
+		</javac>
+	</target>
 	
 	<target name="bin-dist" 
 		depends="build-build, build-extension, build-client, build-client-java5, build-client-editor, build-rmi, build-build-source"
@@ -868,7 +995,7 @@
 	</target>
 
 	<target name="installer" 
-			 depends="clean, bin-dist, copyfiles, convertWindowsLineEndings"
+			 depends="bin-dist, copyfiles, convertWindowsLineEndings"
 			 description="creates the j2mepolish-installer." 
 		>
 		<taskdef name="izpack" 
@@ -876,11 +1003,11 @@
 			classname="com.izforge.izpack.ant.IzPackTask"/>
 		<taskdef name="webprocessor" 
 			classname="de.enough.webprocessor.WebProcessorTask" 
-			classpath="../enough-webprocessor/bin/classes:${polish.home}/bin/website:${polish.home}/bin/classes:${polish.home}/lib/jdom.jar:${polish.home}/dist/enough-j2mepolish-client.jar:${polish.home}/import/enough-j2mepolish-client.jar:${polish.home}/import/cldc-1.1.jar:${polish.home}/import/midp-2.0.jar:${polish.home}/import/mmapi.jar" />
+			classpath="../enough-webprocessor/bin/classes:${polish.home}/bin/website:build/bootstrapwebsite:${polish.home}/bin/classes:${polish.home}/build/coreclasses:${polish.home}/lib/jdom.jar:${polish.home}/dist/enough-j2mepolish-client.jar:${polish.home}/import/enough-j2mepolish-client.jar:${polish.home}/import/cldc-1.1.jar:${polish.home}/import/midp-2.0.jar:${polish.home}/import/mmapi.jar" />
 		<!--
 		<taskdef name="webprocessor" 
 			classname="de.enough.webprocessor.WebProcessorTask" 
-			classpath="bin/website:../enough-webprocessor/bin/classes:dist/enough-webprocessor.jar:${polish.home}/bin/website:${polish.home}/bin/classes:${polish.home}/lib/jdom.jar:../enough-polish-j2me/bin/classes"
+			classpath="bin/website:../enough-webprocessor/bin/classes:dist/enough-webprocessor.jar:${polish.home}/bin/website:build/bootstrapwebsite:${polish.home}/bin/classes:${polish.home}/lib/jdom.jar:../enough-polish-j2me/bin/classes"
 		/>
 		-->
 
