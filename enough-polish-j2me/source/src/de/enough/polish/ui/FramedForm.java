@@ -920,6 +920,31 @@ public class FramedForm extends Form {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Screen#handlePointerPressed(int, int)
 	 */
+	protected boolean handlePointerDragged(int x, int y) {
+		Container newFrame = null;
+		
+		if (this.container.handlePointerDragged(x - this.container.relativeX, y - this.container.relativeY)) {
+			newFrame = this.container;
+		} else if ( this.topFrame != null && this.topFrame.handlePointerDragged(x - this.topFrame.relativeX, y - this.topFrame.relativeY) ) {
+			newFrame = this.topFrame;
+		} else if ( this.bottomFrame != null && this.bottomFrame.handlePointerDragged(x - this.bottomFrame.relativeX, y - this.bottomFrame.relativeY) ) {
+			newFrame = this.bottomFrame;
+		} else if ( this.leftFrame != null && this.leftFrame.handlePointerDragged(x - this.leftFrame.relativeX, y - this.leftFrame.relativeY) ) {
+			newFrame = this.leftFrame;
+		} else if ( this.rightFrame != null && this.rightFrame.handlePointerDragged(x - this.rightFrame.relativeX, y - this.rightFrame.relativeY) ) {
+			newFrame = this.rightFrame;
+		}
+		if (!this.keepContentFocused && newFrame != null && newFrame != this.currentlyActiveContainer ) {
+			setActiveFrame(newFrame);
+		}
+		return (newFrame != null);
+	}
+	//#endif
+	
+	//#ifdef polish.hasPointerEvents
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#handlePointerPressed(int, int)
+	 */
 	protected boolean handlePointerReleased(int x, int y) {
 		Container newFrame = null;
 		if (this.container.handlePointerReleased(x - this.container.relativeX, y - this.container.relativeY)) {
