@@ -429,7 +429,7 @@ These namespaces/schemas will be used soon.
     <capability name="HeapSize" value="20MB" />
     <capability name="MenuBar.OptionsPosition" value="left" />
     <capability name="MenuBar.OkPosition" value="left" />
-    <capability name="TextField.directInput" value="true" />
+    <capability name="TextField.useDirectInput" value="true" />
     <capability name="key.supportsAsciiKeyMap" value="true" />
     <capability name="key.maybeSupportsAsciiKeyMap" value="true" />
     <capability name="key.up" value="-1" />
@@ -456,7 +456,7 @@ These namespaces/schemas will be used soon.
     <capability name="HeapSize" value="20MB" />
     <capability name="MenuBar.OptionsPosition" value="left" />
     <capability name="MenuBar.OkPosition" value="left" />
-    <capability name="TextField.directInput" value="true" />
+    <capability name="TextField.useDirectInput" value="true" />
     <capability name="key.supportsAsciiKeyMap" value="true" />
     <capability name="key.maybeSupportsAsciiKeyMap" value="true" />
     <capability name="key.up" value="-1" />
@@ -610,6 +610,7 @@ These namespaces/schemas will be used soon.
     <capability name="Emulator.Skin" value="QVGA-L" />
     <capability name="ScreenSize" value="320x240" />
   </device>
+  
   <device supportsPolishGui="true">
     <identifier>HTC/G1</identifier>
     <description>An android device</description>
@@ -626,6 +627,14 @@ These namespaces/schemas will be used soon.
     <capability name="key.supportsAsciiKeyMap" value="true" />
     <capability name="IconSize" value="48x48" />
   </device>
+  
+  <device supportsPolishGui="true">
+    <identifier>HTC/G1_1.1</identifier>
+    <parent>HTC/G1</parent>
+    <capability name="JavaPlatform" value="Android/1.1" />
+    <capability name="JavaConfiguration" value="Android/1.1" />
+  </device>
+  
   
   <!-- virtual devices -->
   <!-- These devices do not actually exist, but they share the common
