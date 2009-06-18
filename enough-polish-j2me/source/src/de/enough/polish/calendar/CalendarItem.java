@@ -461,7 +461,7 @@ public class CalendarItem extends TableItem
 	}
 
 	/**
-	 * @return
+	 * @return the selected date
 	 */
 	public Date getSelectedDate()
 	{

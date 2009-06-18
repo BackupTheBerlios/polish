@@ -1399,8 +1399,8 @@ public abstract class CustomItem extends Item
 	 * preprocessing symbol is defined.
 	 * The default implementation returns false.
 	 *  
-	 * @param relX the x position of the pointer pressing relative to this item's left position
-	 * @param relY the y position of the pointer pressing relative to this item's top position
+	 * @param x the x position of the pointer pressing relative to this item's left position
+	 * @param y the y position of the pointer pressing relative to this item's top position
 	 * @return true when the dragging of the pointer was actually handled by this item.
 	 */
 	protected boolean handlePointerDragged( int x, int y ) {

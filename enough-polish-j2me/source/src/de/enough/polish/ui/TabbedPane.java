@@ -542,7 +542,6 @@ public class TabbedPane extends Screen
 	 * @param index the index of the tab which should be replaced
 	 * @param tab the tab object (Screen) to be inserted.
 	 * @param tabIconItem the item visualizing the tab
-	 * @param tabIconStyle the style for the tab icon
 	 * @throws IndexOutOfBoundsException if index is invalid.
 	 * @throws NullPointerException if either tab or icon is null.
 	 */
@@ -598,8 +597,6 @@ public class TabbedPane extends Screen
 	 * Replaces the current tab element without changing its icon.
 	 * 
 	 * @param tab the tab object (Screen) that should replace the current tab
-	 * @param icon the image part of the tab element.
-	 * @throws IndexOutOfBoundsException if there is no tab present
 	 * @throws NullPointerException if either tab or icon is null.
 	 */
 	public void setCurrentTab( Displayable tab)
@@ -686,7 +683,6 @@ public class TabbedPane extends Screen
 	 * 
 	 * @param tab the tab object (Screen) that should replace the current tab
 	 * @param tabIconItem the item visualizing the tab
-	 * @param tabIconStyle the style for the tab icon
 	 * @throws IndexOutOfBoundsException if there is no tab present
 	 * @throws NullPointerException if either tab or icon is null.
 	 */

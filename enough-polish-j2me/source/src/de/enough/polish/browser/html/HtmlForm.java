@@ -219,7 +219,6 @@ public class HtmlForm
 	/**
   	 * Does a Form POST method call.
   	 * @param submitItem the item triggering the call
-  	 * @param form the form containing the data
   	 */
   	protected void doPostSubmitCall(Item submitItem )
   	{

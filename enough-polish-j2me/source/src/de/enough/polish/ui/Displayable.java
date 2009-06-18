@@ -106,7 +106,7 @@ public interface Displayable
 	 * via a call to <A HREF="../../../javax/microedition/lcdui/Displayable.html#sizeChanged(int, int)"><CODE>sizeChanged()</CODE></A>. </p>
 	 * 
 	 * @param ticker - the ticker object used on this screen
-	 * @see #getTicker()
+	 * @see #getPolishTicker()
 	 * @since  MIDP 2.0
 	 */
 	public void setTicker( Ticker ticker);

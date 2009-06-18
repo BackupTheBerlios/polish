@@ -194,7 +194,7 @@ public class Icalendar implements Serializable {
 
 	/**
 	 * setter method for time zone details of calendar
-	 * @param calendarTimezone
+	 * @param localTimezone
 	 */
 	public void setLocalTimezone(String localTimezone) {
 		this.localTimezone = localTimezone;

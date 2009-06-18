@@ -52,7 +52,7 @@ public class ScaledImageItem
 	 * 
 	 * @throws IllegalArgumentException - if the layout value is not a legal combination of directives
 	 * 
-	 * @see #ImageItem(String, Image, int, String)
+	 * @see ImageItem#ImageItem(String, Image, int, String)
 	 * @see #ScaledImageItem(String, Image, int, String, Style)
 	 */
 	public ScaledImageItem(String label, Image image, Dimension imageWidth, Dimension imageHeight, int layout, String altText)
@@ -73,7 +73,7 @@ public class ScaledImageItem
 	 * 
 	 * @throws IllegalArgumentException - if the layout value is not a legal combination of directives
 	 * 
-	 * @see #ImageItem(String, Image, int, String, Style)
+	 * @see ImageItem#ImageItem(String, Image, int, String, Style)
 	 * @see #ScaledImageItem(String, Image, int, String)
 	 */
 	public ScaledImageItem(String label, Image image, Dimension imageWidth, Dimension imageHeight, int layout, String altText, Style style)

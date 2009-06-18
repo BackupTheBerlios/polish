@@ -566,7 +566,7 @@ public class CalendarEntry implements Serializable {
 	}
 
 	/**
-	 * @return 
+	 * @return the alarm value
 	 */
 	public int getAlarm() {
 		return this.alarm;

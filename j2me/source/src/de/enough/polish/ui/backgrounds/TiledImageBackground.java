@@ -167,7 +167,7 @@ implements ImageConsumer
 	 * Creates a new image background.
 	 * 
 	 * @param color the background color or Item.TRANSPARENT
-	 * @param imageUrl the url of the image, e.g. "/bg.png", must not be null!
+	 * @param image the image, must not be null!
 	 * @param repeatMode indicates whether the background image should
 	 *        be repeated, either ImageBackground.REPEAT, REPEAT_X or REPEAT_Y
 	 * @param anchor the anchor of the image, either  "left", "right", 

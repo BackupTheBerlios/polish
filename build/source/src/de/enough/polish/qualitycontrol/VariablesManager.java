@@ -58,7 +58,7 @@ public class VariablesManager {
 	/**
 	 * Loads the variables.xml file.
 	 * 
-	 * @param is input stream for reading the variables.xml file
+	 * @param polishHome the base directory of the J2ME Polish installation
 	 * @throws JDOMException when there are syntax errors in variables.xml
 	 * @throws IOException when variables.xml could not be read
 	 * @throws InvalidComponentException when an variable definition has errors

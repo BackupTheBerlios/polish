@@ -1695,8 +1695,8 @@ public final class ImageUtil {
 	* Linear interpolations will be done between sourceImage original colors and parameter
 	* RGB values in accordance to parameter permille.
 	*
-	* @param RgbImage source image
-	* @param R Red channel adjustment as int, must be [-100;100]
+	* @param sourceImg source image
+	* @param R ged channel adjustment as int, must be [-100;100]
 	* @param G Green channel adjustment as int, must be [-100;100]
 	* @param B Blue adjustment as int, must be [-100;100]
 	* @param permille intrepolations factor, must be [0;1000]
@@ -1721,7 +1721,7 @@ public final class ImageUtil {
 	/*******************************************************************************
 	* Changes the color balance of a RgbImage.
 	*
-	* @param RgbImage source image
+	* @param sourceImg source image
 	* @param R Red channel adjustment as int, must be [-100;100]
 	* @param G Green channel adjustment as int, must be [-100;100]
 	* @param B Blue adjustment as int, must be [-100;100]
@@ -1734,7 +1734,7 @@ public final class ImageUtil {
 	/*******************************************************************************
 	* Changes the color balance of a RgbImage.
 	* 
-	* @param RgbImage source image
+	* @param sourceImg source image
 	* @param R Red channel adjustment as int, must be [-100;100]
 	* @param G Green channel adjustment as int, must be [-100;100]
 	* @param B Blue adjustment as int, must be [-100;100]
@@ -2072,7 +2072,8 @@ public final class ImageUtil {
 	 * @param rgbImg image that should be masked
 	 * @param circX horizontal center coordinate of circle
 	 * @param circY vertical center coordinate of circle
-	 * @param circRadius radius of circle in pixels
+	 * @param circWidth width of circle in pixels
+	 * @param circHeight height of circle in pixels
 	 * @param invert true if mask should invert 
 	 */
 	public final static void clipRgbImageCirkular(RgbImage rgbImg, int circX, int circY, int circWidth, int circHeight, boolean invert)

@@ -55,7 +55,7 @@ import de.enough.polish.util.ImageUtil;
  * </p>
  *
  * <p>Copyright Enough Software 2004 - 2009</p>
-
+ *
  * <pre>
  * history
  *        14-Mar-2004 - rob creation

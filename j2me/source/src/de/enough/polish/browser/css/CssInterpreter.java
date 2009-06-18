@@ -670,7 +670,6 @@ public class CssInterpreter {
 	/**
 	 * Reads all styles and registers them in the internal Hashtable
 	 * 
-	 * @param styles the table in which the read styles should be registered
 	 * @throws IOException when reading fails
 	 * @throws IllegalArgumentException when encountering illegal values. 
 	 */

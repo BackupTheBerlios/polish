@@ -66,8 +66,7 @@ public class BugManager {
 	/**
 	 * Creates a new BugManager.
 	 * 
-	 * @param antProperties all properties which have been defined in Ant
-	 * @param is input stream for reading the bugs.xml file
+	 * @param polishHome the home of the polish installation
 	 * @throws JDOMException when there are syntax errors in bugs.xml
 	 * @throws IOException when bugs.xml could not be read
 	 * @throws InvalidComponentException when an issue definition has errors
