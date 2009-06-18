@@ -2921,15 +2921,13 @@ public abstract class Item implements UiElement, Animatable
 		//#endif
 		if (cHeight > this.contentHeight) {
 			int ch = cHeight;
-			int start = 0;
 			if (!this.useSingleRow) {
 				ch -= labelHeight;
-				start = labelHeight;
 			}
 			if (isLayoutVerticalCenter()) {
-				this.contentY = start + ( (ch - this.contentHeight) >> 1);
+				this.contentY += ( (ch - this.contentHeight) >> 1);
 			} else if (isLayoutBottom()) {
-				this.contentY = start + ( ch - this.contentHeight );
+				this.contentY += ( ch - this.contentHeight );
 			}
 		}
 		this.itemHeight = cHeight + noneContentHeight;
