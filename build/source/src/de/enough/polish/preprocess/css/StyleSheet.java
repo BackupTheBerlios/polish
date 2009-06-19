@@ -500,27 +500,38 @@ public class StyleSheet {
 				}
 			}
 			// check for the "[parentStyleName]:hover" "[parentStyleName]:pressed" etc syntax:
-			int colonPos = selector.indexOf(":");
+			int colonPos = selector.indexOf(':');
 			if ( colonPos != -1) {
-				String subName = selector.substring( colonPos + 1 );
-				parent = selector.substring(0, colonPos ).trim();
-				if (parent.charAt(0) == '.') {
-					parent = parent.substring(1);
+				// allow any number of levels of pseudo styles, e.g. myStyle:hover:visited:pressed
+				String subName = null;
+				Style parentStyle = null;
+				while (colonPos != -1) {
+					subName = selector.substring( colonPos + 1 );
+					int subNameColonIndex = subName.indexOf(':');
+					if (subNameColonIndex != -1) {
+						subName = subName.substring(0, subNameColonIndex).trim();
+					}
+					parent = selector.substring(0, colonPos ).trim();
+					if (parent.charAt(0) == '.') {
+						parent = parent.substring(1);
+					}
+					
+					parentStyle = getStyle( parent );
+					if (parentStyle == null) {
+						throw new BuildException("Invalid CSS: the :" + subName+  " CSS style \"" + selector + "\" needs to follow AFTER the referenced style definition. Please adjust your polish.css design settings.");
+					} 
+					// found parent style, now set the implicit focused-style attribute:
+					String newStyleName = subName;
+					if (subName.equals("hover")) {
+						newStyleName = "focused";
+					}
+					
+					selector = (selector.substring(0, colonPos ).trim() + newStyleName + selector.substring( colonPos + subName.length() + 1 ).trim()).trim();
+					subName = newStyleName;
+//					System.out.println("selector: " + selector );
+//					System.out.println( "subname: [" + subName + "]");
+					colonPos = selector.indexOf(':');
 				}
-				Style parentStyle = getStyle( parent );
-				if (parentStyle == null) {
-					throw new BuildException("Invalid CSS: the :" + subName+  " CSS style \"" + selector + "\" needs to follow AFTER the referenced style definition. Please adjust your polish.css design settings.");
-				} 
-				// found parent style, now set the implicit focused-style attribute:
-				String newStyleName = subName;
-				if (subName.equals("hover")) {
-					newStyleName = "focused";
-				}
-				
-				selector = (selector.substring(0, colonPos ).trim() + newStyleName + selector.substring( colonPos + subName.length() + 1 ).trim()).trim();
-				subName = newStyleName;
-//				System.out.println("selector: " + selector );
-//				System.out.println( "subname: [" + subName + "]");
 				cssBlock.setSelector( selector );
 				HashMap referenceMap = new HashMap(1);
 				referenceMap.put("style", parent + subName );
