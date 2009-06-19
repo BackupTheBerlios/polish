@@ -301,59 +301,77 @@ public final class DrawUtil {
 		//#if polish.midp2
 			g.fillTriangle(x1, y1, x2, y2, x3, y3);
 		//#else
-			int centerX = getCenter( x1, x2, x3 );
-			int centerY = getCenter( y1, y2, y3 );
-			boolean isPositionMoved;
-			do {
-				// drawTriangle( x1, y1, x2, y2, x3, y3, g );
-				g.drawLine( x1, y1, x2, y2 );
-				g.drawLine( x2, y2, x3, y3 ); 
-				g.drawLine( x3, y3, x1, y1 );
-				
-				isPositionMoved = false;
-				if (x1 < centerX) {
-					x1++;
-					isPositionMoved = true;
-				} else if (x1 > centerX) {
-					x1--;
-					isPositionMoved = true;
-				}
-				if (x2 < centerX) {
-					x2++;
-					isPositionMoved = true;
-				} else if (x2 > centerX) {
-					x2--;
-					isPositionMoved = true;
-				}
-				if (x3 < centerX) {
-					x3++;
-					isPositionMoved = true;
-				} else if (x3 > centerX) {
-					x3--;
-					isPositionMoved = true;
-				}
-				if (y1 < centerY) {
-					y1++;
-					isPositionMoved = true;
-				} else if (y1 > centerY) {
-					y1--;
-					isPositionMoved = true;
-				}
-				if (y2 < centerY) {
-					y2++;
-					isPositionMoved = true;
-				} else if (y2 > centerY) {
-					y2--;
-					isPositionMoved = true;
-				}
-				if (y3 < centerY) {
-					y3++;
-					isPositionMoved = true;
-				} else if (y3 > centerY) {
-					y3--;
-					isPositionMoved = true;
-				}
-			} while (isPositionMoved);
+			int tmp;
+			
+			if (y1 > y2) {
+				tmp = x1; x1 = x2; x2 = tmp;
+				tmp = y1; y1 = y2; y2 = tmp;
+			}
+
+			if (y1 > y3) {
+				tmp = x1; x1 = x3; x3 = tmp;
+				tmp = y1; y1 = y3; y3 = tmp;
+			}
+
+			if (y2 > y3) {
+				tmp = x2; x2 = x3; x3 = tmp;
+				tmp = y2; y2 = y3; y3 = tmp;
+			}
+
+			double dx1, dx2, dx3;
+
+            if (y2 - y1 > 0)
+                dx1 = (double) (x2 - x1) / (double) (y2 - y1);
+            else
+                dx1 = 0;
+
+            if (y3 - y1 > 0)
+                dx2 = (double) (x3 - x1) / (double) (y3 - y1);
+            else
+                dx2 = 0;
+
+            if (y3 - y2 > 0)
+                dx3 = (double) (x3 - x2) / (double) (y3 - y2);
+            else
+                dx3 = 0;
+
+            int pos_x1 = 0, pos_x2 = 0, pos_y = 0;
+
+            pos_y = y1;
+            int index1 = 1, index2 = 1;
+
+            if (dx1 > dx2) {
+                for (; pos_y < y2; pos_y++, index1++, index2++) {
+                    pos_x1 = x1 + (int) Math.floor(dx2 * index1 + 0.5);
+                    pos_x2 = x1 + (int) Math.floor(dx1 * index2 + 0.5);
+                    g.drawLine(pos_x1, pos_y, pos_x2, pos_y);
+                }
+
+                pos_x2 = x2;
+                index2 = 0;
+
+                for (; pos_y <= y3; pos_y++, index1++, index2++) {
+                    pos_x1 = x1 + (int) Math.floor(dx2 * index1 + 0.5);
+                    pos_x2 = x2 + (int) Math.floor(dx3 * index2 + 0.5);
+                    g.drawLine(pos_x1, pos_y, pos_x2, pos_y);
+                }
+            }
+            else {
+                for (; pos_y < y2; pos_y++, index1++, index2++) {
+                    pos_x1 = x1 + (int) Math.floor(dx1 * index1 + 0.5);
+                    pos_x2 = x1 + (int) Math.floor(dx2 * index2 + 0.5);
+                    g.drawLine(pos_x1, pos_y, pos_x2, pos_y);
+                }
+
+                pos_x1 = x2;
+                index1 = 0;
+
+                for (; pos_y <= y3; pos_y++, index1++, index2++) {
+                    pos_x1 = x2 + (int) Math.floor(dx3 * index1 + 0.5);
+                    pos_x2 = x1 + (int) Math.floor(dx2 * index2 + 0.5);
+                    g.drawLine(pos_x1, pos_y, pos_x2, pos_y);
+                }
+            }
 		//#endif
 	}
 
