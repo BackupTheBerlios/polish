@@ -194,7 +194,7 @@ alertcontent {
   * Note: the pseudo style 'browserlink:hover' is named 'browserlinkFocused'.
   * Here we define a visited style for the currently selected item (which is focused):
   */
-.browserlinkFocused:visited {
+.browserlink:hover:visited {
 	font-color: #999;
 }
 
