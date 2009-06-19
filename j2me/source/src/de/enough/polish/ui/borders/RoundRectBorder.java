@@ -62,6 +62,9 @@ public class RoundRectBorder extends Border {
 	 */
 	public void paint(int x, int y, int width, int height, Graphics g) {
 		g.setColor( this.color );
+		// weird thing is that Graphics.drawRoundRect() surrounds more area than Graphics.drawRect(). Strange thing that.
+		width--;
+		height--;
 		g.drawRoundRect( x, y, width, height, this.arcWidth, this.arcHeight );
 		int border = this.borderWidthLeft - 1;
 		while ( border > 0) {

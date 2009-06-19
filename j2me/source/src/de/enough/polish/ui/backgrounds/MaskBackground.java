@@ -98,7 +98,7 @@ public class MaskBackground extends Background
 	 */
 	public void paint(int x, int y, int width, int height, Graphics g)
 	{
-		if (width == 0 || height == 0) {
+		if (width <= 0 || height <= 0) {
 			return;
 		}
 		//#if polish.midp2
@@ -141,11 +141,13 @@ public class MaskBackground extends Background
 				
 				
 				int targetColor = imageG.getDisplayColor( this.maskColor ) | 0xff000000;
+				int backgroundColor = imageG.getDisplayColor( 0xffffff ) | 0xff000000;
 				for (int i = 0; i < area; i++) {
 					int maskCol = maskData[i];
 					int maskAlpha = maskCol >>> 24;
 					maskCol |= 0xff000000;
-					if (maskCol == targetColor) {
+					if (maskCol != backgroundColor) {
+						//TODO calculate transparency out of color deviation from targetColor
 						int pixel = this.backgroundBuffer[i];
 						int pixelAlpha = pixel >>> 24;
 						int maxAlpha = Math.min( maskAlpha, this.opacity );
