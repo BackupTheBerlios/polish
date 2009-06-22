@@ -898,6 +898,8 @@ public abstract class Item implements UiElement, Animatable
 			if (this.isShown){
 				this.label.showNotify();
 			}
+		} else if ((label == null && this.label.getText() == null) || (label != null && label.equals(this.label.getText())) ){
+			return;
 		} else {
 			this.label.setText( label );
 		}
