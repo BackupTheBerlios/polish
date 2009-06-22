@@ -275,7 +275,7 @@ public class AddressInfo extends java.lang.Object
 	 * @param field - the ID of the field to be retrieved
 	 * @return the address field string. If the field is not set, returns null.
 	 * @throws java.lang.IllegalArgumentException - if the parameter field ID is not one of the constant values defined in this class
-	 * @see setField(int, java.lang.String)
+	 * @see #setField(int, java.lang.String)
 	 */
 	public java.lang.String getField(int field)
 	{
@@ -290,7 +290,7 @@ public class AddressInfo extends java.lang.Object
 	 * @param field - the ID of the field to be set
 	 * @param value - the new value for the field. null is used to indicate that the field has no content.
 	 * @throws java.lang.IllegalArgumentException - if the parameter field ID is not one of the constant values defined in this class
-	 * @see getField(int)
+	 * @see #getField(int)
 	 */
 	public void setField(int field, java.lang.String value)
 	{

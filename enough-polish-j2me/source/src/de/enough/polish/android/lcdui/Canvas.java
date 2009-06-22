@@ -1,6 +1,8 @@
 //#condition polish.usePolishGui && polish.android
 package de.enough.polish.android.lcdui;
 
+import javax.swing.JApplet;
+
 import android.graphics.Bitmap;
 import de.enough.polish.android.midlet.MIDlet;
 
@@ -677,7 +679,7 @@ public abstract class Canvas implements CommandListener
 	 * if there is no title.
 	 * 
 	 * @return the title of the instance, or null if no title
-	 * @see setTitle(java.lang.String)
+	 * @see #setTitle(java.lang.String)
 	 * @since MIDP 2.0
 	 */
 	public String getTitle() {
@@ -855,7 +857,8 @@ public abstract class Canvas implements CommandListener
 	 * @param y - the y coordinate of the rectangle to be repainted
 	 * @param width - the width of the rectangle to be repainted
 	 * @param height - the height of the rectangle to be repainted
-	 * @see Display.callSerially(Runnable),  serviceRepaints()
+	 * @see javax.microedition.lcdui.Display#callSerially(Runnable)
+	 * @see #serviceRepaints()
 	 */
 	public final void repaint(int x, int y, int width, int height)
 	{
@@ -897,7 +900,7 @@ public abstract class Canvas implements CommandListener
 	 * painting has completed, avoiding the danger of deadlock.
 	 * </p>
 	 * 
-	 * @see Display.callSerially(Runnable)
+	 * @see javax.microedition.lcdui.Display#callSerially(Runnable)
 	 */
 	public final void serviceRepaints()
 	{
@@ -957,7 +960,7 @@ public abstract class Canvas implements CommandListener
 	 * 
 	 * @param s
 	 *            - the new title, or null for no title
-	 * @see getTitle()
+	 * @see #getTitle()
 	 * @since MIDP 2.0
 	 */
 	public void setTitle(String s) {
@@ -1027,7 +1030,7 @@ public abstract class Canvas implements CommandListener
 	 * </P>
 	 * 
 	 * @param keyCode - the key code of the key that was repeated
-	 * @see hasRepeatEvents()
+	 * @see #hasRepeatEvents()
 	 */
 	protected void keyRepeated(int keyCode)
 	{
@@ -1183,8 +1186,7 @@ public abstract class Canvas implements CommandListener
 	 * this method to perform tasks before being shown, such
 	 * as setting up animations, starting timers, etc.
 	 * The default implementation of this method in class
-	 * <code>Canvas</code> is empty.</DL>
-	 * 
+	 * <code>Canvas</code> is empty.
 	 */
 	protected void showNotify()
 	{
@@ -1242,7 +1244,7 @@ public abstract class Canvas implements CommandListener
 	 * 
 	 * @param w - the new width in pixels of the drawable area of the Canvas
 	 * @param h - the new height in pixels of the drawable area of the Canvas
-	 * @see sizeChanged in class Displayable
+	 * @see javax.microedition.lcdui.Displayable#sizeChanged(int, int)
 	 * @since  MIDP 2.0
 	 */
 	protected void sizeChanged(int w, int h)

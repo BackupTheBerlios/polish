@@ -26,7 +26,6 @@ public class ContactDao {
 	
 	/**
 	 * 
-	 * @param peopleCursor the cursor is *not* closed after the method returns. The caller is resposible for closing it.
 	 * @return A Vector containing ContactImpl objects.
 	 */
 	public Vector getAllContacts() {

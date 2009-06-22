@@ -895,7 +895,7 @@ package de.enough.polish.android.bluetooth;
  * <!-- ======== END OF BOTTOM NAVBAR ======= -->
  * 
  * <HR>
- * <small>Copyright © 2006 Sun Microsystems, Inc. All rights reserved. <b>Use is subject to <a href="http://java.sun.com/javame/reference/apis/license.html" target="_top">License Terms</a>.</b> Your use of this web site or any of its content or software indicates your agreement to be bound by these License Terms.<br><br>For more information, please consult the <a href="http://jcp.org/en/jsr/detail?id=82" target="_top">JSR 82 specification.</a></small>
+ * <small>Copyright (c) 2006 Sun Microsystems, Inc. All rights reserved. <b>Use is subject to <a href="http://java.sun.com/javame/reference/apis/license.html" target="_top">License Terms</a>.</b> Your use of this web site or any of its content or software indicates your agreement to be bound by these License Terms.<br><br>For more information, please consult the <a href="http://jcp.org/en/jsr/detail?id=82" target="_top">JSR 82 specification.</a></small>
  * </BODY>
  * <script language="JavaScript" src="../../../../../../js/omi/jsc/s_code_remote.js" tppabs="http://java.sun.com/js/omi/jsc/s_code_remote.js"></script></HTML>
  * 
@@ -1102,7 +1102,9 @@ public class DataElement extends java.lang.Object
 	 * 
 	 * @param valueType - the type of DataElement to create: NULL, DATALT, or DATSEQ
 	 * @throws java.lang.IllegalArgumentException - if valueType is not NULL, DATALT, or DATSEQ
-	 * @see NULL, DATALT, DATSEQ
+	 * @see #NULL
+	 * @see #DATALT
+	 * @see #DATSEQ
 	 */
 	public DataElement(int valueType)
 	{
@@ -1115,7 +1117,7 @@ public class DataElement extends java.lang.Object
 	 * <P>
 	 * 
 	 * @param bool - the value of the DataElement of type BOOL.
-	 * @see BOOL
+	 * @see #BOOL
 	 */
 	public DataElement(boolean bool)
 	{
@@ -1153,7 +1155,13 @@ public class DataElement extends java.lang.Object
 	 * @param valueType - the data type of the object that is being created; must be one of the following: U_INT_1, U_INT_2, U_INT_4, INT_1, INT_2, INT_4, or INT_8
 	 * @param value - the value of the object being created; must be in the range specified for the given valueType
 	 * @throws java.lang.IllegalArgumentException - if the valueType is not valid or the value for the given legal valueType is outside the valid range
-	 * @see U_INT_1, U_INT_2, U_INT_4, INT_1, INT_2, INT_4, INT_8
+	 * @see #U_INT_1
+	 * @see #U_INT_2
+	 * @see #U_INT_4
+	 * @see #INT_1
+	 * @see #INT_2
+	 * @see #INT_4
+	 * @see #INT_8
 	 */
 	public DataElement(int valueType, long value)
 	{
@@ -1190,7 +1198,12 @@ public class DataElement extends java.lang.Object
 	 * @param valueType - the data type of the object that is being created; must be one of the following: URL, UUID, STRING, INT_16, U_INT_8, or U_INT_16
 	 * @param value - the value for the DataElement being created of type valueType
 	 * @throws java.lang.IllegalArgumentException - if the value is not of the valueType type or is not in the range specified or is null
-	 * @see URL, UUID, STRING, U_INT_8, INT_16, U_INT_16
+	 * @see #URL
+	 * @see #UUID
+	 * @see #STRING
+	 * @see #U_INT_8
+	 * @see #INT_16
+	 * @see #U_INT_16
 	 */
 	public DataElement(int valueType, java.lang.Object value)
 	{

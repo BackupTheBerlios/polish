@@ -75,7 +75,7 @@ public class Coordinates extends java.lang.Object
 	 * 
 	 * 
 	 * @return the latitude in degrees
-	 * @see setLatitude(double)
+	 * @see #setLatitude(double)
 	 */
 	public double getLatitude()
 	{
@@ -91,7 +91,7 @@ public class Coordinates extends java.lang.Object
 	 * 
 	 * 
 	 * @return the longitude in degrees
-	 * @see setLongitude(double)
+	 * @see #setLongitude(double)
 	 */
 	public double getLongitude()
 	{
@@ -108,7 +108,7 @@ public class Coordinates extends java.lang.Object
 	 * 
 	 * 
 	 * @return the altitude in meters above the reference ellipsoid
-	 * @see setAltitude(float)
+	 * @see #setAltitude(float)
 	 */
 	public float getAltitude()
 	{
@@ -120,7 +120,7 @@ public class Coordinates extends java.lang.Object
 	 * <P>
 	 * 
 	 * @param altitude - the altitude of the location in meters, defined as height above the WGS84 ellipsoid. 0.0 means a location at the ellipsoid surface, negative values mean the location is below the ellipsoid surface, Float.NaN that the altitude is not available
-	 * @see getAltitude()
+	 * @see #getAltitude()
 	 */
 	public void setAltitude(float altitude)
 	{
@@ -136,7 +136,7 @@ public class Coordinates extends java.lang.Object
 	 * 
 	 * @param latitude - the latitude component of this location in degrees. Valid range: [-90.0, 90.0].
 	 * @throws java.lang.IllegalArgumentException - if latitude is out of the valid range
-	 * @see getLatitude()
+	 * @see #getLatitude()
 	 */
 	public void setLatitude(double latitude)
 	{
@@ -152,7 +152,7 @@ public class Coordinates extends java.lang.Object
 	 * 
 	 * @param longitude - the longitude of the location in degrees. Valid range: [-180.0, 180.0)
 	 * @throws java.lang.IllegalArgumentException - if longitude is out of the valid range
-	 * @see getLongitude()
+	 * @see #getLongitude()
 	 */
 	public void setLongitude(double longitude)
 	{
@@ -243,7 +243,7 @@ public class Coordinates extends java.lang.Object
 	 * @param outputType - identifier of the type of the string representation wanted for output The constant DD_MM_SS identifies the syntax 1 and the constant DD_MM identifies the syntax 2.
 	 * @return a string representation of the coordinate in a representation indicated by the parameter
 	 * @throws java.lang.IllegalArgumentException - if the outputType is not one of the two costant values defined in this class or if the coordinate value is not within the range [-180.0, 180.0) or is Double.NaN
-	 * @see convert(String)
+	 * @see #convert(String)
 	 */
 	public static java.lang.String convert(double coordinate, int outputType)
 	{

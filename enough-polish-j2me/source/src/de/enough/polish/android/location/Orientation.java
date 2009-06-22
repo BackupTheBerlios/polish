@@ -79,7 +79,7 @@ public class Orientation extends java.lang.Object
 	 * 
 	 * 
 	 * @return the terminal's compass azimuth in degrees relative to true or magnetic north
-	 * @see isOrientationMagnetic()
+	 * @see #isOrientationMagnetic()
 	 */
 	public float getCompassAzimuth()
 	{
@@ -98,7 +98,7 @@ public class Orientation extends java.lang.Object
 	 * 
 	 * 
 	 * @return true if this Orientation is relative to the magnetic field of the Earth; false if this Orientation is relative to true north and gravity
-	 * @see getCompassAzimuth()
+	 * @see #getCompassAzimuth()
 	 */
 	public boolean isOrientationMagnetic()
 	{

@@ -120,7 +120,7 @@ public class BluetoothDevice
 		return this.device.hashCode();
 	}
 	/**
-	 * @return
+	 * @return the friendly name of the device
 	 * @throws IOException 
 	 */
 	public String getFriendlyName() throws IOException

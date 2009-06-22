@@ -203,7 +203,7 @@ public class Criteria extends java.lang.Object
 	 * 
 	 * 
 	 * @return the power consumption level, should be one of NO_REQUIREMENT, POWER_USAGE_LOW, POWER_USAGE_MEDIUM, POWER_USAGE_HIGH.
-	 * @see setPreferredPowerConsumption(int)
+	 * @see #setPreferredPowerConsumption(int)
 	 */
 	public int getPreferredPowerConsumption()
 	{
@@ -216,7 +216,7 @@ public class Criteria extends java.lang.Object
 	 * 
 	 * 
 	 * @return the preferred cost setting. true if allowed to cost, false if it must be free of charge.
-	 * @see setCostAllowed(boolean)
+	 * @see #setCostAllowed(boolean)
 	 */
 	public boolean isAllowedToCost()
 	{
@@ -229,7 +229,7 @@ public class Criteria extends java.lang.Object
 	 * 
 	 * 
 	 * @return the accuracy in meters
-	 * @see setVerticalAccuracy(int)
+	 * @see #setVerticalAccuracy(int)
 	 */
 	public int getVerticalAccuracy()
 	{
@@ -242,7 +242,7 @@ public class Criteria extends java.lang.Object
 	 * 
 	 * 
 	 * @return the horizontal accuracy in meters
-	 * @see setHorizontalAccuracy(int)
+	 * @see #setHorizontalAccuracy(int)
 	 */
 	public int getHorizontalAccuracy()
 	{
@@ -255,7 +255,7 @@ public class Criteria extends java.lang.Object
 	 * 
 	 * 
 	 * @return the maximum response time in milliseconds
-	 * @see setPreferredResponseTime(int)
+	 * @see #setPreferredResponseTime(int)
 	 */
 	public int getPreferredResponseTime()
 	{
@@ -269,7 +269,7 @@ public class Criteria extends java.lang.Object
 	 * 
 	 * 
 	 * @return whether the location provider should be able to determine speed and course. true means that it should be able, false means that this is not required.
-	 * @see setSpeedAndCourseRequired(boolean)
+	 * @see #setSpeedAndCourseRequired(boolean)
 	 */
 	public boolean isSpeedAndCourseRequired()
 	{
@@ -283,7 +283,7 @@ public class Criteria extends java.lang.Object
 	 * 
 	 * 
 	 * @return whether the location provider should be able to determine altitude. true means that it should be able, false means that this is not required.
-	 * @see setAltitudeRequired(boolean)
+	 * @see #setAltitudeRequired(boolean)
 	 */
 	public boolean isAltitudeRequired()
 	{
@@ -297,7 +297,7 @@ public class Criteria extends java.lang.Object
 	 * 
 	 * 
 	 * @return whether the location provider should be able to normally provide textual address information. true means that it should be able, false means that this is not required.
-	 * @see setAddressInfoRequired(boolean)
+	 * @see #setAddressInfoRequired(boolean)
 	 */
 	public boolean isAddressInfoRequired()
 	{
@@ -313,7 +313,7 @@ public class Criteria extends java.lang.Object
 	 * <P>
 	 * 
 	 * @param accuracy - the preferred horizontal accuracy in meters
-	 * @see getHorizontalAccuracy()
+	 * @see #getHorizontalAccuracy()
 	 */
 	public void setHorizontalAccuracy(int accuracy)
 	{
@@ -329,7 +329,7 @@ public class Criteria extends java.lang.Object
 	 * <P>
 	 * 
 	 * @param accuracy - the preferred vertical accuracy in meters
-	 * @see getVerticalAccuracy()
+	 * @see #getVerticalAccuracy()
 	 */
 	public void setVerticalAccuracy(int accuracy)
 	{
@@ -346,7 +346,7 @@ public class Criteria extends java.lang.Object
 	 * <P>
 	 * 
 	 * @param time - the preferred time constraint and timeout value in milliseconds
-	 * @see getPreferredResponseTime()
+	 * @see #getPreferredResponseTime()
 	 */
 	public void setPreferredResponseTime(int time)
 	{
@@ -363,7 +363,7 @@ public class Criteria extends java.lang.Object
 	 * <P>
 	 * 
 	 * @param level - the preferred maximum level of power consumption. Should be one of NO_REQUIREMENT, POWER_USAGE_LOW, POWER_USAGE_MEDIUM, POWER_USAGE_HIGH.
-	 * @see getPreferredPowerConsumption()
+	 * @see #getPreferredPowerConsumption()
 	 */
 	public void setPreferredPowerConsumption(int level)
 	{
@@ -389,7 +389,7 @@ public class Criteria extends java.lang.Object
 	 * <P>
 	 * 
 	 * @param costAllowed - false if location determination is not allowed to cost, true if it is allowed to cost
-	 * @see isAllowedToCost()
+	 * @see #isAllowedToCost()
 	 */
 	public void setCostAllowed(boolean costAllowed)
 	{
@@ -403,7 +403,7 @@ public class Criteria extends java.lang.Object
 	 * <P>
 	 * 
 	 * @param speedAndCourseRequired - if set to true, the LocationProvider is required to be able to normally determine the speed and course. if set the false, the speed and course are not required.
-	 * @see isSpeedAndCourseRequired()
+	 * @see #isSpeedAndCourseRequired()
 	 */
 	public void setSpeedAndCourseRequired(boolean speedAndCourseRequired)
 	{
@@ -417,7 +417,7 @@ public class Criteria extends java.lang.Object
 	 * <P>
 	 * 
 	 * @param altitudeRequired - if set to true, the LocationProvider is required to be able to normally determine the altitude if set the false, the altitude is not required.
-	 * @see isAltitudeRequired()
+	 * @see #isAltitudeRequired()
 	 */
 	public void setAltitudeRequired(boolean altitudeRequired)
 	{
@@ -436,7 +436,7 @@ public class Criteria extends java.lang.Object
 	 * <P>
 	 * 
 	 * @param addressInfoRequired - if set to true, the LocationProvider is required to be able to normally determine the textual address information. if set the false, the textual address information is not required.
-	 * @see isAddressInfoRequired()
+	 * @see #isAddressInfoRequired()
 	 */
 	public void setAddressInfoRequired(boolean addressInfoRequired)
 	{

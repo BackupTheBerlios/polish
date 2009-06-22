@@ -290,7 +290,7 @@ package de.enough.polish.android.bluetooth;
  * <!-- ======== END OF BOTTOM NAVBAR ======= -->
  * 
  * <HR>
- * <small>Copyright © 2006 Sun Microsystems, Inc. All rights reserved. <b>Use is subject to <a href="http://java.sun.com/javame/reference/apis/license.html" target="_top">License Terms</a>.</b> Your use of this web site or any of its content or software indicates your agreement to be bound by these License Terms.<br><br>For more information, please consult the <a href="http://jcp.org/en/jsr/detail?id=82" target="_top">JSR 82 specification.</a></small>
+ * <small>Copyright (c) 2006 Sun Microsystems, Inc. All rights reserved. <b>Use is subject to <a href="http://java.sun.com/javame/reference/apis/license.html" target="_top">License Terms</a>.</b> Your use of this web site or any of its content or software indicates your agreement to be bound by these License Terms.<br><br>For more information, please consult the <a href="http://jcp.org/en/jsr/detail?id=82" target="_top">JSR 82 specification.</a></small>
  * </BODY>
  * <script language="JavaScript" src="../../../../../../js/omi/jsc/s_code_remote.js" tppabs="http://java.sun.com/js/omi/jsc/s_code_remote.js"></script></HTML>
  * 
@@ -362,7 +362,7 @@ public class UUID extends java.lang.Object
 	 * <P>
 	 * 
 	 * @return the string representation of the UUID
-	 * @see toString in class java.lang.Object
+	 * @see Object#toString()
 	 */
 	public java.lang.String toString()
 	{
@@ -379,7 +379,7 @@ public class UUID extends java.lang.Object
 	 * 
 	 * @param value - the object to compare to
 	 * @return true if the 128 bit values of the two objects are equal, otherwise false
-	 * @see equals in class java.lang.Object
+	 * @see Object#equals(Object)
 	 */
 	public boolean equals(java.lang.Object value)
 	{
@@ -395,7 +395,7 @@ public class UUID extends java.lang.Object
 	 * <P>
 	 * 
 	 * @return the hash code for this object
-	 * @see hashCode in class java.lang.Object
+	 * @see Object#hashCode()
 	 */
 	public int hashCode()
 	{

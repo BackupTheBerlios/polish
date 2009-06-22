@@ -265,7 +265,7 @@ public abstract class PIM extends java.lang.Object
 	 * @throws PIMException - If the data is incorrect, does not contain enough information to form a complete entry, or a stream error occurs.
 	 * @throws java.lang.NullPointerException - if is is null.
 	 * @throws java.io.UnsupportedEncodingException - if enc is not a encoding method supported on this platform.
-	 * @see supportedSerialFormats(int)
+	 * @see #supportedSerialFormats(int)
 	 */
 	public abstract PIMItem[] fromSerialFormat(java.io.InputStream is, java.lang.String enc) throws PIMException, java.io.UnsupportedEncodingException;
 
@@ -305,7 +305,7 @@ public abstract class PIM extends java.lang.Object
 	 * @throws java.lang.NullPointerException - if os is null, dataFormat is null, or item is null.
 	 * @throws java.io.UnsupportedEncodingException - if enc is not a encoding method supported on this platform.
 	 * @throws java.lang.IllegalArgumentException - if the dataFormat is not a valid format listed in supportedSerialFormats.
-	 * @see supportedSerialFormats(int)
+	 * @see #supportedSerialFormats(int)
 	 */
 	public abstract void toSerialFormat( PIMItem item, java.io.OutputStream os, java.lang.String enc, java.lang.String dataFormat) throws PIMException, java.io.UnsupportedEncodingException;
 

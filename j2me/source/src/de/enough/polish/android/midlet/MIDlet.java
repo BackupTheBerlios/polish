@@ -568,8 +568,7 @@ public abstract class MIDlet extends Activity {
 	 * buttons.
 	 * </p>
 	 * 
-	 * @param URL -
-	 *            The URL for the platform to load. An empty string (not null)
+	 * @param url the URL for the platform to load. An empty string (not null)
 	 *            cancels any pending requests.
 	 * @return true if the MIDlet suite MUST first exit before the content can
 	 *         be fetched.

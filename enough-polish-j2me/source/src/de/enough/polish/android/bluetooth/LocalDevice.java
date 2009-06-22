@@ -499,7 +499,7 @@ import de.enough.polish.android.io.Connection;
  * <!-- ======== END OF BOTTOM NAVBAR ======= -->
  * 
  * <HR>
- * <small>Copyright © 2006 Sun Microsystems, Inc. All rights reserved. <b>Use is subject to <a href="http://java.sun.com/javame/reference/apis/license.html" target="_top">License Terms</a>.</b> Your use of this web site or any of its content or software indicates your agreement to be bound by these License Terms.<br><br>For more information, please consult the <a href="http://jcp.org/en/jsr/detail?id=82" target="_top">JSR 82 specification.</a></small>
+ * <small>Copyright (c) 2006 Sun Microsystems, Inc. All rights reserved. <b>Use is subject to <a href="http://java.sun.com/javame/reference/apis/license.html" target="_top">License Terms</a>.</b> Your use of this web site or any of its content or software indicates your agreement to be bound by these License Terms.<br><br>For more information, please consult the <a href="http://jcp.org/en/jsr/detail?id=82" target="_top">JSR 82 specification.</a></small>
  * </BODY>
  * <script language="JavaScript" src="../../../../../../js/omi/jsc/s_code_remote.js" tppabs="http://java.sun.com/js/omi/jsc/s_code_remote.js"></script></HTML>
  * 
@@ -631,7 +631,10 @@ public class LocalDevice extends java.lang.Object
 	 * 
 	 * 
 	 * @return the discoverable mode the device is presently in
-	 * @see DiscoveryAgent.GIAC, DiscoveryAgent.LIAC, DiscoveryAgent.NOT_DISCOVERABLE, setDiscoverable(int)
+	 * @see DiscoveryAgent#GIAC
+	 * @see DiscoveryAgent#LIAC
+	 * @see DiscoveryAgent#NOT_DISCOVERABLE
+	 * @see #setDiscoverable(int)
 	 */
 	public int getDiscoverable()
 	{
@@ -681,7 +684,10 @@ public class LocalDevice extends java.lang.Object
 	 * @return true if the request succeeded, otherwise false if the request failed because the BCC denied the request; false if the Bluetooth system does not support the access mode specified in mode
 	 * @throws java.lang.IllegalArgumentException - if the mode is not DiscoveryAgent.GIAC, DiscoveryAgent.LIAC, DiscoveryAgent.NOT_DISCOVERABLE, or in the range 0x9E8B00 to 0x9E8B3F
 	 * @throws BluetoothStateException - if the Bluetooth system is in a state that does not allow the discoverable mode to be changed
-	 * @see DiscoveryAgent.GIAC, DiscoveryAgent.LIAC, DiscoveryAgent.NOT_DISCOVERABLE, getDiscoverable()
+	 * @see DiscoveryAgent#GIAC
+	 * @see DiscoveryAgent#LIAC
+	 * @see DiscoveryAgent#NOT_DISCOVERABLE
+	 * @see #getDiscoverable()
 	 */
 	public boolean setDiscoverable(int mode) throws BluetoothStateException
 	{

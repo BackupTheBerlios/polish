@@ -90,7 +90,7 @@ public class ThemeContainer implements Serializable{
 	}
 
 	/**
-	 * @return
+	 * @return the type
 	 */
 	public byte getType() {
 		return this.type;

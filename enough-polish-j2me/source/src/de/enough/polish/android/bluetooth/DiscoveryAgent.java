@@ -468,7 +468,7 @@ package de.enough.polish.android.bluetooth;
  * <!-- ======== END OF BOTTOM NAVBAR ======= -->
  * 
  * <HR>
- * <small>Copyright © 2006 Sun Microsystems, Inc. All rights reserved. <b>Use is subject to <a href="http://java.sun.com/javame/reference/apis/license.html" target="_top">License Terms</a>.</b> Your use of this web site or any of its content or software indicates your agreement to be bound by these License Terms.<br><br>For more information, please consult the <a href="http://jcp.org/en/jsr/detail?id=82" target="_top">JSR 82 specification.</a></small>
+ * <small>Copyright (c) 2006 Sun Microsystems, Inc. All rights reserved. <b>Use is subject to <a href="http://java.sun.com/javame/reference/apis/license.html" target="_top">License Terms</a>.</b> Your use of this web site or any of its content or software indicates your agreement to be bound by these License Terms.<br><br>For more information, please consult the <a href="http://jcp.org/en/jsr/detail?id=82" target="_top">JSR 82 specification.</a></small>
  * </BODY>
  * <script language="JavaScript" src="../../../../../../js/omi/jsc/s_code_remote.js" tppabs="http://java.sun.com/js/omi/jsc/s_code_remote.js"></script></HTML>
  * 
@@ -579,7 +579,9 @@ public class DiscoveryAgent extends java.lang.Object
 	 * @throws java.lang.IllegalArgumentException - if the access code provided is not LIAC, GIAC, or in the range 0x9E8B00 to 0x9E8B3F
 	 * @throws java.lang.NullPointerException - if listener is null
 	 * @throws BluetoothStateException - if the Bluetooth device does not allow an inquiry to be started due to other operations that are being performed by the device
-	 * @see cancelInquiry(javax.bluetooth.DiscoveryListener), GIAC, LIAC
+	 * @see #cancelInquiry(DiscoveryListener)
+	 * @see #GIAC
+	 * @see #LIAC
 	 */
 	public boolean startInquiry(int accessCode, DiscoveryListener listener) throws BluetoothStateException
 	{
@@ -679,7 +681,9 @@ public class DiscoveryAgent extends java.lang.Object
 	 * @throws BluetoothStateException - if the Bluetooth system cannot start the request due to the current state of the Bluetooth system
 	 * @throws java.lang.NullPointerException - if uuid is null
 	 * @throws java.lang.IllegalArgumentException - if security is not ServiceRecord.NOAUTHENTICATE_NOENCRYPT, ServiceRecord.AUTHENTICATE_NOENCRYPT, or ServiceRecord.AUTHENTICATE_ENCRYPT
-	 * @see ServiceRecord.NOAUTHENTICATE_NOENCRYPT, ServiceRecord.AUTHENTICATE_NOENCRYPT, ServiceRecord.AUTHENTICATE_ENCRYPT
+	 * @see ServiceRecord#NOAUTHENTICATE_NOENCRYPT
+	 * @see ServiceRecord#AUTHENTICATE_NOENCRYPT
+	 * @see ServiceRecord#AUTHENTICATE_ENCRYPT
 	 */
 	public java.lang.String selectService( UUID uuid, int security, boolean master) throws BluetoothStateException
 	{

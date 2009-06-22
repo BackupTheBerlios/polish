@@ -234,9 +234,7 @@ public class SqlDao {
 	 * 
 	 * @param recordStoreFk the primary key of the recordstore this record is created in. This value must be valid as it is not cheched.
 	 * @param data Must not be null.
-	 * @param offset
-	 * @param numBytes
-	 * @return 
+	 * @return the id of the added record
 	 * @throws RecordStoreException 
 	 */
 	public synchronized int addRecord(long recordStoreFk, byte[] data) throws RecordStoreException {
@@ -303,7 +301,7 @@ public class SqlDao {
 	/**
 	 * @param recordStorePk
 	 * @param recordId
-	 * @return
+	 * @return the data, or null
 	 */
 	public synchronized byte[] getRecord(long recordStorePk, int recordId) {
 		Cursor resultCursor = database.query(TABLENAME_RECORD,new String[] {COLUMNNAME_RECORD_DATA},COLUMNNAME_RECORD_RECORDNUMBER+"=? AND "+COLUMNNAME_RECORD_RECORDSTORE_FK+"=?",new String[] {Long.toString(recordId),Long.toString(recordStorePk)},null,null,null);

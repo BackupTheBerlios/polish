@@ -200,7 +200,7 @@ public class Location extends java.lang.Object
 	 * 
 	 * 
 	 * @return a boolean value with true indicating that this Location instance is valid and false indicating an invalid Location instance
-	 * @see getExtraInfo(String)
+	 * @see #getExtraInfo(String)
 	 */
 	public boolean isValid()
 	{
@@ -219,7 +219,7 @@ public class Location extends java.lang.Object
 	 * 
 	 * 
 	 * @return a timestamp representing the time
-	 * @see System.currentTimeMillis()
+	 * @see System#currentTimeMillis()
 	 */
 	public long getTimestamp()
 	{

@@ -288,7 +288,7 @@ package de.enough.polish.android.bluetooth;
  * <!-- ======== END OF BOTTOM NAVBAR ======= -->
  * 
  * <HR>
- * <small>Copyright © 2006 Sun Microsystems, Inc. All rights reserved. <b>Use is subject to <a href="http://java.sun.com/javame/reference/apis/license.html" target="_top">License Terms</a>.</b> Your use of this web site or any of its content or software indicates your agreement to be bound by these License Terms.<br><br>For more information, please consult the <a href="http://jcp.org/en/jsr/detail?id=82" target="_top">JSR 82 specification.</a></small>
+ * <small>Copyright (c) 2006 Sun Microsystems, Inc. All rights reserved. <b>Use is subject to <a href="http://java.sun.com/javame/reference/apis/license.html" target="_top">License Terms</a>.</b> Your use of this web site or any of its content or software indicates your agreement to be bound by these License Terms.<br><br>For more information, please consult the <a href="http://jcp.org/en/jsr/detail?id=82" target="_top">JSR 82 specification.</a></small>
  * </BODY>
  * <script language="JavaScript" src="../../../../../../js/omi/jsc/s_code_remote.js" tppabs="http://java.sun.com/js/omi/jsc/s_code_remote.js"></script></HTML>
  * 
@@ -398,7 +398,7 @@ public interface L2CAPConnection
 	 * 
 	 * @return true if there is data to read; false if there is no data to read
 	 * @throws java.io.IOException - if the connection is closed
-	 * @see receive(byte[])
+	 * @see #receive(byte[])
 	 */
 	boolean ready() throws java.io.IOException;
 

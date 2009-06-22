@@ -83,7 +83,7 @@ implements AccessibleField
 	/**
 	 * Creates a new date field
 	 *
-	 * @param date the date
+	 * @param time the date
      * @param inputMode the input mode for the date, either
 	 * DateField.DATE, DateField.DATE_TIME or DateField.TIME.
      *

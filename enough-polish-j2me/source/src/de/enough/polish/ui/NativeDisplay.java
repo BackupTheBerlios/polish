@@ -335,7 +335,6 @@ public interface NativeDisplay
 	 * been delayed. </p>
 	 * 
 	 * @param nextDisplayable the Display requested to be made current; null is allowed
-	 * @see #getCurrent()
 	 */
 	public void setCurrent( Display nextDisplayable);
 	

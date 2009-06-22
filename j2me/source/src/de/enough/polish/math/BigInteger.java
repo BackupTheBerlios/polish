@@ -1193,7 +1193,7 @@ public class BigInteger
      * <p>
      * From Knuth Vol 2, pg 395.
      * @param certainty 
-     * @return 
+     * @return true if the BigInteger is probably prime, false otherwise 
      */
     public boolean isProbablePrime(int certainty)
     {

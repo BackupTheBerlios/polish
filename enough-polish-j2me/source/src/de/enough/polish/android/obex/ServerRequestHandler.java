@@ -397,7 +397,7 @@ package de.enough.polish.android.obex;
  * <!-- ======== END OF BOTTOM NAVBAR ======= -->
  * 
  * <HR>
- * <small>Copyright © 2006 Sun Microsystems, Inc. All rights reserved. <b>Use is subject to <a href="http://java.sun.com/javame/reference/apis/license.html" target="_top">License Terms</a>.</b> Your use of this web site or any of its content or software indicates your agreement to be bound by these License Terms.<br><br>For more information, please consult the <a href="http://jcp.org/en/jsr/detail?id=82" target="_top">JSR 82 specification.</a></small>
+ * <small>Copyright (c) 2006 Sun Microsystems, Inc. All rights reserved. <b>Use is subject to <a href="http://java.sun.com/javame/reference/apis/license.html" target="_top">License Terms</a>.</b> Your use of this web site or any of its content or software indicates your agreement to be bound by these License Terms.<br><br>For more information, please consult the <a href="http://jcp.org/en/jsr/detail?id=82" target="_top">JSR 82 specification.</a></small>
  * </BODY>
  * <script language="JavaScript" src="../../../../../../js/omi/jsc/s_code_remote.js" tppabs="http://java.sun.com/js/omi/jsc/s_code_remote.js"></script></HTML>
  * 
@@ -438,7 +438,7 @@ public class ServerRequestHandler extends java.lang.Object
 	 * 
 	 * @param id - the connection ID to use; -1 if no connection ID should be sent
 	 * @throws java.lang.IllegalArgumentException - if id is not in the range -1 to 2 32-1
-	 * @see getConnectionID()
+	 * @see #getConnectionID()
 	 */
 	public void setConnectionID(long id)
 	{
@@ -452,7 +452,7 @@ public class ServerRequestHandler extends java.lang.Object
 	 * 
 	 * 
 	 * @return the connection id being used or -1 if no connection ID is being used
-	 * @see setConnectionID(long)
+	 * @see #setConnectionID(long)
 	 */
 	public long getConnectionID()
 	{

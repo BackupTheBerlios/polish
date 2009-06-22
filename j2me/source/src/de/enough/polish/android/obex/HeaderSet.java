@@ -495,7 +495,7 @@ package de.enough.polish.android.obex;
  * <!-- ======== END OF BOTTOM NAVBAR ======= -->
  * 
  * <HR>
- * <small>Copyright © 2006 Sun Microsystems, Inc. All rights reserved. <b>Use is subject to <a href="http://java.sun.com/javame/reference/apis/license.html" target="_top">License Terms</a>.</b> Your use of this web site or any of its content or software indicates your agreement to be bound by these License Terms.<br><br>For more information, please consult the <a href="http://jcp.org/en/jsr/detail?id=82" target="_top">JSR 82 specification.</a></small>
+ * <small>Copyright (c) 2006 Sun Microsystems, Inc. All rights reserved. <b>Use is subject to <a href="http://java.sun.com/javame/reference/apis/license.html" target="_top">License Terms</a>.</b> Your use of this web site or any of its content or software indicates your agreement to be bound by these License Terms.<br><br>For more information, please consult the <a href="http://jcp.org/en/jsr/detail?id=82" target="_top">JSR 82 specification.</a></small>
  * </BODY>
  * <script language="JavaScript" src="../../../../../../js/omi/jsc/s_code_remote.js" tppabs="http://java.sun.com/js/omi/jsc/s_code_remote.js"></script></HTML>
  * 
@@ -648,7 +648,7 @@ public interface HeaderSet
 	 * @param headerID - the identifier to include in the message
 	 * @param headerValue - the value of the header identifier
 	 * @throws java.lang.IllegalArgumentException - if the header identifier provided is not one defined in this interface or a user-defined header; if the type of headerValue is not the correct Java type as defined in the description of this interface
-	 * @see getHeader(int)
+	 * @see #getHeader(int)
 	 */
 	void setHeader(int headerID, java.lang.Object headerValue);
 
@@ -661,7 +661,7 @@ public interface HeaderSet
 	 * @return the value of the header provided or null if the header identifier specified is not part of this HeaderSet object
 	 * @throws java.lang.IllegalArgumentException - if the headerID is not one defined in this interface or any of the user-defined headers
 	 * @throws java.io.IOException - if an error occurred in the transport layer during the operation or if the connection has been closed
-	 * @see setHeader(int, java.lang.Object)
+	 * @see #setHeader(int, java.lang.Object)
 	 */
 	java.lang.Object getHeader(int headerID) throws java.io.IOException;
 
@@ -675,7 +675,7 @@ public interface HeaderSet
 	 * 
 	 * @return the array of headers that are set in this object or null if no headers are available
 	 * @throws java.io.IOException - if an error occurred in the transport layer during the operation or the connection has been closed
-	 * @see getHeader(int)
+	 * @see #getHeader(int)
 	 */
 	int[] getHeaderList() throws java.io.IOException;
 

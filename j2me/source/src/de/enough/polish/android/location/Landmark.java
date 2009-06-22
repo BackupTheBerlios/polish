@@ -64,7 +64,7 @@ public class Landmark extends java.lang.Object
 	 * 
 	 * 
 	 * @return the name of the landmark
-	 * @see setName(String)
+	 * @see #setName(String)
 	 */
 	public java.lang.String getName()
 	{
@@ -77,7 +77,7 @@ public class Landmark extends java.lang.Object
 	 * 
 	 * 
 	 * @return returns the description of the landmark, null if not available
-	 * @see setDescription(String)
+	 * @see #setDescription(String)
 	 */
 	public java.lang.String getDescription()
 	{
@@ -90,7 +90,7 @@ public class Landmark extends java.lang.Object
 	 * 
 	 * 
 	 * @return the QualifiedCoordinates of the landmark. null if not available.
-	 * @see setQualifiedCoordinates(QualifiedCoordinates)
+	 * @see #setQualifiedCoordinates(QualifiedCoordinates)
 	 */
 	public QualifiedCoordinates getQualifiedCoordinates()
 	{
@@ -103,7 +103,7 @@ public class Landmark extends java.lang.Object
 	 * 
 	 * 
 	 * @return the AddressInfo of the landmark
-	 * @see setAddressInfo(AddressInfo)
+	 * @see #setAddressInfo(AddressInfo)
 	 */
 	public AddressInfo getAddressInfo()
 	{
@@ -116,7 +116,7 @@ public class Landmark extends java.lang.Object
 	 * 
 	 * @param name - name for the landmark
 	 * @throws java.lang.NullPointerException - if the parameter is null
-	 * @see getName()
+	 * @see #getName()
 	 */
 	public void setName(java.lang.String name)
 	{
@@ -128,7 +128,7 @@ public class Landmark extends java.lang.Object
 	 * <P>
 	 * 
 	 * @param description - description for the landmark, null may be passed in to indicate that description is not available.
-	 * @see getDescription()
+	 * @see #getDescription()
 	 */
 	public void setDescription(java.lang.String description)
 	{
@@ -140,7 +140,7 @@ public class Landmark extends java.lang.Object
 	 * <P>
 	 * 
 	 * @param coordinates - the qualified coordinates of the landmark
-	 * @see getQualifiedCoordinates()
+	 * @see #getQualifiedCoordinates()
 	 */
 	public void setQualifiedCoordinates( QualifiedCoordinates coordinates)
 	{
@@ -152,7 +152,7 @@ public class Landmark extends java.lang.Object
 	 * <P>
 	 * 
 	 * @param addressInfo - the AddressInfo of the landmark
-	 * @see getAddressInfo()
+	 * @see #getAddressInfo()
 	 */
 	public void setAddressInfo( AddressInfo addressInfo)
 	{

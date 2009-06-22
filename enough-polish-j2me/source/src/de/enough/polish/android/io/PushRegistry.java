@@ -561,7 +561,7 @@ public class PushRegistry extends Object
 	 * @throws java.io.IOException - if the connection is already registered or if there are insufficient resources to handle the registration request
 	 * @throws ClassNotFoundException - if the MIDlet class name can not be found in the current MIDlet suite or if this class is not included in any of the MIDlet-&lt;n&gt; records in the descriptor file or the jar file manifest
 	 * @throws SecurityException - if the MIDlet does not have permission to register a connection
-	 * @see unregisterConnection(java.lang.String)
+	 * @see #unregisterConnection(java.lang.String)
 	 */
 	public static void registerConnection(String connection, String midlet, String filter) throws ClassNotFoundException, java.io.IOException
 	{
@@ -574,7 +574,7 @@ public class PushRegistry extends Object
 	 * @param connection - generic connection protocol, host and port number
 	 * @return true if the unregistration was successful, false if the connection was not registered or if the connection argument was null
 	 * @throws SecurityException - if the connection was registered by another MIDlet suite
-	 * @see registerConnection(java.lang.String, java.lang.String, java.lang.String)
+	 * @see #registerConnection(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public static boolean unregisterConnection(String connection)
 	{
@@ -600,7 +600,7 @@ public class PushRegistry extends Object
 	 * 
 	 * @param connection - generic connection protocol, host and port number (optional parameters may be included separated with semi-colons (;))
 	 * @return class name of the MIDlet to be launched, when new external data is available, or null if the connection was not registered by the current MIDlet suite or if the connection argument was null
-	 * @see registerConnection(java.lang.String, java.lang.String, java.lang.String)
+	 * @see #registerConnection(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public static String getMIDlet(String connection)
 	{
@@ -613,7 +613,7 @@ public class PushRegistry extends Object
 	 * 
 	 * @param connection - generic connection protocol, host and port number (optional parameters may be included separated with semi-colons (;))
 	 * @return a filter string indicating which senders are allowed to cause the MIDlet to be launched or null, if the connection was not registered by the current MIDlet suite or if the connection argument was null
-	 * @see registerConnection(java.lang.String, java.lang.String, java.lang.String)
+	 * @see #registerConnection(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public static String getFilter(String connection)
 	{
@@ -637,7 +637,9 @@ public class PushRegistry extends Object
 	 * @throws ConnectionNotFoundException - if the runtime system does not support alarm based application launch
 	 * @throws ClassNotFoundException - if the MIDlet class name can not be found in the current MIDlet suite or if this class is not included in any of the MIDlet-&lt;n&gt; records in the descriptor file or the jar file manifest or if the midlet argument is null
 	 * @throws SecurityException - if the MIDlet does not have permission to register an alarm
-	 * @see Date.getTime(), Timer, TimerTask
+	 * @see java.util.Date#getTime()
+	 * @see java.util.Timer
+	 * @see java.util.TimerTask
 	 */
 	public static long registerAlarm(String midlet, long time) throws ClassNotFoundException, ConnectionNotFoundException
 	{

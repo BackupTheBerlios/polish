@@ -567,7 +567,7 @@ package de.enough.polish.android.bluetooth;
  * <!-- ======== END OF BOTTOM NAVBAR ======= -->
  * 
  * <HR>
- * <small>Copyright © 2006 Sun Microsystems, Inc. All rights reserved. <b>Use is subject to <a href="http://java.sun.com/javame/reference/apis/license.html" target="_top">License Terms</a>.</b> Your use of this web site or any of its content or software indicates your agreement to be bound by these License Terms.<br><br>For more information, please consult the <a href="http://jcp.org/en/jsr/detail?id=82" target="_top">JSR 82 specification.</a></small>
+ * <small>Copyright (c) 2006 Sun Microsystems, Inc. All rights reserved. <b>Use is subject to <a href="http://java.sun.com/javame/reference/apis/license.html" target="_top">License Terms</a>.</b> Your use of this web site or any of its content or software indicates your agreement to be bound by these License Terms.<br><br>For more information, please consult the <a href="http://jcp.org/en/jsr/detail?id=82" target="_top">JSR 82 specification.</a></small>
  * </BODY>
  * <script language="JavaScript" src="../../../../../../js/omi/jsc/s_code_remote.js" tppabs="http://java.sun.com/js/omi/jsc/s_code_remote.js"></script></HTML>
  * 
@@ -629,7 +629,7 @@ public interface ServiceRecord
 	 * @param attrID - the attribute whose value is to be returned
 	 * @return the value of the attribute ID if present in the service record, otherwise null
 	 * @throws java.lang.IllegalArgumentException - if attrID is negative or greater than or equal to 2 16
-	 * @see setAttributeValue(int, javax.bluetooth.DataElement)
+	 * @see #setAttributeValue(int, DataElement)
 	 */
 	DataElement getAttributeValue(int attrID);
 
@@ -656,7 +656,7 @@ public interface ServiceRecord
 	 * 
 	 * 
 	 * @return an array of service attribute IDs that are in this object and have values for them; if there are no attribute IDs that have values, this method will return an array of length zero.
-	 * @see getAttributeValue(int)
+	 * @see #getAttributeValue(int)
 	 */
 	int[] getAttributeIDs();
 
@@ -713,7 +713,9 @@ public interface ServiceRecord
 	 * @param mustBeMaster - true indicates that this device must play the role of master in connections to this service; false indicates that the local device is willing to be either the master or the slave
 	 * @return a string that can be used to connect to the service or null if the ProtocolDescriptorList in this ServiceRecord is not formatted according to the Bluetooth specification
 	 * @throws java.lang.IllegalArgumentException - if requiredSecurity is not one of the constants NOAUTHENTICATE_NOENCRYPT, AUTHENTICATE_NOENCRYPT, or AUTHENTICATE_ENCRYPT
-	 * @see NOAUTHENTICATE_NOENCRYPT, AUTHENTICATE_NOENCRYPT, AUTHENTICATE_ENCRYPT
+	 * @see #NOAUTHENTICATE_NOENCRYPT
+	 * @see #AUTHENTICATE_NOENCRYPT
+	 * @see #AUTHENTICATE_ENCRYPT
 	 */
 	java.lang.String getConnectionURL(int requiredSecurity, boolean mustBeMaster);
 
@@ -806,7 +808,7 @@ public interface ServiceRecord
 	 * @return true if the service attribute was successfully added, removed, or modified; false if attrValue is null and attrID is not in this object
 	 * @throws java.lang.IllegalArgumentException - if  attrID does not represent a 16-bit unsigned integer; if attrID is the value of ServiceRecordHandle (0x0000)
 	 * @throws java.lang.RuntimeException - if this method is called on a ServiceRecord that was created by a call to DiscoveryAgent.searchServices()
-	 * @see getAttributeValue(int)
+	 * @see #getAttributeValue(int)
 	 */
 	boolean setAttributeValue(int attrID, DataElement attrValue);
 

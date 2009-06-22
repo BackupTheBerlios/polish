@@ -392,7 +392,7 @@ package de.enough.polish.android.bluetooth;
  * <!-- ======== END OF BOTTOM NAVBAR ======= -->
  * 
  * <HR>
- * <small>Copyright © 2006 Sun Microsystems, Inc. All rights reserved. <b>Use is subject to <a href="http://java.sun.com/javame/reference/apis/license.html" target="_top">License Terms</a>.</b> Your use of this web site or any of its content or software indicates your agreement to be bound by these License Terms.<br><br>For more information, please consult the <a href="http://jcp.org/en/jsr/detail?id=82" target="_top">JSR 82 specification.</a></small>
+ * <small>Copyright (c) 2006 Sun Microsystems, Inc. All rights reserved. <b>Use is subject to <a href="http://java.sun.com/javame/reference/apis/license.html" target="_top">License Terms</a>.</b> Your use of this web site or any of its content or software indicates your agreement to be bound by these License Terms.<br><br>For more information, please consult the <a href="http://jcp.org/en/jsr/detail?id=82" target="_top">JSR 82 specification.</a></small>
  * </BODY>
  * <script language="JavaScript" src="../../../../../../js/omi/jsc/s_code_remote.js" tppabs="http://java.sun.com/js/omi/jsc/s_code_remote.js"></script></HTML>
  * 
@@ -526,7 +526,7 @@ public interface DiscoveryListener
 	 * 
 	 * @param btDevice - the device that was found during the inquiry
 	 * @param cod - the service classes, major device class, and minor device class of the remote device
-	 * @see DiscoveryAgent.startInquiry(int, javax.bluetooth.DiscoveryListener)
+	 * @see DiscoveryAgent#startInquiry(int, DiscoveryListener)
 	 */
 	void deviceDiscovered( RemoteDevice btDevice, DeviceClass cod);
 
@@ -537,7 +537,7 @@ public interface DiscoveryListener
 	 * 
 	 * @param transID - the transaction ID of the service search that is posting the result
 	 * @param servRecord - a list of services found during the search request
-	 * @see DiscoveryAgent.searchServices(int[], javax.bluetooth.UUID[], javax.bluetooth.RemoteDevice, javax.bluetooth.DiscoveryListener)
+	 * @see DiscoveryAgent#searchServices(int[], UUID[], RemoteDevice, DiscoveryListener)
 	 */
 	void servicesDiscovered(int transID, ServiceRecord[] servRecord);
 
@@ -584,7 +584,9 @@ public interface DiscoveryListener
 	 * <P>
 	 * 
 	 * @param discType - the type of request that was completed; either INQUIRY_COMPLETED, INQUIRY_TERMINATED, or INQUIRY_ERROR
-	 * @see INQUIRY_COMPLETED, INQUIRY_TERMINATED, INQUIRY_ERROR
+	 * @see #INQUIRY_COMPLETED
+	 * @see #INQUIRY_TERMINATED
+	 * @see #INQUIRY_ERROR
 	 */
 	void inquiryCompleted(int discType);
 

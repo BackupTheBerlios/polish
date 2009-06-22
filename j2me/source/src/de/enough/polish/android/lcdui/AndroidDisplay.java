@@ -594,7 +594,7 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 	 * </p>
 	 * 
 	 * @return the MIDlet's current Displayable object
-	 * @see setCurrent(javax.microedition.lcdui.Displayable)
+	 * @see #setCurrent(de.enough.polish.android.lcdui.Canvas)
 	 */
 	public de.enough.polish.android.lcdui.Canvas getCurrent() {
 		return this.currentPolishCanvas;
@@ -717,7 +717,7 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 	 * 
 	 * @param nextDisplayable -
 	 *            the Displayable requested to be made current; null is allowed
-	 * @see getCurrent()
+	 * @see #getCurrent()
 	 */
 	public void setCurrent(de.enough.polish.android.lcdui.Canvas nextDisplayable) {
 		if (this.currentPolishCanvas != null) {

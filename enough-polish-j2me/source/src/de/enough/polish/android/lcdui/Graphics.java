@@ -565,7 +565,8 @@ public class Graphics
 	 * 
 	 * @param x - the x coordinate of the new translation origin
 	 * @param y - the y coordinate of the new translation origin
-	 * @see getTranslateX(),  getTranslateY()
+	 * @see #getTranslateX()
+	 * @see #getTranslateY()
 	 */
 	public void translate(int x, int y)
 	{
@@ -597,7 +598,7 @@ public class Graphics
 	 * Gets the current color.
 	 * 
 	 * @return an integer in form 0x00RRGGBB
-	 * @see setColor(int, int, int)
+	 * @see #setColor(int, int, int)
 	 */
 	public int getColor()
 	{
@@ -608,7 +609,7 @@ public class Graphics
 	 * Gets the red component of the current color.
 	 * 
 	 * @return integer value in range 0-255
-	 * @see setColor(int, int, int)
+	 * @see #setColor(int, int, int)
 	 */
 	public int getRedComponent()
 	{
@@ -619,7 +620,7 @@ public class Graphics
 	 * Gets the green component of the current color.
 	 * 
 	 * @return integer value in range 0-255
-	 * @see setColor(int, int, int)
+	 * @see #setColor(int, int, int)
 	 */
 	public int getGreenComponent()
 	{
@@ -630,7 +631,7 @@ public class Graphics
 	 * Gets the blue component of the current color.
 	 * 
 	 * @return integer value in range 0-255
-	 * @see setColor(int, int, int)
+	 * @see #setColor(int, int, int)
 	 */
 	public int getBlueComponent()
 	{
@@ -649,7 +650,7 @@ public class Graphics
 	 * approximates the brightness of that color.
 	 * 
 	 * @return integer value in range 0-255
-	 * @see setGrayScale(int)
+	 * @see #setGrayScale(int)
 	 */
 	public int getGrayScale()
 	{
@@ -664,7 +665,7 @@ public class Graphics
 	 * @param green - the green component of the color being set in range 0-255
 	 * @param blue - the blue component of the color being set in range 0-255
 	 * @throws IllegalArgumentException - if any of the color components are outside of range 0-255
-	 * @see getColor()
+	 * @see #getColor()
 	 */
 	public void setColor(int red, int green, int blue)
 	{
@@ -683,7 +684,7 @@ public class Graphics
 	 * this value is ignored.
 	 * 
 	 * @param rgb - the color being set
-	 * @see getColor()
+	 * @see #getColor()
 	 */
 	public void setColor(int rgb)
 	{
@@ -706,7 +707,7 @@ public class Graphics
 	 * 
 	 * @param value - the desired grayscale value
 	 * @throws IllegalArgumentException - if the gray value is out of range
-	 * @see getGrayScale()
+	 * @see #getGrayScale()
 	 */
 	public void setGrayScale(int value)
 	{
@@ -717,7 +718,8 @@ public class Graphics
 	 * Gets the current font.
 	 * 
 	 * @return current font
-	 * @see Font,  setFont(javax.microedition.lcdui.Font)
+	 * @see Font
+	 * @see #setFont(Font)
 	 */
 	public Font getFont()
 	{
@@ -731,7 +733,7 @@ public class Graphics
 	 * 
 	 * @param style - can be SOLID or DOTTED
 	 * @throws IllegalArgumentException - if the style is illegal
-	 * @see getStrokeStyle()
+	 * @see #getStrokeStyle()
 	 */
 	public void setStrokeStyle(int style)
 	{
@@ -742,7 +744,7 @@ public class Graphics
 	 * Gets the stroke style used for drawing operations.
 	 * 
 	 * @return stroke style, SOLID or DOTTED
-	 * @see setStrokeStyle(int)
+	 * @see #setStrokeStyle(int)
 	 */
 	public int getStrokeStyle()
 	{
@@ -755,7 +757,10 @@ public class Graphics
 	 * <code>setFont(Font.getDefaultFont())</code>.
 	 * 
 	 * @param font - the specified font
-	 * @see Font,  getFont(), drawString(java.lang.String, int, int, int), drawChars(char[], int, int, int, int, int)
+	 * @see Font
+	 * @see #getFont()
+	 * @see #drawString(java.lang.String, int, int, int)
+	 * @see #drawChars(char[], int, int, int, int, int)
 	 */
 	public void setFont( Font font)
 	{
@@ -775,7 +780,8 @@ public class Graphics
 	 * <code>getClip()</code> call returning an object.
 	 * 
 	 * @return X offset of the current clipping area
-	 * @see clipRect(int, int, int, int),  setClip(int, int, int, int)
+	 * @see #clipRect(int, int, int, int)
+	 * @see #setClip(int, int, int, int)
 	 */
 	public int getClipX()
 	{
@@ -791,7 +797,8 @@ public class Graphics
 	 * <code>getClip()</code> call returning an object.
 	 * 
 	 * @return Y offset of the current clipping area
-	 * @see clipRect(int, int, int, int),  setClip(int, int, int, int)
+	 * @see #clipRect(int, int, int, int)
+	 * @see #setClip(int, int, int, int)
 	 */
 	public int getClipY()
 	{
@@ -803,7 +810,8 @@ public class Graphics
 	 * Gets the width of the current clipping area.
 	 * 
 	 * @return width of the current clipping area.
-	 * @see clipRect(int, int, int, int),  setClip(int, int, int, int)
+	 * @see #clipRect(int, int, int, int)
+	 * @see #setClip(int, int, int, int)
 	 */
 	public int getClipWidth()
 	{
@@ -818,7 +826,8 @@ public class Graphics
 	 * Gets the height of the current clipping area.
 	 * 
 	 * @return height of the current clipping area.
-	 * @see clipRect(int, int, int, int),  setClip(int, int, int, int)
+	 * @see #clipRect(int, int, int, int)
+	 * @see #setClip(int, int, int, int)
 	 */
 	public int getClipHeight()
 	{
@@ -841,7 +850,7 @@ public class Graphics
 	 * @param y - the y coordinate of the rectangle to intersect the clip with
 	 * @param width - the width of the rectangle to intersect the clip with
 	 * @param height - the height of the rectangle to intersect the clip with
-	 * @see setClip(int, int, int, int)
+	 * @see #setClip(int, int, int, int)
 	 */
 	public void clipRect(int x, int y, int width, int height)
 	{
@@ -860,7 +869,7 @@ public class Graphics
 	 * @param y - the y coordinate of the new clip rectangle
 	 * @param width - the width of the new clip rectangle
 	 * @param height - the height of the new clip rectangle
-	 * @see clipRect(int, int, int, int)
+	 * @see #clipRect(int, int, int, int)
 	 */
 	public void setClip(int x, int y, int width, int height)
 	{
@@ -901,7 +910,7 @@ public class Graphics
 	 * @param y - the y coordinate of the rectangle to be filled
 	 * @param width - the width of the rectangle to be filled
 	 * @param height - the height of the rectangle to be filled
-	 * @see drawRect(int, int, int, int)
+	 * @see #drawRect(int, int, int, int)
 	 */
 	public void fillRect(int x, int y, int width, int height)
 	{
@@ -924,7 +933,7 @@ public class Graphics
 	 * @param y - the y coordinate of the rectangle to be drawn
 	 * @param width - the width of the rectangle to be drawn
 	 * @param height - the height of the rectangle to be drawn
-	 * @see fillRect(int, int, int, int)
+	 * @see #fillRect(int, int, int, int)
 	 */
 	public void drawRect(int x, int y, int width, int height)
 	{
@@ -999,7 +1008,7 @@ public class Graphics
 	 * @param height - the height of the rectangle to be drawn
 	 * @param arcWidth - the horizontal diameter of the arc at the four corners
 	 * @param arcHeight - the vertical diameter of the arc at the four corners
-	 * @see fillRoundRect(int, int, int, int, int, int)
+	 * @see #fillRoundRect(int, int, int, int, int, int)
 	 */
 	public void drawRoundRect(int x, int y, int width, int height, int arcWidth, int arcHeight)
 	{
@@ -1020,7 +1029,7 @@ public class Graphics
 	 * @param height - the height of the rectangle to be filled
 	 * @param arcWidth - the horizontal diameter of the arc at the four corners
 	 * @param arcHeight - the vertical diameter of the arc at the four corners
-	 * @see drawRoundRect(int, int, int, int, int, int)
+	 * @see #drawRoundRect(int, int, int, int, int, int)
 	 */
 	public void fillRoundRect(int x, int y, int width, int height, int arcWidth, int arcHeight)
 	{
@@ -1073,7 +1082,7 @@ public class Graphics
 	 * @param height - the height of the arc to be filled
 	 * @param startAngle - the beginning angle.
 	 * @param arcAngle - the angular extent of the arc, relative to the start angle.
-	 * @see drawArc(int, int, int, int, int, int)
+	 * @see #drawArc(int, int, int, int, int, int)
 	 */
 	public void fillArc(int x, int y, int width, int height, int startAngle, int arcAngle)
 	{
@@ -1122,7 +1131,7 @@ public class Graphics
 	 * @param height - the height of the arc to be drawn
 	 * @param startAngle - the beginning angle
 	 * @param arcAngle - the angular extent of the arc, relative to the start angle
-	 * @see fillArc(int, int, int, int, int, int)
+	 * @see #fillArc(int, int, int, int, int, int)
 	 */
 	public void drawArc(int x, int y, int width, int height, int startAngle, int arcAngle)
 	{
@@ -1143,7 +1152,7 @@ public class Graphics
 	 * @param anchor - the anchor point for positioning the text
 	 * @throws NullPointerException - if str is null
 	 * @throws IllegalArgumentException - if anchor is not a legal value
-	 * @see drawChars(char[], int, int, int, int, int)
+	 * @see #drawChars(char[], int, int, int, int, int)
 	 */
 	public void drawString( String str, int x, int y, int anchor)
 	{
@@ -1204,7 +1213,7 @@ public class Graphics
 	 * @throws StringIndexOutOfBoundsException - if offset and length do not specify a valid range within the String str
 	 * @throws IllegalArgumentException - if anchor is not a legal value
 	 * @throws NullPointerException - if str is null
-	 * @see drawString(String, int, int, int).
+	 * @see #drawString(String, int, int, int).
 	 */
 	public void drawSubstring( String str, int offset, int len, int x, int y, int anchor)
 	{
@@ -1219,7 +1228,8 @@ public class Graphics
 	 * @param y - the y coordinate of the anchor point
 	 * @param anchor - the anchor point for positioning the text; see anchor points
 	 * @throws IllegalArgumentException - if anchor is not a legal value
-	 * @see drawString(java.lang.String, int, int, int), drawChars(char[], int, int, int, int, int)
+	 * @see #drawString(java.lang.String, int, int, int)
+	 * @see #drawChars(char[], int, int, int, int, int)
 	 */
 	public void drawChar(char character, int x, int y, int anchor)
 	{
@@ -1247,7 +1257,7 @@ public class Graphics
 	 * @throws ArrayIndexOutOfBoundsException - if offset and length do not specify a valid range within the data array
 	 * @throws IllegalArgumentException - if anchor is not a legal value
 	 * @throws NullPointerException - if data is null
-	 * @see drawString(java.lang.String, int, int, int)
+	 * @see #drawString(java.lang.String, int, int, int)
 	 */
 	public void drawChars(char[] data, int offset, int length, int x, int y, int anchor)
 	{

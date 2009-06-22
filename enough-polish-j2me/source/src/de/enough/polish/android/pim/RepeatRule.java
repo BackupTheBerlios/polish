@@ -851,8 +851,7 @@ public class RepeatRule extends java.lang.Object
 	 * 
 	 * @param obj - another RepeatRule object to compare against
 	 * @return true if the contents of the RepeatRules are equivalent, false otherwise.
-	 * @see equals in class java.lang.Object
-	 * @see 
+	 * @see Object#equals(Object)
 	 */
 	public boolean equals(java.lang.Object obj)
 	{

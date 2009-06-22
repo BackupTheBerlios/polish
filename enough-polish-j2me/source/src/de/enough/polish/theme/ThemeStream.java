@@ -91,7 +91,7 @@ public class ThemeStream {
 	 * Returns an array of bytes from the stream
 	 * @param offset the offset to read the array
 	 * @param length the length of the array
-	 * @return
+	 * @return the data
 	 */
 	protected byte[] getBytes(int offset, int length)
 	{
