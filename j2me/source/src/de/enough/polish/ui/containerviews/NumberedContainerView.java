@@ -48,9 +48,8 @@ public class NumberedContainerView extends ContainerView {
 	protected void initContent(Item parentContainerItem, int firstLineWidth, int availWidth, int availHeight) {
 		Container container = (Container) parentContainerItem;
 		int maxNumber = Math.min( container.size(), 9 );
-		Item[] myItems = container.getItems();
 		for (int i = 0; i < maxNumber; i++) {
-			Item item = myItems[i];
+			Item item = container.get(i);
 			item.setLabel( Integer.toString( i + 1 ) );
 		}
 		super.initContent(parentContainerItem, availWidth, availWidth, availHeight);

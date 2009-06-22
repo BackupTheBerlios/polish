@@ -29,6 +29,7 @@ package de.enough.polish.ui.containerviews;
 
 import javax.microedition.lcdui.Graphics;
 
+import de.enough.polish.ui.Dimension;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.StringItem;
@@ -81,19 +82,15 @@ import de.enough.polish.ui.UiAccess;
 public class CarouselContainerView extends FishEyeContainerView {
 	
 	private boolean isFocusedAtBottom = true;
-	private int maximumHeight = -1;
+	private Dimension maximumHeight;
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.containerviews.FishEyeContainerView#initItemArrangement(int, de.enough.polish.ui.Item[], int, int, int)
 	 */
 	protected void initItemArrangement(int lineWidth, Item[] myItems, int length, int maxWidth, int maxHeight) {
-		int lineHeight = 100;
-		Screen scr = getScreen();
-		if (scr != null) {
-			lineHeight = scr.getScreenContentHeight() - 10;
-		}
-		if (this.maximumHeight != -1 && lineHeight > this.maximumHeight) {
-			lineHeight = this.maximumHeight;
+		int lineHeight = maxHeight;
+		if (this.maximumHeight != null && lineHeight > this.maximumHeight.getValue(maxHeight)) {
+			lineHeight = this.maximumHeight.getValue(maxHeight);
 		}
 		
 		if (this.isRemoveText && !this.isShowTextInTitle) {
@@ -199,13 +196,9 @@ public class CarouselContainerView extends FishEyeContainerView {
 	 */
 	protected void initContent(Item parentContainerItem, int firstLineWidth, int availWidth, int availHeight) {
 		super.initContent(parentContainerItem, firstLineWidth, availWidth, availHeight);
-		int lineHeight = 100;
-		Screen scr = getScreen();
-		if (scr != null) {
-			lineHeight = scr.getScreenContentHeight() - 10;
-		}
-		if (this.maximumHeight != -1 && lineHeight > this.maximumHeight) {
-			lineHeight = this.maximumHeight;
+		int lineHeight = availHeight;
+		if (this.maximumHeight != null && lineHeight > this.maximumHeight.getValue(availHeight)) {
+			lineHeight = this.maximumHeight.getValue(availHeight);
 		}
 		this.contentHeight = lineHeight;
 	}
@@ -218,10 +211,7 @@ public class CarouselContainerView extends FishEyeContainerView {
 	protected void setStyle(Style style) {
 		super.setStyle(style);
 		//#ifdef polish.css.max-height
-			Integer maxHeightInt = style.getIntProperty( "max-height");
-			if (maxHeightInt != null) {
-				this.maximumHeight = maxHeightInt.intValue();
-			}
+			this.maximumHeight = (Dimension)style.getObjectProperty( "max-height");
 		//#endif
 
 	}
