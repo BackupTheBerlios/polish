@@ -861,9 +861,16 @@ implements Displayable
 			}
     		instance.setCommandListener(this._commandListener);
     	}
-    	//#if polish.midp2
+    	//#if !polish.midp1
 	    	if (this._title != null) {
-	    		Display.getInstance().setTitle(this._title);
+	    		//#if polish.blackberry
+		    		Object lock = net.rim.device.api.system.Application.getEventLock();
+	                synchronized (lock) {
+				//#endif
+	                	Display.getInstance().setTitle(this._title);
+				//#if polish.blackberry
+	                }
+				//#endif
 	    	}
     	//#endif
     	this._isShown = true;

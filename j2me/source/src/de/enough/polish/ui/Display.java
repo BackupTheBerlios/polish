@@ -1073,38 +1073,7 @@ implements javax.microedition.lcdui.CommandListener
 		
 		if ( oldCanvas != null ) {
 			oldCanvas._hideNotify();
-			//#if !tmp.fullScreen
-				Object[] commands = oldCanvas._commands == null ? null : oldCanvas._commands.getInternalArray();
-				if (commands != null) {
-					for (int i = 0; i < commands.length; i++)
-					{
-						Command cmd = (Command) commands[i];
-						if (cmd == null) {
-							break;
-						}
-						removeCommand( cmd );
-					}
-				}
-			//#endif
 		}
-		//#if !tmp.fullScreen
-			if (canvas != null) {
-				Object[] commands = canvas._commands == null ? null : canvas._commands.getInternalArray();
-				if (commands != null) {
-					for (int i = 0; i < commands.length; i++)
-					{
-						Command cmd = (Command) commands[i];
-						if (cmd == null) {
-							break;
-						}
-						addCommand( cmd );
-					}
-				}
-				//#if !polish.midp1
-					setTitle( canvas._title );
-				//#endif
-			}
-		//#endif
 
 		//#if polish.css.repaint-previous-screen
 			// de-register an old remaining J2ME Polish screen for situations, in
