@@ -14,7 +14,6 @@ import net.rim.device.api.ui.Manager;
 	import net.rim.device.api.ui.VirtualKeyboard;
 //#endif
 import de.enough.polish.blackberry.midlet.MIDlet;
-import de.enough.polish.ui.CommandListener;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.Canvas;
