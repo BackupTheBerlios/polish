@@ -1477,7 +1477,7 @@ public abstract class BaseScreen
 	}
 	//#endif
 	
-	public void setCommandListener( CommandListener l) {
+	public void setCommandListener( javax.microedition.lcdui.CommandListener l) {
 		// ignore
 	}
     
