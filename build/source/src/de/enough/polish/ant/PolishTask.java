@@ -119,6 +119,7 @@ import de.enough.polish.preverify.Preverifier;
 import de.enough.polish.preverify.ProGuardPreverifier;
 import de.enough.polish.resources.ResourceManager;
 import de.enough.polish.resources.TranslationManager;
+import de.enough.polish.util.ConvertUtil;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.JarUtil;
 import de.enough.polish.util.PathClassLoader;
@@ -2927,6 +2928,16 @@ public class PolishTask extends ConditionalTask {
 			}
 			this.environment.set( Packager.KEY_ENVIRONMENT, packager );
 			packager.createPackage(classesDir, jarFile, device, locale, this.environment );
+			// Check if created jar file exceeds MaxJarSize capability setting. 
+			String maxJarSize = device.getCapability("MaxJarSize");
+			if (maxJarSize != null) {
+				long jarSize = jarFile.length();
+				long maxSize = ConvertUtil.convertToBytes(maxJarSize);
+				if (jarSize > maxSize) {
+					// Maybe we should throw a BuildException here but its unclear to me how reliable the MaxJarSize capability really is.
+					System.err.println("Warning: Generated jar file exceeds max jar size for device: " + jarSize + " > " + maxSize);
+				}
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new BuildException("Unable to create final JAR file: " + e.getMessage(), e );
