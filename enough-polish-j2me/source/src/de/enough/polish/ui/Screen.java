@@ -1016,9 +1016,15 @@ implements UiElement, Animatable
 						}
 					}
 			//#if polish.css.show-scrollbar
+				} else {
+					// ensure that container is initialized:
+					cont.getItemHeight(originalWidth, originalWidth, height);
 				}
 			//#endif
 			this.scrollBar.relativeX = x + width;
+		//#else 
+			// ensure that container is initialized:
+			cont.getItemHeight(originalWidth, originalWidth, height);
 		//#endif
 		//#if polish.css.subtitle-position
 			if (!isSubTitleAtTop) {
@@ -1068,6 +1074,7 @@ implements UiElement, Animatable
 	 * @param cont the container, may be null if no container is used at all.
 	 */
 	protected void initContent(Container cont) {
+		
 		int borderWidthL = 0;
 		int borderWidthR = 0;
 		int borderWidthT = 0;
@@ -1114,6 +1121,8 @@ implements UiElement, Animatable
 		if (cont != null) {
 			cont.relativeX = x;
 			cont.relativeY = y;
+			//#debug
+			System.out.println("initContent: cont=" + x + ", " + y + " width=" + cont.itemWidth);
 			cont.setScrollHeight( height );
 			
 			int containerHeight = cont.itemHeight;

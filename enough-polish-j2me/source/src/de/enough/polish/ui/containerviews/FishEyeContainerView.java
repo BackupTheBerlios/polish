@@ -331,7 +331,7 @@ public class FishEyeContainerView extends ContainerView {
 		this.isHorizontal = true;
 		Container parent = (Container) parentContainerItem;		
 		//#debug
-		System.out.println("FishEye: intialising content for " + this + " with vertical-padding " + this.paddingVertical );
+		System.out.println("FishEye: intialising content for " + this + " with vertical-padding " + this.paddingVertical + ", availWidth=" + availWidth );
 
 		this.parentContainer = parent;
 		Item[] myItems = parent.getItems();
