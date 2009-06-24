@@ -1037,7 +1037,9 @@ implements javax.microedition.lcdui.CommandListener
 						
 						nextScreen._showNotify();
 						this.setCurrent(screenAnimation);
-						lastScreen._hideNotify();
+						if (lastScreen != null) {
+							lastScreen._hideNotify();
+						}
 						if ( !isShown() ) {
 							this.nativeDisplay.setCurrent( this );
 						} else {
