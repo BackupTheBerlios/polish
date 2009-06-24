@@ -6598,6 +6598,7 @@ These namespaces/schemas will be used soon.
 	    <capability name="JavaConfiguration" value="CLDC/1.1" />
 	    <capability name="JavaPackage" value="btapi, 3dapi, nokia-ui, mmapi1.1, fileconnection, wmapi2.0, m3g, wmapi1.1, locationapi, pimapi, webservice, sipapi" />
 	    <capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
+		<capability name="key.supportsAsciiKeyMap" value="true" />
 	    <capability name="key.down" value="-2" />
 	    <capability name="key.fire" value="97" />
 	    <capability name="key.gamea" value="35" />
@@ -6691,6 +6692,7 @@ These namespaces/schemas will be used soon.
 	    <capability name="protocolrtsp" value="audio/3gpp, audio/3gpp2, audio/amr, audio/mp4, audio/mp4-latm, audio/qcelp, audio/vnd.qcelp, video/3gpp, video/3gpp2, video/mp4, application/vnd.rn-realmedia, application/sdp" />
 	    <capability name="timezones" value="GMT, UTC" />
 	    <capability name="totalmemory" value="512000" />
+	    <capability name="Bugs" value="NormalKeyMappedToFire" />
   	</device>
   	
   	<device>
@@ -6921,6 +6923,7 @@ These namespaces/schemas will be used soon.
 	    <capability name="polish.TextField.numerickeys.8" value="b" />
 	    <capability name="polish.TextField.numerickeys.9" value="n" />
 	    <capability name="polish.TextField.numerickeys.0" value="m" />
+	    <capability name="Bugs" value="NormalKeyMappedToFire" />
 	</device>
   
   <device>
@@ -7946,6 +7949,7 @@ These namespaces/schemas will be used soon.
     <capability name="key.AddSymbolKey2" value="9" />
     <capability name="wap.userAgent" value="NokiaE62" />
     <capability name="wap.userAgent" value="NokiaE62-1/3.0 (2.0618.06.17); SymbianOS/9.1 Series60/3.0 Profile/MIDP-2.0 Configuration/CLDC-1.1)" />
+    <capability name="Bugs" value="NormalKeyMappedToFire" />
   </device>
   <device>
     <identifier>Nokia/E65</identifier>

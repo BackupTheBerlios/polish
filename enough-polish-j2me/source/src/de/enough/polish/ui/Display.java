@@ -1583,7 +1583,7 @@ implements javax.microedition.lcdui.CommandListener
 			}
 		//#endif
 		//#if polish.Bugs.NormalKeyMappedToFire
-			if (gameAction == FIRE && (keyCode == Canvas.KEY_POUND || keyCode == Canvas.KEY_STAR)) {
+			if (gameAction == FIRE && (keyCode == Canvas.KEY_POUND || keyCode == Canvas.KEY_STAR || keyCode == 'a' || keyCode == 'j')) {
 				gameAction = 0;
 			}
 		//#endif

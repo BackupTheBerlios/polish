@@ -659,7 +659,7 @@
 		<name>NormalKeyMappedToFire</name>
 		<area>ui</area>
 		<description>
-			The # or * key is mapped to the game action FIRE.
+			The '#', '*', 'a' and 'j' keys are mapped to the game action FIRE.
 		</description>
 		<solution>
 			Be careful when evaluating game actions.
