@@ -6583,7 +6583,116 @@ These namespaces/schemas will be used soon.
 		<capability name="RootCertificates" value="UTI Root" />
  	</device>
   	
-  
+  	<device>
+	    <identifier>Nokia/E63</identifier>
+	    <features>doubleBuffering</features>
+	    <capability name="alphalevels" value="256" />
+	    <capability name="canvassize" value="320x198" />
+	    <capability name="colors" value="16777216" />
+	    <capability name="font.default" value="21" />
+	    <capability name="font.large" value="24" />
+	    <capability name="font.medium" value="21" />
+	    <capability name="font.small" value="19" />
+	    <capability name="fullcanvassize" value="320x240" />
+	    <capability name="hasRepeatEvents" value="true" />
+	    <capability name="JavaConfiguration" value="CLDC/1.1" />
+	    <capability name="JavaPackage" value="btapi, 3dapi, nokia-ui, mmapi1.1, fileconnection, wmapi2.0, m3g, wmapi1.1, locationapi, pimapi, webservice, sipapi" />
+	    <capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
+	    <capability name="key.down" value="-2" />
+	    <capability name="key.fire" value="97" />
+	    <capability name="key.gamea" value="35" />
+	    <capability name="key.gameb" value="115" />
+	    <capability name="key.gamec" value="113" />
+	    <capability name="key.gamed" value="122" />
+	    <capability name="key.left" value="-3" />
+	    <capability name="key.leftsoftkey" value="-6" />
+	    <capability name="key.middlesoftkey" value="111" />
+	    <capability name="key.right" value="-4" />
+	    <capability name="key.rightsoftkey" value="-7" />
+	    <capability name="key.selectsoftkey" value="-5" />
+	    <capability name="key.up" value="-1" />
+	    <capability name="key.AddSymbolKey2" value="9" />
+	    <capability name="polish.TextField.numerickeys.1" value="r" />
+	    <capability name="polish.TextField.numerickeys.2" value="t" />
+	    <capability name="polish.TextField.numerickeys.3" value="zy" />
+	    <capability name="polish.TextField.numerickeys.4" value="f" />
+	    <capability name="polish.TextField.numerickeys.5" value="g" />
+	    <capability name="polish.TextField.numerickeys.6" value="h" />
+	    <capability name="polish.TextField.numerickeys.7" value="v" />
+	    <capability name="polish.TextField.numerickeys.8" value="b" />
+	    <capability name="polish.TextField.numerickeys.9" value="n" />
+	    <capability name="polish.TextField.numerickeys.0" value="m" />
+	    <capability name="mmapi.audio.encodings" value="encoding=audio/amr encoding=audio/basic encoding=audio/x-au encoding=audio/au encoding=audio/x-basic encoding=audio/wav encoding=audio/x-wav encoding=pcm encoding=ulaw encoding=gsm" />
+	    <capability name="mmapi.protocol.capture" value="audio/amr, audio/basic, audio/x-au, audio/au, audio/x-basic, audio/wav, audio/x-wav, video/3gpp2, video/mp4, video/3gpp" />
+	    <capability name="mmapi.protocol.device" value="audio/rmf, audio/sp-midi, audio/mobile-xmf, audio/x-beatnik-rmf, audio/x-rmf, audio/midi, audio/x-tone-seq" />
+	    <capability name="mmapi.protocol.file" value="application/sdp, video/mp4, video/mpeg4, video/3gpp, application/vnd.rn-realmedia, audio/amr-wb, audio/amr, video/3gpp2, audio/mp3, audio/rmf, audio/sp-midi, audio/mobile-xmf, audio/x-beatnik-rmf, audio/x-rmf, audio/midi, audio/mp4, audio/3gpp2, audio/3gpp, audio/3gpp, audio/aac, audio/mpeg, text/plain, text/plain, audio/x-ms-wma, audio/basic, audio/x-au, audio/au, audio/x-basic, audio/wav, audio/x-wav, image/gif, audio/x-tone-seq" />
+	    <capability name="mmapi.protocol.http" value="application/sdp, video/mp4, video/mpeg4, video/3gpp, application/vnd.rn-realmedia, audio/amr-wb, audio/amr, video/3gpp2, audio/mp3, audio/rmf, audio/sp-midi, audio/mobile-xmf, audio/x-beatnik-rmf, audio/x-rmf, audio/midi, audio/mp4, audio/3gpp2, audio/3gpp, audio/3gpp, audio/aac, audio/mpeg, text/plain, text/plain, audio/x-ms-wma, audio/basic, audio/x-au, audio/au, audio/x-basic, audio/wav, audio/x-wav, image/gif, audio/x-tone-seq, application/sdp, video/mp4, video/mpeg4, video/3gpp, application/vnd.rn-realmedia, audio/amr-wb, audio/amr, video/3gpp2, audio/mp3, audio/rmf, audio/sp-midi, audio/mobile-xmf, audio/x-beatnik-rmf, audio/x-rmf, audio/midi, audio/mp4, audio/3gpp2, audio/3gpp, audio/3gpp, audio/aac, audio/mpeg, text/plain, text/plain, audio/x-ms-wma, audio/basic, audio/x-au, audio/au, audio/x-basic, audio/wav, audio/x-wav, image/gif, audio/x-tone-seq" />
+	    <capability name="mmapi.supportsaudiocapture" value="true" />
+	    <capability name="mmapi.supportsvideocapture" value="true" />
+	    <capability name="mmapi.video.encodings" value="encoding=video/3gpp2 encoding=video/mp4 encoding=video/3gpp" />
+	    <capability name="objectmemory" value="4" />
+	    <capability name="api.svg" value="true" />
+	    <capability name="imagecreateformat" value="jpeg, gif, bmp, wbmp" />
+	    <capability name="properties" value="microedition.commports, com.nokia.mid.timeformat, microedition.io.file.FileConnection.version, fileconn.dir.tones.name, com.nokia.mid.dateformat, microedition.profiles, microedition.platform, microedition.hostname, fileconn.dir.memorycard.name, microedition.jtwi.version, microedition.m3g.version, microedition.configuration, file.separator, audio3d.simultaneouslocations, fileconn.dir.videos.name, fileconn.dir.videos, fileconn.dir.photos, microedition.sip.version, supports.recording, fileconn.dir.private, wireless.messaging.sms.smsc, microedition.locale, microedition.m2g.svg.version, video.snapshot.encodings, wireless.messaging.mms.mmsc, fileconn.dir.tones, supports.mediacapabilities, fileconn.dir.photos.name, com.nokia.mid.networkid, supports.video.capture, com.nokia.network.access, audio.samplerates, microedition.amms.version, com.nokia.mid.networkavailability, supports.mixing, video.encodings, microedition.m2g.version, microedition.encoding, com.nokia.mid.batterylevel, microedition.location.version, microedition.m2g.svg.baseProfile, microedition.pim.version, microedition.media.version, audio.encodings, com.nokia.mid.imei, fileconn.dir.memorycard, supports.audio.capture" />
+	    <capability name="property.audio.encodings" value="encoding=audio/amr encoding=audio/basic encoding=audio/x-au encoding=audio/au encoding=audio/x-basic encoding=audio/wav encoding=audio/x-wav encoding=pcm encoding=ulaw encoding=gsm" />
+	    <capability name="property.audio.samplerates" value="8000 16000" />
+	    <capability name="property.audio3d.simultaneouslocations" value="4" />
+	    <capability name="property.bluetooth.api.version" value="1.0" />
+	    <capability name="property.bluetooth.connected.devices.max" value="7" />
+	    <capability name="property.bluetooth.connected.inquiry" value="false" />
+	    <capability name="property.bluetooth.connected.inquiry.scan" value="false" />
+	    <capability name="property.bluetooth.connected.page" value="false" />
+	    <capability name="property.bluetooth.connected.page.scan" value="false" />
+	    <capability name="property.com.nokia.mid.batterylevel" value="85" />
+	    <capability name="property.com.nokia.mid.dateformat" value="dd.MM.yyyy" />
+	    <capability name="property.com.nokia.mid.imei" value="356836020490741" />
+	    <capability name="property.com.nokia.mid.networkavailability" value="unavailable" />
+	    <capability name="property.com.nokia.mid.networkid" value=" ()" />
+	    <capability name="property.com.nokia.mid.timeformat" value="HH:mm" />
+	    <capability name="property.com.nokia.network.access" value="na" />
+	    <capability name="property.file.separator" value="/" />
+	    <capability name="property.fileconn.dir.memorycard" value="file:///E:/" />
+	    <capability name="property.fileconn.dir.memorycard.name" value="Speicherkarte" />
+	    <capability name="property.fileconn.dir.photos" value="file:///C:/Data/Images/" />
+	    <capability name="property.fileconn.dir.photos.name" value="Bilder" />
+	    <capability name="property.fileconn.dir.private" value="file:///c:/private/102033e6/midlets/[1016dd73]/scratch/" />
+	    <capability name="property.fileconn.dir.tones" value="file:///C:/Data/Sounds/" />
+	    <capability name="property.fileconn.dir.tones.name" value="T?ne" />
+	    <capability name="property.fileconn.dir.videos" value="file:///C:/Data/Videos/" />
+	    <capability name="property.fileconn.dir.videos.name" value="Videoclips" />
+	    <capability name="property.microedition.amms.version" value="1.0" />
+	    <capability name="property.microedition.commports" value="USB0,COM0,IR0,BT0,BT1,BT2,BT3,BT4,BT5,BT6,BT7,BT8,BT9,BT10,BT11,BT12,BT13,BT14,BT15,BT16,BT17,BT18,BT19,BT20,BT21,BT22,BT23,BT24,BT25,BT26,BT27,BT28,BT29,BT30,BT31,BT32,BT33,BT34,BT35,BT36,BT37,BT38,BT39,BT40,BT41,BT42,BT43,BT44,BT45,BT46,BT47,BT48,BT49,BT50,BT51,BT52,BT53,BT54,BT55,BT56,BT57,BT58,BT59,BT60,BT61,BT62,BT63" />
+	    <capability name="property.microedition.configuration" value="CLDC-1.1" />
+	    <capability name="property.microedition.encoding" value="ISO-8859-1" />
+	    <capability name="property.microedition.hostname" value="localhost" />
+	    <capability name="property.microedition.io.file.fileconnection.version" value="1.0" />
+	    <capability name="property.microedition.jtwi.version" value="1.0" />
+	    <capability name="property.microedition.location.version" value="1.0" />
+	    <capability name="property.microedition.m2g.svg.baseprofile" value="tiny" />
+	    <capability name="property.microedition.m2g.svg.version" value="1.1" />
+	    <capability name="property.microedition.m2g.version" value="1.1" />
+	    <capability name="property.microedition.m3g.version" value="1.1" />
+	    <capability name="property.microedition.media.version" value="1.1" />
+	    <capability name="property.microedition.pim.version" value="1.0" />
+	    <capability name="property.microedition.platform" value="NokiaE63-1/0.21.110" />
+	    <capability name="property.microedition.profiles" value="MIDP-2.0" />
+	    <capability name="property.microedition.sip.version" value="1.0.1" />
+	    <capability name="property.mmapi.audio.encodings" value="encoding=audio/amr encoding=audio/basic encoding=audio/x-au encoding=audio/au encoding=audio/x-basic encoding=audio/wav encoding=audio/x-wav encoding=pcm encoding=ulaw encoding=gsm" />
+	    <capability name="property.mmapi.video.encodings" value="encoding=video/3gpp2 encoding=video/mp4 encoding=video/3gpp" />
+	    <capability name="property.supports.audio.capture" value="true" />
+	    <capability name="property.supports.mediacapabilities" value="music audio3d" />
+	    <capability name="property.supports.mixing" value="true" />
+	    <capability name="property.supports.recording" value="true" />
+	    <capability name="property.supports.video.capture" value="true" />
+	    <capability name="property.video.encodings" value="encoding=video/3gpp2 encoding=video/mp4 encoding=video/3gpp" />
+	    <capability name="property.video.snapshot.encodings" value="png, jpeg, image/png, image/jpeg, image/jpg, image/gif, image/bmp, png, jpeg, image/png, image/jpeg, image/jpg, image/gif, image/bmp" />
+	    <capability name="property.wireless.messaging.mms.mmsc" value="http://139.7.24.1/servlets/mms" />
+	    <capability name="property.wireless.messaging.sms.smsc" value="+491722270333" />
+	    <capability name="protocolrtsp" value="audio/3gpp, audio/3gpp2, audio/amr, audio/mp4, audio/mp4-latm, audio/qcelp, audio/vnd.qcelp, video/3gpp, video/3gpp2, video/mp4, application/vnd.rn-realmedia, application/sdp" />
+	    <capability name="timezones" value="GMT, UTC" />
+	    <capability name="totalmemory" value="512000" />
+  	</device>
+  	
   	<device>
 		<identifier>Nokia/E66</identifier>
 		<groups>Series60E3FP1</groups>
