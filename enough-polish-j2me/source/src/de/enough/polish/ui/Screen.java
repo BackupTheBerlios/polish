@@ -694,6 +694,8 @@ implements UiElement, Animatable
 	 * or when this screen has a shrink layout.
 	 */
 	protected void requestInit() {
+		//#debug
+		System.out.println("requestInit() for " + this);
 		this.isInitRequested = true;
 	}
 	
@@ -719,6 +721,14 @@ implements UiElement, Animatable
 			this.isRepaintRequested = true;
 			return;
 		}
+		//#if polish.Screen.callSuperEvents
+			//#  super.requestRepaint();
+		//#else
+			Display instance = Display.getInstance();
+			if (instance != null) {
+				instance.requestRepaint();
+			}
+		//#endif
 		super.repaint();
 	}
 
@@ -738,7 +748,10 @@ implements UiElement, Animatable
 		//#if polish.Screen.callSuperEvents
 			//#  super.requestRepaint( x, y, width, height );
 		//#else
-			Display.getInstance().requestRepaint( x, y, width, height );
+			Display instance = Display.getInstance();
+			if (instance != null) {
+				instance.requestRepaint(x, y, width, height );
+			}
 		//#endif
 		
 	}
@@ -790,7 +803,7 @@ implements UiElement, Animatable
 			System.out.println("invalid content dimension, width=" + width + ", height=" + height);
 			return;
 		}
-
+		
 		int borderWidthL = 0;
 		int borderWidthR = 0;
 		int borderWidthT = 0;
@@ -811,15 +824,13 @@ implements UiElement, Animatable
 		height -= this.marginTop + this.marginBottom;
 
 		Container cont = this.container;
-		int containerWidth = 0;
-		int containerHeight = 0; 
+//		int containerWidth = 0;
+//		int containerHeight = 0; 
 		int originalWidth = width;
-		if (cont != null) {
-			containerWidth = cont.getItemWidth(width, width, height);
-			containerHeight = cont.itemHeight;
-			if (this.isLayoutHorizontalShrink) {
-				width = containerWidth;
-			}
+		if (cont != null && this.isLayoutHorizontalShrink) {
+			width = cont.getItemWidth(width, width, height);
+//			containerHeight = cont.itemHeight;
+//			width = containerWidth;
 		}
 		boolean isTitleAtTop = true;
 		//#if tmp.usingTitle
@@ -985,11 +996,23 @@ implements UiElement, Animatable
 						if (this.scrollBar.overlap) {
 							scrollBarWidth = 0;
 						}
-						containerHeight = cont.getItemHeight(originalWidth, originalWidth, height);
-						if (containerHeight > height) {
-							//System.out.println("calculateContentArea for" + this + ": scrollBar is required for containerHeight of " + containerHeight + ", availableHeight=" + height );					
+						if (cont.itemHeight > height) {
+							// it is quite likely that the container's height remains larger than the screen's height, so we substract
+							// the scrollbar's width right away:
 							int w = originalWidth - scrollBarWidth;
-							containerHeight = cont.getItemHeight(w, w, height);
+							int containerHeight = cont.getItemHeight(w, w, height);
+							if (containerHeight <= height &&  scrollBarWidth != 0 ) {
+								// okay, the container's height has changed and we don't need to display the scrollbar anymore, so give the 
+								// container more width:
+								cont.getItemHeight(originalWidth, originalWidth, height);
+							}
+						} else {
+							int containerHeight = cont.getItemHeight(originalWidth, originalWidth, height);
+							if (containerHeight > height &&  scrollBarWidth != 0 ) {
+								//System.out.println("calculateContentArea for" + this + ": scrollBar is required for containerHeight of " + containerHeight + ", availableHeight=" + height );					
+								int w = originalWidth - scrollBarWidth;
+								cont.getItemHeight(w, w, height);
+							}
 						}
 					}
 			//#if polish.css.show-scrollbar

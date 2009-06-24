@@ -2265,7 +2265,6 @@ implements javax.microedition.lcdui.CommandListener
 	 */
 	public void requestRepaint() {
 //		System.out.println("req full repaint");
-//		try { throw new RuntimeException(); } catch (Exception e) { e.printStackTrace(); }
 		repaint();
 	}
 	

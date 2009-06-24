@@ -1572,7 +1572,7 @@ public abstract class Item implements UiElement, Animatable
 	 * @return the complete width of this item.
 	 */
 	public int getItemWidth( int firstLineWidth, int availWidth) {
-		return getItemWidth(firstLineWidth, availWidth, -1);
+		return getItemWidth(firstLineWidth, availWidth, this.availableHeight);
 	}
 
 	
@@ -1603,7 +1603,7 @@ public abstract class Item implements UiElement, Animatable
 	 * @return the complete heigth of this item.
 	 */
 	public int getItemHeight( int firstLineWidth, int availWidth) {
-		return getItemHeight(firstLineWidth, availWidth, -1);
+		return getItemHeight(firstLineWidth, availWidth, this.availableHeight);
 	}
 
 	/**
@@ -2720,7 +2720,7 @@ public abstract class Item implements UiElement, Animatable
 	 */
 	protected void init( int firstLineWidth, int availWidth, int availHeight ) {
 		//#debug
-		System.out.println("initialising item " + this + " with availWidth " + firstLineWidth + "/" + availWidth + ", height " + availHeight);
+		System.out.println("initialising item " + this + " with availWidth " + firstLineWidth + "/" + availWidth + ", height " + availHeight + " (was: " + this.availableWidth + ", " + this.availableHeight + ")" );
 		this.availableWidth = availWidth;
 		this.availableHeight = availHeight;
 		//#if tmp.invisible
