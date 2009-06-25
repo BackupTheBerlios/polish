@@ -2460,6 +2460,9 @@ public abstract class Item implements UiElement, Animatable
 				if(this.isLayoutRight)
 				{
 					backgroundX = rightBorder + this.paddingRight - this.backgroundWidth;
+					//#if polish.css.after
+						backgroundX += this.afterWidth;
+					//#endif
 				}
 				paintBackgroundAndBorder(backgroundX, backgroundY, this.backgroundWidth, this.backgroundHeight, g);
 		//#if polish.css.include-label
@@ -2577,7 +2580,7 @@ public abstract class Item implements UiElement, Animatable
 			}
 		//#endif
 			
-//		g.setColor(0xff0000);
+//		g.setColor(0xffFF00);
 //		g.drawRect( getAbsoluteX() + 1, getAbsoluteY() + 1, this.itemWidth - 2, this.itemHeight - 2);
 //		if (this.parent != null) {
 //			g.setColor(0x00ff00);
