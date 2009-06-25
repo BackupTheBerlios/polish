@@ -194,7 +194,12 @@ public class Criteria extends java.lang.Object
 	 */
 	public Criteria()
 	{
-		//TODO implement Criteria
+		this.preferredPowerConsumption = POWER_USAGE_MEDIUM;
+		// Try to be very accurate
+		this.verticalAccuracy = 1;
+		this.horizontalAccuracy = 1;
+		this.speedAndCourseRequired = true;
+		this.costAllowed = true;
 	}
 
 	/**
