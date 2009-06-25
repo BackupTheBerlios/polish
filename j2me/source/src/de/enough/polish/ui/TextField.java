@@ -353,6 +353,9 @@ public class TextField extends StringItem
 //#if tmp.directInput && polish.TextField.usePredictiveInput && !polish.blackberry
 	//#define tmp.usePredictiveInput
 //#endif
+//#if tmp.directInput && polish.TextField.useDynamicCharset
+//#define tmp.useDynamicCharset
+//#endif
 //#if polish.TextField.supportSymbolsEntry && tmp.directInput
 	//#define tmp.supportsSymbolEntry
 	//#if !polish.css.style.textFieldSymbolTable && !polish.css.style.textFieldSymbolList 
@@ -892,7 +895,7 @@ public class TextField extends StringItem
 		//#endif
 		/** map of characters that can be triggered witht the 0..9 and #, * keys */
 		public static String[] CHARACTERS = new String[]{ charactersKey0, charactersKey1, charactersKey2, charactersKey3, charactersKey4, charactersKey5, charactersKey6, charactersKey7, charactersKey8, charactersKey9 };
-		//#if polish.TextField.useDynamicCharset
+		//#if tmp.useDynamicCharset
 		public static String[] CHARACTERS_UPPER = new String[]{ charactersKey0, charactersKey1, charactersKey2, charactersKey3, charactersKey4, charactersKey5, charactersKey6, charactersKey7, charactersKey8, charactersKey9 };
 		public static boolean usesDynamicCharset;
 		//#endif
@@ -954,7 +957,7 @@ public class TextField extends StringItem
 	//#endif
 	private boolean isKeyPressedHandled;
 
-	//#if polish.TextField.useDynamicCharset
+	//#if tmp.useDynamicCharset
 	/**
 	 * Reads the .properties files for lowercase
 	 * and uppercase letters and maps the values of the predefined keys
@@ -3289,7 +3292,7 @@ public class TextField extends StringItem
 				if ( this.inputMode == MODE_UPPERCASE 
 						|| this.nextCharUppercase ) 
 				{
-					//#if polish.TextField.useDynamicCharset
+					//#if polish.TextField.useDynamicCharset 
 					if(usesDynamicCharset)
 					{
 						alphabet = CHARACTERS_UPPER[ keyCode - Canvas.KEY_NUM0 ];
