@@ -1,8 +1,6 @@
 //#condition polish.usePolishGui && polish.android
 package de.enough.polish.android.lcdui;
 
-import javax.swing.JApplet;
-
 import android.graphics.Bitmap;
 import de.enough.polish.android.midlet.MIDlet;
 
