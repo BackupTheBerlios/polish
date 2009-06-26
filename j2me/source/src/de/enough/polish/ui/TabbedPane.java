@@ -141,6 +141,7 @@ public class TabbedPane extends Screen
 	private Screen currentScreen;
 	private boolean isTabPositionTop;
 	private TabbedFormListener tabbedFormListener;
+	private boolean isSizeChangedCalled;
 
 	/**
 	 * Creates a new, empty TabbedPane, specifying its title.
@@ -1265,11 +1266,18 @@ public class TabbedPane extends Screen
 	 * @see de.enough.polish.ui.Screen#sizeChanged(int, int)
 	 */
 	public void sizeChanged(int width, int height) {
-		if (this.currentScreen != null) {
-			int tabAdjustedHeight = height - this.tabIconsContainer.itemHeight;
-			this.currentScreen.sizeChanged(width, tabAdjustedHeight);
+		if (!this.isSizeChangedCalled) {
+			this.isSizeChangedCalled = true;
+			try {
+				if (this.currentScreen != null) {
+					int tabAdjustedHeight = height - this.tabIconsContainer.itemHeight;
+					this.currentScreen.sizeChanged(width, tabAdjustedHeight);
+				}
+				super.sizeChanged(width, height);
+			} finally {
+				this.isSizeChangedCalled = false;
+			}
 		}
-		super.sizeChanged(width, height);
 	}
 	
 	
