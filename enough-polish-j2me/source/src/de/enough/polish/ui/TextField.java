@@ -3293,7 +3293,7 @@ public class TextField extends StringItem
 						|| this.nextCharUppercase ) 
 				{
 					//#if polish.TextField.useDynamicCharset 
-					if(usesDynamicCharset)
+					if(usesDynamicCharset && keyCode >= Canvas.KEY_NUM0 && keyCode <= Canvas.KEY_NUM9)
 					{
 						alphabet = CHARACTERS_UPPER[ keyCode - Canvas.KEY_NUM0 ];
 						newCharacter = alphabet.charAt(this.characterIndex);
