@@ -473,7 +473,7 @@ public class FramedForm extends Form {
 		// adjust scroll offset for bottom frame animation
 		if(getScrollYOffset() < 0 && (getScrollYOffset() + cont.getContentHeight() < height) )
 		{
-			this.container.setScrollYOffset(-1 * (cont.getContentHeight() - height));
+			cont.setScrollYOffset(-1 * (cont.getContentHeight() - height));
 		}
 		
 		initContent( cont );
