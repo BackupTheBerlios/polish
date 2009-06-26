@@ -48,7 +48,7 @@ import javax.microedition.lcdui.Image;
 public class CommandItem extends IconItem {
 	
 	protected final Command command;
-	private Container children;
+	protected Container children;
 	protected boolean hasChildren;
 	private int childIndicatorWidth = 5;
 	private int childIndicatorYOffset;
@@ -242,7 +242,7 @@ public class CommandItem extends IconItem {
 	 * @param rightBorder
 	 * @param g
 	 */
-	private void paintChildren(int y, int leftBorder, int rightBorder,
+	protected void paintChildren(int y, int leftBorder, int rightBorder,
 			Graphics g)
 	{
 		int x;
