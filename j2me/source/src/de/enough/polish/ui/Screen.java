@@ -4742,7 +4742,6 @@ implements UiElement, Animatable
 			}
 		//#endif
 		//this.isInRequestInit = true;
-		try {
 			//check if the given command is from the currently focused item:
 			Item item = this.container;
 			if (item == null) {
@@ -4764,10 +4763,7 @@ implements UiElement, Animatable
 				//#endif
 				return true;
 			}
-		} finally {
-			//this.isInRequestInit = false;
-			requestInit();
-		}
+		
 		return false;
 	}
 	
