@@ -212,7 +212,8 @@ public final class BitMapFont {
 				indeces[i] = this.characterMap.indexOf( inputCharacter );
 			}
 		}
-		if(color != -1)
+		// Colorize font if color is not black.
+		if (color != -1 && color != 0)
 		{
 			return new BitMapFontViewer( this.fontImage, color, indeces, this.xPositions, this.characterWidths, this.fontHeight, this.spaceIndex, 1 );
 		}

@@ -158,7 +158,8 @@ public class BitMapFontViewer {
 	 */
 	public BitMapFontViewer(Image image, int color, int[] indeces, short[] xPositions, byte[] characterWidths, int fontHeight, int spaceIndex, int verticalPadding ) {
 		this(image,indeces,xPositions,characterWidths,fontHeight,spaceIndex,verticalPadding);
-		if (color != -1) {
+		// Colorize font if color is not black.
+		if (color != -1 && color != 0) {
 			this.image = applyColor(image, COLORIZE_MASK, color);
 		}
 	}
