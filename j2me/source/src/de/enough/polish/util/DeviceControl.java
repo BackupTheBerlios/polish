@@ -1,6 +1,7 @@
 package de.enough.polish.util;
 
 //#if polish.usePolishGui
+import android.location.LocationManager;
 import de.enough.polish.ui.StyleSheet;
 //#endif
 
@@ -223,12 +224,18 @@ public class DeviceControl
 		}
 	}
 
+	/**
+	 * Shows the softkeyboard if the device supports it. This method is only supported on the Android platform at the moment.
+	 */
 	public static void showSoftKeyboard() {
 		//#if polish.android1.5
 		MIDlet.midletInstance.showSoftKeyboard();
 		//#endif
 	}
 	
+	/**
+	 * Hides the softkeyboard if the device supports it. This method is only supported on the Android platform at the moment.
+	 */
 	public static void hideSoftKeyboard() {
 		//#if polish.android1.5
 		MIDlet.midletInstance.hideSoftKeyboard();
@@ -236,14 +243,28 @@ public class DeviceControl
 	}
 	
 	//#if polish.android
+	/**
+	 * This method allows the caller to disable the fallback to the network location provider when the GPS location provider is not available.
+	 * Normally the network location provider is used in case the GPS location provider goes offline for some reason. With this method you can
+	 * turn of this fallback. This is useful if you want to be sure that you always have full acurracy for your location or non at all.
+	 * @param setFallbackOnGpsDisabled value 'true' if you want to disable the fallback mechanism. Value 'false' otherwise.
+	 */
 	public static void shouldFallbackToNetworkLocationOnGpsDisabled(boolean setFallbackOnGpsDisabled) {
 		DeviceControl.fallbackOnGpsDisabled = setFallbackOnGpsDisabled;
 	}
 
+	/**
+	 * This methods tells the caller if the fallback mechanism for the GPS location provider is enabled. See {@link #shouldFallbackToNetworkLocationOnGpsDisabled(boolean)} for details.
+	 * @return Value 'true' if the fallback is disabled. Value 'false' if the fallback is enabled (the default).
+	 */
 	public static boolean isFallbackToNetworkLocationOnGpsDisabled() {
 		return fallbackOnGpsDisabled;
 	}
 
+	/**
+	 * Returns the current locationProvider used by the system.
+	 * @return On of LocationManager.GPS_PROVIDER or LocationManager.NETWORK_PROVIDER
+	 */
 	public static String getLocationProvider() {
 		AndroidLocationProvider androidLocationProviderInstance = AndroidLocationProvider.getInstance();
 		if(androidLocationProviderInstance != null) {
