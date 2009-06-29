@@ -5,6 +5,7 @@ import de.enough.polish.ui.StyleSheet;
 //#endif
 
 //#if polish.android
+import de.enough.polish.android.location.AndroidLocationProvider;
 import de.enough.polish.android.midlet.MIDlet;
 //#endif
 
@@ -31,7 +32,8 @@ public class DeviceControl
 	private static DeviceControl thread;
 	private static Object lightsLock = new Object();
 	private static Object vibrateLock = new Object();
-	private boolean lightOff = false; 
+	private boolean lightOff = false;
+	private static boolean fallbackOnGpsDisabled = true; 
 	
 	private DeviceControl() {
 		// disallow instantiation
@@ -152,7 +154,9 @@ public class DeviceControl
 	public static boolean isLightSupported()
 	{
 		boolean isSupported = false;
-		//#if polish.api.nokia-ui && !polish.Bugs.NoBacklight
+		//#if polish.android
+			isSupported = true;
+		//#elif polish.api.nokia-ui && !polish.Bugs.NoBacklight
 			isSupported = true;
 		//#elif tmp.useBlackBerry
 			isSupported = true;
@@ -219,5 +223,34 @@ public class DeviceControl
 		}
 	}
 
+	public static void showSoftKeyboard() {
+		//#if polish.android1.5
+		MIDlet.midletInstance.showSoftKeyboard();
+		//#endif
+	}
 	
+	public static void hideSoftKeyboard() {
+		//#if polish.android1.5
+		MIDlet.midletInstance.hideSoftKeyboard();
+		//#endif
+	}
+	
+	//#if polish.android
+	public static void shouldFallbackToNetworkLocationOnGpsDisabled(boolean setFallbackOnGpsDisabled) {
+		DeviceControl.fallbackOnGpsDisabled = setFallbackOnGpsDisabled;
+	}
+
+	public static boolean isFallbackToNetworkLocationOnGpsDisabled() {
+		return fallbackOnGpsDisabled;
+	}
+
+	public static String getLocationProvider() {
+		AndroidLocationProvider androidLocationProviderInstance = AndroidLocationProvider.getInstance();
+		if(androidLocationProviderInstance != null) {
+			return androidLocationProviderInstance.getLocationProviderName();
+		}
+		return null;
+	}
+	
+	//#endif
 }
