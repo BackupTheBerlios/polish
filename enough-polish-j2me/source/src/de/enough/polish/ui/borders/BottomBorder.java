@@ -56,8 +56,8 @@ public class BottomBorder extends Border {
 	 */
 	public void paint(int x, int y, int width, int height, Graphics g) {
 		g.setColor( this.color );
-		y += height;
-		int endX = x + width;
+		y += height - 1;
+		int endX = x + width - 1;
 		g.drawLine( x, y, endX, y );
 		if (this.borderWidthBottom > 1) {
 			int border = this.borderWidthBottom - 1;
