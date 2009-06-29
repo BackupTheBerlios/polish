@@ -1,6 +1,8 @@
 //#condition polish.android
 package de.enough.polish.android.location;
 
+import java.util.List;
+
 import android.content.Context;
 import android.location.LocationManager;
 import android.os.Looper;
@@ -38,8 +40,8 @@ public class AndroidLocationProvider extends LocationProvider {
 
 	public static final int ACCURACY_THRESHOLD = 50;
 	public static final int DEFAULT_POWER_REQIREMENT = android.location.Criteria.POWER_MEDIUM;
-	public static final int DEFAULT_MINIMAL_LOCATION_UPDATES = 60000;
-	public static final float DEFAULT_MINIMAL_LOCATION_DISTANCE = 100; // meters
+	public static final int DEFAULT_MINIMAL_LOCATION_UPDATES = 1000; //msec
+	public static final float DEFAULT_MINIMAL_LOCATION_DISTANCE = 1; // meters
 	
 	private static LocationManager locationManager;
 	private static AndroidLocationProvider instance;
@@ -51,43 +53,62 @@ public class AndroidLocationProvider extends LocationProvider {
 	private int currentMinTime;
 	private float currentMinDist;
 	
+	public static AndroidLocationProvider getInstance() {
+		return instance;
+	}
+	
 	public static AndroidLocationProvider getAndroidLocationProviderInstance(Criteria meCriteria) {
-		//#debug
-		System.out.println("getAndroidLocationProviderInstance.");
 		if(locationManager == null) {
 			locationManager = (LocationManager)MIDlet.midletInstance.getSystemService(Context.LOCATION_SERVICE);
 		}
-		int powerRequirement;
-		int preferredPowerConsumption = meCriteria.getPreferredPowerConsumption();
-		switch(preferredPowerConsumption) {
-			case Criteria.NO_REQUIREMENT: powerRequirement = DEFAULT_POWER_REQIREMENT; break;
-			case Criteria.POWER_USAGE_HIGH: powerRequirement = android.location.Criteria.POWER_HIGH; break;
-			case Criteria.POWER_USAGE_MEDIUM: powerRequirement = android.location.Criteria.POWER_MEDIUM; break;
-			case Criteria.POWER_USAGE_LOW: powerRequirement = android.location.Criteria.POWER_LOW; break;
-			default: throw new IllegalArgumentException("The power consumption must be one of Critiera.NO_REQUIREMENT, Criteria.POWER_USAGE_HIGH, Criteria.POWER_USAGE_MEDIUM or Criteria.POWER_USAGE_LOW.");
-		}
-		boolean altitudeRequired = meCriteria.isAltitudeRequired();
-		boolean bearingRequired = meCriteria.isSpeedAndCourseRequired();
-		boolean speedRequired = meCriteria.isSpeedAndCourseRequired();
-		boolean costAllowed = meCriteria.isAllowedToCost();
-		int accuracy;
-		int horizontalAccuracy = meCriteria.getHorizontalAccuracy();
-		if(horizontalAccuracy < ACCURACY_THRESHOLD) {
-			accuracy = android.location.Criteria.ACCURACY_FINE;
-		} else {
-			accuracy = android.location.Criteria.ACCURACY_COARSE;
-		}
-		android.location.Criteria criteria = new android.location.Criteria();
-		criteria.setAccuracy(accuracy);
-		criteria.setSpeedRequired(speedRequired);
-		criteria.setAltitudeRequired(altitudeRequired); 
-		criteria.setBearingRequired(bearingRequired); 
-		criteria.setCostAllowed(costAllowed); 
-		criteria.setPowerRequirement(powerRequirement);
-		String bestProvider = locationManager.getBestProvider(criteria, true);
-		if(bestProvider == null) {
+//		int powerRequirement;
+//		int preferredPowerConsumption = meCriteria.getPreferredPowerConsumption();
+//		switch(preferredPowerConsumption) {
+//			case Criteria.NO_REQUIREMENT: powerRequirement = DEFAULT_POWER_REQIREMENT; break;
+//			case Criteria.POWER_USAGE_HIGH: powerRequirement = android.location.Criteria.POWER_HIGH; break;
+//			case Criteria.POWER_USAGE_MEDIUM: powerRequirement = android.location.Criteria.POWER_MEDIUM; break;
+//			case Criteria.POWER_USAGE_LOW: powerRequirement = android.location.Criteria.POWER_LOW; break;
+//			default: throw new IllegalArgumentException("The power consumption must be one of Critiera.NO_REQUIREMENT, Criteria.POWER_USAGE_HIGH, Criteria.POWER_USAGE_MEDIUM or Criteria.POWER_USAGE_LOW.");
+//		}
+//		boolean altitudeRequired = meCriteria.isAltitudeRequired();
+//		boolean bearingRequired = meCriteria.isSpeedAndCourseRequired();
+//		boolean speedRequired = meCriteria.isSpeedAndCourseRequired();
+//		boolean costAllowed = meCriteria.isAllowedToCost();
+//		int accuracy;
+//		int horizontalAccuracy = meCriteria.getHorizontalAccuracy();
+//		if(horizontalAccuracy < ACCURACY_THRESHOLD) {
+//			accuracy = android.location.Criteria.ACCURACY_FINE;
+//		} else {
+//			accuracy = android.location.Criteria.ACCURACY_COARSE;
+//		}
+//		android.location.Criteria criteria = new android.location.Criteria();
+//		criteria.setAccuracy(accuracy);
+//		criteria.setSpeedRequired(speedRequired);
+//		criteria.setAltitudeRequired(altitudeRequired); 
+//		criteria.setBearingRequired(bearingRequired);
+//		criteria.setCostAllowed(costAllowed); 
+//		criteria.setPowerRequirement(powerRequirement);
+		
+		String bestProvider = null;
+		// We do it ourselves.
+		// bestProvider = locationManager.getBestProvider(criteria, true);
+		
+		List<String> allProviders = locationManager.getAllProviders();
+		if(allProviders.isEmpty()) {
 			return null;
 		}
+		for (String provider : allProviders) {
+			if(LocationManager.GPS_PROVIDER.equals(provider)) {
+				bestProvider = LocationManager.GPS_PROVIDER;
+				break;
+			}
+		}
+		if(bestProvider == null) {
+			bestProvider = allProviders.get(1);
+		}
+		
+		//#debug
+		System.out.println("getAndroidLocationProvider: Best provider is '"+bestProvider+"'");
 		// TODO: What about already registered listeners in the instance?
 		if(instance == null) {
 			instance = new AndroidLocationProvider(bestProvider);
@@ -186,7 +207,7 @@ public class AndroidLocationProvider extends LocationProvider {
 		locationManager.requestLocationUpdates(this.currentProvider,this.currentMinTime,this.currentMinDist ,this.currentLocationListener,looper);
 	}
 
-	String getLocationProviderName() {
+	public String getLocationProviderName() {
 		return this.currentProvider;
 	}
 

@@ -1,6 +1,7 @@
 //#condition polish.android
 package de.enough.polish.android.location;
 
+import de.enough.polish.util.DeviceControl;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -20,11 +21,12 @@ public class AndroidLocationListenerAdapter implements LocationListener {
 		System.out.println("onLocationChanged:"+location);
 		if(this.listener == null) {
 			//#debug warn
-			System.out.println("No listener to inform about location change");
+			System.out.println("onLocationChanged:No listener to inform about location change. Doing nothing.");
 			return;
 		}
 		if(location == null) {
-			System.out.println("AndroidLocationListenerAdapter.onLocationChanged:location is null.");
+			//#debug warn
+			System.out.println("onLocationChanged:location is null.");
 			return;
 		}
 		de.enough.polish.android.location.Location wrappedLocation = new de.enough.polish.android.location.Location(location);
@@ -37,9 +39,15 @@ public class AndroidLocationListenerAdapter implements LocationListener {
 		System.out.println("onProviderDisabled:"+providerName);
 		// When the GPS provider is disabled, switch to the NETWORK provider.
 		if( ! LocationManager.GPS_PROVIDER.equals(providerName)) {
+			//#debug
+			System.out.println("onProviderDisabled: The disabled location provider '"+providerName+"' is not the GPS provider. There is no need to do anything now.");
 			return;
 		}
-		this.locationProvider.setProviderName(LocationManager.NETWORK_PROVIDER);
+		if(DeviceControl.isFallbackToNetworkLocationOnGpsDisabled()) {
+			//#debug
+			System.out.println("onProviderDisabled: As a fallback, I set the NETWORK provider as new location provider.");
+			this.locationProvider.setProviderName(LocationManager.NETWORK_PROVIDER);
+		}
 	}
 
 	public void onProviderEnabled(String providerName) {
@@ -48,29 +56,50 @@ public class AndroidLocationListenerAdapter implements LocationListener {
 		// The provider which was requested by criteria became available.
 		String providerByCritera = this.locationProvider.getProviderByCritera();
 		if( ! providerName.equals(providerByCritera)) {
+			//#debug
+			System.out.println("onProviderEnabled: The enabled location provider '"+providerName+"' is not the one requested by the criteria which was '"+providerByCritera+"'. Doing nothing about it.");
 			return;
 		}
+		//#debug
+		System.out.println("onProviderEnabled: Setting the location provider back to '"+providerByCritera+"' which is the one requested by the user critera.");
 		this.locationProvider.setProviderName(providerByCritera);
 	}
 
 	public void onStatusChanged(String provider, int status, Bundle extras) {
+		String statusName;
+		switch(status) {
+			case android.location.LocationProvider.AVAILABLE:
+				statusName = "Available";
+				break;
+			case android.location.LocationProvider.OUT_OF_SERVICE:
+				statusName = "Out of Service";
+				break;
+			case android.location.LocationProvider.TEMPORARILY_UNAVAILABLE:
+				statusName = "Temporarily Unavailable";
+				break;
+			default: throw new IllegalArgumentException("LocationProvider.onStatusChanged: Status '"+status+"' not recognized.");
+		}
+		
 		//#debug
-		System.out.println("onStatusChanged:provider:"+provider+".Status:"+status);
+		System.out.println("onStatusChanged:provider:"+provider+".Status:"+statusName);
 		int translatedStatus;
 		switch(status) {
-		case android.location.LocationProvider.AVAILABLE:
-			translatedStatus = LocationProvider.AVAILABLE;
-			onProviderEnabled(provider);
-			break;
-		case android.location.LocationProvider.OUT_OF_SERVICE:
-			translatedStatus = LocationProvider.OUT_OF_SERVICE;
-			break;
-			
-		case android.location.LocationProvider.TEMPORARILY_UNAVAILABLE:
-			translatedStatus = LocationProvider.TEMPORARILY_UNAVAILABLE;
-			onProviderDisabled(provider);
-			break;
-		default: throw new IllegalArgumentException("LocationProvider Status change '"+status+"' not recognized.");
+			case android.location.LocationProvider.AVAILABLE:
+				translatedStatus = LocationProvider.AVAILABLE;
+				//TODO: Maybe these methods onProviderEnabled and onProviderDisabled must not be implemented as onSatusChange is sufficient.
+				onProviderEnabled(provider);
+				break;
+				
+			case android.location.LocationProvider.OUT_OF_SERVICE:
+				translatedStatus = LocationProvider.OUT_OF_SERVICE;
+				break;
+				
+			case android.location.LocationProvider.TEMPORARILY_UNAVAILABLE:
+				translatedStatus = LocationProvider.TEMPORARILY_UNAVAILABLE;
+				onProviderDisabled(provider);
+				break;
+				
+			default: throw new IllegalArgumentException("LocationProvider: Status change '"+status+"' not recognized.");
 		}
 		this.listener.providerStateChanged(this.locationProvider, translatedStatus);
 	}
