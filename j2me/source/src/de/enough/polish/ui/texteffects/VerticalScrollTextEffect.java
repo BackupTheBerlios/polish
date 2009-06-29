@@ -33,7 +33,6 @@ import de.enough.polish.ui.AnimationThread;
 import de.enough.polish.ui.ClippingRegion;
 import de.enough.polish.ui.CommandItem;
 import de.enough.polish.ui.Item;
-import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.TextEffect;
 
@@ -88,11 +87,6 @@ public class VerticalScrollTextEffect extends TextEffect{
 			ClippingRegion repaintRegion) {
 		Data data = (Data)getData(parent);
 		
-		if(isParentActive(parent, data))
-		{
-			return;
-		}
-		
 		super.animate(parent, currentTime, repaintRegion);
 		
 		if(data == null || (data.textLines != null && data.textLines.length == 1))
@@ -146,22 +140,6 @@ public class VerticalScrollTextEffect extends TextEffect{
 		}
 	}
 	
-	boolean isParentActive(Item parent, Data data)
-	{
-		if(parent instanceof CommandItem)
-		{
-			CommandItem item = (CommandItem)parent;
-			if(item.isOpen())
-			{
-				data.lineOffset = 0;
-				data.stageCurrent = STAGE_SHOW;
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
 	/**
 	 * Calculates and returns the offset to draw the textlines
 	 * for the animation  
@@ -183,10 +161,6 @@ public class VerticalScrollTextEffect extends TextEffect{
 			int layout, Graphics g) {
 		Data data = (Data)getData(parent);
 		
-		if(isParentActive(parent, data))
-		{
-			return;
-		}
 		
 		data.lineHeight = lineHeight;
 		
