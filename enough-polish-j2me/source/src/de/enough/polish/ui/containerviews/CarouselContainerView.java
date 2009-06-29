@@ -29,6 +29,7 @@ package de.enough.polish.ui.containerviews;
 
 import javax.microedition.lcdui.Graphics;
 
+import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Dimension;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
@@ -87,8 +88,7 @@ public class CarouselContainerView extends FishEyeContainerView {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.containerviews.FishEyeContainerView#initItemArrangement(int, de.enough.polish.ui.Item[], int, int, int)
 	 */
-	protected void initItemArrangement(int lineWidth, Item[] myItems, int length, int maxWidth, int maxHeight) {
-		int lineHeight = maxHeight;
+	protected void initItemArrangement(int lineWidth, int lineHeight, Item[] myItems, int length, int maxWidth, int maxHeight) {
 		if (this.maximumHeight != null && lineHeight > this.maximumHeight.getValue(maxHeight)) {
 			lineHeight = this.maximumHeight.getValue(maxHeight);
 		}
@@ -128,13 +128,13 @@ public class CarouselContainerView extends FishEyeContainerView {
 		}
 
 		
-		int availableWidth = lineWidth; // available width for one side
-		int availableHeight = lineHeight; // - maxHeight; 
+		int availWidth = lineWidth; // available width for one side
+		int availHeight = lineHeight; // - maxHeight; 
 		
 //		System.out.println("available=" + availableWidth + ", lineWidth=" + lineWidth + ", completeWidth=" + completeWidth + ", maxItemWidth=" + maxWidth + ", paddingHorizontal=" + this.paddingHorizontal);
 		int halfLength = (length - 1) >> 1;
-		int availableWidthPerItem  = (availableWidth  << 8) / (halfLength + 1);
-		int availableHeightPerItem = (availableHeight << 8) / (length -1);
+		int availableWidthPerItem  = (availWidth  << 8) / (halfLength + 1);
+		int availableHeightPerItem = (availHeight << 8) / (length -1);
 		// process items on the left side:
 		int index = this.focusedIndex - 1;
 		int processed = 0;
@@ -201,6 +201,7 @@ public class CarouselContainerView extends FishEyeContainerView {
 			lineHeight = this.maximumHeight.getValue(availHeight);
 		}
 		this.contentHeight = lineHeight;
+		this.contentWidth = availWidth;
 	}
 
 
@@ -216,15 +217,17 @@ public class CarouselContainerView extends FishEyeContainerView {
 
 	}
 
+	
 
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.containerviews.FishEyeContainerView#paintItem(de.enough.polish.ui.Item, int, int, int, int, int, int, int, int, int, javax.microedition.lcdui.Graphics)
-	 */
-	protected void paintItem(Item item, int index, int x, int y, int leftBorder, int rightBorder, int clipX, int clipY, int clipWidth, int clipHeight, Graphics g) {
-		// quick'n'dirty workaround for wrong vertical positioning 
-		super.paintItem(item, index, x, y - 5, leftBorder, rightBorder, clipX, clipY,
-				clipWidth, clipHeight, g);
-	}
+
+//	/* (non-Javadoc)
+//	 * @see de.enough.polish.ui.containerviews.FishEyeContainerView#paintItem(de.enough.polish.ui.Item, int, int, int, int, int, int, int, int, int, javax.microedition.lcdui.Graphics)
+//	 */
+//	protected void paintItem(Item item, int index, int x, int y, int leftBorder, int rightBorder, int clipX, int clipY, int clipWidth, int clipHeight, Graphics g) {
+//		// quick'n'dirty workaround for wrong vertical positioning 
+//		super.paintItem(item, index, x, y - 10, leftBorder, rightBorder, clipX, clipY,
+//				clipWidth, clipHeight, g);
+//	}
 	
 	
 

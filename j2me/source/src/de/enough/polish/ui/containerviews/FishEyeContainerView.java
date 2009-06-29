@@ -435,7 +435,7 @@ public class FishEyeContainerView extends ContainerView {
 			this.appearanceMode = Item.PLAIN;
 		}
 		
-		initItemArrangement(availWidth, myItems, length, maxWidth, maxHeight);
+		initItemArrangement(availWidth, availHeight, myItems, length, maxWidth, maxHeight);
 		
 		// use reference positions to set the position for the items:
 		for (int i = 0; i < length; i++) {
@@ -486,12 +486,13 @@ public class FishEyeContainerView extends ContainerView {
 	 * Arranges the items in this view.
 	 * 
 	 * @param lineWidth the available line width
+	 * @param availHeight the available height in pixels
 	 * @param myItems all items
 	 * @param length the number of items
 	 * @param maxWidth the maximum width of one item
 	 * @param maxHeight the maximum height of one item
 	 */
-	protected void initItemArrangement(int lineWidth, Item[] myItems, int length, int maxWidth, int maxHeight) {
+	protected void initItemArrangement(int lineWidth, int availHeight, Item[] myItems, int length, int maxWidth, int maxHeight) {
 		this.referenceXCenterPositions = new int[length];
 		this.referenceXCenterPositions[this.focusedIndex] = lineWidth >> 1;
 		this.referenceFocusedIndex = this.focusedIndex;
