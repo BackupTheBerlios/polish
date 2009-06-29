@@ -63,6 +63,10 @@ import de.enough.polish.util.Properties;
 import de.enough.polish.windows.Keyboard;
 //#endif
 
+//#if polish.android1.5
+import de.enough.polish.android.midlet.MIDlet;
+//#endif
+
 /**
  * A <code>TextField</code> is an editable text component that may be
  * placed into
@@ -4048,7 +4052,9 @@ public class TextField extends StringItem
 				notifyStateChanged();
 			}
 		//#endif
-
+		//#if polish.android1.5
+		MIDlet.midletInstance.hideSoftKeyboard();
+		//#endif
 	}
 	//#endif
 	
@@ -4077,7 +4083,10 @@ public class TextField extends StringItem
 		//#if tmp.updateDeleteCommand
 			updateDeleteCommand( this.text );
 		//#endif
-			
+		
+		//#if polish.android1.5
+		MIDlet.midletInstance.showSoftKeyboard();
+		//#endif
 		return unfocusedStyle;
 	}
 	//#endif
@@ -4174,6 +4183,9 @@ public class TextField extends StringItem
 				commitCurrentCharacter();
 			}
 			super.hideNotify();
+			//#if polish.android1.5
+			MIDlet.midletInstance.hideSoftKeyboard();
+			//#endif
 		}	
 	//#endif
 		

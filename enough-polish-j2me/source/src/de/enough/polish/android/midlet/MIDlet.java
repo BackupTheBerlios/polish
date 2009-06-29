@@ -12,6 +12,7 @@ import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.os.PowerManager;
 import android.telephony.CellLocation;
 import android.telephony.PhoneStateListener;
@@ -19,9 +20,16 @@ import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import de.enough.polish.android.io.ConnectionNotFoundException;
 import de.enough.polish.android.lcdui.AndroidDisplay;
+
+//#if polish.android1.5
+import android.os.ResultReceiver;
+import android.view.inputmethod.InputMethodManager;
+//#endif
 
 /**
  * A MIDlet is a MID Profile application.
@@ -93,6 +101,8 @@ public abstract class MIDlet extends Activity {
 	protected void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		// This does not work. No pointer events are delivered.
+//		getWindow().addFlags(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 		//TODO: Extract all strings to constants.
 		TelephonyManager telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
 		PhoneStateListener listener = new PhoneStateListener() {
@@ -116,6 +126,8 @@ public abstract class MIDlet extends Activity {
 			@Override
 			public void onSignalStrengthChanged(int asu) {
 				String asuString = Integer.toString(asu);
+				//#debug
+				System.out.println("asu is '"+asu+"' and its string is '"+asuString+"'");
 				setSystemProperty("SignalStrength",asuString);
 			}
 			
@@ -154,23 +166,27 @@ public abstract class MIDlet extends Activity {
 	}
 
 	public void backlightOn() {
-		if(this.wakeLock != null) {
-			return;
-		}
-		PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-		this.wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK|PowerManager.ACQUIRE_CAUSES_WAKEUP, "Skobbler Wake Lock");
-		this.wakeLock.acquire();
-		//#debug
-		System.out.println("WakeLock acquired?"+this.wakeLock.isHeld());
+//		if(this.wakeLock != null && this.wakeLock.isHeld()) {
+//			//#debug
+//			System.out.println("The backlight was requested to go on but the wakeLock is already held. I return without doing anything.");
+//			return;
+//		}
+//		PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+//		this.wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK|PowerManager.ACQUIRE_CAUSES_WAKEUP, "Skobbler Wake Lock");
+//		this.wakeLock.acquire();
+//		//#debug
+//		System.out.println("WakeLock acquired?"+this.wakeLock.isHeld());
+		AndroidDisplay.getDisplay(this).setKeepScreenOn(true);
 	}
 	
 	/**
 	 * You need to call this method when you switched on the light with {@link #backlightOn()}.
 	 */
 	public void backlightRelease() {
-		if(this.wakeLock != null) {
-			this.wakeLock.release();
-		}
+//		if(this.wakeLock != null && this.wakeLock.isHeld()) {
+//			this.wakeLock.release();
+//		}
+		AndroidDisplay.getDisplay(this).setKeepScreenOn(false);
 	}
 	
 	protected void setSystemProperty(String name, String value) {
@@ -605,6 +621,7 @@ public abstract class MIDlet extends Activity {
 			Uri uri = Uri.parse(url);
 			Intent intent = new Intent(Intent.ACTION_VIEW,uri);
 			startActivity(intent);
+			return false;
 		}
 		throw new ConnectionNotFoundException("The url '"+url+"' can not behandled. The url scheme is not supported");
 	}
@@ -627,19 +644,39 @@ public abstract class MIDlet extends Activity {
 	}
 
 	public void showSoftKeyboard() {
-		//FIXME: Guard this stuff as it is only available on android 1.5
-//		InputMethodManager inputMethodManager = (InputMethodManager)getSystemService( Context.INPUT_METHOD_SERVICE);
-//		List<InputMethodInfo> inputMethodList = inputMethodManager.getInputMethodList();
-//		System.out.println("InputMethods in the system:");
-//		for (InputMethodInfo inputMethodInfo : inputMethodList) {
-//			System.out.println("Inputmethod:"+inputMethodInfo);
-//		}
-//		AndroidDisplay display = AndroidDisplay.getDisplay(this);
-//		if(display != null) {
-//			boolean softInputShown = inputMethodManager.showSoftInput(display, InputMethodManager.SHOW_FORCED);
-//			inputMethodManager.showSoftInputFromInputMethod(display.getApplicationWindowToken(),InputMethodManager.SHOW_FORCED);
-//			System.out.println("The softInput was shown:"+softInputShown);
-//		}
+		//#if polish.android1.5
+//		getWindow().addFlags(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+		//TODO: If the hardkeyboard is shown, hide the softkeyboard.
+		InputMethodManager inputMethodManager = (InputMethodManager)getSystemService( Context.INPUT_METHOD_SERVICE);
+		Configuration configuration = getBaseContext().getResources().getConfiguration();
+		if(configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO) {
+			return;
+		}
+		AndroidDisplay display = AndroidDisplay.getDisplay(this);
+		if(display != null) {
+			// requestingFocus is important!
+			display.requestFocus();
+			inputMethodManager.showSoftInput(display, 0,new ResultReceiver(display.getHandler()) {
+				protected void onReceiveResult(int arg0, Bundle arg1) {
+					super.onReceiveResult(arg0, arg1);
+					System.out.println("Receiving result:"+arg0);
+				}
+			});
+		}
+		//#endif
+	}
+
+	public void hideSoftKeyboard() {
+		//#if polish.android1.5
+		InputMethodManager inputMethodManager = (InputMethodManager)getSystemService( Context.INPUT_METHOD_SERVICE);
+		AndroidDisplay display = AndroidDisplay.getDisplay(this);
+		boolean active = inputMethodManager.isActive(display);
+		if(!active) {
+			return;
+		}
+		IBinder windowToken = display.getWindowToken();
+		inputMethodManager.hideSoftInputFromWindow(windowToken, 0);
+		//#endif
 	}
 
 }

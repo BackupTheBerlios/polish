@@ -9,12 +9,18 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputConnection;
 import de.enough.polish.android.midlet.MIDlet;
 import de.enough.polish.ui.Display;
 import de.enough.polish.ui.NativeDisplay;
 import de.enough.polish.util.ArrayList;
+
+//#if polish.android1.5
+import android.view.inputmethod.BaseInputConnection;
+import android.view.inputmethod.CompletionInfo;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputConnection;
+import android.view.inputmethod.InputConnectionWrapper;
+//#endif
 
 /**
  * <code>Display</code> represents the manager of the display and input
@@ -224,6 +230,8 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 	public AndroidDisplay(Context context) {
 		super(context);
 		setOnTouchListener(this);
+		setFocusable(true);
+		setFocusableInTouchMode(true);
 	}
 	
 	/* (non-Javadoc)
@@ -295,6 +303,15 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 		}
 		
 		int key = this.util.handleKey(keyCode, event, this.currentPolishCanvas);
+		
+		// TODO: This is not working as the softkeyboard does not emit a keycode on hitting return.
+//		System.out.println("Keycode is:"+key);
+		if(key == 10) {
+			//#debug
+			System.out.println("Hiding Softkeyboard");
+			MIDlet.midletInstance.hideSoftKeyboard();
+		}
+		
 		//#debug
 		System.out.println("onKeyUp:converted android key code '" + keyCode+"' to ME code '"+key+"'");
 		this.currentPolishCanvas.keyReleased(key);
@@ -1081,4 +1098,27 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 		}
 	}
 
+	//#if polish.android1.5
+	@Override
+	public InputConnection onCreateInputConnection(EditorInfo editorInfo) {
+		editorInfo.imeOptions |= EditorInfo.IME_FLAG_NO_EXTRACT_UI | EditorInfo.IME_ACTION_NONE;
+        return new BaseInputConnection(this, false);
+	}
+
+	@Override
+	public boolean onCheckIsTextEditor() {
+		//#debug
+		System.out.println("XXX checking if is text editor");
+		return true;
+	}
+
+	@Override
+	public boolean checkInputConnectionProxy(View arg0) {
+		//#debug
+		System.out.println("XXX checkInputconnectionProxy called with view '"+arg0+"'");
+		return true;
+	}
+	//#endif
+	
+	
 }
