@@ -930,7 +930,13 @@ implements javax.microedition.lcdui.CommandListener
 		if (nextDisplayable instanceof Alert && this.currentDisplayable != nextDisplayable) {
 			Alert alert = (Alert)nextDisplayable;
 			if (alert.nextDisplayable == null) {
-				alert.nextDisplayable = instance.currentDisplayable;
+				Displayable nxt = instance.currentDisplayable;
+				//#if tmp.screenTransitions
+					if (nxt instanceof ScreenChangeAnimation) {
+						nxt = ((ScreenChangeAnimation)nxt).nextDisplayable;
+					}
+				//#endif
+				alert.nextDisplayable = nxt;
 			}
 		}
 		
@@ -1034,8 +1040,9 @@ implements javax.microedition.lcdui.CommandListener
 						if ( screenstyle == null ) {
 							screenstyle = StyleSheet.defaultStyle;
 						}
-						
-						nextScreen._showNotify();
+						if (nextScreen != null) {
+							nextScreen._showNotify();
+						}
 						this.setCurrent(screenAnimation);
 						if (lastScreen != null) {
 							lastScreen._hideNotify();

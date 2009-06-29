@@ -1148,7 +1148,7 @@ public class Container extends Item {
 	 */
 	protected void initContent(int firstLineWidth, int availWidth, int availHeight) {
 		//#debug
-		System.out.println("Container: intialising content for " + this + ": autofocus=" + this.autoFocusEnabled + ", autoFocusIndex=" + this.autoFocusIndex + ", firstLineWidth=" + firstLineWidth + ", availWidth=" + availWidth + ", size=" + this.itemsList.size() );
+		System.out.println("Container: intialising content for " + this + ": autofocus=" + this.autoFocusEnabled + ", autoFocusIndex=" + this.autoFocusIndex + ", firstLineWidth=" + firstLineWidth + ", availWidth=" + availWidth + ", availHeight=" + availHeight + ", size=" + this.itemsList.size() );
 		//this.availableContentWidth = firstLineWidth;
 		//#if polish.css.focused-style
 			if (this.focusedStyle != null) {

@@ -128,7 +128,7 @@ implements Runnable
 	 * @param dsplay the display, which is used for setting this animation
 	 * @param width the screen's width
 	 * @param height the screen's height
-	 * @param lstDisplayable TODO
+	 * @param lstDisplayable the screen that has been shown until now
 	 * @param nxtDisplayable the next screen that should be displayed when this animation finishes (as a Displayable)
 	 * @param isForward true when the animation should run in the normal direction/mode - false if it should run backwards
 	 */

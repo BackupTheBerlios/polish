@@ -2826,6 +2826,7 @@ public abstract class Item implements UiElement, Animatable
 				this.contentHeight = 0;
 			} else {
 		//#endif
+			availHeight -= this.marginTop + getBorderWidthTop() + this.paddingTop + this.paddingBottom + getBorderWidthBottom() + this.marginBottom; 
 			//#ifdef polish.css.view-type
 				if (this.view != null) {
 					this.view.parentItem = this;
