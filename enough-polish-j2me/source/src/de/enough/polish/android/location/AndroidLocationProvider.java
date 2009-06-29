@@ -30,8 +30,7 @@ public class AndroidLocationProvider extends LocationProvider {
 					//#debug
 					System.out.println("Waited for 30ms for the looper to prepare.");
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					// ignore
 				}
 			}
 			return this.looper;
