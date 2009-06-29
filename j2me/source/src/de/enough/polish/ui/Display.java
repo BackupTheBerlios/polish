@@ -2118,7 +2118,24 @@ implements javax.microedition.lcdui.CommandListener
 						instance.screenHeight = h;
 					}
 				//#endif
+				//#if polish.blackberry
+					if (h == 0) {
+						h = net.rim.device.api.ui.Graphics.getScreenHeight();
+					}
+				//#endif
 			}
+		} else {
+			//#if polish.blackberry
+				h = net.rim.device.api.ui.Graphics.getScreenHeight();
+			//#elif polish.midp
+				h = (new javax.microedition.lcdui.Canvas(){
+					protected void paint(javax.microedition.lcdui.Graphics g)
+					{
+						// just a dummy
+					}
+				}).getHeight();
+			//#endif
+
 		}
 		return h;
 	}
@@ -2142,9 +2159,16 @@ implements javax.microedition.lcdui.CommandListener
 						instance.screenWidth = w;
 					}
 				//#endif
+				//#if polish.blackberry
+					if (w == 0) {
+						w = net.rim.device.api.ui.Graphics.getScreenWidth();
+					}
+				//#endif
 			}
 		} else {
-			//#if polish.midp
+			//#if polish.blackberry
+				w = net.rim.device.api.ui.Graphics.getScreenWidth();
+			//#elif polish.midp
 				w = (new javax.microedition.lcdui.Canvas(){
 					protected void paint(javax.microedition.lcdui.Graphics g)
 					{
