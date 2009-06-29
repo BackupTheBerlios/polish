@@ -1,7 +1,6 @@
 package de.enough.polish.util;
 
 //#if polish.usePolishGui
-import android.location.LocationManager;
 import de.enough.polish.ui.StyleSheet;
 //#endif
 
