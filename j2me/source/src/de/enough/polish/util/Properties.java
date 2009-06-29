@@ -130,6 +130,13 @@ implements Externalizable
 		int end = 0;
 		boolean newLineFound;
 		while ( (read = in.read(buffer, start, bufferLength - start )) != -1) {
+			//add \r to last line if its missing
+			if(	buffer.length != read && 
+				buffer[read-1] != '\n' && buffer[read-1] != '\r')
+			{
+				buffer[read] = '\r';
+				read++;
+			}
 			// search for next \r or \n
 			String line;
 			if (encoding != null) {
