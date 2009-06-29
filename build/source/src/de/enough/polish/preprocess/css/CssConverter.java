@@ -1040,7 +1040,7 @@ public class CssConverter extends Converter {
 		}
 		//String className = (String) BACKGROUND_TYPES.get(type);
 		CssMapping mapping = this.backgroundAttribute.getMapping(type);
-		if (mapping != null && mapping.getTo().startsWith("ref:")) {
+		if (mapping != null && mapping.getTo() != null && mapping.getTo().startsWith("ref:")) {
 			type = mapping.getTo().substring("ref:".length()).trim();
 			mapping = this.backgroundAttribute.getMapping( type );
 		}
