@@ -64,6 +64,20 @@ public class ScreenHistory {
 		this.history = new ArrayList();
 	}
 	
+	//#if polish.LibraryBuild && !polish.usePolishGui
+	/**
+	 * Shows the screen
+	 * When the screen has been shown previously, any screens that followed the screen are removed from the history.
+	 * 
+	 * @param screen the screen that should be shown next
+	 * @param display the display used for showing the screen
+	 */
+	public synchronized void show( de.enough.polish.ui.Displayable screen, de.enough.polish.ui.Display display ) {
+		// ignore
+	}
+	//#endif
+
+	
 	/**
 	 * Shows the screen
 	 * When the screen has been shown previously, any screens that followed the screen are removed from the history.
@@ -110,6 +124,20 @@ public class ScreenHistory {
 		return this.history.size() > 1;
 	}
 	
+	//#if polish.LibraryBuild && !polish.usePolishGui
+		/**
+		 * Shows the previous screen when there is any.
+		 * 
+		 * @param display the display used for showing the screen
+		 * @return true when there is a previous screen
+		 * @see #hasPrevious()
+		 * @see #getPrevious()
+		 */
+		public synchronized boolean showPrevious(de.enough.polish.ui.Display display) {
+			return false;
+		}
+	//#endif
+		
 	/**
 	 * Shows the previous screen when there is any.
 	 * 
