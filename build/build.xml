@@ -1003,7 +1003,7 @@
 			classname="com.izforge.izpack.ant.IzPackTask"/>
 		<taskdef name="webprocessor" 
 			classname="de.enough.webprocessor.WebProcessorTask" 
-			classpath="../enough-webprocessor/bin/classes:${polish.home}/bin/website:build/bootstrapwebsite:${polish.home}/bin/classes:${polish.home}/build/coreclasses:${polish.home}/lib/jdom.jar:${polish.home}/dist/enough-j2mepolish-client.jar:${polish.home}/import/enough-j2mepolish-client.jar:${polish.home}/import/cldc-1.1.jar:${polish.home}/import/midp-2.0.jar:${polish.home}/import/mmapi.jar" />
+			classpath="../enough-webprocessor/bin/classes:../enough-webprocessor/dist/enough-webprocessor.jar:${polish.home}/bin/website:build/bootstrapwebsite:${polish.home}/bin/classes:${polish.home}/build/coreclasses:${polish.home}/lib/jdom.jar:${polish.home}/dist/enough-j2mepolish-client.jar:${polish.home}/import/enough-j2mepolish-client.jar:${polish.home}/import/cldc-1.1.jar:${polish.home}/import/midp-2.0.jar:${polish.home}/import/mmapi.jar" />
 		<!--
 		<taskdef name="webprocessor" 
 			classname="de.enough.webprocessor.WebProcessorTask" 
