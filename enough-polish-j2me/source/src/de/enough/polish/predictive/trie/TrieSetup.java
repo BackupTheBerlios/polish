@@ -8,6 +8,7 @@ import javax.microedition.io.ConnectionNotFoundException;
 import de.enough.polish.ui.Alert;
 import de.enough.polish.ui.Command;
 import de.enough.polish.ui.CommandListener;
+import de.enough.polish.ui.Display;
 import de.enough.polish.ui.Displayable;
 import de.enough.polish.ui.Form;
 import de.enough.polish.ui.Gauge;
@@ -164,7 +165,16 @@ implements Runnable, CommandListener
 	{
 		initForm();
 		
-		StyleSheet.display.setCurrent(this.setupForm);
+		Display display = Display.getInstance();
+		while (display == null) {
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+				// ignpore
+			}
+			display = Display.getInstance();
+		}
+		display.setCurrent(this.setupForm);
 		
 		try {
 			DataInputStream stream = getStream();
@@ -176,12 +186,14 @@ implements Runnable, CommandListener
 			
 			if(storeList != null)
 			{
-				for(int i=0; i<storeList.length; i++)
-					if(storeList[i].startsWith(TrieInstaller.PREFIX))
+				for(int i=0; i<storeList.length; i++) {
+					String store = storeList[i];
+					if(store.startsWith(TrieInstaller.PREFIX))
 					{
-						forceClose(storeList[i]);
-						RecordStore.deleteRecordStore(storeList[i]);
+						forceClose(store);
+						RecordStore.deleteRecordStore(store);
 					}
+				}
 			}
 			
 			this.status.setText(Locale.get("polish.predictive.setup.status.install"));
