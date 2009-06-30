@@ -4655,6 +4655,16 @@
 		since="J2ME Polish 2.1.1"
 	/>
 	
+	<attribute
+		name="move-scroll-backgrounds"
+		type="boolean"
+		appliesTo="Screen"
+		description="Deactivate the movement for scroll-up- and scroll-down-backgrounds that have been defined within the screens style."
+		default="true"
+		id="396"
+		since="J2ME Polish 2.1.1"
+	/>
+	
 
 <!-- 
 	<attribute

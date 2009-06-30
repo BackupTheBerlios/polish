@@ -369,6 +369,9 @@ implements UiElement, Animatable
 	//#if polish.css.scroll-down-background
 		private Background scrollDownBackground;
 	//#endif
+	//#if polish.css.move-scroll-backgrounds && (polish.css.scroll-up-background || polish.css.scroll-down-background)
+		private boolean isMoveScrollBackgrounds = true;
+	//#endif
 	
 	/**
 	 * Creates a new screen, this constructor can be used together with the //#style directive.
@@ -1752,6 +1755,12 @@ implements UiElement, Animatable
 				this.scrollDownBackground = downBg;
 			}
 		//#endif
+		//#if polish.css.move-scroll-backgrounds && (polish.css.scroll-up-background || polish.css.scroll-down-background)
+			Boolean moveBool = style.getBooleanProperty("move-scroll-backgrounds");
+			if (moveBool != null) {
+				this.isMoveScrollBackgrounds = moveBool.booleanValue();
+			}
+		//#endif
 		
 			
 		setStyle( style, true );
@@ -2495,20 +2504,32 @@ implements UiElement, Animatable
 			//#if polish.css.scroll-up-background
 				if (this.scrollUpBackground != null && canScrollUp()) {
 					int bgY = this.backgroundY;
-					int off = getScrollUpBackgroundOffset();
-					if (off < this.backgroundHeight) {
-						bgY -= ((this.backgroundHeight - off) * 5) / 100;
-					}
+					//#if polish.css.move-scroll-backgrounds
+						if (this.isMoveScrollBackgrounds) {
+					//#endif
+							int off = getScrollUpBackgroundOffset();
+							if (off < this.backgroundHeight) {
+								bgY -= ((this.backgroundHeight - off) * 5) / 100;
+							}
+					//#if polish.css.move-scroll-backgrounds
+						}
+					//#endif
 					this.scrollUpBackground.paint(this.backgroundX, bgY, this.backgroundWidth, this.backgroundHeight, g);
 				}
 			//#endif
 			//#if polish.css.scroll-down-background
 				if (this.scrollDownBackground != null && canScrollDown()) {
 					int bgY = this.backgroundY;
-					int off = getScrollDownBackgroundOffset();
-					if (off < this.backgroundHeight) {
-						bgY += ((this.backgroundHeight - off) * 5) / 100;
-					}
+					//#if polish.css.move-scroll-backgrounds
+						if (this.isMoveScrollBackgrounds) {
+					//#endif
+							int off = getScrollDownBackgroundOffset();
+							if (off < this.backgroundHeight) {
+								bgY += ((this.backgroundHeight - off) * 5) / 100;
+							}
+					//#if polish.css.move-scroll-backgrounds
+						}
+					//#endif
 					this.scrollDownBackground.paint(this.backgroundX, bgY, this.backgroundWidth, this.backgroundHeight, g);
 				}
 			//#endif
