@@ -1592,7 +1592,16 @@ implements javax.microedition.lcdui.CommandListener
 			}
 		//#endif
 		//#if polish.Bugs.NormalKeyMappedToFire
-			if (gameAction == FIRE && (keyCode == Canvas.KEY_POUND || keyCode == Canvas.KEY_STAR || keyCode == 'a' || keyCode == 'j')) {
+			if ((gameAction == FIRE && (keyCode == Canvas.KEY_POUND || keyCode == Canvas.KEY_STAR || keyCode == 'a' || keyCode == 'j'))
+				|| (gameAction == UP && (keyCode == 'r' || keyCode == 'p'))
+				|| (gameAction == DOWN && (keyCode == 'v' || keyCode == 'y' || keyCode == 'z'))
+				|| (gameAction == LEFT && (keyCode == 'd' || keyCode == 'l'))
+				|| (gameAction == RIGHT && keyCode == 'g')
+				|| (gameAction == GAME_A && keyCode == 'h')
+				|| (gameAction == GAME_B && (keyCode == 'k' || keyCode == 's'))
+				|| (gameAction == GAME_C && (keyCode == 'd' || keyCode == 'q'))
+				|| (gameAction == GAME_D && (keyCode == 'm' || keyCode == 'y' || keyCode == 'z'))
+				) {
 				gameAction = 0;
 			}
 		//#endif

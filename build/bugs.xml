@@ -660,6 +660,8 @@
 		<area>ui</area>
 		<description>
 			The '#', '*', 'a' and 'j' keys are mapped to the game action FIRE.
+			Other keys are mappend randomly to UP, DOWN, LEFT, RIGHT, GAME_A, GAME_B,
+			GAME_C and GAME_D. 
 		</description>
 		<solution>
 			Be careful when evaluating game actions.
