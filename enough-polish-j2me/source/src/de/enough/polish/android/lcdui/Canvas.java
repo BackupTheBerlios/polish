@@ -1251,7 +1251,7 @@ public abstract class Canvas implements CommandListener
 	}
 	
 	public void commandAction( Command c, Canvas d) {
-		
+		// TODO: Whats this?
 	}
 
 }

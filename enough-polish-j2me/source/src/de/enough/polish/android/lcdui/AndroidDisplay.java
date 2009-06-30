@@ -16,10 +16,8 @@ import de.enough.polish.util.ArrayList;
 
 //#if polish.android1.5
 import android.view.inputmethod.BaseInputConnection;
-import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
-import android.view.inputmethod.InputConnectionWrapper;
 //#endif
 
 /**
