@@ -1,12 +1,6 @@
-/*
- * TODOs
- * 
- * - layout: center, right
- */
-
 //#condition polish.usePolishGui
 /*
- * Copyright (c) 2004-2007 Robert Virkus / Enough Software
+ * Copyright (c) 2004-2009 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -38,10 +32,11 @@ import javax.microedition.lcdui.Canvas;
 import de.enough.polish.ui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
-//#if polish.TextField.useDirectInput && polish.TextField.usePredictiveInput && !polish.blackberry
+//#if polish.TextField.useDirectInput && polish.TextField.usePredictiveInput && !(polish.blackberry || polish.android)
 	import de.enough.polish.predictive.TextBuilder;
 	import de.enough.polish.predictive.trie.TrieProvider;
 //#endif
+import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.DeviceInfo;
 import de.enough.polish.util.DrawUtil;
 import de.enough.polish.util.Locale;
@@ -354,7 +349,7 @@ public class TextField extends StringItem
 	//#define tmp.forceDirectInput
 	//#define tmp.directInput
 //#endif
-//#if tmp.directInput && polish.TextField.usePredictiveInput && !polish.blackberry
+//#if tmp.directInput && polish.TextField.usePredictiveInput && !(polish.blackberry || polish.android)
 	//#define tmp.usePredictiveInput
 //#endif
 //#if tmp.directInput && polish.TextField.useDynamicCharset
@@ -4304,6 +4299,69 @@ public class TextField extends StringItem
 		}
 	}
 	//#endif
+
+	/**
+	 * Retrieves matching words for the specified textfield.
+	 * Note that you need to enable the predictive input mode using the preprocessing variable
+	 * <code>polish.TextField.usePredictiveInputMode</code>.
+	 * 
+	 * @return ArrayList<String> of allowed words - null when no predictive mode is used
+	 */
+	public ArrayList getPredictiveMatchingWords() {
+		//#if tmp.usePredictiveInput
+			PredictiveAccess predictive = getPredictiveAccess();
+			return predictive.getResults();
+		//#else
+			//# return null;
+		//#endif
+	}
+
+	/**
+	 * Allows the given words for the specified textfield.
+	 * Note that you need to enable the predictive input mode using the preprocessing variable
+	 * <code>polish.TextField.usePredictiveInputMode</code>.
+	 * 
+	 * @param field the textfield
+	 * @param words array of allowed words - use null to reset the allowed words to the default RMS dictionary
+	 */
+	public void setPredictiveDictionary(String[] words) {
+	 	//#if tmp.usePredictiveInput
+			PredictiveAccess predictive = getPredictiveAccess();
+			predictive.initPredictiveInput(words);
+			
+			setString("");
+			predictive.synchronize();
+			
+			if(words == null)
+			{
+				predictive.setPredictiveType(PredictiveAccess.TRIE);
+			}
+			else
+			{
+				predictive.setPredictiveType(PredictiveAccess.ARRAY);
+			}
+		//#endif
+	}
+
+	//TODO andre: document
+	public void setPredictiveInfo(String info) {
+	 	//#if tmp.usePredictiveInput
+			PredictiveAccess predictive = getPredictiveAccess();
+			predictive.setInfo(info);
+		//#endif
+	}
+	
+	/**
+	 * Set the word-not-found box in the textfield
+	 * 
+	 * @param field the textfield
+	 * @param alert the alert
+	 */
+	public void setPredictiveWordNotFoundAlert(Alert alert) {
+	 	//#if  tmp.usePredictiveInput
+			getPredictiveAccess().setAlert(alert);
+		//#endif
+	}
 	
 	/*
 	public boolean keyChar(char key, int status, int time) {

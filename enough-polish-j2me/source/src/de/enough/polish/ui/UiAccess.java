@@ -1028,7 +1028,6 @@ public final class UiAccess {
 	 */
 	public static void setStyle(List list, int itemIndex) {
 		// ignore
-		
 	}
 	//#endif	
 
@@ -3431,22 +3430,7 @@ public final class UiAccess {
 	 */
 	public static void setPredictiveDictionary(TextField field, String[] words)
 	{
-	 	//#if polish.TextField.useDirectInput && !polish.blackberry && polish.TextField.usePredictiveInput
-			PredictiveAccess predictive = field.getPredictiveAccess();
-			predictive.initPredictiveInput(words);
-			
-			field.setString("");
-			predictive.synchronize();
-			
-			if(words == null)
-			{
-				predictive.setPredictiveType(PredictiveAccess.TRIE);
-			}
-			else
-			{
-				predictive.setPredictiveType(PredictiveAccess.ARRAY);
-			}
-		//#endif
+		field.setPredictiveDictionary( words );
 	}
 	//#endif
 	
@@ -3472,20 +3456,16 @@ public final class UiAccess {
 	 * <code>polish.TextField.usePredictiveInputMode</code>.
 	 * 
 	 * @param field the textfield
-	 * @return ArrayList<String> of allowed words - null when no preditive mode is used
+	 * @return ArrayList<String> of allowed words - null when no predictive mode is used
 	 */
 	public static ArrayList getPredictiveMatchingWords(TextField field)
 	{
-	 	//#if polish.TextField.useDirectInput && !polish.blackberry && polish.TextField.usePredictiveInput
-			PredictiveAccess predictive = field.getPredictiveAccess();
-			return predictive.getResults();
-		//#else
-			//# return null;
-		//#endif
+		return field.getPredictiveMatchingWords();
 	}
 	//#endif
 	
 	//#if polish.midp
+	//TODO andre: document
 	public static void setTextfieldInfo(javax.microedition.lcdui.TextField field, String info)
 	{
 		// ignore
@@ -3493,12 +3473,10 @@ public final class UiAccess {
 	//#endif
 
 	//#if polish.usePolishGui
+	//TODO andre: document
 	public static void setTextfieldInfo(TextField field, String info)
 	{
-	 	//#if polish.TextField.useDirectInput && !polish.blackberry && polish.TextField.usePredictiveInput
-			PredictiveAccess predictive = field.getPredictiveAccess();
-			predictive.setInfo(info);
-		//#endif
+		field.setPredictiveInfo( info );
 	}
 	//#endif
 	
@@ -3720,9 +3698,7 @@ public final class UiAccess {
 	 */
 	public static void setWordNotFound(TextField field, Alert alert)
 	{
-	 	//#if polish.TextField.useDirectInput && !polish.blackberry && polish.TextField.usePredictiveInput
-			field.getPredictiveAccess().setAlert(alert);
-		//#endif
+		field.setPredictiveWordNotFoundAlert( alert );
 	}
 	//#endif
 	

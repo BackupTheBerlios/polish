@@ -1,4 +1,4 @@
-//#condition polish.TextField.useDirectInput && !polish.blackberry && polish.usePolishGui && polish.TextField.usePredictiveInput 
+//#condition polish.usePolishGui && polish.TextField.usePredictiveInput && polish.TextField.useDirectInput && !(polish.blackberry || polish.android)
 package de.enough.polish.predictive;
 
 import de.enough.polish.ui.TextField;
