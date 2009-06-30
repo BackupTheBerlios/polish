@@ -956,6 +956,10 @@ public class TextField extends StringItem
 	//#endif
 	private boolean isKeyPressedHandled;
 
+	//#if polish.android1.5
+		private long androidFocusedTime;
+	//#endif
+
 	//#if tmp.useDynamicCharset
 	/**
 	 * Reads the .properties files for lowercase
@@ -2970,12 +2974,11 @@ public class TextField extends StringItem
 							handled = handleKeyClear(keyCode, gameAction);
 						}
 						
-						// rickyn: Prevent the menu key on android to print a "R" key.
 						//#if polish.key.Menu:defined
 							int menuKey = 0;
 							//#= menuKey = ${polish.key.Menu};
 							if(keyCode == menuKey) {
-								handled = true;
+								return false;
 							}
 						//#endif
 							
@@ -3757,7 +3760,7 @@ public class TextField extends StringItem
 	}
 	//#endif
 	
-	//#if polish.hasPointerEvents && !tmp.forceDirectInput
+	//#if polish.hasPointerEvents
 	/**
 	 * Handles the event when a pointer has been pressed at the specified position.
 	 * The default method translates the pointer-event into an artificial
@@ -3772,14 +3775,21 @@ public class TextField extends StringItem
 	 */
 	protected boolean handlePointerPressed( int x, int y ) {
 		if (isInItemArea(x, y)) {
-			return notifyItemPressedStart();
-		} else {
-			return false;
+			//#if  !tmp.forceDirectInput
+				//# return notifyItemPressedStart();
+			//#elif polish.android
+				if (this.isFocused && ((System.currentTimeMillis() - this.androidFocusedTime) > 200)) {
+					MIDlet.midletInstance.toggleSoftKeyboard();
+				} else {
+					return super.handlePointerReleased(x, y);
+				}
+			//#endif
 		}
+		return super.handlePointerPressed(x, y);
 	}
 	//#endif
 	
-	//#if tmp.useNativeTextBox
+	//#if tmp.useNativeTextBox 
 	/**
 	 * Handles the event when a pointer has been pressed at the specified position.
 	 * The default method translates the pointer-event into an artificial
@@ -3797,10 +3807,10 @@ public class TextField extends StringItem
 			notifyItemPressedEnd();
 			showTextBox();
 			return true;
-		} else {
-			return false;
 		}
+		return super.handlePointerReleased(x, y);
 	}
+	
 	//#endif
 
 	
@@ -4048,7 +4058,7 @@ public class TextField extends StringItem
 			}
 		//#endif
 		//#if polish.android1.5
-		MIDlet.midletInstance.hideSoftKeyboard();
+			MIDlet.midletInstance.hideSoftKeyboard();
 		//#endif
 	}
 	//#endif
@@ -4080,7 +4090,8 @@ public class TextField extends StringItem
 		//#endif
 		
 		//#if polish.android1.5
-		MIDlet.midletInstance.showSoftKeyboard();
+			MIDlet.midletInstance.showSoftKeyboard();
+			this.androidFocusedTime = System.currentTimeMillis();
 		//#endif
 		return unfocusedStyle;
 	}

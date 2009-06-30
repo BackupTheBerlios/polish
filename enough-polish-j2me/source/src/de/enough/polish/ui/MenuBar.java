@@ -33,6 +33,7 @@ import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
+import de.enough.polish.android.midlet.MIDlet;
 import de.enough.polish.event.EventManager;
 import de.enough.polish.ui.backgrounds.TranslucentSimpleBackground;
 import de.enough.polish.util.ArrayList;
@@ -1138,6 +1139,9 @@ public class MenuBar extends Item {
 			this.isOpened = open;
 			//#if polish.blackberry
 				this.screen.notifyFocusSet( null );
+			//#endif
+			//#if polish.android1.5
+				MIDlet.midletInstance.hideSoftKeyboard();
 			//#endif
 			//#if !polish.MenuBar.focusFirstAfterClose
 				// focus the first item again, so when the user opens the menu again, it will be "fresh" again

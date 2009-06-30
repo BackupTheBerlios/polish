@@ -6,6 +6,8 @@ import android.view.KeyEvent;
 
 public class DisplayUtil {
 	
+	public static final int KEY_MENU = -111;
+	
 	KeyCharacterMap characterMap;
 	
 	public DisplayUtil(int deviceId)
@@ -14,6 +16,10 @@ public class DisplayUtil {
 	}
 	
 	public int handleKey(int keyCode, KeyEvent event, Canvas canvas) {
+		int flags = event.getFlags();
+		if (keyCode == KeyEvent.KEYCODE_MENU && ((flags & KeyEvent.FLAG_FROM_SYSTEM) == KeyEvent.FLAG_FROM_SYSTEM)) {
+			return KEY_MENU;
+		}
 		int key = event.getKeyCode();
 		int meta = event.getMetaState();
 		

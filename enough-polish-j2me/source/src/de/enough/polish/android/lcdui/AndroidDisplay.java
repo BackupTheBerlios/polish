@@ -274,8 +274,15 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 	}
 
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		//#debug
+		System.out.println("AndroidDisplay.onKeyDown: keyCode=" + keyCode + ", flags=" + event.getFlags() + ", action=" + event.getAction() + ", isFromSoftKeyBoard=" + ((event.getFlags() & KeyEvent.FLAG_SOFT_KEYBOARD) == KeyEvent.FLAG_SOFT_KEYBOARD));
 		if(this.currentPolishCanvas == null) {
 			return false;
+		}
+		if(keyCode == KeyEvent.KEYCODE_ENTER && ((event.getFlags() & KeyEvent.FLAG_SOFT_KEYBOARD) == KeyEvent.FLAG_SOFT_KEYBOARD)) {
+			//#debug
+			System.out.println("Hiding Softkeyboard in onKeyUp");
+			return true;
 		}
 		if(this.util == null)
 		{
@@ -295,6 +302,12 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 		if(this.currentPolishCanvas == null) {
 			return false;
 		}
+		if(keyCode == KeyEvent.KEYCODE_ENTER && ((event.getFlags() & KeyEvent.FLAG_SOFT_KEYBOARD) == KeyEvent.FLAG_SOFT_KEYBOARD)) {
+			//#debug
+			System.out.println("Hiding Softkeyboard");
+			MIDlet.midletInstance.hideSoftKeyboard();
+			return true;
+		}
 		if(this.util == null)
 		{
 			this.util = new DisplayUtil(event.getDeviceId());
@@ -302,13 +315,6 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 		
 		int key = this.util.handleKey(keyCode, event, this.currentPolishCanvas);
 		
-		// TODO: This is not working as the softkeyboard does not emit a keycode on hitting return.
-//		System.out.println("Keycode is:"+key);
-		if(key == 10) {
-			//#debug
-			System.out.println("Hiding Softkeyboard");
-			MIDlet.midletInstance.hideSoftKeyboard();
-		}
 		
 		//#debug
 		System.out.println("onKeyUp:converted android key code '" + keyCode+"' to ME code '"+key+"'");
