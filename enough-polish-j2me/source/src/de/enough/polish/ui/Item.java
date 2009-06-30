@@ -3454,6 +3454,8 @@ public abstract class Item implements UiElement, Animatable
 	protected boolean handlePointerReleased( int relX, int relY ) {
 		if ( isInItemArea(relX, relY)) {
 			return handleKeyReleased( 0, Canvas.FIRE );
+		} else if (this.isPressed) {
+			notifyItemPressedEnd();
 		}
 		return false;
 	}
