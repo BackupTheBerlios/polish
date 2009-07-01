@@ -59,6 +59,7 @@ implements OutputFilter
 		int totalBuilds = numberOfBuildsPerProject * projects.length;
 		int executedBuilds = 0;
 		
+		boolean atLeastOneProjectFailed = false;
 		boolean[] ignoreProjects = new boolean[ projects.length ];
 		while (currentBuildRound < numberOfBuildsPerProject) {
 			for (int i = 0; i < projects.length; i++) {
@@ -73,6 +74,7 @@ implements OutputFilter
 					boolean ignoreForFutureBuilds = build( projectHome, currentPermutationIndex, numberOfBuildsPerProject, polishVariables );
 					if (ignoreForFutureBuilds) {
 						totalBuilds -= numberOfBuildsPerProject + currentBuildRound + 1;
+						atLeastOneProjectFailed = true;
 						ignoreProjects[i] = true;
 					}
 					executedBuilds++;
@@ -85,6 +87,10 @@ implements OutputFilter
 			}
 			currentBuildRound++;
 			polishVariables = getVariablePermutation(currentPermutationIndex);
+		}
+		// Signal general failure.
+		if (atLeastOneProjectFailed) {
+			System.exit(1);
 		}
 	}
 
@@ -383,6 +389,7 @@ implements OutputFilter
 			handleConfigError( "Unexpected configuration problem: " + e.toString() );
 			System.err.println("Configuration error: " + e.toString() );
 			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 
