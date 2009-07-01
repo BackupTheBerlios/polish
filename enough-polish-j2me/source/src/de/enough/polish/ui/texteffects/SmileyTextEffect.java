@@ -396,7 +396,7 @@ public class SmileyTextEffect extends TextEffect {
 	 * @param line
 	 * @param offset
 	 * @param smileys
-	 * @return
+	 * @return the smiley
 	 */
 	protected String getNextSmiley(String line, int offset, ArrayList smileys)
 	{

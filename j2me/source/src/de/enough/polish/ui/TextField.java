@@ -4332,7 +4332,6 @@ public class TextField extends StringItem
 	 * Note that you need to enable the predictive input mode using the preprocessing variable
 	 * <code>polish.TextField.usePredictiveInputMode</code>.
 	 * 
-	 * @param field the textfield
 	 * @param words array of allowed words - use null to reset the allowed words to the default RMS dictionary
 	 */
 	public void setPredictiveDictionary(String[] words) {
@@ -4365,7 +4364,6 @@ public class TextField extends StringItem
 	/**
 	 * Set the word-not-found box in the textfield
 	 * 
-	 * @param field the textfield
 	 * @param alert the alert
 	 */
 	public void setPredictiveWordNotFoundAlert(Alert alert) {
