@@ -4832,4 +4832,31 @@ public final class UiAccess {
 	}
 	//#endif
 	
+	//#if polish.midp
+	/**
+	 * Intializes the specified item with the specified dimensions
+	 * @param item the item
+	 * @param firstLineWidth the first line width
+	 * @param availWidth the available width
+	 * @param availHeight the available height
+	 */
+	public static void init(javax.microedition.lcdui.Item item, int firstLineWidth, int availWidth, int availHeight)
+	{
+		
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Intializes the specified item with the specified dimensions
+	 * @param item the item
+	 * @param firstLineWidth the first line width
+	 * @param availWidth the available width
+	 * @param availHeight the available height
+	 */
+	public static void init(Item item, int firstLineWidth, int availWidth, int availHeight)
+	{
+		item.init(firstLineWidth, availWidth, availHeight);
+	}
+	//#endif
 }
