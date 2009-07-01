@@ -13,16 +13,13 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.PowerManager;
 import android.telephony.CellLocation;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
-import android.view.ViewGroup;
 import android.view.Window;
-import android.view.WindowManager;
 import de.enough.polish.android.io.ConnectionNotFoundException;
 import de.enough.polish.android.lcdui.AndroidDisplay;
 
@@ -63,6 +60,7 @@ import android.view.inputmethod.InputMethodManager;
  * 
  */
 public abstract class MIDlet extends Activity {
+
 	//The one and only MIDlet
 	public static MIDlet midletInstance;
 	
@@ -78,7 +76,7 @@ public abstract class MIDlet extends Activity {
 
 	private boolean shuttingDown;
 
-	private PowerManager.WakeLock wakeLock;
+//	private PowerManager.WakeLock wakeLock;
 
 	/**
 	 * Protected constructor for subclasses. The application management software
@@ -123,6 +121,7 @@ public abstract class MIDlet extends Activity {
 					setSystemProperty("Cell-lac",lacString);
 				}
 			}
+
 			@Override
 			public void onSignalStrengthChanged(int asu) {
 				String asuString = Integer.toString(asu);
@@ -130,7 +129,6 @@ public abstract class MIDlet extends Activity {
 				System.out.println("asu is '"+asu+"' and its string is '"+asuString+"'");
 				setSystemProperty("SignalStrength",asuString);
 			}
-			
 		};
 		int events = PhoneStateListener.LISTEN_CELL_LOCATION | PhoneStateListener.LISTEN_SIGNAL_STRENGTH;
 		telephonyManager.listen(listener, events);
