@@ -3789,7 +3789,7 @@ public class TextField extends StringItem
 	}
 	//#endif
 	
-	//#if tmp.useNativeTextBox 
+	//#if tmp.useNativeTextBox && polish.hasPointerEvents
 	/**
 	 * Handles the event when a pointer has been pressed at the specified position.
 	 * The default method translates the pointer-event into an artificial

@@ -33,13 +33,17 @@ import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
-import de.enough.polish.android.midlet.MIDlet;
 import de.enough.polish.event.EventManager;
 import de.enough.polish.ui.backgrounds.TranslucentSimpleBackground;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.DeviceControl;
 import de.enough.polish.util.HashMap;
 import de.enough.polish.util.Locale;
+
+//#if polish.android
+import de.enough.polish.android.midlet.MIDlet;
+//#endif
+
 //#if polish.api.windows
 import de.enough.polish.windows.Keyboard;
 //#endif
