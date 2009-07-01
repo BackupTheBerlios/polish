@@ -270,6 +270,9 @@
 		<identifier>Android/1.1</identifier>
 		<features>android, android1.1, midp2, hasPointerEvents, hasPointerMotionEvents</features>
 		<description>Android is a java platform for mobile devices by Google</description>
+		<capability name="key.Menu" value="-111" />
+	    <capability name="key.ReturnKey" value="4" />
+	    <capability name="key.supportsAsciiKeyMap" value="true" />
 		<capability name="build.BootClassPath" value="android-1.1.jar" />
 		<capability name="build.ImplicitGroups" value="android" />
 		<capability name="polish.MenuBar.useExtendedMenuBar" value="true" />
@@ -289,6 +292,7 @@
 		<capability name="TextField.useDirectInput" value="true" />
 		<capability name="build.Android.Platform.Version" value="1.1" />
 		<capability name="build.Android.Platform.Target" value="1" />
+	    <capability name="IconSize" value="48x48" />
 	</platform>
 	
 	<platform>

@@ -475,12 +475,6 @@ These namespaces/schemas will be used soon.
     <groups>android</groups>
     <capability name="JavaPlatform" value="Android/1.1" />
     <capability name="JavaConfiguration" value="Android/1.1" />
-    <capability name="JavaPackage" value="mmapi,fileconnection" />
-    <capability name="key.Menu" value="82" />
-    <capability name="key.enter" value="10" />
-    <capability name="key.ReturnKey" value="4" />
-    <capability name="key.ClearKey" value="67" />
-    <capability name="key.supportsAsciiKeyMap" value="true" />
   </device>
   
     <device supportsPolishGui="true">
@@ -490,12 +484,6 @@ These namespaces/schemas will be used soon.
     <groups>android</groups>
     <capability name="JavaPlatform" value="Android/1.5" />
     <capability name="JavaConfiguration" value="Android/1.5" />
-    <capability name="JavaPackage" value="mmapi,fileconnection" />
-    <capability name="key.Menu" value="82" />
-    <capability name="key.enter" value="10" />
-    <capability name="key.ReturnKey" value="4" />
-    <capability name="key.ClearKey" value="67" />
-    <capability name="key.supportsAsciiKeyMap" value="true" />
   </device>
   
    <device supportsPolishGui="true">
@@ -617,14 +605,8 @@ These namespaces/schemas will be used soon.
     <groups>android</groups>
     <capability name="JavaPlatform" value="Android/1.5" />
     <capability name="JavaConfiguration" value="Android/1.5" />
-    <capability name="JavaPackage" value="mmapi,fileconnection" />
     <capability name="ScreenSize" value="320x480" />
     <capability name="CanvasSize" value="320x453" />
-    <capability name="key.Menu" value="82" />
-    <capability name="key.enter" value="10" />
-    <capability name="key.ReturnKey" value="4" />
-    <capability name="key.ClearKey" value="67" />
-    <capability name="key.supportsAsciiKeyMap" value="true" />
     <capability name="IconSize" value="48x48" />
   </device>
   
