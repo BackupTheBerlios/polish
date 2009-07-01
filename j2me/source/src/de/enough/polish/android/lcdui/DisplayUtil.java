@@ -7,6 +7,7 @@ import android.view.KeyEvent;
 public class DisplayUtil {
 	
 	public static final int KEY_MENU = -111;
+	public static final int KEY_CLEAR = -8;
 	
 	KeyCharacterMap characterMap;
 	
@@ -19,6 +20,9 @@ public class DisplayUtil {
 		int flags = event.getFlags();
 		if (keyCode == KeyEvent.KEYCODE_MENU && ((flags & KeyEvent.FLAG_FROM_SYSTEM) == KeyEvent.FLAG_FROM_SYSTEM)) {
 			return KEY_MENU;
+		}
+		if (keyCode == KeyEvent.KEYCODE_CLEAR || keyCode == KeyEvent.KEYCODE_DEL) {// && ((flags & KeyEvent.FLAG_SOFT_KEYBOARD) == KeyEvent.FLAG_SOFT_KEYBOARD)) {
+			return KEY_CLEAR;
 		}
 		int key = event.getKeyCode();
 		int meta = event.getMetaState();

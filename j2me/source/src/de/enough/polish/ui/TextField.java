@@ -3041,18 +3041,18 @@ public class TextField extends StringItem
 					this.isKeyPressedHandled = true;
 					return true;
 				}
-				if (currentLength > 0) {
-					//#ifdef polish.key.ClearKey:defined
-						//#= if ((keyCode == ${polish.key.ClearKey}) || (gameAction == Canvas.LEFT)) {
-					//#else
-						if (keyCode == -8 || gameAction == Canvas.LEFT) {						
-					//#endif
-						setString( currentText.substring(0, currentLength - 1) );
-						notifyStateChanged();
+				//#ifdef polish.key.ClearKey:defined
+					//#= if ((keyCode == ${polish.key.ClearKey}) || (gameAction == Canvas.LEFT)) {
+				//#else
+					if (keyCode == -8 || gameAction == Canvas.LEFT) {						
+				//#endif
+						if (currentLength > 0) {
+							setString( currentText.substring(0, currentLength - 1) );
+							notifyStateChanged();
+						}				
 						this.isKeyPressedHandled = true;
 						return true;
-					}
-				}				
+				}
 				return false;
 			}
 		//#endif
