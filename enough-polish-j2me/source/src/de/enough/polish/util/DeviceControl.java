@@ -5,6 +5,8 @@ import de.enough.polish.ui.StyleSheet;
 //#endif
 
 //#if polish.android
+import android.content.Context;
+import android.location.LocationManager;
 import de.enough.polish.android.location.AndroidLocationProvider;
 import de.enough.polish.android.midlet.MIDlet;
 //#endif
@@ -249,7 +251,7 @@ public class DeviceControl
 	 * @param setFallbackOnGpsDisabled value 'true' if you want to disable the fallback mechanism. Value 'false' otherwise.
 	 */
 	public static void shouldFallbackToNetworkLocationOnGpsDisabled(boolean setFallbackOnGpsDisabled) {
-		DeviceControl.fallbackOnGpsDisabled = setFallbackOnGpsDisabled;
+		fallbackOnGpsDisabled = setFallbackOnGpsDisabled;
 	}
 
 	/**
@@ -270,6 +272,12 @@ public class DeviceControl
 			return androidLocationProviderInstance.getLocationProviderName();
 		}
 		return null;
+	}
+	
+	public static boolean isGpsEnabled() {
+		LocationManager locationManager = (LocationManager)MIDlet.midletInstance.getSystemService(Context.LOCATION_SERVICE);
+		boolean providerEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+		return providerEnabled;
 	}
 	
 	//#endif
