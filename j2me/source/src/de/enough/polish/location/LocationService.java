@@ -3,6 +3,12 @@ package de.enough.polish.location;
 
 import javax.microedition.location.Criteria;
 
+//#if polish.android
+import android.content.Context;
+import android.location.LocationManager;
+import de.enough.polish.android.midlet.MIDlet;
+//#endif
+
 public class LocationService {
 
 	public static final Criteria CRITERIA_GPS_PROVIDER = null;
@@ -33,6 +39,11 @@ public class LocationService {
 	 *         returned if the GPS device is disabled.
 	 */
 	public static boolean isGpsEnabled() {
-		return false;
+		boolean providerEnabled = false;
+		//#if polish.android
+		LocationManager locationManager = (LocationManager)MIDlet.midletInstance.getSystemService(Context.LOCATION_SERVICE);
+		providerEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+		//#endif
+		return providerEnabled;
 	}
 }
