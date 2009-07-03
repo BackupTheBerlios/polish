@@ -6,7 +6,6 @@ import javax.microedition.location.LocationException;
 import javax.microedition.location.LocationListener;
 import javax.microedition.location.LocationProvider;
 
-import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.HashMap;
 
 /**
@@ -29,21 +28,27 @@ implements LocationListener
 	private final LocationProvider[] providers;
 	private HashMap criteriaByProvider;
 	
-	private FallbackLocationProvider( Criteria[] criteria ) throws LocationException {
-		HashMap uniqueProviders = new HashMap(criteria.length);
+	private FallbackLocationProvider( Criteria[] criteriaFallbacks ) throws LocationException {
+		HashMap uniqueProviders = new HashMap(criteriaFallbacks.length);
 		// go from bottom to top, in case there is a location API that uses a single Location provider for all criteria.
 		// In such a case we have at least the most important provider:
-		for (int i=criteria.length; --i >= 0; ) {
-			Criteria crit = criteria[i];
-			LocationProvider provider = LocationProvider.getInstance(crit);
-			if (crit != null) {
-				uniqueProviders.put( provider, crit);
-			} else {
-				uniqueProviders.put( provider, new Object() );				
+		for (int i=criteriaFallbacks.length; --i >= 0; ) {
+			Criteria criteria = criteriaFallbacks[i];
+			LocationProvider provider = LocationProvider.getInstance(criteria);
+			if (provider != null) {
+				if (criteria != null) {
+					uniqueProviders.put( provider, criteria);
+				} else {
+					uniqueProviders.put( provider, new Object() );				
+				}
 			}
+		}
+		if (uniqueProviders.size() == 0) {
+			throw new LocationException();
 		}
 		this.providers = (LocationProvider[]) uniqueProviders.keys( new LocationProvider[ uniqueProviders.size() ]);
 		this.criteriaByProvider = uniqueProviders;
+		
 	}
 
 	/**
@@ -154,23 +159,24 @@ implements LocationListener
 	/**
 	 * LocationListener method - do not call.
 	 */
-	public void providerStateChanged(LocationProvider provider, int state) {
+	public void providerStateChanged(LocationProvider changedProvider, int state) {
 		LocationProvider enabledProvider = null;
 		if (state == AVAILABLE) {
 			if (this.activeProvider == null) {
-				enabledProvider = provider;
+				enabledProvider = changedProvider;
 			} else {
 				for (int i=0; i<this.providers.length; i++) {
 					LocationProvider prov = this.providers[i];
 					if (prov == this.activeProvider) {
 						break;
 					}
-					if (prov == provider) {
-						enabledProvider = provider;
+					if (prov == changedProvider) {
+						enabledProvider = changedProvider;
+						break;
 					}
 				}
 			}
-		} else if (provider == this.activeProvider) {
+		} else if (changedProvider == this.activeProvider) {
 			// the active provider has been deactivated, so find the next best matching one:
 			for (int i=0; i<this.providers.length; i++) {
 				LocationProvider prov = this.providers[i];
@@ -195,6 +201,7 @@ implements LocationListener
 				if (criteriaObj instanceof Criteria) {
 					this.fallbackLocationListener.providerEnabled( (Criteria) criteriaObj);
 				} else {
+					//TODO: This should be a providerDisabled method.
 					this.fallbackLocationListener.providerEnabled( null );
 				}
 			}
