@@ -308,29 +308,32 @@ public abstract class LocationProvider extends java.lang.Object
 	 * @throws java.lang.SecurityException - if the calling application does not have a permission to query the location information
 	 */
 	public static Location getLastKnownLocation() {
-		//#debug
-		System.out.println("LocationProvider.getLastKnownLocation:enter.");
 		if(lastKnownLocation != null) {
 			//#debug
-			System.out.println("LocationProvider.getLastKnownLocation:lastKnownLocation:"+lastKnownLocation);
+			System.out.println("getLastKnownLocation:lastKnownLocation:"+lastKnownLocation);
 			return lastKnownLocation;
 		}
-		LocationManager locationManager = (LocationManager)MIDlet.midletInstance.getSystemService(Context.LOCATION_SERVICE);
-		
-		android.location.Location androidLocation;
-		androidLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-		if(androidLocation == null) {
-			androidLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-		}
-		if(androidLocation == null) {
-			//#debug
-			System.out.println("LocationProvider.getLastKnownLocation:No last known location found.");
-			return null;
-		}
-		lastKnownLocation = new Location(androidLocation);
 		//#debug
-		System.out.println("LocationProvider.getLastKnownLocation:got new location and save it as last known location:"+lastKnownLocation);
-		return lastKnownLocation;
+		System.out.println("getLastKnownLocation:no last known location. Neither getLocation() nor a LocationListener was ever called.");
+		// TODO: Save the last known location system wide?!
+		// We no not attempt to get a good location. If getLocation was never called, then we have nothing to over.
+		return null;
+//		LocationManager locationManager = (LocationManager)MIDlet.midletInstance.getSystemService(Context.LOCATION_SERVICE);
+//		
+//		android.location.Location androidLocation;
+//		androidLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+//		if(androidLocation == null) {
+//			androidLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+//		}
+//		if(androidLocation == null) {
+//			//#debug
+//			System.out.println("LocationProvider.getLastKnownLocation:No last known location found.");
+//			return null;
+//		}
+//		lastKnownLocation = new Location(androidLocation);
+//		//#debug
+//		System.out.println("LocationProvider.getLastKnownLocation:got new location and save it as last known location:"+lastKnownLocation);
+//		return lastKnownLocation;
 	}
 
 	/**
