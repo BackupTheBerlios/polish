@@ -44,6 +44,7 @@ import de.enough.polish.android.helper.ResourceInputStream;
 import de.enough.polish.android.helper.ResourcesHelper;
 import de.enough.polish.android.midlet.MIDlet;
 import android.content.Context;
+import android.content.res.AssetFileDescriptor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 //#endif
@@ -142,6 +143,10 @@ public class AudioPlayer implements PlayerListener
 			}
 		}
 		this.defaultContentType = contentType;
+		
+		//#if polish.android
+		this.androidPlayer = new MediaPlayer();
+		//#endif
 	}
 	
 	/**
@@ -173,8 +178,8 @@ public class AudioPlayer implements PlayerListener
 	public void play(String url, String type) throws MediaException, IOException
 	{
 		//#if polish.android
+		this.androidPlayer.reset();
 		if(url.startsWith("file://")) {
-			this.androidPlayer = new MediaPlayer();
 			String path = url.substring("file://".length());
 			File file = new File(path);
 			if(!file.exists()) {
@@ -182,18 +187,24 @@ public class AudioPlayer implements PlayerListener
 			}
 			System.out.println("The file is "+file.getAbsolutePath());
 			FileInputStream fileInputStream = new FileInputStream(file);
-			FileDescriptor fileDescriptor = fileInputStream.getFD();
-			//TODO: Do we need to close the stream?
-//			fileInputStream.close();
+			FileDescriptor fileDescriptor;
+			fileDescriptor = fileInputStream.getFD();
 			// rickyn: Do not use setDataSource(String) as it does not work. Use setDataSource(FileDescriptor) instead.
 			this.androidPlayer.setDataSource(fileDescriptor);
-			this.androidPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-			this.androidPlayer.prepare();
+			fileInputStream.close();
 		} else {
 			int resourceID = ResourcesHelper.getResourceID(url);
-			this.androidPlayer = MediaPlayer.create(MIDlet.midletInstance, resourceID);
-			
+			AssetFileDescriptor assetFileDescriptor = MIDlet.midletInstance.getResources().openRawResourceFd(resourceID);
+			if(assetFileDescriptor == null) {
+				throw new IOException("Could not retrieve AssetFileDescriptor for resource id '"+resourceID+"'");
+			}
+			FileDescriptor fileDescriptor;
+			fileDescriptor = assetFileDescriptor.getFileDescriptor();
+			this.androidPlayer.setDataSource(fileDescriptor);
+			assetFileDescriptor.close();
 		}
+		this.androidPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+		this.androidPlayer.prepare();
 		this.androidPlayer.setOnCompletionListener(this);
 		this.androidPlayer.start();
 		//#else
@@ -203,6 +214,9 @@ public class AudioPlayer implements PlayerListener
 			}
 			play(in, type);
 		//#endif
+		if(this.userJ2MeLevel != -1) {
+			setVolumeLevel(this.userJ2MeLevel);
+		}
 	}
 
 	/**
@@ -258,29 +272,35 @@ public class AudioPlayer implements PlayerListener
 	public void play(String url) throws MediaException, IOException 
 	{
 		//#if polish.android
-			if(url.startsWith("file://")) {
-				this.androidPlayer = new MediaPlayer();
-				String path = url.substring("file://".length());
-				File file = new File(path);
-				if(!file.exists()) {
-					throw new IOException("Could not find file at url '"+url+"'");
-				}
-				System.out.println("The file is "+file.getAbsolutePath());
-				FileInputStream fileInputStream = new FileInputStream(file);
-				FileDescriptor fileDescriptor = fileInputStream.getFD();
-				//TODO: Do we need to close the stream?
-//				fileInputStream.close();
-				// rickyn: Do not use setDataSource(String) as it does not work.
-				this.androidPlayer.setDataSource(fileDescriptor);
-				this.androidPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-				this.androidPlayer.prepare();
-			} else {
-				int resourceID = ResourcesHelper.getResourceID(url);
-				this.androidPlayer = MediaPlayer.create(MIDlet.midletInstance, resourceID);
-				
+		this.androidPlayer.reset();
+		if(url.startsWith("file://")) {
+			String path = url.substring("file://".length());
+			File file = new File(path);
+			if(!file.exists()) {
+				throw new IOException("Could not find file at url '"+url+"'");
 			}
-			this.androidPlayer.setOnCompletionListener(this);
-			this.androidPlayer.start();
+			System.out.println("The file is "+file.getAbsolutePath());
+			FileInputStream fileInputStream = new FileInputStream(file);
+			FileDescriptor fileDescriptor;
+			fileDescriptor = fileInputStream.getFD();
+			// rickyn: Do not use setDataSource(String) as it does not work. Use setDataSource(FileDescriptor) instead.
+			this.androidPlayer.setDataSource(fileDescriptor);
+			fileInputStream.close();
+		} else {
+			int resourceID = ResourcesHelper.getResourceID(url);
+			AssetFileDescriptor assetFileDescriptor = MIDlet.midletInstance.getResources().openRawResourceFd(resourceID);
+			if(assetFileDescriptor == null) {
+				throw new IOException("Could not retrieve AssetFileDescriptor for resource id '"+resourceID+"'");
+			}
+			FileDescriptor fileDescriptor;
+			fileDescriptor = assetFileDescriptor.getFileDescriptor();
+			this.androidPlayer.setDataSource(fileDescriptor);
+			assetFileDescriptor.close();
+		}
+		this.androidPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+		this.androidPlayer.prepare();
+		this.androidPlayer.setOnCompletionListener(this);
+		this.androidPlayer.start();
 		//#else
 			InputStream in = getClass().getResourceAsStream(url);
 			if (in == null) {
@@ -519,6 +539,8 @@ public class AudioPlayer implements PlayerListener
 		return volume;
 	}
 	
+	//TODO: The volume setup is a mess on android. 1) Map the keys 24/25 to volume change methods. 2) Find the right way to set the volume of individual streams.
+	
 	/**
 	 * Sets the volume using a linear point scale with values between 0 and 100.
 	 * 0 is silence; 100 is the loudest useful level that this VolumeControl supports. If the given level is less than 0 or greater than 100, the level will be set to 0 or 100 respectively.
@@ -582,7 +604,7 @@ public class AudioPlayer implements PlayerListener
 	private int scaleJ2MeLevelToAndroidLevel(int aJ2MeLevel) {
 		if (this.androidMaxVolume == -1) {
 			AudioManager audioManager = (AudioManager) MIDlet.midletInstance.getSystemService(Context.AUDIO_SERVICE);			
-			this.androidMaxVolume = audioManager.getStreamMaxVolume( AudioManager.STREAM_MUSIC);
+			this.androidMaxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
 		}
 		aJ2MeLevel = boundJ2MeLevel(aJ2MeLevel);
 		float androidLevel = this.androidMaxVolume / 100f * aJ2MeLevel;
