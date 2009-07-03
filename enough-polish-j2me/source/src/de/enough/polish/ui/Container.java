@@ -255,6 +255,8 @@ public class Container extends Item {
 	 * @throws IllegalArgumentException when the given item is null
 	 */
 	public void add( Item item ) {
+		//#debug
+		System.out.println("adding " + item + " to " + this);
 		synchronized (this.itemsList) {
 			item.relativeY =  0;
 			item.internalX = Item.NO_POSITION_SET;
@@ -2848,11 +2850,18 @@ public class Container extends Item {
 	protected boolean handlePointerReleased(int relX, int relY) {
 		//#debug
 		System.out.println("Container.handlePointerReleased(" + relX + ", " + relY + ") for " + this );
+		Item item = this.focusedItem;
 		if (this.enableScrolling && (Math.abs(getScrollYOffset() - this.lastPointerPressYOffset)>8)) {
 			// we have scrolling in the meantime
+			if (item != null && item.isPressed) {
+				item.notifyItemPressedEnd();
+			}
 			return true;
 		}
 		if (handlePointerScrollReleased(relX, relY)) {
+			if (item != null && item.isPressed) {
+				item.notifyItemPressedEnd();
+			}
 			return true;
 		}
 		// an item within this container was selected:
@@ -2868,7 +2877,6 @@ public class Container extends Item {
 			}
 		//#endif
 		//System.out.println("Container.handlePointerReleased: adjusted to (" + relX + ", " + relY + ") for " + this );
-		Item item = this.focusedItem;
 		if (item != null) {
 			// the focused item can extend the parent container, e.g. subcommands, 
 			// so give it a change to process the event itself:
