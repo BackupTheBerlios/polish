@@ -144,17 +144,19 @@ public class VideoSource implements Serializable{
 	
 	public void open() throws Exception
 	{
-//		try {
+		try {
 			//#if !polish.video.progressive && polish.api.fileconnection
-			if(this.file != null)
-			{
-				FileConnection fileConnection;
+			if(this.file != null  && !this.file.startsWith("rtsp://"))
+			{	
+			
+					FileConnection fileConnection;
+					
+					fileConnection = (FileConnection)Connector.open(this.file, Connector.READ_WRITE);
+					
+					this.connection = fileConnection;
+					
+					this.stream = fileConnection.openInputStream();
 				
-				fileConnection = (FileConnection)Connector.open(this.file, Connector.READ_WRITE);
-				
-				this.connection = fileConnection;
-				
-				this.stream = fileConnection.openInputStream();
 			}
 			//#endif
 		
@@ -162,7 +164,7 @@ public class VideoSource implements Serializable{
 			{
 				this.player = Manager.createPlayer(getStream(), getMime());
 			}
-			else if(getFile() != null)
+			else if(getFile() != null )
 			{
 				this.player = Manager.createPlayer(getFile());
 			}
@@ -176,10 +178,10 @@ public class VideoSource implements Serializable{
 			this.volumeControl = (VolumeControl) player.getControl("VolumeControl");
 			
 			this.framePositioningControl = (FramePositioningControl) player.getControl("FramePositioningControl");
-//		} catch (Exception e) {
-//			//#debug
-//			System.out.println("error in VideoSource.open() : " + e.toString());
-//		}
+		} catch (Exception e) {
+			//#debug
+			System.out.println("error in VideoSource.open() : " + e.toString());
+		}
 	}
 	
 	public void close()

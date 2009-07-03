@@ -990,14 +990,17 @@ public class VideoContainer extends Container implements Runnable, PlayerListene
 	 * and notifying the listeners when its done.
 	 */
 	public synchronized void run() {
-			try {
+		
+		try {
 				if (getState() == STATE_NOT_PREPARED) {
 					
+					System.out.println("de.enough.polish.video.VideoContainer.run(): 1 state = " + getState());	
+					
 					//Wait till the Container is initialized
-					while(!isInitialized())
-					{
-						Thread.sleep(500);
-					};
+					//while(!isInitialized())
+					//{
+						Thread.sleep(2500);
+					//};
 
 					close();
 					
