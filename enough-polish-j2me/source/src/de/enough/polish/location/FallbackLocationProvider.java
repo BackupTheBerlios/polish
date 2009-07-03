@@ -1,37 +1,204 @@
 //#condition polish.api.location
 package de.enough.polish.location;
+import javax.microedition.location.Criteria;
 import javax.microedition.location.Location;
 import javax.microedition.location.LocationException;
 import javax.microedition.location.LocationListener;
 import javax.microedition.location.LocationProvider;
 
-public class FallbackLocationProvider extends LocationProvider {
+import de.enough.polish.util.ArrayList;
+import de.enough.polish.util.HashMap;
 
+/**
+ * A location provider that uses different location providers, e.g. Network and GPS providers.
+ * Location updates will be retrieved by the best (first) provider.
+ *  
+ * @author Robert Virkus
+ * @author Richard Nkrumah
+ *
+ */
+public class FallbackLocationProvider 
+extends LocationProvider
+implements LocationListener
+{
+	
+	private FallbackLocationListener fallbackLocationListener;
+	private LocationProvider activeProvider;
+	private boolean isReset;
+	private LocationListener locationListener;
+	private final LocationProvider[] providers;
+	private HashMap criteriaByProvider;
+	
+	private FallbackLocationProvider( Criteria[] criteria ) throws LocationException {
+		HashMap uniqueProviders = new HashMap(criteria.length);
+		// go from bottom to top, in case there is a location API that uses a single Location provider for all criteria.
+		// In such a case we have at least the most important provider:
+		for (int i=criteria.length; --i >= 0; ) {
+			Criteria crit = criteria[i];
+			LocationProvider provider = LocationProvider.getInstance(crit);
+			if (crit != null) {
+				uniqueProviders.put( provider, crit);
+			} else {
+				uniqueProviders.put( provider, new Object() );				
+			}
+		}
+		this.providers = (LocationProvider[]) uniqueProviders.keys( new LocationProvider[ uniqueProviders.size() ]);
+		this.criteriaByProvider = uniqueProviders;
+	}
+
+	/**
+	 * Retrieves an instance of the FallbackLocationProvier
+	 * @param criteria the criteria that are sorted from the most to the least important one (so the most important one is in criteria[0]).
+	 * @return the FallbackLocationProvider instance
+	 * @throws LocationException if all location providers are currently out of service
+	 */
+	public static FallbackLocationProvider getInstance( Criteria[] criteria ) throws LocationException {
+		//TODO consider to use singletons, depending on usage of this API.
+		return new FallbackLocationProvider( criteria );
+	}
+
+	/**
+	 * Sets the listener that is informed when a criteria is enabled
+	 * @param fallbackLocationListener the listener, use null to remove listener
+	 */
 	public void setFallbackLocationListener(FallbackLocationListener fallbackLocationListener) {
-		// TODO: 
+		this.fallbackLocationListener = fallbackLocationListener;
+	}
+	
+	/**
+	 * Retrieves the number of unique location providers that are used within this FallbackLocationProvider
+	 * @return the number
+	 */
+	public int getNumberOfUniqueLocationProviders() {
+		return this.providers.length;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see javax.microedition.location.LocationProvider#getLocation(int)
+	 */
+	public Location getLocation(int timeoutInSeconds) throws LocationException, InterruptedException {
+		LocationProvider provider = this.activeProvider;
+		long waitedTime = 0;
+		while (provider == null) {
+			try {
+				Thread.sleep(200);
+				waitedTime += 200;
+				if (waitedTime >= timeoutInSeconds*1000) {
+					throw new InterruptedException();
+				}
+				if (this.isReset) {
+					this.isReset = false;
+					throw new InterruptedException();
+				}
+			} catch (InterruptedException e) {
+				// ignore
+			}
+			provider = this.activeProvider;
+		}
+		timeoutInSeconds -= (waitedTime/1000);
+		return provider.getLocation(timeoutInSeconds);
 	}
 
-	@Override
-	public Location getLocation(int arg0) throws LocationException, InterruptedException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see javax.microedition.location.LocationProvider#getState()
+	 */
 	public int getState() {
-		// TODO Auto-generated method stub
-		return 0;
+		LocationProvider provider = this.activeProvider;
+		if (provider == null) {
+			return TEMPORARILY_UNAVAILABLE;
+		}
+		return provider.getState();
 	}
 
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see javax.microedition.location.LocationProvider#reset()
+	 */
 	public void reset() {
-		// TODO Auto-generated method stub
+		LocationProvider provider = this.activeProvider;
+		if (provider == null) {
+			this.isReset = true;
+		} else {
+			provider.reset();
+		}
+		//TODO: reset other providers as well?
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see javax.microedition.location.LocationProvider#setLocationListener(javax.microedition.location.LocationListener, int, int, int)
+	 */
+	public void setLocationListener(LocationListener listener, int interval, int timeout, int maxAge) {
+		this.locationListener = listener;
+		for (int i = 0; i < this.providers.length; i++) {
+			LocationProvider provider = this.providers[i];
+			provider.setLocationListener( listener == null ? null : this, interval, timeout, maxAge);
+			
+		}
+	}
+	
+	/////////////////////// Location Listener methods ////////////////////////////////////////////
+
+	/**
+	 * LocationListener method - do not call.
+	 */
+	public void locationUpdated(LocationProvider provider, Location loc) {
+		if (provider == this.activeProvider && this.locationListener != null) {
+			this.locationListener.locationUpdated(this, loc);
+		}
 		
 	}
 
-	@Override
-	public void setLocationListener(LocationListener arg0, int arg1, int arg2, int arg3) {
-		// TODO Auto-generated method stub
+	/**
+	 * LocationListener method - do not call.
+	 */
+	public void providerStateChanged(LocationProvider provider, int state) {
+		LocationProvider enabledProvider = null;
+		if (state == AVAILABLE) {
+			if (this.activeProvider == null) {
+				enabledProvider = provider;
+			} else {
+				for (int i=0; i<this.providers.length; i++) {
+					LocationProvider prov = this.providers[i];
+					if (prov == this.activeProvider) {
+						break;
+					}
+					if (prov == provider) {
+						enabledProvider = provider;
+					}
+				}
+			}
+		} else if (provider == this.activeProvider) {
+			// the active provider has been deactivated, so find the next best matching one:
+			for (int i=0; i<this.providers.length; i++) {
+				LocationProvider prov = this.providers[i];
+				if (prov.getState() == AVAILABLE) {
+					enabledProvider = prov;
+					break;
+				}
+			}
+			if (enabledProvider == null) {
+				// handle case when active provider has been disabled and no other is available:
+				this.activeProvider = null;
+				if (this.locationListener != null) {
+					this.locationListener.providerStateChanged(this, TEMPORARILY_UNAVAILABLE);
+				}
+			}
+		}
 		
+		if (enabledProvider != null) {
+			this.activeProvider = enabledProvider;
+			if (this.fallbackLocationListener != null) {
+				Object criteriaObj = this.criteriaByProvider.get(enabledProvider);
+				if (criteriaObj instanceof Criteria) {
+					this.fallbackLocationListener.providerEnabled( (Criteria) criteriaObj);
+				} else {
+					this.fallbackLocationListener.providerEnabled( null );
+				}
+			}
+			this.locationListener.providerStateChanged(this, AVAILABLE);
+		}
 	}
 }
