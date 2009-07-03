@@ -3456,6 +3456,7 @@ public abstract class Item implements UiElement, Animatable
 			return handleKeyReleased( 0, Canvas.FIRE );
 		} else if (this.isPressed) {
 			notifyItemPressedEnd();
+			return true;
 		}
 		return false;
 	}
