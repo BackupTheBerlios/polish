@@ -209,7 +209,7 @@ public abstract class ItemView implements Serializable{
 	 */
 	protected void setStyle( Style style, boolean resetStyle ) {
 		// subclasses may implement this
-		if (!resetStyle) {
+		if (!resetStyle && this.parentItem != null) {
 			this.paddingHorizontal = this.parentItem.paddingHorizontal;
 			this.paddingVertical = this.parentItem.paddingVertical;
 		}
