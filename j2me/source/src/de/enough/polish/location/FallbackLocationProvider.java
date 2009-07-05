@@ -84,24 +84,37 @@ implements LocationListener
 	 */
 	public Location getLocation(int timeoutInSeconds) throws LocationException, InterruptedException {
 		LocationProvider provider = this.activeProvider;
-		long waitedTime = 0;
-		while (provider == null) {
-			try {
-				Thread.sleep(200);
-				waitedTime += 200;
-				if (waitedTime >= timeoutInSeconds*1000) {
-					throw new InterruptedException();
+		if (this.locationListener != null) {
+			long waitedTime = 0;
+			while (provider == null) {
+				try {
+					Thread.sleep(200);
+					waitedTime += 200;
+					if (waitedTime >= timeoutInSeconds*1000) {
+						throw new InterruptedException();
+					}
+					if (this.isReset) {
+						this.isReset = false;
+						throw new InterruptedException();
+					}
+				} catch (InterruptedException e) {
+					// ignore
 				}
-				if (this.isReset) {
-					this.isReset = false;
-					throw new InterruptedException();
-				}
-			} catch (InterruptedException e) {
-				// ignore
+				provider = this.activeProvider;
 			}
-			provider = this.activeProvider;
+			timeoutInSeconds -= (waitedTime/1000);
+		} else {
+			for (int i=0; i < this.providers.length; i++) {
+				LocationProvider prov = this.providers[i];
+				if (prov.getState() == AVAILABLE) {
+					provider = prov;
+					break;
+				}
+			}
+			if (provider == null) {
+				provider = this.providers[0];
+			}
 		}
-		timeoutInSeconds -= (waitedTime/1000);
 		return provider.getLocation(timeoutInSeconds);
 	}
 
