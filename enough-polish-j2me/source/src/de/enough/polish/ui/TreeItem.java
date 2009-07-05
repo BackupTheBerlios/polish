@@ -553,7 +553,6 @@ public class TreeItem
 
 
 
-
 	class Node extends Item {
 		private final Item root;
 		private final Container children;
@@ -641,6 +640,7 @@ public class TreeItem
 				}
 				x += TreeItem.this.indicatorWidth;
 			//#endif
+//			System.out.println("painting root at " + x + ", " + y + " borders=" + leftBorder + ", " + rightBorder + ", root=" + this.root);
 			this.root.paint(x, y, leftBorder, rightBorder, g);
 			if (this.isExpanded) {
 				leftBorder += this.xLeftOffset;
@@ -668,12 +668,12 @@ public class TreeItem
 		 */
 		protected boolean handleKeyPressed(int keyCode, int gameAction) {
 			//#debug
-			System.out.println("Node " + this + " handleKeyPressed: isExpanded=" + this.isExpanded);
+			System.out.println("Node " + this + " handleKeyPressed(" +  keyCode + ", " + gameAction + "): isExpanded=" + this.isExpanded);
 			boolean handled = false;
 			if (this.isExpanded) {
  				if (this.children.isFocused) {
 					handled = this.children.handleKeyPressed(keyCode, gameAction);
-					//System.out.println("TreeItem: children handled key pressed: " + handled);
+//					System.out.println("TreeItem: children handled key pressed: " + handled);
 					if (handled) {
 						if (this.children.internalX != NO_POSITION_SET) {
 							this.internalX = this.children.relativeX + this.children.contentX + this.children.internalX;
@@ -700,6 +700,7 @@ public class TreeItem
 					this.children.focus(null, gameAction);
 					//this.isChildrenFocused = true;
 					handled = true;
+//					System.out.println("keyPressed: moving focus to children");
 				}
 
 			}
@@ -724,11 +725,12 @@ public class TreeItem
 		 */
 		protected boolean handleKeyReleased(int keyCode, int gameAction) {
 			//#debug
-			System.out.println("Node " + this + " handleKeyReleased: isExpanded=" + this.isExpanded);
+			System.out.println("Node " + this + " handleKeyReleased(" +  keyCode + ", " + gameAction + "): isExpanded=" + this.isExpanded);
 			boolean handled = false;
 			if (this.isExpanded) {
  				if (this.children.isFocused) {
 					handled = this.children.handleKeyReleased(keyCode, gameAction);
+//					System.out.println("children handled keyReleased: " + handled);
 					if (handled) {
 						if (this.children.internalX != NO_POSITION_SET) {
 							this.internalX = this.children.relativeX + this.children.contentX + this.children.internalX;
@@ -742,6 +744,8 @@ public class TreeItem
 							this.internalHeight = this.children.itemHeight;
 						}
 					}
+//				} else {
+//					System.out.println("keyReleased: Children are not focused");
 				}
 
 			}

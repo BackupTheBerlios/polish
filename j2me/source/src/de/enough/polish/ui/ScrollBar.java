@@ -101,7 +101,7 @@ public class ScrollBar extends Item {
 		//#define tmp.fadeout
 		private int startOpacity = 255;
 	//#endif
-	private boolean isVisible;
+	protected boolean isVisible;
 	protected boolean overlap;
 	private int screenAvailableContentHeight;
 	private int screenActualContentHeight;
@@ -219,9 +219,11 @@ public class ScrollBar extends Item {
 	 */
 	public boolean animate()
 	{
+		
 		boolean animated = false;
 		int[] rgbData = this.opacityRgbData;
-		if (this.overlap && rgbData != null && this.opacity > 0)  {
+		if (this.isVisible && this.overlap && rgbData != null && this.opacity > 0)  {
+//			System.out.println("actual=" + this.screenActualContentHeight + ", available=" + this.screenAvailableContentHeight );
 			this.opacity -= 10;
 			if (this.opacity <= 0) {
 				this.opacity = 0;

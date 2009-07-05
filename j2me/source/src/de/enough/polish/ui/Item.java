@@ -2302,7 +2302,7 @@ public abstract class Item implements UiElement, Animatable
 			int widthBefore = this.itemWidth;
 			init( this.availableWidth, this.availableWidth, this.availableHeight );
 			if ( (this.itemHeight != heightBefore || this.itemWidth != widthBefore) && this.parent != null) {
-				//#debug
+				//#debug warn
 				System.out.println("requesting initialization of parent: itemWidth=" + this.itemWidth + "(" + widthBefore + "), itemHeight=" + this.itemHeight + "(" + heightBefore + ") for item " + this);
 				this.parent.requestInit();
 				// returning here can lead to flickering - however, having to re-initialize the parent here

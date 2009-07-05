@@ -1085,6 +1085,7 @@ public class Container extends Item {
 				currentYOffset = this.yOffset;
 			}
 		//#endif
+		int originalYOffset = currentYOffset;
 
 		int verticalSpace = this.scrollHeight - (this.contentY + this.marginBottom + this.paddingBottom + getBorderWidthBottom()); // the available height for this container
 		int yTopAdjust = 0;
@@ -1130,8 +1131,14 @@ public class Container extends Item {
 			System.out.println("scroll: do nothing");
 			return false;
 		}
-		setScrollYOffset(currentYOffset, true);
-		return true;
+		if (currentYOffset != originalYOffset) {
+			setScrollYOffset(currentYOffset, true);
+			return true;
+		} else {
+			//#debug
+			System.out.println("scroll: no change");
+			return false;
+		}
 	}
 	
 	/* (non-Javadoc)

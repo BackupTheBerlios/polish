@@ -1017,11 +1017,15 @@ implements UiElement, Animatable
 								cont.getItemHeight(w, w, height);
 							}
 						}
+						if (cont.itemHeight <= height) {
+							this.scrollBar.isVisible = false;
+						}
 					}
 			//#if polish.css.show-scrollbar
 				} else {
 					// ensure that container is initialized:
 					cont.getItemHeight(originalWidth, originalWidth, height);
+					this.scrollBar.isVisible = false;
 				}
 			//#endif
 			this.scrollBar.relativeX = x + width;

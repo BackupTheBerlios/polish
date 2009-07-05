@@ -2307,7 +2307,7 @@ implements javax.microedition.lcdui.CommandListener
 	 * Requests a repaint for the complete screen
 	 */
 	public void requestRepaint() {
-//		System.out.println("req full repaint");
+//		System.out.println("*** req full repaint ***");
 		repaint();
 	}
 	
