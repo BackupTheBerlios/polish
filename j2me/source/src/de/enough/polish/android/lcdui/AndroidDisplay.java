@@ -279,11 +279,13 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 		if(this.currentPolishCanvas == null) {
 			return false;
 		}
+		//#if polish.android1.5
 		if(keyCode == KeyEvent.KEYCODE_ENTER && ((event.getFlags() & KeyEvent.FLAG_SOFT_KEYBOARD) == KeyEvent.FLAG_SOFT_KEYBOARD)) {
 			//#debug
 			System.out.println("Hiding Softkeyboard in onKeyUp");
 			return true;
 		}
+		//#endif
 		if(this.util == null)
 		{
 			this.util = new DisplayUtil(event.getDeviceId());
@@ -302,12 +304,14 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 		if(this.currentPolishCanvas == null) {
 			return false;
 		}
+		//#if polish.android1.5
 		if(keyCode == KeyEvent.KEYCODE_ENTER && ((event.getFlags() & KeyEvent.FLAG_SOFT_KEYBOARD) == KeyEvent.FLAG_SOFT_KEYBOARD)) {
 			//#debug
 			System.out.println("Hiding Softkeyboard");
 			MIDlet.midletInstance.hideSoftKeyboard();
 			return true;
 		}
+		//#endif
 		if(this.util == null)
 		{
 			this.util = new DisplayUtil(event.getDeviceId());

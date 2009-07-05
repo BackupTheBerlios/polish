@@ -661,7 +661,7 @@ public abstract class MIDlet extends Activity {
 				inputMethodManager.showSoftInput(display, 0,new ResultReceiver(display.getHandler()) {
 					protected void onReceiveResult(int arg0, Bundle arg1) {
 						super.onReceiveResult(arg0, arg1);
-						System.out.println("Receiving result:"+arg0);
+//						System.out.println("Receiving result:"+arg0);
 					}
 				});
 			}

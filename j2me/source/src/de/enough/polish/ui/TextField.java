@@ -3777,7 +3777,7 @@ public class TextField extends StringItem
 		if (isInItemArea(x, y)) {
 			//#if  !tmp.forceDirectInput
 				//# return notifyItemPressedStart();
-			//#elif polish.android
+			//#elif polish.android1.5
 				if (this.isFocused && ((System.currentTimeMillis() - this.androidFocusedTime) > 200)) {
 					MIDlet.midletInstance.toggleSoftKeyboard();
 				} else {

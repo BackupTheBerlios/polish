@@ -18,7 +18,11 @@ public class DisplayUtil {
 	
 	public int handleKey(int keyCode, KeyEvent event, Canvas canvas) {
 		int flags = event.getFlags();
-		if (keyCode == KeyEvent.KEYCODE_MENU && ((flags & KeyEvent.FLAG_FROM_SYSTEM) == KeyEvent.FLAG_FROM_SYSTEM)) {
+		if (keyCode == KeyEvent.KEYCODE_MENU 
+				//#if polish.android1.5
+				&& ((flags & KeyEvent.FLAG_FROM_SYSTEM) == KeyEvent.FLAG_FROM_SYSTEM) 
+			//#endif
+		){
 			return KEY_MENU;
 		}
 		if (keyCode == KeyEvent.KEYCODE_CLEAR || keyCode == KeyEvent.KEYCODE_DEL) {// && ((flags & KeyEvent.FLAG_SOFT_KEYBOARD) == KeyEvent.FLAG_SOFT_KEYBOARD)) {
