@@ -81,6 +81,9 @@ public class StringItem extends Item
 	//#if polish.css.text-layout
 		private int textLayout;
 	//#endif
+	//#if polish.css.text-visible
+		private boolean isTextVisible = true;
+	//#endif
 
 	/**
 	 * Creates a new <code>StringItem</code> object.  Calling this
@@ -586,7 +589,11 @@ public class StringItem extends Item
 		if (body != null && this.font == null) {
 			this.font = Font.getDefaultFont();
 		}
-		if (body == null) {
+		if ((body == null)
+			//#if polish.css.text-visible
+				|| !this.isTextVisible
+			//#endif
+		) {
 			this.contentHeight = 0;
 			this.contentWidth = 0;
 			this.textLines = null;
@@ -774,6 +781,14 @@ public class StringItem extends Item
 			Integer maxLinesInt = style.getIntProperty("max-lines");
 			if (maxLinesInt != null) {
 				this.maxLines = maxLinesInt.intValue();
+			}
+		//#endif
+		//#if polish.css.text-visible
+			Boolean textVisibleBool = style.getBooleanProperty("text-visible");
+			if (textVisibleBool != null) {
+				this.isTextVisible = textVisibleBool.booleanValue();
+			} else {
+				this.isTextVisible = true;
 			}
 		//#endif
 	}

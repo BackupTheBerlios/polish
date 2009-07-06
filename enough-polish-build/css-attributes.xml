@@ -1821,6 +1821,7 @@
 		<mapping from="gradient" to="new de.enough.polish.ui.texteffects.VerticalGradientTextEffect()"/>
 		<mapping from="vertical-gradient" to="new de.enough.polish.ui.texteffects.VerticalGradientTextEffect()" />
 		<mapping from="vertical-scroll" to="new de.enough.polish.ui.texteffects.VerticalScrollTextEffect()" />
+		<mapping from="html" to="new de.enough.polish.ui.texteffects.HtmlTextEffect()" />
 		<mapping from="mirror-shadow" to="new de.enough.polish.ui.texteffects.VerticalMirrorTextEffect()" >
 			<condition>polish.midp2</condition>
 		</mapping>
@@ -4360,6 +4361,7 @@
 		since="J2ME Polish 2.1"
 	/>
 	
+	<!-- free slot
 	<attribute
 		name="text-visible"
 		type="boolean"
@@ -4369,6 +4371,7 @@
 		id="366"
 		since="J2ME Polish 2.1"
 	/>
+	 -->
 	
 	<attribute
 		name="gauge-images-sources"
@@ -4684,6 +4687,17 @@
 		id="398"
 		since="J2ME Polish 2.1.1"
 	/>
+	
+	<attribute
+		name="text-visible"
+		type="boolean"
+		appliesTo="StringItem,FakeStringCustomItem"
+		description="You can turn off the text rendering completely by setting text-visible to false."
+		default="true"
+		id="399"
+		since="J2ME Polish 2.1.1"
+	/>
+	
 	
 
 <!-- 
