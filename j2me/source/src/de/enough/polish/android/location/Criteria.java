@@ -184,6 +184,8 @@ public class Criteria extends java.lang.Object
 	private boolean altitudeRequired;
 	private boolean addressInfoRequired;
 
+	private String providerId;
+
 	/**
 	 * Constructs a <code>Criteria</code> object. All the fields are
 	 * set to the default values that are specified below in the
@@ -448,4 +450,65 @@ public class Criteria extends java.lang.Object
 		this.addressInfoRequired = addressInfoRequired;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (this.addressInfoRequired ? 1231 : 1237);
+		result = prime * result + (this.altitudeRequired ? 1231 : 1237);
+		result = prime * result + (this.costAllowed ? 1231 : 1237);
+		result = prime * result + this.horizontalAccuracy;
+		result = prime * result + this.preferredPowerConsumption;
+		result = prime * result + this.preferredResponseTime;
+		result = prime * result + (this.speedAndCourseRequired ? 1231 : 1237);
+		result = prime * result + this.verticalAccuracy;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		Criteria other = (Criteria) obj;
+		if (this.addressInfoRequired != other.addressInfoRequired) {
+			return false;
+		}
+		if (this.altitudeRequired != other.altitudeRequired) {
+			return false;
+		}
+		if (this.costAllowed != other.costAllowed) {
+			return false;
+		}
+		if (this.horizontalAccuracy != other.horizontalAccuracy) {
+			return false;
+		}
+		if (this.preferredPowerConsumption != other.preferredPowerConsumption) {
+			return false;
+		}
+		if (this.preferredResponseTime != other.preferredResponseTime) {
+			return false;
+		}
+		if (this.speedAndCourseRequired != other.speedAndCourseRequired) {
+			return false;
+		}
+		if (this.verticalAccuracy != other.verticalAccuracy) {
+			return false;
+		}
+		return true;
+	}
+
+	public void setRequestedLocationProviderId(String providerId) {
+		this.providerId = providerId;
+	}
+	
+	public String getRequestedLocationProviderId() {
+		return this.providerId;
+	}
 }

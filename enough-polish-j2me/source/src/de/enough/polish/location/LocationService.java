@@ -53,12 +53,26 @@ public class LocationService {
 	
 	private static Criteria createNetworkCriteria() {
 		Criteria criteria = new Criteria();
-		criteria.setHorizontalAccuracy( 10 ); // 10 meters
-		criteria.setVerticalAccuracy( 10 ); // 10 meters
+		criteria.setHorizontalAccuracy( 100 ); // 10 meters
+		criteria.setVerticalAccuracy( 100 ); // 10 meters
+		criteria.setAltitudeRequired(false);
+		criteria.setPreferredPowerConsumption(Criteria.POWER_USAGE_LOW);
+		criteria.setCostAllowed(true);
+		criteria.setSpeedAndCourseRequired(false);
+		criteria.setAddressInfoRequired(false);
+		//#if polish.android
+		//# criteria.setRequestedLocationProviderId(LocationManager.NETWORK_PROVIDER);
+		//#endif
 		return criteria;
 	}
 
 	private static Criteria createGpsCriteria() {
-		return new Criteria();
+		Criteria criteria = new Criteria();
+		criteria.setHorizontalAccuracy( 1 ); // 10 meters
+		criteria.setVerticalAccuracy( 1 ); // 10 meters
+		//#if polish.android
+		//# criteria.setRequestedLocationProviderId(LocationManager.GPS_PROVIDER);
+		//#endif
+		return criteria;
 	}
 }
