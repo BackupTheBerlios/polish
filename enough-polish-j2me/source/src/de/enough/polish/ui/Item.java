@@ -4612,6 +4612,9 @@ public abstract class Item implements UiElement, Animatable
 	 */
 	public void onScreenSizeChanged( int screenWidth, int screenHeight ) {
 		//#if polish.css.portrait-style || polish.css.landscape-style
+			if (!this.isStyleInitialised && this.style != null) {
+				setStyle( this.style );
+			}
 			if (screenWidth > screenHeight) {
 				if (this.landscapeStyle != null && this.style != this.landscapeStyle) {
 					setStyle(this.landscapeStyle);

@@ -461,8 +461,9 @@ implements UiElement, Animatable
 	 * Initialises this screen before it is painted for the first time.
 	 */
 	protected void init( int width, int height) {
-		//#debug
+		// #debug
 		System.out.println("Initialising screen " + this + " with dimension " + width + "x" + height);
+		
 		// calling super.setFullScreenMode(true) is already done within the showNotify() method
 		if (height == 0 || width == 0) {
 			return; // invalid initialization values...
@@ -490,6 +491,23 @@ implements UiElement, Animatable
 				this.cssSelector = this.style.name;
 			}
 		//#endif
+
+		//#if tmp.usingTitle
+			if (this.title != null) {
+				this.title.onScreenSizeChanged(width, height);
+			}
+		//#endif
+		//#if tmp.useExternalMenuBar
+			this.menuBar.onScreenSizeChanged(width, height);
+		//#endif
+		if (this.subTitle != null) {
+			this.subTitle.onScreenSizeChanged(width, height);
+		}
+		if (this.container != null) {
+			this.container.onScreenSizeChanged(width, height);
+		}
+
+			
 		if (this.style != null) {
 			this.marginLeft = this.style.getMarginLeft(this.screenWidth);
 			this.marginRight = this.style.getMarginRight(this.screenWidth);			
@@ -4872,20 +4890,6 @@ implements UiElement, Animatable
 			//#endif
 			//System.out.println("sizeChanged - doInit=" + doInit);
 			if (doInit) {
-				//#if tmp.usingTitle
-					if (this.title != null) {
-						this.title.onScreenSizeChanged(width, height);
-					}
-				//#endif
-				//#if tmp.useExternalMenuBar
-					this.menuBar.onScreenSizeChanged(width, height);
-				//#endif
-				if (this.subTitle != null) {
-					this.subTitle.onScreenSizeChanged(width, height);
-				}
-				if (this.container != null) {
-					this.container.onScreenSizeChanged(width, height);
-				}
 				init( width, height );
 			}
 			//#if polish.css.repaint-previous-screen
