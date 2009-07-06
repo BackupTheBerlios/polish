@@ -25,6 +25,7 @@
  */
 package de.enough.polish.xml;
 
+import java.util.Enumeration;
 import java.util.Hashtable;
 
 import de.enough.polish.util.ArrayList;
@@ -252,5 +253,44 @@ public class XmlDomNode
 	public XmlDomNode[] getChildren()
 	{
 		return (XmlDomNode[]) this.childList.toArray( new XmlDomNode[ this.childList.size() ] );
+	}
+
+	/**
+	 * Retrieves an XML representation of this XML node and its nested children.
+	 * @return the node as an XML string.
+	 */
+	public String toXmlString() {
+		StringBuffer xml = new StringBuffer();
+		appendXmlString("", xml);
+		return xml.toString();
+	}
+
+	/**
+	 * Appends this node's information in XML format to the given StringBuffer
+	 * @param indent the current indentation
+	 * @param xml the buffer
+	 */
+	protected void appendXmlString(String indent, StringBuffer xml) {
+		xml.append( indent ).append( '<' ).append( this.name );
+		if (this.attributes != null) {
+			Enumeration  keys = this.attributes.keys();
+			while (keys.hasMoreElements()) {
+				String key = (String) keys.nextElement();
+				String value = (String) this.attributes.get(key);
+				xml.append(' ').append( key ).append( "=\"").append( value ).append("\"");
+			}
+		}
+		xml.append(">\n");
+		String childIndent = ' ' + indent;
+		if (this.text != null) {
+			xml.append(childIndent).append(this.text).append('\n');
+		}
+		if (this.childList != null) {
+			for (int i=0; i<this.childList.size(); i++) {
+				XmlDomNode node = (XmlDomNode) this.childList.get(i);
+				node.appendXmlString(childIndent, xml);
+			}
+		}
+		xml.append( indent ).append( "</" ).append( this.name ).append(">\n");
 	}
 }
