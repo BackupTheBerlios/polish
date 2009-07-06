@@ -163,7 +163,11 @@ implements LocationListener
 	 * LocationListener method - do not call.
 	 */
 	public void locationUpdated(LocationProvider provider, Location loc) {
-		if (provider == this.activeProvider && this.locationListener != null) {
+		if(this.locationListener == null) {
+			return;
+		}
+		// Propagate the update in case no active provider is present like on the first location before the state change event was triggered.
+		if (this.activeProvider == null || this.activeProvider == provider) {
 			this.locationListener.locationUpdated(this, loc);
 		}
 		
@@ -221,4 +225,22 @@ implements LocationListener
 			this.locationListener.providerStateChanged(this, AVAILABLE);
 		}
 	}
+	
+	public String toString() {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("FallbackLocationProvider{activeProvider='");
+		buffer.append(this.activeProvider);
+		buffer.append("',AllProviders=[");
+		if(this.providers.length > 0) {
+			buffer.append(this.providers[0]);
+		}
+		for (int i = 1; i < this.providers.length; i++) {
+			buffer.append("',");
+			buffer.append(this.providers[i]);
+		}
+		buffer.append("]}");
+		String result = buffer.toString();
+		return result;
+	}
+	
 }
