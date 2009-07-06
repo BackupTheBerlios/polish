@@ -418,6 +418,11 @@ public class StringItem extends Item
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		//#debug
 		System.out.println("painting at left=" + leftBorder + ", right=" + rightBorder + ", x=" + x + ", text=" + this.text);
+		//#if polish.css.text-visible
+			if (!this.isTextVisible) {
+				return;
+			}
+		//#endif
 		if (this.text != null) {
 			//#if polish.css.text-wrap
 				int clipX = 0;
