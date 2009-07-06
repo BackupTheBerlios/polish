@@ -531,6 +531,17 @@ public class Style implements Externalizable
 	
 	//#if polish.LibraryBuild
 	/**
+	 * Removes the specified attribute from this style.
+	 * 
+	 * @param key the key name of the attribute
+	 */
+	public void removeAttribute(String key) {
+		this.libraryBuildAttributes.remove(key);
+	}
+	//#endif
+	
+	//#if polish.LibraryBuild
+	/**
 	 * Adds the specified attribute to this style, possibly replacing a previous set value.
 	 * This method expects the property name referenced directly like "padding-top", not
 	 * as a variable like propName, since the property name is converted to an integer value
@@ -892,6 +903,9 @@ public class Style implements Externalizable
 		Serializer.serialize(this.attributeKeys, out);
 		Serializer.serialize(this.attributeValues, out);
 	}
+
+
+
 
 
 	

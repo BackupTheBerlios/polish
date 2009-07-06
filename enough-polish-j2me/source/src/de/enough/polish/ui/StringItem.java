@@ -665,19 +665,21 @@ public class StringItem extends Item
 	
 	String[] wrap(String body, int firstLineWidth, int availWidth)
 	{
+		String[] result;
 		//#ifdef tmp.useTextEffect
 		if (this.textEffect != null) {
-			return this.textEffect.wrap( this, body, this.textColor, this.font, firstLineWidth, availWidth );
+			result = this.textEffect.wrap( this, body, this.textColor, this.font, firstLineWidth, availWidth );
 		} else {
 		//#endif
 			//#ifdef polish.css.max-lines
-			//#	return TextUtil.wrap(body, this.font, firstLineWidth, availWidth, maxLines);
+				result = TextUtil.wrap(body, this.font, firstLineWidth, availWidth, this.maxLines);
 			//#else
-				return TextUtil.wrap(body, this.font, firstLineWidth, availWidth);
+				result = TextUtil.wrap(body, this.font, firstLineWidth, availWidth);
 			//#endif
 		//#ifdef tmp.useTextEffect
 			}
 		//#endif
+		return result;
 	}
 	
 	

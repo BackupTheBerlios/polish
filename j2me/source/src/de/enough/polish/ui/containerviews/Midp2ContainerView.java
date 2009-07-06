@@ -26,6 +26,8 @@
  */
 package de.enough.polish.ui.containerviews;
 
+import javax.microedition.lcdui.Graphics;
+
 import de.enough.polish.ui.ContainerView;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Dimension;
@@ -61,8 +63,21 @@ public class Midp2ContainerView extends ContainerView
 	protected void initContent(Item parentContainerItem, int firstLineWidth, int availWidth, int availHeight)
 	{
 		super.initContent(parentContainerItem, firstLineWidth, availWidth, availHeight);
-		// now just adjust positions, so that the elements are layouted according to their settings:
+		// now just adjust positions, so that the elements are layout according to their settings:
 		Item[] items = this.parentContainer.getItems();
+		initContent( items, firstLineWidth, availWidth, availHeight );
+	}
+
+	/**
+	 * Initiates this view for the specified items
+	 * @param items the items
+	 * @param firstLineWidth available width for the first line
+	 * @param availWidth available width for the view
+	 * @param availHeight available height for the view
+	 */
+	public void initContent(Item[] items, int firstLineWidth, int availWidth,
+			int availHeight) 
+	{
 		int x = 0;
 		int y = 0;
 		int currentRowHeight = 0;
@@ -71,6 +86,7 @@ public class Midp2ContainerView extends ContainerView
 		for (int i = 0; i < items.length; i++)
 		{
 			Item item = items[i];
+			
 			int lo = item.getLayout();
 			if (((lo & Item.LAYOUT_NEWLINE_BEFORE) == Item.LAYOUT_NEWLINE_BEFORE) || (x + item.getContentWidth() > availWidth) ) 
 			{
@@ -108,8 +124,18 @@ public class Midp2ContainerView extends ContainerView
 				currentRowStartIndex = i + 1;
 			}
 		}
+		if (x != 0) {
+			System.out.println("Midp2ContainerView: currentRowHeight=" + currentRowHeight + ", x=" + x + ", maxRowWidth=" + maxRowWidth);
+			if (currentRowHeight != 0) {
+				lineBreak( items, currentRowStartIndex, items.length-1, x, currentRowHeight, availWidth);
+				y += currentRowHeight;
+			}
+			if (x > maxRowWidth) {
+				maxRowWidth = x;
+			}
+		}
 		this.contentHeight = y;
-		this.contentWidth = maxRowWidth;
+		this.contentWidth = maxRowWidth;		
 	}
 
 	/**
@@ -139,6 +165,39 @@ public class Midp2ContainerView extends ContainerView
 				}
 			}
 		}
+	}
+
+	/**
+	 * Paints the content of this MIDP2 view.
+	 * 
+	 * @param items the nested items
+	 * @param x
+	 * @param y
+	 * @param leftBorder
+	 * @param rightBorder
+	 * @param g
+	 */
+	public void paintContent(Item[] items, int x, int y, int leftBorder,
+			int rightBorder, Graphics g) 
+	{
+		super.paintContent( null, items, x, y, leftBorder, rightBorder, g.getClipX(), g.getClipY(), g.getClipWidth(), g.getClipHeight(), g);
+		
+	}
+
+	/**
+	 * Retrieves the content height
+	 * @return the height of this view
+	 */
+	public int getContentHeight() {
+		return this.contentHeight;
+	}
+	
+	/**
+	 * Retrieves the content width
+	 * @return the width of this view
+	 */
+	public int getContentWidth() {
+		return this.contentWidth;
 	}
 
 }
