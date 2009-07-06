@@ -41,100 +41,97 @@ public class AndroidLocationProvider extends LocationProvider {
 	public static final float DEFAULT_MINIMAL_LOCATION_DISTANCE = 1; // meters
 	
 	private static LocationManager locationManager;
-	private static AndroidLocationProvider instance;
 
-	private String currentProvider;
+	private String providerId;
 	private AndroidLocationListenerAdapter currentLocationListener;
 	private LocationUpdateThread locationUpdateThread;
-	private final String providerByCritera;
 	private int currentMinTime;
 	private float currentMinDist;
+	private int state = OUT_OF_SERVICE;
 	
-	public static AndroidLocationProvider getInstance() {
-		return instance;
-	}
-	
+	/**
+	 * @param meCriteria May be null.
+	 */
 	public static AndroidLocationProvider getAndroidLocationProviderInstance(Criteria meCriteria) {
 		if(locationManager == null) {
 			locationManager = (LocationManager)MIDlet.midletInstance.getSystemService(Context.LOCATION_SERVICE);
 		}
 		int powerRequirement;
-		int preferredPowerConsumption = meCriteria.getPreferredPowerConsumption();
-		switch(preferredPowerConsumption) {
-			case Criteria.NO_REQUIREMENT: powerRequirement = DEFAULT_POWER_REQIREMENT; break;
-			case Criteria.POWER_USAGE_HIGH: powerRequirement = android.location.Criteria.POWER_HIGH; break;
-			case Criteria.POWER_USAGE_MEDIUM: powerRequirement = android.location.Criteria.POWER_MEDIUM; break;
-			case Criteria.POWER_USAGE_LOW: powerRequirement = android.location.Criteria.POWER_LOW; break;
-			default: throw new IllegalArgumentException("The power consumption must be one of Critiera.NO_REQUIREMENT, Criteria.POWER_USAGE_HIGH, Criteria.POWER_USAGE_MEDIUM or Criteria.POWER_USAGE_LOW.");
+		if(meCriteria == null) {
+			meCriteria = new Criteria();
 		}
-		boolean altitudeRequired = meCriteria.isAltitudeRequired();
-		boolean bearingRequired = meCriteria.isSpeedAndCourseRequired();
-		boolean speedRequired = meCriteria.isSpeedAndCourseRequired();
-		boolean costAllowed = meCriteria.isAllowedToCost();
-		int accuracy;
-		int horizontalAccuracy = meCriteria.getHorizontalAccuracy();
-		if(horizontalAccuracy < ACCURACY_THRESHOLD) {
-			accuracy = android.location.Criteria.ACCURACY_FINE;
-		} else {
-			accuracy = android.location.Criteria.ACCURACY_COARSE;
-		}
-		
-		android.location.Criteria criteria = new android.location.Criteria();
-		criteria.setAccuracy(accuracy);
-		criteria.setSpeedRequired(speedRequired);
-		criteria.setAltitudeRequired(altitudeRequired); 
-		criteria.setBearingRequired(bearingRequired);
-		criteria.setCostAllowed(costAllowed); 
-		criteria.setPowerRequirement(powerRequirement);
 		
 		String bestProvider = null;
-		bestProvider = locationManager.getBestProvider(criteria, true);
+
+		String requestedLocationProviderId = meCriteria.getRequestedLocationProviderId();
+		if(requestedLocationProviderId != null) {
+			bestProvider = requestedLocationProviderId;
+		} else {
+			int preferredPowerConsumption = meCriteria.getPreferredPowerConsumption();
+			switch(preferredPowerConsumption) {
+				case Criteria.NO_REQUIREMENT: powerRequirement = DEFAULT_POWER_REQIREMENT; break;
+				case Criteria.POWER_USAGE_HIGH: powerRequirement = android.location.Criteria.POWER_HIGH; break;
+				case Criteria.POWER_USAGE_MEDIUM: powerRequirement = android.location.Criteria.POWER_MEDIUM; break;
+				case Criteria.POWER_USAGE_LOW: powerRequirement = android.location.Criteria.POWER_LOW; break;
+				default: throw new IllegalArgumentException("The power consumption must be one of Critiera.NO_REQUIREMENT, Criteria.POWER_USAGE_HIGH, Criteria.POWER_USAGE_MEDIUM or Criteria.POWER_USAGE_LOW.");
+			}
+			boolean altitudeRequired = meCriteria.isAltitudeRequired();
+			boolean bearingRequired = meCriteria.isSpeedAndCourseRequired();
+			boolean speedRequired = meCriteria.isSpeedAndCourseRequired();
+			boolean costAllowed = meCriteria.isAllowedToCost();
+			int accuracy;
+			int horizontalAccuracy = meCriteria.getHorizontalAccuracy();
+			if(horizontalAccuracy < ACCURACY_THRESHOLD) {
+				accuracy = android.location.Criteria.ACCURACY_FINE;
+			} else {
+				accuracy = android.location.Criteria.ACCURACY_COARSE;
+			}
+			
+			android.location.Criteria criteria = new android.location.Criteria();
+			criteria.setAccuracy(accuracy);
+			criteria.setSpeedRequired(speedRequired);
+			criteria.setAltitudeRequired(altitudeRequired); 
+			criteria.setBearingRequired(bearingRequired);
+			criteria.setCostAllowed(costAllowed); 
+			criteria.setPowerRequirement(powerRequirement);
+			
+			bestProvider = locationManager.getBestProvider(criteria, true);
+		}
 		
 		//#debug
 		System.out.println("getAndroidLocationProvider: Best provider for criteria is '"+bestProvider+"'");
-		// TODO: What about already registered listeners in the instance?
-		if(instance == null) {
-			instance = new AndroidLocationProvider(bestProvider);
-		} else {
-			instance.setProviderName(bestProvider);
+
+		if(bestProvider == null) {
+			return null;
 		}
-		return instance;
+		
+		return new AndroidLocationProvider(bestProvider);
 	}
 
-	public AndroidLocationProvider(String provider) {
-		this.currentProvider = provider;
-		this.providerByCritera = provider;
+	private AndroidLocationProvider(String providerId) {
+		this.providerId = providerId;
 		this.locationUpdateThread = new LocationUpdateThread("LocationUpdateThread");
 		this.locationUpdateThread.start();
 	}
 	
 	@Override
 	public Location getLocation(int timeout) throws LocationException,InterruptedException {
-		android.location.Location location = locationManager.getLastKnownLocation(this.currentProvider);
+		android.location.Location location = locationManager.getLastKnownLocation(this.providerId);
 		if(location == null) {
 			//#debug warn
-			System.out.println("AndroidLocationProvider.getLocation():null received from LocationManager.getLastKnownLocation.");
+			System.out.println("getLocation():null received from LocationManager.getLastKnownLocation.");
 			return null;
 		}
 		Location newLocation = new Location(location);
 		LocationProvider.setLastKnownLocation(newLocation);
 		//#debug
-		System.out.println("AndroidLocationProvider.getLocation():"+newLocation);
+		System.out.println("getLocation():"+newLocation);
 		return newLocation;
 	}
 
 	@Override
 	public int getState() {
-		boolean enabled = locationManager.isProviderEnabled(this.currentProvider);
-		int state;
-		if(enabled) {
-			state = LocationProvider.AVAILABLE;
-		} else {
-			state = LocationProvider.TEMPORARILY_UNAVAILABLE;
-		}
-		//#debug
-		System.out.println("AndroidLocationProvider.getState:"+state);
-		return state;
+		return this.state;
 	}
 
 	@Override
@@ -167,36 +164,37 @@ public class AndroidLocationProvider extends LocationProvider {
 		registerLocationListener();
 	}
 
-	/**
-	 * Set a new provider and also retargets a listener if one is present. Do not confuse the adapter listener with the user provided listener.
-	 * @param providerName
-	 */
-	void setProviderName(String providerName) {
-		android.location.LocationProvider locationProvider = locationManager.getProvider(providerName);
-		if(locationProvider == null) {
-			// Provider not supported, like NETWORK in the emulator.
-			return;
-		}
-		this.currentProvider = providerName;
-		if(this.currentLocationListener != null && this.currentLocationListener.getListener() != null) {
-			//#debug
-			System.out.println("setProviderName:"+providerName+" and also retargeting the listener");
-			registerLocationListener();
-		}
-	}
-
 	private void registerLocationListener() {
 		// TODO: Promote the looper variable to a field.
 		Looper looper = this.locationUpdateThread.getLooper();
-		locationManager.requestLocationUpdates(this.currentProvider,this.currentMinTime,this.currentMinDist ,this.currentLocationListener,looper);
+		locationManager.requestLocationUpdates(this.providerId,this.currentMinTime,this.currentMinDist ,this.currentLocationListener,looper);
 	}
 
 	public String getLocationProviderName() {
-		return this.currentProvider;
+		return this.providerId;
 	}
 
-	String getProviderByCritera() {
-		return this.providerByCritera;
+	public String toString() {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("AndroidLocationProvider{provider='");
+		buffer.append(this.providerId);
+		buffer.append("',state='");
+		buffer.append(getStateName(getState()));
+		buffer.append("'}");
+		String result = buffer.toString();
+		return result;
+	}
+
+	private String getStateName(int state) {
+		switch(state) {
+			case AVAILABLE: return "Available";
+			case TEMPORARILY_UNAVAILABLE: return "Temporarily Unavailable";
+			case OUT_OF_SERVICE: return "Out of Service";
+			default: return "Unknown State '"+state+"'";
+		}
 	}
 	
+	void setState(int state) {
+		this.state = state;
+	}
 }
