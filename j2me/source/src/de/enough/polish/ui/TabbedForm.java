@@ -726,7 +726,7 @@ public class TabbedForm extends Form {
 		//#endif
 
 		if (doInit) {
-			this.tabBar.isInitialized = false;
+			this.tabBar.onScreenSizeChanged(width, height);
 		}
 
 		super.sizeChanged(width, height);

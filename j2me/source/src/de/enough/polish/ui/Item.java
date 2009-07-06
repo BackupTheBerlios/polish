@@ -839,7 +839,10 @@ public abstract class Item implements UiElement, Animatable
 	//#if polish.css.visited-style
 		private boolean hasBeenVisited;
 	//#endif
-
+	//#if polish.css.portrait-style || polish.css.landscape-style
+		private Style landscapeStyle;
+		private Style portraitStyle;
+	//#endif
 
 
 
@@ -1228,7 +1231,26 @@ public abstract class Item implements UiElement, Animatable
 				this.isInlineLabel = inlineBool.booleanValue();
 			}
 		//#endif
-			
+		
+		//#if polish.css.portrait-style || polish.css.landscape-style
+			//#if polish.css.landscape-style
+				Style lsStyle = (Style) style.getObjectProperty("landscape-style");
+				if (lsStyle != null) {
+					this.landscapeStyle = lsStyle;
+					this.portraitStyle = style;
+				}
+			//#endif
+			//#if polish.css.portrait-style
+				Style ptStyle = (Style) style.getObjectProperty("portrait-style");
+				if (ptStyle != null) {
+					if (this.landscapeStyle == null) {
+						this.landscapeStyle = style;
+					}
+					this.portraitStyle = ptStyle;
+				}
+			//#endif
+		//#endif
+
 		// now set other style attributes:
 		setStyle( style, true );
 	}
@@ -4579,6 +4601,25 @@ public abstract class Item implements UiElement, Animatable
 	 */
 	public boolean isInteractive() {
 		return this.appearanceMode != PLAIN;
+	}
+	
+	/**
+	 * Notifies this item about a new screen size.
+	 * The default implementation just checks if the design should switch to portrait or landscape-style (if those CSS attributes are used).
+	 * The item will be re-initialized with its available dimensions using init(int,int,int) soon.
+	 * @param screenWidth the screen width
+	 * @param screenHeight the screen height
+	 */
+	public void onScreenSizeChanged( int screenWidth, int screenHeight ) {
+		//#if polish.css.portrait-style || polish.css.landscape-style
+			if (screenWidth > screenHeight) {
+				if (this.landscapeStyle != null && this.style != this.landscapeStyle) {
+					setStyle(this.landscapeStyle);
+				}
+			} else if (this.portraitStyle != null && this.style != this.portraitStyle){
+				setStyle( this.portraitStyle );
+			}
+		//#endif
 	}
 
 //#ifdef polish.Item.additionalMethods:defined

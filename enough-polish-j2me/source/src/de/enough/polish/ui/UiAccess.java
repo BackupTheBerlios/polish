@@ -817,7 +817,7 @@ public final class UiAccess {
 	
 	//#if polish.usePolishGui
 	/**
-	 * Sets a ChoiceItem or a subclass for the given ChoiceGroup. 
+	 * Appends a ChoiceItem or a subclass to the given ChoiceGroup. 
 	 * @param ChoiceGroup the ChoiceGroup
 	 * @param item the new item
 	 */

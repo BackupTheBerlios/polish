@@ -33,10 +33,13 @@ import javax.microedition.lcdui.Graphics;
  * <p><b>J2ME Polish Implementation</b><br/>
  * <br/>
  * <b>Initialisation</b><br/>
- * J2ME Polish calls the getPrefContentWidth()-method first with an open height (-1).
- * Then the getPrefContentHeight()-method is called with the actual granted width.
+ * J2ME Polish calls the getPrefContentWidth()-method first with the available height.
+ * Then the getPrefContentHeight()-method is called with the preferred content width or the actual granted width.
  * When the width had to be adjusted, the custom item will be notified again with
  * the setSize(width. height)-method.
+ * <br />
+ * The sizeChanged(int w, int h) method will be called when the available content width has changed,
+ * before getPrefContentWidth(int) and getPrefContentHeight(int) are called.
  * 
  * <br/><br/><b>Traversal</b><br/>
  * When the custom item gains the focus for the first time, the traverse-method

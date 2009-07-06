@@ -4874,12 +4874,18 @@ implements UiElement, Animatable
 			if (doInit) {
 				//#if tmp.usingTitle
 					if (this.title != null) {
-						this.title.isInitialized = false;
+						this.title.onScreenSizeChanged(width, height);
 					}
 				//#endif
 				//#if tmp.useExternalMenuBar
-					this.menuBar.isInitialized = false;
+					this.menuBar.onScreenSizeChanged(width, height);
 				//#endif
+				if (this.subTitle != null) {
+					this.subTitle.onScreenSizeChanged(width, height);
+				}
+				if (this.container != null) {
+					this.container.onScreenSizeChanged(width, height);
+				}
 				init( width, height );
 			}
 			//#if polish.css.repaint-previous-screen

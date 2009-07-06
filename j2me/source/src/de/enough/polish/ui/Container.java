@@ -3478,6 +3478,24 @@ public class Container extends Item {
 		}
 		return super.getMarginTop(availWidth);
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#onScreenSizeChanged(int, int)
+	 */
+	public void onScreenSizeChanged(int screenWidth, int screenHeight) {
+		super.onScreenSizeChanged(screenWidth, screenHeight);
+		Object[] items = this.itemsList.getInternalArray();
+		for (int i = 0; i < items.length; i++) {
+			Item item = (Item) items[i];
+			if (item == null) {
+				break;
+			}
+			item.onScreenSizeChanged(screenWidth, screenHeight);
+		}
+	}
+	
+	
 	
 
 

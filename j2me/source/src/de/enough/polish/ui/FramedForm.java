@@ -1175,6 +1175,28 @@ public class FramedForm extends Form {
 			item.addCommands(commandsList);
 		}
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#sizeChanged(int, int)
+	 */
+	public void sizeChanged(int width, int height) {
+		super.sizeChanged(width, height);
+		if (this.leftFrame != null) {
+			this.leftFrame.onScreenSizeChanged(width, height);
+		}
+		if (this.rightFrame != null) {
+			this.rightFrame.onScreenSizeChanged(width, height);
+		}
+		if (this.topFrame != null) {
+			this.topFrame.onScreenSizeChanged(width, height);
+		}
+
+		if (this.bottomFrame != null) {
+			this.bottomFrame.onScreenSizeChanged(width, height);
+		}
+	}
+	
 	
 
 //	/* (non-Javadoc)

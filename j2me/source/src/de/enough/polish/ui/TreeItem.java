@@ -948,7 +948,17 @@ public class TreeItem
 			}
 		}
 
-		
+		/*
+		 * (non-Javadoc)
+		 * @see de.enough.polish.ui.Item#onScreenSizeChanged(int, int)
+		 */
+		public void onScreenSizeChanged(int screenWidth, int screenHeight) {
+			super.onScreenSizeChanged(screenWidth, screenHeight);
+			if (this.children != null) {
+				this.children.onScreenSizeChanged(screenWidth, screenHeight);
+			}
+		}
+
 		
 	}
 
