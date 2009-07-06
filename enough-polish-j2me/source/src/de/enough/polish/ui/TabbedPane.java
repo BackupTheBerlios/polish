@@ -1269,12 +1269,12 @@ public class TabbedPane extends Screen
 		if (!this.isSizeChangedCalled) {
 			this.isSizeChangedCalled = true;
 			try {
+				this.tabIconsContainer.onScreenSizeChanged(width, height);
 				if (this.currentScreen != null) {
 					int tabAdjustedHeight = height - this.tabIconsContainer.itemHeight;
 					this.currentScreen.sizeChanged(width, tabAdjustedHeight);
 				}
 				super.sizeChanged(width, height);
-				this.tabIconsContainer.onScreenSizeChanged(width, height);
 			} finally {
 				this.isSizeChangedCalled = false;
 			}

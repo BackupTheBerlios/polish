@@ -443,6 +443,11 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	//////////////  END DEFAULT IMPLEMENTATION OF CUSTOM ITEM METHODS  /////////////////////////////
 	
 
+	//#if polish.handleEvents || polish.css.animations
+	//#define tmp.handleEvents
+	private boolean hasBeenShownBefore;
+//#endif
+	
 	/**
 	 * A J2ME Polish constant defining a transparent/invisible color.
 	 * TRANSPARENT has the value -1.
@@ -824,6 +829,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	//#ifdef polish.css.view-type
 		protected ItemView view;
 		protected boolean preserveViewType;
+		protected boolean setView;
 	//#endif
 	//#if polish.supportInvisibleItems || polish.css.visible
 		//#define tmp.invisible
@@ -874,12 +880,24 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		private RgbImage filterRgbImage;
 		private RgbFilter[] originalFilters;
 	//#endif
+	//#if polish.css.inline-label
+		protected boolean isInlineLabel;
+	//#endif
 	protected int availableWidth;
 	protected int availableHeight;
 	protected boolean ignoreRepaintRequests;
 
 	private ItemTransition itemTransition;
 
+	private boolean preserveBackground;
+	private boolean preserveBorder;
+	//#if polish.css.visited-style
+		private boolean hasBeenVisited;
+	//#endif
+	//#if polish.css.portrait-style || polish.css.landscape-style
+		protected Style landscapeStyle;
+		protected Style portraitStyle;
+	//#endif
 
 
 
@@ -905,7 +923,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 * @param style the style of this item - contains the background, border etc.
 	 */
 	protected FakeCustomItem(String label, int layout, int appearanceMode, Style style) {
-		super( label );
+		super( null );
 		this.style = style;
 		this.layout = layout;
 		this.appearanceMode = appearanceMode;
@@ -938,6 +956,8 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 			if (this.isShown){
 				this.label.showNotify();
 			}
+		} else if ((label == null && this.label.getText() == null) || (label != null && label.equals(this.label.getText())) ){
+			return;
 		} else {
 			this.label.setText( label );
 		}
@@ -1097,6 +1117,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 * @param background the new background, use null for not showing a background
 	 */
 	public void setBackground( Background background ) {
+		this.preserveBackground = true;
 		this.background = background;
 	}
 	
@@ -1105,9 +1126,9 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 * @param border the new border, use null for not showing a border
 	 */
 	public void setBorder( Border border ) {
+		this.preserveBorder = true;
 		this.border = border;
 	}
-	
 	
 	/**
 	 * Sets the style of this item.
@@ -1126,7 +1147,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		}
 		//System.out.println( this + " style [" + style.name + "]: right: " + this.isLayoutRight + " center: " + this.isLayoutCenter + " expand: " + this.isLayoutExpand + " layout=" + Integer.toHexString(this.layout));
 		if (this.isShown) {
-			if (this.background != style.background) {
+			if (this.background != style.background && !this.preserveBackground) {
 				if (this.background != null) {
 					this.background.hideNotify();
 				}
@@ -1134,7 +1155,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 					style.background.showNotify();
 				}
 			}
-			if (this.border != style.border) {
+			if (this.border != style.border && !this.preserveBackground) {
 				if (this.border != null) {
 					this.border.hideNotify();
 				}
@@ -1143,8 +1164,12 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 				}
 			}
 		}
-		this.background = style.background;
-		this.border = style.border;
+		if (!this.preserveBackground) {
+			this.background = style.background;
+		}
+		if (!this.preserveBorder) {
+			this.border = style.border;
+		}
 		
 		//#if polish.css.content-visible
 			Boolean contentVisibleBool = style.getBooleanProperty("content-visible");
@@ -1255,9 +1280,29 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		//#if polish.css.inline-label
 			Boolean inlineBool = style.getBooleanProperty("inline-label");
 			if (inlineBool != null) {
+				this.isInlineLabel = inlineBool.booleanValue();
 			}
 		//#endif
-			
+		
+		//#if polish.css.portrait-style || polish.css.landscape-style
+			//#if polish.css.landscape-style
+				Style lsStyle = (Style) style.getObjectProperty("landscape-style");
+				if (lsStyle != null) {
+					this.landscapeStyle = lsStyle;
+					this.portraitStyle = style;
+				}
+			//#endif
+			//#if polish.css.portrait-style
+				Style ptStyle = (Style) style.getObjectProperty("portrait-style");
+				if (ptStyle != null) {
+					if (this.landscapeStyle == null) {
+						this.landscapeStyle = style;
+					}
+					this.portraitStyle = ptStyle;
+				}
+			//#endif
+		//#endif
+
 		// now set other style attributes:
 		setStyle( style, true );
 	}
@@ -1600,7 +1645,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 * @return the complete width of this item.
 	 */
 	public int getItemWidth( int firstLineWidth, int availWidth) {
-		return getItemWidth(firstLineWidth, availWidth, -1);
+		return getItemWidth(firstLineWidth, availWidth, this.availableHeight);
 	}
 
 	
@@ -1615,10 +1660,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 * @return the complete width of this item.
 	 */
 	public int getItemWidth( int firstLineWidth, int availWidth, int availHeight ) {
-		if (!this.isInitialized || this.itemWidth > availWidth) {// || (this.isLayoutExpand && lineWidth > this.itemWidth) ) {
-//			if (this.itemWidth > lineWidth) {
-//				System.out.println("itemWidth=" + this.itemWidth + ", lineWidth=" + lineWidth + ", this=" + this);
-//			}
+		if (!this.isInitialized || this.availableWidth != availWidth || this.availableHeight != availHeight  ) {
 			init( firstLineWidth, availWidth, availHeight );
 		}
 		return this.itemWidth;
@@ -1634,7 +1676,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 * @return the complete heigth of this item.
 	 */
 	public int getItemHeight( int firstLineWidth, int availWidth) {
-		return getItemHeight(firstLineWidth, availWidth, -1);
+		return getItemHeight(firstLineWidth, availWidth, this.availableHeight);
 	}
 
 	/**
@@ -1648,10 +1690,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 * @return the complete heigth of this item.
 	 */
 	public int getItemHeight( int firstLineWidth, int availWidth, int availHeight ) {
-		if (!this.isInitialized || this.itemWidth > availWidth) {
-//			if (this.itemWidth > lineWidth) {
-//				System.out.println("trigger re-initialise lineWidth=" + availWidth + ", itemWidth=" + itemWidth + ", isInitialized=" + this.isInitialized + " for " + this);
-//			}
+		if (!this.isInitialized || this.availableWidth != availWidth || this.availableHeight != availHeight  ) {
 			init( firstLineWidth, availWidth, availHeight );
 		}
 		return this.itemHeight;
@@ -1816,6 +1855,38 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		}
 	}
 	
+//	/**
+//	 * Repaints the screen to which this item belongs to depending on the isInitialized field
+//	 * When this item is initialized, only the area covered by this item is repainted (unless other repaint requests are queued).
+//	 * When this item is not initialized (isInitialized == false), a repaint for the complete screen is triggered, as there might be
+//	 * a size change involved.
+//	 * Subclasses can call this method whenever their contents have changed and they need an immediate refresh.
+//	 * 
+//	 * @see #isInitialized 
+//	 * @see #repaintFully()
+//	 * @see #repaint(int, int, int, int)
+//	 */
+//	protected void repaint() {
+//		if (this.ignoreRepaintRequests) {
+//			return;
+//		}
+//		//#if tmp.invisible
+//			if (this.isInvisible) {
+//				return;
+//			}
+//		//#endif
+//		//#if polish.Bugs.fullRepaintRequired
+//			repaintFully();
+//		//#else
+//			//System.out.println("repaint(): " + this.relativeX + ", " + this.relativeY + ", " + this.itemWidth + ", " + this.itemHeight);
+//			if (this.isInitialized) {
+//				// note: -contentX, -contentY fails for right or center layouts
+//				repaint( - (this.paddingLeft + this.marginLeft + getBorderWidthLeft()), -(this.paddingTop + this.marginTop + getBorderWidthTop()), this.itemWidth, this.itemHeight );
+//			} else {
+//				repaintFully();
+//			}
+//		//#endif
+//	}
 	
 	/**
 	 * Retrieves the border width.
@@ -1882,6 +1953,35 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	}
 
 
+
+	/**
+	 * Repaints the specified relative area of this item.
+	 * The area is specified relative to the <code>Item's</code>
+	 * content area.
+	 * 
+	 * @param relX horizontal start position relative to this item's content area
+	 * @param relY vertical start position relative to this item's content area
+	 * @param width the width of the area
+	 * @param height the height of the area
+	 * 
+	 * @see #repaint()
+	 * @see #repaintFully()
+	 */
+//	protected void repaint( int relX, int relY, int width, int height ) {
+//		//System.out.println("repaint called by class " + getClass().getName() );
+////		if (this.parent instanceof Container) {
+////			((Container) this.parent).isInitialized = false;
+////		}
+//		Screen scr = getScreen();
+//		// rickyn: Removed second test to correct dropped redraw requests for screens within a tabbedPane
+//		if (scr != null/* && scr == StyleSheet.currentScreen*/) {
+//			relX += getAbsoluteX(); // + this.contentX;
+//			relY += getAbsoluteY(); // + this.contentY;
+//			//System.out.println("item.repaint(" + relX + ", " + relY+ ", " +  width + ", " +  height + ")  for " + this );
+//			scr.requestRepaint( relX, relY, width, height + 1 );
+//		}
+//	}
+
 	
 	/**
 	 * Requests that this item and all its parents are to be re-initialised, if the size of this item has been changed.
@@ -1889,6 +1989,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 * This method should be called when an item changes its size more than usual.
 	 */
 	public void requestInit() {
+		if (this.isInitialized) {
 			this.isInitialized = false;
 			if (this.label != null) {
 				this.label.isInitialized = false;
@@ -1902,7 +2003,10 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 			if (scr != null) {
 				scr.requestInit();
 			}
-			repaint();
+			if (this.isShown) {
+				repaint();
+			}
+		}
 	}
 	
 	/**
@@ -2205,12 +2309,6 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	public void notifyStateChanged()
 	{
 		if (this.itemStateListener != null) {
-			try {
-				return;
-			} catch (Exception e) {
-				//#debug error
-				System.out.println("Unable to forward ItemStateChanged event to listener " + this.itemStateListener + e );
-			}
 		}
 		Screen scr = StyleSheet.currentScreen;
 		if (scr == null) {
@@ -2242,6 +2340,10 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		// initialise this item if necessary:
 		int availWidth = rightBorder - leftBorder;
 		if (!this.isInitialized || (availWidth < this.itemWidth )) {
+			if (availWidth < 2) {
+				repaint();
+				return;
+			}
 			//#if polish.debug.info
 			if (availWidth < this.itemWidth ) {
 				//#debug info
@@ -2258,7 +2360,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 			int widthBefore = this.itemWidth;
 			init( this.availableWidth, this.availableWidth, this.availableHeight );
 			if ( (this.itemHeight != heightBefore || this.itemWidth != widthBefore) && this.parent != null) {
-				//#debug
+				//#debug warn
 				System.out.println("requesting initialization of parent: itemWidth=" + this.itemWidth + "(" + widthBefore + "), itemHeight=" + this.itemHeight + "(" + heightBefore + ") for item " + this);
 				this.parent.requestInit();
 				// returning here can lead to flickering - however, having to re-initialize the parent here
@@ -2361,6 +2463,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		if (this.label != null) {
 			if (this.useSingleRow) {
 				this.label.paint( x, y, leftBorder, rightBorder - (this.contentWidth + this.paddingHorizontal), g );
+				leftBorder += this.label.itemWidth;
 			} else {
 				this.label.paint( x, y, leftBorder, rightBorder, g );
 				y += this.label.itemHeight;
@@ -2415,6 +2518,9 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 				if(this.isLayoutRight)
 				{
 					backgroundX = rightBorder + this.paddingRight - this.backgroundWidth;
+					//#if polish.css.after
+						backgroundX += this.afterWidth;
+					//#endif
 				}
 				paintBackgroundAndBorder(backgroundX, backgroundY, this.backgroundWidth, this.backgroundHeight, g);
 		//#if polish.css.include-label
@@ -2523,7 +2629,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 				if (this.view != null) {
 				} else {
 			//#endif
-					paintContent( x, y, leftBorder, rightBorder, g );				
+					paintContent( x, y, leftBorder, rightBorder, g );
 			//#ifdef polish.css.view-type
 				}
 			//#endif
@@ -2531,7 +2637,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 			}
 		//#endif
 			
-//		g.setColor(0xff0000);
+//		g.setColor(0xffFF00);
 //		g.drawRect( getAbsoluteX() + 1, getAbsoluteY() + 1, this.itemWidth - 2, this.itemHeight - 2);
 //		if (this.parent != null) {
 //			g.setColor(0x00ff00);
@@ -2674,7 +2780,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 */
 	protected void init( int firstLineWidth, int availWidth, int availHeight ) {
 		//#debug
-		System.out.println("initialising item " + this + " with availWidth " + firstLineWidth + "/" + availWidth + ", height " + availHeight);
+		System.out.println("initialising item " + this + " with availWidth " + firstLineWidth + "/" + availWidth + ", height " + availHeight + " (was: " + this.availableWidth + ", " + this.availableHeight + ")" );
 		this.availableWidth = availWidth;
 		this.availableHeight = availHeight;
 		//#if tmp.invisible
@@ -2686,6 +2792,20 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 				return;
 			}
  		//#endif
+			
+		Style myStyle = this.style;
+		if (myStyle != null) {
+			this.paddingLeft = myStyle.getPaddingLeft(availWidth);
+			this.paddingRight = myStyle.getPaddingRight(availWidth);
+			this.paddingTop = myStyle.getPaddingTop(availWidth);
+			this.paddingBottom = myStyle.getPaddingBottom(availWidth);
+			this.paddingVertical = myStyle.getPaddingVertical(availWidth);
+			this.paddingHorizontal = myStyle.getPaddingHorizontal(availWidth);
+			this.marginLeft = getMarginLeft(availWidth);
+			this.marginRight = getMarginRight(availWidth);
+			this.marginTop = getMarginTop(availWidth);
+			this.marginBottom = getMarginBottom(availWidth);
+		}
 		
 		if (this.style != null && !this.isStyleInitialised) {
 			setStyle( this.style );
@@ -2701,20 +2821,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 				setStyle( StyleSheet.defaultStyle );
 			}
 		//#endif
-		Style myStyle = this.style;
-		if (myStyle != null) {
-			this.paddingLeft = myStyle.getPaddingLeft(availWidth);
-			this.paddingRight = myStyle.getPaddingRight(availWidth);
-			this.paddingTop = myStyle.getPaddingTop(availWidth);
-			this.paddingBottom = myStyle.getPaddingBottom(availWidth);
-			this.paddingVertical = myStyle.getPaddingVertical(availWidth);
-			this.paddingHorizontal = myStyle.getPaddingHorizontal(availWidth);
-			this.marginLeft = getMarginLeft(availWidth);
-			this.marginRight = getMarginRight(availWidth);
-			this.marginTop = getMarginTop(availWidth);
-			this.marginBottom = getMarginBottom(availWidth);
-		}
-
+		
 		int labelWidth = 0;
 		int labelHeight = 0;
 		if (this.label != null) {
@@ -2763,6 +2870,10 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		this.contentY = this.marginTop + getBorderWidthTop() + this.paddingTop; 
 		
 		//#if polish.css.inline-label
+			if (this.isInlineLabel && labelWidth < (90 * availWidth)/100) {
+				firstLineContentWidth -= labelWidth;
+				availableContentWidth -= labelWidth;
+			}
 		//#endif
 		
 		// initialise content by subclass:
@@ -2772,6 +2883,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 				this.contentHeight = 0;
 			} else {
 		//#endif
+			availHeight -= this.marginTop + getBorderWidthTop() + this.paddingTop + this.paddingBottom + getBorderWidthBottom() + this.marginBottom; 
 			//#ifdef polish.css.view-type
 				if (this.view != null) {
 					this.contentWidth = this.view.contentWidth;
@@ -2870,15 +2982,13 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		//#endif
 		if (cHeight > this.contentHeight) {
 			int ch = cHeight;
-			int start = 0;
 			if (!this.useSingleRow) {
 				ch -= labelHeight;
-				start = labelHeight;
 			}
 			if (isLayoutVerticalCenter()) {
-				this.contentY = start + ( (ch - this.contentHeight) >> 1);
+				this.contentY += ( (ch - this.contentHeight) >> 1);
 			} else if (isLayoutBottom()) {
-				this.contentY = start + ( ch - this.contentHeight );
+				this.contentY += ( ch - this.contentHeight );
 			}
 		}
 		this.itemHeight = cHeight + noneContentHeight;
@@ -3139,10 +3249,44 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 */
 	protected boolean handleKeyReleased( int keyCode, int gameAction ) {
 		//#debug
-		System.out.println("handleKeyReleased(" + keyCode + ", " + gameAction + ") for " + this + ", isPressed=" + this.isPressed);
+		System.out.println("handleKeyReleased(" + keyCode + ", " + gameAction + ") for " + this + ", isPressed=" + this.isPressed );
 		if (this.appearanceMode != PLAIN && this.isPressed && getScreen().isGameActionFire(keyCode, gameAction) )
 		{
 			notifyItemPressedEnd();
+			Item item = null;
+			if (this.defaultCommand == null && this.parent != null) {
+				item = this.parent;
+			}
+			if (item.defaultCommand != null) {
+				if (item.itemCommandListener != null) {
+				} else {			
+					Screen scr = getScreen();
+					if (scr != null ) {
+						scr.callCommandListener(item.defaultCommand);
+					}
+				}
+				//#if polish.css.visited-style
+					if (this.style != null) {
+						Style visitedStyle = (Style) this.style.getObjectProperty("visited-style");
+						if (visitedStyle != null) {
+							this.hasBeenVisited = true;
+							//#debug
+							System.out.println("found visited style " + visitedStyle.name + " in " + this.style.name);
+							setStyle( visitedStyle );
+						} 
+						if (this.parent instanceof Container) {
+							Container cont = (Container) this.parent;
+							visitedStyle = (Style) cont.itemStyle.getObjectProperty("visited-style");
+							if (visitedStyle != null) {
+								//#debug
+								System.out.println("found visited style " + visitedStyle.name + " in " + cont.itemStyle.name);								
+								cont.itemStyle = visitedStyle;
+							}
+						}
+					}
+				//#endif
+				return true;
+			}
 		}
 		int clearKey =
 		//#if polish.key.ClearKey:defined
@@ -3356,6 +3500,9 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	protected boolean handlePointerReleased( int relX, int relY ) {
 		if ( isInItemArea(relX, relY)) {
 			return handleKeyReleased( 0, Canvas.FIRE );
+		} else if (this.isPressed) {
+			notifyItemPressedEnd();
+			return true;
 		}
 		return false;
 	}
@@ -3539,13 +3686,25 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		if (!this.isStyleInitialised && this.style != null) {
 			setStyle( this.style );
 		}
+		Style focStyle;
 		if (this.focusedStyle != null) {
-			return this.focusedStyle;
+			focStyle = this.focusedStyle;
 		} else if (this.parent != null) {
-			return this.parent.getFocusedStyle();
+			focStyle = this.parent.getFocusedStyle();
 		} else {
-			return StyleSheet.focusedStyle;
+			focStyle= StyleSheet.focusedStyle;
 		}
+		//#if polish.css.visited-style
+			if (this.hasBeenVisited && focStyle != null) {
+				Style visitedStyle = (Style) focStyle.getObjectProperty("visited-style");
+				//#debug
+				System.out.println("found visited style " + (visitedStyle != null ? visitedStyle.name : "<none>") + " in " + focStyle.name);
+				if (visitedStyle != null) {
+					focStyle = visitedStyle;
+				}
+			}
+		//#endif
+		return focStyle;
 	}
 
 	/**
@@ -3744,6 +3903,10 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		//#endif
 		//#if tmp.handleEvents
 			//System.out.println("triggering event 'show' for " + this + " with style " + (this.style != null ? this.style.name : "<null>") + ", animations=" + (this.style != null ? "" + this.style.getAnimations() : "<null>"));
+			if (!this.hasBeenShownBefore) {
+				EventManager.fireEvent( EventManager.EVENT_SHOW_FIRST_TIME,  this, null );
+				this.hasBeenShownBefore = true;
+			}
 			EventManager.fireEvent( EventManager.EVENT_SHOW,  this, null );
 		//#endif
 	}
@@ -4091,6 +4254,85 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		if (invisible == this.isInvisible) {
 			return;
 		}
+//		if (visible) {
+//			System.out.println("+++ SETTING VISIBLE: " + this );
+//		} else {
+//			System.out.println("--- SETTING INVISIBLE: " + this );
+//		}
+		if (this.parent instanceof Container) {
+			Container parentContainer = (Container) this.parent;
+			if (invisible && this.isFocused) {
+				//System.out.println("making focused item invisible: " + this);
+				// remove any item commands:
+				Screen scr = getScreen();
+				if (scr != null) {
+				}
+				int itemIndex = 0;
+				boolean isFocusSet = parentContainer.focusClosestItemAbove( itemIndex );
+				this.isFocused = false;
+				//System.out.println("new focus set: " + isFocusSet + ", new index=" + parentContainer.focusedIndex + ", this.index=" + itemIndex );
+				if (isFocusSet) {
+					if (parentContainer.focusedIndex > itemIndex ) {
+						// focused has moved downwards, since the above item is now invisible,
+						// adjust the scrolling accordingly:
+						int offset = parentContainer.yOffset + this.itemHeight + parentContainer.paddingVertical;
+						if (offset > 0) {
+							offset = 0;
+						}
+						//System.out.println("setting parent scroll offset to " + offset );
+						parentContainer.setScrollYOffset( offset, false );
+					} else {
+						parentContainer.scroll( 0, parentContainer.focusedItem );
+					}
+				} else {
+					parentContainer.focusChild(-1);
+				}
+			} else if (!this.isFocused && parentContainer.focusedIndex > 10) {
+				// adjust scrolling so that the focused element of the parent container stays in the current position:
+				int offset;
+				if (invisible) {
+					 offset = parentContainer.getScrollYOffset() + this.itemHeight;
+					 if (offset > 0) {
+						 offset = 0;
+					 }
+					//System.out.println("invisible: adjusting yScrollOffset with itemHeight=" + this.itemHeight + " to " + (offset > 0 ? 0 : offset) );
+					parentContainer.setScrollYOffset( offset, false );
+				} else {
+					int height = this.invisibleItemHeight;
+					if (height == 0 && this.parent != null) {
+						//System.out.println("visible getting height for available width of " + this.parent.contentWidth );
+						this.isInvisible = false;
+						this.isInitialized = false;
+						height = getItemHeight( this.parent.contentWidth, this.parent.contentWidth, this.parent.contentHeight );
+					} else {
+						this.itemHeight = height;
+					}
+					offset = parentContainer.getScrollYOffset() - height;
+					//System.out.println("visible: adjusting yScrollOffset with height=" + height + " to " + offset );					
+					parentContainer.setScrollYOffset( offset, false );						
+				}
+				// adjust the internal Y position:
+			} else if (parentContainer.focusedIndex == -1)
+			{
+				if(visible)
+				{
+					//No other container is set to focused
+					//so it is ASSUMED that this is the only
+					//visisble item
+					this.relativeY = 0;
+					parentContainer.setScrollYOffset(0);
+				}
+			}
+		}
+		if ( invisible ) {
+			this.invisibleAppearanceModeCache = this.appearanceMode;
+			this.invisibleItemHeight = this.itemHeight;
+			this.appearanceMode = PLAIN;
+		} else {
+			this.appearanceMode = this.invisibleAppearanceModeCache;
+		}
+		this.isInvisible = invisible;
+		requestInit();
 		//#endif
 	}
 	/**
@@ -4321,6 +4563,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	}
 	
 	public void setItemTransition( ItemTransition transition ) {
+		this.itemTransition = transition;
 	}
 
 	public Image toImage() {
@@ -4332,13 +4575,17 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 			img = Image.createImage( this.itemWidth, this.itemHeight );
 		//#endif
 		Graphics g = img.getGraphics();
+		ItemTransition t = this.itemTransition;
+		this.itemTransition = null;
+		paint( 0, 0, 0, this.itemWidth, g );
+		this.itemTransition = t;
 		return img;
 	}
 	
 	public RgbImage toRgbImage() {
 		return new RgbImage( toImage(), true );
 	}
-
+	
 	/**
 	 * Determines whether this item is interactive and thus can be selected.
 	 * @return true when this item is deemed to be interactive
@@ -4346,5 +4593,32 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	public boolean isInteractive() {
 		return this.appearanceMode != PLAIN;
 	}
-
+	
+	/**
+	 * Notifies this item about a new screen size.
+	 * The default implementation just checks if the design should switch to portrait or landscape-style (if those CSS attributes are used).
+	 * The item will be re-initialized with its available dimensions using init(int,int,int) soon.
+	 * @param screenWidth the screen width
+	 * @param screenHeight the screen height
+	 */
+	public void onScreenSizeChanged( int screenWidth, int screenHeight ) {
+		//#if polish.css.portrait-style || polish.css.landscape-style
+			if (!this.isStyleInitialised && this.style != null) {
+				setStyle( this.style );
+			}
+			boolean styleChanged = false;
+			if (screenWidth > screenHeight) {
+				if (this.landscapeStyle != null && this.style != this.landscapeStyle) {
+					setStyle(this.landscapeStyle);
+					styleChanged = true;
+				}
+			} else if (this.portraitStyle != null && this.style != this.portraitStyle){
+				setStyle( this.portraitStyle );
+				styleChanged = true;
+			}
+			if (styleChanged && this.isFocused) {
+				setStyle( getFocusedStyle() );
+			}
+		//#endif
+	}
 }
