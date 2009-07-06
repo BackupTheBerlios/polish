@@ -7,7 +7,6 @@ import de.enough.polish.ui.StyleSheet;
 //#if polish.android
 import android.content.Context;
 import android.location.LocationManager;
-import de.enough.polish.android.location.AndroidLocationProvider;
 import de.enough.polish.android.midlet.MIDlet;
 //#endif
 
@@ -249,6 +248,7 @@ public class DeviceControl
 	 * Normally the network location provider is used in case the GPS location provider goes offline for some reason. With this method you can
 	 * turn of this fallback. This is useful if you want to be sure that you always have full acurracy for your location or non at all.
 	 * @param setFallbackOnGpsDisabled value 'true' if you want to disable the fallback mechanism. Value 'false' otherwise.
+	 * @deprecated
 	 */
 	public static void shouldFallbackToNetworkLocationOnGpsDisabled(boolean setFallbackOnGpsDisabled) {
 		fallbackOnGpsDisabled = setFallbackOnGpsDisabled;
@@ -257,23 +257,17 @@ public class DeviceControl
 	/**
 	 * This methods tells the caller if the fallback mechanism for the GPS location provider is enabled. See {@link #shouldFallbackToNetworkLocationOnGpsDisabled(boolean)} for details.
 	 * @return Value 'true' if the fallback is disabled. Value 'false' if the fallback is enabled (the default).
+	 * @deprecated
 	 */
 	public static boolean isFallbackToNetworkLocationOnGpsDisabled() {
 		return fallbackOnGpsDisabled;
 	}
 
 	/**
-	 * Returns the current locationProvider used by the system.
-	 * @return On of LocationManager.GPS_PROVIDER or LocationManager.NETWORK_PROVIDER
+	 * 
+	 * @return
+	 * @deprecated Use {@link de.enough.polish.location.LocationService#isGpsEnabled()}
 	 */
-	public static String getLocationProvider() {
-		AndroidLocationProvider androidLocationProviderInstance = AndroidLocationProvider.getInstance();
-		if(androidLocationProviderInstance != null) {
-			return androidLocationProviderInstance.getLocationProviderName();
-		}
-		return null;
-	}
-	
 	public static boolean isGpsEnabled() {
 		LocationManager locationManager = (LocationManager)MIDlet.midletInstance.getSystemService(Context.LOCATION_SERVICE);
 		boolean providerEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
