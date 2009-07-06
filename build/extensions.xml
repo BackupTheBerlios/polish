@@ -161,7 +161,7 @@
 			<mapping from="javax.microedition.lcdui.*">
 				<to>
 					de.enough.polish.android.lcdui.AlertType;
-					de.enough.polish.android.lcdui.Font;
+					import de.enough.polish.android.lcdui.Font;
 					import de.enough.polish.android.lcdui.Graphics;
 					import de.enough.polish.android.lcdui.Image; 
 					import de.enough.polish.ui.*
