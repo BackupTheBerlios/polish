@@ -607,7 +607,6 @@ These namespaces/schemas will be used soon.
     <capability name="JavaConfiguration" value="Android/1.5" />
     <capability name="ScreenSize" value="320x480" />
     <capability name="CanvasSize" value="320x453" />
-    <capability name="IconSize" value="48x48" />
   </device>
   
   <device supportsPolishGui="true">

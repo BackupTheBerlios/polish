@@ -493,6 +493,42 @@ public class PolishPreprocessor extends CustomPreprocessor {
 						lines.setCurrent( line );
 						continue;
 					}
+					
+					methodName = "tyle.removeAttribute(";
+					startPos = line.indexOf(methodName);
+					if (startPos == -1) {
+						methodName = "getStyle().removeAttribute(";
+						startPos = line.indexOf(methodName);
+					}
+					if (startPos != -1) {
+						int endPos = line.indexOf( ')', startPos + methodName.length() );
+						if (endPos == -1) {
+								System.out.println( getErrorStart(className, lines) + "Unsupported style-usage: "
+										+ "style.removeAttribute( \"name\" ); always needs to be on a single line. "
+										+ " This line might be invalid: " + line );
+							continue;
+						}
+						
+						String propertyNameAndValue = line.substring( startPos + methodName.length(),
+								endPos ).trim();
+						
+						if (propertyNameAndValue.charAt(0) != '"' ) {
+							// the user has used addAttribute(int, Object), so no need
+							// to adjust this line:
+							continue;
+						}
+						int quoteIndex = propertyNameAndValue.indexOf('"', 1);
+						if (quoteIndex == -1) {
+							throw new BuildException( getErrorStart(className, lines) + ": style.removeProperty(String,Object) method found without closing quotation marks for the property name: " + line);
+						}
+						String key = propertyNameAndValue.substring( 1, quoteIndex);
+						int id = this.idGenerator.getId(
+								key, this.environment.hasSymbol("polish.css." + key) );
+						line = StringUtil.replace( line, '"' + key + '"', "" + id );
+						//System.out.println("style: setting line[" + lines.getCurrentIndex() + " to = [" + line + "]");
+						lines.setCurrent( line );
+						continue;
+					}
 				//}
 				
 				// check for usage of java.lang.IllegalStateException:
