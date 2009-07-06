@@ -6,6 +6,7 @@ import javax.microedition.location.LocationException;
 import javax.microedition.location.LocationListener;
 import javax.microedition.location.LocationProvider;
 
+import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.HashMap;
 
 /**
@@ -30,6 +31,7 @@ implements LocationListener
 	
 	private FallbackLocationProvider( Criteria[] criteriaFallbacks ) throws LocationException {
 		HashMap uniqueProviders = new HashMap(criteriaFallbacks.length);
+		ArrayList providersList = new ArrayList(criteriaFallbacks.length);
 		// go from bottom to top, in case there is a location API that uses a single Location provider for all criteria.
 		// In such a case we have at least the most important provider:
 		for (int i=criteriaFallbacks.length; --i >= 0; ) {
@@ -41,12 +43,13 @@ implements LocationListener
 				} else {
 					uniqueProviders.put( provider, new Object() );				
 				}
+				providersList.add( 0, provider );
 			}
 		}
 		if (uniqueProviders.size() == 0) {
 			throw new LocationException();
 		}
-		this.providers = (LocationProvider[]) uniqueProviders.keys( new LocationProvider[ uniqueProviders.size() ]);
+		this.providers = (LocationProvider[]) providersList.toArray( new LocationProvider[ uniqueProviders.size() ]);
 		this.criteriaByProvider = uniqueProviders;
 		
 	}
@@ -163,11 +166,7 @@ implements LocationListener
 	 * LocationListener method - do not call.
 	 */
 	public void locationUpdated(LocationProvider provider, Location loc) {
-		if(this.locationListener == null) {
-			return;
-		}
-		// Propagate the update in case no active provider is present like on the first location before the state change event was triggered.
-		if (this.activeProvider == null || this.activeProvider == provider) {
+		if ((provider == this.activeProvider || this.activeProvider == null) && this.locationListener != null) {
 			this.locationListener.locationUpdated(this, loc);
 		}
 		
