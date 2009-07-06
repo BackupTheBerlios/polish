@@ -3484,7 +3484,6 @@ public class Container extends Item {
 	 * @see de.enough.polish.ui.Item#onScreenSizeChanged(int, int)
 	 */
 	public void onScreenSizeChanged(int screenWidth, int screenHeight) {
-		super.onScreenSizeChanged(screenWidth, screenHeight);
 		Object[] items = this.itemsList.getInternalArray();
 		for (int i = 0; i < items.length; i++) {
 			Item item = (Item) items[i];
@@ -3493,6 +3492,23 @@ public class Container extends Item {
 			}
 			item.onScreenSizeChanged(screenWidth, screenHeight);
 		}
+		//#if polish.css.portrait-style || polish.css.landscape-style
+			Screen scr = getScreen();
+			if (scr != null && scr.container == this) {
+				if (screenWidth > screenHeight) {
+					if (this.landscapeStyle != null && scr.style != this.landscapeStyle) {
+						scr.style = this.landscapeStyle;
+					}
+				} else if (this.portraitStyle != null && scr.style != this.portraitStyle){
+					scr.style = this.portraitStyle;
+				}
+	
+			} else {
+		//#endif
+				super.onScreenSizeChanged(screenWidth, screenHeight);
+		//#if polish.css.portrait-style || polish.css.landscape-style
+			}
+		//#endif
 	}
 	
 	

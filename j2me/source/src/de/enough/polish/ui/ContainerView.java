@@ -1170,7 +1170,7 @@ extends ItemView
 			Integer columns = style.getIntProperty("columns");
 			if (columns != null) {
 				this.numberOfColumns = columns.intValue();
-				//System.out.println("ContainerView: supporting " + this.numberOfColumns + " cols");
+				System.out.println("ContainerView: supporting " + this.numberOfColumns + " cols");
 				this.columnsSetting = NORMAL_WIDTH_COLUMNS;
 				//#ifdef polish.css.columns-width
 					String width = style.getProperty("columns-width");

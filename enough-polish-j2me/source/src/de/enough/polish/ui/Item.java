@@ -840,8 +840,8 @@ public abstract class Item implements UiElement, Animatable
 		private boolean hasBeenVisited;
 	//#endif
 	//#if polish.css.portrait-style || polish.css.landscape-style
-		private Style landscapeStyle;
-		private Style portraitStyle;
+		protected Style landscapeStyle;
+		protected Style portraitStyle;
 	//#endif
 
 

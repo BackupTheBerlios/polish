@@ -189,7 +189,7 @@ public abstract class TextEffect implements Serializable
 
 	/**
 	 * Paints the text and applies the text effect.
-	 * The default implementation calls drawText( String, int, int, int, int, int, Graphics)
+	 * The default implementation calls drawStrings(String[], int, int, int, int, int, int, int, int, Graphics)
 	 * 
 	 * @param parent the parent item
 	 * @param textLines the text
@@ -202,7 +202,7 @@ public abstract class TextEffect implements Serializable
 	 * @param maxWidth the width of the longest line
 	 * @param layout the anchor or the text, e.g. Item.LAYOUT_CENTER or Item.LAYOUT_RIGHT
 	 * @param g the graphics context
-	 * @see #drawString( String,int,int,int,int,Graphics)
+	 * @see #drawStrings(String[], int, int, int, int, int, int, int, int, Graphics)
 	 */
 	public void drawStrings( Item parent, String[] textLines, int textColor, int x, int y, int leftBorder, int rightBorder, int lineHeight, int maxWidth, int layout, Graphics g ) {
 		drawStrings(textLines, textColor, x, y, leftBorder, rightBorder, lineHeight, maxWidth, layout, g);
@@ -517,6 +517,7 @@ public abstract class TextEffect implements Serializable
 	
 	/**
 	 * Wraps the text into several lines.
+	 * The default implementation just calls the wrap method without parent item.
 	 * 
 	 * @param parent the parent item
 	 * @param text the text
@@ -524,6 +525,7 @@ public abstract class TextEffect implements Serializable
 	 * @param firstLineWidth width of the first line
 	 * @param lineWidth width of following lines
 	 * @return an arrays with strings all fitting into the specified dimensions
+	 * @see #wrap(String, int, Font, int, int)
 	 */
 	public String[] wrap(Item parent, String text, int textColor, Font font, int firstLineWidth, int lineWidth) {
 		return wrap(text,textColor,font,firstLineWidth,lineWidth);
@@ -531,12 +533,14 @@ public abstract class TextEffect implements Serializable
 
 	/**
 	 * Wraps the text into several lines.
+	 * The default implementation just calls TextUtil.wrap(text, font, firstLineWidth, lineWidth).
 	 * 
 	 * @param text the text
 	 * @param font used font
 	 * @param firstLineWidth width of the first line
 	 * @param lineWidth width of following lines
 	 * @return an arrays with strings all fitting into the specified dimensions
+	 * @see TextUtil#wrap(String, Font, int, int)
 	 */
 	public String[] wrap(String text, int textColor, Font font, int firstLineWidth, int lineWidth) {
 		return TextUtil.wrap(text, font, firstLineWidth, lineWidth);
