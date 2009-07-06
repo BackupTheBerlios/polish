@@ -470,6 +470,9 @@ public abstract class CustomItem extends Item
 	/** indivates whether a user input event has been handled */
 	protected boolean isEventHandled;
 
+	private int availableContentWidth;
+	private int availableContentHeight;
+
 
 	/**
 	 * Superclass constructor, provided so that the
@@ -1206,9 +1209,15 @@ public abstract class CustomItem extends Item
 	 */
 	protected void initContent(int firstLineWidth, int availWidth, int availHeight) {
 		// intialising the content:
-		int prefWidth = getPrefContentWidth( -1 );
+		boolean resetSize = (availWidth != this.availableContentWidth || availHeight != this.availableContentHeight);
+		if (resetSize) {
+			this.availableContentWidth = availWidth;
+			this.availableContentHeight = availHeight;
+			sizeChanged( availWidth, availHeight );
+			resetSize = false;
+		}
+		int prefWidth = getPrefContentWidth( availHeight );
 		this.preferredWidth = prefWidth;
-		boolean resetSize = false;
 		if (prefWidth > availWidth) {
 			prefWidth = availWidth;
 			resetSize = true;
