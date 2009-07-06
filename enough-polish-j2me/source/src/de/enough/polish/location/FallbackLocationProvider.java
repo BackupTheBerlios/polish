@@ -1,4 +1,4 @@
-//#condition polish.api.location
+//#condition polish.api.locationapi
 package de.enough.polish.location;
 import javax.microedition.location.Criteria;
 import javax.microedition.location.Location;
