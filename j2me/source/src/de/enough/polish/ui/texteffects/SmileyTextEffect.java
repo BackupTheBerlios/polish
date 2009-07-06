@@ -27,8 +27,6 @@
 package de.enough.polish.ui.texteffects;
 
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.Hashtable;
 
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
@@ -36,7 +34,6 @@ import javax.microedition.lcdui.Image;
 
 import de.enough.polish.ui.TextEffect;
 import de.enough.polish.util.ArrayList;
-import de.enough.polish.util.HashMap;
 import de.enough.polish.util.IntHashMap;
 
 /**
@@ -162,15 +159,15 @@ public class SmileyTextEffect extends TextEffect {
 		
 		for (int index = 0; index < str.length(); index++) {
 			char hash = Character.toLowerCase(str.charAt(index));
-			if(this.smileyHash.containsKey(hash))
+			ArrayList smileys = (ArrayList)smileyHash.get(hash);
+			if(smileys != null)
 			{
-				ArrayList smileys = (ArrayList)this.smileyHash.get(hash);
 				String sequence = getNextSmiley(str, index, smileys);
 				if(sequence != null)
 				{
 					int textWidth = getFont().substringWidth(str, textStart, index - textStart); 
 					
-					stringWidth += textWidth + this.smileyWidth;
+					stringWidth += textWidth + smileyWidth;
 					
 					index += sequence.length();
 					
@@ -187,19 +184,19 @@ public class SmileyTextEffect extends TextEffect {
 	}
 	
 	public int getFontHeight() {
-		if (!this.isInitialized) {
+		if (!isInitialized) {
 			init();
 		}
 		
 		int fontHeight = super.getFontHeight();
 		
-		if(fontHeight > this.smileyHeight)
+		if(fontHeight > smileyHeight)
 		{
 			return fontHeight;
 		}
 		else
 		{
-			return this.smileyHeight;
+			return smileyHeight;
 		}
 	}
 	
@@ -209,7 +206,7 @@ public class SmileyTextEffect extends TextEffect {
 	public String[] wrap(String text, int textColor, Font font,
 			int firstLineWidth, int lineWidth)
 	{
-		if (!this.isInitialized) {
+		if (!isInitialized) {
 			init();
 		}
 		if (firstLineWidth <= 0 || lineWidth <= 0) {
@@ -278,7 +275,7 @@ public class SmileyTextEffect extends TextEffect {
 			int completeWidth, int firstLineWidth, int lineWidth, 
 			ArrayList list ) 
 	{
-		if (!this.isInitialized) {
+		if (!isInitialized) {
 			init();
 		}
 		
@@ -292,9 +289,9 @@ public class SmileyTextEffect extends TextEffect {
 			char hash = Character.toLowerCase(c);
 			
 			String smiley = null;
-			if(this.smileyHash.containsKey(hash))
+			ArrayList smileys = (ArrayList)smileyHash.get(hash);
+			if(smileys != null)
 			{
-				ArrayList smileys = (ArrayList)this.smileyHash.get(hash);
 				smiley = getNextSmiley(value, i, smileys);
 			}
 			
@@ -306,7 +303,7 @@ public class SmileyTextEffect extends TextEffect {
 			}
 			else
 			{
-				elementWidth = this.smileyWidth;
+				elementWidth = smileyWidth;
 			}
 			
 			currentLineWidth += elementWidth;
@@ -353,7 +350,7 @@ public class SmileyTextEffect extends TextEffect {
 	public void drawString(String text, int textColor, int x, int y, int orientation,
 			Graphics g) 
 	{	
-		if (!this.isInitialized) {
+		if (!isInitialized) {
 			init();
 		}
 		
@@ -362,13 +359,13 @@ public class SmileyTextEffect extends TextEffect {
 		
 		for (int index = 0; index < text.length(); index++) {
 			char hash = Character.toLowerCase(text.charAt(index));
-			if(this.smileyHash.containsKey(hash))
+			ArrayList smileys = (ArrayList)smileyHash.get(hash);
+			if(smileys != null)
 			{
-				ArrayList smileys = (ArrayList)this.smileyHash.get(hash);
 				String sequence = getNextSmiley(text, index, smileys);
 				if(sequence != null)
 				{
-					Smiley smiley = (Smiley)this.smileyMap.get(sequence.hashCode());
+					Smiley smiley = (Smiley)smileyMap.get(sequence.hashCode());
 					
 					g.drawSubstring(text, textStart, index - textStart, x + drawStart, y, orientation);
 					
@@ -378,7 +375,7 @@ public class SmileyTextEffect extends TextEffect {
 					
 					g.drawImage(smiley.image, x + drawStart, y, orientation);
 					
-					drawStart += this.smileyWidth;
+					drawStart += smileyWidth;
 					
 					index += sequence.length();
 					
