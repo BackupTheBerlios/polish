@@ -288,7 +288,7 @@
 		<capability name="polish.java5" value="true" />
 		<capability name="build.Preverifier" value="none" />
 		<capability name="Emulator.Class" value="AndroidEmulator" />
-		<capability name="JavaPackage" value="mmapi,pdaapi,wmapi" />
+		<capability name="JavaPackage" value="mmapi,pdaapi,wmapi,location" />
 		<capability name="TextField.useDirectInput" value="true" />
 		<capability name="build.Android.Platform.Version" value="1.1" />
 		<capability name="build.Android.Platform.Target" value="1" />
