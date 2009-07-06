@@ -4664,6 +4664,26 @@
 		id="396"
 		since="J2ME Polish 2.1.1"
 	/>
+
+	<attribute
+		name="landscape-style"
+		type="style"
+		appliesTo="Item"
+		description="The name of the style for an item in landscape mode (when the screen is more wide than high)."
+		default="null"
+		id="397"
+		since="J2ME Polish 2.1.1"
+	/>
+
+	<attribute
+		name="portrait-style"
+		type="style"
+		appliesTo="Item"
+		description="The name of the style for an item in portrait mode (when the screen is more high than wide)."
+		default="null"
+		id="398"
+		since="J2ME Polish 2.1.1"
+	/>
 	
 
 <!-- 

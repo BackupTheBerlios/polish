@@ -52,6 +52,7 @@ import de.enough.polish.util.ProcessUtil;
 public class AndroidEmulator extends Emulator{
 	public final static String QVGA_P = "QVGA-P";
 	public final static String QVGA_L = "QVGA-L";
+	public final static String HVGA = "HVGA";
 	public final static String HVGA_P = "HVGA-P";
 	public final static String HVGA_L = "HVGA-L";
 		
@@ -235,6 +236,6 @@ public class AndroidEmulator extends Emulator{
 		if("480x320".equals(screenSize)) {
 			return HVGA_L;
 		}
-		return HVGA_P;
+		return HVGA;
 	}
 }
