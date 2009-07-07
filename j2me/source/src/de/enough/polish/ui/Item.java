@@ -4626,10 +4626,13 @@ public abstract class Item implements UiElement, Animatable
 			if (newStyle != null) {
 				setStyle( newStyle );
 				if (this.isFocused) {
-					if (this.parent instanceof Container) {
-						((Container)this.parent).itemStyle = newStyle;
+					Screen scr = getScreen();
+					if (scr == null || scr.container != this) {
+						if (this.parent instanceof Container) {
+							((Container)this.parent).itemStyle = newStyle;
+						}
+						setStyle( getFocusedStyle() );
 					}
-					setStyle( getFocusedStyle() );
 				}
 			}
 		//#endif
