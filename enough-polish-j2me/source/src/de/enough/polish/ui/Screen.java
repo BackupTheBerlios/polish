@@ -5806,6 +5806,10 @@ implements UiElement, Animatable
 		return this.paintLock;
 	}
 
+	public Container getRootContainer() {
+		return this.container;
+	}
+
 
 
 

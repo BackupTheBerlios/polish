@@ -22,6 +22,10 @@ import android.view.MotionEvent;
 import android.view.Window;
 import de.enough.polish.android.io.ConnectionNotFoundException;
 import de.enough.polish.android.lcdui.AndroidDisplay;
+import de.enough.polish.ui.Display;
+import de.enough.polish.ui.Displayable;
+import de.enough.polish.ui.Item;
+import de.enough.polish.ui.Screen;
 
 //#if polish.android1.5
 import android.os.ResultReceiver;
@@ -75,6 +79,10 @@ public abstract class MIDlet extends Activity {
 	private ContentResolver contentResolver;
 
 	private boolean shuttingDown;
+	
+	private boolean isSoftkeyboardOpen;
+
+	private int currentScreenYOffset;
 
 //	private PowerManager.WakeLock wakeLock;
 
@@ -647,6 +655,9 @@ public abstract class MIDlet extends Activity {
 		//#if polish.android1.5
 			//#debug
 			System.out.println("SHOWING softkeyboard");
+			if (this.isSoftkeyboardOpen) {
+				return;
+			}
 	//		getWindow().addFlags(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 			//TODO: If the hardkeyboard is shown, hide the softkeyboard.
 			InputMethodManager inputMethodManager = (InputMethodManager)getSystemService( Context.INPUT_METHOD_SERVICE);
@@ -665,13 +676,19 @@ public abstract class MIDlet extends Activity {
 					}
 				});
 			}
+			this.isSoftkeyboardOpen = true;
+			onSoftKeyboardOpened();
 		//#endif
 	}
+
 
 	public void hideSoftKeyboard() {
 		//#if polish.android1.5
 			//#debug
 			System.out.println("HIDING softkeyboard");
+			if (!this.isSoftkeyboardOpen) {
+				return;
+			}
 			InputMethodManager inputMethodManager = (InputMethodManager)getSystemService( Context.INPUT_METHOD_SERVICE);
 			AndroidDisplay display = AndroidDisplay.getDisplay(this);
 			boolean active = inputMethodManager.isActive(display);
@@ -679,6 +696,8 @@ public abstract class MIDlet extends Activity {
 				IBinder windowToken = display.getWindowToken();
 				inputMethodManager.hideSoftInputFromWindow(windowToken, 0);
 			}
+			this.isSoftkeyboardOpen = false;
+			onSoftKeyboardClosed();
 		//#endif
 	}
 	
@@ -697,7 +716,47 @@ public abstract class MIDlet extends Activity {
 				inputMethodManager.toggleSoftInputFromWindow(windowToken,  0, 0);
 				//inputMethodManager.hideSoftInputFromWindow(windowToken, 0);				
 			}
+			this.isSoftkeyboardOpen = !this.isSoftkeyboardOpen;
+			if (this.isSoftkeyboardOpen) {
+				onSoftKeyboardOpened();
+			} else {
+				onSoftKeyboardClosed();
+			}
 		//#endif
+	}
+	
+	private Screen getCurrentScreen() {
+		Display display = Display.getInstance();
+		if (display == null) {
+			return null;
+		}
+		Displayable disp = display.getCurrent();
+		if (disp == null || (!(disp instanceof Screen))) {
+			return null;
+		}
+		return (Screen) disp;
+	}
+	
+	private void onSoftKeyboardOpened() {
+		Screen screen = getCurrentScreen();
+		if (screen != null) {
+			Item item = screen.getCurrentItem();
+			if (item != null) {
+				this.currentScreenYOffset = screen.getScrollYOffset();
+				int contAbsY = 0;
+				if (screen.getRootContainer() != null) {
+					contAbsY = screen.getRootContainer().getAbsoluteY();
+				}
+				screen.setScrollYOffset( -(item.getAbsoluteY() - contAbsY), true);
+			}
+		}
+	}
+
+	private void onSoftKeyboardClosed() {
+		Screen screen = getCurrentScreen();
+		if (screen != null) {
+			screen.setScrollYOffset(this.currentScreenYOffset, true);
+		}
 	}
 
 }
