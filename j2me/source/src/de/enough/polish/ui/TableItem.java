@@ -493,6 +493,8 @@ public class TableItem
 	 */
 	public void animate(long currentTime, ClippingRegion repaintRegion)
 	{
+		
+		
 		super.animate(currentTime, repaintRegion);
 		//TODO animate currently selected item
 		int current = this.xOffset;
@@ -504,9 +506,11 @@ public class TableItem
 			if ( ( speed > 0 && current > target) || (speed < 0 && current < target ) ) {
 				current = target;
 			}
-			this.xOffset = current;
-			addRelativeToContentRegion(repaintRegion, -1, -1, this.contentWidth + 2, this.contentHeight + 2 );
+			this.xOffset = current;		
+			addRelativeToContentRegion(repaintRegion, -1, -1, this.completeWidth + 2, this.contentHeight + 2 );
+			
 		}
+		
 		synchronized (this.paintLock) {
 			int sCol = this.selectedColumnIndex;
 			int sRow = this.selectedRowIndex;
@@ -939,8 +943,8 @@ public class TableItem
 			if (this.targetXOffset + this.internalX <  0) {
 				this.targetXOffset = -this.internalX;
 			} else if (this.targetXOffset + this.internalX + this.internalWidth > this.contentWidth) {
-				this.targetXOffset = this.contentWidth - (this.internalX + this.internalWidth );
-			}
+				this.targetXOffset = this.contentWidth - (this.internalX  + this.internalWidth );
+			}	
 		}
 		notifyStateChanged();
 	}
