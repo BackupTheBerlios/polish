@@ -4615,18 +4615,22 @@ public abstract class Item implements UiElement, Animatable
 			if (!this.isStyleInitialised && this.style != null) {
 				setStyle( this.style );
 			}
-			boolean styleChanged = false;
+			Style newStyle = null;
 			if (screenWidth > screenHeight) {
 				if (this.landscapeStyle != null && this.style != this.landscapeStyle) {
-					setStyle(this.landscapeStyle);
-					styleChanged = true;
+					newStyle = this.landscapeStyle;
 				}
 			} else if (this.portraitStyle != null && this.style != this.portraitStyle){
-				setStyle( this.portraitStyle );
-				styleChanged = true;
+				newStyle = this.portraitStyle;
 			}
-			if (styleChanged && this.isFocused) {
-				setStyle( getFocusedStyle() );
+			if (newStyle != null) {
+				setStyle( newStyle );
+				if (this.isFocused) {
+					if (this.parent instanceof Container) {
+						((Container)this.parent).itemStyle = newStyle;
+					}
+					setStyle( getFocusedStyle() );
+				}
 			}
 		//#endif
 	}
