@@ -461,7 +461,7 @@ implements UiElement, Animatable
 	 * Initialises this screen before it is painted for the first time.
 	 */
 	protected void init( int width, int height) {
-		// #debug
+		//#debug
 		System.out.println("Initialising screen " + this + " with dimension " + width + "x" + height);
 		
 		// calling super.setFullScreenMode(true) is already done within the showNotify() method

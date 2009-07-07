@@ -480,15 +480,17 @@ public class ChoiceTextField
 	 * @see de.enough.polish.ui.Item#handlePointerPressed(int, int)
 	 */
 	protected boolean handlePointerPressed(int x, int y) {
-		//#debug
-		System.out.println("handlePointerPressed(" + x + ", " + y + ")");
 		boolean handled = super.handlePointerPressed(x, y);
+		//#debug
+		System.out.println("handlePointerPressed(" + x + ", " + y + ") for " + this + ", isOpen=" + this.isOpen + ", super handled=" + handled);
 		if (!handled && this.isOpen) {
 			handled = this.choicesContainer.handlePointerPressed(x - this.contentX, y - (this.choicesContainer.relativeY + this.contentY) );
 			if (handled && !this.isInChoice) {
 				this.isInChoice = true;
+			} else {
+				openChoices(false);
+				handled = true;
 			}
-			handled = true;
 		}
 		return handled;
 	}
@@ -499,9 +501,9 @@ public class ChoiceTextField
 	 * @see de.enough.polish.ui.Item#handlePointerPressed(int, int)
 	 */
 	protected boolean handlePointerReleased(int x, int y) {
-		//#debug
-		System.out.println("handlePointerReleased(" + x + ", " + y + ")");
 		boolean handled = super.handlePointerReleased(x, y);
+		//#debug
+		System.out.println("handlePointerReleased(" + x + ", " + y + ") for " + this + ", isOpen=" + this.isOpen + ", super handled=" + handled);
 		if (!handled && this.isOpen) {
 			handled = this.choicesContainer.handlePointerReleased(x - this.contentX, y - (this.choicesContainer.relativeY + this.contentY) );
 			if (!handled && this.choicesContainer.focusedItem != null) {
@@ -556,9 +558,12 @@ public class ChoiceTextField
 	private void openChoices( boolean open ) {
 		//#debug
 		System.out.println("open choices: " + open + ", have been opened already:" + this.isOpen);
+		try { throw new RuntimeException(); } catch (Exception e) { e.printStackTrace(); }
 		this.choicesContainer.focusChild( -1 );
 		if (open) {
-			if (this.parent instanceof Container) {
+			if (this.choicesContainer.size() == 0) {
+				open = false;
+			} else if (this.parent instanceof Container) {
 				Container parentContainer = (Container) this.parent;
 				if ( parentContainer.enableScrolling ) {
 					int availWidth = this.itemWidth - (this.marginLeft + this.marginRight);
