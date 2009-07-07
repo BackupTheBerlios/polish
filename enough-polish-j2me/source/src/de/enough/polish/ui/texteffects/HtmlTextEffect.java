@@ -199,7 +199,7 @@ public class HtmlTextEffect extends TextEffect {
 	 * @see de.enough.polish.ui.TextEffect#getFontHeight()
 	 */
 	public int getFontHeight() {
-		if (this.midp2View != null) {
+		if (this.midp2View == null) {
 			return super.getFontHeight();
 		} else {
 			return this.midp2View.getContentHeight();
