@@ -55,6 +55,7 @@ public class HtmlTextEffect extends TextEffect {
 	 */
 	public HtmlTextEffect() {
 		// use style for further initialization, if required.
+		this.isTextSensitive = true;
 	}
 	
 	
