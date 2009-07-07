@@ -448,10 +448,8 @@
 			-->
 			<fileset dir="build/coreclasses" includes="de/enough/polish/rmi/bluetooth/*" />
 			<fileset dir="build/clientclasses" includes="de/enough/polish/rmi/*" />
-			<!-- keep original Serializer, so that JavaSE components are not missing... 
-			<fileset dir="build/clientclasses" includes="de/enough/polish/io/*" />
-			-->
-			<fileset dir="build/clientclasses" includes="de/enough/polish/io/*" />
+			<!-- We need un-preprocessed classes for server-side rmi. -->
+			<fileset dir="build/clientdummy" includes="de/enough/polish/io/*" />
 			<fileset dir="tmp/core/runtime" />
 		</jar>
 	</target>
