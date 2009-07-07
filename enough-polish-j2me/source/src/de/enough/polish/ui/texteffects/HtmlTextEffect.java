@@ -213,10 +213,9 @@ public class HtmlTextEffect extends TextEffect {
 	 */
 	public int stringWidth(String str) {
 		if (this.midp2View == null) {
-			return super.stringWidth(str);
-		} else {
-			return this.midp2View.getContentWidth();
-		}
+			wrap( str, 0, getFont(), Integer.MAX_VALUE, Integer.MAX_VALUE );
+		} 
+		return this.midp2View.getContentWidth();
 	}
 
 
