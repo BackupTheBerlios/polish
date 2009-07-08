@@ -198,7 +198,13 @@ public class AudioPlayer implements PlayerListener
 		return this.listener;
 	}
 
-	public void streamMp3s(String[] filenames) {
+	/**
+	 * This method will play the files with the filenames given in the parameter one after the other.
+	 * This method is only available for the Android platform at the moment.
+	 * @param filenames Must not be null and no array element must be null.
+	 * @throws IOException 
+	 */
+	public void streamMp3s(String[] filenames) throws IOException {
 		//#if polish.android
 		if(filenames == null) {
 			throw new IllegalArgumentException("Parameter 'filenames' is null. It should be a reference to a String array.");
@@ -207,6 +213,15 @@ public class AudioPlayer implements PlayerListener
 		buffer.append("http://localhost:"+StreamingMp3Server.PORT_STREAMING_MP3+"/bla?");
 		for (int i = 0; i < filenames.length; i++) {
 			String filename = filenames[i];
+			if(filename == null) {
+				throw new IllegalArgumentException("The value at index position '"+i+"' is null. This must not happen.");
+			}
+			if(filename.startsWith("file://")) {
+				filename = filename.substring("file://".length());
+			}
+			else {
+				throw new IllegalArgumentException("The filename at index position '"+i+"' must start with 'file://'. Every filename must be on the local filesystem.");
+			}
 			try {
 				filename = URLEncoder.encode(filename, "UTF-8");
 			} catch (UnsupportedEncodingException e) {
@@ -356,6 +371,8 @@ public class AudioPlayer implements PlayerListener
 			// rickyn: Do not use setDataSource(String) as it does not work. Use setDataSource(FileDescriptor) instead.
 			this.androidPlayer.setDataSource(fileDescriptor);
 			fileInputStream.close();
+		} else if(url.startsWith("http://")) {
+				this.androidPlayer.setDataSource(url);
 		} else {
 			int resourceID = ResourcesHelper.getResourceID(url);
 			AssetFileDescriptor assetFileDescriptor = MIDlet.midletInstance.getResources().openRawResourceFd(resourceID);
@@ -367,6 +384,7 @@ public class AudioPlayer implements PlayerListener
 			this.androidPlayer.setDataSource(fileDescriptor);
 			assetFileDescriptor.close();
 		}
+		
 		this.androidPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 		this.androidPlayer.prepare();
 		this.androidPlayer.start();
