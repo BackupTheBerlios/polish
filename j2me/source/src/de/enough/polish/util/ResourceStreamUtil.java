@@ -51,6 +51,7 @@ public class ResourceStreamUtil
 	 * @param url the URL of the resource within the JAR file, e.g. /resource.xml
 	 * @return the resource as byte array
 	 * @throws IOException when the resource could not be read
+	 * TODO: This method should also handle file:// urls.
 	 */
 	public static byte[] getResourceAsByteArray( String url ) 
 	throws IOException
