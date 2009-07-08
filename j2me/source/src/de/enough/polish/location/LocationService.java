@@ -51,6 +51,23 @@ public class LocationService {
 		return providerEnabled;
 	}
 	
+	/**
+	 * Informs the caller about the status of the Network location provider.
+	 * 
+	 * @return The value is 'true' if the Network location provider is enabled on the device
+	 *         and can be used. This does not say anything about the capability
+	 *         of the Network location provider to actually get a fix. The value 'false' is
+	 *         returned if the Network location provider is disabled.
+	 */
+	public static boolean isNetworkLocationProviderEnabled() {
+		boolean providerEnabled = false;
+		//#if polish.android
+		LocationManager locationManager = (LocationManager)MIDlet.midletInstance.getSystemService(Context.LOCATION_SERVICE);
+		providerEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+		//#endif
+		return providerEnabled;
+	}
+	
 	private static Criteria createNetworkCriteria() {
 		Criteria criteria = new Criteria();
 		criteria.setHorizontalAccuracy( 100 ); // 10 meters
