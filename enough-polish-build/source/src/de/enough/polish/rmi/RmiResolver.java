@@ -95,7 +95,7 @@ public class RmiResolver
 			if (version > 101) {
 				useObfuscation = in.readBoolean();
 			} else if (version < 100) {
-				throw new RemoteException("Unssuported version: " + version);
+				throw new RemoteException("Unsupported version: " + version);
 			}
 			String methodName = in.readUTF();
 			long primitivesFlag = 0;
