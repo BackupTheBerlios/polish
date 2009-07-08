@@ -1614,7 +1614,11 @@ public class Container extends Item {
 		Item item = this.focusedItem;
 		if (item != null) {
 			if (!item.isInitialized) {
-				item.init( this.contentWidth, this.contentWidth, this.contentWidth );
+				if (item.availableWidth != 0) {
+					item.init( item.availableWidth, item.availableWidth, item.availableHeight );
+				} else {
+					item.init( this.contentWidth, this.contentWidth, this.contentWidth );
+				}
 			} else if (this.enableScrolling && item.internalX != NO_POSITION_SET) {
 				int startY = getScrollYOffset() + item.relativeY + item.contentY + item.internalY;
 				if ( (
@@ -2858,14 +2862,13 @@ public class Container extends Item {
 		//#debug
 		System.out.println("Container.handlePointerReleased(" + relX + ", " + relY + ") for " + this );
 		Item item = this.focusedItem;
-		if (this.enableScrolling && (Math.abs(getScrollYOffset() - this.lastPointerPressYOffset)>8)) {
-			// we have scrolling in the meantime
-			if (item != null && item.isPressed) {
-				item.notifyItemPressedEnd();
+		if ((this.enableScrolling && (Math.abs(getScrollYOffset() - this.lastPointerPressYOffset)>8))
+				|| (handlePointerScrollReleased(relX, relY))
+		) {
+			while (item instanceof Container) {
+				item = ((Container)item).focusedItem;
 			}
-			return true;
-		}
-		if (handlePointerScrollReleased(relX, relY)) {
+			// we have scrolling in the meantime
 			if (item != null && item.isPressed) {
 				item.notifyItemPressedEnd();
 			}
@@ -2988,6 +2991,8 @@ public class Container extends Item {
 	//#endif
 	
 	
+	
+	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#getItemAreaHeight()
 	 */
@@ -3001,6 +3006,7 @@ public class Container extends Item {
 		return max;
 	}
 	
+
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#getItemAt(int, int)
 	 */
