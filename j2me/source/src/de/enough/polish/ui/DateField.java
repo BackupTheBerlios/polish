@@ -43,6 +43,10 @@ import de.enough.polish.util.Locale;
 	import de.enough.polish.blackberry.ui.PolishDateField;
 //#endif
 	
+//#if polish.android
+	import de.enough.polish.android.midlet.MIDlet;
+//#endif
+	
 import de.enough.polish.calendar.CalendarItem;
 
 /**
@@ -162,6 +166,8 @@ implements
 	//#endif
 	//#if polish.blackberry
 		private PolishDateField blackberryDateField;
+
+	private long androidFocusedTime;
 	//#endif
 		
 		
@@ -840,8 +846,25 @@ implements
 		//#if polish.blackberry
 			this.blackberryDateField.focusRemove();
 		//#endif
+		//#if polish.android1.5
+			MIDlet.midletInstance.hideSoftKeyboard();
+		//#endif
 	}
 	
+	
+	//#if polish.android1.5
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#focus(de.enough.polish.ui.Style, int)
+	 */
+	protected Style focus(Style newStyle, int direction) {
+		MIDlet.midletInstance.showSoftKeyboard();
+		this.androidFocusedTime = System.currentTimeMillis();
+
+		return super.focus(newStyle, direction);
+	}
+	//#endif
+
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#handleKeyPressed(int, int)
 	 */
