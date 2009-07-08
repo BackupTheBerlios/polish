@@ -40,6 +40,9 @@ import java.io.InputStream;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import de.enough.polish.android.helper.ResourceInputStream;
 import de.enough.polish.android.helper.ResourcesHelper;
 import de.enough.polish.android.midlet.MIDlet;
@@ -73,6 +76,7 @@ public class AudioPlayer implements PlayerListener
 	private PlayerListener listener;
 	//#if polish.android
 	private MediaPlayer androidPlayer;
+	private int volumeControlStream;
 	//#endif
 
 	private final String defaultContentType;
@@ -146,6 +150,34 @@ public class AudioPlayer implements PlayerListener
 		
 		//#if polish.android
 		this.androidPlayer = new MediaPlayer();
+		this.androidPlayer.setOnCompletionListener(this);
+		this.volumeControlStream = MIDlet.midletInstance.getVolumeControlStream();
+		AudioManager audioManager = (AudioManager) MIDlet.midletInstance.getSystemService(Context.AUDIO_SERVICE);			
+		this.androidMaxVolume = audioManager.getStreamMaxVolume(this.volumeControlStream);
+		//#debug
+		System.out.println("The maximum volume is '"+this.androidMaxVolume+"'");
+		//#debug
+		System.out.println("The maximum volume for music is "+audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
+		int currentAndroidVolume = audioManager.getStreamVolume(this.volumeControlStream);
+		//#debug
+		System.out.println("The current volume is '"+currentAndroidVolume+"'");
+		this.userJ2MeLevel = (int) (100f / this.androidMaxVolume * currentAndroidVolume);
+		//#debug
+		System.out.println("The current J2Me volume is '"+this.userJ2MeLevel+"'");
+		
+		StreamingMp3Server server = new StreamingMp3Server();
+		try {
+			server.start();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//#endif
+	}
+	
+	public void stop() {
+		//#if polish.android
+		this.androidPlayer.stop();
 		//#endif
 	}
 	
@@ -166,6 +198,45 @@ public class AudioPlayer implements PlayerListener
 		return this.listener;
 	}
 
+	public void streamMp3s(String[] filenames) {
+		//#if polish.android
+		if(filenames == null) {
+			throw new IllegalArgumentException("Parameter 'filenames' is null. It should be a reference to a String array.");
+		}
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("http://localhost:"+StreamingMp3Server.PORT_STREAMING_MP3+"/bla?");
+		for (int i = 0; i < filenames.length; i++) {
+			String filename = filenames[i];
+			try {
+				filename = URLEncoder.encode(filename, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+				// Unlikely.
+				return;
+			}
+			buffer.append("file=");
+			buffer.append(filename);
+			if(i<filenames.length-1) {
+				buffer.append("&");
+			}
+		}
+		this.androidPlayer.reset();
+		String url = buffer.toString();
+		this.androidPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+		try {
+			this.androidPlayer.setDataSource(url);
+			this.androidPlayer.prepare();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		this.androidPlayer.start();
+		//#endif
+	}
+	
 	/**
 	 * Plays the media taken from the specified URL.
 	 * @param url the URL of the media 
@@ -205,7 +276,6 @@ public class AudioPlayer implements PlayerListener
 		}
 		this.androidPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 		this.androidPlayer.prepare();
-		this.androidPlayer.setOnCompletionListener(this);
 		this.androidPlayer.start();
 		//#else
 			InputStream in = getClass().getResourceAsStream(url);
@@ -299,7 +369,6 @@ public class AudioPlayer implements PlayerListener
 		}
 		this.androidPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 		this.androidPlayer.prepare();
-		this.androidPlayer.setOnCompletionListener(this);
 		this.androidPlayer.start();
 		//#else
 			InputStream in = getClass().getResourceAsStream(url);
@@ -518,13 +587,6 @@ public class AudioPlayer implements PlayerListener
 	public int getVolumeLevel() {
 		int volume;
 		//#if polish.android
-			AudioManager audioManager = (AudioManager) MIDlet.midletInstance.getSystemService(Context.AUDIO_SERVICE);			
-			if (this.androidMaxVolume == -1) {
-				this.androidMaxVolume = audioManager.getStreamMaxVolume( AudioManager.STREAM_MUSIC);
-			}
-			// TODO: rickyn: This is nonsense. getStreamVolume returns overall volume, not of the currently playing stream.
-//			int current = audioManager.getStreamVolume( AudioManager.STREAM_MUSIC);
-//			volume = (int) (100f / this.androidMaxVolume * current);
 			volume = this.userJ2MeLevel;
 		//#else
 			Player pl = this.player;
@@ -549,12 +611,16 @@ public class AudioPlayer implements PlayerListener
 	 * @param j2MeLevel the volume level between 0 and 100
 	 */
 	public void setVolumeLevel(int j2MeLevel) {
-		//#if polish.android
 		int boundJ2MeLevel = boundJ2MeLevel(j2MeLevel);
 		this.userJ2MeLevel = boundJ2MeLevel;
-		int androidLevel = scaleJ2MeLevelToAndroidLevel(boundJ2MeLevel);
-		AudioManager audioManager = (AudioManager) MIDlet.midletInstance.getSystemService(Context.AUDIO_SERVICE);
-		audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,androidLevel,0);
+		//#debug
+		System.out.println("The current J2Me volume is '"+this.userJ2MeLevel+"'");
+		//#if polish.android
+			AudioManager audioManager = (AudioManager) MIDlet.midletInstance.getSystemService(Context.AUDIO_SERVICE);			
+			int androidLevel = (int)(this.androidMaxVolume / 100f * boundJ2MeLevel);
+			//#debug
+			System.out.println("The android volume is set to '"+androidLevel+"'");
+			audioManager.setStreamVolume(this.volumeControlStream,androidLevel,0);
 //			if (this.androidPlayer != null) {
 //				this.androidPlayer.setVolume(androidLevel,androidLevel);
 //			}
@@ -568,7 +634,6 @@ public class AudioPlayer implements PlayerListener
 				}
 			}
 		//#endif
-		this.userJ2MeLevel = j2MeLevel;
 	}
 	
 	/**
@@ -593,25 +658,6 @@ public class AudioPlayer implements PlayerListener
 		}
 	}
 
-	//#if polish.android
-	/**
-	 * Informs the audio player about a finished media on Android devices.
-	 * @param mp the media player (should be the same as this.mediaPlayer)
-	 */
-	public void onCompletion(MediaPlayer mp) {
-		playerUpdate( this.player, PlayerListener.END_OF_MEDIA, null );
-	}
-	private int scaleJ2MeLevelToAndroidLevel(int aJ2MeLevel) {
-		if (this.androidMaxVolume == -1) {
-			AudioManager audioManager = (AudioManager) MIDlet.midletInstance.getSystemService(Context.AUDIO_SERVICE);			
-			this.androidMaxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-		}
-		aJ2MeLevel = boundJ2MeLevel(aJ2MeLevel);
-		float androidLevel = this.androidMaxVolume / 100f * aJ2MeLevel;
-//		float androidLevel = aJ2MeLevel / 100f;
-		return (int)androidLevel;
-	}
-
 	private int boundJ2MeLevel(int aJ2MeLevel) {
 		if (aJ2MeLevel < 0) {
 			aJ2MeLevel = 0;
@@ -620,6 +666,56 @@ public class AudioPlayer implements PlayerListener
 		}
 		return aJ2MeLevel;
 	}
+
+	//#if polish.android
+	/**
+	 * Informs the audio player about a finished media on Android devices.
+	 * @param mp the media player (should be the same as this.mediaPlayer)
+	 */
+	public void onCompletion(MediaPlayer mp) {
+		playerUpdate( this.player, PlayerListener.END_OF_MEDIA, null );
+	}
+	
 	//#endif
+	
+	/**
+	 * This method is part of a two-phase playback. The first phase is to prepare the content, the second phase plays it. This way
+	 * gaps in the playback of subsequent contents are minimized.
+	 * This method will only prepare the audio content given by the url. You can play this content with the {@link #play()} method.
+	 * This method is only available on android at the moment.
+	 * @param url
+	 * @throws IOException
+	 */
+	public void prepare(String url) throws IOException {
+		//#if polish.android
+		this.androidPlayer.reset();
+		if(url.startsWith("file://")) {
+			String path = url.substring("file://".length());
+			File file = new File(path);
+			if(!file.exists()) {
+				throw new IOException("Could not find file at url '"+url+"'");
+			}
+			System.out.println("The file is "+file.getAbsolutePath());
+			FileInputStream fileInputStream = new FileInputStream(file);
+			FileDescriptor fileDescriptor;
+			fileDescriptor = fileInputStream.getFD();
+			// rickyn: Do not use setDataSource(String) as it does not work. Use setDataSource(FileDescriptor) instead.
+			this.androidPlayer.setDataSource(fileDescriptor);
+			fileInputStream.close();
+		} else {
+			int resourceID = ResourcesHelper.getResourceID(url);
+			AssetFileDescriptor assetFileDescriptor = MIDlet.midletInstance.getResources().openRawResourceFd(resourceID);
+			if(assetFileDescriptor == null) {
+				throw new IOException("Could not retrieve AssetFileDescriptor for resource id '"+resourceID+"'");
+			}
+			FileDescriptor fileDescriptor;
+			fileDescriptor = assetFileDescriptor.getFileDescriptor();
+			this.androidPlayer.setDataSource(fileDescriptor);
+			assetFileDescriptor.close();
+		}
+		this.androidPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+		this.androidPlayer.prepare();
+		//#endif
+	}
 
 }

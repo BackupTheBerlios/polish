@@ -1,6 +1,7 @@
 //#condition polish.usePolishGui && polish.android
 package de.enough.polish.android.midlet;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -19,7 +20,9 @@ import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import de.enough.polish.android.io.ConnectionNotFoundException;
 import de.enough.polish.android.lcdui.AndroidDisplay;
 import de.enough.polish.ui.Display;
@@ -31,6 +34,8 @@ import de.enough.polish.ui.Screen;
 import android.os.ResultReceiver;
 import android.view.inputmethod.InputMethodManager;
 //#endif
+
+import android.widget.FrameLayout;
 
 /**
  * A MIDlet is a MID Profile application.
@@ -107,8 +112,7 @@ public abstract class MIDlet extends Activity {
 	protected void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		// This does not work. No pointer events are delivered.
-//		getWindow().addFlags(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+//		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 		//TODO: Extract all strings to constants.
 		TelephonyManager telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
 		PhoneStateListener listener = new PhoneStateListener() {
@@ -655,6 +659,7 @@ public abstract class MIDlet extends Activity {
 		//#if polish.android1.5
 			//#debug
 			System.out.println("SHOWING softkeyboard");
+
 			if (this.isSoftkeyboardOpen) {
 				return;
 			}
@@ -675,12 +680,21 @@ public abstract class MIDlet extends Activity {
 //						System.out.println("Receiving result:"+arg0);
 					}
 				});
+//				FrameLayout mInputFrame = (FrameLayout)display.getRootView().findViewById(android.R.id.inputArea);
+//				if(mInputFrame != null) {
+//					System.out.println("HEIGHT OF SOFTINPUT:"+mInputFrame.getHeight());
+//				}
+				// TODO: Find out the height of the soft input!!
+				Window window = getWindow();
+				ArrayList<View> touchables = display.getRootView().getTouchables();
+				for (View view : touchables) {
+					System.out.println("VIEW WITH ID FOUND:"+view.getId());
+				}
 			}
 			this.isSoftkeyboardOpen = true;
 			onSoftKeyboardOpened();
 		//#endif
 	}
-
 
 	public void hideSoftKeyboard() {
 		//#if polish.android1.5

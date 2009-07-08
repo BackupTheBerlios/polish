@@ -229,8 +229,13 @@ public class ContactImpl implements Contact {
 		for (Iterator iterator = this.fields.iterator(); iterator.hasNext();) {
 			Field field = (Field) iterator.next();
 			fieldIds[i] = field.fieldInfo.id;
+			i++;
 		}
-		return fieldIds;
+		// restrict the array to usefull cells
+		int[] returnFields = new int[i];
+		while(--i>=0)
+			returnFields[i]=fieldIds[i];
+		return returnFields;
 	}
 
 	public int getInt(int fieldId, int index) {

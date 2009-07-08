@@ -38,6 +38,7 @@ public class AndroidLocationListenerAdapter implements LocationListener {
 	public void onProviderDisabled(String providerName) {
 		//#debug
 		System.out.println("onProviderDisabled:"+providerName);
+		onStatusChanged(providerName, android.location.LocationProvider.OUT_OF_SERVICE, null);
 	}
 
 	/**
@@ -46,6 +47,7 @@ public class AndroidLocationListenerAdapter implements LocationListener {
 	public void onProviderEnabled(String providerName) {
 		//#debug
 		System.out.println("onProviderEnabled:"+providerName);
+		onStatusChanged(providerName, android.location.LocationProvider.TEMPORARILY_UNAVAILABLE, null);
 	}
 
 	public void onStatusChanged(String provider, int status, Bundle extras) {

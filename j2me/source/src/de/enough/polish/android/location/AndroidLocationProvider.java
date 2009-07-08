@@ -46,7 +46,6 @@ public class AndroidLocationProvider extends LocationProvider {
 	private AndroidLocationListenerAdapter currentLocationListener;
 	private LocationUpdateThread locationUpdateThread;
 	private int currentMinTime;
-	private float currentMinDist;
 	private int state = OUT_OF_SERVICE;
 	
 	/**
@@ -160,14 +159,13 @@ public class AndroidLocationProvider extends LocationProvider {
 			this.currentMinTime = interval;
 		}
 		this.currentLocationListener.setListener(listener);
-		this.currentMinDist = DEFAULT_MINIMAL_LOCATION_DISTANCE;
 		registerLocationListener();
 	}
 
 	private void registerLocationListener() {
 		// TODO: Promote the looper variable to a field.
 		Looper looper = this.locationUpdateThread.getLooper();
-		locationManager.requestLocationUpdates(this.providerId,this.currentMinTime,this.currentMinDist ,this.currentLocationListener,looper);
+		locationManager.requestLocationUpdates(this.providerId,0,0 ,this.currentLocationListener,looper);
 	}
 
 	public String getLocationProviderName() {

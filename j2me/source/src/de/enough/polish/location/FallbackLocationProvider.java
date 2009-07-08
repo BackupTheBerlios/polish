@@ -242,4 +242,8 @@ implements LocationListener
 		return result;
 	}
 	
+	public LocationProvider getActiveLocationProvider() {
+		return this.activeProvider;
+	}
+	
 }

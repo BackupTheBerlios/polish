@@ -54,7 +54,9 @@ public class ContactDao {
 		
 		putNameIntoContact(personCursor,contactImpl);
 		putAddressIntoContact(id,contactImpl);
+		putDisplayNameIntoContact(personCursor, contactImpl);
 		putNumbersIntoContact(id,contactImpl);
+		putNoteIntoContact(personCursor,contactImpl);
 		
 		contactImpl.setModified(false);
 		return contactImpl;
@@ -146,6 +148,8 @@ public class ContactDao {
 		if(isNew) {
 			personUri = this.contentResolver.insert(People.CONTENT_URI, values);
 			id = ContentUris.parseId(personUri);
+			// insert this contact into "My Contacts" group in order to see it in the Contact viewer
+			Contacts.People.addToMyContactsGroup(this.contentResolver, id);
 		} else {
 			id = contact.getId();
 			personUri = ContentUris.withAppendedId(People.CONTENT_URI, id);
@@ -163,6 +167,24 @@ public class ContactDao {
 		}
 		this.contentResolver.update(personUri, values, null, null);
 		
+		// Update the Display name
+		int numberOfDisplayNames = contact.countValues(Contact.FORMATTED_NAME);
+		if(numberOfDisplayNames > 0) {
+			values.clear();
+			String name = contact.getString(Contact.FORMATTED_NAME, 0);
+			values.put(People.DISPLAY_NAME, name);
+		}
+		this.contentResolver.update(personUri, values, null, null);
+		
+		// Update the note
+		int numberOfNotes = contact.countValues(Contact.NOTE);
+		if(numberOfNotes > 0) {
+			values.clear();
+			String name = contact.getString(Contact.NOTE, 0);
+			values.put(People.NOTES, name);
+		}
+		this.contentResolver.update(personUri, values, null, null);
+
 		// Update the address.
 		int numberOfAddresses = contact.countValues(Contact.ADDR);
 		for(int i = 0; i < numberOfAddresses; i++) {
@@ -241,4 +263,20 @@ public class ContactDao {
 		}
 		return Contacts.People.Phones.TYPE_OTHER;
 	}
+	
+	private void putDisplayNameIntoContact(Cursor personCursor, ContactImpl contactImpl) {
+		int columnIndex = personCursor.getColumnIndex(People.DISPLAY_NAME);
+		String name = personCursor.getString(columnIndex);
+		contactImpl.addString(Contact.FORMATTED_NAME, PIMItem.ATTR_NONE, name);
+	}
+
+	private void putNoteIntoContact(Cursor personCursor, ContactImpl contactImpl) {
+		int columnIndex = personCursor.getColumnIndex(People.NOTES);
+		while(personCursor.moveToNext()) {
+			String name = personCursor.getString(columnIndex);
+			if(name != null)
+				contactImpl.addString(Contact.NOTE, PIMItem.ATTR_NONE, name);
+		}
+	}
+
 }

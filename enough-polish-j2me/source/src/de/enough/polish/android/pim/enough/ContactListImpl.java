@@ -17,6 +17,24 @@ public class ContactListImpl implements ContactList {
 	public static final FieldInfo CONTACT_ADDR_FIELD_INFO = new FieldInfo(Contact.ADDR,PIMItem.STRING_ARRAY,"Address",7,Contact.ADDR_EXTRA,new int[] {Contact.ADDR_EXTRA}, new int[] {Contact.ATTR_HOME,Contact.ATTR_WORK,Contact.ATTR_OTHER,Contact.ATTR_NONE});
 	public static final FieldInfo CONTACT_NAME_FIELD_INFO = new FieldInfo(Contact.NAME,PIMItem.STRING_ARRAY,"Name",5,Contact.NAME_OTHER,new int[] {Contact.NAME_OTHER},new int[] {Contact.ATTR_NONE});
 	public static final FieldInfo CONTACT_TEL_FIELD_INFO = new FieldInfo(Contact.TEL,PIMItem.STRING,"Phone",0,0,new int[0],new int[] {Contact.ATTR_MOBILE,Contact.ATTR_WORK,Contact.ATTR_HOME,Contact.ATTR_OTHER,Contact.ATTR_PAGER,Contact.ATTR_FAX,Contact.ATTR_NONE});
+	public static final FieldInfo CONTACT_NOTE_FIELD_INFO = new FieldInfo(
+			Contact.NOTE,
+			PIMItem.STRING,
+			"Note",
+			0,
+			0,
+			new int[0],
+			new int[] {Contact.ATTR_NONE}
+			);
+		public static final FieldInfo CONTACT_UID_FIELD_INFO = new FieldInfo(
+			Contact.UID,
+			PIMItem.STRING,
+			"Unique identifier",
+			0,
+			0,
+			new int[0],
+			new int[] {Contact.ATTR_NONE}
+			);
 
 	private static final FieldInfo[] fieldInfos = new FieldInfo[] {CONTACT_ADDR_FIELD_INFO,CONTACT_NAME_FIELD_INFO,CONTACT_TEL_FIELD_INFO};
 	

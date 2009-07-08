@@ -39,7 +39,7 @@ public class AndroidPim extends PIM {
 
 	@Override
 	public PIMList openPIMList(int pimListType, int mode, String name) throws PIMException {
-		if("contacts".equals(name)) {
+		if( ! "contacts".equals(name)) {
 			throw new PIMException("No PIMList with the name '"+name+"' present. See method listPIMLists(int) for available names.");
 		}
 		return openPIMList(pimListType, mode);
