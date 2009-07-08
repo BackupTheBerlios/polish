@@ -1,6 +1,8 @@
 //#condition polish.android
 package de.enough.polish.android.location;
 
+import java.util.List;
+
 import android.content.Context;
 import android.location.LocationManager;
 import android.os.Looper;
@@ -50,8 +52,9 @@ public class AndroidLocationProvider extends LocationProvider {
 	
 	/**
 	 * @param meCriteria May be null.
+	 * @throws LocationException 
 	 */
-	public static AndroidLocationProvider getAndroidLocationProviderInstance(Criteria meCriteria) {
+	public static AndroidLocationProvider getAndroidLocationProviderInstance(Criteria meCriteria) throws LocationException {
 		if(locationManager == null) {
 			locationManager = (LocationManager)MIDlet.midletInstance.getSystemService(Context.LOCATION_SERVICE);
 		}
@@ -100,7 +103,13 @@ public class AndroidLocationProvider extends LocationProvider {
 		//#debug
 		System.out.println("getAndroidLocationProvider: Best provider for criteria is '"+bestProvider+"'");
 
+		
 		if(bestProvider == null) {
+			// We have no provider found. If there is no provider enabled, throw an exception according to API.
+			List<String> providers = locationManager.getProviders(true);
+			if(providers.isEmpty()) {
+				throw new LocationException("No enabled LocationProvider found. Enable an Location Provider and try again.");
+			}
 			return null;
 		}
 		
@@ -183,12 +192,12 @@ public class AndroidLocationProvider extends LocationProvider {
 		return result;
 	}
 
-	private String getStateName(int state) {
-		switch(state) {
+	private String getStateName(int stateId) {
+		switch(stateId) {
 			case AVAILABLE: return "Available";
 			case TEMPORARILY_UNAVAILABLE: return "Temporarily Unavailable";
 			case OUT_OF_SERVICE: return "Out of Service";
-			default: return "Unknown State '"+state+"'";
+			default: return "Unknown State '"+stateId+"'";
 		}
 	}
 	
