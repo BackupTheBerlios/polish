@@ -166,8 +166,6 @@ implements
 	//#endif
 	//#if polish.blackberry
 		private PolishDateField blackberryDateField;
-
-	private long androidFocusedTime;
 	//#endif
 		
 		
@@ -859,7 +857,7 @@ implements
 	 */
 	protected Style focus(Style newStyle, int direction) {
 		MIDlet.midletInstance.showSoftKeyboard();
-		this.androidFocusedTime = System.currentTimeMillis();
+		//this.androidFocusedTime = System.currentTimeMillis();
 
 		return super.focus(newStyle, direction);
 	}
