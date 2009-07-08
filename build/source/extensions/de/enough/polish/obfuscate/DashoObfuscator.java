@@ -276,7 +276,7 @@ public class DashoObfuscator extends Obfuscator {
 		if (!dashoHome.exists()) {
 			throw new BuildException("Unable to initialisise DashO-obfuscator: Either the property \"dasho.home\" or the parameter \"DashoHome\" points to a non-existing directory: "  + dashoHome.getAbsolutePath() );
 		}
-		String dashoProJarPath = dashoHome.getAbsolutePath() + File.separator + "DashoPro.jar";
+		String dashoProJarPath = dashoHome.getAbsolutePath() + File.separator + "DashOPro.jar";
 		AntClassLoader classLoader = new AntClassLoader( this.project, new Path( this.project, dashoProJarPath));
 		// include all jar-files from the dasho.home/lib-folder:
 		File libFolder = new File( dashoHome, "lib" );
@@ -306,12 +306,12 @@ public class DashoObfuscator extends Obfuscator {
 		try {
 			Class dashoClass;
 			try {
-				dashoClass = classLoader.loadClass("DashoPro");
-				this.dashoMainClassName = "DashoPro";
+				dashoClass = classLoader.loadClass("DashOPro");
+				this.dashoMainClassName = "DashOPro";
 			} catch (ClassNotFoundException e) {
 				// ok, try to load the evaluation-class: 
-				dashoClass = classLoader.loadClass( "DashoProEval" );
-				this.dashoMainClassName = "DashoProEval";
+				dashoClass = classLoader.loadClass( "DashOProEval" );
+				this.dashoMainClassName = "DashOProEval";
 			}
 			this.dashoMainMethod = dashoClass.getMethod("main", new Class[]{ String[].class } );
 			if (!Modifier.isStatic( this.dashoMainMethod.getModifiers() )) {
