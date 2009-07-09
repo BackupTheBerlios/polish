@@ -510,6 +510,18 @@ public class MenuBar extends Item {
 					}
 					return;
 				}
+				//#if tmp.useInvisibleMenuBar
+					// remove command from commands list before trying to get a new negative command index:
+					int index = this.commandsList.indexOf( cmd );
+					if (index != -1) {
+						//System.out.println("removing normal command");
+						if (index == this.commandsContainer.getFocusedIndex()) {
+							this.commandsContainer.focusChild(-1);
+						}
+						this.commandsList.remove( index );
+						this.commandsContainer.remove( index );
+					}
+				//#endif
 				int newSingleRightCommandIndex = getNextNegativeOrPositiveCommandIndex(true);
 				if ( newSingleRightCommandIndex != -1 ) {
 					//#if tmp.useInvisibleMenuBar
