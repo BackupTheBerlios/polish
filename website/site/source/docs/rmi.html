@@ -910,6 +910,45 @@ public class ConnectionThread extends Thread
 <pre>
 &lt;variable name=&quot;polish.rmi.spp&quot; value=&quot;true&quot; /&gt;
 </pre>
+
+
+	<h2 id="mockup">Mockup Testing</h2>
+	<p>
+	You can easily test your mobile application without the server by using a mockup server implementation: 
+	</p>
+<ul>
+	<li><b>Implement mockup:</b> Implement a mockup server in your mobile application. The only thing necessary is to implement the
+		interface of your server.</li>
+	<li><b>Activate mockup:</b> Activate the usage of your mockup by specifying a preprocessing variable in your <i>build.xml</i> that starts
+	with <code>polish.rmi.mockup.</code> and ends with the fully qualified name of your server interface. Set this
+	variable to a call that retrieves your mockup - this can be static call or a constructor like in this example: 
+<pre>
+&lt;variable name=&quot;polish.rmi.mockup.de.enough.polish.sample.rmi.GameServer&quot; 
+         value=&quot;new de.enough.polish.sample.rmi.test.MockupGameServer()&quot; /&gt;
+</pre>
+	</li>
+</ul>
+	<p>
+	That's all. Just deactivate the preprocessing variable when you want to access the server. You could change your <i>build.xml</i>
+	so that you can create mockup versions of your application easily by adding conditions to your variable definition:
+	</p>
+<pre>
+&lt;target name=&quot;j2mepolish&quot; 
+	...
+	&lt;variable name=&quot;polish.rmi.mockup.de.enough.polish.sample.rmi.GameServer&quot; 
+             value=&quot;new de.enough.polish.sample.rmi.test.MockupGameServer()&quot; 
+                <b>if=&quot;mockup&quot;</b>
+        /&gt;
+       ...
+&lt;/target&gt;
+   
+&lt;target name=&quot;enableMockup&quot; &gt;
+	&lt;property name=&quot;mockup&quot; value=&quot;true&quot; /&gt;
+&lt;/target&gt;
+
+&lt;target name=&quot;mockup&quot; depends=&quot;enableMockup, j2mepolish&quot; /&gt;
+    	
+</pre>
 	
 	<h2 id="configuration">Configuring the RMI Framework</h2>
 	<p>
@@ -947,6 +986,13 @@ public class ConnectionThread extends Thread
 		<code>polish.rmi.spp</code> variable to true:
 <pre>
 &lt;variable name=&quot;polish.rmi.spp&quot; value=&quot;true&quot; /&gt;
+</pre>
+		</li>
+		<li><b>Mockup Test</b>: To use a mockup server implementation instead of your remote server, you need to define the preprocessing variable
+		<code>polish.rmi.mockup.${fully qualified interface name}</code>, for example like this: 
+<pre>
+&lt;variable name=&quot;polish.rmi.mockup.de.enough.polish.sample.rmi.GameServer&quot; 
+         value=&quot;new de.enough.polish.sample.rmi.test.MockupGameServer()&quot; /&gt;
 </pre>
 		</li>
 	</ul>
