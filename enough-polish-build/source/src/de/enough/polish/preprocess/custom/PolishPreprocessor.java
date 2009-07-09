@@ -303,16 +303,16 @@ public class PolishPreprocessor extends CustomPreprocessor {
 					throw new BuildException (getErrorStart(className, lines) + ": Invalid RemoteClient.open() usage - please specify the name of the interface directly with quotes, e.g. \"RemoteClient.open(\"GameServer\", \"http://localhost/gameserver/myservice\")\" . This line is not valid: " + line );					
 				}
 				name = name.substring( 1, name.length() - 1);
-				if (this.environment.hasSymbol("polish.useDefaultPackage")) {
-					int lastDotPos = name.lastIndexOf('.');
-					if (lastDotPos != -1) {
-						name = name.substring(lastDotPos + 1);
-					}
+				String mockup = this.environment.getVariable("polish.rmi.mockup." + name );
+				if (mockup != null) {
+					line = line.substring(0, startPos) + mockup + "; //" + line.substring(startPos);
+					lines.setCurrent(line);
+				} else {
+					String url = line.substring( commaPos + 1, parenthesesEnd ).trim();
+					line = line.substring(0, startPos)
+						+ "new " + name + "RemoteClient(" + url + "); //" + line.substring(startPos);
+					lines.setCurrent(line);
 				}
-				String url = line.substring( commaPos + 1, parenthesesEnd ).trim();
-				line = line.substring(0, startPos)
-					+ "new " + name + "RemoteClient(" + url + "); //" + line.substring(startPos);
-				lines.setCurrent(line);
 				continue;
 			}
 			
