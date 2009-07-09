@@ -263,7 +263,8 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 		super.onSizeChanged(w, h, oldw, oldh);
 		if(this.bitmap != null) {
-			this.bitmap.recycle();
+			//TODO: uncomment if the exceptions remain when the unit test framework is used.
+//			this.bitmap.recycle();
 		}
 		this.bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
 		if(this.currentPolishCanvas != null) {
