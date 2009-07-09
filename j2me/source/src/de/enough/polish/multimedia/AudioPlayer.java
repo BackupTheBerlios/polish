@@ -51,6 +51,7 @@ import android.content.res.AssetFileDescriptor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 //#endif
+import android.widget.MediaController.MediaPlayerControl;
 /**
  * <p>
  * Plays back audio files - at the moment this is only supported for MIDP 2.0 and devices that support the MMAPI and for Android devices.
@@ -64,7 +65,7 @@ import android.media.MediaPlayer;
  */
 public class AudioPlayer implements PlayerListener
 //#if polish.android
-	, MediaPlayer.OnCompletionListener
+	, MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener
 //#endif
 {
 
@@ -177,6 +178,7 @@ public class AudioPlayer implements PlayerListener
 	
 	public void stop() {
 		//#if polish.android
+		// TODO: This call could crash if it happens while the asynchonous prepare takes place.
 		this.androidPlayer.stop();
 		//#endif
 	}
@@ -201,8 +203,9 @@ public class AudioPlayer implements PlayerListener
 	/**
 	 * This method will play the files with the filenames given in the parameter one after the other.
 	 * This method is only available for the Android platform at the moment.
-	 * @param filenames Must not be null and no array element must be null.
-	 * @throws IOException 
+	 * @param filenames Must not be null and no array element must be null. Each filename must start with 'file://'. Normally you want
+	 * to access files under the directory 'System.getProperty("fileconn.dir.private")'.
+	 * @throws IOException
 	 */
 	public void streamMp3s(String[] filenames) throws IOException {
 		//#if polish.android
@@ -240,7 +243,7 @@ public class AudioPlayer implements PlayerListener
 		this.androidPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 		try {
 			this.androidPlayer.setDataSource(url);
-			this.androidPlayer.prepare();
+			this.androidPlayer.prepareAsync();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		} catch (IllegalStateException e) {
@@ -248,7 +251,8 @@ public class AudioPlayer implements PlayerListener
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		this.androidPlayer.start();
+		// This is done asynchonously.
+//		this.androidPlayer.start();
 		//#endif
 	}
 	
@@ -574,7 +578,7 @@ public class AudioPlayer implements PlayerListener
 			//#if !polish.android
 				p.removePlayerListener(this);
 			//#endif
-			cleanUpPlayer();
+//			cleanUpPlayer();
 		}
 	}
 
@@ -692,6 +696,15 @@ public class AudioPlayer implements PlayerListener
 	 */
 	public void onCompletion(MediaPlayer mp) {
 		playerUpdate( this.player, PlayerListener.END_OF_MEDIA, null );
+	}
+	
+	public void onPrepared(MediaPlayer p) {
+		p.start();
+	}
+	
+	public boolean onError(MediaPlayer arg0, int arg1, int arg2) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 	//#endif
