@@ -51,7 +51,6 @@ import android.content.res.AssetFileDescriptor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 //#endif
-import android.widget.MediaController.MediaPlayerControl;
 /**
  * <p>
  * Plays back audio files - at the moment this is only supported for MIDP 2.0 and devices that support the MMAPI and for Android devices.
