@@ -149,8 +149,16 @@
 				<variable name="title" value="J2ME Polish" />
 				<variable name="polish.DateField.useDirectInput" value="true" />
 				<variable name="polish.TextField.useDirectInput" value="true" />
-				<variable name="polish.rmi.redirect" value="false" />
 				<variable name="polish.useScrollBar" value="true" />
+				<variable name="polish.rmi.redirect" value="false" />
+				<!-- 
+				You can use following mockup implementation for testing this application without using a server:
+				-->
+				<variable 
+					name="polish.rmi.mockup.de.enough.polish.sample.rmi.GameServer" 
+					value="new de.enough.polish.sample.rmi.test.MockupGameServer()"
+					if="mockup"
+				/>
 			</variables>
 			<!-- Here you can set the dir attribute to "resources2" for an alternative design. -->
 			<resources
@@ -232,10 +240,26 @@
 
 <target name="build-all" depends="clean,j2mepolish,build-war" description="builds both the client and the server code of the application"/>
 	
-<target name="clean" 
-  		description="allows a clean build. You should call [ant clean] whenever you made changes to devices.xml, vendors.xml or groups.xml">
-	<delete dir="build" />
-	<delete dir="dist" />
-</target>
+	<target name="clean" 
+	  		description="allows a clean build. You should call [ant clean] whenever you made changes to devices.xml, vendors.xml or groups.xml">
+		<delete dir="build" />
+		<delete dir="dist" />
+	</target>
+	
+	<target name="cleanbuild"
+			description="Builds the application and the server cleanly"
+			depends="clean, build-all" 
+	/>
+
+	
+	<target name="enableMockup" >
+		<property name="mockup" value="true" />
+	</target>
+
+	<target name="mockup"
+			description="Builds the application with using a mockup server implementation for testing purposes"
+			depends="enableMockup, j2mepolish" 
+	/>
+	
 
 </project>
