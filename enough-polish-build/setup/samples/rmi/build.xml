@@ -133,10 +133,13 @@
 				<!-- You can set localized variables in the resources/messages.txt files as well.  -->
 				<variables includeAntProperties="true" >
 					<!-- 
-					You can use following mockup implementation for testing this application without using a server.
-					Just uncomment following variable:
-					<variable name="polish.rmi.mockup.de.enough.polish.sample.rmi.GameServer" value="new de.enough.polish.sample.rmi.test.MockupGameServer()" />
+					You can use following mockup implementation for testing this application without using a server:
 					-->
+					<variable 
+						name="polish.rmi.mockup.de.enough.polish.sample.rmi.GameServer" 
+						value="new de.enough.polish.sample.rmi.test.MockupGameServer()"
+						if="mockup"
+					/>
 					<!-- activate text input over J2ME Polish TextFields (without opening a new TextBox for each input: 
 					<variable name="polish.TextField.useDirectInput" value="true" />
 					- activate input of symbols: -
@@ -259,6 +262,16 @@
 		description="allows a clean build. You should call [ant cleanbuild] whenever you made changes to devices.xml, vendors.xml or groups.xml"
 		depends="clean, j2mepolish"
 	/>
+	
+	<target name="enableMockup" >
+		<property name="mockup" value="true" />
+	</target>
+
+	<target name="mockup"
+			description="Builds the application with using a mockup server implementation for testing purposes"
+			depends="enableMockup, j2mepolish" 
+	/>
+
 	
     <target name="debug" description="debugs the project" depends="enableDebug, test, j2mepolish" />
 
