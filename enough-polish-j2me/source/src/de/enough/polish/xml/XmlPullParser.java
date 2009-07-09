@@ -616,8 +616,9 @@ public class XmlPullParser implements SimplePullParser {
      * @see de.enough.polish.xml.SimplePullParser#getAttributeName(int)
      */
     public String getAttributeName(int index) {
-        if (index >= this.attributeCount)
+        if (index >= this.attributeCount) {
             throw new IndexOutOfBoundsException();
+        }
         return this.attributes[index << 1];
     }
 
@@ -625,20 +626,21 @@ public class XmlPullParser implements SimplePullParser {
      * @see de.enough.polish.xml.SimplePullParser#getAttributeValue(int)
      */
     public String getAttributeValue(int index) {
-        if (index >= this.attributeCount)
+        if (index >= this.attributeCount) {
             throw new IndexOutOfBoundsException();
+        }
         return this.attributes[(index << 1) + 1];
     }
-
+    
     /* (non-Javadoc)
      * @see de.enough.polish.xml.SimplePullParser#getAttributeValue(java.lang.String)
      */
-    public String getAttributeValue(String name) {
+    public String getAttributeValue(String attrName) {
 
         for (int i = (this.attributeCount << 1) - 2;
             i >= 0;
             i -= 2) {
-            if (this.attributes[i].equals(name))
+            if (this.attributes[i].equals(attrName))
                 return this.attributes[i + 1];
         }
 
@@ -744,15 +746,19 @@ public class XmlPullParser implements SimplePullParser {
      *     throw new XmlPullParserException ( "....");
      * </pre>
      */
-    public void require(int type, String name)
+    public void require(int eventType, String eventName)
         throws IOException {
 
-        if (this.type == SimplePullParser.TEXT && type != SimplePullParser.TEXT && isWhitespace())
+        if (this.type == SimplePullParser.TEXT && eventType != SimplePullParser.TEXT && isWhitespace()) 
+        {
             next();
+        }
 
-        if (type != this.type
-            || (name != null && !name.equals(getName())))
-            exception("expected: " + this.TYPES[type] + "/" + name);
+        if (eventType != this.type
+            || (eventName != null && !eventName.equals(getName()))) 
+        {
+            exception("expected: " + this.TYPES[eventType] + "/" + eventName);
+        }
     }
 
     /**
@@ -780,4 +786,5 @@ public class XmlPullParser implements SimplePullParser {
         next();
         return result;
     }
+
 }
