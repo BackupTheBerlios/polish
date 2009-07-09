@@ -29,8 +29,6 @@ public class AndroidLocationListenerAdapter implements LocationListener {
 		}
 		de.enough.polish.android.location.Location wrappedLocation = new de.enough.polish.android.location.Location(location);
 		LocationProvider.setLastKnownLocation(wrappedLocation);
-		//#debug
-		System.out.println("onLocationChanged:location update:"+wrappedLocation);
 		this.listener.locationUpdated(this.locationProvider, wrappedLocation);
 	}
 
