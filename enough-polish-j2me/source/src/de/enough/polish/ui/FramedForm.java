@@ -650,14 +650,29 @@ public class FramedForm extends Form {
 					// make sure that the right item is focused i.e.
 					// if the direction is UP the last item of
 					// the resulting container should be focused
-					int lastItem = newFrame.size() - 1;
-					int firstItem = 0;
 					switch(gameAction)
 					{
 						case LEFT : 
 						case RIGHT : 
-						case DOWN : newFrame.focusChild(firstItem); break;
-						case UP : newFrame.focusChild(lastItem); break;
+						case DOWN :
+							// focus first selectable item:
+							for (int i=0; i<newFrame.size(); i++) {
+								Item item = newFrame.get(i);
+								if (item.appearanceMode != Item.PLAIN) {
+									newFrame.focusChild(i); 
+									break;
+								}
+							}
+							break;
+						case UP : 
+							for (int i=newFrame.size(); --i >= 0; ) {
+								Item item = newFrame.get(i);
+								if (item.appearanceMode != Item.PLAIN) {
+									newFrame.focusChild(i); 
+									break;
+								}
+							}
+							break;
 					}
 				}
 				//#endif
@@ -748,7 +763,6 @@ public class FramedForm extends Form {
 	 */
 	Container getFrameByGameAction(int gameAction, Container[] down, Container[] up, Container[] left, Container[] right)
 	{
-		Container newFrame = null;
 		Container[] nextFrames;
 		switch (gameAction) {
 			case DOWN:
@@ -764,8 +778,9 @@ public class FramedForm extends Form {
 				nextFrames = right;
 				break;
 			default:
-				return newFrame;
+				return null;
 		}
+		Container newFrame = null;
 		for (int i = 0; i < nextFrames.length; i++) {
 			Container frame = nextFrames[i];
 			if (frame != null && frame.appearanceMode != Item.PLAIN) {
