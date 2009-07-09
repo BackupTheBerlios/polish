@@ -934,16 +934,17 @@ public class ConnectionThread extends Thread
 	</p>
 <pre>
 &lt;target name=&quot;j2mepolish&quot; 
-	...
-	&lt;variable name=&quot;polish.rmi.mockup.de.enough.polish.sample.rmi.GameServer&quot; 
-             value=&quot;new de.enough.polish.sample.rmi.test.MockupGameServer()&quot; 
-                <b>if=&quot;mockup&quot;</b>
-        /&gt;
-       ...
+    ...
+    &lt;variable 
+          name=&quot;polish.rmi.mockup.de.enough.polish.sample.rmi.GameServer&quot; 
+          value=&quot;new de.enough.polish.sample.rmi.test.MockupGameServer()&quot; 
+          <b>if=&quot;mockup&quot;</b>
+    /&gt;
+    ...
 &lt;/target&gt;
    
 &lt;target name=&quot;enableMockup&quot; &gt;
-	&lt;property name=&quot;mockup&quot; value=&quot;true&quot; /&gt;
+    &lt;property name=&quot;mockup&quot; value=&quot;true&quot; /&gt;
 &lt;/target&gt;
 
 &lt;target name=&quot;mockup&quot; depends=&quot;enableMockup, j2mepolish&quot; /&gt;
