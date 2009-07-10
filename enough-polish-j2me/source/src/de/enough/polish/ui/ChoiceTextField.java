@@ -558,7 +558,6 @@ public class ChoiceTextField
 	private void openChoices( boolean open ) {
 		//#debug
 		System.out.println("open choices: " + open + ", have been opened already:" + this.isOpen);
-		try { throw new RuntimeException(); } catch (Exception e) { e.printStackTrace(); }
 		this.choicesContainer.focusChild( -1 );
 		if (open) {
 			if (this.choicesContainer.size() == 0) {
