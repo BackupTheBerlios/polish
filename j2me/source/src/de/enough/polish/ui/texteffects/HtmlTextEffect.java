@@ -52,7 +52,7 @@ import de.enough.polish.xml.XmlPullParser;
 public class HtmlTextEffect extends TextEffect {
 
 	private Midp2ContainerView midp2View;
-	private Item[] textItems;
+	private transient Item[] textItems;
 
 
 	/**
