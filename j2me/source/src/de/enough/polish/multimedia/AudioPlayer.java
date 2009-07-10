@@ -64,7 +64,7 @@ import android.media.MediaPlayer;
  */
 public class AudioPlayer implements PlayerListener
 //#if polish.android
-	, MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener
+	, MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener
 //#endif
 {
 
@@ -151,6 +151,7 @@ public class AudioPlayer implements PlayerListener
 		//#if polish.android
 		this.androidPlayer = new MediaPlayer();
 		this.androidPlayer.setOnCompletionListener(this);
+		this.androidPlayer.setOnPreparedListener(this);
 		this.volumeControlStream = MIDlet.midletInstance.getVolumeControlStream();
 		AudioManager audioManager = (AudioManager) MIDlet.midletInstance.getSystemService(Context.AUDIO_SERVICE);			
 		this.androidMaxVolume = audioManager.getStreamMaxVolume(this.volumeControlStream);
@@ -178,7 +179,9 @@ public class AudioPlayer implements PlayerListener
 	public void stop() {
 		//#if polish.android
 		// TODO: This call could crash if it happens while the asynchonous prepare takes place.
-		this.androidPlayer.stop();
+		if(this.androidPlayer.isPlaying()) {
+			this.androidPlayer.stop();
+		}
 		//#endif
 	}
 	
@@ -239,7 +242,7 @@ public class AudioPlayer implements PlayerListener
 		}
 		this.androidPlayer.reset();
 		String url = buffer.toString();
-		this.androidPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+//		this.androidPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 		try {
 			this.androidPlayer.setDataSource(url);
 			this.androidPlayer.prepareAsync();
@@ -698,12 +701,10 @@ public class AudioPlayer implements PlayerListener
 	}
 	
 	public void onPrepared(MediaPlayer p) {
+		//#debug
+		System.out.println("onPrepared called.");
 		p.start();
-	}
-	
-	public boolean onError(MediaPlayer arg0, int arg1, int arg2) {
-		// TODO Auto-generated method stub
-		return false;
+		this.androidPlayer.start();
 	}
 	
 	//#endif
