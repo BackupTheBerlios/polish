@@ -25,9 +25,12 @@
 
 package de.enough.polish.ui.texteffects;
 
+import java.io.IOException;
+
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 
+import de.enough.polish.io.StringReader;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
@@ -36,8 +39,10 @@ import de.enough.polish.ui.TextEffect;
 import de.enough.polish.ui.containerviews.Midp2ContainerView;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.TextUtil;
+import de.enough.polish.xml.SimplePullParser;
 import de.enough.polish.xml.XmlDomNode;
 import de.enough.polish.xml.XmlDomParser;
+import de.enough.polish.xml.XmlPullParser;
 
 /**
  * Allows to use simple HTML markup for the design of the text.
@@ -95,18 +100,29 @@ public class HtmlTextEffect extends TextEffect {
 	public String[] wrap(String htmlText, int textColor, Font font,
 			int firstLineWidth, int lineWidth) 
 	{
-		XmlDomNode root = XmlDomParser.parseTree( "<r>" + htmlText + "</r>" );
+//		XmlDomNode root = XmlDomParser.parseTree( "<r>" + htmlText + "</r>" );
 		ArrayList childList = new ArrayList();
 		Style baseStyle = this.style.clone(true);
 		baseStyle.removeAttribute("text-effect");
-		baseStyle.layout = Item.LAYOUT_LEFT;
+		baseStyle.layout = (baseStyle.layout & (~(Item.LAYOUT_EXPAND | Item.LAYOUT_VEXPAND | Item.LAYOUT_SHRINK | Item.LAYOUT_VSHRINK)) );
 		baseStyle.background = null;
 		baseStyle.border = null;
 		
-		addNode( root, baseStyle, childList );
+		try {
+			XmlPullParser xmlReader = new XmlPullParser(new StringReader(htmlText), false );
+			xmlReader.relaxed = true;
+			parse( xmlReader, baseStyle, childList );
+		} catch (IOException e) {
+			//#debug error
+			System.out.println("Unable to parse text " + htmlText + e );
+			return super.wrap( htmlText, textColor, font, firstLineWidth, lineWidth );
+		}
+
+		
 		Item[] items = (Item[]) childList.toArray( new Item[childList.size()]);
 		for (int i = 0; i < items.length; i++) {
 			Item item = items[i];
+			//System.out.println( i + ": " + ((StringItem)item).getText());
 			item.getItemWidth( lineWidth, lineWidth, -1);
 		}
 		Midp2ContainerView view = new Midp2ContainerView();
@@ -119,39 +135,83 @@ public class HtmlTextEffect extends TextEffect {
 
 
 
-	private void addNode(XmlDomNode node, Style nodeStyle, ArrayList childList) {
-		String name = node.getName().toLowerCase();
-		int addedFontStyle = -1;
-		if ("b".equals(name)) {
-			addedFontStyle = Font.STYLE_BOLD;
-		} else if ("i".equals(name)) {
-			addedFontStyle = Font.STYLE_ITALIC;
-		}
-		String styleName = node.getAttribute("class");
-		if (styleName == null) {
-			node.getAttribute("id");
-		}
-		if (styleName != null) {
-			Style nextNodeStyle = StyleSheet.getStyle(styleName);
-			if (nextNodeStyle != null) {
-				nodeStyle = nextNodeStyle;
+	private void parse(XmlPullParser parser, Style nodeStyle, ArrayList childList) 
+	{
+		while (parser.next() != SimplePullParser.END_DOCUMENT)
+		{
+			int type = parser.getType();
+			if (type == SimplePullParser.START_TAG)
+			{
+				String name = parser.getName().toLowerCase();
+				
+				int addedFontStyle = -1;
+				if ("b".equals(name)) {
+					addedFontStyle = Font.STYLE_BOLD;
+				} else if ("i".equals(name)) {
+					addedFontStyle = Font.STYLE_ITALIC;
+				}
+				String styleName = parser.getAttributeValue("class");
+				if (styleName == null) {
+					styleName = parser.getAttributeValue("id");
+				}
+				Style nextNodeStyle = null;
+				if (styleName != null) {
+					nextNodeStyle = StyleSheet.getStyle(styleName);
+				}
+				if (nextNodeStyle == null) {
+					nextNodeStyle = nodeStyle;
+				}
+				if (addedFontStyle != -1) {
+					nextNodeStyle = nextNodeStyle.clone(true);
+					Integer fontStyle = nextNodeStyle.getIntProperty("font-style");
+					nextNodeStyle.addAttribute("font-style", addToFontStyle( addedFontStyle, fontStyle ) );
+				}
+				parse(parser, nextNodeStyle, childList);
+			} else if (type == SimplePullParser.TEXT) {
+				String text = parser.getText();
+				addText( text, nodeStyle, childList );
+			} else if (type == SimplePullParser.END_TAG) {
+				return;
 			}
-		}
-		if (addedFontStyle != -1) {
-			nodeStyle = nodeStyle.clone(true);
-			Integer fontStyle = nodeStyle.getIntProperty("font-style");
-			nodeStyle.addAttribute("font-style", addToFontStyle( addedFontStyle, fontStyle ) );
-		}
-		String text = node.getText();
-		if (text != null) {
-			addText( text, nodeStyle, childList );
-		}
-		for (int i=0; i<node.getChildCount(); i++) {
-			XmlDomNode child = node.getChild(i);
-			addNode( child, nodeStyle, childList );
-		}
-
+		} 
+		
 	}
+
+
+//	private void addNode(XmlDomNode node, Style nodeStyle, ArrayList childList) {
+//		String name = node.getName().toLowerCase();
+//		int addedFontStyle = -1;
+//		if ("b".equals(name)) {
+//			addedFontStyle = Font.STYLE_BOLD;
+//		} else if ("i".equals(name)) {
+//			addedFontStyle = Font.STYLE_ITALIC;
+//		}
+//		String styleName = node.getAttribute("class");
+//		if (styleName == null) {
+//			node.getAttribute("id");
+//		}
+//		if (styleName != null) {
+//			Style nextNodeStyle = StyleSheet.getStyle(styleName);
+//			if (nextNodeStyle != null) {
+//				nodeStyle = nextNodeStyle;
+//			}
+//		}
+//		if (addedFontStyle != -1) {
+//			nodeStyle = nodeStyle.clone(true);
+//			Integer fontStyle = nodeStyle.getIntProperty("font-style");
+//			nodeStyle.addAttribute("font-style", addToFontStyle( addedFontStyle, fontStyle ) );
+//		}
+//		String text = node.getText();
+//		if (text != null) {
+//			System.out.println(childList.size() + ": text=" + text);
+//			addText( text, nodeStyle, childList );
+//		}
+//		for (int i=0; i<node.getChildCount(); i++) {
+//			XmlDomNode child = node.getChild(i);
+//			addNode( child, nodeStyle, childList );
+//		}
+//
+//	}
 
 
 	private Object addToFontStyle(int styleSetting, Integer fontStyle) {
