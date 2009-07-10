@@ -705,6 +705,8 @@ public class StringItem extends Item
 						}
 					}
 					this.textEffect = effect;
+				} else {
+					effect = this.textEffect;
 				}
 				effect.setStyle(style);
 			} else {
