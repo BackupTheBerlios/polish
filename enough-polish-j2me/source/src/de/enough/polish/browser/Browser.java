@@ -503,10 +503,11 @@ implements Runnable, ResourceLoader
 		HashMap attributeMap = new HashMap();
 		while (parser.next() != SimplePullParser.END_DOCUMENT)
 		{
-			if (parser.getType() == SimplePullParser.START_TAG
-					|| parser.getType() == SimplePullParser.END_TAG)
+			int type = parser.getType();
+			if (type == SimplePullParser.START_TAG
+					|| type == SimplePullParser.END_TAG)
 			{
-				boolean openingTag = parser.getType() == SimplePullParser.START_TAG;
+				boolean openingTag = (type == SimplePullParser.START_TAG);
 
 				// #debug
 				//System.out.println( "looking for handler for " + parser.getName()  + ", openingTag=" + openingTag );
@@ -530,14 +531,14 @@ implements Runnable, ResourceLoader
 					System.out.println( "no handler for " + parser.getName() );
 				}
 			}
-			else if (parser.getType() == SimplePullParser.TEXT)
+			else if (type == SimplePullParser.TEXT)
 			{
 				handleText(parser.getText().trim());
 			}
 			else
 			{
 				//#debug error
-				System.out.println("unknown type: " + parser.getType() + ", name=" + parser.getName());
+				System.out.println("unknown type: " + type + ", name=" + parser.getName());
 			}
 		} // end while (parser.next() != PullParser.END_DOCUMENT)
 
