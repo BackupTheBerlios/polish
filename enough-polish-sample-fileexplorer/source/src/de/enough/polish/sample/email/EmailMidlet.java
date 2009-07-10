@@ -77,6 +77,7 @@ implements CommandListener, ItemStateListener
 	private final Command setStatusOnlineCommand = new Command( "Online", Command.SCREEN, 1 );
 	private final Command setStatusOfflineCommand = new Command( "Offline", Command.SCREEN, 2 );
 	private final Command setStatusInvisibleCommand = new Command( "Invisible", Command.SCREEN, 2 );
+	private final Command cmdAbout = new Command("About", Command.SCREEN, 2 );
 
 	private Form mainScreen;
 	private CreateMessageForm createMessageForm;
@@ -113,6 +114,7 @@ implements CommandListener, ItemStateListener
 
 		form.setCommandListener( this );
 		form.setItemStateListener( this );
+		form.addCommand( this.cmdAbout );
 		form.addCommand( this.createNewCommand );
 		form.addCommand( this.exitCommand );
 		UiAccess.addSubCommand( this.createNewMailCommand, this.createNewCommand, form );
@@ -173,7 +175,9 @@ implements CommandListener, ItemStateListener
 		System.out.println("commandAction with cmd=" + cmd.getLabel() + ", screen=" + disp );
 		if ( disp == this.mainScreen ) {
 			if (cmd == this.exitCommand ) {
-				notifyDestroyed();				
+				notifyDestroyed();
+			} else if (cmd == this.cmdAbout) {
+				showAbout();
 			} else if (cmd == this.createNewMailCommand) {
 				//#style createMessageForm
 				CreateMessageForm form = new CreateMessageForm( "Create E-Mail");
@@ -220,7 +224,24 @@ implements CommandListener, ItemStateListener
 				System.out.println("aborting message creation.");
 				this.display.setCurrent( this.mainScreen );
 			}
+		} else {
+			if (cmd == this.okCommand) {
+				this.display.setCurrent(this.mainScreen);
+			}
 		}
+	}
+
+	protected void showAbout() {
+		//#style screenAbout
+		Form form = new Form("About");
+		//#style aboutText
+		form.append("<span class=\"aboutHeader\">FileExplorer</span> is a sample application of <b>J2ME Polish.</b> " 
+				+ "You can use and modify this application for your own purposes - the sources are provided in "
+				+ "J2ME Polish:\n<span class=\"aboutLink\">www.j2mepolish.org</span>");
+		form.setCommandListener(this);
+		form.addCommand(this.okCommand);
+		this.display.setCurrent(form);
+		
 	}
 
 	public void itemStateChanged(Item item) {

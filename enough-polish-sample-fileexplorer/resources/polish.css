@@ -391,6 +391,44 @@ alertcontent {
 	font-color: white;
 }
 
+/*************    About Screen       ***************************************************************************************************/
+.screenAbout {
+	title-style: aboutTitle;
+	padding: 15%;
+}
+
+.aboutTitle {
+	font-size: large;
+	font-color: #fff;
+	background-color: #333;
+	layout: expand | center;
+}
+
+.aboutText {
+	text-effect: html;
+	font-color: #333;
+	layout: bottom;
+}
+
+.aboutHeader {
+	always-include: true;
+	font-size: large;
+	font-style: bold;
+	font-color: #933;
+}
+
+.aboutLink {
+	always-include: true;
+	font-style: underlined | italic;
+	font-color: #444;
+	/*
+	border {
+		type: bottom;
+		color: #444;
+	}
+	*/
+}
+
 /*************    Scrollbar          ***************************************************************************************************/
 scrollbar {
 	scrollbar-slider-color: #fff;
