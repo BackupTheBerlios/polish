@@ -1098,7 +1098,7 @@ public abstract class BaseScreen
     		boolean forwardEvent = true;
     		Item item = this.currentItem;
         	Field field = item != null ? this.currentItem._bbField : null;
-        	if (field instanceof PolishEditField) {
+        	if (field instanceof PolishTextField) {
         		int absX = item.getAbsoluteX();
         		int absY = item.getAbsoluteY();
         		if ( x < absX || y < absY || x > absX + item.itemWidth || y > absY + item.itemHeight) {
