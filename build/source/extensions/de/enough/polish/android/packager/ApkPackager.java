@@ -106,8 +106,6 @@ public class ApkPackager extends Packager{
 		arguments.add(ArgumentHelper.getPackage("ap_",env));
 		arguments.add("-f");
 		arguments.add(ArgumentHelper.getDex(env));
-		arguments.add("-rf");
-		arguments.add(ArgumentHelper.getRes(env));
 		arguments.add("-rj");
 		arguments.add(ArgumentHelper.getLibs(env));
 		return arguments;
