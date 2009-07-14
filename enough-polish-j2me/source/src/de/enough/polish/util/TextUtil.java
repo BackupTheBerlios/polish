@@ -221,7 +221,7 @@ public final class TextUtil {
 		if (!hasLineBreaks) {
 			wrap( value, font, completeWidth, firstLineWidth, lineWidth, lines, maxLines );
 		} else {
-			// now the string will be splitted at the line-breaks and
+			// now the string will be split at the line-breaks and
 			// then each line is processed:
 			char[] valueChars = value.toCharArray();
 			int lastIndex = 0;
@@ -266,11 +266,14 @@ public final class TextUtil {
 			}
 		}
 		
-		if(lines.size() == maxLines)
+		if(lines.size() >= maxLines)
 		{
 			String line = (String)lines.get(maxLines - 1);
 			line = addAppendix(line, font, firstLineWidth);
 			lines.set(maxLines - 1, line);
+			while (lines.size() > maxLines) {
+				lines.remove( lines.size() -1 );
+			}
 		}
 		
 		//#debug
