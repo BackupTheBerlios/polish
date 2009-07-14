@@ -790,6 +790,9 @@ public class StringItem extends Item
 			Integer maxLinesInt = style.getIntProperty("max-lines");
 			if (maxLinesInt != null) {
 				this.maxLines = maxLinesInt.intValue();
+				if (this.maxLines <= 0) {
+					this.maxLines = TextUtil.MAXLINES_UNLIMITED;
+				}
 			}
 		//#endif
 		//#if polish.css.text-visible
