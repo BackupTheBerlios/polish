@@ -243,6 +243,11 @@ public class DeviceControl
 	}
 	
 	//#if polish.android
+	
+	public static void setSuicideOnExit(boolean suicideOnExit) {
+		MIDlet.midletInstance.setSuicideOnExit(suicideOnExit);
+	}
+	
 	/**
 	 * This method allows the caller to disable the fallback to the network location provider when the GPS location provider is not available.
 	 * Normally the network location provider is used in case the GPS location provider goes offline for some reason. With this method you can

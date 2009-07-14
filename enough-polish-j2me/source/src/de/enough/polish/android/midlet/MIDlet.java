@@ -14,6 +14,7 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Process;
 import android.telephony.CellLocation;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
@@ -89,6 +90,8 @@ public abstract class MIDlet extends Activity {
 	private boolean isSoftkeyboardOpen;
 
 	private int currentScreenYOffset;
+
+	private boolean suicideOnExit;
 
 //	private PowerManager.WakeLock wakeLock;
 
@@ -340,6 +343,10 @@ public abstract class MIDlet extends Activity {
 			} catch (MIDletStateChangeException e) {
 				//
 			}
+		}
+		if(this.suicideOnExit) {
+			int myPid = Process.myPid();
+			Process.killProcess(myPid);
 		}
 	}
 
@@ -777,6 +784,14 @@ public abstract class MIDlet extends Activity {
 		if (screen != null) {
 			screen.setScrollYOffset(this.currentScreenYOffset, true);
 		}
+	}
+
+	/**
+	 * 
+	 * @param suicideOnExit true if the process should be killed after the destroy event is received.
+	 */
+	public void setSuicideOnExit(boolean suicideOnExit) {
+		this.suicideOnExit = suicideOnExit;
 	}
 
 }
