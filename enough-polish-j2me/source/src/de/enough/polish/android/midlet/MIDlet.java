@@ -25,6 +25,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import de.enough.polish.android.io.ConnectionNotFoundException;
 import de.enough.polish.android.lcdui.AndroidDisplay;
+import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Display;
 import de.enough.polish.ui.Displayable;
 import de.enough.polish.ui.Item;
@@ -758,8 +759,9 @@ public abstract class MIDlet extends Activity {
 			if (item != null) {
 				this.currentScreenYOffset = screen.getScrollYOffset();
 				int contAbsY = 0;
-				if (screen.getRootContainer() != null) {
-					contAbsY = screen.getRootContainer().getAbsoluteY();
+				Container cont = screen.getRootContainer();
+				if (cont != null) {
+					contAbsY = cont.getAbsoluteY();
 				}
 				screen.setScrollYOffset( -(item.getAbsoluteY() - contAbsY), true);
 			}
