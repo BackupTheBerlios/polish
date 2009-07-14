@@ -1280,6 +1280,62 @@ public class TabbedPane extends Screen
 			}
 		}
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#getCurrentIndex()
+	 */
+	public int getCurrentIndex() {
+		if (this.currentScreen != null) {
+			return this.currentScreen.getCurrentIndex();
+		}
+		return super.getCurrentIndex();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#getCurrentItem()
+	 */
+	public Item getCurrentItem() {
+		if (this.currentScreen != null) {
+			return this.currentScreen.getCurrentItem();
+		}
+		return super.getCurrentItem();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#setScrollYOffset(int, boolean)
+	 */
+	public void setScrollYOffset(int offset, boolean smooth) {
+		if (this.currentScreen != null) {
+			this.currentScreen.setScrollYOffset(offset, smooth);
+		} else {
+			super.setScrollYOffset(offset, smooth);
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#getScrollHeight()
+	 */
+	public int getScrollHeight() {
+		if (this.currentScreen != null) {
+			return this.currentScreen.getScrollHeight();
+		} 
+		return super.getScrollHeight();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#getScrollYOffset()
+	 */
+	public int getScrollYOffset() {
+		if (this.currentScreen != null) {
+			return this.currentScreen.getScrollYOffset();
+		}
+		return super.getScrollYOffset();
+	}
 	
 	
 
