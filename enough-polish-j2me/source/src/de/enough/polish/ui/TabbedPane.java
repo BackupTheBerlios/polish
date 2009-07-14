@@ -965,14 +965,14 @@ public class TabbedPane extends Screen
 	}
 	//#endif
 
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Screen#paint(Graphics)
-	 */
-	public void paint(Graphics g) {
-		
-		super.paint(g);
-	}
-	
+//	/* (non-Javadoc)
+//	 * @see de.enough.polish.ui.Screen#paint(Graphics)
+//	 */
+//	public void paint(Graphics g) {
+//		
+//		super.paint(g);
+//	}
+//	
 	
 	
 	/* (non-Javadoc)
@@ -995,6 +995,7 @@ public class TabbedPane extends Screen
 			if (!screen.isInitialized) {
 				int w = getScreenFullWidth();
 				int h = getScreenFullHeight();
+				h -= this.tabIconsContainer.itemHeight;
 				screen.init( w, h );
 			}
 			screen.paintScreen(g);
