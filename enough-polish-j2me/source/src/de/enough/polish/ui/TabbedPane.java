@@ -1337,6 +1337,17 @@ public class TabbedPane extends Screen
 		}
 		return super.getScrollYOffset();
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#getRootContainer()
+	 */
+	public Container getRootContainer() {
+		if (this.currentScreen != null) {
+			return this.currentScreen.getRootContainer();
+		}		
+		return super.getRootContainer();
+	}
 	
 	
 
