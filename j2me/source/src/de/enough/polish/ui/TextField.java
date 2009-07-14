@@ -3760,7 +3760,7 @@ public class TextField extends StringItem
 	}
 	//#endif
 	
-	//#if polish.hasPointerEvents
+	//#if polish.hasPointerEvents && !tmp.forceDirectInput
 	/**
 	 * Handles the event when a pointer has been pressed at the specified position.
 	 * The default method translates the pointer-event into an artificial
@@ -3775,21 +3775,13 @@ public class TextField extends StringItem
 	 */
 	protected boolean handlePointerPressed( int x, int y ) {
 		if (isInItemArea(x, y)) {
-			//#if  !tmp.forceDirectInput
-				//# return notifyItemPressedStart();
-			//#elif polish.android1.5
-				if (this.isFocused && ((System.currentTimeMillis() - this.androidFocusedTime) > 200)) {
-					MIDlet.midletInstance.toggleSoftKeyboard();
-				} else {
-					return super.handlePointerReleased(x, y);
-				}
-			//#endif
+			return notifyItemPressedStart();
 		}
 		return super.handlePointerPressed(x, y);
 	}
 	//#endif
 	
-	//#if tmp.useNativeTextBox && polish.hasPointerEvents
+	//#if polish.hasPointerEvents
 	/**
 	 * Handles the event when a pointer has been pressed at the specified position.
 	 * The default method translates the pointer-event into an artificial
@@ -3804,14 +3796,29 @@ public class TextField extends StringItem
 	 */
 	protected boolean handlePointerReleased( int x, int y ) {
 		if (isInItemArea(x, y)) {
-			notifyItemPressedEnd();
-			showTextBox();
-			return true;
+			//#if tmp.useNativeTextBox
+				notifyItemPressedEnd();
+				showTextBox();
+				//# return true;
+			//#elif polish.android1.5
+				if (this.isFocused && ((System.currentTimeMillis() - this.androidFocusedTime) > 200)) {
+					MIDlet.midletInstance.toggleSoftKeyboard();
+					return true;
+				} else {
+					return super.handlePointerReleased(x, y);
+				}
+			//#endif
 		}
 		return super.handlePointerReleased(x, y);
 	}
-	
 	//#endif
+	
+	//#if polish.hasPointerEvents && polish.android1.5
+	protected boolean handlePointerDragged(int relX, int relY) {
+		return super.handlePointerDragged(relX, relY) || true;
+	}
+	//#endif
+
 
 	
 	//#ifdef tmp.directInput
