@@ -46,6 +46,7 @@
 		<type  name="parameterized" class="de.enough.polish.preprocess.css.attributes.ParameterizedCssAttribute" />
 		<type  name="point" class="de.enough.polish.preprocess.css.attributes.PointCssAttribute" />
 		<type names="time, timems, time-ms" class="de.enough.polish.preprocess.css.attributes.TimeMsCssAttribute" />
+		<type  name="dimensionmap" class="de.enough.polish.preprocess.css.attributes.DimensionMapCssAttribute" />
 	</types>
 
 	<attribute
@@ -800,10 +801,9 @@
 		name="font-size"
 		appliesTo="StringItem"
 		description="The font size of an item or screen element."
-		type="map"
+		type="dimensionmap"
 		values="small, little, medium, default, normal, large, big"
 		allowsCombinations="false"
-		requiresMapping="true"
 		isCaseSensitive="false"
 		default="medium"
 		id="-15"

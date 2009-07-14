@@ -308,7 +308,11 @@ public class Style implements Externalizable
 	 * @return the value of this property as an Integer object. If none has been defined, null will be returned.
 	 */
 	public Integer getIntProperty( String propName ) {
-		return (Integer) this.libraryBuildAttributes.get(propName);
+		Object val = this.libraryBuildAttributes.get(propName);
+		if (val instanceof Dimension) {
+			return new Integer( ((Dimension) val).getValue(100) );
+		}
+		return (Integer) val;
 	}
 	//#endif
 
@@ -475,9 +479,10 @@ public class Style implements Externalizable
 			int fontStyle = Font.STYLE_PLAIN;
 			boolean fontDefined = false;
 			//#if polish.css.font
-				this.font = (Font) style.getObjectProperty( "font" );
-				if (this.font != null) {
-					return this.font;
+				Font f = (Font) style.getObjectProperty( "font" );
+				if (f != null) {
+					this.font = f;
+					return f;
 				}
 			//#endif
 			//#if polish.css.font-style
@@ -487,12 +492,18 @@ public class Style implements Externalizable
 					fontDefined = true;
 				}
 			//#endif
-			int fontSize = Font.SIZE_MEDIUM;
+			int fontSizeConstant = Font.SIZE_MEDIUM;
+			Dimension fontSizeDimension = null;
 			//#if polish.css.font-size
-				Integer sizeInt = style.getIntProperty("font-size");
-				if (sizeInt != null) {
-					fontSize = sizeInt.intValue();
-					fontDefined = true;
+				Object size = style.getObjectProperty("font-size");
+				if (size instanceof Dimension) {
+					fontSizeDimension = (Dimension) size;
+				} else {
+					Integer sizeInt = style.getIntProperty("font-size");
+					if (sizeInt != null) {
+						fontSizeConstant = sizeInt.intValue();
+						fontDefined = true;
+					}
 				}
 			//#endif
 			int fontFace = Font.FACE_SYSTEM;
@@ -504,7 +515,43 @@ public class Style implements Externalizable
 				}
 			//#endif
 			if (fontDefined) {
-				this.font = Font.getFont(fontFace, fontStyle, fontSize);
+				if (fontSizeDimension != null) {
+				//#if polish.android
+					//# this.font = de.enough.polish.android.lcdui.Font.getFont(fontFace, fontStyle, fontSizeDimension);
+				//#elif polish.blackberry
+					//# this.font = de.enough.polish.blackberry.ui.Font.getFont(fontFace, fontStyle, fontSizeDimension);
+				//#else
+					if (fontSizeDimension.isPercent()) {
+						if (fontSizeDimension.getValue(100) < 100) {
+							fontSizeConstant = Font.SIZE_SMALL;
+						} else if (fontSizeDimension.getValue(100) == 100) {
+							fontSizeConstant = Font.SIZE_MEDIUM;
+						} else {
+							fontSizeConstant = Font.SIZE_LARGE;
+						}
+					} else {
+						int height = fontSizeDimension.getValue( 100 );
+						Font fnt = Font.getFont( fontFace, fontStyle, Font.SIZE_MEDIUM );
+						int minDifference = Math.abs( fnt.getHeight() - height ); 
+						fnt = Font.getFont( fontFace, fontStyle, Font.SIZE_SMALL );
+						int difference = Math.abs( fnt.getHeight() - height );
+						if (difference < minDifference) {
+							fontSizeConstant = Font.SIZE_SMALL;
+						} else {
+							fnt = Font.getFont( fontFace, fontStyle, Font.SIZE_LARGE );
+							difference = Math.abs( fnt.getHeight() - height );
+							if (difference < minDifference) {
+								fontSizeConstant = Font.SIZE_LARGE;
+							}
+						}
+						
+					}
+					
+					this.font = Font.getFont(fontFace, fontStyle, fontSizeConstant);
+				//#endif
+				} else {
+					this.font = Font.getFont(fontFace, fontStyle, fontSizeConstant);
+				}
 			}
 		}
 		return this.font;

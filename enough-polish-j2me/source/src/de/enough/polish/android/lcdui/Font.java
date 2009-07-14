@@ -1,6 +1,7 @@
 //#condition polish.usePolishGui && polish.android
 package de.enough.polish.android.lcdui;
 
+import de.enough.polish.ui.Dimension;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 
@@ -165,11 +166,10 @@ public final class Font extends Object
 	private int baselinePosition;
 	
 	private Paint paint;
-		
-	private Font( int face, int style, int size ) throws ClassNotFoundException {
+	
+	private Font( int face, int style ) { 
 		this.face = face;
 		this.style = style;
-		this.size = size; 
 		if ((style == STYLE_PLAIN) && (face == FACE_SYSTEM || face == FACE_PROPORTIONAL)) {
 			this.typeface = Typeface.DEFAULT;			
 		} else {
@@ -189,7 +189,12 @@ public final class Font extends Object
 			}
 			this.typeface = Typeface.create(family, androidStyle);
 		}
-		this.paint = new Paint();
+	}
+		
+	private Font( int face, int style, int size ) { 
+		this( face, style );
+		this.size = size; 
+
 		double factor;
 		if (size == SIZE_MEDIUM) {
 			//#if polish.android.font.MediumFactor:defined
@@ -211,9 +216,23 @@ public final class Font extends Object
 			//#endif
 		}
 		
+		this.paint = new Paint();
 		float androidSize = (float) (this.paint.getTextSize() * factor);
 
 		this.height = (int)androidSize;
+		initPaint( this.paint );
+		
+		int decent = this.paint.getFontMetricsInt().descent;
+		this.baselinePosition = this.height - decent;
+	}
+	
+	private Font( int face, int style, Dimension size ) { 
+		this( face, style );
+		this.size = SIZE_MEDIUM; 
+
+		this.paint = new Paint();
+		this.height = size.getValue( (int)this.paint.getTextSize());
+
 		initPaint( this.paint );
 		
 		int decent = this.paint.getFontMetricsInt().descent;
@@ -248,9 +267,6 @@ public final class Font extends Object
 		if (defaultFont == null) {
 			try {
 				defaultFont = new Font( FACE_SYSTEM, STYLE_PLAIN, SIZE_MEDIUM );
-			} catch (ClassNotFoundException e) {
-				//#debug error
-				System.out.println("Unable to create default font" + e);
 			} catch (Exception e) {
 				//#debug error
 				System.out.println("Unable to create default font" + e);
@@ -274,13 +290,25 @@ public final class Font extends Object
 	 */
 	public static Font getFont(int face, int style, int size)
 	{
-		try {
-			return new Font( face, style, size );
-		} catch (ClassNotFoundException e) {
-			//#debug error
-			System.out.println("Unable to create font" + e);
-			return getDefaultFont();
-		}
+		return new Font( face, style, size );
+	}
+	
+	/**
+	 * Obtains an object representing a font having the specified face, style,
+	 * and size. If a matching font does not exist, the system will
+	 * attempt to provide the closest match. This method <em>always</em>
+	 * returns
+	 * a valid font object, even if it is not a close match to the request.
+	 * 
+	 * @param face one of FACE_SYSTEM, FACE_MONOSPACE, or FACE_PROPORTIONAL
+	 * @param style STYLE_PLAIN, or a combination of STYLE_BOLD, STYLE_ITALIC, and STYLE_UNDERLINED
+	 * @param size  the size either in percent or pixel
+	 * @return instance the nearest font found
+	 * @throws IllegalArgumentException - if face, style, or size are not legal values
+	 */
+	public static Font getFont(int face, int style, Dimension size)
+	{
+		return new Font( face, style, size );
 	}
 
 	/**
