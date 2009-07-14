@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.os.Parcelable;
+import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -275,7 +276,7 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 	}
 
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		//#debug
+		// #debug
 		System.out.println("AndroidDisplay.onKeyDown: keyCode=" + keyCode + ", flags=" + event.getFlags() + ", action=" + event.getAction() + ", isFromSoftKeyBoard=" + ((event.getFlags() & KeyEvent.FLAG_SOFT_KEYBOARD) == KeyEvent.FLAG_SOFT_KEYBOARD));
 		if(this.currentPolishCanvas == null) {
 			return false;
@@ -328,6 +329,40 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 		return true;
 	}
 	
+	
+	
+	@Override
+	public boolean onKeyMultiple(int keyCode, int repeatCount, KeyEvent event)
+	{
+		//#debug
+		System.out.println("onMultiple: key event: characters=[" + event.getCharacters() + "], number=[" + event.getNumber() + "], unicode/meta=[" + event.getUnicodeChar(event.getMetaState()) + "], isSystem=" + event.isSystem() + ",  keyCode=[" + keyCode + "/" + event.getKeyCode() + "], action=" + event.getAction() + ", repeat=" + repeatCount + ", metaState=" + event.getMetaState() + ", describeContents=" + event.describeContents() + ", flags=" + event.getFlags());
+		if(this.currentPolishCanvas == null) {
+			return false;
+		}
+		if(this.util == null)
+		{
+			this.util = new DisplayUtil(event.getDeviceId());
+		}
+		
+		int key = this.util.handleKey(keyCode, event, this.currentPolishCanvas);
+		if (repeatCount > 0) {
+			this.currentPolishCanvas.keyRepeated(key);
+		} else {
+			if (key == 0) {
+				String characters = event.getCharacters();
+				if (characters != null) {
+					for (int i=0; i<characters.length();i++) {
+						key += characters.charAt(i);
+					}
+				}
+			}
+			this.currentPolishCanvas.keyPressed(key);
+			this.currentPolishCanvas.keyReleased(key);
+		}
+		return true;
+		//return super.onKeyMultiple(keyCode, repeatCount, event);
+	}
+
 	/**
 	 * 
 	 * @param x physical x position
@@ -1111,7 +1146,8 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 	@Override
 	public InputConnection onCreateInputConnection(EditorInfo editorInfo) {
 		editorInfo.imeOptions |= EditorInfo.IME_FLAG_NO_EXTRACT_UI | EditorInfo.IME_ACTION_NONE;
-        return new BaseInputConnection(this, false);
+        //return new PolishInputConnection(this, false);
+		return new BaseInputConnection(this, false);
 	}
 
 	@Override
@@ -1122,9 +1158,9 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 	}
 
 	@Override
-	public boolean checkInputConnectionProxy(View arg0) {
+	public boolean checkInputConnectionProxy(View view) {
 		//#debug
-		System.out.println("XXX checkInputconnectionProxy called with view '"+arg0+"'");
+		System.out.println("XXX checkInputconnectionProxy called with view '"+view+"'");
 		return true;
 	}
 	//#endif

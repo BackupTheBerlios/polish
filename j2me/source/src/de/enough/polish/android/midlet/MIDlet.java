@@ -218,7 +218,6 @@ public abstract class MIDlet extends Activity {
 		setSystemProperty("microedition.locale", language);
 	}
 
-	//TODO: these methods are not called
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onKeyDown(int, android.view.KeyEvent)
 	 */
@@ -226,12 +225,17 @@ public abstract class MIDlet extends Activity {
 		return AndroidDisplay.getDisplay(this).onKeyDown(keyCode, event);
 	}
 
-	//TODO: these methods are not called
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onKeyUp(int, android.view.KeyEvent)
 	 */
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
 		return AndroidDisplay.getDisplay(this).onKeyUp(keyCode, event);
+	}
+	
+	@Override
+	public boolean onKeyMultiple(int keyCode, int repeatCount, KeyEvent event)
+	{
+		return AndroidDisplay.getDisplay(this).onKeyMultiple(keyCode, repeatCount, event);
 	}
 
 	/*
