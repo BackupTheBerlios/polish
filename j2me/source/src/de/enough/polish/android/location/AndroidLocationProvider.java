@@ -47,7 +47,6 @@ public class AndroidLocationProvider extends LocationProvider {
 	private String providerId;
 	private AndroidLocationListenerAdapter currentLocationListener;
 	private LocationUpdateThread locationUpdateThread;
-	private int currentMinTime;
 	private int state = OUT_OF_SERVICE;
 	
 	/**
@@ -162,11 +161,12 @@ public class AndroidLocationProvider extends LocationProvider {
 			locationManager.removeUpdates(this.currentLocationListener);
 			return;
 		}
-		if(interval == -1) {
-			this.currentMinTime = DEFAULT_MINIMAL_LOCATION_UPDATES;
-		} else {
-			this.currentMinTime = interval;
-		}
+		//TODO: Handle the minTime gracefully. Use 0 for the fastest updates.
+//		if(interval == -1) {
+//			this.currentMinTime = DEFAULT_MINIMAL_LOCATION_UPDATES;
+//		} else {
+//			this.currentMinTime = interval;
+//		}
 		this.currentLocationListener.setListener(listener);
 		registerLocationListener();
 	}
