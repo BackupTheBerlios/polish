@@ -202,7 +202,7 @@ public final class TextUtil {
 			//#debug error
 			System.out.println("INVALID LINE WIDTH FOR SPLITTING " + firstLineWidth + " / " + lineWidth + " ( for string " + value + ")");
 			//#if polish.debug.error
-				try { throw new RuntimeException(); } catch (Exception e) { e.printStackTrace(); }	
+				try { throw new RuntimeException("INVALID LINE WIDTH FOR SPLITTING " + firstLineWidth + " / " + lineWidth + " ( for string " + value + ")"); } catch (Exception e) { e.printStackTrace(); }	
 			//#endif
 			return new String[]{ value };
 		}
@@ -547,6 +547,31 @@ public final class TextUtil {
             }
         }
         return encodedUrl.toString(); // Return encoded URL
+    }
+    
+    /**
+     * Encodes a string for parsing using an XML parser.
+     * &amp, &lt; and &gt; are replaced.
+     * 
+     * @param text the text
+     * @return the cleaned text
+     */
+    public static String encodeForXmlParser( String text ) {
+    	int len = text.length();
+    	StringBuffer buffer = new StringBuffer(len + 10);
+        for (int i = 0; i < len; i++) {
+            char c = text.charAt(i);
+            if (c == '&') {
+            	buffer.append("&amp;");
+            } else if (c == '<') {
+            	buffer.append("&lt;");
+            } else if (c == '>') {
+            	buffer.append("&gt;");
+            } else {
+            	buffer.append(c);
+            }
+        }
+    	return buffer.toString();
     }
 
     /**
