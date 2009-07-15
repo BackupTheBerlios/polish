@@ -768,8 +768,8 @@ public abstract class MIDlet extends Activity {
 		if (screen != null) {
 			Item item = screen.getCurrentItem();
 			if (item != null) {
-				while (item instanceof Container && item.getParent() != null) {
-					item = item.getParent();
+				while (item instanceof Container && ((Container)item).getFocusedItem() != null) {
+					item = ((Container)item).getFocusedItem();
 				}
 				this.currentScreenYOffset = screen.getScrollYOffset();
 				int contAbsY = 0;
