@@ -74,7 +74,7 @@ implements OutputFilter
 	
 	private Map furtherParameters;
 	private boolean isVerbose;
-	private boolean doPreverify;
+	private boolean doPreverify = true;
 
 	/**
 	 * Creates a new pro guard obfuscator.
