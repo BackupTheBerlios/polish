@@ -231,7 +231,14 @@ public final class Font extends Object
 		this.size = SIZE_MEDIUM; 
 
 		this.paint = new Paint();
-		this.height = size.getValue( (int)this.paint.getTextSize());
+		double factor;
+		//#if polish.android.font.MediumFactor:defined
+			//#= factor = ${polish.android.font.MediumFactor};
+		//#else
+			factor = 1.85;
+		//#endif
+
+		this.height = size.getValue( (int)(this.paint.getTextSize() * factor) );
 
 		initPaint( this.paint );
 		
