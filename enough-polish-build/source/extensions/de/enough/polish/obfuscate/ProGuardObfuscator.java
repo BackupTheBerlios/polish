@@ -131,19 +131,11 @@ implements OutputFilter
 		params.put( "-libraryjars", buffer.toString() );
 		// add classes that should be kept from obfuscating:
 		Map keepClassesByName = new HashMap();
-		for (int i = 0; i < preserve.length; i++) {
-			String className = preserve[i];
-			params.put( "-keep", "class " + className );
-			keepClassesByName.put( className, Boolean.TRUE );
-		}
+		addKeepClasses(preserve, params, keepClassesByName);
 		Environment env = device.getEnvironment();
 		if (env != null && env.getVariable("polish.build.Obfuscator.KeepClasses") != null ) {
 			preserve = StringUtil.splitAndTrim(env.getVariable("polish.build.Obfuscator.KeepClasses"), ',');
-			for (int i = 0; i < preserve.length; i++) {
-				String className = preserve[i];
-				params.put( "-keep", "class " + className );
-				keepClassesByName.put( className, Boolean.TRUE );
-			}			
+			addKeepClasses(preserve, params, keepClassesByName);			
 		}
 		// add settings:
 		if (!this.doOptimize) {
@@ -337,6 +329,27 @@ implements OutputFilter
 			throw new BuildException("ProGuard was unable to obfuscate: " + e.getMessage(), e );
 		}
 		*/
+	}
+
+
+
+	/**
+	 * @param preserve
+	 * @param params
+	 * @param keepClassesByName
+	 */
+	private void addKeepClasses(String[] preserve,
+			OrderedMultipleEntriesMap params, Map keepClassesByName) 
+	{
+		for (int i = 0; i < preserve.length; i++) {
+			String className = preserve[i];
+			if (className.indexOf('{') == -1) {
+				params.put( "-keep", "class " + className + "{ *; }" );
+			} else {
+				params.put( "-keep", "class " + className );
+			}
+			keepClassesByName.put( className, Boolean.TRUE );
+		}
 	}
 	
 	/**

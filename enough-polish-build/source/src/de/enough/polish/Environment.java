@@ -816,5 +816,21 @@ public class Environment {
 		this.variables.putAll(properties);
 		this.basicProperties = properties;
 	}
+
+	/**
+	 * Adds the given value to the specified variable.
+	 * If the variable is already present the value will be added with a comma as a separator
+	 * @param name name of the variable
+	 * @param value value of the variable
+	 */
+	public void addToVariable(String name, String value) {
+		String existing = (String) this.variables.remove(name);
+		if (existing != null) {
+			addVariable(name, existing + "," + value);
+		} else {
+			addVariable(name, value);
+		}
+		
+	}
 	
  }

@@ -23,7 +23,7 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.manifest.j2se;
+package de.enough.polish.j2se;
 
 import de.enough.polish.Attribute;
 import de.enough.polish.Device;
@@ -35,15 +35,16 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
 
-public class JavaSeManifestCreator
-  extends ManifestCreator
+public class JavaSEManifestCreator
+extends ManifestCreator
 {
-  public void createManifest(File manifestFile, Attribute[] manifestAttributes, String encoding, Device device, Locale locale, Environment env)
-    throws IOException
-  {
-    Manifest manifest = new Manifest( env, encoding );
-    manifest.setAttributes( manifestAttributes );
-    manifest.addAttribute(new Attribute("Main-Class", "de.enough.polish.runtime.swing.SwingSimulator"));
-    manifest.write(manifestFile);
-  }
+	public void createManifest(File manifestFile, Attribute[] manifestAttributes, String encoding, Device device, Locale locale, Environment env)
+	throws IOException
+	{
+		Manifest manifest = new Manifest( env, encoding );
+		manifest.setAttributes( manifestAttributes );
+		manifest.addAttribute(new Attribute("Main-Class", "de.enough.polish.emulator.MicroEmulatorStarter"));
+		manifest.write(manifestFile);
+		manifest.write( new File( manifestFile.getParentFile(), "J2MEPOLISHMANIFEST.MF") );
+	}
 }

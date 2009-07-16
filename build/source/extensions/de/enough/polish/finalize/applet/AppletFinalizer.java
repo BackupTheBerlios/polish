@@ -45,10 +45,14 @@ public class AppletFinalizer
    */
   public void finalize(File jadFile, File jarFile, Device device, Locale locale, Environment env)
   {
-    String name = "Browser Example";
+    String name = env.getVariable("MIDlet-Name");
     String jarName = jarFile.getName();
     String width = "240";
     String height = "320";
+    if (device.getCapability("polish.ScreenSize") != null) {
+    	width = device.getCapability("polish.ScreenWidth");
+    	height = device.getCapability("polish.ScreenHeight");
+    }
     
     try
     {

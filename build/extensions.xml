@@ -707,7 +707,7 @@
 	<extension>
 		<type>postcompiler</type>
 		<name>j2se</name>
-		<class>de.enough.polish.postcompile.j2se.JavaSEPostCompiler</class>
+		<class>de.enough.polish.j2se.JavaSEPostCompiler</class>
 		<classpath>${polish.home}/bin/extensions</classpath>
 	</extension>
 	
@@ -797,7 +797,7 @@
 	<extension>
 		<type>manifestcreator</type>
 		<name>j2se</name>
-		<class>de.enough.polish.manifest.j2se.JavaSeManifestCreator</class>
+		<class>de.enough.polish.j2se.JavaSEManifestCreator</class>
 		<classpath>${polish.home}/bin/extensions</classpath>
 	</extension>
 	
