@@ -3809,11 +3809,16 @@ public class TextField extends StringItem
 				if (this.isFocused && ((System.currentTimeMillis() - this.androidFocusedTime) > 200)) {
 					MIDlet.midletInstance.toggleSoftKeyboard();
 					return true;
-				} else {
-					return super.handlePointerReleased(x, y);
 				}
 			//#endif
 		}
+		//#if polish.android1.5
+		else if (this.isFocused) {
+			// handle released in any case, so that no other elements can be focused:
+			return true;
+		}
+		//#endif
+		
 		return super.handlePointerReleased(x, y);
 	}
 	//#endif
