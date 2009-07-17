@@ -736,11 +736,15 @@ public abstract class MIDlet extends Activity {
 			System.out.println("toggling softkeyboard");
 			InputMethodManager inputMethodManager = (InputMethodManager)getSystemService( Context.INPUT_METHOD_SERVICE);
 			AndroidDisplay display = AndroidDisplay.getDisplay(this);
-			boolean active = inputMethodManager.isActive(display);
-			if(active) {
+			//boolean active = inputMethodManager.isActive(display);
+			//if(active) {
+			try {
 				IBinder windowToken = display.getWindowToken();
 				inputMethodManager.toggleSoftInputFromWindow(windowToken,  0, 0);
 				//inputMethodManager.hideSoftInputFromWindow(windowToken, 0);				
+			} catch (Exception e) {
+				//#debug error
+				System.out.println("Unable to toggle softkeyboard" + e);
 			}
 			this.isSoftkeyboardOpen = !this.isSoftkeyboardOpen;
 			if (this.isSoftkeyboardOpen) {
@@ -777,7 +781,8 @@ public abstract class MIDlet extends Activity {
 				if (cont != null) {
 					contAbsY = cont.getAbsoluteY();
 				}
-				screen.setScrollYOffset( -(item.getAbsoluteY() - contAbsY), true);
+				int newYOffset = - (item.getAbsoluteY() - contAbsY); // - this.currentScreenYOffset;
+				screen.setScrollYOffset( newYOffset, true);
 			}
 		}
 	}
