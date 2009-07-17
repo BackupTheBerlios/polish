@@ -282,9 +282,10 @@ extends ItemView
 						//#debug
 						System.out.println("initContent: width of star column=" + (availWidth - combinedWidth) );
 					}
-				} else {
+				} 
+				//# else {
 			//#else
-				//#	if (this.columnsSetting != STATIC_WIDTH_COLUMNS) {
+				if (this.columnsSetting != STATIC_WIDTH_COLUMNS || this.columnsWidths == null) {
 			//#endif
 				int availableColumnWidth;
 				if (isNormalWidthColumns) {
