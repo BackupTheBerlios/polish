@@ -859,11 +859,27 @@ implements
 	 * @see de.enough.polish.ui.Item#focus(de.enough.polish.ui.Style, int)
 	 */
 	protected Style focus(Style newStyle, int direction) {
-		MIDlet.midletInstance.showSoftKeyboard();
-		this.androidFocusedTime = System.currentTimeMillis();
+		if (this.isShown) {
+			MIDlet.midletInstance.showSoftKeyboard();
+			this.androidFocusedTime = System.currentTimeMillis();
+		}
 		return super.focus(newStyle, direction);
 	}
 	//#endif
+	
+	//#if polish.android1.5
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.StringItem#showNotify()
+	 */
+	protected void showNotify() {
+		if (this.isFocused) {
+			MIDlet.midletInstance.showSoftKeyboard();
+		}
+		super.showNotify();
+	}
+	//#endif
+
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#handleKeyPressed(int, int)

@@ -3807,6 +3807,7 @@ public class TextField extends StringItem
 				//# return true;
 			//#elif polish.android1.5
 				if (this.isFocused && ((System.currentTimeMillis() - this.androidFocusedTime) > 200)) {
+					notifyItemPressedEnd();
 					MIDlet.midletInstance.toggleSoftKeyboard();
 					return true;
 				}
@@ -3815,6 +3816,7 @@ public class TextField extends StringItem
 		//#if polish.android1.5
 		else if (this.isFocused) {
 			// handle released in any case, so that no other elements can be focused:
+			notifyItemPressedEnd();
 			return true;
 		}
 		//#endif
@@ -4108,8 +4110,10 @@ public class TextField extends StringItem
 		//#endif
 		
 		//#if polish.android1.5
-			MIDlet.midletInstance.showSoftKeyboard();
-			this.androidFocusedTime = System.currentTimeMillis();
+			if (this.isShown) {
+				MIDlet.midletInstance.showSoftKeyboard();
+				this.androidFocusedTime = System.currentTimeMillis();
+			}
 		//#endif
 		return unfocusedStyle;
 	}
@@ -4184,6 +4188,10 @@ public class TextField extends StringItem
 		
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.StringItem#showNotify()
+	 */
 	protected void showNotify() {
 		//#if tmp.updateDeleteCommand
 			updateDeleteCommand(this.text);
@@ -4193,6 +4201,11 @@ public class TextField extends StringItem
 			if(this.isFocused && this.infoItem != null)
 			{
 				updateInfo();
+			}
+		//#endif
+		//#if polish.android1.5
+			if (this.isFocused) {
+				MIDlet.midletInstance.showSoftKeyboard();
 			}
 		//#endif
 		super.showNotify();
