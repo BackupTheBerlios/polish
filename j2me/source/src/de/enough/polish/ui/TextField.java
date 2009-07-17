@@ -958,6 +958,7 @@ public class TextField extends StringItem
 
 	//#if polish.android1.5
 		private long androidFocusedTime;
+		private long androidLastPointerPressedTime;
 	//#endif
 
 	//#if tmp.useDynamicCharset
@@ -3760,7 +3761,7 @@ public class TextField extends StringItem
 	}
 	//#endif
 	
-	//#if polish.hasPointerEvents && !tmp.forceDirectInput
+	//#if polish.hasPointerEvents && (!tmp.forceDirectInput || polish.android1.5)
 	/**
 	 * Handles the event when a pointer has been pressed at the specified position.
 	 * The default method translates the pointer-event into an artificial
@@ -3775,7 +3776,11 @@ public class TextField extends StringItem
 	 */
 	protected boolean handlePointerPressed( int x, int y ) {
 		if (isInItemArea(x, y)) {
-			return notifyItemPressedStart();
+			//#if polish.android1.5
+				this.androidLastPointerPressedTime = System.currentTimeMillis();
+			//#elif !tmp.forceDirectInput
+				return notifyItemPressedStart();
+			//#endif
 		}
 		return super.handlePointerPressed(x, y);
 	}
@@ -3815,7 +3820,8 @@ public class TextField extends StringItem
 	
 	//#if polish.hasPointerEvents && polish.android1.5
 	protected boolean handlePointerDragged(int relX, int relY) {
-		return super.handlePointerDragged(relX, relY) || true;
+		return super.handlePointerDragged(relX, relY) 
+		|| (((System.currentTimeMillis() - this.androidLastPointerPressedTime) < 500) && isInItemArea(relX, relY));
 	}
 	//#endif
 
