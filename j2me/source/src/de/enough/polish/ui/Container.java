@@ -915,6 +915,7 @@ public class Container extends Item {
 		int previousIndex = this.focusedIndex; // need to determine whether the user has scrolled from the bottom to the top
 		this.focusedIndex = index;
 		this.focusedItem = item;
+		int scrollOffsetBeforeScroll = getScrollYOffset();
 		//#if tmp.supportViewType
 			if ( this.containerView != null ) {
 				this.itemStyle =  this.containerView.focusItem( index, item, direction, newStyle );
@@ -961,16 +962,17 @@ public class Container extends Item {
 					System.out.println("Focusing last or first item.");
 					nextItem = item;
 				}
-				
-				if ( this.enableScrolling && ((isDownwards && (index < previousIndex) || (previousIndex == -1))) ) {
-					// either the first item or the first selectable item has been focused, so scroll to the very top:
-					setScrollYOffset(0, true);
-				} else {
-					int itemYTop = isDownwards ? item.relativeY : nextItem.relativeY;
-					int itemYBottom = isDownwards ? nextItem.relativeY + nextItem.itemHeight : item.relativeY + item.itemHeight;
-					int height = itemYBottom - itemYTop;
-                    //System.out.println("scrolling for item " + item + ", nextItem=" + nextItem + " in " + this + " with relativeY=" + this.relativeY + ", itemYTop=" + itemYTop);
-					scroll( direction, this.relativeX, itemYTop, item.internalWidth, height );
+				if (getScrollYOffset() == scrollOffsetBeforeScroll) {
+					if ( this.enableScrolling && ((isDownwards && (index < previousIndex) || (previousIndex == -1))) ) {
+						// either the first item or the first selectable item has been focused, so scroll to the very top:
+						setScrollYOffset(0, true);
+					} else {
+						int itemYTop = isDownwards ? item.relativeY : nextItem.relativeY;
+						int itemYBottom = isDownwards ? nextItem.relativeY + nextItem.itemHeight : item.relativeY + item.itemHeight;
+						int height = itemYBottom - itemYTop;
+	                    //System.out.println("scrolling for item " + item + ", nextItem=" + nextItem + " in " + this + " with relativeY=" + this.relativeY + ", itemYTop=" + itemYTop);
+						scroll( direction, this.relativeX, itemYTop, item.internalWidth, height );
+					}
 				}
 			}
 		} else if (getScrollHeight() != -1) { // if (this.enableScrolling) {
