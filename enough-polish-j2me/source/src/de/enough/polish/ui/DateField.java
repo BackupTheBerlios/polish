@@ -167,6 +167,9 @@ implements
 	//#if polish.blackberry
 		private PolishDateField blackberryDateField;
 	//#endif
+	//#if polish.android1.5
+		private long androidFocusedTime;
+	//#endif
 		
 		
 	/**
@@ -857,8 +860,7 @@ implements
 	 */
 	protected Style focus(Style newStyle, int direction) {
 		MIDlet.midletInstance.showSoftKeyboard();
-		//this.androidFocusedTime = System.currentTimeMillis();
-
+		this.androidFocusedTime = System.currentTimeMillis();
 		return super.focus(newStyle, direction);
 	}
 	//#endif
@@ -1292,7 +1294,7 @@ implements
 	}
 	//#endif
 
-	//#if polish.hasPointerEvents && (tmp.useMidp || tmp.directInputPointer)
+	//#if polish.hasPointerEvents && (tmp.useMidp || tmp.directInputPointer || polish.android1.5)
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#handlePointerReleased(int, int)
 	 */
@@ -1301,8 +1303,13 @@ implements
 		if (isInItemArea( relX, relY )) {
 			//#if tmp.directInputPointer
 				showPolishCalendar();
-			//#else
+			//#elif tmp.useMidp 
 				showDateForm();
+			//#elif polish.android1.5
+				if (this.isFocused && ((System.currentTimeMillis() - this.androidFocusedTime) > 200)) {
+					MIDlet.midletInstance.toggleSoftKeyboard();
+					return true;
+				}
 			//#endif
 			return true;
 		}
