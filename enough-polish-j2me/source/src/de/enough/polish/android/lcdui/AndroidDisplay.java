@@ -552,6 +552,9 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 	 *             if m is null
 	 */
 	public static AndroidDisplay getDisplay(MIDlet m) {
+		if(m == null) {
+			throw new NullPointerException("The first parameter is null but it must reference an object.");
+		}
 		if(instance == null) {
 			instance = new AndroidDisplay(m);
 		}
