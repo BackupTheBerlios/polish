@@ -170,7 +170,7 @@ public class GradientItem extends CustomItem {
 			g.setColor(color);
 			g.drawLine( 0, i + steps, this.width, i + steps );
 		}
-		invalidate();
+		repaint();
 	}
 
 }

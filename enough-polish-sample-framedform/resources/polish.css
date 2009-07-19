@@ -10,12 +10,14 @@ colors {
 
 backgrounds {
 	contBackground {
+		type: round-rect;
 		color: #7f7f7f;
 	}
 }
 
 borders {
 	contBorder {
+		type: round-rect;
 		width: 2;
 		color: #777;
 	}
@@ -30,7 +32,12 @@ borders {
 }
 
 scrollbar {
-	background-color: red;
+	background-color: #7272f4;
+	//#if polish.hasPointerEvents
+		scrollbar-slider-width: 12;
+	//#else
+		scrollbar-slider-width: 4;
+	//#endif 
 }
 
 rightframe {
@@ -81,10 +88,9 @@ rightframe {
 	padding: 2;
 	font-color: fontColor;
 	font-size: small;
-	/*
+	/** use expand layout only when using view-type: exclusive for the ChoiceGroup
 	layout: expand | center;
-	*/
-	focused-style: .colorChoiceItemFocused;
+	**/
 }
 
 .colorChoiceItem:hover {
@@ -117,7 +123,11 @@ title {
 	font-color: titleColor;
 	text-effect: shadow;
 	text-shadow-color: inactiveFontColor;
-	layout: expand | center;	
+	layout: expand | center;
+	border {
+		type: bottom;
+		color: #333;
+	}
 }
 
 label {

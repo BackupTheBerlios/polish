@@ -35,6 +35,7 @@ import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Item;
+import javax.microedition.lcdui.ItemCommandListener;
 import javax.microedition.lcdui.ItemStateListener;
 import javax.microedition.lcdui.StringItem;
 import javax.microedition.lcdui.TextField;
@@ -57,7 +58,7 @@ import de.enough.polish.util.IntHashMap;
  */
 public class FramedFormDemo 
 extends MIDlet
-implements ItemStateListener, CommandListener
+implements ItemStateListener, CommandListener, ItemCommandListener
 {
 
 	private static final IntHashMap COLOR_MAP = new IntHashMap();
@@ -225,12 +226,14 @@ implements ItemStateListener, CommandListener
 			//#style itemWithDefaultCommand
 			item = new StringItem( null, "press-" + i);
 			item.setDefaultCommand( this.cmdShowAlert );
+			item.setItemCommandListener( this );
 			this.framedForm.append( Graphics.TOP, item );
 		}
 		for (int i=6; i>0; i--) {
 			//#style itemWithDefaultCommand
 			item = new StringItem( null, "press+" + i);
 			item.setDefaultCommand( this.cmdShowAlert );
+			item.setItemCommandListener( this );
 			this.framedForm.append( Graphics.BOTTOM, item );
 		}
 		//#style horizontalFrame
@@ -347,15 +350,30 @@ implements ItemStateListener, CommandListener
 	}
 
 	public void commandAction(Command cmd, Displayable disp) {
+		//#debug 
+		System.out.println("commandAction for " + cmd.getLabel());
 		if (cmd == this.cmdNext) {
 			next();
 		} else if (cmd == this.cmdShowAlert) {
 			//#style popupAlert
 			Alert alert = new Alert("Showing a popup alert!");
 			this.display.setCurrent( alert );
-		} else {
+		} else if (cmd == this.cmdExit) {
 			notifyDestroyed();
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.microedition.lcdui.ItemCommandListener#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Item)
+	 */
+	public void commandAction(Command cmd, Item item)
+	{
+		if (cmd == this.cmdShowAlert) {
+			//#style popupAlert
+			Alert alert = new Alert("Showing a popup alert for " + item);
+			this.display.setCurrent( alert );			
+		}
+		
 	}
 
 }
