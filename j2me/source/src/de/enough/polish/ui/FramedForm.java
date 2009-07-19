@@ -406,8 +406,8 @@ public class FramedForm extends Form {
 	 * @see de.enough.polish.ui.Screen#setContentArea(int, int, int, int)
 	 */
 	protected void calculateContentArea(int x, int y, int width, int height) {
-		int lastContentWidth = this.contentWidth;
-		int lastContentHeight = this.contentHeight;
+//		int lastContentWidth = this.contentWidth;
+//		int lastContentHeight = this.contentHeight;
 		super.calculateContentArea(x, y, width, height);
 		
 		x = this.contentX;
@@ -918,19 +918,33 @@ public class FramedForm extends Form {
 	 */
 	protected boolean handlePointerPressed(int x, int y) {
 		Container newFrame = null;
-		
-		if (this.container.handlePointerPressed(x - this.container.relativeX, y - this.container.relativeY)) {
+		Container activeFrame = this.currentlyActiveContainer;
+		if ( activeFrame != null 
+				&& activeFrame.handlePointerPressed(x - activeFrame.relativeX, y - activeFrame.relativeY)) 
+		{ 
+			newFrame = activeFrame;
+		} else if ( this.container != activeFrame 
+				&& this.container.handlePointerPressed(x - this.container.relativeX, y - this.container.relativeY)) 
+		{
 			newFrame = this.container;
-		} else if ( this.topFrame != null && this.topFrame.handlePointerPressed(x - this.topFrame.relativeX, y - this.topFrame.relativeY) ) {
+		} else if ( this.topFrame != null && this.topFrame != activeFrame 
+				&& this.topFrame.handlePointerPressed(x - this.topFrame.relativeX, y - this.topFrame.relativeY) ) 
+		{
 			newFrame = this.topFrame;
-		} else if ( this.bottomFrame != null && this.bottomFrame.handlePointerPressed(x - this.bottomFrame.relativeX, y - this.bottomFrame.relativeY) ) {
+		} else if ( this.bottomFrame != null && this.bottomFrame != activeFrame
+				&& this.bottomFrame.handlePointerPressed(x - this.bottomFrame.relativeX, y - this.bottomFrame.relativeY) ) 
+		{
 			newFrame = this.bottomFrame;
-		} else if ( this.leftFrame != null && this.leftFrame.handlePointerPressed(x - this.leftFrame.relativeX, y - this.leftFrame.relativeY) ) {
+		} else if ( this.leftFrame != null && this.leftFrame != activeFrame 
+				&& this.leftFrame.handlePointerPressed(x - this.leftFrame.relativeX, y - this.leftFrame.relativeY) ) 
+		{
 			newFrame = this.leftFrame;
-		} else if ( this.rightFrame != null && this.rightFrame.handlePointerPressed(x - this.rightFrame.relativeX, y - this.rightFrame.relativeY) ) {
+		} else if ( this.rightFrame != null && this.rightFrame != activeFrame 
+				&& this.rightFrame.handlePointerPressed(x - this.rightFrame.relativeX, y - this.rightFrame.relativeY) ) 
+		{
 			newFrame = this.rightFrame;
 		}
-		if (!this.keepContentFocused && newFrame != null && newFrame != this.currentlyActiveContainer ) {
+		if (!this.keepContentFocused && newFrame != null && newFrame != activeFrame ) {
 			setActiveFrame(newFrame);
 		}
 		return (newFrame != null);
@@ -943,19 +957,33 @@ public class FramedForm extends Form {
 	 */
 	protected boolean handlePointerDragged(int x, int y) {
 		Container newFrame = null;
-		
-		if (this.container.handlePointerDragged(x - this.container.relativeX, y - this.container.relativeY)) {
+		Container activeFrame = this.currentlyActiveContainer;
+		if ( activeFrame != null 
+				&& activeFrame.handlePointerDragged(x - activeFrame.relativeX, y - activeFrame.relativeY)) 
+		{ 
+			newFrame = activeFrame;
+		} else if ( this.container != activeFrame 
+				&& this.container.handlePointerDragged(x - this.container.relativeX, y - this.container.relativeY)) 
+		{
 			newFrame = this.container;
-		} else if ( this.topFrame != null && this.topFrame.handlePointerDragged(x - this.topFrame.relativeX, y - this.topFrame.relativeY) ) {
+		} else if ( this.topFrame != null && this.topFrame != activeFrame 
+				&& this.topFrame.handlePointerDragged(x - this.topFrame.relativeX, y - this.topFrame.relativeY) ) 
+		{
 			newFrame = this.topFrame;
-		} else if ( this.bottomFrame != null && this.bottomFrame.handlePointerDragged(x - this.bottomFrame.relativeX, y - this.bottomFrame.relativeY) ) {
+		} else if ( this.bottomFrame != null && this.bottomFrame != activeFrame
+				&& this.bottomFrame.handlePointerDragged(x - this.bottomFrame.relativeX, y - this.bottomFrame.relativeY) ) 
+		{
 			newFrame = this.bottomFrame;
-		} else if ( this.leftFrame != null && this.leftFrame.handlePointerDragged(x - this.leftFrame.relativeX, y - this.leftFrame.relativeY) ) {
+		} else if ( this.leftFrame != null && this.leftFrame != activeFrame 
+				&& this.leftFrame.handlePointerDragged(x - this.leftFrame.relativeX, y - this.leftFrame.relativeY) ) 
+		{
 			newFrame = this.leftFrame;
-		} else if ( this.rightFrame != null && this.rightFrame.handlePointerDragged(x - this.rightFrame.relativeX, y - this.rightFrame.relativeY) ) {
+		} else if ( this.rightFrame != null && this.rightFrame != activeFrame 
+				&& this.rightFrame.handlePointerDragged(x - this.rightFrame.relativeX, y - this.rightFrame.relativeY) ) 
+		{
 			newFrame = this.rightFrame;
 		}
-		if (!this.keepContentFocused && newFrame != null && newFrame != this.currentlyActiveContainer ) {
+		if (!this.keepContentFocused && newFrame != null && newFrame != activeFrame ) {
 			setActiveFrame(newFrame);
 		}
 		return (newFrame != null);
@@ -968,18 +996,33 @@ public class FramedForm extends Form {
 	 */
 	protected boolean handlePointerReleased(int x, int y) {
 		Container newFrame = null;
-		if (this.container.handlePointerReleased(x - this.container.relativeX, y - this.container.relativeY)) {
+		Container activeFrame = this.currentlyActiveContainer;
+		if ( activeFrame != null 
+				&& activeFrame.handlePointerReleased(x - activeFrame.relativeX, y - activeFrame.relativeY)) 
+		{ 
+			newFrame = activeFrame;
+		} else if ( this.container != activeFrame 
+				&& this.container.handlePointerReleased(x - this.container.relativeX, y - this.container.relativeY)) 
+		{
 			newFrame = this.container;
-		} else if ( this.topFrame != null && this.topFrame.handlePointerReleased(x - this.topFrame.relativeX, y - this.topFrame.relativeY) ) {
+		} else if ( this.topFrame != null && this.topFrame != activeFrame 
+				&& this.topFrame.handlePointerReleased(x - this.topFrame.relativeX, y - this.topFrame.relativeY) ) 
+		{
 			newFrame = this.topFrame;
-		} else if ( this.bottomFrame != null && this.bottomFrame.handlePointerReleased(x - this.bottomFrame.relativeX, y - this.bottomFrame.relativeY) ) {
+		} else if ( this.bottomFrame != null && this.bottomFrame != activeFrame
+				&& this.bottomFrame.handlePointerReleased(x - this.bottomFrame.relativeX, y - this.bottomFrame.relativeY) ) 
+		{
 			newFrame = this.bottomFrame;
-		} else if ( this.leftFrame != null && this.leftFrame.handlePointerReleased(x - this.leftFrame.relativeX, y - this.leftFrame.relativeY) ) {
+		} else if ( this.leftFrame != null && this.leftFrame != activeFrame 
+				&& this.leftFrame.handlePointerReleased(x - this.leftFrame.relativeX, y - this.leftFrame.relativeY) ) 
+		{
 			newFrame = this.leftFrame;
-		} else if ( this.rightFrame != null && this.rightFrame.handlePointerReleased(x - this.rightFrame.relativeX, y - this.rightFrame.relativeY) ) {
+		} else if ( this.rightFrame != null && this.rightFrame != activeFrame 
+				&& this.rightFrame.handlePointerReleased(x - this.rightFrame.relativeX, y - this.rightFrame.relativeY) ) 
+		{
 			newFrame = this.rightFrame;
 		}
-		if (!this.keepContentFocused && newFrame != null && newFrame != this.currentlyActiveContainer ) {
+		if (!this.keepContentFocused && newFrame != null && newFrame != activeFrame ) {
 			setActiveFrame(newFrame);
 		}
 		return (newFrame != null);

@@ -2775,7 +2775,7 @@ public class Container extends Item {
 			boolean processed = item.handlePointerPressed(relX - item.relativeX, relY - item.relativeY );
 			if (processed) {
 				//#debug
-				System.out.println("pointer event at " + relX + "," + relY + " consumed by focusedItem.");
+				System.out.println("pointerPressed at " + relX + "," + relY + " consumed by focusedItem.");
 				return true;
 			}
 		}
@@ -2797,6 +2797,9 @@ public class Container extends Item {
 				return false;
 			}
 		//#endif
+		if (this.lastPointerPressY < 0 || (this.enableScrolling && this.lastPointerPressY > this.scrollHeight)) {
+			return false;
+		}
 		Item[] myItems = getItems();
 		int itemRelX, itemRelY;
 		for (int i = 0; i < myItems.length; i++) {
@@ -2815,6 +2818,10 @@ public class Container extends Item {
 			focusChild(i, item, 0);
 			// let the item also handle the pointer-pressing event:
 			item.handlePointerPressed( itemRelX , itemRelY );
+			if (!this.isFocused) {
+				this.autoFocusEnabled = true;
+				this.autoFocusIndex = i;
+			}
 			return true;			
 		}
 		return false;
@@ -2895,11 +2902,11 @@ public class Container extends Item {
 			boolean processed = item.handlePointerReleased(relX - item.relativeX, relY - item.relativeY );
 			if (processed) {
 				//#debug
-				System.out.println("pointer event at " + relX + "," + relY + " consumed by focusedItem " + item);
+				System.out.println("pointerReleased at " + relX + "," + relY + " consumed by focusedItem " + item);
 				return true;
 			} else if ( item.isInItemArea(relX - item.relativeX, relY - item.relativeY )) {
 				//#debug
-				System.out.println("pointer event not handled by focused item but within that item's area");
+				System.out.println("pointerReleased not handled by focused item but within that item's area");
 				return false;
 			}
 		}
