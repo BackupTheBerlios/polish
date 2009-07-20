@@ -77,6 +77,7 @@ public class StringItem extends Item
 	//#endif
 	//#ifdef polish.css.max-lines
 		protected int maxLines = TextUtil.MAXLINES_UNLIMITED;
+		protected String maxLinesAppendix;
 	//#endif
 	//#if polish.css.text-layout
 		private int textLayout;
@@ -672,7 +673,7 @@ public class StringItem extends Item
 		} else {
 		//#endif
 			//#ifdef polish.css.max-lines
-				result = TextUtil.wrap(body, this.font, firstLineWidth, availWidth, this.maxLines);
+				result = TextUtil.wrap(body, this.font, firstLineWidth, availWidth, this.maxLines, this.maxLinesAppendix);
 			//#else
 				result = TextUtil.wrap(body, this.font, firstLineWidth, availWidth);
 			//#endif
@@ -794,6 +795,12 @@ public class StringItem extends Item
 					this.maxLines = TextUtil.MAXLINES_UNLIMITED;
 				}
 			}
+			//#ifdef polish.css.max-lines-appendix
+				String appendix = style.getProperty("max-lines-appendix");
+				if (resetStyle || appendix != null) {
+					this.maxLinesAppendix = appendix; 
+				}
+			//#endif
 		//#endif
 		//#if polish.css.text-visible
 			Boolean textVisibleBool = style.getBooleanProperty("text-visible");

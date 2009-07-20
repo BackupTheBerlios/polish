@@ -50,9 +50,9 @@ public final class TextUtil {
 	public static final int MAXLINES_UNLIMITED = Integer.MAX_VALUE; 
 	
 	/**
-	 * the appendix to attach to a truncated text
+	 * the default appendix to attach to a truncated text
 	 */
-	private static final String MAXLINES_APPENDIX = "...";
+	public static final String MAXLINES_APPENDIX = "...";
 
 	private static final String UNRESERVED = "-_.!~*'()\"";
 	
@@ -153,10 +153,10 @@ public final class TextUtil {
 	//#if polish.midp || polish.usePolishGui
 	/**
 	 * Wraps the given string so it fits on the specified lines.
-	 * First of al it is splitted at the line-breaks ('\n'), subsequently the substrings
-	 * are splitted when they do not fit on a single line.
+	 * First of all it is split at the line-breaks ('\n'), subsequently the substrings
+	 * are split when they do not fit on a single line.
 	 *  
-	 * @param value the string which should be splitted
+	 * @param value the string which should be split
 	 * @param font the font which is used to display the font
 	 * @param firstLineWidth the allowed width for the first line
 	 * @param lineWidth the allowed width for all other lines, lineWidth >= firstLineWidth
@@ -165,24 +165,24 @@ public final class TextUtil {
 	 * @see #wrap(String, Font, int, int)
 	 */
 	public static String[] split( String value, Font font, int firstLineWidth, int lineWidth ) {
-		return wrap(value, font, firstLineWidth, lineWidth,MAXLINES_UNLIMITED);
+		return wrap(value, font, firstLineWidth, lineWidth, MAXLINES_UNLIMITED, null);
 	}
 	//#endif
 	
 	//#if polish.midp || polish.usePolishGui
 	/**
 	 * Wraps the given string so it fits on the specified lines.
-	 * First of al it is splitted at the line-breaks ('\n'), subsequently the substrings
-	 * are splitted when they do not fit on a single line.
+	 * First of all it is split at the line-breaks ('\n'), subsequently the substrings
+	 * are split when they do not fit on a single line.
 	 *  
-	 * @param value the string which should be splitted
+	 * @param value the string which should be split
 	 * @param font the font which is used to display the font
 	 * @param firstLineWidth the allowed width for the first line
 	 * @param lineWidth the allowed width for all other lines, lineWidth >= firstLineWidth
 	 * @return the array containing the substrings
 	 */
 	public static String[] wrap( String value, Font font, int firstLineWidth, int lineWidth) {
-		return wrap(value, font, firstLineWidth, lineWidth,MAXLINES_UNLIMITED);
+		return wrap(value, font, firstLineWidth, lineWidth, MAXLINES_UNLIMITED, null);
 	}
 
 	/**
@@ -197,7 +197,7 @@ public final class TextUtil {
 	 * @param maxLines the maximum number of lines
 	 * @return the array containing the substrings
 	 */
-	public static String[] wrap( String value, Font font, int firstLineWidth, int lineWidth, int maxLines ) {
+	public static String[] wrap( String value, Font font, int firstLineWidth, int lineWidth, int maxLines, String appendix ) {
 		if (firstLineWidth <= 0 || lineWidth <= 0) {
 			//#debug error
 			System.out.println("INVALID LINE WIDTH FOR SPLITTING " + firstLineWidth + " / " + lineWidth + " ( for string " + value + ")");
@@ -269,7 +269,10 @@ public final class TextUtil {
 		if(lines.size() >= maxLines)
 		{
 			String line = (String)lines.get(maxLines - 1);
-			line = addAppendix(line, font, firstLineWidth);
+			if (appendix == null) {
+				appendix = MAXLINES_APPENDIX;
+			}
+			line = addAppendix(line, font, firstLineWidth, appendix);
 			lines.set(maxLines - 1, line);
 			while (lines.size() > maxLines) {
 				lines.remove( lines.size() -1 );
@@ -450,23 +453,25 @@ public final class TextUtil {
 	//#endif
 	
 	//#if polish.midp || polish.usePolishGui
+	
 	/**
 	 * Adds the specified appendix to the give line of text
 	 * and shortens the text to fit the available width 
 	 * @param line the textline
 	 * @param font the font used
 	 * @param availWidth the available width
+	 * @param appendix the appendix to be added
 	 * @return the shortened line with the appendix
 	 */
-	private static String addAppendix(String line, Font font, int availWidth)
+	private static String addAppendix(String line, Font font, int availWidth, String appendix)
 	{
 		try
 		{
-			int appendixWidth = font.stringWidth(MAXLINES_APPENDIX);
+			int appendixWidth = font.stringWidth(appendix);
 			int completeWidth = font.stringWidth(line) +  appendixWidth;
 			if(availWidth < appendixWidth)
 			{
-				line = MAXLINES_APPENDIX;
+				line = appendix;
 				completeWidth = appendixWidth;
 				while(completeWidth > availWidth)
 				{
@@ -484,7 +489,7 @@ public final class TextUtil {
 					completeWidth = font.stringWidth(line) +  appendixWidth;
 				}
 				
-				return line + MAXLINES_APPENDIX;
+				return line + appendix;
 			}
 		}
 		catch(ArrayIndexOutOfBoundsException e)
