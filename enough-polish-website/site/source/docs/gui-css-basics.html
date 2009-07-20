@@ -27,11 +27,199 @@ Every style starts with the selector followed by an opening curved parenthesis, 
 The selector can consist of several item-names and contain an &quot;extends&quot; clause.
 Each attribute-value pair needs to be finished by a semicolon.
 </p>
-<h2 id="css-naming">Naming</h2>
+<h2 id="css-naming">Naming and Style Types</h2>
+<p>
+J2ME Polish differentiates between different style types:
+</p>
+<ul>
+	<li><b>Static styles</b>:  start their name with a dot (e.g. <code>.mainMenuItem</code>) and are used with the <code>//#style</code> preprocesing directive, e.g. <code>//#style mainMenuItem</code>.</li>
+	<li><b>Predefined styles</b>: are used by some UI elements, examples include <code>title</code>, <code>menubar</code> or <code>menu</code>. In contrast to static styles, predefined ones don't start with a dot.</li>
+	<li><b>Dynamic styles</b>: are resolved during runtime when a UI element has no associated style. Examples include <code>form</code> for designing <a href="gui-screen-form.html">Forms</a> or <code>form p</code> for designing <a href="gui-item-stringitem.html">StringItems</a> within forms. Dynamic names do not start with a dot.</li>
+	<li><b>Pseudo styles</b>: can be used to extend static or predefined styles. Examples are <code>.mainMenuItem:hover</code> or <code>.mainMenuItem:pressed</code>. Pseudo styles use a colon between the style's basic name and its pseudo name.</li>
+</ul>
 <p>
 Styles can use any names, as long as they consist of alphanumeric and underline (_) characters only. Names are not case-sensitive. 
-Static styles - styles that are referenced with the <code>#style</code> preprocessing directive - need to start with a dot. Static styles must not use the names of dynamic or predefined styles. All Java keywords like &quot;class&quot;, &quot;int&quot; or &quot;boolean&quot; etcetera are not allowed as style names.
+All Java keywords like &quot;class&quot;, &quot;int&quot; or &quot;boolean&quot; etcetera are not allowed as style names.
 </p>
+<h3 id="style-predefined">Predefined Styles</h3>
+<p>
+There are several predefined styles which you can look up in the <a href="gui-visualguide.html">visual guide</a> for the respective components.
+Some commonly used predefined styles are:
+</p>
+<ul>
+	<li><a href="gui-screenelement-title.html">title</a>: designs the title of screens, can be overridden using the <code>title-style</code> attribute that points to a static style.</li>
+	<li><a href="gui-screenelement-menubar.html">menubar</a>: designs the menubar of screens when using the extended menubar implementation, can be overriden using the <code>menubar-style</code> that points to a static style.</li>
+	<li><a href="gui-screenelement-scrollbar.html">scrollbar</a>: designs the scrollbar for screens.</li>
+	<li><a href="gui-screenelement-focused.html">focused</a>: the default style for focused UI elements that do not specify a <code>[style-name]:hover</code> pseudo style.</li>
+	<!-- 
+	<li><a href="gui-screenelement-.html"></a>: </li>
+	 -->
+</ul>
+<h3 id="style-static">Static Styles</h3>
+<p>
+Static styles are applied with the <code>#style</code> directive in your Java code - note that the the style name needs to start with a dot in the 
+<i>polish.css</i> file, but not necessarily in the #style directive:
+</p>
+<pre>
+//#style mainScreen
+Form form = new Form("Hello World");
+//#style info
+form.append("Welcome to your first app.");
+</pre>
+<p>
+In the <i>polish.css</i> you need to define the corresponding styles:
+</p>
+<pre>
+.mainScreen {
+	background-color: #ddd;
+	padding-left: 10%;
+	padding-right: 10%;
+}
+
+.info {
+	font-style: italic;
+	font-color: #333;
+}
+</pre>
+<h3 id="style-dynamic">Dynamic Styles</h3>
+<p>Dynamic styles are resolved during runtime. They are good for designing applications that don't use <code>#style</code> preprocessing directives.
+However since they resolved during runtime they are not as effective as static styles. In general we don't recommend the usage of dynamic styles, therefore.
+<h3 id="style-pseudo">Pseudo Styles</h3>
+<p>
+Pseudo styles are used to design UI elements in different states, e.g. when they are focused. Pseudo styles use a colon between the basic style name
+and the pseudo style, for example <code>.myItem:hover</code> or <code>.myItem:pressed</code>. Pseudo styles inherit all settings of the basic element 
+There are a couple of pseudo styles available:
+</p>
+<ul>
+	<li><code>:hover</code> designs the focused state of the UI element. You should strive to keep the <code>:hover</code> state of a UI element the same
+	size as in the normal style, otherwise UI elements will seem to 'jump' around when moving the focus. Here's an example in which
+	we use a margin in the unfocused state to compensate for a border in the focused state: 
+<pre>
+.mainMenuItem {
+	margin: 2px;
+	font-color: #333;
+	layout: expand;
+}
+.mainMenuItem:hover {
+	margin: 0px;
+	font-color: #eee;
+	background-color: #333;
+	border-color: #600;
+	border-width: 2px;
+}
+</pre>
+	</li>
+	<li><code>:pressed</code> defines the design for an element when it is pressed, meaning the user selects it by holding down a pointer or a key.
+	 Typically the <code>:pressed</code> style is applied when the element is already focused, so you either need to make sure that
+	 you copy the <code>:hover</code> settings manually or nest styles, like <code>.mainMenuItem:hover:pressed</code>. 
+	 This is not true for all cases, e.g. <a href="gui-screenelement-menubar.html">leftcommand</a> etc are never focused, but they have a 
+	 pressed style: <code>leftcommand:pressed</code>:
+<pre>
+leftcommand {
+	font-style: bold;
+	font-color: #00aeef;
+}
+leftcommand:pressed {
+	font-color: #fff;
+}
+rightcommand extends leftcommand {
+	layout: right;
+}
+rightcommand:pressed {
+	font-color: #fff;
+}
+middlecommand extends leftcommand {
+	layout: center;
+}
+middlecommand:pressed {
+	font-color: #fff;
+}
+</pre>
+	</li>
+	<li><code>:visited</code>. Use the <code>:visited</code> style for changing the design of a UI item after its default command has been
+	triggered. Here's an example for links within the <a href="gui-item-browseritem.html">browser</a>:
+<pre>
+.browserlink {
+	padding-left: 4%;
+	padding-right: 4%;
+	layout: expand;
+	font {
+		style: bold;
+		color: #00aeef;
+	}
+}
+.browserlink:hover {
+	font-color: #fff;
+	background-color: #f26522;
+}
+.browserlink:pressed {
+	background-color: #f26522;
+	font-color: #333;
+}
+<b>.browserlink:visited</b> {
+	font-color: #999;
+}
+<b>.browserlink:hover:visited</b> {
+	font-color: #999;
+}
+</pre>
+	</li>
+	<li><code>:landscape</code> allows you to change the design for landscape screen orientations. 
+	This is useful for differentiating your design between portrait and landscape modes, e.g. displaying icon texts in landscape mode but
+	not in portrait mode:
+<pre>
+.tabIcon {
+	margin: 1px;
+	padding: 2px;
+	icon-image: url( Tab%INDEX%.png );
+	icon-image-align: top;
+	max-width: 25%;
+	font-bitmap: url( arialsmall.bmf );
+	layout: expand | center | vertical-center;
+}
+
+.tabIcon:hover {
+	padding: 1px;
+	background {
+		type: round-rect;
+		arc: 8;
+		color: #f1f1f1;
+	}
+	border {
+		type: round-rect;
+		arc: 8;
+		color: #aeaeae;
+	}
+	icon-image: url( TabFoc%INDEX%.png );
+}
+
+<b>.tabIcon:landscape</b> {
+	text-visible: false;
+}
+
+<b>.tabIcon:landscape:hover</b> {
+	padding: 1px;
+	background {
+		type: round-rect;
+		arc: 8;
+		color: #f1f1f1;
+	}
+	border {
+		type: round-rect;
+		arc: 8;
+		color: #aeaeae;
+	}
+	icon-image: url( TabFoc%INDEX%.png );
+}
+</pre>
+	</li>
+	<li><code>:portrait</code> works the same as <code>:landscape</code> pseudo styles, but only for portrait resolutions.</li>
+</ul>
+<p>
+You can also nest pseudo styles, e.g. for designing the <code>:visited</code> style of <code>.myItem:hover</code> just define the style
+<code>.myItem:hover:visited</code>.
+</p>
+
 <h2 id ="css-grouping">Grouping of Attributes</h2>
 <p>Attributes can be grouped for easier handling:
 </p>
@@ -373,6 +561,43 @@ The most important settings are:
 	</tr>
 
 	</table>
+	
+<h2 id="programmatically">Access Styles Programmatically</h2>
+<p>
+You can apply and read styles programmatically in several ways:
+</p>
+<ul>
+	<li><code>#style</code> directive: use the style directive to apply static styles in the constructor of UI elements or in many screen methods or
+	in <a href="<a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/UiAccess.html#setStyle(javax.microedition.lcdui.Item, de.enough.polish.ui.Style)">UiAccess.setStyle(Item, Style)</a>:
+<pre>
+//#style mainMenuItem
+UiAccess.setStyle( myMenuItem );
+</pre>
+	</li>
+	<li><To load styles dynamically use 
+	<a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/StyleSheet.html#getStyle(java.lang.String)">StyleSheet.getStyle(String name)</a>
+	to access styles by their name. Please note that J2ME Polish optimizes away styles that are not used within your project directly. To force the 
+	inclusion of a style that is accessed only programmatically, you need to define it's <code>always-include</code> CSS property:
+<pre>
+.menubarFacebook {
+	always-include: true;
+	...
+}
+</pre> 
+	</li>
+	<li>To create styles dynamically just use the 
+	<a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/Style.html">Style constructor</a> and add settings using the 
+	<code>.addAttribute(String name, Object property)</code> method. Note that the name of your style needs to end
+	on <code>style</code>, since J2ME Polish replaces CSS attribute names with short IDs during the build process using
+	preprocessing.
+<pre>
+Style myStyle = new Style();
+myStyle.addAttribute("padding", new Dimension("20%") );
+myStyle.addAttribute("font-color", new Color(0x333333) );
+myStyle.background = new SimpleBackground( new Color(0xffdddd) );
+</pre>
+	</li> 
+</ul>
 
 <h2 id="sample">Sample polish.css</h2>
 <p>
@@ -382,6 +607,7 @@ Let's have a look at a full example:
 colors {
 	fontColor: #333;
 	fontColorFocused: #ddd; 
+	fontColorPressed: #600;
 }
 
 backgrounds {
@@ -406,6 +632,10 @@ backgrounds {
 	font-color: fontColorFocused;
 	background-color: #333;
 }
+.mainItem:pressed {
+	font-color: fontColorPressed;
+	background-color: #333;
+}
 
 title {
 	background-color: #333;
@@ -413,6 +643,7 @@ title {
 	layout: expand | center;  
 }
 </pre>
+
 
 
 <%include end.txt %>
