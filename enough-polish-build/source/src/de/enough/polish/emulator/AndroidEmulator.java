@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
+import de.enough.polish.BuildException;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.ant.android.ArgumentHelper;
@@ -175,8 +176,10 @@ public class AndroidEmulator extends Emulator{
 			System.out.println(this.device.getIdentifier() + ": Installing application...");
 			
 			// Install the application
-			ProcessUtil.exec(this.installArguments, this.device.getIdentifier() + ": ", true, null, null);
-			
+			int result = ProcessUtil.exec(this.installArguments, this.device.getIdentifier() + ": ", true, null, null);
+			if(result != 0) {
+				throw new BuildException("Could not install application. The process returned '"+result+"'");
+			}
 			System.out.println(this.device.getIdentifier() + ": Successfully installed application.");
 		} catch (IOException e) {
 			e.printStackTrace();
