@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project basedir="." default="j2mepolish" name="enough-polish-sample-localization">
+<project basedir="." default="j2mepolish" name="enough-polish-sample-accessible">
 	
 
 <property file="${user.name}.properties" />
