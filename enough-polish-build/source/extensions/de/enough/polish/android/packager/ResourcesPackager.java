@@ -73,6 +73,8 @@ public class ResourcesPackager extends Packager{
 				e.printStackTrace();
 				throw new BuildException("aapt was unable to create package - got error " + e);
 			}
+		} else {
+			throw new BuildException(env.writeProperties("unable to resolve appt tool, please check your android.home setting, which currently reads \"${android.home}\".", false) );
 		}
 	}
 	
