@@ -4698,6 +4698,17 @@
 		since="J2ME Polish 2.1.1"
 	/>
 	
+	<attribute
+		name="max-lines-appendix"
+		type="string"
+		appliesTo="StringItem"
+		description="Defines the appendix that is added at the end of the text if it should be longer than max-lines. To be used in conjunction with max-lines."
+		default="..."
+		id="400"
+		since="J2ME Polish 2.1.1"
+	/>
+	
+	
 	
 
 <!-- 
