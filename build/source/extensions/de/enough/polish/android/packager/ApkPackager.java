@@ -84,6 +84,8 @@ public class ApkPackager extends Packager{
 				e.printStackTrace();
 				throw new BuildException("apk was unable to create package - got error " + e);
 			}
+		} else {
+			throw new BuildException("Could not find apkBuilder tool. Please check your path to the android home.");
 		}
 	}
 
