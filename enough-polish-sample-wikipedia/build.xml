@@ -247,4 +247,6 @@
 	<delete dir="dist" />
 </target>
 
+	<target name="cleanbuild" depends="clean,j2mepolish" />
+
 </project>
