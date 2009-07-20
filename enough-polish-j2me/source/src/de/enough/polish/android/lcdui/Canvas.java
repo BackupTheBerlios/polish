@@ -729,8 +729,7 @@ public abstract class Canvas implements CommandListener
 	 */
 	public boolean hasRepeatEvents()
 	{
-		return false;
-		//TODO implement hasRepeatEvents
+		return true;
 	}
 	
 	/**

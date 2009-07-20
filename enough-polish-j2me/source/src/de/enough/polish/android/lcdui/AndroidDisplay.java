@@ -620,7 +620,7 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 	 * @return number of colors
 	 */
 	public int numColors() {
-		return 0;
+		return 32000;
 		// TODO implement numColors
 	}
 
@@ -636,7 +636,7 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 	 * @since MIDP 2.0
 	 */
 	public int numAlphaLevels() {
-		return 0;
+		return 64;
 		// TODO implement numAlphaLevels
 	}
 
