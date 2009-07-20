@@ -1,7 +1,6 @@
 //#condition polish.usePolishGui && polish.android
 package de.enough.polish.android.midlet;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -15,13 +14,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Process;
+import android.os.ResultReceiver;
 import android.telephony.CellLocation;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import de.enough.polish.android.io.ConnectionNotFoundException;
@@ -33,11 +32,9 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
 
 //#if polish.android1.5
-import android.os.ResultReceiver;
 import android.view.inputmethod.InputMethodManager;
 //#endif
 
-import android.widget.FrameLayout;
 
 /**
  * A MIDlet is a MID Profile application.
@@ -116,7 +113,9 @@ public abstract class MIDlet extends Activity {
 	protected void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		//TODO: Remove this as we do not want to shrink the application on softkeyboard display.
 //		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+		
 		//TODO: Extract all strings to constants.
 		TelephonyManager telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
 		PhoneStateListener listener = new PhoneStateListener() {
@@ -142,7 +141,7 @@ public abstract class MIDlet extends Activity {
 			public void onSignalStrengthChanged(int asu) {
 				String asuString = Integer.toString(asu);
 				//#debug
-				System.out.println("asu is '"+asu+"' and its string is '"+asuString+"'");
+				System.out.println("SignalStrength (asu) is '"+asu+"'");
 				setSystemProperty("SignalStrength",asuString);
 			}
 		};
@@ -668,62 +667,121 @@ public abstract class MIDlet extends Activity {
 	}
 
 	public void showSoftKeyboard() {
+		//#debug
+		System.out.println("Handling showSoftKeyboard");
 		//#if polish.android1.5
+			
+			Configuration configuration;
+			configuration = getBaseContext().getResources().getConfiguration();
 			//#debug
-			System.out.println("SHOWING softkeyboard");
-
+			System.out.println("Configuration before showing softkeyboard is '"+configuration+"'");
+		
 			if (this.isSoftkeyboardOpen) {
+				//#debug
+				System.out.println("Canceling the display of the softkeybard as it is already visible.");
 				return;
 			}
-	//		getWindow().addFlags(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-			//TODO: If the hardkeyboard is shown, hide the softkeyboard.
-			InputMethodManager inputMethodManager = (InputMethodManager)getSystemService( Context.INPUT_METHOD_SERVICE);
-			Configuration configuration = getBaseContext().getResources().getConfiguration();
-			if(configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO) {
-				return;
-			}
+			//#debug
+			System.out.println("About to show softkeyboard");
+			
+			// TODO: This code is not needed as android does this test for us?!
+//			if(configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO) {
+//				//#debug
+//				System.out.println("Canceling the display of the softkeyboard because the hardkeyboard is already shown.");
+//				return;
+//			}
 			AndroidDisplay display = AndroidDisplay.getDisplay(this);
-			if(display != null) {
-				// requestingFocus is important!
-				display.requestFocus();
-				inputMethodManager.showSoftInput(display, 0,new ResultReceiver(display.getHandler()) {
-					protected void onReceiveResult(int arg0, Bundle arg1) {
-						super.onReceiveResult(arg0, arg1);
-//						System.out.println("Receiving result:"+arg0);
-					}
-				});
-//				FrameLayout mInputFrame = (FrameLayout)display.getRootView().findViewById(android.R.id.inputArea);
-//				if(mInputFrame != null) {
-//					System.out.println("HEIGHT OF SOFTINPUT:"+mInputFrame.getHeight());
-//				}
-				// TODO: Find out the height of the soft input!!
-				Window window = getWindow();
-				ArrayList<View> touchables = display.getRootView().getTouchables();
-				for (View view : touchables) {
-					System.out.println("VIEW WITH ID FOUND:"+view.getId());
-				}
+			if(display == null) {
+				//#debug
+				System.out.println("Canceling the display of the softkeyboard as no AndroidDisplay is available.");
+				return;
 			}
+			InputMethodManager inputMethodManager = (InputMethodManager)getSystemService( Context.INPUT_METHOD_SERVICE);
+			boolean active;
+			active = inputMethodManager.isActive(display);
+			//#debug
+			System.out.println("Input method before showing is active: '"+active+"'");
+			// requestingFocus is important! Do not remove it!
+			display.requestFocus();
+			inputMethodManager.hideSoftInputFromWindow(display.getWindowToken(), 0, new ResultReceiver(display.getHandler()) {
+				@Override
+				protected void onReceiveResult(int resultCode, Bundle resultData) {
+					//#debug
+					System.out.println("Result for hiding softinput (before showing) is '"+resultCode+"' with resultData '"+resultData+"'");
+				}
+			});
+			inputMethodManager.showSoftInput(display, InputMethodManager.SHOW_FORCED,new ResultReceiver(display.getHandler()) {
+				@Override
+				protected void onReceiveResult(int resultCode, Bundle resultData) {
+					//#debug
+					System.out.println("Result for showing softinput is '"+resultCode+"' with resultData '"+resultData+"'");
+				}
+			});
+			active = inputMethodManager.isActive(display);
+			//#debug
+			System.out.println("Input method after showing is active: '"+active+"'");
+			configuration = getBaseContext().getResources().getConfiguration();
+			//#debug
+			System.out.println("Configuration after showing softkeyboard is '"+configuration+"'");
+			// TODO: Find out the height of the soft input!!
+//				View rootView = display.getRootView();
+//				ArrayList<View> touchables = rootView.getTouchables();
+//				if(touchables == null || touchables.isEmpty()) {
+//					//#debug
+//					System.out.println("No touchable view found in RootView.");
+//				} else {
+//					for (View view : touchables) {
+//						//#debug
+//						System.out.println("Found touchable view with id '"+view.getId()+"'");
+//					}
+//				}
+//				View focusView = rootView.findFocus();
+//				if(focusView != null) {
+//					//#debug
+//					System.out.println("View with focus is '"+focusView.getId()+"'");
+//				} else {
+//					//#debug
+//					System.out.println("No view with focus in RootView found.");
+//				}
+//				Window window = getWindow();
 			this.isSoftkeyboardOpen = true;
 			onSoftKeyboardOpened();
 		//#endif
 	}
 
 	public void hideSoftKeyboard() {
+		//#debug
+		System.out.println("Handling hideSoftKeyboard");
 		//#if polish.android1.5
+		Configuration configuration;
+		configuration = getBaseContext().getResources().getConfiguration();
+		//#debug
+		System.out.println("Configuration before hiding softkeyboard is '"+configuration+"'");
+		
+		// TODO: Do not use a self managed field but the configuration or InputMethodManager.isActive or something similar.
+		if (!this.isSoftkeyboardOpen) {
 			//#debug
-			System.out.println("HIDING softkeyboard");
-			if (!this.isSoftkeyboardOpen) {
-				return;
-			}
-			InputMethodManager inputMethodManager = (InputMethodManager)getSystemService( Context.INPUT_METHOD_SERVICE);
-			AndroidDisplay display = AndroidDisplay.getDisplay(this);
-			boolean active = inputMethodManager.isActive(display);
-			if(active) {
-				IBinder windowToken = display.getWindowToken();
-				inputMethodManager.hideSoftInputFromWindow(windowToken, 0);
-			}
-			this.isSoftkeyboardOpen = false;
-			onSoftKeyboardClosed();
+			System.out.println("Canceling the hiding of the softkeyboard as it is not visible anyway.");
+			return;
+		}
+		//#debug
+		System.out.println("About to show softkeyboard");
+		AndroidDisplay display = AndroidDisplay.getDisplay(this);
+		InputMethodManager inputMethodManager = (InputMethodManager)getSystemService( Context.INPUT_METHOD_SERVICE);
+		boolean active;
+		active = inputMethodManager.isActive(display);
+		//#debug
+		System.out.println("Input method before hiding is active: '"+active+"'");
+		IBinder windowToken = display.getWindowToken();
+		inputMethodManager.hideSoftInputFromWindow(windowToken, 0);
+		active = inputMethodManager.isActive(display);
+		//#debug
+		System.out.println("Input method after hiding is active: '"+active+"'");
+		configuration = getBaseContext().getResources().getConfiguration();
+		//#debug
+		System.out.println("Configuration after hiding softkeyboard is '"+configuration+"'");
+		this.isSoftkeyboardOpen = false;
+		onSoftKeyboardClosed();
 		//#endif
 	}
 	
@@ -731,21 +789,41 @@ public abstract class MIDlet extends Activity {
 	 * Shows the virtual keyboard when it is hidden and hides it when it is shown.
 	 */
 	public void toggleSoftKeyboard() {
+		//#debug
+		System.out.println("Handling toggleSoftKeyboard");
 		//#if polish.android1.5
-			//#debug
-			System.out.println("toggling softkeyboard");
+		
 			InputMethodManager inputMethodManager = (InputMethodManager)getSystemService( Context.INPUT_METHOD_SERVICE);
+			Configuration configuration;
+//			if(configuration.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO) {
+//				if(this.isSoftkeyboardOpen) {
+//					hideSoftKeyboard();
+//				}
+//				return;
+//			}
+			configuration = getBaseContext().getResources().getConfiguration();
+			//#debug
+			System.out.println("Configuration before toggling softkeyboard is '"+configuration+"'");
+			
 			AndroidDisplay display = AndroidDisplay.getDisplay(this);
-			//boolean active = inputMethodManager.isActive(display);
-			//if(active) {
-			try {
-				IBinder windowToken = display.getWindowToken();
-				inputMethodManager.toggleSoftInputFromWindow(windowToken,  0, 0);
-				//inputMethodManager.hideSoftInputFromWindow(windowToken, 0);				
-			} catch (Exception e) {
-				//#debug error
-				System.out.println("Unable to toggle softkeyboard" + e);
-			}
+//			boolean active = inputMethodManager.isActive(display);
+//			if(active) {
+			IBinder windowToken = display.getWindowToken();
+			boolean active;
+			active = inputMethodManager.isActive(display);
+			//#debug
+			System.out.println("Input method before toggle is active: '"+active+"'");
+			//#debug
+			System.out.println("Toggling the softinput method.");
+			inputMethodManager.toggleSoftInputFromWindow(windowToken,  InputMethodManager.SHOW_FORCED, 0);
+				//inputMethodManager.hideSoftInputFromWindow(windowToken, 0);			
+//			}
+			active = inputMethodManager.isActive(display);
+			//#debug
+			System.out.println("Input method after toogle is active: '"+active+"'");
+			configuration = getBaseContext().getResources().getConfiguration();
+			//#debug
+			System.out.println("Configuration after toggling softkeyboard is '"+configuration+"'");
 			this.isSoftkeyboardOpen = !this.isSoftkeyboardOpen;
 			if (this.isSoftkeyboardOpen) {
 				onSoftKeyboardOpened();
@@ -800,6 +878,11 @@ public abstract class MIDlet extends Activity {
 	 */
 	public void setSuicideOnExit(boolean suicideOnExit) {
 		this.suicideOnExit = suicideOnExit;
+	}
+
+	public void switchInputMethod() {
+		InputMethodManager inputMethodManager = (InputMethodManager)getSystemService( Context.INPUT_METHOD_SERVICE);
+		inputMethodManager.showInputMethodPicker();
 	}
 
 }
