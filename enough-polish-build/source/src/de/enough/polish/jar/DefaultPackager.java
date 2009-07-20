@@ -64,4 +64,7 @@ public class DefaultPackager extends Packager {
 		JarUtil.jar(sourceDir, targetFile, true );
 	}
 
+	public String toString() {
+		return "Default Jar Packager";
+	}
 }

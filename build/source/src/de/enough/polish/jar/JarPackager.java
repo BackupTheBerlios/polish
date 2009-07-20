@@ -109,6 +109,7 @@ extends Packager
 		//System.out.println(arguments);
 		//int result = ProcessUtil.exec( arguments, "jar: ", true, this, sourceDir );
 		int result = 0;
+		System.out.println("creating JAR file ["+ targetFile.getAbsolutePath() + "].");
 		try {
 			result = ProcessUtil.exec( arguments, "jar: ", true, null, sourceDir );
 		} catch (IOException e) {
@@ -130,5 +131,8 @@ extends Packager
 		this.verbose = enable;
 	}
 
+	public String toString() {
+		return "Jar Packager";
+	}
 	
 }

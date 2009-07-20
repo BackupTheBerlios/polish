@@ -2916,7 +2916,7 @@ public class PolishTask extends ConditionalTask {
 					throw new BuildException("Unable to delete the existing JAR-file [" + jarFile.getAbsolutePath() + "], please call \"ant clean\" or remove the folder \"" + jarFile.getParent() + "\"-folder manually." );
 				}
 			}
-			System.out.println("creating JAR file ["+ jarFile.getAbsolutePath() + "].");
+//			System.out.println("creating JAR file ["+ jarFile.getAbsolutePath() + "].");
 			// writing manifest:
 			String creatorName = this.environment.getVariable( "polish.build.ManifestCreator" );
 			if (creatorName == null ) {
@@ -2934,6 +2934,7 @@ public class PolishTask extends ConditionalTask {
 			if (packager == null ) {
 				packager = new DefaultPackager();
 			}
+			System.out.println("Using "+packager);
 			this.environment.set( Packager.KEY_ENVIRONMENT, packager );
 			packager.createPackage(classesDir, jarFile, device, locale, this.environment );
 			// Check if created jar file exceeds MaxJarSize capability setting. 

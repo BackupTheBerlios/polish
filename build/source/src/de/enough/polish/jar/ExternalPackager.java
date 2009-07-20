@@ -111,4 +111,7 @@ public class ExternalPackager extends Packager {
 		
 	}
 
+	public String toString() {
+		return "External Packager";
+	}
 }

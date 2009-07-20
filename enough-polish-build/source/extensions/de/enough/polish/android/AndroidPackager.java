@@ -59,4 +59,7 @@ public class AndroidPackager extends Packager{
 		new ApkPackager().createPackage(sourceDir, targetFile, device, locale, env);
 	}
 
+	public String toString() {
+		return "Android Packager";
+	}
 }
