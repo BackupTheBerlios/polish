@@ -226,6 +226,24 @@ form.append( item );
 	text-wrap: true;
 }
 </pre>
+	<p>
+	Alternatively you might want to use the <code>max-lines</code> CSS property. This will limit the lines to the given number and end the 
+	last last line with a <code>...</code> or the ending specified in <code>max-lines-appendix</code>. By setting <code>max-lines</code> to 0 
+	or to a negative number, you will not limit the number of lines anymore. 
+	<br />
+	If you want to give all items the same
+	height you can either use the <code>min-height</code> CSS attribute or use <code>force-lines</code> for expanding StringItems with less text lines 
+	to the number defined in <code>max-lines</code>.
+	</p>
+<pre>
+.messageItem {
+	max-lines: 1;
+	max-lines-appendix: ..;
+}
+.messageItem:hover {
+	max-lines: -1;
+}
+</pre>
 	
 	<h2 id="StringItem-JavaDoc">JavaDoc</h2>
 	<ul>
