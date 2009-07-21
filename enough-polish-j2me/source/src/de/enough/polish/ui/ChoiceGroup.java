@@ -1643,7 +1643,6 @@ implements Choice
 				}
 			}
 		//#endif
-		boolean isEventCloseBy = Math.abs( this.lastPointerPressY - relY ) < 15;
 		if (   this.isPointerReleaseShouldTriggerKeyRelease ) { 
 			this.isPointerReleaseShouldTriggerKeyRelease = false;
 			
@@ -1654,7 +1653,7 @@ implements Choice
 						handled = this.containerView.handlePointerReleased(relX - this.contentX, relY - this.yOffset - this.contentY);
 					}
 				//#endif
-				if (!handled && isEventCloseBy) {
+				if (!handled && isInItemArea(relX, relY, this.focusedItem)) {
 					handled = handleKeyReleased( 0, Canvas.FIRE );
 				}
 			}
@@ -1664,7 +1663,7 @@ implements Choice
 		}
 		boolean handled = super.handlePointerReleased(relX, relY);
 		//#ifdef polish.usePopupItem
-			if (!handled && this.isPopup && !isClosed && isEventCloseBy ) {
+			if (!handled && this.isPopup && !isClosed) { // && isEventCloseBy ) {
 				closePopup();
 				handled = true;
 			}

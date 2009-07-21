@@ -3260,8 +3260,8 @@ public abstract class Item implements UiElement, Animatable
 						}
 					}
 				//#endif
-				return true;
 			}
+			return true;
 		}
 		int clearKey =
 		//#if polish.key.ClearKey:defined
@@ -3474,6 +3474,8 @@ public abstract class Item implements UiElement, Animatable
 	 * @see #contentY for calculating the vertical position relative to the content (relY - contentY)
 	 */
 	protected boolean handlePointerReleased( int relX, int relY ) {
+		//#debug
+		System.out.println("handlePointerReleased " + relX + ", " + relY + " for item " + this + " isPressed=" + this.isPressed);
 		if ( isInItemArea(relX, relY)) {
 			return handleKeyReleased( 0, Canvas.FIRE );
 		} else if (this.isPressed) {

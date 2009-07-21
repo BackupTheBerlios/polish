@@ -2874,12 +2874,19 @@ public class Container extends Item {
 		if ((this.enableScrolling && (Math.abs(getScrollYOffset() - this.lastPointerPressYOffset)>8))
 				|| (handlePointerScrollReleased(relX, relY))
 		) {
-			while (item instanceof Container) {
-				item = ((Container)item).focusedItem;
-			}
 			// we have scrolling in the meantime
+			boolean processed = false;
 			if (item != null && item.isPressed) {
-				item.notifyItemPressedEnd();
+				processed = item.handlePointerReleased(relX - item.relativeX, relY - item.relativeY );
+			}
+			if (!processed) {
+				while (item instanceof Container) {
+					item = ((Container)item).focusedItem;
+				}
+				// we have scrolling in the meantime
+				if (item != null && item.isPressed) {
+					item.notifyItemPressedEnd();
+				}
 			}
 			return true;
 		}
