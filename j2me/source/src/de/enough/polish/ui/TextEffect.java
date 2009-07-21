@@ -95,37 +95,6 @@ public abstract class TextEffect implements Serializable
 	}
 	
 	/**
-	 * Gets the data of a text effect
-	 * for complex effects
-	 * @param parent the parent item
-	 * @return the data
-	 */
-	public Object getData(Item parent)
-	{
-		return parent.getAttribute(getClass().getName());
-	}
-	
-	/**
-	 * Sets the data of a text effect
-	 * for complex effects
-	 * @param parent the parent item
-	 * @param data the data
-	 */
-	public Object setData(Item parent, Object data)
-	{
-		if(data == null)
-		{
-			parent.removeAttribute(getClass().getName());
-		}
-		else
-		{
-			parent.setAttribute(getClass().getName(),data);
-		}
-
-		return data;
-	}
-	
-	/**
 	 * Sets the style of this item without assuming defaults for non-set style elements.
 	 * Subclasses can override this method for getting specific settings.
 	 * 

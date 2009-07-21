@@ -639,7 +639,7 @@ public class FramedForm extends Form {
 			
 			Container newFrame = getNextFrame(gameAction);
 			
-			if ( newFrame != null && newFrame != this.currentlyActiveContainer ) {
+			if ( newFrame != null ) {
 				
 				setActiveFrame(newFrame);
 				handled = true;
@@ -655,26 +655,13 @@ public class FramedForm extends Form {
 						case LEFT : 
 						case RIGHT : 
 						case DOWN :
-							// focus first selectable item:
-							for (int i=0; i<newFrame.size(); i++) {
-								Item item = newFrame.get(i);
-								if (item.appearanceMode != Item.PLAIN) {
-									newFrame.focusChild(i); 
-									break;
-								}
-							}
-							break;
 						case UP : 
-							for (int i=newFrame.size(); --i >= 0; ) {
-								Item item = newFrame.get(i);
-								if (item.appearanceMode != Item.PLAIN) {
-									newFrame.focusChild(i); 
-									break;
-								}
-							}
+							focusByAction(gameAction, newFrame);
 							break;
 					}
 				}
+				
+				return true;
 				//#endif
 			}
 			else
@@ -682,7 +669,40 @@ public class FramedForm extends Form {
 				return false;
 			}
 		}
-		return handled || super.handleKeyPressed(keyCode, gameAction);
+		
+		return handled;
+	}
+	
+	/**
+	 * Focuses the first resp. last element of the container 
+	 * depending on the direction of the frame change
+	 * @param gameAction the game action
+	 * @param container the container
+	 */
+	public void focusByAction(int gameAction, Container container)
+	{
+		switch(gameAction)
+		{
+			case LEFT:
+			case RIGHT:
+			case DOWN :
+				for (int i=0; i<container.size(); i++) {
+					Item item = container.get(i);
+					if (item.appearanceMode != Item.PLAIN) {
+						container.focusChild(i);
+					}
+				}
+				break;
+			case UP : 
+				for (int i=container.size(); --i >= 0; ) {
+					Item item = container.get(i);
+					if (item.appearanceMode != Item.PLAIN) {
+						container.focusChild(i);
+						break;
+					}
+				}
+				break;
+		}
 	}
 	
 	/**
@@ -780,7 +800,14 @@ public class FramedForm extends Form {
 			default:
 				return null;
 		}
+		
 		Container newFrame = null;
+		
+		if(this.allowCycling)
+		{
+			newFrame = this.currentlyActiveContainer;
+		}
+		
 		for (int i = 0; i < nextFrames.length; i++) {
 			Container frame = nextFrames[i];
 			if (frame != null && frame.appearanceMode != Item.PLAIN) {
