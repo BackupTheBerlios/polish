@@ -979,8 +979,15 @@ public class TabbedPane extends Screen
 	 * @see de.enough.polish.ui.Screen#paintBackgroundAndBorder(Graphics)
 	 */
 	protected void paintBackgroundAndBorder(Graphics g) {
-		if (this.currentScreen != null) {
-			this.currentScreen.paintBackgroundAndBorder(g);
+		Screen screen = this.currentScreen;
+		if (screen != null) {
+			if (!screen.isInitialized) {
+				int w = getScreenFullWidth();
+				int h = getScreenFullHeight();
+				h -= this.tabIconsContainer.itemHeight;
+				screen.init( w, h );
+			}
+			screen.paintBackgroundAndBorder(g);
 		} else {
 			super.paintBackgroundAndBorder(g);
 		}
@@ -992,12 +999,6 @@ public class TabbedPane extends Screen
 	protected void paintScreen(Graphics g) {
 		Screen screen = this.currentScreen;
 		if (screen != null) {
-			if (!screen.isInitialized) {
-				int w = getScreenFullWidth();
-				int h = getScreenFullHeight();
-				h -= this.tabIconsContainer.itemHeight;
-				screen.init( w, h );
-			}
 			screen.paintScreen(g);
 		} else {
 			super.paintScreen(g);
