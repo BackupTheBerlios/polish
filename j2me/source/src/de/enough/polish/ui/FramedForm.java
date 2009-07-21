@@ -690,6 +690,7 @@ public class FramedForm extends Form {
 					Item item = container.get(i);
 					if (item.appearanceMode != Item.PLAIN) {
 						container.focusChild(i);
+						break;
 					}
 				}
 				break;
