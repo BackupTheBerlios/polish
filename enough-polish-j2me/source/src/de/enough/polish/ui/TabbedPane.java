@@ -1132,7 +1132,7 @@ public class TabbedPane extends Screen
 	protected boolean handleKeyReleased(int keyCode, int gameAction) {
 		if (this.currentScreen != null) {
 			boolean handled = this.currentScreen.handleKeyReleased(keyCode, gameAction);
-			if(!handled)
+			if(!handled && !Display.getInstance().hasPointerEvents())
 			{
 				if (gameAction == RIGHT && this.currentDisplayableIndex < this.tabDisplayables.size()-1) {
 					setFocus( this.currentDisplayableIndex + 1 );
