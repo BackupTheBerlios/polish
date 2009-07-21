@@ -803,11 +803,12 @@ public class FramedForm extends Form {
 		}
 		
 		Container newFrame = null;
-		
+		//#if polish.FramedForm.allowCycling
 		if(this.allowCycling)
 		{
 			newFrame = this.currentlyActiveContainer;
 		}
+		//#endif
 		
 		for (int i = 0; i < nextFrames.length; i++) {
 			Container frame = nextFrames[i];
