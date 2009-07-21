@@ -1,5 +1,6 @@
 package de.enough.polish.sample.tabbedpane;
 
+import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.ChoiceGroup;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
@@ -7,41 +8,40 @@ import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.Image;
-import javax.microedition.lcdui.Item;
-import javax.microedition.lcdui.ItemStateListener;
 import javax.microedition.lcdui.List;
+import javax.microedition.lcdui.TextField;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
-import de.enough.polish.browser.html.HtmlBrowser;
 import de.enough.polish.ui.Screen;
-import de.enough.polish.ui.TabbedFormListener;
 import de.enough.polish.ui.TabListener;
+import de.enough.polish.ui.TabbedFormListener;
 import de.enough.polish.ui.TabbedPane;
 import de.enough.polish.ui.UiAccess;
 
 /**
- * <p>Demonstrates a simple browser app using the HtmlBrowser component of J2ME Polish.</p>
+ * <p>Demonstrates the usage of the J2ME Polish TabbedPane screen.</p>
  *
- * <p>Copyright Enough Software 2008</p>
+ * <p>Copyright Enough Software 2009</p>
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class TabbedPaneMidlet 
 extends MIDlet
 implements CommandListener, TabListener, TabbedFormListener
 {
-	
+	private Command cmdPopup = new Command("Alert", Command.SCREEN, 2);
 	private Command cmdBack = new Command("Back", Command.BACK, 9);
 	private Command cmdExit = new Command("Exit", Command.EXIT, 10 );
 	private TabbedPane tabbedPane;
 	private List screenMainMenu;
+	private Display display;
 
      protected void startApp() throws MIDletStateChangeException{
-          Display display = Display.getDisplay( this );
+          this.display = Display.getDisplay( this );
           if (this.tabbedPane == null) {
         	  init();
           }
-          display.setCurrent( this.tabbedPane );
+          this.display.setCurrent( this.tabbedPane );
      }
 
      private void init() {
@@ -52,6 +52,7 @@ implements CommandListener, TabListener, TabbedFormListener
     	 
          //#style mainMenuScreen
          Form form = new Form(null);
+         form.append("test text");
          try {
         	 Image img = Image.createImage("/map.png");
         	 form.append(img);
@@ -59,9 +60,14 @@ implements CommandListener, TabListener, TabbedFormListener
         	 //#debug error
         	 System.out.println("unable to load image" + e);
          }
+         TextField field = new TextField("Your name: ", null, 50, TextField.ANY );
+         form.append(field);
+         
          form.addCommand( new Command("New Message", Command.ITEM, 2));
          form.addCommand( new Command("New Contact", Command.ITEM, 3));
          form.addCommand( new Command("Back", Command.BACK, 2));
+         form.addCommand( this.cmdPopup );
+         form.setCommandListener(this);
         
          //#style mapTitle
          ChoiceGroup group = new ChoiceGroup(null, ChoiceGroup.MULTIPLE);
@@ -69,6 +75,11 @@ implements CommandListener, TabListener, TabbedFormListener
         	 //#style mapTitleItem
         	 group.append(null, null);
          }
+         boolean[] flags = new boolean[ group.size() ];
+         flags[0] = true;
+         flags[1] = true;
+         group.setSelectedFlags( flags );
+         
          UiAccess.setTitle(form, group);
          
          String[] names = {"Menu", null, "Inbox", "Settings"};
@@ -104,6 +115,7 @@ implements CommandListener, TabListener, TabbedFormListener
 		         }
         	 }
          }
+         this.tabbedPane.setFocus(1);
          
 	}
 
@@ -146,6 +158,10 @@ implements CommandListener, TabListener, TabbedFormListener
 		} else if (cmd == this.cmdExit) {
 			//destroyApp( true );
 			notifyDestroyed();
+		} else if (cmd == this.cmdPopup) {
+			//#style popupAlert
+			Alert alert = new Alert("This is a popup alert.");
+			this.display.setCurrent( alert );
 		}
 	}
 
