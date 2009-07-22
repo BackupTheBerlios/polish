@@ -32,9 +32,11 @@ import javax.microedition.lcdui.Graphics;
 import de.enough.polish.ui.AnimationThread;
 import de.enough.polish.ui.ClippingRegion;
 import de.enough.polish.ui.CommandItem;
+import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.TextEffect;
+import de.enough.polish.ui.UiAccess;
 
 /**
  * <p>A text effect that scrolls through the wrapped lines</p>
@@ -60,7 +62,7 @@ public class VerticalScrollTextEffect extends TextEffect{
 	String[] textLines = null;
 	String[] firstLine = null;
 	
-	String[] drawLines = new String[2];
+	String[] drawLines = null;
 	
 	long stageTime = 0;
 	int stageCurrent = STAGE_SHOW;
@@ -157,11 +159,12 @@ public class VerticalScrollTextEffect extends TextEffect{
 	public void drawStrings(Item parent, String[] textLines, int textColor, int x, int y,
 			int leftBorder, int rightBorder, int lineHeight, int maxWidth,
 			int layout, Graphics g) {
-		
 		this.lineHeight = lineHeight;
 		
-		this.drawLines[0] = this.textLines[this.lineIndex];
-		this.drawLines[1] = this.textLines[(this.lineIndex + 1) % this.textLines.length];
+		int index = this.lineIndex;
+		for (int i = 0; i < this.drawLines.length; i++) {
+			this.drawLines[i] = this.textLines[(index + i) % this.textLines.length];
+		}
 		
 		int clipX = g.getClipX();
 		int clipY = g.getClipY();
@@ -190,6 +193,16 @@ public class VerticalScrollTextEffect extends TextEffect{
 		if(this.lastLineWidth != firstLineWidth)
 		{
 			this.textLines = super.wrap(text, textColor, font, firstLineWidth, lineWidth);
+			
+			if(this.textLines.length > 1)
+			{
+				this.drawLines = new String[2];
+			}
+			else
+			{
+				this.drawLines = new String[1];
+			}
+			
 			this.firstLine = new String[]{this.textLines[0]};
 			this.lastLineWidth = firstLineWidth;
 			
