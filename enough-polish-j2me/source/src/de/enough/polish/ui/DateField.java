@@ -847,9 +847,6 @@ implements
 		//#if polish.blackberry
 			this.blackberryDateField.focusRemove();
 		//#endif
-		//#if polish.android1.5
-			MIDlet.midletInstance.hideSoftKeyboard();
-		//#endif
 	}
 	
 	

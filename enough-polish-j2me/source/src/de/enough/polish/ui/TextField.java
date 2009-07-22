@@ -3813,14 +3813,6 @@ public class TextField extends StringItem
 				}
 			//#endif
 		}
-		//#if polish.android1.5
-		else if (this.isFocused) {
-			// handle released in any case, so that no other elements can be focused:
-			notifyItemPressedEnd();
-			return true;
-		}
-		//#endif
-		
 		return super.handlePointerReleased(x, y);
 	}
 	//#endif
@@ -4076,9 +4068,6 @@ public class TextField extends StringItem
 				commitCurrentCharacter();
 				notifyStateChanged();
 			}
-		//#endif
-		//#if polish.android1.5
-			MIDlet.midletInstance.hideSoftKeyboard();
 		//#endif
 	}
 	//#endif
