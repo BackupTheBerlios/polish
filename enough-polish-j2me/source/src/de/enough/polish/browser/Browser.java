@@ -398,6 +398,29 @@ implements Runnable, ResourceLoader
 		// ignore
 	}
 	//#endif
+	
+	/**
+	 * Retrieves the current container.
+	 * @return the current container
+	 */
+	public Container getCurrentContainer() {
+		return this.currentContainer;
+	}
+	
+	/**
+	 * Removes the current container without adding it.
+	 * @return the current container
+	 */
+	public Container removeCurrentContainer() {
+		Container current = this.currentContainer;
+		Container previousContainer = (Container) current.getParent();
+		if (previousContainer == UiAccess.cast(this)) {
+			this.currentContainer = null;
+		} else {
+			this.currentContainer = previousContainer;
+		}
+		return current;
+	}
 
 	/**
 	 * Closes the current container

@@ -205,6 +205,8 @@ public class HtmlTagHandler
 	private ChoiceGroup currentRadioChoiceGroup;
 	private BooleanStack isDivOrSpanOpened;
 
+	private String anchorHref;
+
 	/**
 	 * Creates a new html tag handler
 	 */
@@ -367,56 +369,112 @@ public class HtmlTagHandler
 				this.currentSelect.addOption(name, value, selected != null, style);
 			}
 			return true;
+		} else if (TAG_A.equals(tagName)) {
+			if (opening) {
+				this.anchorHref = (String) attributeMap.get(ATTR_HREF);
+				this.browser.openContainer(style);
+				if (style == null) {
+					Container container = this.browser.getCurrentContainer();
+					//#style browserLink
+					UiAccess.setStyle(container);
+				}
+			} else {
+				// apply link to last item(s):
+				Container container = this.browser.removeCurrentContainer();
+				Style contStyle = container.getStyle();
+				Item linkItem;
+				if (container.size() == 0) {
+					linkItem = new StringItem( null, null );
+				} else if (container.size() == 1) {
+					linkItem = container.get(0);
+				} else {
+					// check if all elements are StringItems - then we should combine them:
+					boolean allItemsAreStringItems = true;
+					StringBuffer text = new StringBuffer();
+					for (int i=0; i<container.size(); i++) {
+						Item item = container.get(i);
+						if (!(item instanceof StringItem)) { 
+							allItemsAreStringItems = false;
+							break;
+						} else {
+							if (text.length() > 0) {
+								text.append(' ');
+							}
+							text.append( ((StringItem)item).getText() );
+						}
+					}
+					if (allItemsAreStringItems) {
+						linkItem = new StringItem( null, text.toString() );
+					} else {
+						linkItem = container;
+					}
+				}
+//				System.out.println("closing <a>: container.size()=" + container.size() + ", linkItem=" + linkItem + ", style=" + (contStyle != null ? contStyle.name : "<no style>") );
+				if (contStyle != null) {
+					linkItem.setStyle( contStyle );
+				} else if (linkItem.getStyle() == null) {
+					//#style browserLink
+					UiAccess.setStyle( linkItem );
+				}
+				linkItem.setDefaultCommand(CMD_LINK);
+				linkItem.setItemCommandListener( this );
+				linkItem.setAttribute(ATTR_HREF, this.anchorHref );
+				addCommands(TAG_A, linkItem);
+				add(linkItem);
+
+				//this.browser.closeContainer();
+			}
 		}
 
 		if (opening)
 		{    
-			if (TAG_A.equals(tagName))
-			{
-				String href = (String) attributeMap.get(ATTR_HREF);
-				parser.next();
-				Item linkItem;
-				if (href != null)
-				{
-					String anchorText = handleText(parser.getText());
-					// hack for image links:
-					if ("".equals(anchorText) && TAG_IMG.equals(parser.getName())) {
-						// this is an image link:
-						attributeMap.clear();
-						for (int i = 0; i < parser.getAttributeCount(); i++)
-						{
-							String attributeName = parser.getAttributeName(i);
-							String attributeValue = parser.getAttributeValue(i);
-							attributeMap.put(attributeName, attributeValue);
-						}
-						String src = (String) attributeMap.get("src");
-						String url = this.browser.makeAbsoluteURL(src);
-						Image image = this.browser.loadImage(url);
-						//#style browserLink
-						linkItem = new ImageItem(null, image, 0, (String) attributeMap.get("alt") );
-						//this.browser.loadImageLater( url, (ImageItem) linkItem );
-
-					} else {
-						//#style browserLink
-						linkItem = new StringItem(null, anchorText);
-					}
-					linkItem.setDefaultCommand(CMD_LINK);
-					linkItem.setItemCommandListener( this );
-					linkItem.setAttribute(ATTR_HREF, href );
-					addCommands(TAG_A, linkItem);
-				}
-				else
-				{
-					//#style browserText
-					linkItem = new StringItem(null, handleText(parser.getText()));
-				}
-				if (style != null) {
-					linkItem.setStyle(style);
-				}
-				add(linkItem);
-				return true;
-			}
-			else if (TAG_BR.equals(tagName))
+//			if (TAG_A.equals(tagName))
+//			{
+//				String href = (String) attributeMap.get(ATTR_HREF);
+//				parser.next();
+//				Item linkItem;
+//				if (href != null)
+//				{
+//					String anchorText = handleText(parser.getText());
+//					// hack for image links:
+//					if ("".equals(anchorText) && TAG_IMG.equals(parser.getName())) {
+//						// this is an image link:
+//						attributeMap.clear();
+//						for (int i = 0; i < parser.getAttributeCount(); i++)
+//						{
+//							String attributeName = parser.getAttributeName(i);
+//							String attributeValue = parser.getAttributeValue(i);
+//							attributeMap.put(attributeName, attributeValue);
+//						}
+//						String src = (String) attributeMap.get("src");
+//						String url = this.browser.makeAbsoluteURL(src);
+//						Image image = this.browser.loadImage(url);
+//						//#style browserLink
+//						linkItem = new ImageItem(null, image, 0, (String) attributeMap.get("alt") );
+//						//this.browser.loadImageLater( url, (ImageItem) linkItem );
+//
+//					} else {
+//						//#style browserLink
+//						linkItem = new StringItem(null, anchorText);
+//					}
+//					linkItem.setDefaultCommand(CMD_LINK);
+//					linkItem.setItemCommandListener( this );
+//					linkItem.setAttribute(ATTR_HREF, href );
+//					addCommands(TAG_A, linkItem);
+//				}
+//				else
+//				{
+//					//#style browserText
+//					linkItem = new StringItem(null, handleText(parser.getText()));
+//				}
+//				if (style != null) {
+//					linkItem.setStyle(style);
+//				}
+//				add(linkItem);
+//				return true;
+//			}
+//			else 
+			if (TAG_BR.equals(tagName))
 			{
 				addLineBreak();
 				return true;
