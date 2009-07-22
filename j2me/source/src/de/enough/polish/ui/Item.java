@@ -3260,8 +3260,8 @@ public abstract class Item implements UiElement, Animatable
 						}
 					}
 				//#endif
+				return true;
 			}
-			return true;
 		}
 		int clearKey =
 		//#if polish.key.ClearKey:defined
