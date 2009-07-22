@@ -139,15 +139,18 @@ public class TitleMenuBar extends MenuBar{
 		
 		Item title = this.titleItem;
 		int maxHeight = Math.max( this.contentHeight, title.getItemHeight( availWidth, availWidth, availHeight) );
+		CommandItem singleLeft = this.singleLeftCommandItem;
+		CommandItem singleRight = this.singleRightCommandItem;
 		if (maxHeight > title.itemHeight) {
 			if (title.isLayoutVerticalCenter()) {
 				title.relativeY = (maxHeight - title.itemHeight) / 2;
 			} else if (title.isLayoutBottom()) {
 				title.relativeY = maxHeight - title.itemHeight; 
 			}
+			singleLeft.relativeY = 0;
+			singleRight.relativeY = 0;
 		} else {
 			title.relativeY = 0;
-			CommandItem singleLeft = this.singleLeftCommandItem;
 			if ( singleLeft.isLayoutVerticalCenter()) {
 				singleLeft.relativeY = (maxHeight - singleLeft.itemHeight) >> 1;					
 			} else if ( singleLeft.isLayoutBottom()) {
@@ -155,7 +158,6 @@ public class TitleMenuBar extends MenuBar{
 			} else {
 				singleLeft.relativeY = 0;
 			}
-			CommandItem singleRight = this.singleRightCommandItem;
 			if ( singleRight.isLayoutVerticalCenter()) {
 				singleRight.relativeY = (maxHeight - singleRight.itemHeight) >> 1;					
 			} else if ( singleRight.isLayoutBottom()) {
