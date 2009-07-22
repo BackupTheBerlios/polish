@@ -1324,9 +1324,9 @@ implements Choice
 			System.out.println("itemsList.size()==0, aborting handleKeyPressed");
 			return super.handleKeyPressed(keyCode, gameAction);
 		}
-		//#debug
-		System.out.println("handleKeyPressed( " + keyCode + ", " + gameAction + " ) for " + this);
 		boolean gameActionIsFire = getScreen().isGameActionFire(keyCode, gameAction); 
+		// #debug
+		System.out.println("handleKeyPressed( " + keyCode + ", " + gameAction + " ) for " + this + ", isFire=" + gameActionIsFire);
 		
 		//#if polish.ChoiceGroup.handleDefaultCommandFirst == true
 			if (gameActionIsFire) {
@@ -1653,7 +1653,7 @@ implements Choice
 						handled = this.containerView.handlePointerReleased(relX - this.contentX, relY - this.yOffset - this.contentY);
 					}
 				//#endif
-				if (!handled && isInItemArea(relX, relY, this.focusedItem)) {
+				if (!handled && isInItemArea(relX - this.contentX, relY - this.yOffset - this.contentY, this.focusedItem)) {
 					handled = handleKeyReleased( 0, Canvas.FIRE );
 				}
 			}
