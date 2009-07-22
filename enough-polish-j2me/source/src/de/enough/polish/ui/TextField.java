@@ -3806,7 +3806,7 @@ public class TextField extends StringItem
 				showTextBox();
 				//# return true;
 			//#elif polish.android1.5
-				if (this.isFocused && ((System.currentTimeMillis() - this.androidFocusedTime) > 200)) {
+				if (this.isFocused && ((System.currentTimeMillis() - this.androidFocusedTime) > 1000)) {
 					notifyItemPressedEnd();
 					MIDlet.midletInstance.toggleSoftKeyboard();
 					return true;
