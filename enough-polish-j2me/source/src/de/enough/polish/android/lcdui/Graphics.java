@@ -1015,7 +1015,10 @@ public class Graphics
 		x += this.translateX;
 		y += this.translateY;
 		RectF rect = new RectF(x,y,x+width,y+height);
+		float strokeWidth = this.paint.getStrokeWidth();
+		this.paint.setStrokeWidth(1);
 		this.canvas.drawRoundRect(rect, arcWidth, arcHeight, this.paint);
+		this.paint.setStrokeWidth(strokeWidth);
 	}
 
 	/**
