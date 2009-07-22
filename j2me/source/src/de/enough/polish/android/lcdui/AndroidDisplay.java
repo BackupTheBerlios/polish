@@ -262,16 +262,17 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 		super.onSizeChanged(w, h, oldw, oldh);
-		if(this.bitmap != null) {
+//		if(this.bitmap != null) {
 			//TODO: uncomment if the exceptions remain when the unit test framework is used.
 //			this.bitmap.recycle();
-		}
+//		}
 		this.bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
 		if(this.currentPolishCanvas != null) {
 			//#debug
 			System.out.println("onSizeChanged with width '"+w+"' and height '"+h+"'");
 			this.currentPolishCanvas.sizeChanged(w,h);
 		}
+		MIDlet.midletInstance.onSizeChanged(w, h);
 	}
 
 	public boolean onKeyDown(int keyCode, KeyEvent event) {

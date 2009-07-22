@@ -885,4 +885,9 @@ public abstract class MIDlet extends Activity {
 		inputMethodManager.showInputMethodPicker();
 	}
 
+	public void onSizeChanged( int w, int h) {
+		//#if polish.android1.5
+			this.isSoftkeyboardOpen = false;
+		//#endif
+	}
 }
