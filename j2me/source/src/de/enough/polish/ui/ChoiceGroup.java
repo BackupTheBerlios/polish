@@ -1197,6 +1197,7 @@ implements Choice
 				return;
 			}
 		//#endif
+			
 		if (this.isPopup && !this.isPopupClosed) {
 			this.backgroundWidth += (this.originalContentWidth - this.contentWidth); 
 			this.backgroundHeight += (this.originalContentHeight - this.contentHeight); 
@@ -1226,13 +1227,13 @@ implements Choice
 					ChoiceItem selectedItem = (ChoiceItem) this.itemsList.get( 0 );
 					this.popupItem.setText( selectedItem.getText() );
 				}
-				int noneContentWidth = availWidth + this.marginLeft + getBorderWidthLeft() + this.paddingLeft + this.marginRight + getBorderWidthRight() + this.paddingRight;
-				this.popupItem.init( noneContentWidth, noneContentWidth, availHeight );
 				this.internalX = NO_POSITION_SET;
 			} else {
 				this.originalContentWidth = this.contentWidth;
 				this.originalContentHeight = this.contentHeight;
 			}
+			int noneContentWidth = availWidth + this.marginLeft + getBorderWidthLeft() + this.paddingLeft + this.marginRight + getBorderWidthRight() + this.paddingRight;
+			this.popupItem.getItemWidth( noneContentWidth, noneContentWidth, availHeight );
 			this.originalBackgroundHeight = this.contentHeight + this.marginTop + this.marginBottom;
 			if (!this.useSingleRow && this.label != null) {
 				this.originalBackgroundHeight += this.label.itemHeight + this.paddingVertical;
@@ -1325,7 +1326,7 @@ implements Choice
 			return super.handleKeyPressed(keyCode, gameAction);
 		}
 		boolean gameActionIsFire = getScreen().isGameActionFire(keyCode, gameAction); 
-		// #debug
+		//#debug
 		System.out.println("handleKeyPressed( " + keyCode + ", " + gameAction + " ) for " + this + ", isFire=" + gameActionIsFire);
 		
 		//#if polish.ChoiceGroup.handleDefaultCommandFirst == true
