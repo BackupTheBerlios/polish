@@ -276,7 +276,7 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 	}
 
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		// #debug
+		//#debug
 		System.out.println("AndroidDisplay.onKeyDown: keyCode=" + keyCode + ", flags=" + event.getFlags() + ", action=" + event.getAction() + ", isFromSoftKeyBoard=" + ((event.getFlags() & KeyEvent.FLAG_SOFT_KEYBOARD) == KeyEvent.FLAG_SOFT_KEYBOARD));
 		if(this.currentPolishCanvas == null) {
 			return false;
