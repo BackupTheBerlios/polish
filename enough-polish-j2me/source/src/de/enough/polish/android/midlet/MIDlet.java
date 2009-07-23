@@ -893,6 +893,7 @@ public abstract class MIDlet extends Activity {
 
 	public void onSizeChanged( int w, int h) {
 		//#if polish.android1.5
+			hideSoftKeyboard();
 			this.isSoftkeyboardOpen = false;
 		//#endif
 	}
