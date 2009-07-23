@@ -343,6 +343,9 @@ public abstract class MIDlet extends Activity {
 				//
 			}
 		}
+		//#if polish.android1.5
+			hideSoftKeyboard();
+		//#endif
 		if(this.suicideOnExit) {
 			int myPid = Process.myPid();
 			Process.killProcess(myPid);
