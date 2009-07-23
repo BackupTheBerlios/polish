@@ -192,7 +192,7 @@ public final class Serializer {
 					}
 				//#endif
 				//#debug debug
-				System.out.println("serializing " + className + "=" + object);
+				//#= System.out.println("serializing " + className + "=" + object);
 				out.writeUTF( className );
 				((Externalizable)object).write(out);
 			} else if (object instanceof Externalizable[]) { 
@@ -239,7 +239,7 @@ public final class Serializer {
 								}
 							//#endif
 							//#debug debug
-							System.out.println("serializing " + className + "=" + object);
+							//#= System.out.println("serializing " + className + "=" + object);
 							out.writeUTF( className );
 							lastClass = currentClass;
 							lastId = idCounter;
@@ -493,7 +493,7 @@ public final class Serializer {
 				}
 			//#endif
 			//#debug debug
-			System.out.println("deserialize " + className + "...");
+			//#= System.out.println("deserialize " + className + "...");
 			Externalizable extern = null;
 			try {
 				extern = (Externalizable) Class.forName( className ).newInstance();
