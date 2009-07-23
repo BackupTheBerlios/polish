@@ -313,6 +313,9 @@ public abstract class MIDlet extends Activity {
 	protected void onStop() {
 		//#debug
 		System.out.println("onStop().");
+		//#if polish.android1.5
+			hideSoftKeyboard();
+		//#endif
 		//Debug.stopMethodTracing();
 		pauseApp();
 		// Release the wake lock if it was acquired.
@@ -329,6 +332,9 @@ public abstract class MIDlet extends Activity {
 	protected void onDestroy() {
 		//#debug
 		System.out.println("onDestroy().");
+		//#if polish.android1.5
+			hideSoftKeyboard();
+		//#endif
 		//Debug.stopMethodTracing();
 		super.onDestroy();
 		//TODO: Use listener pattern to register and unregister Lifecycle listeners.
@@ -343,9 +349,6 @@ public abstract class MIDlet extends Activity {
 				//
 			}
 		}
-		//#if polish.android1.5
-			hideSoftKeyboard();
-		//#endif
 		if(this.suicideOnExit) {
 			int myPid = Process.myPid();
 			Process.killProcess(myPid);
