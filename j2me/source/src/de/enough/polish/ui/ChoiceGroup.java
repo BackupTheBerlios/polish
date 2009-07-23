@@ -31,6 +31,9 @@ import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
+//#if polish.android1.5
+	import de.enough.polish.android.midlet.MIDlet;
+//#endif
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.Locale;
 
@@ -1279,6 +1282,11 @@ implements Choice
 		if (this.isPopupClosed == false) {
 			return;
 		}
+		//#if polish.android1.5
+			if (this.isShown) {
+				MIDlet.midletInstance.hideSoftKeyboard();
+			}
+		//#endif
 		getScreen().addCommandsLayer( new Command[]{ StyleSheet.OK_CMD, StyleSheet.CANCEL_CMD} );
 		//this.popupOpenY = this.yTopPos; 
 		if (this.parent instanceof Container) {
@@ -1635,7 +1643,7 @@ implements Choice
 		System.out.println("ChoiceGroup.handlePointerReleased(" + relX + ", " + relY + ") for " + this + ", isPointerReleaseShouldTriggerKeyRelease=" + this.isPointerReleaseShouldTriggerKeyRelease + ", focusedItem=" + this.focusedItem + ", focusuedIndex=" + this.focusedIndex);
 		//#ifdef polish.usePopupItem
 			boolean isClosed = this.isPopupClosed;
-			if (this.isPopup && isClosed) {
+			if (this.isFocused && this.isPopup && isClosed) {
 				if (isInItemArea(relX, relY)) {
 					openPopup();
 					return true;
@@ -1852,6 +1860,7 @@ implements Choice
 	 */
 	public void setStyleWithBackground(Style style, boolean ignoreBackground)
 	{
+//		System.out.println("ChoiceGroup " + this.label + ", setStyle " + style.name);
 		super.setStyleWithBackground(style, ignoreBackground);
 		//#ifdef polish.usePopupItem
 			if (this.isPopup && this.popupItem != null) {
