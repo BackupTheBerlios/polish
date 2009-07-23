@@ -3000,7 +3000,7 @@ implements UiElement, Animatable
 			//#style info, default
 			this.infoItem = new StringItem( null, infoText );
 			this.infoItem.screen = this;
-		} else {
+		} else if (this.isInitialized){
 			StringItem info = ((StringItem)this.infoItem); 
 			info.setText( infoText );
 			int leftX = this.marginLeft + (this.border != null ? this.border.borderWidthLeft : 0 );
