@@ -2756,6 +2756,8 @@ public class Container extends Item {
 		// an item within this container was selected:
 		this.lastPointerPressY = relY;
 		this.lastPointerPressYOffset = getScrollYOffset();
+		int origRelX = relX;
+		int origRelY = relY;
 		relY -= this.yOffset;
 		relY -= this.contentY;
 		relX -= this.contentX;
@@ -2787,18 +2789,18 @@ public class Container extends Item {
 				}
 				relX -= viewXOffset;
 			}
-			if (!isInItemArea(relX + viewXOffset, relY) || (item != null && item.isInItemArea(relX - item.relativeX, relY - item.relativeY )) ) {
+			if (!isInItemArea(origRelX, origRelY) || (item != null && item.isInItemArea(relX - item.relativeX, relY - item.relativeY )) ) {
 				//System.out.println("Container.handlePointerPressed(): out of range, relativeX=" + this.relativeX + ", relativeY="  + this.relativeY + ", contentHeight=" + this.contentHeight );
-				return false;
+				return this.defaultCommand != null && super.handlePointerPressed(origRelX, origRelY);
 			}
 		//#else
-			if (!isInItemArea(relX, relY) || (item != null && item.isInItemArea(relX - item.relativeX, relY - item.relativeY )) ) {
+			if (!isInItemArea(origRelX, origRelY) || (item != null && item.isInItemArea(relX - item.relativeX, relY - item.relativeY )) ) {
 				//System.out.println("Container.handlePointerPressed(): out of range, relativeX=" + this.relativeX + ", relativeY="  + this.relativeY + ", contentHeight=" + this.contentHeight );
-				return false;
+				return super.handlePointerPressed(origRelX, origRelY);
 			}
 		//#endif
 		if (this.lastPointerPressY < 0 || (this.enableScrolling && this.lastPointerPressY > this.scrollHeight)) {
-			return false;
+			return this.defaultCommand != null && super.handlePointerPressed(origRelX, origRelY);
 		}
 		Item[] myItems = getItems();
 		int itemRelX, itemRelY;
@@ -2824,7 +2826,7 @@ public class Container extends Item {
 			}
 			return true;			
 		}
-		return false;
+		return this.defaultCommand != null && super.handlePointerPressed(origRelX, origRelY);
 	}
 	//#endif
 	
@@ -2869,7 +2871,7 @@ public class Container extends Item {
 	 */
 	protected boolean handlePointerReleased(int relX, int relY) {
 		//#debug
-		System.out.println("Container.handlePointerReleased(" + relX + ", " + relY + ") for " + this );
+		System.out.println("Container.handlePointerReleased(" + relX + ", " + relY + ") for " + this  );
 		Item item = this.focusedItem;
 		if ((this.enableScrolling && (Math.abs(getScrollYOffset() - this.lastPointerPressYOffset)>8))
 				|| (handlePointerScrollReleased(relX, relY))
@@ -2881,6 +2883,9 @@ public class Container extends Item {
 			}
 			if (!processed) {
 				while (item instanceof Container) {
+					if (item.isPressed) {
+						item.notifyItemPressedEnd();
+					}
 					item = ((Container)item).focusedItem;
 				}
 				// we have scrolling in the meantime
@@ -2891,6 +2896,8 @@ public class Container extends Item {
 			return true;
 		}
 		// an item within this container was selected:
+		int origRelX = relX;
+		int origRelY = relY;
 		relY -= this.yOffset;
 		relX -= this.contentX;
 		relY -= this.contentY;
@@ -2914,7 +2921,7 @@ public class Container extends Item {
 			} else if ( item.isInItemArea(relX - item.relativeX, relY - item.relativeY )) {
 				//#debug
 				System.out.println("pointerReleased not handled by focused item but within that item's area");
-				return false;
+				return this.defaultCommand != null && super.handlePointerReleased(origRelX, origRelY);
 			}
 		}
 		//#ifdef tmp.supportViewType
@@ -2925,16 +2932,10 @@ public class Container extends Item {
 				}
 				relX -= viewXOffset;
 			}
-			if (!isInItemArea(relX + viewXOffset, relY)) {
-				//System.out.println("Container.handlePointerPressed(): out of range, relativeX=" + this.relativeX + ", relativeY="  + this.relativeY + ", contentHeight=" + this.contentHeight );
-				return false;
-			}
-		//#else
-			if (!isInItemArea(relX, relY)) {
-				//System.out.println("Container.handlePointerPressed(): out of range, relativeX=" + this.relativeX + ", relativeY="  + this.relativeY + ", contentHeight=" + this.contentHeight );
-				return false;
-			}
 		//#endif
+		if (!isInItemArea(origRelX, origRelY)) {
+			return this.defaultCommand != null && super.handlePointerReleased(origRelX, origRelY);
+		}
 		Item[] myItems = getItems();
 		int itemRelX, itemRelY;
 		for (int i = 0; i < myItems.length; i++) {
@@ -2955,7 +2956,7 @@ public class Container extends Item {
 			item.handlePointerReleased( itemRelX , itemRelY );
 			return true;			
 		}
-		return false;
+		return this.defaultCommand != null && super.handlePointerReleased(origRelX, origRelY);
 	}
 	//#endif
 
