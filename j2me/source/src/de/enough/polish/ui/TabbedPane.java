@@ -602,6 +602,12 @@ public class TabbedPane extends Screen
 	 */
 	public void setCurrentTab( Displayable tab)
 	{
+		if (tab == this.currentDisplayable) {
+			//#debug 
+			System.out.println("ignoring setCurrentTab for " + tab + " as this is the current tab already.");
+			repaint();
+			return;
+		}
 		int index = this.currentDisplayableIndex;
 		if (index == -1) {
 			if (size() == 0) {
