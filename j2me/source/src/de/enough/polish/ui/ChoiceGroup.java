@@ -1662,7 +1662,8 @@ implements Choice
 						handled = this.containerView.handlePointerReleased(relX - this.contentX, relY - this.yOffset - this.contentY);
 					}
 				//#endif
-				if (!handled && isInItemArea(relX - this.contentX, relY - this.yOffset - this.contentY, this.focusedItem)) {
+//				System.out.println("isInItemArea(relX - this.contentX, relY - this.yOffset - this.contentY, this.focusedItem)=" + isInItemArea(relX - this.contentX, relY - this.yOffset - this.contentY, this.focusedItem));
+				if (!handled && isInItemArea(relX - this.contentX, relY - this.contentY, this.focusedItem)) {
 					handled = handleKeyReleased( 0, Canvas.FIRE );
 				}
 			}
