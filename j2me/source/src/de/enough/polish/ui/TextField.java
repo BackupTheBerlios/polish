@@ -2329,96 +2329,6 @@ public class TextField extends StringItem
 	}
 	//#endif
 	
-	
-
-	/*
-	 * Checks the caret position - is only used during debugging.
-	private void checkCaretPosition() {
-		int cPos = 0;
-		for (int i = 0; i < this.realTextLines.length; i++) {
-			String line = this.realTextLines[i];
-			if (i == this.caretRow) {
-				cPos += this.caretColumn;
-				break;
-			}
-			cPos += line.length();
-		}
-		if (cPos != this.caretPosition) {
-			System.out.println("=============================");
-			System.out.println("Warning: this.caretPosition = " + this.caretPosition);
-			System.out.println("but it should be: " + cPos );
-			System.out.println("=============================");
-		}
-	}
-	 */
-
-	//#ifdef tmp.directInput
-	/*
-	 * Calculates the caret x and y positions.
-	private void calculateCaretPosition() {
-		// calculate row, column, x and y position of the caret:
-		if (this.text == null) {
-			this.caretX = 0;
-			this.caretY = 0;
-			return;
-		}
-		//#ifdef polish.css.font-bitmap
-			if (this.bitMapFontViewer != null) {
-				// a bitmap-font is used
-				//TODO calculate caret-position with bitmap-fonts
-			}
-		//#endif
-		// no bitmap-font is used:
-		int maxPos = this.text.length();
-		if (this.caretPosition == maxPos) {
-			int length = this.textLines.length - 1;
-			this.caretY = length * (this.font.getHeight() + this.paddingVertical);
-			this.caretX = this.font.stringWidth( this.textLines[ length ] );
-			return;
-		}
-		int pos = 0;
-		int row = 0;
-		int y = 0;
-		int rowHeight = this.font.getHeight() + this.paddingVertical;
-		for (int i = 0; i < this.textLines.length; i++) {
-			String line = this.textLines[i];
-			int lineLength = line.length();
-			int textIndex = this.text.indexOf(line, pos);
-			int lastPos = textIndex + lineLength;
-			if (lastPos < maxPos) {
-				char lastChar = this.text.charAt( lastPos );
-				if (lastChar == ' ') {
-					pos++;
-					line += " ";
-				}
-			}
-			
-			if (this.caretPosition <= pos + lineLength) {
-				this.caretColumn = this.caretPosition - pos;
-				this.caretRow = row;
-				//TODO respect the layout of the text:
-				if ( this.caretColumn != 0 ) {
-					this.caretX = this.font.stringWidth(line.substring(0, this.caretColumn));
-				} else {
-					this.caretX = 0;
-				}
-				this.caretY = y;
-				break;
-			}
-			pos += lineLength;
-			y += rowHeight;
-			row++;
-		}
-	}
-	 */
-	//#endif
-	
-	//#if polish.blackberry
-//	protected void hideNotify() {
-//		this.editField.onUndisplay();
-//	}
-	//#endif
-
 	//#ifdef polish.useDynamicStyles
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#getCssSelector()
@@ -4210,7 +4120,7 @@ public class TextField extends StringItem
 			}
 			super.hideNotify();
 			//#if polish.android1.5
-			MIDlet.midletInstance.hideSoftKeyboard();
+				MIDlet.midletInstance.hideSoftKeyboard();
 			//#endif
 		}	
 	//#endif
