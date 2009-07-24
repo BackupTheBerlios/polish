@@ -2790,10 +2790,7 @@ public abstract class Item implements UiElement, Animatable
 		int labelWidth = 0;
 		int labelHeight = 0;
 		if (this.label != null) {
-			if (!this.label.isInitialized) {
-				this.label.init( firstLineWidth, availWidth, availHeight );
-			}
-			labelWidth = this.label.itemWidth;
+			labelWidth = this.label.getItemWidth( firstLineWidth, availWidth, availHeight );
 			labelHeight = this.label.itemHeight;
 		}
 		// calculate content width and content height:
