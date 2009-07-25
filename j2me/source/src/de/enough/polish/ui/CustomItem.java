@@ -1211,6 +1211,8 @@ public abstract class CustomItem extends Item
 	 * @see de.enough.polish.ui.Item#initContent(int, int)
 	 */
 	protected void initContent(int firstLineWidth, int availWidth, int availHeight) {
+		//#debug
+		System.out.println("initContent of " + this + " with " + availWidth + "x" + availHeight);
 		// intialising the content:
 		boolean resetSize = (availWidth != this.availableContentWidth || availHeight != this.availableContentHeight);
 		if (resetSize) {
