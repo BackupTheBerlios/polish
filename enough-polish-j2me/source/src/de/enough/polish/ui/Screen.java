@@ -4227,6 +4227,13 @@ implements UiElement, Animatable
 	 */
 	private void initMenuBar()
 	{
+		//#if tmp.useTitleMenu
+			if (this.hasTitleMenu)
+			{
+				// ignore, any size updates are handled within the item
+				return;
+			}
+		//#endif
 		//TODO adjust for other menubar positions
 		int availableWidth = this.screenWidth;
 		//#if polish.css.separate-menubar
