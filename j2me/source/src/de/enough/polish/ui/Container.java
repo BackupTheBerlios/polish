@@ -2873,7 +2873,7 @@ public class Container extends Item {
 		//#debug
 		System.out.println("Container.handlePointerReleased(" + relX + ", " + relY + ") for " + this  );
 		Item item = this.focusedItem;
-		if ((this.enableScrolling && (Math.abs(getScrollYOffset() - this.lastPointerPressYOffset)>8))
+		if ((this.enableScrolling && (Math.abs(getScrollYOffset() - this.lastPointerPressYOffset)>20))
 				|| (handlePointerScrollReleased(relX, relY))
 		) {
 			// we have scrolling in the meantime

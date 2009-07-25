@@ -1641,6 +1641,10 @@ implements Choice
 	protected boolean handlePointerReleased(int relX, int relY) {
 		//#debug
 		System.out.println("ChoiceGroup.handlePointerReleased(" + relX + ", " + relY + ") for " + this + ", isPointerReleaseShouldTriggerKeyRelease=" + this.isPointerReleaseShouldTriggerKeyRelease + ", focusedItem=" + this.focusedItem + ", focusuedIndex=" + this.focusedIndex);
+		if (this.enableScrolling && Math.abs(getScrollYOffset() - this.lastPointerPressYOffset)>20) {
+			// if we handle this case below, we would trigger choice elements accidently while dragging items:
+			return super.handlePointerReleased(relX, relY);
+		}
 		//#ifdef polish.usePopupItem
 			boolean isClosed = this.isPopupClosed;
 			if (this.isFocused && this.isPopup && isClosed) {
