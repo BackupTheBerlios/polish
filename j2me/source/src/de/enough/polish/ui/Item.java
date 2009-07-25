@@ -2318,6 +2318,8 @@ public abstract class Item implements UiElement, Animatable
 				this.availableWidth = availWidth;
 				if (this.parent != null) {
 					this.availableHeight = this.parent.contentHeight;
+				} else if (getScreen() != null){
+					this.availableHeight = getScreen().contentHeight;
 				}
 			}
 			int heightBefore = this.itemHeight;
