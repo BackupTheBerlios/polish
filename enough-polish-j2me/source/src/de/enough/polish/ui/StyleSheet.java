@@ -342,7 +342,9 @@ public final class StyleSheet {
 			// try just the item:
 			//#debug
 			System.out.println("trying " + itemCssSelector);
-			style = (Style) stylesByName.get( itemCssSelector );
+			if (itemCssSelector != null) {
+				style = (Style) stylesByName.get( itemCssSelector );
+			}
 			if (style == null) {
 				//#debug
 				System.out.println("Using default style for item " + item.getClass().getName() );
