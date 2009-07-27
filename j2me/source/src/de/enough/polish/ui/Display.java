@@ -907,6 +907,7 @@ implements javax.microedition.lcdui.CommandListener
 			this.nativeDisplay.notifyDisplayableChange( this.currentDisplayable, nextDisplayable );
 		//#endif
 		if (nextDisplayable == this.currentDisplayable) {
+			repaint();
 			return;
 		}
 		//#if polish.midp && !polish.blackberry
