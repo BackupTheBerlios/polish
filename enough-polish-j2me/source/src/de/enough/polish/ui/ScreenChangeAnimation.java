@@ -87,6 +87,9 @@ public abstract class ScreenChangeAnimation
 extends Canvas
 implements Runnable
 {
+	//#if (polish.useFullScreen || polish.useMenuFullScreen)
+		//#define tmp.useFullScreen
+	//#endif
 	protected Display display;
 	protected Canvas nextCanvas;
 	protected Image lastCanvasImage;
@@ -115,7 +118,7 @@ implements Runnable
 	 */
 	public ScreenChangeAnimation() {
 		// default constructor
-		//#if polish.midp2 && !polish.Bugs.fullScreenInPaint
+		//#if tmp.useFullScreen
 			setFullScreenMode(true);
 		//#endif
 	}
@@ -385,7 +388,7 @@ implements Runnable
 	 * The default implementation switches into fullscreen mode
 	 */
 	public void showNotify() {
-		//#if polish.midp2 && !polish.Bugs.fullScreenInPaint
+		//#if tmp.useFullScreen
 			setFullScreenMode(true);
 		//#endif
 	}
