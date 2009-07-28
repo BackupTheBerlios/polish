@@ -1959,6 +1959,23 @@ public abstract class Item implements UiElement, Animatable
 	}
 	
 	/**
+	 * Requests initialization for
+	 * only this item. 
+	 */
+	protected void requestSimpleInit()
+	{
+		if (this.isInitialized) {
+			this.isInitialized = false;
+			if (this.label != null) {
+				this.label.isInitialized = false;
+			}
+			if (this.isShown) {
+				repaint();
+			}
+		}
+	}
+	
+	/**
 	 * Retrieves the screen to which this item belongs to.
 	 * 
 	 * @return either the corresponding screen or null when no screen could be found 
