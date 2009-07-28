@@ -87,6 +87,8 @@ public class ImageItem extends Item
 	protected int height = -1;
 	protected int xOffset;
 	protected int xOverlap;
+	protected int imageWidth;
+	protected int imageHeight;
 
 	/**
 	 * Creates a new <code>ImageItem</code> with the given label, image, layout
@@ -267,8 +269,18 @@ public class ImageItem extends Item
 	{
 		this.image = image;
 		this.xOffset = 0;
-		requestInit();
-		repaint();
+		
+		//no initialization if the style is null and the image dimensions haven't changed
+		if ((image != null && 
+			(this.imageWidth != image.getWidth() || 
+			this.imageHeight != image.getHeight()))
+			) {
+			requestInit();
+		}
+		else if (this.isShown)
+		{
+			repaint();
+		}
 	}
 
 	/**
@@ -345,6 +357,10 @@ public class ImageItem extends Item
 	protected void initContent(int firstLineWidth, int availWidth, int availHeight) {
 		this.xOverlap = 0;
 		if (this.image != null) {
+			int imgWidth = this.image.getWidth();
+			int imgHeight = this.image.getHeight();
+			this.imageWidth = imgWidth;
+			this.imageHeight = imgHeight;
 			this.contentHeight = this.image.getHeight();
 			this.contentWidth = this.image.getWidth();
 			//#if polish.ImageItem.allowUserInteraction != false
