@@ -650,15 +650,7 @@ public class FramedForm extends Form {
 					// make sure that the right item is focused i.e.
 					// if the direction is UP the last item of
 					// the resulting container should be focused
-					switch(gameAction)
-					{
-						case LEFT : 
-						case RIGHT : 
-						case DOWN :
-						case UP : 
-							focusByAction(gameAction, newFrame);
-							break;
-					}
+					focusByAction(gameAction, newFrame);
 				}
 				
 				return true;
