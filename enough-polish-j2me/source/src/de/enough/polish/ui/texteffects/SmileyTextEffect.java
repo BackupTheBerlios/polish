@@ -62,7 +62,7 @@ import de.enough.polish.util.IntHashMap;
  */
 public class SmileyTextEffect extends TextEffect {
 	
-	public class Smiley
+	public static class Smiley
 	{		
 		public String[] smileys;
 		public Image image;
@@ -115,9 +115,14 @@ public class SmileyTextEffect extends TextEffect {
 
 		smileyMap 		= new IntHashMap();
 		smileyHash 	= new IntHashMap();
-		
-		smileyWidth	= smileyList[0].image.getWidth();
-		smileyHeight	= smileyList[0].image.getHeight();
+		if (smileyList == null || smileyList.length == 0 ) {
+			return;
+		}
+		Image img = smileyList[0].image;
+		if (img != null) {
+			smileyWidth	= img.getWidth();
+			smileyHeight	= img.getHeight();
+		}
 		
 		for(int i=0; i<smileyList.length; i++)
 		{
