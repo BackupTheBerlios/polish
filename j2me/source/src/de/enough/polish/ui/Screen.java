@@ -5410,6 +5410,29 @@ implements UiElement, Animatable
 	}
 	
 	/**
+	 * Retrieves the horizontal start position of the screen's content area
+	 * @return the horizontal start in pixels from the left
+	 */
+	public int getScreenContentX() {
+		if (this.contentHeight == 0) {
+			calculateContentArea(0, 0, this.screenWidth, this.screenHeight);
+		}
+		return this.contentX;
+	}
+
+	/**
+	 * Retrieves the vertical start position of the screen's content area
+	 * @return the vertical start in pixels from the top
+	 */
+	public int getScreenContentY() {
+		if (this.contentHeight == 0) {
+			calculateContentArea(0, 0, this.screenWidth, this.screenHeight);
+		}
+		return this.contentY;
+	}
+
+	
+	/**
 	 * Retrieves the height that the complete screen uses, including title, menubar, ticker, etc.
 	 * 
 	 * @return the fully available height.
@@ -5813,10 +5836,13 @@ implements UiElement, Animatable
 		return this.paintLock;
 	}
 
+	/**
+	 * Retrieves the root container of this screen
+	 * @return  the root container, this might be null for some subclasses
+	 */
 	public Container getRootContainer() {
 		return this.container;
 	}
-
 
 
 
