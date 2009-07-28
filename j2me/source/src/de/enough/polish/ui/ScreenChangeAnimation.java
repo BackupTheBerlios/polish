@@ -208,8 +208,6 @@ implements Runnable
 	protected Image toImage(Displayable displayable, Screen nextScreen, Screen lastScreen, int width, int height) {
 		boolean isLastScreen = (displayable == lastScreen);
 		Screen screen = isLastScreen ? lastScreen : nextScreen;
-		int screenWidth = width;
-		int screenHeight = height;
 		Image screenImage = null;
 		if (!isLastScreen && displayable instanceof Canvas) {
 			((Canvas)displayable).showNotify();
@@ -223,18 +221,18 @@ implements Runnable
 				if (limitToContentBool != null) {
 					limitToContent = limitToContentBool.booleanValue();
 					if (limitToContent) {
-						screenWidth = screen.container.itemWidth;
-						screenHeight = Math.min( screen.contentHeight, screen.container.itemHeight );
+						width = screen.container.itemWidth;
+						height = Math.min( screen.contentHeight, screen.container.itemHeight );
 						Border border = screen.border;
 						if (border != null) {
-							screenWidth += border.borderWidthLeft + border.borderWidthRight;
-							screenHeight += border.borderWidthTop + border.borderWidthBottom;
+							width += border.borderWidthLeft + border.borderWidthRight;
+							height += border.borderWidthTop + border.borderWidthBottom;
 							contentX = border.borderWidthLeft;
 							contentY = border.borderWidthTop;
 						}
 						Item title = screen.getTitleItem();
 						if (title != null) {
-							screenHeight += title.itemHeight;
+							height += title.itemHeight;
 							contentY += title.itemHeight;
 						}
 						// this creates an unmutable image and cannot be used:
@@ -246,9 +244,9 @@ implements Runnable
 				}
 			}
 		//#endif
-		screenImage = Image.createImage(screenWidth, screenHeight);
+		screenImage = Image.createImage(width, height);
 		Graphics g = screenImage.getGraphics(); 
-		g.setClip(0, 0, screenWidth, screenHeight);
+		g.setClip(0, 0, width, height);
 		if ( displayable instanceof Canvas) {
 			//#debug
 			System.out.println("StyleSheet: last screen is painted");
@@ -265,7 +263,7 @@ implements Runnable
 						this.nextContentY = -g.getTranslateY();
 					}
 					g.translate( -g.getTranslateX(), -g.getTranslateY() );
-					screen.container.paint(contentX, contentY, contentX,  screenWidth, g);
+					screen.container.paint(contentX, contentY, contentX,  width, g);
 				} else {
 			//#endif
 					if (isLastScreen) {	
@@ -401,18 +399,16 @@ implements Runnable
 		// ignore
 	}
 	
-	//#if polish.midp2 && !polish.Bugs.needsNokiaUiForSystemAlerts 
 	/**
 	 * Notifies this animation that the screen space has been changed.
 	 * This is ignored by the default implementation.
-   * 
-   * @param width the width
-   * @param height the height
+	 * 
+	 * @param width the width
+	 * @param height the height
 	 */
 	public void sizeChanged( int width, int height ) {
 		// ignore
 	}
-	//#endif
 
 	/**
 	 * Handles key repeat events.
@@ -531,7 +527,7 @@ implements Runnable
 	 */
 	public void run() {
 		try {
-			if (this.nextCanvas != null && animate() && !abort) {
+			if (this.nextCanvas != null && animate() && !this.abort) {
 				repaint();
 			} else {
 				//#debug
@@ -546,7 +542,7 @@ implements Runnable
 				Displayable next = this.nextDisplayable;
 				this.nextDisplayable = null;
 				System.gc();
-				if (disp != null && !abort) {
+				if (disp != null && !this.abort) {
 					// checking out if the animation is still shown is sweet in theory but it fails when there are security dialogs and the like in the way..
 					//Displayable current = disp.getCurrent();
 					//if (current == this && next != null) {
