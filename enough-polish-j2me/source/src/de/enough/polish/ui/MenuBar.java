@@ -1672,6 +1672,9 @@ public class MenuBar extends Item {
 				selectedCommandItem = this.singleLeftCommandItem;
 			}
 			if (selectedCommandItem != null) {
+				if (!selectedCommandItem.isPressed) {
+					return false;
+				}
 				selectedCommandItem.notifyItemPressedEnd();
 			}
 			//System.out.println("menubar clicked");
