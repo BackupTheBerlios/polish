@@ -2777,20 +2777,6 @@ public abstract class Item implements UiElement, Animatable
 			}
  		//#endif
 			
-		Style myStyle = this.style;
-		if (myStyle != null) {
-			this.paddingLeft = myStyle.getPaddingLeft(availWidth);
-			this.paddingRight = myStyle.getPaddingRight(availWidth);
-			this.paddingTop = myStyle.getPaddingTop(availWidth);
-			this.paddingBottom = myStyle.getPaddingBottom(availWidth);
-			this.paddingVertical = myStyle.getPaddingVertical(availWidth);
-			this.paddingHorizontal = myStyle.getPaddingHorizontal(availWidth);
-			this.marginLeft = getMarginLeft(availWidth);
-			this.marginRight = getMarginRight(availWidth);
-			this.marginTop = getMarginTop(availWidth);
-			this.marginBottom = getMarginBottom(availWidth);
-		}
-		
 		if (this.style != null && !this.isStyleInitialised) {
 			setStyle( this.style );
 		}
@@ -2805,6 +2791,20 @@ public abstract class Item implements UiElement, Animatable
 				setStyle( StyleSheet.defaultStyle );
 			}
 		//#endif
+		
+		Style myStyle = this.style;
+		if (myStyle != null) {
+			this.paddingLeft = myStyle.getPaddingLeft(availWidth);
+			this.paddingRight = myStyle.getPaddingRight(availWidth);
+			this.paddingTop = myStyle.getPaddingTop(availWidth);
+			this.paddingBottom = myStyle.getPaddingBottom(availWidth);
+			this.paddingVertical = myStyle.getPaddingVertical(availWidth);
+			this.paddingHorizontal = myStyle.getPaddingHorizontal(availWidth);
+			this.marginLeft = getMarginLeft(availWidth);
+			this.marginRight = getMarginRight(availWidth);
+			this.marginTop = getMarginTop(availWidth);
+			this.marginBottom = getMarginBottom(availWidth);
+		}
 		
 		int labelWidth = 0;
 		int labelHeight = 0;
