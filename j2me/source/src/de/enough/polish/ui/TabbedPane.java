@@ -567,6 +567,9 @@ public class TabbedPane extends Screen
 	 * @throws NullPointerException if either tab or icon is null.
 	 */
 	public void setTab( int index, Displayable tab, IconItem tabIconItem, Style tabIconStyle) {
+		//#debug
+		System.out.println("setting tab " + tab);
+		//try { throw new RuntimeException(); } catch (Exception e) { e.printStackTrace(); }
 		if (tab == null || tabIconItem == null) {
 			throw new NullPointerException();
 		}
@@ -1343,6 +1346,52 @@ public class TabbedPane extends Screen
 			return this.currentScreen.getScrollYOffset();
 		}
 		return super.getScrollYOffset();
+	}
+	
+	
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#getScreenContentHeight()
+	 */
+	public int getScreenContentHeight() {
+		if (this.currentScreen != null) {
+			return this.currentScreen.getScreenContentHeight();
+		}
+		return super.getScreenContentHeight();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#getScreenContentWidth()
+	 */
+	public int getScreenContentWidth() {
+		if (this.currentScreen != null) {
+			return this.currentScreen.getScreenContentWidth();
+		}
+		return super.getScreenContentWidth();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#getScreenContentX()
+	 */
+	public int getScreenContentX() {
+		if (this.currentScreen != null) {
+			return this.currentScreen.getScreenContentX();
+		}
+		return super.getScreenContentX();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#getScreenContentY()
+	 */
+	public int getScreenContentY() {
+		if (this.currentScreen != null) {
+			return this.currentScreen.getScreenContentY();
+		}
+		return super.getScreenContentY();
 	}
 
 	/*
