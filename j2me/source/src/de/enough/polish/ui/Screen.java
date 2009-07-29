@@ -2665,13 +2665,13 @@ implements UiElement, Animatable
 //		g.drawLine( (int) (this.screenWidth * 0.05), this.contentY, this.screenWidth - (int)(this.screenWidth * 0.05), this.contentY + this.contentHeight );
 		// initialising the container here prevents clipping problems on BlackBerry for some
 		// screens like FilteredList. Why this makes a difference is beyond me, but well... it works.
-		int containerHeight;
-		if (cont.itemHeight > height) {
-			int sbw = getScrollBarWidth();
-			containerHeight = cont.getItemHeight( width - sbw, width - sbw, height);
-		} else {
-			containerHeight = cont.getItemHeight( width, width, height);
-		}
+		int containerHeight = cont.itemHeight;
+//		if (cont.itemHeight > height) {
+//			int sbw = getScrollBarWidth();
+//			containerHeight = cont.getItemHeight( width - sbw, width - sbw, height);
+//		} else {
+//			containerHeight = cont.getItemHeight( width, width, height);
+//		}
 		
 		g.clipRect(x, y, width, height );
 		

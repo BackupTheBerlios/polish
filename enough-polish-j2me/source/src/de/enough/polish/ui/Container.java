@@ -1493,8 +1493,13 @@ public class Container extends Item {
 			clipY = g.getClipY();
 			clipWidth = g.getClipWidth();
 			clipHeight = g.getClipHeight();
-			//g.clipRect(clipX, y - this.paddingTop, clipWidth, clipHeight - ((y - this.paddingTop) - clipY) );
-			g.clipRect(clipX, y, clipWidth, clipHeight - (y - clipY) );
+			Screen scr = this.screen;
+			if (scr != null && scr.container == this &&  this.relativeY > scr.contentY ) {
+				int diff = this.relativeY - scr.contentY;
+				g.clipRect(clipX, y - diff, clipWidth, clipHeight - (y - clipY) + diff );				
+			} else {
+				g.clipRect(clipX, y, clipWidth, clipHeight - (y - clipY) );
+			}
 		}
 		//x = leftBorder;
 		y += this.yOffset;
@@ -2785,11 +2790,12 @@ public class Container extends Item {
 			if (contView != null) {
 				relX += viewXOffset;
 				if ( contView.handlePointerPressed(relX,relY) ) {
+					//System.out.println("ContainerView consumed pointer event");
 					return true;
 				}
 				relX -= viewXOffset;
 			}
-			if (!isInItemArea(origRelX, origRelY) || (item != null && item.isInItemArea(relX - item.relativeX, relY - item.relativeY )) ) {
+			if (!isInItemArea(origRelX, origRelY - this.yOffset) || (item != null && item.isInItemArea(relX - item.relativeX, relY - item.relativeY )) ) {
 				//System.out.println("Container.handlePointerPressed(): out of range, relativeX=" + this.relativeX + ", relativeY="  + this.relativeY + ", contentHeight=" + this.contentHeight );
 				return this.defaultCommand != null && super.handlePointerPressed(origRelX, origRelY);
 			}
@@ -2799,7 +2805,10 @@ public class Container extends Item {
 				return super.handlePointerPressed(origRelX, origRelY);
 			}
 		//#endif
-		if (this.lastPointerPressY < 0 || (this.enableScrolling && this.lastPointerPressY > this.scrollHeight)) {
+		Screen scr = this.screen;
+		if ( ((origRelY < 0) && (scr == null || origRelY + this.relativeY - scr.contentY < 0)) 
+				|| (this.enableScrolling && origRelY > this.scrollHeight) 
+		){
 			return this.defaultCommand != null && super.handlePointerPressed(origRelX, origRelY);
 		}
 		Item[] myItems = getItems();
@@ -3166,6 +3175,7 @@ public class Container extends Item {
 	public void setScrollYOffset( int offset, boolean smooth) {
 		//#debug
 		System.out.println("Setting scrollYOffset to " + offset + " for " + this);
+		//try { throw new RuntimeException("for " + offset); } catch (Exception e) { e.printStackTrace(); }
 		if (!this.enableScrolling && this.parent instanceof Container) {
 			((Container)this.parent).setScrollYOffset(offset, smooth);
 			return;
