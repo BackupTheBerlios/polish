@@ -3097,7 +3097,6 @@ public abstract class Item implements UiElement, Animatable
 	protected void setContentHeight( int height ) {
 		this.contentHeight = height;
 	}
-
 	
 	//#ifdef polish.useDynamicStyles
 	/**
@@ -3141,8 +3140,8 @@ public abstract class Item implements UiElement, Animatable
 	 * 
 	 * 
 	 * @param firstLineWidth the maximum width of the first line 
-	 * @param availWidth the maximum width of any following lines
-	 * @param availHeight TODO
+	 * @param availWidth the available maximum width of this item in pixels
+	 * @param availHeight the available maximum height  of this item in pixels
 	 * @see #contentWidth
 	 * @see #contentHeight
 	 * @see #preferredWidth
@@ -4168,7 +4167,7 @@ public abstract class Item implements UiElement, Animatable
 	 */
 	public int getItemAreaHeight()
 	{
-		return Math.max( this.itemHeight, this.contentY + this.backgroundHeight );
+		return Math.max( this.itemHeight, this.marginTop + this.backgroundHeight + this.marginBottom );
 	}
 	
 	

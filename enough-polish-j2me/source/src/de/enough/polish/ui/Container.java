@@ -2978,30 +2978,36 @@ public class Container extends Item {
 				}
 			}
 		//#endif
-		int maxItemHeight = getItemAreaHeight();
-		Screen scr = this.screen;
-		if (scr != null && this == scr.container && this.relativeY > scr.contentY) {
-			// this is an adjustment for calculating the correct scroll offset for containers with a vertical-center or bottom layout:
-			maxItemHeight += this.relativeY - scr.contentY;
-		}
-
-		if (this.enableScrolling && maxItemHeight > this.scrollHeight) {
-			int lastOffset = getScrollYOffset();
-			//System.out.println("drag: offset=" + lastOffset + ", this.lastPointerPressY=" + this.lastPointerPressY + ", y=" + relY);
-			int nextOffset = this.lastPointerPressYOffset + (relY - this.lastPointerPressY);
-			//System.out.println("nextOffset=" + nextOffset);
-			if (nextOffset > 0) {
-				nextOffset = 0;
-			} else {
-				maxItemHeight += 20;
-				if (nextOffset + maxItemHeight < this.scrollHeight) { 
-					nextOffset = this.scrollHeight - maxItemHeight;
+		if (this.enableScrolling ) {
+			int maxItemHeight = getItemAreaHeight();
+			Screen scr = this.screen;
+			Style myStyle = this.style;
+			if (myStyle != null) {
+				maxItemHeight -= myStyle.getPaddingTop(this.availableHeight) + myStyle.getPaddingBottom(this.availableHeight) + myStyle.getMarginTop(this.availableHeight) + myStyle.getMarginBottom(this.availableHeight);
+			}
+			if (scr != null 
+					&& this == scr.container 
+					&& this.relativeY > scr.contentY 
+			) {
+				// this is an adjustment for calculating the correct scroll offset for containers with a vertical-center or bottom layout:
+				maxItemHeight += this.relativeY - scr.contentY;
+			}
+			if (maxItemHeight > this.scrollHeight) {
+				int lastOffset = getScrollYOffset();
+				int nextOffset = this.lastPointerPressYOffset + (relY - this.lastPointerPressY);
+				if (nextOffset > 0) {
+					nextOffset = 0;
+				} else {
+					maxItemHeight += 20;
+					if (nextOffset + maxItemHeight < this.scrollHeight) { 
+						nextOffset = this.scrollHeight - maxItemHeight;
+					}
 				}
+				if (nextOffset != lastOffset) {
+					setScrollYOffset( nextOffset, false );
+				}
+				return true;
 			}
-			if (nextOffset != lastOffset) {
-				setScrollYOffset( nextOffset, false );
-			}
-			return true;
 		}
 		return super.handlePointerDragged(relX, relY);
 	}
