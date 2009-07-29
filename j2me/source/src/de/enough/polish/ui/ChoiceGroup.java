@@ -2081,21 +2081,21 @@ implements Choice
 		return this.choiceType;
 	}
 
-	//#ifdef polish.usePopupItem
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Item#getItemHeightOverlap()
-	 */
-	public int getItemHeightOverlap()
-	{
-		if (this.isPopup && !this.isPopupClosed) {
-			int res = this.backgroundHeight - this.itemHeight;
-			if (res > 0) {
-				return res;
-			}
-		}
-		return 0;
-	}
-	//#endif
+//	//#ifdef polish.usePopupItem
+//	/* (non-Javadoc)
+//	 * @see de.enough.polish.ui.Item#getItemHeightOverlap()
+//	 */
+//	public int getItemHeightOverlap()
+//	{
+//		if (this.isPopup && !this.isPopupClosed) {
+//			int res = this.backgroundHeight - this.itemHeight;
+//			if (res > 0) {
+//				return res;
+//			}
+//		}
+//		return 0;
+//	}
+//	//#endif
 
 
 	
