@@ -864,6 +864,7 @@ public abstract class MIDlet extends Activity {
 				Container cont = screen.getRootContainer();
 				if (cont != null) {
 					contAbsY = cont.getAbsoluteY() + (screen.getScreenContentY() - cont.relativeY);
+					//System.out.println("contentY=" + screen.getScreenContentY() + ", cont.relativeY=" + cont.relativeY + ", cont.absY=" + cont.getAbsoluteY() + ", item.absY=" + item.getAbsoluteY());
 				}
 				int newYOffset = - (item.getAbsoluteY() - contAbsY); // - this.currentScreenYOffset;
 				screen.setScrollYOffset( newYOffset, true);
