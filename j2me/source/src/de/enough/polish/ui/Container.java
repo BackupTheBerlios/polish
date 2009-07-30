@@ -173,7 +173,7 @@ public class Container extends Item {
 	 * @param height available height for this item including label, padding, margin and border, -1 when scrolling should not be done.
 	 */
 	public void setScrollHeight( int height ) {
-		boolean scrollAutomatic = (this.scrollHeight != -1) && (height != -1) && (height != this.scrollHeight) && this.isInitialized;
+		boolean scrollAutomatic = (this.scrollHeight != -1) && (height != -1) && (height != this.scrollHeight) && isInitialized();
 		this.scrollHeight = height;
 		this.enableScrolling = (height != -1);
 		Item item = this.scrollItem != null ? this.scrollItem : this.focusedItem;
@@ -262,9 +262,9 @@ public class Container extends Item {
 			item.internalX = Item.NO_POSITION_SET;
 			item.parent = this;
 			this.itemsList.add( item );
-			this.isInitialized = false;
+			setInitialized(false);
 			if (this.parent != null) {
-				this.parent.isInitialized = false;
+				this.parent.setInitialized(false);
 			}
 		}
 		if (this.isShown) {
@@ -550,9 +550,9 @@ public class Container extends Item {
 				//#endif
 				this.focusedIndex--;
 			}
-			this.isInitialized = false;
+			setInitialized(false);
 			if (this.parent != null) {
-				this.parent.isInitialized = false;
+				this.parent.setInitialized(false);
 			}
 			if (this.isShown) {
 				removedItem.hideNotify();
@@ -758,8 +758,8 @@ public class Container extends Item {
 			this.contentWidth = 0;
 			this.itemHeight = this.marginTop + this.paddingTop + this.paddingBottom + this.marginBottom;
 			this.itemWidth = this.marginLeft + this.paddingLeft + this.paddingRight + this.marginRight;
-			if (this.isInitialized) {
-				this.isInitialized = false;
+			if (isInitialized()) {
+				setInitialized(false);
 				//this.yBottom = this.yTop = 0;
 				repaint();
 			}
@@ -782,7 +782,7 @@ public class Container extends Item {
 	 * @return an array of all items, can be empty but not null.
 	 */
 	public Item[] getItems() {
-		if (!this.isInitialized || this.containerItems == null) {
+		if (!isInitialized() || this.containerItems == null) {
 			this.containerItems = (Item[]) this.itemsList.toArray( new Item[ this.itemsList.size() ]);
 		}
 		return this.containerItems;
@@ -847,7 +847,7 @@ public class Container extends Item {
 		System.out.println("Container (" + this + "): Focusing item " + index + " (" + item + "), isInitialized=" + this.isInitialized + ", autoFocusEnabled=" + this.autoFocusEnabled );
 		//System.out.println("focus: yOffset=" + this.yOffset + ", targetYOffset=" + this.targetYOffset + ", enableScrolling=" + this.enableScrolling + ", isInitialized=" + this.isInitialized );
 		
-		if (!this.isInitialized && this.autoFocusEnabled) {
+		if (!isInitialized() && this.autoFocusEnabled) {
 			// setting the index for automatically focusing the appropriate item
 			// during the initialisation:
 			//#debug
@@ -888,7 +888,7 @@ public class Container extends Item {
 				System.out.println("Container: Unable to defocus item - no previous style found.");
 				previouslyFocusedItem.defocus( StyleSheet.defaultStyle );
 			}
-			if (this.isInitialized) {
+			if (isInitialized()) {
 				//fix 2008-11-11: width given to an item can be different from availableContentWidth on ContainerViews:
 				//int wAfter = previouslyFocusedItem.getItemWidth( this.availableContentWidth, this.availableContentWidth, this.availableHeight );
 				//fix 2008-12-10: on some ContainerViews it can happen, that not all items have been initialized before:
@@ -903,7 +903,7 @@ public class Container extends Item {
 				int layoutAfter = previouslyFocusedItem.layout;
 				if (wAfter != wBefore || hAfter != hBefore || layoutAfter != layoutBefore ) {
 					isReinitializationRequired = true;
-					previouslyFocusedItem.isInitialized = false; // could be that a container view poses restrictions on the possible size, i.e. within a table
+					previouslyFocusedItem.setInitialized(false); // could be that a container view poses restrictions on the possible size, i.e. within a table
 				}
 			}
 		}
@@ -932,7 +932,7 @@ public class Container extends Item {
 			}
 		//#endif
 		//System.out.println("focus - still initialzed=" + this.isInitialized + " for " + this);
-		if  (this.isInitialized) {
+		if  (isInitialized()) {
 			// this container has been initialised already,
 			// so the dimensions are known.
 			//System.out.println("focus: contentWidth=" + this.contentWidth + ", of container " + this);
@@ -943,7 +943,8 @@ public class Container extends Item {
 			int layoutAfter = item.layout;
 			if (wAfter != wBefore || hAfter != hBefore || layoutAfter != layoutBefore ) {
 				isReinitializationRequired = true;
-				item.isInitialized = false; // could be that a container view poses restrictions on the possible size, i.e. within a table
+				System.out.println("initialized false");
+				item.setInitialized(false); // could be that a container view poses restrictions on the possible size, i.e. within a table
 			}
 			updateInternalPosition(item);
 			if (getScrollHeight() != -1) {	
@@ -980,8 +981,8 @@ public class Container extends Item {
 			System.out.println("focus: postpone scrolling to initContent() for " + this + ", item " + item);
 			this.isScrollRequired = true;
 		}
-		if (this.isInitialized) {
-			this.isInitialized = !isReinitializationRequired;
+		if (isInitialized()) {
+			setInitialized(!isReinitializationRequired);
 		} else if (this.contentWidth != 0) {
 			updateInternalPosition(item);
 		}
@@ -1037,7 +1038,7 @@ public class Container extends Item {
 			int relativeInternalY = item.relativeY + item.contentY + item.internalY;
 			return scroll(  direction, relativeInternalX, relativeInternalY, item.internalWidth, item.internalHeight );
 		} else {
-			if (!this.isInitialized && item.relativeY == 0) {
+			if (!isInitialized() && item.relativeY == 0) {
 				// defer scrolling to init at a later stage:
 				//System.out.println( this + ": setting scrollItem to " + item);
 				this.scrollItem = item;
@@ -1372,13 +1373,13 @@ public class Container extends Item {
 					updateInternalPosition(item);
 					if (isLayoutShrink) {
 						//System.out.println("container has shrinking layout and contains focused item " + item);
-						item.isInitialized = false;
+						item.setInitialized(false);
 						boolean doExpand = item.isLayoutExpand;
 						int width;
 						if (doExpand) {
 							item.isLayoutExpand = false;
 							width = item.getItemWidth( availWidth, availWidth, availHeight );
-							item.isInitialized = false;
+							item.setInitialized(false);
 							item.isLayoutExpand = true;
 						} else {
 							width = item.itemWidth;
@@ -1620,7 +1621,7 @@ public class Container extends Item {
 		
 		Item item = this.focusedItem;
 		if (item != null) {
-			if (!item.isInitialized) {
+			if (!item.isInitialized()) {
 				if (item.availableWidth != 0) {
 					item.init( item.availableWidth, item.availableWidth, item.availableHeight );
 				} else {
@@ -2510,7 +2511,7 @@ public class Container extends Item {
 			//#ifdef tmp.supportViewType
 				if (this.containerView != null) {
 					this.containerView.defocus( originalStyle );
-					this.isInitialized = false;
+					setInitialized(false);
 				}
 			//#endif
 			Item item = this.focusedItem;
@@ -3097,7 +3098,7 @@ public class Container extends Item {
 	public void requestFullInit() {
 		for (int i = 0; i < this.itemsList.size(); i++) {
 			Item item = (Item) this.itemsList.get(i);
-			item.isInitialized = false;
+			item.setInitialized(false);
 			if (item instanceof Container) {
 				((Container)item).requestFullInit();
 			}

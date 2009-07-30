@@ -131,7 +131,7 @@ public class TabBar extends Item {
 		// activating the new tab:
 		this.activeTabIndex = index;
 		((ImageItem)this.tabs.get( index )).setStyle(this.activeStyleUsed);
-		this.isInitialized = false;
+		setInitialized(false);
 		this.nextTabIndex = index;
 	}
 

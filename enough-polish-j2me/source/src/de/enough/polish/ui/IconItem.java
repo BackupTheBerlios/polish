@@ -530,7 +530,7 @@ implements ImageConsumer
 				Integer scaleFactorInt = style.getIntProperty( "scale-factor" );
 				if (scaleFactorInt != null) {
 					this.scaleFactor = scaleFactorInt.intValue();
-					this.isInitialized = false;
+					setInitialized(false);
 				}
 			//#endif
 				
@@ -573,8 +573,8 @@ implements ImageConsumer
 	public void setImage(String name, Image image) {
 		this.image = image;
 		//System.out.println("image [" + name + "] has been set.");
-		if (this.isInitialized) {
-			this.isInitialized = false;
+		if (isInitialized()) {
+			setInitialized(false);
 			repaint();
 		}
 	}
@@ -609,7 +609,7 @@ implements ImageConsumer
 		//#endif
 		
 		//no initialization if the style is null and the image dimensions haven't changed
-		if (this.isInitialized
+		if (isInitialized()
 			//#if !polish.css.scale-factor
 			&& (img != null && (style != null || 
 				this.imageWidth != img.getWidth() || 
@@ -632,7 +632,7 @@ implements ImageConsumer
 	 */
 	public void setImageAlign( int imageAlign ) {
 		this.imageAlign = imageAlign;
-		this.isInitialized = false;
+		setInitialized(false);
 	}
 	
 	//#if polish.midp2 && polish.css.scale-factor
@@ -727,7 +727,7 @@ implements ImageConsumer
 		//#if polish.midp2 && polish.css.scale-factor
 			this.scaleData = null;
 			this.isStyleInitialised = false;
-			this.isInitialized = false;
+			setInitialized(false);
 		//#endif
 			//#if polish.css.icon-filter && polish.midp2
 			if (this.iconFilters != null) {
@@ -756,7 +756,7 @@ implements ImageConsumer
 		if (!isTextVisible) {
 			this.textLines = null;
 		}
-		this.isInitialized = false;
+		setInitialized(false);
 	}
 
 	

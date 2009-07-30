@@ -528,7 +528,7 @@ implements ImageConsumer
 		//#if polish.css.view-type
 		if (this.view == null) {
 		//#endif		
-			if (this.isInitialized) {
+			if (isInitialized()) {
 				if (this.isIndefinite) {
 					updateIndefiniteIndicatorImage();
 				} else if (this.image == null && this.mode != MODE_CONTINUOUS){
@@ -686,7 +686,7 @@ implements ImageConsumer
 	 */
 	public void setMaxValue(int maxValue)
 	{
-		this.isInitialized = false;
+		setInitialized(false);
 		if (maxValue == INDEFINITE) {
 			if (this.maxValue != maxValue) {
 				this.value = CONTINUOUS_IDLE;
@@ -705,7 +705,7 @@ implements ImageConsumer
 			AnimationThread.removeAnimationItem( this );
 		}
 		this.maxValue = maxValue;
-		this.isInitialized = false;
+		setInitialized(false);
 	}
 
 	/**
@@ -1089,7 +1089,7 @@ implements ImageConsumer
 	 */
 	public void setImage(String name, Image image) {
 		this.image = image;
-		this.isInitialized = false;
+		setInitialized(false);
 		repaint();
 	}
 	//#endif
@@ -1161,7 +1161,7 @@ implements ImageConsumer
 				return animated;
 			}
 		//#endif
-		if (this.isIndefinite && this.value == CONTINUOUS_RUNNING && this.isInitialized) {
+		if (this.isIndefinite && this.value == CONTINUOUS_RUNNING && isInitialized()) {
 			//#if polish.css.gauge-animation-mode
 				if ( this.image != null && this.animationMode == ANIMATION_MODE_BACKANDFORTH ) {
 					if (this.animationDirectionDownwards) {

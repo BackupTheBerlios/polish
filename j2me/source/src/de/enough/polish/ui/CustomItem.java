@@ -1323,7 +1323,7 @@ public abstract class CustomItem extends Item
 		}
 		this.isEventHandled = false;
 		keyPressed( keyCode );
-		if (this.isEventHandled || this.isInitialized == false) {
+		if (this.isEventHandled || !isInitialized()) {
 			return true;
 		} else {
 			return super.handleKeyPressed(keyCode, gameAction);
@@ -1336,7 +1336,7 @@ public abstract class CustomItem extends Item
 	protected boolean handleKeyRepeated(int keyCode, int gameAction) {
 		this.isEventHandled = false;
 		keyRepeated( keyCode );
-		if (this.isEventHandled || this.isInitialized == false) {
+		if (this.isEventHandled || !isInitialized()) {
 			return true;
 		} else {
 			return super.handleKeyRepeated(keyCode, gameAction);
@@ -1349,7 +1349,7 @@ public abstract class CustomItem extends Item
 	protected boolean handleKeyReleased(int keyCode, int gameAction) {
 		this.isEventHandled = false;
 		keyReleased( keyCode );
-		if (this.isEventHandled || this.isInitialized == false) {
+		if (this.isEventHandled || !isInitialized()) {
 			return true;
 		} else {
 			return super.handleKeyReleased(keyCode, gameAction);
@@ -1377,7 +1377,7 @@ public abstract class CustomItem extends Item
 		y -= this.contentY;
 		this.isEventHandled = false;
 		pointerPressed( x, y );
-		return (this.isEventHandled || this.isInitialized == false);
+		return (this.isEventHandled || !isInitialized());
 	}
 	//#endif
 	
@@ -1402,7 +1402,7 @@ public abstract class CustomItem extends Item
 		y -= this.contentY;
 		this.isEventHandled = false;
 		pointerReleased( x, y );
-		return (this.isEventHandled || this.isInitialized == false);
+		return (this.isEventHandled || isInitialized());
 	}
 	//#endif
 	
@@ -1427,7 +1427,7 @@ public abstract class CustomItem extends Item
 		y -= this.contentY;
 		this.isEventHandled = false;
 		pointerDragged( x, y );
-		return (this.isEventHandled || this.isInitialized == false);
+		return (this.isEventHandled || isInitialized());
 	}
 	//#endif
 

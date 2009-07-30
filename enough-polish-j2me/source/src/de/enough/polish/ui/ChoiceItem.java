@@ -498,7 +498,7 @@ public class ChoiceItem extends IconItem
 		} else {
 			setImage( image );
 		}
-		this.isInitialized = false;
+		setInitialized(false);
 		/*
 		this.isInitialised = false;
 		repaint();

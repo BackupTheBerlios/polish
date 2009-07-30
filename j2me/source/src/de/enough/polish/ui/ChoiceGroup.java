@@ -745,8 +745,8 @@ implements Choice
 			item.setStyle(elementStyle);
 		}
 
-		if (this.isInitialized) {
-			this.isInitialized = false;
+		if (isInitialized()) {
+			setInitialized(false);
 			repaint();
 		}
 	}
@@ -985,7 +985,7 @@ implements Choice
 				newSelected.select( true );
 				
 				if (this.isFocused) {
-					if ( this.isInitialized) {
+					if ( isInitialized()) {
 						focusChild( elementNum, newSelected, 0 );
 					} else {
 						this.autoFocusEnabled = true;
@@ -1000,8 +1000,8 @@ implements Choice
 			}		
 			
 		}
-		if (this.isInitialized) {
-			this.isInitialized = false;
+		if (isInitialized()) {
+			setInitialized(false);
 			repaint();
 		}
 	}
@@ -1071,8 +1071,8 @@ implements Choice
 			}
 			setSelectedIndex( index, true );
 		}
-		if (this.isInitialized) {
-			this.isInitialized = false;
+		if (isInitialized()) {
+			setInitialized(false);
 			repaint();
 		}
 	}
@@ -1273,7 +1273,7 @@ implements Choice
 			container.updateInternalPosition( this );
 			container.setScrollYOffset( this.popupParentOpenY, false );
 		}
-		this.isInitialized = false;
+		setInitialized(false);
 	}
 	//#endif
 
@@ -1306,7 +1306,7 @@ implements Choice
 			this.internalX = item.relativeX;
 			this.internalWidth = item.itemWidth;
 		}
-		this.isInitialized = false;
+		setInitialized(false);
 		this.backgroundHeight = this.originalBackgroundHeight;
 	}
 	//#endif

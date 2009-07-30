@@ -737,8 +737,8 @@ public void set(int elementNum, String stringPart, Image imagePart, Style elemen
 		item.setStyle(elementStyle);
 	}
 
-	if (this.isInitialized) {
-		this.isInitialized = false;
+	if (isInitialized()) {
+		isInitialized = false;
 		repaint();
 	}
 }

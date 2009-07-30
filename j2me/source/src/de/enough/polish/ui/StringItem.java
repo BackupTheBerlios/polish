@@ -384,7 +384,7 @@ public class StringItem extends Item
 	public void setFont( Font font)
 	{
 		this.font = font;
-		this.isInitialized = false;
+		setInitialized(false);
 	}
 
 	/**

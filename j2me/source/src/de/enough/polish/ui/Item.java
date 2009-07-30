@@ -627,7 +627,8 @@ public abstract class Item implements UiElement, Animatable
 	//#ifdef polish.css.max-height
 		protected Dimension maximumHeight;
 	//#endif
-	protected boolean isInitialized;
+	boolean isInitialized;
+	
 	/** the background of this item  */
 	public Background background;
 	protected Border border;
@@ -906,8 +907,8 @@ public abstract class Item implements UiElement, Animatable
 		} else {
 			this.label.setText( label );
 		}
-		if (this.isInitialized) {
-			this.isInitialized = false;
+		if (isInitialized()) {
+			setInitialized(false);
 			repaint();
 		}
 	}
@@ -985,8 +986,8 @@ public abstract class Item implements UiElement, Animatable
 			} else {
 				this.isLayoutExpand = false;
 			}
-			if (this.isInitialized) {
-				this.isInitialized = false;
+			if (isInitialized()) {
+				setInitialized(false);
 				repaint();
 			} else if (!this.isStyleInitialised && this.style != null) {
 				setStyle( this.style );
@@ -1084,7 +1085,6 @@ public abstract class Item implements UiElement, Animatable
 	public void setStyle( Style style ) {
 		//#debug
 		System.out.println("setting style " + style.name + " for " + this );
-		this.isInitialized = false;
 		this.isStyleInitialised = true;
 		this.style = style;
 		if (style != StyleSheet.defaultStyle) {
@@ -1298,7 +1298,7 @@ public abstract class Item implements UiElement, Animatable
 	 * @throws NullPointerException when style is null
 	 */
 	public void setStyle( Style style, boolean resetStyle ) {
-		if(!resetStyle && this.isInitialized) {
+		if(!resetStyle && isInitialized()) {
 //			boolean initializationRequired = false;
 			Dimension value;
 			//#if polish.css.margin
@@ -1540,7 +1540,7 @@ public abstract class Item implements UiElement, Animatable
 				this.contentYAdjustment = contentYInt;
 			}
 		//#endif
-		if (!resetStyle && this.isInitialized) {
+		if (!resetStyle && isInitialized()) {
 			//#if polish.css.background-width
 				Dimension bgWidth = (Dimension) style.getObjectProperty("background-width");
 				if (bgWidth != null) {
@@ -1609,7 +1609,7 @@ public abstract class Item implements UiElement, Animatable
 	 * @return the complete width of this item.
 	 */
 	public int getItemWidth( int firstLineWidth, int availWidth, int availHeight ) {
-		if (!this.isInitialized || this.availableWidth != availWidth || this.availableHeight != availHeight  ) {
+		if (!isInitialized() || this.availableWidth != availWidth || this.availableHeight != availHeight  ) {
 			init( firstLineWidth, availWidth, availHeight );
 		}
 		return this.itemWidth;
@@ -1639,7 +1639,7 @@ public abstract class Item implements UiElement, Animatable
 	 * @return the complete heigth of this item.
 	 */
 	public int getItemHeight( int firstLineWidth, int availWidth, int availHeight ) {
-		if (!this.isInitialized || this.availableWidth != availWidth || this.availableHeight != availHeight  ) {
+		if (!isInitialized() || this.availableWidth != availWidth || this.availableHeight != availHeight  ) {
 			init( firstLineWidth, availWidth, availHeight );
 		}
 		return this.itemHeight;
@@ -1938,38 +1938,15 @@ public abstract class Item implements UiElement, Animatable
 	 * This method should be called when an item changes its size more than usual.
 	 */
 	public void requestInit() {
-		if (this.isInitialized) {
-			this.isInitialized = false;
-			if (this.label != null) {
-				this.label.isInitialized = false;
-			}
-			Item p = this.parent; 
-			while ( p != null) {
-				p.isInitialized = false;
-				p = p.parent;
-			}
+		if(this.isInitialized) {
+			setInitialized(false);
+	
 			Screen scr = getScreen();
 			if (scr != null) {
 				scr.requestInit();
 			}
-			if (this.isShown) {
-				repaint();
-			}
-		}
-	}
-	
-	/**
-	 * Requests initialization for
-	 * only this item. 
-	 */
-	protected void requestSimpleInit()
-	{
-		if (this.isInitialized) {
-			this.isInitialized = false;
-			if (this.label != null) {
-				this.label.isInitialized = false;
-			}
-			if (this.isShown) {
+		
+			if(this.isShown) {
 				repaint();
 			}
 		}
@@ -2299,6 +2276,16 @@ public abstract class Item implements UiElement, Animatable
 		}
 	}
 	
+	void setAvailableDimensions(int leftBorder, int rightBorder)
+	{
+		this.availableWidth = rightBorder - leftBorder;
+		if (this.parent != null) {
+			this.availableHeight = this.parent.contentHeight;
+		} else if (getScreen() != null){
+			this.availableHeight = getScreen().contentHeight;
+		}
+	}
+	
 	/**
 	 * Paints this item on the screen.
 	 * This method should normally not be overriden. Override it
@@ -2319,36 +2306,21 @@ public abstract class Item implements UiElement, Animatable
 		//#endif
 
 		// initialise this item if necessary:
-		int availWidth = rightBorder - leftBorder;
-		if (!this.isInitialized || (availWidth < this.itemWidth )) {
-			if (availWidth < 2) {
-				repaint();
-				return;
-			}
-			//#if polish.debug.info
-			if (availWidth < this.itemWidth ) {
-				//#debug info
-				System.out.println("re-initializing item " + this + " for availableWidth=" + availWidth + "(original=" + this.availableWidth + "), itemWidth=" + this.itemWidth);
-			} 
-			//#endif
-			if (this.availableWidth == 0) {
-				this.availableWidth = availWidth;
-				if (this.parent != null) {
-					this.availableHeight = this.parent.contentHeight;
-				} else if (getScreen() != null){
-					this.availableHeight = getScreen().contentHeight;
+		if (!this.isInitialized) {
+			setAvailableDimensions(leftBorder, rightBorder);
+			
+			int previousItemWidth = this.itemWidth;
+			int previousItemHeight = this.itemHeight;
+			
+			init(this.availableWidth, this.availableWidth, this.availableHeight);
+			
+			if(previousItemWidth != this.itemWidth || previousItemHeight != this.itemHeight)
+			{
+				Item parentItem = this.parent; 
+				if( parentItem != null) {
+					System.out.println("request parent init");
+					parentItem.requestInit();
 				}
-			}
-			int heightBefore = this.itemHeight;
-			int widthBefore = this.itemWidth;
-			init( this.availableWidth, this.availableWidth, this.availableHeight );
-			if ( (this.itemHeight != heightBefore || this.itemWidth != widthBefore) && this.parent != null) {
-				//#debug warn
-				System.out.println("requesting initialization of parent: itemWidth=" + this.itemWidth + "(" + widthBefore + "), itemHeight=" + this.itemHeight + "(" + heightBefore + ") for item " + this);
-				this.parent.requestInit();
-				// returning here can lead to flickering - however, having to re-initialize the parent here
-				// should be exceptional.
-				//return;
 			}
 		}
 		//#if polish.css.x-adjust
@@ -2886,7 +2858,7 @@ public abstract class Item implements UiElement, Animatable
 			this.itemHeight = labelHeight;
 			this.backgroundHeight = 0;
 			this.backgroundWidth = 0;
-			this.isInitialized = true;
+			setInitialized(true);
 			return;
 		}
 		
@@ -3016,7 +2988,7 @@ public abstract class Item implements UiElement, Animatable
 		//#if polish.css.opacity && polish.midp2
 			this.opacityRgbData = null;
 		//#endif
-		this.isInitialized = true;
+		setInitialized(true);
 		//#debug
 		System.out.println("Item.init(): contentWidth=" + this.contentWidth + ", itemWidth=" + this.itemWidth + ", backgroundWidth=" + this.backgroundWidth);
 	}
@@ -4259,6 +4231,7 @@ public abstract class Item implements UiElement, Animatable
 	 * @param visible true when this item should become visible.
 	 */
 	public void setVisible( boolean visible ) {
+		System.out.println("set visible");
 		//#if tmp.invisible
 		boolean invisible = !visible;
 		if (invisible == this.isInvisible) {
@@ -4316,7 +4289,7 @@ public abstract class Item implements UiElement, Animatable
 					if (height == 0 && this.parent != null) {
 						//System.out.println("visible getting height for available width of " + this.parent.contentWidth );
 						this.isInvisible = false;
-						this.isInitialized = false;
+						setInitialized(false);
 						height = getItemHeight( this.parent.contentWidth, this.parent.contentWidth, this.parent.contentHeight );
 					} else {
 						this.itemHeight = height;
@@ -4416,6 +4389,11 @@ public abstract class Item implements UiElement, Animatable
 	 */
 	public ArrayList getItemCommands() {
 		return this.commands;
+	}
+	
+	public void setInitialized(boolean initialized)
+	{
+		this.isInitialized = initialized;
 	}
 
 	/**

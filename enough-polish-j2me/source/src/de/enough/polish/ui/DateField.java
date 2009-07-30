@@ -567,8 +567,8 @@ implements
 			}
 			this.text = buffer.toString();
 		} // date != null
-		if (this.isInitialized) {
-			this.isInitialized = false;
+		if (isInitialized()) {
+			setInitialized(false);
 			repaint();
 		}
 	}
@@ -1362,7 +1362,7 @@ implements
 
 	//#if polish.blackberry
 	public void fieldChanged(Field field, int context) {
-		if (context != FieldChangeListener.PROGRAMMATIC && this.isInitialized ) {
+		if (context != FieldChangeListener.PROGRAMMATIC && isInitialized() ) {
 			setDate( new Date( this.blackberryDateField.getDate()) );
 			Screen scr = getScreen();
 			if (scr != null) {

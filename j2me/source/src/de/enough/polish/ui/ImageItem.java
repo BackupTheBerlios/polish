@@ -306,7 +306,7 @@ public class ImageItem extends Item
 	{
 		this.altText = text;
 		if (this.image == null) {
-			this.isInitialized = false;
+			setInitialized(false);
 			repaint();
 		}
 	}

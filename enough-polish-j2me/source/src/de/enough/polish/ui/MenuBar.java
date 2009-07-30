@@ -262,7 +262,7 @@ public class MenuBar extends Item {
 						this.singleMiddleCommandItem.setImage( (Image)null );
 						this.singleMiddleCommandItem.setText( cmd.getLabel() );
 						if (this.isInitialized) {
-							this.isInitialized = false;
+							setInitialized(false);
 							repaint();
 						}
 						return;						
@@ -284,7 +284,7 @@ public class MenuBar extends Item {
 						this.singleLeftCommandItem.setImage( (Image)null );
 						this.singleLeftCommandItem.setText( cmd.getLabel() );
 						if (this.isInitialized) {
-							this.isInitialized = false;
+							setInitialized(false);
 							repaint();
 						}
 						return;
@@ -306,7 +306,7 @@ public class MenuBar extends Item {
 							this.singleLeftCommandItem.setImage( (Image)null );
 							this.singleLeftCommandItem.setText( cmd.getLabel() );
 							if (this.isInitialized) {
-								this.isInitialized = false;
+								setInitialized(false);
 								repaint();
 							}
 							return;
@@ -326,7 +326,7 @@ public class MenuBar extends Item {
 							this.singleRightCommandItem.setImage( (Image)null );
 							this.singleRightCommandItem.setText( cmd.getLabel() );
 							if (this.isInitialized) {
-								this.isInitialized = false;
+								setInitialized(false);
 								repaint();
 							}
 							return;
@@ -357,7 +357,7 @@ public class MenuBar extends Item {
 					this.singleRightCommand = cmd;
 					this.singleRightCommandItem.setText( cmd.getLabel() );
 					if (this.isInitialized) {
-						this.isInitialized = false;
+						setInitialized(false);
 						repaint();
 					}
 					return;
@@ -378,7 +378,7 @@ public class MenuBar extends Item {
 					this.singleLeftCommand = cmd;
 					this.singleLeftCommandItem.setText( cmd.getLabel() );
 					if (this.isInitialized) {
-						this.isInitialized = false;
+						setInitialized(false);
 						repaint();
 					}
 					return;
@@ -405,7 +405,7 @@ public class MenuBar extends Item {
 		addCommand( item );
 		
 		if (this.isInitialized) {
-			this.isInitialized = false;
+			setInitialized(false);
 			repaint();
 		}
 	}
@@ -435,7 +435,7 @@ public class MenuBar extends Item {
 				this.singleMiddleCommandItem.setText( newMiddleCommand.getLabel() );
 			}
 			if (this.isInitialized) {
-				this.isInitialized = false;
+				setInitialized(false);
 				repaint();
 			}
 			return;
@@ -445,7 +445,7 @@ public class MenuBar extends Item {
 		if ( cmd == this.singleLeftCommand ) {
 			this.singleLeftCommand = null;
 			if (this.isInitialized) {
-				this.isInitialized = false;
+				setInitialized(false);
 				repaint();
 			}
 			//#if tmp.RightOptions 
@@ -459,7 +459,7 @@ public class MenuBar extends Item {
 						this.singleRightCommand = null;
 					}
 					if (this.isInitialized) {
-						this.isInitialized = false;
+						setInitialized(false);
 						repaint();
 					}
 					return;
@@ -505,7 +505,7 @@ public class MenuBar extends Item {
 						this.singleLeftCommand = null;
 					}
 					if (this.isInitialized) {
-						this.isInitialized = false;
+						setInitialized(false);
 						repaint();
 					}
 					return;
@@ -576,7 +576,7 @@ public class MenuBar extends Item {
 		//#endif
 
 		if (this.isInitialized) {
-			this.isInitialized = false;
+			setInitialized(false);
 			repaint();
 		}
 	}
@@ -1229,7 +1229,7 @@ public class MenuBar extends Item {
 				boolean handled = this.commandsContainer.handleKeyPressed(keyCode, gameAction);
 				//System.out.println("menubar: container handled key " + keyCode + ": " + handled);
 				if (handled) {
-					this.isInitialized = false;
+					setInitialized(false);
 				} else { 
 					//#if polish.debug.error
 						if (gameAction == Canvas.DOWN || gameAction == Canvas.UP) {
@@ -1472,7 +1472,7 @@ public class MenuBar extends Item {
 				boolean handled = this.commandsContainer.handleKeyReleased(keyCode, gameAction);
 				//System.out.println("menubar: container handled keyReleased " + keyCode + ": " + handled);
 				if (handled) {
-					this.isInitialized = false;
+					setInitialized(false);
 				} else { 
 					if (keyCode >= Canvas.KEY_NUM1 && keyCode <= Canvas.KEY_NUM9) {
 						int index = keyCode - Canvas.KEY_NUM1;
@@ -1947,7 +1947,7 @@ public class MenuBar extends Item {
 		this.allCommands.put( childCommand, child);
 		parentCommandItem.addChild( child );
 		if (this.isOpened) {
-			this.isInitialized = false;
+			setInitialized(false);
 			repaint();
 		}
 	}
@@ -1984,7 +1984,7 @@ public class MenuBar extends Item {
 
 		// Repaint if needed.
 		if (this.isOpened) {
-			this.isInitialized = false;
+			setInitialized(false);
 			repaint();
 		}
 	}
@@ -2126,7 +2126,7 @@ public class MenuBar extends Item {
 				return;
 			}
 			this.isOrientationVertical = isVertical;
-			this.isInitialized = false;
+			setInitialized(false);
 		//#endif
 	}
 	

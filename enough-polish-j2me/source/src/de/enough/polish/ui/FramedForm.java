@@ -400,14 +400,13 @@ public class FramedForm extends Form {
 		}
 	}
 	
-	
-
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Screen#setContentArea(int, int, int, int)
 	 */
 	protected void calculateContentArea(int x, int y, int width, int height) {
 //		int lastContentWidth = this.contentWidth;
 //		int lastContentHeight = this.contentHeight;
+		
 		super.calculateContentArea(x, y, width, height);
 		
 		x = this.contentX;
@@ -477,23 +476,6 @@ public class FramedForm extends Form {
 		}
 		
 		initContent( cont );
-//		if (cont.isLayoutCenter) {
-//			cont.relativeX = x + (width - cont.itemWidth)/2;
-//		} else if (cont.isLayoutRight) {
-//			cont.relativeX = x + (width - cont.itemWidth);
-//		} else {
-//			cont.relativeX = x;
-//		}
-//		if (cont.isLayoutCenter) {
-//			cont.relativeY = y + (height - cont.itemHeight)/2;
-//		} else if (cont.isLayoutRight) {
-//			cont.relativeY = y + (height - cont.itemHeight);
-//		} else {
-//			cont.relativeY = y;
-//		}
-//		cont.setScrollHeight( height );
-		
-		
 	}	
 	
 	

@@ -214,13 +214,13 @@ extends ItemView
 				if (isLayoutShrink && this.focusedItem != null) {
 					Item item = this.focusedItem;
 					//System.out.println("container has shrinking layout and contains focuse item " + item + ", minWidth=" + parent.minimumWidth);
-					item.isInitialized = false;
+					item.setInitialized(false);
 					boolean doExpand = item.isLayoutExpand;
 					int width;
 					if (doExpand) {
 						item.isLayoutExpand = false;
 						width = item.getItemWidth( availWidth, availWidth, availHeight );
-						item.isInitialized = false;
+						item.setInitialized(false);
 						item.isLayoutExpand = true;
 					} else {
 						width = item.itemWidth;
@@ -334,7 +334,7 @@ extends ItemView
 				int availColWidth = this.columnsWidths[columnIndex].getValue( availWidth );
 				//#if polish.css.colspan
 					int itemColSpan = item.colSpan;
-					if (!item.isInitialized && item.style != null) {
+					if (!item.isInitialized() && item.style != null) {
 						Integer colSpanInt = item.style.getIntProperty("colspan");
 						if ( colSpanInt != null ) {
 							itemColSpan = colSpanInt.intValue();
@@ -380,7 +380,7 @@ extends ItemView
 					if (this.isAlignHeights) {
 						// we need to re-initialize every item every time, because otherwise
 						// item heights could only grow and never shrink:
-						item.isInitialized = false;
+						item.setInitialized(false);
 					}
 				//#endif
 				int width = item.getItemWidth( availColWidth, availColWidth, availHeight );
@@ -410,7 +410,7 @@ extends ItemView
 						//#debug
 						System.out.println("initializing new colspan of item " + i + "/" + item + ", column " + columnIndex + ": " + itemColSpan);
 						item.colSpan = itemColSpan;
-						item.isInitialized = false;
+						item.setInitialized(false);
 					}
 					columnIndex += itemColSpan;
 				//#else
