@@ -406,7 +406,6 @@ public class FramedForm extends Form {
 	protected void calculateContentArea(int x, int y, int width, int height) {
 //		int lastContentWidth = this.contentWidth;
 //		int lastContentHeight = this.contentHeight;
-		
 		super.calculateContentArea(x, y, width, height);
 		
 		x = this.contentX;
@@ -622,8 +621,7 @@ public class FramedForm extends Form {
 			Container newFrame = getNextFrame(gameAction);
 			
 			if ( newFrame != null ) {
-				
-				setActiveFrame(newFrame);
+				setActiveFrame(newFrame, false, gameAction);
 				handled = true;
 				
 				//#if polish.FramedForm.allowCycling
@@ -872,14 +870,8 @@ public class FramedForm extends Form {
 	 * @param keepMainFocus true when the focus should be kept on the main container at the same time.
 	 */
 	protected void  setActiveFrame(Container newFrame, boolean keepMainFocus ) {
-		if (newFrame == null || newFrame == this.currentlyActiveContainer) {
-			return;
-		}
-		if (!keepMainFocus) {
-			this.currentlyActiveContainer.defocus( this.currentlyActiveContainer.style );
-		}
+		int direction = 0;
 		if (newFrame.appearanceMode != Item.PLAIN) {
-			int direction = 0;
 			if (this.currentlyActiveContainer == this.bottomFrame) {
 				direction = Canvas.UP;
 			} else if (this.currentlyActiveContainer == this.topFrame) {
@@ -899,6 +891,25 @@ public class FramedForm extends Form {
 					direction = Canvas.RIGHT;
 				}
 			}
+		}
+		setActiveFrame( newFrame, keepMainFocus, direction );
+	}
+	
+	/**
+	 * Activates another frame.
+	 * 
+	 * @param newFrame the next frame
+	 * @param keepMainFocus true when the focus should be kept on the main container at the same time.
+	 * @param direction the direction that should be used. e.g. Canvas.UP, DOWN
+	 */
+	protected void setActiveFrame(Container newFrame, boolean keepMainFocus, int direction) {
+		if (newFrame == null || newFrame == this.currentlyActiveContainer) {
+			return;
+		}
+		if (!keepMainFocus) {
+			this.currentlyActiveContainer.defocus( this.currentlyActiveContainer.style );
+		}
+		if (newFrame.appearanceMode != Item.PLAIN) {
 			newFrame.focus( StyleSheet.focusedStyle, direction );
 		}
 		this.currentlyActiveContainer = newFrame;

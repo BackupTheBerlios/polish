@@ -5844,6 +5844,15 @@ implements UiElement, Animatable
 		return this.container;
 	}
 
+	/**
+	 * Retrieves the height of the title.
+	 * 
+	 * @return the height of the title in pixels or 0 when the title is null or is not rendered by J2ME Polish
+	 */
+	public int getTitleHeight() {
+		return this.titleHeight;
+	}
+
 
 
 //#ifdef polish.Screen.additionalMethods:defined

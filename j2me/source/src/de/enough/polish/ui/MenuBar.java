@@ -575,7 +575,7 @@ public class MenuBar extends Item {
 		}
 		//#endif
 
-		if (this.isInitialized) {
+		if (isInitialized()) {
 			setInitialized(false);
 			repaint();
 		}
@@ -696,7 +696,7 @@ public class MenuBar extends Item {
 		//#debug
 		System.out.println("Init content of MenuBar - isOpened=" + this.isOpened + ", firstLineWidth=" + firstLineWidth + ", lineWidth=" + availWidth + ", screen=" + this.screen );
 		if (this.isOpened) {
-			int titleHeight = this.screen.titleHeight; // + this.screen.subTitleHeight + this.screen.infoHeight;
+			int titleHeight = this.screen.getTitleHeight(); // + this.screen.subTitleHeight + this.screen.infoHeight;
 			int screenHeight = this.screen.screenHeight;
 			this.topY = titleHeight;
 			this.commandsContainer.setScrollHeight( screenHeight - titleHeight );
@@ -994,11 +994,12 @@ public class MenuBar extends Item {
 			// paint overlay background:
 			//#if !polish.Bugs.noTranslucencyWithDrawRgb
 				if (this.overlayBackground != null) {
+					int overlayWidth = this.screen.screenWidth;
 					//#if polish.MenuBar.Position == right
-						this.overlayBackground.paint( 0, this.screen.contentY, this.screen.screenWidth - this.itemWidth, this.screen.screenHeight, g );
-					//#else
-						this.overlayBackground.paint( 0, this.screen.contentY, this.screen.screenWidth, this.screen.screenHeight - this.screen.contentY, g );
+						overlayWidth -= this.itemWidth;
 					//#endif
+					int titleHeight = this.screen.getTitleHeight();
+					this.overlayBackground.paint( 0, titleHeight, overlayWidth, this.screen.screenHeight - titleHeight, g );
 				}
 			//#endif
 		}
@@ -1238,7 +1239,7 @@ public class MenuBar extends Item {
 								System.out.println("Container DID NOT HANDLE DOWN OR UP, selectedIndex=" + this.commandsContainer.getFocusedIndex() + ", count="+ this.commandsContainer.size() + ", cycling=" + this.commandsContainer.allowCycling);
 							//#else
 								//#debug error
-								System.out.println("Container DID NOT HANDLE DOWN OR UP because it has been DEACTIVATED - check your polish.Container.allowCycling preprocessing variable" );
+								System.out.println("Container DID NOT HANDLE DOWN OR UP probably since cycling has been DEACTIVATED - check your polish.Container.allowCycling preprocessing variable" );
 							//#endif
 							//#if polish.css.view-type
 								//#debug error

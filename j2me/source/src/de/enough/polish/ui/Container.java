@@ -943,7 +943,6 @@ public class Container extends Item {
 			int layoutAfter = item.layout;
 			if (wAfter != wBefore || hAfter != hBefore || layoutAfter != layoutBefore ) {
 				isReinitializationRequired = true;
-				System.out.println("initialized false");
 				item.setInitialized(false); // could be that a container view poses restrictions on the possible size, i.e. within a table
 			}
 			updateInternalPosition(item);
@@ -3176,7 +3175,7 @@ public class Container extends Item {
 	public void setScrollYOffset( int offset, boolean smooth) {
 		//#debug
 		System.out.println("Setting scrollYOffset to " + offset + " for " + this);
-		//try { throw new RuntimeException("for " + offset); } catch (Exception e) { e.printStackTrace(); }
+		//try { throw new RuntimeException("for yOffset " + offset); } catch (Exception e) { e.printStackTrace(); }
 		if (!this.enableScrolling && this.parent instanceof Container) {
 			((Container)this.parent).setScrollYOffset(offset, smooth);
 			return;

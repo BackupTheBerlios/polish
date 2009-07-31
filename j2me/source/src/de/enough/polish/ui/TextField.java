@@ -2011,7 +2011,7 @@ public class TextField extends StringItem
 			//#endif
 				// adjust text-start for input info abc|Abc|ABC|123 if it should be shown on the same line:
 				//#if tmp.includeInputInfo && !polish.TextField.useExternalInfo
-					if (this.infoItem != null && this.isShowInputInfo) {
+					if (this.isFocused && this.infoItem != null && this.isShowInputInfo) {
 						int infoWidth = this.infoItem.getItemWidth( availWidth, availWidth, availHeight);
 						if (this.infoItem.isLayoutRight) {
 							int newRightBorder = rightBorder - infoWidth;
@@ -2142,7 +2142,7 @@ public class TextField extends StringItem
 	protected void initContent(int firstLineWidth, int availWidth, int availHeight) {
 		this.screen = getScreen();
 		//#if tmp.includeInputInfo
-			if (this.infoItem != null) {
+			if (this.infoItem != null && this.isFocused && this.isShowInputInfo) {
 				int infoWidth = this.infoItem.getItemWidth(firstLineWidth, availWidth, availHeight);
 				firstLineWidth -= infoWidth;
 				availWidth -= infoWidth;
@@ -2155,7 +2155,7 @@ public class TextField extends StringItem
 		//#endif
 		super.initContent(firstLineWidth, availWidth, availHeight);
 		//#if tmp.includeInputInfo
-			if (this.infoItem != null) {
+			if (this.infoItem != null && this.isFocused && this.isShowInputInfo) {
 				this.contentWidth += this.infoItem.itemWidth;
 				if (this.contentHeight < this.infoItem.itemHeight) {
 					this.contentHeight = this.infoItem.itemHeight;

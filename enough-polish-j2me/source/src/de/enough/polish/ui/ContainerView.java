@@ -1040,6 +1040,7 @@ extends ItemView
 			this.parentContainer.setScrollYOffset(0, true);
 		}
 		if (screen != null && focItem != null 
+				&& screen.container == this.parentContainer
 				&& forwardFocus && i > this.focusedIndex 
 				&& (nextItem.relativeY - focItem.relativeY + (focItem.relativeY + this.parentContainer.getRelativeScrollYOffset()) > screen.contentHeight )
 		) {

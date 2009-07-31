@@ -1553,6 +1553,7 @@ implements Choice
 		boolean gameActionIsFire =	getScreen().isGameActionFire(keyCode, gameAction); 
 		if (gameActionIsFire) {
 			ChoiceItem choiceItem = (ChoiceItem) this.focusedItem;
+			boolean handled = false;
 			if (choiceItem != null
 					//#ifdef polish.usePopupItem
 						&& !(this.isPopup && isClosed)
@@ -1561,8 +1562,10 @@ implements Choice
 			{
 				if (this.isMultiple) {
 					selectChoiceItem( choiceItem, !choiceItem.isSelected);
-				} else {
+					handled = true;
+				} else if (this.selectedIndex != this.focusedIndex){
 					setSelectedIndex(this.focusedIndex, true);
+					handled = true;
 				}
 				if ( this.choiceType != Choice.IMPLICIT ) 
 				{
@@ -1593,7 +1596,7 @@ implements Choice
 				}
 			}
 			//#endif
-			return true;
+			return handled;
 		}
 //		//#ifdef polish.usePopupItem
 //			if (this.closePopupOnKeyRelease) {
