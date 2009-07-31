@@ -1253,6 +1253,7 @@ public abstract class Item implements UiElement, Animatable
 
 		// now set other style attributes:
 		setStyle( style, true );
+		setInitialized(false);
 	}
 	
 	//#ifdef polish.css.view-type	
@@ -2318,7 +2319,6 @@ public abstract class Item implements UiElement, Animatable
 			{
 				Item parentItem = this.parent; 
 				if( parentItem != null) {
-					System.out.println("request parent init");
 					parentItem.requestInit();
 				}
 			}
@@ -4391,6 +4391,10 @@ public abstract class Item implements UiElement, Animatable
 		return this.commands;
 	}
 	
+	/**
+	 * Sets the initialized state of this item.
+	 * @param initialized true when this item is deemed to be initialized, otherwise false. When setting to 'false' the item will run its init() and initContent() methods at the next option.
+	 */
 	public void setInitialized(boolean initialized)
 	{
 		this.isInitialized = initialized;
