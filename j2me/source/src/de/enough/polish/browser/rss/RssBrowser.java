@@ -32,10 +32,17 @@ import de.enough.polish.browser.html.HtmlTagHandler;
 import de.enough.polish.ui.Command;
 import de.enough.polish.ui.CommandListener;
 import de.enough.polish.ui.Displayable;
+import de.enough.polish.ui.Item;
 import de.enough.polish.ui.ItemCommandListener;
 import de.enough.polish.ui.Style;
 
-
+/**
+ * The RSS browser is like the HTML browser, but it additionally supports RSS 2.0 feeds.
+ * 
+ * @author Michael Koch
+ * @author Robert Virkus
+ *
+ */
 public class RssBrowser
 	extends HtmlBrowser
 	implements CommandListener
@@ -43,38 +50,62 @@ public class RssBrowser
 	private ItemCommandListener rssItemCommandListener;
 	private RssTagHandler rssTagHandler;
 
+	/**
+	 * Creates a new RSS reader
+	 */
 	public RssBrowser() {
 		this((Style) null);
 	}
 
+	/**
+	 * Creates a new RSS reader.
+	 * @param style the style, typically defined using a #style preprocessing directive
+	 */
 	public RssBrowser(Style style) {
 		this(new DefaultRssItemCommandListener(), style); 
 	}
 
 	//#if polish.LibraryBuild
+	/**
+	 * Creates a new RSS reader
+	 * @param listener the command listener
+	 */
 	public RssBrowser(javax.microedition.lcdui.ItemCommandListener listener) {
 		this( listener, null ); 
 	}
 	//#endif
 
 	//#if polish.LibraryBuild
+	/**
+	 * Creates a new RSS reader.
+	 * @param listener the command listener
+	 * @param style the style, typically defined using a #style preprocessing directive
+	 */
 	public RssBrowser(javax.microedition.lcdui.ItemCommandListener listener, Style style ) {
 		super( style );
-		this.rssTagHandler = new RssTagHandler(HtmlTagHandler.CMD_LINK, (ItemCommandListener) null); 
-		this.rssTagHandler.register(this);
+		// nothing done here
 	}
 	//#endif
 	
+	/**
+	 * Creates a new RSS reader.
+	 * @param listener the command listener
+	 */
 	public RssBrowser(ItemCommandListener listener)
 	{
 		this( listener, null );
 	}
 
+	/**
+	 * Creates a new RSS reader.
+	 * @param listener the command listener
+	 * @param style the style, typically defined using a #style preprocessing directive
+	 */
 	public RssBrowser(ItemCommandListener listener, Style style)
 	{
 		super(style);
 		this.rssItemCommandListener = listener;
-		this.rssTagHandler = new RssTagHandler(HtmlTagHandler.CMD_LINK, listener); 
+		this.rssTagHandler = new RssTagHandler(getLinkCommand(), getRssItemCommandListener()); 
 		this.rssTagHandler.register(this);
 		if (listener instanceof DefaultRssItemCommandListener) {
 			DefaultRssItemCommandListener rssListener = (DefaultRssItemCommandListener) listener;
@@ -82,6 +113,21 @@ public class RssBrowser
 			rssListener.setCommandListener(this);
 		}
 	}
+
+	/**
+	 * @return
+	 */
+	public ItemCommandListener getRssItemCommandListener() {
+		return this.rssItemCommandListener;
+	}
+
+	/**
+	 * @return
+	 */
+	public Command getLinkCommand() {
+		return HtmlTagHandler.CMD_LINK;
+	}
+	
 	
 	/**
 	 * Sets a handler different from the default RSS tag handler.
@@ -102,10 +148,16 @@ public class RssBrowser
 	 */
 	public boolean handleCommand(Command command)
 	{
-		if (this.rssItemCommandListener != null
+		if (getRssItemCommandListener() != null
 			&& command == RssTagHandler.CMD_GO_TO_ARTICLE) 
 		{
-			this.rssItemCommandListener.commandAction(command, getFocusedItem());
+			Item rssItem = getFocusedItem();
+			String rssUrl = (String) rssItem.getAttribute(HtmlTagHandler.ATTR_HREF);
+			System.out.println("going to article, url=" + rssUrl);
+			if (rssUrl != null) {
+				this.rssTagHandler.onViewUrl(rssUrl);
+			}
+			getRssItemCommandListener().commandAction(command, rssItem);
 			return true;
 		}
 
@@ -163,5 +215,13 @@ public class RssBrowser
 		if (this.rssTagHandler != null) {
 			this.rssTagHandler.setIncludeDescriptions(includeDescriptions);
 		}
+	}
+
+	/**
+	 * Retrieves the RSS Tag Handeler
+	 * @return the tag handler
+	 */
+	public RssTagHandler getRssTagHandler() {
+		return this.rssTagHandler;
 	}
 }

@@ -84,6 +84,10 @@ public class DefaultRssItemCommandListener implements CommandListener, ItemComma
 		//System.out.println("DefaultRssItemCommandListner: command ="+ command.getLabel() );
 		if (command == RssTagHandler.CMD_RSS_ITEM_SELECT) {
 			RssItem rssItem = (RssItem) UiAccess.getAttribute(item, RssTagHandler.ATTR_RSS_ITEM);
+			String rssUrl = rssItem.getLink();
+			if (rssUrl != null && this.rssBrowser != null) {
+				this.rssBrowser.getRssTagHandler().onViewUrl( rssUrl );
+			}
 
 			if (rssItem != null && StyleSheet.display != null) {
 				//#style rssDescriptionAlert

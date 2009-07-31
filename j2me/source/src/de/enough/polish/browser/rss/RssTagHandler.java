@@ -100,15 +100,18 @@ public class RssTagHandler
 	private boolean includeDescriptions;
 	private Style rssLinkStyle;
 
-	//#if polish.midp2 && !polish.android
+	//#if polish.LibraryBuild
 	public RssTagHandler(Command linkCommand, javax.microedition.lcdui.ItemCommandListener listener)
 	{
-		//#debug error
-		System.out.println("This constructor should not be used after preprocessing.");
-		this.linkCommand = linkCommand;
+		// ignore
 	}
 	//#endif
 
+	/**
+	 * Creates a new RSS tag handler
+	 * @param linkCommand the command that should be used for links
+	 * @param listener the corresponding command listener
+	 */
 	public RssTagHandler(Command linkCommand, ItemCommandListener listener)
 	{
 		this.linkCommand = linkCommand;
@@ -271,7 +274,7 @@ public class RssTagHandler
 		if (this.url != null) {
 			item.setAttribute(HtmlTagHandler.ATTR_HREF, rssUrl);
 		}
-		applyStylingForRssLink( item );
+		applyStylingForRssLink( item, this.browser.size(), rssUrl );
 
 		this.browser.add(item);
 	}
@@ -281,13 +284,26 @@ public class RssTagHandler
 	 * If a style has been set using the setRssLinkStyle() method, that style is applied here
 	 * by the default implementation. Otherwise the default implementation does not change anything.
 	 *   
-	 * @param item a StringItem that contains a link to the article
+	 * @param item the item that contains a link to the article
+	 * @param index the index of the item
+	 * @param rssUrl the URL of the RSS item
 	 */
-	protected void applyStylingForRssLink(StringItem item) {
+	protected void applyStylingForRssLink(Item item, int index, String rssUrl) {
 		// subclasses may want to override this
 		if (this.rssLinkStyle != null) {
 			item.setStyle(this.rssLinkStyle);
 		}
+	}
+	
+	/**
+	 * This method is called when an RSS item is actually being shown (visited).
+	 * Subclasses may override this to react accordingly (e.g. by storing the URL for using visited styles within applyStylingForRssLink).
+	 * 
+	 * @param rssUrl the URL of the RSS item that is to be shown
+	 * @see #applyStylingForRssLink(Item, int, String)
+	 */
+	protected void onViewUrl( String rssUrl ) {
+		// ignore
 	}
 	
 	/**
