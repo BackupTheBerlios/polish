@@ -131,6 +131,21 @@ public class ResourcesPreCompiler extends PreCompiler {
 			rootElement.addContent(permissionElement);
 		}
 		
+		Element usesSdkElement = new Element("uses-sdk");
+		usesSdkElement.setAttribute("minSdkVersion", "3",namespace);
+		rootElement.addContent(usesSdkElement);
+		
+		String version = env.getVariable("MIDlet-Version");
+		if(version == null || version.length() == 0) {
+			version = "1";
+		}
+		int versionCodeNumber = computeSumOfVersion(version);
+		String versionCode = String.valueOf(versionCodeNumber);
+		rootElement.setAttribute("versionCode", versionCode,namespace);
+		
+		String versionName = version;
+		rootElement.setAttribute("versionName", versionName,namespace);
+		
 		String midletName = env.getBuildSetting().getMidlets(env)[0].name;
 
 		Element applicationElement = rootElement.getChild("application");
@@ -148,9 +163,20 @@ public class ResourcesPreCompiler extends PreCompiler {
 				iconUrl = iconUrl.substring(0,indexOfPoint);
 			}
 			if(iconUrl.length() != 0) {
+				applicationElement.setAttribute("icon","@raw"+iconUrl,namespace);
 				activityElement.setAttribute("icon","@raw"+iconUrl,namespace);
 			}
+		} else {
+			System.err.println("No icon was defined in this build. You will not be able to deploy this application in the Android Market. Please define an icon with the attribte 'icon' in the 'info' tag of the build.xml file.");
 		}
+		
+		// TODO: This does not work. Instead we need to alter the file res/values/string.xml, add the description as a string resource
+		// and reference this resource as value '@string/mystring' to this property.
+//		String description = env.getVariable("MIDlet-Description");
+//		if(description == null || description.length() == 0) {
+//			description = "";
+//		}
+//		applicationElement.setAttribute("description",description,namespace);
 		
 		XMLOutputter xmlOutputter = new XMLOutputter();
 		FileWriter fileWriter;
@@ -165,6 +191,31 @@ public class ResourcesPreCompiler extends PreCompiler {
 			throw new BuildException("Could not write to file file '"+manifestPath+"'",e);
 		}
 		
+	}
+
+	/**
+	 * This method sums all numerical version components in the version string. It is helpful to compare version strings with a
+	 * simple ordering. It will break with versions like 1.0.1-preview1 and 1.0.1 as the former has a higher numerical score but
+	 * is 'lower' as a version.
+	 * @param version
+	 * @return
+	 */
+	private static int computeSumOfVersion(String version) {
+		int sum = 0;
+		int place = 0;
+		int start = version.length()-1;
+		for(int character = start; character >= 0; character--) {
+			int characterValue = version.charAt(character);
+			if(48 <=characterValue && characterValue <= 57) {
+				// Its a number.
+				int number = characterValue-48;
+				sum += number * Math.pow(10,place);
+				place++;
+			} else {
+				place = 0;
+			}
+		}
+		return sum;
 	}
 	
 	/**
