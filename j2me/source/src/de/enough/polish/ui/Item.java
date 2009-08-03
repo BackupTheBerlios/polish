@@ -844,18 +844,32 @@ public abstract class Item implements UiElement, Animatable
 		protected Style landscapeStyle;
 		protected Style portraitStyle;
 	//#endif
+	private boolean isInRequestInit;
 
 
 
-	
+	/**
+	 * Convenience constructor.
+	 * Creates a new item without label, with a left aligned layout and Item.PLAIN appearance mode.
+	 */
 	protected Item() {
 		this( null, LAYOUT_DEFAULT, PLAIN, null );
 	}
 	
+	/**
+	 * Convenience constructor.
+	 * Creates a new item without label, with a left aligned layout, an Item.PLAIN appearance mode and the given style.
+	 * @param style the style for this item
+	 */
 	protected Item( Style style ) {
 		this( null, LAYOUT_DEFAULT, PLAIN, style );
 	}
 	
+	/**
+	 * Convenience constructor.
+	 * Creates a new item with the specified label and layout, an Item.PLAIN appearance mode and default style.
+	 * @param style the style for this item
+	 */
 	protected Item( String label, int layout) {
 		this( label, layout, PLAIN, null );
 	}
@@ -865,7 +879,7 @@ public abstract class Item implements UiElement, Animatable
 	 * 
 	 * @param label the label of this item
 	 * @param layout the layout of this item
-	 * @param appearanceMode the mode of this item, either Item.PLAIN, Item.BUTTON or Item.HYPERLINK
+	 * @param appearanceMode the mode of this item, either Item.PLAIN or Item.INTERACTIVE (Item.BUTTON, Item.HYPERLINK, Item.INTERACTIVE)
 	 * @param style the style of this item - contains the background, border etc.
 	 */
 	protected Item(String label, int layout, int appearanceMode, Style style) {
@@ -1939,16 +1953,29 @@ public abstract class Item implements UiElement, Animatable
 	 * This method should be called when an item changes its size more than usual.
 	 */
 	public void requestInit() {
-		if(this.isInitialized) {
-			setInitialized(false);
-	
-			Screen scr = getScreen();
-			if (scr != null) {
-				scr.requestInit();
-			}
 		
-			if(this.isShown) {
-				repaint();
+		if (this.isInitialized && !this.isInRequestInit) {
+			this.isInRequestInit = true;
+			try {
+				setInitialized(false);
+				int widthBefore = this.itemWidth;
+				int heightBefore = this.itemHeight;
+				init( this.availableWidth, this.availableWidth, this.availableHeight) ;
+				if (widthBefore != this.itemWidth || heightBefore != this.itemHeight) {
+					if (this.parent != null) {
+						this.parent.requestInit();
+					} else {
+						Screen scr = getScreen();
+						if (scr != null) {
+							scr.requestInit();
+							scr.requestRepaint();
+						}
+					}
+				} else if (this.isShown) {
+					repaint();
+				}
+			} finally {
+				this.isInRequestInit = false;
 			}
 		}
 	}
@@ -2280,11 +2307,16 @@ public abstract class Item implements UiElement, Animatable
 	void setAvailableDimensions(int leftBorder, int rightBorder)
 	{
 		this.availableWidth = rightBorder - leftBorder;
+		int h = 0;
 		if (this.parent != null) {
-			this.availableHeight = this.parent.contentHeight;
-		} else if (getScreen() != null){
-			this.availableHeight = getScreen().contentHeight;
+			h = Math.min( this.parent.contentHeight, this.parent.availableHeight );
+		} else {
+			Screen scr = getScreen();
+			if (scr != null){
+				h = Math.min( scr.contentHeight, h );
+			}
 		}
+		this.availableHeight = h;
 	}
 	
 	/**
@@ -2308,19 +2340,18 @@ public abstract class Item implements UiElement, Animatable
 
 		// initialise this item if necessary:
 		if (!this.isInitialized) {
-			setAvailableDimensions(leftBorder, rightBorder);
+			if (this.availableWidth == 0) {
+				setAvailableDimensions(leftBorder, rightBorder);
+			}
 			
 			int previousItemWidth = this.itemWidth;
 			int previousItemHeight = this.itemHeight;
 			
 			init(this.availableWidth, this.availableWidth, this.availableHeight);
 			
-			if(previousItemWidth != this.itemWidth || previousItemHeight != this.itemHeight)
+			if ((previousItemWidth != this.itemWidth || previousItemHeight != this.itemHeight) && this.parent != null)
 			{
-				Item parentItem = this.parent; 
-				if( parentItem != null) {
-					parentItem.requestInit();
-				}
+				this.parent.requestInit();
 			}
 		}
 		//#if polish.css.x-adjust

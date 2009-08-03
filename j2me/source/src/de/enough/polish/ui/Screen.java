@@ -720,18 +720,7 @@ implements UiElement, Animatable
 		this.isInitRequested = true;
 	}
 	
-//	/**
-//	 * Forwards a repaint request only when those requests should not be ignored.
-//	 * Requests should be usually ignored during the event handling, for example. 
-//	 * @see #ignoreRepaintRequests
-//	 */
-//	public void requestRepaint() {
-//		//if (!this.ignoreRepaintRequests) {
-//			super.repaint();
-//		//}
-//	}
-//	
-	
+
 	/**
 	 * Forwards a repaint request only when those requests should not be ignored.
 	 * Requests should be usually ignored during the event handling, for example. 
@@ -1091,9 +1080,24 @@ implements UiElement, Animatable
 		this.contentHeight = height;
 		//#debug
 		System.out.println("calculateContentArea: x=" + this.contentX + ", y=" + this.contentY + ", width=" + this.contentWidth + ", height=" + this.contentHeight);
+		adjustContentArea( x, y, originalWidth, height, cont );
 		initContent(cont);
 	}
 	
+	/**
+	 * Subclasses may override this to adjust the content area of a screen.
+	 * The default implementation does nothing.
+	 * 
+	 * @param x the contentX field
+	 * @param y the contentY field
+	 * @param width the contentWidth field
+	 * @param height the contentHeight field
+	 * @param cont the container, may be null
+	 */
+	protected void adjustContentArea(int x, int y, int width, int height, Container cont) {
+		// let subclasses do their magic here
+	}
+
 	/**
 	 * Initializes the container and background position 
 	 * @param cont the container, may be null if no container is used at all.

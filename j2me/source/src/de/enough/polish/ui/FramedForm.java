@@ -400,29 +400,20 @@ public class FramedForm extends Form {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Screen#setContentArea(int, int, int, int)
+	/* 
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#adjustContentArea(int, int, int, int, de.enough.polish.ui.Container)
 	 */
-	protected void calculateContentArea(int x, int y, int width, int height) {
-//		int lastContentWidth = this.contentWidth;
-//		int lastContentHeight = this.contentHeight;
-		super.calculateContentArea(x, y, width, height);
-		
-		x = this.contentX;
-		y = this.contentY;
+	protected void adjustContentArea(int x, int y, int width, int height, Container cont) {
 		int sbw = getScrollBarWidth();
-		if (this.contentWidth + sbw <= width) {
-			width = this.contentWidth + sbw;
-		} else {
-			width = this.contentWidth;
+		if (width + sbw <= this.screenWidth) {
+			width += sbw;
 		}
-		height = this.contentHeight;
 		
 		this.originalContentX = x;
 		this.originalContentY = y;
 		this.originalContentWidth = width;
 		this.originalContentHeight = height;
-		Container cont = this.container;
 		if (this.leftFrame != null) {
 			this.expandLeftFrame = (this.leftFrame.style.layout & Item.LAYOUT_VEXPAND) == Item.LAYOUT_VEXPAND;
 			if (this.expandLeftFrame) {
@@ -459,22 +450,19 @@ public class FramedForm extends Form {
 			height -= frameHeight;
 		}
 		if (cont.getContentHeight() > height) {
-			cont.getItemWidth(width - sbw, width - sbw, height);
-		} else {
-			cont.getItemWidth(width, width, height);
+			width -=sbw;
 		}
+		cont.getItemWidth(width, width, height);
 		this.contentX = x;
 		this.contentY = y;
 		this.contentWidth = width;
 		this.contentHeight = height;
 		
-		// adjust scroll offset for bottom frame animation
-		if(getScrollYOffset() < 0 && (getScrollYOffset() + cont.getContentHeight() < height) )
-		{
-			cont.setScrollYOffset(-1 * (cont.getContentHeight() - height));
-		}
-		
-		initContent( cont );
+//		// adjust scroll offset for bottom frame animation
+//		if(getScrollYOffset() < 0 && (getScrollYOffset() + cont.getContentHeight() < height) )
+//		{
+//			cont.setScrollYOffset(-1 * (cont.getContentHeight() - height));
+//		}
 	}	
 	
 	
