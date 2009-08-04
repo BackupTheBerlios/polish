@@ -2942,7 +2942,7 @@ public class PolishTask extends ConditionalTask {
 			if (maxJarSize != null) {
 				long jarSize = jarFile.length();
 				long maxSize = ConvertUtil.convertToBytes(maxJarSize);
-				if (jarSize > maxSize) {
+				if (jarSize > maxSize && maxSize != -1) {
 					// Maybe we should throw a BuildException here but its unclear to me how reliable the MaxJarSize capability really is.
 					System.err.println("Warning: Generated jar file exceeds max jar size for device: " + jarSize + " > " + maxSize);
 				}
