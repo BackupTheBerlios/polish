@@ -1061,7 +1061,7 @@ implements UiElement, Animatable
 			// ensure that container is initialized:
 			cont.getItemHeight(originalWidth, originalWidth, height);
 		//#endif
-		System.out.println("calculateContentArea: container.itemHeight=" + cont.itemHeight + ", screenHeight=" + this.screenHeight + ", cont.itemWidth=" + cont.itemWidth );
+		//System.out.println("calculateContentArea: container.itemHeight=" + cont.itemHeight + ", screenHeight=" + this.screenHeight + ", cont.itemWidth=" + cont.itemWidth );
 		//#if polish.css.subtitle-position
 			if (!isSubTitleAtTop) {
 				this.subTitle.relativeY = y + height;
