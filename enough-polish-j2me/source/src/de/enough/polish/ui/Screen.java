@@ -719,7 +719,6 @@ implements UiElement, Animatable
 		System.out.println("requestInit() for " + this);
 		this.isInitRequested = true;
 	}
-	
 
 	/**
 	 * Forwards a repaint request only when those requests should not be ignored.
@@ -995,75 +994,6 @@ implements UiElement, Animatable
 		//#else
 			height -= topHeight;	
 		//#endif
-		//#if tmp.useScrollBar
-			//#if polish.css.show-scrollbar
-				if ( this.scrollBarVisible ) {
-			//#endif
-					if ( cont != null ) {
-						this.scrollBar.scrollBarHeight = height;
-						//System.out.println("calculateContentArea for " + this + ": container.isInitialised=" + cont.isInitialised );
-						int scrollBarWidth = this.scrollBar.getItemWidth(width, width, height);
-						if (this.scrollBar.overlap) {
-							scrollBarWidth = 0;
-						}
-						if (cont.itemHeight > height) {
-							// it is quite likely that the container's height remains larger than the screen's height, so we substract
-							// the scrollbar's width right away:
-							int w = originalWidth - scrollBarWidth;
-							int containerHeight = cont.getItemHeight(w, w, height);
-							if (containerHeight <= height &&  scrollBarWidth != 0 ) {
-								// okay, the container's height has changed and we don't need to display the scrollbar anymore, so give the 
-								// container more width:
-								cont.getItemHeight(originalWidth, originalWidth, height);
-							}
-						} else {
-							int containerHeight = cont.getItemHeight(originalWidth, originalWidth, height);
-							if (containerHeight > height &&  scrollBarWidth != 0 ) {
-								//System.out.println("calculateContentArea for" + this + ": scrollBar is required for containerHeight of " + containerHeight + ", availableHeight=" + height );					
-								int w = originalWidth - scrollBarWidth;
-								cont.getItemHeight(w, w, height);
-							}
-						}
-						if (cont.itemHeight <= height) {
-							this.scrollBar.isVisible = false;
-						}
-					}
-			//#if polish.css.show-scrollbar
-				} else {
-					// ensure that container is initialized:
-					cont.getItemHeight(originalWidth, originalWidth, height);
-					this.scrollBar.isVisible = false;
-				}
-			//#endif
-			this.scrollBar.relativeX = x + width;
-		//#else 
-			// ensure that container is initialized:
-			cont.getItemHeight(originalWidth, originalWidth, height);
-		//#endif
-		//#if polish.css.subtitle-position
-			if (!isSubTitleAtTop) {
-				this.subTitle.relativeY = y + height;
-			}
-		//#endif
-		//#if tmp.usingTitle
-			if (cont != null
-					&& cont.itemHeight < height
-					//#if polish.css.separate-title
-						&& !this.separateTitle
-					//#endif
-					&& this.isLayoutVerticalShrink 
-					&& this.title != null 
-					) 
-			{
-				
-				if (this.isLayoutBottom && isTitleAtTop) {
-					this.title.relativeY +=  (height - cont.itemHeight);
-				}
-				else if (this.isLayoutVCenter) {
-					this.title.relativeY +=  (height - cont.itemHeight) / 2;
-				}
-			}
-		//#endif
 		// now set the content coordinates:	
 		this.contentX = x;
 		//#ifndef polish.skipTicker			
@@ -1078,9 +1008,81 @@ implements UiElement, Animatable
 		this.contentY = y;
 		this.contentWidth = originalWidth;
 		this.contentHeight = height;
+			
+		adjustContentArea( x, y, originalWidth, height, cont );
+		
+		//#if tmp.useScrollBar
+			//#if polish.css.show-scrollbar
+				if ( this.scrollBarVisible ) {
+			//#endif
+					if ( cont != null ) {
+						this.scrollBar.scrollBarHeight = this.contentHeight;
+						//System.out.println("calculateContentArea for " + this + ": container.isInitialised=" + cont.isInitialised );
+						int scrollBarWidth = this.scrollBar.getItemWidth(this.contentWidth, this.contentWidth, this.contentHeight);
+						if (this.scrollBar.overlap) {
+							scrollBarWidth = 0;
+						}
+						if (cont.itemHeight > this.contentHeight) {
+							// it is quite likely that the container's height remains larger than the screen's height, so we substract
+							// the scrollbar's width right away:
+							int w = originalWidth - scrollBarWidth;
+							int containerHeight = cont.getItemHeight(w, w, this.contentHeight);
+							if (containerHeight <= this.contentHeight &&  scrollBarWidth != 0 ) {
+								// okay, the container's height has changed and we don't need to display the scrollbar anymore, so give the 
+								// container more width:
+								cont.getItemHeight(originalWidth, originalWidth, this.contentHeight);
+							}
+						} else {
+							int containerHeight = cont.getItemHeight(originalWidth, originalWidth, this.contentHeight);
+							if (containerHeight > this.contentHeight &&  scrollBarWidth != 0 ) {
+								//System.out.println("calculateContentArea for" + this + ": scrollBar is required for containerHeight of " + containerHeight + ", availableHeight=" + height );					
+								int w = originalWidth - scrollBarWidth;
+								cont.getItemHeight(w, w, this.contentHeight);
+							}
+						}
+						if (cont.itemHeight <= this.contentHeight) {
+							this.scrollBar.isVisible = false;
+						}
+					}
+			//#if polish.css.show-scrollbar
+				} else {
+					// ensure that container is initialized:
+					cont.getItemHeight(originalWidth, originalWidth, this.contentHeight);
+					this.scrollBar.isVisible = false;
+				}
+			//#endif
+			this.scrollBar.relativeX = x + width;
+		//#else 
+			// ensure that container is initialized:
+			cont.getItemHeight(originalWidth, originalWidth, this.contentHeight);
+		//#endif
+		//#if polish.css.subtitle-position
+			if (!isSubTitleAtTop) {
+				this.subTitle.relativeY = y + height;
+			}
+		//#endif
+		//#if tmp.usingTitle
+			if (cont != null
+					&& cont.itemHeight < this.contentHeight
+					//#if polish.css.separate-title
+						&& !this.separateTitle
+					//#endif
+					&& this.isLayoutVerticalShrink 
+					&& this.title != null 
+					) 
+			{
+				
+				if (this.isLayoutBottom && isTitleAtTop) {
+					this.title.relativeY +=  (this.contentHeight - cont.itemHeight);
+				}
+				else if (this.isLayoutVCenter) {
+					this.title.relativeY +=  (this.contentHeight - cont.itemHeight) / 2;
+				}
+			}
+		//#endif
+		
 		//#debug
 		System.out.println("calculateContentArea: x=" + this.contentX + ", y=" + this.contentY + ", width=" + this.contentWidth + ", height=" + this.contentHeight);
-		adjustContentArea( x, y, originalWidth, height, cont );
 		initContent(cont);
 	}
 	

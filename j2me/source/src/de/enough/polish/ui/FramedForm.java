@@ -405,11 +405,6 @@ public class FramedForm extends Form {
 	 * @see de.enough.polish.ui.Screen#adjustContentArea(int, int, int, int, de.enough.polish.ui.Container)
 	 */
 	protected void adjustContentArea(int x, int y, int width, int height, Container cont) {
-		int sbw = getScrollBarWidth();
-		if (width + sbw <= this.screenWidth) {
-			width += sbw;
-		}
-		
 		this.originalContentX = x;
 		this.originalContentY = y;
 		this.originalContentWidth = width;
@@ -449,10 +444,6 @@ public class FramedForm extends Form {
 			//#endif
 			height -= frameHeight;
 		}
-		if (cont.getContentHeight() > height) {
-			width -=sbw;
-		}
-		cont.getItemWidth(width, width, height);
 		this.contentX = x;
 		this.contentY = y;
 		this.contentWidth = width;
