@@ -1355,27 +1355,27 @@ public class TextField extends StringItem
 	 	
 	protected void updateDeleteCommand(String newText) {
 		//#if tmp.updateDeleteCommand
-		// remove delete command when the caret is before the first character,
-		// add it when it is after the first character:
-		// #debug
-		//System.out.println("updateDeleteCommand: newText=[" + newText + "]");
-		if ( !this.isUneditable ) {
-			if ( newText == null 
-				//#ifdef tmp.directInput
-					|| (this.caretPosition == 0    &&    this.caretChar == this.editingCaretChar)
-				//#else
-					|| newText.length() == 0 
-				//#endif
-			) {
-				removeCommand( DELETE_CMD );
-			} else if ((this.text == null || this.text.length() == 0)
-				//#ifdef tmp.directInput
-					|| this.caretPosition == 1
-				//#endif						
-			) {
-				addCommand( DELETE_CMD );
+			// remove delete command when the caret is before the first character,
+			// add it when it is after the first character:
+			// #debug
+			//System.out.println("updateDeleteCommand: newText=[" + newText + "]");
+			if ( !this.isUneditable ) {
+				if ( newText == null 
+					//#ifdef tmp.directInput
+						|| (this.caretPosition == 0    &&    this.caretChar == this.editingCaretChar)
+					//#else
+						|| newText.length() == 0 
+					//#endif
+				) {
+					removeCommand( DELETE_CMD );
+				} else if ((this.text == null || this.text.length() == 0)
+					//#ifdef tmp.directInput
+						|| this.caretPosition == 1
+					//#endif						
+				) {
+					addCommand( DELETE_CMD );
+				}
 			}
-		}
 		//#endif		
 	}
 

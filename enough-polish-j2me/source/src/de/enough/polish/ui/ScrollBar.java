@@ -219,7 +219,6 @@ public class ScrollBar extends Item {
 	 */
 	public boolean animate()
 	{
-		
 		boolean animated = false;
 		int[] rgbData = this.opacityRgbData;
 		if (this.isVisible && this.overlap && rgbData != null && this.opacity > 0)  {
@@ -387,6 +386,10 @@ public class ScrollBar extends Item {
 			Dimension opacityInt = (Dimension) style.getObjectProperty("opacity");
 			if (opacityInt != null) {
 				this.startOpacity = opacityInt.getValue(255);
+			}
+			if (this.startOpacity == 255) {
+				this.startOpacity = 254;
+				this.opacity = 254;
 			}
 			Boolean fadeOutBool = style.getBooleanProperty("scrollbar-fadeout");
 			if (fadeOutBool != null) {
