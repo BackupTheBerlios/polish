@@ -47,7 +47,7 @@ import de.enough.polish.util.RgbImage;
  * <p>Items support following CSS attributes:
  * </p>
  * <ul>
- * 		<li><b>margin, margin-left, margin-right, margin-top, margin-bottom, margin-vertical, margin-horizontal</b>: margins between border and next item.</li>
+ * 		<li><b>margin, margin-left, margin-right, margin-top, margin-bottom</b>: margins between border and next item.</li>
  * 		<li><b>padding, padding-left, padding-right, padding-top, padding-bottom, padding-vertical, padding-horizontal</b>: paddings between border and content.</li>
  * 		<li><b>background</b>: The background of this item.</li>
  * 		<li><b>border</b>: The border of this item.</li>
