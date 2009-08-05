@@ -787,7 +787,7 @@ public class PolishTask extends ConditionalTask {
 				ArrayList extensions = new ArrayList( this.lifeCycleManagers.size() );
 				for (Iterator iterator = this.lifeCycleManagers.iterator(); iterator.hasNext(); ) {
 					ExtensionSetting setting = (ExtensionSetting) iterator.next();
-					if (setting.isActive( getProject() )) {
+					if (setting.isActive( this.environment )) {
 						extensions.add( this.extensionManager.getTemporaryExtension(ExtensionManager.TYPE_FINALIZER, setting,this.environment ) );
 					}
 				}
