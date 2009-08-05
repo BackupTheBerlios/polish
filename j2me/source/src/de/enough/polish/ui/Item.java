@@ -844,7 +844,6 @@ public abstract class Item implements UiElement, Animatable
 		protected Style landscapeStyle;
 		protected Style portraitStyle;
 	//#endif
-	private boolean isInRequestInit;
 
 
 
@@ -1954,31 +1953,20 @@ public abstract class Item implements UiElement, Animatable
 	 */
 	public void requestInit() {
 		
-		if (this.isInitialized && !this.isInRequestInit) {
-			this.isInRequestInit = true;
-			try {
-				setInitialized(false);
-//				
-//				int widthBefore = this.itemWidth;
-//				int heightBefore = this.itemHeight;
-//				init( this.availableWidth, this.availableWidth, this.availableHeight) ;
-//				if (widthBefore != this.itemWidth || heightBefore != this.itemHeight) {
-					if (this.parent != null) {
-						this.parent.requestInit();
-					} else {
-						Screen scr = getScreen();
-						if (scr != null) {
-							scr.requestInit();
-							scr.requestRepaint();
-						}
-					}
-//				} else 
-//				if (this.isShown) {
-//					repaint();
-//				}
-			} finally {
-				this.isInRequestInit = false;
-			}
+		if (this.isInitialized) {
+			setInitialized(false);
+			Item p = this.parent; 
+            while ( p != null) {
+                p.setInitialized( false );
+                p = p.parent;
+            }
+            Screen scr = getScreen();
+            if (scr != null) {
+                scr.requestInit();
+            }
+            if (this.isShown) {
+                repaint();
+            }
 		}
 	}
 	
