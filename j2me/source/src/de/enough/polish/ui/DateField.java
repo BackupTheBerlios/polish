@@ -984,20 +984,19 @@ implements
 			} else if ( this.date != null && gameAction == Canvas.RIGHT ) {
 				moveForward(true);
 			} else if (gameAction != Canvas.FIRE){
-				// force check before leaving this date=-field:
-				if (this.date != null) {
-					moveForward(true);
-					this.currentField = 0;
-					this.currentFieldStartIndex = 0;
-					this.editIndex = 0;
-				}
+				//#if polish.android1.5
+					this.androidLastInvalidCharacterTime = System.currentTimeMillis();
+				//#else
+					// force check before leaving this date=-field:
+					if (this.date != null) {
+						moveForward(true);
+						this.currentField = 0;
+						this.currentFieldStartIndex = 0;
+						this.editIndex = 0;
+					}
+				//#endif
 				return false;
 			} 
-			//#if polish.android1.5
-				else {
-					this.androidLastInvalidCharacterTime = System.currentTimeMillis();
-				}
-			//#endif
 
 		//#else
 			if ( (keyCode >= Canvas.KEY_NUM0 && keyCode <= Canvas.KEY_NUM9) || getScreen().isGameActionFire(keyCode, gameAction) ) 
