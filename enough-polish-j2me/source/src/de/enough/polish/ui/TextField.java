@@ -959,6 +959,7 @@ public class TextField extends StringItem
 	//#if polish.android1.5
 		private long androidFocusedTime;
 		private long androidLastPointerPressedTime;
+		private long androidLastInvalidCharacterTime;	
 	//#endif
 
 	//#if tmp.useDynamicCharset
@@ -3139,7 +3140,11 @@ public class TextField extends StringItem
 						return true;								
 					}
 				}
-				
+				//#if polish.android1.5
+					if (this.isNumeric) {
+						this.androidLastInvalidCharacterTime = System.currentTimeMillis();
+					}
+				//#endif
 			}
 			if ( (!this.isNumeric) //this.inputMode != MODE_NUMBERS 
 					&& !this.isUneditable
@@ -3241,7 +3246,17 @@ public class TextField extends StringItem
 					return this.predictiveAccess.keyClear(keyCode, gameAction);
 				}
 			//#endif			
-			if ( this.text != null && this.text.length() > 0) {			
+			if ( this.text != null && this.text.length() > 0) {
+				//#if polish.android1.5
+					long invalidCharInputTime = this.androidLastInvalidCharacterTime;
+					if (invalidCharInputTime != 0) {
+						this.androidLastInvalidCharacterTime = 0;
+						if (invalidCharInputTime - System.currentTimeMillis() <= 10 * 1000) {
+							// consume clear, when the last invalid input is less then 10 seconds ago:
+							return true;
+						}
+					}
+				//#endif
 				return deleteCurrentChar();
 			}
 		//#endif
@@ -3259,7 +3274,9 @@ public class TextField extends StringItem
 			//#endif
 			
 			//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
-				//#= if (keyCode == ${polish.key.ChangeNumericalAlphaInputModeKey} && !this.isNumeric && !this.isUneditable) {
+				int changeNumericalAlphaInputModeKey = 0;
+				//#= changeNumericalAlphaInputModeKey = ${polish.key.ChangeNumericalAlphaInputModeKey};
+				if (keyCode ==changeNumericalAlphaInputModeKey && !this.isNumeric && !this.isUneditable) {
 					if (this.inputMode == MODE_NUMBERS) {
 						this.inputMode = MODE_LOWERCASE;
 					} else {
@@ -3276,19 +3293,19 @@ public class TextField extends StringItem
 					} else {
 						this.nextCharUppercase = false;
 					}
-					//# return true;
-				//# }
+					return true;
+				}
 			//#endif
 			//#if polish.key.supportsAsciiKeyMap.condition:defined && polish.key.shift:defined
 				// there is a shift key responsible for switching the input mode which
 				// is only used when the device is opened up - example includes the Nokia/E70.
 				if (!this.screen.isKeyboardAccessible()) {
 			//#endif
-				//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
-					//#= if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable && (!(KEY_CHANGE_MODE == Canvas.KEY_NUM0 && this.inputMode == MODE_NUMBERS)) ) {
-				//#else
-				if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable) {
-				//#endif
+				if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable
+						//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
+							&& (!(KEY_CHANGE_MODE == Canvas.KEY_NUM0 && this.inputMode == MODE_NUMBERS)) 
+						//#endif
+				) {
 					if (this.nextCharUppercase && this.inputMode == MODE_LOWERCASE) {
 						this.nextCharUppercase = false;
 					} else {
