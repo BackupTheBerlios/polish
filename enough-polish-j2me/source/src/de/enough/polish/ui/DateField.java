@@ -169,6 +169,7 @@ implements
 	//#endif
 	//#if polish.android1.5
 		private long androidFocusedTime;
+		private long androidLastInvalidCharacterTime;	
 	//#endif
 		
 		
@@ -941,6 +942,25 @@ implements
 					foundNumber = 0;
 				}
 			//#endif
+				
+			int clearKey =
+				//#if polish.key.ClearKey:defined
+					//#= ${polish.key.ClearKey};
+				//#else
+					-8;
+				//#endif
+			//#if polish.android1.5
+				if (keyCode == clearKey) {
+					long invalidCharInputTime = this.androidLastInvalidCharacterTime;
+					if (invalidCharInputTime != 0) {
+						this.androidLastInvalidCharacterTime = 0;
+						if (invalidCharInputTime - System.currentTimeMillis() <= 10 * 1000) {
+							// consume clear, when the last invalid input is less then 10 seconds ago:
+							return true;
+						}
+					}
+				}
+			//#endif
 
 			// check for input of numbers 
 			if ( ( keyCode >= Canvas.KEY_NUM0 && keyCode <= Canvas.KEY_NUM9 )
@@ -959,11 +979,7 @@ implements
 				}
 				setText( newText );
 				moveForward(true);
-			//#ifdef polish.key.ClearKey:defined
-				//#= } else if ( this.date != null && (gameAction == Canvas.LEFT || keyCode == ${polish.key.ClearKey}) ) {
-			//#else
-				} else if ( this.date != null && gameAction == Canvas.LEFT ) {
-			//#endif
+			} else if ( this.date != null && (gameAction == Canvas.LEFT || keyCode == clearKey)) {
 				moveBackward(true);
 			} else if ( this.date != null && gameAction == Canvas.RIGHT ) {
 				moveForward(true);
@@ -976,7 +992,12 @@ implements
 					this.editIndex = 0;
 				}
 				return false;
-			}
+			} 
+			//#if polish.android1.5
+				else {
+					this.androidLastInvalidCharacterTime = System.currentTimeMillis();
+				}
+			//#endif
 
 		//#else
 			if ( (keyCode >= Canvas.KEY_NUM0 && keyCode <= Canvas.KEY_NUM9) || getScreen().isGameActionFire(keyCode, gameAction) ) 
