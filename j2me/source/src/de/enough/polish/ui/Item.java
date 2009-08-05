@@ -1958,10 +1958,11 @@ public abstract class Item implements UiElement, Animatable
 			this.isInRequestInit = true;
 			try {
 				setInitialized(false);
-				int widthBefore = this.itemWidth;
-				int heightBefore = this.itemHeight;
-				init( this.availableWidth, this.availableWidth, this.availableHeight) ;
-				if (widthBefore != this.itemWidth || heightBefore != this.itemHeight) {
+//				
+//				int widthBefore = this.itemWidth;
+//				int heightBefore = this.itemHeight;
+//				init( this.availableWidth, this.availableWidth, this.availableHeight) ;
+//				if (widthBefore != this.itemWidth || heightBefore != this.itemHeight) {
 					if (this.parent != null) {
 						this.parent.requestInit();
 					} else {
@@ -1971,9 +1972,10 @@ public abstract class Item implements UiElement, Animatable
 							scr.requestRepaint();
 						}
 					}
-				} else if (this.isShown) {
-					repaint();
-				}
+//				} else 
+//				if (this.isShown) {
+//					repaint();
+//				}
 			} finally {
 				this.isInRequestInit = false;
 			}
