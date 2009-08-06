@@ -1289,7 +1289,7 @@ public class TextField extends StringItem
 				}
 				synchronized (bbLock) {
                     if (this.isFocused && this.isShown) {
-                    	getScreen().notifyFocusSet(null);
+                    	Display.getInstance().notifyFocusSet(null);
                     }
                     if (text != null) {
                         this.editField.setText(text);
@@ -1749,7 +1749,7 @@ public class TextField extends StringItem
 						manager.delete(this._bbField);
 					}
 					if (this.isFocused) {
-						getScreen().notifyFocusSet(this);
+						Display.getInstance().notifyFocusSet(this);
 					}					
 				}
 			}
@@ -1909,7 +1909,7 @@ public class TextField extends StringItem
 					setConstraints(this.constraints);
 				}
 				if (this.isFocused) {
-					getScreen().notifyFocusSet(this);
+					Display.getInstance().notifyFocusSet(this);
 				}
 			}
 			else

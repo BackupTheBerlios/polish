@@ -235,21 +235,11 @@ implements ItemStateListener //, CommandListener
 			this.filterTextField.focus( this.filterTextField.getFocusedStyle(), 0 );
 		}
 		//#if polish.blackberry
-			notifyFocusSet( this.filterTextField );
+			Display.getInstance().notifyFocusSet(this.filterTextField);
 		//#endif
 		itemStateChanged( this.filterTextField );
 		super.showNotify();
 	}
-	
-	//#if polish.blackberry
-	protected void notifyFocusSet( Item item ) {
-		if (isMenuOpened()) {
-			Display.getInstance().notifyFocusSet(item);
-		} else {
-			Display.getInstance().notifyFocusSet(this.filterTextField);
-		}
-	}
-	//#endif
 
 	//#if !polish.blackberry
     private boolean forwardEventToNativeField(Screen screen, int keyCode) {

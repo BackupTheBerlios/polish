@@ -1249,7 +1249,7 @@ implements UiElement, Animatable
 			}
 			//#if polish.blackberry
 				else {
-					notifyFocusSet( getCurrentItem() );
+					Display.getInstance().notifyFocusSet(getCurrentItem());
 				}
 			//#endif
 			//#if polish.css.repaint-previous-screen
@@ -5674,19 +5674,6 @@ implements UiElement, Animatable
 	public boolean isSoftKey(int keyCode, int gameAction)
 	{
 		return Display.getInstance().isSoftKey(keyCode, gameAction);
-	}
-
-	/**
-	 * Notifies this screen about the new item that is focused on BlackBerry platforms.
-	 * This is only called for BlackBerry platforms - check for the preprocesing
-	 * symbol polish.blackberry.
-	 * 
-	 * @param item the item that has been focused
-	 */
-	protected void notifyFocusSet( Item item ) {
-		//#if polish.blackberry
-			Display.getInstance().notifyFocusSet(item);
-		//#endif
 	}
 	
 	/**

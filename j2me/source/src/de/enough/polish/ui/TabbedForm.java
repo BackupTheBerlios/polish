@@ -436,7 +436,7 @@ public class TabbedForm extends Form {
 				System.out.println("Focusing tab [" + tabIndex + "].");
 				tabContainer.focus( tabContainer.style, 0 );
 		        //#if polish.blackberry
-					notifyFocusSet( tabContainer );
+					Display.getInstance().notifyFocusSet(tabContainer);
 			    //#endif
 			}
 		tabContainer.background = null;

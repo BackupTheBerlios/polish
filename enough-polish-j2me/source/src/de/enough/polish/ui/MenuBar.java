@@ -1143,7 +1143,7 @@ public class MenuBar extends Item {
 			this.isInitialized = (open == this.isOpened);
 			this.isOpened = open;
 			//#if polish.blackberry
-				this.screen.notifyFocusSet( this.screen.getCurrentItem() );
+				Display.getInstance().notifyFocusSet(this.screen.getCurrentItem());
 			//#endif
 		} else if (open && !this.isOpened) {
 			if (this.commandsContainer.size() == 0) {
@@ -1155,7 +1155,7 @@ public class MenuBar extends Item {
 			this.isInitialized = (open == this.isOpened);
 			this.isOpened = open;
 			//#if polish.blackberry
-				this.screen.notifyFocusSet( null );
+				Display.getInstance().notifyFocusSet(null);
 			//#endif
 			//#if polish.android1.5
 				MIDlet.midletInstance.hideSoftKeyboard();
