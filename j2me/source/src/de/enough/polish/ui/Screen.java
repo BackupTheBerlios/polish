@@ -4272,6 +4272,7 @@ implements UiElement, Animatable
 			this.menuBarHeight = height;
 			this.screenHeight = this.fullScreenHeight - height;
 			this.menuBar.relativeY = this.screenHeight;
+			this.isInitialized = false;
 		}
 	}
 	//#endif
