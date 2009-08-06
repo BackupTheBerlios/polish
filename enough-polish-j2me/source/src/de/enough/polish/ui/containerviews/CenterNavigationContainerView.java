@@ -38,11 +38,15 @@ public class CenterNavigationContainerView extends ContainerView {
 			//#style rightArrow?
 			rightItem = new ImageItem(null,Image.createImage("/arrow_right.png"),Item.LAYOUT_RIGHT,null);
 		} catch (IOException e) {
-			e.printStackTrace();
+			//#debug error
+			System.out.println("Unable to load arrow resource " + e);
 		}
 	}
 	
 	private transient int[][] inactiveIcons = null;
+	private int itemMaxWidth;
+	private int leftItemWidth;
+	private int rightItemWidth;
 	
 	/**
 	 * Creates a new view
@@ -71,16 +75,20 @@ public class CenterNavigationContainerView extends ContainerView {
 	protected void initContent(Item parentItm, int firstLineWidth,
 			int availWidth, int availHeight) 
 	{
+		this.parentContainer = (Container) parentItm;
 		int height = 0;
 		Item[] items = this.parentContainer.getItems();
 		this.inactiveIcons = new int[items.length][];
-		
+		int maxWidth = 0;
 		for (int i = 0; i < items.length; i++) {
 			Item item = items[i];
 			
 			int itemHeight = item.getItemHeight(availWidth, availWidth, availHeight);
 			int itemWidth = item.itemWidth;
-			
+			if (itemWidth > maxWidth) {
+				maxWidth = itemWidth;
+			}
+			item.relativeX = (availWidth - maxWidth) / 2;
 			if (itemWidth == 0)  {
 				this.inactiveIcons[i] = new int[0];
 				continue;
@@ -106,7 +114,12 @@ public class CenterNavigationContainerView extends ContainerView {
 			convertToGrayScale(rgbData,this.grayOffset);
 			this.inactiveIcons[i] = rgbData;
 		}
-		
+		this.leftItemWidth = leftItem.getItemWidth(availWidth, availWidth, availHeight);
+		this.rightItemWidth = rightItem.getItemWidth(availWidth, availWidth, availHeight);
+		rightItem.relativeX = availWidth - this.rightItemWidth;
+		rightItem.setParent( parentItm );
+		leftItem.setParent( parentItm );
+		this.itemMaxWidth = maxWidth;
 		this.contentHeight = height;
 		this.contentWidth = availWidth;
 	}
@@ -153,16 +166,13 @@ public class CenterNavigationContainerView extends ContainerView {
 		int originalRightBorder = rightBorder;
 		
 		int width = rightBorder - leftBorder;
-		int availHeight = this.availableHeight;
-		int leftWidth = leftItem.getItemWidth(width, width, availHeight);
-		int rightWidth = rightItem.getItemWidth(width, width, availHeight);
 		
-		leftBorder += leftWidth;
-		rightBorder -= rightWidth;
+		leftBorder += this.leftItemWidth;
+		rightBorder -= this.rightItemWidth;
 		
 		int center = width/2;
 		
-		int itemWidth = myItems[0].getItemWidth(width, width, availHeight);
+		int itemWidth = this.itemMaxWidth;
 		
 		int offset = (center - (this.focusedIndex * itemWidth)) - (itemWidth / 2);  
 		
@@ -170,18 +180,18 @@ public class CenterNavigationContainerView extends ContainerView {
 		{
 			Item item = myItems[i];
 			
-			int xOffset = x + offset;
+			int myXOffset = x + offset;
 			
-			if(xOffset > leftBorder && (xOffset + itemWidth) < rightBorder)
+			if(myXOffset > leftBorder && (myXOffset + itemWidth) < rightBorder)
 			{
 				if(item == this.focusedItem)
 				{
-					item.paint(xOffset, y, leftBorder, rightBorder, g);
+					item.paint(myXOffset, y, leftBorder, rightBorder, g);
 				}
 				else
 				{
 					int[] rgbData = this.inactiveIcons[i];
-					DrawUtil.drawRgb( rgbData, xOffset, y, item.itemWidth, item.itemHeight, true, g );
+					DrawUtil.drawRgb( rgbData, myXOffset, y, item.itemWidth, item.itemHeight, true, g );
 				}
 			}
 			
@@ -200,7 +210,8 @@ public class CenterNavigationContainerView extends ContainerView {
 			
 			if(this.focusedIndex != (myItems.length - 1))
 			{
-				rightItem.paint(rightBorder - rightWidth, y, leftBorder, rightBorder, g);	
+				x = rightBorder - this.rightItemWidth;
+				rightItem.paint(x, y, x, rightBorder, g);	
 			}
 		}
 	}
@@ -213,9 +224,72 @@ public class CenterNavigationContainerView extends ContainerView {
 		//#if polish.midp1
 			//# return false;
 		//#else
-			return super.isValid(parent, style);
+			return parent instanceof Container;
 		//#endif
-	}	
+	}
+
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.ItemView#handlePointerPressed(int, int)
+	 */
+	public boolean handlePointerPressed(int x, int y) {
+		if (y < 0 || y > this.contentHeight) {
+			return false;
+		}
+		if (x < this.leftItemWidth) {
+			UiAccess.notifyItemPressedStart(leftItem);
+			return true;
+		}
+		if (x > this.contentWidth - this.rightItemWidth) {
+			UiAccess.notifyItemPressedStart(rightItem);
+			return true;
+		}
+		return super.handlePointerPressed(x, y);
+	}
+
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.ItemView#handlePointerReleased(int, int)
+	 */
+	public boolean handlePointerReleased(int x, int y) {
+		if (y < 0 || y > this.contentHeight) {
+			return false;
+		}
+		if (x < this.leftItemWidth) {
+			UiAccess.notifyItemPressedEnd(leftItem);
+			int nextIndex = this.focusedIndex - 1;
+			if (nextIndex >= 0) {
+				this.parentContainer.focusChild( nextIndex );
+			}
+			return true;
+		}
+		if (x > this.contentWidth - this.rightItemWidth) {
+			UiAccess.notifyItemPressedEnd(rightItem);
+			int nextIndex = this.focusedIndex + 1;
+			if (nextIndex < this.parentContainer.size()) {
+				this.parentContainer.focusChild( nextIndex );
+			}
+			return true;
+		}
+		// another item was probably selected:
+		int focusedX = (this.contentWidth - this.itemMaxWidth) / 2;
+		int relativeX = x - focusedX;
+		int relativeIndex = relativeX / this.itemMaxWidth;
+		int nextIndex = this.focusedIndex + relativeIndex;
+		if (relativeX < 0) {
+			nextIndex--;
+		}
+		if (nextIndex >= 0 && nextIndex < this.parentContainer.size()) {
+			this.parentContainer.focusChild( nextIndex );
+			return true;
+		}
+		return super.handlePointerReleased(x, y);
+	}
+
+	
+	
 	
 	
 }
