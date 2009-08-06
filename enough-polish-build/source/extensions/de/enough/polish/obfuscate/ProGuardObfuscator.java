@@ -138,9 +138,10 @@ implements OutputFilter
 			addKeepClasses(preserve, params, keepClassesByName);			
 		}
 		// add settings:
-		if (!this.doOptimize) {
+		// removed as proguard 4.4 optimizes from itself
+		/*if (!this.doOptimize) {
 			params.put( "-dontoptimize", "" );
-		}
+		}*/
 		if (this.environment.hasSymbol("polish.build.obfuscator.ignorewarnings")) {
 			params.put( "-ignorewarnings", "" );
 		}
@@ -383,18 +384,16 @@ implements OutputFilter
     }
      */
     
-	/**
+    /**
 	 * Enables or disables the optimization step of ProGuard.
 	 * 
 	 * @param optimize true when the optimization should be enabled. By default the
 	 *        optimization is enabled.
 	 */
-    public void setOptimize( boolean optimize ) {
+    /*public void setOptimize( boolean optimize ) {
     	this.doOptimize = optimize;
-    }
-
-
-
+    }*/
+    
 	/* (non-Javadoc)
 	 * @see de.enough.polish.util.OutputFilter#filter(java.lang.String, java.io.PrintStream)
 	 */
