@@ -3435,7 +3435,6 @@ public abstract class Item implements UiElement, Animatable
 		
 	}
 	
-	//#ifdef polish.hasPointerEvents
 	/**
 	 * Handles the event when a pointer has been pressed at the specified position.
 	 * The default method discards this event when relX/relY is outside of the item's area.
@@ -3455,14 +3454,14 @@ public abstract class Item implements UiElement, Animatable
 	 * @see #contentY for calculating the vertical position relative to the content (relY - contentY)
 	 */
 	protected boolean handlePointerPressed( int relX, int relY ) {
-		if ( isInItemArea(relX, relY)) {
-			return handleKeyPressed( 0, Canvas.FIRE );
-		}
+		//#ifdef polish.hasPointerEvents
+			if ( isInItemArea(relX, relY)) {
+				return handleKeyPressed( 0, Canvas.FIRE );
+			}
+		//#endif
 		return false;
 	}
-	//#endif
 	
-	//#ifdef polish.hasPointerEvents
 	/**
 	 * Handles the event when a pointer has been released at the specified position.
 	 * The default method discards this event when relX/relY is outside of the item's area.
@@ -3482,19 +3481,19 @@ public abstract class Item implements UiElement, Animatable
 	 * @see #contentY for calculating the vertical position relative to the content (relY - contentY)
 	 */
 	protected boolean handlePointerReleased( int relX, int relY ) {
-		//#debug
-		System.out.println("handlePointerReleased " + relX + ", " + relY + " for item " + this + " isPressed=" + this.isPressed);
-		if ( isInItemArea(relX, relY)) {
-			return handleKeyReleased( 0, Canvas.FIRE );
-		} else if (this.isPressed) {
-			notifyItemPressedEnd();
-			return true;
-		}
+		//#ifdef polish.hasPointerEvents
+			//#debug
+			System.out.println("handlePointerReleased " + relX + ", " + relY + " for item " + this + " isPressed=" + this.isPressed);
+			if ( isInItemArea(relX, relY)) {
+				return handleKeyReleased( 0, Canvas.FIRE );
+			} else if (this.isPressed) {
+				notifyItemPressedEnd();
+				return true;
+			}
+		//#endif
 		return false;
 	}
-	//#endif
 	
-	//#ifdef polish.hasPointerEvents
 	/**
 	 * Handles the dragging/movement of a pointer.
 	 * This method should be overwritten only when the polish.hasPointerEvents 
@@ -3507,14 +3506,15 @@ public abstract class Item implements UiElement, Animatable
 	 */
 	protected boolean handlePointerDragged(int relX, int relY)
 	{
-		//#ifdef polish.css.view-type
-			if (this.view != null && this.view.handlePointerDragged(relX, relY)) {
-				return true;
-			}
+		//#ifdef polish.hasPointerEvents
+			//#ifdef polish.css.view-type
+				if (this.view != null && this.view.handlePointerDragged(relX, relY)) {
+					return true;
+				}
+			//#endif
 		//#endif
 		return false;
 	}
-	//#endif
 
 
 	/**

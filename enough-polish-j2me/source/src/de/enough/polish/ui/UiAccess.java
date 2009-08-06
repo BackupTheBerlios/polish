@@ -1244,12 +1244,12 @@ public final class UiAccess {
 
 	//#if polish.usePolishGui
 	/**
-	 * Forwards a key event to the specified item.
+	 * Forwards a pointer event to the specified item.
 	 * The handlePointerPressed call is protected, this is an public accessor for any item.
 	 * 
 	 * @param item the item 
-	 * @param x the x position of the pointer pressing relative to this item's left position
-	 * @param y the y position of the pointer pressing relative to this item's top position
+	 * @param x the x position of the pointer position relative to this item's left position
+	 * @param y the y position of the pointer position relative to this item's top position
 	 * @return true when the event has been consumed by the item
 	 */
 	public static boolean handlePointerPressed( Item item, int x, int y ) {
@@ -1263,15 +1263,50 @@ public final class UiAccess {
 
 	//#if polish.midp
 	/**
-	 * Forwards a key event to the specified item.
+	 * Forwards a pointer event to the specified item.
 	 * The handlePointerPressed call is protected, this is an public accessor for any item.
 	 * 
 	 * @param item the item 
-	 * @param x the x position of the pointer pressing relative to this item's left position
-	 * @param y the y position of the pointer pressing relative to this item's top position
+	 * @param x the x position of the pointer position relative to this item's left position
+	 * @param y the y position of the pointer position relative to this item's top position
 	 * @return true when the event has been consumed by the item
 	 */
 	public static boolean handlePointerPressed( javax.microedition.lcdui.Item item, int x, int y ) {
+		return false;
+	}
+	//#endif
+	
+
+	//#if polish.usePolishGui
+	/**
+	 * Forwards a pointer event to the specified item.
+	 * The handlePointerDragged call is protected, this is an public accessor for any item.
+	 * 
+	 * @param item the item 
+	 * @param x the x position of the pointer position relative to this item's left position
+	 * @param y the y position of the pointer position relative to this item's top position
+	 * @return true when the event has been consumed by the item
+	 */
+	public static boolean handlePointerDragged( Item item, int x, int y ) {
+		//#if polish.hasPointerEvents
+			return item.handlePointerDragged(x, y);
+		//#else
+			//# return false;
+		//#endif
+	}
+	//#endif
+
+	//#if polish.midp
+	/**
+	 * Forwards a pointer event to the specified item.
+	 * The handlePointerDragged call is protected, this is an public accessor for any item.
+	 * 
+	 * @param item the item 
+	 * @param x the x position of the pointer position relative to this item's left position
+	 * @param y the y position of the pointer position relative to this item's top position
+	 * @return true when the event has been consumed by the item
+	 */
+	public static boolean handlePointerDragged( javax.microedition.lcdui.Item item, int x, int y ) {
 		return false;
 	}
 	//#endif
@@ -1282,8 +1317,8 @@ public final class UiAccess {
 	 * The handlePointerReleased call is protected, this is an public accessor for any item.
 	 * 
 	 * @param item the item 
-	 * @param x the x position of the pointer pressing relative to this item's left position
-	 * @param y the y position of the pointer pressing relative to this item's top position
+	 * @param x the x position of the pointer position relative to this item's left position
+	 * @param y the y position of the pointer position relative to this item's top position
 	 * @return true when the event has been consumed by the item
 	 */
 	public static boolean handlePointerReleased( Item item, int x, int y ) {
@@ -1301,8 +1336,8 @@ public final class UiAccess {
 	 * The handlePointerReleased call is protected, this is an public accessor for any item.
 	 * 
 	 * @param item the item 
-	 * @param x the x position of the pointer pressing relative to this item's left position
-	 * @param y the y position of the pointer pressing relative to this item's top position
+	 * @param x the x position of the pointer position relative to this item's left position
+	 * @param y the y position of the pointer position relative to this item's top position
 	 * @return true when the event has been consumed by the item
 	 */
 	public static boolean handlePointerReleased( javax.microedition.lcdui.Item item, int x, int y ) {
@@ -4859,4 +4894,48 @@ public final class UiAccess {
 		item.init(firstLineWidth, availWidth, availHeight);
 	}
 	//#endif
+
+	//#if polish.usePolishGui
+	/**
+	 * Makes the notifyItemPressedStart method publicly available.
+	 * @param item the item which is pressed
+	 */
+	public static void notifyItemPressedStart(Item item) {
+		item.notifyItemPressedStart();
+	}
+	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Makes the notifyItemPressedStart method publicly available.
+	 * @param item the item which is pressed
+	 */
+	public static void notifyItemPressedStart(javax.microedition.lcdui.Item item) {
+		// ignore
+	}
+	//#endif
+	
+	
+
+	//#if polish.usePolishGui
+	/**
+	 * Makes the notifyItemPressedEnd method publicly available.
+	 * @param item the item which is not pressed anymore
+	 */
+	public static void notifyItemPressedEnd(Item item) {
+		item.notifyItemPressedEnd();
+	}
+	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Makes the notifyItemPressedEnd method publicly available.
+	 * @param item the item which is not pressed anymore
+	 */
+	public static void notifyItemPressedEnd(javax.microedition.lcdui.Item item) {
+		// ignore
+	}
+	//#endif
+
+
 }

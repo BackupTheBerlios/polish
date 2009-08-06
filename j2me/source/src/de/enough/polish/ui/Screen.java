@@ -4731,7 +4731,6 @@ implements UiElement, Animatable
 	}
 	//#endif
 	
-	//#ifdef polish.hasPointerEvents
 	/**
 	 * Handles the pressing of a pointer.
 	 * This method should be overwritten only when the polish.hasPointerEvents 
@@ -4746,14 +4745,15 @@ implements UiElement, Animatable
 	 * @return true when the pressing of the pointer was actually handled by this item.
 	 */
 	protected boolean handlePointerPressed( int x, int y ) {
-		if (this.container == null) {
-			return false;
-		}
-		return this.container.handlePointerPressed(x - this.container.relativeX, y - this.container.relativeY );
+		boolean handled = false;
+		//#ifdef polish.hasPointerEvents
+			if (this.container != null) {
+				handled = this.container.handlePointerPressed(x - this.container.relativeX, y - this.container.relativeY );
+			}
+		//#endif
+		return handled;
 	}
-	//#endif
 	
-	//#ifdef polish.hasPointerEvents
 	/**
 	 * Handles the release of a pointer.
 	 * This method should be overwritten only when the polish.hasPointerEvents 
@@ -4768,14 +4768,15 @@ implements UiElement, Animatable
 	 * @return true when releasing the pointer was actually handled by this item.
 	 */
 	protected boolean handlePointerReleased( int x, int y ) {
-		if (this.container == null) {
-			return false;
-		}
-		return this.container.handlePointerReleased(x - this.container.relativeX, y - this.container.relativeY );
+		boolean handled = false;
+		//#ifdef polish.hasPointerEvents
+			if (this.container != null) {
+				handled = this.container.handlePointerReleased(x - this.container.relativeX, y - this.container.relativeY );
+			}
+		//#endif
+		return handled;
 	}
-	//#endif
 
-	//#ifdef polish.hasPointerEvents
 	/**
 	 * Handles the dragging/movement of a pointer.
 	 * This method should be overwritten only when the polish.hasPointerEvents 
@@ -4791,12 +4792,14 @@ implements UiElement, Animatable
 	 */
 	protected boolean handlePointerDragged(int x, int y)
 	{
-		if (this.container == null) {
-			return false;
-		}
-		return this.container.handlePointerDragged( x - this.container.relativeX, y - this.container.relativeY );
+		boolean handled = false;
+		//#ifdef polish.hasPointerEvents
+			if (this.container != null) {
+				handled = this.container.handlePointerDragged(x - this.container.relativeX, y - this.container.relativeY );
+			}
+		//#endif
+		return handled;
 	}
-	//#endif
 
 
 	
@@ -5674,6 +5677,19 @@ implements UiElement, Animatable
 	public boolean isSoftKey(int keyCode, int gameAction)
 	{
 		return Display.getInstance().isSoftKey(keyCode, gameAction);
+	}
+
+	/**
+	 * Notifies this screen about the new item that is focused on BlackBerry platforms.
+	 * This is only called for BlackBerry platforms - check for the preprocesing
+	 * symbol polish.blackberry.
+	 * 
+	 * @param item the item that has been focused
+	 */
+	protected void notifyFocusSet( Item item ) {
+		//#if polish.blackberry
+			Display.getInstance().notifyFocusSet(item);
+		//#endif
 	}
 	
 	/**

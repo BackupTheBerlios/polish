@@ -377,7 +377,6 @@ public abstract class ItemView implements Serializable{
 		return false;
 	}
 
-	//#ifdef polish.hasPointerEvents
 	/**
 	 * Handles pointer pressed events.
 	 * This is an optional feature that doesn't need to be implemented by subclasses, since the parent container already forwards the event to the appropriate item (when this method returns false).
@@ -395,9 +394,7 @@ public abstract class ItemView implements Serializable{
 	public boolean handlePointerPressed(int x, int y) {
 		return false;
 	}
-	//#endif
 	
-	//#ifdef polish.hasPointerEvents
 	/**
 	 * Handles the event when a pointer has been released at the specified position.
 	 * The default implementation just returns false.
@@ -413,9 +410,7 @@ public abstract class ItemView implements Serializable{
 	public boolean handlePointerReleased( int x, int y ) {
 		return false;
 	}
-	//#endif
 	
-	//#ifdef polish.hasPointerEvents
 	/**
 	 * Handles the event when a pointer has been dragged to the specified position.
 	 * The default implementation just returns false.
@@ -432,7 +427,6 @@ public abstract class ItemView implements Serializable{
 	{
 		return false;
 	}
-	//#endif
 	
 	/**
 	 * Implementation that are valid only for specific item classes can override this method so that they cannot be accidently attached to unsupported classes.

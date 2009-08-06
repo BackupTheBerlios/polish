@@ -424,7 +424,8 @@ public class StringItem extends Item
 				return;
 			}
 		//#endif
-		if (this.text != null) {
+		String[] lines = this.textLines;
+		if (lines != null) {
 			//#if polish.css.text-wrap
 				int clipX = 0;
 				int clipY = 0;
@@ -470,9 +471,9 @@ public class StringItem extends Item
 						lo = this.layout & ~Item.LAYOUT_VCENTER;
 					//#endif
 					//#if polish.Bugs.needsBottomOrientiationForStringDrawing
-						this.textEffect.drawStrings( this, this.textLines, this.textColor, x, y, leftBorder, rightBorder, lineHeight, this.contentWidth, lo	 | Item.LAYOUT_BOTTOM, g );
+						this.textEffect.drawStrings( this, lines, this.textColor, x, y, leftBorder, rightBorder, lineHeight, this.contentWidth, lo	 | Item.LAYOUT_BOTTOM, g );
 					//#else
-						this.textEffect.drawStrings( this, this.textLines, this.textColor, x, y, leftBorder, rightBorder, lineHeight, this.contentWidth, lo | Item.LAYOUT_TOP, g );
+						this.textEffect.drawStrings( this, lines, this.textColor, x, y, leftBorder, rightBorder, lineHeight, this.contentWidth, lo | Item.LAYOUT_TOP, g );
 					//#endif
 				} else {
 			//#endif
@@ -522,8 +523,8 @@ public class StringItem extends Item
 					//#else
 						orientation = Graphics.TOP | orientation;
 					//#endif
-					for (int i = 0; i < this.textLines.length; i++) {
-						String line = this.textLines[i];
+					for (int i = 0; i < lines.length; i++) {
+						String line = lines[i];
 						g.drawString( line, lineX, lineY, orientation );
 						lineY += lineHeight;
 					}

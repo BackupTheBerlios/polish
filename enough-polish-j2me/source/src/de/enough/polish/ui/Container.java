@@ -869,7 +869,7 @@ public class Container extends Item {
 		}
 		
 		//#if polish.blackberry
-		Display.getInstance().notifyFocusSet(item);
+			Display.getInstance().notifyFocusSet(item);
 		//#endif
 
 		// indicating if either the former focusedItem or the new focusedItem has changed it's size or it's layout by losing/gaining the focus, 
@@ -2929,7 +2929,7 @@ public class Container extends Item {
 				return true;
 			} else if ( item.isInItemArea(relX - item.relativeX, relY - item.relativeY )) {
 				//#debug
-				System.out.println("pointerReleased not handled by focused item but within that item's area");
+				System.out.println("pointerReleased not handled by focused item but within that item's area. Item=" + item + ", container=" + this);
 				return this.defaultCommand != null && super.handlePointerReleased(origRelX, origRelY);
 			}
 		}
