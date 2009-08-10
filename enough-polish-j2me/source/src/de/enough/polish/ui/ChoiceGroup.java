@@ -1248,6 +1248,23 @@ implements Choice
 		}
 	}
 	//#endif
+	
+	//#ifdef polish.usePopupItem
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Container#updateInternalPosition(Item)
+	 */
+	protected void updateInternalPosition(Item item) {
+		if (this.isPopup && this.isPopupClosed) {
+			if (this.parent instanceof Container) {
+				this.internalX = NO_POSITION_SET;
+				((Container)this.parent).updateInternalPosition(this);
+			}
+		} else {
+			super.updateInternalPosition( item );
+		}
+	}
+	//#endif
+
 
 	//#ifdef polish.useDynamicStyles
 	/* (non-Javadoc)
@@ -1270,7 +1287,6 @@ implements Choice
 			//#debug
 			System.out.println("closing popup and adjusting scroll y offset to " + this.popupParentOpenY);
 			Container container = (Container)this.parent;
-			container.updateInternalPosition( this );
 			container.setScrollYOffset( this.popupParentOpenY, false );
 		}
 		setInitialized(false);

@@ -1366,8 +1366,8 @@ public class Container extends Item {
 				}
 			} else {
 				this.appearanceMode = INTERACTIVE;
-				if (this.focusedItem != null) {
-					Item item = this.focusedItem;
+				Item item = this.focusedItem;
+				if (item != null) {
 					updateInternalPosition(item);
 					if (isLayoutShrink) {
 						//System.out.println("container has shrinking layout and contains focused item " + item);
@@ -1419,6 +1419,10 @@ public class Container extends Item {
 		if (item == null) {
 			return;
 		}
+		int prevX = this.internalX;
+		int prevY = this.internalY;
+		int prevWidth = this.internalWidth;
+		int prevHeight = this.internalHeight;
 		if (item.internalX != NO_POSITION_SET) { // && (item.itemHeight > getScrollHeight()  || (item.contentY + item.internalY + item.internalHeight > item.itemHeight) ) ) {
 			// adjust internal settings for root container:
 			this.internalX = item.relativeX + item.contentX + item.internalX;
@@ -1430,7 +1434,7 @@ public class Container extends Item {
 			this.internalWidth = item.internalWidth;
 			this.internalHeight = item.internalHeight;
 			//#debug
-			System.out.println(this + ": Adjusted internal area by internal area of " + item + " to x=" + this.internalX + ", y=" + this.internalY + ", w=" + this.internalWidth + ", h=" + this.internalHeight );						
+			System.out.println(this + ": Adjusted internal area by internal area of " + item + " to x=" + this.internalX + ", y=" + this.internalY + ", w=" + this.internalWidth + ", h=" + this.internalHeight );
 		} else {
 			this.internalX = item.relativeX;
 			if (this.enableScrolling) {
@@ -1443,7 +1447,10 @@ public class Container extends Item {
 			//#debug
 			System.out.println(this + ": Adjusted internal area by full area of " + item + " to x=" + this.internalX + ", y=" + this.internalY + ", w=" + this.internalWidth + ", h=" + this.internalHeight );						
 		}
-		if (this.isFocused && this.parent instanceof Container) {
+		if (this.isFocused 
+				&& this.parent instanceof Container
+				&& (prevY != this.internalY || prevX != this.internalX || prevWidth != this.itemWidth || prevHeight != this.internalHeight)
+		) {
 			((Container)this.parent).updateInternalPosition( this );
 		}
 	}
