@@ -1170,8 +1170,11 @@ implements Runnable, ResourceLoader
 			}
 			HistoryEntry entry = this.scheduledHistoryEntry;
 			if (entry != null) {
-				focusChild( entry.getFocusedIndex() );
-				setScrollYOffset( entry.getScrollOffset(), false );
+				int index = entry.getFocusedIndex();
+				if (index < size()) {
+					focusChild( index );
+					setScrollYOffset( entry.getScrollOffset(), false );
+				}
 				this.scheduledHistoryEntry = null;
 			}
 
@@ -1421,7 +1424,7 @@ implements Runnable, ResourceLoader
 		System.out.println("Browser: going to [" + url + "]" );
 		if (this.currentDocumentBase != null)
 		{
-			this.history.push(this.currentDocumentBase);
+			this.history.push(new HistoryEntry( this.currentDocumentBase, getFocusedIndex(), getScrollYOffset() ));
 			if (this.cmdBack != null && this.history.size() == 1 && getScreen() != null) {
 				getScreen().addCommand(this.cmdBack);
 			}
