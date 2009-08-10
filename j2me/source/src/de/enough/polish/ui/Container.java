@@ -262,9 +262,8 @@ public class Container extends Item {
 			item.internalX = Item.NO_POSITION_SET;
 			item.parent = this;
 			this.itemsList.add( item );
-			setInitialized(false);
-			if (this.parent != null) {
-				this.parent.setInitialized(false);
+			if (isInitialized()) {
+				requestInit();
 			}
 		}
 		if (this.isShown) {
