@@ -2322,12 +2322,6 @@ public abstract class Item implements UiElement, Animatable
 	 * @param g the Graphics on which this item should be painted.
 	 */
 	public void paint( int x, int y, int leftBorder, int rightBorder, Graphics g ) {
-		if(DebugHelper.breakOn(this, "ist leer", null))
-		{
-			//DebugHelper.trace();
-			System.out.println("avail : " + leftBorder + "/" + rightBorder);
-		}
-		
 		//#if tmp.invisible
 			if (this.isInvisible) {
 				return;
