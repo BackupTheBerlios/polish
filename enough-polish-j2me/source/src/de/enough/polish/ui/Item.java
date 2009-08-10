@@ -2330,7 +2330,9 @@ public abstract class Item implements UiElement, Animatable
 
 		// initialise this item if necessary:
 		if (!this.isInitialized) {
-			setAvailableDimensions(leftBorder, rightBorder);
+			if (this.availableWidth == 0) {
+				setAvailableDimensions(leftBorder, rightBorder);
+			}
 			
 			int previousItemWidth = this.itemWidth;
 			int previousItemHeight = this.itemHeight;
