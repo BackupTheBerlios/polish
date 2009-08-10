@@ -2322,6 +2322,12 @@ public abstract class Item implements UiElement, Animatable
 	 * @param g the Graphics on which this item should be painted.
 	 */
 	public void paint( int x, int y, int leftBorder, int rightBorder, Graphics g ) {
+		if(DebugHelper.breakOn(this, "ist leer", null))
+		{
+			//DebugHelper.trace();
+			System.out.println("avail : " + leftBorder + "/" + rightBorder);
+		}
+		
 		//#if tmp.invisible
 			if (this.isInvisible) {
 				return;
@@ -2330,9 +2336,7 @@ public abstract class Item implements UiElement, Animatable
 
 		// initialise this item if necessary:
 		if (!this.isInitialized) {
-			if (this.availableWidth == 0) {
-				setAvailableDimensions(leftBorder, rightBorder);
-			}
+			setAvailableDimensions(leftBorder, rightBorder);
 			
 			int previousItemWidth = this.itemWidth;
 			int previousItemHeight = this.itemHeight;
@@ -4252,7 +4256,6 @@ public abstract class Item implements UiElement, Animatable
 	 * @param visible true when this item should become visible.
 	 */
 	public void setVisible( boolean visible ) {
-		System.out.println("set visible");
 		//#if tmp.invisible
 		boolean invisible = !visible;
 		if (invisible == this.isInvisible) {
