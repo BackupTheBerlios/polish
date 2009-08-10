@@ -25,6 +25,7 @@
 package de.enough.polish.ui;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.microedition.lcdui.Canvas;
 
@@ -978,6 +979,18 @@ public class TextField extends StringItem
 	/**
 	 * Reads the .properties files for lowercase
 	 * and uppercase letters and maps the values of the predefined keys
+	 * to the character maps. Uses UTF-8 as encoding.
+	 * @param lowercaseUrl the properties file for lower case
+	 * @param uppercaseUrl the properties file for upper case
+	 */
+	public static void loadCharacterSets(InputStream lowercaseStream,InputStream uppercaseStream)
+	{
+		loadCharacterSets(lowercaseStream, uppercaseStream,"UTF8");
+	}
+	
+	/**
+	 * Reads the .properties files for lowercase
+	 * and uppercase letters and maps the values of the predefined keys
 	 * to the character maps. 
 	 * @param lowercaseUrl the properties file for lower case
 	 * @param uppercaseUrl the properties file for upper case
@@ -987,6 +1000,30 @@ public class TextField extends StringItem
 	{
 		loadCharacterSets(CHARACTERS,lowercaseUrl, encoding);
 		loadCharacterSets(CHARACTERS_UPPER,uppercaseUrl, encoding);
+		
+		try
+		{
+			validateSets();
+			usesDynamicCharset = true;
+		}catch(IllegalArgumentException e)
+		{
+			//#debug error
+			System.out.println("unable to load dynamic character sets : " + e.getMessage());
+		}
+	}
+	
+	/**
+	 * Reads the .properties files for lowercase
+	 * and uppercase letters and maps the values of the predefined keys
+	 * to the character maps. 
+	 * @param lowercaseStream the properties file for lower case
+	 * @param uppercaseStream the properties file for upper case
+	 * @param encoding the encoding to use
+	 */
+	public static void loadCharacterSets(InputStream lowercaseStream,InputStream uppercaseStream, String encoding)
+	{
+		loadCharacterSets(CHARACTERS,lowercaseStream, encoding);
+		loadCharacterSets(CHARACTERS_UPPER,uppercaseStream, encoding);
 		
 		try
 		{
@@ -1031,6 +1068,27 @@ public class TextField extends StringItem
 		} catch (IOException e) {
 			//#debug error
 			System.out.println("unable to load character set : " +  url);
+		}
+	}
+	
+	/**
+	 * Reads a .properties file and maps
+	 * the values of the predefined keys
+	 * to the specified character maps
+	 * @param target the character map
+	 * @param stream the properties file
+	 * @param encoding the encoding
+	 */
+	static void loadCharacterSets(String[] target, InputStream stream, String encoding)
+	{
+		Properties properties;
+		try {
+			properties = new Properties();
+			properties.load(stream, encoding, false);
+			loadCharacterSets(target,properties);
+		} catch (IOException e) {
+			//#debug error
+			System.out.println("unable to load character set : " +  stream.toString());
 		}
 	}
 	
