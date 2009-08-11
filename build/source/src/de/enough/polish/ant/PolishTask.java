@@ -628,11 +628,15 @@ public class PolishTask extends ConditionalTask {
 			}
 			if (this.doObfuscate) {
 				obfuscate( device, locale );
-				if(this.doPostObfuscate)
-				{
-					postObfuscate(device, locale);
-				}
 			}
+			
+			copyResources( device, locale );
+			
+			if(this.doObfuscate && this.doPostObfuscate)
+			{
+				postObfuscate(device, locale);
+			}
+			
 			if (this.buildSetting.doPreverify()) {
 				preverify( device, locale );
 			}
@@ -2854,17 +2858,13 @@ public class PolishTask extends ConditionalTask {
 		preverifier.execute( device, locale, getEnvironment() );
 
 	}
-
-	/**
-	 * Packages the code and assembles the resources for the application.
-	 * 
-	 * @param device The device for which the code should be jared.
-	 * @param locale the current locale, can be null
-	 */
-	protected void jar( Device device, Locale locale ) {
+	
+	protected void copyResources(Device device, Locale locale)
+	{
 		File classesDir = new File( device.getClassesDir() );
 		// copy resources to final destination:
 		try {
+			System.out.println(classesDir);
 			FileUtil.copyDirectoryContents( device.getResourceDir(), classesDir, !this.buildSetting.getResourceSetting().isForceUpdate() );
 
 			//If .rag files for this build have been build, copy the files
@@ -2876,7 +2876,17 @@ public class PolishTask extends ConditionalTask {
 			System.out.println("creating JAR for device [" + device.getIdentifier() + "]." );
 			e.printStackTrace();
 			throw new BuildException("Unable to copy resources: " + e.toString(), e );
-		}		
+		}
+	}
+
+	/**
+	 * Packages the code and assembles the resources for the application.
+	 * 
+	 * @param device The device for which the code should be jared.
+	 * @param locale the current locale, can be null
+	 */
+	protected void jar( Device device, Locale locale ) {
+		File classesDir = new File( device.getClassesDir() );
 
 		// retrieve the name of the jar-file:
 		String jarName = this.environment.getVariable("polish.jarName");
