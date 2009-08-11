@@ -580,6 +580,14 @@
 		<name>antcall</name>
 		<class>de.enough.polish.obfuscate.AntCallObfuscator</class>
 	</extension>
+	
+	<!-- Post Obfuscator -->
+	
+	<extension>
+		<type>postobfuscator</type>
+		<name>antcall</name>
+		<class>de.enough.polish.postobfuscate.AntCallPostObfuscator</class>
+	</extension>
 
 	<!-- Library Processors -->
 	
@@ -898,6 +906,12 @@
 	<extension>
 		<type>packager</type>
 		<name>jar</name>
+		<class>de.enough.polish.jar.JarPackager</class>
+	</extension>
+	
+	<extension>
+		<type>packager</type>
+		<name>antcalljar</name>
 		<class>de.enough.polish.jar.JarPackager</class>
 	</extension>
 	
