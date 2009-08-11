@@ -2864,7 +2864,6 @@ public class PolishTask extends ConditionalTask {
 		File classesDir = new File( device.getClassesDir() );
 		// copy resources to final destination:
 		try {
-			System.out.println(classesDir);
 			FileUtil.copyDirectoryContents( device.getResourceDir(), classesDir, !this.buildSetting.getResourceSetting().isForceUpdate() );
 
 			//If .rag files for this build have been build, copy the files
