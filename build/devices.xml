@@ -2387,7 +2387,7 @@ These namespaces/schemas will be used soon.
     <capability name="key.middlesoftkey" value="-4" />
     <capability name="key.returnsoftkey" value="-4" />
     <capability name="key.right" value="-4" />
-    <capability name="key.rightsoftkey" value="-4" />
+    <capability name="key.rightsoftkey" value="-7" />
     <capability name="key.selectsoftkey" value="-4" />
     <capability name="key.up" value="-1" />
     <capability name="mmapi.protocol.capture" value="image/jpeg" />
@@ -6461,11 +6461,11 @@ These namespaces/schemas will be used soon.
     <capability name="key.gamec" value="42" />
     <capability name="key.gamed" value="35" />
     <capability name="key.left" value="52" />
-    <capability name="key.leftsoftkey" value="-3" />
+    <capability name="key.leftsoftkey" value="-6" />
     <capability name="key.middlesoftkey" value="-5" />
     <capability name="key.returnsoftkey" value="-5" />
     <capability name="key.right" value="54" />
-    <capability name="key.rightsoftkey" value="-4" />
+    <capability name="key.rightsoftkey" value="-7" />
     <capability name="key.selectsoftkey" value="-5" />
     <capability name="key.up" value="50" />
     <capability name="mmapi.audio.encodings" value="audio/amr" />
@@ -6711,11 +6711,11 @@ These namespaces/schemas will be used soon.
 	    <capability name="key.gamec" value="42" />
 	    <capability name="key.gamed" value="35" />
 	    <capability name="key.left" value="-3" />
-	    <capability name="key.leftsoftkey" value="-3" />
+	    <capability name="key.leftsoftkey" value="-6" />
 	    <capability name="key.middlesoftkey" value="-5" />
 	    <capability name="key.returnsoftkey" value="-7" />
 	    <capability name="key.right" value="-4" />
-	    <capability name="key.rightsoftkey" value="-4" />
+	    <capability name="key.rightsoftkey" value="-7" />
 	    <capability name="key.selectsoftkey" value="-5" />
 	    <capability name="key.up" value="-1" />
 	    <capability name="properties" value="microedition.commports, com.nokia.mid.timeformat, microedition.io.file.FileConnection.version, fileconn.dir.tones.name, com.nokia.mid.dateformat, microedition.profiles, microedition.platform, microedition.hostname, fileconn.dir.memorycard.name, microedition.jtwi.version, com.nokia.mid.networksignal, microedition.m3g.version, microedition.configuration, com.nokia.mid.countrycode, file.separator, audio3d.simultaneouslocations, fileconn.dir.videos.name, fileconn.dir.videos, fileconn.dir.photos, microedition.sip.version, supports.recording, fileconn.dir.private, wireless.messaging.sms.smsc, microedition.locale, microedition.m2g.svg.version, video.snapshot.encodings, wireless.messaging.mms.mmsc, fileconn.dir.tones, supports.mediacapabilities, fileconn.dir.photos.name, com.nokia.mid.networkid, supports.video.capture, com.nokia.network.access, audio.samplerates, microedition.amms.version, com.nokia.mid.networkavailability, supports.mixing, video.encodings, microedition.m2g.version, microedition.encoding, com.nokia.mid.batterylevel, microedition.location.version, microedition.m2g.svg.baseProfile, microedition.pim.version, microedition.media.version, audio.encodings, com.nokia.mid.imei, fileconn.dir.memorycard, supports.audio.capture" />
@@ -7343,10 +7343,10 @@ These namespaces/schemas will be used soon.
     <capability name="key.gamec" value="42" />
     <capability name="key.gamed" value="35" />
     <capability name="key.left" value="52" />
-    <capability name="key.leftsoftkey" value="-3" />
+    <capability name="key.leftsoftkey" value="-6" />
     <capability name="key.middlesoftkey" value="-5" />
     <capability name="key.right" value="54" />
-    <capability name="key.rightsoftkey" value="-4" />
+    <capability name="key.rightsoftkey" value="-7" />
     <capability name="key.selectsoftkey" value="-5" />
     <capability name="key.up" value="50" />
     <capability name="mmapi.protocol.device" value="audio/midi, audio/x-tone-seq" />
@@ -8640,11 +8640,11 @@ These namespaces/schemas will be used soon.
     <capability name="key.gamec" value="42" />
     <capability name="key.gamed" value="35" />
     <capability name="key.left" value="-3" />
-    <capability name="key.leftsoftkey" value="-3" />
+    <capability name="key.leftsoftkey" value="-6" />
     <capability name="key.middlesoftkey" value="-5" />
     <capability name="key.returnsoftkey" value="-8" />
     <capability name="key.right" value="-4" />
-    <capability name="key.rightsoftkey" value="-4" />
+    <capability name="key.rightsoftkey" value="-7" />
     <capability name="key.selectsoftkey" value="-5" />
     <capability name="key.up" value="-1" />
     <capability name="mmapi.audio.encodings" value="audio/amr, audio/basic, audio/x-au, audio/au, audio/x-basic, audio/wav, audio/x-wav, pcm, ulaw, =gsm" />
@@ -10146,11 +10146,11 @@ These namespaces/schemas will be used soon.
     <capability name="key.gamec" value="42" />
     <capability name="key.gamed" value="35" />
     <capability name="key.left" value="52" />
-    <capability name="key.leftsoftkey" value="-3" />
+    <capability name="key.leftsoftkey" value="-6" />
     <capability name="key.middlesoftkey" value="-5" />
     <capability name="key.returnsoftkey" value="-6" />
     <capability name="key.right" value="54" />
-    <capability name="key.rightsoftkey" value="-4" />
+    <capability name="key.rightsoftkey" value="-7" />
     <capability name="key.selectsoftkey" value="-5" />
     <capability name="key.up" value="50" />
     <capability name="mmapi.audio.encodings" value="audio/amr" />
@@ -13102,11 +13102,11 @@ These namespaces/schemas will be used soon.
     <capability name="key.gamec" value="42" />
     <capability name="key.gamed" value="35" />
     <capability name="key.left" value="-3" />
-    <capability name="key.leftsoftkey" value="-3" />
+    <capability name="key.leftsoftkey" value="-6" />
     <capability name="key.middlesoftkey" value="-5" />
     <capability name="key.returnsoftkey" value="-6" />
     <capability name="key.right" value="-4" />
-    <capability name="key.rightsoftkey" value="-4" />
+    <capability name="key.rightsoftkey" value="-7" />
     <capability name="key.selectsoftkey" value="-7" />
     <capability name="key.up" value="-1" />
     <capability name="mmapi.protocol.capture" value="image/jpeg" />
@@ -18600,11 +18600,11 @@ These namespaces/schemas will be used soon.
     <capability name="key.gamec" value="55" />
     <capability name="key.gamed" value="57" />
     <capability name="key.left" value="-3" />
-    <capability name="key.leftsoftkey" value="-3" />
+    <capability name="key.leftsoftkey" value="-6" />
     <capability name="key.middlesoftkey" value="-2" />
     <capability name="key.returnsoftkey" value="-8" />
     <capability name="key.right" value="-4" />
-    <capability name="key.rightsoftkey" value="-4" />
+    <capability name="key.rightsoftkey" value="-7" />
     <capability name="key.selectsoftkey" value="-7" />
     <capability name="key.up" value="-1" />
     <capability name="mmapi.protocol.device" value="audio/x-tone-seq, audio/midi" />
@@ -18693,11 +18693,11 @@ These namespaces/schemas will be used soon.
     <capability name="key.gamec" value="55" />
     <capability name="key.gamed" value="57" />
     <capability name="key.left" value="-3" />
-    <capability name="key.leftsoftkey" value="-3" />
+    <capability name="key.leftsoftkey" value="-6" />
     <capability name="key.middlesoftkey" value="-5" />
     <capability name="key.returnsoftkey" value="-1" />
     <capability name="key.right" value="-4" />
-    <capability name="key.rightsoftkey" value="-4" />
+    <capability name="key.rightsoftkey" value="-7" />
     <capability name="key.selectsoftkey" value="-5" />
     <capability name="key.up" value="-1" />
     <capability name="mmapi.protocol.device" value="audio/x-tone-seq, audio/midi" />
@@ -18742,11 +18742,11 @@ These namespaces/schemas will be used soon.
     <capability name="key.gamec" value="55" />
     <capability name="key.gamed" value="57" />
     <capability name="key.left" value="-3" />
-    <capability name="key.leftsoftkey" value="-3" />
+    <capability name="key.leftsoftkey" value="-6" />
     <capability name="key.middlesoftkey" value="-5" />
     <capability name="key.returnsoftkey" value="-1" />
     <capability name="key.right" value="-4" />
-    <capability name="key.rightsoftkey" value="-4" />
+    <capability name="key.rightsoftkey" value="-7" />
     <capability name="key.selectsoftkey" value="-5" />
     <capability name="key.up" value="-1" />
     <capability name="mmapi.protocol.device" value="audio/x-tone-seq, audio/midi" />
@@ -20420,11 +20420,11 @@ These namespaces/schemas will be used soon.
     <capability name="key.gamec" value="42" />
     <capability name="key.gamed" value="35" />
     <capability name="key.left" value="-3" />
-    <capability name="key.leftsoftkey" value="-3" />
+    <capability name="key.leftsoftkey" value="-6" />
     <capability name="key.middlesoftkey" value="-5" />
     <capability name="key.returnsoftkey" value="-5" />
     <capability name="key.right" value="-4" />
-    <capability name="key.rightsoftkey" value="-4" />
+    <capability name="key.rightsoftkey" value="-7" />
     <capability name="key.selectsoftkey" value="-5" />
     <capability name="key.up" value="-1" />
     <capability name="mmapi.audio.encodings" value="audio/amr, audio/amr-nb, audio/pcm" />
@@ -21398,7 +21398,7 @@ These namespaces/schemas will be used soon.
     <capability name="key.gamec" value="55" />
     <capability name="key.gamed" value="57" />
     <capability name="key.left" value="-3" />
-    <capability name="key.leftsoftkey" value="-3" />
+    <capability name="key.leftsoftkey" value="-6" />
     <capability name="key.middlesoftkey" value="-4" />
     <capability name="key.returnsoftkey" value="-4" />
     <capability name="key.right" value="-4" />
