@@ -39,7 +39,7 @@ title {
 }
 
 label {
-	layout: left | top | newline-after;
+	layout: left | top | expand;
 	font {
 		size: small;
 		style: plain;
@@ -56,6 +56,11 @@ label {
 	/*
 	screen-orientation-change-animation: fade-out-fade-in;
 	*/
+}
+
+.screenMain:landscape {
+	columns: 2;
+	columns-width: equal;
 }
 
 .itemMain {
@@ -162,8 +167,6 @@ alertcontent {
 	padding-right: 4%;
 	layout: expand;
 	font {
-		face: system;
-		size: medium;
 		style: bold;
 		color: #00aeef;
 	}
@@ -185,18 +188,29 @@ alertcontent {
 	font-color: #333;
 }
 
-/** define visited styles for focused and unfocused RSS items: **/
+/** define visited styles for unfocused RSS items: **/
 .browserlink:visited {
 	font-color: #999;
 }
 
 /** 
-  * Note: the pseudo style 'browserlink:hover' is named 'browserlinkFocused'.
   * Here we define a visited style for the currently selected item (which is focused):
   */
 .browserlink:hover:visited {
 	font-color: #999;
 }
+
+.browserLinkOdd extends browserLink {
+	background-color: #ddd;	
+}
+
+.browserlink:visited:hover {
+	//#if polish.name != iPhone
+		font-color: #999;
+		background-color: #f26522;
+	//#endif
+}
+
 
 
 /************************** RSS item alert screen ****************************************************************************/
@@ -250,28 +264,22 @@ menubar {
 
 
 leftcommand {
-	layout: left;
-	font {
-		style: bold;
-		color: #00aeef;
-	}
+	font-style: bold;
+	font-color: #00aeef;
 }
-rightcommand extends leftcommand {
-	layout: right;
-}
-
-middlecommand extends leftcommand {
-	layout: center;
-}
-
 leftcommand:pressed {
 	font-color: #fff;
 }
 
+rightcommand extends leftcommand {
+	layout: right;
+}
 rightcommand:pressed {
 	font-color: #fff;
 }
-
+middlecommand extends leftcommand {
+	layout: center;
+}
 middlecommand:pressed {
 	font-color: #fff;
 }

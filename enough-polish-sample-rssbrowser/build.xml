@@ -216,7 +216,8 @@
 	<target name="clean" 
 	  		description="allows a clean build. You should call [ant clean] whenever you made changes to devices.xml, vendors.xml or groups.xml">
 		<delete dir="build" />
-		<delete dir="dist" />
+		<mkdir dir="dist" />
+		<delete dir="dist" includes="**/*" />
 	</target>
 
 </project>

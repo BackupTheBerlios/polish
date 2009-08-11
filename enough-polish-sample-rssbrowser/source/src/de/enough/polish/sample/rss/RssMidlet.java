@@ -1,5 +1,7 @@
 package de.enough.polish.sample.rss;
 
+import java.io.IOException;
+
 import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.Choice;
 import javax.microedition.lcdui.Command;
@@ -32,7 +34,7 @@ import de.enough.polish.ui.splash.InitializerSplashScreen;
  */
 public class RssMidlet 
 	extends MIDlet
-	implements CommandListener, ItemCommandListener, ApplicationInitializer
+	implements CommandListener, ApplicationInitializer
 {
 	private static final Command CMD_MAIN_MENU = new Command("Main Menu", Command.BACK, 5 );
 	private static final Command CMD_BACK = new Command("Back", Command.BACK, 5 );
@@ -45,6 +47,7 @@ public class RssMidlet
 	private List mainMenu;
 	private String defaultRssUrl = "http://www.digg.com/rss/containerscience.xml";
 	private Form settingsForm;
+	private StylingRssHander rssTagHandler;
 
      protected void startApp()
      	throws MIDletStateChangeException
@@ -85,7 +88,11 @@ public class RssMidlet
          //#style rssBrowserForm
          this.browserScreen = new Form("Browser");
          //#style rssBrowser
-         this.rssBrowser = new RssBrowser( this );
+         this.rssBrowser = new RssBrowser();
+         StylingRssHander handler = new StylingRssHander(this.rssBrowser);
+         this.rssBrowser.setRssTagHandler(handler);
+         this.rssTagHandler = handler;
+         	
          this.browserScreen.append( this.rssBrowser );
          this.browserScreen.addCommand(CMD_BACK);
          this.browserScreen.addCommand(CMD_EXIT);
@@ -102,6 +109,18 @@ public class RssMidlet
      protected void pauseApp(){
           // ignore
      }
+     
+     protected void exit() {
+ 		if (this.rssTagHandler != null) {
+ 			try {
+ 				this.rssTagHandler.saveVisitedUrls();
+ 			} catch (IOException e) {
+ 				//#debug error
+ 				System.out.println("Unable to save visited URLs" + e);
+ 			}
+ 		}
+ 		notifyDestroyed();
+ 	}
 
      protected void destroyApp(boolean unconditional) throws MIDletStateChangeException{
           // nothing to clean up
@@ -112,7 +131,7 @@ public class RssMidlet
 		System.out.println("commandAction: cmd=" + command.getLabel() );
 		if (displayable == this.mainMenu) {
 			if (command == CMD_EXIT) {
-				notifyDestroyed();
+				exit();
 			} else {
 				int index = this.mainMenu.getSelectedIndex();
 				switch (index) {
@@ -126,7 +145,7 @@ public class RssMidlet
 					showAbout();
 					break;
 				case 3:
-					notifyDestroyed();
+					exit();
 					break;
 				}
 			}
@@ -162,23 +181,23 @@ public class RssMidlet
 			}
 		}
 		if (command == CMD_EXIT) {
-			notifyDestroyed();
+			exit();
 		}
 	}
 	
-	public void commandAction(Command command, Item item)
-	{
-		//#debug
-		System.out.println("commandAction: cmd=" + command.getLabel() + " for item " + item);
-		if (command == RssTagHandler.CMD_RSS_ITEM_SELECT) {
-			RssItem rssItem = (RssItem) UiAccess.getAttribute(item, RssTagHandler.ATTR_RSS_ITEM);
-			showRssNewsItem( rssItem );
-		}
-		else {
-			//#debug warn
-			System.err.println("Unhandled command " + command);
-		}
-	}
+//	public void commandAction(Command command, Item item)
+//	{
+//		//#debug
+//		System.out.println("commandAction: cmd=" + command.getLabel() + " for item " + item);
+//		if (command == RssTagHandler.CMD_RSS_ITEM_SELECT) {
+//			RssItem rssItem = (RssItem) UiAccess.getAttribute(item, RssTagHandler.ATTR_RSS_ITEM);
+//			showRssNewsItem( rssItem );
+//		}
+//		else {
+//			//#debug warn
+//			System.err.println("Unhandled command " + command);
+//		}
+//	}
 	
 	private void showRssNewsItem( RssItem rssItem ) {
 		if (rssItem != null) {
