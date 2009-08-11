@@ -126,6 +126,7 @@ public class BuildSetting {
 	private boolean doPreverify = true;
 	private boolean doCompile = true;
 	private ArrayList postCompilers;
+	private ArrayList postObfuscators;
 	private ArrayList finalizers;
 	private File projectBaseDir;
 	private File polishHomeDir;
@@ -339,6 +340,13 @@ public class BuildSetting {
 			this.postCompilers = new ArrayList();
 		}
 		this.postCompilers.add( setting );
+	}
+	
+	public void addConfiguredPostObfuscator(PostObfuscatorSetting setting) {
+		if (this.postObfuscators == null) {
+			this.postObfuscators = new ArrayList();
+		}
+		this.postObfuscators.add( setting );
 	}
 	
 	/**
@@ -1576,7 +1584,25 @@ public class BuildSetting {
 	public boolean doPreCompile() {
 		return (this.preCompilers != null);
 	}
+	
+	public PostObfuscatorSetting[] getPostObfuscators() {
+		// init standard postcompilers:
+		//PostCompilerSetting screenChangerSetting = new PostCompilerSetting();
+		//screenChangerSetting.setName("screenchanger");
+		if (this.postObfuscators == null) {
+			return new PostObfuscatorSetting[0]; // { screenChangerSetting }; 
+		} else {
+			//this.postCompilers.add( screenChangerSetting );
+			return (PostObfuscatorSetting[]) this.postObfuscators.toArray( new PostObfuscatorSetting[this.postObfuscators.size()] );
+		}
+	}
 
+	/**
+	 * @return true when there are postcompilers
+	 */
+	public boolean doPostCompile() {
+		return (this.postCompilers != null);
+	}
 	
 	public PostCompilerSetting[] getPostCompilers() {
 		// init standard postcompilers:
@@ -1591,10 +1617,10 @@ public class BuildSetting {
 	}
 
 	/**
-	 * @return true when there are postcompilers
+	 * @return true when there are postobfuscators
 	 */
-	public boolean doPostCompile() {
-		return (this.postCompilers != null);
+	public boolean doPostObfuscate() {
+		return (this.postObfuscators != null);
 	}
 	
 	/**

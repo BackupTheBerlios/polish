@@ -69,6 +69,7 @@ public class ExtensionManager {
 	public static final String TYPE_PRECOMPILER = "precompiler";
 	public static final String TYPE_POSTCOMPILER = "postcompiler";
 	public static final String TYPE_OBFUSCATOR = "obfuscator";
+	public static final String TYPE_POSTOBFUSCATOR = "postobfuscator";
 	public static final String TYPE_PREVERIFIER = "preverifier";
 	public static final String TYPE_RESOURCE_COPIER = "resourcecopier";
 	public static final String TYPE_PACKAGER = "packager";
@@ -514,6 +515,10 @@ public class ExtensionManager {
 
 	public void postCompile( Device device, Locale locale, Environment environment ) {
 		executeExtensions( TYPE_POSTCOMPILER, device, locale, environment );
+	}
+	
+	public void postObfuscate( Device device, Locale locale, Environment environment ) {
+		executeExtensions( TYPE_POSTOBFUSCATOR, device, locale, environment );
 	}
 	
 	public void executeExtensions( String type, Device device, Locale locale, Environment environment ) {

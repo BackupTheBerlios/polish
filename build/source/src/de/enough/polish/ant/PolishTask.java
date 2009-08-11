@@ -80,6 +80,7 @@ import de.enough.polish.ant.build.LogSetting;
 import de.enough.polish.ant.build.Midlet;
 import de.enough.polish.ant.build.ObfuscatorSetting;
 import de.enough.polish.ant.build.PostCompilerSetting;
+import de.enough.polish.ant.build.PostObfuscatorSetting;
 import de.enough.polish.ant.build.PreCompilerSetting;
 import de.enough.polish.ant.build.PreprocessorSetting;
 import de.enough.polish.ant.build.PreverifierSetting;
@@ -105,6 +106,7 @@ import de.enough.polish.linuxnotify.LinuxNotifier;
 import de.enough.polish.manifest.ManifestCreator;
 import de.enough.polish.obfuscate.Obfuscator;
 import de.enough.polish.postcompile.PostCompiler;
+import de.enough.polish.postobfuscate.PostObfuscator;
 import de.enough.polish.precompile.PreCompiler;
 import de.enough.polish.preprocess.CustomPreprocessor;
 import de.enough.polish.preprocess.DebugManager;
@@ -236,9 +238,12 @@ public class PolishTask extends ConditionalTask {
 	protected boolean doPostCompile;
 
 	protected PostCompiler[] postCompilers;
+	
+	protected boolean doPostObfuscate;
+
+	protected PostObfuscator[] postObfuscators;
 
 	protected LibrariesSetting binaryLibraries;
-
 
 	protected boolean isInitialized;
 
@@ -623,11 +628,15 @@ public class PolishTask extends ConditionalTask {
 			}
 			if (this.doObfuscate) {
 				obfuscate( device, locale );
+				if(this.doPostObfuscate)
+				{
+					postObfuscate(device, locale);
+				}
 			}
 			if (this.buildSetting.doPreverify()) {
 				preverify( device, locale );
 			}
-
+			
 			jar( device, locale );
 			jad( device, locale );
 		}
@@ -1163,6 +1172,17 @@ public class PolishTask extends ConditionalTask {
 			if (this.doObfuscate) {
 				this.obfuscators = (Obfuscator[]) obfuscatorsList.toArray( new Obfuscator[ obfuscatorsList.size() ] );
 				//this.useDefaultPackage = this.buildSetting.useDefaultPackage();
+			}
+		}
+		
+		// init postobfuscators:
+		if (this.buildSetting.doPostObfuscate()) {
+			this.doPostObfuscate = true;
+			PostObfuscatorSetting[] postObfuscatorSettings = this.buildSetting.getPostObfuscators();
+			this.postObfuscators = new PostObfuscator[ postObfuscatorSettings.length ];
+			for (int i = 0; i < postObfuscatorSettings.length; i++) {
+				PostObfuscatorSetting setting = postObfuscatorSettings[i];
+				this.postObfuscators[i] = PostObfuscator.getInstance(setting, this.extensionManager, this.environment);
 			}
 		}
 
@@ -2649,6 +2669,45 @@ public class PolishTask extends ConditionalTask {
 
 		if (this.polishLogger != null) {
 			this.polishLogger.setObfuscateMode( false );
+		}
+	}
+	
+	/**
+	 * Retrieves all currently active post obfuscators.
+	 * 
+	 * @return an array of all active postobfuscators, can be empty but not null.
+	 */
+	protected PostObfuscator[] getActivePostObfuscators() {
+		if (this.postObfuscators == null || this.postObfuscators.length == 0) {
+			return new PostObfuscator[ 0 ];
+		}
+		ArrayList list = new ArrayList();
+		BooleanEvaluator evaluator = this.environment.getBooleanEvaluator();
+		Project antProject = getProject();
+		for (int i = 0; i < this.postObfuscators.length; i++) {
+			PostObfuscator postObfuscator = this.postObfuscators[i];
+			if (postObfuscator.getSetting().isActive(evaluator, antProject)) {
+				list.add( postObfuscator );
+			}
+		}
+		return (PostObfuscator[]) list.toArray( new PostObfuscator[ list.size() ]);
+	}
+	
+	/**
+	 * Postcompiles the project for the given device.
+	 * 
+	 * @param device The device for which the obfuscation should be done.
+	 * @param locale the current localization
+	 */
+	protected void postObfuscate( Device device, Locale locale ) {
+		this.extensionManager.postObfuscate( device, locale, this.environment );
+
+		// execute active postcompilers:
+		PostObfuscator[] postObfuscators = getActivePostObfuscators();
+		for (int i = 0; i < postObfuscators.length; i++) {
+			PostObfuscator postObfuscator = postObfuscators[i];
+			System.out.println("postobfuscating with " + postObfuscator.getClass().getName());
+			postObfuscator.execute( device, locale, this.environment );
 		}
 	}
 
