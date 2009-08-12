@@ -3219,8 +3219,6 @@ implements UiElement, Animatable
 		//#if polish.Screen.callSuperEvents
 			super.keyPressed(keyCode);
 		//#endif
-			//System.out.println("keyCode=" + keyCode);
-		
 		this.lastInteractionTime = System.currentTimeMillis();
 		synchronized (this.paintLock) {
 			//#if polish.Bugs.noSoftKeyReleasedEvents
@@ -3378,12 +3376,14 @@ implements UiElement, Animatable
 				//#endif
 				//#if tmp.menuFullScreen && polish.key.ReturnKey:defined
 					if (!processed) {
-						//#= if ( (keyCode == ${polish.key.ReturnKey}) && (this.backCommand != null) ) {
+						int backKey = 0;
+						//#= backKey = ${polish.key.ReturnKey};
+						if ( (keyCode == backKey) && (this.backCommand != null) ) {
 							//#debug
 							System.out.println("keyPressed: invoking commandListener for " + this.backCommand.getLabel() );
 							callCommandListener( this.backCommand );
 							processed = true;
-						//# }
+						}
 					}
 				//#endif
 				//#if polish.blackberry

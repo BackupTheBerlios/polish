@@ -1192,11 +1192,11 @@ public class MenuBar extends Item {
 				CommandItem commandItem = (CommandItem) this.commandsContainer.getFocusedItem();
 				commandItem.handleKeyPressed( 0, Canvas.FIRE );
 				return true;
-		//#if polish.key.ReturnKey:defined
-			//#= } else  if (isCloseOptionsMenuKey(keyCode, gameAction) || keyCode == ${polish.key.ReturnKey}) {
-		//#else
-			} else  if (isCloseOptionsMenuKey(keyCode, gameAction)) {
-		//#endif
+			} else  if (isCloseOptionsMenuKey(keyCode, gameAction)
+				//#if polish.key.ReturnKey:defined
+					//#= || (keyCode == ${polish.key.ReturnKey})
+				//#endif
+			) {
 				CommandItem item = getCloseOptionsItem();
 				if (item != null) {
 					item.notifyItemPressedStart();
@@ -1444,11 +1444,11 @@ public class MenuBar extends Item {
 					}
 				//#endif
 				return commandItem.handleKeyReleased(0, Canvas.FIRE);
-		//#if polish.key.ReturnKey:defined
-			//#= } else  if (isCloseOptionsMenuKey(keyCode, gameAction) || keyCode == ${polish.key.ReturnKey}) {
-		//#else
-			} else  if (isCloseOptionsMenuKey(keyCode, gameAction)) {
-		//#endif
+			} else  if (isCloseOptionsMenuKey(keyCode, gameAction)
+				//#if polish.key.ReturnKey:defined
+					//#= || (keyCode == ${polish.key.ReturnKey})
+				//#endif
+			) {
 				this.isSoftKeyPressed = true;
 				int selectedIndex = this.commandsContainer.getFocusedIndex();
 				if (!this.commandsContainer.handleKeyReleased(0, Canvas.LEFT)
