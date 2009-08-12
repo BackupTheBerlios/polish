@@ -673,6 +673,21 @@ These namespaces/schemas will be used soon.
     <features>isVirtual</features>
     <groups>Series60E3</groups>
   </device>
+  <device supportsPolishGui="true">
+    <identifier>Nokia/Series60E3FP1</identifier>
+    <features>isVirtual</features>
+    <groups>Series60E3FP1</groups>
+  </device>
+  <device supportsPolishGui="true">
+    <identifier>Nokia/Series60E3FP2</identifier>
+    <features>isVirtual</features>
+    <groups>Series60E3FP2</groups>
+  </device>
+  <device supportsPolishGui="true">
+    <identifier>Nokia/Series60E5</identifier>
+    <features>isVirtual</features>
+    <groups>Series60E5</groups>
+  </device>
   <device supportsPolishGui="false">
     <identifier>Nokia/Series40</identifier>
     <features>isVirtual</features>
@@ -6224,6 +6239,7 @@ These namespaces/schemas will be used soon.
   <device>
     <identifier>Nokia/5800</identifier>
     <features>hasPointerEvents, hasVirtualKeyboard</features>
+    <groups>Series60E5</groups>
     <capability name="alphalevels" value="256" />
     <capability name="api.svg" value="true" />
     <capability name="bugs" value="FillPolygonRequiresPositiveXYInNokiaUiApi" />
