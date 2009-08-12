@@ -104,5 +104,33 @@ public class ContainerTest extends TestCase {
 
 		
 	}
+	
+	public void testSetAbsoluteY() {
+		Container container = new Container( false );
+		StringItem item1 = new StringItem( null, "1");
+		StringItem item2 = new StringItem( null, "2");
+		StringItem item3 = new StringItem( null, "3");
+		StringItem item4 = new StringItem( null, "4");
+		StringItem item5 = new StringItem( null, "5");
+		container.add(item1);
+		container.add(item2);
+		container.add(item3);
+		container.add(item4);
+		container.add(item5);
+		
+		container.init(100, 100, 200);
+		
+		int absoluteY = item4.getAbsoluteY();
+		System.out.println("before insert: absY=" + absoluteY);
+		container.add(0, new StringItem(null, "x"));
+		container.add(0, new StringItem(null, "y"));
+		container.add(0, new StringItem(null, "z"));
+		
+		container.init(100, 100, 200);
+		System.out.println("after insert: absY=" + item4.getAbsoluteY());
+		item4.setAbsoluteY(absoluteY);
+		System.out.println("after set: absY=" + item4.getAbsoluteY());
+		
+	}
 
 }
