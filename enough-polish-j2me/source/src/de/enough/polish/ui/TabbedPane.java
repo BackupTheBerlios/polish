@@ -1123,50 +1123,84 @@ public class TabbedPane extends Screen
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Screen#handleKeyPressed(int, int)
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#keyPressed(int)
 	 */
-	protected boolean handleKeyPressed(int keyCode, int gameAction) {
+	public void keyPressed(int keyCode) {
 		if (this.currentScreen != null) {
 			this.lastInteractionTime = System.currentTimeMillis();
-			return this.currentScreen.handleKeyPressed(keyCode, gameAction);
+			this.currentScreen.keyPressed(keyCode);
 		} else {
-			return super.handleKeyPressed(keyCode, gameAction);	
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Screen#handleKeyReleased(int, int)
-	 */
-	protected boolean handleKeyReleased(int keyCode, int gameAction) {
-		if (this.currentScreen != null) {
-			boolean handled = this.currentScreen.handleKeyReleased(keyCode, gameAction);
-			if(!handled && !Display.getInstance().hasPointerEvents())
-			{
-				if (gameAction == RIGHT && this.currentDisplayableIndex < this.tabDisplayables.size()-1) {
-					setFocus( this.currentDisplayableIndex + 1 );
-				} else if (gameAction == LEFT && this.currentDisplayableIndex > 0) {
-					setFocus( this.currentDisplayableIndex - 1 );
-				}
-				return true;
-			}
-			return handled;
-		} else {
-			return super.handleKeyReleased(keyCode, gameAction);
+			super.keyPressed(keyCode);	
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Screen#handleKeyRepeated(int, int)
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#keyRepeated(int)
 	 */
-	protected boolean handleKeyRepeated(int keyCode, int gameAction) {
+	public void keyRepeated(int keyCode) {
 		if (this.currentScreen != null) {
-			this.lastInteractionTime = System.currentTimeMillis();
-			return this.currentScreen.handleKeyRepeated(keyCode, gameAction);
+			this.currentScreen.keyRepeated(keyCode);
 		} else {
-			return super.handleKeyRepeated(keyCode, gameAction);	
+			super.keyRepeated(keyCode);	
 		}
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#keyReleased(int)
+	 */
+	public void keyReleased(int keyCode) {
+		//#ifdef polish.hasPointerEvents
+		if(!Display.getInstance().hasPointerEvents())
+		{
+		//#endif
+			int gameAction = 0;
+			try {
+				gameAction = getGameAction(keyCode);
+			} catch (Exception e) {
+				// ignore
+			}
+			if (gameAction == RIGHT && keyCode != KEY_NUM6 && this.currentDisplayableIndex < this.tabDisplayables.size()-1) {
+				setFocus( this.currentDisplayableIndex + 1 );
+				return;
+			} else if (gameAction == LEFT && keyCode != KEY_NUM4 && this.currentDisplayableIndex > 0) {
+				setFocus( this.currentDisplayableIndex - 1 );
+				return;
+			}
+		//#ifdef polish.hasPointerEvents
+		} 
+		//#endif
+		if (this.currentScreen != null) {
+			this.currentScreen.keyReleased(keyCode);
+		} else {
+			super.keyReleased(keyCode);	
+		}
+	}
+
+//	/* (non-Javadoc)
+//	 * @see de.enough.polish.ui.Screen#handleKeyReleased(int, int)
+//	 */
+//	protected boolean handleKeyReleased(int keyCode, int gameAction) {
+//		if (this.currentScreen != null) {
+//			boolean handled = this.currentScreen.handleKeyReleased(keyCode, gameAction);
+//			if(!handled && !Display.getInstance().hasPointerEvents())
+//			{
+//				if (gameAction == RIGHT && this.currentDisplayableIndex < this.tabDisplayables.size()-1) {
+//					setFocus( this.currentDisplayableIndex + 1 );
+//				} else if (gameAction == LEFT && this.currentDisplayableIndex > 0) {
+//					setFocus( this.currentDisplayableIndex - 1 );
+//				}
+//				return true;
+//			}
+//			return handled;
+//		} else {
+//			return super.handleKeyReleased(keyCode, gameAction);
+//		}
+//	}
+	
 	
 	//#ifdef polish.hasPointerEvents
 	/* (non-Javadoc)
