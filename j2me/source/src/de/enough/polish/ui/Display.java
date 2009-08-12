@@ -894,7 +894,7 @@ implements javax.microedition.lcdui.CommandListener
 	public void setCurrent( Displayable nextDisplayable)
 	{
 		//#debug
-		System.out.println("Display.setCurrent " + nextDisplayable + ", current=" + this.currentDisplayable);
+		System.out.println("Display.setCurrent " + nextDisplayable + ", current=" + this.currentDisplayable + ", isShown=" + isShown() );
 		
 		//#if tmp.displayInfo
 			if (this.showInfo) {
@@ -1848,6 +1848,8 @@ implements javax.microedition.lcdui.CommandListener
 	 * @see javax.microedition.lcdui.Canvas#hideNotify()
 	 */
 	protected void hideNotify() {
+		//#debug
+		System.out.println("Display.hideNotify()");
 		//#if tmp.wrapperScreen
 			if (this.ignoreShowHide) {
 				return;
@@ -1864,6 +1866,8 @@ implements javax.microedition.lcdui.CommandListener
 	 * @see javax.microedition.lcdui.Canvas#showNotify()
 	 */
 	protected void showNotify() {
+		//#debug
+		System.out.println("Display.showNotify()");
 		//#if tmp.wrapperScreen
 			if (this.ignoreShowHide) {
 				return;
@@ -2459,24 +2463,29 @@ implements javax.microedition.lcdui.CommandListener
 	}
 	//#endif
 	
-		public void toggleScreen() {
-			//#if tmp.wrapperScreen
-				//#debug
-				System.out.println("toggle screen");
-				Display.this.ignoreShowHide = true;
-				WrapperCanvas canvas = new WrapperCanvas();
-				((de.enough.polish.midp.ui.NativeDisplayImpl)this.nativeDisplay).setCurrentNative( canvas );
-				try {
-					Thread.sleep(500);
-				} catch (Exception e) {
-					// ignore
-				}
-				this.nativeDisplay.setCurrent( this );
-				this.ignoreShowHide = false;
-				//#debug
-				System.out.println("screen toggle finished");
-			//#endif
-		}
+	public void toggleScreen() {
+		//#if tmp.wrapperScreen
+			//#debug
+			System.out.println("toggle screen");
+			this.ignoreShowHide = true;
+			WrapperCanvas canvas = new WrapperCanvas();
+			((de.enough.polish.midp.ui.NativeDisplayImpl)this.nativeDisplay).setCurrentNative( canvas );
+			try {
+				Thread.sleep(500);
+			} catch (Exception e) {
+				// ignore
+			}
+			this.nativeDisplay.setCurrent( this );
+			try {
+				Thread.sleep(100);
+			} catch (Exception e) {
+				// ignore
+			}
+			this.ignoreShowHide = false;
+			//#debug
+			System.out.println("screen toggle finished");
+		//#endif
+	}
 	
 	//#if tmp.wrapperScreen
 	class WrapperCanvas extends javax.microedition.lcdui.Canvas {
