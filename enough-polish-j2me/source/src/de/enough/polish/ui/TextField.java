@@ -1533,7 +1533,7 @@ public class TextField extends StringItem
 	 */
 	public void insert( String src, int position)
 	{
-		String txt = this.text;
+		String txt = getString();
 		if(txt == null)
 			txt = "";
 		
@@ -1605,10 +1605,7 @@ public class TextField extends StringItem
 	 */
 	public void delete(int offset, int length)
 	{
-		String txt = this.text;
-		if (this.isPassword) {
-			txt = this.passwordText;
-		}
+		String txt = getString();
 		String start = txt.substring(0, offset );
 		String end = txt.substring( offset + length );
 		setString( start + end );
@@ -2587,12 +2584,7 @@ public class TextField extends StringItem
 		}
 		//#debug
 		System.out.println( "insertCharacter " + insertChar); // + ", append=" + append + ", commit=" + commit +", caretPos=" + this.caretPosition );
-		String myText;
-		if (this.isPassword) {
-			myText = this.passwordText;
-		} else {
-			myText = this.text;
-		}
+		String myText = getString();
 		
 		int cp = this.caretPosition;
 		if (!isValidInput( insertChar, cp, myText )) {
