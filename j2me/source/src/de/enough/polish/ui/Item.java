@@ -4092,9 +4092,9 @@ public abstract class Item implements UiElement, Animatable
 	}
 	
 	/**
-	 * Retrieves this item's current absolute horizontal position
+	 * Retrieves this item's current absolute vertical position
 	 * 
-	 * @return the absolute x position of this item in pixel.
+	 * @return the absolute y position of this item in pixel.
 	 */
 	public int getAbsoluteY() {
 		int absY = this.relativeY; // + this.contentY; in that case no label is included anymore
@@ -4115,6 +4115,30 @@ public abstract class Item implements UiElement, Animatable
 			item = item.parent;
 		}
 		return absY;
+	}
+	
+	/**
+	 * Sets the absolute vertical position of this item.
+	 * Note that results may vary depending on the view-type of the root container.
+	 * 
+	 * @param absY the absolute y position of this item in pixel.
+	 */
+	public void setAbsoluteY(int absY) {
+		// find out vertical offset for root container:
+		int currentAbsY = getAbsoluteY();
+		int diff = absY - currentAbsY;
+		//System.out.println("setting absY to " + absY + ", current=" + currentAbsY + ", diff=" + diff + " for item " + this);
+		Item item = this;
+		while (item.parent != null) {
+			item = item.parent;
+		}
+		if (item instanceof Container) {
+			Container container = (Container)item;
+			int offset = container.getScrollYOffset() + diff;
+			//System.out.println("resulting in scrollOffset=" + offset + ", currentScrollOffset=" + container.getScrollYOffset());
+			container.setScrollYOffset(offset, false);
+		}
+		//System.out.println("after setAbsoluteY=" + getAbsoluteY() + ", should be=" + absY);
 	}
 	
 	/**
@@ -4656,6 +4680,8 @@ public abstract class Item implements UiElement, Animatable
 			}
 		//#endif
 	}
+
+
 
 //#ifdef polish.Item.additionalMethods:defined
 	//#include ${polish.Item.additionalMethods}
