@@ -66,7 +66,7 @@ extends Obfuscator
 implements OutputFilter
 {
 	
-	private boolean doOptimize = true;
+	private boolean doOptimize;
 	private File proGuardJarFile;
 	private boolean dontObfuscate;
 	private boolean overloadAggressively = true;
@@ -467,7 +467,9 @@ implements OutputFilter
 				if ("".equals(value) || "false".equals(value)) {
 					value = "";
 					name = "-dontoptimize";
+					this.doOptimize = false;
 				} else {
+					this.doOptimize = true;
 					continue;
 				}
 			}
