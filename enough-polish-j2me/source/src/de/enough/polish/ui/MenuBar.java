@@ -225,21 +225,23 @@ public class MenuBar extends Item {
 		int type = cmd.getCommandType();
 		int priority = cmd.getPriority();
 		//#if tmp.useInvisibleMenuBar
-			if ( this.hideCommand == null )	{
-				// add hide command:
-				//#ifdef polish.i18n.useDynamicTranslations
-					String text =  Locale.get("polish.command.hide");
-				//#elifdef polish.command.hide:defined
-					//#= String text =  "${polish.command.hide}";
-				//#else
-					//# String text =  "Hide";
-				//#endif
-				
-				//#if !polish.MenuBar.suppressHideCommand					
-				this.hideCommand = new Command( text, Command.CANCEL, 2000 );
-				addCommand( this.hideCommand, commandStyle );
-				//#endif
-			}
+			//#if !polish.android
+				if ( this.hideCommand == null )	{
+					// add hide command:
+					//#ifdef polish.i18n.useDynamicTranslations
+						String text =  Locale.get("polish.command.hide");
+					//#elifdef polish.command.hide:defined
+						//#= String text =  "${polish.command.hide}";
+					//#else
+						//# String text =  "Hide";
+					//#endif
+					
+					//#if !polish.MenuBar.suppressHideCommand					
+					this.hideCommand = new Command( text, Command.CANCEL, 2000 );
+					addCommand( this.hideCommand, commandStyle );
+					//#endif
+				}
+			//#endif
 			if ( (cmd != this.hideCommand) && 
 					(type == Command.BACK || type == Command.CANCEL || type == Command.EXIT) ) 
 			{
@@ -1213,7 +1215,7 @@ public class MenuBar extends Item {
 				//System.out.println("MenuBar is closing due to key " + keyCode);
 				return true;
 			} else {
-				//#if tmp.useInvisibleMenuBar
+				//#if tmp.useInvisibleMenuBar && !polish.android
 					// handle hide command specifically:
 					if (  gameAction == Canvas.FIRE && ((CommandItem)this.commandsContainer.focusedItem).command == this.hideCommand ) {
 						//setOpen( false );
@@ -1437,7 +1439,7 @@ public class MenuBar extends Item {
 			if (isSelectOptionsMenuKey(keyCode, gameAction)) {
 				this.isSoftKeyPressed = true;	
 				CommandItem commandItem = (CommandItem) this.commandsContainer.getFocusedItem();
-				//#if tmp.useInvisibleMenuBar
+				//#if tmp.useInvisibleMenuBar && !polish.android
 					if (commandItem.command == this.hideCommand ) {
 						setOpen( false );
 						return true;
@@ -2166,6 +2168,11 @@ public class MenuBar extends Item {
 		return this.allCommands.size();
 	}
 	
+	public Command getCommand(int index) {
+		return (Command) this.allCommands.keys()[index];
+	}
+
+	
 	public Style getMenuItemStyle()
 	{
 		return this.menuItemStyle;
@@ -2337,7 +2344,6 @@ public class MenuBar extends Item {
 		//#endif
 	}
 
-	
 	
 	
 //#ifdef polish.MenuBar.additionalMethods:defined

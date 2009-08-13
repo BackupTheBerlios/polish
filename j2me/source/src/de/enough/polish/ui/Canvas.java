@@ -1159,7 +1159,14 @@ implements Displayable
 		this._title = s;
 		//#if !polish.midp1
 		if (this._isShown) {
-			Display.getInstance().setTitle( s );
+    		//#if polish.blackberry
+	    		Object lock = net.rim.device.api.system.Application.getEventLock();
+	            synchronized (lock) {
+			//#endif
+	            	Display.getInstance().setTitle(s);
+			//#if polish.blackberry
+	            }
+			//#endif
 		}
 		//#endif
 	}

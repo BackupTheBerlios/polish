@@ -219,9 +219,10 @@ public class Display
 //#else
 	extends javax.microedition.lcdui.Canvas
 //#endif
-
-//#if polish.midp && ! polish.android
-implements javax.microedition.lcdui.CommandListener
+//#if polish.android
+	//# implements de.enough.polish.ui.CommandListener
+//#elif polish.midp
+	implements javax.microedition.lcdui.CommandListener
 //#endif
 	
 //#if polish.css.screen-transition || polish.css.screen-change-animation || polish.ScreenChangeAnimation.forward:defined
@@ -1033,6 +1034,7 @@ implements javax.microedition.lcdui.CommandListener
 							width = getScreenWidth();
 							height = getScreenHeight();
 						}
+						this.currentDisplayable = nextDisplayable;
 						screenAnimation.onShow( screenstyle, this, width, height, lastDisplayable, nextDisplayable, isForwardAnimation );
 						
 						this.currentCanvas = screenAnimation;
@@ -2441,7 +2443,7 @@ implements javax.microedition.lcdui.CommandListener
 	}
 	//#endif
 
-	//#if polish.midp
+	//#if polish.midp && !polish.android
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.CommandListener#commandAction(de.enough.polish.ui.Command, de.enough.polish.ui.Displayable)
 	 */
@@ -2453,6 +2455,20 @@ implements javax.microedition.lcdui.CommandListener
 			} else if (this.currentCanvas instanceof Screen) {
 				((Screen)this.currentCanvas).handleCommand( (Command)c);
 			}
+		}
+	}
+	//#endif
+	
+	//#if polish.android
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.CommandListener#commandAction(de.enough.polish.ui.Command, de.enough.polish.ui.Displayable)
+	 */
+	public void commandAction(Command c, Displayable d)
+	{
+		if (this.commandListener != null) {
+			this.commandListener.commandAction(c, this.currentDisplayable );
+		} else if (this.currentCanvas instanceof Screen) {
+			((Screen)this.currentCanvas).handleCommand( c );
 		}
 	}
 	//#endif

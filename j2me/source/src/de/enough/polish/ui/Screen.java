@@ -294,7 +294,8 @@ implements UiElement, Animatable
 	//#if polish.css.clip-screen-info
 		private boolean clipScreenInfo;
 	//#endif	
-	//#if polish.blackberry
+	//#if polish.blackberry || polish.android
+		//#define tmp.trackKeyUsage
 		/** flag for key pressed events - only for internal usage on BlackBerry platforms! */
 		public boolean keyPressedProcessed;
 		/** flag for key released events - only for internal usage on BlackBerry platforms! */
@@ -2555,7 +2556,8 @@ implements UiElement, Animatable
 					//#endif
 							int off = getScrollUpBackgroundOffset();
 							if (off < this.backgroundHeight) {
-								bgY -= ((this.backgroundHeight - off) * 5) / 100;
+								int yAdjust = ((this.backgroundHeight - off) * 5) / 100;
+								bgY -= yAdjust;
 							}
 					//#if polish.css.move-scroll-backgrounds
 						}
@@ -2571,7 +2573,8 @@ implements UiElement, Animatable
 					//#endif
 							int off = getScrollDownBackgroundOffset();
 							if (off < this.backgroundHeight) {
-								bgY += ((this.backgroundHeight - off) * 5) / 100;
+								int yAdjust = ((this.backgroundHeight - off) * 5) / 100;
+								bgY += yAdjust;
 							}
 					//#if polish.css.move-scroll-backgrounds
 						}
@@ -2620,8 +2623,8 @@ implements UiElement, Animatable
 	}
 	
 	/**
-	 * Checks if this screen can currently scroll downwards.
-	 * @return true when scrolling down is possible.
+	 * Retrieves the scroll down offset
+	 * @return the offset in pixels until the bottom of the scrollable area, 0 if the bottom is reached, otherwise a positive number of pixels.
 	 */
 	protected int getScrollDownBackgroundOffset() {
 		Container cont = this.container;
@@ -2632,12 +2635,12 @@ implements UiElement, Animatable
 	}
 
 	/**
-	 * Checks if this screen can currently scroll upwards.
-	 * @return true when scrolling up is possible.
+	 * Retrieves the scroll up offset
+	 * @return the offset in pixels until the top of the scrollable area, 0 if the top is reached, otherwise a positive number of pixels.
 	 */
 	protected int getScrollUpBackgroundOffset() {
 		Container cont = this.container;
-		if (cont != null && cont.yOffset != 0) {
+		if (cont != null) {
 			return -cont.yOffset;
 		}
 		return 0;
@@ -3229,7 +3232,7 @@ implements UiElement, Animatable
 				//#debug
 				System.out.println("keyPressed: [" + keyCode + "].");
 				int gameAction = -1;
-				//#if polish.blackberry
+				//#if tmp.trackKeyUsage
 					this.keyPressedProcessed = true;
 				//#endif
 				try {
@@ -3287,7 +3290,7 @@ implements UiElement, Animatable
 							}
 							if (this.menuBar.isSoftKeyPressed) {
 								//System.out.println("menubar detected softkey " + keyCode );
-								//#if polish.blackberry
+								//#if tmp.trackKeyUsage
 									this.keyPressedProcessed = false;
 								//#endif
 								return;
@@ -3331,7 +3334,7 @@ implements UiElement, Animatable
 							}
 							boolean doReturn = false;
 							if ( isSoftKeyLeft(keyCode, gameAction) || isSoftKeyRight(keyCode, gameAction)) {
-								//#if polish.blackberry
+								//#if tmp.trackKeyUsage
 									this.keyPressedProcessed = false;
 								//#endif
 								doReturn = true;
@@ -3378,15 +3381,23 @@ implements UiElement, Animatable
 					if (!processed) {
 						int backKey = 0;
 						//#= backKey = ${polish.key.ReturnKey};
-						if ( (keyCode == backKey) && (this.backCommand != null) ) {
-							//#debug
-							System.out.println("keyPressed: invoking commandListener for " + this.backCommand.getLabel() );
-							callCommandListener( this.backCommand );
-							processed = true;
+						if ( (keyCode == backKey)) {
+							Command cmd = this.backCommand;
+							//#ifdef tmp.useExternalMenuBar
+								if (cmd == null && this.menuBar.size() == 1 && this.menuBar.getCommand(0).getCommandType() == Command.OK ) {
+									cmd = this.menuBar.getCommand(0);
+								}
+							//#endif
+							if (cmd != null) {
+								//#debug
+								System.out.println("keyPressed: invoking commandListener for " + cmd.getLabel() );
+								callCommandListener( cmd );
+								processed = true;
+							}
 						}
 					}
 				//#endif
-				//#if polish.blackberry
+				//#if tmp.trackKeyUsage
 					this.keyPressedProcessed = processed;
 				//#endif
 				if (processed || this.isRepaintRequested) {

@@ -56,6 +56,7 @@ import de.enough.polish.xml.XmlPullParser;
 import de.enough.polish.ui.FakeContainerCustomItem;
 //#endif
 
+import de.enough.polish.ui.AnimationThread;
 import de.enough.polish.ui.ClippingRegion;
 import de.enough.polish.ui.Command;
 import de.enough.polish.ui.Container;
@@ -1266,7 +1267,7 @@ implements Runnable, ResourceLoader
 				{
 					this.isWorking = true;
 					//#if polish.Browser.PaintDownloadIndicator
-					this.isStoppedWorking = false;
+						this.isStoppedWorking = false;
 					//#endif
 					String url = this.nextUrl;
 					String postData = this.nextPostData;
@@ -1276,11 +1277,11 @@ implements Runnable, ResourceLoader
 					if (this.isCancelRequested != true)
 					{
 						//#if polish.Browser.MemorySaver
-						int size = 50 * 1024;
-						//#if polish.Browser.MemorySaver.Amount:defined
-						//#= size = ${polish.Browser.MemorySaver.Amount};
-						//#endif
-						byte[] memorySaver = new byte[size];
+							int size = 50 * 1024;
+							//#if polish.Browser.MemorySaver.Amount:defined
+								//#= size = ${polish.Browser.MemorySaver.Amount};
+							//#endif
+							byte[] memorySaver = new byte[size];
 						//#endif
 
 						try {
@@ -1538,6 +1539,7 @@ implements Runnable, ResourceLoader
 
 	protected void notifyPageError(String url, Exception e)
 	{
+		AnimationThread.removeAnimationItem(this);
 		if (this.browserListener != null) {
 			this.browserListener.notifyPageError(url, e);
 		}
@@ -1545,6 +1547,7 @@ implements Runnable, ResourceLoader
 
 	protected void notifyPageStart(String url)
 	{
+		AnimationThread.addAnimationItem(this);
 		if (this.browserListener != null) {
 			this.browserListener.notifyPageStart(url);
 		}
@@ -1552,6 +1555,7 @@ implements Runnable, ResourceLoader
 
 	protected void notifyPageEnd()
 	{
+		AnimationThread.removeAnimationItem(this);
 		if (this.browserListener != null) {
 			this.browserListener.notifyPageEnd();
 		}

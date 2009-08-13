@@ -63,6 +63,7 @@ import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
 import javax.microedition.media.control.VideoControl;
 
+
 import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.ArrayList;
@@ -98,7 +99,7 @@ extends Screen
 implements Runnable 
 {
 
-	private static final long PLAYER_TIMEOUT = 300;
+	//private static final long PLAYER_TIMEOUT = 300;
 	/**
 	 * The mount position of the camera is not known.
 	 * @see #getCameraMountPosition()
@@ -118,7 +119,7 @@ implements Runnable
 	private VideoControl videoControl;
 	private boolean isSnapshotInProgress;
 	//#if polish.api.advancedmultimedia
-		private boolean isAutofocusEnabled = true;
+		private boolean isAutofocusEnabled = false;
 	//#endif
 	private Command cmdCapture;
 	private boolean isInitializing;
@@ -156,6 +157,8 @@ implements Runnable
 	 * @see de.enough.polish.ui.Screen#hideNotify()
 	 */
 	public void hideNotify() {
+		//#debug
+		System.out.println("SnapshotScreen.hideNotify(): isSnapshotInProgress=" + this.isSnapshotInProgress);
 		super.hideNotify();
 		if (!this.isSnapshotInProgress) {
 			stopSnapshot(false);
@@ -166,6 +169,8 @@ implements Runnable
 	 * @see de.enough.polish.ui.Screen#showNotify()
 	 */
 	public void showNotify() {
+		//#debug
+		System.out.println("SnapshotScreen.showNotify(): isSnapshotInProgress=" + this.isSnapshotInProgress + ", (player==null)=" + (this.player == null));
 		super.showNotify();
 		if (this.player == null) {
 			// display snapshot window:
@@ -238,7 +243,7 @@ implements Runnable
 	
 	/**
 	 * Tries to determine the available resolutions from the supported encodings
-	 * @return an array of detected resolutions, may be emtpy but not null. Each resolution is returned as a Point object, where x defines the width and y defines the height of the resolution.
+	 * @return an array of detected resolutions, may be empty but not null. Each resolution is returned as a Point object, where x defines the width and y defines the height of the resolution.
 	 */
 	public static Point[] getSnapshotResolutions() {
 		String[] encodings = getSnapshotEncodings();
@@ -546,6 +551,9 @@ implements Runnable
 	 * @see de.enough.polish.event.ThreadedCommandListener
 	 */
 	public byte[] getSnapshot( String encoding ) throws MediaException {
+		//#debug
+		System.out.println("getting snapshot for " + encoding + ", isSnapshotInProgress=" + this.isSnapshotInProgress);
+		encoding = null;
 		if (this.isSnapshotInProgress) {
 			throw new MediaException("Snapshot in progress");
 		}
@@ -567,18 +575,20 @@ implements Runnable
 				}
 			}
 			step = 1;
-			if (tries == 0) {
-				try {
-					step = 2;
-		        	vc.setVisible(false);
-		        	vc.setVisible(true);
-				} catch (Exception e) {
-					throw new MediaException("While setting visibility: " + e);
-				}
-			}
+//			if (tries == 0) {
+//				try {
+//					step = 2;
+//		        	vc.setVisible(false);
+//		        	vc.setVisible(true);
+//				} catch (Exception e) {
+//					throw new MediaException("While setting visibility: " + e);
+//				}
+//			}
 			//#if polish.api.advancedmultimedia
 				if (this.isAutofocusEnabled) {
 					step = 3;
+					//#debug
+					System.out.println("Setting focus for player");
 					AdvancedMultimediaManager.setFocus(pl);
 				}
 			//#endif
@@ -596,6 +606,8 @@ implements Runnable
             	}
             	data = vc.getSnapshot(encoding);
             } catch (MediaException e) {
+            	//#debug info
+            	System.out.println("did not get data for encoding " + encoding + e);
             	if (encoding == null) {
             		throw e;
             	}
@@ -604,26 +616,36 @@ implements Runnable
             if (data == null && encoding != null) {
             	try {
             		step = 5;
+            		//#debug
+            		System.out.println("retrying snapshot with <null> encoding.");
             		data = vc.getSnapshot(null);
+            		//#debug
+            		System.out.println("got data for <null> encoding.");
             	} catch (MediaException e) {
             		throw new MediaException( "(1): " + message + " enc=[" + encoding + "], (2):" + e.getMessage() + ", supported:[" + System.getProperty("video.snapshot.encodings") + "]" );
             	}
             }
             //#debug info
             System.out.println("End of capturing data at " + (new Date()).toString());
+            //#debug
+            System.out.println("data.length=" + data.length);
+			this.isSnapshotInProgress = false;
+			stopSnapshot();
             return data;
 		} catch (MediaException e) {
 			//#debug error
 			System.out.println("Unable to take snapshot " + e);
 			throw e;
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			//#debug error
-			System.out.println("Unable to take snapshot " + e);
+			System.out.println("Unable to take snapshot at step " + step + e);
 			if (e instanceof SecurityException) {
 				throw (SecurityException) e;
 			}
 			throw new MediaException( e.toString() + " at step " + step ); 
 		} finally {
+			//#debug
+			System.out.println("stopping snapshot, last step=" + step);
 			this.isSnapshotInProgress = false;
 		}
 	}
@@ -721,6 +743,17 @@ implements Runnable
 			this.videoControl = vc;
 			if (vc != null) {
 				try {
+					/*
+					 * todo: add BB specific code:
+					 * 			if (this._bbField != null) {
+				getScreen().removePermanentNativeItem(this);
+			}
+			this._bbField = (Field) videoControl.initDisplayMode(VideoControl.USE_GUI_PRIMITIVE, "net.rim.device.api.ui.Field");
+			if (this.adjustSizeAutomatically) {
+				this.contentWidth = videoControl.getSourceWidth();
+				this.contentHeight = videoControl.getSourceHeight();
+			}
+					 */
 					vc.initDisplayMode(VideoControl.USE_DIRECT_VIDEO, Display.getInstance());
 					vc.setVisible(true);
 					this.player.prefetch();
@@ -830,7 +863,7 @@ implements Runnable
 	public void stopSnapshot(boolean removeInstanceVariables)
 	{
 		//#debug
-		System.out.println("stopSnapshot()");
+		System.out.println("stopSnapshot(): removeInstanceVars=" + removeInstanceVariables + ", isSnapshotInProgress=" + this.isSnapshotInProgress);
 		if (this.isSnapshotInProgress) {
 			return;
 		}
@@ -841,16 +874,23 @@ implements Runnable
 			} catch (Exception e) {
 				//#debug error
 				System.out.println("Unable to close VideoControl" + e);
+				this.videoControl = null;
 			}
 		}
 		Player pl = this.player;
 		if ( pl != null && pl.getState() != Player.CLOSED) {
 			try {
 				pl.stop();
+				try {
+					Thread.sleep(200);
+				} catch (Exception e2) {
+					// ignore thread interrupt
+				}
 				pl.close();
 			} catch (Exception e) {
 				//#debug error
 				System.out.println("Unable to close player" + e);
+				this.player = null;
 			}
 		}
 		// when there is an error we keep references so that we can later onwards
@@ -859,6 +899,13 @@ implements Runnable
 			this.videoControl = null;
 			this.player = null;
 		}
+		//#if polish.Bugs.SnapshotRequiresScreenChange && polish.midp
+			( new Thread() { 
+				public void run() {
+					Display.getInstance().toggleScreen();
+				}
+			}).start();
+		//#endif
 	}
 
 	/**
@@ -868,8 +915,12 @@ implements Runnable
 	public Player getPlayer() {
 		return this.player;
 	}
-	
+
 	//#if polish.vendor.Sony-Ericsson || polish.vendor.Generic
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#handleKeyReleased(int, int)
+	 */
 	public boolean handleKeyReleased( int keyCode, int gameAction ) {
 		boolean handled = super.handleKeyReleased( keyCode, gameAction );
 		if (!handled && (keyCode == -24 || keyCode == -26) && this.cmdCapture != null && getCommandListener() != null && !isBusy()) {
@@ -916,13 +967,6 @@ implements Runnable
 	public void setCaptureCommand(javax.microedition.lcdui.Command cmdCapture)
 	{
 		// ignore
-//		if (this.cmdCapture != null) {
-//			removeCommand( this.cmdCapture );
-//		}
-//		this.cmdCapture = cmdCapture;
-//		if (cmdCapture != null) {
-//			addCommand( cmdCapture );
-//		}
 	}
 	//#endif
 

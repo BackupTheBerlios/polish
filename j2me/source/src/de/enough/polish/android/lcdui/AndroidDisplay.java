@@ -11,13 +11,15 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import de.enough.polish.android.midlet.MIDlet;
 import de.enough.polish.ui.Display;
+import de.enough.polish.ui.Displayable;
 import de.enough.polish.ui.NativeDisplay;
+import de.enough.polish.ui.Screen;
 import de.enough.polish.util.ArrayList;
 
 //#if polish.android1.5
-import android.view.inputmethod.BaseInputConnection;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputConnection;
+	import android.view.inputmethod.BaseInputConnection;
+	import android.view.inputmethod.EditorInfo;
+	import android.view.inputmethod.InputConnection;
 //#endif
 
 /**
@@ -195,6 +197,10 @@ import android.view.inputmethod.InputConnection;
  * @since MIDP 1.0
  */
 public class AndroidDisplay extends View implements NativeDisplay, OnTouchListener{
+	
+	//#if polish.useFullScreen
+		//#define tmp.fullScreen
+	//#endif
 
 	private static AndroidDisplay instance;
 
@@ -274,6 +280,19 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 		}
 		MIDlet.midletInstance.onSizeChanged(w, h);
 	}
+	
+
+	private Screen getCurrentScreen() {
+		Display display = Display.getInstance();
+		if (display == null) {
+			return null;
+		}
+		Displayable disp = display.getCurrent();
+		if (disp == null || (!(disp instanceof Screen))) {
+			return null;
+		}
+		return (Screen) disp;
+	}
 
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		//#debug
@@ -298,7 +317,20 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 		System.out.println("onKeyDown:converted android key code '" + keyCode+"' to ME code '"+key+"'");
 		
 		this.currentPolishCanvas.keyPressed(key);
-		
+		//#if !tmp.fullScreen
+			Screen screen = getCurrentScreen();
+			if ((screen == null) || (!screen.keyPressedProcessed)) {			
+				if (keyCode == KeyEvent.KEYCODE_MENU) { // && this.addedCommandMenuItemBridges.size() > 0) {
+					return false;
+				}
+				if (keyCode == KeyEvent.KEYCODE_BACK) {
+					return MIDlet.midletInstance.onBack();
+				}
+				if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER ) {
+					return MIDlet.midletInstance.onOK();
+				}
+			}
+		//#endif
 		return true;
 	}
 
@@ -325,6 +357,14 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 		//#debug
 		System.out.println("onKeyUp:converted android key code '" + keyCode+"' to ME code '"+key+"'");
 		this.currentPolishCanvas.keyReleased(key);
+		//#if !tmp.fullScreen
+			if (keyCode == KeyEvent.KEYCODE_MENU) { // && this.addedCommandMenuItemBridges.size() > 0) {
+				Screen screen = getCurrentScreen();
+				if ((screen == null) || (!screen.keyPressedProcessed)) {			
+					return false;
+				}
+			}
+		//#endif
 		
 		return true;
 	}
@@ -559,6 +599,10 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 		if(instance == null) {
 			instance = new AndroidDisplay(m);
 		}
+		return instance;
+	}
+	
+	public static AndroidDisplay getInstance() {
 		return instance;
 	}
 
@@ -1167,6 +1211,5 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 		return true;
 	}
 	//#endif
-	
 	
 }

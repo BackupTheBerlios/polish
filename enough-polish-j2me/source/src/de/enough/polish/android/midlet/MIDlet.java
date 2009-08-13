@@ -20,16 +20,20 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.Window;
 import android.view.WindowManager;
 import de.enough.polish.android.io.ConnectionNotFoundException;
 import de.enough.polish.android.lcdui.AndroidDisplay;
+import de.enough.polish.ui.Command;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Display;
 import de.enough.polish.ui.Displayable;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
+import de.enough.polish.util.ArrayList;
 
 //#if polish.android1.5
 import android.view.inputmethod.InputMethodManager;
@@ -68,6 +72,15 @@ import android.view.inputmethod.InputMethodManager;
  * 
  */
 public abstract class MIDlet extends Activity {
+	
+	//#if polish.useFullScreen
+		//#define tmp.fullScreen
+	//#else
+		private final ArrayList addedCommands = new ArrayList();
+		private final ArrayList addedCommandMenuItemBridges = new ArrayList();
+		private boolean isMenuOpened;
+	//#endif
+
 
 	//The one and only MIDlet
 	public static MIDlet midletInstance;
@@ -239,12 +252,6 @@ public abstract class MIDlet extends Activity {
 	{
 		return AndroidDisplay.getDisplay(this).onKeyMultiple(keyCode, repeatCount, event);
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see android.app.Activity#onPause()
-	 */
 	
 	protected void onPause() {
 		//#debug
@@ -898,4 +905,153 @@ public abstract class MIDlet extends Activity {
 			this.isSoftkeyboardOpen = false;
 		//#endif
 	}
+	
+	
+	
+	public synchronized void addCommand( de.enough.polish.ui.Command cmd ) {
+		//#if !tmp.fullscreen
+			if (!this.addedCommands.contains(cmd)) {
+				this.addedCommands.add( cmd );
+			}
+		//#endif
+	}
+	
+	public synchronized void removeCommand( de.enough.polish.ui.Command cmd ) {
+		//#if !tmp.fullscreen
+			this.addedCommands.remove( cmd );
+		//#endif
+	}
+	
+	
+	//#if !tmp.fullScreen
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		if (menu != null) {
+			this.isMenuOpened = true;
+			menu.clear();
+			this.addedCommandMenuItemBridges.clear();
+			Object[] commands = this.addedCommands.getInternalArray();
+			for (int i = 0; i < commands.length; i++) {
+				Command cmd = (Command) commands[i];
+				if (cmd == null) {
+					break;
+				}
+				int groupId = 0;
+				int itemId = this.addedCommandMenuItemBridges.size();
+				MenuItem item = menu.add( groupId, itemId, cmd.getPriority(), cmd.getLabel() );
+				CommandMenuItemBridge bridge = new CommandMenuItemBridge( cmd, item );
+				this.addedCommandMenuItemBridges.add(bridge);
+			}
+		}
+		return super.onPrepareOptionsMenu(menu) || true;
+	}
+	//#endif
+
+	//#if !tmp.fullScreen
+	public boolean onOptionsItemSelected(MenuItem item) {
+		Object[] items = this.addedCommandMenuItemBridges.getInternalArray();
+		for (int i = 0; i < items.length; i++) {
+			CommandMenuItemBridge bridge = (CommandMenuItemBridge) items[i];
+			if (bridge == null) {
+				break;
+			}
+			if (bridge.menuItem == item) {
+				Display.getInstance().commandAction(bridge.cmd, (de.enough.polish.ui.Displayable)null );
+				return true;
+			}
+		}
+		return super.onOptionsItemSelected(item);
+	}
+	//#endif
+
+	//#if !tmp.fullScreen
+	@Override
+	public void onOptionsMenuClosed(Menu menu) {
+		super.onOptionsMenuClosed(menu);
+		this.isMenuOpened = false;
+	}
+	//#endif
+	
+	
+	//#if !tmp.fullScreen
+	public boolean onBack() {
+		if (this.isMenuOpened) {
+			return false;
+		}
+		//#if polish.android1.5
+			if (this.isSoftkeyboardOpen) {
+				hideSoftKeyboard();
+				return true;
+			}
+		//#endif
+		Command cmdBack = null;
+		Object[] commands = this.addedCommands.getInternalArray();
+		for (int i = 0; i < commands.length; i++) {
+			Command cmd = (Command) commands[i];
+			if (cmd == null) {
+				break;
+			}
+			int type = cmd.getCommandType();
+			if (type == Command.BACK || type == Command.CANCEL || type == Command.EXIT) {
+				if (cmdBack == null || cmdBack.getPriority() > cmd.getPriority()) {
+					cmdBack = cmd;
+				}
+			}
+		}
+		if (cmdBack == null && this.addedCommands.size() == 1 && ((Command)commands[0]).getCommandType() == Command.OK) {
+			// this seems to be an alert with only the OK command present:
+			cmdBack = (Command)commands[0];
+		}
+		if (cmdBack != null) {
+			Display.getInstance().commandAction(cmdBack, (de.enough.polish.ui.Displayable)null );
+			return true;
+		}
+		return false;
+	}
+	//#endif
+	
+	//#if !tmp.fullScreen
+	public boolean onOK() {
+		Command cmdOK = null;
+		Object[] commands = this.addedCommands.getInternalArray();
+		for (int i = 0; i < commands.length; i++) {
+			Command cmd = (Command) commands[i];
+			if (cmd == null) {
+				break;
+			}
+			int type = cmd.getCommandType();
+			if (type == Command.OK) {
+				if (cmdOK == null || cmdOK.getPriority() > cmd.getPriority()) {
+					cmdOK = cmd;
+				}
+			}
+		}
+		if (cmdOK != null) {
+			Display.getInstance().commandAction(cmdOK, (de.enough.polish.ui.Displayable)null );
+			return true;
+		}
+		return false;
+	}
+	//#endif
+
+
+	static class CommandMenuItemBridge {
+		final Command cmd;
+		final MenuItem menuItem;
+
+		public CommandMenuItemBridge(de.enough.polish.ui.Command cmd, MenuItem menuItem) {
+			this.cmd = cmd;
+			this.menuItem = menuItem;
+		}
+		
+	}
+
+
+
+
+
+
+
+
+
 }

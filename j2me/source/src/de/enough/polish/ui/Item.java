@@ -1951,8 +1951,7 @@ public abstract class Item implements UiElement, Animatable
 	 * All parents of this item are notified, too.
 	 * This method should be called when an item changes its size more than usual.
 	 */
-	public void requestInit() {
-		
+	public synchronized void requestInit() {
 		if (this.isInitialized) {
 			setInitialized(false);
 			Item p = this.parent; 
@@ -2755,7 +2754,7 @@ public abstract class Item implements UiElement, Animatable
 	 * @see #initContent(int, int, int)
 	 * @see ItemView#initContent(Item, int, int, int)
 	 */
-	protected void init( int firstLineWidth, int availWidth, int availHeight ) {
+	protected synchronized void init( int firstLineWidth, int availWidth, int availHeight ) {
 		//#debug
 		System.out.println("initialising item " + this + " with availWidth " + firstLineWidth + "/" + availWidth + ", height " + availHeight + " (was: " + this.availableWidth + ", " + this.availableHeight + ")" );
 		this.availableWidth = availWidth;

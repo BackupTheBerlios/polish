@@ -304,7 +304,7 @@ import de.enough.polish.android.midlet.MIDlet;
  * 
  * @since MIDP 1.0
  */
-public abstract class Canvas implements CommandListener
+public abstract class Canvas 
 {
 	protected android.graphics.Canvas androidCanvas = new android.graphics.Canvas();
 	private boolean _isShown;
@@ -553,9 +553,8 @@ public abstract class Canvas implements CommandListener
 	public static final int KEY_ANDROID_7 = 14;
     public static final int KEY_ANDROID_8 = 15;
     public static final int KEY_ANDROID_9 = 16;
-    public void addCommand(Command command) {
-		// Implemented by sub class.
-	}
+    
+    
 	//TODO: Check if we need to access the field directly. Whats wrong with getHeight?
 	public int getCanvasHeight()
 	{
@@ -773,10 +772,12 @@ public abstract class Canvas implements CommandListener
 	 * @throws NullPointerException
 	 *             - if cmd is null
 	 */
-	// public void addCommand( Command cmd)
-	// {
-	// //TODO implement addCommand
-	// }
+	public void addCommand( de.enough.polish.ui.Command cmd )
+	{
+		MIDlet.midletInstance.addCommand(cmd);
+	}
+	
+	
 	/**
 	 * Removes a command from the <code>Displayable</code>. If the command is
 	 * not in the <code>Displayable</code> (tested by comparing the object
@@ -789,9 +790,24 @@ public abstract class Canvas implements CommandListener
 	 * @param cmd
 	 *            - the command to be removed
 	 */
-	public void removeCommand(Command cmd) {
+	public void removeCommand(de.enough.polish.ui.Command cmd) {
+		MIDlet.midletInstance.removeCommand(cmd);
+	}
+	
+	/**
+	 * Sets a listener for <A
+	 * HREF="../../../javax/microedition/lcdui/Command.html">
+	 * <CODE>Commands</CODE></A> to this <code>Displayable</code>, replacing any
+	 * previous <code>CommandListener</code>. A <code>null</code> reference is
+	 * allowed and has the effect of removing any existing listener.
+	 * 
+	 * @param l
+	 *            - the new listener, or null.
+	 */
+	public void setCommandListener(de.enough.polish.ui.CommandListener l) {
 		// Implemented by sub class.
 	}
+
 
 	/**
 	 * Requests a repaint for the entire <code>Canvas</code>. The
@@ -908,20 +924,7 @@ public abstract class Canvas implements CommandListener
 		this.androidCanvas.setBitmap(bitmap);
 	}
 
-	/**
-	 * Sets a listener for <A
-	 * HREF="../../../javax/microedition/lcdui/Command.html">
-	 * <CODE>Commands</CODE></A> to this <code>Displayable</code>, replacing any
-	 * previous <code>CommandListener</code>. A <code>null</code> reference is
-	 * allowed and has the effect of removing any existing listener.
-	 * 
-	 * @param l
-	 *            - the new listener, or null.
-	 */
-	public void setCommandListener(CommandListener l) {
-		// Implemented by sub class.
-	}
-
+	
 	/**
 	 * Controls whether the <code>Canvas</code> is in full-screen mode
 	 * or in normal mode.
@@ -1249,8 +1252,5 @@ public abstract class Canvas implements CommandListener
 		//TODO implement sizeChanged
 	}
 	
-	public void commandAction( Command c, Canvas d) {
-		// TODO: Whats this?
-	}
-
+	
 }
