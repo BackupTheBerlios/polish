@@ -111,6 +111,7 @@
 					<variable file="configuration/configuration.properties" />
 					<!-- allow customized configuration settings: -->
 					<variable file="configuration/${customization}/configuration.properties" />
+					<variable name="polish.FullScreen" value="false" if="polish.android" />
 					<!-- Sample configuration options for J2ME Polish
 					<variable name="polish.TextField.useDirectInput" value="true" />
 					<variable name="polish.TextField.supportSymbolsEntry" value="true" />

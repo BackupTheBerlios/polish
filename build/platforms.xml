@@ -277,10 +277,12 @@
 		<capability name="build.ImplicitGroups" value="android" />
 		<capability name="polish.MenuBar.useExtendedMenuBar" value="true" />
 		<capability name="polish.MenuBar.Position" value="invisible" />
-		<capability name="Display.baseclass" value="de.enough.polish.android.lcdui.Canvas" />
-		<capability name="build.classes.screen" value="de.enough.polish.android.lcdui.Canvas" />
+		<capability name="Display.baseclass"        value="de.enough.polish.android.lcdui.Canvas" />
+		<capability name="build.classes.screen"     value="de.enough.polish.android.lcdui.Canvas" />
 		<capability name="build.classes.fullscreen" value="de.enough.polish.android.lcdui.Canvas" />
 		<capability name="build.classes.NativeDisplay" value="de.enough.polish.android.lcdui.AndroidDisplay" />
+		<!-- use a J2ME Polish title even when fullscreen mode is deactivated -->
+		<capability name="usePolishTitle" value="true" />
 		<capability name="javac.source" value="1.5" /> 
 		<capability name="javac.target" value="1.5" />
 		<capability name="javac.srcdir" value="activity/src" /> 

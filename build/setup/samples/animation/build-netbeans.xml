@@ -131,6 +131,7 @@
 				<!-- You can set localized variables in the resources/messages.txt files as well.  -->
 				<variables includeAntProperties="true" >
 					<variable name="polish.MenuBar.useExtendedMenubar" value="true" />
+					<variable name="polish.FullScreen" value="false" if="polish.android" />
 				</variables>
 				<!-- Here you can set the dir attribute to "resources2" for an alternative design. -->
 				<resources

@@ -123,7 +123,6 @@
 			<mapping from="javax.microedition.lcdui.Image" to="de.enough.polish.doja.ui.Image" />
 			<mapping from="javax.microedition.lcdui.*">
 				<to>
-					de.enough.polish.doja.ui.CommandListener; 
 					import de.enough.polish.doja.ui.AlertType;
 					import de.enough.polish.doja.ui.Font;
 					import de.enough.polish.doja.ui.Graphics;
