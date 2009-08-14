@@ -28,17 +28,18 @@ this:
 <pre>
 &lt;property 
 	name=&quot;android.home&quot; 
-	location=&quot;C:/Program Files/android-sdk-windows-1.0_r1&quot; 
+	location=&quot;C:/Program Files/android-sdk-windows-1.5_r1&quot; 
 /&gt;
 </pre>
 </p>
-<h2 id="blackberry-building">Building Android Application</h2>
+<h2 id="android-building">Building Android Application</h2>
 <p>To convert, compile and package your source code for the Android
-platform, you simply need to set <i>Generic/android</i> as the device to
-build your application for. This device has a resolution of 240 x 320
-and has all default features of an Android phone. Future versions of
-J2ME Polish will add more sophisticated devices like the T-Mobile G1.</p>
-<p>The building of the application is done in these steps:
+platform, you simply need to set <code>Generic/android</code> as the device to
+build your application for. You can also target a more specific phone like the <code>Generic/android1.1</code> (for Android 1.1 phones),
+ <code>Generic/android1.5</code> (for Android 1.5 phones), or <code>HTC/G1</code>.
+</p>
+<p>The building of the application is done in these steps (fully automatically):
+</p>
 <ol>
 	<li>An activity is created in <code>/activity</code> of the
 	Android build folder. </li>
@@ -50,12 +51,7 @@ J2ME Polish will add more sophisticated devices like the T-Mobile G1.</p>
 	<li>The resources are packed to a <i>.ap_</i> file with <code>aapt</code></li>
 	<li>The application is packaged to a <i>.apk</i> file with the SDK's <code>apkbuilder</code> command</li>
 </ol>
-</p>
-<b>
-Please note that the current android conversion is in its first stages. So far only the 
-Polish API and HTTP are supported. Other packages and features will follow soon.
-</b>
-<h2 id="blackberry-testing">Testing Android application</h2>
+<h2 id="android-testing">Testing Android application</h2>
 <p>
 There are two possibilities to test Android application build with J2ME Polish:
 </p>
@@ -66,44 +62,75 @@ the Android emulator is started automatically
 and the application is installed. Before launching your application, please wait for the <i>build.xml</i>
 to output <i>Successfully installed</i>. To rebuild the application and test it, just cancel 
 the running <i>build.xml</i> and leave the emulator running, the build process will automatically detect 
-if there's an emulator running and install the application to the running emulator. You can also 
+if there's an emulator running and install the application to the running emulator. 
+If you application is running at that time, it will be shut down automatically. You can also 
 start the emulator before the build process is started.
 </li>
 <li>
-The created activity in the <code>build</code> folder can also be imported to eclipse and used to 
+The created activity in the <code>build</code> folder can also be imported to Eclipse and used to 
 test via the Android ADT Plugins if they're installed. Please note that you need to fix the project to use it with the ADT
 plugins. To do so, right-click the imported activity and run <i>Android
 Tools / Fix Project Properties</i>.
 </li>
 </ul>
-<h2 id="blackberry-troubleshooting">Troubleshooting</h2>
+<p>
+To show output send to <code>System.out</code> or <code>System.err</code> you can either use the Eclipse plugin 
+or start the Android tool <code>ddms</code>, which you can find in <i>${android.home}/tools</i>.
+</p>
+
+<h2 id="android-configuring">Configuring Commands</h2>
+<p>
+You can use J2ME Polish for rendering commands or use native Android commands. This is being configured with the fullscreen mode of J2ME Polish
+ - set it to <code>false</code> for using native Android commands and to <code>menu</code> for using J2ME Polish rendered commands. 
+ Note that at the moment you need to use J2ME Polish rendering when using subcommands. Often you will want to use native Android commands:
+</p>
+<pre>
+&lt;variable name=&qupt;polish.FullScreen&qupt; value=&qupt;false&qupt; if=&qupt;polish.android&qupt; /&gt;
+</pre>
+<p>
+This setting needs to be applied to the <code>&lt;variables&gt;</code> section of the <code>&lt;j2mepolish&gt;</code> task in your
+<i>build.xml</i> script.
+</p>
+
+<h2 id="android-APIs">Supported APIs</h2>
+<p>
+A couple of common J2ME APIs are now supported by J2ME Polish:
+</p>
+<ul>
+	<li><b>JSR 139 CLDC 1.1</b>: The basic Java technologies are provided by the Android stack itself</li>
+	<li><b>JSR 118 MIDP 2.0</b>: The basic mobile information device profile APIs are supported, including RMS, low level LCDUI functionalities, HTTP connections, and <code>http:</code> and <code>tel:</code> platform requests</li>
+	<li><b>JSR 075 FileConnection</b>: You can access file objects on Android</li>
+	<li><b>JSR 075 PIM</b>: Read the native address book</li>
+	<li><b>JSR 179 Location</b>: Access the GPS on Android devices</li>
+</ul>
+<p>
+For playing back audio please use the <code>de.enough.polish.multimedia.AudiPlayer</code> for now. Direct usage of the MMAPI is not yet supported.
+</p>
+
+
+<h2 id="android-roadmap">Roadmap</h2>
+<p>
+Future versions of the Android conversion will support the conversion of the following Java Packages: 
+</p>
+<ul>
+	<li>MMAPI (use  <code>de.enough.polish.multimedia.AudiPlayer</code> for now) </li>
+	<li>Bluetooth API</li>
+</ul>
+
+
+
+<h2 id="android-troubleshooting">Troubleshooting</h2>
 <b>The creation of the .dex file terminates with an OutOfMemoryError</b>
 <p>
 This error is quite common and due to insufficient memory settings in the dx executable of the android installation.
 Please go to ${android.home}/tools and open the dx executable. Remove <code>REM</code> from the line
+</p>
 <pre>
 REM set javaOpts=-Xmx256M
 </pre>
+<p>
 and rerun the build process. If the error occurs again, increase the settings for -Xmx to a higher amount.
 </p>
 
-<h2 id="blackberry-roadmap">Roadmap</h2>
-<p>
-Future versions of the android conversion will support the conversion of the following Java Packages : 
-<ul>
-<li>
-RMS
-</li>
-<li>
-Multimedia API
-</li>
-<li>
-Location API
-</li>
-<li>
-Bluetooth API
-</li>
-</ul>
-</p>
 
 <%include end.txt %>
