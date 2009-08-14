@@ -5,11 +5,16 @@
 
 <%include start.txt %>
 
+
 <h1 id="top">Developing for Android Devices</h1>
+<%index %>
+<p>
+<br />
 The Android platform is a Java - driven platform for mobile devices from
 Google. In J2ME Polish, you can develop normal MIDlet applications and
 simply convert these applications to the native Android application
 format.
+</p>
 <h2 id="android-preparation">Preparations</h2>
 <p>To create and deploy application for Android all thats needed is
 the android sdk with the version 1.0 or higher. Please visit the <a
@@ -85,12 +90,27 @@ You can use J2ME Polish for rendering commands or use native Android commands. T
  Note that at the moment you need to use J2ME Polish rendering when using subcommands. Often you will want to use native Android commands:
 </p>
 <pre>
-&lt;variable name=&qupt;polish.FullScreen&qupt; value=&qupt;false&qupt; if=&qupt;polish.android&qupt; /&gt;
+&lt;variable name=&quot;polish.FullScreen&quot; value=&quot;false&quot; if=&quot;polish.android&quot; /&gt;
 </pre>
 <p>
 This setting needs to be applied to the <code>&lt;variables&gt;</code> section of the <code>&lt;j2mepolish&gt;</code> task in your
 <i>build.xml</i> script.
+<br />Here you can see the difference in the rendering behavior in the J2ME Polish <i>rssbrowser</i> sample application:
 </p>
+<table>
+<tr>
+<td>
+<img src="<%= basedir%>images/gui-android-commands-j2mepolish.png" width="319" height="481" alt="Commands rendered by J2ME Polish." />
+<br />
+Commands rendered by J2ME Polish.
+</td>
+<td>
+<img src="<%= basedir%>images/gui-android-commands-native.png" width="319" height="479" alt="Commands rendered by Android." /> 
+<br />
+Native Android commands.
+</td>
+</tr>
+</table>
 
 <h2 id="android-APIs">Supported APIs</h2>
 <p>
