@@ -1090,6 +1090,7 @@ implements Runnable, ResourceLoader
 			if (connection != null)
 			{
 
+				notifyPageStart(url);
 				boolean isHttpConnection = connection instanceof HttpConnection;
 				HttpConnection httpConnection = null;
 				if (isHttpConnection) {
@@ -1107,7 +1108,6 @@ implements Runnable, ResourceLoader
 				}
 
 				is = connection.openInputStream();
-				notifyPageStart(url);
 				String contentEncoding = null;
 				if (isHttpConnection) {
 					contentEncoding = httpConnection.getEncoding();
