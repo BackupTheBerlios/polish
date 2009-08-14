@@ -653,7 +653,7 @@ public abstract class MIDlet extends Activity {
 			startActivity(i);
 			return false;
 		}
-		if(url.startsWith("http:")) {
+		if(url.startsWith("http:") || url.startsWith("https:")) {
 			Uri uri = Uri.parse(url);
 			Intent intent = new Intent(Intent.ACTION_VIEW,uri);
 			startActivity(intent);
