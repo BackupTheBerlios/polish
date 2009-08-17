@@ -2295,16 +2295,38 @@ public abstract class Item implements UiElement, Animatable
 	
 	void setAvailableDimensions(int leftBorder, int rightBorder)
 	{
-		this.availableWidth = rightBorder - leftBorder;
+		int w = rightBorder - leftBorder;
 		int h = 0;
-		if (this.parent != null) {
-			h = Math.min( this.parent.contentHeight, this.parent.availableHeight );
+		Item p = this.parent;
+		if (p != null) {
+			while (p != null && (w < 1 || h < 1)) {
+				if (p.contentWidth != 0) {
+					if (h < 1) {
+						h = Math.min( p.contentHeight, p.availableHeight );
+					}
+					if (w < 1) {
+						w = Math.min( p.contentWidth, p.availableWidth );
+					}
+				} else {
+					if (h < 1) {
+						h = p.availableHeight;
+					}
+					if (w < 1) {
+						w = p.availableWidth;
+					}
+				}
+				p = p.parent;
+			}
 		} else {
 			Screen scr = getScreen();
 			if (scr != null){
-				h = Math.min( scr.contentHeight, h );
+				h = scr.contentHeight;
+				if (w < 1) {
+					w = scr.contentWidth;
+				}
 			}
 		}
+		this.availableWidth = w;
 		this.availableHeight = h;
 	}
 	
