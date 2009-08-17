@@ -4342,9 +4342,8 @@ implements UiElement, Animatable
 				this.itemCommands = new ArrayList( commands.length );
 			} else {
 				if (this.itemCommands.size() > 0) {
-					removeItemCommands(item);
+					clearItemCommands();
 				}
-				this.itemCommands.clear();
 			}
 			for (int i = 0; i < commands.length; i++) {
 				Command command = (Command) commands[i];
@@ -4407,15 +4406,8 @@ implements UiElement, Animatable
 	protected Command getDefaultCommand(Item item) {
 		return item.defaultCommand;
 	}
-
 	
-	/**
-	 * Removes the commands of the given item.
-	 *  
-	 * @param item the item which has at least one command 
-	 * @see #setItemCommands(ArrayList,Item)
-	 */
-	protected void removeItemCommands( Item item ) {
+	protected void clearItemCommands() {
 		//System.out.println("removeItemCommands for " + item);
 		if (this.itemCommands != null) {
 			// use the Screen's itemCommands list, since in this list only commands that are only present on the item
@@ -4426,13 +4418,57 @@ implements UiElement, Animatable
 				if (command == null) {
 					break;
 				}
+				
 				//#ifdef tmp.useExternalMenuBar
 					this.menuBar.removeCommand(command);
 				//#else
 					removeCommand(command);
 				//#endif
 			}
-			this.itemCommands.clear();
+		}
+		//#ifdef tmp.useExternalMenuBar
+			if (this.menuBar.size() ==0) {
+				this.menuBarHeight = 0;
+			}
+		//#endif
+			
+		//#ifdef tmp.useExternalMenuBar
+			if (super.isShown()) {
+				requestRepaint();
+			}
+		//#endif
+	}
+	
+	/**
+	 * Removes the commands of the given item.
+	 *  
+	 * @param item the item which has at least one command 
+	 * @see #setItemCommands(ArrayList,Item)
+	 */
+	protected void removeItemCommands( Item item ) {
+		ArrayList itemCommands = item.getItemCommands();
+		//System.out.println("removeItemCommands for " + item);
+		if (this.itemCommands != null) {
+			// use the Screen's itemCommands list, since in this list only commands that are only present on the item
+			// are listed (not commands that are also present on the screen).
+			Object[] commands = this.itemCommands.getInternalArray();
+			for (int i = 0; i < commands.length; i++) {
+				Command command = (Command) commands[i];
+				if (command == null) {
+					break;
+				}
+				
+				if(itemCommands != null && itemCommands.contains(command))
+				{
+					//#ifdef tmp.useExternalMenuBar
+						this.menuBar.removeCommand(command);
+					//#else
+						removeCommand(command);
+					//#endif
+						
+					this.itemCommands.remove(command);
+				}
+			}
 		}
 		//#ifdef tmp.useExternalMenuBar
 			if (this.menuBar.size() ==0) {
