@@ -33,6 +33,7 @@ import de.enough.polish.ui.AnimationThread;
 import de.enough.polish.ui.ClippingRegion;
 import de.enough.polish.ui.CommandItem;
 import de.enough.polish.ui.Container;
+import de.enough.polish.ui.DebugHelper;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.TextEffect;
@@ -76,20 +77,12 @@ public class VerticalScrollTextEffect extends TextEffect{
 	{
 		this.isTextSensitive = true;
 	}
-	
-	public void onAttach(Item parent) {
-	}
-
-	public void onDetach(Item parent) {
-		AnimationThread.removeAnimationItem(parent);
-	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.TextEffect#animate(de.enough.polish.ui.Item, long, de.enough.polish.ui.ClippingRegion)
 	 */
 	public void animate(Item parent, long currentTime,
 			ClippingRegion repaintRegion) {
-		
 		super.animate(parent, currentTime, repaintRegion);
 		
 		if(this.textLines != null && this.textLines.length == 1)
