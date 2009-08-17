@@ -2,12 +2,12 @@
 <classpath>
 	<classpathentry kind="src" path="source/src"/>
 	<classpathentry kind="src" output="bin/test" path="source/test"/>
+	<classpathentry kind="lib" path="/enough-polish-build/import/cldc-1.1-java5.0.jar"/>
 	<classpathentry kind="lib" path="/enough-polish-build/import/midp-2.0.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="file:/home/mkoch/local/WTK2.2/docs/api/midp/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/enough-polish-build/import/cldc-1.1.jar"/>
 	<classpathentry kind="lib" path="/enough-polish-build/import/m3g.jar"/>
 	<classpathentry kind="lib" path="/enough-polish-build/import/pdaapi.jar"/>
 	<classpathentry kind="lib" path="/enough-polish-build/import/doja-2.5.jar"/>

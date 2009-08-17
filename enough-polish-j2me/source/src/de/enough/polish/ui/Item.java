@@ -4701,6 +4701,23 @@ public abstract class Item implements UiElement, Animatable
 			}
 		//#endif
 	}
+	
+	/**
+	 * Retrieves the available width for this item.
+	 * @return the available width in pixel, can be 0 when this item has not yet been initialized
+	 */
+	public int getAvailableWidth() {
+		return this.availableWidth;
+	}
+	
+	/**
+	 * Retrieves the available height for this item.
+	 * @return the available height in pixel, can be 0 when this item has not yet been initialized
+	 */
+	public int getAvailableHeight() {
+		return this.availableHeight;
+	}
+
 
 
 
