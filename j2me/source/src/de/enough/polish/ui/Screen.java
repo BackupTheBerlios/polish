@@ -4453,9 +4453,9 @@ implements UiElement, Animatable
 	 * @see #setItemCommands(ArrayList,Item)
 	 */
 	protected void removeItemCommands( Item item ) {
-		ArrayList commandsFromItem = item.getItemCommands();
+//		ArrayList commandsFromItem = item.getItemCommands();
 		//System.out.println("removeItemCommands for " + item);
-		if (this.itemCommands != null) {
+		if (this.itemCommands != null && this.itemCommands.size() > 0) {
 			// use the Screen's itemCommands list, since in this list only commands that are only present on the item
 			// are listed (not commands that are also present on the screen).
 			Object[] commands = this.itemCommands.getInternalArray();
@@ -4465,31 +4465,32 @@ implements UiElement, Animatable
 					break;
 				}
 				
-				if(commandsFromItem != null && commandsFromItem.contains(command))
-				{
+//				if(commandsFromItem != null && commandsFromItem.contains(command))
+//				{
 					//#ifdef tmp.useExternalMenuBar
 						this.menuBar.removeCommand(command);
 					//#else
 						removeCommand(command);
 					//#endif
 						
-					this.itemCommands.remove(command);
+//					this.itemCommands.remove(command);
 				}
+//			}
+			this.itemCommands.clear();
+			//#ifdef tmp.useExternalMenuBar
+				if (this.menuBar.size() ==0) {
+					this.menuBarHeight = 0;
+				}
+			//#endif
+			if (this.focusedItem == item) {
+				this.focusedItem = null;
 			}
+			//#ifdef tmp.useExternalMenuBar
+				if (super.isShown()) {
+					requestRepaint();
+				}
+			//#endif
 		}
-		//#ifdef tmp.useExternalMenuBar
-			if (this.menuBar.size() ==0) {
-				this.menuBarHeight = 0;
-			}
-		//#endif
-		if (this.focusedItem == item) {
-			this.focusedItem = null;
-		}
-		//#ifdef tmp.useExternalMenuBar
-			if (super.isShown()) {
-				requestRepaint();
-			}
-		//#endif
 	}
 	
 	/**
