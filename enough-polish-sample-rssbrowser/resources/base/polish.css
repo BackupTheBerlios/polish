@@ -201,7 +201,7 @@ alertcontent {
 }
 
 .browserLinkOdd extends browserLink {
-	background-color: #ddd;	
+	background-color: #8aaa;	
 }
 
 .browserlink:visited:hover {
@@ -218,13 +218,11 @@ alertcontent {
 .rssDescriptionAlert extends aboutAlert {
 	content-style: .rssDescriptionAlertContent;
 	screen-change-animation: right;
-	background {
-		type: vertical-gradient;
-		top-color: #fff;
-		bottom-color: #000;
-		start: 95%;
-		bottom: menubar;
-	}
+	background-color: #fff;
+	background-top: title;
+	background-bottom: menubar;
+	scroll-up-background: rssScrollUpBg;
+	scroll-down-background: rssScrollDownBg;	
 }
 
 .rssDescriptionAlertTitle  {
@@ -238,7 +236,7 @@ alertcontent {
 }
 
 .rssDescriptionAlertContent {
-	font-color: black;
+	font-color: #111;
 }
 
 

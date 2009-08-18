@@ -10,7 +10,7 @@ import de.enough.polish.ui.Style;
 import de.enough.polish.ui.UiAccess;
 import de.enough.polish.util.ArrayList;
 
-public class StylingRssHander extends RssTagHandler {
+public class StylingRssHandler extends RssTagHandler {
 	
 	private ArrayList visitedUrls;
 	private RmsStorage urlsStorage;
@@ -20,7 +20,7 @@ public class StylingRssHander extends RssTagHandler {
 	 * Creates a new RSS handler
 	 * @param browser the original RSS browser
 	 */
-	public StylingRssHander(RssBrowser browser) {
+	public StylingRssHandler(RssBrowser browser) {
 		super(browser.getLinkCommand(), browser.getRssItemCommandListener());
 		try {
 			this.urlsStorage = new RmsStorage(null);

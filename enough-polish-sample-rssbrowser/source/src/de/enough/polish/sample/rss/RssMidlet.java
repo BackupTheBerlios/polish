@@ -47,7 +47,7 @@ public class RssMidlet
 	private List mainMenu;
 	private String defaultRssUrl = "http://www.digg.com/rss/containerscience.xml";
 	private Form settingsForm;
-	private StylingRssHander rssTagHandler;
+	private StylingRssHandler rssTagHandler;
 
      protected void startApp()
      	throws MIDletStateChangeException
@@ -89,7 +89,7 @@ public class RssMidlet
          this.browserScreen = new Form("Browser");
          //#style rssBrowser
          this.rssBrowser = new RssBrowser();
-         StylingRssHander handler = new StylingRssHander(this.rssBrowser);
+         StylingRssHandler handler = new StylingRssHandler(this.rssBrowser);
          this.rssBrowser.setRssTagHandler(handler);
          this.rssTagHandler = handler;
          	
