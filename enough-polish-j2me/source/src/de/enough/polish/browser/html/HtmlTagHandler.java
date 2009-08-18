@@ -372,6 +372,12 @@ public class HtmlTagHandler
 		} else if (TAG_A.equals(tagName)) {
 			if (opening) {
 				this.anchorHref = (String) attributeMap.get(ATTR_HREF);
+				//#if polish.debug.error
+				if (this.anchorHref == null) {
+					//#debug error
+					System.out.println("Unable to handle anchor tag <a> without " + ATTR_HREF + " attribute: " + attributeMap);
+				}
+				//#endif
 				this.browser.openContainer(style);
 				if (style == null) {
 					Container container = this.browser.getCurrentContainer();
@@ -410,17 +416,19 @@ public class HtmlTagHandler
 					}
 				}
 //				System.out.println("closing <a>: container.size()=" + container.size() + ", linkItem=" + linkItem + ", style=" + (contStyle != null ? contStyle.name : "<no style>") );
-				if (contStyle != null) {
-					linkItem.setStyle( contStyle );
-				} else if (linkItem.getStyle() == null) {
-					//#style browserLink
-					UiAccess.setStyle( linkItem );
+				if (this.anchorHref != null) {
+					if (contStyle != null) {
+						linkItem.setStyle( contStyle );
+					} else if (linkItem.getStyle() == null) {
+						//#style browserLink
+						UiAccess.setStyle( linkItem );
+					}
+					linkItem.setDefaultCommand(CMD_LINK);
+					linkItem.setItemCommandListener( this );
+					linkItem.setAttribute(ATTR_HREF, this.anchorHref );
+					addCommands(TAG_A, linkItem);
+					add(linkItem);
 				}
-				linkItem.setDefaultCommand(CMD_LINK);
-				linkItem.setItemCommandListener( this );
-				linkItem.setAttribute(ATTR_HREF, this.anchorHref );
-				addCommands(TAG_A, linkItem);
-				add(linkItem);
 
 				//this.browser.closeContainer();
 			}
