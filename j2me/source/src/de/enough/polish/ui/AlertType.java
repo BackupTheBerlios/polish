@@ -3,16 +3,17 @@
 package de.enough.polish.ui;
 
 /**
- * not implemented!
-*The AlertType provides an indication of the nature of alerts. 
-*Alerts are used by an application to present various kinds of 
-*information to the user. An AlertType may be used to directly 
-*signal the user without changing the current Displayable. 
-*The playSound method can be used to spontaneously generate a sound 
-*to alert the user. For example, a game using a Canvas can use playSound 
-*to indicate success or progress. 
-*The predefined types are INFO, WARNING, ERROR, ALARM, and CONFIRMATION. 
-*/
+ * The AlertType provides an indication of the nature of alerts. 
+ * Alerts are used by an application to present various kinds of 
+ * information to the user. An AlertType may be used to directly 
+ * signal the user without changing the current Displayable. 
+ * The playSound method can be used to spontaneously generate a sound 
+ * to alert the user. For example, a game using a Canvas can use playSound 
+ * to indicate success or progress. 
+ * The predefined types are INFO, WARNING, ERROR, ALARM, and CONFIRMATION. 
+ *
+ * <b>Note that in J2ME Polish the alert type does not really matter, you can influence the design in the style for the alert.</b>
+ */
 
 public class AlertType{
 	/**
@@ -44,7 +45,6 @@ public class AlertType{
 	
 	
 	/**
-	 * not implemented!
 	 * Alert the user by playing the sound for this AlertType. 
 	 * The AlertType instance is used as a hint by the device 
 	 * to generate an appropriate sound. Instances other than 
@@ -53,15 +53,32 @@ public class AlertType{
 	 * The device may ignore the request, use the same sound for 
 	 * several AlertTypes or use any other means suitable to 
 	 * alert the user. 
+	 * Note that this is only implemented for pure J2ME/MIDP phone
 	 * 
-	 * @param display - to which the AlertType's sound should be played. 
+	 * @param display to which the AlertType's sound should be played. 
 	 * @return true if the user was alerted, false otherwise.
-	 * @throws NullPointerException - if display is null
+	 * @throws NullPointerException if display is null
 	 */
-	public boolean playSound(Display display)throws NullPointerException{
-		
-		//todo implement
-		return false;
+	public boolean playSound(Display display) throws NullPointerException{
+		//#if polish.midp && !(polish.android || polish.blackberry)
+			javax.microedition.lcdui.AlertType nativeType;
+			if (this == ALARM) {
+				nativeType = javax.microedition.lcdui.AlertType.ALARM; 
+			} else if (this == CONFIRMATION) {
+				nativeType = javax.microedition.lcdui.AlertType.CONFIRMATION;
+			} else if (this == ERROR) {
+				nativeType = javax.microedition.lcdui.AlertType.ERROR;
+			} else if (this == INFO) {
+				nativeType = javax.microedition.lcdui.AlertType.INFO;
+			} else if (this == WARNING) {
+				nativeType = javax.microedition.lcdui.AlertType.WARNING;
+			} else {
+				return false;
+			}
+			return nativeType.playSound( (javax.microedition.lcdui.Display) display.getNativeDisplay() );
+		//#else
+			//# return false;
+		//#endif
 	}
 	 
 }
