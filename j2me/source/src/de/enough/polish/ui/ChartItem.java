@@ -175,8 +175,8 @@ public class ChartItem
 		int length = this.dataSequences[0].length - 1;
 		boolean isHorizontalShrink = (this.layout & LAYOUT_SHRINK) == LAYOUT_SHRINK;
 		//#ifdef polish.css.max-width
-			if (this.maximumWidth != null && this.maximumWidth.getValue(firstLineWidth) < availWidth ) {
-				availWidth = this.maximumWidth.getValue(firstLineWidth);
+			if (this.maximumWidth != null && this.maximumWidth.getValue(availWidth) < availWidth ) {
+				availWidth = this.maximumWidth.getValue(availWidth);
 			}
 		//#endif
 		if (isHorizontalShrink && length <= availWidth) {
