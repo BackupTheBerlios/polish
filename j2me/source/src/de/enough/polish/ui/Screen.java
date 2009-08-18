@@ -2665,6 +2665,9 @@ implements UiElement, Animatable
 		if (cont == null || cont.size() == 0) {
 			return;
 		}
+		if (!cont.isInitialized()) {
+			calculateContentArea(0, 0, this.screenWidth, this.screenHeight );
+		}
 		int clipX = g.getClipX();
 		int clipY = g.getClipY();
 		int clipWidth = g.getClipWidth();
