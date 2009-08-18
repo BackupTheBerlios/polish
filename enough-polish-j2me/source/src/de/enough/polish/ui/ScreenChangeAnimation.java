@@ -541,7 +541,9 @@ implements Runnable
 				this.display = null;
 				Displayable next = this.nextDisplayable;
 				this.nextDisplayable = null;
-				System.gc();
+				//#if !polish.blackberry
+					System.gc();
+				//#endif
 				if (disp != null && !this.abort) {
 					// checking out if the animation is still shown is sweet in theory but it fails when there are security dialogs and the like in the way..
 					//Displayable current = disp.getCurrent();
