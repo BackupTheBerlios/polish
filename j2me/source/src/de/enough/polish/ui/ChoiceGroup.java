@@ -1610,6 +1610,7 @@ implements Choice
 				} else {
 					closePopup();
 				}
+				handled = true;
 			}
 			//#endif
 			return handled;
