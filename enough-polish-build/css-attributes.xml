@@ -4708,6 +4708,14 @@
 		since="J2ME Polish 2.1.1"
 	/>
 	
+	<attribute
+		name="menu-item-style"
+		type="style"
+		appliesTo="MenuBar"
+		description="The default style for commands shown within the options menu."
+		id="401"
+		since="J2ME Polish 2.1.2"
+	/>
 	
 	
 

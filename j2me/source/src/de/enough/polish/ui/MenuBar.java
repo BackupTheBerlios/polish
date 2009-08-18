@@ -1864,6 +1864,12 @@ public class MenuBar extends Item {
 					this.commandsContainer.setStyle(menuStyle);
 				}
 			//#endif
+			//#if polish.css.menu-item-style
+				Style menuItmStyle = (Style) style.getObjectProperty("menu-item-style");
+				if (menuItmStyle != null ) {
+					setMenuItemStyle(menuItmStyle);
+				}
+			//#endif
 				
 		//#endif
 	}
