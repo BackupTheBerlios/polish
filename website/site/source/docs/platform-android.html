@@ -82,14 +82,14 @@ or start the Android tool <code>ddms</code>, which you can find in <i>${android.
 
 <h2 id="android-signing">Sign your Application</h2>
 <p>Every Android application needs to be signed. The build process will automatically sign your application with a development signature which is accepted by a device or an emulator. To sign
-your application with your own signature you can use the signing mechanism provided by J2ME Polish. Please the the <code>sign</code> tag for details.</p>
+your application with your own signature you can use the signing mechanism provided by J2ME Polish. Please see the <a href="build-build.html#sign"><code>sign</code> tag</a> for details.</p>
 <p>Tip: Changing the signature of an application will not change its identity. If you try to install an already installed application with the same id but a different signature,
 the system will assume fraud and will not allow the operation. So in order to change the development signature to a real one you need to deinstall the old application first. This also implies
 that you should not deploy an application with a development signature to your customers. The customer would be forced to deinstall the application by hand in case you want to update the application.</p>
 
 <h2 id="android-market">Publishing your Application on Android Market</h2>
 <p>The Android Market is the One-Stop-Shop for applications on any Android handset. A published application can be downloaded by every Android user and you need not provide hosting and delivery methods.</p>
-
+<p>To publish your application you need an Android Market account. Please see <a href="http://www.android.com/market">the offical Android Market site</a> for details.</p>
 
 <h2 id="android-configuring">Configuring Commands</h2>
 <p>
