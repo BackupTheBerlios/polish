@@ -50,6 +50,14 @@ public class VersionFunction extends PropertyFunction
 	 */
 	public String process(String input, String[] arguments, Environment env)
 	{
+		return doProcess(input, arguments);
+	}
+	
+	public static String process(String version) {
+		return doProcess(version, null);
+	}
+
+	private static String doProcess(String input, String[] arguments) {
 		if (arguments != null && arguments.length > 0) {
 			String start = arguments[0].toLowerCase().trim();
 			String[] inputs = StringUtil.splitAndTrim(input, ',');
@@ -94,5 +102,5 @@ public class VersionFunction extends PropertyFunction
 		}
 		return version.toString();
 	}
-
+	
 }

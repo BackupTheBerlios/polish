@@ -43,6 +43,7 @@ import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.ant.android.ArgumentHelper;
 import de.enough.polish.precompile.PreCompiler;
+import de.enough.polish.propertyfunctions.VersionFunction;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.ProcessUtil;
 
@@ -139,7 +140,7 @@ public class ResourcesPreCompiler extends PreCompiler {
 		if(version == null || version.length() == 0) {
 			version = "1";
 		}
-		int versionCodeNumber = computeSumOfVersion(version);
+		int versionCodeNumber = computeVersionCode(version);
 		String versionCode = String.valueOf(versionCodeNumber);
 		rootElement.setAttribute("versionCode", versionCode,namespace);
 		
@@ -200,22 +201,13 @@ public class ResourcesPreCompiler extends PreCompiler {
 	 * @param version
 	 * @return
 	 */
-	private static int computeSumOfVersion(String version) {
-		int sum = 0;
-		int place = 0;
-		int start = version.length()-1;
-		for(int character = start; character >= 0; character--) {
-			int characterValue = version.charAt(character);
-			if(48 <=characterValue && characterValue <= 57) {
-				// Its a number.
-				int number = characterValue-48;
-				sum += number * Math.pow(10,place);
-				place++;
-			} else {
-				place = 0;
-			}
+	private int computeVersionCode(String version) {
+		if(version == null || version.length() == 0) {
+			version = "1";
 		}
-		return sum;
+		String versionCodeString = VersionFunction.process(version);
+		int versionCode = Integer.parseInt(versionCodeString);
+		return versionCode;
 	}
 	
 	/**
