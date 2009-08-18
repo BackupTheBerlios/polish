@@ -3084,12 +3084,12 @@ public class TextField extends StringItem
 					}
 				//#endif
 				if (keyCode >= 32 
-						&& this.screen.isKeyboardAccessible() 
 						//#if polish.key.maybeSupportsAsciiKeyMap
 							&& useAsciiKeyMap
 						//#endif
 						&& this.inputMode != MODE_NUMBERS 
 						&& !this.isNumeric
+						&& this.screen.isKeyboardAccessible() 
 						&& !( 	   (gameAction == Canvas.UP     &&  insertChar != '2' && keyCode == this.screen.getKeyCode(Canvas.UP) ) 
 								|| (gameAction == Canvas.DOWN   &&  insertChar != '8' && keyCode == this.screen.getKeyCode(Canvas.DOWN)  )
 								|| (gameAction == Canvas.LEFT   &&  insertChar != '4' && keyCode == this.screen.getKeyCode(Canvas.LEFT)	)
