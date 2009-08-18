@@ -4407,6 +4407,9 @@ implements UiElement, Animatable
 		return item.defaultCommand;
 	}
 	
+	/**
+	 * Removes commands from the complete focused item hierarchy
+	 */
 	protected void clearItemCommands() {
 		//System.out.println("removeItemCommands for " + item);
 		if (this.itemCommands != null) {
@@ -4437,6 +4440,7 @@ implements UiElement, Animatable
 				requestRepaint();
 			}
 		//#endif
+		this.itemCommands.clear();
 	}
 	
 	/**
@@ -4446,7 +4450,7 @@ implements UiElement, Animatable
 	 * @see #setItemCommands(ArrayList,Item)
 	 */
 	protected void removeItemCommands( Item item ) {
-		ArrayList itemCommands = item.getItemCommands();
+		ArrayList commandsFromItem = item.getItemCommands();
 		//System.out.println("removeItemCommands for " + item);
 		if (this.itemCommands != null) {
 			// use the Screen's itemCommands list, since in this list only commands that are only present on the item
@@ -4458,7 +4462,7 @@ implements UiElement, Animatable
 					break;
 				}
 				
-				if(itemCommands != null && itemCommands.contains(command))
+				if(commandsFromItem != null && commandsFromItem.contains(command))
 				{
 					//#ifdef tmp.useExternalMenuBar
 						this.menuBar.removeCommand(command);
