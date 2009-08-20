@@ -487,7 +487,7 @@ public class ExclusiveSingleLineView extends ContainerView {
 		this.currentItem = (ChoiceItem) items[ index ];
 		//this.currentItem.select( true );
 		((ChoiceGroup) this.parentContainer).setSelectedIndex( this.currentItemIndex, true );
-		this.parentContainer.focusChild(this.currentItemIndex, this.currentItem, 0);
+		this.parentContainer.focusChild(this.currentItemIndex, this.currentItem, 0, true);
 		this.parentContainer.notifyStateChanged();
 		return true;
 	}

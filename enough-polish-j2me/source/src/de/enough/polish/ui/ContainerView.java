@@ -1122,7 +1122,7 @@ extends ItemView
 	 * @param direction the direction, either Canvas.DOWN, Canvas.RIGHT, Canvas.UP, Canvas.LEFT or 0.
 	 */
 	protected void focusItem( int index, Item item, int direction  ) {
-		this.parentContainer.focusChild(index, item, direction );
+		this.parentContainer.focusChild(index, item, direction, true );
 	}
 
 //	/**
@@ -1379,7 +1379,7 @@ extends ItemView
 	 * @param width the width of the area
 	 * @param height the height of the area
 	 */
-	protected void scroll( int direction, int x, int y, int width, int height ){
+	protected void scroll( int direction, int x, int y, int width, int height, boolean force ){
 		Container container = this.parentContainer;
 		while (!container.enableScrolling) {
 			Item item = container.parent;
@@ -1392,7 +1392,7 @@ extends ItemView
 			}
 		} 
 		if (container.enableScrolling) {
-			container.scroll( direction, x, y, width, height );
+			container.scroll( direction, x, y, width, height, force );
 		}
 	}
 	

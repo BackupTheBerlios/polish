@@ -986,7 +986,7 @@ implements Choice
 				
 				if (this.isFocused) {
 					if ( isInitialized()) {
-						focusChild( elementNum, newSelected, 0 );
+						focusChild( elementNum, newSelected, 0, true );
 					} else {
 						this.autoFocusEnabled = true;
 						this.autoFocusIndex = elementNum;

@@ -2320,7 +2320,7 @@ public class TextField extends StringItem
 			this.screen = getScreen();
 			if (this.isFocused && this.parent instanceof Container ) {
 				// ensure that the visible area of this TextField is shown:
-				((Container)this.parent).scroll(0, this); // problem: itemHeight is not yet set
+				((Container)this.parent).scroll(0, this, true); // problem: itemHeight is not yet set
 			}
 		//#endif
 	}
@@ -4300,7 +4300,7 @@ public class TextField extends StringItem
 					direction = Canvas.UP;
 				}
 				this.bbLastCursorPosition = cursorPosition;
-				((Container)this.parent).scroll(direction, this);
+				((Container)this.parent).scroll(direction, this, true);
 			}
 		} else {
 			this.internalX = NO_POSITION_SET;

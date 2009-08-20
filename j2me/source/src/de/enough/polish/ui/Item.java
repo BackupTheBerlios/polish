@@ -4331,7 +4331,7 @@ public abstract class Item implements UiElement, Animatable
 						//System.out.println("setting parent scroll offset to " + offset );
 						parentContainer.setScrollYOffset( offset, false );
 					} else {
-						parentContainer.scroll( 0, parentContainer.focusedItem );
+						parentContainer.scroll( 0, parentContainer.focusedItem, true);
 					}
 				} else {
 					parentContainer.focusChild(-1);

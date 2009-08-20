@@ -5041,7 +5041,7 @@ implements UiElement, Animatable
 								if (child.appearanceMode != Item.PLAIN || force ) {
 									Container parentContainer = (Container) child.parent;
 									//System.out.println("focusing " + child + " in parent " + parentContainer);
-									parentContainer.focusChild( parentContainer.indexOf(child), child, 0 );
+									parentContainer.focusChild( parentContainer.indexOf(child), child, 0, force );
 								} else {
 									//System.out.println("child is not focussable: " + child);
 									return;
@@ -5080,7 +5080,7 @@ implements UiElement, Animatable
 	 * @param index the index of the item which is already shown on this screen.
 	 */
 	public void focus(int index) {
-		focus( index, false );
+		focus( index, true );
 	}
 	
 	/**
@@ -5108,7 +5108,7 @@ implements UiElement, Animatable
 		if (index != -1 && item != null && (item.appearanceMode != Item.PLAIN || force ) ) {
 			//#debug
 			System.out.println("Screen: focusing item " + index + ": " + item );
-			this.container.focusChild( index, item, 0 );
+			this.container.focusChild( index, item, 0, force );
 			if (index == 0) {
 				this.container.setScrollYOffset( 0, false );
 			}

@@ -125,7 +125,7 @@ public class HorizontalChoiceView extends ContainerView {
 				selectedItemIndex = 0;
 			}
 			if ( selectedItemIndex < parent.size() ) {
-				parent.focusChild (selectedItemIndex, parent.get( selectedItemIndex ), 0);
+				parent.focusChild (selectedItemIndex, parent.get( selectedItemIndex ), 0, true);
 			}
 		} else {
 			selectedItemIndex = parent.getFocusedIndex();
@@ -768,7 +768,7 @@ public class HorizontalChoiceView extends ContainerView {
 		ChoiceItem item = (ChoiceItem) this.parentContainer.get( index );
 		this.focusedItem = item;
 		notifyItemPressedEnd(item);
-		this.parentContainer.focusChild (index, item, 0);
+		this.parentContainer.focusChild (index, item, 0, true);
 		if (isMultiple) {
 			item.toggleSelect();			
 		} else {

@@ -2228,7 +2228,7 @@ public final class UiAccess {
      */
     public static void scrollTo( Item item ) {
     	if (item.parent instanceof Container) {
-    		((Container)item.parent).scroll(0, item);
+    		((Container)item.parent).scroll(0, item, true);
     		return;
     	}
     	Screen screen = item.getScreen();
