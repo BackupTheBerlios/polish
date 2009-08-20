@@ -914,11 +914,13 @@ public class Display
 		//#if polish.midp && !polish.blackberry
 			if (nextDisplayable == null || !(nextDisplayable instanceof Canvas)) {
 				// this is a native Displayable
-				if (this.currentCanvas != null) {
-					this.currentCanvas._hideNotify();
-					this.currentCanvas = null;
+				if (nextDisplayable != null) {
+					if (this.currentCanvas != null) {
+						this.currentCanvas._hideNotify();
+						this.currentCanvas = null;
+					}
+					this.currentDisplayable = nextDisplayable;
 				}
-				this.currentDisplayable = nextDisplayable;
 				((de.enough.polish.midp.ui.NativeDisplayImpl)this.nativeDisplay).setCurrent( nextDisplayable );
 				return;
 			}
