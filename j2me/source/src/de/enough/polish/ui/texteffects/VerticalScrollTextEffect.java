@@ -217,6 +217,9 @@ public class VerticalScrollTextEffect extends TextEffect{
 	 */
 	public void drawString(String text, int textColor, int x, int y,
 			int anchor, Graphics g) {
+		//#if polish.blackberry
+		g.setFont(style.getFont());
+		//#endif
 		g.setColor(textColor);
 		g.drawString(text, x, y, anchor);
 	}
