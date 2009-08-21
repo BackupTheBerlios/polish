@@ -4708,6 +4708,7 @@
 		since="J2ME Polish 2.1.1"
 	/>
 	
+	
 	<attribute
 		name="menu-item-style"
 		type="style"
@@ -4717,8 +4718,14 @@
 		since="J2ME Polish 2.1.2"
 	/>
 	
-	
-
+	<attribute
+		name="scrollbar-slider-minimum-height"
+		type="integer"
+		appliesTo="ScrollBar"
+		description="The minimum height to be used for the slider of a scrollbar"
+		id="402"
+		since="J2ME Polish 2.1.3"
+	/>
 <!-- 
 	<attribute
 		name="content-layout"
