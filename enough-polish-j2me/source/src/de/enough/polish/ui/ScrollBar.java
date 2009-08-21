@@ -78,6 +78,14 @@ public class ScrollBar extends Item {
 	private static final int MODE_AREA = 0;
 	private static final int MODE_ITEM = 1;
 	private static final int MODE_PAGE = 2;
+	
+	//#if polish.ScrollBar.minSliderHeight:defined
+	//#= private static final int MIN_SLIDER_HEIGHT = ${polish.ScrollBar.minSliderHeight};
+	//#else
+		private static final int MIN_SLIDER_HEIGHT = 1;
+	//#endif
+		
+	
 	protected int sliderColor;
 	protected int sliderWidth = 2;
 	//#if polish.css.scrollbar-slider-image
@@ -190,6 +198,12 @@ public class ScrollBar extends Item {
 				this.opacity = this.startOpacity;
 			}
 		//#endif
+			
+		// adjust slider height if it not visible
+		if(this.sliderHeight < MIN_SLIDER_HEIGHT) {
+			this.sliderHeight = MIN_SLIDER_HEIGHT;
+		}
+			
 		return this.itemWidth;
 //		int w = this.itemWidth;
 //		//#if tmp.fadeout
