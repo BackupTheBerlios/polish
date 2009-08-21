@@ -1060,6 +1060,22 @@ public class Container extends Item {
 	 * @param height the height of the area
 	 * @return true when the scroll request changed the internal scroll offsets
 	 */
+	protected boolean scroll( int direction, int x, int y, int width, int height ) {
+		return scroll( direction, x, y, width, height, false );
+	}
+	
+	/**
+	 * Adjusts the yOffset or the targetYOffset so that the given relative values are inside of the visible area.
+	 * The call is forwarded to a parent container when scrolling is not enabled for this item.
+	 * 
+	 * @param direction the direction, is used for adjusting the scrolling when the internal area is to large. Either 0 or Canvas.UP, Canvas.DOWN, Canvas.LEFT or Canvas.RIGHT
+	 * @param x the horizontal position of the area relative to this content's left edge, is ignored in the current version
+	 * @param y the vertical position of the area relative to this content's top edge
+	 * @param width the width of the area
+	 * @param height the height of the area
+	 * @param force true when the area should be shown regardless where the the current scrolloffset is located
+	 * @return true when the scroll request changed the internal scroll offsets
+	 */
 	protected boolean scroll( int direction, int x, int y, int width, int height, boolean force ) {
 		//#debug
 		System.out.println("scroll: direction=" + direction + ", y=" + y + ", availableHeight=" + this.scrollHeight +  ", height=" +  height + ", focusedIndex=" + this.focusedIndex + ", yOffset=" + this.yOffset + ", targetYOffset=" + this.targetYOffset +", numberOfItems=" + this.itemsList.size() + ", in " + this + ", downwards=" + (direction == Canvas.DOWN || direction == Canvas.RIGHT ||  direction == 0));
