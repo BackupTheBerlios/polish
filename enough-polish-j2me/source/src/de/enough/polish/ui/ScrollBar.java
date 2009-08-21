@@ -79,13 +79,6 @@ public class ScrollBar extends Item {
 	private static final int MODE_ITEM = 1;
 	private static final int MODE_PAGE = 2;
 	
-	//#if polish.ScrollBar.minSliderHeight:defined
-	//#= private static final int MIN_SLIDER_HEIGHT = ${polish.ScrollBar.minSliderHeight};
-	//#else
-		private static final int MIN_SLIDER_HEIGHT = 1;
-	//#endif
-		
-	
 	protected int sliderColor;
 	protected int sliderWidth = 2;
 	//#if polish.css.scrollbar-slider-image
@@ -104,6 +97,7 @@ public class ScrollBar extends Item {
 	protected boolean hideSlider = true;
 	protected int sliderY;
 	protected int sliderHeight;
+	protected int sliderMinHeight = 1;
 	protected int scrollBarHeight;
 	//#if polish.css.opacity && polish.midp2 && polish.css.scrollbar-fadeout
 		//#define tmp.fadeout
@@ -200,8 +194,8 @@ public class ScrollBar extends Item {
 		//#endif
 			
 		// adjust slider height if it not visible
-		if(this.sliderHeight < MIN_SLIDER_HEIGHT) {
-			this.sliderHeight = MIN_SLIDER_HEIGHT;
+		if(this.sliderHeight < this.sliderMinHeight) {
+			this.sliderHeight = this.sliderMinHeight;
 		}
 			
 		return this.itemWidth;
@@ -414,6 +408,12 @@ public class ScrollBar extends Item {
 			Background bg = (Background) style.getObjectProperty("scrollbar-slider-background");
 			if (bg != null) {
 				this.sliderBackground = bg;
+			}
+		//#endif
+		//#if polish.css.scrollbar-slider-minimum-height
+			Integer sliderMinHeightInt = style.getIntProperty("scrollbar-slider-minimum-height");
+			if (sliderMinHeightInt != null) {
+				this.sliderMinHeight = sliderMinHeightInt.intValue();
 			}
 		//#endif
 	}
