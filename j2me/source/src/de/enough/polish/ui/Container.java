@@ -428,12 +428,12 @@ public class Container extends Item {
 				focusChild( -1 );
 			}
 		}
-		if (this.focusedIndex == -1 || index <= this.focusedIndex ) {
+		if (this.enableScrolling && (this.focusedIndex == -1 || index <= this.focusedIndex )) {
 			int offset = getScrollYOffset() + last.itemHeight;
 			if (offset > 0) {
 				offset = 0;
 			}
-			setScrollYOffset(offset);
+			setScrollYOffset(offset, true);
 		}
 		//#if polish.css.focus-all
 			if (this.isFocused && this.isFocusAllChildren && !item.isFocused) {
@@ -1601,6 +1601,15 @@ public class Container extends Item {
 			} else {
 				// this is only necessary since ContainerViews are integrated differently from
 				// normal ItemViews - we should consider abonding this approach!
+				//#if polish.css.bgborder
+					if (this.bgBorder != null) {
+						int bgX = x - this.bgBorder.borderWidthLeft;
+						int bgW = width + this.bgBorder.borderWidthLeft + this.bgBorder.borderWidthRight;
+						int bgY = y - this.bgBorder.borderWidthTop;
+						int bgH = height + this.bgBorder.borderWidthTop + this.bgBorder.borderWidthBottom;
+						this.containerView.paintBorder( this.bgBorder, bgX, bgY, bgW, bgH, g );
+					}
+				//#endif
 				if ( this.background != null ) {
 					int bWidthL = getBorderWidthLeft();
 					int bWidthR = getBorderWidthRight();
