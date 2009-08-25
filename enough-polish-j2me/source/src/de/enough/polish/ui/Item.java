@@ -2216,8 +2216,11 @@ public abstract class Item implements UiElement, Animatable
 				this.appearanceMode = INTERACTIVE;
 			}
 		//#endif
-		if (this.isFocused) {
-			getScreen().notifyDefaultCommand( cmd );
+		if (this.isFocused) 
+		{
+			Screen scr = getScreen();
+			if(null != scr)
+				scr.notifyDefaultCommand( cmd );
 		}
 	}
 	
@@ -3215,7 +3218,8 @@ public abstract class Item implements UiElement, Animatable
 	protected boolean handleKeyPressed( int keyCode, int gameAction ) {
 		//#debug
 		System.out.println("item " + this + ": handling keyPressed for keyCode=" + keyCode + ", gameAction=" + gameAction);
-		if ( this.appearanceMode != PLAIN && getScreen().isGameActionFire(keyCode, gameAction) )
+		Screen scr = getScreen();
+		if ( this.appearanceMode != PLAIN && null != scr && scr.isGameActionFire(keyCode, gameAction) )
 		{
 			return notifyItemPressedStart();
 		}
@@ -3253,7 +3257,8 @@ public abstract class Item implements UiElement, Animatable
 	protected boolean handleKeyReleased( int keyCode, int gameAction ) {
 		//#debug
 		System.out.println("handleKeyReleased(" + keyCode + ", " + gameAction + ") for " + this + ", isPressed=" + this.isPressed );
-		if (this.appearanceMode != PLAIN && this.isPressed && getScreen().isGameActionFire(keyCode, gameAction) )
+		Screen scr = getScreen();
+		if (this.appearanceMode != PLAIN && this.isPressed && null != scr && scr.isGameActionFire(keyCode, gameAction) )
 		{
 			notifyItemPressedEnd();
 			Item item = this;
@@ -3264,7 +3269,7 @@ public abstract class Item implements UiElement, Animatable
 				if (item.itemCommandListener != null) {
 					item.itemCommandListener.commandAction(item.defaultCommand, this);
 				} else {			
-					Screen scr = getScreen();
+					scr = getScreen();
 					if (scr != null ) {
 						scr.callCommandListener(item.defaultCommand);
 					}
@@ -3315,7 +3320,7 @@ public abstract class Item implements UiElement, Animatable
 				if (this.itemCommandListener != null) {
 					this.itemCommandListener.commandAction(deleteCommand, this);
 				} else {			
-					Screen scr = getScreen();
+					scr = getScreen();
 					if (scr != null ) {
 						scr.callCommandListener(deleteCommand);
 					}
