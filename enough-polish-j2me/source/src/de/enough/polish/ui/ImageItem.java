@@ -274,7 +274,7 @@ public class ImageItem extends Item
 		if ((image != null && 
 			(this.imageWidth != image.getWidth() || 
 			this.imageHeight != image.getHeight()))
-			) {
+		) {
 			requestInit();
 		}
 		else if (this.isShown)
