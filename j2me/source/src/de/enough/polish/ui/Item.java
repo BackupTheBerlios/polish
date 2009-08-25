@@ -2219,7 +2219,7 @@ public abstract class Item implements UiElement, Animatable
 		if (this.isFocused) 
 		{
 			Screen scr = getScreen();
-			if(null != scr)
+			if(scr != null)
 				scr.notifyDefaultCommand( cmd );
 		}
 	}
@@ -3258,7 +3258,7 @@ public abstract class Item implements UiElement, Animatable
 		//#debug
 		System.out.println("handleKeyReleased(" + keyCode + ", " + gameAction + ") for " + this + ", isPressed=" + this.isPressed );
 		Screen scr = getScreen();
-		if (this.appearanceMode != PLAIN && this.isPressed && null != scr && scr.isGameActionFire(keyCode, gameAction) )
+		if (this.appearanceMode != PLAIN && this.isPressed && scr != null && scr.isGameActionFire(keyCode, gameAction) )
 		{
 			notifyItemPressedEnd();
 			Item item = this;
@@ -3269,10 +3269,7 @@ public abstract class Item implements UiElement, Animatable
 				if (item.itemCommandListener != null) {
 					item.itemCommandListener.commandAction(item.defaultCommand, this);
 				} else {			
-					scr = getScreen();
-					if (scr != null ) {
-						scr.callCommandListener(item.defaultCommand);
-					}
+					scr.callCommandListener(item.defaultCommand);
 				}
 				//#if polish.css.visited-style
 					if (this.style != null) {
@@ -3319,11 +3316,8 @@ public abstract class Item implements UiElement, Animatable
 			if (deleteCommand != null) {
 				if (this.itemCommandListener != null) {
 					this.itemCommandListener.commandAction(deleteCommand, this);
-				} else {			
-					scr = getScreen();
-					if (scr != null ) {
-						scr.callCommandListener(deleteCommand);
-					}
+				} else if (scr != null ) {
+					scr.callCommandListener(deleteCommand);
 				}				
 			}
 		}
