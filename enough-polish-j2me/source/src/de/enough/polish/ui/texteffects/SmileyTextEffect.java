@@ -32,6 +32,7 @@ import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
+import de.enough.polish.ui.StyleSheet;
 import de.enough.polish.ui.TextEffect;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.IntHashMap;
@@ -77,7 +78,7 @@ public class SmileyTextEffect extends TextEffect {
 			
 			try
 			{
-				this.image = Image.createImage(imageUrl);
+				this.image = StyleSheet.getImage(imageUrl, this, false);
 			}
 			catch(IOException e)
 			{
