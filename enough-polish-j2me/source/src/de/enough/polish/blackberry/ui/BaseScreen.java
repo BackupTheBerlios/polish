@@ -1177,6 +1177,7 @@ public abstract class BaseScreen
     					screen.focus(item);
     				}
     			}
+    			screen.notifyScreenStateChanged();
     			invalidate();
     			return true;
 			}
@@ -1419,7 +1420,7 @@ public abstract class BaseScreen
             synchronized (lock) {
             	deleteRange(1, count -1 );
             }
-			addedItems.clear();
+			this.addedItems.clear();
     	} 
     	clearPermanentNativeItems();
         //#if polish.hasPointerEvents
