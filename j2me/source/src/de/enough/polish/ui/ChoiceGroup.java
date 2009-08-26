@@ -1598,6 +1598,9 @@ implements Choice
 								selectCmd = List.SELECT_COMMAND;
 							}
 							scr.callCommandListener( selectCmd );
+							//#if polish.MenuBar.Position == invisible
+								handled = true;
+							//#endif
 						}
 					}
 				}
