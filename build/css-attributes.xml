@@ -4720,7 +4720,7 @@
 	
 	<attribute
 		name="scrollbar-slider-minimum-height"
-		type="integer"
+		type="dimension"
 		appliesTo="ScrollBar"
 		description="The minimum height to be used for the slider of a scrollbar"
 		id="402"
