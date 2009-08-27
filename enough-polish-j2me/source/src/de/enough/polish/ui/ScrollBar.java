@@ -411,9 +411,9 @@ public class ScrollBar extends Item {
 			}
 		//#endif
 		//#if polish.css.scrollbar-slider-minimum-height
-			Integer sliderMinHeightInt = style.getIntProperty("scrollbar-slider-minimum-height");
+			Dimension sliderMinHeightInt = (Dimension)style.getObjectProperty("scrollbar-slider-minimum-height");
 			if (sliderMinHeightInt != null) {
-				this.sliderMinHeight = sliderMinHeightInt.intValue();
+				this.sliderMinHeight = sliderMinHeightInt.getValue(this.contentHeight);
 			}
 		//#endif
 	}
