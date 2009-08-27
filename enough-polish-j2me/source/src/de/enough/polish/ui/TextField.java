@@ -3953,15 +3953,24 @@ public class TextField extends StringItem
 		//#debug
 		System.out.println("TextField.commandAction( " + cmd.getLabel() + ", " + this + " )");
 		//#if tmp.usePredictiveInput
-			if (this.predictiveAccess.commandAction(cmd, item)) {			
+			if (this.predictiveAccess.commandAction(cmd, item)) {		
 				return;
 			}
 		//#endif
-		
+		if (cmd.commandAction(this, null)) {
+			return;
+		}
 		//#if tmp.implementsItemCommandListener
 			//#if tmp.supportsSymbolEntry 
 				if (cmd == ENTER_SYMBOL_CMD ) {
-					//#if !polish.TextField.ignoreSymbolCommand
+					try { throw new RuntimeException(); } catch (Exception e) { e.printStackTrace(); }
+					//#if polish.TextField.ignoreSymbolCommand
+						Screen scr = getScreen();
+						if (scr != null & scr.getCommandListener() != null) {
+							System.out.println("forwarding cmd to " + scr.getCommandListener());
+							scr.getCommandListener().commandAction(cmd, scr);
+						}
+					//#else
 						showSymbolsList();
 					//#endif
 					return;

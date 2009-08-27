@@ -4883,7 +4883,11 @@ implements UiElement, Animatable
 			//#debug
 			System.out.println("ForwardCommandListener: processing command " + cmd.getLabel() + " for item " + item + " and screen " + Screen.this + ", itemCommandListener=" + (item == null ? null : item.itemCommandListener) + ", real commandListener=" + this.realCommandListener);
 			if ( item != null && item.handleCommand(cmd)) {
-				//System.out.println("command processed by item (or subitem) " + item);
+				System.out.println("command processed by item (or subitem) " + item);
+				return true;
+			}
+			// try to invoke command specific listener:
+			if (cmd.commandAction(item, this)) {
 				return true;
 			}
 			// now invoke the usual command listener:

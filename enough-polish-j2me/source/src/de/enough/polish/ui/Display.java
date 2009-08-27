@@ -894,7 +894,7 @@ public class Display
 	 */
 	public void setCurrent( Displayable nextDisplayable)
 	{
-		//#debug
+		// #debug
 		System.out.println("Display.setCurrent " + nextDisplayable + ", current=" + this.currentDisplayable + ", isShown=" + isShown() );
 		
 		//#if tmp.displayInfo

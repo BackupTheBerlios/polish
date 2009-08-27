@@ -3812,6 +3812,9 @@ public abstract class Item implements UiElement, Animatable
 	 * @return true when the command has been handled by this item
 	 */
 	protected boolean handleCommand( Command cmd ) {
+		if (cmd.commandAction(this, null)) {
+			return true;
+		}
 		if (this.commands == null || this.itemCommandListener == null || !this.commands.contains(cmd) ) {
 			return false;
 		}
