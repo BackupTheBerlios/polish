@@ -8,6 +8,7 @@ package de.enough.polish.ui;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
+import javax.microedition.lcdui.game.Sprite;
 import javax.microedition.midlet.MIDlet;
 
 import de.enough.polish.event.EventManager;
@@ -1760,22 +1761,19 @@ public class Display
 				if (originalGraphics != null) {
 					Image bufferImage = this.screenOrientationBuffer;
 					if (bufferImage != null) {
-						int[] rgb = new int[ rotatedClipWidth * rotatedClipHeight ];
-						bufferImage.getRGB(rgb, 0, rotatedClipWidth, rotatedClipX, rotatedClipY, rotatedClipWidth, rotatedClipHeight );
+						originalGraphics.drawRegion(bufferImage, rotatedClipX, rotatedClipY, rotatedClipWidth, rotatedClipHeight, getSpriteTransform(this.screenOrientationDegrees),  clipX, clipY, Graphics.LEFT | Graphics.TOP );
 						//System.out.println("bufferImage.width=" + bufferImage.getWidth() + "x" + bufferImage.getHeight() );
-						int[] targetRgb;
+						//originalGraphics.drawRGB( targetRgb, 0, clipWidth, clipX, clipY, clipWidth, clipHeight, false);
 						//#if tmp.RemoteScreen
+							int[] rgb = new int[ rotatedClipWidth * rotatedClipHeight ];
+							bufferImage.getRGB(rgb, 0, rotatedClipWidth, rotatedClipX, rotatedClipY, rotatedClipWidth, rotatedClipHeight );
+							int[] targetRgb;
 							if (this.screenOrientationDegrees == 0) {
 								targetRgb = rgb;
 							} else {
-						//#endif
 								targetRgb = new int[ rgb.length ];
 								ImageUtil.rotateSimple(rgb, targetRgb, rotatedClipWidth, rotatedClipHeight, this.screenOrientationDegrees );
-						//#if tmp.RemoteScreen
 							}
-						//#endif
-						originalGraphics.drawRGB( targetRgb, 0, clipWidth, clipX, clipY, clipWidth, clipHeight, false);
-						//#if tmp.RemoteScreen
 							this.remoteScreen.updateScreen(rotatedClipX, rotatedClipY, rotatedClipWidth, rotatedClipHeight,rgb);
 						//#endif
 					}
@@ -1798,6 +1796,16 @@ public class Display
 				}
 			}
 		//#endif
+	}
+
+	private int getSpriteTransform(int degrees) {
+		switch (degrees) {
+		case 0: return Sprite.TRANS_NONE;
+		case 90: return Sprite.TRANS_ROT90;
+		case 180: return Sprite.TRANS_ROT180;
+		case 270: return Sprite.TRANS_ROT270;
+		default: return Sprite.TRANS_NONE;
+		}
 	}
 
 	/**
