@@ -26,6 +26,8 @@ package de.enough.polish.ui;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.microedition.lcdui.Canvas;
 
@@ -928,7 +930,25 @@ public class TextField extends StringItem
 	//#if polish.midp && !polish.blackberry && !polish.api.windows
 		//#define tmp.useNativeTextBox
 		private de.enough.polish.midp.ui.TextBox midpTextBox;
+		//<Mobica
+		//Variable passedChar used as container for char which is passed to native TextBox.
+		//So when key is pressed (e.g. '2') view goes to native mode and 'a' character is appended to the current text
+		private char passedChar;
+		//Timer responsible for checking delay between two, subsequent presses 
+		private final Timer keyDelayTimer = new Timer();
+		private TimerTask keyDelayTimerTask = null;
+		//last time when button was pressed
+		private long lastTimeKeyPressed;
+		//number of presses of one phone button
+		private int keyPressCounter=0;
+		//latest key pressed keyCode
+		private int latestKey;
+		//maximum delay between subseqent key presses. If exceeded, will timer will call native editor. 
+		private int delayBetweenKeys = 200;
+		//>Mobica
 	//#endif
+	//Allow to open native editor by pressing CSK
+	private boolean cskOpensNativeEditor = true;
 	
 	
 	//#if tmp.usePredictiveInput
@@ -1429,7 +1449,7 @@ public class TextField extends StringItem
 					removeCommand( DELETE_CMD );
 				} else if ((this.text == null || this.text.length() == 0)
 					//#ifdef tmp.directInput
-						|| this.caretPosition == 1
+						|| this.caretPosition > 0
 					//#endif						
 				) {
 					addCommand( DELETE_CMD );
@@ -2824,7 +2844,44 @@ public class TextField extends StringItem
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
 		//#debug
 		System.out.println("handleKeyPressed " + keyCode );
+		
+		//<mobica
+		//#if tmp.useNativeTextBox
+		if (keyCode >0)
+		{
+			String alphabet;
+			if (keyCode == Canvas.KEY_POUND) {
+				alphabet = charactersKeyPound;
+			} else if (keyCode == Canvas.KEY_STAR) {
+				alphabet = charactersKeyStar;
+			} else {
+				alphabet = CHARACTERS[ keyCode - Canvas.KEY_NUM0 ];
+			}
+			if (alphabet == null || (alphabet.length() == 0)) {
+				return false;
+			}
+			
+			if(keyDelayTimerTask==null || latestKey != keyCode){
+			keyPressCounter=0;
+			passedChar = alphabet.charAt(keyPressCounter++);
+			latestKey = keyCode;
+			}
+			else {
+				passedChar = alphabet.charAt(keyPressCounter++);
+				latestKey = keyCode;
+				if (keyPressCounter == alphabet.length()){
+				keyPressCounter=0;	
+				}
+			}
+			if ((constraints & NUMERIC) == NUMERIC){
+				passedChar = (char)keyCode;
+			}
+		}
+		//#endif
+		//mobica>
+		
 		this.isKeyPressedHandled = false;
+		
 		//#ifndef tmp.directInput
 			//#if polish.bugs.inversedGameActions
 				if ((gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM8)
@@ -2855,8 +2912,7 @@ public class TextField extends StringItem
 						|| (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
 						|| (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4)
 						|| (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6)
-						|| (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5)
-						|| (this.screen.isSoftKey(keyCode, gameAction))
+						|| (!(gameAction == Canvas.FIRE && cskOpensNativeEditor) && this.screen.isSoftKey(keyCode, gameAction))
 						) 
 				{
 					return false;
@@ -2876,7 +2932,31 @@ public class TextField extends StringItem
 						if (this.inputMode == MODE_NATIVE && keyCode != KEY_CHANGE_MODE) {
 						//#endif
 							//#if tmp.useNativeTextBox
-								showTextBox();
+							lastTimeKeyPressed = System.currentTimeMillis();
+							if (keyDelayTimerTask==null && !((constraints & UNEDITABLE) == UNEDITABLE)){
+								final int localGameAction = gameAction;
+								final int localKeyCode = keyCode;
+								keyDelayTimerTask = new TimerTask(){
+
+									public void run() {
+										if(System.currentTimeMillis()-lastTimeKeyPressed < (delayBetweenKeys+20) ) return;
+										showTextBox();
+										if (TextField.this.midpTextBox!=null && (localGameAction != Canvas.FIRE || localKeyCode == Canvas.KEY_NUM5)){
+											String oldText =TextField.this.midpTextBox.getString();
+											if (oldText.length()==0 && !((constraints & INITIAL_CAPS_NEVER) == INITIAL_CAPS_NEVER)){
+												passedChar = Character.toUpperCase(passedChar);
+											}
+											TextField.this.midpTextBox.insert(String.valueOf(passedChar), TextField.this.getCaretPosition());
+										}
+										keyDelayTimerTask.cancel();
+										keyDelayTimerTask = null;
+									}
+									
+								};
+								
+							keyDelayTimer.schedule(keyDelayTimerTask, 0,delayBetweenKeys);
+							}
+								
 								return true;
 							//#endif
 						}
@@ -3677,12 +3757,19 @@ public class TextField extends StringItem
 		//return super.handleKeyRepeated(keyCode, gameAction);
 	}
 	//#endif
-
+	
 	//#if !polish.blackberry && tmp.directInput
+	boolean skipKeyReleasedEvent = false;
+	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#handleKeyReleased(int, int)
 	 */
 	protected boolean handleKeyReleased( int keyCode, int gameAction ) {
+		if(skipKeyReleasedEvent) {
+			skipKeyReleasedEvent = false;
+		
+			return true;
+		}
 		//#debug
 		System.out.println("handleKeyReleased  " + keyCode );
 		this.isKeyDown = false;
@@ -3899,10 +3986,12 @@ public class TextField extends StringItem
 		//#if tmp.useNativeTextBox
 			if (cmd == StyleSheet.CANCEL_CMD) {
 				this.midpTextBox.setString( this.text );
+				skipKeyReleasedEvent = true;
 			} else if (!this.isUneditable) {
 				setString( this.midpTextBox.getString() );
 				setCaretPosition( size() );
 				notifyStateChanged();
+				skipKeyReleasedEvent = true;
 			}
 			StyleSheet.display.setCurrent( this.screen );
 		//#endif
@@ -3953,24 +4042,15 @@ public class TextField extends StringItem
 		//#debug
 		System.out.println("TextField.commandAction( " + cmd.getLabel() + ", " + this + " )");
 		//#if tmp.usePredictiveInput
-			if (this.predictiveAccess.commandAction(cmd, item)) {		
+			if (this.predictiveAccess.commandAction(cmd, item)) {			
 				return;
 			}
 		//#endif
-		if (cmd.commandAction(this, null)) {
-			return;
-		}
+		
 		//#if tmp.implementsItemCommandListener
 			//#if tmp.supportsSymbolEntry 
 				if (cmd == ENTER_SYMBOL_CMD ) {
-					try { throw new RuntimeException(); } catch (Exception e) { e.printStackTrace(); }
-					//#if polish.TextField.ignoreSymbolCommand
-						Screen scr = getScreen();
-						if (scr != null & scr.getCommandListener() != null) {
-							System.out.println("forwarding cmd to " + scr.getCommandListener());
-							scr.getCommandListener().commandAction(cmd, scr);
-						}
-					//#else
+					//#if !polish.TextField.ignoreSymbolCommand
 						showSymbolsList();
 					//#endif
 					return;
@@ -4377,7 +4457,17 @@ public class TextField extends StringItem
 			getPredictiveAccess().setAlert(alert);
 		//#endif
 	}
+
 	
+	//<Mobica
+	public boolean isCskOpensNativeEditor() {
+		return cskOpensNativeEditor;
+	}
+	
+	public void setCskOpensNativeEditor(boolean cskOpensNativeEditor) {
+		this.cskOpensNativeEditor = cskOpensNativeEditor;
+	}
+	//Mobica>
 	/*
 	public boolean keyChar(char key, int status, int time) {
 		Screen scr = getScreen();
