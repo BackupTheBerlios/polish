@@ -450,7 +450,7 @@ public class StringItem extends Item
 			g.setFont( this.font );
 			g.setColor( this.textColor );
 			
-			int lineHeight = getFontHeight() + this.paddingVertical; 
+			int lineHeight = getLineHeight();
 			//#ifdef polish.css.text-horizontal-adjustment
 				x += this.textHorizontalAdjustment;
 				leftBorder += this.textHorizontalAdjustment;
@@ -537,6 +537,14 @@ public class StringItem extends Item
 				}
 			//#endif
 		}
+	}
+	
+	/**
+	 * Returns the height of one line
+	 * @return the height of one line
+	 */
+	public int getLineHeight() {
+		return getFontHeight() + this.paddingVertical;
 	}
 	
 	/**
