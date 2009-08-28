@@ -881,12 +881,17 @@ implements Displayable
     	if (this._commands != null) {
     		Object[] commands = this._commands.getInternalArray();
     		Display instance = Display.getInstance();
+    		Canvas current = instance.currentCanvas;
     		for (int i = 0; i < commands.length; i++) {
 				Command cmd = (Command) commands[i];
 				if (cmd == null) {
 					break;
 				}
-				instance.removeCommand(cmd);
+				//TODO we could skip this test when calling first _hideNotify() on the old screen and then _showNotify() on the new screen
+				// however there are other dependencies that might not get easily resolved (repaint-previous-screen, StyleSheet.currentScreen), so for now we keep it like this.
+				if (current == null || current._commands == null || !current._commands.contains(cmd)) {
+					instance.removeCommand(cmd);
+				}
 			}
     	}
     	this._isShown = false;
