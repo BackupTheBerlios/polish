@@ -1,6 +1,8 @@
 //#condition polish.usePolishGui && polish.android
 package de.enough.polish.android.midlet;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -15,6 +17,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Process;
 import android.os.ResultReceiver;
+import android.provider.Settings;
 import android.telephony.CellLocation;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
@@ -101,7 +104,7 @@ public abstract class MIDlet extends Activity {
 
 	private int currentScreenYOffset;
 
-	private boolean suicideOnExit;
+	private boolean suicideOnExit = true;
 
 //	private PowerManager.WakeLock wakeLock;
 
@@ -620,7 +623,7 @@ public abstract class MIDlet extends Activity {
 	 * buttons.
 	 * </p>
 	 * 
-	 * @param url the URL for the platform to load. An empty string (not null)
+	 * @param urlString the URL for the platform to load. An empty string (not null)
 	 *            cancels any pending requests.
 	 * @return true if the MIDlet suite MUST first exit before the content can
 	 *         be fetched.
@@ -628,16 +631,16 @@ public abstract class MIDlet extends Activity {
 	 *             if the platform cannot handle the URL requested.
 	 * @since MIDP 2.0
 	 */
-	public final boolean platformRequest(String url) throws ConnectionNotFoundException{
-		if(url == null) {
+	public final boolean platformRequest(String urlString) throws ConnectionNotFoundException{
+		if(urlString == null) {
 			throw new IllegalArgumentException("Parameter 'url' must not be null.");
 		}
-		if("".equals(url)) {
+		if("".equals(urlString)) {
 			// TODO: Cancel pending requests.
 			return false;
 		}
-		if(url.startsWith("tel:")) {
-			String number = url.substring(4);
+		if(urlString.startsWith("tel:")) {
+			String number = urlString.substring(4);
 			// The line is hidden from the IDE as eclipse uses the MIDP String which does not implement CharSequence.
 			boolean matches = false;
 			//#= matches = java.util.regex.Pattern.compile("\\+?\\d+").matcher(number).matches();
@@ -653,13 +656,18 @@ public abstract class MIDlet extends Activity {
 			startActivity(i);
 			return false;
 		}
-		if(url.startsWith("http:") || url.startsWith("https:")) {
-			Uri uri = Uri.parse(url);
+		if(urlString.startsWith("http:") || urlString.startsWith("https:")) {
+			Uri uri = Uri.parse(urlString);
 			Intent intent = new Intent(Intent.ACTION_VIEW,uri);
 			startActivity(intent);
 			return false;
 		}
-		throw new ConnectionNotFoundException("The url '"+url+"' can not behandled. The url scheme is not supported");
+		if(urlString.startsWith("device://show/settings/gps")) {
+			Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+			startActivity(intent);
+			return false;
+		}
+		throw new ConnectionNotFoundException("The url '"+urlString+"' can not behandled. The url scheme is not supported");
 	}
 
 	/**
