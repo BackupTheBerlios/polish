@@ -930,7 +930,6 @@ public class TextField extends StringItem
 	//#if polish.midp && !polish.blackberry && !polish.api.windows
 		//#define tmp.useNativeTextBox
 		private de.enough.polish.midp.ui.TextBox midpTextBox;
-		//<Mobica
 		//Variable passedChar used as container for char which is passed to native TextBox.
 		//So when key is pressed (e.g. '2') view goes to native mode and 'a' character is appended to the current text
 		private char passedChar;
@@ -2845,7 +2844,6 @@ public class TextField extends StringItem
 		//#debug
 		System.out.println("handleKeyPressed " + keyCode );
 		
-		//<mobica
 		//#if tmp.useNativeTextBox
 		if (keyCode >0)
 		{
@@ -2861,20 +2859,20 @@ public class TextField extends StringItem
 				return false;
 			}
 			
-			if(keyDelayTimerTask==null || latestKey != keyCode){
-			keyPressCounter=0;
-			passedChar = alphabet.charAt(keyPressCounter++);
-			latestKey = keyCode;
+			if(this.keyDelayTimerTask==null || this.latestKey != keyCode){
+				this.keyPressCounter=0;
+				this.passedChar = alphabet.charAt(this.keyPressCounter++);
+				this.latestKey = keyCode;
 			}
 			else {
-				passedChar = alphabet.charAt(keyPressCounter++);
-				latestKey = keyCode;
-				if (keyPressCounter == alphabet.length()){
-				keyPressCounter=0;	
+				this.passedChar = alphabet.charAt(this.keyPressCounter++);
+				this.latestKey = keyCode;
+				if (this.keyPressCounter == alphabet.length()){
+					this.keyPressCounter=0;	
 				}
 			}
-			if ((constraints & NUMERIC) == NUMERIC){
-				passedChar = (char)keyCode;
+			if ((this.constraints & NUMERIC) == NUMERIC){
+				this.passedChar = (char)keyCode;
 			}
 		}
 		//#endif
@@ -2912,7 +2910,7 @@ public class TextField extends StringItem
 						|| (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
 						|| (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4)
 						|| (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6)
-						|| (!(gameAction == Canvas.FIRE && cskOpensNativeEditor) && this.screen.isSoftKey(keyCode, gameAction))
+						|| (!(gameAction == Canvas.FIRE && this.cskOpensNativeEditor) && this.screen.isSoftKey(keyCode, gameAction))
 						) 
 				{
 					return false;
@@ -2932,11 +2930,11 @@ public class TextField extends StringItem
 						if (this.inputMode == MODE_NATIVE && keyCode != KEY_CHANGE_MODE) {
 						//#endif
 							//#if tmp.useNativeTextBox
-							lastTimeKeyPressed = System.currentTimeMillis();
-							if (keyDelayTimerTask==null && !((constraints & UNEDITABLE) == UNEDITABLE)){
+							this.lastTimeKeyPressed = System.currentTimeMillis();
+							if (this.keyDelayTimerTask==null && !((this.constraints & UNEDITABLE) == UNEDITABLE)){
 								final int localGameAction = gameAction;
 								final int localKeyCode = keyCode;
-								keyDelayTimerTask = new TimerTask(){
+								this.keyDelayTimerTask = new TimerTask(){
 
 									public void run() {
 										if(System.currentTimeMillis()-lastTimeKeyPressed < (delayBetweenKeys+20) ) return;
@@ -2954,7 +2952,7 @@ public class TextField extends StringItem
 									
 								};
 								
-							keyDelayTimer.schedule(keyDelayTimerTask, 0,delayBetweenKeys);
+								this.keyDelayTimer.schedule(this.keyDelayTimerTask, 0,this.delayBetweenKeys);
 							}
 								
 								return true;
@@ -3765,8 +3763,8 @@ public class TextField extends StringItem
 	 * @see de.enough.polish.ui.Item#handleKeyReleased(int, int)
 	 */
 	protected boolean handleKeyReleased( int keyCode, int gameAction ) {
-		if(skipKeyReleasedEvent) {
-			skipKeyReleasedEvent = false;
+		if(this.skipKeyReleasedEvent) {
+			this.skipKeyReleasedEvent = false;
 		
 			return true;
 		}
@@ -3986,12 +3984,12 @@ public class TextField extends StringItem
 		//#if tmp.useNativeTextBox
 			if (cmd == StyleSheet.CANCEL_CMD) {
 				this.midpTextBox.setString( this.text );
-				skipKeyReleasedEvent = true;
+				this.skipKeyReleasedEvent = true;
 			} else if (!this.isUneditable) {
 				setString( this.midpTextBox.getString() );
 				setCaretPosition( size() );
 				notifyStateChanged();
-				skipKeyReleasedEvent = true;
+				this.skipKeyReleasedEvent = true;
 			}
 			StyleSheet.display.setCurrent( this.screen );
 		//#endif
@@ -4459,33 +4457,21 @@ public class TextField extends StringItem
 	}
 
 	
-	//<Mobica
+	/**
+	 * Returns true if the flag to open the native editor on CSK press is set to true
+	 * @param cskOpensNativeEditor
+	 */
 	public boolean isCskOpensNativeEditor() {
-		return cskOpensNativeEditor;
+		return this.cskOpensNativeEditor;
 	}
 	
+	/**
+	 * Sets the flag to open the native editor on CSK press
+	 * @param cskOpensNativeEditor
+	 */
 	public void setCskOpensNativeEditor(boolean cskOpensNativeEditor) {
 		this.cskOpensNativeEditor = cskOpensNativeEditor;
 	}
-	//Mobica>
-	/*
-	public boolean keyChar(char key, int status, int time) {
-		Screen scr = getScreen();
-		if (!this.isFocused || scr == null || !scr.isShown()) {
-			return false;
-		}
-		int currentLength = (this.text == null ? 0 : this.text.length());
-		if (currentLength < this.maxSize) { 
-			this.caretChar = key;
-			insertCharacter();
-			return true;
-		} else {
-			return false;
-		}
-	}
-	*/
-	
-	
 	
 //#ifdef polish.TextField.additionalMethods:defined
 	//#include ${polish.TextField.additionalMethods}
