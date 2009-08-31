@@ -120,6 +120,21 @@ Native Android commands.
 </td>
 </tr>
 </table>
+<p>
+<br />When using native commands, you cannot design colors or the general design of the commands, but like in normal J2ME Polish commands
+you can specify command images with <code>icon-image</code> CSS attribute:
+</p>
+<p>In your Java code use a <code>#style</code> preprocessing directive to bind a style to a specific command:</p>
+<pre>
+//#style commandNext
+Command cmdNext = new Command( "Next", Command.SCREEN, 2 );
+</pre>
+<p>Then define this style in your <i>polish.css</i> file accordingly:</p>
+<pre>
+.commandNext {
+	icon-image: url( cmd_next.png ); 
+}
+</pre>
 
 <h2 id="android-APIs">Supported APIs</h2>
 <p>
