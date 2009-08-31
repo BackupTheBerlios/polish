@@ -2128,7 +2128,7 @@
 	
 	<attribute
 		name="scrollbar-slider-width"
-		type="integer"
+		type="dimension"
 		appliesTo="Screen, ScrollBar"
 		description="The width of the slider in pixels, is ignored when a slider-image is defined."
 		default="2"
