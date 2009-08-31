@@ -4479,10 +4479,17 @@ public class TextField extends StringItem
 	public void setCskOpensNativeEditor(boolean cskOpensNativeEditor) {
 		this.cskOpensNativeEditor = cskOpensNativeEditor;
 	}
+
+	/**
+	 * Sets the title to be displayed in the native textbox
+	 * @param title the title to set
+	 */
+	public void setTitle(String title) {
+		this.title = title;
+	}
 	
 	
 //#ifdef polish.TextField.additionalMethods:defined
 	//#include ${polish.TextField.additionalMethods}
 //#endif
-
 }
