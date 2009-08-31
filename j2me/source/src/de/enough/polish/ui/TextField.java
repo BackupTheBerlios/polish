@@ -1448,7 +1448,7 @@ public class TextField extends StringItem
 					removeCommand( DELETE_CMD );
 				} else if ((this.text == null || this.text.length() == 0)
 					//#ifdef tmp.directInput
-						|| this.caretPosition > 0
+						|| this.caretPosition == 1
 					//#endif						
 				) {
 					addCommand( DELETE_CMD );
