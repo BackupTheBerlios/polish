@@ -1816,8 +1816,8 @@ public class TextField extends StringItem
 			}
 			if (this.editField != null) {
 				// remove the old edit field from the blackberry screen:
-				Object lock = Application.getEventLock();
-				synchronized ( lock ) {
+				Object bbLock = Application.getEventLock();
+				synchronized ( bbLock ) {
 					Manager manager = this._bbField.getManager();
 					if (manager != null) {
 						manager.delete(this._bbField);
@@ -2557,7 +2557,7 @@ public class TextField extends StringItem
 		boolean nextCharInputHasChanged = false;
 		//#if polish.TextField.suppressAutoInputModeChange
 			if ( this.inputMode == MODE_FIRST_UPPERCASE  
-				&& (insertChar == ' ' ||  ( insertChar == '.' && !(this.isEmail || this.isUrl || (constraints & INITIAL_CAPS_NEVER) == INITIAL_CAPS_NEVER)) )) 
+				&& (insertChar == ' ' ||  ( insertChar == '.' && !(this.isEmail || this.isUrl || (this.constraints & INITIAL_CAPS_NEVER) == INITIAL_CAPS_NEVER)) )) 
 			{
 				this.nextCharUppercase = true;
 			} else {
@@ -2567,7 +2567,7 @@ public class TextField extends StringItem
 			nextCharInputHasChanged = this.nextCharUppercase;
 			if ( ( (this.inputMode == MODE_FIRST_UPPERCASE || this.nextCharUppercase) 
 					&& insertChar == ' ') 
-				|| ( insertChar == '.' && !(this.isEmail || this.isUrl || (constraints & INITIAL_CAPS_NEVER) == INITIAL_CAPS_NEVER))) 
+				|| ( insertChar == '.' && !(this.isEmail || this.isUrl || (this.constraints & INITIAL_CAPS_NEVER) == INITIAL_CAPS_NEVER))) 
 			{
 				this.nextCharUppercase = true;
 			} else {
@@ -2938,17 +2938,17 @@ public class TextField extends StringItem
 								this.keyDelayTimerTask = new TimerTask(){
 
 									public void run() {
-										if(System.currentTimeMillis()-lastTimeKeyPressed < (delayBetweenKeys+20) ) return;
+										if(System.currentTimeMillis()-TextField.this.lastTimeKeyPressed < (TextField.this.delayBetweenKeys+20) ) return;
 										showTextBox();
 										if (TextField.this.midpTextBox!=null && (localGameAction != Canvas.FIRE || localKeyCode == Canvas.KEY_NUM5)){
 											String oldText =TextField.this.midpTextBox.getString();
-											if (oldText.length()==0 && !((constraints & INITIAL_CAPS_NEVER) == INITIAL_CAPS_NEVER)){
-												passedChar = Character.toUpperCase(passedChar);
+											if (oldText.length()==0 && !((TextField.this.constraints & INITIAL_CAPS_NEVER) == INITIAL_CAPS_NEVER)){
+												TextField.this.passedChar = Character.toUpperCase(TextField.this.passedChar);
 											}
-											TextField.this.midpTextBox.insert(String.valueOf(passedChar), TextField.this.getCaretPosition());
+											TextField.this.midpTextBox.insert(String.valueOf(TextField.this.passedChar), TextField.this.getCaretPosition());
 										}
-										keyDelayTimerTask.cancel();
-										keyDelayTimerTask = null;
+										TextField.this.keyDelayTimerTask.cancel();
+										TextField.this.keyDelayTimerTask = null;
 									}
 									
 								};
@@ -3204,7 +3204,7 @@ public class TextField extends StringItem
 					return true;
 				}
 				//#if polish.TextField.numerickeys.1:defined
-					String numericKeyStr = null;
+					String numericKeyStr = "";
 					int foundNumber = -1;
 					//#= numericKeyStr = "${polish.TextField.numerickeys.1}";
 					if (numericKeyStr.indexOf(insertChar) != -1) {
