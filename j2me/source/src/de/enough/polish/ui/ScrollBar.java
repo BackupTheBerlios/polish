@@ -372,9 +372,9 @@ public class ScrollBar extends Item {
 			//#endif
 		//#endif
 		//#if polish.css.scrollbar-slider-width
-			Integer sliderWidthInt = style.getIntProperty("scrollbar-slider-width");
-			if (sliderWidthInt != null) {
-				this.sliderWidth = sliderWidthInt.intValue();
+			Dimension sliderWidthDim = (Dimension)style.getObjectProperty("scrollbar-slider-width");
+			if (sliderWidthDim != null) {
+				this.sliderWidth = sliderWidthDim.getValue(getScreen().getScreenContentWidth());
 			}
 		//#endif
 		//#if polish.css.scrollbar-slider-color
