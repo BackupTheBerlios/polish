@@ -5,7 +5,7 @@ package de.enough.polish.ui;
 
 import javax.microedition.lcdui.Graphics;
 
-import de.enough.polish.util.ArrayList;
+import de.enough.polish.util.IdentityArrayList;
 
 
 /**
@@ -485,7 +485,7 @@ implements Displayable
 
 	private CommandListener _commandListener;
 	boolean _isShown;
-	public ArrayList _commands;
+	public IdentityArrayList _commands;
 	String _title;
 
 
@@ -857,6 +857,7 @@ implements Displayable
 				if (cmd == null) {
 					break;
 				}
+				System.out.println("adding cmd " + cmd.getLabel());
 				instance.addCommand(cmd);
 			}
     		instance.setCommandListener(this._commandListener);
@@ -890,6 +891,7 @@ implements Displayable
 				//TODO we could skip this test when calling first _hideNotify() on the old screen and then _showNotify() on the new screen
 				// however there are other dependencies that might not get easily resolved (repaint-previous-screen, StyleSheet.currentScreen), so for now we keep it like this.
 				if (current == null || current._commands == null || !current._commands.contains(cmd)) {
+					System.out.println("removing cmd " + cmd.getLabel());
 					instance.removeCommand(cmd);
 				}
 			}
@@ -1131,7 +1133,7 @@ implements Displayable
 	public void addCommand(Command cmd)
 	{
 		if (this._commands == null) {
-			this._commands = new ArrayList();
+			this._commands = new IdentityArrayList();
 		}
 		boolean add = !this._commands.contains(cmd);
 		this._commands.add( cmd );

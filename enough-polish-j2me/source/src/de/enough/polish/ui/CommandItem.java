@@ -71,7 +71,7 @@ public class CommandItem extends IconItem {
 	 * @param parent the parent item
 	 */
 	public CommandItem( Command command, Item parent ) {
-		this( command, parent, null );
+		this( command, parent, command.getStyle() );
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class CommandItem extends IconItem {
 	 * @param style the style for this item
 	 */
 	public CommandItem( Command command, Item parent, Style style ) {
-		super( null, command.getLabel(), null, style );
+		super( null, command.getLabel(), null, (style == null ? command.getStyle() : style) );
 		this.appearanceMode = Item.INTERACTIVE;
 		this.command = command;
 		this.parent = parent;

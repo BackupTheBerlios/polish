@@ -38,6 +38,7 @@ import de.enough.polish.ui.backgrounds.TranslucentSimpleBackground;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.DeviceControl;
 import de.enough.polish.util.HashMap;
+import de.enough.polish.util.IdentityArrayList;
 import de.enough.polish.util.Locale;
 
 //#if polish.android
@@ -88,7 +89,7 @@ public class MenuBar extends Item {
 		//#define tmp.LeftOptions
 	//#endif
 	
-	protected final ArrayList commandsList;
+	protected final IdentityArrayList commandsList;
 	protected final Container commandsContainer;
 	protected boolean isOpened;
 	protected Command singleLeftCommand;
@@ -146,7 +147,7 @@ public class MenuBar extends Item {
 	public MenuBar(Screen screen, Style style) {
 		super(style);
 		this.screen = screen;
-		this.commandsList = new ArrayList();
+		this.commandsList = new IdentityArrayList();
 		this.allCommands = new HashMap
 		//#if polish.java5
 			<Command,CommandItem>

@@ -1,8 +1,7 @@
 //#condition polish.usePolishGui && polish.android
 package de.enough.polish.android.midlet;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -27,7 +26,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.Window;
-import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import de.enough.polish.android.helper.ResourcesHelper;
 import de.enough.polish.android.io.ConnectionNotFoundException;
 import de.enough.polish.android.lcdui.AndroidDisplay;
 import de.enough.polish.ui.Command;
@@ -36,11 +36,8 @@ import de.enough.polish.ui.Display;
 import de.enough.polish.ui.Displayable;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
-import de.enough.polish.util.ArrayList;
-
-//#if polish.android1.5
-import android.view.inputmethod.InputMethodManager;
-//#endif
+import de.enough.polish.ui.Style;
+import de.enough.polish.util.IdentityArrayList;
 
 
 /**
@@ -79,8 +76,8 @@ public abstract class MIDlet extends Activity {
 	//#if polish.useFullScreen
 		//#define tmp.fullScreen
 	//#else
-		private final ArrayList addedCommands = new ArrayList();
-		private final ArrayList addedCommandMenuItemBridges = new ArrayList();
+		private final IdentityArrayList addedCommands = new IdentityArrayList();
+		private final IdentityArrayList addedCommandMenuItemBridges = new IdentityArrayList();
 		private boolean isMenuOpened;
 	//#endif
 
@@ -947,6 +944,21 @@ public abstract class MIDlet extends Activity {
 				int groupId = 0;
 				int itemId = this.addedCommandMenuItemBridges.size();
 				MenuItem item = menu.add( groupId, itemId, cmd.getPriority(), cmd.getLabel() );
+				//#if polish.css.icon-image
+					Style style = cmd.getStyle();
+					if (style != null) {
+						String url = style.getProperty("icon-image");
+						if (url != null) {
+							try {
+								int id = ResourcesHelper.getResourceID(url);
+								item.setIcon(id);
+							} catch (IOException e) {
+								//#debug error
+								System.err.println("Unable to retrieve ID for " + url + e);
+							}
+						}
+					}
+				//#endif
 				CommandMenuItemBridge bridge = new CommandMenuItemBridge( cmd, item );
 				this.addedCommandMenuItemBridges.add(bridge);
 			}

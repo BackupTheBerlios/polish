@@ -583,5 +583,22 @@ extends javax.microedition.lcdui.Command
 		}
 		return false;
 	}
+
+	/**
+	 * Retrieves the style for this command.
+	 * @return the style, can be null
+	 */
+	public Style getStyle() {
+		return this.style;
+	}
+	
+	/**
+	 * Sets the style for this command. 
+	 * Note that you need to set the style before adding the command to a screen, otherwise no effect will be seen. 
+	 * @param style the new style
+	 */
+	public void setStyle(Style style) {
+		this.style = style;
+	}
 	
 }
