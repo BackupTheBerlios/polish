@@ -939,14 +939,14 @@ public class TextField extends StringItem
 		//last time when button was pressed
 		private long lastTimeKeyPressed;
 		//number of presses of one phone button
-		private int keyPressCounter=0;
+		private int keyPressCounter = 0;
 		//latest key pressed keyCode
 		private int latestKey;
 		//maximum delay between subseqent key presses. If exceeded, will timer will call native editor. 
 		private int delayBetweenKeys = 200;
+		private boolean skipKeyReleasedEvent = false;
 		//>Mobica
 	//#endif
-	//Allow to open native editor by pressing CSK
 	private boolean cskOpensNativeEditor = true;
 	
 	
@@ -2910,7 +2910,8 @@ public class TextField extends StringItem
 						|| (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
 						|| (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4)
 						|| (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6)
-						|| (!(gameAction == Canvas.FIRE && this.cskOpensNativeEditor) && this.screen.isSoftKey(keyCode, gameAction))
+						|| (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5 && !this.cskOpensNativeEditor)
+						|| (this.screen.isSoftKey(keyCode, gameAction))
 						) 
 				{
 					return false;
@@ -3755,21 +3756,20 @@ public class TextField extends StringItem
 		//return super.handleKeyRepeated(keyCode, gameAction);
 	}
 	//#endif
-	
+
 	//#if !polish.blackberry && tmp.directInput
-	boolean skipKeyReleasedEvent = false;
-	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#handleKeyReleased(int, int)
 	 */
 	protected boolean handleKeyReleased( int keyCode, int gameAction ) {
-		if(this.skipKeyReleasedEvent) {
-			this.skipKeyReleasedEvent = false;
-		
-			return true;
-		}
 		//#debug
 		System.out.println("handleKeyReleased  " + keyCode );
+		//#if tmp.useNativeTextBox
+			if(this.skipKeyReleasedEvent) {
+				this.skipKeyReleasedEvent = false;
+				return true;
+			}
+		//#endif
 		this.isKeyDown = false;
 		this.deleteKeyRepeatCount = 0;
 		
@@ -4040,15 +4040,22 @@ public class TextField extends StringItem
 		//#debug
 		System.out.println("TextField.commandAction( " + cmd.getLabel() + ", " + this + " )");
 		//#if tmp.usePredictiveInput
-			if (this.predictiveAccess.commandAction(cmd, item)) {			
+			if (this.predictiveAccess.commandAction(cmd, item)) {		
 				return;
 			}
 		//#endif
-		
+		if (cmd.commandAction(this, null)) {
+			return;
+		}
 		//#if tmp.implementsItemCommandListener
 			//#if tmp.supportsSymbolEntry 
 				if (cmd == ENTER_SYMBOL_CMD ) {
-					//#if !polish.TextField.ignoreSymbolCommand
+					//#if polish.TextField.ignoreSymbolCommand
+						Screen scr = getScreen();
+						if (scr != null & scr.getCommandListener() != null) {
+							scr.getCommandListener().commandAction(cmd, scr);
+						}
+					//#else
 						showSymbolsList();
 					//#endif
 					return;
@@ -4458,20 +4465,21 @@ public class TextField extends StringItem
 
 	
 	/**
-	 * Returns true if the flag to open the native editor on CSK press is set to true
-	 * @param cskOpensNativeEditor
+	 * Returns true if the flag to open the native editor on CenterSoftKey press is set to true
+	 * @return true when the native editor is opened when FIRE is pressed
 	 */
 	public boolean isCskOpensNativeEditor() {
 		return this.cskOpensNativeEditor;
 	}
 	
 	/**
-	 * Sets the flag to open the native editor on CSK press
-	 * @param cskOpensNativeEditor
+	 * Sets the flag to open the native editor on CenterSoftKey press
+	 * @param cskOpensNativeEditor true when the native editor should be opened when FIRE is pressed
 	 */
 	public void setCskOpensNativeEditor(boolean cskOpensNativeEditor) {
 		this.cskOpensNativeEditor = cskOpensNativeEditor;
 	}
+	
 	
 //#ifdef polish.TextField.additionalMethods:defined
 	//#include ${polish.TextField.additionalMethods}
