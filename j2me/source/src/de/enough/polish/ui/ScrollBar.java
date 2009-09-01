@@ -80,7 +80,7 @@ public class ScrollBar extends Item {
 	private static final int MODE_PAGE = 2;
 	
 	protected int sliderColor;
-	protected int sliderWidth = 2;
+	protected Dimension sliderWidth;
 	//#if polish.css.scrollbar-slider-image
 		protected Image sliderImage;
 		//#if polish.css.scrollbar-slider-image-repeat
@@ -258,7 +258,11 @@ public class ScrollBar extends Item {
 //				this.contentWidth = 0;
 //			}
 //		//#endif
-		this.contentWidth = this.sliderWidth;
+		if (this.sliderWidth != null) {
+			this.contentWidth = this.sliderWidth.getValue(availWidth);
+		} else {
+			this.contentWidth = 2;
+		}
 		this.contentHeight = this.scrollBarHeight - ( this.paddingTop + this.paddingBottom + this.marginTop + this.marginBottom + getBorderWidthTop() + getBorderWidthBottom());
 
 	}
@@ -305,7 +309,7 @@ public class ScrollBar extends Item {
 		}
 		//#if polish.css.scrollbar-slider-background
 			if (this.sliderBackground != null) {
-				this.sliderBackground.paint(x, y + this.sliderY, this.sliderWidth, this.sliderHeight, g);
+				this.sliderBackground.paint(x, y + this.sliderY, this.contentWidth, this.sliderHeight, g);
 			} else {
 		//#endif
 			//#if polish.css.scrollbar-slider-image
@@ -325,7 +329,7 @@ public class ScrollBar extends Item {
 			//#endif
 					//System.out.println("Painting slider at " + x + "," + (y + this.sliderY) + ", width=" + this.sliderWidth + ", height=" + this.sliderHeight);
 					g.setColor( this.sliderColor );
-					g.fillRect(x, y + this.sliderY, this.sliderWidth, this.sliderHeight);
+					g.fillRect(x, y + this.sliderY, this.contentWidth, this.sliderHeight);
 			//#if polish.css.scrollbar-slider-image
 				}
 			//#endif
@@ -357,7 +361,7 @@ public class ScrollBar extends Item {
 			if (url != null) {
 				try {
 					this.sliderImage = StyleSheet.getImage(url, url, false);
-					this.sliderWidth = this.sliderImage.getWidth();
+					this.sliderWidth = new Dimension( this.sliderImage.getWidth() );
 					this.sliderHeight = this.sliderImage.getHeight();
 				} catch (Exception e) {
 					//#debug error
@@ -374,7 +378,7 @@ public class ScrollBar extends Item {
 		//#if polish.css.scrollbar-slider-width
 			Dimension sliderWidthDim = (Dimension)style.getObjectProperty("scrollbar-slider-width");
 			if (sliderWidthDim != null) {
-				this.sliderWidth = sliderWidthDim.getValue(getScreen().getScreenContentWidth());
+				this.sliderWidth = sliderWidthDim; 
 			}
 		//#endif
 		//#if polish.css.scrollbar-slider-color
