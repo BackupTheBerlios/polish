@@ -2847,32 +2847,33 @@ public class TextField extends StringItem
 		//#if tmp.useNativeTextBox
 		if (keyCode >0)
 		{
-			String alphabet;
+			String alphabet = null;
 			if (keyCode == Canvas.KEY_POUND) {
 				alphabet = charactersKeyPound;
 			} else if (keyCode == Canvas.KEY_STAR) {
 				alphabet = charactersKeyStar;
 			} else {
-				alphabet = CHARACTERS[ keyCode - Canvas.KEY_NUM0 ];
-			}
-			if (alphabet == null || (alphabet.length() == 0)) {
-				return false;
-			}
-			
-			if(this.keyDelayTimerTask==null || this.latestKey != keyCode){
-				this.keyPressCounter=0;
-				this.passedChar = alphabet.charAt(this.keyPressCounter++);
-				this.latestKey = keyCode;
-			}
-			else {
-				this.passedChar = alphabet.charAt(this.keyPressCounter++);
-				this.latestKey = keyCode;
-				if (this.keyPressCounter == alphabet.length()){
-					this.keyPressCounter=0;	
+				int index = keyCode - Canvas.KEY_NUM0;
+				if (index >= 0 && index <= CHARACTERS.length) {
+					alphabet = CHARACTERS[ index ];
 				}
 			}
-			if ((this.constraints & NUMERIC) == NUMERIC){
-				this.passedChar = (char)keyCode;
+			if (alphabet != null && (alphabet.length() >= 0)) {
+				if(this.keyDelayTimerTask==null || this.latestKey != keyCode){
+					this.keyPressCounter=0;
+					this.passedChar = alphabet.charAt(this.keyPressCounter++);
+					this.latestKey = keyCode;
+				}
+				else {
+					this.passedChar = alphabet.charAt(this.keyPressCounter++);
+					this.latestKey = keyCode;
+					if (this.keyPressCounter == alphabet.length()){
+						this.keyPressCounter=0;	
+					}
+				}
+				if ((this.constraints & NUMERIC) == NUMERIC){
+					this.passedChar = (char)keyCode;
+				}
 			}
 		}
 		//#endif
@@ -2925,37 +2926,36 @@ public class TextField extends StringItem
 		//#endif
 				//#ifdef tmp.directInput
 					//#if !polish.blackberry
+						if (this.inputMode == MODE_NATIVE && keyCode != KEY_CHANGE_MODE
 						//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
-						//#= if (this.inputMode == MODE_NATIVE && keyCode != KEY_CHANGE_MODE && keyCode != ${polish.key.ChangeNumericalAlphaInputModeKey}  ) {
-						//#else
-						if (this.inputMode == MODE_NATIVE && keyCode != KEY_CHANGE_MODE) {
+								//#= && keyCode != ${polish.key.ChangeNumericalAlphaInputModeKey}  
 						//#endif
+						) {
 							//#if tmp.useNativeTextBox
-							this.lastTimeKeyPressed = System.currentTimeMillis();
-							if (this.keyDelayTimerTask==null && !((this.constraints & UNEDITABLE) == UNEDITABLE)){
-								final int localGameAction = gameAction;
-								final int localKeyCode = keyCode;
-								this.keyDelayTimerTask = new TimerTask(){
-
-									public void run() {
-										if(System.currentTimeMillis()-TextField.this.lastTimeKeyPressed < (TextField.this.delayBetweenKeys+20) ) return;
-										showTextBox();
-										if (TextField.this.midpTextBox!=null && (localGameAction != Canvas.FIRE || localKeyCode == Canvas.KEY_NUM5)){
-											String oldText =TextField.this.midpTextBox.getString();
-											if (oldText.length()==0 && !((TextField.this.constraints & INITIAL_CAPS_NEVER) == INITIAL_CAPS_NEVER)){
-												TextField.this.passedChar = Character.toUpperCase(TextField.this.passedChar);
+								this.lastTimeKeyPressed = System.currentTimeMillis();
+								if (this.keyDelayTimerTask==null && !((this.constraints & UNEDITABLE) == UNEDITABLE)){
+									final int localGameAction = gameAction;
+									final int localKeyCode = keyCode;
+									this.keyDelayTimerTask = new TimerTask(){
+	
+										public void run() {
+											if(System.currentTimeMillis()-TextField.this.lastTimeKeyPressed < (TextField.this.delayBetweenKeys+20) ) return;
+											showTextBox();
+											if (TextField.this.midpTextBox!=null && (localGameAction != Canvas.FIRE || localKeyCode == Canvas.KEY_NUM5)){
+												String oldText =TextField.this.midpTextBox.getString();
+												if (oldText.length()==0 && !((TextField.this.constraints & INITIAL_CAPS_NEVER) == INITIAL_CAPS_NEVER)){
+													TextField.this.passedChar = Character.toUpperCase(TextField.this.passedChar);
+												}
+												TextField.this.midpTextBox.insert(String.valueOf(TextField.this.passedChar), TextField.this.getCaretPosition());
 											}
-											TextField.this.midpTextBox.insert(String.valueOf(TextField.this.passedChar), TextField.this.getCaretPosition());
+											TextField.this.keyDelayTimerTask.cancel();
+											TextField.this.keyDelayTimerTask = null;
 										}
-										TextField.this.keyDelayTimerTask.cancel();
-										TextField.this.keyDelayTimerTask = null;
-									}
+										
+									};
 									
-								};
-								
-								this.keyDelayTimer.schedule(this.keyDelayTimerTask, 0,this.delayBetweenKeys);
-							}
-								
+									this.keyDelayTimer.schedule(this.keyDelayTimerTask, 0,this.delayBetweenKeys);
+								}								
 								return true;
 							//#endif
 						}
