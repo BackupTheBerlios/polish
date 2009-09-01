@@ -242,7 +242,7 @@ public abstract class MIDlet extends UiApplication
 					if (colonPos == -1) {
 						if (lastKey == null) {
 							//#debug warn
-							System.out.println("Unable to to split Manifest line " + line);
+							System.out.println("Unable to to split line " + line);
 							continue;
 						} else {
 							lastValue += line.trim();

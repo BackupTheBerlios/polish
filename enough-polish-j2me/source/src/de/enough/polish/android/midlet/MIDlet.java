@@ -2,6 +2,8 @@
 package de.enough.polish.android.midlet;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -38,6 +40,7 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.IdentityArrayList;
+import de.enough.polish.util.TextUtil;
 
 
 /**
@@ -91,7 +94,8 @@ public abstract class MIDlet extends Activity {
 	// The view of the application
 //	private AndroidDisplay display;
 
-	private HashMap<String,String> appProperties;
+	private final HashMap<String,String> appProperties;
+	private boolean isAppPropertiesLoaded;
 
 	private ContentResolver contentResolver;
 
@@ -116,6 +120,10 @@ public abstract class MIDlet extends Activity {
 	 */
 	protected MIDlet() {
 		midletInstance = this;
+		this.appProperties = new HashMap<String,String>();
+		//#= this.appProperties.put("MIDlet-Name", "${MIDlet-Name}");
+		//#= this.appProperties.put("MIDlet-Vendor", "${MIDlet-Vendor}");
+		//#= this.appProperties.put("MIDlet-Version", "${MIDlet-Version}");
 	}
 	
 	/*
@@ -180,10 +188,6 @@ public abstract class MIDlet extends Activity {
 		if(this.contentResolver == null) {
 			this.contentResolver = getContentResolver();
 		}
-		this.appProperties = new HashMap<String,String>();
-		//#= this.appProperties.put("MIDlet-Name", "${MIDlet-Name}");
-		//#= this.appProperties.put("MIDlet-Vendor", "${MIDlet-Vendor}");
-		//#= this.appProperties.put("MIDlet-Version", "${MIDlet-Version}");
 		
 		
 		// read files directory and save it as a system property
@@ -516,15 +520,51 @@ public abstract class MIDlet extends Activity {
 	 * the manifest the value from the descriptor is used and the value from the
 	 * manifest is ignored.
 	 * 
-	 * @param key -
-	 *            the name of the property
+	 * @param key the name of the property
 	 * @return A string with the value of the property. null is returned if no
 	 *         value is available for the key.
-	 * @throws NullPointerException -
-	 *             is thrown if key is null.
+	 * @throws NullPointerException is thrown if key is null.
 	 */
 	public final String getAppProperty(String key) {
 		String value = this.appProperties.get(key);
+		if (value == null && !this.isAppPropertiesLoaded) {
+			try {
+				InputStream in = ResourcesHelper.getResourceAsStream("/jadprops.txt");
+				this.isAppPropertiesLoaded = true;
+				if (in != null) {
+					InputStreamReader reader = new InputStreamReader( in );
+					char[] buffer = new char[ 4 * 1024 ]; // 8 kb
+					StringBuffer completeBuffer = new StringBuffer();
+					try {
+						int read;
+						while ( (read = reader.read(buffer)) != -1 ) {
+							completeBuffer.append(buffer, 0, read);
+						}
+					} catch (IOException e) {
+						//#debug error
+						System.out.println("Unable to read manifest" + e);
+					}
+					String[] lines = TextUtil.split( completeBuffer.toString(), '\n' );
+					for (int i = 0; i < lines.length; i++) {
+						String line = lines[i];
+						int colonPos = line.indexOf(':');
+						if (colonPos == -1) {
+							//#debug warn
+							System.out.println("Unable to to split line " + line);
+							continue;
+						}
+						String attributeKey = line.substring( 0, colonPos );
+						String attributeValue = line.substring( colonPos + 2 );
+						//#debug
+						System.out.println("Adding: " + attributeKey + "=" + attributeValue );
+						this.appProperties.put( attributeKey, attributeValue );
+					}
+					value = this.appProperties.get(key);
+				}
+			} catch (Exception e) {
+				// try later
+			}
+		}
 		//#debug
 		System.out.println("AppProperty for key '"+key+"' is '"+value+"'");
 		return value;

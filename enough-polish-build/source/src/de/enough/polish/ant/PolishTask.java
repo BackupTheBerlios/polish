@@ -1745,6 +1745,9 @@ public class PolishTask extends ConditionalTask {
 			}
 		}
 		 */
+		
+		prepareJadAttributes(device);
+		prepareManifestProperties(device);
 	}
 
 	/**
@@ -2897,6 +2900,56 @@ public class PolishTask extends ConditionalTask {
 		}
 
 		// create manifest:
+
+		try {
+			if (jarFile.exists()) {
+				boolean success = jarFile.delete();
+				if (!success) {
+					throw new BuildException("Unable to delete the existing JAR-file [" + jarFile.getAbsolutePath() + "], please call \"ant clean\" or remove the folder \"" + jarFile.getParent() + "\"-folder manually." );
+				}
+			}
+//			System.out.println("creating JAR file ["+ jarFile.getAbsolutePath() + "].");
+			// writing manifest:
+			String creatorName = this.environment.getVariable( "polish.build.ManifestCreator" );
+			if (creatorName == null ) {
+				creatorName = "default";
+			}
+			this.extensionManager.executeTemporaryExtension(ExtensionManager.TYPE_MANIFEST_CREATOR, creatorName, this.environment );
+			//			Manifest manifest = new Manifest( this.environment, this.buildSetting.getEncoding() );
+			//			manifest.setAttributes( manifestAttributes );
+			//			File manifestFile = new File( device.getClassesDir() 
+			//					+ File.separator + "META-INF" + File.separator + "MANIFEST.MF");
+			//			manifest.write(manifestFile);
+			//FileUtil.writeTextFile( manifestFile, jad.getContent(), this.buildSetting.getEncoding() );
+			// package all classes and resources:
+			Packager packager = (Packager) this.extensionManager.getActiveExtension( ExtensionManager.TYPE_PACKAGER, this.environment );
+			if (packager == null ) {
+				packager = new DefaultPackager();
+			}
+			System.out.println("Using "+packager);
+			this.environment.set( Packager.KEY_ENVIRONMENT, packager );
+			packager.createPackage(classesDir, jarFile, device, locale, this.environment );
+			// Check if created jar file exceeds MaxJarSize capability setting. 
+			String maxJarSize = device.getCapability("MaxJarSize");
+			if (maxJarSize != null) {
+				long jarSize = jarFile.length();
+				long maxSize = ConvertUtil.convertToBytes(maxJarSize);
+				if (jarSize > maxSize && maxSize != -1) {
+					// Maybe we should throw a BuildException here but its unclear to me how reliable the MaxJarSize capability really is.
+					System.err.println("Warning: Generated jar file exceeds max jar size for device: " + jarSize + " > " + maxSize);
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new BuildException("Unable to create final JAR file: " + e.getMessage(), e );
+		}
+
+	}
+
+	/**
+	 * @param device
+	 */
+	private void prepareManifestProperties(Device device) {
 		HashMap attributesByName = new HashMap();
 		attributesByName.put( "Manifest-Version", new Attribute( "Manifest-Version", "1.0" ) ); 
 		// set MicroEdition-Profile:
@@ -2919,7 +2972,7 @@ public class PolishTask extends ConditionalTask {
 				config = InfoSetting.CLDC1_0;
 			}
 		}
-		attributesByName.put( InfoSetting.MICRO_EDITION_CONFIGURATION, new  Attribute(InfoSetting.MICRO_EDITION_CONFIGURATION, config) );
+		attributesByName.put( InfoSetting.MICRO_EDITION_CONFIGURATION, new Attribute(InfoSetting.MICRO_EDITION_CONFIGURATION, config) );
 
 		// add info attributes:
 		Attribute[] jadAttributes = this.infoSetting.getManifestAttributes( this.environment );
@@ -2974,52 +3027,6 @@ public class PolishTask extends ConditionalTask {
 		}
 		this.environment.set( ManifestCreator.MANIFEST_ATTRIBUTES_KEY, manifestAttributes );
 		this.environment.set( ManifestCreator.MANIFEST_ENCODING_KEY, this.buildSetting.getEncoding() );
-		//		Jad jad = new Jad( this.environment );
-		//		jad.setAttributes(manifestAttributes);
-
-		try {
-			if (jarFile.exists()) {
-				boolean success = jarFile.delete();
-				if (!success) {
-					throw new BuildException("Unable to delete the existing JAR-file [" + jarFile.getAbsolutePath() + "], please call \"ant clean\" or remove the folder \"" + jarFile.getParent() + "\"-folder manually." );
-				}
-			}
-//			System.out.println("creating JAR file ["+ jarFile.getAbsolutePath() + "].");
-			// writing manifest:
-			String creatorName = this.environment.getVariable( "polish.build.ManifestCreator" );
-			if (creatorName == null ) {
-				creatorName = "default";
-			}
-			this.extensionManager.executeTemporaryExtension(ExtensionManager.TYPE_MANIFEST_CREATOR, creatorName, this.environment );
-			//			Manifest manifest = new Manifest( this.environment, this.buildSetting.getEncoding() );
-			//			manifest.setAttributes( manifestAttributes );
-			//			File manifestFile = new File( device.getClassesDir() 
-			//					+ File.separator + "META-INF" + File.separator + "MANIFEST.MF");
-			//			manifest.write(manifestFile);
-			//FileUtil.writeTextFile( manifestFile, jad.getContent(), this.buildSetting.getEncoding() );
-			// package all classes and resources:
-			Packager packager = (Packager) this.extensionManager.getActiveExtension( ExtensionManager.TYPE_PACKAGER, this.environment );
-			if (packager == null ) {
-				packager = new DefaultPackager();
-			}
-			System.out.println("Using "+packager);
-			this.environment.set( Packager.KEY_ENVIRONMENT, packager );
-			packager.createPackage(classesDir, jarFile, device, locale, this.environment );
-			// Check if created jar file exceeds MaxJarSize capability setting. 
-			String maxJarSize = device.getCapability("MaxJarSize");
-			if (maxJarSize != null) {
-				long jarSize = jarFile.length();
-				long maxSize = ConvertUtil.convertToBytes(maxJarSize);
-				if (jarSize > maxSize && maxSize != -1) {
-					// Maybe we should throw a BuildException here but its unclear to me how reliable the MaxJarSize capability really is.
-					System.err.println("Warning: Generated jar file exceeds max jar size for device: " + jarSize + " > " + maxSize);
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new BuildException("Unable to create final JAR file: " + e.getMessage(), e );
-		}
-
 	}
 
 	/**
@@ -3030,6 +3037,30 @@ public class PolishTask extends ConditionalTask {
 	 */
 	protected void jad(Device device, Locale locale) {		
 		// now create the JAD file:
+		// prepare once more, since we now should have the JAR file:
+		prepareJadAttributes(device);
+		String creatorName = this.environment.getVariable( "polish.build.DescriptorCreator" );
+		if (creatorName == null ) {
+			creatorName = "default";
+		}
+		this.extensionManager.executeTemporaryExtension( ExtensionManager.TYPE_DESCRIPTOR_CREATOR, creatorName, this.environment );
+		//		Jad jad = new Jad( this.environment );
+		//		jad.setAttributes( filteredAttributes );
+		//		
+		//		String jadPath = this.environment.getVariable("polish.jadPath");
+		//		File jadFile = new File( jadPath );
+		//		try {
+		//			System.out.println("creating JAD file [" + jadFile.getAbsolutePath() + "].");
+		//			FileUtil.writeTextFile(jadFile, jad.getContent(), this.buildSetting.getEncoding() );
+		//		} catch (IOException e) {
+		//			throw new BuildException("Unable to create JAD file [" + jadFile.getAbsolutePath() +"] for device [" + device.getIdentifier() + "]: " + e.getMessage() );
+		//		}
+	}
+
+	/**
+	 * @param device
+	 */
+	private void prepareJadAttributes(Device device) {
 		HashMap attributesByName = new HashMap();
 		// add info attributes:
 		Attribute[] jadAttributes = this.infoSetting.getJadAttributes( this.environment );
@@ -3062,11 +3093,15 @@ public class PolishTask extends ConditionalTask {
 		//		}
 
 		// add size of jar:
-		long size = device.getJarFile().length();
-		attributesByName.put(InfoSetting.MIDLET_JAR_SIZE,
-				new Attribute( InfoSetting.MIDLET_JAR_SIZE, "" + size ) );
-		this.environment.setVariable( InfoSetting.MIDLET_JAR_SIZE, "" + size );
-
+		if (device.getJarFile() == null) {
+			attributesByName.put(InfoSetting.MIDLET_JAR_SIZE,
+					new Attribute( InfoSetting.MIDLET_JAR_SIZE, "0") );
+		} else {
+			long size = device.getJarFile().length();
+			attributesByName.put(InfoSetting.MIDLET_JAR_SIZE,
+					new Attribute( InfoSetting.MIDLET_JAR_SIZE, "" + size ) );
+			this.environment.setVariable( InfoSetting.MIDLET_JAR_SIZE, "" + size );
+		}
 		// add user-defined attributes:
 		if (this.buildSetting.getJadAttributes() != null) {
 			Attribute[] attributes = this.buildSetting.getJadAttributes().getAttributes( this.environment );
@@ -3091,23 +3126,6 @@ public class PolishTask extends ConditionalTask {
 		this.environment.set( DescriptorCreator.DESCRIPTOR_ATTRIBUTES_KEY, filteredAttributes );
 		this.environment.set( DescriptorCreator.DESCRIPTOR_ENCODING_KEY, this.buildSetting.getEncoding() );
 		// writing JAD:
-
-		String creatorName = this.environment.getVariable( "polish.build.DescriptorCreator" );
-		if (creatorName == null ) {
-			creatorName = "default";
-		}
-		this.extensionManager.executeTemporaryExtension( ExtensionManager.TYPE_DESCRIPTOR_CREATOR, creatorName, this.environment );
-		//		Jad jad = new Jad( this.environment );
-		//		jad.setAttributes( filteredAttributes );
-		//		
-		//		String jadPath = this.environment.getVariable("polish.jadPath");
-		//		File jadFile = new File( jadPath );
-		//		try {
-		//			System.out.println("creating JAD file [" + jadFile.getAbsolutePath() + "].");
-		//			FileUtil.writeTextFile(jadFile, jad.getContent(), this.buildSetting.getEncoding() );
-		//		} catch (IOException e) {
-		//			throw new BuildException("Unable to create JAD file [" + jadFile.getAbsolutePath() +"] for device [" + device.getIdentifier() + "]: " + e.getMessage() );
-		//		}
 	}
 
 	/**

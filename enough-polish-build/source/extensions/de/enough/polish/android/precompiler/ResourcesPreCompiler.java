@@ -26,9 +26,12 @@
 package de.enough.polish.android.precompiler;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 import org.apache.tools.ant.BuildException;
@@ -39,9 +42,14 @@ import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.XMLOutputter;
 
+import de.enough.polish.Attribute;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
+import de.enough.polish.ant.Jad;
+import de.enough.polish.ant.PolishTask;
 import de.enough.polish.ant.android.ArgumentHelper;
+import de.enough.polish.descriptor.DescriptorCreator;
+import de.enough.polish.manifest.ManifestCreator;
 import de.enough.polish.precompile.PreCompiler;
 import de.enough.polish.propertyfunctions.VersionFunction;
 import de.enough.polish.util.FileUtil;
@@ -72,8 +80,11 @@ public class ResourcesPreCompiler extends PreCompiler {
 
 		System.out.println("aapt: Copying resources to " + ArgumentHelper.getRaw(env) + "...");		
 		try {
+			// generate jadprops.txt:
+			storeJadProperties( new File( ArgumentHelper.getRaw(env)), env);
 			copyResources(device, env);
 		} catch (IOException e) {
+			e.printStackTrace();
 			throw new BuildException("Unable to copy resources: " + e);
 		}
 
@@ -192,6 +203,40 @@ public class ResourcesPreCompiler extends PreCompiler {
 			throw new BuildException("Could not write to file file '"+manifestPath+"'",e);
 		}
 		
+	}
+	
+	/**
+	 * Writes the JAD properties in a way so that the MIDlet can load them.
+	 * 
+	 * @param jadFile the JAD file
+	 * @param classesDir the classes directory to which the JAD properties should be saved
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws UnsupportedEncodingException
+	 */
+	private void storeJadProperties(File targetDir, Environment env) 
+	throws FileNotFoundException, IOException, UnsupportedEncodingException
+	{
+		File txtJadFile = new File( targetDir, "jadprops.txt");
+		if (!targetDir.exists()) {
+			targetDir.mkdirs();
+		}
+		Attribute[] descriptorAttributes = (Attribute[]) env.get(ManifestCreator.MANIFEST_ATTRIBUTES_KEY);
+		Jad jad = new Jad( env );
+		jad.setAttributes( descriptorAttributes );
+		descriptorAttributes = (Attribute[]) env.get(DescriptorCreator.DESCRIPTOR_ATTRIBUTES_KEY);
+		jad.addAttributes( descriptorAttributes );
+		String[] jadPropertiesLines = jad.getContent();
+		StringBuffer buffer = new StringBuffer();
+		for (int i = 0; i < jadPropertiesLines.length; i++)
+		{
+			String line = jadPropertiesLines[i];
+			buffer.append(line).append('\n');
+		}
+		FileOutputStream fileOut = new FileOutputStream(  txtJadFile );
+		fileOut.write( buffer.toString().getBytes("UTF-8") );
+		fileOut.flush();
+		fileOut.close();
 	}
 
 	/**
