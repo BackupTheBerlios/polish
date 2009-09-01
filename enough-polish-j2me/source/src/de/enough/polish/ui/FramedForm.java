@@ -939,7 +939,9 @@ public class FramedForm extends Form {
 		}
 		if (!this.keepContentFocused && newFrame != null && newFrame != activeFrame ) {
 			setActiveFrame(newFrame);
+			return newFrame.handlePointerPressed(x - newFrame.relativeX, y - newFrame.relativeY);
 		}
+		
 		return (newFrame != null);
 	}
 	//#endif
@@ -1017,7 +1019,9 @@ public class FramedForm extends Form {
 		}
 		if (!this.keepContentFocused && newFrame != null && newFrame != activeFrame ) {
 			setActiveFrame(newFrame);
+			return newFrame.handlePointerReleased(x - newFrame.relativeX, y - newFrame.relativeY);
 		}
+		
 		return (newFrame != null);
 	}
 	//#endif
