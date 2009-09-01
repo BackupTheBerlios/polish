@@ -451,34 +451,30 @@ public abstract class MIDlet extends UiApplication
 			midlet.startApp();	
 			midlet.enterEventDispatcher();
 		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (MIDletStateChangeException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-	private class NativeMidlet extends javax.microedition.midlet.MIDlet {
-		
-
-			protected void startApp() throws javax.microedition.midlet.MIDletStateChangeException {
-				// nothing to do
-			}
-		
-			protected void pauseApp() {
-				// ignore
-			}
-		
-			protected void destroyApp(boolean arg0) throws javax.microedition.midlet.MIDletStateChangeException {
-				// ignore
-			}
-	}
+//	private class NativeMidlet extends javax.microedition.midlet.MIDlet {
+//		
+//
+//			protected void startApp() throws javax.microedition.midlet.MIDletStateChangeException {
+//				// nothing to do
+//			}
+//		
+//			protected void pauseApp() {
+//				// ignore
+//			}
+//		
+//			protected void destroyApp(boolean arg0) throws javax.microedition.midlet.MIDletStateChangeException {
+//				// ignore
+//			}
+//	}
 
 }
