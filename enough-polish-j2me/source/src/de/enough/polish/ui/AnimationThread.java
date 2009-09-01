@@ -67,19 +67,19 @@ public class AnimationThread extends Thread
 		public final static int ANIMATION_INTERVAL = 50;
 	//#endif
 	//#ifdef polish.animationMinimumInterval:defined
-		//#= public final static int ANIMATION_MINIMUM_INTERVAL = ${polish.animationMinimumInterval};
+		//#= public final static int ANIMATION_MINIMUM_INTERVAL = ${time(polish.animationMinimumInterval)};
 	//#else
 		private static final int ANIMATION_MINIMUM_INTERVAL = 10;
 	//#endif
 	//#ifdef polish.sleepInterval:defined
-		//#= private final static int SLEEP_INTERVAL = ${polish.sleepInterval};
+		//#= private final static int SLEEP_INTERVAL = ${time(polish.sleepInterval)};
 	//#else
 		private final static int SLEEP_INTERVAL = 300;
 	//#endif
 	protected static boolean releaseResourcesOnScreenChange;
 	private static ArrayList animationList;
 	//#if polish.Animation.MaxIdleTime:defined
-		//#= private final static long ANIMATION_TIMEOUT = ${polish.Animation.MaxIdleTime};
+		//#= private final static long ANIMATION_TIMEOUT = ${ time(polish.Animation.MaxIdleTime)};
 	//#else
 		private final static long ANIMATION_TIMEOUT = 3 * 60 * 1000; // after 3 minutes of inactivity stop the animations
 	//#endif
