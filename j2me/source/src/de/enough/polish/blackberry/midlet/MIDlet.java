@@ -234,16 +234,25 @@ public abstract class MIDlet extends UiApplication
 					System.out.println("Unable to read manifest" + e);
 				}
 				String[] lines = TextUtil.split( completeBuffer.toString(), '\n' );
+				String lastKey = null;
+				String lastValue = null;
 				for (int i = 0; i < lines.length; i++) {
 					String line = lines[i];
 					int colonPos = line.indexOf(':');
 					if (colonPos == -1) {
-						//#debug warn
-						System.out.println("Unable to to split Manifest line " + line);
-						continue;
+						if (lastKey == null) {
+							//#debug warn
+							System.out.println("Unable to to split Manifest line " + line);
+							continue;
+						} else {
+							lastValue += line.trim();
+							this.appProperties.put( lastKey, lastValue );
+						}
 					}
 					String attributeKey = line.substring( 0, colonPos );
 					String attributeValue = line.substring( colonPos + 2 );
+					lastKey = attributeKey;
+					lastValue = attributeValue;
 					//#debug
 					System.out.println("Adding: " + attributeKey + "=" + attributeValue );
 					this.appProperties.put( attributeKey, attributeValue );
