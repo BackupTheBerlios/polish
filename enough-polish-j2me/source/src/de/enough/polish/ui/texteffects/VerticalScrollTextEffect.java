@@ -31,13 +31,12 @@ import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.ui.AnimationThread;
 import de.enough.polish.ui.ClippingRegion;
-import de.enough.polish.ui.CommandItem;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.DebugHelper;
 import de.enough.polish.ui.Item;
+import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.TextEffect;
-import de.enough.polish.ui.UiAccess;
 
 /**
  * <p>A text effect that scrolls through the wrapped lines</p>
@@ -59,10 +58,9 @@ public class VerticalScrollTextEffect extends TextEffect{
 	int stageInterval = 2000;
 	
 	int lineHeight = 0;
+	int drawCount = 0;
 		
 	String[] textLines = null;
-	String[] firstLine = null;
-	
 	String[] drawLines = null;
 	
 	long stageTime = 0;
@@ -164,10 +162,19 @@ public class VerticalScrollTextEffect extends TextEffect{
 		int clipWidth = g.getClipWidth();
 		int clipHeight = g.getClipHeight();
 		
+		int linesHeight;
+		
+		if(parent.isLayoutVerticalExpand()) {
+			linesHeight = (lineHeight * this.drawCount);
+		}
+		else {
+			linesHeight = lineHeight;
+		}
+		
 		//#if polish.Bugs.needsBottomOrientiationForStringDrawing
-			g.setClip(x, y + lineHeight, maxWidth, lineHeight);
+			g.setClip(x, y + linesHeight, maxWidth, linesHeight);
 		//#else
-			g.setClip(x, y, maxWidth, lineHeight);
+			g.setClip(x, y, maxWidth, linesHeight);
 		//#endif
 		
 		leftBorder = x;
@@ -183,33 +190,50 @@ public class VerticalScrollTextEffect extends TextEffect{
 	 */
 	public String[] wrap(Item parent, String text, int textColor, Font font,
 			int firstLineWidth, int lineWidth) {
-		if(this.lastLineWidth != firstLineWidth)
-		{
-			this.textLines = super.wrap(text, textColor, font, firstLineWidth, lineWidth);
-			
-			if(this.textLines.length > 1)
-			{
-				this.drawLines = new String[2];
-			}
-			else
-			{
-				this.drawLines = new String[1];
-			}
-			
-			this.firstLine = new String[]{this.textLines[0]};
-			this.lastLineWidth = firstLineWidth;
-			
-			if(this.textLines != null && this.textLines.length > 1)
-			{
-				AnimationThread.addAnimationItem(parent);
-			}
-			else
-			{
-				AnimationThread.removeAnimationItem(parent);
-			}
-		}
+		StringItem parentItem = (StringItem)parent;
 		
-		return this.firstLine;
+		this.textLines = super.wrap(text, textColor, font, firstLineWidth, lineWidth);
+		
+		String[] lines = new String[this.drawCount];
+		
+		if(parentItem.isLayoutVerticalExpand())
+		{
+			if(parentItem.itemHeight == 0) {
+				this.drawLines = new String[0];
+				return this.drawLines;
+			}
+			else
+			{
+				int availableContentHeight = parentItem.getAvailableContentHeight();
+				this.drawCount = availableContentHeight / parentItem.getLineHeight();
+				
+				if(this.textLines.length > this.drawCount)
+				{
+					 this.drawLines = new String[this.drawCount + 1];
+					 
+					 AnimationThread.addAnimationItem(parent);
+				}
+				else
+				{
+					this.drawLines = this.textLines;
+					
+					AnimationThread.removeAnimationItem(parent);
+				}
+				
+				lines = new String[this.drawCount];
+				
+				for (int index = 0; index < lines.length; index++) {
+					lines[index] = this.textLines[index];
+				}
+				
+				return lines;
+			}
+		} else {
+			this.drawLines = new String[2];
+			String[] firstLine = new String[1];
+			firstLine[0] = this.textLines[0];
+			return firstLine;
+		}
 	}
 
 	/* (non-Javadoc)
