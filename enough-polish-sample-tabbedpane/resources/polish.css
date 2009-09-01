@@ -203,6 +203,7 @@ title {
 
 .tabbedPaneIcons {
 	view-type: horizontal;
+	horizontalview-distribution: equal;
 	background {
 		type: vertical-gradient;
 		top-color: #f6f6f6;
@@ -220,7 +221,6 @@ title {
 	padding: 2px;
 	icon-image: url( Tab%INDEX%.png );
 	icon-image-align: top;
-	max-width: 25%;
 	font-bitmap: url( arialsmall.bmf );
 	layout: expand | center | vertical-center;
 }
@@ -263,7 +263,6 @@ title {
 	padding: 2px;
 	icon-image: url( TabCustom0.png );
 	icon-image-align: top;
-	max-width: 25%;
 	font-bitmap: url( arialsmall.bmf );
 	layout: expand | center | vertical-center;
 }
