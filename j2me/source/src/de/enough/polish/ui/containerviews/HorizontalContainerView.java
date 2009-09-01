@@ -129,9 +129,12 @@ public class HorizontalContainerView extends ContainerView {
 		//#endif
 
 		int availItemWidth = availWidth;
+		int availItemWidthWithPaddingShift8 = 0;
 		//#if polish.css.horizontalview-distribution
 			if (this.isDistributeEquals) {
-				availItemWidth = (availItemWidth - ((items.length - 1)*this.paddingHorizontal)) / items.length;
+				int left = availItemWidth - ((items.length - 1)*this.paddingHorizontal);
+				availItemWidth = left / items.length;
+				availItemWidthWithPaddingShift8 = (availWidth << 8) / items.length;
 			}
 		//#endif
 		for (int i = 0; i < items.length; i++) {
@@ -170,6 +173,11 @@ public class HorizontalContainerView extends ContainerView {
 			item.relativeX = completeWidth;
 			item.relativeY = 0;
 			completeWidth += itemWidth + (isLast ? 0 :  this.paddingHorizontal);
+			//#if polish.css.horizontalview-distribution
+				if (this.isDistributeEquals) {
+					completeWidth = (availItemWidthWithPaddingShift8 * (i+1)) >> 8;
+				}
+			//#endif
 			if ( i == selectedItemIndex) {
 				if ( startX + this.xOffset < 0 ) {
 					this.targetXOffset = -startX; 
