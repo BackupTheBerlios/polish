@@ -4637,6 +4637,11 @@ public abstract class Item implements UiElement, Animatable
 		return ((this.layout & LAYOUT_VCENTER) == LAYOUT_VCENTER);
 	}
 	
+	public boolean isLayoutVerticalExpand()
+	{
+		return ((this.layout & LAYOUT_VEXPAND) == LAYOUT_VEXPAND);
+	}
+	
 	public void setItemTransition( ItemTransition transition ) {
 		this.itemTransition = transition;
 	}
@@ -4719,10 +4724,11 @@ public abstract class Item implements UiElement, Animatable
 	public int getAvailableHeight() {
 		return this.availableHeight;
 	}
-
-
-
-
+	
+	public int getAvailableContentHeight() {
+		return this.itemHeight - this.marginTop - this.marginBottom;
+	}
+	
 //#ifdef polish.Item.additionalMethods:defined
 	//#include ${polish.Item.additionalMethods}
 //#endif
