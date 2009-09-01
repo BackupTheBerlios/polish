@@ -57,6 +57,10 @@ public class VerticalScrollTextEffect extends TextEffect{
 	
 	int stageInterval = 2000;
 	
+	int maxLines = 1;
+	
+	int lines = 1;
+	
 	int lineHeight = 0;
 	int drawCount = 0;
 		
@@ -164,12 +168,7 @@ public class VerticalScrollTextEffect extends TextEffect{
 		
 		int linesHeight;
 		
-		if(parent.isLayoutVerticalExpand()) {
-			linesHeight = (lineHeight * this.drawCount);
-		}
-		else {
-			linesHeight = lineHeight;
-		}
+		linesHeight = lineHeight * (this.lines);
 		
 		//#if polish.Bugs.needsBottomOrientiationForStringDrawing
 			g.setClip(x, y + linesHeight, maxWidth, linesHeight);
@@ -194,46 +193,29 @@ public class VerticalScrollTextEffect extends TextEffect{
 		
 		this.textLines = super.wrap(text, textColor, font, firstLineWidth, lineWidth);
 		
-		String[] lines = new String[this.drawCount];
-		
-		if(parentItem.isLayoutVerticalExpand())
+		if(this.textLines.length > this.maxLines)
 		{
-			if(parentItem.itemHeight == 0) {
-				this.drawLines = new String[0];
-				return this.drawLines;
-			}
-			else
-			{
-				int availableContentHeight = parentItem.getAvailableContentHeight();
-				this.drawCount = availableContentHeight / parentItem.getLineHeight();
-				
-				if(this.textLines.length > this.drawCount)
-				{
-					 this.drawLines = new String[this.drawCount + 1];
-					 
-					 AnimationThread.addAnimationItem(parent);
-				}
-				else
-				{
-					this.drawLines = this.textLines;
-					
-					AnimationThread.removeAnimationItem(parent);
-				}
-				
-				lines = new String[this.drawCount];
-				
-				for (int index = 0; index < lines.length; index++) {
-					lines[index] = this.textLines[index];
-				}
-				
-				return lines;
-			}
-		} else {
-			this.drawLines = new String[2];
-			String[] firstLine = new String[1];
-			firstLine[0] = this.textLines[0];
-			return firstLine;
+			 this.drawLines = new String[this.maxLines + 1];
+			 this.lines = this.maxLines;
+			 
+			 AnimationThread.addAnimationItem(parent);
 		}
+		else
+		{
+			this.drawLines = this.textLines;
+			this.lines = this.textLines.length;
+			
+			AnimationThread.removeAnimationItem(parent);
+		}
+
+		
+		String[] resultLines = new String[this.lines];
+		
+		for (int index = 0; index < resultLines.length; index++) {
+			resultLines[index] = this.textLines[index];
+		}
+		
+		return resultLines;
 	}
 
 	/* (non-Javadoc)
@@ -259,6 +241,14 @@ public class VerticalScrollTextEffect extends TextEffect{
 		if(stageIntervalInt != null)
 		{
 			this.stageInterval = stageIntervalInt.intValue();
+		}
+		//#endif
+		
+		//#if polish.css.vertical-scroll-max-lines
+		Integer maxLinesInt = style.getIntProperty("vertical-scroll-max-lines");
+		if(maxLinesInt != null)
+		{
+			this.maxLines = maxLinesInt.intValue();
 		}
 		//#endif
 	}
