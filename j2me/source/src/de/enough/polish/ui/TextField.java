@@ -2844,7 +2844,7 @@ public class TextField extends StringItem
 		//#debug
 		System.out.println("handleKeyPressed " + keyCode );
 		
-		//#if tmp.useNativeTextBox
+		//#if tmp.useNativeTextBox && tmp.directInput
 		if (keyCode >0)
 		{
 			String alphabet = null;
