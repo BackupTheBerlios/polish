@@ -46,12 +46,16 @@ import de.enough.polish.ui.Style;
  */
 public class HorizontalContainerView extends ContainerView {
 	
+	private static final int DISTRIBUTE_EQUALS = 1;
 	
 	protected int targetXOffset;
 	private boolean allowRoundTrip;
 	private boolean isExpandRightLayout;
 	//#if polish.css.horizontalview-align-heights
 		private boolean isAlignHeights;
+	//#endif
+	//#if polish.css.horizontalview-distribution
+		private boolean isDistributeEquals;
 	//#endif
 	//#if polish.css.show-text-in-title
 		private boolean isShowTextInTitle;
@@ -124,6 +128,12 @@ public class HorizontalContainerView extends ContainerView {
 			}
 		//#endif
 
+		int availItemWidth = availWidth;
+		//#if polish.css.horizontalview-distribution
+			if (this.isDistributeEquals) {
+				availItemWidth = (availItemWidth - ((items.length - 1)*this.paddingHorizontal)) / items.length;
+			}
+		//#endif
 		for (int i = 0; i < items.length; i++) {
 			Item item = items[i];
 			//#if polish.css.show-text-in-title
@@ -142,8 +152,13 @@ public class HorizontalContainerView extends ContainerView {
 					}
 				}
 			//#endif
-			int itemHeight = item.getItemHeight(availWidth, availWidth, availHeight);
+			int itemHeight = item.getItemHeight(availItemWidth, availItemWidth, availHeight);
 			int itemWidth = item.itemWidth;
+			//#if polish.css.horizontalview-distribution
+				if (this.isDistributeEquals) {
+					itemWidth = availItemWidth;
+				}
+			//#endif
 			if (itemHeight > maxHeight ) {
 				maxHeight = itemHeight;
 			}
@@ -241,6 +256,12 @@ public class HorizontalContainerView extends ContainerView {
 			Boolean showTextInTitleBool = style.getBooleanProperty("show-text-in-title");
 			if (showTextInTitleBool != null) {
 				this.isShowTextInTitle = showTextInTitleBool.booleanValue();
+			}
+		//#endif
+		//#if polish.css.horizontalview-distribution
+			Integer distribution = style.getIntProperty("horizontalview-distribution");
+			if (distribution != null) {
+				this.isDistributeEquals = (distribution.intValue() == DISTRIBUTE_EQUALS);
 			}
 		//#endif
 	}
