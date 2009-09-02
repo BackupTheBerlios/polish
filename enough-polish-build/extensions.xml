@@ -386,6 +386,12 @@
 
 	<extension>
 		<type>propertyfunction</type>
+		<name>package</name>
+		<class>de.enough.polish.propertyfunctions.PackageNameFunction</class>
+	</extension>
+
+	<extension>
+		<type>propertyfunction</type>
 		<name>number</name>
 		<class>de.enough.polish.propertyfunctions.NumberFunction</class>
 	</extension>

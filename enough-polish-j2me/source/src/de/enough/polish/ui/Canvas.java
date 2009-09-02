@@ -857,7 +857,7 @@ implements Displayable
 				if (cmd == null) {
 					break;
 				}
-				System.out.println("adding cmd " + cmd.getLabel());
+//				System.out.println("adding cmd " + cmd.getLabel());
 				instance.addCommand(cmd);
 			}
     		instance.setCommandListener(this._commandListener);
@@ -891,7 +891,7 @@ implements Displayable
 				//TODO we could skip this test when calling first _hideNotify() on the old screen and then _showNotify() on the new screen
 				// however there are other dependencies that might not get easily resolved (repaint-previous-screen, StyleSheet.currentScreen), so for now we keep it like this.
 				if (current == null || current._commands == null || !current._commands.contains(cmd)) {
-					System.out.println("removing cmd " + cmd.getLabel());
+//					System.out.println("removing cmd " + cmd.getLabel());
 					instance.removeCommand(cmd);
 				}
 			}

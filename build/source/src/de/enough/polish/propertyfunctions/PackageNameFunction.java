@@ -26,17 +26,17 @@ package de.enough.polish.propertyfunctions;
 import de.enough.polish.Environment;
 
 /**
- * <p>Converts the fully qualified classname to the name of only the class (without package).</p>
+ * <p>Converts the fully qualified classname to the name of the package.</p>
  *
  * <p>Copyright Enough Software 2009</p>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class ClassNameFunction extends PropertyFunction {
+public class PackageNameFunction extends PropertyFunction {
 
 	/**
 	 * Creates a new function 
 	 */
-	public ClassNameFunction() {
+	public PackageNameFunction() {
 		super();
 	}
 
@@ -46,9 +46,9 @@ public class ClassNameFunction extends PropertyFunction {
 	public String process(String input, String[] arguments, Environment env) {
 		int lastDotIndex = input.lastIndexOf('.');
 		if (lastDotIndex != -1) {
-			return input.substring( lastDotIndex + 1 );
+			return input.substring( 0, lastDotIndex  );
 		}
-		return input;
+		return "default";
 	}
 
 }

@@ -33,6 +33,7 @@ import javax.microedition.lcdui.Image;
 
 //#if polish.android1.5
 	import de.enough.polish.android.midlet.MIDlet;
+import de.enough.polish.android.midlet.MidletBridge;
 //#endif
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.Locale;
@@ -1300,7 +1301,7 @@ implements Choice
 		}
 		//#if polish.android1.5
 			if (this.isShown) {
-				MIDlet.midletInstance.hideSoftKeyboard();
+				MidletBridge.instance.hideSoftKeyboard();
 			}
 		//#endif
 		getScreen().addCommandsLayer( new Command[]{ StyleSheet.OK_CMD, StyleSheet.CANCEL_CMD} );

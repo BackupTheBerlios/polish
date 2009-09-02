@@ -1,13 +1,10 @@
 package de.enough.polish.util;
 
 //#if polish.usePolishGui
-import de.enough.polish.ui.StyleSheet;
+	import de.enough.polish.ui.StyleSheet;
 //#endif
-
 //#if polish.android
-import android.content.Context;
-import android.location.LocationManager;
-import de.enough.polish.android.midlet.MIDlet;
+	import de.enough.polish.android.midlet.MidletBridge;
 //#endif
 
 /**
@@ -97,7 +94,7 @@ public class DeviceControl
 	{
 		
 		//#if polish.android
-			MIDlet.midletInstance.backlightOn();
+			MidletBridge.instance.backlightOn();
 			//# return true;
 		//#else
 		synchronized(lightsLock) {
@@ -129,7 +126,7 @@ public class DeviceControl
 	public static void lightOff()
 	{
 		//#if polish.android
-			MIDlet.midletInstance.backlightRelease();
+			MidletBridge.instance.backlightRelease();
 		//#else
 		synchronized(lightsLock) {
 			//#if tmp.useNokiaUi
@@ -229,7 +226,7 @@ public class DeviceControl
 	 */
 	public static void showSoftKeyboard() {
 		//#if polish.android1.5
-		MIDlet.midletInstance.showSoftKeyboard();
+			MidletBridge.instance.showSoftKeyboard();
 		//#endif
 	}
 	
@@ -238,14 +235,14 @@ public class DeviceControl
 	 */
 	public static void hideSoftKeyboard() {
 		//#if polish.android1.5
-		MIDlet.midletInstance.hideSoftKeyboard();
+			MidletBridge.instance.hideSoftKeyboard();
 		//#endif
 	}
 	
 	//#if polish.android
 	
 	public static void setSuicideOnExit(boolean suicideOnExit) {
-		MIDlet.midletInstance.setSuicideOnExit(suicideOnExit);
+		MidletBridge.instance.setSuicideOnExit(suicideOnExit);
 	}
 	
 	/**
@@ -274,9 +271,7 @@ public class DeviceControl
 	 * @deprecated Use {@link de.enough.polish.location.LocationService#isGpsEnabled()}
 	 */
 	public static boolean isGpsEnabled() {
-		LocationManager locationManager = (LocationManager)MIDlet.midletInstance.getSystemService(Context.LOCATION_SERVICE);
-		boolean providerEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-		return providerEnabled;
+		return de.enough.polish.location.LocationService.isGpsEnabled();
 	}
 	
 	//#endif

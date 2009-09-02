@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.provider.Contacts;
 import android.provider.Contacts.People;
 import de.enough.polish.android.midlet.MIDlet;
+import de.enough.polish.android.midlet.MidletBridge;
 import de.enough.polish.android.pim.Contact;
 import de.enough.polish.android.pim.PIMItem;
 
@@ -21,7 +22,7 @@ public class ContactDao {
 
 	public ContactDao(ContactListImpl contactListImpl) {
 		this.contactListImpl = contactListImpl;
-		this.contentResolver = MIDlet.midletInstance.getContentResolver();
+		this.contentResolver = MidletBridge.instance.getContentResolver();
 	}
 	
 	/**

@@ -64,6 +64,7 @@ import de.enough.polish.windows.Keyboard;
 //#if polish.android1.5
 import de.enough.polish.android.midlet.MIDlet;
 //#endif
+import de.enough.polish.android.midlet.MidletBridge;
 
 /**
  * A <code>TextField</code> is an editable text component that may be
@@ -3870,7 +3871,7 @@ public class TextField extends StringItem
 			//#elif polish.android1.5
 				if (this.isFocused && ((System.currentTimeMillis() - this.androidFocusedTime) > 1000)) {
 					notifyItemPressedEnd();
-					MIDlet.midletInstance.toggleSoftKeyboard();
+					MidletBridge.instance.toggleSoftKeyboard();
 					return true;
 				}
 			//#endif
@@ -4171,7 +4172,7 @@ public class TextField extends StringItem
 		
 		//#if polish.android1.5
 			if (this.isShown) {
-				MIDlet.midletInstance.showSoftKeyboard();
+				MidletBridge.instance.showSoftKeyboard();
 				this.androidFocusedTime = System.currentTimeMillis();
 			}
 		//#endif
@@ -4265,7 +4266,7 @@ public class TextField extends StringItem
 		//#endif
 		//#if polish.android1.5
 			if (this.isFocused) {
-				MIDlet.midletInstance.showSoftKeyboard();
+				MidletBridge.instance.showSoftKeyboard();
 			}
 		//#endif
 		super.showNotify();
@@ -4281,7 +4282,7 @@ public class TextField extends StringItem
 			}
 			super.hideNotify();
 			//#if polish.android1.5
-				MIDlet.midletInstance.hideSoftKeyboard();
+				MidletBridge.instance.hideSoftKeyboard();
 			//#endif
 		}	
 	//#endif

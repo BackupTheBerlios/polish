@@ -45,6 +45,7 @@ import de.enough.polish.util.Locale;
 	
 //#if polish.android
 	import de.enough.polish.android.midlet.MIDlet;
+import de.enough.polish.android.midlet.MidletBridge;
 //#endif
 	
 import de.enough.polish.calendar.CalendarItem;
@@ -858,7 +859,7 @@ implements
 	 */
 	protected Style focus(Style newStyle, int direction) {
 		if (this.isShown) {
-			MIDlet.midletInstance.showSoftKeyboard();
+			MidletBridge.instance.showSoftKeyboard();
 			this.androidFocusedTime = System.currentTimeMillis();
 		}
 		return super.focus(newStyle, direction);
@@ -872,7 +873,7 @@ implements
 	 */
 	protected void showNotify() {
 		if (this.isFocused) {
-			MIDlet.midletInstance.showSoftKeyboard();
+			MidletBridge.instance.showSoftKeyboard();
 		}
 		super.showNotify();
 	}
@@ -1340,7 +1341,7 @@ implements
 				showDateForm();
 			//#elif polish.android1.5
 				if (this.isFocused && ((System.currentTimeMillis() - this.androidFocusedTime) > 200)) {
-					MIDlet.midletInstance.toggleSoftKeyboard();
+					MidletBridge.instance.toggleSoftKeyboard();
 					return true;
 				}
 			//#endif

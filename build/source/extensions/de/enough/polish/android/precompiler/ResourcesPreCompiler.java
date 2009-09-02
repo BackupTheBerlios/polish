@@ -33,6 +33,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.apache.tools.ant.BuildException;
 import org.jdom.Document;
@@ -46,7 +47,6 @@ import de.enough.polish.Attribute;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.ant.Jad;
-import de.enough.polish.ant.PolishTask;
 import de.enough.polish.ant.android.ArgumentHelper;
 import de.enough.polish.descriptor.DescriptorCreator;
 import de.enough.polish.manifest.ManifestCreator;
@@ -110,6 +110,7 @@ public class ResourcesPreCompiler extends PreCompiler {
 		File manifestFile = new File(manifestPath);
 		try {
 			document = builder.build(manifestFile);
+			//System.out.println("Got MANIFEST " + print(document));
 		} catch (JDOMException e) {
 			throw new BuildException("Could not parse file '"+manifestPath+"'",e);
 		} catch (IOException e) {
@@ -179,7 +180,7 @@ public class ResourcesPreCompiler extends PreCompiler {
 				activityElement.setAttribute("icon","@raw"+iconUrl,namespace);
 			}
 		} else {
-			System.err.println("No icon was defined in this build. You will not be able to deploy this application in the Android Market. Please define an icon with the attribte 'icon' in the 'info' tag of the build.xml file.");
+			System.err.println("Warning: No icon was defined in this build. You will not be able to deploy this application in the Android Market. Please define an icon with the attribte \"icon\" in the <info> tag of the build.xml file.");
 		}
 		
 		// TODO: This does not work. Instead we need to alter the file res/values/string.xml, add the description as a string resource
@@ -200,11 +201,39 @@ public class ResourcesPreCompiler extends PreCompiler {
 		try {
 			xmlOutputter.output(document,fileWriter);
 		} catch (IOException e) {
-			throw new BuildException("Could not write to file file '"+manifestPath+"'",e);
+			throw new BuildException("Could not write the android manifest to file  '"+manifestPath+"'",e);
 		}
 		
 	}
 	
+//	private String print(Document document) {
+//		StringBuffer buffer = new StringBuffer();
+//		Element e = document.getRootElement();
+//		add( e, "", buffer );
+//		return buffer.toString();
+//	}
+//
+//	private void add(Element e, String start, StringBuffer buffer) {
+//		buffer.append(start).append('<').append( e.getName() );
+//		List l = e.getAttributes();
+//		for (Iterator iterator = l.iterator(); iterator.hasNext();) {
+//			org.jdom.Attribute attr = (org.jdom.Attribute) iterator.next();
+//			buffer.append(' ').append(attr.getName()).append("=\"").append( attr.getValue() + "\"");
+//		}
+//		buffer.append(">\n");
+//		if (e.getTextTrim() != null) {
+//			buffer.append( start ).append( e.getTextTrim() );
+//		}
+//		String st = start + "  ";
+//		l = e.getChildren();
+//		for (Iterator iterator = l.iterator(); iterator.hasNext();) {
+//			Element child = (Element)iterator.next();
+//			add( child, st, buffer );
+//		}
+//		buffer.append(start).append("</").append( e.getName() ).append(">\n");
+//		
+//	}
+
 	/**
 	 * Writes the JAD properties in a way so that the MIDlet can load them.
 	 * 

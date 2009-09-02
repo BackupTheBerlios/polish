@@ -43,6 +43,7 @@ import de.enough.polish.util.Locale;
 
 //#if polish.android
 import de.enough.polish.android.midlet.MIDlet;
+import de.enough.polish.android.midlet.MidletBridge;
 //#endif
 
 //#if polish.api.windows
@@ -1161,7 +1162,7 @@ public class MenuBar extends Item {
 				Display.getInstance().notifyFocusSet(null);
 			//#endif
 			//#if polish.android1.5
-				MIDlet.midletInstance.hideSoftKeyboard();
+				MidletBridge.instance.hideSoftKeyboard();
 			//#endif
 			//#if !polish.MenuBar.focusFirstAfterClose
 				// focus the first item again, so when the user opens the menu again, it will be "fresh" again
