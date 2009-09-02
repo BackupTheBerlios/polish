@@ -323,7 +323,6 @@ public class MidletBridge extends Activity {
 	}
 
 	protected void onStart() {
-		System.out.println("ON START");
 		//#debug
 		System.out.println("onStart().");
 		super.onStart();
