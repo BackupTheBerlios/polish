@@ -62,9 +62,8 @@ import de.enough.polish.windows.Keyboard;
 //#endif
 
 //#if polish.android1.5
-import de.enough.polish.android.midlet.MIDlet;
+	import de.enough.polish.android.midlet.MidletBridge;
 //#endif
-import de.enough.polish.android.midlet.MidletBridge;
 
 /**
  * A <code>TextField</code> is an editable text component that may be
