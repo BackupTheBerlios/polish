@@ -52,7 +52,8 @@ import de.enough.polish.ui.StyleSheet;
  */
 public class HorizontalChoiceView extends ContainerView {
 	
-	
+	private static final int DISTRIBUTE_EQUALS = 1;
+
 	private final static int POSITION_BOTH_SIDES = 0; 
 	private final static int POSITION_RIGHT = 1; 
 	private final static int POSITION_LEFT = 2; 
@@ -84,6 +85,10 @@ public class HorizontalChoiceView extends ContainerView {
 		private Background expandBackground;
 		private boolean isExpandBackground = true;
 	//#endif
+	//#if polish.css.horizontalview-distribution
+		private boolean isDistributeEquals;
+	//#endif
+
 	private int arrowWidth = 10;
 	private int currentItemIndex;
 	private int leftArrowStartX;
@@ -124,9 +129,9 @@ public class HorizontalChoiceView extends ContainerView {
 			if (selectedItemIndex == -1) {
 				selectedItemIndex = 0;
 			}
-			if ( selectedItemIndex < parent.size() ) {
-				parent.focusChild (selectedItemIndex, parent.get( selectedItemIndex ), 0, true);
-			}
+//			if ( selectedItemIndex < parent.size() ) {
+//				parent.focusChild (selectedItemIndex, parent.get( selectedItemIndex ), 0, true);
+//			}
 		} else {
 			selectedItemIndex = parent.getFocusedIndex();
 		}
@@ -206,14 +211,23 @@ public class HorizontalChoiceView extends ContainerView {
 		this.contentStart = contentStartX;
 		availWidth -= completeArrowWidth;
 		int completeWidth = 0;
+		int availItemWidth = availWidth;
+		int availItemWidthWithPaddingShift8 = 0;
 		Item[] items = parent.getItems();
+		//#if polish.css.horizontalview-distribution
+			if (this.isDistributeEquals) {
+				int left = availItemWidth - ((items.length - 1)*this.paddingHorizontal);
+				availItemWidth = left / items.length;
+				availItemWidthWithPaddingShift8 = (availWidth << 8) / items.length;
+			}
+		//#endif
 		for (int i = 0; i < items.length; i++) {
 			Item item = items[i];
 			//TODO allow drawing of boxes as well
 			//if (!isMultiple) {
 				((ChoiceItem) item).drawBox = false;
 			//}
-			int itemHeight = item.getItemHeight(availWidth, availWidth, availHeight);
+			int itemHeight = item.getItemHeight(availItemWidth, availItemWidth, availHeight);
 			int itemWidth = item.itemWidth;
 			if (itemHeight > height ) {
 				height = itemHeight;
@@ -222,6 +236,11 @@ public class HorizontalChoiceView extends ContainerView {
 			item.relativeY = 0;
 			int startX = completeWidth;
 			completeWidth += itemWidth + this.paddingHorizontal;
+			//#if polish.css.horizontalview-distribution
+				if (this.isDistributeEquals) {
+					completeWidth = (availItemWidthWithPaddingShift8 * (i+1)) >> 8;
+				}
+			//#endif
 			if ( i == selectedItemIndex) {
 				if ( startX + this.xOffset < 0 ) {
 					this.xOffset = -startX; 
@@ -361,6 +380,12 @@ public class HorizontalChoiceView extends ContainerView {
 				this.allowRoundTrip = allowRoundTripBool.booleanValue();
 			}
 		//#endif
+		//#if polish.css.horizontalview-distribution
+			Integer distribution = style.getIntProperty("horizontalview-distribution");
+			if (distribution != null) {
+				this.isDistributeEquals = (distribution.intValue() == DISTRIBUTE_EQUALS);
+			}
+		//#endif	
 	}
 	
 	
@@ -384,7 +409,7 @@ public class HorizontalChoiceView extends ContainerView {
 			} else if (this.arrowPosition == POSITION_LEFT ) {
 				modifiedX += (this.arrowWidth + this.paddingHorizontal) << 1;
 				leftBorder += (this.arrowWidth + this.paddingHorizontal) << 1;
-			} else {
+			} else if (this.arrowPosition == POSITION_RIGHT){
 				rightBorder -= (this.arrowWidth + this.paddingHorizontal) << 1;				
 			}
 		//#endif	
@@ -659,7 +684,7 @@ public class HorizontalChoiceView extends ContainerView {
 				}
 
 			}
-			if (index != this.currentItemIndex) {
+			if (index != this.currentItemIndex || !isMultiple) {
 				this.pointerReleasedIndex = index;
 				Item item = this.parentContainer.get(index);
 				notifyItemPressedStart(item);
