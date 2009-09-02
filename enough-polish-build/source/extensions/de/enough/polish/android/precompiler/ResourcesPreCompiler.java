@@ -152,9 +152,9 @@ public class ResourcesPreCompiler extends PreCompiler {
 		if(version == null || version.length() == 0) {
 			version = "1";
 		}
-		int versionCodeNumber = computeVersionCode(version);
 		String versionCode = env.getVariable("android.versionCode");
 		if (versionCode == null || versionCode.length() == 0) {
+			int versionCodeNumber = computeVersionCode(version);
 			versionCode = String.valueOf(versionCodeNumber);
 		}
 		rootElement.setAttribute("versionCode", versionCode,namespace);
