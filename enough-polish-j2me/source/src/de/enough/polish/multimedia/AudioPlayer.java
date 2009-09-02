@@ -704,7 +704,7 @@ public class AudioPlayer implements PlayerListener
 		//#debug
 		System.out.println("onPrepared called.");
 		p.start();
-		this.androidPlayer.start();
+//		this.androidPlayer.start();
 	}
 	
 	//#endif
