@@ -134,7 +134,6 @@ public class MidletBridge extends Activity {
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
 	 */
 	protected void onCreate(Bundle icicle) {
-		System.out.println("ON CREATE");
 		super.onCreate(icicle);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		//TODO: Remove this as we do not want to shrink the application on softkeyboard display.
@@ -610,7 +609,6 @@ public class MidletBridge extends Activity {
 	public void showSoftKeyboard() {
 		//#debug
 		System.out.println("Handling showSoftKeyboard");
-		try { throw new RuntimeException(); } catch (Exception e) { e.printStackTrace(); }
 		//#if polish.android1.5
 			
 			Configuration configuration;
@@ -694,7 +692,6 @@ public class MidletBridge extends Activity {
 	public void hideSoftKeyboard() {
 		//#debug
 		System.out.println("Handling hideSoftKeyboard");
-		try { throw new RuntimeException(); } catch (Exception e) { e.printStackTrace(); }
 
 		//#if polish.android1.5
 		Configuration configuration;
@@ -735,7 +732,6 @@ public class MidletBridge extends Activity {
 	public void toggleSoftKeyboard() {
 		//#debug
 		System.out.println("Handling toggleSoftKeyboard");
-		try { throw new RuntimeException(); } catch (Exception e) { e.printStackTrace(); }
 
 		//#if polish.android1.5
 		
@@ -793,7 +789,7 @@ public class MidletBridge extends Activity {
 	
 	private void onSoftKeyboardOpened() {
 		Screen screen = getCurrentScreen();
-		System.out.println("onSoftKeyOpened, screen=" + screen);
+//		System.out.println("onSoftKeyOpened, screen=" + screen);
 		if (screen != null) {
 			Item item = screen.getCurrentItem();
 			if (item != null) {
@@ -815,7 +811,7 @@ public class MidletBridge extends Activity {
 
 	private void onSoftKeyboardClosed() {
 		Screen screen = getCurrentScreen();
-		System.out.println("onSoftKeyClosed, screen=" + screen + ", yOffset=" + this.currentScreenYOffset);
+//		System.out.println("onSoftKeyClosed, screen=" + screen + ", yOffset=" + this.currentScreenYOffset);
 		if (screen != null) {
 			screen.setScrollYOffset(this.currentScreenYOffset, true);
 		}
