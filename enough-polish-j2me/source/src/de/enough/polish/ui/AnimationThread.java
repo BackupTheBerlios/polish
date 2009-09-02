@@ -60,6 +60,18 @@ public class AnimationThread extends Thread
 	implements EventListener
 //#endif
 {
+	/**
+	 * Event that is triggered when entering the idle mode.
+	 * The idle mode is triggered after 3 minutes or - when defined - after polish.Animation.MaxIdleTime.
+	 * The event is only triggered when polish.Animation.fireIdleEvents is set to true in your build.xml.
+	 */
+	public static final String EVENT_IDLE_MODE_ON = "idle-on";
+	/**
+	 * Event that is triggered when leaving the idle mode.
+	 * The idle mode is left when the user starts interacting with the application again.
+	 * The event is only triggered when polish.Animation.fireIdleEvents is set to true in your build.xml.
+	 */
+	public static final String EVENT_IDLE_MODE_OFF = "idle-off";
 	
 	//#ifdef polish.animationInterval:defined
 		//#= public final static int ANIMATION_INTERVAL = ${polish.animationInterval};
@@ -142,6 +154,23 @@ public class AnimationThread extends Thread
 							repaintRegion.reset();
 							screen.serviceRepaints();
 						}
+						//#if polish.Animation.fireIdleEvents
+							if (sleeptime == SLEEP_INTERVAL) {
+								EventManager.fireEvent( EVENT_IDLE_MODE_OFF, this, null);
+							}
+						//#endif
+						long usedTime = System.currentTimeMillis() - currentTime;
+						if (usedTime >= (ANIMATION_INTERVAL-ANIMATION_MINIMUM_INTERVAL)) {
+							sleeptime = ANIMATION_MINIMUM_INTERVAL;
+						} else {
+							sleeptime = ANIMATION_INTERVAL - usedTime;
+						}
+					} else if (sleeptime != SLEEP_INTERVAL) {
+						sleeptime = SLEEP_INTERVAL;
+						//#if polish.Animation.fireIdleEvents
+							EventManager.fireEvent( EVENT_IDLE_MODE_ON, this, null);
+						//#endif
+						continue;
 					}
 
 					if (releaseResourcesOnScreenChange) {
@@ -149,12 +178,6 @@ public class AnimationThread extends Thread
 						if (d != screen) {
 							StyleSheet.currentScreen = null;
 						}
-					}
-					long usedTime = System.currentTimeMillis() - currentTime;
-					if (usedTime >= (ANIMATION_INTERVAL-ANIMATION_MINIMUM_INTERVAL)) {
-						sleeptime = ANIMATION_MINIMUM_INTERVAL;
-					} else {
-						sleeptime = ANIMATION_INTERVAL - usedTime;
 					}
 				} else {
 					if (releaseResourcesOnScreenChange) {
