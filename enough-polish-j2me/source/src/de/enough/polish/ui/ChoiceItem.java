@@ -562,6 +562,11 @@ public class ChoiceItem extends IconItem
 			this.styleCheckedFocused = newStyle;
 		} else if (this.style == this.styleNormal && this.styleNormalFocused == null) {
 			this.styleNormalFocused = newStyle;
+		} else if (this.isSelected && this.styleCheckedFocused != null) {
+			if (this.styleNormalFocused == null) {
+				this.styleNormalFocused = newStyle;
+			}
+			newStyle = this.styleCheckedFocused;
 		}
 		Style st = super.focus(newStyle, direction);
 		if (this.styleNormal != null) {
@@ -636,5 +641,6 @@ public class ChoiceItem extends IconItem
 	public Image getSelectedImage() {
 		return this.selected;
 	}
+
 
 }

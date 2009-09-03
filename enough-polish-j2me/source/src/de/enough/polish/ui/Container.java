@@ -2826,7 +2826,7 @@ public class Container extends Item {
 		//#ifdef tmp.supportViewType
 			if (contView != null) {
 				relX += viewXOffset;
-				if ( contView.handlePointerPressed(relX,relY) ) {
+				if ( contView.handlePointerPressed(relX + this.contentX, relY + this.contentY) ) {
 					//System.out.println("ContainerView consumed pointer event");
 					return true;
 				}
@@ -2945,8 +2945,8 @@ public class Container extends Item {
 		int origRelX = relX;
 		int origRelY = relY;
 		relY -= this.yOffset;
-		relX -= this.contentX;
 		relY -= this.contentY;
+		relX -= this.contentX;
 		//#ifdef tmp.supportViewType
 			int viewXOffset = 0;
 			ContainerView contView = this.containerView;
@@ -2973,7 +2973,7 @@ public class Container extends Item {
 		//#ifdef tmp.supportViewType
 			if (this.containerView != null) {
 				relX += viewXOffset;
-				if ( this.containerView.handlePointerReleased(relX,relY) ) {
+				if ( this.containerView.handlePointerReleased(relX + this.contentX,relY + this.contentY) ) {
 					return true;
 				}
 				relX -= viewXOffset;

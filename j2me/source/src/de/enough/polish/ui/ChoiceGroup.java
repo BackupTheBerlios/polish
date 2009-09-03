@@ -1687,7 +1687,7 @@ implements Choice
 			if (!handled) {
 				//#ifdef tmp.supportViewType
 					if (this.containerView != null) {
-						handled = this.containerView.handlePointerReleased(relX - this.contentX, relY - this.yOffset - this.contentY);
+						handled = this.containerView.handlePointerReleased(relX, relY - this.yOffset);
 					}
 				//#endif
 //				System.out.println("isInItemArea(relX - this.contentX, relY - this.yOffset - this.contentY, this.focusedItem)=" + isInItemArea(relX - this.contentX, relY - this.yOffset - this.contentY, this.focusedItem));
