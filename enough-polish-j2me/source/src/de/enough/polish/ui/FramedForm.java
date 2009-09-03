@@ -121,6 +121,32 @@ public class FramedForm extends Form {
 		}		
 		return this.container;
 	}
+
+	/**
+	 * Looks up the frame around the given position
+	 * @param x the absolute x position
+	 * @param y the absolute y position
+	 * @return the frame of the specified position, might be null
+	 */
+	public  Container getFrame(int x, int y) {
+		if (this.topFrame != null && y < this.topFrame.relativeY + this.topFrame.itemHeight) {
+			return this.topFrame;
+		}
+		if (this.bottomFrame != null && y > this.bottomFrame.relativeY) {
+			return this.bottomFrame;
+		}
+		if (this.leftFrame != null && x < this.leftFrame.relativeX + this.leftFrame.itemWidth) {
+			return this.leftFrame;
+		}
+		if (this.rightFrame != null && x > this.rightFrame.relativeX) {
+			return this.rightFrame;
+		}
+		if (this.container.isInItemArea( x - this.container.relativeX, y - this.container.relativeY)) {
+			return this.container;
+		}
+		return null;
+	}
+
 	
 	/**
 	 * Deletes all the items from all frames of this <code>FramedForm</code>, leaving  it with zero items.
@@ -893,7 +919,16 @@ public class FramedForm extends Form {
 		}
 		this.currentlyActiveContainer = newFrame;
 		if (newFrame == this.container) {
-			newFrame.init( this.contentWidth, this.contentWidth, this.contentHeight );
+			int w = this.contentWidth;
+			int h = this.contentHeight;
+			if (newFrame.itemHeight > h) {
+				w -= getScrollBarWidth();
+				int ch = newFrame.getItemHeight( w, w, h );
+				if (ch <= h) {
+					w += getScrollBarWidth();
+					newFrame.init( w, w, h );
+				}
+			}
 			initContent(newFrame);
 		}
 		if (keepMainFocus && newFrame != this.container) {
@@ -910,8 +945,15 @@ public class FramedForm extends Form {
 	 * @see de.enough.polish.ui.Screen#handlePointerPressed(int, int)
 	 */
 	protected boolean handlePointerPressed(int x, int y) {
-		Container newFrame = null;
+		Container areaFrame = getFrame( x, y );
 		Container activeFrame = this.currentlyActiveContainer;
+		if (areaFrame != null && areaFrame != activeFrame && areaFrame.isInteractive()) {
+			setActiveFrame(areaFrame);
+			if (areaFrame.handlePointerPressed(x - areaFrame.relativeX, y - areaFrame.relativeY)) {
+				return true;
+			}
+		}
+		Container newFrame = null;
 		if ( activeFrame != null 
 				&& activeFrame.handlePointerPressed(x - activeFrame.relativeX, y - activeFrame.relativeY)) 
 		{ 
@@ -939,9 +981,7 @@ public class FramedForm extends Form {
 		}
 		if (!this.keepContentFocused && newFrame != null && newFrame != activeFrame ) {
 			setActiveFrame(newFrame);
-			return newFrame.handlePointerPressed(x - newFrame.relativeX, y - newFrame.relativeY);
 		}
-		
 		return (newFrame != null);
 	}
 	//#endif
@@ -1019,9 +1059,7 @@ public class FramedForm extends Form {
 		}
 		if (!this.keepContentFocused && newFrame != null && newFrame != activeFrame ) {
 			setActiveFrame(newFrame);
-			return newFrame.handlePointerReleased(x - newFrame.relativeX, y - newFrame.relativeY);
 		}
-		
 		return (newFrame != null);
 	}
 	//#endif
