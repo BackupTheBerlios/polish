@@ -550,13 +550,7 @@ public class Style implements Externalizable
 					this.font = Font.getFont(fontFace, fontStyle, fontSizeConstant);
 				//#endif
 				} else {
-					//#if polish.android
-					//# this.font = de.enough.polish.android.lcdui.Font.getFont(fontFace, fontStyle, fontSizeConstant);
-				//#elif polish.blackberry
-					//# this.font = de.enough.polish.blackberry.ui.Font.getFont(fontFace, fontStyle, fontSizeConstant);
-				//#else
 					this.font = Font.getFont(fontFace, fontStyle, fontSizeConstant);
-				//#endif
 				}
 			}
 		}
