@@ -645,7 +645,9 @@ public class HorizontalChoiceView extends ContainerView {
 	public boolean handlePointerPressed(int x, int y) {
 		//#debug
 		System.out.println("handlePointerPressed at " + x + ", " + y);
-		if (this.parentContainer.isInItemArea(x, y)) {
+		if (!this.parentContainer.isInContentArea(x, y)) {
+			this.isPointerPressedHandled = false;
+		} else {
 			if ( this.completeWidthOfItems > this.contentWidth) {
 				this.isPointerPressedHandled = true;
 				this.pointerPressedX = x;
@@ -692,8 +694,6 @@ public class HorizontalChoiceView extends ContainerView {
 			} else {
 				this.pointerReleasedIndex = -1;
 			}
-		} else {
-			this.isPointerPressedHandled = false;
 		}
 		return super.handlePointerPressed(x, y);
 	}
@@ -724,9 +724,8 @@ public class HorizontalChoiceView extends ContainerView {
 		if (index == -1) {
 			return super.handlePointerReleased(x, y);
 		}
-		if (!(this.parentContainer.isInItemArea(x, y))) {
+		if (!(this.parentContainer.isInContentArea(x, y))) {
 			this.pointerReleasedIndex = -1;
-			//System.out.println("release: not int item area: " + x  + ", " + y);
 			return false;
 		}
 		boolean isMultiple = ((ChoiceGroup)this.parentContainer).getType() == ChoiceGroup.MULTIPLE;

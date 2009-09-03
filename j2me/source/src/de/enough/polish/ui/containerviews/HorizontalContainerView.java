@@ -323,7 +323,7 @@ public class HorizontalContainerView extends ContainerView {
 	 * @see de.enough.polish.ui.ItemView#handlePointerPressed(int, int)
 	 */
 	public boolean handlePointerPressed(int x, int y) {
-		if (this.isClippingRequired && this.parentContainer.isInItemArea(x, y)) {
+		if (this.isClippingRequired && this.parentContainer.isInContentArea(x, y)) {
 			this.isPointerPressedHandled = true;
 			this.pointerPressedX = x;
 		}
