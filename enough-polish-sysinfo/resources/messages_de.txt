@@ -20,7 +20,7 @@ cmd.back=Zur\u00fcck
 cmd.exit=Beenden
 cmd.select=W\u00e4hlen
 cmd.upload=Systeminformationen hochladen
-cmd.update=Auf updates prüfen
+cmd.update=Auf updates pr\u221a\u00bafen
 cmd.sysprops=SystemProperties
 
 msg.thanks=Danke
@@ -36,11 +36,11 @@ msg.vendor=Hersteller
 msg.device=Modell
 msg.identinfo=Bitte geben Sie den Hersteller und das Modell ein
 msg.logininfo=Sie k\u00f6nnen die Informationen online auf http://devices.j2mepolish.org/ einsehen und bearbeiten
-msg.update=Prüfe auf updates
+msg.update=Pr\u00fcfe auf updates
 msg.remoteversion=Version online:
 msg.localversion=Lokale Version:
-msg.updateavailable=Es ist ein neues SysInfoMIDlet verfügbar!
+msg.updateavailable=Es ist ein neues SysInfoMIDlet verf\u00fcgbar!
 msg.updatevisitaddress=Bitte laden Sie das MIDlet von http://dl.j2mepolish.org/ und ersetzen Sie die lokale Version!
-msg.updatenotavailable=Kein Update verfügbar.
+msg.updatenotavailable=Kein Update verf\u00fcgbar.
 
 text.credits=Urspr\u00fcnglich entwickelt von Waldemar Baraldi (Grimo Software),\n< waldemar.baraldi @grimo-software.com >.\nErweitert von Mark Schrijver,\n< mark.schrijver @mobillion.nl >\nund Robert Virkus,\n< j2mepolish @enough.de >

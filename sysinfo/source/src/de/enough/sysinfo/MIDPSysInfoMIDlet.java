@@ -7,6 +7,8 @@ package de.enough.sysinfo;
 
 import java.util.Hashtable;
 
+import javax.microedition.lcdui.Alert;
+import javax.microedition.lcdui.AlertType;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
@@ -30,6 +32,8 @@ import com.grimo.me.product.midpsysinfo.SysPropCollector;
 import com.grimo.me.product.midpsysinfo.SystemInfoCollector;
 
 import de.enough.polish.rmi.RemoteClient;
+import de.enough.polish.util.DeviceControl;
+import de.enough.polish.util.DeviceInfo;
 import de.enough.polish.util.Locale;
 
 /**
@@ -66,17 +70,17 @@ public class MIDPSysInfoMIDlet extends MIDlet implements CommandListener {
 	public TextField deviceField = new TextField("Device: ", "", 50,
 			TextField.ANY);
 	
-	public Form userForm = new Form(Locale.get("msg.userif"));
+	public Form userForm;
 	
 	public TextField userField = new TextField(Locale.get("msg.user") + ": ", "anonymous", 20,
 			TextField.ANY);
 
 	public TextField pwdField = new TextField(Locale.get("msg.pwd") + ": ", "", 50,
-			TextField.PASSWORD);
+			TextField.PASSWORD | TextField.ANY);
 
-	public Form waitForm = new Form(Locale.get("msg.wait"));
+	public Form waitForm;
 	
-	public Form doneForm = new Form(Locale.get("msg.wait"));
+	public Form doneForm;
 
 	public Hashtable keyInfos;
 	
@@ -85,12 +89,20 @@ public class MIDPSysInfoMIDlet extends MIDlet implements CommandListener {
 	}
 
 	public void startApp() {
-			if (this.mainMenu == null) {
+		Alert alert = null;
+		if (this.mainMenu == null) {
+			try {
 				initApp();
+			} catch (Exception e) {
+				alert = new Alert("error", "Unhandled exception: " + e.toString(), null, AlertType.ERROR );
 			}
-			this.display = Display.getDisplay(this);
+		}
+		this.display = Display.getDisplay(this);
+		if (alert != null) {
+			this.display.setCurrent( alert, this.mainMenu );
+		} else {
 			this.display.setCurrent( this.mainMenu );
-		
+		}
 	}
 
 	/**
@@ -123,8 +135,8 @@ public class MIDPSysInfoMIDlet extends MIDlet implements CommandListener {
 		/* try to guess vendor and model */
 		String model = getSystemProperty( new String[]{ "device.model", "microedition.platform" } );
 		if(model != null){
-			this.vendorField = new TextField(Locale.get("msg.vendor") + ": ", model, 50, TextField.ANY);
-			this.deviceField = new TextField(Locale.get("msg.device") + ": ", model, 50, TextField.ANY);
+			this.vendorField = new TextField(Locale.get("msg.vendor") + ": ", DeviceInfo.getVendorName(), 512, TextField.ANY);
+			this.deviceField = new TextField(Locale.get("msg.device") + ": ", DeviceInfo.getDeviceName(), 512, TextField.ANY);
 		}
 		
 		// device identifier form 
@@ -135,6 +147,7 @@ public class MIDPSysInfoMIDlet extends MIDlet implements CommandListener {
 		this.identForm.append(Locale.get("msg.identinfo"));
 		
 		// user login form 
+		this.userForm = new Form(Locale.get("msg.userif"));
 		this.userForm.addCommand(this.sendInfoCmd);
 		this.userForm.setCommandListener(this);
 		this.userForm.append(this.userField);
@@ -142,10 +155,12 @@ public class MIDPSysInfoMIDlet extends MIDlet implements CommandListener {
 		this.userForm.append(Locale.get("msg.logininfo"));
 
 		// wait form
+		this.waitForm = new Form(Locale.get("msg.wait"));
 		this.waitForm.append(Locale.get("msg.wait"));
 		this.waitForm.setCommandListener(this);
 		
 		// done form
+		this.doneForm = new Form(Locale.get("msg.wait"));
 		this.doneForm.addCommand(this.backCmd);
 		this.doneForm.setCommandListener(this);
 			
