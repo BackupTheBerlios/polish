@@ -141,6 +141,40 @@ public class DeviceInfo
 	}
 	
 	/**
+	 * Tries to determine the name of this device model, e.g. "N97" when having a Nokia/N97
+	 * @return the name of this device model or null when it cannot be determined
+	 */
+	public static String getDeviceName() {
+		String platform = System.getProperty( "microedition.platform" );
+		if (platform == null || "j2me".equals(platform)) {
+			platform = System.getProperty( "device.model" );
+		}
+		if (platform != null) {
+			String vendor = getVendorName();
+			if (vendor != null) {
+				int index = platform.toLowerCase().indexOf(vendor.toLowerCase());
+				if (index != -1) {
+					platform = platform.substring( index + vendor.length() ).trim();
+				}
+				index = platform.indexOf(' ');
+				if (index != -1) {
+					platform = platform.substring(0, index );
+				}
+				index = platform.indexOf('-');
+				if (index != -1) {
+					platform = platform.substring(0, index );
+				}
+				index = platform.indexOf('/');
+				if (index != -1) {
+					platform = platform.substring(0, index );
+				}
+				return platform;
+			}
+		}
+		return null;
+	}
+	
+	/**
 	 * Tries to guess the key for changing the input mode, e.g. from 123 to abc.
 	 * 
 	 * @return the key, by default Canvas.KEY_POUND 
@@ -203,5 +237,7 @@ public class DeviceInfo
 		//#endif
 		return requiresFullRgbArrayForDrawRgb;
 	}
+
+
 
 }
