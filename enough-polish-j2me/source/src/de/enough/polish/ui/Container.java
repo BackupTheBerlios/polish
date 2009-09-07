@@ -532,6 +532,7 @@ public class Container extends Item {
 						focusClosestItem(index);
 					}
 				} else {
+					this.focusedIndex = -1;
 					this.autoFocusEnabled = true;
 					this.autoFocusIndex = 0;
 				}
@@ -3038,7 +3039,7 @@ public class Container extends Item {
 				// this is an adjustment for calculating the correct scroll offset for containers with a vertical-center or bottom layout:
 				maxItemHeight += this.relativeY - scr.contentY;
 			}
-			if (maxItemHeight > this.scrollHeight) {
+			if (maxItemHeight > this.scrollHeight || this.yOffset != 0) {
 				int lastOffset = getScrollYOffset();
 				int nextOffset = this.lastPointerPressYOffset + (relY - this.lastPointerPressY);
 				if (nextOffset > 0) {
