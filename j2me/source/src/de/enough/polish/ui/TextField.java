@@ -3000,7 +3000,7 @@ public class TextField extends StringItem
                                 handled = true;
                         }
                         //#endif
-
+                        
 						// Backspace
 						//#ifdef polish.key.ClearKey:defined
 							//#= if (keyCode == ${polish.key.ClearKey}
@@ -3025,27 +3025,27 @@ public class TextField extends StringItem
 							
 							
 						//#ifdef polish.key.ChangeNumericalAlphaInputModeKey:defined
-                        //#= if(!handled &&
-                        //#=     !(keyCode == KEY_CHANGE_MODE && !this.isNumeric &&
-                        //#=       !(KEY_CHANGE_MODE == Canvas.KEY_NUM0 &&
-                        //#=         this.inputMode == MODE_NUMBERS)) &&
-                        //#=     !(keyCode == ${polish.key.ChangeNumericalAlphaInputModeKey} &&
-                        //#=       !this.isNumeric))
+	                        //#= if(!handled &&
+	                        //#=     !(keyCode == KEY_CHANGE_MODE && !this.isNumeric &&
+	                        //#=       !(KEY_CHANGE_MODE == Canvas.KEY_NUM0 &&
+	                        //#=         this.inputMode == MODE_NUMBERS)) &&
+	                        //#=     !(keyCode == ${polish.key.ChangeNumericalAlphaInputModeKey} &&
+	                        //#=       !this.isNumeric))
                         //#else
-                        if(!handled && keyCode != KEY_CHANGE_MODE)
+							if(!handled && keyCode != KEY_CHANGE_MODE)
                         //#endif
                         {
                                 handled = handleKeyInsert(keyCode, gameAction);
                         }
 	                        
 						// Navigate the caret
-						if (   (gameAction == Canvas.UP 	|| 
+						if (   !handled 					&&
+								(gameAction == Canvas.UP 	|| 
 								gameAction == Canvas.DOWN 	||
 								gameAction == Canvas.LEFT 	||
 								gameAction == Canvas.RIGHT  ||
-								gameAction == Canvas.FIRE)  &&
-								!handled) 
-						{
+								gameAction == Canvas.FIRE)
+						) {
 							handled = handleKeyNavigation(keyCode, gameAction);
 							if (!handled && getScreen().isGameActionFire(keyCode, gameAction) && this.defaultCommand != null) {
 								notifyItemPressedStart();
@@ -3169,10 +3169,11 @@ public class TextField extends StringItem
 						&& this.inputMode != MODE_NUMBERS 
 						&& !this.isNumeric
 						&& this.screen.isKeyboardAccessible() 
-						&& !( 	   (gameAction == Canvas.UP     &&  insertChar != '2' && keyCode == this.screen.getKeyCode(Canvas.UP) ) 
+						&& !( 	(insertChar < 'a' || insertChar > 'z')
+								&& ((gameAction == Canvas.UP     &&  insertChar != '2' && keyCode == this.screen.getKeyCode(Canvas.UP)  ) 
 								|| (gameAction == Canvas.DOWN   &&  insertChar != '8' && keyCode == this.screen.getKeyCode(Canvas.DOWN)  )
 								|| (gameAction == Canvas.LEFT   &&  insertChar != '4' && keyCode == this.screen.getKeyCode(Canvas.LEFT)	)
-								|| (gameAction == Canvas.RIGHT  &&  insertChar != '6' && keyCode == this.screen.getKeyCode(Canvas.RIGHT))
+								|| (gameAction == Canvas.RIGHT  &&  insertChar != '6' && keyCode == this.screen.getKeyCode(Canvas.RIGHT)))
 								//|| (gameAction == Canvas.FIRE   &&  keyCode == this.screen.getKeyCode(Canvas.FIRE) )  
 							)
 						) 
