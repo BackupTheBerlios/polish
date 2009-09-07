@@ -159,8 +159,7 @@
 			<mapping from="javax.microedition.lcdui.Image" to="de.enough.polish.android.lcdui.Image" />
 			<mapping from="javax.microedition.lcdui.*">
 				<to>
-					de.enough.polish.android.lcdui.AlertType;
-					import de.enough.polish.android.lcdui.Font;
+					de.enough.polish.android.lcdui.Font;
 					import de.enough.polish.android.lcdui.Graphics;
 					import de.enough.polish.android.lcdui.Image; 
 					import de.enough.polish.ui.*
@@ -187,7 +186,12 @@
 			<mapping from="javax.microedition.io.OutputConnection" to="de.enough.polish.android.io.OutputConnection" />
 			<mapping from="javax.microedition.io.SocketConnection" to="de.enough.polish.android.io.SocketConnection" />
 			<mapping from="javax.microedition.io.HttpConnection" to="de.enough.polish.android.io.HttpConnection" />
+			<mapping from="javax.microedition.io.HttpsConnection" to="de.enough.polish.android.io.HttpsConnection" />
 			<mapping from="javax.microedition.io.ConnectionNotFoundException" to="de.enough.polish.android.io.ConnectionNotFoundException" />
+			<mapping from="javax.microedition.io.SecurityInfo" to="de.enough.polish.android.io.SecurityInfo" />
+			<mapping from="javax.microedition.pki.*" to="de.enough.polish.android.pki.*" />
+			<mapping from="javax.microedition.pki.Certificate" to="de.enough.polish.android.pki.Certificate" />
+			<mapping from="javax.microedition.pki.CertificateException" to="de.enough.polish.android.pki.CertificateException" />
 			<!--  Fileconnection API -->
 			<mapping from="javax.microedition.io.file.*" to="de.enough.polish.android.io.file.*" />
 			<mapping from="javax.microedition.io.file.ConnectionClosedException" to="de.enough.polish.android.io.file.ConnectionClosedException" />
