@@ -1464,27 +1464,27 @@ public abstract class Item implements UiElement, Animatable
 			}
 		//#endif
 		//#ifdef polish.css.min-width
-			Dimension minWidthInt = (Dimension) style.getObjectProperty("min-width");
-			if (minWidthInt != null) {
-				this.minimumWidth = minWidthInt;
+			Dimension minWidthDim = (Dimension) style.getObjectProperty("min-width");
+			if (minWidthDim != null) {
+				this.minimumWidth = minWidthDim;
 			}
 		//#endif
 		//#ifdef polish.css.max-width
-			Dimension maxWidthInt  = (Dimension) style.getObjectProperty("max-width");
-			if (maxWidthInt != null) {
-				this.maximumWidth = maxWidthInt;
+			Dimension maxWidthDim  = (Dimension) style.getObjectProperty("max-width");
+			if (maxWidthDim != null) {
+				this.maximumWidth = maxWidthDim;
 			}
 		//#endif
 		//#ifdef polish.css.min-height
-			Dimension minHeightInt = (Dimension) style.getObjectProperty("min-height");
-			if (minHeightInt != null) {
-				this.minimumHeight = minHeightInt;
+			Dimension minHeightDim = (Dimension) style.getObjectProperty("min-height");
+			if (minHeightDim != null) {
+				this.minimumHeight = minHeightDim;
 			}
 		//#endif
 		//#ifdef polish.css.max-height
-			Dimension maxHeightInt  = (Dimension) style.getObjectProperty("max-height");
-			if (maxHeightInt != null) {
-				this.maximumHeight = maxHeightInt;
+			Dimension maxHeightDim  = (Dimension) style.getObjectProperty("max-height");
+			if (maxHeightDim != null) {
+				this.maximumHeight = maxHeightDim;
 			}
 		//#endif
 
