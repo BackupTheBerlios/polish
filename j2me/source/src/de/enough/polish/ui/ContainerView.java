@@ -110,6 +110,7 @@ extends ItemView
 	protected boolean isVertical = true;
 	/** indicates whether elements in this container view can be selected directly by pointer events */
 	protected boolean allowsDirectSelectionByPointerEvent = true;
+	private int lastAvailableContentWidth;
 
 
 	/**
@@ -151,6 +152,8 @@ extends ItemView
 		this.paddingVertical = parentContainerItem.paddingVertical;
 		this.focusedIndex = parent.getFocusedIndex();
 		this.focusedItem = parent.getFocusedItem();
+		boolean reinitInAnyCase = (availWidth != this.lastAvailableContentWidth);
+		this.lastAvailableContentWidth = availWidth;
 		//#if polish.Container.allowCycling != false
 			this.allowCycling = parent.allowCycling;
 			Item ancestor = parent.parent;
@@ -388,10 +391,8 @@ extends ItemView
 				//#endif
 					
 				int width = item.itemWidth;
-				if (width > availColWidth || !item.isInitialized) {
+				if (reinitInAnyCase || width > availColWidth || !item.isInitialized) {
 					width = item.getItemWidth( availColWidth, availColWidth, availHeight );
-				} else {
-					
 				}
 				//System.out.println("got item width");
 				int height = item.itemHeight; //getItemHeight( availColWidth, availColWidth, availHeight );
