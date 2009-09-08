@@ -186,8 +186,11 @@ extends ItemView
 			for (int i = 0; i < myItems.length; i++) {
 				Item item = myItems[i];
 				//System.out.println("initalising " + item.getClass().getName() + ":" + i);
-				int width = item.getItemWidth( firstLineWidth, availWidth, availHeight );
-				int height = item.getItemHeight( firstLineWidth, availWidth, availHeight );
+				int width = item.itemWidth;
+				if (!item.isInitialized) {
+					width = item.getItemWidth( firstLineWidth, availWidth, availHeight );
+				}
+				int height = item.itemHeight;
 				if (item.appearanceMode != Item.PLAIN) {
 					hasFocusableItem = true;
 				}
@@ -383,7 +386,13 @@ extends ItemView
 						item.setInitialized(false);
 					}
 				//#endif
-				int width = item.getItemWidth( availColWidth, availColWidth, availHeight );
+					
+				int width = item.itemWidth;
+				if (width > availColWidth || !item.isInitialized) {
+					width = item.getItemWidth( availColWidth, availColWidth, availHeight );
+				} else {
+					
+				}
 				//System.out.println("got item width");
 				int height = item.itemHeight; //getItemHeight( availColWidth, availColWidth, availHeight );
 				if (item.appearanceMode != Item.PLAIN) {
@@ -417,11 +426,11 @@ extends ItemView
 					columnIndex++;
 				//#endif
 				item.relativeX = columnX; // when equal or normal column widths are used, this is below changed again, since the widhs are just calculated right now.
-				if (item.itemWidth < availColWidth) {
+				if (width < availColWidth) {
 					if (item.isLayoutCenter) {
-						item.relativeX += (availColWidth - item.itemWidth) / 2;
+						item.relativeX += (availColWidth - width) / 2;
 					} else if (item.isLayoutRight) {
-						item.relativeX += (availColWidth - item.itemWidth);
+						item.relativeX += (availColWidth - width);
 					}
 				}
 				item.relativeY = myContentHeight;

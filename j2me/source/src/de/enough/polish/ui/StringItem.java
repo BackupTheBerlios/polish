@@ -85,7 +85,10 @@ public class StringItem extends Item
 	//#if polish.css.text-visible
 		private boolean isTextVisible = true;
 	//#endif
+	protected boolean isTextInitializationRequired;
+	protected int lastAvailableContentWidth;
 
+	
 	/**
 	 * Creates a new <code>StringItem</code> object.  Calling this
 	 * constructor is equivalent to calling
@@ -345,6 +348,7 @@ public class StringItem extends Item
 			if (text == null) {
 				this.textLines = null;
 			}
+			this.isTextInitializationRequired = true;
 			requestInit();
 		}
 	}
@@ -352,7 +356,10 @@ public class StringItem extends Item
 	//#if tmp.useTextEffect
 	public void setTextEffect(TextEffect effect)
 	{
-		this.textEffect = effect;
+		if (effect != this.textEffect) {
+			this.textEffect = effect;
+			this.isTextInitializationRequired = true;
+		}
 	}
 	//#endif
 	
@@ -383,8 +390,10 @@ public class StringItem extends Item
 	 */
 	public void setFont( Font font)
 	{
-		this.font = font;
-		setInitialized(false);
+		if (font == null || !font.equals(this.font)) {
+			this.font = font;
+			setInitialized(false);
+		}
 	}
 
 	/**
@@ -593,6 +602,7 @@ public class StringItem extends Item
 			}
 		//#endif
 	}
+	
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#initItem()
@@ -614,7 +624,10 @@ public class StringItem extends Item
 			this.textLines = null;
 			return;
 		}
-
+		if (!this.isTextInitializationRequired && availWidth == this.lastAvailableContentWidth) {
+			return;
+		}
+		this.lastAvailableContentWidth = availWidth;
 		//#if polish.css.text-wrap
 			if ( this.useSingleLine ) {
 				this.availableTextWidth = availWidth;
@@ -719,8 +732,10 @@ public class StringItem extends Item
 					effect = this.textEffect;
 				}
 				effect.setStyle(style);
-			} else {
+				this.isTextInitializationRequired = true;
+			} else if (this.textEffect != null) {
 				this.textEffect = null;
+				this.isTextInitializationRequired = true;
 			}
 		//#endif
 		//#if polish.css.text-layout
@@ -768,9 +783,13 @@ public class StringItem extends Item
 		//#if polish.css.text-wrap
 			Boolean textWrapBool = style.getBooleanProperty("text-wrap");
 			if (textWrapBool != null) {
-				this.useSingleLine = !textWrapBool.booleanValue();
-			} else if (resetStyle) {
+				if (textWrapBool.booleanValue() != this.useSingleLine) {
+					this.useSingleLine = !textWrapBool.booleanValue();
+					this.isTextInitializationRequired = true;
+				}
+			} else if (resetStyle && this.useSingleLine) {
 				this.useSingleLine = false;
+				this.isTextInitializationRequired = true;
 			}
 			//#if polish.css.text-wrap-animate
 				Boolean animateTextWrapBool = style.getBooleanProperty("text-wrap-animate");
@@ -799,9 +818,12 @@ public class StringItem extends Item
 		//#ifdef polish.css.max-lines
 			Integer maxLinesInt = style.getIntProperty("max-lines");
 			if (maxLinesInt != null) {
-				this.maxLines = maxLinesInt.intValue();
-				if (this.maxLines <= 0) {
-					this.maxLines = TextUtil.MAXLINES_UNLIMITED;
+				if (maxLinesInt.intValue() != this.maxLines) {
+					this.maxLines = maxLinesInt.intValue();
+					if (this.maxLines <= 0) {
+						this.maxLines = TextUtil.MAXLINES_UNLIMITED;
+					}
+					this.isTextInitializationRequired = true;
 				}
 			}
 			//#ifdef polish.css.max-lines-appendix
