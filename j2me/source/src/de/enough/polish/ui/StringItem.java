@@ -627,6 +627,7 @@ public class StringItem extends Item
 		if (!this.isTextInitializationRequired && availWidth == this.lastAvailableContentWidth) {
 			return;
 		}
+		this.isTextInitializationRequired = false;
 		this.lastAvailableContentWidth = availWidth;
 		//#if polish.css.text-wrap
 			if ( this.useSingleLine ) {
