@@ -86,7 +86,9 @@ public class StringItem extends Item
 		private boolean isTextVisible = true;
 	//#endif
 	protected boolean isTextInitializationRequired;
-	protected int lastAvailableContentWidth;
+	private int lastAvailableContentWidth;
+	private int lastContentWidth;
+	private int lastContentHeight;
 
 	
 	/**
@@ -619,12 +621,14 @@ public class StringItem extends Item
 				|| !this.isTextVisible
 			//#endif
 		) {
-			this.contentHeight = 0;
 			this.contentWidth = 0;
+			this.contentHeight = 0;
 			this.textLines = null;
 			return;
 		}
 		if (!this.isTextInitializationRequired && availWidth == this.lastAvailableContentWidth) {
+			this.contentWidth = this.lastContentWidth; 
+			this.contentHeight = this.lastContentHeight; 
 			return;
 		}
 		this.isTextInitializationRequired = false;
@@ -685,6 +689,8 @@ public class StringItem extends Item
 		//#if polish.css.text-wrap
 			}
 		//#endif
+		this.lastContentWidth = this.contentWidth;
+		this.lastContentHeight = this.contentHeight;
 	}
 	
 	String[] wrap(String body, int firstLineWidth, int availWidth)
