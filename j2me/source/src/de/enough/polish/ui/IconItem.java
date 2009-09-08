@@ -304,6 +304,20 @@ implements ImageConsumer
 		//#endif
 	} 
 	
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#setContentWidth(int)
+	 */
+	protected void setContentWidth( int width ) {
+		if (this.imageAlign == Graphics.TOP || this.imageAlign == Graphics.BOTTOM) {
+			int diff = width - this.contentWidth;
+			this.relativeIconX += diff/2;
+		} else if (this.imageAlign == Graphics.RIGHT) {
+			this.relativeIconX = width - this.imageWidth;
+		}
+		super.setContentWidth(width);
+	}
+	
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#paintContent(int, int, javax.microedition.lcdui.Graphics)
