@@ -179,7 +179,11 @@ public final class Font extends Object
 			if ( face == FACE_SYSTEM && style == STYLE_PLAIN && size == SIZE_MEDIUM) {
 				this.font = net.rim.device.api.ui.Font.getDefault();
 			} else {
+				//#if polish.blackberry.font.family:defined
+				//#= FontFamily family = FontFamily.forName( "${polish.blackberry.font.family}" );
+				//#else
 				FontFamily family = FontFamily.forName( FontFamily.FAMILY_SYSTEM );
+				//#endif
 				
 				int bbStyle = 0;
 				if ( (style & STYLE_BOLD) == STYLE_BOLD  ) {
@@ -226,7 +230,11 @@ public final class Font extends Object
 		this.size = SIZE_MEDIUM;
 		
 		//#if !building.theme
+			//#if polish.blackberry.font.family:defined
+			//#= FontFamily family = FontFamily.forName( "${polish.blackberry.font.family}" );
+			//#else
 			FontFamily family = FontFamily.forName( FontFamily.FAMILY_SYSTEM );
+			//#endif
 			
 			int bbStyle = 0;
 			if ( (style & STYLE_BOLD) == STYLE_BOLD  ) {
