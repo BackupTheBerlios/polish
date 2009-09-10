@@ -19503,6 +19503,7 @@ These namespaces/schemas will be used soon.
   </device>
   <device>
     <identifier>Sony-Ericsson/C905</identifier>
+    <groups>SE-JavaPlatform8</groups>
     <capability name="alphalevels" value="256" />
     <capability name="api.svg" value="true" />
     <capability name="bugs" value="TransparencyNotWorkingInDrawPolygon,unknownSystemPropertiesThrowExceptions,FillPolygonRequiresPositiveXYInNokiaUiApi" />
