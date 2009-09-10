@@ -190,7 +190,7 @@ extends ItemView
 				Item item = myItems[i];
 				//System.out.println("initalising " + item.getClass().getName() + ":" + i);
 				int width = item.itemWidth;
-				if (!item.isInitialized) {
+				if (reinitInAnyCase || !item.isInitialized) {
 					width = item.getItemWidth( firstLineWidth, availWidth, availHeight );
 				}
 				int height = item.itemHeight;

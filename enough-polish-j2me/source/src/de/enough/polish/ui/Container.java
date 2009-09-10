@@ -100,6 +100,8 @@ public class Container extends Item {
 		protected int lastPointerPressY;
 		/** scrolloffset when this container was pressed the last time */
 		protected int lastPointerPressYOffset;
+		/** time in ms when this container was pressed the last time */
+		protected long lastPointerPressTime;
 	//#endif
 	//#if polish.css.focused-style-first
 		protected Style focusedStyleFirst;
@@ -129,6 +131,9 @@ public class Container extends Item {
 		private long showNotifyTime;
 	//#endif
 	boolean appearanceModeSet;
+	private int scrollDirection;
+	private int scrollSpeed;
+	private int scrollDamping;
 
 	
 	/**
@@ -2611,6 +2616,7 @@ public class Container extends Item {
 		return handled;
 	}
 
+	private long lastAnimationTime;
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#animate(long, de.enough.polish.ui.ClippingRegion)
@@ -2647,26 +2653,92 @@ public class Container extends Item {
 //			}
 			// # debug
 			//System.out.println("animate(): adjusting yOffset to " + this.yOffset );
-			int x = getAbsoluteX();
-			int y = getAbsoluteY();
-			int height = this.itemHeight;
-			int width = this.itemWidth;
+			
+			// add repaint region:
+			int x, y, width, height;
 			Screen scr = getScreen();
-			//#if polish.useScrollBar || polish.classes.ScrollBar:defined
-				width += scr.getScrollBarWidth();
-			//#endif
+			height = getItemAreaHeight();;
 			if (this.scrollHeight > height) {
 				x = scr.contentX;
 				y = scr.contentY;
 				height = scr.contentHeight;
 				width = scr.contentWidth + scr.getScrollBarWidth();
-			}
-			
-			int fullHeight = getItemAreaHeight(); 
-			if (fullHeight > height) {
-				height = fullHeight;
+			} else {
+				x = getAbsoluteX();
+				y = getAbsoluteY();
+				width = this.itemWidth;
+				//#if polish.useScrollBar || polish.classes.ScrollBar:defined
+					width += scr.getScrollBarWidth();
+				//#endif
 			}
 			repaintRegion.addRegion( x, y, width, height + diff + 1 );
+		}
+		int speed = this.scrollSpeed;
+		if (speed != 0) {
+			speed = (speed * (100 - this.scrollDamping)) / 100;
+			if (speed <= 0) {
+				speed = 0;
+			}
+			this.scrollSpeed = speed;
+			long timeDelta = currentTime - this.lastAnimationTime;
+			if (timeDelta > 1000) {
+				timeDelta = AnimationThread.ANIMATION_INTERVAL;
+			}
+			this.lastAnimationTime = currentTime;
+			speed = (int) ((speed * timeDelta) / 1000);
+			if (speed == 0) {
+				this.scrollSpeed = 0;
+			}
+			int offset = this.yOffset;
+			int height = getItemAreaHeight();
+			if (this.scrollDirection == Canvas.UP) {
+				offset += speed;
+				target = offset;
+				if (offset > 0) {
+					this.scrollSpeed = 0;
+					target = 0;
+				}
+			} else {
+				offset -= speed;
+				target = offset;
+				int maxItemHeight = getItemAreaHeight();
+				Screen scr = this.screen;
+				Style myStyle = this.style;
+				if (myStyle != null) {
+					maxItemHeight -= myStyle.getPaddingTop(this.availableHeight) + myStyle.getPaddingBottom(this.availableHeight) + myStyle.getMarginTop(this.availableHeight) + myStyle.getMarginBottom(this.availableHeight);
+				}
+				if (scr != null 
+						&& this == scr.container 
+						&& this.relativeY > scr.contentY 
+				) {
+					// this is an adjustment for calculating the correct scroll offset for containers with a vertical-center or bottom layout:
+					maxItemHeight += this.relativeY - scr.contentY;
+				}
+				if (offset + maxItemHeight < this.scrollHeight) { 
+					this.scrollSpeed = 0;
+					target = this.scrollHeight - maxItemHeight;
+				}
+			}
+			this.yOffset = offset;
+			this.targetYOffset = target;
+			// add repaint region:
+			int x, y, width;
+			Screen scr = getScreen();
+			height = this.itemHeight;
+			if (this.scrollHeight > height) {
+				x = scr.contentX;
+				y = scr.contentY;
+				height = scr.contentHeight;
+				width = scr.contentWidth + scr.getScrollBarWidth();
+			} else {
+				x = getAbsoluteX();
+				y = getAbsoluteY();
+				width = this.itemWidth;
+				//#if polish.useScrollBar || polish.classes.ScrollBar:defined
+					width += scr.getScrollBarWidth();
+				//#endif
+			}
+			repaintRegion.addRegion( x, y, width, height );
 		}
 		
 		Item focItem = this.focusedItem;
@@ -2799,6 +2871,7 @@ public class Container extends Item {
 		// an item within this container was selected:
 		this.lastPointerPressY = relY;
 		this.lastPointerPressYOffset = getScrollYOffset();
+		this.lastPointerPressTime = System.currentTimeMillis();
 		int origRelX = relX;
 		int origRelY = relY;
 		relY -= this.yOffset;
@@ -2920,27 +2993,37 @@ public class Container extends Item {
 		//#debug
 		System.out.println("Container.handlePointerReleased(" + relX + ", " + relY + ") for " + this  );
 		Item item = this.focusedItem;
-		if ((this.enableScrolling && (Math.abs(getScrollYOffset() - this.lastPointerPressYOffset)>20))
-				|| (handlePointerScrollReleased(relX, relY))
-		) {
-			// we have scrolling in the meantime
-			boolean processed = false;
-			if (item != null && item.isPressed) {
-				processed = item.handlePointerReleased(relX - item.relativeX, relY - item.relativeY );
-			}
-			if (!processed) {
-				while (item instanceof Container) {
-					if (item.isPressed) {
+		if (this.enableScrolling) {
+			int scrollDiff = Math.abs(getScrollYOffset() - this.lastPointerPressYOffset);
+			if ( scrollDiff > 20  ||  handlePointerScrollReleased(relX, relY) ) {
+				// we have scrolling in the meantime
+				boolean processed = false;
+				if (item != null && item.isPressed) {
+					processed = item.handlePointerReleased(relX - item.relativeX, relY - item.relativeY );
+				}
+				if (!processed) {
+					while (item instanceof Container) {
+						if (item.isPressed) {
+							item.notifyItemPressedEnd();
+						}
+						item = ((Container)item).focusedItem;
+					}
+					// we have scrolling in the meantime
+					if (item != null && item.isPressed) {
 						item.notifyItemPressedEnd();
 					}
-					item = ((Container)item).focusedItem;
 				}
-				// we have scrolling in the meantime
-				if (item != null && item.isPressed) {
-					item.notifyItemPressedEnd();
+				// check if we should continue the scrolling:
+				long dragTime = System.currentTimeMillis() - this.lastPointerPressTime;
+				if (dragTime < 1000) {
+					int direction = Canvas.DOWN;
+					if (this.yOffset > this.lastPointerPressYOffset) {
+						direction = Canvas.UP;
+					}
+					startScroll( direction,  (int) ((scrollDiff * 1000 ) / dragTime), 20 );
 				}
+				return true;
 			}
-			return true;
 		}
 		// an item within this container was selected:
 		int origRelX = relX;
@@ -3042,18 +3125,18 @@ public class Container extends Item {
 			if (maxItemHeight > this.scrollHeight || this.yOffset != 0) {
 				int lastOffset = getScrollYOffset();
 				int nextOffset = this.lastPointerPressYOffset + (relY - this.lastPointerPressY);
-				if (nextOffset > 0) {
-					nextOffset = 0;
+				if (nextOffset > this.scrollHeight/3) {
+					nextOffset = this.scrollHeight/3;
 				} else {
-					maxItemHeight += 20;
+					maxItemHeight += this.scrollHeight/3;
 					if (nextOffset + maxItemHeight < this.scrollHeight) { 
 						nextOffset = this.scrollHeight - maxItemHeight;
 					}
 				}
 				if (nextOffset != lastOffset) {
 					setScrollYOffset( nextOffset, false );
+					return true;
 				}
-				return true;
 			}
 		}
 		return super.handlePointerDragged(relX, relY);
@@ -3226,6 +3309,25 @@ public class Container extends Item {
 			this.yOffset = offset;			
 		}
 		this.targetYOffset = offset;
+		this.scrollSpeed = 0;
+	}
+	
+	/**
+	 * Starts to scroll in the specified direction
+	 * @param direction either Canvas.UP or Canvas.DOWN
+	 * @param speed the speed in pixels per second
+	 * @param damping the damping in percent; 0 means no damping at all; 100 means the scrolling will be stopped immediately
+	 */
+	public void startScroll( int direction,int speed, int damping) {
+		//#debug
+		System.out.println("startScrolling " + (direction == Canvas.UP ? "up" : "down") + " with speed=" + speed + ", damping=" + damping + " for " + this);
+		if (!this.enableScrolling && this.parent instanceof Container) {
+			((Container)this.parent).startScroll(direction, speed, damping);
+			return;
+		}
+		this.scrollDirection = direction;
+		this.scrollSpeed = speed;
+		this.scrollDamping = damping;
 	}
 
 	/**
