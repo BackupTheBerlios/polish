@@ -4746,6 +4746,17 @@
 		values="normal, equal"
 		since="J2ME Polish 2.1.3"
 	/>
+
+	<attribute
+		name="repaint-previous-screen-anchor"
+		type="integer"
+		appliesTo="Screen"
+		description="Position of a shrinked screen relative to the current item of a previous screen."
+		id="405"
+		default="none"
+		values="none, focused"
+		since="J2ME Polish 2.1.3"
+	/>
 	
 	
 <!-- 

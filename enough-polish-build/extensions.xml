@@ -599,6 +599,18 @@
 	</extension>
 
 	<!-- Library Processors -->
+
+
+	<extension>
+		<type>libraryprocessor</type>
+		<name>basic</name>
+		<class>de.enough.polish.libraryprocessor.DefaultLibraryProcessor</class>
+		<autostart>
+			polish.usePolishGui 
+		</autostart>
+		<classpath>${polish.home}/lib/asm-all.jar:${polish.home}/lib/enough-bytecode.jar</classpath>
+	</extension>
+
 	
 	<extension>
 		<type>libraryprocessor</type>
@@ -624,13 +636,15 @@
 		
 	<extension>
 		<type>libraryprocessor</type>
-		<name>blackberryimportresolver</name>
+		<name>androidimportresolver</name>
 		<class>de.enough.polish.android.ImportResolver</class>
 		<autostart>
 			polish.android
 		</autostart>
 		<classpath>${polish.home}/lib/asm-all.jar:${polish.home}/lib/enough-bytecode.jar</classpath>
 	</extension>
+	
+	
 
 	<!-- Pre Compiler -->
 	

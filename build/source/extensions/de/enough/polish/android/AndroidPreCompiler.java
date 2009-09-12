@@ -30,6 +30,7 @@ import java.io.File;
 import de.enough.polish.BuildException;
 import de.enough.polish.Device;
 import de.enough.polish.android.precompiler.ActivityPreCompiler;
+import de.enough.polish.android.precompiler.LibraryCopierPreCompiler;
 import de.enough.polish.android.precompiler.ResourcesPreCompiler;
 import de.enough.polish.precompile.PreCompiler;
 
@@ -53,6 +54,7 @@ public class AndroidPreCompiler extends PreCompiler{
 	{
 		new ActivityPreCompiler().preCompile(classesDir, device);
 		new ResourcesPreCompiler().preCompile(classesDir, device);
+		new LibraryCopierPreCompiler().preCompile(classesDir, device);
 	}
 
 }
