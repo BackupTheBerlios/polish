@@ -78,7 +78,11 @@ public class TermRequirement extends Requirement {
 		} else {
 			this.booleanEvaluator.setEnvironment( device );
 		}
-		return this.booleanEvaluator.evaluate( this.term, "build.xml", 0 );
+		boolean termIsTrue = this.booleanEvaluator.evaluate( this.term, "build.xml", 0 );
+//		if (termIsTrue && device.getIdentifier().startsWith("Motorola")) {
+//			System.out.println("adding " + device.getIdentifier() );
+//		}
+		return termIsTrue;
 		/*
 		if (result) {
 			//System.out.println("device " + device.getIdentifier() + " is virtual: " + device.hasFeature("polish.isVirtual") );
