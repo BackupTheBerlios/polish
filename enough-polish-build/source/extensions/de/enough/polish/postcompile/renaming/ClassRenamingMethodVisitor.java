@@ -87,6 +87,20 @@ public class ClassRenamingMethodVisitor
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see
+	 * org.objectweb.asm.MethodAdapter#visitTryCatchBlock(org.objectweb.asm.
+	 * Label, org.objectweb.asm.Label, org.objectweb.asm.Label,
+	 * java.lang.String)
+	 */
+	public void visitTryCatchBlock(Label start, Label end, Label handler, String type)
+	{
+		type = ClassRenamingHelper.doRenaming(type, this.renamingMap);
+		super.visitTryCatchBlock(start, end, handler, type);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.objectweb.asm.MethodAdapter#visitTypeInsn(int, java.lang.String)
 	 */
 	public void visitTypeInsn(int opcode, String desc)
