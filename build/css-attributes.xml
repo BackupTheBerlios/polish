@@ -4747,6 +4747,7 @@
 		since="J2ME Polish 2.1.3"
 	/>
 
+<!--
 	<attribute
 		name="repaint-previous-screen-anchor"
 		type="integer"
@@ -4757,7 +4758,7 @@
 		values="none, focused"
 		since="J2ME Polish 2.1.3"
 	/>
-	
+-->
 	
 <!-- 
 	<attribute
