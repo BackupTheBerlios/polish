@@ -314,6 +314,9 @@ implements UiElement, Animatable
 	//#endif
 	//#if polish.css.repaint-previous-screen
 		private boolean repaintPreviousScreen;
+		//#if polish.css.repaint-previous-screen-anchor
+			private int repaintPreviousScreenAnchor;
+		//#endif
 		private Canvas previousScreen;
 		//#if !polish.Bugs.noTranslucencyWithDrawRgb
 			protected Background previousScreenOverlayBackground;
@@ -1192,8 +1195,43 @@ implements UiElement, Animatable
 				if (this.isLayoutVerticalShrink) {
 					this.backgroundHeight -= (height - containerHeight);
 				}
-			} else {
-				cont.relativeY = y;
+
+				/*
+				//#if polish.css.repaint-previous-screen && polish.css.repaint-previous-screen-anchor
+					if (this.repaintPreviousScreen && this.repaintPreviousScreenAnchor != 0 && (this.previousScreen instanceof Screen)) {
+						Item previousFocused = ((Screen)this.previousScreen).getCurrentItem();
+						if (previousFocused != null) {
+							while (previousFocused instanceof Container && ((Container)previousFocused).getFocusedItem() != null) {
+								previousFocused = ((Container)previousFocused).getFocusedItem();
+							}
+							int absY = previousFocused.getAbsoluteY();
+							int target;
+							if (this.isLayoutVCenter) {
+								target = Math.max( absY - (containerHeight / 2), y );
+							} else  if (this.isLayoutBottom) {
+								target = absY;
+								if (target + containerHeight > y + height) {
+									target = y + height - containerHeight;
+								}
+							} else {
+								target = Math.max( absY - containerHeight, y );
+							}
+							int diff = target - cont.relativeY; 
+							cont.relativeY = target;
+							if (this.isLayoutVerticalShrink) {
+								this.backgroundY += diff;
+							}
+							//#if tmp.usingTitle
+								if (this.title != null) {
+									this.title.relativeY += diff;
+								}
+							//#endif
+						}
+					}
+					System.out.println("RESULT:::::::::::: cont.relativeY=" + cont.relativeY + ", title.relativeY=" + title.relativeY + ", backgroundY=" + backgroundY + ", bgHeight=" + backgroundHeight);
+				//#endif
+				 * 
+				 */
 			}
 			if (containerHeight > height) {
 				width -= getScrollBarWidth();
@@ -1319,6 +1357,13 @@ implements UiElement, Animatable
 							this.previousScreen = (Canvas) currentDisplayable;
 						}
 					}
+					/* TODO: more work required
+					//#if polish.css.repaint-previous-screen-anchor
+						if (this.repaintPreviousScreenAnchor != 0 && this.container != null) {
+							initContent(this.container);
+						}
+					//#endif
+					 */
 				}
 			//#endif
 			
@@ -1535,7 +1580,7 @@ implements UiElement, Animatable
 			this.style.releaseResources();
 		}
 	 	//#debug
-		System.out.println("Setting screen-style for " + getClass().getName() );
+		System.out.println("Setting screen-style for " + this );
 		this.style = style;
 		this.background = style.background;
 		this.border = style.border;
@@ -1753,6 +1798,18 @@ implements UiElement, Animatable
 					}
 				}
 				//#endif
+				/* TODO reenable repaint-previous-screen-anchor
+				//#if polish.css.repaint-previous-screen-anchor
+					if (this.repaintPreviousScreen) {
+						Integer repaintAnchorInt = style.getIntProperty("repaint-previous-screen-anchor");
+						if (repaintAnchorInt != null) {
+							this.repaintPreviousScreenAnchor = repaintAnchorInt.intValue();
+						}
+						
+					}
+				//#endif
+				 * 
+				 */
 			}
 		//#endif
 		//#if polish.css.separate-menubar
