@@ -286,7 +286,9 @@ public class Container extends Item {
 				
 			}
 		//#endif
-		repaint();
+		if (this.isShown) {
+			repaint();
+		}
 	}
 	
 
@@ -352,7 +354,9 @@ public class Container extends Item {
 				}
 			//#endif
 		}
-		repaint();
+		if (this.isShown) {
+			repaint();
+		}
 	}
 	
 	//#if polish.LibraryBuild
