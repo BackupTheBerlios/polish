@@ -164,10 +164,12 @@ Future versions of the Android conversion will support the conversion of the fol
 
 
 <h2 id="android-troubleshooting">Troubleshooting</h2>
+<p>You might encounter some issues when building Android applications:</p>
+<h3 id="android-troubleshooting-dex">OutOfMemory for dex</h3>
 <b>The creation of the .dex file terminates with an OutOfMemoryError</b>
 <p>
 This error is quite common and due to insufficient memory settings in the dx executable of the android installation.
-Please go to ${android.home}/tools and open the dx executable. Remove <code>REM</code> from the line
+Please go to <i>${android.home}/tools</i> <code>REM</code> from the line
 </p>
 <pre>
 REM set javaOpts=-Xmx256M
@@ -175,6 +177,19 @@ REM set javaOpts=-Xmx256M
 <p>
 and rerun the build process. If the error occurs again, increase the settings for -Xmx to a higher amount.
 </p>
-
+<h3 id="android-troubleshooting-libraries">Verifier Error when using binary libraries</h3>
+<p>
+	From J2ME Polish 2.1.3 onwards you can use binary libraries normally with Android:
+</p>
+<pre>
+&lt;libraries&gt;
+    &lt;library file=&quot;lib/mylib.jar&quot; /&gt;   
+&lt;/libraries&gt;
+</pre>
+<p>
+	This works fine but the Android Virtual Machine cannot cope with several variables having the same name but different types.
+	Obfuscators can produce such 'naming shadowing' since this is allowed in Java bytecode. In case you are encountering such
+	problems, please either use the library in source code or ask the vendor of the library to provide a version without name shadowing. 
+</p>
 
 <%include end.txt %>
