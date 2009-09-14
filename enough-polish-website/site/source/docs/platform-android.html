@@ -166,16 +166,16 @@ Future versions of the Android conversion will support the conversion of the fol
 <h2 id="android-troubleshooting">Troubleshooting</h2>
 <p>You might encounter some issues when building Android applications:</p>
 <h3 id="android-troubleshooting-dex">OutOfMemory for dex</h3>
-<b>The creation of the .dex file terminates with an OutOfMemoryError</b>
 <p>
+	The creation of the .dex file terminates with an OutOfMemoryError.
 This error is quite common and due to insufficient memory settings in the dx executable of the android installation.
-Please go to <i>${android.home}/tools</i> <code>REM</code> from the line
+Please go to <i>${android.home}/tools</i> and remove the <code>REM</code> from the line
 </p>
 <pre>
 REM set javaOpts=-Xmx256M
 </pre>
 <p>
-and rerun the build process. If the error occurs again, increase the settings for -Xmx to a higher amount.
+and rerun the build process. If the error occurs again, increase the settings for <code>-Xmx</code> to a higher amount, e.g. <code>-Xmx512M</code>.
 </p>
 <h3 id="android-troubleshooting-libraries">Verifier Error when using binary libraries</h3>
 <p>
