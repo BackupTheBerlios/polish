@@ -207,11 +207,11 @@ implements ItemStateListener //, CommandListener
 	}
 
 
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Screen#calculateContentArea(int, int, int, int)
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#adjustContentArea(int, int, int, int, de.enough.polish.ui.Container)
 	 */
-	protected void calculateContentArea(int x, int y, int width, int height) {
-		super.calculateContentArea(x, y, width, height);
+	protected void adjustContentArea(int x, int y, int width, int height, Container cont) {
 		this.filterHeight = this.filterTextField.getItemHeight( this.contentWidth, this.contentWidth, this.contentHeight / 2 );
 		this.contentHeight -= this.filterHeight;
 		this.container.setScrollHeight( this.contentHeight );
@@ -220,10 +220,9 @@ implements ItemStateListener //, CommandListener
 			this.contentY += this.filterHeight;
 		} else {
 			this.filterTextField.relativeY = this.contentY + this.contentHeight;
-		}
+		}		
 	}
-	
-	
+
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Screen#showNotify()
 	 */
