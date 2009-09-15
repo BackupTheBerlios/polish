@@ -770,6 +770,7 @@ implements ImageConsumer
 		if (!isTextVisible) {
 			this.textLines = null;
 		}
+		this.isTextInitializationRequired = true;
 		setInitialized(false);
 	}
 
