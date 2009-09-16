@@ -1212,7 +1212,7 @@ public abstract class BaseScreen
      * @param item the item that is focused
      * @param repeatSync true when the access should be tried synchronized again when the first trial fails
      */
-    public void notifyFocusSet( Item item, boolean repeatSync ) {
+    public void notifyFocusSet( final Item item, final boolean repeatSync ) {
        	if (this.isObscured) {
     		return;
     	}
@@ -1243,12 +1243,24 @@ public abstract class BaseScreen
 	            //System.out.println("Canvas.focus(): focusing dummy");
 	        }
     	} catch (IllegalStateException e) {
-    		if (repeatSync) {
-	            Object lock = MIDlet.getEventLock();
-	            synchronized (lock) {
-	            	notifyFocusSet(item, false);
-	            }
-    		}
+    		// On Blackberry we need to run the following code on the UI thread
+    		// to make sure we get no deadlock between Blackberry lock and lock
+    		// on Container.itemsList.
+    		//#if polish.blackberry
+    		Display.getInstance().callSerially(new Runnable() {
+    			public void run()
+    			{
+    		//#endif
+		    		if (repeatSync) {
+			            Object lock = MIDlet.getEventLock();
+			            synchronized (lock) {
+			            	notifyFocusSet(item, false);
+			            }
+		    		}
+    		//#if polish.blackberry
+    			}
+    		});
+    		//#endif
     	}
     }
     
