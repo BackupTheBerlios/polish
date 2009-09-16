@@ -616,9 +616,6 @@
 		<type>libraryprocessor</type>
 		<name>polishimportresolver</name>
 		<class>de.enough.polish.libraryprocessor.PolishImportLibraryProcessor</class>
-		<autostart>
-			polish.usePolishGui 
-		</autostart>
 		<classpath>${polish.home}/lib/asm-all.jar:${polish.home}/lib/enough-bytecode.jar</classpath>
 	</extension>
 	
