@@ -62,7 +62,7 @@ import de.enough.polish.windows.Keyboard;
 //#endif
 
 //#if polish.android1.5
-	import de.enough.polish.android.midlet.MidletBridge;
+import de.enough.polish.android.midlet.MidletBridge;
 //#endif
 
 /**
@@ -930,22 +930,23 @@ public class TextField extends StringItem
 	//#if polish.midp && !polish.blackberry && !polish.api.windows
 		//#define tmp.useNativeTextBox
 		private de.enough.polish.midp.ui.TextBox midpTextBox;
-		//Variable passedChar used as container for char which is passed to native TextBox.
-		//So when key is pressed (e.g. '2') view goes to native mode and 'a' character is appended to the current text
-		private char passedChar;
-		//Timer responsible for checking delay between two, subsequent presses 
-		private final Timer keyDelayTimer = new Timer();
-		private TimerTask keyDelayTimerTask = null;
-		//last time when button was pressed
-		private long lastTimeKeyPressed;
-		//number of presses of one phone button
-		private int keyPressCounter = 0;
-		//latest key pressed keyCode
-		private int latestKey;
-		//maximum delay between subseqent key presses. If exceeded, will timer will call native editor. 
-		private int delayBetweenKeys = 200;
+			//#if polish.TextField.passCharacterToNativeEditor
+			//Variable passedChar used as container for char which is passed to native TextBox.
+			//So when key is pressed (e.g. '2') view goes to native mode and 'a' character is appended to the current text
+			private char passedChar;
+			//Timer responsible for checking delay between two, subsequent presses 
+			private final Timer keyDelayTimer = new Timer();
+			private TimerTask keyDelayTimerTask = null;
+			//last time when button was pressed
+			private long lastTimeKeyPressed;
+			//number of presses of one phone button
+			private int keyPressCounter = 0;
+			//latest key pressed keyCode
+			private int latestKey;
+			//maximum delay between subseqent key presses. If exceeded, will timer will call native editor. 
+			private int delayBetweenKeys = 200;
+			//#endif
 		private boolean skipKeyReleasedEvent = false;
-		//>Mobica
 	//#endif
 	private boolean cskOpensNativeEditor = true;
 	
@@ -1202,6 +1203,11 @@ public class TextField extends StringItem
 			}
 		//#endif
 		this.constraints = constraints;
+		//#if tmp.useNativeTextBox
+			//#if polish.nativeEditor.delayBetweenKeys:defined && polish.TextField.passCharacterToNativeEditor
+			//#= 	delayBetweenKeys = ${polish.nativeEditor.delayBetweenKeys};
+			//#endif
+		//#endif
 		this.maxSize = maxSize;
 		if (label != null) {
 			this.title = label;
@@ -1270,7 +1276,10 @@ public class TextField extends StringItem
 		if (!this.isUneditable) {
 			this.midpTextBox.addCommand(StyleSheet.CANCEL_CMD);
 		}
-		this.midpTextBox.setCommandListener( this );	
+		this.midpTextBox.setCommandListener( this );
+		if ((constraints & TextField.INITIAL_CAPS_NEVER) == TextField.INITIAL_CAPS_NEVER){
+			this.midpTextBox.setInitialInputMode("MIDP_LOWERCASE_LATIN");
+		}
 	}
 	//#endif
 	
@@ -1441,14 +1450,16 @@ public class TextField extends StringItem
 				if ( newText == null 
 					//#ifdef tmp.directInput
 						|| (this.caretPosition == 0    &&    this.caretChar == this.editingCaretChar)
-					//#else
+					//#else 
 						|| newText.length() == 0 
 					//#endif
 				) {
 					removeCommand( DELETE_CMD );
 				} else if ((this.text == null || this.text.length() == 0)
-					//#ifdef tmp.directInput
-						|| this.caretPosition == 1
+					//#if tmp.directInput
+						// needed for native input as the string is passed as a whole
+						// and thus skips caretPosition == 1
+						|| this.caretPosition > 0
 					//#endif						
 				) {
 					addCommand( DELETE_CMD );
@@ -2843,41 +2854,42 @@ public class TextField extends StringItem
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
 		//#debug
 		System.out.println("handleKeyPressed " + keyCode );
-		
-		//#if tmp.useNativeTextBox && tmp.directInput
-		if (keyCode >0)
-		{
-			String alphabet = null;
-			if (keyCode == Canvas.KEY_POUND) {
-				alphabet = charactersKeyPound;
-			} else if (keyCode == Canvas.KEY_STAR) {
-				alphabet = charactersKeyStar;
-			} else {
-				int index = keyCode - Canvas.KEY_NUM0;
-				if (index >= 0 && index <= CHARACTERS.length) {
-					alphabet = CHARACTERS[ index ];
-				}
-			}
-			if (alphabet != null && (alphabet.length() >= 0)) {
-				if(this.keyDelayTimerTask==null || this.latestKey != keyCode){
-					this.keyPressCounter=0;
-					this.passedChar = alphabet.charAt(this.keyPressCounter++);
-					this.latestKey = keyCode;
-				}
-				else {
-					this.passedChar = alphabet.charAt(this.keyPressCounter++);
-					this.latestKey = keyCode;
-					if (this.keyPressCounter == alphabet.length()){
-						this.keyPressCounter=0;	
+	
+		//#if  tmp.useNativeTextBox
+			//#if polish.TextField.passCharacterToNativeEditor
+			if (keyCode >0)
+			{
+				String alphabet = null;
+				if (keyCode == Canvas.KEY_POUND) {
+					alphabet = charactersKeyPound;
+				} else if (keyCode == Canvas.KEY_STAR) {
+					alphabet = charactersKeyStar;
+				} else {
+					int index = keyCode - Canvas.KEY_NUM0;
+					if (index >= 0 && index <= CHARACTERS.length) {
+						alphabet = CHARACTERS[ index ];
 					}
 				}
-				if ((this.constraints & NUMERIC) == NUMERIC){
-					this.passedChar = (char)keyCode;
+				if (alphabet != null && (alphabet.length() >= 0)) {
+					if(this.keyDelayTimerTask==null || this.latestKey != keyCode){
+						this.keyPressCounter=0;
+						this.passedChar = alphabet.charAt(this.keyPressCounter++);
+						this.latestKey = keyCode;
+					}
+					else {
+						this.passedChar = alphabet.charAt(this.keyPressCounter++);
+						this.latestKey = keyCode;
+						if (this.keyPressCounter == alphabet.length()){
+							this.keyPressCounter=0;	
+						}
+					}
+					if ((this.constraints & NUMERIC) == NUMERIC){
+						this.passedChar = (char)keyCode;
+					}
 				}
 			}
-		}
+			//#endif
 		//#endif
-		//mobica>
 		
 		this.isKeyPressedHandled = false;
 		
@@ -2911,8 +2923,7 @@ public class TextField extends StringItem
 						|| (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
 						|| (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4)
 						|| (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6)
-						|| (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5 && !this.cskOpensNativeEditor)
-						|| (this.screen.isSoftKey(keyCode, gameAction))
+						|| (!(gameAction == Canvas.FIRE && this.cskOpensNativeEditor) && this.screen.isSoftKey(keyCode, gameAction))
 						) 
 				{
 					return false;
@@ -2932,6 +2943,7 @@ public class TextField extends StringItem
 						//#endif
 						) {
 							//#if tmp.useNativeTextBox
+								//#if polish.TextField.passCharacterToNativeEditor
 								this.lastTimeKeyPressed = System.currentTimeMillis();
 								if (this.keyDelayTimerTask==null && !((this.constraints & UNEDITABLE) == UNEDITABLE)){
 									final int localGameAction = gameAction;
@@ -2955,7 +2967,10 @@ public class TextField extends StringItem
 									};
 									
 									this.keyDelayTimer.schedule(this.keyDelayTimerTask, 0,this.delayBetweenKeys);
-								}								
+								}
+								//#else
+								showTextBox();
+								//#endif	
 								return true;
 							//#endif
 						}
@@ -3000,7 +3015,7 @@ public class TextField extends StringItem
                                 handled = true;
                         }
                         //#endif
-                        
+
 						// Backspace
 						//#ifdef polish.key.ClearKey:defined
 							//#= if (keyCode == ${polish.key.ClearKey}
@@ -3025,27 +3040,27 @@ public class TextField extends StringItem
 							
 							
 						//#ifdef polish.key.ChangeNumericalAlphaInputModeKey:defined
-	                        //#= if(!handled &&
-	                        //#=     !(keyCode == KEY_CHANGE_MODE && !this.isNumeric &&
-	                        //#=       !(KEY_CHANGE_MODE == Canvas.KEY_NUM0 &&
-	                        //#=         this.inputMode == MODE_NUMBERS)) &&
-	                        //#=     !(keyCode == ${polish.key.ChangeNumericalAlphaInputModeKey} &&
-	                        //#=       !this.isNumeric))
+                        //#= if(!handled &&
+                        //#=     !(keyCode == KEY_CHANGE_MODE && !this.isNumeric &&
+                        //#=       !(KEY_CHANGE_MODE == Canvas.KEY_NUM0 &&
+                        //#=         this.inputMode == MODE_NUMBERS)) &&
+                        //#=     !(keyCode == ${polish.key.ChangeNumericalAlphaInputModeKey} &&
+                        //#=       !this.isNumeric))
                         //#else
-							if(!handled && keyCode != KEY_CHANGE_MODE)
+                        if(!handled && keyCode != KEY_CHANGE_MODE)
                         //#endif
                         {
                                 handled = handleKeyInsert(keyCode, gameAction);
                         }
 	                        
 						// Navigate the caret
-						if (   !handled 					&&
-								(gameAction == Canvas.UP 	|| 
+						if (   (gameAction == Canvas.UP 	|| 
 								gameAction == Canvas.DOWN 	||
 								gameAction == Canvas.LEFT 	||
 								gameAction == Canvas.RIGHT  ||
-								gameAction == Canvas.FIRE)
-						) {
+								gameAction == Canvas.FIRE)  &&
+								!handled) 
+						{
 							handled = handleKeyNavigation(keyCode, gameAction);
 							if (!handled && getScreen().isGameActionFire(keyCode, gameAction) && this.defaultCommand != null) {
 								notifyItemPressedStart();
@@ -3170,10 +3185,10 @@ public class TextField extends StringItem
 						&& !this.isNumeric
 						&& this.screen.isKeyboardAccessible() 
 						&& !( 	(insertChar < 'a' || insertChar > 'z')
-								&& ((gameAction == Canvas.UP     &&  insertChar != '2' && keyCode == this.screen.getKeyCode(Canvas.UP)  ) 
+								&& (gameAction == Canvas.UP     &&  insertChar != '2' && keyCode == this.screen.getKeyCode(Canvas.UP) ) 
 								|| (gameAction == Canvas.DOWN   &&  insertChar != '8' && keyCode == this.screen.getKeyCode(Canvas.DOWN)  )
 								|| (gameAction == Canvas.LEFT   &&  insertChar != '4' && keyCode == this.screen.getKeyCode(Canvas.LEFT)	)
-								|| (gameAction == Canvas.RIGHT  &&  insertChar != '6' && keyCode == this.screen.getKeyCode(Canvas.RIGHT)))
+								|| (gameAction == Canvas.RIGHT  &&  insertChar != '6' && keyCode == this.screen.getKeyCode(Canvas.RIGHT))
 								//|| (gameAction == Canvas.FIRE   &&  keyCode == this.screen.getKeyCode(Canvas.FIRE) )  
 							)
 						) 
@@ -3757,7 +3772,7 @@ public class TextField extends StringItem
 		//return super.handleKeyRepeated(keyCode, gameAction);
 	}
 	//#endif
-
+	
 	//#if !polish.blackberry && tmp.directInput
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#handleKeyReleased(int, int)
@@ -3765,7 +3780,7 @@ public class TextField extends StringItem
 	protected boolean handleKeyReleased( int keyCode, int gameAction ) {
 		//#debug
 		System.out.println("handleKeyReleased  " + keyCode );
-		//#if tmp.useNativeTextBox
+		//#if tmp.useNativeTextBox && !(polish.Vendor == Samsung)
 			if(this.skipKeyReleasedEvent) {
 				this.skipKeyReleasedEvent = false;
 				return true;
@@ -4041,7 +4056,7 @@ public class TextField extends StringItem
 		//#debug
 		System.out.println("TextField.commandAction( " + cmd.getLabel() + ", " + this + " )");
 		//#if tmp.usePredictiveInput
-			if (this.predictiveAccess.commandAction(cmd, item)) {		
+			if (this.predictiveAccess.commandAction(cmd, item)) {			
 				return;
 			}
 		//#endif
