@@ -263,7 +263,7 @@ public final class StyleSheet {
 	 */
 	public static Style getStyle( Item item ) {
 		if (item.screen == null) {
-			//#debug error
+			//#debug info
 			System.out.println("unable to retrieve style for item [" + item.getClass().getName() + "] without screen.");
 			return defaultStyle;
 		}
