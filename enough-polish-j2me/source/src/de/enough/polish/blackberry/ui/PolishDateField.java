@@ -148,14 +148,20 @@ implements AccessibleField
 
 	public void focusAdd( boolean draw ) {
         //System.out.println("DateField: focusAdd (" + getText() + ")");
-        super.focusAdd( draw );
+		Object bbLock = Application.getEventLock();
+		synchronized (bbLock) {    
+			super.focusAdd( draw );
+		}
         this.isFocused = true;
 	}
 	
 	public void focusRemove() {
-	        //System.out.println("DateField: focusRemove (" + getText() + ")");
-	        super.focusRemove();
-	        this.isFocused = false;
+	    //System.out.println("DateField: focusRemove (" + getText() + ")");
+		Object bbLock = Application.getEventLock();
+		synchronized (bbLock) {    
+			super.focusRemove();
+		}
+	    this.isFocused = false;
 	}
 	
 	 public void paint( net.rim.device.api.ui.Graphics g ) {
