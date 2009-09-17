@@ -1246,21 +1246,17 @@ public abstract class BaseScreen
     		// On Blackberry we need to run the following code on the UI thread
     		// to make sure we get no deadlock between Blackberry lock and lock
     		// on Container.itemsList.
-    		//#if polish.blackberry
     		Display.getInstance().callSerially(new Runnable() {
     			public void run()
     			{
-    		//#endif
 		    		if (repeatSync) {
 			            Object lock = MIDlet.getEventLock();
 			            synchronized (lock) {
 			            	notifyFocusSet(item, false);
 			            }
 		    		}
-    		//#if polish.blackberry
     			}
     		});
-    		//#endif
     	}
     }
     
