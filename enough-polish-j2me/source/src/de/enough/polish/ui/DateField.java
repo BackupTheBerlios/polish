@@ -851,22 +851,23 @@ implements
 	
 	
 	private void checkOutDate() {
-		String current = this.text;
-		int start = 0;
-		this.currentField = 0;
-		while (start < this.text.length()) {
-			int end = getNextDateTimeEnd(start);
-			this.editIndex = end - 1;
-			this.currentFieldStartIndex = start;
-			checkField( end, false);
-			this.text = current;
-			this.currentField++;
-			start = end + 1;
-		}
-		this.currentField = 0;
-		this.currentFieldStartIndex = 0;
-		this.editIndex = 0;
-	
+		//#if tmp.directInput
+			String current = this.text;
+			int start = 0;
+			this.currentField = 0;
+			while (start < this.text.length()) {
+				int end = getNextDateTimeEnd(start);
+				this.editIndex = end - 1;
+				this.currentFieldStartIndex = start;
+				checkField( end, false);
+				this.text = current;
+				this.currentField++;
+				start = end + 1;
+			}
+			this.currentField = 0;
+			this.currentFieldStartIndex = 0;
+			this.editIndex = 0;
+		//#endif
 	}
 
 	private int getNextDateTimeEnd(int start) {
