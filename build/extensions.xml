@@ -611,37 +611,6 @@
 		<classpath>${polish.home}/lib/asm-all.jar:${polish.home}/lib/enough-bytecode.jar</classpath>
 	</extension>
 
-	
-	<extension>
-		<type>libraryprocessor</type>
-		<name>polishimportresolver</name>
-		<class>de.enough.polish.libraryprocessor.PolishImportLibraryProcessor</class>
-		<classpath>${polish.home}/lib/asm-all.jar:${polish.home}/lib/enough-bytecode.jar</classpath>
-	</extension>
-	
-
-	<extension>
-		<type>libraryprocessor</type>
-		<name>blackberryimportresolver</name>
-		<class>de.enough.polish.blackberry.ImportResolver</class>
-		<autostart>
-			polish.usePolishGui 
-			and polish.blackberry
-		</autostart>
-		<classpath>${polish.home}/lib/asm-all.jar:${polish.home}/lib/enough-bytecode.jar</classpath>
-	</extension>
-		
-	<extension>
-		<type>libraryprocessor</type>
-		<name>androidimportresolver</name>
-		<class>de.enough.polish.android.ImportResolver</class>
-		<autostart>
-			polish.android
-		</autostart>
-		<classpath>${polish.home}/lib/asm-all.jar:${polish.home}/lib/enough-bytecode.jar</classpath>
-	</extension>
-	
-	
 
 	<!-- Pre Compiler -->
 	
