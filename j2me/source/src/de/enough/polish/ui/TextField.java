@@ -58,11 +58,11 @@ import de.enough.polish.util.Properties;
 //#endif
 
 //#if polish.api.windows
-import de.enough.polish.windows.Keyboard;
+	import de.enough.polish.windows.Keyboard;
 //#endif
 
 //#if polish.android1.5
-import de.enough.polish.android.midlet.MidletBridge;
+	import de.enough.polish.android.midlet.MidletBridge;
 //#endif
 
 /**
@@ -679,7 +679,7 @@ public class TextField extends StringItem
 
 	// clear command is used in DateField, too:
 	//#ifdef polish.command.clear.priority:defined
-	//#= private final static int CLEAR_PRIORITY = ${polish.command.clear.priority};
+		//#= private final static int CLEAR_PRIORITY = ${polish.command.clear.priority};
 	//#else
 		private final static int CLEAR_PRIORITY = 8;
 	//#endif
@@ -898,8 +898,8 @@ public class TextField extends StringItem
 		/** map of characters that can be triggered witht the 0..9 and #, * keys */
 		public static String[] CHARACTERS = new String[]{ charactersKey0, charactersKey1, charactersKey2, charactersKey3, charactersKey4, charactersKey5, charactersKey6, charactersKey7, charactersKey8, charactersKey9 };
 		//#if tmp.useDynamicCharset
-		public static String[] CHARACTERS_UPPER = new String[]{ charactersKey0, charactersKey1, charactersKey2, charactersKey3, charactersKey4, charactersKey5, charactersKey6, charactersKey7, charactersKey8, charactersKey9 };
-		public static boolean usesDynamicCharset;
+			public static String[] CHARACTERS_UPPER = new String[]{ charactersKey0, charactersKey1, charactersKey2, charactersKey3, charactersKey4, charactersKey5, charactersKey6, charactersKey7, charactersKey8, charactersKey9 };
+			public static boolean usesDynamicCharset;
 		//#endif
 		private static final String[] EMAIL_CHARACTERS = new String[]{ VALID_LOCAL_EMAIL_ADDRESS_CHARACTERS + "0", VALID_LOCAL_EMAIL_ADDRESS_CHARACTERS + "1", "abc2", "def3", "ghi4", "jkl5", "mno6", "pqrs7", "tuv8", "wxyz9" };
 		private String[] characters;
@@ -930,7 +930,7 @@ public class TextField extends StringItem
 	//#if polish.midp && !polish.blackberry && !polish.api.windows
 		//#define tmp.useNativeTextBox
 		private de.enough.polish.midp.ui.TextBox midpTextBox;
-			//#if polish.TextField.passCharacterToNativeEditor
+		//#if polish.TextField.passCharacterToNativeEditor
 			//Variable passedChar used as container for char which is passed to native TextBox.
 			//So when key is pressed (e.g. '2') view goes to native mode and 'a' character is appended to the current text
 			private char passedChar;
@@ -943,9 +943,14 @@ public class TextField extends StringItem
 			private int keyPressCounter = 0;
 			//latest key pressed keyCode
 			private int latestKey;
-			//maximum delay between subseqent key presses. If exceeded, will timer will call native editor. 
-			private int delayBetweenKeys = 200;
+			//maximum delay between subseqent key presses. If exceeded, will timer will call native editor.
+			private int delayBetweenKeys =
+			//#if polish.nativeEditor.delayBetweenKeys:defined
+				//#= ${polish.nativeEditor.delayBetweenKeys};
+			//#else
+				200;
 			//#endif
+		//#endif
 		private boolean skipKeyReleasedEvent = false;
 	//#endif
 	private boolean cskOpensNativeEditor = true;
@@ -1203,11 +1208,6 @@ public class TextField extends StringItem
 			}
 		//#endif
 		this.constraints = constraints;
-		//#if tmp.useNativeTextBox
-			//#if polish.nativeEditor.delayBetweenKeys:defined && polish.TextField.passCharacterToNativeEditor
-			//#= 	delayBetweenKeys = ${polish.nativeEditor.delayBetweenKeys};
-			//#endif
-		//#endif
 		this.maxSize = maxSize;
 		if (label != null) {
 			this.title = label;
@@ -1277,7 +1277,7 @@ public class TextField extends StringItem
 			this.midpTextBox.addCommand(StyleSheet.CANCEL_CMD);
 		}
 		this.midpTextBox.setCommandListener( this );
-		if ((constraints & TextField.INITIAL_CAPS_NEVER) == TextField.INITIAL_CAPS_NEVER){
+		if ((this.constraints & TextField.INITIAL_CAPS_NEVER) == TextField.INITIAL_CAPS_NEVER){
 			this.midpTextBox.setInitialInputMode("MIDP_LOWERCASE_LATIN");
 		}
 	}
