@@ -298,8 +298,7 @@ implements
 	{
 		//#if tmp.directInput
 			if (this.isFocused && (this.date != null)) {
-				moveForward(false);
-				moveBackward(false);
+				checkOutDate();
 			}
 		//#endif
 		return this.date;
@@ -571,8 +570,8 @@ implements
 		} // date != null
 		if (isInitialized()) {
 			setInitialized(false);
-			repaint();
 		}
+		repaint();
 	}
 	
 	public String getDateFormatPattern() {
@@ -842,8 +841,7 @@ implements
 		this.showCaret = false;
 		//#if tmp.directInput
 			if (this.date != null) {
-				moveForward(false);
-				moveBackward(false);
+				checkOutDate();
 			}
 		//#endif
 		//#if polish.blackberry
@@ -852,6 +850,35 @@ implements
 	}
 	
 	
+	private void checkOutDate() {
+		String current = this.text;
+		int start = 0;
+		this.currentField = 0;
+		while (start < this.text.length()) {
+			int end = getNextDateTimeEnd(start);
+			this.editIndex = end - 1;
+			this.currentFieldStartIndex = start;
+			checkField( end, false);
+			this.text = current;
+			this.currentField++;
+			start = end + 1;
+		}
+		this.currentField = 0;
+		this.currentFieldStartIndex = 0;
+		this.editIndex = 0;
+	
+	}
+
+	private int getNextDateTimeEnd(int start) {
+		for (int i=start; i<this.text.length(); i++) {
+			char c = this.text.charAt(i);
+			if (!Character.isDigit(c) && i>start) {
+				return i;
+			}
+		}
+		return this.text.length();
+	}
+
 	//#if polish.android1.5
 	/*
 	 * (non-Javadoc)
