@@ -120,7 +120,8 @@ public class VMBridge
     }
     
     private void createContext() {
-    	this.context = Context.enter();
+    	// rickyn: Calling Context.enter() causes an infinitve loop.
+    	this.context = new Context();
     	this.scope = this.context.initStandardObjects();
     }
     
