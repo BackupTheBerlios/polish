@@ -25,6 +25,7 @@
 
 package de.enough.polish.libraryprocessor;
 
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
@@ -38,6 +39,11 @@ import de.enough.polish.preprocess.custom.ImportPreprocessor;
  * @author Robert Virkus
  */
 public class DefaultLibraryProcessor extends ImportLibraryProcessor {
+	
+	private static final HashMap CLASS_TO_INTERFACE_MAP = new HashMap();
+	static {
+		CLASS_TO_INTERFACE_MAP.put("de.enough.polish.ui.Displayable", Boolean.TRUE);
+	}
 
 	/**
 	 * Creates a new default library processor
@@ -63,7 +69,7 @@ public class DefaultLibraryProcessor extends ImportLibraryProcessor {
 				to = to.substring(0, splitIndex);
 			}
 			if ( to.charAt(to.length() -1 ) != '*') {
-				conversions.addConversion(from, to );
+				conversions.addConversion(from, to, CLASS_TO_INTERFACE_MAP.containsKey(to) );
 			}
 		}
 	}
