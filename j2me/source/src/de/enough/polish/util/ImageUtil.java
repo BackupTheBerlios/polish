@@ -1547,6 +1547,9 @@ public final class ImageUtil {
 			ihm = null;
 			outPutRGB = null;
 			System.gc();
+			
+			//return original sourceImg
+			return sourceImg;
 		}
 		
 		return new RgbImage(outPutRGB,sourceImg.getWidth());
