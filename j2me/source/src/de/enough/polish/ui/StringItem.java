@@ -491,20 +491,35 @@ public class StringItem extends Item
 					int centerX = 0;
 					boolean isCenter;
 					boolean isRight;
+					boolean isExpand;
 					//#if polish.css.text-layout
 						int lo = this.textLayout;
 						isCenter = (lo & LAYOUT_CENTER) == LAYOUT_CENTER;
 						isRight = (lo & LAYOUT_CENTER) == LAYOUT_RIGHT;
+						isExpand = (lo & LAYOUT_EXPAND) == LAYOUT_EXPAND;
 					//#else
 						isCenter = this.isLayoutCenter;
 						isRight = this.isLayoutRight;
 					//#endif
 					
 					if (isCenter) {
-						centerX = leftBorder + (rightBorder - leftBorder) / 2;
-						//#ifdef polish.css.text-horizontal-adjustment
+						//#if polish.css.text-layout
+						if(isExpand && this.parent != null) {
+							int parentLeft = this.parent.getAbsoluteX() + this.parent.getContentX(); 
+							int parentRight = parentLeft + this.parent.getContentWidth();
+							centerX = parentLeft + (parentRight - parentLeft) / 2;
+							//#ifdef polish.css.text-horizontal-adjustment
 							centerX += this.textHorizontalAdjustment;
+							//#endif
+						}
+						else
 						//#endif
+						{
+							centerX = leftBorder + (rightBorder - leftBorder) / 2;
+							//#ifdef polish.css.text-horizontal-adjustment
+							centerX += this.textHorizontalAdjustment;
+							//#endif
+						}
 					}
 					int lineX = x;
 					int lineY = y;
