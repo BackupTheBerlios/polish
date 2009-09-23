@@ -922,7 +922,8 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	/**
 	 * Convenience constructor.
 	 * Creates a new item with the specified label and layout, an Item.PLAIN appearance mode and default style.
-	 * @param style the style for this item
+	 * @param label the label for this item
+	 * @param layout the layout of this item
 	 */
 	protected FakeCustomItem( String label, int layout) {
 		this( label, layout, PLAIN, null );
