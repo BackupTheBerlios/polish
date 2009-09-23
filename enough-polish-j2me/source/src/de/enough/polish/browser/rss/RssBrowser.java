@@ -115,14 +115,14 @@ public class RssBrowser
 	}
 
 	/**
-	 * @return
+	 * @return the ItemCommandListener for the RssItems
 	 */
 	public ItemCommandListener getRssItemCommandListener() {
 		return this.rssItemCommandListener;
 	}
 
 	/**
-	 * @return
+	 * @return the Command triggered by links
 	 */
 	public Command getLinkCommand() {
 		return HtmlTagHandler.CMD_LINK;
