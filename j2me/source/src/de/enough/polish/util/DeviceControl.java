@@ -249,7 +249,7 @@ public class DeviceControl
 	 * This method allows the caller to disable the fallback to the network location provider when the GPS location provider is not available.
 	 * Normally the network location provider is used in case the GPS location provider goes offline for some reason. With this method you can
 	 * turn of this fallback. This is useful if you want to be sure that you always have full acurracy for your location or non at all.
-	 * @param setFallbackOnGpsDisabled value 'true' if you want to disable the fallback mechanism. Value 'false' otherwise.
+	 * @param setFallbackOnGpsDisabled <code>true</code> if you want to disable the fallback mechanism, <code>false</code> otherwise.
 	 * @deprecated
 	 */
 	public static void shouldFallbackToNetworkLocationOnGpsDisabled(boolean setFallbackOnGpsDisabled) {
@@ -258,7 +258,7 @@ public class DeviceControl
 
 	/**
 	 * This methods tells the caller if the fallback mechanism for the GPS location provider is enabled. See {@link #shouldFallbackToNetworkLocationOnGpsDisabled(boolean)} for details.
-	 * @return Value 'true' if the fallback is disabled. Value 'false' if the fallback is enabled (the default).
+	 * @return <code>true</code> if the fallback is disabled, <code>false</code> if the fallback is enabled (the default).
 	 * @deprecated
 	 */
 	public static boolean isFallbackToNetworkLocationOnGpsDisabled() {
@@ -267,7 +267,7 @@ public class DeviceControl
 
 	/**
 	 * 
-	 * @return
+	 * @return <code>true</code> if GPS is enabled, <code>false</code> otherwise.
 	 * @deprecated Use {@link de.enough.polish.location.LocationService#isGpsEnabled()}
 	 */
 	public static boolean isGpsEnabled() {
