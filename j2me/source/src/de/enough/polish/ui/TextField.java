@@ -751,7 +751,7 @@ public class TextField extends StringItem
 	private String passwordText;
 	private boolean isPassword;
 	private boolean enableDirectInput;
-	
+	private boolean noNewLine = false;
 	//#if (!tmp.suppressCommands && !tmp.supportsSymbolEntry) || tmp.supportsSymbolEntry
 		private ItemCommandListener additionalItemCommandListener;
 	//#endif
@@ -926,7 +926,7 @@ public class TextField extends StringItem
 			private long lastFieldChangedEvent;
 		//#endif
 		private int bbLastCursorPosition;
-	//#endif
+		//#endif
 	//#if polish.midp && !polish.blackberry && !polish.api.windows
 		//#define tmp.useNativeTextBox
 		private de.enough.polish.midp.ui.TextBox midpTextBox;
@@ -1261,7 +1261,9 @@ public class TextField extends StringItem
 				useAsciiKeyMap = true;
 			//#endif
 		//#endif
-
+		//#if polish.TextField.noNewLine
+		this.noNewLine = true;
+		//#endif
 		setString(text);
 	}
 	
@@ -1824,6 +1826,9 @@ public class TextField extends StringItem
 				bbStyle |= BasicEditField.FILTER_EMAIL;
 			} else if ( fieldType == URL ) {
 				bbStyle |= BasicEditField.FILTER_URL;
+			}
+			if(this.noNewLine){
+				bbStyle |= BasicEditField.NO_NEWLINE;
 			}
 			if (this.editField != null) {
 				// remove the old edit field from the blackberry screen:
@@ -4504,6 +4509,17 @@ public class TextField extends StringItem
 		this.title = title;
 	}
 	
+	/**
+	 * Set if the textfield should accept the enter key as an input which results in a new line.
+	 * 
+	 * @param noNewLine set if new lines should be ignored
+	 */
+	public void setNoNewLine(boolean noNewLine) {
+		this.noNewLine = noNewLine;
+		//#if polish.blackberry
+		this.setConstraints(this.constraints);
+		//#endif
+	}
 	
 //#ifdef polish.TextField.additionalMethods:defined
 	//#include ${polish.TextField.additionalMethods}

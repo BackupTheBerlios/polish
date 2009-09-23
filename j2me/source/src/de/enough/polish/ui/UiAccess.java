@@ -4937,5 +4937,14 @@ public final class UiAccess {
 	}
 	//#endif
 
-
+	/**
+	 * Set if the textfield should accept the enter key as an input which results in a new line.
+	 * 
+	 * @param noNewLine set if new lines should be ignored
+	 */
+	public static void setNoNewLine(de.enough.polish.ui.TextField textField, boolean noNewLine) {
+		if(textField != null){
+			textField.setNoNewLine(noNewLine);
+		}
+	}
 }
