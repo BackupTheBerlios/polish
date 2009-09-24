@@ -1056,7 +1056,9 @@ implements UiElement, Animatable
 			//#if polish.css.show-scrollbar
 				} else {
 					// ensure that container is initialized:
-					cont.getItemHeight(originalWidth, originalWidth, height);
+					if(cont != null) {
+						cont.getItemHeight(originalWidth, originalWidth, height);
+					}
 					this.scrollBar.isVisible = false;
 				}
 			//#endif
@@ -4500,7 +4502,9 @@ implements UiElement, Animatable
 				requestRepaint();
 			}
 		//#endif
-		this.itemCommands.clear();
+		if(this.itemCommands != null) {
+			this.itemCommands.clear();
+		}
 	}
 	
 	/**

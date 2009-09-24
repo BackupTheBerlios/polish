@@ -2485,7 +2485,7 @@ public class Container extends Item {
 //			}
 			// change the label-style of this container:
 			//#ifdef polish.css.label-style
-				if (this.label != null) {
+				if (this.label != null && focusStyle != null) {
 					Style labStyle = (Style) focusStyle.getObjectProperty("label-style");
 					if (labStyle != null) {
 						this.labelStyle = this.label.style;

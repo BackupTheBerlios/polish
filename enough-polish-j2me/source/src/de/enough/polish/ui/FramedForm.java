@@ -476,7 +476,7 @@ public class FramedForm extends Form {
 		this.contentHeight = height;
 		
 		// adjust scroll offset for bottom frame animation
-		if(getScrollYOffset() < 0 && (getScrollYOffset() + cont.getContentHeight() < height) )
+		if(cont != null && getScrollYOffset() < 0 && (getScrollYOffset() + cont.getContentHeight() < height) )
 		{
 			cont.setScrollYOffset(-1 * (cont.getContentHeight() - height));
 		}
@@ -527,11 +527,15 @@ public class FramedForm extends Form {
 		if (this.rightFrame != null) {
 		 	Style frameStyle = this.rightFrame.style;
 			if (this.expandRightFrame) {
+		 		int leftFrameBackgroundWidth = 0;  
+		 		if(this.leftFrame != null) {
+		 			leftFrameBackgroundWidth = this.leftFrame.getBackgroundWidth();
+		 		}
 			 	if ( frameStyle.background != null ) {
-			 		frameStyle.background.paint( this.contentX + this.contentWidth + frameStyle.getMarginLeft(this.screenWidth), frameStyle.getMarginTop(this.screenHeight), this.leftFrame.backgroundWidth, this.originalContentHeight - frameStyle.getMarginTop(this.screenHeight) - frameStyle.getMarginBottom(this.screenHeight), g);
+			 		frameStyle.background.paint( this.contentX + this.contentWidth + frameStyle.getMarginLeft(this.screenWidth), frameStyle.getMarginTop(this.screenHeight), leftFrameBackgroundWidth, this.originalContentHeight - frameStyle.getMarginTop(this.screenHeight) - frameStyle.getMarginBottom(this.screenHeight), g);
 			 	}
 			 	if ( frameStyle.border != null ) {
-			 		frameStyle.border.paint( this.contentX + this.contentWidth + frameStyle.getMarginLeft(this.screenWidth), frameStyle.getMarginTop(this.screenHeight), this.leftFrame.backgroundWidth, this.originalContentHeight - frameStyle.getMarginTop(this.screenHeight) - frameStyle.getMarginBottom(this.screenHeight), g);
+			 		frameStyle.border.paint( this.contentX + this.contentWidth + frameStyle.getMarginLeft(this.screenWidth), frameStyle.getMarginTop(this.screenHeight), leftFrameBackgroundWidth, this.originalContentHeight - frameStyle.getMarginTop(this.screenHeight) - frameStyle.getMarginBottom(this.screenHeight), g);
 			 	}
 			}
 			int y = this.originalContentY;

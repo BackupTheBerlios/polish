@@ -234,14 +234,20 @@ public class HorizontalContainerView extends ContainerView {
 			}
 		}
 		//#endif
-		if (this.isClippingRequired && item != null) {
-			if (this.targetXOffset + item.relativeX < 0) {
-				this.targetXOffset = -item.relativeX;
-			} else if (this.targetXOffset + item.relativeX + item.itemWidth > this.contentWidth) {
-				this.targetXOffset = this.contentWidth - item.relativeX - item.itemWidth;
+		
+		if(item != null) {
+			if (this.isClippingRequired && item != null) {
+				if (this.targetXOffset + item.relativeX < 0) {
+					this.targetXOffset = -item.relativeX;
+				} else if (this.targetXOffset + item.relativeX + item.itemWidth > this.contentWidth) {
+					this.targetXOffset = this.contentWidth - item.relativeX - item.itemWidth;
+				}
 			}
-		}
-		return super.focusItem(focIndex, item, direction, focStyle);
+			
+			return super.focusItem(focIndex, item, direction, focStyle);
+		} 
+		
+		return null;
 	}
 
 

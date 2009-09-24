@@ -87,51 +87,57 @@ public class VerticalScrollTextEffect extends TextEffect{
 			ClippingRegion repaintRegion) {
 		super.animate(parent, currentTime, repaintRegion);
 		
-		if(this.textLines != null && this.textLines.length == 1)
-		{
-			return;
-		}
+		if(this.textLines != null){
+			
+			if(this.textLines.length == 1)
+			{
+				return;
+			}
 		
-		boolean addRepaintRegion = false;
-		if (this.stageTime == 0) {
-			this.stageTime = currentTime;
-			addRepaintRegion = true;
-		}
-		
-		// get the time passed since last animation
-		long timePassed = currentTime - this.stageTime;
-		
-		switch(this.stageCurrent)
-		{
-			case STAGE_SHOW : 
-				if (timePassed > this.stageInterval) {
-					//#debug debug
-					System.out.println("stage changed to STAGE_SCROLL");
-
-					this.stageCurrent = STAGE_SCROLL;
-					this.stageTime = currentTime;
-					addRepaintRegion = true;
-				}
-				break;
-			case STAGE_SCROLL : 
-				this.lineOffset = getLineOffset(timePassed, this.lineHeight );
+			boolean addRepaintRegion = false;
+			if (this.stageTime == 0) {
+				this.stageTime = currentTime;
 				addRepaintRegion = true;
-				// if the interval time has passed ... 
-				if (timePassed > this.stageInterval) {
-					//#debug debug
-					System.out.println("stage change to STAGE_SHOW");
-					
-					this.lineIndex = (this.lineIndex + 1) % this.textLines.length;
-					this.lineOffset = 0;
-					
-					this.stageCurrent = STAGE_SHOW;
-					this.stageTime = currentTime;
-				}
-				break;
-		};
-		
-		if (addRepaintRegion) {
-			parent.addRepaintArea(repaintRegion);
+			}
+			
+			// get the time passed since last animation
+			long timePassed = currentTime - this.stageTime;
+			
+			switch(this.stageCurrent)
+			{
+				case STAGE_SHOW : 
+					if (timePassed > this.stageInterval) {
+						//#debug debug
+						System.out.println("stage changed to STAGE_SCROLL");
+	
+						this.stageCurrent = STAGE_SCROLL;
+						this.stageTime = currentTime;
+						addRepaintRegion = true;
+					}
+					break;
+				case STAGE_SCROLL : 
+					this.lineOffset = getLineOffset(timePassed, this.lineHeight );
+					addRepaintRegion = true;
+					// if the interval time has passed ... 
+					if (timePassed > this.stageInterval) {
+						//#debug debug
+						System.out.println("stage change to STAGE_SHOW");
+						
+						this.lineIndex = (this.lineIndex + 1) % this.textLines.length;
+						this.lineOffset = 0;
+						
+						this.stageCurrent = STAGE_SHOW;
+						this.stageTime = currentTime;
+					}
+					break;
+			};
+			
+			if (addRepaintRegion) {
+				parent.addRepaintArea(repaintRegion);
+			}
+		}
+		else {
+			return;
 		}
 	}
 	

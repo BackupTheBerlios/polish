@@ -3280,12 +3280,12 @@ public class TextField extends StringItem
 				//#endif
 				if ( this.isDecimal ) {
 					//System.out.println("handling key for DECIMAL TextField");
-					if (currentLength < this.maxSize 
-							&& ( keyCode == Canvas.KEY_POUND || keyCode == Canvas.KEY_STAR )
-							&& (this.text.indexOf( Locale.DECIMAL_SEPARATOR) == -1)
-							) 
+					if (this.text == null || 
+						(currentLength < this.maxSize 
+						&& ( keyCode == Canvas.KEY_POUND || keyCode == Canvas.KEY_STAR )
+						&& this.text.indexOf( Locale.DECIMAL_SEPARATOR) == -1)
+						) 
 					{
-						
 						insertChar = Locale.DECIMAL_SEPARATOR;
 						insertCharacter(insertChar, true, true );
 						return true;								
