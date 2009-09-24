@@ -752,6 +752,7 @@ public class TextField extends StringItem
 	private boolean isPassword;
 	private boolean enableDirectInput;
 	private boolean noNewLine = false;
+
 	//#if (!tmp.suppressCommands && !tmp.supportsSymbolEntry) || tmp.supportsSymbolEntry
 		private ItemCommandListener additionalItemCommandListener;
 	//#endif
@@ -926,7 +927,7 @@ public class TextField extends StringItem
 			private long lastFieldChangedEvent;
 		//#endif
 		private int bbLastCursorPosition;
-		//#endif
+	//#endif
 	//#if polish.midp && !polish.blackberry && !polish.api.windows
 		//#define tmp.useNativeTextBox
 		private de.enough.polish.midp.ui.TextBox midpTextBox;
@@ -1005,10 +1006,10 @@ public class TextField extends StringItem
 	 * Reads the .properties files for lowercase
 	 * and uppercase letters and maps the values of the predefined keys
 	 * to the character maps. Uses UTF-8 as encoding.
-	 * @param lowercaseUrl the properties file for lower case
-	 * @param uppercaseUrl the properties file for upper case
+	 * @param lowercaseStream the input stream of properties for lower case
+	 * @param uppercaseStream the input stream of properties for upper case
 	 */
-	public static void loadCharacterSets(InputStream lowercaseStream,InputStream uppercaseStream)
+	public static void loadCharacterSets(InputStream lowercaseStream, InputStream uppercaseStream)
 	{
 		loadCharacterSets(lowercaseStream, uppercaseStream,"UTF8");
 	}
@@ -1262,7 +1263,7 @@ public class TextField extends StringItem
 			//#endif
 		//#endif
 		//#if polish.TextField.noNewLine
-		this.noNewLine = true;
+			this.noNewLine = true;
 		//#endif
 		setString(text);
 	}
