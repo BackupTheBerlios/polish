@@ -906,47 +906,51 @@ implements UiElement, Animatable
 //			x += this.border.borderWidthLeft;
 //			y += this.border.borderWidthTop;
 //		}
-		Item info = this.infoItem;
-		if (info != null) {
-			//TODO use #if polish.css.clip-screen-info
-				//			if (this.infoItem != null && this.clipScreenInfo) {			
-				//				topHeight += this.infoHeight;
-				//			}
-			this.infoHeight = info.getItemHeight(width, width, height);
-			info.relativeX = x;
-			int iw = info.itemWidth;
-			if (iw < originalWidth) {
-				if (info.isLayoutRight) {
-					info.relativeX += originalWidth - iw;
-				} else if (info.isLayoutCenter) {
-					info.relativeX += (originalWidth - iw)/2;
+		
+		int topHeight = 0;
+		synchronized(this.paintLock) {
+			Item info = this.infoItem;
+			if (info != null) {
+				//TODO use #if polish.css.clip-screen-info
+					//			if (this.infoItem != null && this.clipScreenInfo) {			
+					//				topHeight += this.infoHeight;
+					//			}
+				this.infoHeight = info.getItemHeight(width, width, height);
+				info.relativeX = x;
+				int iw = info.itemWidth;
+				if (iw < originalWidth) {
+					if (info.isLayoutRight) {
+						info.relativeX += originalWidth - iw;
+					} else if (info.isLayoutCenter) {
+						info.relativeX += (originalWidth - iw)/2;
+					}
 				}
 			}
-		}
-		int topHeight = 0;
-		//#if polish.css.clip-screen-info
-			if (this.clipScreenInfo) {
-				topHeight += this.infoHeight;
-			}
-		//#endif
-		if (isTitleAtTop) {
-			topHeight += this.titleHeight;
-		} else {
-			height -= this.titleHeight;
-		}
-		if (isSubTitleAtTop) {
-			topHeight += this.subTitleHeight;
-		} else {
-			height -= this.subTitleHeight;
-		}
-		y += topHeight;
-		if (info != null) {
-			info.relativeY = topHeight;
+			
 			//#if polish.css.clip-screen-info
-			if (this.clipScreenInfo) {
-				info.relativeY = topHeight - this.infoHeight;				
-			}
+				if (this.clipScreenInfo) {
+					topHeight += this.infoHeight;
+				}
 			//#endif
+			if (isTitleAtTop) {
+				topHeight += this.titleHeight;
+			} else {
+				height -= this.titleHeight;
+			}
+			if (isSubTitleAtTop) {
+				topHeight += this.subTitleHeight;
+			} else {
+				height -= this.subTitleHeight;
+			}
+			y += topHeight;
+			if (info != null) {
+				info.relativeY = topHeight;
+				//#if polish.css.clip-screen-info
+				if (this.clipScreenInfo) {
+					info.relativeY = topHeight - this.infoHeight;				
+				}
+				//#endif
+			}
 		}
 		//#if tmp.useExternalMenuBar
 			//TODO use #if polish.css.separate-menubar    

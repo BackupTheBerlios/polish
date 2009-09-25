@@ -186,7 +186,9 @@ public class Container extends Item {
 			//#debug
 			System.out.println("setScrollHeight(): scrolling to item=" + item + " with y=" + item.relativeY + ", height=" + height);
 			scroll( 0, item, true);
-			this.isScrollRequired = false;
+			synchronized(this.itemsList) {
+				this.isScrollRequired = false;
+			}
 		}
 	}
 	
@@ -1049,7 +1051,9 @@ public class Container extends Item {
 			if (!isInitialized() && item.relativeY == 0) {
 				// defer scrolling to init at a later stage:
 				//System.out.println( this + ": setting scrollItem to " + item);
-				this.scrollItem = item;
+				synchronized(this.itemsList) {
+					this.scrollItem = item;
+				}
 				return true;
 			} else {				
 				// use item dimensions for scrolling:
@@ -1182,7 +1186,9 @@ public class Container extends Item {
 		super.setAppearanceMode(appearanceMode);
 		// this is used in initContent() to circumvent the 
 		// reversal of the previously set appearance mode
-		this.appearanceModeSet = true;
+		synchronized(this.itemsList) {
+			this.appearanceModeSet = true;
+		}
 	}
 
 	/* (non-Javadoc)
@@ -2183,9 +2189,11 @@ public class Container extends Item {
 			}
 		//#endif
 		//#if polish.css.expand-items
-			Boolean expandItemsBool = style.getBooleanProperty("expand-items");
-			if (expandItemsBool != null) {
-				this.isExpandItems = expandItemsBool.booleanValue();
+			synchronized(this.itemsList) {
+				Boolean expandItemsBool = style.getBooleanProperty("expand-items");
+				if (expandItemsBool != null) {
+					this.isExpandItems = expandItemsBool.booleanValue();
+				}
 			}
 		//#endif
 			
