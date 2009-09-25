@@ -33,7 +33,7 @@ import de.enough.polish.util.ArrayList;
  * 
  * <p>
  * Implementations may truncate or scale the icon image if it is larger than the
- * size supported by device. Applications can query the implementation�s tab
+ * size supported by device. Applications can query the implementation's tab
  * icon size by calling <A HREF="../../../javax/microedition/lcdui/Display.html#getBestImageWidth(int)"><CODE>Display.getBestImageWidth(int)</CODE></A> and
  * <A HREF="../../../javax/microedition/lcdui/Display.html#getBestImageHeight(int)"><CODE>Display.getBestImageHeight(int)</CODE></A> methods using the <A HREF="../../../javax/microedition/lcdui/Display.html#TAB"><CODE>Display.TAB</CODE></A>
  * image type. The style and apperance of tabs are platform-dependent.

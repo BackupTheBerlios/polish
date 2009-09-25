@@ -867,7 +867,8 @@ public abstract class Item implements UiElement, Animatable
 	/**
 	 * Convenience constructor.
 	 * Creates a new item with the specified label and layout, an Item.PLAIN appearance mode and default style.
-	 * @param style the style for this item
+	 * @param label the label of this item
+	 * @param layout the layout of this item
 	 */
 	protected Item( String label, int layout) {
 		this( label, layout, PLAIN, null );

@@ -122,7 +122,6 @@ public class VideoSource implements Serializable{
 	 * @param id the id
 	 * @param stream the stream
 	 * @param mime the mimetype
-	 * @param callback the callback
 	 */
 	public VideoSource(String id, InputStream stream, String mime)
 	{
@@ -135,9 +134,8 @@ public class VideoSource implements Serializable{
 	 * Construct a VideoSource with a stream, a connection a mimetype and a callback
 	 * @param id the id
 	 * @param stream the stream
-	 * @param connection
+	 * @param connection the connection
 	 * @param mime the mimetype
-	 * @param callback the callback
 	 */
 	public VideoSource(String id, InputStream stream, Connection connection, String mime)
 	{
