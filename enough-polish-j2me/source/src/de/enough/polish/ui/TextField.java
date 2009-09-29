@@ -4139,7 +4139,7 @@ public class TextField extends StringItem
 		//#endif
 	}
 		
-	//#if (tmp.directInput && (polish.TextField.showInputInfo != false)) || polish.blackberry || polish.TextField.activateUneditableWithFire
+	//#if (tmp.directInput && (polish.TextField.showInputInfo != false)) || polish.blackberry || polish.TextField.activateUneditableWithFire || polish.android1.5
 	protected void defocus(Style originalStyle) {
 		super.defocus(originalStyle);
 		//#if polish.blackberry
@@ -4157,6 +4157,9 @@ public class TextField extends StringItem
 			synchronized (bbLock) {
 				this.editField.focusRemove();
 			}
+			//#if polish.hasPointerEvents && polish.TextField.hideSoftKeyboardOnDefocus
+				//# Display.getInstance().getVirtualKeyboard().setVisibility(net.rim.device.api.ui.VirtualKeyboard.HIDE);
+			//#endif
 		//#elif polish.TextField.showInputInfo != false && !tmp.includeInputInfo
 			if (this.screen != null) {
 				this.screen.setInfo((Item)null);
@@ -4168,6 +4171,10 @@ public class TextField extends StringItem
 				notifyStateChanged();
 			}
 		//#endif
+		//#if polish.android1.5 && polish.TextField.hideSoftKeyboardOnDefocus
+				MidletBridge.instance.hideSoftKeyboard();
+		//#endif
+
 	}
 	//#endif
 	
@@ -4299,16 +4306,20 @@ public class TextField extends StringItem
 		super.showNotify();
 	}
 
-	//#if  !polish.blackberry && tmp.directInput
+	//#if  (!polish.blackberry && tmp.directInput) || (polish.blackberry && polish.hasPointerEvents)
 		/* (non-Javadoc)
 		 * @see de.enough.polish.ui.StringItem#hideNotify()
 		 */
 		protected void hideNotify() {
-			if (this.caretChar != this.editingCaretChar) {
-				commitCurrentCharacter();
-			}
+			//#if !polish.blackberry
+				if (this.caretChar != this.editingCaretChar) {
+					commitCurrentCharacter();
+				}
+			//#endif
 			super.hideNotify();
-			//#if polish.android1.5
+			//#if polish.blackberry && polish.hasPointerEvents
+				//# Display.getInstance().getVirtualKeyboard().setVisibility(net.rim.device.api.ui.VirtualKeyboard.HIDE);
+			//#elif polish.android1.5
 				MidletBridge.instance.hideSoftKeyboard();
 			//#endif
 		}	
