@@ -5091,6 +5091,9 @@ implements UiElement, Animatable
 		int index;
 		if (item == null) {
 			index = -1;
+		} else if (item.isFocused){
+			// ignore:
+			return;
 		} else {
 			index = this.container.itemsList.indexOf(item);
 			if (index == -1) {
@@ -5173,6 +5176,10 @@ implements UiElement, Animatable
 	 * @param force true when the item should be focused even when it is inactive (like a label for example)
 	 */
 	public void focus(int index, Item item, boolean force) {
+		if (item != null && item.isFocused){
+			// ignore refocusing of already focused item:
+			return;
+		}
 		if (index != -1 && item != null && (item.appearanceMode != Item.PLAIN || force ) ) {
 			//#debug
 			System.out.println("Screen: focusing item " + index + ": " + item );
@@ -6002,6 +6009,15 @@ implements UiElement, Animatable
 	 */
 	public int getTitleHeight() {
 		return this.titleHeight;
+	}
+
+	/**
+	 * Sets the last interaction time for this screen.
+	 * This is being used for stopping animations after an activity timeout.
+	 * @param currentTimeMillis the time for the last interaction, typically System.currentTimeMillis()
+	 */
+	public void setLastInteractionTime(long currentTimeMillis) {
+		this.lastInteractionTime = currentTimeMillis;
 	}
 
 
