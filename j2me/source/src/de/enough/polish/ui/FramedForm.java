@@ -147,7 +147,73 @@ public class FramedForm extends Form {
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#getItemAt(int, int)
+	 */
+	public Item getItemAt( int x, int y ) {
+		Container frame = this.topFrame;
+		if (frame != null && y >= frame.relativeY && y <= frame.relativeY + frame.itemHeight) {
+			return frame.getItemAt(x - frame.relativeX, y - frame.relativeY);
+		}
+		frame = this.bottomFrame;
+		if (frame != null && y >= frame.relativeY && y <= frame.relativeY + frame.itemHeight) {
+			return frame.getItemAt(x - frame.relativeX, y - frame.relativeY);
+		}
+		frame = this.leftFrame;
+		if (frame != null && x >= frame.relativeX && x <= frame.relativeX + frame.itemWidth &&  y >= frame.relativeY && y <= frame.relativeY + frame.itemHeight) {
+			return frame.getItemAt(x - frame.relativeX, y - frame.relativeY);
+		}
+		frame = this.rightFrame;
+		if (frame != null && x >= frame.relativeX && x <= frame.relativeX + frame.itemWidth &&  y >= frame.relativeY && y <= frame.relativeY + frame.itemHeight) {
+			return frame.getItemAt(x - frame.relativeX, y - frame.relativeY);
+		}
+		return super.getItemAt(x, y);
+	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#focus(de.enough.polish.ui.Item, boolean)
+	 */
+	public void focus(Item item, boolean force) {
+		Container frame = this.topFrame;
+		if (frame != null && frame.contains(item)) {
+			if (frame != this.currentlyActiveContainer) {
+				setActiveFrame(frame);
+			}
+			frame.focusChild( frame.indexOf(item), item, 0, force );
+			return;
+		}
+		frame = this.bottomFrame;
+		if (frame != null && frame.contains(item)) {
+			if (frame != this.currentlyActiveContainer) {
+				setActiveFrame(frame);
+			}
+			frame.focusChild( frame.indexOf(item), item, 0, force );
+			return;
+		}
+		frame = this.leftFrame;
+		if (frame != null && frame.contains(item)) {
+			if (frame != this.currentlyActiveContainer) {
+				setActiveFrame(frame);
+			}
+			frame.focusChild( frame.indexOf(item), item, 0, force );
+			return;
+		}
+		frame = this.rightFrame;
+		if (frame != null && frame.contains(item)) {
+			if (frame != this.currentlyActiveContainer) {
+				setActiveFrame(frame);
+			}
+			frame.focusChild( frame.indexOf(item), item, 0, force );
+			return;
+		}
+		if (this.currentlyActiveContainer != this.container) {
+			setActiveFrame(this.container);
+		}
+		super.focus(item, force);
+	}
+
 	/**
 	 * Deletes all the items from all frames of this <code>FramedForm</code>, leaving  it with zero items.
 	 * This method does nothing if the <code>FramedForm</code> is already empty.
