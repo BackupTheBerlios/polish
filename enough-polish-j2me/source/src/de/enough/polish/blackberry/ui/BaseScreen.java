@@ -1129,7 +1129,7 @@ public abstract class BaseScreen
 				screenContentHeight = screen.getScreenContentHeight();
 			}
 			if (event == TouchEvent.MOVE) {
-    			if (screen == null) {
+    			if (screen == null || screen.isMenuOpened()) {
     				pointerDragged( x, y );
     			} else if ( scrollHeight > screenContentHeight ){
 					if (y < this.pointerDownY) {
@@ -1145,41 +1145,59 @@ public abstract class BaseScreen
     			}
     			invalidate();
     			return true;
-			} else if (event == TouchEvent.UP) {
-    			if (System.currentTimeMillis() - this.pointerDownTime < 700 && scrollHeight > screenContentHeight) {
-    				if (screen != null) {
-    					if (y < this.pointerDownY) {
-    						// scrolling downwards:
-    						if (offset + scrollHeight > screenContentHeight) {
-    							screen.setScrollYOffset( offset + (y - this.pointerDownY), true );
-    						}
-    					} else {
-    						if (offset < 0) {
-    							screen.setScrollYOffset( offset + (y - this.pointerDownY), true );
-    						}
-    					}                             
-    				}
-    			}
-    			return true;
-			} else if (event == TouchEvent.DOWN) {
-    			if ( screen != null ) {
-    				this.pointerDownY = y;
-    				this.pointerDownYOffset = offset; 
-    				this.pointerDownTime = System.currentTimeMillis();
-    				Item item = screen.getItemAt(x, y);
-    				if (item != null) {
-    					if (item instanceof CommandItem) {
-    						CommandItem cmdItem = (CommandItem) item;
-    						if (cmdItem.isOpen()) {
-    							cmdItem.open(false);
-    						}
-    					}
-    					screen.focus(item);
-    				}
-    			}
-    			screen.notifyScreenStateChanged();
-    			invalidate();
-    			return true;
+			} else {
+				long currentTimeMillis = System.currentTimeMillis();
+				if (event == TouchEvent.UP) {
+					if (screen != null && screen.getRootContainer() != null) {
+						screen.setLastInteractionTime( currentTimeMillis );
+						long dragTime = currentTimeMillis - this.pointerDownTime;
+						if (dragTime < 1000 && dragTime > 1) {
+							int direction = Canvas.DOWN;
+							if (offset > this.pointerDownYOffset) {
+								direction = Canvas.UP;
+							}
+							int scrollDiff = Math.abs(offset - this.pointerDownYOffset);
+							screen.getRootContainer().startScroll( direction,  (int) ((scrollDiff * 1000 ) / dragTime), 20 );
+						}
+						return true;
+					}
+//				if (System.currentTimeMillis() - this.pointerDownTime < 700 && scrollHeight > screenContentHeight) {
+//    				if (screen != null) {
+//    					if (y < this.pointerDownY) {
+//    						// scrolling downwards:
+//    						if (offset + scrollHeight > screenContentHeight) {
+//    							screen.setScrollYOffset( offset + (y - this.pointerDownY), true );
+//    						}
+//    					} else {
+//    						if (offset < 0) {
+//    							screen.setScrollYOffset( offset + (y - this.pointerDownY), true );
+//    						}
+//    					}                             
+//    				}
+//    			}
+//    			invalidate();
+					return true;
+				} else if (event == TouchEvent.DOWN || event == TouchEvent.GESTURE) {
+					if ( screen != null ) {
+						this.pointerDownY = y;
+						this.pointerDownYOffset = offset; 
+						this.pointerDownTime = currentTimeMillis;
+						Item item = screen.getItemAt(x, y);
+						if (item != null) {
+							if (item instanceof CommandItem) {
+								CommandItem cmdItem = (CommandItem) item;
+								if (cmdItem.isOpen()) {
+									cmdItem.open(false);
+								}
+							}
+							screen.focus(item);
+							screen.notifyScreenStateChanged();
+						}
+						screen.setScrollYOffset(offset, false);
+					}
+					invalidate();
+					return true;
+				}
 			}
     	}
 		if (isSuperCalled) {
