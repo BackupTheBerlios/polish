@@ -76,7 +76,7 @@ public class MenuBar extends Item {
 	//#endif
 	//#if (polish.MenuBar.Position == invisible) || (polish.blackberry && (polish.BlackBerry.useStandardMenuBar != true))
 		//#define tmp.useInvisibleMenuBar
-		private Command hideCommand;
+		//private Command hideCommand;
 		private Command positiveCommand;
 	//#endif
 	//#if ${lowercase(polish.MenuBar.OptionsPosition)} == right && ${lowercase(polish.MenuBar.OkPosition)} != right
@@ -228,23 +228,23 @@ public class MenuBar extends Item {
 		int priority = cmd.getPriority();
 		//#if tmp.useInvisibleMenuBar
 			//#if !polish.android
-				if ( this.hideCommand == null )	{
-					// add hide command:
-					//#ifdef polish.i18n.useDynamicTranslations
-						String text =  Locale.get("polish.command.hide");
-					//#elifdef polish.command.hide:defined
-						//#= String text =  "${polish.command.hide}";
-					//#else
-						//# String text =  "Hide";
-					//#endif
-					
-					//#if !polish.MenuBar.suppressHideCommand					
-					this.hideCommand = new Command( text, Command.CANCEL, 2000 );
-					addCommand( this.hideCommand, commandStyle );
-					//#endif
-				}
+//				if ( this.hideCommand == null )	{
+//					// add hide command:
+//					//#ifdef polish.i18n.useDynamicTranslations
+//						String text =  Locale.get("polish.command.hide");
+//					//#elifdef polish.command.hide:defined
+//						//#= String text =  "${polish.command.hide}";
+//					//#else
+//						//# String text =  "Hide";
+//					//#endif
+//					
+//					//#if !polish.MenuBar.suppressHideCommand					
+//					this.hideCommand = new Command( text, Command.CANCEL, 2000 );
+//					addCommand( this.hideCommand, commandStyle );
+//					//#endif
+//				}
 			//#endif
-			if ( (cmd != this.hideCommand) && 
+			if ( //(cmd != this.hideCommand) && 
 					(type == Command.BACK || type == Command.CANCEL || type == Command.EXIT) ) 
 			{
 				//#if tmp.RightOptions
@@ -1218,11 +1218,11 @@ public class MenuBar extends Item {
 				return true;
 			} else {
 				//#if tmp.useInvisibleMenuBar && !polish.android
-					// handle hide command specifically:
-					if (  gameAction == Canvas.FIRE && ((CommandItem)this.commandsContainer.focusedItem).command == this.hideCommand ) {
-						//setOpen( false );
-						return true;
-					}
+//					// handle hide command specifically:
+//					if (  gameAction == Canvas.FIRE && ((CommandItem)this.commandsContainer.focusedItem).command == this.hideCommand ) {
+//						//setOpen( false );
+//						return true;
+//					}
 				//#endif
 //				if (gameAction == Canvas.FIRE) {
 //					int focusedIndex = this.commandsContainer.focusedIndex;
@@ -1442,10 +1442,10 @@ public class MenuBar extends Item {
 				this.isSoftKeyPressed = true;	
 				CommandItem commandItem = (CommandItem) this.commandsContainer.getFocusedItem();
 				//#if tmp.useInvisibleMenuBar && !polish.android
-					if (commandItem.command == this.hideCommand ) {
-						setOpen( false );
-						return true;
-					}
+//					if (commandItem.command == this.hideCommand ) {
+//						setOpen( false );
+//						return true;
+//					}
 				//#endif
 				return commandItem.handleKeyReleased(0, Canvas.FIRE);
 			} else  if (isCloseOptionsMenuKey(keyCode, gameAction)
@@ -1469,10 +1469,10 @@ public class MenuBar extends Item {
 			} else {
 				//#if tmp.useInvisibleMenuBar
 					// handle hide command specifically:
-					if (  gameAction == Canvas.FIRE && ((CommandItem)this.commandsContainer.focusedItem).command == this.hideCommand ) {
-						setOpen( false );
-						return true;
-					}
+//					if (  gameAction == Canvas.FIRE && ((CommandItem)this.commandsContainer.focusedItem).command == this.hideCommand ) {
+//						setOpen( false );
+//						return true;
+//					}
 				//#endif
 				boolean handled = this.commandsContainer.handleKeyReleased(keyCode, gameAction);
 				//System.out.println("menubar: container handled keyReleased " + keyCode + ": " + handled);
