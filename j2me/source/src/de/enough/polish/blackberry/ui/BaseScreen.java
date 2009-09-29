@@ -1177,7 +1177,7 @@ public abstract class BaseScreen
 //    			}
 //    			invalidate();
 					return true;
-				} else if (event == TouchEvent.DOWN || event == TouchEvent.GESTURE) {
+				} else if (event == TouchEvent.DOWN) {
 					if ( screen != null ) {
 						this.pointerDownY = y;
 						this.pointerDownYOffset = offset; 
