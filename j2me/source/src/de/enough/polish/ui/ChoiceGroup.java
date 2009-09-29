@@ -837,10 +837,18 @@ implements Choice
 	public void deleteAll()
 	{
 		clear();
+	}
+	
+	
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Container#clear()
+	 */
+	public void clear() {
 		this.selectedIndex = -1;
+		super.clear();
 	}
 
-	
 	/**
 	 * Gets a boolean value indicating whether this element is selected.
 	 * 
