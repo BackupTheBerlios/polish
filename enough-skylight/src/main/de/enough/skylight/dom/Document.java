@@ -1,6 +1,6 @@
 package de.enough.skylight.dom;
 
-public interface Document {
+public interface Document extends DomNode{
 
 	public DomNode createElement(String tagName);
 }

@@ -7,20 +7,20 @@ import org.mozilla.javascript.Scriptable;
 import de.enough.polish.util.HashMap;
 import de.enough.skylight.dom.Document;
 import de.enough.skylight.dom.DomNode;
+import de.enough.skylight.dom.NodeList;
 
 public class DocumentImpl extends DomNodeImpl implements Document {
 
-	private DomNodeImpl documentElement;
 	private HashMap elementsById;
 
-	protected void init(DomNodeImpl parent) {
-		this.documentElement = parent;
+	protected void init() {
+		super.init(this, null, "_DOCUMENT", null, DOCUMENT_TYPE_NODE);
 		// TODO: This data structure should be created in the parser run.
 		this.elementsById = new HashMap();
 		
 		defineProperty("doctype", null, READONLY|PERMANENT);
 		defineProperty("implementation", null, READONLY|PERMANENT);
-		defineProperty("documentElement", this.documentElement, READONLY|PERMANENT);
+		defineProperty("documentElement", null, READONLY|PERMANENT);
 		defineProperty("createElement", null, EMPTY);
 		defineProperty("createDocumentFragment", null, EMPTY);
 		defineProperty("createTextNode", null, EMPTY);
@@ -55,8 +55,16 @@ public class DocumentImpl extends DomNodeImpl implements Document {
 	}
 	
 	void cacheNodeWithId(String id, DomNodeImpl domNode) {
-		DomNode parentNode = domNode.getParentNode();
-		this.elementsById.put(id, parentNode);
+		this.elementsById.put(id, domNode);
+	}
+
+	public void toXmlString(StringBuffer buffer) {
+//		buffer.append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
+		NodeList childNodes = this.getChildNodes();
+		if(childNodes.getLength() > 0) {
+			childNodes.item(0).toXmlString(buffer);
+			
+		}
 	}
 	
 }

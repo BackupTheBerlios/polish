@@ -15,11 +15,10 @@ public class NamedNodeMapImpl extends ScriptableObject implements NamedNodeMap{
 	protected DomNode parent;
 	protected HashMap hashMap;
 
-	public void init(DomNode parent) {
-		this.parent = parent;
+	public void init() {
 		this.hashMap = new HashMap();
 		
-		defineProperty("length", null, READONLY|PERMANENT);
+		defineProperty("length", new Integer(0), READONLY|PERMANENT);
 		defineProperty("getNamedItem", null, PERMANENT);
 		defineProperty("setNamedItem", new BaseFunction() {
 			public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {

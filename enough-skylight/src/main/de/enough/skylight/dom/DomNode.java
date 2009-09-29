@@ -1,5 +1,7 @@
 package de.enough.skylight.dom;
 
+import org.w3c.dom.DOMException;
+
 /**
  * This interface is based on org.w3c.dom.Node
  * The <code>Node</code> interface is the primary datatype for the entire 
@@ -559,6 +561,6 @@ public interface DomNode {
 	 * Retrieves an XML representation of this XML node and its nested children.
 	 * @return the node as an XML string.
 	 */
-	public String toXmlString();
+	public void toXmlString(StringBuffer buffer);
 
 }

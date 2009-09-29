@@ -103,14 +103,38 @@ public class DomParserTest extends TestCase {
 		Document document  = null;
 		DomParser domParser = new DomParser();
 		document = domParser.parseTree(this.xmlString1);
-		
+		StringBuffer buffer = new StringBuffer();
+		document.toXmlString(buffer);
+		System.out.println("XML:"+buffer.toString());
 		scope.put("document", scope, document);
-
+		
 		String code = "document.getElementById(\"myA\").nodeType";
 		Script script = context.compileString(code, "<cmd>", 1);
 		
 		Object result = script.exec(context, scope);
 		
+		System.out.println(this.xmlString1);
+		System.out.println(code);
+		System.out.println(result);
+		System.out.println("END");
+	}
+	
+	public void testPut() {
+		Context context;
+		context = Context.enter();
+		Scriptable scope = context.initStandardObjects();
+		
+		Document document  = null;
+		DomParser domParser = new DomParser();
+		document = domParser.parseTree(this.xmlString1);
+		
+		scope.put("document", scope, document);
+
+		String code = "document.nodeValue = \"Hello\"";
+		Script script = context.compileString(code, "<cmd>", 1);
+		
+		Object result = script.exec(context, scope);
+		assertEquals("Hello", result);
 		System.out.println(this.xmlString1);
 		System.out.println(code);
 		System.out.println(result);
