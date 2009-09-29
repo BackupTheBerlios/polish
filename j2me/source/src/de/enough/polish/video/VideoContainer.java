@@ -43,6 +43,12 @@ import de.enough.polish.video.util.VideoUtil;
  * @author Andre Schmidt
  */
 public class VideoContainer extends Container implements Runnable, PlayerListener, VideoCallback {
+
+	/**
+	 * The video is stopped
+	 */
+	public static final int STATE_CLOSED = -1;
+	
 	/**
 	 * The video is not yet prepared
 	 */
@@ -455,36 +461,33 @@ public class VideoContainer extends Container implements Runnable, PlayerListene
 		}
 	}
 	
+	void close(VideoSource source) {
+		if(source != null) {
+			if(getState() == STATE_PLAYING)
+			{
+				try
+				{
+					source.getVideoControl().setVisible(false);
+					source.getPlayer().stop();
+				}catch(MediaException e)
+				{
+					onVideoError(e);
+				}
+			}
+			
+			onVideoClose();
+			
+			source.close();
+		}
+	}
+	
 	/**
 	 * Closes this VideoContainer.
 	 */
 	public void close()
 	{
-		if(getState() == STATE_PLAYING)
-		{
-			try
-			{
-				this.source.getVideoControl().setVisible(false);
-				this.source.getPlayer().stop();
-			}catch(MediaException e)
-			{
-				onVideoError(e);
-			}
-		}
-		
-		onVideoClose();
-		
-		if(this.sourceToClear != null)
-		{
-			this.sourceToClear.close();
-			this.sourceToClear = null;
-		}
-		
-		if(this.multipartToClear != null)
-		{
-			this.multipartToClear.close();
-			this.multipartToClear = null;
-		}
+		close(this.source);
+		setState(STATE_CLOSED);
 	}
 
 	/**
@@ -961,7 +964,7 @@ public class VideoContainer extends Container implements Runnable, PlayerListene
 						Thread.sleep(500);
 					}
 
-					close();
+					close(this.sourceToClear);
 					
 					if(this.source != null)
 					{
@@ -1186,7 +1189,7 @@ public class VideoContainer extends Container implements Runnable, PlayerListene
 	
 	void hideVideo()
 	{
-		if(!this.changingViewMode)
+		if(!this.changingViewMode && getState() > STATE_CLOSED)
 		{
 			this.resume = (getState() == STATE_PLAYING);
 			pause();
