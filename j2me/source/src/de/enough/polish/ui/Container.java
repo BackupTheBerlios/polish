@@ -2638,11 +2638,7 @@ public class Container extends Item {
 		// scroll the container:
 		int target = this.targetYOffset;
 		int current = this.yOffset;
-		if (target != current	
-		//#if polish.css.scroll-mode
-			&& this.scrollSmooth
-		//#endif
-		) {
+		if (target != current) {
 			if (this.scrollHeight != -1 && Math.abs(target - current) > this.scrollHeight) {
 				// maximally scroll one page:
 				if (current < target) {
@@ -3027,7 +3023,7 @@ public class Container extends Item {
 				}
 				// check if we should continue the scrolling:
 				long dragTime = System.currentTimeMillis() - this.lastPointerPressTime;
-				if (dragTime < 1000) {
+				if (dragTime < 1000 && dragTime > 1) {
 					int direction = Canvas.DOWN;
 					if (this.yOffset > this.lastPointerPressYOffset) {
 						direction = Canvas.UP;
