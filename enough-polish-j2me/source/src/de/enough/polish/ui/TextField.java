@@ -1828,6 +1828,12 @@ public class TextField extends StringItem
 			} else if ( fieldType == URL ) {
 				bbStyle |= BasicEditField.FILTER_URL;
 			}
+			if ((constraints & SENSITIVE) == SENSITIVE) {
+				bbStyle |= BasicEditField.NO_LEARNING; 
+			}
+			if ((constraints & NON_PREDICTIVE) == NON_PREDICTIVE) {
+				bbStyle |= BasicEditField.NO_LEARNING; 
+			}
 			if(this.noNewLine){
 				bbStyle |= BasicEditField.NO_NEWLINE;
 			}
