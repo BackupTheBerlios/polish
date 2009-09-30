@@ -4535,7 +4535,7 @@ public class TextField extends StringItem
 	public void setNoNewLine(boolean noNewLine) {
 		this.noNewLine = noNewLine;
 		//#if polish.blackberry
-		this.setConstraints(this.constraints);
+			this.setConstraints(this.constraints);
 		//#endif
 	}
 	
