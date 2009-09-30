@@ -434,8 +434,13 @@ extends ItemView
 						item.relativeX += (availColWidth - width);
 					}
 				}
+
 				item.relativeY = myContentHeight;
 				if (columnIndex == this.numberOfColumns) {
+					if (item.isLayoutRight && isLayoutExpand()) {
+						// position item to the far right side:
+						item.relativeX = availWidth - width + 1;
+					}
 					//System.out.println("starting new row: rowIndex=" + rowIndex + "  numberOfRows: " + numberOfRows);
 					columnIndex = 0;
 					columnX = 0;
@@ -469,12 +474,12 @@ extends ItemView
 					maxRowHeight = 0;
 					rowStartIndex = i + 1;
 				} else {
-					int columXCent = 0;
+					int columnXCent = 0;
 					for (int j = 0; j < columnIndex; j++) {
-						columXCent += this.columnsWidths[j].getValue( availWidth * 100 ) + this.paddingHorizontal;
+						columnXCent += this.columnsWidths[j].getValue( availWidth * 100 ) + this.paddingHorizontal;
 					}
-					columnX = columXCent / 100;
-					if (columXCent % 100 >= 50) {
+					columnX = columnXCent / 100;
+					if (columnXCent % 100 >= 50) {
 						columnX++;
 					}
 				}
@@ -681,9 +686,14 @@ extends ItemView
 					myContentWidth = 0;
 				}
 			}
-			myContentWidth = 0;
-			for (int i = 0; i < this.columnsWidths.length; i++) {
-				myContentWidth += this.columnsWidths[i].getValue( availWidth ) + this.paddingHorizontal;
+			if (isLayoutExpand()) {
+				myContentWidth = availWidth;
+			} else {
+				myContentWidth = 0;
+				for (int i = 0; i < this.columnsWidths.length; i++) {
+					myContentWidth += this.columnsWidths[i].getValue( availWidth ) + this.paddingHorizontal;
+				}
+				myContentWidth -= this.paddingHorizontal;
 			}
 			this.isVertical = this.numberOfRows > 1;
 			this.contentWidth = myContentWidth;
