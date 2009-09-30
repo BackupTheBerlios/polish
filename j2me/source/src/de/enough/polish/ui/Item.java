@@ -903,7 +903,11 @@ public abstract class Item implements UiElement, Animatable
 	 * @returns the normal style
 	 */
 	public Style getNormalStyle() {
-		return this.normalStyle;
+		Style nStyle = this.normalStyle;
+		if (nStyle == null) {
+			nStyle = this.style;
+		}
+		return nStyle;
 	}
 
 	/**
@@ -3732,8 +3736,6 @@ public abstract class Item implements UiElement, Animatable
 		return focStyle;
 	}
 
-	Style regularStyle;
-	
 	/**
 	 * Focuses this item.
 	 * 
@@ -3771,7 +3773,6 @@ public abstract class Item implements UiElement, Animatable
 		//#if tmp.handleEvents
 			EventManager.fireEvent( EventManager.EVENT_FOCUS, this, new Integer(direction));
 		//#endif
-		
 		return oldStyle;
 	}
 	
@@ -4653,6 +4654,54 @@ public abstract class Item implements UiElement, Animatable
 	public boolean isLayoutVerticalCenter()
 	{
 		return ((this.layout & LAYOUT_VCENTER) == LAYOUT_VCENTER);
+	}
+	
+	/**
+	 * Determines the layout of this item.
+	 * Note that either setLayout() or init() has to be called before this method returns valid values.
+	 * 
+	 * @return true when the item has a vshrink layout.
+	 * @see #setLayout(int)
+	 * @see #init(int,int,int)
+	 */	
+	public boolean isLayoutVerticalShrink() {
+		return ((this.layout & LAYOUT_VSHRINK) == LAYOUT_VSHRINK);
+	}
+	
+	/**
+	 * Determines the layout of this item.
+	 * Note that either setLayout() or init() has to be called before this method returns valid values.
+	 * 
+	 * @return true when the item has a vexpand layout.
+	 * @see #setLayout(int)
+	 * @see #init(int,int,int)
+	 */	
+	public boolean isLayoutVerticalExpand() {
+		return ((this.layout & LAYOUT_VEXPAND) == LAYOUT_VEXPAND);
+	}
+	
+	/**
+	 * Determines the layout of this item.
+	 * Note that either setLayout() or init() has to be called before this method returns valid values.
+	 * 
+	 * @return true when the item has a horizontal expand layout.
+	 * @see #setLayout(int)
+	 * @see #init(int,int,int)
+	 */	
+	public boolean isLayoutExpand() {
+		return ((this.layout & LAYOUT_EXPAND) == LAYOUT_EXPAND);
+	}
+	
+	/**
+	 * Determines the layout of this item.
+	 * Note that either setLayout() or init() has to be called before this method returns valid values.
+	 * 
+	 * @return true when the item has a horizontal shrink layout.
+	 * @see #setLayout(int)
+	 * @see #init(int,int,int)
+	 */	
+	public boolean isLayoutShrink() {
+		return ((this.layout & LAYOUT_SHRINK) == LAYOUT_SHRINK);
 	}
 	
 	public void setItemTransition( ItemTransition transition ) {
