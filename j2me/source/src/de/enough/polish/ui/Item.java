@@ -2549,7 +2549,7 @@ public abstract class Item implements UiElement, Animatable
 		//#if polish.css.before || polish.css.after || polish.css.min-height  || polish.css.max-height
 			boolean isVerticalCenter = (this.layout & LAYOUT_VCENTER) == LAYOUT_VCENTER; 
 			boolean isTop = !isVerticalCenter && (this.layout & LAYOUT_TOP) == LAYOUT_TOP; 
-			boolean isBottom = !isVerticalCenter && (this.layout & LAYOUT_BOTTOM) == LAYOUT_BOTTOM; 
+			boolean isBottom = !isVerticalCenter && (this.layout & LAYOUT_BOTTOM) == LAYOUT_BOTTOM;
 		//#endif
 		//#ifdef polish.css.before
 			if (this.beforeImage != null) {
@@ -2558,10 +2558,12 @@ public abstract class Item implements UiElement, Animatable
 				int yAdjust = this.beforeHeight - this.contentHeight;
 				if ( this.beforeHeight < this.contentHeight) {
 					if (isTop) {
-						beforeY -= yAdjust;
+						//beforeY -= yAdjust;
 					} else if (isBottom) {
+						System.out.println("bottom for " + this);
 						beforeY += yAdjust;
 					} else {
+						System.out.println("centering for " + this);
 						beforeY -= (yAdjust >> 1);
 					}
 				} else {
