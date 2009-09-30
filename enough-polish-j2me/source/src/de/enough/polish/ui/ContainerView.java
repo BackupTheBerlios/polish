@@ -435,7 +435,6 @@ extends ItemView
 					}
 				}
 				item.relativeY = myContentHeight;
-				columnX += availColWidth;
 				if (columnIndex == this.numberOfColumns) {
 					//System.out.println("starting new row: rowIndex=" + rowIndex + "  numberOfRows: " + numberOfRows);
 					columnIndex = 0;
@@ -469,6 +468,15 @@ extends ItemView
 					}
 					maxRowHeight = 0;
 					rowStartIndex = i + 1;
+				} else {
+					int columXCent = 0;
+					for (int j = 0; j < columnIndex; j++) {
+						columXCent += this.columnsWidths[j].getValue( availWidth * 100 ) + this.paddingHorizontal;
+					}
+					columnX = columXCent / 100;
+					if (columXCent % 100 >= 50) {
+						columnX++;
+					}
 				}
 			} // for each item
 			if (hasFocusableItem) {
@@ -646,16 +654,20 @@ extends ItemView
 			} // otherwise the column widths are defined statically.
 			// set content height & width:
 			int myContentWidth = 0;
-			columnIndex = 0;			
+			
+			columnIndex = 0;
 			for (int i = 0; i < myItems.length; i++) {
 				Item item = myItems[i];
 				int cw = this.columnsWidths[columnIndex].getValue( availWidth );
-				item.relativeX = myContentWidth;
-				if (item.itemWidth < cw) {
-					if (item.isLayoutCenter) {
-						item.relativeX += (cw - item.itemWidth) / 2;
-					} else if (item.isLayoutRight) {
-						item.relativeX += (cw - item.itemWidth);
+				if (this.columnsSetting != STATIC_WIDTH_COLUMNS) {
+					//TODO: check under which circumstances this is necessary.
+					item.relativeX = myContentWidth;
+					if (item.itemWidth < cw) {
+						if (item.isLayoutCenter) {
+							item.relativeX += (cw - item.itemWidth) / 2;
+						} else if (item.isLayoutRight) {
+							item.relativeX += (cw - item.itemWidth);
+						}
 					}
 				}
 				myContentWidth += cw + this.paddingHorizontal;
