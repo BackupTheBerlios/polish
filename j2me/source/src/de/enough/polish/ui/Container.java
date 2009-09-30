@@ -1419,6 +1419,13 @@ public class Container extends Item {
 							item.isLayoutExpand = true;
 						} else {
 							width = item.itemWidth;
+							if (item.isLayoutCenter) {
+								item.relativeX = (availWidth - width) / 2;
+								myContentWidth = availWidth;
+							} else if (item.isLayoutRight) {
+								item.relativeX = (availWidth - width);
+								myContentWidth = availWidth;
+							}
 						}
 						if (width > myContentWidth) {
 							myContentWidth = width;
