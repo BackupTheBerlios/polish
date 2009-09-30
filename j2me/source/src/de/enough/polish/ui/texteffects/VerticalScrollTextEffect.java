@@ -33,7 +33,9 @@ import de.enough.polish.ui.AnimationThread;
 import de.enough.polish.ui.ClippingRegion;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.DebugHelper;
+import de.enough.polish.ui.FramedForm;
 import de.enough.polish.ui.Item;
+import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.TextEffect;
@@ -160,6 +162,7 @@ public class VerticalScrollTextEffect extends TextEffect{
 	public void drawStrings(Item parent, String[] textLines, int textColor, int x, int y,
 			int leftBorder, int rightBorder, int lineHeight, int maxWidth,
 			int layout, Graphics g) {
+		
 		this.lineHeight = lineHeight;
 		
 		int index = this.lineIndex;
@@ -177,9 +180,9 @@ public class VerticalScrollTextEffect extends TextEffect{
 		linesHeight = lineHeight * (this.lines);
 		
 		//#if polish.Bugs.needsBottomOrientiationForStringDrawing
-			g.setClip(x, y + linesHeight, maxWidth, linesHeight);
+			g.clipRect(x, y + linesHeight, maxWidth, linesHeight);
 		//#else
-			g.setClip(x, y, maxWidth, linesHeight);
+			g.clipRect(x, y, maxWidth, linesHeight);
 		//#endif
 		
 		leftBorder = x;
