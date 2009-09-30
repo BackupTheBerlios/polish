@@ -463,9 +463,9 @@ extends ItemView
 										item.setItemHeight( maxRowHeight );
 									} else
 								//#endif
-								if ((item.layout & Item.LAYOUT_VCENTER) == Item.LAYOUT_VCENTER) {
+								if (item.isLayoutVerticalCenter()) {
 									item.relativeY += (maxRowHeight - item.itemHeight) >> 1;
-								} else if ((item.layout & Item.LAYOUT_BOTTOM) == Item.LAYOUT_BOTTOM) {
+								} else if (item.isLayoutBottom()) {
 									item.relativeY += (maxRowHeight - item.itemHeight);
 								}
 							}
