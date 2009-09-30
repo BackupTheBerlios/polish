@@ -459,7 +459,7 @@ extends ItemView
 							item = myItems[j];
 							if (item.itemHeight < maxRowHeight) {
 								//#if polish.css.align-heights
-									if (this.isAlignHeights) {
+									if (this.isAlignHeights && !item.isLayoutVerticalShrink()) {
 										item.setItemHeight( maxRowHeight );
 									} else
 								//#endif
