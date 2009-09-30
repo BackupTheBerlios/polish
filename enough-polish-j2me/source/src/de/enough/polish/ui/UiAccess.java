@@ -4937,14 +4937,29 @@ public final class UiAccess {
 	}
 	//#endif
 
+	//#if polish.usePolishGui
 	/**
 	 * Set if the textfield should accept the enter key as an input which results in a new line.
 	 * 
+	 * @param textField the text field
 	 * @param noNewLine set if new lines should be ignored
 	 */
-	public static void setNoNewLine(de.enough.polish.ui.TextField textField, boolean noNewLine) {
+	public static void setNoNewLine(TextField textField, boolean noNewLine) {
 		if(textField != null){
 			textField.setNoNewLine(noNewLine);
 		}
 	}
+	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Set if the textfield should accept the enter key as an input which results in a new line.
+	 * 
+	 * @param textField the text field
+	 * @param noNewLine set if new lines should be ignored
+	 */
+	public static void setNoNewLine(javax.microedition.lcdui.TextField textField, boolean noNewLine) {
+		// ignore
+	}
+	//#endif
 }
