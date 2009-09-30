@@ -3300,6 +3300,11 @@ public final class UiAccess {
 	 */
 	public static int[] getRgbData( Item item, int opacity ) {
 		//#if polish.midp2
+			if (item.itemWidth < 1 || item.itemHeight < 1) {
+				//#debug error
+				System.out.println("Unable to retrieve RGB data for item with a dimension of " + item.itemWidth + "x" + item.itemHeight );
+				return new int[0];
+			}
 			Image image = Image.createImage( item.itemWidth, item.itemHeight );
 			int transparentColor = 0x12345678;
 			Graphics g = image.getGraphics();
