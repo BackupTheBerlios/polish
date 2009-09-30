@@ -2560,10 +2560,8 @@ public abstract class Item implements UiElement, Animatable
 					if (isTop) {
 						//beforeY -= yAdjust;
 					} else if (isBottom) {
-						System.out.println("bottom for " + this);
 						beforeY += yAdjust;
 					} else {
-						System.out.println("centering for " + this);
 						beforeY -= (yAdjust >> 1);
 					}
 				} else {
