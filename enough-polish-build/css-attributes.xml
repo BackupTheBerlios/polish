@@ -4274,7 +4274,7 @@
 		name="horizontalview-align-heights"
 		type="boolean"
 		appliesTo="HorizontalContainerView"
-		description="Specifies if all items should have the same height as the highest item in the group."
+		description="Specifies if all items should have the same height as the highest item in the group. You can exclude an item from aligning by setting its layout to vertical-shrink."
 		default="false"
 		id="357"
 		since="J2ME Polish 2.1"
