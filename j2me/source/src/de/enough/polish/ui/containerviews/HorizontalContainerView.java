@@ -191,14 +191,19 @@ public class HorizontalContainerView extends ContainerView {
 				this.appearanceMode = Item.INTERACTIVE;
 			}
 		}
-		//#if polish.css.horizontalview-align-heights
-			if (this.isAlignHeights) {
-				for (int i = 0; i < items.length; i++) {
-					Item item = items[i];
+		for (int i = 0; i < items.length; i++) {
+			Item item = items[i];
+			//#if polish.css.horizontalview-align-heights
+				if (this.isAlignHeights && !item.isLayoutVerticalShrink()) {
 					item.setItemHeight( maxHeight );
-				}
+				} else
+			//#endif
+			if (item.isLayoutVerticalCenter()) {
+				item.relativeY += (maxHeight - item.itemHeight) >> 1;
+			} else if (item.isLayoutBottom()) {
+				item.relativeY += (maxHeight - item.itemHeight);
 			}
-		//#endif
+		}
 		this.contentHeight = maxHeight;
 		if (completeWidth > availWidth) {
 			this.isClippingRequired = true;
