@@ -5676,7 +5676,7 @@ implements UiElement, Animatable
 	 */
 	public int getScrollHeight() {
 		if (this.container != null) {
-			return this.container.itemHeight;
+			return this.container.getItemAreaHeight();
 		}
 		return 0;
 	}
