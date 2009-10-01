@@ -105,7 +105,13 @@ public class MidletBridge extends Activity {
 
 	private int currentScreenYOffset;
 
-	private boolean suicideOnExit = true;
+	private boolean suicideOnExit =
+		//#if polish.android.killProcessOnExit:defined
+			//#= ${polish.android.killProcessOnExit}
+		//#else
+			true
+		//#endif
+	;
 	private static MIDlet midlet;
 	
 
