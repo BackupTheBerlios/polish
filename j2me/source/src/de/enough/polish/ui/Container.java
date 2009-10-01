@@ -181,7 +181,7 @@ public class Container extends Item {
 		boolean scrollAutomatic = (this.scrollHeight != -1) && (height != -1) && (height != this.scrollHeight) && isInitialized();
 		this.scrollHeight = height;
 		this.enableScrolling = (height != -1);
-		Item item = this.scrollItem != null ? this.scrollItem : this.focusedItem;
+		Item item = this.scrollItem != null ? this.scrollItem : (this.isFocused ? this.focusedItem : null);
 		if (scrollAutomatic && item != null) {
 			//#debug
 			System.out.println("setScrollHeight(): scrolling to item=" + item + " with y=" + item.relativeY + ", height=" + height);

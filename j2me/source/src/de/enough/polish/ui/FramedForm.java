@@ -196,8 +196,12 @@ public class FramedForm extends Form {
 			children.add(item);
 			item = item.parent;
 		}
+		Container frame = null;
+		int offset = 0;
 		if (item != this.currentlyActiveContainer && item instanceof Container) {
-			setActiveFrame( (Container)item );
+			frame = (Container)item;
+			offset = frame.getScrollYOffset();
+			setActiveFrame( frame, this.keepContentFocused, 0  );
 		}
 		for (int i=children.size(); --i >= 0; ) {
 			Item child = (Item) children.get(i);
@@ -208,6 +212,9 @@ public class FramedForm extends Form {
 				}
 			}
 			item = child;
+		}
+		if (frame != null) {
+			frame.setScrollYOffset(offset, false);
 		}
 	}
 	
