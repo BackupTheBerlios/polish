@@ -3554,7 +3554,43 @@ public abstract class Item implements UiElement, Animatable
 		//#endif
 		return false;
 	}
+	
+	/**
+	 * Handles a touch down/press event. 
+	 * This is similar to a pointerPressed event, however it is only available on devices with screens that differentiate
+	 * between press and touch events (read: BlackBerry Storm).
+	 * 
+	 * @param x the horizontal pixel position of the touch event relative to this item's left position
+	 * @param y  the vertical pixel position of the touch event relative to this item's top position
+	 * @return true when the event was handled
+	 */
+	public boolean handlePointerTouchDown( int x, int y ) {
+		//#if polish.hasTouchEvents && polish.css.view-type
+			if (this.view != null && this.view.handlePointerTouchDown(x, y)) {
+				return true;
+			}
+		//#endif
+		return false;
+	}
+	
 
+	/**
+	 * Handles a touch up/release event. 
+	 * This is similar to a pointerReleased event, however it is only available on devices with screens that differentiate
+	 * between press and touch events (read: BlackBerry Storm).
+	 * 
+	 * @param x the horizontal pixel position of the touch event relative to this item's left position
+	 * @param y  the vertical pixel position of the touch event relative to this item's top position
+	 * @return true when the event was handled
+	 */
+	public boolean handlePointerTouchUp( int x, int y ) {
+		//#if polish.hasTouchEvents && polish.css.view-type
+			if (this.view != null && this.view.handlePointerTouchUp(x, y)) {
+				return true;
+			}
+		//#endif
+		return false;
+	}
 
 	/**
 	 * Adds a repaint request for this item's space.

@@ -1,9 +1,11 @@
 //#condition polish.usePolishGui && polish.android
 package de.enough.polish.android.lcdui;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.os.Looper;
 import android.os.Parcelable;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -21,6 +23,7 @@ import de.enough.polish.util.ArrayList;
 	import android.view.inputmethod.BaseInputConnection;
 	import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
+import android.widget.PopupWindow;
 //#endif
 
 /**
@@ -841,6 +844,22 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 		}
 		postInvalidate();
 	}
+	
+
+	public void setCurrent(Displayable nextDisplayable) {
+		if (nextDisplayable instanceof Dialog) {
+			if (Looper.myLooper() == null) {
+				Looper.prepare();
+			}
+			Dialog window = (Dialog) nextDisplayable;
+			window.show();
+			return;
+		}
+		if (nextDisplayable instanceof View) {
+			
+		}
+		
+	}
 
 	/**
 	 * Requests that this <code>Alert</code> be made current, and that
@@ -1212,5 +1231,6 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 		return true;
 	}
 	//#endif
+
 	
 }

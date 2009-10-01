@@ -897,6 +897,7 @@ public class Display
 	{
 		//#debug
 		System.out.println("Display.setCurrent " + nextDisplayable + ", current=" + this.currentDisplayable + ", isShown=" + isShown() );
+		//try { throw new RuntimeException("for " + nextDisplayable); } catch (Exception e) { e.printStackTrace(); }
 		
 		//#if tmp.displayInfo
 			if (this.showInfo) {
@@ -912,7 +913,6 @@ public class Display
 			repaint();
 			return;
 		}
-		//#if polish.midp && !polish.blackberry
 			if (nextDisplayable == null || !(nextDisplayable instanceof Canvas)) {
 				// this is a native Displayable
 				if (nextDisplayable != null) {
@@ -922,10 +922,9 @@ public class Display
 					}
 					this.currentDisplayable = nextDisplayable;
 				}
-				((de.enough.polish.midp.ui.NativeDisplayImpl)this.nativeDisplay).setCurrent( nextDisplayable );
+				this.nativeDisplay.setCurrent( nextDisplayable );
 				return;
 			}
-		//#endif
 		
 		if (this.currentDisplayable == nextDisplayable) {
 			repaint();
@@ -1651,6 +1650,11 @@ public class Display
 //		int cy = g.getClipY();
 //		int cw = g.getClipWidth();
 //		int ch = g.getClipHeight();
+		try {
+//			Thread.sleep(1500);
+		} catch (Exception e) {
+			// ignroe
+		}
 		
 		//#if tmp.displayInfo
 			if (this.showInfo) {
@@ -2038,6 +2042,54 @@ public class Display
 			//#endif
 			this.currentCanvas.pointerDragged(x, y);
 		}
+	}
+	//#endif
+	
+	
+	//#ifdef polish.hasTouchEvents
+	/**
+	 * Handles a touch down/press event. 
+	 * This is similar to a pointerPressed event, however it is only available on devices with screens that differentiate
+	 * between press and touch events (read: BlackBerry Storm).
+	 * 
+	 * @param x the absolute horizontal pixel position of the touch event 
+	 * @param y  the absolute vertical pixel position of the touch event
+	 * @return true when the event was handled
+	 */
+	public boolean handlePointerTouchDown( int x, int y ) {
+		if (this.currentCanvas != null) {
+			//#if tmp.screenOrientation
+				Point p = translatePoint( x, y );
+				x = p.x;
+				y = p.y;
+			//#endif
+			return this.currentCanvas.handlePointerTouchDown(x, y);
+		}
+		return false;
+	}
+	//#endif
+	
+
+	//#ifdef polish.hasTouchEvents
+	/**
+	 * Handles a touch up/release event. 
+	 * This is similar to a pointerReleased event, however it is only available on devices with screens that differentiate
+	 * between press and touch events (read: BlackBerry Storm).
+	 * 
+	 * @param x the absolute horizontal pixel position of the touch event 
+	 * @param y  the absolute vertical pixel position of the touch event
+	 * @return true when the event was handled
+	 */
+	public boolean handlePointerTouchUp( int x, int y ) {
+		if (this.currentCanvas != null) {
+			//#if tmp.screenOrientation
+				Point p = translatePoint( x, y );
+				x = p.x;
+				y = p.y;
+			//#endif
+			return this.currentCanvas.handlePointerTouchUp(x, y);
+		}
+		return false;
 	}
 	//#endif
 	

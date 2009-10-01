@@ -3114,6 +3114,9 @@ public class Container extends Item {
 	protected boolean handlePointerDragged(int relX, int relY) {
 		//#debug
 		System.out.println("handlePointerDraggged " + relX + ", " + relY + " for " + this + ", enableScrolling=" + this.enableScrolling + ", focusedItem=" + this.focusedItem);
+		//#if polish.blackberry
+			
+		//#endif
 		Item item = this.focusedItem;
 		if (item != null && item.handlePointerDragged( relX - this.contentX - item.relativeX, relY - this.yOffset - this.contentY - item.relativeY)) {
 			return true;
@@ -3160,8 +3163,70 @@ public class Container extends Item {
 	}
 	//#endif
 	
+	//#if polish.hasTouchEvents
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#handlePointerTouchDown(int, int)
+	 */
+	public boolean handlePointerTouchDown(int x, int y) {
+		if (this.enableScrolling) {
+			this.lastPointerPressY = y;
+			this.lastPointerPressYOffset = getScrollYOffset();
+			this.lastPointerPressTime = System.currentTimeMillis();
+		}
+		Item item = this.focusedItem;
+		if (item != null) {
+			if (item.handlePointerTouchDown(x - item.relativeX, y - item.relativeY)) {
+				return true;
+			}
+		}
+		//#ifdef tmp.supportViewType
+			if (this.containerView != null) {
+				if ( this.containerView.handlePointerTouchDown(x,y) ) {
+					return true;
+				}
+			}
+		//#endif
+		return super.handlePointerTouchDown(x, y);
+	}
+	//#endif
 	
-	
+	//#if polish.hasTouchEvents
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#handlePointerTouchUp(int, int)
+	 */
+	public boolean handlePointerTouchUp(int x, int y) {
+		Item item = this.focusedItem;
+		if (item != null) {
+			if (item.handlePointerTouchUp(x - item.relativeX, y - item.relativeY)) {
+				return true;
+			}
+		}
+		//#ifdef tmp.supportViewType
+			if (this.containerView != null) {
+				if ( this.containerView.handlePointerTouchDown(x,y) ) {
+					return true;
+				}
+			}
+		//#endif
+		if (this.enableScrolling) {
+			int scrollDiff = Math.abs(getScrollYOffset() - this.lastPointerPressYOffset);
+			if (scrollDiff > 20) {
+				long dragTime = System.currentTimeMillis() - this.lastPointerPressTime;
+				if (dragTime < 1000 && dragTime > 1) {
+					int direction = Canvas.DOWN;
+					if (this.yOffset > this.lastPointerPressYOffset) {
+						direction = Canvas.UP;
+					}
+					startScroll( direction,  (int) ((scrollDiff * 1000 ) / dragTime), 20 );
+				}
+			}
+		}
+		return super.handlePointerTouchUp(x, y);
+	}
+	//#endif
+
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#getItemAreaHeight()
@@ -3691,7 +3756,7 @@ public class Container extends Item {
 		}
 	}
 
-	
+
 
 
 //#ifdef polish.Container.additionalMethods:defined

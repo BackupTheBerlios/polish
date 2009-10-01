@@ -516,7 +516,11 @@ implements Displayable
      */
     public boolean hasPointerEvents()
     {
-            return false;
+    	Display display = Display.getInstance();
+    	if (display != null) {
+    		return display.hasPointerEvents();
+    	}
+        return false;
     }
 
     /**
@@ -528,7 +532,11 @@ implements Displayable
      */
     public boolean hasPointerMotionEvents()
     {
-            return false;
+    	Display display = Display.getInstance();
+    	if (display != null) {
+    		return display.hasPointerMotionEvents();
+    	}
+        return false;
     }
 
     /**
@@ -539,7 +547,7 @@ implements Displayable
      */
     public boolean hasRepeatEvents()
     {
-            return true;
+        return true;
     }
 
     /**
@@ -741,6 +749,34 @@ implements Displayable
     {
             // do nothing
     }
+    
+    /**
+	 * Handles a touch down/press event. 
+	 * This is similar to a pointerPressed event, however it is only available on devices with screens that differentiate
+	 * between press and touch events (read: BlackBerry Storm).
+	 * 
+	 * @param x the absolute horizontal pixel position of the touch event 
+	 * @param y  the absolute vertical pixel position of the touch event
+	 * @return true when the event was handled
+	 */
+	public boolean handlePointerTouchDown( int x, int y ) {
+		return false;
+	}
+	
+
+	/**
+	 * Handles a touch up/release event. 
+	 * This is similar to a pointerReleased event, however it is only available on devices with screens that differentiate
+	 * between press and touch events (read: BlackBerry Storm).
+	 * 
+	 * @param x the absolute horizontal pixel position of the touch event 
+	 * @param y  the absolute vertical pixel position of the touch event
+	 * @return true when the event was handled
+	 */
+	public boolean handlePointerTouchUp( int x, int y ) {
+		return false;
+	}
+	
 
     /**
      * Requests a repaint for the specified region of the <code>Canvas</code>. 

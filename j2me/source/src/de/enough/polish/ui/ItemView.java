@@ -429,6 +429,33 @@ public abstract class ItemView implements Serializable{
 	}
 	
 	/**
+	 * Handles a touch down/press event. 
+	 * This is similar to a pointerPressed event, however it is only available on devices with screens that differentiate
+	 * between press and touch events (read: BlackBerry Storm).
+	 * 
+	 * @param x the horizontal pixel position of the touch event relative to the parent item's left position
+	 * @param y  the vertical pixel position of the touch event relative to the parent item's top position
+	 * @return true when the event was handled
+	 */
+	public boolean handlePointerTouchDown( int x, int y ) {
+		return false;
+	}
+	
+
+	/**
+	 * Handles a touch up/release event. 
+	 * This is similar to a pointerReleased event, however it is only available on devices with screens that differentiate
+	 * between press and touch events (read: BlackBerry Storm).
+	 * 
+	 * @param x the horizontal pixel position of the touch event relative to the parent item's left position
+	 * @param y  the vertical pixel position of the touch event relative to the parent item's top position
+	 * @return true when the event was handled
+	 */
+	public boolean handlePointerTouchUp( int x, int y ) {
+		return false;
+	}
+	
+	/**
 	 * Implementation that are valid only for specific item classes can override this method so that they cannot be accidently attached to unsupported classes.
 	 * This allows casting without checking the parent item with instanceof in each method, for example.
 	 * The default implementation just returns true for any case.

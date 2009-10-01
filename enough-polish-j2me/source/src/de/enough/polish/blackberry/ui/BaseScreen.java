@@ -14,6 +14,7 @@ import net.rim.device.api.ui.Manager;
 	import net.rim.device.api.ui.VirtualKeyboard;
 //#endif
 import de.enough.polish.blackberry.midlet.MIDlet;
+import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.Canvas;
@@ -59,11 +60,6 @@ public abstract class BaseScreen
 //    private static final int KEY_BB_8 = 4325376;
 //    private static final int KEY_BB_9 = 5046272;
 
-    //#if polish.hasPointerEvents
-		private int pointerDownYOffset;
-		private int pointerDownY;
-		private long pointerDownTime;
-	//#endif
 	//#if !tmp.fullscreen
 		private final ArrayList addedMenuItems = new ArrayList();
 	//#endif
@@ -432,6 +428,34 @@ public abstract class BaseScreen
     {
             // do nothing
     }
+    
+    /**
+	 * Handles a touch down/press event. 
+	 * This is similar to a pointerPressed event, however it is only available on devices with screens that differentiate
+	 * between press and touch events (read: BlackBerry Storm).
+	 * 
+	 * @param x the absolute horizontal pixel position of the touch event 
+	 * @param y  the absolute vertical pixel position of the touch event
+	 * @return true when the event was handled
+	 */
+	public boolean handlePointerTouchDown( int x, int y ) {
+		return false;
+	}
+	
+
+	/**
+	 * Handles a touch up/release event. 
+	 * This is similar to a pointerReleased event, however it is only available on devices with screens that differentiate
+	 * between press and touch events (read: BlackBerry Storm).
+	 * 
+	 * @param x the absolute horizontal pixel position of the touch event 
+	 * @param y  the absolute vertical pixel position of the touch event
+	 * @return true when the event was handled
+	 */
+	public boolean handlePointerTouchUp( int x, int y ) {
+		return false;
+	}
+	
 
     /**
      * Requests a repaint for the specified region of the <code>Canvas</code>. 
@@ -1125,23 +1149,22 @@ public abstract class BaseScreen
     			pointerReleased( x, y );
     			return true;
 		} else {
-			int offset = 0;
-			int scrollHeight = 0;
-			int screenContentHeight = 0;
-			if (screen != null) {
-				offset = screen.getScrollYOffset();
-				scrollHeight = screen.getScrollHeight();
-				screenContentHeight = screen.getScreenContentHeight();
-			}
 			if (event == TouchEvent.MOVE) {
-    			return handleBlackBerryTouchMove(x, y, screen, offset, scrollHeight, screenContentHeight);
-			} else {
-				long currentTimeMillis = System.currentTimeMillis();
-				if (event == TouchEvent.UP) {
-					return handleBlackBerryTouchUp(x, y, screen, offset, currentTimeMillis);
-				} else if (event == TouchEvent.DOWN) {
-					return handleBlackBerryTouchDown(x, y, screen, offset, currentTimeMillis);
+				pointerDragged( x, y );
+				invalidate();
+				return true;
+			} else if (event == TouchEvent.UP) {
+					if (handlePointerTouchUp(x, y)) {
+						invalidate();
+						return true;
+					}
+					return false;
+			} else if (event == TouchEvent.DOWN) {
+				if (handlePointerTouchDown(x, y)) {
+					invalidate();
+					return true;
 				}
+				return false;
 			}
     	}
 		if (isSuperCalled) {
@@ -1151,98 +1174,7 @@ public abstract class BaseScreen
     }
     //#endif
 
-	/**
-	 * Handles a pointer touch release event.
-	 * 
-	 * @param x the absolute horizontal position of the touch event 
-	 * @param y the absolute vertical position of the touch event
-	 * @param screen the screen
-	 * @param offset the screen's current scrolling offset 
-	 * @return true when the event was handled
-	 */
-	protected boolean handleBlackBerryTouchDown(int x, int y, Screen screen, int offset, long currentTimeMillis) {
-	    //#if polish.hasPointerEvents
-			if ( screen != null ) {
-				this.pointerDownY = y;
-				this.pointerDownYOffset = offset; 
-				this.pointerDownTime = currentTimeMillis;
-				Item item = screen.getItemAt(x, y);
-				if (item != null) {
-					if (item instanceof CommandItem) {
-						CommandItem cmdItem = (CommandItem) item;
-						if (cmdItem.isOpen()) {
-							cmdItem.open(false);
-						}
-					}
-					screen.focus(item);
-					screen.notifyScreenStateChanged();
-				}
-				screen.setScrollYOffset(offset, false);
-			}
-			invalidate();
-		//#endif
-		return true;
-	}
-
-	/**
-	 * Handles a pointer touch release event.
-	 * 
-	 * @param x the absolute horizontal position of the touch event 
-	 * @param y the absolute vertical position of the touch event
-	 * @param screen the screen
-	 * @param offset the screen's current scrolling offset 
-	 * @return true when the event was handled
-	 */
-	protected boolean handleBlackBerryTouchUp(int x, int y, Screen screen, int offset, long currentTimeMillis) {
-	    //#if polish.hasPointerEvents
-			if (screen != null && screen.getRootContainer() != null) {
-				screen.setLastInteractionTime( currentTimeMillis );
-				long dragTime = currentTimeMillis - this.pointerDownTime;
-				if (dragTime < 1000 && dragTime > 1) {
-					int direction = Canvas.DOWN;
-					if (offset > this.pointerDownYOffset) {
-						direction = Canvas.UP;
-					}
-					int scrollDiff = Math.abs(offset - this.pointerDownYOffset);
-					screen.getRootContainer().startScroll( direction,  (int) ((scrollDiff * 1000 ) / dragTime), 20 );
-				}
-			}
-		//#endif
-		return true;
-	}
-
-	/**
-	 * Handles a pointer drag event.
-	 * 
-	 * @param x the absolute horizontal position of the touch event 
-	 * @param y the absolute vertical position of the touch event
-	 * @param screen the screen
-	 * @param offset the screen's current scrolling offset 
-	 * @param scrollHeight the screen's current scroll height
-	 * @param screenContentHeight the screen's current internal / full height
-	 * @return true when the event was handled
-	 */
-	protected boolean handleBlackBerryTouchMove(int x, int y, Screen screen, int offset, int scrollHeight, int screenContentHeight) {
-	    //#if polish.hasPointerEvents
-			if (screen == null || screen.isMenuOpened()) {
-				pointerDragged( x, y );
-			} else if ( scrollHeight > screenContentHeight ){
-				if (y < this.pointerDownY) {
-					// scrolling downwards:
-					if (offset + scrollHeight > screenContentHeight) {
-						screen.setScrollYOffset( this.pointerDownYOffset + (y - this.pointerDownY), true );
-					}
-				} else {
-					if (offset < 0) {
-						screen.setScrollYOffset( this.pointerDownYOffset + (y - this.pointerDownY), true );
-					}
-				}                             
-			}
-			invalidate();
-		//#endif
-		return true;
-	}
-    
+	
     /**
      * Determines whether this screen is shown
      * 
