@@ -190,6 +190,9 @@ public class FramedForm extends Form {
 		}
 		ArrayList children = new ArrayList();
 		while (item.parent != null) {
+			if (!(force || item.isInteractive())) {
+				return;
+			}
 			children.add(item);
 			item = item.parent;
 		}
