@@ -1813,8 +1813,10 @@ public class TextField extends StringItem
 		//#if polish.blackberry
 			
 			long bbStyle = Field.FOCUSABLE;
-			if (!this.isUneditable) {
-				bbStyle |= Field.EDITABLE;
+			if (this.isUneditable) {
+				bbStyle |= Field.READONLY;
+			} else {
+				bbStyle |= Field.EDITABLE;				
 			}
 			
 			if ( fieldType == DECIMAL) {
