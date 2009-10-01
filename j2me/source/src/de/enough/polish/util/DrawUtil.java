@@ -172,17 +172,13 @@ public final class DrawUtil {
 			Object o = g; // this cast is needed, otherwise the compiler will complain
 			              // that javax.microedition.lcdui.Graphics can never be casted
 			              // to de.enough.polish.blackberry.ui.Graphics.
-			//#if polish.useDefaultPackage
-				//# net.rim.device.api.ui.Graphics graphics = g.g;
-				//# graphics.setColor(color);
-				//# graphics.drawPathOutline( xPoints, yPoints, null, null, true);
-			//#else
-				if ( o instanceof de.enough.polish.blackberry.ui.Graphics) {
-					net.rim.device.api.ui.Graphics graphics = ((de.enough.polish.blackberry.ui.Graphics) o).g;
-					graphics.setColor(color);
-					graphics.drawPathOutline( xPoints, yPoints, null, null, true);
-				}				
-			//#endif
+			net.rim.device.api.ui.Graphics graphics = ((de.enough.polish.blackberry.ui.Graphics) o).g;
+			if ((color & 0xff000000) == 0) {
+				color = 0xff000000 | color;
+			}
+			graphics.setColor( color );
+			graphics.setColor(color);
+			graphics.drawPathOutline( xPoints, yPoints, null, null, true);
 		//#elif polish.api.nokia-ui
 			DirectGraphics dg = DirectUtils.getDirectGraphics(g);
 			if ((color & 0xFF000000) == 0) {
@@ -212,6 +208,10 @@ public final class DrawUtil {
 		//#if polish.blackberry && polish.usePolishGui
 			net.rim.device.api.ui.Graphics bbGraphics = null;
 			//# bbGraphics = g.g;
+			if ((color & 0xff000000) == 0) {
+				color = 0xff000000 | color;
+			}
+			bbGraphics.setColor( color );
 			bbGraphics.drawFilledPath( xPoints, yPoints, null, null);
 		//#elif polish.api.nokia-ui
 			DirectGraphics dg = DirectUtils.getDirectGraphics(g);
