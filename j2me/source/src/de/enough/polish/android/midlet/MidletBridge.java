@@ -282,6 +282,7 @@ public class MidletBridge extends Activity {
 		//#debug
 		System.out.println("onPause().");
 		try {
+			hideSoftKeyboard();
 			midlet.pauseApp();
 		} catch (Exception e) {
 			e.printStackTrace();
