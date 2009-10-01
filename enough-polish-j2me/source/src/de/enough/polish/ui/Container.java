@@ -2567,6 +2567,8 @@ public class Container extends Item {
 					originalStyle = this.plainStyle;
 				}
 				this.plainStyle = null;
+			} else if (this.isPressed) {
+				notifyItemPressedEnd();
 			}
 			this.isFocused = false;
 			//#ifdef tmp.supportViewType
