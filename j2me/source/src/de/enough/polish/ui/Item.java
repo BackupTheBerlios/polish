@@ -744,10 +744,10 @@ public abstract class Item implements UiElement, Animatable
 		/** a blackberry specific internal field */
 		public Field _bbField;
 	//#endif
-	protected Style normalStyle;
 	protected Style focusedStyle;
 	protected boolean isPressed;
 	//#if polish.css.pressed-style
+		private Style normalStyle;
 		private Style pressedStyle;
 	//#endif
 
@@ -895,19 +895,6 @@ public abstract class Item implements UiElement, Animatable
 			this.style = style;
 			this.isStyleInitialised = false;
 		}
-	}
-	
-	/**
-	 * Returns the normal style for this item.
-	 * 
-	 * @returns the normal style
-	 */
-	public Style getNormalStyle() {
-		Style nStyle = this.normalStyle;
-		if (nStyle == null) {
-			nStyle = this.style;
-		}
-		return nStyle;
 	}
 
 	/**
@@ -1113,12 +1100,8 @@ public abstract class Item implements UiElement, Animatable
 		//#debug
 		System.out.println("setting style " + style.name + " for " + this );
 		this.isStyleInitialised = true;
-		
-		if(style != this.focusedStyle) {
-			this.normalStyle = style;
-		}
-		
 		this.style = style;
+		
 		if (style != StyleSheet.defaultStyle) {
 			setLayout( style.layout );
 		}
