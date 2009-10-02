@@ -226,6 +226,10 @@ public class VerticalScrollTextEffect extends TextEffect{
 		
 		return resultLines;
 	}
+	
+	public void onDetach(Item parent) {
+		AnimationThread.removeAnimationItem(parent);
+	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.TextEffect#drawString(java.lang.String, int, int, int, int, javax.microedition.lcdui.Graphics)

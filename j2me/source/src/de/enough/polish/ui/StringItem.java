@@ -750,12 +750,14 @@ public class StringItem extends Item
 						}
 					}
 					this.textEffect = effect;
+					this.textEffect.onAttach(this);
 				} else {
 					effect = this.textEffect;
 				}
 				effect.setStyle(style);
 				this.isTextInitializationRequired = true;
 			} else if (this.textEffect != null) {
+				this.textEffect.onDetach(this);
 				this.textEffect = null;
 				this.isTextInitializationRequired = true;
 			}
