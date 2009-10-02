@@ -152,6 +152,14 @@ public class FramedForm extends Form {
 	 * @see de.enough.polish.ui.Screen#getItemAt(int, int)
 	 */
 	public Item getItemAt( int x, int y ) {
+        Container cont = this.container;
+        Item superItemAt = null;
+		if (isMenuOpened()) {
+            superItemAt = super.getItemAt(x, y);
+            if (superItemAt instanceof CommandItem) {
+                return superItemAt;
+            }
+        }
 		Container frame = this.topFrame;
 		if (frame != null && y >= frame.relativeY && y <= frame.relativeY + frame.itemHeight) {
 			return frame.getItemAt(x - frame.relativeX, y - frame.relativeY);
@@ -169,13 +177,17 @@ public class FramedForm extends Form {
 			return frame.getItemAt(x - frame.relativeX, y - frame.relativeY);
 		}
 		frame = this.currentlyActiveContainer;
-        if (frame != this.container) {
+        if (frame != cont) {
             Item item = frame.getItemAt(x - frame.relativeX, y - frame.relativeY);
             if (item != null && item != frame) {
                 return item;
             }
         }
-		return super.getItemAt(x, y);
+        if (superItemAt != null) {
+        	return superItemAt;
+        } else {
+        	return super.getItemAt(x, y);
+        }
 	}
 	
 	/*
