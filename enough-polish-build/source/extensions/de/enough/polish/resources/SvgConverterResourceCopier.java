@@ -225,7 +225,7 @@ public class SvgConverterResourceCopier extends ResourceCopier {
 //	  		System.out.println("sX: " + sX );
 //	  		System.out.println("sY: " +sY );
 //	  		System.out.println("breite: " + width * sX );
-//	  		System.out.println("h�he: " + height * sY );
+//	  		System.out.println("hoehe: " + height * sY );
 		try {
 			diagram.render(g);
 		} catch (SVGException e) {
