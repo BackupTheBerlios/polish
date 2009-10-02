@@ -135,7 +135,6 @@
 			<mapping from="javax.microedition.rms.*" to="de.enough.polish.doja.rms.*" />
 			<mapping from="javax.microedition.rms.RecordComparator" to="de.enough.polish.doja.rms.RecordComparator" />
 			<mapping from="javax.microedition.rms.RecordEnumeration" to="de.enough.polish.doja.rms.RecordEnumeration" />
-			<mapping from="javax.microedition.rms.RecordEnumeration" to="de.enough.polish.doja.rms.RecordEnumeration" />
 			<mapping from="javax.microedition.rms.RecordListener" to="de.enough.polish.doja.rms.RecordListener" />
 			<mapping from="javax.microedition.rms.RecordStore" to="de.enough.polish.doja.rms.RecordStore" />
 			<mapping from="javax.microedition.rms.InvalidRecordIDException" to="de.enough.polish.doja.rms.InvalidRecordIDException" />
@@ -167,7 +166,6 @@
 			</mapping>
 			<mapping from="javax.microedition.rms.*" to="de.enough.polish.android.rms.*" />
 			<mapping from="javax.microedition.rms.RecordComparator" to="de.enough.polish.android.rms.RecordComparator" />
-			<mapping from="javax.microedition.rms.RecordEnumeration" to="de.enough.polish.android.rms.RecordEnumeration" />
 			<mapping from="javax.microedition.rms.RecordEnumeration" to="de.enough.polish.android.rms.RecordEnumeration" />
 			<mapping from="javax.microedition.rms.RecordListener" to="de.enough.polish.android.rms.RecordListener" />
 			<mapping from="javax.microedition.rms.RecordFilter" to="de.enough.polish.android.rms.RecordFilter" />
