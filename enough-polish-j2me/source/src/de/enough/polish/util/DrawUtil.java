@@ -205,7 +205,9 @@ public final class DrawUtil {
 	 * @param g the graphics context
 	 */
 	public final static void fillPolygon( int[] xPoints, int[] yPoints, int color, Graphics g ) {
-		//#if polish.blackberry && polish.usePolishGui
+		/* Removed by request as this code doesn't work while
+		 * the normal approach works just fine
+		// #if polish.blackberry && polish.usePolishGui
 			net.rim.device.api.ui.Graphics bbGraphics = null;
 			//# bbGraphics = g.g;
 			if ((color & 0xff000000) == 0) {
@@ -213,7 +215,9 @@ public final class DrawUtil {
 			}
 			bbGraphics.setColor( color );
 			bbGraphics.drawFilledPath( xPoints, yPoints, null, null);
-		//#elif polish.api.nokia-ui
+		*/
+		
+		//#if polish.api.nokia-ui
 			DirectGraphics dg = DirectUtils.getDirectGraphics(g);
 			if ((color & 0xFF000000) == 0) {
 				color |= 0xFF000000;
