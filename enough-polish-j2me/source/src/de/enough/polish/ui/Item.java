@@ -3767,31 +3767,36 @@ public abstract class Item implements UiElement, Animatable
 	protected Style focus( Style newStyle, int direction ) {
 		//#debug
 		System.out.println("focus " + this);
+		
 		Style oldStyle = this.style;
-		if (!this.isStyleInitialised && oldStyle != null) {
-			setStyle( oldStyle );
+		
+		if(!this.isFocused) {
+			if (!this.isStyleInitialised && oldStyle != null) {
+				setStyle( oldStyle );
+			}
+			if (newStyle == null) {
+				newStyle = getFocusedStyle();
+			}
+			//#if polish.css.view-type
+				this.preserveViewType = true;
+			//#endif
+			setStyle( newStyle );
+			//#if polish.css.view-type
+				this.preserveViewType = false;
+			//#endif
+			this.isFocused = true;
+			// now set any commands of this item:
+			if (this.commands != null) {
+				showCommands();
+			}
+			if (oldStyle == null) {
+				oldStyle = StyleSheet.defaultStyle;
+			}
+			//#if tmp.handleEvents
+				EventManager.fireEvent( EventManager.EVENT_FOCUS, this, new Integer(direction));
+			//#endif
 		}
-		if (newStyle == null) {
-			newStyle = getFocusedStyle();
-		}
-		//#if polish.css.view-type
-			this.preserveViewType = true;
-		//#endif
-		setStyle( newStyle );
-		//#if polish.css.view-type
-			this.preserveViewType = false;
-		//#endif
-		this.isFocused = true;
-		// now set any commands of this item:
-		if (this.commands != null) {
-			showCommands();
-		}
-		if (oldStyle == null) {
-			oldStyle = StyleSheet.defaultStyle;
-		}
-		//#if tmp.handleEvents
-			EventManager.fireEvent( EventManager.EVENT_FOCUS, this, new Integer(direction));
-		//#endif
+		
 		return oldStyle;
 	}
 	
