@@ -989,7 +989,9 @@ public class Container extends Item {
 		} else if (getScrollHeight() != -1) { // if (this.enableScrolling) {
 			//#debug
 			System.out.println("focus: postpone scrolling to initContent() for " + this + ", item " + item);
-			this.isScrollRequired = true;
+			synchronized(this.itemsList) {
+				this.isScrollRequired = true;
+			}
 		}
 		if (isInitialized()) {
 			setInitialized(!isReinitializationRequired);
@@ -2442,6 +2444,7 @@ public class Container extends Item {
 					if (this.plainStyle != null) {
 						this.style = this.plainStyle;
 					}
+					
 					return super.focus( focusStyle, direction );
 				}
 			//#if tmp.supportViewType

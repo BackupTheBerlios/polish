@@ -62,7 +62,7 @@ public class RedirectHttpConnection implements HttpConnection
 		// #= private static final int MAX_REDIRECTS = ${polish.Browser.MaxRedirects};
 	// #endif
 
-	private String originalUrl;
+	private final String originalUrl;
 	private String requestMethod = HttpConnection.GET;
 	private HashMap requestProperties;
 	private HttpConnection httpConnection;
