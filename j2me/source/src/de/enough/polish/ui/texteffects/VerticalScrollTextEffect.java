@@ -227,6 +227,10 @@ public class VerticalScrollTextEffect extends TextEffect{
 		return resultLines;
 	}
 	
+	public void onAttach(Item parent) {
+		AnimationThread.addAnimationItem(parent);
+	}
+	
 	public void onDetach(Item parent) {
 		AnimationThread.removeAnimationItem(parent);
 	}
