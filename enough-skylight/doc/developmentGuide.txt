@@ -1,0 +1,26 @@
+
+Memos
+=====
+
+Architecture
+------------
+
+Html/Css Engine: Responsible for transforming the DOM like inserting row boxes in tables if only table cell items are present.
+  Also setting the CSS attributes in accordiance with the rules of inheritance and default values. It also associates
+  CSS to nodes by interpreting the selectors. 
+
+Renderer: A renderer gets a perfect DOM with associated style properties and will render it into the viewport.
+
+
+
+
+
+Styles
+------
+
+Every DomNode may have an associated Syle object. This style object is not the J2ME Polish Style object.
+
+
+
+
+

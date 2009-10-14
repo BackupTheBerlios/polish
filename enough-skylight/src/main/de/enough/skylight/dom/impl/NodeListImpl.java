@@ -6,9 +6,16 @@ import de.enough.polish.util.ArrayList;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.NodeList;
 
+/**
+ * This implementation of a NodeList is also able to hold the state of a current index into the list.
+ * This is helpful to iterate through the list.
+ * @author rickyn
+ *
+ */
 public class NodeListImpl extends ScriptableObject implements NodeList {
 
 	private ArrayList nodeList = new ArrayList();
+	private int index;
 	
 	public String getClassName() {
 		return "NodeList";
@@ -36,4 +43,20 @@ public class NodeListImpl extends ScriptableObject implements NodeList {
 		}
 	}
 
+	public void setIndex(int index) {
+		this.index = index;
+	}
+	
+	public int getIndex() {
+		return this.index;
+	}
+	
+	public void resetIndex() {
+		this.index = 0;
+	}
+
+	public void increaseIndex() {
+		this.index++;
+	}
+	
 }

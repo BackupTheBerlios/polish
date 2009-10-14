@@ -5,9 +5,14 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
+import de.enough.polish.util.ArrayList;
+import de.enough.polish.util.HashMap;
 import de.enough.skylight.dom.Document;
 import de.enough.skylight.dom.DomException;
 import de.enough.skylight.dom.DomNode;
+import de.enough.skylight.dom.Event;
+import de.enough.skylight.dom.EventException;
+import de.enough.skylight.dom.EventListener;
 import de.enough.skylight.dom.NamedNodeMap;
 import de.enough.skylight.dom.NodeList;
 
@@ -24,6 +29,7 @@ public class DomNodeImpl extends ScriptableObject implements DomNode {
 			return replaceChild((DomNodeImpl)args[0], (DomNodeImpl)args[1]);
 		}
 	}
+	
 	private DomNodeImpl parent;
 	private String name;
 	private NamedNodeMapImpl attributes;
@@ -32,6 +38,8 @@ public class DomNodeImpl extends ScriptableObject implements DomNode {
 	private String text;
 	private Document document;
 	private String value;
+	private HashMap capturingListeners = new HashMap();
+	private HashMap bubblingListeners = new HashMap();
 
 	protected void init(Document document, DomNodeImpl parent, String name, NamedNodeMap attributes, int type) {
 		this.document = document;
@@ -224,6 +232,112 @@ public class DomNodeImpl extends ScriptableObject implements DomNode {
 			return this.parent;
 		}
 		return super.get(name, start);
+	}
+	public void addEventListener(String type, EventListener listener, boolean useCapture) {
+		if(useCapture) {
+			ArrayList listeners = (ArrayList) this.capturingListeners.get(type);
+			if(listeners == null) {
+				listeners = new ArrayList();
+				this.capturingListeners.put(type, listeners);
+			}
+			if( ! listeners.contains(listener)) {
+				listeners.add(listener);
+			}
+		} else {
+			ArrayList listeners = (ArrayList) this.bubblingListeners.get(type);
+			if(listeners == null) {
+				listeners = new ArrayList();
+				this.bubblingListeners.put(type, listeners);
+			}
+			if( ! listeners.contains(listener)) {
+				listeners.add(listener);
+			}
+		}
+		
+	}
+	public boolean dispatchEvent(Event event) throws EventException {
+		dispatchEventInteral((EventImpl)event,null);
+		return false;
+	}
+	
+	/**
+	 * This method will do the actual dispatch. If the nodeChain is empty, it will be calcuated. This normally happens
+	 * right after the inital dispatch.
+	 * @param event
+	 * @param nodeChain
+	 */
+	private void dispatchEventInteral(EventImpl event, NodeListImpl eventChain) {
+		DomNodeImpl target = (DomNodeImpl) event.getTarget();
+		if(eventChain == null ) {
+			eventChain = createEventChain(target);
+		}
+		int index = eventChain.getIndex();
+		if(index >= eventChain.getLength()-1) {
+			// We reached the event target.
+			event.setEventEnvironment(Event.AT_TARGET, this);
+			if(event.isPreventDefault()) {
+				return;
+			}
+			doDefaultAction();
+			return;
+		}
+		event.setEventEnvironment(this);
+		short eventPhase = event.getEventPhase();
+		if(eventPhase == Event.CAPTURING_PHASE) {
+			ArrayList listeners = (ArrayList)this.capturingListeners.get(event.getType());
+			if(listeners != null) {
+				int numberOfListeners = listeners.size();
+				for(int i = 0; i < numberOfListeners; i++) {
+					EventListener eventListener = (EventListener)listeners.get(i);
+					try {
+						eventListener.handleEvent(event);
+					} catch(Exception exception) {
+						// Do nothing with the exception.
+					}
+				}
+			}
+			eventChain.increaseIndex();
+			// TODO: Now it is breaking. The event propagation should not increase the call stack.
+			// So we should have a EventManager who will do the propagation and calling of listeners
+			// on the current targets and will call doDefaultAction on the event target.
+			// The EventManager chould then be also threaded.
+		}
+	}
+
+	private void doDefaultAction() {
+		
+	}
+	
+	private NodeListImpl createEventChain(DomNodeImpl target) {
+		NodeListImpl nodeList = new NodeListImpl();
+		DomNodeImpl domNode = target;
+		while(domNode != null) {
+			nodeList.add(domNode);
+			domNode = domNode.parent;
+		}
+		return nodeList;
+	}
+	
+	public void removeEventListener(String type, EventListener listener, boolean useCapture) {
+		if(useCapture) {
+			ArrayList listeners = (ArrayList) this.capturingListeners.get(type);
+			if(listeners == null) {
+				return;
+			}
+			listeners.remove(listener);
+			if(listeners.size() == 0) {
+				this.capturingListeners.remove(type);
+			}
+		} else {
+			ArrayList listeners = (ArrayList) this.bubblingListeners.get(type);
+			if(listeners == null) {
+				return;
+			}
+			listeners.remove(listener);
+			if(listeners.size() == 0) {
+				this.bubblingListeners.remove(type);
+			}
+		}
 	}
 
 }
