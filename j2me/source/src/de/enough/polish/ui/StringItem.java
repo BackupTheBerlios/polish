@@ -503,7 +503,7 @@ public class StringItem extends Item
 					//#endif
 					
 					if (isCenter) {
-						//#if polish.css.text-layout
+						//#if polish.css.text-layout && polish.text-layout.parentCenter
 						if(isExpand && this.parent != null) {
 							int parentLeft = this.parent.getAbsoluteX() + this.parent.getContentX(); 
 							int parentRight = parentLeft + this.parent.getContentWidth();

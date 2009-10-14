@@ -1085,6 +1085,7 @@ public class FramedForm extends Form {
 		{ 
 			newFrame = activeFrame;
 		} else if ( this.container != activeFrame 
+				&& getFrame(x, y) == this.container
 				&& this.container.handlePointerDragged(x - this.container.relativeX, y - this.container.relativeY)) 
 		{
 			newFrame = this.container;

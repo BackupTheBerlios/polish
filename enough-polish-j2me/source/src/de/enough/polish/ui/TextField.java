@@ -2254,6 +2254,11 @@ public class TextField extends StringItem
 			}
 		//#endif
 		super.initContent(firstLineWidth, availWidth, availHeight);
+		
+		//#if polish.TextField.showHelpText
+		UiAccess.init(this.helpItem, firstLineWidth, availWidth, availHeight);
+		//#endif
+		
 		//#if tmp.includeInputInfo
 			if (this.infoItem != null && this.isFocused && this.isShowInputInfo) {
 				this.contentWidth += this.infoItem.itemWidth;
