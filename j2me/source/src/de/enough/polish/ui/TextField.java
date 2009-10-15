@@ -2078,7 +2078,7 @@ public class TextField extends StringItem
 	
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		//#if polish.blackberry
-        	if (this.isFocused && !StyleSheet.currentScreen.isMenuOpened() ) {
+        	if (getScreen().isNativeUiShownFor(this)) {
 				this.editField.setPaintPosition( x + g.getTranslateX(), y + g.getTranslateY() );
 			} else {
 				super.paintContent(x, y, leftBorder, rightBorder, g);

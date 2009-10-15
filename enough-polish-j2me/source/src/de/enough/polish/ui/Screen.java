@@ -5884,6 +5884,17 @@ implements UiElement, Animatable
 	}
 	
 	/**
+	 * Determines whether a native UI component is shown for the specified item.
+	 * This is currently only implemented for BlackBerry platforms - check for the preprocesing
+	 * symbol polish.blackberry.
+	 * 
+	 * @param item the item that has been focused
+	 */
+	protected boolean isNativeUiShownFor( Item item ) {
+		return Display.getInstance().isNativeUiShownFor(item);
+	}
+	
+	/**
 	 * Notifies this screen about the new item with a native componen that is added on BlackBerry platforms.
 	 * This is only called for BlackBerry platforms - check for the preprocesing
 	 * symbol polish.blackberry.

@@ -2172,6 +2172,20 @@ public class Display
 		// ignore
 	}
 	//#endif
+	
+	//#if !polish.blackberry
+	/**
+	 * Determines whether a native UI component is shown for the specified item.
+	 * This is currently only implemented for BlackBerry platforms - check for the preprocesing
+	 * symbol polish.blackberry.
+	 * 
+	 * @param item the item that has been focused
+	 */
+	protected boolean isNativeUiShownFor( Item item ) {
+		return false;
+	}
+	//#endif
+
 
 	//#if polish.LibraryBuild 
 	/**

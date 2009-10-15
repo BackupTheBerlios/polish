@@ -1252,6 +1252,18 @@ public abstract class BaseScreen
     }
     
 	/**
+	 * Determines whether a native UI component is shown for the specified item.
+	 * This is currently only implemented for BlackBerry platforms - check for the preprocesing
+	 * symbol polish.blackberry.
+	 * 
+	 * @param item the item that has been focused
+	 */
+	protected boolean isNativeUiShownFor( Item item ) {
+		return (this.currentItem == item) && !de.enough.polish.ui.StyleSheet.currentScreen.isMenuOpened();
+	}
+
+    
+	/**
 	 * Notifies this screen about an item with a native componen that is removed on BlackBerry platforms.
 	 * This is only called for BlackBerry platforms - check for the preprocesing
 	 * symbol polish.blackberry.
