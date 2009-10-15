@@ -678,7 +678,7 @@ implements
 	 */
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		//#if polish.blackberry
-	    	if (this.isFocused && !StyleSheet.currentScreen.isMenuOpened() ) {
+			if (getScreen().isNativeUiShownFor(this)) {
 				this.blackberryDateField.setPaintPosition( x, y );
 			} else {
 				super.paintContent(x, y, leftBorder, rightBorder, g);
