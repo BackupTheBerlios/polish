@@ -2,10 +2,6 @@ package de.enough.polish.util;
 
 public class URL {
 	
-	public static void main(String args[]) {
-		URL url = new URL("http://www.test.de");
-		System.out.println(url);
-	}
 	String host;
 	
 	String path;
