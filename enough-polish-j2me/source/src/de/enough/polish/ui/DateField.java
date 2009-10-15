@@ -852,7 +852,7 @@ implements
 	
 	
 	private void checkOutDate() {
-		//#if tmp.directInput
+		//#if tmp.directInput && !polish.blackberry
 			String current = this.text;
 			int start = 0;
 			this.currentField = 0;
