@@ -569,6 +569,7 @@ implements
 			this.text = buffer.toString();
 		} // date != null
 		if (isInitialized()) {
+			this.isTextInitializationRequired = true;
 			setInitialized(false);
 		}
 		repaint();
