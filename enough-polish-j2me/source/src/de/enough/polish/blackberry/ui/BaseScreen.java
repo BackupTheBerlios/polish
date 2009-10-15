@@ -1258,7 +1258,7 @@ public abstract class BaseScreen
 	 * 
 	 * @param item the item that has been focused
 	 */
-	protected boolean isNativeUiShownFor( Item item ) {
+	public boolean isNativeUiShownFor( Item item ) {
 		return (this.currentItem == item) && !de.enough.polish.ui.StyleSheet.currentScreen.isMenuOpened();
 	}
 
