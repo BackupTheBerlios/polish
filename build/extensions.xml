@@ -928,8 +928,8 @@
 	
 	<extension>
 		<type>finalizer</type>
-		<name>jar2cod</name>
-		<class>de.enough.polish.blackberry.JarToCodFinalizer</class>
+		<name>jdp</name>
+		<class>de.enough.polish.blackberry.JDPFinalizer</class>
 		<classpath>${polish.home}/bin/extensions</classpath>
 		<autostart>
 				polish.blackberry
@@ -938,8 +938,8 @@
 	
 	<extension>
 		<type>finalizer</type>
-		<name>jdp</name>
-		<class>de.enough.polish.blackberry.JDPFinalizer</class>
+		<name>jar2cod</name>
+		<class>de.enough.polish.blackberry.JarToCodFinalizer</class>
 		<classpath>${polish.home}/bin/extensions</classpath>
 		<autostart>
 				polish.blackberry
