@@ -1036,8 +1036,10 @@ public class MenuBar extends Item {
 	        //#else
 	        	g.setClip(0, this.topY, this.screen.screenWidth, maxClipHeight);
 	        //#endif
-            this.commandsContainer.paint( x + this.commandsContainer.relativeX, y + this.commandsContainer.relativeY, x + this.commandsContainer.relativeX, x + this.commandsContainer.relativeX + this.commandsContainer.itemWidth, g);
-			g.setClip( clipX, clipY, clipWidth, clipHeight );
+	        //#if !polish.MenuBar.suppressHideCommand
+	        	this.commandsContainer.paint( x + this.commandsContainer.relativeX, y + this.commandsContainer.relativeY, x + this.commandsContainer.relativeX, x + this.commandsContainer.relativeX + this.commandsContainer.itemWidth, g);
+			//#endif
+            g.setClip( clipX, clipY, clipWidth, clipHeight );
 		//#if !tmp.useInvisibleMenuBar
 			// paint menu-bar:
 			//#if polish.MenuBar.Position == right
