@@ -116,10 +116,8 @@ public class AnimationThread extends Thread
 		while ( true ) {
 			try {
 				if(sleeptime == ANIMATION_YIELD_INTERVAL) {
-					System.out.println("YIELD");
 					Thread.yield();
 				} else {
-					System.out.println(sleeptime);
 					Thread.sleep(sleeptime);
 				}
 				
