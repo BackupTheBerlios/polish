@@ -4968,25 +4968,19 @@ public final class UiAccess {
 	}
 	//#endif
 	
-	//#if polish.css.screen-change-animation
 	/**
 	 * Enables or disables screen change animations
 	 * @param enable true if screen change animations should be run otherwise false
 	 */
 	public static void enableScreenChangeAnimation(boolean enable) {
-		Display display = Display.getInstance();
-		if(display != null) {
-			display.enableScreenChangeAnimations = enable;
-		}
-		else {
-			Display.getDisplay(StyleSheet.midlet).enableScreenChangeAnimations = enable;
-		}
+		//#if polish.usePolishGui && polish.css.screen-change-animation
+			Display display = Display.getInstance();
+			if(display != null) {
+				display.enableScreenChangeAnimations = enable;
+			}
+			else if (StyleSheet.midlet != null){
+				Display.getDisplay(StyleSheet.midlet).enableScreenChangeAnimations = enable;
+			}
+		//#endif
 	}
-	//#endif
-	
-	//#if polish.midp
-	public static void enableScreenChangeAnimation(javax.microedition.lcdui.Display display, boolean enable) {
-		// ignore
 	}
-	//#endif
-}
