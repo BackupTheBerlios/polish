@@ -576,7 +576,7 @@ public class Display
 	//#if tmp.screenOrientation && polish.hasPointerEvents
 		private final Point pointerEventPoint;
 	//#endif
-	private boolean enableScreenChangeAnimations = true;
+	protected boolean enableScreenChangeAnimations = true;
 	//#if ${polish.license} == GPL
 		//#define tmp.displayInfo
 		private boolean showInfo;
