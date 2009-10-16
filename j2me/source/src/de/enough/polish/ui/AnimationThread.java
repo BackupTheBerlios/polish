@@ -78,11 +78,7 @@ public class AnimationThread extends Thread
 	//#else
 		public final static int ANIMATION_INTERVAL = 50;
 	//#endif
-	//#ifdef polish.animationMinimumInterval:defined
-		//#= public final static int ANIMATION_MINIMUM_INTERVAL = ${time(polish.animationMinimumInterval)};
-	//#else
-		private static final int ANIMATION_MINIMUM_INTERVAL = 10;
-	//#endif
+	private static final int ANIMATION_YIELD_INTERVAL = Integer.MIN_VALUE;
 	//#ifdef polish.sleepInterval:defined
 		//#= private final static int SLEEP_INTERVAL = ${time(polish.sleepInterval)};
 	//#else
@@ -119,7 +115,14 @@ public class AnimationThread extends Thread
 //		int animationCounter = 0;
 		while ( true ) {
 			try {
-				Thread.sleep(sleeptime);
+				if(sleeptime == ANIMATION_YIELD_INTERVAL) {
+					System.out.println("YIELD");
+					Thread.yield();
+				} else {
+					System.out.println(sleeptime);
+					Thread.sleep(sleeptime);
+				}
+				
 				Screen screen = StyleSheet.currentScreen;
 				//System.out.println("AnimationThread: animating " + screen + ", current=" + StyleSheet.display.getCurrent());
 				if (screen != null 
@@ -160,8 +163,8 @@ public class AnimationThread extends Thread
 							}
 						//#endif
 						long usedTime = System.currentTimeMillis() - currentTime;
-						if (usedTime >= (ANIMATION_INTERVAL-ANIMATION_MINIMUM_INTERVAL)) {
-							sleeptime = ANIMATION_MINIMUM_INTERVAL;
+						if (usedTime >= ANIMATION_INTERVAL) {
+							sleeptime = ANIMATION_YIELD_INTERVAL;
 						} else {
 							sleeptime = ANIMATION_INTERVAL - usedTime;
 						}
