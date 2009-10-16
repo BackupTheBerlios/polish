@@ -93,6 +93,11 @@ public class AnimationThread extends Thread
 	//#endif
 	
 	/**
+	 * the total delta (animation, serviceRepaints, sleep) of the last frame
+	 */
+	long totalDelta = -1;
+		
+	/**
 	 * Creates a new animation thread.
 	 */
 	public AnimationThread() {
@@ -115,12 +120,6 @@ public class AnimationThread extends Thread
 //		int animationCounter = 0;
 		while ( true ) {
 			try {
-				if(sleeptime == ANIMATION_YIELD_INTERVAL) {
-					Thread.yield();
-				} else {
-					Thread.sleep(sleeptime);
-				}
-				
 				Screen screen = StyleSheet.currentScreen;
 				//System.out.println("AnimationThread: animating " + screen + ", current=" + StyleSheet.display.getCurrent());
 				if (screen != null 
@@ -130,7 +129,9 @@ public class AnimationThread extends Thread
 				) {
 					long currentTime = System.currentTimeMillis();
 					if ( (currentTime - screen.lastInteractionTime) < ANIMATION_TIMEOUT ) { 
+						
 						screen.animate( currentTime, repaintRegion );
+						
 						if (animationList != null) {
 							Object[] animationItems = animationList.getInternalArray();
 							for (int i = 0; i < animationItems.length; i++) {
@@ -139,9 +140,11 @@ public class AnimationThread extends Thread
 									break;
 								}
 								//System.out.println("animating " + animatable);
+								
 								animatable.animate(currentTime, repaintRegion);
 							}
 						}
+						
 						if (repaintRegion.containsRegion()) {
 							//System.out.println("AnimationThread: screen needs repainting");
 							//#debug debug
@@ -180,6 +183,14 @@ public class AnimationThread extends Thread
 							StyleSheet.currentScreen = null;
 						}
 					}
+					
+					if(sleeptime == ANIMATION_YIELD_INTERVAL) {
+						Thread.yield();
+					} else {
+						Thread.sleep(sleeptime);
+					}
+					
+					this.totalDelta = System.currentTimeMillis() - currentTime;
 				} else {
 					if (releaseResourcesOnScreenChange) {
 						StyleSheet.releaseResources();
@@ -194,6 +205,14 @@ public class AnimationThread extends Thread
 				System.out.println("unable to animate screen" + e );
 			}
 		}
+	}
+	
+	/**
+	 * Returns the total delta of the last frame
+	 * @return the total delta of the last frame
+	 */
+	public long getTotalDelta() {
+		return this.totalDelta;
 	}
 
 	/**
