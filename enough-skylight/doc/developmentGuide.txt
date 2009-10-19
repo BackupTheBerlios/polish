@@ -20,7 +20,3 @@ Styles
 
 Every DomNode may have an associated Syle object. This style object is not the J2ME Polish Style object.
 
-
-
-
-
