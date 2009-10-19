@@ -1036,7 +1036,10 @@ public class MenuBar extends Item {
 	        //#else
 	        	g.setClip(0, this.topY, this.screen.screenWidth, maxClipHeight);
 	        //#endif
-	        //#if !polish.MenuBar.suppressHideCommand
+	        //#if polish.hideAllCommands
+	        	//#debug
+	        	//System.out.println("polish.hideAllCommands is used to suppress painting for a Command.");
+	        //#else
 	        	this.commandsContainer.paint( x + this.commandsContainer.relativeX, y + this.commandsContainer.relativeY, x + this.commandsContainer.relativeX, x + this.commandsContainer.relativeX + this.commandsContainer.itemWidth, g);
 			//#endif
             g.setClip( clipX, clipY, clipWidth, clipHeight );
