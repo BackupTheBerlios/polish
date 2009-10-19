@@ -1917,6 +1917,13 @@ public class Display
 	 * @see javax.microedition.lcdui.Canvas#keyPressed(int)
 	 */
 	protected void keyPressed(int keyCode) {
+		System.out.println(keyCode);
+		//#if polish.Display.useUserInputValidator
+		if(this.validator != null && !this.validator.isKeyPressValid(keyCode)) {
+			return;
+		}
+		//#endif
+		
 		//#debug
 		System.out.println("Display.keyPressed " + keyCode);
 		//#if tmp.keyRepeatOverload
@@ -1939,6 +1946,12 @@ public class Display
 	 * @see javax.microedition.lcdui.Canvas#keyRepeated(int)
 	 */
 	protected void keyRepeated(int keyCode) {
+		//#if polish.Display.useUserInputValidator
+		if(this.validator != null && !this.validator.isKeyRepeatedValid(keyCode)) {
+			return;
+		}
+		//#endif
+		
 		//#debug
 		System.out.println("Display.keyRepeated " + keyCode );
 		if (this.currentCanvas != null) { 
@@ -1980,6 +1993,12 @@ public class Display
 	 * @see javax.microedition.lcdui.Canvas#keyReleased(int)
 	 */
 	protected void keyReleased(int keyCode) {
+		//#if polish.Display.useUserInputValidator
+		if(this.validator != null && !this.validator.isKeyReleaseValid(keyCode)) {
+			return;
+		}
+		//#endif
+		
 		//#debug
 		System.out.println("Display.keyReleased " + keyCode);
 		//#if tmp.keyRepeatOverload
@@ -2002,6 +2021,12 @@ public class Display
 	 * @see javax.microedition.lcdui.Canvas#pointerPressed(int,int)
 	 */
 	protected void pointerPressed(int x, int y) {
+		//#if polish.Display.useUserInputValidator
+		if(this.validator != null && !this.validator.isPointerPressValid(x, y)) {
+			return;
+		}
+		//#endif
+		
 		if (this.currentCanvas != null) { 
 			//#if tmp.screenOrientation
 				Point p = translatePoint( x, y );
@@ -2018,6 +2043,12 @@ public class Display
 	 * @see javax.microedition.lcdui.Canvas#pointerPressed(int,int)
 	 */
 	protected void pointerReleased(int x, int y) {
+		//#if polish.Display.useUserInputValidator
+		if(this.validator != null && !this.validator.isPointerReleaseValid(x, y)) {
+			return;
+		}
+		//#endif
+		
 		if (this.currentCanvas != null) { 
 			//#if tmp.screenOrientation
 				Point p = translatePoint( x, y );
@@ -2034,6 +2065,12 @@ public class Display
 	 * @see javax.microedition.lcdui.Canvas#pointerPressed(int,int)
 	 */
 	protected void pointerDragged(int x, int y) {
+		//#if polish.Display.useUserInputValidator
+		if(this.validator != null && !this.validator.isPointerDragValid(x, y)) {
+			return;
+		}
+		//#endif
+		
 		if (this.currentCanvas != null) {
 			//#if tmp.screenOrientation
 				Point p = translatePoint( x, y );
@@ -2578,6 +2615,37 @@ public class Display
 			System.out.println("screen toggle finished");
 		//#endif
 	}
+	
+	//#if polish.Display.useUserInputValidator
+	
+	/**
+	 * The key validator
+	 */
+	UserInputValidator validator;
+	
+	/**
+	 * Sets the key validator for this display
+	 * @param validator
+	 */
+	public void setKeyValidator(UserInputValidator validator) {
+		this.validator = validator;
+	}
+	
+	/**
+	 * An interface to implement to filter certain key actions
+	 * @author Andre
+	 *
+	 */
+	public interface UserInputValidator {
+		public boolean isKeyPressValid(int keyCode);
+		public boolean isKeyReleaseValid(int keyCode);
+		public boolean isKeyRepeatedValid(int keyCode);
+		public boolean isPointerPressValid(int x, int y);
+		public boolean isPointerReleaseValid(int x, int y);
+		public boolean isPointerDragValid(int x, int y);
+		
+	}
+	//#endif
 	
 	//#if tmp.wrapperScreen
 	class WrapperCanvas extends javax.microedition.lcdui.Canvas {

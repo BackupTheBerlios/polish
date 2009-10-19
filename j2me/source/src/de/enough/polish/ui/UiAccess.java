@@ -30,6 +30,7 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 import de.enough.polish.event.EventManager;
+import de.enough.polish.ui.Display.UserInputValidator;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.HashMap;
 
@@ -4984,5 +4985,20 @@ public final class UiAccess {
 		//#endif
 	}
 	
+	/**
+	 * Sets the key validator for the current display. MUST be set after first Display.getDisplay().
+	 * @param validator the key validator  
+	 */
+	public static void setUserInputValidator(UserInputValidator validator) {
+		//#if polish.usePolishGui && polish.Display.useKeyValidator
+		Display display = Display.getInstance();
+		if(display != null) {
+			display.setKeyValidator(validator);
+		}
+		else if (StyleSheet.midlet != null){
+			Display.getDisplay(StyleSheet.midlet).setKeyValidator(validator);
+		}
+		//#endif
+	}
 	
 }
