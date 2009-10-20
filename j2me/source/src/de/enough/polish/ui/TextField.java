@@ -352,7 +352,7 @@ public class TextField extends StringItem
 	//#define tmp.forceDirectInput
 	//#define tmp.directInput
 //#endif
-//#if tmp.directInput && polish.TextField.usePredictiveInput && !(polish.blackberry || polish.android)
+//#if polish.TextField.useDirectInput && polish.TextField.usePredictiveInput && !(polish.blackberry || polish.android)
 	//#define tmp.usePredictiveInput
 //#endif
 //#if tmp.directInput && polish.TextField.useDynamicCharset
@@ -2078,28 +2078,21 @@ public class TextField extends StringItem
 	
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		//#if polish.blackberry
-        	if (getScreen().isNativeUiShownFor(this)) {
+        	if (this.isFocused && getScreen().isNativeUiShownFor(this)) {
 				this.editField.setPaintPosition( x + g.getTranslateX(), y + g.getTranslateY() );
 			} else {
 				super.paintContent(x, y, leftBorder, rightBorder, g);
 			}
 		//#else
         
-        //#if tmp.includeInputInfo
-    		if (this.isUneditable || !this.isFocused) {
-        //#endif
-    			super.paintContent(x, y, leftBorder, rightBorder, g);
-    	//#if tmp.includeInputInfo
-    		}
-		//#endif
-    		
 		if (this.isUneditable || !this.isFocused) {
 			//#if polish.TextField.showHelpText
-			if(this.text == null || this.text.length() == 0)
-			{
-				this.helpItem.paint(x, y, leftBorder, rightBorder, g);
-			}
+				if(this.text == null || this.text.length() == 0)
+				{
+					this.helpItem.paint(x, y, leftBorder, rightBorder, g);
+				} else
 			//#endif
+    			super.paintContent(x, y, leftBorder, rightBorder, g);
 			return;
 		}
 		
@@ -2125,15 +2118,62 @@ public class TextField extends StringItem
 						}
 					}
 				//#endif
-				super.paintContent(x, y, leftBorder, rightBorder, g);
-
 				//#if polish.TextField.showHelpText
-				if(this.text == null || this.text.length() == 0)
-				{
-					this.helpItem.paint(x, y, leftBorder, rightBorder, g);
-				}
+					if(this.text == null || this.text.length() == 0)
+					{
+						this.helpItem.paint(x, y, leftBorder, rightBorder, g);
+					} else
 				//#endif
-				
+				if (this.isPassword && !(this.showCaret || this.isNumeric || this.caretChar == this.editingCaretChar)) {
+					int cX = getCaretXPosition(x, rightBorder, availWidth);
+					int cY = y + this.caretY;
+					int clipX = g.getClipX();
+					int clipY = g.getClipY();
+					int clipWidth = g.getClipWidth();
+					int clipHeight = g.getClipHeight();
+					g.clipRect( x, y, cX - x, clipHeight );
+					super.paintContent(x, y, leftBorder, rightBorder, g);
+					g.setClip( clipX, clipY, clipWidth, clipHeight );
+					int w = this.caretWidth;
+                	int starWidth = charWidth('*');
+                	if (starWidth > w) {
+                		w = starWidth;
+                	}
+                	if (this.caretX + w < this.contentWidth) {
+						g.clipRect( cX + w, y, clipWidth, clipHeight );
+						super.paintContent(x, y, leftBorder, rightBorder, g);
+						g.setClip( clipX, clipY, clipWidth, clipHeight );
+                	}
+					if (cY > y) {
+						g.clipRect( clipX, clipY, clipWidth, cY - clipY );
+						super.paintContent(x, y, leftBorder, rightBorder, g);
+						g.setClip( clipX, clipY, clipWidth, clipHeight );
+					}
+					int h = getFontHeight();
+					if (this.caretY + h < this.contentHeight) {
+						g.clipRect( x, cY + h, clipWidth, clipHeight );
+						super.paintContent(x, y, leftBorder, rightBorder, g);
+						g.setClip( clipX, clipY, clipWidth, clipHeight );
+					}
+					g.setColor( this.textColor);
+                    int anchor = Graphics.TOP | Graphics.LEFT;
+        			//#if polish.Bugs.needsBottomOrientiationForStringDrawing
+                    	cY += h;
+                    	anchor = Graphics.BOTTOM | Graphics.LEFT;
+                    //#endif
+                    //#if polish.css.text-effect
+                    	if (this.textEffect != null) {
+                    		this.textEffect.drawChar( this.caretChar, cX, cY, anchor, g);
+                    	} else {
+                    //#endif
+                    		g.drawChar( this.caretChar, cX, cY, anchor );
+                    //#if polish.css.text-effect
+                    	}
+                    //#endif
+				} else {
+					super.paintContent(x, y, leftBorder, rightBorder, g);
+				}
+
 
 		  		//#ifdef polish.css.text-wrap
 		        	if (this.useSingleLine) {
@@ -2148,20 +2188,7 @@ public class TextField extends StringItem
 					//#else
 						g.setColor( this.textColor );
 					//#endif
-					int cX;
-					if (!this.isLayoutCenter && !this.isLayoutRight) {
-						cX = x + this.caretX;
-					} else {
-						if (this.isLayoutCenter) {
-							cX = x + (((availWidth) - this.caretRowWidth) >> 1 ) + this.caretX;
-						} else  {
-							//#if polish.i18n.rightToLeft
-								cX = rightBorder -  this.caretX;
-							//#else
-								cX = rightBorder - this.caretRowWidth + this.caretX;
-							//#endif
-						}
-					}
+					int cX = getCaretXPosition(x, rightBorder, availWidth);
 					int cY = y + this.caretY;
                     if (this.caretChar != this.editingCaretChar) {
                     	// draw background rectangle
@@ -2207,11 +2234,12 @@ public class TextField extends StringItem
 
 				return;
 			//#ifdef tmp.allowDirectInput
+			} else { 
+				super.paintContent(x, y, leftBorder, rightBorder, g);
 			}
 			//#endif
-				
-				
 		//#else
+			super.paintContent(x, y, leftBorder, rightBorder, g);
 			// no direct input possible, but paint caret
 			if (this.showCaret && this.isFocused ) {
 				//#ifndef polish.css.textfield-caret-color
@@ -2235,6 +2263,31 @@ public class TextField extends StringItem
 		// end of non-blackberry block
 		//#endif
 	}
+
+	//#ifdef tmp.directInput
+	/**
+	 * Calculates the exact horizontal caret position. 
+	 * @param x the x position of this field
+	 * @param rightBorder the right border
+	 * @param availWidth the available width
+	 * @return the caret position
+	 */
+	private int getCaretXPosition(int x, int rightBorder, int availWidth) {
+		int cX;
+		if (this.isLayoutCenter) {
+			cX = x + (((availWidth) - this.caretRowWidth) >> 1 ) + this.caretX;
+		} else if (this.isLayoutRight) {
+			//#if polish.i18n.rightToLeft
+				cX = rightBorder -  this.caretX;
+			//#else
+				cX = rightBorder - this.caretRowWidth + this.caretX;
+			//#endif
+		} else {
+			cX = x + this.caretX;
+		}
+		return cX;
+	}
+	//#endif
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#initItem()
