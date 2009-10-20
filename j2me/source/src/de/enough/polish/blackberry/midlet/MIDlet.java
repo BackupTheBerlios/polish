@@ -240,14 +240,14 @@ public abstract class MIDlet extends UiApplication
 					String line = lines[i];
 					int colonPos = line.indexOf(':');
 					if (colonPos == -1) {
-						if (lastKey == null) {
+						if (lastKey == null || "".equals(line)) {
 							//#debug warn
 							System.out.println("Unable to to split line " + line);
-							continue;
 						} else {
 							lastValue += line.trim();
 							this.appProperties.put( lastKey, lastValue );
 						}
+						continue;
 					}
 					String attributeKey = line.substring( 0, colonPos );
 					String attributeValue = line.substring( colonPos + 2 );
