@@ -77,6 +77,8 @@ public class VerticalScrollTextEffect extends TextEffect{
 	
 	int lastLineWidth = -1;
 	
+	boolean needsAnimation = false;
+	
 	public VerticalScrollTextEffect()
 	{
 		this.isTextSensitive = true;
@@ -207,12 +209,16 @@ public class VerticalScrollTextEffect extends TextEffect{
 			 this.drawLines = new String[this.maxLines + 1];
 			 this.lines = this.maxLines;
 			 
+			 this.needsAnimation = true;
+			 
 			 AnimationThread.addAnimationItem(parent);
 		}
 		else
 		{
 			this.drawLines = this.textLines;
 			this.lines = this.textLines.length;
+			
+			this.needsAnimation = false;
 			
 			AnimationThread.removeAnimationItem(parent);
 		}
@@ -228,7 +234,9 @@ public class VerticalScrollTextEffect extends TextEffect{
 	}
 	
 	public void onAttach(Item parent) {
-		AnimationThread.addAnimationItem(parent);
+		if(parent.isInitialized() && this.needsAnimation) {
+			AnimationThread.addAnimationItem(parent);
+		}
 	}
 	
 	public void onDetach(Item parent) {

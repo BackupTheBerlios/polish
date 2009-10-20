@@ -376,6 +376,9 @@ implements UiElement, Animatable
 	//#if polish.css.move-scroll-backgrounds && (polish.css.scroll-up-background || polish.css.scroll-down-background)
 		private boolean isMoveScrollBackgrounds = true;
 	//#endif
+	//#if polish.css.screen-change-animation	
+	protected boolean enableScreenChangeAnimation = true;
+	//#endif
 	
 	/**
 	 * Creates a new screen, this constructor can be used together with the //#style directive.

@@ -986,7 +986,7 @@ public class Display
 							}
 						}
 					//#else					
-						if (nextScreen != null && nextScreen.style != null) {
+						if (nextScreen != null && nextScreen.style != null && nextScreen.enableScreenChangeAnimation) {
 							screenstyle = nextScreen.style;
 							screenAnimation = (ScreenChangeAnimation) screenstyle.getObjectProperty("screen-change-animation");
 						}
@@ -1013,7 +1013,7 @@ public class Display
 									}
 								}
 							//#endif							
-							if ( (screenAnimation == null || lastScreen instanceof Alert) && lastScreen.style != null) {
+							if ( (screenAnimation == null || lastScreen instanceof Alert) && lastScreen.style != null && lastScreen.enableScreenChangeAnimation) {
 								if (screenAnimation == null || lastScreen.style.getObjectProperty("screen-change-animation") != null) {
 									screenstyle = lastScreen.style;
 									screenAnimation = (ScreenChangeAnimation) screenstyle.getObjectProperty("screen-change-animation");
@@ -1917,7 +1917,6 @@ public class Display
 	 * @see javax.microedition.lcdui.Canvas#keyPressed(int)
 	 */
 	protected void keyPressed(int keyCode) {
-		System.out.println(keyCode);
 		//#if polish.Display.useUserInputValidator
 		if(this.validator != null && !this.validator.isKeyPressValid(keyCode)) {
 			return;

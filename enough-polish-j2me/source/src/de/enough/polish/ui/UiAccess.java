@@ -4972,7 +4972,7 @@ public final class UiAccess {
 	 * Enables or disables screen change animations
 	 * @param enable true if screen change animations should be run otherwise false
 	 */
-	public static void enableScreenChangeAnimation(boolean enable) {
+	public static void enableScreenChangeAnimations(boolean enable) {
 		//#if polish.usePolishGui && polish.css.screen-change-animation
 			Display display = Display.getInstance();
 			if(display != null) {
@@ -4981,6 +4981,16 @@ public final class UiAccess {
 			else if (StyleSheet.midlet != null){
 				Display.getDisplay(StyleSheet.midlet).enableScreenChangeAnimations = enable;
 			}
+		//#endif
+	}
+	
+	/**
+	 * Enables or disables screen change animations
+	 * @param enable true if screen change animations should be run otherwise false
+	 */
+	public static void enableScreenChangeAnimation(Screen screen, boolean enable) {
+		//#if polish.usePolishGui && polish.css.screen-change-animation
+			screen.enableScreenChangeAnimation = enable;
 		//#endif
 	}
 	
