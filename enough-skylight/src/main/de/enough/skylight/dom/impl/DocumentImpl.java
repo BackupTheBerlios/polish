@@ -49,6 +49,24 @@ public class DocumentImpl extends DomNodeImpl implements Document {
 		return "Document";
 	}
 
+	public Object get(String name, Scriptable start) {
+		if("documentElement".equals(name)) {
+			int numberChildren = this.childList.getLength();
+			// Return the first child which is not a processing instruction.
+			// TODO: The handling of processing instructions in the DomParser is not existent. Implement something
+			// to test a node if it is a processing instruction.
+			for(int i = 0; i < numberChildren;i++) {
+				DomNodeImpl child = this.childList.internalGetItem(i);
+				if(child.getNodeType() == DomNode.ELEMENT_NODE) {
+					return child;
+				}				
+			}
+			return null;
+		}
+		// TODO Auto-generated method stub
+		return super.get(name, start);
+	}
+
 	public DomNode createElement(String tagName) {
 		// TODO Auto-generated method stub
 		return null;

@@ -34,7 +34,7 @@ public class DomNodeImpl extends ScriptableObject implements DomNode {
 	private String name;
 	private NamedNodeMapImpl attributes;
 	private int type;
-	private NodeListImpl childList;
+	protected NodeListImpl childList;
 	private String text;
 	private Document document;
 	private String value;
@@ -118,7 +118,9 @@ public class DomNodeImpl extends ScriptableObject implements DomNode {
 		return this.childList;
 	}
 	public DomNode getFirstChild() {
-		// TODO Auto-generated method stub
+		if(this.childList.getLength() > 0) {
+			return this.childList.item(0);
+		}
 		return null;
 	}
 	public DomNode getLastChild() {

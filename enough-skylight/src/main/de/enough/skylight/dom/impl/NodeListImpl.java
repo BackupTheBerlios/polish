@@ -26,9 +26,13 @@ public class NodeListImpl extends ScriptableObject implements NodeList {
 	}
 
 	public DomNode item(int index) {
-		return (DomNode) this.nodeList.get(index);
+		return internalGetItem(index);
 	}
 
+	protected DomNodeImpl internalGetItem(int index) {
+		return (DomNodeImpl)this.nodeList.get(index);
+	}
+	
 	public void add(DomNodeImpl childNode) {
 		this.nodeList.add(childNode);
 	}
