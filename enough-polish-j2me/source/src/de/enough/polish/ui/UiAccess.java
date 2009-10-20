@@ -4984,8 +4984,11 @@ public final class UiAccess {
 		//#endif
 	}
 	
+	//#if polish.usePolishGui 
 	/**
-	 * Enables or disables screen change animations
+	 * Enables or disables screen change animations for the specified screen
+	 * 
+	 * @param screen the screen
 	 * @param enable true if screen change animations should be run otherwise false
 	 */
 	public static void enableScreenChangeAnimation(Screen screen, boolean enable) {
@@ -4993,6 +4996,19 @@ public final class UiAccess {
 			screen.enableScreenChangeAnimation = enable;
 		//#endif
 	}
+	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Enables or disables screen change animations for the specified screen
+	 * 
+	 * @param screen the screen
+	 * @param enable true if screen change animations should be run otherwise false
+	 */
+	public static void enableScreenChangeAnimation(javax.microedition.lcdui.Screen screen, boolean enable) {
+		// ignore
+	}
+	//#endif
 	
 	//#if polish.Display.useKeyValidator
 	/**
