@@ -8271,6 +8271,7 @@ These namespaces/schemas will be used soon.
     <capability name="key.rightsoftkey" value="-7" />
     <capability name="key.selectsoftkey" value="111" />
     <capability name="key.up" value="114" />
+    <capability name="key.supportsAsciiKeyMap" value="true" />
     <capability name="menubar.optionsposition" value="left" />
     <capability name="microedition.commports" value="USB2,COM1,IR1,USB1,BT1,BT2,BT3,BT4,BT5,BT6,BT7,BT8,BT9,BT10,BT11,BT12,BT13,BT14,BT15,BT16,BT17,BT18,BT19,BT20,BT21,BT22,BT23,BT24,BT25,BT26,BT27,BT28,BT29,BT30,BT31,BT32,BT33,BT34,BT35,BT36,BT37,BT38,BT39,BT40,BT41,BT42,BT43,BT44,BT45,BT46,BT47,BT48,BT49,BT50,BT51,BT52,BT53,BT54,BT55,BT56,BT57,BT58,BT59,BT60,BT61,BT62,BT63,BT64" />
     <capability name="microedition.configuration" value="CLDC-1.1" />
