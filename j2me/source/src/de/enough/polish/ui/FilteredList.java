@@ -239,6 +239,18 @@ implements ItemStateListener //, CommandListener
 		itemStateChanged( this.filterTextField );
 		super.showNotify();
 	}
+	
+	//#if polish.blackberry
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#notifyFocusSet(de.enough.polish.ui.Item)
+	 */
+	protected void notifyFocusSet(Item item) {
+		if (this.isMenuOpened() || item == this.filterTextField) {
+			super.notifyFocusSet(item);
+		}
+	}
+	//#endif
 
 	//#if !polish.blackberry
     private boolean forwardEventToNativeField(Screen screen, int keyCode) {
@@ -508,7 +520,11 @@ implements ItemStateListener //, CommandListener
 	{
 		int index = -1;
 		if (item != null) {
-			this.itemsList.indexOf( item );
+			index = this.itemsList.indexOf( item );
+			if (index == -1) {
+				super.focus( item, force );
+				return;
+			}
 		}
 		focus( index, item, force );
 	}
@@ -518,14 +534,23 @@ implements ItemStateListener //, CommandListener
 	 */
 	public void focus(int index, Item item, boolean force)
 	{
+		if (isMenuOpened()) {
+			super.focus( index, item, force );
+			return;
+		}
 		if (index != -1 && item == null) {
 			item = (Item) this.itemsList.get( index );
 		}
 		if (item != null) {
 			index = this.container.indexOf(item);
-			this.container.focusChild(index);
+			if (index == -1) {
+				super.focus( index, item, force );
+			} else {
+				this.container.focusChild(index);
+			}
 		} else {
-			this.container.focusChild(-1);
+			super.focus( index, item, force );
+			//this.container.focusChild(-1);
 		}
 	}
 
@@ -651,7 +676,7 @@ implements ItemStateListener //, CommandListener
 	public void itemStateChanged(Item item) {
 		if (item == this.filterTextField) {
 			String text = this.filterTextField.getString();
-			if (text == this.lastFilterText) {
+			if (text == this.lastFilterText || (text != null && text.equals(this.lastFilterText))) {
 				return;
 			}
 			this.lastFilterText = text;

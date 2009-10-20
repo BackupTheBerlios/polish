@@ -880,7 +880,7 @@ public class Container extends Item {
 		}
 		
 		//#if polish.blackberry
-			Display.getInstance().notifyFocusSet(item);
+			getScreen().notifyFocusSet(item);
 		//#endif
 
 		// indicating if either the former focusedItem or the new focusedItem has changed it's size or it's layout by losing/gaining the focus, 

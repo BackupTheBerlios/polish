@@ -1152,7 +1152,7 @@ public class MenuBar extends Item {
 			this.isInitialized = (open == this.isOpened);
 			this.isOpened = open;
 			//#if polish.blackberry
-				Display.getInstance().notifyFocusSet(this.screen.getCurrentItem());
+				this.screen.notifyFocusSet(this.screen.getCurrentItem());
 			//#endif
 		} else if (open && !this.isOpened) {
 			if (this.commandsContainer.size() == 0) {

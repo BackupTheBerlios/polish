@@ -1378,7 +1378,7 @@ public class TextField extends StringItem
 				}
 				synchronized (bbLock) {
                     if (this.isFocused && this.isShown) {
-                    	Display.getInstance().notifyFocusSet(null);
+                    	getScreen().notifyFocusSet(null);
                     }
                     if (text != null) {
                         this.editField.setText(text);
@@ -1386,7 +1386,7 @@ public class TextField extends StringItem
                         this.editField.setText(""); // setting null triggers an IllegalArgumentException
                     }
                     if (this.isFocused && this.isShown) {
-                    	Display.getInstance().notifyFocusSet(this);
+                    	getScreen().notifyFocusSet(this);
                     }
 				}
 			}
@@ -1848,7 +1848,7 @@ public class TextField extends StringItem
 						manager.delete(this._bbField);
 					}
 					if (this.isFocused) {
-						Display.getInstance().notifyFocusSet(this);
+						getScreen().notifyFocusSet(this);
 					}					
 				}
 			}
@@ -2008,7 +2008,7 @@ public class TextField extends StringItem
 					setConstraints(this.constraints);
 				}
 				if (this.isFocused) {
-					Display.getInstance().notifyFocusSet(this);
+					getScreen().notifyFocusSet(this);
 				}
 			}
 			else

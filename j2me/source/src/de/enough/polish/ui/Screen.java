@@ -1294,7 +1294,7 @@ implements UiElement, Animatable
 			}
 			//#if polish.blackberry
 				else {
-					Display.getInstance().notifyFocusSet(getCurrentItem());
+					notifyFocusSet(getCurrentItem());
 				}
 			//#endif
 			//#if polish.css.repaint-previous-screen

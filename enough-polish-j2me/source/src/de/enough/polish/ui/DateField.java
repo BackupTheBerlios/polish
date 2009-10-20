@@ -784,7 +784,7 @@ implements
 			// some position settings here:
 			int contX = this.contentX;
 			if (this.label != null && this.label.itemWidth + this.contentWidth <= availWidth) {
-				this.contentX += this.label.itemWidth;
+				contX += this.label.itemWidth;
 			}
 			if (this.style != null) {
 				this.blackberryDateField.setStyle( this.style );
