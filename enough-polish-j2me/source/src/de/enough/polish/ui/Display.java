@@ -1917,7 +1917,7 @@ public class Display
 	 * @see javax.microedition.lcdui.Canvas#keyPressed(int)
 	 */
 	protected void keyPressed(int keyCode) {
-		//#if polish.Display.useUserInputValidator
+		//#if polish.Display.useUserInputValidation
 		if(this.validator != null && !this.validator.isKeyPressValid(keyCode)) {
 			return;
 		}
@@ -1945,7 +1945,7 @@ public class Display
 	 * @see javax.microedition.lcdui.Canvas#keyRepeated(int)
 	 */
 	protected void keyRepeated(int keyCode) {
-		//#if polish.Display.useUserInputValidator
+		//#if polish.Display.useUserInputValidation
 		if(this.validator != null && !this.validator.isKeyRepeatedValid(keyCode)) {
 			return;
 		}
@@ -1992,7 +1992,7 @@ public class Display
 	 * @see javax.microedition.lcdui.Canvas#keyReleased(int)
 	 */
 	protected void keyReleased(int keyCode) {
-		//#if polish.Display.useUserInputValidator
+		//#if polish.Display.useUserInputValidation
 		if(this.validator != null && !this.validator.isKeyReleaseValid(keyCode)) {
 			return;
 		}
@@ -2020,7 +2020,7 @@ public class Display
 	 * @see javax.microedition.lcdui.Canvas#pointerPressed(int,int)
 	 */
 	protected void pointerPressed(int x, int y) {
-		//#if polish.Display.useUserInputValidator
+		//#if polish.Display.useUserInputValidation
 		if(this.validator != null && !this.validator.isPointerPressValid(x, y)) {
 			return;
 		}
@@ -2042,7 +2042,7 @@ public class Display
 	 * @see javax.microedition.lcdui.Canvas#pointerPressed(int,int)
 	 */
 	protected void pointerReleased(int x, int y) {
-		//#if polish.Display.useUserInputValidator
+		//#if polish.Display.useUserInputValidation
 		if(this.validator != null && !this.validator.isPointerReleaseValid(x, y)) {
 			return;
 		}
@@ -2064,7 +2064,7 @@ public class Display
 	 * @see javax.microedition.lcdui.Canvas#pointerPressed(int,int)
 	 */
 	protected void pointerDragged(int x, int y) {
-		//#if polish.Display.useUserInputValidator
+		//#if polish.Display.useUserInputValidation
 		if(this.validator != null && !this.validator.isPointerDragValid(x, y)) {
 			return;
 		}
@@ -2615,7 +2615,7 @@ public class Display
 		//#endif
 	}
 	
-	//#if polish.Display.useUserInputValidator
+	//#if polish.Display.useUserInputValidation
 	
 	/**
 	 * The key validator
