@@ -4985,12 +4985,13 @@ public final class UiAccess {
 		//#endif
 	}
 	
+	//#if polish.Display.useKeyValidator
 	/**
 	 * Sets the key validator for the current display. MUST be set after first Display.getDisplay().
 	 * @param validator the key validator  
 	 */
 	public static void setUserInputValidator(UserInputValidator validator) {
-		//#if polish.usePolishGui && polish.Display.useKeyValidator
+		//#if polish.usePolishGui 
 		Display display = Display.getInstance();
 		if(display != null) {
 			display.setKeyValidator(validator);
@@ -5000,5 +5001,6 @@ public final class UiAccess {
 		}
 		//#endif
 	}
+	//#endif
 	
 }
