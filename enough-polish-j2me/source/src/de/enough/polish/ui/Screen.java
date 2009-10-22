@@ -3618,7 +3618,7 @@ implements UiElement, Animatable
 				//#endif
 				//#if tmp.menuFullScreen
 					// only trigger the OK command with the main FIRE key (keyCode == getKeyCode(FIRE))
-					if (!processed && gameAction == FIRE && keyCode != KEY_NUM5 && this.okCommand != null && !isMenuOpened()) {
+					if (!processed && gameAction == FIRE && keyCode != KEY_NUM5 && this.okCommand != null && !isMenuOpened() && this.container.isFocused) {
 						callCommandListener(this.okCommand);
 						processed = true;
 					} 
