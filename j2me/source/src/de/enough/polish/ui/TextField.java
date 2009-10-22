@@ -1378,7 +1378,11 @@ public class TextField extends StringItem
 				}
 				synchronized (bbLock) {
                     if (this.isFocused && this.isShown) {
-                    	getScreen().notifyFocusSet(null);
+                    	if(getScreen() != null) {
+            				getScreen().notifyFocusSet(this);
+            			} else {
+            				Display.getInstance().notifyFocusSet(this);
+            			}
                     }
                     if (text != null) {
                         this.editField.setText(text);
@@ -2008,7 +2012,11 @@ public class TextField extends StringItem
 					setConstraints(this.constraints);
 				}
 				if (this.isFocused) {
+					if(getScreen() != null) {
 					getScreen().notifyFocusSet(this);
+				} else {
+					Display.getInstance().notifyFocusSet(this);
+				}
 				}
 			}
 			else

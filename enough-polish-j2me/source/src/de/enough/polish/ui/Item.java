@@ -3958,7 +3958,11 @@ public abstract class Item implements UiElement, Animatable
 		//#endif
 		//#if polish.blackberry
 			if (this.isFocused  && this._bbField != null) {
-				getScreen().notifyFocusSet(this);
+				if(getScreen() != null) {
+					getScreen().notifyFocusSet(this);
+				} else {
+					Display.getInstance().notifyFocusSet(this);
+				}
 			}
 		//#endif
 		//#if tmp.handleEvents
