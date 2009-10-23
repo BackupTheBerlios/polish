@@ -1,7 +1,5 @@
 package de.enough.skylight.dom.impl;
 
-import org.mozilla.javascript.ScriptableObject;
-
 import de.enough.polish.util.ArrayList;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.NodeList;
@@ -12,27 +10,19 @@ import de.enough.skylight.dom.NodeList;
  * @author rickyn
  *
  */
-public class NodeListImpl extends ScriptableObject implements NodeList {
+public class NodeListImpl implements NodeList {
 
 	private ArrayList nodeList = new ArrayList();
 	private int index;
 	
-	public String getClassName() {
-		return "NodeList";
-	}
-
 	public int getLength() {
 		return this.nodeList.size();
 	}
 
 	public DomNode item(int index) {
-		return internalGetItem(index);
+		return (DomNode)this.nodeList.get(index);
 	}
 
-	protected DomNodeImpl internalGetItem(int index) {
-		return (DomNodeImpl)this.nodeList.get(index);
-	}
-	
 	public void add(DomNodeImpl childNode) {
 		this.nodeList.add(childNode);
 	}
@@ -47,6 +37,7 @@ public class NodeListImpl extends ScriptableObject implements NodeList {
 		}
 	}
 
+	// These methods should help with an iterator style list.
 	public void setIndex(int index) {
 		this.index = index;
 	}

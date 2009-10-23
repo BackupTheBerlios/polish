@@ -103,9 +103,9 @@ public interface NamedNodeMap {
      *   Document does not support XML Namespaces (such as [<a href='http://www.w3.org/TR/1999/REC-html401-19991224/'>HTML 4.01</a>]). 
      * @since DOM Level 2
      */
-    public DomNode getNamedItemNS(String namespaceURI, 
-                               String localName)
-                               throws DomException;
+//    public DomNode getNamedItemNS(String namespaceURI, 
+//                               String localName)
+//                               throws DomException;
 
     /**
      * Adds a node using its <code>namespaceURI</code> and 
@@ -139,8 +139,8 @@ public interface NamedNodeMap {
      *   Document does not support XML Namespaces (such as [<a href='http://www.w3.org/TR/1999/REC-html401-19991224/'>HTML 4.01</a>]). 
      * @since DOM Level 2
      */
-    public DomNode setNamedItemNS(DomNode arg)
-                               throws DomException;
+//    public DomNode setNamedItemNS(DomNode arg)
+//                               throws DomException;
 
     /**
      * Removes a node specified by local name and namespace URI. A removed 
@@ -165,8 +165,8 @@ public interface NamedNodeMap {
      *   Document does not support XML Namespaces (such as [<a href='http://www.w3.org/TR/1999/REC-html401-19991224/'>HTML 4.01</a>]). 
      * @since DOM Level 2
      */
-    public DomNode removeNamedItemNS(String namespaceURI, 
-                                  String localName)
-                                  throws DomException;
+//    public DomNode removeNamedItemNS(String namespaceURI, 
+//                                  String localName)
+//                                  throws DomException;
 
 }

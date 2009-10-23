@@ -11,6 +11,7 @@ import org.mozilla.javascript.Script;
 import org.mozilla.javascript.Scriptable;
 
 import de.enough.polish.util.StreamUtil;
+import de.enough.skylight.dom.impl.DocumentImpl;
 import de.enough.skylight.dom.impl.DomParser;
 
 public class DocumentApiTest extends TestCase {
@@ -49,13 +50,13 @@ public class DocumentApiTest extends TestCase {
 	public void testA() throws FileNotFoundException, IOException {
 		
 		
-		Document document  = null;
+		DocumentImpl document  = null;
 		DomParser domParser = new DomParser();
 		String htmlDocument;
 		htmlDocument = StreamUtil.getString(new FileInputStream(HTML_PAGE_1), null, StreamUtil.DEFAULT_BUFFER);
-		document = domParser.parseTree(htmlDocument);
+		document = (DocumentImpl)domParser.parseTree(htmlDocument);
 		
-		this.scope.put("document", this.scope, document);
+		this.scope.put("document", this.scope, document.getScriptable());
 		
 		String code = "unitTest.run();";
 		Script script = this.context.compileString(code, "<cmd>", 1);

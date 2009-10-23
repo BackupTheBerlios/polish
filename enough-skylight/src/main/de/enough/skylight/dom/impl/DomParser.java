@@ -58,8 +58,7 @@ public class DomParser {
 	        throw new RuntimeException("Could not create xml parser."+exception);
 	    }
 	    DocumentImpl document = new DocumentImpl();
-	    document.init();
-	    
+	    document.init(document, null, "_DOCUMENT", null, DomNode.DOCUMENT_NODE);
 	    DomNodeImpl currentNode = document;
 	    String newName;
 	    int newType;
@@ -70,10 +69,10 @@ public class DomParser {
 	            newType = parser.getType();
 	            
 	            if(newType == SimplePullParser.START_TAG) {	
-	            	DomNodeImpl newNode = new DomNodeImpl();
 	            	NamedNodeMapImpl attributeMap = new NamedNodeMapImpl();
-	                newNode.init(document,currentNode,newName,attributeMap,DomNode.ELEMENT_NODE);
-	                attributeMap.init();
+	            	DomNodeImpl newNode = new ElementImpl();
+	            	
+	            	newNode.init(document,currentNode,newName,attributeMap,DomNode.ELEMENT_NODE);
 	                int attributeCount = parser.getAttributeCount(); 
 	                if (attributeCount > 0) {
 	                	
@@ -94,7 +93,8 @@ public class DomParser {
 	            
 	            else if(newType == SimplePullParser.TEXT) {
 	                String text = parser.getText();
-	                DomNodeImpl newNode = new DomNodeImpl();
+	                //TODO: Create a Text element here.
+	                DomNodeImpl newNode = new ElementImpl();
 	                newNode.init(document,currentNode,null,null,DomNode.TEXT_NODE);
 	                newNode.setNodeValue(text);
 	            }

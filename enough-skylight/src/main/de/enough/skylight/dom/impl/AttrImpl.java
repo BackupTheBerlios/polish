@@ -5,12 +5,15 @@ import org.mozilla.javascript.Scriptable;
 import de.enough.skylight.dom.Attr;
 import de.enough.skylight.dom.DomException;
 import de.enough.skylight.dom.DomNode;
+import de.enough.skylight.dom.impl.rhino.AttrScriptableObject;
+import de.enough.skylight.dom.impl.rhino.DocumentScriptableObject;
 
 public class AttrImpl extends DomNodeImpl implements Attr {
 
 	private DomNode parent;
 	private String name;
 	private String value;
+	private AttrScriptableObject scriptableObject;
 
 	protected void init(DomNodeImpl parent, String name, String value) {
 		// Do not pass the parent to the super constructor as we do not want to queue this attributes as a proper child of the parent.
@@ -19,10 +22,6 @@ public class AttrImpl extends DomNodeImpl implements Attr {
 		this.name = name;
 		this.value = value;
 		
-		defineProperty("name", this.name, READONLY|PERMANENT);
-		defineProperty("ownerElement", this.parent, READONLY|PERMANENT);
-		defineProperty("specified", null, READONLY|PERMANENT);
-		defineProperty("value", null, PERMANENT);
 		if("id".equals(name)) {
 			// This will update the cache so id getElementById lookups are faster.
 			// TODO: Put this more close to the actual adding of the attributes so we do not need to
@@ -32,22 +31,6 @@ public class AttrImpl extends DomNodeImpl implements Attr {
 		}
 	}
 	
-	public Object get(String name, Scriptable start) {
-		if("specified".equals(name)) {
-			return new Boolean(getSpecified());
-		}
-		if("value".equals(name)) {
-			return this.value == null?NOT_FOUND:this.value;
-		}
-		return super.get(name, start);
-	}
-
-	
-	
-	public String getClassName() {
-		return "Attr";
-	}
-
 	public String getName() {
 		return this.name;
 	}
@@ -68,6 +51,7 @@ public class AttrImpl extends DomNodeImpl implements Attr {
 		this.value = value;
 	}
 
+	@Override
 	public void toXmlString(StringBuffer buffer) {
 		buffer.append(this.name);
 		if(this.value != null) {
@@ -77,7 +61,14 @@ public class AttrImpl extends DomNodeImpl implements Attr {
 		}
 	}
 	
-	
+	@Override
+	public Scriptable getScriptable() {
+		if(this.scriptableObject == null) {
+			this.scriptableObject = new AttrScriptableObject();
+			this.scriptableObject.init(this);
+		}
+		return this.scriptableObject;
+	}
 	
 
 }

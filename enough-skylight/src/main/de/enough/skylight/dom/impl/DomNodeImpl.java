@@ -1,9 +1,6 @@
 package de.enough.skylight.dom.impl;
 
-import org.mozilla.javascript.BaseFunction;
-import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.ScriptableObject;
 
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.HashMap;
@@ -16,88 +13,43 @@ import de.enough.skylight.dom.EventListener;
 import de.enough.skylight.dom.NamedNodeMap;
 import de.enough.skylight.dom.NodeList;
 
-public class DomNodeImpl extends ScriptableObject implements DomNode {
+public abstract class DomNodeImpl implements DomNode {
 
-	final class AppendChildFunction extends BaseFunction {
-		public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
-			return appendChild((DomNode) args[0]);
-		}
-	}
-	final class ReplaceChildFunction extends BaseFunction {
-		public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
-			//TODO: Must the argument property be set in these call methods?
-			return replaceChild((DomNodeImpl)args[0], (DomNodeImpl)args[1]);
-		}
-	}
-	
 	private DomNodeImpl parent;
 	private String name;
 	private NamedNodeMapImpl attributes;
 	private int type;
 	protected NodeListImpl childList;
-	private String text;
-	private Document document;
+//	private String text;
+	private DocumentImpl document;
 	private String value;
 	private HashMap capturingListeners = new HashMap();
 	private HashMap bubblingListeners = new HashMap();
 
-	protected void init(Document document, DomNodeImpl parent, String name, NamedNodeMap attributes, int type) {
+	// TODO: init also all collection fields again and release all items in them.
+	public void init(DocumentImpl document, DomNodeImpl parent, String name, NamedNodeMapImpl attributes, int type) {
 		this.document = document;
 		this.parent = parent;
+		this.type = type;
+		this.childList = new NodeListImpl();
+		this.name = name;
+		if(attributes == null) {
+			this.attributes = new NamedNodeMapImpl();
+		} else {
+			this.attributes = attributes;
+		}
 
         if(this.parent != null) {
             this.parent.doAppendChild(this);
         }
-
-        this.name = name;
-        if(attributes == null) {
-        	this.attributes = new NamedNodeMapImpl();
-        	this.attributes.init();
-        } else {
-        	this.attributes = (NamedNodeMapImpl)attributes;
-        }
-        this.type = type;
-        this.childList = new NodeListImpl();
-        // TODO: Add all the other constants.
-        putConst("ELEMENT_NODE", this, new Integer(5));
-		defineProperty("nodeName", this.name, READONLY|PERMANENT);
-		defineProperty("nodeValue", null, PERMANENT);
-		defineProperty("nodeType", new Integer(this.type), READONLY|PERMANENT);
-		defineProperty("parentNode", this.parent, READONLY|PERMANENT);
-		defineProperty("childNodes", this.childList, READONLY|PERMANENT);
-		defineProperty("firstChild", null, READONLY|PERMANENT);
-		defineProperty("lastChild", null, READONLY|PERMANENT);
-		defineProperty("previousSibling", null, READONLY|PERMANENT);
-		defineProperty("nextSibling", null, READONLY|PERMANENT);
-		defineProperty("attributes", this.attributes, READONLY|PERMANENT);
-		defineProperty("ownerDocument", null, READONLY|PERMANENT);
-		defineProperty("namespaceURI", null, READONLY|PERMANENT);
-		defineProperty("prefix", null, PERMANENT);
-		defineProperty("localName", null, READONLY|PERMANENT);
-		defineProperty("insertBefore", null, PERMANENT);
-		defineProperty("replaceChild", new ReplaceChildFunction(), PERMANENT);
-		defineProperty("removeChild", null, PERMANENT);
-		defineProperty("appendChild", new AppendChildFunction(), PERMANENT);
-		defineProperty("hasChildNodes", null, PERMANENT);
-		defineProperty("cloneNode", null, PERMANENT);
-		defineProperty("normalize", null, PERMANENT);
-		defineProperty("isSupported", null, PERMANENT);
-		defineProperty("hasAttributes", new BaseFunction() {
-			public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
-				return new Boolean(hasAttributes());
-			}
-			
-		}, PERMANENT);
 	}
+	
 	private void doAppendChild(DomNodeImpl childNode) {
 		this.childList.add(childNode);
 	}
-	//TODO: Should every property be PERMANENT?
-	public String getClassName() {
-		// TODO: What classname should a ScriptableDomNode have?
-		return "Node";
-	}
+	
 	public DomNode appendChild(DomNode newChild) throws DomException {
+		//TODO: We need handling for DocumentFragments.
 		DomNodeImpl newChildImpl = (DomNodeImpl)newChild;
 		this.childList.add(newChildImpl);
 		newChildImpl.doSetParent(this);
@@ -222,19 +174,6 @@ public class DomNodeImpl extends ScriptableObject implements DomNode {
 		buffer.append(">");
 	}
 	
-	public String toString() {
-		return this.name;
-	}
-	public void put(String name, Scriptable start, Object value) {
-//		System.out.println("DomNodeImpl.put(name, start, value): Enter. Name:"+name+"X");
-		super.put(name, start, value);
-	}
-	public Object get(String name, Scriptable start) {
-		if("parentNode".equals(name)) {
-			return this.parent;
-		}
-		return super.get(name, start);
-	}
 	public void addEventListener(String type, EventListener listener, boolean useCapture) {
 		if(useCapture) {
 			ArrayList listeners = (ArrayList) this.capturingListeners.get(type);
@@ -341,5 +280,7 @@ public class DomNodeImpl extends ScriptableObject implements DomNode {
 			}
 		}
 	}
+	
+	public abstract Scriptable getScriptable();
 
 }
