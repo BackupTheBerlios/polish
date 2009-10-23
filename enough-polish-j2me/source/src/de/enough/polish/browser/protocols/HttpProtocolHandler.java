@@ -69,6 +69,14 @@ public class HttpProtocolHandler extends ProtocolHandler
 		USER_AGENT = userAgent;
 		userAgentSet = true;
 	}
+	
+	/**
+	 * Returns the user agent string
+	 * @return the user agent string
+	 */
+	public static String getUserAgent() {
+		return USER_AGENT;
+	}
 
 	/**
 	 * Creates a new HttpProtocolHandler object with "http" as it's protocol.
@@ -113,7 +121,12 @@ public class HttpProtocolHandler extends ProtocolHandler
 		this.requestProperties = requestProperties;
 		if ( requestProperties.get("User-Agent") == null || userAgentSet)
 		{
-			requestProperties.put("User-Agent", USER_AGENT );
+			if(USER_AGENT != null) {
+				requestProperties.put("User-Agent", USER_AGENT );
+			} else {
+				requestProperties.remove("User-Agent");
+			}
+			 
 		}
 		if ( requestProperties.get("Accept") == null ) {
 			requestProperties.put("Accept", "text/html, text/xml, text/*, image/png, image/*, application/xhtml+xml, */*" );
