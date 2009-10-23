@@ -50,14 +50,25 @@ import javax.microedition.io.StreamConnection;
  */
 public class HttpProtocolHandler extends ProtocolHandler
 {
-	private static final String USER_AGENT = 
+	private static String USER_AGENT = 
 	//#if polish.Browser.UserAgent:defined
 		//#= 	"${polish.Browser.UserAgent}";
 	//#else
 				"J2ME-Polish/" + System.getProperty("microedition.platform");
 	//#endif
 
+	private static boolean userAgentSet = false;
+	
 	private HashMap requestProperties;
+	
+	/**
+	 * Sets the USER_AGENT string used for the request header
+	 * @param userAgent the USER_AGENT string to set
+	 */
+	public static void setUserAgent(String userAgent) {
+		USER_AGENT = userAgent;
+		userAgentSet = true;
+	}
 
 	/**
 	 * Creates a new HttpProtocolHandler object with "http" as it's protocol.
@@ -100,7 +111,7 @@ public class HttpProtocolHandler extends ProtocolHandler
 			requestProperties = new HashMap();
 		}
 		this.requestProperties = requestProperties;
-		if ( requestProperties.get("User-Agent") == null )
+		if ( requestProperties.get("User-Agent") == null || userAgentSet)
 		{
 			requestProperties.put("User-Agent", USER_AGENT );
 		}
