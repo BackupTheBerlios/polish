@@ -149,31 +149,33 @@ public class ScrollBar extends Item {
 		}
 		int lastSliderY = this.sliderY;
 		int lastSliderHeight = this.sliderHeight;
+		int nextSliderY;
+		int nextSliderHeight;
 		this.isVisible = true;
 		this.scrollBarHeight = screenAvailableHeight;
 		//#if polish.css.scrollbar-slider-mode
 			if ( this.sliderMode == MODE_ITEM && focusedIndex != -1) {
 				//System.out.println("using item");
 				int chunkPerSlider = (screenAvailableHeight << 8) / numberOfItems; 
-				this.sliderY = (chunkPerSlider * focusedIndex) >>> 8;
-				this.sliderHeight = chunkPerSlider >>> 8;
+				nextSliderY = (chunkPerSlider * focusedIndex) >>> 8;
+				nextSliderHeight = chunkPerSlider >>> 8;
 			} else if ( this.sliderMode == MODE_AREA && selectionHeight != 0 ) {
 				// take the currently selected area
 				//System.out.println("using area");
-				this.sliderY = ( (selectionStart - contentYOffset) * screenAvailableHeight) / screenContentHeight;
-				this.sliderHeight = (selectionHeight * screenAvailableHeight) / screenContentHeight;					
+				nextSliderY = ( (selectionStart - contentYOffset) * screenAvailableHeight) / screenContentHeight;
+				nextSliderHeight = (selectionHeight * screenAvailableHeight) / screenContentHeight;					
 			} else {
 		//#endif
 				// use the page dimensions:
 				//System.out.println("using page");
-				this.sliderY = (-contentYOffset  * screenAvailableHeight) / screenContentHeight;
-				this.sliderHeight = (screenAvailableHeight * screenAvailableHeight) / screenContentHeight;
+				nextSliderY = (-contentYOffset  * screenAvailableHeight) / screenContentHeight;
+				nextSliderHeight = (screenAvailableHeight * screenAvailableHeight) / screenContentHeight;
 		//#if polish.css.scrollbar-slider-mode
 			}
 		//#endif
 		//#if polish.css.scrollbar-slider-image && polish.css.scrollbar-slider-image-repeat
 			if (this.repeatSliderImage && this.sliderImage != null ) {
-				if (this.sliderHeight > this.sliderImage.getHeight()) {
+				if (nextSliderHeight > this.sliderImage.getHeight()) {
 					this.repeatSliderNumber = this.sliderHeight / this.sliderImage.getHeight(); 
 				} else {
 					this.repeatSliderNumber = 1;
@@ -181,22 +183,30 @@ public class ScrollBar extends Item {
 			}
 		//#endif
 		//#debug
-		System.out.println("sliderY=" + this.sliderY + ", sliderHeight=" + this.sliderHeight);
+		System.out.println("sliderY=" + nextSliderY + ", sliderHeight=" + this.sliderHeight);
+		if (nextSliderY < 0) {
+			nextSliderHeight += nextSliderY;
+			nextSliderY = 0;
+		}
+		this.sliderY = nextSliderY;
 		if (!this.isInitialized || (this.scrollBarHeight != this.itemHeight) ) {
 			init( screenWidth, screenWidth, screenAvailableHeight );
 		}
 		this.itemHeight = this.scrollBarHeight;
 		//#if tmp.fadeout
-			if (lastSliderY != this.sliderY || lastSliderHeight != this.sliderHeight) {
+			if (lastSliderY != nextSliderY || lastSliderHeight != nextSliderHeight) {
 				this.opacityRgbData = null;
 				this.opacity = this.startOpacity;
 			}
 		//#endif
 			
 		// adjust slider height if it not visible
-		if(this.sliderHeight < this.sliderMinHeight) {
-			this.sliderHeight = this.sliderMinHeight;
+		if (nextSliderHeight < this.sliderMinHeight) {
+			nextSliderHeight = this.sliderMinHeight;
+		} else if (nextSliderHeight < 0) {
+			nextSliderHeight = 0;
 		}
+		this.sliderHeight = nextSliderHeight;
 			
 		return this.itemWidth;
 //		int w = this.itemWidth;
