@@ -6,7 +6,6 @@ import de.enough.skylight.dom.Attr;
 import de.enough.skylight.dom.DomException;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.impl.rhino.AttrScriptableObject;
-import de.enough.skylight.dom.impl.rhino.DocumentScriptableObject;
 
 public class AttrImpl extends DomNodeImpl implements Attr {
 

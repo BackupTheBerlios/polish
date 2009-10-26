@@ -8,6 +8,7 @@ import org.mozilla.javascript.ScriptableObject;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.Element;
 import de.enough.skylight.dom.impl.DocumentImpl;
+import de.enough.skylight.dom.impl.DomNodeImpl;
 import de.enough.skylight.dom.impl.ElementImpl;
 
 public class DocumentScriptableObject extends ScriptableObject {
@@ -37,7 +38,10 @@ public class DocumentScriptableObject extends ScriptableObject {
 			public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
 				ElementImpl element = (ElementImpl)getElementById((String)args[0]);
 				// TODO: NPE here!
-				return element.getScriptable();
+				if(element != null) {
+					return element.getScriptable();
+				}
+				return null;
 			}
 		}, EMPTY);
 	}
@@ -54,9 +58,9 @@ public class DocumentScriptableObject extends ScriptableObject {
 			// TODO: The handling of processing instructions in the DomParser is not existent. Implement something
 			// to test a node if it is a processing instruction.
 			for(int i = 0; i < numberChildren;i++) {
-				DomNode child = this.documentImpl.getChildNodes().item(i);
+				DomNodeImpl child = (DomNodeImpl)this.documentImpl.getChildNodes().item(i);
 				if(child.getNodeType() == DomNode.ELEMENT_NODE) {
-					return child;
+					return child.getScriptable();
 				}				
 			}
 			return null;

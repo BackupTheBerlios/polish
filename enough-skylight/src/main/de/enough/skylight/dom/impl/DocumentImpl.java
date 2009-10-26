@@ -45,8 +45,7 @@ public class DocumentImpl extends DomNodeImpl implements Document {
 	}
 
 	public Element getElementById(String elementId) {
-		// TODO Auto-generated method stub
-		return null;
+		return (Element) this.elementsById.get(elementId);
 	}
 
 	public NodeList getElementsByTagName(String tagname) {

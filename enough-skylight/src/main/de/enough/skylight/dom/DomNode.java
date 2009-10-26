@@ -1,7 +1,5 @@
 package de.enough.skylight.dom;
 
-import org.w3c.dom.DOMException;
-
 /**
  * This interface is based on org.w3c.dom.Node
  * The <code>Node</code> interface is the primary datatype for the entire 

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="j2mepolish" name="Skylight Browser">
+
+	<property file="${user.name}.properties" />
+	
+	<property  name="device" value="Generic/AnyPhone" />
+	<property  name="devices.production" value="Generic/AnyPhone" />
+	<property name="polish.home" location="../enough-polish-build" />
+	
+	<taskdef 
+		name="j2mepolish"
+		classname="de.enough.polish.ant.PolishTask" 
+		classpath="${polish.home}/bin/classes:${polish.home}/lib/jdom.jar" />
+
+    <target name="j2mepolish" depends="init" description="Build the project.">
+    	<j2mepolish>
+    		<info copyright="Copyright 2009 Enough Software GmbH &amp; Co. KG. All rights reserved." 
+    			description="The Skylight Browser"
+    			infoUrl="http://www.enough.de" 
+    			jarName="${polish.vendor}-${polish.name}-${polish.locale}-skylight.jar" 
+    			jarUrl="${deploy-url}${polish.jarName}"
+    			name="Skylight"
+    			vendorName="Enough Software GmbH &amp; Co. KG" 
+    			version="1.0.0"/>
+    		
+    		<deviceRequirements if="test">
+    			<requirement name="Identifier" value="${device}"/>
+    		</deviceRequirements>
+    		<deviceRequirements unless="test">
+    			<requirement name="Identifier" value="${devices.production}"/>
+    		</deviceRequirements>
+    
+    		<build fullscreen="menu"
+                    polishDir="../enough-polish-j2me/source/src" 
+                    usePolishGui="true">
+    			
+    			<midlet class="de.enough.skylight.midlet.Main" name="Main" />
+    			
+    			<!--
+    			<variables>
+    				<variable name="polish.Container.allowCycling" value="false" />
+    			</variables>
+    			-->
+    
+    			<sources>
+    			 <source dir="src/main" />
+    			 <source dir="midlet/main" />
+    			 <source dir="../enough-polish-rhino/source/src" />
+    			</sources>
+    			
+    			<obfuscator useDefaultPackage="false" name="ProGuard" unless="test">
+    				<keep class="de.enough.skylight.midlet.Main" />
+    			</obfuscator>
+    			
+    			<debug if="test" level="info" showLogOnError="true" verbose="true">
+    				<!--
+    				<filter level="debug" class="de.enough.polish.ui.ChoiceTextField" />
+    				-->
+    			</debug>
+    			
+    			<resources
+    				dir="resources"
+    				defaultexcludes="yes">
+    				
+    				<localization>
+    					<locale name="de" encoding="UTF8"/>
+    				</localization>
+    			</resources>
+    			<postcompiler name="java5" />
+    		</build>
+    		
+    		<emulator if="test" />
+    
+    	</j2mepolish>
+    </target>
+
+	<target name="test">
+		   <property name="test" value="true"/>
+	</target>
+	    
+	<target name="init">
+	       <property name="test" value="false"/>
+	       <property name="deploy-url" value=""/>
+	</target>
+	
+    <target name="clean" description="Removes all generated files. You should call [ant clean] whenever you made changes to devices.xml, vendors.xml or groups.xml" >
+    	   <delete dir="build"/>
+    	   <delete dir="dist"/>
+    </target>
+	
+    <target name="emulator" depends="test,j2mepolish" description="Convenient target to build the project and start the emulator." />
+    <target name="cleanbuild" depends="clean,j2mepolish" description="Convenient target to clean the project and build it." />
+
+</project>

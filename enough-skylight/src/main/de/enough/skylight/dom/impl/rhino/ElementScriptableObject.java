@@ -1,10 +1,8 @@
 package de.enough.skylight.dom.impl.rhino;
 
-import org.mozilla.javascript.ScriptableObject;
-
 import de.enough.skylight.dom.impl.ElementImpl;
 
-public class ElementScriptableObject extends ScriptableObject{
+public class ElementScriptableObject extends DomNodeScriptableObject{
 
 	private ElementImpl elementImpl;
 
@@ -14,6 +12,7 @@ public class ElementScriptableObject extends ScriptableObject{
 	}
 
 	public void init(ElementImpl elementImpl) {
+		super.init(elementImpl);
 		this.elementImpl = elementImpl;
 	}
 

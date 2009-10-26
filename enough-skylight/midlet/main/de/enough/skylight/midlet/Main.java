@@ -11,16 +11,19 @@ import de.enough.skylight.renderer.HtmlContainer;
 
 public class Main extends MIDlet{
 
+	@Override
 	protected void destroyApp(boolean arg0) throws MIDletStateChangeException {
 		// TODO Auto-generated method stub
 		
 	}
 
+	@Override
 	protected void pauseApp() {
 		// TODO Auto-generated method stub
 		
 	}
 
+	@Override
 	protected void startApp() throws MIDletStateChangeException {
 		Form form = new Form("HtmlContainer");
 		HtmlContainer htmlContainer = new HtmlContainer();
