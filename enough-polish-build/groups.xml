@@ -214,7 +214,8 @@
 		<capability name="OS" value="Symbian OS 8.0a" />
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
-		<capability name="JavaPackage" value="m3g, pdaapi, videoControlBeforePlayer" />		
+		<capability name="JavaPackage" value="m3g, pdaapi" />		
+		<capability name="Bugs" value="videoControlBeforePlayer" />
 	</group>
 
 	<group>
