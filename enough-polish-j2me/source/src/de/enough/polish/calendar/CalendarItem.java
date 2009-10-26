@@ -181,7 +181,7 @@ public class CalendarItem extends TableItem
 	public CalendarItem(Calendar cal, Style style)
 	{
 		// depending on the month up to 6 rows my be used, typically 5 are enough + 1 for the day abbreviations
-		//TODO where are the year and the month name shown?
+		//TODO where are the year and the month name shown? (right now the label is used)
 		super( 7, 7, style); 
 		this.calendar = cal;
 		
@@ -466,6 +466,18 @@ public class CalendarItem extends TableItem
 	public Date getSelectedDate()
 	{
 		return getSelectedCalendar().getTime();
+	}
+	
+	/**
+	 * Enables or disables the interactivity state of this calendar item.
+	 * @param isInteractive true when the item should be editable and selectable
+	 */
+	public void setEditable( boolean isInteractive ) {
+		if (isInteractive) {
+			setAppearanceMode( INTERACTIVE );
+		} else {
+			setAppearanceMode( PLAIN );
+		}
 	}
 
 }
