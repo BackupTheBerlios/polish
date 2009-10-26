@@ -550,7 +550,7 @@ public final class Font extends Object
 	 */
 	public int substringWidth( String str, int offset, int len)
 	{
-		return this.font.getAdvance( str.substring( offset, len ) );
+		return this.font.getAdvance( str.substring( offset, offset + len ) );
 	}
 
 }
