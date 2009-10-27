@@ -146,6 +146,9 @@ public class AnimationThread extends Thread
 						}
 						
 						if (repaintRegion.containsRegion()) {
+							//#debug repaint
+							System.out.println("repainting for " + repaintRegion);
+							
 							//System.out.println("AnimationThread: screen needs repainting");
 							//#debug debug
 							System.out.println("triggering repaint for screen " + screen + ", is shown: " + screen.isShown() );
