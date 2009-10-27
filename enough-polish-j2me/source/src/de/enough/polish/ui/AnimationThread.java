@@ -142,6 +142,9 @@ public class AnimationThread extends Thread
 								//System.out.println("animating " + animatable);
 								
 								animatable.animate(currentTime, repaintRegion);
+								
+								//#debug repaint
+								System.out.println("called animate for " + animatable + " : " + repaintRegion);
 							}
 						}
 						
