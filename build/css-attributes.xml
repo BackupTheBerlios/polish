@@ -4746,6 +4746,44 @@
 		values="normal, equal"
 		since="J2ME Polish 2.1.3"
 	/>
+	
+	<attribute
+		name="calendar-day-style"
+		type="style"
+		appliesTo="CalendarItem"
+		description="The style of a normal day within an CalendarItem."
+		id="405"
+		since="J2ME Polish 2.1.3"
+	/>
+
+	<attribute
+		name="calendar-weekday-style"
+		type="style"
+		appliesTo="CalendarItem"
+		description="The style of the weekday headings within an CalendarItem."
+		id="406"
+		since="J2ME Polish 2.1.3"
+	/>
+
+	<attribute
+		name="calendar-day-inactive-style"
+		type="style"
+		appliesTo="CalendarItem"
+		description="The style for days of the preceding or following month within an CalendarItem."
+		id="407"
+		since="J2ME Polish 2.1.3"
+	/>
+
+	<attribute
+		name="calendar-current-day-style"
+		type="style"
+		appliesTo="CalendarItem"
+		description="The style of the currently selected day within an CalendarItem."
+		id="408"
+		since="J2ME Polish 2.1.3"
+	/>
+
+
 
 <!--
 	<attribute
