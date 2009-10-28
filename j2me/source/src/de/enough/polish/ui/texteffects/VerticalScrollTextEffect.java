@@ -83,25 +83,17 @@ public class VerticalScrollTextEffect extends TextEffect{
 	{
 		this.isTextSensitive = true;
 	}
-
+	
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.TextEffect#animate(de.enough.polish.ui.Item, long, de.enough.polish.ui.ClippingRegion)
+	 * @see de.enough.polish.ui.TextEffect#animate()
 	 */
-	public void animate(Item parent, long currentTime,
-			ClippingRegion repaintRegion) {
-		super.animate(parent, currentTime, repaintRegion);
-		
-		if(this.textLines != null){
+	public boolean animate() {
+		if(this.textLines != null && this.textLines.length != 1){
+			long currentTime = System.currentTimeMillis();
 			
-			if(this.textLines.length == 1)
-			{
-				return;
-			}
-		
-			boolean addRepaintRegion = false;
 			if (this.stageTime == 0) {
 				this.stageTime = currentTime;
-				addRepaintRegion = true;
+				return true;
 			}
 			
 			// get the time passed since last animation
@@ -116,12 +108,11 @@ public class VerticalScrollTextEffect extends TextEffect{
 	
 						this.stageCurrent = STAGE_SCROLL;
 						this.stageTime = currentTime;
-						addRepaintRegion = true;
 					}
-					break;
+					return false;
 				case STAGE_SCROLL : 
 					this.lineOffset = getLineOffset(timePassed, this.lineHeight );
-					addRepaintRegion = true;
+					
 					// if the interval time has passed ... 
 					if (timePassed > this.stageInterval) {
 						//#debug debug
@@ -133,16 +124,11 @@ public class VerticalScrollTextEffect extends TextEffect{
 						this.stageCurrent = STAGE_SHOW;
 						this.stageTime = currentTime;
 					}
-					break;
+					return true;
 			};
-			
-			if (addRepaintRegion) {
-				parent.addRepaintArea(repaintRegion);
-			}
 		}
-		else {
-			return;
-		}
+		
+		return false;
 	}
 	
 	/**
