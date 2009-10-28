@@ -955,7 +955,7 @@ public class Display
 			{
 				ScreenChangeAnimation animation = (ScreenChangeAnimation)this.currentCanvas;
 				animation.abort();
-				if(animation.nextCanvas != null && animation.nextCanvas._isShown) {
+				if(animation.nextCanvas != null) {
 					animation.nextCanvas._hideNotify();
 				}
 			}
