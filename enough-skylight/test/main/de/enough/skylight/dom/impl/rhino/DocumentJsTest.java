@@ -38,9 +38,9 @@ public class DocumentJsTest extends TestCase {
 			script = this.context.compileString(jsTestDocument, jsFilePath, 1);
 			script.exec(this.context, this.scope);
 		} catch (FileNotFoundException e) {
-			throw new RuntimeException("Could not load file '"+jsFilePath+"'",e);
+			throw new RuntimeException("Could not load file '"+jsFilePath+"'."+e);
 		} catch (IOException e) {
-			throw new RuntimeException("Could not load file '"+jsFilePath+"'",e);
+			throw new RuntimeException("Could not load file '"+jsFilePath+"'."+e);
 		}
 		
 		

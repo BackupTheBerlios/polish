@@ -18,9 +18,9 @@ public class DocumentTest extends TestCase {
 		try {
 			htmlDocument = StreamUtil.getString(new FileInputStream(HtmlPages.HTML_PAGE_1), null, StreamUtil.DEFAULT_BUFFER);
 		} catch (FileNotFoundException e) {
-			throw new RuntimeException(e);
+			throw new RuntimeException(e.toString());
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			throw new RuntimeException(e.toString());
 		}
 		this.document = (DocumentImpl)domParser.parseTree(htmlDocument);
 		assertNotNull(this.document);
