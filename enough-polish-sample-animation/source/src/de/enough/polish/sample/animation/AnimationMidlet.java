@@ -125,16 +125,7 @@ public class AnimationMidlet extends MIDlet implements CommandListener{
         pressKeyText.setDefaultCommand(this.cmdSkipIntro);
         form.append(pressKeyText);
         form.setCommandListener(this);
-        
-        EventManager manager = EventManager.getInstance(); 
-        manager.remapEvent("intro-finish", introText1);
-        manager.remapEvent("intro-text1-finish", introText2);
-        if (imageItem != null) {
-        	manager.remapEvent("intro-text1-finish", imageItem);
-        }
-        manager.remapEvent("intro-text2-finish", introText3);
-        manager.remapEvent("show-press-key", pressKeyText);
-        
+                
         DeviceControl.lightOn();
         this.display.setCurrent(form);
     }
@@ -148,7 +139,11 @@ public class AnimationMidlet extends MIDlet implements CommandListener{
 			EventManager.getInstance().removeAllRemappings();
 			showMainMenu();
 		} else {
-			notifyDestroyed();
+			if (this.mainMenu != null && this.mainMenu.getSelectedIndex() == 0) {
+				showIntro();
+			} else {
+				notifyDestroyed();
+			}
 		}
 		
 	}
