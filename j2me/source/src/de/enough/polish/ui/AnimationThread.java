@@ -440,7 +440,9 @@ public class AnimationThread extends Thread
 		}
 
 		/**
-		 * @param force
+		 * Finishes or repeats the current animation.
+		 * @param force true when it should be finished in any case
+		 * @param currentTime the current time in ms
 		 */
 		protected void exitOrRepeat(boolean force, long currentTime)
 		{
@@ -448,7 +450,13 @@ public class AnimationThread extends Thread
 			if (force || this.repeats == 0 || this.repeats  == -2) {
 				AnimationThread.animationList.remove(this);
 				if (this.animation.fireEvent != null) {
-					EventManager.fireEvent(this.animation.fireEvent, this.uiElement, this.animation );
+					if (this.uiElement instanceof Item) {
+						UiAccess.fireEvent( this.animation.fireEvent, ((Item)this.uiElement).getScreen(), this.animation );
+					} else if (this.uiElement instanceof Screen) {
+						UiAccess.fireEvent( this.animation.fireEvent, (Screen)this.uiElement, this.animation );
+					} else {
+						EventManager.fireEvent(this.animation.fireEvent, this.uiElement, this.animation );
+					}
 				}
 			} else  {
 				if (this.repeats != -1) {
