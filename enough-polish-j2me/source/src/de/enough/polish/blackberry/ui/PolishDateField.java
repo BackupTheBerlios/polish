@@ -33,6 +33,7 @@ import de.enough.polish.ui.StyleSheet;
 import net.rim.device.api.i18n.DateFormat;
 import net.rim.device.api.system.Application;
 import net.rim.device.api.ui.component.DateField;
+import net.rim.device.api.ui.DrawStyle;
 import net.rim.device.api.ui.XYRect;
 import net.rim.device.api.i18n.SimpleDateFormat;
 
@@ -107,6 +108,7 @@ implements AccessibleField
 	
 	public static long getStyle(int inputMode) {
 		long style = EDITABLE;
+		style |= DrawStyle.LEFT;
 		switch (inputMode) {
 		case MIDP_DATE:
 			style |= DateField.DATE;
@@ -223,7 +225,7 @@ implements AccessibleField
 
 	public void setPaintPosition(int x, int y ) {
        this.isFocused = true;
-       super.setPosition(x, y);
+       super.setPosition(x - 1, y);
 	}
 
 	public void setInputMode(int mode) {
