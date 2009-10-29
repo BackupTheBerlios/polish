@@ -1377,13 +1377,17 @@ public class TextField extends StringItem
 					this.screen = getScreen();
 				}
 				synchronized (bbLock) {
+                    if (this.isFocused && this.isShown) {
+                    	// don't want to have endless loops of change events:
+                    	this.screen.notifyFocusSet(null);
+                    }
                     if (text != null) {
                         this.editField.setText(text);
                     } else {
                         this.editField.setText(""); // setting null triggers an IllegalArgumentException
                     }
                     if (this.isFocused && this.isShown) {
-                    	getScreen().notifyFocusSet(this);
+                    	this.screen.notifyFocusSet(this);
                     }
 				}
 			}
