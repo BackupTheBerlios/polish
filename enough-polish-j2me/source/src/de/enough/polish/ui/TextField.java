@@ -1377,13 +1377,6 @@ public class TextField extends StringItem
 					this.screen = getScreen();
 				}
 				synchronized (bbLock) {
-                    if (this.isFocused && this.isShown) {
-                    	if(getScreen() != null) {
-            				getScreen().notifyFocusSet(this);
-            			} else {
-            				Display.getInstance().notifyFocusSet(this);
-            			}
-                    }
                     if (text != null) {
                         this.editField.setText(text);
                     } else {
