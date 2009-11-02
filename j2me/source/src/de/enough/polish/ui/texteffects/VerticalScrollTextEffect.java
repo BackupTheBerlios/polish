@@ -84,6 +84,17 @@ public class VerticalScrollTextEffect extends TextEffect{
 		this.isTextSensitive = true;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.TextEffect#animate(de.enough.polish.ui.Item, long, de.enough.polish.ui.ClippingRegion)
+	 */
+	public void animate(Item parent, long currentTime, ClippingRegion repaintRegion) 
+	{
+		if (animate()) {
+			parent.addRelativeToContentRegion( repaintRegion, 0, 0, parent.itemWidth, parent.itemHeight );
+		}
+	}
+	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.TextEffect#animate()
 	 */
