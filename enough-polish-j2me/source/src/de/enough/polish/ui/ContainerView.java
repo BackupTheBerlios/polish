@@ -1462,5 +1462,16 @@ extends ItemView
 		return item.focus(focusedStyle, direction);
 	}
 
-
+	public void releaseResources() 
+	{
+		if(this.parentContainer != null)
+		{
+			this.parentContainer.isInitialized = false;
+		}
+		
+		//make sure parent item is dereferenced, else possible mem leak
+		this.parentContainer = null;
+		
+		super.releaseResources();
+	}
 }

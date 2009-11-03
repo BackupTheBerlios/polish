@@ -523,12 +523,15 @@ public abstract class ItemView implements Serializable{
 	 * Releases all resources that are not required to keep the state of this view.
 	 * The default implementation does free nothing and only sets the "isInitialized" flag if the parent item.
 	 */
-	public void releaseResources(){
-		// do nothing
+	public void releaseResources()
+	{
 		if(this.parentItem != null)
 		{
 			this.parentItem.isInitialized = false;
 		}
+		
+		//make sure parent item is dereferenced, else possible mem leak
+		this.parentItem = null;
 	}
 	
 	/**
