@@ -4040,6 +4040,14 @@ public abstract class Item implements UiElement, Animatable
 		if (this.background != null) {
 			this.background.releaseResources();
 		}
+		if(null != this.itemCommandListener)
+			this.itemCommandListener = null;
+		if(null != this.itemStateListener)
+			this.itemStateListener = null;
+		if(null != this.parent)
+			this.parent = null;
+		if(null != this.screen)
+			this.screen = null;
 		//#ifdef polish.css.view-type
 			if (this.view != null) {
 				this.view.releaseResources();
