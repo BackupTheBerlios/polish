@@ -168,7 +168,16 @@ public class RedirectHttpConnection implements HttpConnection
 					|| resultCode == HttpConnection.HTTP_SEE_OTHER
 					|| resultCode == HttpConnection.HTTP_TEMP_REDIRECT)
 			{
-				url = tmpHttpConnection.getHeaderField("Location");
+				String tmpUrl = tmpHttpConnection.getHeaderField("Location");
+
+				// Check if url is relative.
+				if (!tmpUrl.startsWith("http://") && !tmpUrl.startsWith("https://") ) {
+					url += tmpUrl; 
+				}
+				else {
+					url = tmpUrl;
+				}
+
 				tmpIn.close(); // close input stream - needed for moto devices,
 								// for example
 				tmpHttpConnection.close();
