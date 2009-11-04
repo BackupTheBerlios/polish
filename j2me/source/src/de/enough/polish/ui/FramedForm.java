@@ -1377,6 +1377,27 @@ public class FramedForm extends Form {
 			this.bottomFrame.onScreenSizeChanged(width, height);
 		}
 	}
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#releaseResources()
+	 */
+	public void releaseResources() {
+		super.releaseResources();
+		
+		if (this.leftFrame != null) {
+			this.leftFrame.releaseResources();
+		}
+		if (this.rightFrame != null) {
+			this.rightFrame.releaseResources();
+		}
+		if (this.topFrame != null) {
+			this.topFrame.releaseResources();
+		}
+
+		if (this.bottomFrame != null) {
+			this.bottomFrame.releaseResources();
+		}
+	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Screen#destroy()
