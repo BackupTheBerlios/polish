@@ -1462,16 +1462,26 @@ extends ItemView
 		return item.focus(focusedStyle, direction);
 	}
 
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.ItemView#releaseResources()
+	 */
 	public void releaseResources() 
 	{
+		super.releaseResources();
+		
 		if(this.parentContainer != null)
 		{
 			this.parentContainer.isInitialized = false;
 		}
-		
+	}
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.ItemView#destroy()
+	 */
+	public void destroy() {
+		releaseResources();
+
 		//make sure parent item is dereferenced, else possible mem leak
 		this.parentContainer = null;
-		
-		super.releaseResources();
 	}
 }

@@ -3551,6 +3551,26 @@ public class Container extends Item {
 			}
 		//#endif
 	}
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#destroy()
+	 */
+	public void destroy() {
+		super.destroy();
+		Item[] items = getItems();
+		for (int i = 0; i < items.length; i++)
+		{
+			Item item = items[i];
+			item.destroy();
+		}
+		
+		//#ifdef tmp.supportViewType
+		if (this.containerView != null) {
+			this.containerView.destroy();
+			this.containerView = null;
+		}
+		//#endif
+	}
 
 	/**
 	 * Retrieves the internal array with all managed items embedded in this container, some entries might be null.

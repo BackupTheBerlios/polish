@@ -529,6 +529,13 @@ public abstract class ItemView implements Serializable{
 		{
 			this.parentItem.isInitialized = false;
 		}
+	}
+	
+	/**
+	 * Destroys the containerview by removing references to the parent item
+	 */
+	public void destroy() {
+		releaseResources();
 		
 		//make sure parent item is dereferenced, else possible mem leak
 		this.parentItem = null;
