@@ -198,6 +198,9 @@ public class AnimationThread extends Thread
 					
 					this.totalDelta = (System.currentTimeMillis() - currentTime) - ANIMATION_INTERVAL;
 				} else {
+					// sleep to avoid restless loop
+					Thread.sleep(SLEEP_INTERVAL);
+					
 					if (releaseResourcesOnScreenChange) {
 						StyleSheet.releaseResources();
 						releaseResourcesOnScreenChange = false;
