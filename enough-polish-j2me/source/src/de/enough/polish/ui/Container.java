@@ -3557,7 +3557,11 @@ public class Container extends Item {
 	 */
 	public void destroy() {
 		super.destroy();
+		
 		Item[] items = getItems();
+		
+		clear();
+		
 		for (int i = 0; i < items.length; i++)
 		{
 			Item item = items[i];

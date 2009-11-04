@@ -5356,17 +5356,7 @@ implements UiElement, Animatable
 			if (this.container != null) {
 				this.container.releaseResources();
 			}
-			if(null != screenStateListener)
-				screenStateListener = null;
-			
-			if(null != itemStateListener)
-				itemStateListener = null;
-			
-			if(null != forwardCommandListener)
-				forwardCommandListener = null;
-			
-			if(null != realCommandListener)
-				realCommandListener = null;			
+					
 			//#ifdef tmp.menuFullScreen
 				//#ifdef tmp.useExternalMenuBar
 					this.menuBar.releaseResources();
@@ -5385,6 +5375,31 @@ implements UiElement, Animatable
 				}
 			//#endif
 			this.isResourcesReleased = true;
+		}
+	}
+	
+	/**
+	 * Destroys the screen
+	 */
+	public void destroy() {
+		releaseResources();
+		
+		this.container.destroy();
+		
+		if(this.screenStateListener != null) {
+			this.screenStateListener = null;
+		}
+		
+		if(this.itemStateListener != null) {
+			this.itemStateListener = null;
+		}
+		
+		if(this.forwardCommandListener != null ) {
+			this.forwardCommandListener = null;
+		}
+		
+		if(this.realCommandListener != null) {
+			this.realCommandListener = null;	
 		}
 	}
 

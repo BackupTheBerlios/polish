@@ -1377,6 +1377,29 @@ public class FramedForm extends Form {
 			this.bottomFrame.onScreenSizeChanged(width, height);
 		}
 	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#destroy()
+	 */
+	public void destroy() {
+		super.destroy();
+		
+		if (this.leftFrame != null) {
+			this.leftFrame.destroy();
+		}
+		if (this.rightFrame != null) {
+			this.rightFrame.destroy();
+		}
+		if (this.topFrame != null) {
+			this.topFrame.destroy();
+		}
+
+		if (this.bottomFrame != null) {
+			this.bottomFrame.destroy();
+		}
+	}
+	
+	
 	
 	
 
