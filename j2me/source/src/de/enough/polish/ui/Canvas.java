@@ -935,6 +935,12 @@ implements Displayable
     	this._isShown = false;
     	hideNotify();
     }
+    
+	protected void _hideNotifyExternal() {
+		_hideNotify();
+		hideNotifyExternal();
+	}
+
 
     /**
      * The implementation calls <code>showNotify()</code>
@@ -967,6 +973,15 @@ implements Displayable
     {
         // do nothing
     }
+    
+	/**
+	 * Allows subclasses to react to external hide notifications much easier.
+	 * An external hide notification can originate from incoming phone calls or security prompts, for example.
+	 * The default implementation does nothing.
+	 */
+	protected void hideNotifyExternal() {
+		// subclasses may override this
+	}
 
     /**
      * Renders the <code>Canvas</code>. The application must implement

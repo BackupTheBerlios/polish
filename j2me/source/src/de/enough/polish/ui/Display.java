@@ -1875,7 +1875,7 @@ public class Display
 			}
 		//#endif
 		if (this.currentCanvas != null) { 
-			this.currentCanvas._hideNotify();
+			this.currentCanvas._hideNotifyExternal();
 		}
 	}
 	
