@@ -280,7 +280,7 @@ public class ContactImpl implements Contact {
 	public String[] getStringArray(int fieldId, int index) {
 		FieldInfo fieldInfo = findFieldInfo(fieldId);
 		if(fieldInfo == null) {
-			throw new UnsupportedFieldException();
+			throw new UnsupportedFieldException("There is no field with id '"+fieldId+"'");
 		}
 		if(PIMItem.STRING_ARRAY != fieldInfo.type) {
 			throw new IllegalArgumentException("The field 'fieldId' is not of type PIMItem.STRING_ARRAY");
@@ -468,7 +468,7 @@ public class ContactImpl implements Contact {
 	 * @param fieldId
 	 * @param type
 	 * @return
-	 * @throws UnsupportedFieldException if the field itself is available for this class
+	 * @throws UnsupportedFieldException if the field itself is not available for this class
 	 * @throws IllegalArgumentException if the type of the field is not valid
 	 */
 	private void checkFieldType(FieldInfo fieldInfo, int type) {
