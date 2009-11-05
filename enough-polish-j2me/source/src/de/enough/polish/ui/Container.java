@@ -2725,10 +2725,10 @@ public class Container extends Item {
 				target = offset;
 				int maxItemHeight = getItemAreaHeight();
 				Screen scr = this.screen;
-				Style myStyle = this.style;
-				if (myStyle != null) {
-					maxItemHeight -= myStyle.getPaddingTop(this.availableHeight) + myStyle.getPaddingBottom(this.availableHeight) + myStyle.getMarginTop(this.availableHeight) + myStyle.getMarginBottom(this.availableHeight);
-				}
+//				Style myStyle = this.style;
+//				if (myStyle != null) {
+//					maxItemHeight -= myStyle.getPaddingTop(this.availableHeight) + myStyle.getPaddingBottom(this.availableHeight) + myStyle.getMarginTop(this.availableHeight) + myStyle.getMarginBottom(this.availableHeight);
+//				}
 				if (scr != null 
 						&& this == scr.container 
 						&& this.relativeY > scr.contentY 
