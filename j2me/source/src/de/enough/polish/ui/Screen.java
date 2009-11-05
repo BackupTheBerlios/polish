@@ -3446,26 +3446,7 @@ implements UiElement, Animatable
 						return;
 					}
 				//#endif
-				//#if tmp.menuFullScreen && polish.key.ReturnKey:defined
-					if (!processed) {
-						int backKey = 0;
-						//#= backKey = ${polish.key.ReturnKey};
-						if ( (keyCode == backKey)) {
-							Command cmd = this.backCommand;
-							//#ifdef tmp.useExternalMenuBar
-								if (cmd == null && this.menuBar.size() == 1 && this.menuBar.getCommand(0).getCommandType() == Command.OK ) {
-									cmd = this.menuBar.getCommand(0);
-								}
-							//#endif
-							if (cmd != null) {
-								//#debug
-								System.out.println("keyPressed: invoking commandListener for " + cmd.getLabel() );
-								callCommandListener( cmd );
-								processed = true;
-							}
-						}
-					}
-				//#endif
+
 				//#if tmp.trackKeyUsage
 					this.keyPressedProcessed = processed;
 				//#endif
@@ -3632,6 +3613,26 @@ implements UiElement, Animatable
 						if (!processed && keyCode == clearKey && this.cancelCommand != null) {
 							callCommandListener(this.cancelCommand);
 							processed = true;
+						}
+					//#endif
+					//#if polish.key.ReturnKey:defined
+						if (!processed) {
+							int backKey = 0;
+							//#= backKey = ${polish.key.ReturnKey};
+							if ( (keyCode == backKey)) {
+								Command cmd = this.backCommand;
+								//#ifdef tmp.useExternalMenuBar
+									if (cmd == null && this.menuBar.size() == 1 && this.menuBar.getCommand(0).getCommandType() == Command.OK ) {
+										cmd = this.menuBar.getCommand(0);
+									}
+								//#endif
+								if (cmd != null) {
+									//#debug
+									System.out.println("keyPressed: invoking commandListener for " + cmd.getLabel() );
+									callCommandListener( cmd );
+									processed = true;
+								}
+							}
 						}
 					//#endif
 				//#endif
