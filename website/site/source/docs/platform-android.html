@@ -138,14 +138,14 @@ Command cmdNext = new Command( "Next", Command.SCREEN, 2 );
 
 <h2 id="android-APIs">Supported APIs</h2>
 <p>
-A couple of common J2ME APIs are now supported by J2ME Polish:
+The following common J2ME APIs are supported by J2ME Polish:
 </p>
 <ul>
 	<li><b>JSR 139 CLDC 1.1</b>: The basic Java technologies are provided by the Android stack itself</li>
 	<li><b>JSR 118 MIDP 2.0</b>: The basic mobile information device profile APIs are supported, including RMS, low level LCDUI functionalities, HTTP connections, and <code>http:</code> and <code>tel:</code> platform requests</li>
-	<li><b>JSR 075 FileConnection</b>: You can access file objects on Android</li>
-	<li><b>JSR 075 PIM</b>: Read the native address book</li>
-	<li><b>JSR 179 Location</b>: Access the GPS on Android devices</li>
+	<li><b>JSR 075 FileConnection</b>: Access the filesystem on the device.</li>
+	<li><b>JSR 075 PIM</b>: Read information from the native address book.</li>
+	<li><b>JSR 179 Location</b>: Access GPS information.</li>
 </ul>
 <p>
 For playing back audio please use the <code>de.enough.polish.multimedia.AudiPlayer</code> for now. Direct usage of the MMAPI is not yet supported.
@@ -188,8 +188,8 @@ and rerun the build process. If the error occurs again, increase the settings fo
 </pre>
 <p>
 	This works fine but the Android Virtual Machine cannot cope with several variables having the same name but different types.
-	Obfuscators can produce such 'naming shadowing' since this is allowed in Java bytecode. In case you are encountering such
-	problems, please either use the library in source code or ask the vendor of the library to provide a version without name shadowing. 
+	Obfuscators can produce such 'name shadowing' as this is allowed in Java bytecode. In case you are encountering such
+	problems, please either use the library in source code or ask the vendor of the library to provide a version without overloaded variable names. 
 </p>
 
 <%include end.txt %>
