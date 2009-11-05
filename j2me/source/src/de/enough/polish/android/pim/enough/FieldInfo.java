@@ -4,6 +4,11 @@
  */
 package de.enough.polish.android.pim.enough;
 
+/**
+ * This class describes a field in the JavaME PIM API.
+ * @author rickyn
+ *
+ */
 class FieldInfo {
 	public static final int DEFAULT_PREFERRED_INDEX = -1;
 	public static final int DEFAULT_NUMBER_OF_ARRAYELEMENTS = 0;

@@ -66,7 +66,7 @@ public class ContactListImpl implements ContactList {
 	}
 
 	public Contact createContact() {
-		ContactImpl contact = new ContactImpl(-1,this);
+		ContactImpl contact = new ContactImpl(this);
 		return contact;
 	}
 
@@ -223,6 +223,12 @@ public class ContactListImpl implements ContactList {
 		return findFieldInfo(fieldId,true);
 	}
 	
+	/**
+	 * 
+	 * @param fieldId
+	 * @param throwException
+	 * @return May return null if no field with the given id is present and now exception should be thrown.
+	 */
 	FieldInfo findFieldInfo(int fieldId, boolean throwException) {
 		for (int i = 0; i < fieldInfos.length; i++) {
 			FieldInfo fieldInfo = fieldInfos[i];
