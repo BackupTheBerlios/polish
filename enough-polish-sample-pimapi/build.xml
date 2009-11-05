@@ -1,0 +1,132 @@
+<!-- This file controls the build process.                    -->
+<!-- The most important target is the j2mepolish-target,      -->
+<!-- which controls for what devices the application should   -->
+<!-- be created and so on.                                    -->
+<!--                                                          -->
+<!-- Important: when you have no Wireless Toolkit installed   -->
+<!-- you need to define the "preverify"-attribute             -->
+<!-- of the <build>-element of the J2ME Polish task.          -->
+<!--                                                          -->
+<!-- When you call Ant from the command-line, you can         -->
+<!-- call "ant test j2mepolish" to skip the obfuscation       -->
+<!-- and to build the example for fewer handsets.             -->
+<!-- The default target builds and obfuscates the example.    -->
+<!--                                                          -->
+<!-- The full documentation can be found at                   -->
+<!-- http://www.j2mepolish.org                                -->
+<!--                                                          -->
+<!-- Have fun!                                                -->
+<project 
+	name="enough-j2mepolish-pimapi" 
+	default="j2mepolish">
+	
+	<property file="${user.name}.properties" />
+	
+	<property name="polish.home" location="" />
+	
+	<property file="${polish.home}/global.properties" />
+
+	<property name="device" value=""/>
+	<property name="devices" value=""/>
+	
+	<taskdef name="j2mepolish" 
+		classname="de.enough.polish.ant.PolishTask" 
+		classpath="${polish.home}/bin/classes:${polish.home}/lib/jdom.jar"
+	/>
+		
+	<target name="enableDebug" 
+		description="Call this target first to skip the obfuscation step, call the emulator and start the debugger, e.g. ant enableDebug j2mepolish"
+		>
+		<property name="debug" value="true" />
+	</target>
+	
+		
+	<target name="test" 
+		description="Call this target first to skip the obfuscation step and call the emulator, e.g. ant test j2mepolish"
+		>
+		<property name="test" value="true" />
+		<property name="dir.work" value="build/test" />
+	</target>
+			
+	<target name="init">
+	  	<property name="test" value="false" />
+		<property name="dir.work" value="build/real" />
+		<property name="deploy-url" value="" />
+		<property name="resource.dir" value="resources" />
+	</target>
+	 
+	<target name="j2mepolish" 
+			depends="init"
+			description="This is the controller for the J2ME build process." 
+			>
+		<j2mepolish>
+			<info
+				name="PimApiSample"
+				version="1.0.0"
+				description="A sample project to show the PIM API."
+				vendorName="Enough Software"
+				infoUrl="http://www.j2mepolish.org"
+				jarName="${polish.vendor}-${polish.name}-${polish.locale}-pimapi.jar" 
+				jarUrl="${deploy-url}${polish.jarName}"
+				copyright="Copyright 2009 Enough Software. All rights reserved."
+				icon="icon.png"
+			/>
+			<deviceRequirements if="test">
+				<requirement name="Identifier" value="${device}" />
+			</deviceRequirements>
+			<deviceRequirements unless="test">
+				<requirement name="Identifier" value="${devices}" />
+			</deviceRequirements>
+			<build
+				symbols="ExampleSymbol, AnotherExample"
+				fullscreen="menu"
+				usePolishGui="true"
+				workDir="${dir.work}"
+			>
+				<postcompiler name="java5" />
+				<midlet class="de.enough.polish.sample.pimapi.PimApiMidlet" name="PimApi" />
+				<resources
+					dir="${resource.dir}"
+					defaultexcludes="yes"
+					excludes="readme.txt"
+				>
+				</resources>
+				<debug if="test" showLogOnError="true" verbose="true" level="error">
+					<filter pattern="de.enough.polish.android.*" level="debug" />
+					<filter pattern="de.enough.polish.ui.*" level="warn" />
+				</debug>
+			</build>
+			
+			<emulator
+				wait="true"
+				trace="none"
+				securityDomain="maximum"
+				enableProfiler="false"
+				enableMemoryMonitor="false"
+				enableNetworkMonitor="false"
+				if="test and not debug">
+			</emulator>
+		</j2mepolish>
+	</target>
+	
+	<target 
+		name="emulator"
+		depends="test,j2mepolish"
+		description="invokes the emulator">
+	</target>
+
+	<target name="clean" 
+	  		description="allows a clean build. You should call [ant clean] whenever you made changes to devices.xml, vendors.xml or groups.xml">
+		<delete dir="build" />
+		<delete dir="dist" includes="**/*" />
+	</target>
+
+	<target  
+		name="cleanbuild"
+		description="allows a clean build. You should call [ant cleanbuild] whenever you made changes to devices.xml, vendors.xml or groups.xml"
+		depends="clean, j2mepolish"
+	/>
+	
+    <target name="debug" description="debug the project" depends="enableDebug, test, j2mepolish" />
+
+</project>

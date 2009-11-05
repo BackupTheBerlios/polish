@@ -1,0 +1,30 @@
+colors {
+    fontColor: rgb( 30, 85, 86 );
+    focusedFontColor: #000;
+    bgColor:  #eee;
+    focusedBgColor:  #fff;
+    borderColor: fontColor;
+    focusedBorderColor: focusedFontColor;   
+}
+
+title {
+    padding: 2;
+    font-face: proportional;
+    font-size: large;
+    font-style: bold;
+    font-color: focusedFontColor;
+    background-color: bgColor;
+    border: none;
+    layout: horizontal-center | horizontal-expand;
+    text-effect: vertical-gradient;
+    text-vertical-gradient-start-color: #ddd;
+    text-vertical-gradient-end-color: #000;     
+}
+
+menubar {
+    margin: 0;
+    padding-top: 3;
+    padding: 2;
+    background-color: bgColor;
+}
+
