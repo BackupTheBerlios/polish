@@ -31,22 +31,20 @@ public class Benchmark {
 	 */
 	public static void start(String key)
 	{
-		Benchmark benchmark = new Benchmark();
+		Benchmark benchmark = (Benchmark)benchmarks.get(key);
+		
+		if(benchmark == null) {
+			benchmark = new Benchmark();
+		}
 		
 		benchmark.setTime(System.currentTimeMillis());
 		
 		benchmarks.put(key, benchmark);
 	
-		//#debug benchmark
 		 System.out.println(key + " : started");
 	}
 	
-	/**
-	 * Finishes a benchmark with the given key
-	 * @param key the keys
-	 */
-	public static void finish(String key)
-	{
+	public static void stop(String key, String name) {
 		Benchmark benchmark = (Benchmark)benchmarks.get(key);
 		
 		if(benchmark == null)
@@ -57,10 +55,7 @@ public class Benchmark {
 		long time = System.currentTimeMillis() - benchmark.getTime();
 		String formattedTime = getFormattedTime(time);
 
-		//#debug benchmark
-		System.out.println(key + " : finished : " + formattedTime + " seconds");
-		
-		benchmarks.remove(key);
+		System.out.println(key + " : " + name + ": " + formattedTime + " seconds");
 	}
 	
 	/**
@@ -69,7 +64,6 @@ public class Benchmark {
 	 */
 	public static void info(String info)
 	{
-		//#debug benchmark
 		System.out.println(info);
 	}
 
