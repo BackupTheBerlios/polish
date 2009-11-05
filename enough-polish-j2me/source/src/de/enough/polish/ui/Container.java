@@ -3556,11 +3556,11 @@ public class Container extends Item {
 	 * @see de.enough.polish.ui.Item#destroy()
 	 */
 	public void destroy() {
-		super.destroy();
-		
 		Item[] items = getItems();
 		
 		clear();
+		
+		super.destroy();
 		
 		for (int i = 0; i < items.length; i++)
 		{
