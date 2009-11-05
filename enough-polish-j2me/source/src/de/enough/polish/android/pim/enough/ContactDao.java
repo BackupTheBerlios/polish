@@ -10,7 +10,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.Contacts;
 import android.provider.Contacts.People;
-import de.enough.polish.android.midlet.MIDlet;
 import de.enough.polish.android.midlet.MidletBridge;
 import de.enough.polish.android.pim.Contact;
 import de.enough.polish.android.pim.PIMItem;
@@ -29,9 +28,9 @@ public class ContactDao {
 	 * 
 	 * @return A Vector containing ContactImpl objects.
 	 */
-	public Vector getAllContacts() {
+	public Vector<Contact> getAllContacts() {
 		Cursor peopleCursor = this.contentResolver.query(People.CONTENT_URI, null, null, null, null);
-		Vector contacts = new Vector();
+		Vector<Contact> contacts = new Vector<Contact>();
 		while(peopleCursor.moveToNext()) {
 			ContactImpl contact = getContactFromCursor(peopleCursor);
 			contacts.addElement(contact);
