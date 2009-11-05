@@ -1572,7 +1572,11 @@ class BaseScreenManager extends Manager {
 		for (int i=0; i<getFieldCount(); i++) {
 			Field field = getField(i);
 			if (currentItem != null && field == currentItem._bbField) {
-				layoutChild( field, currentItem.itemWidth, currentItem.itemHeight);
+				int itemW = currentItem.getContentWidth();
+				if (itemW == 0) {
+					itemW = currentItem.itemWidth;
+				}
+				layoutChild( field, itemW, currentItem.itemHeight);
 				setPositionChild( field, currentItem.getAbsoluteX(), currentItem.getAbsoluteY() );
 			} else {
 				Item item = getItem( field );
