@@ -1576,6 +1576,7 @@ class BaseScreenManager extends Manager {
 				if (itemW == 0) {
 					itemW = currentItem.itemWidth;
 				}
+				itemW += 2;
 				layoutChild( field, itemW, currentItem.itemHeight);
 				setPositionChild( field, currentItem.getAbsoluteX() + currentItem.getContentX(), currentItem.getAbsoluteY() + currentItem.getContentY() );
 			} else {
@@ -1585,6 +1586,7 @@ class BaseScreenManager extends Manager {
 					if (itemW == 0) {
 						itemW = currentItem.itemWidth;
 					}
+					itemW += 2;
 					layoutChild( field, itemW, item.itemHeight);
 					//layoutChild( field, w, h);
 					setPositionChild( field, item.getAbsoluteX() + item.getContentX(), item.getAbsoluteY() + item.getContentY() );
