@@ -2514,15 +2514,14 @@ public abstract class Item implements UiElement, Animatable
 		//#endif
 				int backgroundX = x;
 				int backgroundY = y;
-				if (this.useSingleRow && this.label != null) {
-					backgroundX += this.label.itemWidth;
-				}
 				if(this.isLayoutRight)
 				{
 					backgroundX = rightBorder + this.paddingRight - this.backgroundWidth;
 					//#if polish.css.after
 						backgroundX += this.afterWidth;
 					//#endif
+				} else {
+					backgroundX += this.contentX;
 				}
 				paintBackgroundAndBorder(backgroundX, backgroundY, this.backgroundWidth, this.backgroundHeight, g);
 		//#if polish.css.include-label
@@ -2961,9 +2960,6 @@ public abstract class Item implements UiElement, Animatable
 			cHeight += labelHeight;
 			this.contentY += labelHeight;
 		}
-		if (labelWidth > this.itemWidth) {
-			this.itemWidth = labelWidth;
-		}
 		if ( this.isLayoutExpand ) {
 			this.itemWidth = availWidth;
 			//#ifdef polish.css.max-width
@@ -3007,6 +3003,15 @@ public abstract class Item implements UiElement, Animatable
 							  - this.marginTop
 							  - this.marginBottom
 							  - labelHeight;
+			if (labelWidth > this.itemWidth) {
+				int diff = labelWidth - this.itemWidth;
+				if (isLayoutCenter()) {
+					this.contentX += diff/2;
+				} else if (isLayoutRight()) {
+					this.contentX += diff;
+				}
+				this.itemWidth = labelWidth;
+			}
 		}
 		//#if polish.css.background-width
 			this.originalBackgroundWidth = this.backgroundWidth;

@@ -80,7 +80,7 @@ public class StringItem extends Item
 		protected String maxLinesAppendix;
 	//#endif
 	//#if polish.css.text-layout
-		private int textLayout;
+		protected int textLayout;
 	//#endif
 	//#if polish.css.text-visible
 		private boolean isTextVisible = true;
@@ -526,7 +526,7 @@ public class StringItem extends Item
 					int orientation;
 					// adjust the painting according to the layout:
 					if (isRight) {
-						lineX = rightBorder;
+						lineX = x + this.backgroundWidth - this.paddingLeft - this.paddingRight; // rightBorder;
 						orientation = Graphics.RIGHT;
 					} else if (isCenter) {
 						lineX = centerX;

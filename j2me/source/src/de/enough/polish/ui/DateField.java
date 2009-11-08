@@ -680,7 +680,26 @@ implements
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		//#if polish.blackberry
 			if (getScreen().isNativeUiShownFor(this)) {
-				this.blackberryDateField.setPaintPosition( x, y );
+				x--;
+				int diff = this.backgroundWidth - this.originalWidth - this.paddingLeft - this.paddingRight;
+        		//int diff = this.contentWidth - this.originalWidth;
+        		if (diff != 0) {
+        			//#if polish.css.text-layout
+	        			if (this.textLayout != 0) {
+	        				if ((this.textLayout & LAYOUT_CENTER) == LAYOUT_CENTER) {
+	        					x += diff / 2;
+	        				} else if ((this.textLayout & LAYOUT_CENTER) == LAYOUT_RIGHT) {
+	        					x += diff;
+	        				}
+	        			} else 
+        			//#endif
+        			if (this.isLayoutCenter) {
+        				x += diff / 2;
+        			} else if (this.isLayoutRight) {
+        				x += diff;
+        			}
+        		}
+				this.blackberryDateField.setPaintPosition( x + g.getTranslateX(), y + g.getTranslateY() );
 			} else {
 				super.paintContent(x, y, leftBorder, rightBorder, g);
 			}
@@ -781,21 +800,17 @@ implements
 				return;
 			}
 			// setFont() triggers a re-layout of the BlackBerry manager, so we need to prepare
-			// some position settings here:
-			int contX = this.contentX;
-			if (this.label != null && this.label.itemWidth + this.contentWidth <= availWidth) {
-				contX += this.label.itemWidth;
-			}
+			// some position settings here (at least on 4.6 this code is wrong):
+//			int contX = this.contentX;
+//			if (this.label != null && this.label.itemWidth + this.contentWidth <= availWidth) {
+//				contX += this.label.itemWidth;
+//			}
 			if (this.style != null) {
 				this.blackberryDateField.setStyle( this.style );
 			}
 			// allow extra pixels for the cursor:
-			this.blackberryDateField.doLayout( this.contentWidth+8, this.contentHeight );
+			this.blackberryDateField.doLayout( this.contentWidth+2, this.contentHeight );
 			//System.out.println("TextField: editField.getText()="+ this.editField.getText() );
-			XYRect rect = this.blackberryDateField.getExtent();
-			this.contentX = contX;
-			this.contentWidth = rect.width;
-			this.contentHeight = rect.height;
 		//#endif			
 	}
 

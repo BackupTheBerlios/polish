@@ -922,6 +922,7 @@ public class TextField extends StringItem
 	//#endif
 	protected char emailSeparatorChar = ';';
 	//#if polish.blackberry
+		private int originalContentWidth;
 		private PolishTextField editField;
 		//#if polish.Bugs.ItemStateListenerCalledTooEarly
 			private long lastFieldChangedEvent;
@@ -982,11 +983,11 @@ public class TextField extends StringItem
 		//#define tmp.supportsAsciiKeyMap
 	//#endif
 	private boolean isKeyPressedHandled;
-
+	
 	//#if polish.android1.5
 		private long androidFocusedTime;
 		private long androidLastPointerPressedTime;
-		private long androidLastInvalidCharacterTime;	
+		private long androidLastInvalidCharacterTime;
 	//#endif
 
 	//#if tmp.useDynamicCharset
@@ -2084,6 +2085,24 @@ public class TextField extends StringItem
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		//#if polish.blackberry
         	if (this.isFocused && getScreen().isNativeUiShownFor(this)) {
+        		x--;
+        		int diff = this.backgroundWidth - this.originalContentWidth - this.paddingLeft - this.paddingRight;
+        		if (diff != 0) {
+        			//#if polish.css.text-layout
+	        			if (this.textLayout != 0) {
+	        				if ((this.textLayout & LAYOUT_CENTER) == LAYOUT_CENTER) {
+	        					x += diff / 2;
+	        				} else if ((this.textLayout & LAYOUT_CENTER) == LAYOUT_RIGHT) {
+	        					x += diff - 1;
+	        				}
+	        			} else 
+        			//#endif
+        			if (this.isLayoutCenter) {
+        				x += diff / 2;
+        			} else if (this.isLayoutRight) {
+        				x += diff;
+        			}
+        		}
 				this.editField.setPaintPosition( x + g.getTranslateX(), y + g.getTranslateY() );
 			} else {
 				super.paintContent(x, y, leftBorder, rightBorder, g);
@@ -2312,7 +2331,9 @@ public class TextField extends StringItem
 			}
 		//#endif
 		super.initContent(firstLineWidth, availWidth, availHeight);
-		
+		//#if polish.blackberry
+			this.originalContentWidth = this.contentWidth;
+		//#endif
 		//#if polish.TextField.showHelpText
 		UiAccess.init(this.helpItem, firstLineWidth, availWidth, availHeight);
 		//#endif

@@ -90,6 +90,7 @@ public class PolishEditField extends EditField implements PolishTextField {
             super.setPosition(x, y);
 		}
 		
+		
 		public int getInsertPositionOffset() {
 			return getCursorPosition();
 		}
@@ -107,19 +108,20 @@ public class PolishEditField extends EditField implements PolishTextField {
 			}
 			this.fontColor = style.getFontColor();
 			//#if ${ version(polish.JavaPlatform, BlackBerry) } >= ${version(4.6)}
-				if (style.background != null) {
-					if (this.backgroundWrapper == null) {
-						this.backgroundWrapper = new BackgroundWrapper( style.background );
-						try {
-							setBackground(this.backgroundWrapper);
-						} catch (Exception e) {
-							//#debug error
-							System.out.println("Unable to set background" + e);
-						}
-					} else {
-						this.backgroundWrapper.setBackground(style.background);
-					}
-				}
+				setBackground(BackgroundWrapper.INSTANCE);
+//				if (style.background != null) {
+//					if (this.backgroundWrapper == null) {
+//						this.backgroundWrapper = new BackgroundWrapper( style.background );
+//						try {
+//							setBackground(this.backgroundWrapper);
+//						} catch (Exception e) {
+//							//#debug error
+//							System.out.println("Unable to set background" + e);
+//						}
+//					} else {
+//						this.backgroundWrapper.setBackground(style.background);
+//					}
+//				}
 			//#endif
 		}
 
