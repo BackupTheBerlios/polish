@@ -2516,12 +2516,13 @@ public abstract class Item implements UiElement, Animatable
 				int backgroundY = y;
 				if(this.isLayoutRight)
 				{
+					//TODO: do we really need a special case for right layout?
 					backgroundX = rightBorder + this.paddingRight - this.backgroundWidth;
 					//#if polish.css.after
 						backgroundX += this.afterWidth;
 					//#endif
-//				} else {
-//					backgroundX += this.contentX;
+				} else {
+					backgroundX += this.contentX - this.paddingLeft;
 				}
 				paintBackgroundAndBorder(backgroundX, backgroundY, this.backgroundWidth, this.backgroundHeight, g);
 		//#if polish.css.include-label
