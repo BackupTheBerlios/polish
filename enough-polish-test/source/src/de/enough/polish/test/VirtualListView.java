@@ -5,22 +5,28 @@ import de.enough.polish.ui.ClippingRegion;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.ContainerView;
 import de.enough.polish.ui.Item;
+import de.enough.polish.util.ArrayList;
 
 public class VirtualListView extends ContainerView{
-	VirtualListProvider provider;
+	transient VirtualListProvider provider;
 	
-	VirtualListRange range;
+	transient VirtualListRange range;
 	
-	Container container;
+	transient Container container;
 	
 	int bufferSize;
 	
-	long lastOffset = -1;
+	ArrayList activeItems;
+	
+	long lastScrollOffset = -1;
+	
+	long lastNoticationOffset = -1;
 	
 	public VirtualListView(VirtualListProvider provider, int bufferSize) {
 		this.provider = provider;
 		this.container = this.provider.getContainer();
 		this.bufferSize = bufferSize;
+		this.activeItems = new ArrayList();
 	}
 	
 	public VirtualListRange getRange() {
@@ -37,11 +43,6 @@ public class VirtualListView extends ContainerView{
 		return sampleItem.getItemHeight(width,width);
 	}	
 	
-	public boolean handlePointerDragged(int x, int y) {
-		this.parentContainer.focusChild(-1);
-		return super.handlePointerDragged(x, y);
-	}
-	
 	public int getDirection(long previousOffset, long currentOffset) {
 		if(previousOffset > currentOffset) {
 			return Canvas.DOWN;
@@ -56,31 +57,53 @@ public class VirtualListView extends ContainerView{
 	public void animate(long currentTime, ClippingRegion repaintRegion) {
 		super.animate(currentTime, repaintRegion);
 		
+		// get the current absolute scroll offset
 		long currentOffset = Math.abs(this.container.getScrollYOffset());
-		if(	this.lastOffset != currentOffset  
+		if(	this.lastScrollOffset != currentOffset  
 			//#if polish.hasPointerEvents
 			//# && this.container.getScrollYOffset() == this.container.getCurrentScrollYOffset()
 			//#endif
-			) 
-			{
-			int direction = getDirection(this.lastOffset, currentOffset);
+			) {
+			// get the scroll direction
+			int direction = getDirection(this.lastScrollOffset, currentOffset);
 			
+			/* 	if the scroll direction is DOWN (offset is decreased) and the scroll offset
+			 *	is below the current range or if the scroll direction is UP (offset is increased) 
+			 *	and the scroll offset is above the current range
+			 */
 			if( (direction == Canvas.DOWN && this.range.belowRange(currentOffset)) || 
 				(direction == Canvas.UP && this.range.overRange(currentOffset)) ||
-				this.lastOffset == -1) {
+				this.lastScrollOffset == -1) {
 				
+				// update the range
 				this.range.update(currentOffset,direction, this.provider.total());
 				this.range.setOffset(-1);
-				
+
+				// select for the new range
 				ListSelection selection = this.provider.select(this.range);
 				
+				// apply the selection
 				this.provider.apply(null,selection.getEntries(),null,true);
 			}
-			
-			this.lastOffset = currentOffset;
-		} 
+			this.lastScrollOffset = currentOffset;
+		} else {
+			// if screen is not interacted with for 500 ms ...
+			if( !this.provider.getScreen().isInteracted(500)) {
+				// and it was scrolled ...
+				if(this.lastNoticationOffset != currentOffset) {
+					// notify the inactive and active items
+					notifyInactiveItems();
+					notifyActiveItems();
+					this.lastNoticationOffset = currentOffset;
+				}
+			}
+		}
 	}
 	
+	/**
+	 * Initializes the range
+	 * @param availWidth the available width
+	 */
 	public void initRange(int availWidth) {
 		int referenceHeight = getReferenceHeight(availWidth);
 		this.range = new VirtualListRange(referenceHeight,availWidth,this.bufferSize);
@@ -101,7 +124,11 @@ public class VirtualListView extends ContainerView{
 		initListContent(this.range);
 	}
 	
-	public int getOffset()
+	/**
+	 * Returns the visible offset
+	 * @return the visible offset
+	 */
+	public int getVisibleOffset()
 	{
 		Item item = this.container.getFocusedItem();
 		if(item != null)
@@ -146,7 +173,6 @@ public class VirtualListView extends ContainerView{
 				}
 			}
 			
-			
 			this.parentContainer.setScrollYOffset(yOffset,false);
 		}
 	}
@@ -176,5 +202,50 @@ public class VirtualListView extends ContainerView{
 		this.contentHeight = range.getTotalHeight();
 		
 		setScrollOffset(this.container, this.range);
+	}
+	
+
+	/**
+	 * Notifies active items
+	 */
+	public void notifyActiveItems()
+	{
+		for (int i = 0; i < this.container.size(); i++) {
+			Item item = this.container.get(i);
+			if(isItemShown(item))
+			{
+				this.provider.notify(item, true);
+				this.activeItems.add(item);
+			}
+		}
+	}
+	
+	/**
+	 * Notifies inactive items
+	 */
+	public void notifyInactiveItems()
+	{
+		while(this.activeItems.size() > 0) {
+			Item item = (Item)this.activeItems.get(0);
+			this.provider.notify(item, false);
+			this.activeItems.remove(0);
+		}
+	}
+	
+	/**
+	 * Returns true if an item is in the visible area of the managed container
+	 * @param item the item
+	 * @return true if an item is in the visible area of the managed container otherwise false
+	 */
+	public boolean isItemShown(Item item)
+	{
+		int verticalMin = this.container.getAbsoluteY() + Math.abs(this.container.getScrollYOffset());
+		int verticalMax = verticalMin + this.container.getScrollHeight();
+		
+		int itemCenter = item.getAbsoluteY() + (item.itemHeight/2);
+		
+		boolean shownVertical = (itemCenter > verticalMin && itemCenter < verticalMax);
+		
+		return shownVertical;
 	}
 }

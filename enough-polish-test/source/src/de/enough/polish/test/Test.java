@@ -70,13 +70,15 @@ public class Test extends MIDlet implements Runnable{
     	
     	data = this.provider.getData();
     	
-    	//new Thread(this).start();
+    	new Thread(this).start();
     }
 
 	
 	boolean begin;
 	public void run() {
-		while(true) {
+		//while(true) 
+		{
+			this.provider.search("entry 40");
 			
 			try {
 			if(begin) {
@@ -90,13 +92,15 @@ public class Test extends MIDlet implements Runnable{
 				
 				begin = true;
 			}
-			this.provider.update(null, true);
 			
-				Thread.sleep(1000);
+				Thread.sleep(5000);
+				
+				this.provider.search("entry 80");
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
 		}
 		
 	}

@@ -77,11 +77,22 @@ public class TestProvider extends VirtualListProvider{
 	
 	public int getIndex(Object scope) {
 		for (int i = 0; i < data.length; i++) {
-			if(data[i] == scope) {
+			if(data[i].equals(scope)) {
 				return i;
 			}
 		}
 		
 		return -1;
+	}
+	
+	protected void notify(Item item, boolean active) {
+		System.out.println(item + ": active : " + active);	
+	}
+	
+	protected void search(String search) {
+		int index = getIndex(search);
+		System.out.println(index);
+		Object scope = data[index];
+		update(scope, true);
 	}
 }

@@ -247,7 +247,7 @@ dummy {
 }
 
 form {
-	scroll-mode: smooth;
+	scroll-mode: normal;
 }
 
 entry {

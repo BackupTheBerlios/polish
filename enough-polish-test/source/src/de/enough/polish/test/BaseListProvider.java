@@ -28,6 +28,10 @@ public abstract class BaseListProvider {
 	public Container getContainer() {
 		return this.container;
 	}
+	
+	public Screen getScreen() {
+		return this.screen;
+	}
 
 	abstract void updateItem(Item item, Object data);
 
