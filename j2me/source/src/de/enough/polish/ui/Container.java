@@ -3043,6 +3043,8 @@ public class Container extends Item {
 						direction = Canvas.UP;
 					}
 					startScroll( direction,  (int) ((scrollDiff * 1000 ) / dragTime), 20 );
+				} else if (this.yOffset > 0) {
+					setScrollYOffset(0, true);
 				}
 				return true;
 			}
