@@ -1072,7 +1072,9 @@ implements UiElement, Animatable
 			this.scrollBar.relativeX = x + width;
 		//#else 
 			// ensure that container is initialized:
-			cont.getItemHeight(originalWidth, originalWidth, height);
+			if (cont != null) {
+				cont.getItemHeight(originalWidth, originalWidth, height);
+			}
 		//#endif
 		//System.out.println("calculateContentArea: container.itemHeight=" + cont.itemHeight + ", screenHeight=" + this.screenHeight + ", cont.itemWidth=" + cont.itemWidth );
 		//#if polish.css.subtitle-position
