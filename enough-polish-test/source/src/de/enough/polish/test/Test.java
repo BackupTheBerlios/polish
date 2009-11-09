@@ -64,13 +64,13 @@ public class Test extends MIDlet implements Runnable{
     	
     	Form form = new Form("ListTest");
     	
-    	this.provider = new TestProvider(UiAccess.getScreenContainer(form),form);
+    	this.provider = new TestProvider(UiAccess.getScreenContainer(form), form, null, 20);
     	
     	Display.getDisplay(this).setCurrent(form);
     	
     	data = this.provider.getData();
     	
-    	new Thread(this).start();
+    	//new Thread(this).start();
     }
 
 	
@@ -90,9 +90,9 @@ public class Test extends MIDlet implements Runnable{
 				
 				begin = true;
 			}
-			this.provider.update("the entry", true);
+			this.provider.update(null, true);
 			
-				Thread.sleep(10000);
+				Thread.sleep(1000);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -10,8 +10,8 @@ public class TestProvider extends VirtualListProvider{
 	
 	String[] data = new String[100];
 
-	public TestProvider(Container container, Screen screen) {
-		super(container, screen,null);
+	public TestProvider(Container container, Screen screen, ItemCommandListener listener, int bufferSize) {
+		super(container, screen, listener, bufferSize);
 		    	
     	for (int i = 0; i < data.length; i++) {
     		data[i] = "entry " + i;

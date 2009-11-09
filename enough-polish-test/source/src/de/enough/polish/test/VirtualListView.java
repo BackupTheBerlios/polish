@@ -13,11 +13,14 @@ public class VirtualListView extends ContainerView{
 	
 	Container container;
 	
+	int bufferSize;
+	
 	long lastOffset = -1;
 	
-	public VirtualListView(VirtualListProvider provider) {
+	public VirtualListView(VirtualListProvider provider, int bufferSize) {
 		this.provider = provider;
 		this.container = this.provider.getContainer();
+		this.bufferSize = bufferSize;
 	}
 	
 	public VirtualListRange getRange() {
@@ -54,7 +57,12 @@ public class VirtualListView extends ContainerView{
 		super.animate(currentTime, repaintRegion);
 		
 		long currentOffset = Math.abs(this.container.getScrollYOffset());
-		if(this.lastOffset != currentOffset) {
+		if(	this.lastOffset != currentOffset  
+			//#if polish.hasPointerEvents
+			//# && this.container.getScrollYOffset() == this.container.getCurrentScrollYOffset()
+			//#endif
+			) 
+			{
 			int direction = getDirection(this.lastOffset, currentOffset);
 			
 			if( (direction == Canvas.DOWN && this.range.belowRange(currentOffset)) || 
@@ -75,7 +83,7 @@ public class VirtualListView extends ContainerView{
 	
 	public void initRange(int availWidth) {
 		int referenceHeight = getReferenceHeight(availWidth);
-		this.range = new VirtualListRange(referenceHeight,availWidth,0);
+		this.range = new VirtualListRange(referenceHeight,availWidth,this.bufferSize);
 		this.range.setRange(0, 0, this.provider.total());
 	}
 

@@ -9,10 +9,10 @@ public abstract class VirtualListProvider extends BaseListProvider{
 
 	VirtualListView view;
 	
-	public VirtualListProvider(Container container, Screen screen, ItemCommandListener commandListener) {
+	public VirtualListProvider(Container container, Screen screen, ItemCommandListener commandListener, int bufferSize) {
 		super(container, screen, commandListener);
 		
-		this.view = new VirtualListView(this);
+		this.view = new VirtualListView(this,bufferSize);
 		
 		initView();
 	}
@@ -40,12 +40,15 @@ public abstract class VirtualListProvider extends BaseListProvider{
 		
 		VirtualListRange range = this.view.getRange();
 		
-		ListSelection selection = select(scope, range);
-		
-		range.setRange(selection.getStart(), selection.getEnd(), selection.getTotal());
-		range.setOffset(this.view.getOffset());
-		
-		apply(null,selection.getEntries(),scope,doFocus);
+		//#if polish.hasPointerEvents
+		//# ListSelection selection = select(range);
+		//# apply(null,selection.getEntries(),null,doFocus);
+		//#else
+			ListSelection selection = select(scope, range);
+			range.setRange(selection.getStart(), selection.getEnd(), selection.getTotal());
+			range.setOffset(this.view.getOffset());
+			apply(null,selection.getEntries(),scope,doFocus);
+		//#endif
 	}
 	
 	protected abstract int total();
