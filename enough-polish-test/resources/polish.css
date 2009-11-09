@@ -241,6 +241,26 @@ rightcommand extends leftcommand
 	layout: right;
 }
 
+dummy {
+	always-include: true;
+	view-type: horizontal;
+}
+
+form {
+	scroll-mode: smooth;
+}
+
+entry {
+	padding: 20;
+	font-color: red;
+	font-size: large;
+	layout: expand;
+}
+
+entry:hover {
+	background-color: red;
+	font-color: white;
+}
 
 
 
