@@ -4899,6 +4899,17 @@ public final class UiAccess {
 		item.init(firstLineWidth, availWidth, availHeight);
 	}
 	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Intializes the specified screen
+	 * @param screen the screen
+	 */
+	public static void init(Screen screen)
+	{
+		screen.init(Display.getScreenWidth(),Display.getScreenHeight());
+	}
+	//#endif
 
 	//#if polish.usePolishGui
 	/**
