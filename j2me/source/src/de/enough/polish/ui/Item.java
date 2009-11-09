@@ -2520,8 +2520,8 @@ public abstract class Item implements UiElement, Animatable
 					//#if polish.css.after
 						backgroundX += this.afterWidth;
 					//#endif
-				} else {
-					backgroundX += this.contentX;
+//				} else {
+//					backgroundX += this.contentX;
 				}
 				paintBackgroundAndBorder(backgroundX, backgroundY, this.backgroundWidth, this.backgroundHeight, g);
 		//#if polish.css.include-label
