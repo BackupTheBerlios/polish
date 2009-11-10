@@ -2,7 +2,6 @@
 package de.enough.polish.android.pim.enough;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 
@@ -14,45 +13,16 @@ import de.enough.polish.android.pim.UnsupportedFieldException;
 
 public class ContactImpl implements Contact {
 
-	protected static class Field {
-		protected final FieldInfo fieldInfo;
-		protected ArrayList values;
-		protected ArrayList attributes;
-		public Field(FieldInfo fieldInfo) {
-			this.fieldInfo = fieldInfo;
-			this.values = new ArrayList();
-			this.attributes = new ArrayList();
-		}
-		public String toString() {
-			StringBuffer buffer = new StringBuffer();
-			buffer.append(this.fieldInfo);
-			buffer.append("\n");
-			int numberOfValues = this.values.size();
-			for(int i = 0; i < numberOfValues; i++) {
-				Object value = this.values.get(i);
-				if(value instanceof Object[]) {
-					Object[] array = (Object[]) value;
-					value = Arrays.toString(array);
-				}
-				buffer.append("Value["+i+"]:"+value+".");
-				buffer.append("Attr["+i+"]:"+this.attributes.get(i)+".");
-				buffer.append("\n");
-			}
-			buffer.append("\n");
-			return buffer.toString();
-		}
-	}
-	
 	private final ContactListImpl contactList;
 	// We use an ArrayList object to save the space a HashMap would waste. There are only a few fields so searching linearly them is less memory intensive than a lookup.
-	private final ArrayList fields;
+	private final ArrayList<Field> fields;
 	private boolean isModified;
 	private final long id;
 	
 	ContactImpl(long id, ContactListImpl contactList) {
 		this.id = id;
 		this.contactList = contactList;
-		this.fields = new ArrayList();
+		this.fields = new ArrayList<Field>();
 	}
 	
 	ContactImpl(ContactListImpl contactList) {
@@ -172,7 +142,7 @@ public class ContactImpl implements Contact {
 		if(index > lastValidIndex) {
 			throw new IndexOutOfBoundsException("The index '"+index+"' is larger then the last valid index of '"+lastValidIndex+"'");
 		}
-		Integer attributes = (Integer)field.attributes.get(index);
+		Integer attributes = field.attributes.get(index);
 		return attributes.intValue();
 	}
 
@@ -226,8 +196,8 @@ public class ContactImpl implements Contact {
 		int numberOfFields = this.fields.size();
 		int[] fieldIds = new int[numberOfFields];
 		int i = 0;
-		for (Iterator iterator = this.fields.iterator(); iterator.hasNext();) {
-			Field field = (Field) iterator.next();
+		for (Iterator<Field> iterator = this.fields.iterator(); iterator.hasNext();) {
+			Field field = iterator.next();
 			fieldIds[i] = field.fieldInfo.pimId;
 			i++;
 		}
@@ -446,12 +416,13 @@ public class ContactImpl implements Contact {
 		this.isModified = true;
 	}
 
+	@Override
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("Contact ("+this.id+")");
 		buffer.append("\n");
-		for (Iterator iterator = this.fields.iterator(); iterator.hasNext();) {
-			Field field = (Field) iterator.next();
+		for (Iterator<Field> iterator = this.fields.iterator(); iterator.hasNext();) {
+			Field field = iterator.next();
 			buffer.append(field);
 			buffer.append("\n");
 		}
@@ -487,8 +458,8 @@ public class ContactImpl implements Contact {
 	}
 	
 	private Field findField(FieldInfo fieldInfo, boolean throwException) {
-		for (Iterator iterator = this.fields.iterator(); iterator.hasNext();) {
-			Field field = (Field) iterator.next();
+		for (Iterator<Field> iterator = this.fields.iterator(); iterator.hasNext();) {
+			Field field = iterator.next();
 			if(field.fieldInfo.equals(fieldInfo)) {
 				return field;
 			}
