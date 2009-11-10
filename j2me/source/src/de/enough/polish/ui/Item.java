@@ -696,7 +696,7 @@ public abstract class Item implements UiElement, Animatable
 	public int relativeX;
 	/** the vertical start position of this item relative to it's parent item top content edge */
 	public int relativeY; 
-	/** the horizontal position of this item's content relative to it's left edge */
+	/** the horizontal position of this item's content relative to it's left edge (so for a left aligned item its marginLeft + border.widthLeft + paddingLeft */
 	protected int contentX;
 	/** the vertical position of this item's content relative to it's top edge */
 	protected int contentY; // absolute top vertical position of the content 
@@ -2506,20 +2506,27 @@ public abstract class Item implements UiElement, Animatable
 //		}
 		
 		
-		// paint background:
 		x += this.marginLeft;
 		y += this.marginTop;
+		// paint background and border:
 		//#if polish.css.include-label
 			if (!this.includeLabel) {
 		//#endif
 				int backgroundX = x;
-				int backgroundY = y;
-				//backgroundX += this.contentX - this.paddingLeft;
-				paintBackgroundAndBorder(backgroundX, backgroundY, this.backgroundWidth, this.backgroundHeight, g);
+				if (this.label != null && !this.useSingleRow) {
+					x += this.contentX - this.paddingLeft - this.marginLeft;
+					if (this.border != null) {
+						backgroundX -= this.border.borderWidthLeft;
+					}
+					if (this.background != null) {
+						backgroundX -= this.background.borderWidth;
+					}
+				}
+				paintBackgroundAndBorder(backgroundX, y, this.backgroundWidth, this.backgroundHeight, g);
 		//#if polish.css.include-label
 			}
 		//#endif
-		
+
 		//#if polish.css.content-x-adjust
 			if (this.contentXAdjustment != null) {
 				x += this.contentXAdjustment.getValue(this.contentWidth);
@@ -2722,7 +2729,7 @@ public abstract class Item implements UiElement, Animatable
 	}
 
 	/**
-	 * Paints the background of this item.
+	 * Paints the background and - if defined - the bgborder of this item.
 	 * 
 	 * @param x the horizontal start position
 	 * @param y the vertical start position
