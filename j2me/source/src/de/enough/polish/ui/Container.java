@@ -1688,7 +1688,7 @@ public class Container extends Item {
 				if (item.availableWidth != 0) {
 					item.init( item.availableWidth, item.availableWidth, item.availableHeight );
 				} else {
-					item.init( this.contentWidth, this.contentWidth, this.contentWidth );
+					item.init( this.contentWidth, this.contentWidth, this.contentHeight );
 				}
 			} else if (this.enableScrolling && item.internalX != NO_POSITION_SET) {
 				int startY = getScrollYOffset() + item.relativeY + item.contentY + item.internalY;
@@ -2912,10 +2912,26 @@ public class Container extends Item {
 		if (item != null) {
 			// the focused item can extend the parent container, e.g. subcommands, 
 			// so give it a change to process the event itself:
+			int itemLayout = item.layout;
 			boolean processed = item.handlePointerPressed(relX - item.relativeX, relY - item.relativeY );
 			if (processed) {
 				//#debug
 				System.out.println("pointerPressed at " + relX + "," + relY + " consumed by focusedItem.");
+				// layout could have been changed:
+				if (item.layout != itemLayout && isInitialized()) {
+					if (item.availableWidth != 0) {
+						item.init( item.availableWidth, item.availableWidth, item.availableHeight );
+					} else {
+						item.init( this.contentWidth, this.contentWidth, this.contentHeight );
+					}
+					if (item.isLayoutLeft()) {
+						item.relativeX = 0;
+					} else if (item.isLayoutCenter()) {
+						item.relativeX = (this.contentWidth - item.itemWidth)/2;
+					} else {
+						item.relativeX = this.contentWidth - item.itemWidth;
+					}
+				}
 				return true;
 			}
 		}
@@ -3022,6 +3038,7 @@ public class Container extends Item {
 				boolean processed = false;
 				if (item != null && item.isPressed) {
 					processed = item.handlePointerReleased(relX - item.relativeX, relY - item.relativeY );
+					setInitialized(false);
 				}
 				if (!processed) {
 					while (item instanceof Container) {
@@ -3033,6 +3050,7 @@ public class Container extends Item {
 					// we have scrolling in the meantime
 					if (item != null && item.isPressed) {
 						item.notifyItemPressedEnd();
+						setInitialized(false);
 					}
 				}
 				// check if we should continue the scrolling:
@@ -3067,10 +3085,26 @@ public class Container extends Item {
 		if (item != null) {
 			// the focused item can extend the parent container, e.g. subcommands, 
 			// so give it a change to process the event itself:
+			int itemLayout = item.layout;
 			boolean processed = item.handlePointerReleased(relX - item.relativeX, relY - item.relativeY );
 			if (processed) {
 				//#debug
 				System.out.println("pointerReleased at " + relX + "," + relY + " consumed by focusedItem " + item);
+				// layout could have been changed:
+				if (item.layout != itemLayout && isInitialized()) {
+					if (item.availableWidth != 0) {
+						item.init( item.availableWidth, item.availableWidth, item.availableHeight );
+					} else {
+						item.init( this.contentWidth, this.contentWidth, this.contentHeight );
+					}
+					if (item.isLayoutLeft()) {
+						item.relativeX = 0;
+					} else if (item.isLayoutCenter()) {
+						item.relativeX = (this.contentWidth - item.itemWidth)/2;
+					} else {
+						item.relativeX = this.contentWidth - item.itemWidth;
+					}
+				}
 				return true;
 			} else if ( item.isInItemArea(relX - item.relativeX, relY - item.relativeY )) {
 				//#debug
