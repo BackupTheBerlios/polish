@@ -2514,7 +2514,7 @@ public abstract class Item implements UiElement, Animatable
 		//#endif
 				int backgroundX = x;
 				if (this.label != null && !this.useSingleRow) {
-					x += this.contentX - this.paddingLeft - this.marginLeft;
+					backgroundX += this.contentX - this.paddingLeft - this.marginLeft;
 					if (this.border != null) {
 						backgroundX -= this.border.borderWidthLeft;
 					}
