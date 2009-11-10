@@ -228,7 +228,7 @@ public class ContactImpl implements Contact {
 		int i = 0;
 		for (Iterator iterator = this.fields.iterator(); iterator.hasNext();) {
 			Field field = (Field) iterator.next();
-			fieldIds[i] = field.fieldInfo.id;
+			fieldIds[i] = field.fieldInfo.pimId;
 			i++;
 		}
 		// restrict the array to usefull cells

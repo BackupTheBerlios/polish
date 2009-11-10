@@ -13,14 +13,14 @@ class FieldInfo {
 	public static final int DEFAULT_PREFERRED_INDEX = -1;
 	public static final int DEFAULT_NUMBER_OF_ARRAYELEMENTS = 0;
 	protected final int numberOfArrayElements;
-	protected final int id;
+	protected final int pimId;
 	protected final int type;
 	protected final String label;
 	protected final int preferredIndex;
 	protected final int[] supportedArrayElements;
 	protected final int[] supportedAttributes;
-	public FieldInfo (int id, int type, String label,int numberOfArrayElements, int preferredIndex,int[] supportedArrayElements, int[] supportedAttributes) {
-		this.id = id;
+	public FieldInfo (int pimId, int type, String label,int numberOfArrayElements, int preferredIndex,int[] supportedArrayElements, int[] supportedAttributes) {
+		this.pimId = pimId;
 		this.type = type;
 		this.label = label;
 		this.numberOfArrayElements = numberOfArrayElements;
@@ -40,7 +40,7 @@ class FieldInfo {
 			return false;
 		}
 		FieldInfo other = (FieldInfo) obj;
-		if (this.id != other.id) {
+		if (this.pimId != other.pimId) {
 			return false;
 		}
 		return true;
@@ -49,10 +49,10 @@ class FieldInfo {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + this.id;
+		result = prime * result + this.pimId;
 		return result;
 	}
 	public String toString() {
-		return "FieldInfo:Id:"+this.id+".Type:"+this.type+".Label:"+this.label+".ArrayElements:"+this.numberOfArrayElements+".";
+		return "FieldInfo:Id:"+this.pimId+".Type:"+this.type+".Label:"+this.label+".ArrayElements:"+this.numberOfArrayElements+".";
 	}
 }

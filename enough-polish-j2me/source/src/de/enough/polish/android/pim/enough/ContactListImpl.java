@@ -2,7 +2,6 @@
 package de.enough.polish.android.pim.enough;
 
 import java.util.Enumeration;
-import java.util.Vector;
 
 import de.enough.polish.android.pim.Contact;
 import de.enough.polish.android.pim.ContactList;
@@ -17,26 +16,11 @@ public class ContactListImpl implements ContactList {
 	public static final FieldInfo CONTACT_ADDR_FIELD_INFO = new FieldInfo(Contact.ADDR,PIMItem.STRING_ARRAY,"Address",7,Contact.ADDR_EXTRA,new int[] {Contact.ADDR_EXTRA}, new int[] {Contact.ATTR_HOME,Contact.ATTR_WORK,Contact.ATTR_OTHER,Contact.ATTR_NONE});
 	public static final FieldInfo CONTACT_NAME_FIELD_INFO = new FieldInfo(Contact.NAME,PIMItem.STRING_ARRAY,"Name",5,Contact.NAME_OTHER,new int[] {Contact.NAME_OTHER},new int[] {Contact.ATTR_NONE});
 	public static final FieldInfo CONTACT_TEL_FIELD_INFO = new FieldInfo(Contact.TEL,PIMItem.STRING,"Phone",0,0,new int[0],new int[] {Contact.ATTR_MOBILE,Contact.ATTR_WORK,Contact.ATTR_HOME,Contact.ATTR_OTHER,Contact.ATTR_PAGER,Contact.ATTR_FAX,Contact.ATTR_NONE});
-	public static final FieldInfo CONTACT_NOTE_FIELD_INFO = new FieldInfo(
-			Contact.NOTE,
-			PIMItem.STRING,
-			"Note",
-			0,
-			0,
-			new int[0],
-			new int[] {Contact.ATTR_NONE}
-			);
-		public static final FieldInfo CONTACT_UID_FIELD_INFO = new FieldInfo(
-			Contact.UID,
-			PIMItem.STRING,
-			"Unique identifier",
-			0,
-			0,
-			new int[0],
-			new int[] {Contact.ATTR_NONE}
-			);
+	public static final FieldInfo CONTACT_NOTE_FIELD_INFO = new FieldInfo(Contact.NOTE,PIMItem.STRING,"Note",0,0,new int[0],new int[] {Contact.ATTR_NONE});
+	public static final FieldInfo CONTACT_FORMATTED_NAME_FIELD_INFO = new FieldInfo(Contact.FORMATTED_NAME,PIMItem.STRING,"Formatted Name",0,0,new int[0],new int[] {Contact.ATTR_NONE});
+	public static final FieldInfo CONTACT_UID_FIELD_INFO = new FieldInfo(Contact.UID,PIMItem.STRING,"Unique identifier",0,0,new int[0],new int[] {Contact.ATTR_NONE});
 
-	private static final FieldInfo[] fieldInfos = new FieldInfo[] {CONTACT_ADDR_FIELD_INFO,CONTACT_NAME_FIELD_INFO,CONTACT_TEL_FIELD_INFO};
+	private static final FieldInfo[] fieldInfos = new FieldInfo[] {CONTACT_ADDR_FIELD_INFO,CONTACT_NAME_FIELD_INFO,CONTACT_TEL_FIELD_INFO,CONTACT_NOTE_FIELD_INFO,CONTACT_FORMATTED_NAME_FIELD_INFO};
 	
 	private final int mode;
 	// TODO: This is a helper class but it is also a dependency...
@@ -118,7 +102,7 @@ public class ContactListImpl implements ContactList {
 	public int[] getSupportedFields() {
 		int[] supportedFields = new int[fieldInfos.length];
 		for (int i = 0; i < fieldInfos.length; i++) {
-			supportedFields[i] = fieldInfos[i].id;
+			supportedFields[i] = fieldInfos[i].pimId;
 		}
 		return supportedFields;
 	}
@@ -170,13 +154,7 @@ public class ContactListImpl implements ContactList {
 
 	public Enumeration items() throws PIMException {
 		ensureListReadable();
-		Vector contacts = this.contactDao.getAllContacts();
-		return contacts.elements();
-	}
-
-	public Enumeration items(javax.microedition.pim.PIMItem arg0) throws javax.microedition.pim.PIMException {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		return this.contactDao.items();
 	}
 
 	public Enumeration items(PIMItem matchingItem) throws PIMException {
@@ -204,8 +182,13 @@ public class ContactListImpl implements ContactList {
 
 	public void removeContact(Contact contact) throws PIMException {
 		ensureListWriteable();
-		//#debug warn
-		System.out.println("Method ContactList.removeContact is not implemented.");
+		ContactImpl contactImpl = (ContactImpl)contact;
+		try {
+			this.contactDao.removeContact(contactImpl);
+		}
+		catch(Exception e) {
+			throw new PIMException(e.getMessage(),PIMException.GENERAL_ERROR);
+		}
 	}
 
 	public void renameCategory(String currentCategory, String newCategory) throws PIMException {
@@ -232,7 +215,7 @@ public class ContactListImpl implements ContactList {
 	FieldInfo findFieldInfo(int fieldId, boolean throwException) {
 		for (int i = 0; i < fieldInfos.length; i++) {
 			FieldInfo fieldInfo = fieldInfos[i];
-			if(fieldId == fieldInfo.id) {
+			if(fieldId == fieldInfo.pimId) {
 				return fieldInfo;
 			}
 		}
