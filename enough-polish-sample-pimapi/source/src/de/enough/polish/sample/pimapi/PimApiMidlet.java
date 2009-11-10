@@ -51,44 +51,13 @@ import de.enough.polish.util.ArrayList;
  */
 public class PimApiMidlet extends MIDlet{
 
-	public class Message{
-		private boolean error;
-		private String testName;
-		private String message;
-		public Message(boolean error, String testName, String message) {
-			this.error = error;
-			this.testName = testName;
-			this.message = message;
-		}
-		public String getMessage() {
-			return this.message;
-		}
-		public String getTestName() {
-			return this.testName;
-		}
-		public boolean isError() {
-			return this.error;
-		}
-		@Override
-		public String toString() {
-			String status = "";
-			if(this.error) {
-				status = "ERROR:";
-			}
-			return status+this.message+"("+this.testName+")";
-		}
-	}
-	
 	private ArrayList<Message> messages = new ArrayList<Message>();
 	private static Display display;
 
 	public void run() {
 		try {
-			clearContacts();
-			testRemoveContacts();
-			testGetItems();
+			testRemoveAllContacts();
 			testCreateContact();
-			testGetItems();
 		} catch(Exception exception) {
 			addException("run","Somewhere something went south", exception);
 		} finally {
@@ -155,9 +124,10 @@ public class PimApiMidlet extends MIDlet{
 				addException("clearContacts","Removing contact '"+i+"' failed", e);
 			}
 		}
+		System.out.println("Removed '"+i+"' contacts.");
 	}
 	
-	public void testRemoveContacts() {
+	public void testRemoveAllContacts() {
 		clearContacts();
 		ContactList	contactList = getContactList();
 		Enumeration items;
