@@ -5,13 +5,11 @@ import java.util.Enumeration;
 
 import de.enough.polish.android.pim.Contact;
 import de.enough.polish.android.pim.ContactList;
-import de.enough.polish.android.pim.PIM;
 import de.enough.polish.android.pim.PIMException;
 import de.enough.polish.android.pim.PIMItem;
-import de.enough.polish.android.pim.UnsupportedFieldException;
 
 // TODO: Put a lot of stuff into a superclass.
-public class ContactListImpl implements ContactList {
+public class ContactListImpl extends AbstractList implements ContactList {
 
 	public static final FieldInfo CONTACT_ADDR_FIELD_INFO = new FieldInfo(Contact.ADDR,PIMItem.STRING_ARRAY,"Address",7,Contact.ADDR_EXTRA,new int[] {Contact.ADDR_EXTRA}, new int[] {Contact.ATTR_HOME,Contact.ATTR_WORK,Contact.ATTR_OTHER,Contact.ATTR_NONE});
 	public static final FieldInfo CONTACT_NAME_FIELD_INFO = new FieldInfo(Contact.NAME,PIMItem.STRING_ARRAY,"Name",5,Contact.NAME_OTHER,new int[] {Contact.NAME_OTHER},new int[] {Contact.ATTR_NONE});
@@ -20,20 +18,14 @@ public class ContactListImpl implements ContactList {
 	public static final FieldInfo CONTACT_FORMATTED_NAME_FIELD_INFO = new FieldInfo(Contact.FORMATTED_NAME,PIMItem.STRING,"Formatted Name",0,0,new int[0],new int[] {Contact.ATTR_NONE});
 	public static final FieldInfo CONTACT_UID_FIELD_INFO = new FieldInfo(Contact.UID,PIMItem.STRING,"Unique identifier",0,0,new int[0],new int[] {Contact.ATTR_NONE});
 
-	private static final FieldInfo[] fieldInfos = new FieldInfo[] {CONTACT_ADDR_FIELD_INFO,CONTACT_NAME_FIELD_INFO,CONTACT_TEL_FIELD_INFO,CONTACT_NOTE_FIELD_INFO,CONTACT_FORMATTED_NAME_FIELD_INFO};
 	
-	private final int mode;
 	// TODO: This is a helper class but it is also a dependency...
 	private ContactDao contactDao;
-	private final String name;
 
 	ContactListImpl(String name, int mode) {
-		this.name = name;
-		if(mode != PIM.READ_ONLY && mode != PIM.WRITE_ONLY && mode != PIM.READ_WRITE) {
-			throw new IllegalArgumentException("The mode '"+mode+"' is not supported.");
-		}
-		this.mode = mode;
+		super(name,mode);
 		this.contactDao = new ContactDao(this);
+		setFieldInfos(new FieldInfo[] {CONTACT_ADDR_FIELD_INFO,CONTACT_NAME_FIELD_INFO,CONTACT_TEL_FIELD_INFO,CONTACT_NOTE_FIELD_INFO,CONTACT_FORMATTED_NAME_FIELD_INFO});
 	}
 
 	public void addCategory(String category) throws PIMException {
@@ -85,10 +77,6 @@ public class ContactListImpl implements ContactList {
 		return field.label;
 	}
 
-	public String getName() {
-		return this.name;
-	}
-
 	public int[] getSupportedArrayElements(int stringArrayField) {
 		FieldInfo fieldInfo = findFieldInfo(stringArrayField);
 		return fieldInfo.supportedArrayElements;
@@ -97,14 +85,6 @@ public class ContactListImpl implements ContactList {
 	public int[] getSupportedAttributes(int field) {
 		FieldInfo fieldInfo = findFieldInfo(field);
 		return fieldInfo.supportedAttributes;
-	}
-
-	public int[] getSupportedFields() {
-		int[] supportedFields = new int[fieldInfos.length];
-		for (int i = 0; i < fieldInfos.length; i++) {
-			supportedFields[i] = fieldInfos[i].pimId;
-		}
-		return supportedFields;
 	}
 
 	public Contact importContact(Contact contact) {
@@ -202,45 +182,8 @@ public class ContactListImpl implements ContactList {
 		return fieldInfo.numberOfArrayElements;
 	}
 
-	FieldInfo findFieldInfo(int fieldId) {
-		return findFieldInfo(fieldId,true);
-	}
-	
-	/**
-	 * 
-	 * @param fieldId
-	 * @param throwException
-	 * @return May return null if no field with the given id is present and now exception should be thrown.
-	 */
-	FieldInfo findFieldInfo(int fieldId, boolean throwException) {
-		for (int i = 0; i < fieldInfos.length; i++) {
-			FieldInfo fieldInfo = fieldInfos[i];
-			if(fieldId == fieldInfo.pimId) {
-				return fieldInfo;
-			}
-		}
-		if(throwException) {
-			throw new UnsupportedFieldException("The field with id '"+fieldId+"' is not supported.");
-		}
-		return null;
-	}
-
 	void persist(ContactImpl contact) {
 		this.contactDao.persist(contact);
-	}
-	/**
-	 * This method throws a SecurityException if the list is not readable. This is the case if the list was opened in WRITE_ONLY mode.
-	 */
-	private void ensureListReadable() {
-		if(this.mode == PIM.WRITE_ONLY) {
-			throw new SecurityException("The list is only writeable.");
-		}
-	}
-	
-	private void ensureListWriteable() {
-		if(this.mode == PIM.READ_ONLY) {
-			throw new SecurityException("The list is only readable.");
-		}
 	}
 
 }

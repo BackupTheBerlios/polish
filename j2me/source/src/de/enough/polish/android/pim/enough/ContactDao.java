@@ -22,7 +22,7 @@ import de.enough.polish.android.pim.Contact;
 public class ContactDao {
 
 	private final ContactListImpl contactListImpl;
-	private ContentResolver contentResolver;
+	private final ContentResolver contentResolver;
 
 	public ContactDao(ContactListImpl contactListImpl) {
 		this.contactListImpl = contactListImpl;
