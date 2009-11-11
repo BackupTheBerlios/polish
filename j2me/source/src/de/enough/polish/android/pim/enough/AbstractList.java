@@ -1,3 +1,5 @@
+//#condition polish.android
+
 package de.enough.polish.android.pim.enough;
 
 import de.enough.polish.android.pim.PIM;
