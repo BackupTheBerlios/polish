@@ -119,10 +119,6 @@ public class AnimationThread extends Thread
 	 * Animates the current screen.
 	 */
 	public void run() {
-
-
-		//#debug ovidiu
-
 		long sleeptime = ANIMATION_INTERVAL;
 		long currentTime = 0;
 		long usedTime = 0 ;
@@ -135,12 +131,12 @@ public class AnimationThread extends Thread
 		ClippingRegion repaintRegion = new ClippingRegion();
 //		int animationCounter = 0;
 		while ( true ) {
-
-			Timer.startTimer(6);
-			Timer.incrementTimer(5);
-			Timer.check(15000);
+			//#mdebug ovidiu
+				Timer.startTimer(6);
+				Timer.incrementTimer(5);
+				Timer.check(15000);
+			//#enddebug
 			try {
-
 				Screen screen = StyleSheet.currentScreen;
 				//System.out.println("AnimationThread: animating " + screen + ", current=" + StyleSheet.display.getCurrent());
 				if (screen != null
