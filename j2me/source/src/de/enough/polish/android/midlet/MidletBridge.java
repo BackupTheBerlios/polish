@@ -318,7 +318,7 @@ public class MidletBridge extends Activity {
 		// This should allow to control the audio volume with the volume keys on the handset when the application has focus.
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		this.shuttingDown = false;
-		// Needed to redraw the any previous screens of a previous run. So the application need not call setCurrent in the case of a rerun.
+		// Needed to redraw any previous screens of a previous run. So the application need not call setCurrent in the case of a rerun.
 		display.refresh();
 		try {
 			midlet.startApp();
@@ -333,14 +333,6 @@ public class MidletBridge extends Activity {
 		//#debug
 		System.out.println("onStart().");
 		super.onStart();
-		//Debug.startMethodTracing("skobbler");
-		try {
-			midlet.startApp();
-		} catch (Exception e) {
-			//#debug fatal
-			System.out.println("starApp() failed: " + e);
-			//TODO: add fatal error handling here, e.g. by displaying system error message
-		}
 	}
 
 	/*
