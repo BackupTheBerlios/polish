@@ -1,12 +1,19 @@
 package de.enough.polish.util;
 
 //#if polish.usePolishGui
+	import de.enough.polish.ui.Display;
 	import de.enough.polish.ui.StyleSheet;
 //#endif
 //#if polish.android
 	import de.enough.polish.android.midlet.MidletBridge;
 //#endif
-
+//#if polish.blackberry && polish.hasPointerEvents
+	//#if polish.usePolishGui
+		import de.enough.polish.blackberry.ui.BaseScreen;
+	//#endif
+	import net.rim.device.api.ui.VirtualKeyboard;
+//#endif
+	
 /**
  * 
  * <p>Controls backlight and vibration in an device-independent manner</p>
@@ -227,6 +234,8 @@ public class DeviceControl
 	public static void showSoftKeyboard() {
 		//#if polish.android1.5
 			MidletBridge.instance.showSoftKeyboard();
+		//#elif polish.blackberry && polish.hasPointerEvents && polish.usePolishGui
+			((BaseScreen)(Object)Display.getInstance()).getVirtualKeyboard().setVisibility( VirtualKeyboard.SHOW );
 		//#endif
 	}
 	
@@ -236,6 +245,8 @@ public class DeviceControl
 	public static void hideSoftKeyboard() {
 		//#if polish.android1.5
 			MidletBridge.instance.hideSoftKeyboard();
+		//#elif polish.blackberry && polish.hasPointerEvents && polish.usePolishGui
+			((BaseScreen)(Object)Display.getInstance()).getVirtualKeyboard().setVisibility( VirtualKeyboard.HIDE );
 		//#endif
 	}
 	
