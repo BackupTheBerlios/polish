@@ -52,6 +52,7 @@ class FieldInfo {
 		result = prime * result + this.pimId;
 		return result;
 	}
+	@Override
 	public String toString() {
 		return "FieldInfo:Id:"+this.pimId+".Type:"+this.type+".Label:"+this.label+".ArrayElements:"+this.numberOfArrayElements+".";
 	}

@@ -11,6 +11,7 @@ import de.enough.polish.android.pim.PIMItem;
 import de.enough.polish.android.pim.PIMList;
 import de.enough.polish.android.pim.UnsupportedFieldException;
 
+// TODO: Extract abstract base class.
 public class ContactImpl implements Contact {
 
 	private final ContactListImpl contactList;
@@ -30,9 +31,6 @@ public class ContactImpl implements Contact {
 	}
 	
 	public void addBinary(int fieldId, int attributes, byte[] value, int offset, int length) {
-		FieldInfo fieldInfo = findFieldInfo(fieldId);
-		checkFieldType(fieldInfo,PIMItem.BINARY);
-		
 		if(value == null) {
 			throw new NullPointerException("The parameter value is null.");
 		}
@@ -48,65 +46,102 @@ public class ContactImpl implements Contact {
 		if(offset >= value.length) {
 			throw new IllegalArgumentException("The parameter 'offset' violates contraint 'offset < value.length'");
 		}
-		
+		Field field = getField(fieldId, PIMItem.BINARY);
 		byte[] result = new byte[length];
 		System.arraycopy(value, offset, result, 0, length);
-		Field field = findOrCreateField(fieldInfo);
 		field.values.add(result);
 		field.attributes.add(new Integer(attributes));
 		this.isModified = true;
 	}
 
 	public void addBoolean(int fieldId, int attributes, boolean value) {
-		FieldInfo fieldInfo = findFieldInfo(fieldId);
-		checkFieldType(fieldInfo,PIMItem.BOOLEAN);
-		// TODO: Implement sanity check for attributes.
-		Field field = findOrCreateField(fieldInfo);
+		Field field = getField(fieldId, PIMItem.BOOLEAN);
 		field.values.add(new Boolean(value));
 		field.attributes.add(new Integer(attributes));
 		this.isModified = true;
 	}
 	
 	public void addDate(int fieldId, int attributes, long value) {
-		FieldInfo fieldInfo = findFieldInfo(fieldId);
-		checkFieldType(fieldInfo, PIMItem.DATE);
-		Field field = findOrCreateField(fieldInfo);
+		Field field = getField(fieldId, PIMItem.DATE);
 		field.values.add(new Date(value));
 		field.attributes.add(new Integer(attributes));
 		this.isModified = true;
 	}
 
 	public void addInt(int fieldId, int attributes, int value) {
-		FieldInfo fieldInfo = findFieldInfo(fieldId);
-		checkFieldType(fieldInfo, PIMItem.INT);
-		Field field = findOrCreateField(fieldInfo);
+		Field field = getField(fieldId, PIMItem.INT);
 		field.values.add(new Integer(value));
 		field.attributes.add(new Integer(attributes));
 		this.isModified = true;
 	}
 
 	public void addString(int fieldId, int attributes, String value) {
-		FieldInfo fieldInfo = findFieldInfo(fieldId);
-		checkFieldType(fieldInfo, PIMItem.STRING);
 		if(value == null) {
 			throw new NullPointerException("Parameter 'value' must not be null.");
 		}
-		Field field = findOrCreateField(fieldInfo);
+		Field field = getField(fieldId, PIMItem.STRING);
 		field.values.add(value);
 		field.attributes.add(new Integer(attributes));
 		this.isModified = true;
 	}
 
 	public void addStringArray(int fieldId, int attributes, String[] value) {
-		FieldInfo fieldInfo = findFieldInfo(fieldId);
-		checkFieldType(fieldInfo, PIMItem.STRING_ARRAY);
 		if(value == null) {
 			throw new NullPointerException("Parameter 'value' must not be null.");
 		}
-		Field field = findOrCreateField(fieldInfo);
+		Field field = getField(fieldId, PIMItem.STRING_ARRAY);
 		field.values.add(value);
 		field.attributes.add(new Integer(attributes));
 		this.isModified = true;
+	}
+	
+	/**
+	 * This method returns a field from the given fieldId. If the field does not exists, it is created.
+	 * @param fieldId
+	 * @param expectedType the type the field must have.
+	 * @throws UnsupportedFieldException if no field with the given id is supported.
+	 * @return
+	 */
+	private Field getField(int fieldId, int expectedType) {
+		FieldInfo fieldInfo = this.contactList.findFieldInfo(fieldId);
+		if(fieldInfo == null) {
+			throw new UnsupportedFieldException("The field with id '"+fieldId+"' is not supported.");
+		}
+		if(fieldInfo.type != expectedType) {
+			throw new IllegalArgumentException("The field with metadata '"+fieldInfo+"' is not of type '"+expectedType+"'.");
+		}
+		for (Iterator<Field> iterator = this.fields.iterator(); iterator.hasNext();) {
+			Field field = iterator.next();
+			if(field.fieldInfo.equals(fieldInfo)) {
+				return field;
+			}
+		}
+		Field field = new Field(fieldInfo);
+		this.fields.add(field);
+		return field;
+	}
+	
+	/**
+	 * This method returns a field from the given fieldId. If the field does not exists, it is created.
+	 * @param fieldId
+	 * @throws UnsupportedFieldException if no field with the given id is supported.
+	 * @return an existing or a newly created field with the given fieldId.
+	 * TODO: Code duplication with getField(int,int).
+	 */
+	private Field getField(int fieldId) {
+		FieldInfo fieldInfo = this.contactList.findFieldInfo(fieldId);
+		if(fieldInfo == null) {
+			throw new UnsupportedFieldException("The field with id '"+fieldId+"' is not supported.");
+		}
+		for (Iterator<Field> iterator = this.fields.iterator(); iterator.hasNext();) {
+			Field field = iterator.next();
+			if(field.fieldInfo.equals(fieldInfo)) {
+				return field;
+			}
+		}
+		Field field = new Field(fieldInfo);
+		this.fields.add(field);
+		return field;
 	}
 
 	public void addToCategory(String category) throws PIMException {
@@ -121,11 +156,7 @@ public class ContactImpl implements Contact {
 	}
 
 	public int countValues(int fieldId) {
-		FieldInfo fieldInfo = findFieldInfo(fieldId);
-		Field field = findField(fieldInfo,false);
-		if(field == null) {
-			return 0;
-		}
+		Field field = getField(fieldId);
 		return field.values.size();
 	}
 
@@ -133,11 +164,7 @@ public class ContactImpl implements Contact {
 		if(index < 0) {
 			throw new IndexOutOfBoundsException("The index '"+index+"' must not be < 0.");
 		}
-		FieldInfo fieldInfo = findFieldInfo(fieldId);
-		Field field = findField(fieldInfo);
-		if(index < 0) {
-			throw new IndexOutOfBoundsException("Parameter 'index' violates contraint 'index > 0'");
-		}
+		Field field = getField(fieldId);
 		int lastValidIndex = field.attributes.size() - 1;
 		if(index > lastValidIndex) {
 			throw new IndexOutOfBoundsException("The index '"+index+"' is larger then the last valid index of '"+lastValidIndex+"'");
@@ -147,9 +174,7 @@ public class ContactImpl implements Contact {
 	}
 
 	public byte[] getBinary(int fieldId, int index) {
-		FieldInfo fieldInfo = findFieldInfo(fieldId);
-		checkFieldType(fieldInfo, PIMItem.BINARY);
-		Field field = findField(fieldInfo);
+		Field field = getField(fieldId, PIMItem.BINARY);
 		int numberOfValues = field.values.size();
 		if(index >= numberOfValues) {
 			throw new IndexOutOfBoundsException("The parameter 'index' violates constraint 'index < numberOfValues'.");
@@ -159,12 +184,10 @@ public class ContactImpl implements Contact {
 	}
 
 	public boolean getBoolean(int fieldId, int index) {
-		FieldInfo fieldInfo = findFieldInfo(fieldId);
-		checkFieldType(fieldInfo, PIMItem.BOOLEAN);
-		Field field = findField(fieldInfo);
 		if(index < 0) {
 			throw new IndexOutOfBoundsException("The parameter 'index' violates constraint 'index >= 0'");
 		}
+		Field field = getField(fieldId, PIMItem.BINARY);
 		int numberOfValues = field.values.size();
 		if(index >= numberOfValues) {
 			throw new IndexOutOfBoundsException("The parameter 'index' violates constraint 'index < numberOfValues'.");
@@ -178,9 +201,7 @@ public class ContactImpl implements Contact {
 	}
 
 	public long getDate(int fieldId, int index) {
-		FieldInfo fieldInfo = findFieldInfo(fieldId);
-		checkFieldType(fieldInfo, PIMItem.DATE);
-		Field field = findField(fieldInfo);
+		Field field = getField(fieldId, PIMItem.DATE);
 		if(index < 0) {
 			throw new IndexOutOfBoundsException("The parameter 'index' violates constraint 'index >= 0'");
 		}
@@ -209,12 +230,10 @@ public class ContactImpl implements Contact {
 	}
 
 	public int getInt(int fieldId, int index) {
-		FieldInfo fieldInfo = findFieldInfo(fieldId);
-		checkFieldType(fieldInfo, PIMItem.INT);
-		Field field = findField(fieldInfo);
 		if(index < 0) {
 			throw new IndexOutOfBoundsException("The parameter 'index' violates constraint 'index >= 0'");
 		}
+		Field field = getField(fieldId,PIMItem.INT);
 		int numberOfValues = field.values.size();
 		if(index >= numberOfValues) {
 			throw new IndexOutOfBoundsException("The parameter 'index' violates constraint 'index < numberOfValues'.");
@@ -228,17 +247,15 @@ public class ContactImpl implements Contact {
 	}
 
 	public int getPreferredIndex(int fieldId) {
-		FieldInfo fieldInfo = findFieldInfo(fieldId);
+		FieldInfo fieldInfo = this.contactList.findFieldInfo(fieldId);
 		return fieldInfo.preferredIndex;
 	}
 
 	public String getString(int fieldId, int index) {
-		FieldInfo fieldInfo = findFieldInfo(fieldId);
-		checkFieldType(fieldInfo, PIMItem.STRING);
-		Field field = findField(fieldInfo);
 		if(index < 0) {
 			throw new IndexOutOfBoundsException("The parameter 'index' violates constraint 'index >= 0'");
 		}
+		Field field = getField(fieldId,PIMItem.STRING);
 		int numberOfValues = field.values.size();
 		if(index >= numberOfValues) {
 			throw new IndexOutOfBoundsException("The parameter 'index' violates constraint 'index < numberOfValues'.");
@@ -248,17 +265,10 @@ public class ContactImpl implements Contact {
 	}
 
 	public String[] getStringArray(int fieldId, int index) {
-		FieldInfo fieldInfo = findFieldInfo(fieldId);
-		if(fieldInfo == null) {
-			throw new UnsupportedFieldException("There is no field with id '"+fieldId+"'");
-		}
-		if(PIMItem.STRING_ARRAY != fieldInfo.type) {
-			throw new IllegalArgumentException("The field 'fieldId' is not of type PIMItem.STRING_ARRAY");
-		}
-		Field field = findField(fieldInfo);
 		if(index < 0) {
 			throw new IndexOutOfBoundsException("The parameter 'index' violates contraint 'index >= 0'");
 		}
+		Field field = getField(fieldId,PIMItem.STRING_ARRAY);
 		if(index >= field.values.size()) {
 			throw new IndexOutOfBoundsException("The parameter 'index' violates contraint 'index < numberOfValuesInField'");
 		}
@@ -281,14 +291,10 @@ public class ContactImpl implements Contact {
 	}
 
 	public void removeValue(int fieldId, int index) {
-		FieldInfo fieldInfo = findFieldInfo(fieldId);
-		Field field = findField(fieldInfo);
-		if(field == null) {
-			throw new IllegalArgumentException();
-		}
 		if(index < 0) {
 			throw new IndexOutOfBoundsException("Parameter 'index' violates constraint 'index >= 0'");
 		}
+		Field field = getField(fieldId);
 		int numberOfValues = field.values.size();
 		if(index >= numberOfValues) {
 			throw new IndexOutOfBoundsException("Parameter 'index' violates constraint 'index < numberOfValues'");
@@ -298,12 +304,10 @@ public class ContactImpl implements Contact {
 	}
 	
 	public void setBinary(int fieldId, int index, int attributes, byte[] value, int offset, int length) {
-		FieldInfo fieldInfo = findFieldInfo(fieldId);
-		checkFieldType(fieldInfo, PIMItem.BINARY);
-		Field field = findField(fieldInfo);
 		if(index < 0) {
 			throw new IndexOutOfBoundsException("Parameter 'index' violates constraint 'index >= 0'");
 		}
+		Field field = getField(fieldId,PIMItem.BINARY);
 		int numberOfValues = field.values.size();
 		if(index >= numberOfValues) {
 			throw new IndexOutOfBoundsException("Parameter 'index' violates constraint 'index < numberOfValues'");
@@ -337,12 +341,10 @@ public class ContactImpl implements Contact {
 	}
 
 	public void setBoolean(int fieldId, int index, int attributes, boolean value) {
-		FieldInfo fieldInfo = findFieldInfo(fieldId);
-		checkFieldType(fieldInfo, PIMItem.BOOLEAN);
-		Field field = findField(fieldInfo);
 		if(index < 0) {
 			throw new IndexOutOfBoundsException("Parameter 'index' violates constraint 'index >= 0'");
 		}
+		Field field = getField(fieldId,PIMItem.BOOLEAN);
 		int numberOfValues = field.values.size();
 		if(index >= numberOfValues) {
 			throw new IndexOutOfBoundsException("Parameter 'index' violates constraint 'index < numberOfValues'");
@@ -353,9 +355,7 @@ public class ContactImpl implements Contact {
 	}
 
 	public void setDate(int fieldId, int index, int attributes, long value) {
-		FieldInfo fieldInfo = findFieldInfo(fieldId);
-		checkFieldType(fieldInfo, PIMItem.DATE);
-		Field field = findField(fieldInfo);
+		Field field = getField(fieldId,PIMItem.DATE);
 		if(index < 0) {
 			throw new IndexOutOfBoundsException("Parameter 'index' violates constraint 'index >= 0'");
 		}
@@ -369,9 +369,7 @@ public class ContactImpl implements Contact {
 	}
 
 	public void setInt(int fieldId, int index, int attributes, int value) {
-		FieldInfo fieldInfo = findFieldInfo(fieldId);
-		checkFieldType(fieldInfo, PIMItem.INT);
-		Field field = findField(fieldInfo);
+		Field field = getField(fieldId,PIMItem.INT);
 		if(index < 0) {
 			throw new IndexOutOfBoundsException("Parameter 'index' violates constraint 'index >= 0'");
 		}
@@ -385,9 +383,7 @@ public class ContactImpl implements Contact {
 	}
 
 	public void setString(int fieldId, int index, int attributes, String value) {
-		FieldInfo fieldInfo = findFieldInfo(fieldId);
-		checkFieldType(fieldInfo, PIMItem.STRING);
-		Field field = findField(fieldInfo);
+		Field field = getField(fieldId,PIMItem.STRING);
 		if(index < 0) {
 			throw new IndexOutOfBoundsException("Parameter 'index' violates constraint 'index >= 0'");
 		}
@@ -401,9 +397,7 @@ public class ContactImpl implements Contact {
 	}
 
 	public void setStringArray(int fieldId, int index, int attributes, String[] value) {
-		FieldInfo fieldInfo = findFieldInfo(fieldId);
-		checkFieldType(fieldInfo, PIMItem.STRING_ARRAY);
-		Field field = findField(fieldInfo);
+		Field field = getField(fieldId,PIMItem.STRING_ARRAY);
 		if(index < 0) {
 			throw new IndexOutOfBoundsException("Parameter 'index' violates constraint 'index >= 0'");
 		}
@@ -442,33 +436,35 @@ public class ContactImpl implements Contact {
 	 * @throws UnsupportedFieldException if the field itself is not available for this class
 	 * @throws IllegalArgumentException if the type of the field is not valid
 	 */
-	private void checkFieldType(FieldInfo fieldInfo, int type) {
-		if(fieldInfo.type != type) {
-			throw new IllegalArgumentException("The field with metadata '"+fieldInfo+"' is not of type '"+type+"'.");
-		}
-	}
+//	private void checkFieldType(FieldInfo fieldInfo, int type) {
+//		if(fieldInfo.type != type) {
+//			throw new IllegalArgumentException("The field with metadata '"+fieldInfo+"' is not of type '"+type+"'.");
+//		}
+//	}
+	
+	
 
 	/**
 	 * Finds the field with the given field metadata. Throws an exception if it can not be found.
 	 * @param fieldInfo
 	 * @return
 	 */
-	private Field findField(FieldInfo fieldInfo) {
-		return findField(fieldInfo,true);
-	}
-	
-	private Field findField(FieldInfo fieldInfo, boolean throwException) {
-		for (Iterator<Field> iterator = this.fields.iterator(); iterator.hasNext();) {
-			Field field = iterator.next();
-			if(field.fieldInfo.equals(fieldInfo)) {
-				return field;
-			}
-		}
-		if(throwException) {
-			throw new IndexOutOfBoundsException("The field with metadata '"+fieldInfo+"' does not have any values.");
-		}
-		return null;
-	}
+//	private Field findField(FieldInfo fieldInfo) {
+//		return findField(fieldInfo,true);
+//	}
+//	
+//	private Field findField(FieldInfo fieldInfo, boolean throwException) {
+//		for (Iterator<Field> iterator = this.fields.iterator(); iterator.hasNext();) {
+//			Field field = iterator.next();
+//			if(field.fieldInfo.equals(fieldInfo)) {
+//				return field;
+//			}
+//		}
+//		if(throwException) {
+//			throw new IndexOutOfBoundsException("The field with metadata '"+fieldInfo+"' does not have any values.");
+//		}
+//		return null;
+//	}
 
 	/**
 	 * 
@@ -476,22 +472,22 @@ public class ContactImpl implements Contact {
 	 * @return the FieldInfo object with the given fieldId. Returns never null.
 	 * @throws UnsupportedFieldException if field is not supported by ContactList.
 	 */
-	private FieldInfo findFieldInfo(int fieldId) {
-		FieldInfo fieldInfo = this.contactList.findFieldInfo(fieldId);
-		if(fieldInfo == null) {
-			throw new UnsupportedFieldException("The field with id '"+fieldId+"' is not supported.");
-		}
-		return fieldInfo;
-	}
+//	private FieldInfo findFieldInfo(int fieldId) {
+//		FieldInfo fieldInfo = this.contactList.findFieldInfo(fieldId);
+//		if(fieldInfo == null) {
+//			throw new UnsupportedFieldException("The field with id '"+fieldId+"' is not supported.");
+//		}
+//		return fieldInfo;
+//	}
 
-	private Field findOrCreateField(FieldInfo fieldInfo) {
-		Field field = findField(fieldInfo,false);
-		if(field == null) {
-			field = new Field(fieldInfo);
-			this.fields.add(field);
-		}
-		return field;
-	}
+//	private Field findOrCreateField(FieldInfo fieldInfo) {
+//		Field field = findField(fieldInfo,false);
+//		if(field == null) {
+//			field = new Field(fieldInfo);
+//			this.fields.add(field);
+//		}
+//		return field;
+//	}
 
 	boolean isNew() {
 		return this.id == -1;
