@@ -17,7 +17,7 @@ import de.enough.polish.util.ImageUtil;
 //#if polish.api.sensor && polish.Screen.AutomaticOrientationChange && polish.midp2
 	//#define tmp.automaticScreenOrientation
 	import de.enough.polish.util.sensor.AccelerationListener;
-import de.enough.polish.util.sensor.AccelerationUtil;
+	import de.enough.polish.util.sensor.AccelerationUtil;
 //#endif
 
 
@@ -608,6 +608,10 @@ public class Display
 	//#endif
 	private CommandListener commandListener;
 	protected int nonFullScreenHeight;
+	//#if polish.blackberry && polish.hasPointerEvents
+		private int bbMaxScreenHeight;
+		private int bbMinScreenHeight = Integer.MAX_VALUE;
+	//#endif
 		
 	//#if polish.build.classes.NativeDisplay:defined
 		//#= private Display( MIDlet midlet, ${polish.build.classes.NativeDisplay} nativeDisplay ) {
@@ -1039,6 +1043,18 @@ public class Display
 							width = getScreenWidth();
 							height = getScreenHeight();
 						}
+						//#if polish.blackberry && polish.hasPointerEvents
+		                    if (nextScreen != null) {
+		                        if (height < this.bbMaxScreenHeight) {
+		                            if (nextScreen.getCurrentItem() == null || nextScreen.getCurrentItem()._bbField == null) {
+		                            height = this.bbMaxScreenHeight;
+		                            nextScreen.sizeChanged( width, height );
+		                        }
+		                        } else if (nextScreen.getCurrentItem() != null && nextScreen.getCurrentItem()._bbField != null) {
+		                            nextScreen.sizeChanged( width, this.bbMinScreenHeight );
+		                        }
+		                    }
+						//#endif
 						this.currentDisplayable = nextDisplayable;
 						screenAnimation.onShow( screenstyle, this, width, height, lastDisplayable, nextDisplayable, isForwardAnimation );
 						
@@ -1904,7 +1920,15 @@ public class Display
 			startAnimationThread = true;
 		}
 		getScreenWidth();
-		getScreenHeight();
+		int h = getScreenHeight();
+		//#if polish.blackberry && polish.hasPointerEvents
+			if (h > this.bbMaxScreenHeight) {
+				this.bbMaxScreenHeight = h;
+			}
+			if (h < this.bbMinScreenHeight) {
+				this.bbMinScreenHeight = h;
+			}
+		//#endif
 		if (this.currentCanvas != null) { 
 			this.currentCanvas._showNotify();
 			if (this.screenWidth != 0) {
@@ -2179,6 +2203,14 @@ public class Display
 	public void sizeChanged(int width, int height, boolean isRotated) {
 		//#debug
 		System.out.println("sizeChanged=" + width +"x" + height);
+		//#if polish.blackberry && polish.hasPointerEvents
+			if (height > this.bbMaxScreenHeight) {
+				this.bbMaxScreenHeight = height;
+			}
+			if (height < this.bbMinScreenHeight) {
+				this.bbMinScreenHeight = height;
+			}
+		//#endif
 		//try { throw new RuntimeException(); } catch (Exception e) { e.printStackTrace(); }
 		//#if tmp.screenOrientation
 			//#debug

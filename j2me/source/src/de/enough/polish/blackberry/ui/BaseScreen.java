@@ -1435,7 +1435,14 @@ public abstract class BaseScreen
     	} 
     	clearPermanentNativeItems();
         //#if polish.hasPointerEvents
-	    	getVirtualKeyboard().setVisibility( VirtualKeyboard.HIDE );
+	        if (nextDisplayable instanceof Screen) {
+	            Screen screen = (Screen) nextDisplayable;
+	            if (screen.getCurrentItem() == null || screen.getCurrentItem()._bbField == null) {
+	                getVirtualKeyboard().setVisibility( VirtualKeyboard.HIDE );
+	            }
+	        } else {
+	            getVirtualKeyboard().setVisibility( VirtualKeyboard.HIDE );
+	        }
 	    //#endif
 		//#if !tmp.fullscreen
 	    	removeAllMenuItems();

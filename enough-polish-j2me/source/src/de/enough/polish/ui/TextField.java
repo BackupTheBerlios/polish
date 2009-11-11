@@ -4404,7 +4404,8 @@ public class TextField extends StringItem
 			//#endif
 			super.hideNotify();
 			//#if polish.blackberry && polish.hasPointerEvents
-				//# Display.getInstance().getVirtualKeyboard().setVisibility(net.rim.device.api.ui.VirtualKeyboard.HIDE);
+				// 2009-11-11: hiding the softkeyboard is not really necessary as we have a finer grained control about this in BaseScreen.notifyDisplayChange()
+				//# //Display.getInstance().getVirtualKeyboard().setVisibility(net.rim.device.api.ui.VirtualKeyboard.HIDE);
 			//#elif polish.android1.5
 				MidletBridge.instance.hideSoftKeyboard();
 			//#endif
