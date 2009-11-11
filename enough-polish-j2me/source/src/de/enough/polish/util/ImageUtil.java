@@ -31,9 +31,6 @@ package de.enough.polish.util;
 	import javax.microedition.lcdui.Image;
 //#endif
 
-//#debug ovidiu
-import com.ovidiuiliescu.*;
-
 import de.enough.polish.math.FP;
 
 /**
@@ -69,14 +66,13 @@ public final class ImageUtil {
 	 * @throws ArithmeticException when width of scaleFactor is 0
 	 */
 	public static void scale(int scaleFactor, int width, int height, int[] rgbData, int[] scaledRgbData) {
-		
 		if (scaleFactor < 100){
 			int xStart = ((width*100) - (width*scaleFactor)) / 200;
 			int yStart = ((height*100) - (height*scaleFactor)) / 200;
-			for (int y=yStart; y < height-yStart; y++){ 
+			for (int y=yStart; y < height-yStart; y++){
 				for (int x=xStart; x < width-xStart; x++){
 					int xTarget = (x*scaleFactor)/100  + xStart;
-					int yTarget = (y*scaleFactor)/100 + yStart;             
+					int yTarget = (y*scaleFactor)/100 + yStart;            
 					scaledRgbData[(yTarget*width) + xTarget] = rgbData[(y*width)+x];
 				}
 			}
@@ -91,7 +87,6 @@ public final class ImageUtil {
 				}
 			}
 		}
-
 	}
 	
 	/**
