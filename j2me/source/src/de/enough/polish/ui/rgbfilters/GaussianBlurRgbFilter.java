@@ -117,8 +117,8 @@ public class GaussianBlurRgbFilter extends RgbFilter {
 		int x = 0, y = 0, dx = 0, dy = 0, startX = 0, endX, c = 0, percentage = 0;
 		int yTimesWidth = 0;
 		int dyTimesWidth = 0;
-		int width = this.width;
-		int height = this.height;
+		int imgWidth = this.width;
+		int imgHeight = this.height;
 
 		/*
 		 * Gaussian Blur is linearly separable, so let's take advantage of this
@@ -143,8 +143,8 @@ public class GaussianBlurRgbFilter extends RgbFilter {
 		 */
 
 		// VERTICAL PASS
-		for (y = -1; ++y < height;) {
-			for (x = -1; ++x < width;) {
+		for (y = -1; ++y < imgHeight;) {
+			for (x = -1; ++x < imgWidth;) {
 				
 				sourcePixel = rgbInput[x + yTimesWidth];
 				red = (sourcePixel & 0x00ff0000) >> 16;
@@ -158,11 +158,11 @@ public class GaussianBlurRgbFilter extends RgbFilter {
 				if (startY < 0) {
 					startY = 0;
 				}
-				if (endY >= height) {
-					endY = height - 1;
+				if (endY >= imgHeight) {
+					endY = imgHeight - 1;
 				}
 
-				dyTimesWidth = startY * width;
+				dyTimesWidth = startY * imgWidth;
 				for (dy = startY - 1; ++dy <= endY;) {
 
 					c = rgbInput[x + dyTimesWidth];
@@ -174,7 +174,7 @@ public class GaussianBlurRgbFilter extends RgbFilter {
 
 					totalPercentage += percentage;
 
-					dyTimesWidth += width;
+					dyTimesWidth += imgWidth;
 				}
 
 				red = ((red << 7) / totalPercentage) << 16;
@@ -184,15 +184,15 @@ public class GaussianBlurRgbFilter extends RgbFilter {
 				rgbOutput[x + yTimesWidth] = (sourcePixel & 0xff000000) | red | green | blue;
 
 			}
-			yTimesWidth += width;
+			yTimesWidth += imgWidth;
 		}
 
 		// HORIZONTAL PASS
 		yTimesWidth = 0;
 		dyTimesWidth = 0;
 
-		for (y = -1; ++y < height;) {
-			for (x = -1; ++x < width;) {
+		for (y = -1; ++y < imgHeight;) {
+			for (x = -1; ++x < imgWidth;) {
 				
 				sourcePixel = rgbOutput[x + yTimesWidth];
 				red = (sourcePixel & 0x00ff0000) >> 16;
@@ -206,8 +206,8 @@ public class GaussianBlurRgbFilter extends RgbFilter {
 				if (startX < 0) {
 					startX = 0;
 				}
-				if (endX >= width) {
-					endX = width - 1;
+				if (endX >= imgWidth) {
+					endX = imgWidth - 1;
 				}
 
 				for (dx = startX - 1; ++dx <= endX;) {
@@ -230,7 +230,7 @@ public class GaussianBlurRgbFilter extends RgbFilter {
 
 			}
 
-			yTimesWidth += width; 
+			yTimesWidth += imgWidth;
 		}
 
 		//#debug ovidiu
