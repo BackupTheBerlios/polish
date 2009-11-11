@@ -10,16 +10,16 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * J2ME Polish is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with J2ME Polish; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- * 
+ *
  * Commercial licenses are also available, please
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
@@ -31,6 +31,10 @@ import de.enough.polish.ui.Displayable;
 
 import de.enough.polish.event.EventListener;
 import de.enough.polish.event.EventManager;
+
+//#debug ovidiu
+import com.ovidiuiliescu.*;
+
 import de.enough.polish.util.ArrayList;
 
 /**
@@ -43,9 +47,9 @@ import de.enough.polish.util.ArrayList;
  *  <variables>
  *		<variable name="polish.animationInterval" value="200" />
  *	</variables>
- * 	</pre> 
+ * 	</pre>
  *  sets the interval to 200 ms. When not specified, the default interval
- *  of 100 ms will be used. 
+ *  of 100 ms will be used.
  * </p>
  * <p>Copyright Enough Software 2004 - 2009</p>
 
@@ -72,7 +76,7 @@ public class AnimationThread extends Thread
 	 * The event is only triggered when polish.Animation.fireIdleEvents is set to true in your build.xml.
 	 */
 	public static final String EVENT_IDLE_MODE_OFF = "idle-off";
-	
+
 	//#ifdef polish.animationInterval:defined
 		//#= public final static int ANIMATION_INTERVAL = ${polish.animationInterval};
 	//#else
@@ -91,7 +95,12 @@ public class AnimationThread extends Thread
 	//#else
 		private final static long ANIMATION_TIMEOUT = 3 * 60 * 1000; // after 3 minutes of inactivity stop the animations
 	//#endif
-	
+
+	/**
+	 * the total delta (animation, serviceRepaints, sleep) of the last frame
+	 */
+	long totalDelta = -1;
+
 	/**
 	 * Creates a new animation thread.
 	 */
@@ -105,44 +114,86 @@ public class AnimationThread extends Thread
 			EventManager.getInstance().addEventListener(null, this);
 		//#endif
 	}
-	
+
 	/**
 	 * Animates the current screen.
 	 */
 	public void run() {
+
+
+		//#debug ovidiu
+
 		long sleeptime = ANIMATION_INTERVAL;
+		long currentTime = 0;
+		long usedTime = 0 ;
+		int i = 0;
+
+		Object[] animationItems = null ;
+		Animatable animatable = null ;
+		Displayable d = null ;
+
 		ClippingRegion repaintRegion = new ClippingRegion();
 //		int animationCounter = 0;
 		while ( true ) {
+
+			Timer.startTimer(6);
+			Timer.incrementTimer(5);
+			Timer.check(15000);
 			try {
-				if(sleeptime == ANIMATION_YIELD_INTERVAL) {
-					Thread.yield();
-				} else {
-					Thread.sleep(sleeptime);
-				}
-				
+
 				Screen screen = StyleSheet.currentScreen;
 				//System.out.println("AnimationThread: animating " + screen + ", current=" + StyleSheet.display.getCurrent());
-				if (screen != null 
+				if (screen != null
 						//#if polish.css.repaint-previous-screen
 						&& screen.isShown()
 						//#endif
 				) {
-					long currentTime = System.currentTimeMillis();
-					if ( (currentTime - screen.lastInteractionTime) < ANIMATION_TIMEOUT ) { 
+					currentTime = System.currentTimeMillis();
+					if ( (currentTime - screen.lastInteractionTime) < ANIMATION_TIMEOUT ) {
+
+						//#debug ovidiu
+						Timer.startTimer(7);
+
 						screen.animate( currentTime, repaintRegion );
+
+						//#mdebug ovidiu
+						Timer.pauseTimer(7);
+						Timer.incrementTimer(8);
+						//#enddebug
+
+
 						if (animationList != null) {
-							Object[] animationItems = animationList.getInternalArray();
-							for (int i = 0; i < animationItems.length; i++) {
-								Animatable animatable = (Animatable) animationItems[i];
+							animationItems = animationList.getInternalArray();
+							for (i = 0; i < animationItems.length; i++) {
+								animatable = (Animatable) animationItems[i];
 								if (animatable == null) {
+
 									break;
 								}
 								//System.out.println("animating " + animatable);
+
+								//#debug ovidiu
+								Timer.startTimer(7);
+
 								animatable.animate(currentTime, repaintRegion);
+
+								//#mdebug ovidiu
+								Timer.pauseTimer(7);
+								Timer.incrementTimer(8);
+								//#enddebug
+
+								//#debug repaint
+								System.out.println("called animate for " + animatable + " : " + repaintRegion);
 							}
 						}
+
+						//#debug ovidiu
+						Timer.startTimer(9);
+
 						if (repaintRegion.containsRegion()) {
+							//#debug repaint
+							System.out.println("repainting for " + repaintRegion);
+
 							//System.out.println("AnimationThread: screen needs repainting");
 							//#debug debug
 							System.out.println("triggering repaint for screen " + screen + ", is shown: " + screen.isShown() );
@@ -155,12 +206,16 @@ public class AnimationThread extends Thread
 							repaintRegion.reset();
 							screen.serviceRepaints();
 						}
+
+						//#debug ovidiu
+						Timer.pauseTimer(9);
+
 						//#if polish.Animation.fireIdleEvents
 							if (sleeptime == SLEEP_INTERVAL) {
 								EventManager.fireEvent( EVENT_IDLE_MODE_OFF, this, null);
 							}
 						//#endif
-						long usedTime = System.currentTimeMillis() - currentTime;
+						usedTime = System.currentTimeMillis() - currentTime;
 						if (usedTime >= ANIMATION_INTERVAL) {
 							sleeptime = ANIMATION_YIELD_INTERVAL;
 						} else {
@@ -171,15 +226,37 @@ public class AnimationThread extends Thread
 						//#if polish.Animation.fireIdleEvents
 							EventManager.fireEvent( EVENT_IDLE_MODE_ON, this, null);
 						//#endif
+
+						//#mdebug ovidiu
+						Timer.pauseTimer(6);
+						Timer.check(15000);
+						//#enddebug
+
 						continue;
 					}
 
 					if (releaseResourcesOnScreenChange) {
-						Displayable d = StyleSheet.display.getCurrent();
+						d = StyleSheet.display.getCurrent();
 						if (d != screen) {
 							StyleSheet.currentScreen = null;
 						}
 					}
+
+					if(sleeptime == ANIMATION_YIELD_INTERVAL) {
+						//#mdebug ovidiu
+						Timer.pauseTimer(6);
+						Timer.check(15000);
+						//#enddebug
+						Thread.yield();
+					} else {
+						//#mdebug ovidiu
+						Timer.pauseTimer(6);
+						Timer.check(15000);
+						//#enddebug
+						Thread.sleep(sleeptime);
+					}
+
+					this.totalDelta = (System.currentTimeMillis() - currentTime) - ANIMATION_INTERVAL;
 				} else {
 					if (releaseResourcesOnScreenChange) {
 						StyleSheet.releaseResources();
@@ -193,14 +270,28 @@ public class AnimationThread extends Thread
 				//#debug error
 				System.out.println("unable to animate screen" + e );
 			}
+
+			//#mdebug ovidiu
+			Timer.pauseTimer(6);
+			Timer.check(15000);
+			//#enddebug
 		}
+
+	}
+
+	/**
+	 * Returns the total delta of the last frame
+	 * @return the total delta of the last frame
+	 */
+	public long getTotalDelta() {
+		return this.totalDelta;
 	}
 
 	/**
 	 * Adds the given item to list of items that should be animated.
 	 * Typically an item adds itself to the list in the showNotify() method and
 	 * then de-registers itself in the hideNotify() method.
-	 *  
+	 *
 	 * @param item the item that needs to be animated regardless of it's focused state etc.
 	 * @see #removeAnimationItem(Animatable)
 	 */
@@ -218,7 +309,7 @@ public class AnimationThread extends Thread
 	 * Adds the given item to list of items that should be animated.
 	 * Typically an item adds itself to the list in the showNotify() method and
 	 * then de-registers itself in the hideNotify() method.
-	 *  
+	 *
 	 * @param item the item that needs to be animated regardless of it's focused state etc.
 	 * @see #removeAnimationItem(javax.microedition.lcdui.CustomItem)
 	 */
@@ -231,7 +322,7 @@ public class AnimationThread extends Thread
 	 * Removes the given item to list of items that should be animated.
 	 * Typically an item adds itself to the list in the showNotify() method and
 	 * then de-registers itself in the hideNotify() method.
-	 *  
+	 *
 	 * @param item the item that does not need to be animated anymore
 	 * @see #addAnimationItem(Animatable)
 	 */
@@ -246,7 +337,7 @@ public class AnimationThread extends Thread
 	 * Removes the given item to list of items that should be animated.
 	 * Typically an item adds itself to the list in the showNotify() method and
 	 * then de-registers itself in the hideNotify() method.
-	 *  
+	 *
 	 * @param item the item that does not need to be animated anymore
 	 * @see #addAnimationItem(javax.microedition.lcdui.CustomItem)
 	 */
@@ -286,7 +377,7 @@ public class AnimationThread extends Thread
 		}
 	}
 	//#endif
-	
+
 	/* (non-Javadoc)
 	 * @see de.enough.polish.event.EventListener#handleEvent(java.lang.String, java.lang.Object, java.lang.Object)
 	 */
@@ -321,7 +412,7 @@ public class AnimationThread extends Thread
 					}
 				}
 			}
-		//#endif				
+		//#endif
 	}
 
 	//#if polish.css.animations
@@ -334,7 +425,7 @@ public class AnimationThread extends Thread
 		private final Style uiElementStyle;
 		private boolean isStarted;
 		private int repeats;
-		
+
 		public CssAnimationRun( CssAnimation animation, UiElement item ) {
 			this.animation = animation;
 			this.startTime = System.currentTimeMillis();
@@ -360,8 +451,10 @@ public class AnimationThread extends Thread
 				this.style.addAttribute( animation.cssAttributeId, this.lastValue);
 			}
 		}
-		
+
 		public void animate( long currentTime, ClippingRegion repaintArea ) {
+			//return;
+
 			this.uiElement.addRepaintArea(repaintArea);
 			if (!this.isStarted) {
 				if (currentTime - this.startTime >= this.animation.delay) {
@@ -444,7 +537,7 @@ public class AnimationThread extends Thread
 				this.startTime = currentTime;
 			}
 		}
-		
+
 	}
 	//#endif
 

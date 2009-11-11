@@ -78,9 +78,11 @@ public class GrayscaleRgbFilter extends RgbFilter
 		int grayscalePercent = (this.grayscale.getValue(255) * 100) / 255; 
 		int inverseGrayscalePercent = 100 - grayscalePercent;
 		int alpha, red, green, blue;
+		int brightness = 0;
+		int pixel = 0;
 		for (int i = 0; i < rgbOutput.length; i++)
 		{
-			int pixel = rgbInput[i];
+			    pixel = rgbInput[i];
 				//TODO keep pixels within keep-range
 				alpha = (0xFF000000 & pixel) >>> 24;
 				if (alpha == 0) {
@@ -91,7 +93,7 @@ public class GrayscaleRgbFilter extends RgbFilter
 				green = (0x0000FF & (pixel >>> 8));
 				blue = pixel & (0x000000FF );
 				
-				int brightness = ((((red + green + blue) / 3 ) & 0x000000FF) * grayscalePercent) / 100;
+				brightness = ((((red + green + blue) / 3 ) & 0x000000FF) * grayscalePercent) / 100;
 				red = (red * inverseGrayscalePercent) / 100;
 				green = (green * inverseGrayscalePercent) / 100;
 				blue = (blue * inverseGrayscalePercent) / 100;

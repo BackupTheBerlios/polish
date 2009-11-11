@@ -26,15 +26,24 @@
  */
 package de.enough.polish.ui.rgbfilters;
 
+//#debug ovidiu
+import com.ovidiuiliescu.*;
+
 import de.enough.polish.ui.Dimension;
 import de.enough.polish.ui.RgbFilter;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.RgbImage;
 
 /**
- * <p>Blurs an image.</p>
- *
- * <p>Copyright Enough Software 2008</p>
+ * <p>
+ * Blurs an image.
+ * </p>
+ * 
+ * <p>
+ * Copyright Enough Software 2008
+ * </p>
+ * 
+ * @author Ovidiu Iliescu
  * @author Nagendra Sharma, nagendra@prompttechnologies.net
  * @author Robert Virkus, j2mepolish@enough.de (blur animation & fixes)
  */
@@ -47,10 +56,13 @@ public class GaussianBlurRgbFilter extends RgbFilter {
 	 * Creates a new GaussianBlurRgb Filter
 	 */
 	public GaussianBlurRgbFilter() {
+
 		// just create a new instance
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.enough.polish.ui.RgbFilter#isActive()
 	 */
 	public boolean isActive() {
@@ -60,14 +72,19 @@ public class GaussianBlurRgbFilter extends RgbFilter {
 		return (this.blur.getValue(255) != 0);
 	}
 
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.RgbFilter#process(de.enough.polish.util.RgbImage)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.enough.polish.ui.RgbFilter#process(de.enough.polish.util.RgbImage)
 	 */
 	public RgbImage process(RgbImage input) {
-
 		if (!isActive()) {
 			return input;
 		}
+		// #debug ovidiu
+		Timer.startTimer(2);
+
 		this.width = input.getWidth();
 		this.height = input.getHeight();
 		if (this.output == null || this.output.getWidth() != input.getWidth()
@@ -86,72 +103,169 @@ public class GaussianBlurRgbFilter extends RgbFilter {
 			dimension++;
 		}
 		
-		for (int y = 0; y < this.height; y++) {
-			for (int x = 0; x < this.width; x++) {
-				// On the border, return black, since there is no pixel to be modified.
-				int sourcePixel = rgbInput[x + y * this.width];
-//				if (x < dimension || y < dimension
-//						|| x >= (this.width - dimension)
-//						|| y >= (this.height - dimension)) {
-//					rgbOutput[x + y * this.width] = sourcePixel;
-//					continue;
-//				}
+		// #debug ovidiu
+		Timer.startTimer(4);
 
-				int red   = (sourcePixel & 0x00ff0000) >> 16 ;
-				int green = (sourcePixel & 0x0000ff00) >> 8;
-				int blue  =  sourcePixel & 0x000000ff; 
-				int totalPercentage = 100;
-				int startY = y - dimension;
-				int endY = y + dimension;
-				for (int dy = startY; dy <= endY; dy++) {
-					int startX = x - dimension;
-					int endX = x + dimension;
-					for (int dx = startX; dx <= endX; dx++) {
-						//System.out.println("dx: " + dx + " dy: " + 
-						//                       dy + " w: " + w);
-						if (dx < 0 || dy < 0 || dx >= this.width || dy >= this.height ) {
-							continue;
-						}
-						if (dx != x || dy != y) {
-							int c = rgbInput[dx + dy * this.width];
-							int percentage = ((c >>> 24) * 100) / 255;
-							if (dx == startX || dx == endX || dy == startY || dy == endY ) {
-								percentage = (percentage * outerPercentage) / 100;
-							}
-							red +=   (((c & 0x00ff0000) >> 16) * percentage) / 100;
-							green += (((c & 0x0000ff00) >> 8)  * percentage) / 100;
-							blue +=   ((c & 0x000000ff)        * percentage) / 100;
-							totalPercentage += percentage;
-						}
-					}
-				}
+		// Define all variables here instead of inside the loops.
+		int sourcePixel = 0;
+		int red = 0;
+		int green = 0;
+		int blue = 0;
+		int totalPercentage = 100;
+		int startY = 0;
+		int endY = 0;
+		int x = 0, y = 0, dx = 0, dy = 0, startX = 0, endX, c = 0, percentage = 0;
+		int yTimesWidth = 0;
+		int dyTimesWidth = 0;
+		int width = this.width;
+		int height = this.height;
+
+		/*
+		 * Gaussian Blur is linearly separable, so let's take advantage of this
+		 * by doing first a vertical pass and then a horizontal pass.
+		 * 
+		 * Basically :
+		 * 
+		 * FullGauss (image,d*d) = HorizGauss(VertGauss(image,d),d)
+		 *  
+		 * Massive speed improvement obtained because of this, since instead of
+		 * width*height*dimension*dimension pixels we only process 2*width*height*dimension
+		 * pixels.
+		 * 
+		 * Also heavily optimized the loops by moving the inner "if"s one level up
+		 * and using pre-calculation and bit shifts wherever possible.
+		 * 
+		 * Because of bit shifts, some values (like totalPercentage) were refactored
+		 * to base-2 numbers (128 instead of 100). The math has been modified to take
+		 * this into consideration, however very small visual differences might occur
+		 * because of this. These differences are, for all intents and purposes unnoticeable.
+		 * 
+		 */
+
+		// VERTICAL PASS
+		for (y = -1; ++y < height;) {
+			for (x = -1; ++x < width;) {
 				
-				red =   ((red   * 100) / totalPercentage) << 16;
-				green = ((green * 100) / totalPercentage) << 8;
-				blue =  ((blue  * 100) / totalPercentage);
-			
+				sourcePixel = rgbInput[x + yTimesWidth];
+				red = (sourcePixel & 0x00ff0000) >> 16;
+				green = (sourcePixel & 0x0000ff00) >> 8;
+				blue = sourcePixel & 0x000000ff;
+				
+				totalPercentage = 128;
+				startY = y - dimension;
+				endY = y + dimension;
 
-				rgbOutput[x + y * this.width] = (sourcePixel & 0xff000000) | red | green | blue ;
+				if (startY < 0) {
+					startY = 0;
+				}
+				if (endY >= height) {
+					endY = height - 1;
+				}
+
+				dyTimesWidth = startY * width;
+				for (dy = startY - 1; ++dy <= endY;) {
+
+					c = rgbInput[x + dyTimesWidth];
+					percentage = c >>> 25;
+
+					red += (((c & 0x00ff0000) >> 16) * percentage) >> 7;
+					green += (((c & 0x0000ff00) >> 8) * percentage) >> 7;
+					blue += ((c & 0x000000ff) * percentage) >> 7;
+
+					totalPercentage += percentage;
+
+					dyTimesWidth += width;
+				}
+
+				red = ((red << 7) / totalPercentage) << 16;
+				green = ((green << 7) / totalPercentage) << 8;
+				blue = ((blue << 7) / totalPercentage);
+
+				rgbOutput[x + yTimesWidth] = (sourcePixel & 0xff000000) | red | green | blue;
+
 			}
+			yTimesWidth += width;
 		}
+
+		// HORIZONTAL PASS
+		yTimesWidth = 0;
+		dyTimesWidth = 0;
+
+		for (y = -1; ++y < height;) {
+			for (x = -1; ++x < width;) {
+				
+				sourcePixel = rgbOutput[x + yTimesWidth];
+				red = (sourcePixel & 0x00ff0000) >> 16;
+				green = (sourcePixel & 0x0000ff00) >> 8;
+				blue = sourcePixel & 0x000000ff;
+				totalPercentage = 128;
+
+				startX = x - dimension;
+				endX = x + dimension;
+
+				if (startX < 0) {
+					startX = 0;
+				}
+				if (endX >= width) {
+					endX = width - 1;
+				}
+
+				for (dx = startX - 1; ++dx <= endX;) {
+
+					c = rgbOutput[dx + yTimesWidth];
+					percentage = c >>> 25;
+
+					red += (((c & 0x00ff0000) >> 16) * percentage) >> 7;
+					green += (((c & 0x0000ff00) >> 8) * percentage) >> 7;
+					blue += ((c & 0x000000ff) * percentage) >> 7;
+
+					totalPercentage += percentage;
+				}
+
+				red = ((red << 7) / totalPercentage) << 16;
+				green = ((green << 7) / totalPercentage) << 8;
+				blue = ((blue << 7) / totalPercentage);
+
+				rgbOutput[x + yTimesWidth] = (sourcePixel & 0xff000000) | red | green | blue;
+
+			}
+
+			yTimesWidth += width; 
+		}
+
+		// #debug ovidiu
+		Timer.pauseTimer(4);
+
+		// #mdebug ovidiu
+		Timer.pauseTimer(2);
+		Timer.incrementTimer(3);
+		Timer.check(15000);
+		// #enddebug
 
 		return this.output;
 	}
 
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.RgbFilter#setStyle(de.enough.polish.ui.Style, boolean)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see de.enough.polish.ui.RgbFilter#setStyle(de.enough.polish.ui.Style,
+	 * boolean)
 	 */
 	public void setStyle(Style style, boolean resetStyle) {
+
 		super.setStyle(style, resetStyle);
-		//#if polish.css.filter-blur-grade
-			Dimension blurInt = (Dimension) style.getObjectProperty("filter-blur-grade");
-			if (blurInt != null) {
-				this.blur = blurInt;
-			}
-		//#endif
+		// #if polish.css.filter-blur-grade
+		Dimension blurInt = (Dimension) style.getObjectProperty("filter-blur-grade");
+		if (blurInt != null) { 
+			this.blur = blurInt;
+		}
+		// #endif
+
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.enough.polish.ui.RgbFilter#releaseResources()
 	 */
 	public void releaseResources() {
