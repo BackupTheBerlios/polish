@@ -4979,6 +4979,7 @@ implements UiElement, Animatable
 	public boolean handlePointerTouchUp( int x, int y ) {
 		boolean handled = false;
 		//#ifdef polish.hasTouchEvents
+			this.lastInteractionTime = System.currentTimeMillis();
 			Container cont = this.container;
 			if (cont != null) {
 				if (cont.handlePointerTouchUp(x - cont.relativeX, y - cont.relativeY)) {
