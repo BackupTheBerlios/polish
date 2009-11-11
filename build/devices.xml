@@ -8251,7 +8251,7 @@ These namespaces/schemas will be used soon.
     <capability name="hasrepeatevents" value="true" />
     <capability name="imagecreateformat" value="jpeg, gif, bmp, wbmp" />
     <capability name="javaconfiguration" value="CLDC/1.1" />
-    <capability name="javapackage" value="btapi, m3g, mmapi1.2, wmapi2.0, fileconnection, 3dapi, pimapi, locationapi, webservice, nokia-ui, wmapi1.1,btapi, m3g, mmapi1.2, wmapi2.0, fileconnection, 3dapi, pimapi, locationapi, webservice, nokia-ui, wmapi1.1, svg, sensor" />
+    <capability name="javapackage" value="btapi, m3g, mmapi1.2, wmapi2.0, fileconnection, 3dapi, pimapi, locationapi, webservice, nokia-ui, wmapi1.1,btapi, m3g, mmapi1.2, wmapi2.0, fileconnection, 3dapi, pimapi, locationapi, webservice, nokia-ui, wmapi1.1, svg, sensor, jsr177" />
     <capability name="javaplatform" value="MIDP/2.1, JTWI/1.0" />
     <capability name="key.addsymbolkey" value="42" />
     <capability name="key.changeinputmodekey" value="35" />
