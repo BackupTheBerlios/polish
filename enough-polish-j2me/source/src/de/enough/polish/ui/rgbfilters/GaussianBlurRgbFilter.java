@@ -82,7 +82,7 @@ public class GaussianBlurRgbFilter extends RgbFilter {
 		if (!isActive()) {
 			return input;
 		}
-		// #debug ovidiu
+		//#debug ovidiu
 		Timer.startTimer(2);
 
 		this.width = input.getWidth();
@@ -103,7 +103,7 @@ public class GaussianBlurRgbFilter extends RgbFilter {
 			dimension++;
 		}
 		
-		// #debug ovidiu
+		//#debug ovidiu
 		Timer.startTimer(4);
 
 		// Define all variables here instead of inside the loops.
@@ -233,14 +233,14 @@ public class GaussianBlurRgbFilter extends RgbFilter {
 			yTimesWidth += width; 
 		}
 
-		// #debug ovidiu
+		//#debug ovidiu
 		Timer.pauseTimer(4);
 
-		// #mdebug ovidiu
+		//#mdebug ovidiu
 		Timer.pauseTimer(2);
 		Timer.incrementTimer(3);
 		Timer.check(15000);
-		// #enddebug
+		//#enddebug
 
 		return this.output;
 	}
