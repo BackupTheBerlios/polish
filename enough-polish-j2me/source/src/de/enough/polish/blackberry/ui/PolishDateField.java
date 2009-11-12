@@ -66,7 +66,7 @@ implements AccessibleField
 	//#if ${ version(polish.JavaPlatform, BlackBerry) } >= ${version(4.6)}
 		private BackgroundWrapper backgroundWrapper;
 	//#endif
-	private final XYRect xyFocusRect;
+	//private final XYRect xyFocusRect;
 
 	/**
 	 * Creates a new date field
@@ -103,7 +103,7 @@ implements AccessibleField
 	 */
 	public PolishDateField(long date, DateFormat dateFormat, long style) {
 		super(null, date, dateFormat, style);
-		this.xyFocusRect = new XYRect();
+		//this.xyFocusRect = new XYRect();
 	}
 	
 	public static long getStyle(int inputMode) {
@@ -175,15 +175,15 @@ implements AccessibleField
    }
 	 protected void drawFocus(net.rim.device.api.ui.Graphics graphics, boolean on)
 	 {
-		 getFocusRect( this.xyFocusRect );
-		 graphics.setColor( this.fontColor );
+//		 getFocusRect( this.xyFocusRect );
+//		 graphics.setColor( this.fontColor );
 		 // apparently the focus is paint _after_ the content is drawn on BB.
 		 // Weird design decision, this means that we cannot use any fill method here...
 //		 graphics.fillRoundRect( this.xyFocusRect.x - 2, this.xyFocusRect.y - 2, this.xyFocusRect.width + 4, this.xyFocusRect.height + 4, 6, 6 );
 //		 int complementaryColor = DrawUtil.getComplementaryColor( this.fontColor );
 //		 graphics.setColor( complementaryColor );
 //		 graphics.fillRoundRect( this.xyFocusRect.x, this.xyFocusRect.y, this.xyFocusRect.width, this.xyFocusRect.height, 6, 6 );
-		 graphics.drawRoundRect( this.xyFocusRect.x, this.xyFocusRect.y, this.xyFocusRect.width, this.xyFocusRect.height, 6, 6 );
+//		 graphics.drawRoundRect( this.xyFocusRect.x, this.xyFocusRect.y, this.xyFocusRect.width, this.xyFocusRect.height, 6, 6 );
 	 }
 	 
      public void layout( int width, int height) {
