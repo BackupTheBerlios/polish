@@ -734,8 +734,8 @@ public abstract class BaseScreen
     protected void paintBackground( net.rim.device.api.ui.Graphics g ) {
         //System.out.println("Canvas.paintBackground(): enter");
     	try {
-        this.graphics.setGraphics( g );
-    	paint( this.graphics );
+	        this.graphics.setGraphics( g );
+	    	paint( this.graphics );
     	} catch (Exception e) {
     		//#debug error
     		System.out.println("unable to paint screen " + this + e );
@@ -1123,11 +1123,13 @@ public abstract class BaseScreen
     	boolean isSuperCalled = false;
     	int x = message.getGlobalX(1);
 		int y = message.getGlobalY(1);
+		int event = message.getEvent();
     	if ( screen != null && forwardEventToNativeField( screen, 0)) {
     		boolean forwardEvent = true;
     		Item item = this.currentItem;
         	Field field = item != null ? this.currentItem._bbField : null;
-        	if (field instanceof PolishTextField) {
+        	boolean isTextField = field instanceof PolishTextField; 
+        	if (isTextField) {
         		int absX = item.getAbsoluteX();
         		int absY = item.getAbsoluteY();
         		if ( x < absX || y < absY || x > absX + item.itemWidth || y > absY + item.itemHeight) {
@@ -1136,12 +1138,11 @@ public abstract class BaseScreen
         	}
         	if (forwardEvent) {
         		isSuperCalled = true;
-	    		if (super.touchEvent( message ) && !focusChangeDetected(screen)) {
+	    		if (super.touchEvent( message ) && !focusChangeDetected(screen) && (!isTextField)) {
 	    			return true;
 	    		}
         	}
     	}
-		int event = message.getEvent();
 		if (event == TouchEvent.CLICK) {
     			pointerPressed( x, y );
     			return true;
