@@ -48,6 +48,7 @@ import de.enough.polish.util.ArrayList;
  * 				</pre>
  * 				</li>
  * 		<li><b>scroll-mode</b>: Either "smooth" (=default) or "normal".</li>
+ * 		<li><b>and many more...</b>: compare the visual guide to J2ME Polish</li>
  * </ul>
  * <p>Copyright Enough Software 2004 - 2007 - 2009</p>
 
@@ -2719,6 +2720,9 @@ public class Container extends Item {
 				if (offset > 0) {
 					this.scrollSpeed = 0;
 					target = 0;
+					//#if polish.Container.ScrollBounce:defined && polish.Container.ScrollBounce == false
+						offset = 0;
+					//#endif
 				}
 			} else {
 				offset -= speed;
@@ -2739,6 +2743,9 @@ public class Container extends Item {
 				if (offset + maxItemHeight < this.scrollHeight) { 
 					this.scrollSpeed = 0;
 					target = this.scrollHeight - maxItemHeight;
+					//#if polish.Container.ScrollBounce:defined && polish.Container.ScrollBounce == false
+						offset = target;
+					//#endif
 				}
 			}
 			this.yOffset = offset;
@@ -3186,14 +3193,25 @@ public class Container extends Item {
 			if (maxItemHeight > this.scrollHeight || this.yOffset != 0) {
 				int lastOffset = getScrollYOffset();
 				int nextOffset = this.lastPointerPressYOffset + (relY - this.lastPointerPressY);
-				if (nextOffset > this.scrollHeight/3) {
-					nextOffset = this.scrollHeight/3;
-				} else {
-					maxItemHeight += this.scrollHeight/3;
-					if (nextOffset + maxItemHeight < this.scrollHeight) { 
-						nextOffset = this.scrollHeight - maxItemHeight;
+				//#if polish.Container.ScrollBounce:defined && polish.Container.ScrollBounce == false
+					if (nextOffset > 0) {
+						nextOffset = 0;
+					} else {
+						maxItemHeight += this.scrollHeight/4;
+						if (nextOffset + maxItemHeight < this.scrollHeight) { 
+							nextOffset = this.scrollHeight - maxItemHeight;
+						}
 					}
-				}
+				//#else
+					if (nextOffset > this.scrollHeight/3) {
+						nextOffset = this.scrollHeight/3;
+					} else {
+						maxItemHeight += this.scrollHeight/3;
+						if (nextOffset + maxItemHeight < this.scrollHeight) { 
+							nextOffset = this.scrollHeight - maxItemHeight;
+						}
+					}
+				//#endif
 				if (nextOffset != lastOffset) {
 					setScrollYOffset( nextOffset, false );
 					return true;
