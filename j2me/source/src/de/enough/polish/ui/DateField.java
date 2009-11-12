@@ -944,7 +944,7 @@ implements
 			int foundNumber = -1;
 
 			//#if polish.TextField.numerickeys.1:defined
-				char insertChar = Integer.toString( keyCode - Canvas.KEY_NUM0 ).charAt( 0 );
+				char insertChar = (char) (' ' + (keyCode - 32)); 
 				String numericKeyStr = null;
 				//#= numericKeyStr = "${polish.TextField.numerickeys.1}";
 				if (numericKeyStr.indexOf(insertChar) != -1) {
@@ -1014,9 +1014,11 @@ implements
 				if (this.date == null) {
 					setDate( new Date( System.currentTimeMillis() ) );
 				}
-				char c = Integer.toString( keyCode - Canvas.KEY_NUM0 ).charAt( 0 );
+				char c;
 				if (foundNumber != -1) {
 					c = Integer.toString( foundNumber ).charAt( 0 );
+				} else {
+					c = Integer.toString( keyCode - Canvas.KEY_NUM0 ).charAt( 0 );
 				}
 				String newText = this.text.substring( 0, this.editIndex ) + c;
 				if ( this.editIndex < this.text.length() -1 ) {
