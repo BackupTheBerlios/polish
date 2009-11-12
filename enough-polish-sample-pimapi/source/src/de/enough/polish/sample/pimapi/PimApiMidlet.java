@@ -58,6 +58,7 @@ public class PimApiMidlet extends MIDlet{
 		try {
 			testRemoveAllContacts();
 			testCreateContact();
+			testIsSupportedField();
 		} catch(Exception exception) {
 			addException("run","Somewhere something went south", exception);
 		} finally {
@@ -86,6 +87,33 @@ public class PimApiMidlet extends MIDlet{
 		} catch (PIMException e) {
 			addException("createContact","Could not commit contact",e);
 			return;
+		}
+	}
+	
+	public void testIsSupportedField() {
+		ContactList contactList = getContactList();
+		boolean supportedField;
+		supportedField = contactList.isSupportedField(Contact.NAME);
+		assertTrue("SomeMethods","The field Contact.Name is not supported but should be.",supportedField);
+		supportedField = contactList.isSupportedField(Contact.ADDR);
+		assertTrue("SomeMethods","The field Contact.Name is not supported but should be.",supportedField);
+		supportedField = contactList.isSupportedField(Contact.NOTE);
+		assertTrue("SomeMethods","The field Contact.Name is not supported but should be.",supportedField);
+		supportedField = contactList.isSupportedField(Contact.TEL);
+		assertTrue("SomeMethods","The field Contact.Name is not supported but should be.",supportedField);
+		boolean notSupportedField = contactList.isSupportedField(Contact.ADDR_COUNTRY);
+		assertFalse("SomeMethods","The field Contact.Name is not supported but should be.", notSupportedField);
+	}
+
+	private void assertTrue(String test, String message, boolean isTrue) {
+		if(!isTrue) {
+			addError(test, message);
+		}
+	}
+	
+	private void assertFalse(String test, String message, boolean isFalse) {
+		if(isFalse) {
+			addError(test, message);
 		}
 	}
 
