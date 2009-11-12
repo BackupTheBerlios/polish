@@ -72,8 +72,6 @@ public class ContactDao {
 		int numberOfAddresses = contact.countValues(Contact.ADDR);
 		for(int i = 0; i < numberOfAddresses; i++) {
 			Uri addressUri = Uri.withAppendedPath(personUri, Contacts.People.ContactMethods.CONTENT_DIRECTORY);
-			//#debug
-			System.out.println("uri for address:"+addressUri);
 			values.clear();
 			values.put(Contacts.ContactMethods.KIND,new Integer(Contacts.KIND_POSTAL));
 			
@@ -91,8 +89,6 @@ public class ContactDao {
 		int numberOfTelephoneNumbers = contact.countValues(Contact.TEL);
 		for(int i = 0; i < numberOfTelephoneNumbers; i++) {
 			Uri phoneUri = Uri.withAppendedPath(personUri, Contacts.People.Phones.CONTENT_DIRECTORY);
-			//#debug
-			System.out.println("uri for tel:"+phoneUri);
 			values.clear();
 			String telephoneNumber = contact.getString(Contact.TEL, i);
 			values.put(Contacts.People.Phones.NUMBER,telephoneNumber);
@@ -159,8 +155,23 @@ public class ContactDao {
 	public void removeContact(ContactImpl contact) {
 		long id = contact.getId();
 		Uri personUri = ContentUris.withAppendedId(People.CONTENT_URI, id);
-		System.out.println("person to remove:"+personUri);
 		this.contentResolver.delete(personUri, null, null);
+	}
+
+	public Contact importContact(ContactImpl contact) {
+		throw new UnsupportedOperationException();
+	}
+
+	public Enumeration items(ContactImpl contact) {
+		throw new UnsupportedOperationException();
+	}
+
+	public Enumeration items(String matchingValue) {
+		throw new UnsupportedOperationException();
+	}
+
+	public Enumeration itemsByCategory(String category) {
+		throw new UnsupportedOperationException();
 	}
 	
 }

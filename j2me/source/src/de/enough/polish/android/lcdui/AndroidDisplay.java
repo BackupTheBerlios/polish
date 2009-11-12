@@ -1219,8 +1219,6 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 
 	@Override
 	public boolean onCheckIsTextEditor() {
-		//#debug
-		System.out.println("XXX checking if is text editor");
 		return true;
 	}
 
