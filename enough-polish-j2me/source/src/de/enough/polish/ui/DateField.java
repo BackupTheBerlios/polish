@@ -39,13 +39,11 @@ import de.enough.polish.util.Locale;
 	import net.rim.device.api.ui.Field;
 	import net.rim.device.api.ui.FieldChangeListener;
 	import net.rim.device.api.ui.UiApplication;
-	import net.rim.device.api.ui.XYRect;
 	import de.enough.polish.blackberry.ui.PolishDateField;
 //#endif
 	
 //#if polish.android
-	import de.enough.polish.android.midlet.MIDlet;
-import de.enough.polish.android.midlet.MidletBridge;
+	import de.enough.polish.android.midlet.MidletBridge;
 //#endif
 	
 import de.enough.polish.calendar.CalendarItem;
@@ -88,7 +86,7 @@ implements
 //#if polish.DateField.useDirectInput == true || polish.Bugs.dateFieldBroken || polish.blackberry || polish.android
 	//#define tmp.directInput
 //#endif
-//#if (!tmp.directInput || (polish.hasPointerEvents && !polish.DateField.useDirectInputForPointer)) && polish.midp
+//#if (!tmp.directInput || (polish.hasPointerEvents && !polish.DateField.useDirectInputForPointer)) && (polish.midp && !polish.blackberry)
 	//#define tmp.useMidp
 //#endif
 //#if polish.DateField.useDirectInputForPointer && polish.hasPointerEvents
@@ -156,8 +154,7 @@ implements
 		private int currentFieldStartIndex;
 		private ItemCommandListener additionalItemCommandListener;
 	//#endif
-	//#if (!tmp.directInput || polish.hasPointerEvents) && polish.midp
-		//#define tmp.useMidp
+	//#if tmp.useMidp
 		private javax.microedition.lcdui.DateField midpDateField; 
 		private de.enough.polish.midp.ui.Form form;
 	//#endif
@@ -167,10 +164,11 @@ implements
 	//#endif
 	//#if polish.blackberry
 		private PolishDateField blackberryDateField;
+		private int bbYAdjust;	
 	//#endif
 	//#if polish.android1.5
 		private long androidFocusedTime;
-		private long androidLastInvalidCharacterTime;	
+		private long androidLastInvalidCharacterTime;
 	//#endif
 		
 		
@@ -699,6 +697,7 @@ implements
         				x += diff;
         			}
         		}
+        		y -= this.bbYAdjust;
 				this.blackberryDateField.setPaintPosition( x + g.getTranslateX(), y + g.getTranslateY() );
 			} else {
 				super.paintContent(x, y, leftBorder, rightBorder, g);
@@ -810,6 +809,7 @@ implements
 			}
 			// allow extra pixels for the cursor:
 			this.blackberryDateField.doLayout( this.contentWidth+2, this.contentHeight );
+			this.bbYAdjust = (this.blackberryDateField.getExtent().height - this.contentHeight) / 2;
 			//System.out.println("TextField: editField.getText()="+ this.editField.getText() );
 		//#endif			
 	}
