@@ -12,6 +12,7 @@ import android.provider.Contacts;
 import android.provider.Contacts.People;
 import de.enough.polish.android.midlet.MidletBridge;
 import de.enough.polish.android.pim.Contact;
+import de.enough.polish.android.pim.PIMItem;
 
 /**
  * This Data Access Object will manage JavaME PIM contact objects and talks to the sqlite3 database on android.

@@ -30,8 +30,6 @@ public class ContactEnumeration implements Enumeration{
 	}
 
 	public Object nextElement() {
-		//#debug
-		System.out.println("Current contact is at position '"+this.position+"' of '"+this.count+"' contacts.");
 		if(this.peopleCursor.isClosed()) {
 			return null;
 		}
