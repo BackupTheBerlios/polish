@@ -100,46 +100,46 @@ public class ContactFactory {
 		}
 	}
 	
-	private static int convertAttrToAddressType(int attribute) {
-		if((attribute & Contact.ATTR_HOME) == Contact.ATTR_HOME){
-			return Contacts.ContactMethods.TYPE_HOME;
-		}
-		if((attribute & Contact.ATTR_WORK) == Contact.ATTR_WORK){
-			return Contacts.ContactMethods.TYPE_HOME;
-		}
-		if((attribute & Contact.ATTR_OTHER) == Contact.ATTR_OTHER){
-			return Contacts.ContactMethods.TYPE_OTHER;
-		}
-		return Contacts.ContactMethods.TYPE_OTHER;
-	}
-	
-	private static int convertAttrToTelType(int attribute) {
-		if((attribute & Contact.ATTR_MOBILE) == Contact.ATTR_MOBILE){
-			return Contacts.People.Phones.TYPE_MOBILE;
-		}
-		if((attribute & Contact.ATTR_FAX) == Contact.ATTR_FAX){
-			if((attribute & Contact.ATTR_HOME) == Contact.ATTR_HOME){
-				return Contacts.People.Phones.TYPE_FAX_HOME;
-			}
-			if((attribute & Contact.ATTR_WORK) == Contact.ATTR_WORK){
-				return Contacts.People.Phones.TYPE_FAX_WORK;
-			}
-			return Contacts.People.Phones.TYPE_FAX_WORK;
-		}
-		if((attribute & Contact.ATTR_HOME) == Contact.ATTR_HOME){
-			return Contacts.People.Phones.TYPE_HOME;
-		}
-		if((attribute & Contact.ATTR_WORK) == Contact.ATTR_WORK){
-			return Contacts.People.Phones.TYPE_WORK;
-		}
-		if((attribute & Contact.ATTR_PAGER) == Contact.ATTR_PAGER){
-			return Contacts.People.Phones.TYPE_PAGER;
-		}
-		if((attribute & Contact.ATTR_OTHER) == Contact.ATTR_OTHER){
-			return Contacts.People.Phones.TYPE_OTHER;
-		}
-		return Contacts.People.Phones.TYPE_OTHER;
-	}
+//	private static int convertAttrToAddressType(int attribute) {
+//		if((attribute & Contact.ATTR_HOME) == Contact.ATTR_HOME){
+//			return Contacts.ContactMethods.TYPE_HOME;
+//		}
+//		if((attribute & Contact.ATTR_WORK) == Contact.ATTR_WORK){
+//			return Contacts.ContactMethods.TYPE_HOME;
+//		}
+//		if((attribute & Contact.ATTR_OTHER) == Contact.ATTR_OTHER){
+//			return Contacts.ContactMethods.TYPE_OTHER;
+//		}
+//		return Contacts.ContactMethods.TYPE_OTHER;
+//	}
+//	
+//	private static int convertAttrToTelType(int attribute) {
+//		if((attribute & Contact.ATTR_MOBILE) == Contact.ATTR_MOBILE){
+//			return Contacts.People.Phones.TYPE_MOBILE;
+//		}
+//		if((attribute & Contact.ATTR_FAX) == Contact.ATTR_FAX){
+//			if((attribute & Contact.ATTR_HOME) == Contact.ATTR_HOME){
+//				return Contacts.People.Phones.TYPE_FAX_HOME;
+//			}
+//			if((attribute & Contact.ATTR_WORK) == Contact.ATTR_WORK){
+//				return Contacts.People.Phones.TYPE_FAX_WORK;
+//			}
+//			return Contacts.People.Phones.TYPE_FAX_WORK;
+//		}
+//		if((attribute & Contact.ATTR_HOME) == Contact.ATTR_HOME){
+//			return Contacts.People.Phones.TYPE_HOME;
+//		}
+//		if((attribute & Contact.ATTR_WORK) == Contact.ATTR_WORK){
+//			return Contacts.People.Phones.TYPE_WORK;
+//		}
+//		if((attribute & Contact.ATTR_PAGER) == Contact.ATTR_PAGER){
+//			return Contacts.People.Phones.TYPE_PAGER;
+//		}
+//		if((attribute & Contact.ATTR_OTHER) == Contact.ATTR_OTHER){
+//			return Contacts.People.Phones.TYPE_OTHER;
+//		}
+//		return Contacts.People.Phones.TYPE_OTHER;
+//	}
 	
 	/**
 	 * 

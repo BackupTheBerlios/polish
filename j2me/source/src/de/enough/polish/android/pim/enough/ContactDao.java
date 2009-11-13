@@ -12,7 +12,6 @@ import android.provider.Contacts;
 import android.provider.Contacts.People;
 import de.enough.polish.android.midlet.MidletBridge;
 import de.enough.polish.android.pim.Contact;
-import de.enough.polish.android.pim.PIMItem;
 
 /**
  * This Data Access Object will manage JavaME PIM contact objects and talks to the sqlite3 database on android.
@@ -46,20 +45,53 @@ public class ContactDao {
 		}
 
 		// Update the name
-		int numberOfNames = contact.countValues(Contact.NAME);
-		if(numberOfNames > 0) {
-			values.clear();
-			String[] names = contact.getStringArray(Contact.NAME, 0);
-			String aName = names[Contact.NAME_OTHER];
-			values.put(People.NAME, aName);
+		values.clear();
+		StringBuffer buffer = new StringBuffer();
+		String[] names = contact.getStringArray(Contact.NAME, 0);
+		boolean inputSpace = false;
+		if(names[Contact.NAME_PREFIX] != null) {
+			buffer.append(names[Contact.NAME_PREFIX]);
+			inputSpace = true;
+		}
+		if(names[Contact.NAME_GIVEN] != null) {
+			if(inputSpace) {
+				buffer.append(" ");
+			}
+			buffer.append(names[Contact.NAME_GIVEN]);
+			inputSpace = true;
+		}
+		if(names[Contact.NAME_FAMILY] != null) {
+			if(inputSpace) {
+				buffer.append(" ");
+			}
+			buffer.append(names[Contact.NAME_FAMILY]);
+			inputSpace = true;
+		}
+		if(names[Contact.NAME_SUFFIX] != null) {
+			if(inputSpace) {
+				buffer.append(" ");
+			}
+			buffer.append(names[Contact.NAME_SUFFIX]);
+			inputSpace = true;
+		}
+		if(names[Contact.NAME_OTHER] != null) {
+			if(inputSpace) {
+				buffer.append(" ");
+			}
+			buffer.append("(");
+			buffer.append(names[Contact.NAME_OTHER]);
+			buffer.append(")");
+			inputSpace = true;
 		}
 		
+		values.put(People.NAME, buffer.toString());
+		
 		// Update the Display name
-		int numberOfDisplayNames = contact.countValues(Contact.FORMATTED_NAME);
-		if(numberOfDisplayNames > 0) {
-			String name = contact.getString(Contact.FORMATTED_NAME, 0);
-			values.put(People.DISPLAY_NAME, name);
-		}
+//		int numberOfDisplayNames = contact.countValues(Contact.FORMATTED_NAME);
+//		if(numberOfDisplayNames > 0) {
+//			String name = contact.getString(Contact.FORMATTED_NAME, 0);
+//			values.put(People.NAME, name);
+//		}
 		
 		// Update the note
 		int numberOfNotes = contact.countValues(Contact.NOTE);
@@ -81,12 +113,71 @@ public class ContactDao {
 			values.put(Contacts.ContactMethods.TYPE,new Integer(type));
 			
 			String[] addressElements = contact.getStringArray(Contact.ADDR, i);
-			String address = addressElements[Contact.ADDR_EXTRA];
-			values.put(Contacts.ContactMethods.DATA,address);
+			buffer = new StringBuffer();
+			inputSpace = false;
+			if(addressElements[Contact.ADDR_POBOX] != null) {
+				buffer.append("PoBox ");
+				buffer.append(addressElements[Contact.ADDR_POBOX]);
+				inputSpace = true;
+			}
+			if(addressElements[Contact.ADDR_STREET] != null) {
+				if(inputSpace) {
+					buffer.append(" ");
+				}
+				buffer.append(addressElements[Contact.ADDR_STREET]);
+				inputSpace = true;
+			}
+			if(addressElements[Contact.ADDR_POSTALCODE] != null) {
+				if(inputSpace) {
+					buffer.append(" ");
+				}
+				buffer.append(addressElements[Contact.ADDR_POSTALCODE]);
+				inputSpace = true;
+			}
+			if(addressElements[Contact.ADDR_LOCALITY] != null) {
+				if(inputSpace) {
+					buffer.append(" ");
+				}
+				buffer.append(addressElements[Contact.ADDR_LOCALITY]);
+				inputSpace = true;
+			}
+			if(addressElements[Contact.ADDR_COUNTRY] != null) {
+				if(inputSpace) {
+					buffer.append(" ");
+				}
+				buffer.append(addressElements[Contact.ADDR_COUNTRY]);
+				inputSpace = true;
+			}
+			if(addressElements[Contact.ADDR_EXTRA] != null) {
+				if(inputSpace) {
+					buffer.append(" ");
+				}
+				buffer.append(addressElements[Contact.ADDR_EXTRA]);
+				inputSpace = true;
+			}
+			
+			values.put(Contacts.ContactMethods.DATA,buffer.toString());
 			this.contentResolver.insert(addressUri, values);
 		}
 		
-		// Telephone.
+		int numberOfEMails = contact.countValues(Contact.EMAIL);
+		for(int i = 0; i < numberOfEMails; i++) {
+			Uri addressUri = Uri.withAppendedPath(personUri, Contacts.People.ContactMethods.CONTENT_DIRECTORY);
+			values.clear();
+			buffer = new StringBuffer();
+			buffer.append(contact.getString(Contact.EMAIL, i));
+			values.put(Contacts.ContactMethods.DATA,buffer.toString());
+
+			values.put(Contacts.ContactMethods.KIND,new Integer(Contacts.KIND_EMAIL));
+			
+			int attributes = contact.getAttributes(Contact.EMAIL, i);
+			int type = convertAttrToAddressType(attributes);
+			values.put(Contacts.ContactMethods.TYPE,new Integer(type));
+			
+			this.contentResolver.insert(addressUri, values);
+		}
+		
+		// Update the telephone number.
 		int numberOfTelephoneNumbers = contact.countValues(Contact.TEL);
 		for(int i = 0; i < numberOfTelephoneNumbers; i++) {
 			Uri phoneUri = Uri.withAppendedPath(personUri, Contacts.People.Phones.CONTENT_DIRECTORY);
@@ -108,7 +199,7 @@ public class ContactDao {
 			return Contacts.ContactMethods.TYPE_HOME;
 		}
 		if((attribute & Contact.ATTR_WORK) == Contact.ATTR_WORK){
-			return Contacts.ContactMethods.TYPE_HOME;
+			return Contacts.ContactMethods.TYPE_WORK;
 		}
 		if((attribute & Contact.ATTR_OTHER) == Contact.ATTR_OTHER){
 			return Contacts.ContactMethods.TYPE_OTHER;
