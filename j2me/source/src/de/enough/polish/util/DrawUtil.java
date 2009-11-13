@@ -592,7 +592,7 @@ public final class DrawUtil {
 
 	/**
 	 * Creates a gradient of colors.
-	 * This method is highly optimized and only uses bit-shifting and additions (no multitplication nor devision).
+	 * This method is highly optimized and only uses bit-shifting and additions (no multiplication nor devision).
 	 * 
 	 * @param startColor the first color
 	 * @param endColor the last color
