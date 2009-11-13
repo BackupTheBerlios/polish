@@ -73,13 +73,39 @@ public class PimApiMidlet extends MIDlet{
 		int numberOfElements;
 		numberOfElements = contactList.stringArraySize(Contact.NAME);
 		String[] name = new String[numberOfElements];
-		name[Contact.NAME_OTHER] = "Scrooge McDuck";
+		name[Contact.NAME_PREFIX] = "Dr.";
+		name[Contact.NAME_GIVEN] = "Donald";
+		name[Contact.NAME_FAMILY] = "Duck";
+		name[Contact.NAME_SUFFIX] = "Esq.";
+		name[Contact.NAME_OTHER] = "Uncle";
 		contact.addStringArray(Contact.NAME, PIMItem.ATTR_NONE, name);
 
 		numberOfElements = contactList.stringArraySize(Contact.ADDR);
-		String[] address = new String[numberOfElements];
-		address[Contact.ADDR_EXTRA] = "Duckburg";
-		contact.addStringArray(Contact.ADDR, PIMItem.ATTR_NONE, address);
+		String[] address;
+		// Home address
+		address = new String[numberOfElements];
+		address[Contact.ADDR_POBOX] = "11";
+		address[Contact.ADDR_STREET] = "Sesamstreet 1";
+		address[Contact.ADDR_POSTALCODE] = "28195";
+		address[Contact.ADDR_LOCALITY] = "Sesamcity";
+		address[Contact.ADDR_COUNTRY] = "Moon";
+		address[Contact.ADDR_EXTRA] = "Somewhere";
+		contact.addStringArray(Contact.ADDR, Contact.ATTR_HOME, address);
+		
+		// Work address
+		address = new String[numberOfElements];
+		address[Contact.ADDR_POBOX] = "911";
+		address[Contact.ADDR_STREET] = "CTU main street 1";
+		address[Contact.ADDR_POSTALCODE] = "24";
+		address[Contact.ADDR_LOCALITY] = "Los Terroristos";
+		address[Contact.ADDR_COUNTRY] = "Dystopia";
+		address[Contact.ADDR_EXTRA] = "Chuck Norris adopted Jack Bauer. Without his consent.";
+		contact.addStringArray(Contact.ADDR, Contact.ATTR_WORK, address);
+		
+		contact.addString(Contact.EMAIL,Contact.ATTR_WORK,"work@somewhere.net");
+		contact.addString(Contact.EMAIL,Contact.ATTR_HOME,"home@somewhere.net");
+		contact.addString(Contact.EMAIL,Contact.ATTR_OTHER,"other@somewhere.net");
+		
 		contact.addString(Contact.TEL, Contact.ATTR_HOME, "+4999999999");
 		contact.addString(Contact.TEL, Contact.ATTR_WORK, "+4911111111");
 		try {
