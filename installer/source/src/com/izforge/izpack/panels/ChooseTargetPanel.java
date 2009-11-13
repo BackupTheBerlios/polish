@@ -55,7 +55,7 @@ import com.izforge.izpack.installer.IzPanel;
 public class ChooseTargetPanel extends IzPanel {
 	private static final long serialVersionUID = -7966526000206872182L;
 	private FilePropertyPanel polishHomePanel;
-	private boolean isWindowsVista;
+	private boolean isWindowsVistaOrWindows7;
 	private boolean vistaBatchFileCreated;
 	private String vistaBatchFilePath;
 
@@ -92,19 +92,32 @@ public class ChooseTargetPanel extends IzPanel {
 	    setLayout( new BorderLayout() );
 	    add( subPanel, BorderLayout.NORTH );
 	    String osName = System.getProperty("os.name");
-	    this.isWindowsVista = osName != null && osName.indexOf("Vista") != -1;
+	    boolean isWindowsVista = osName != null && osName.indexOf("Vista") != -1;
+	    boolean isWindows7 = osName != null && osName.indexOf("Windows 7") != -1;
+	    this.isWindowsVistaOrWindows7 = isWindowsVista || isWindows7;
 	    
-	    if (this.isWindowsVista) {
-	    	this.vistaBatchFileCreated = createVistaInstallerBatchFile();
+	    if (this.isWindowsVistaOrWindows7) {
+	    	this.vistaBatchFileCreated = createVistaOrWindows7InstallerBatchFile();
 	    	if (this.vistaBatchFileCreated) {
-	    		JLabel vistaTitle = new JLabel("Windows Vista Installation");
+	    		JLabel vistaTitle;
+	    		if (isWindows7) {
+		    		vistaTitle = new JLabel("Windows 7 Installation");
+		    		area = new JTextArea( "Please note:\n"
+		    				+ "On Windows 7 (tm) you need to run the installer with administrator rights if you want to install J2ME Polish to a restricted location like C:\\Program Files\\J2ME-Polish.\n"
+		    				+ "A batch file for this purpose has been created at " + this.vistaBatchFilePath + ".\n"
+		    				+ "Right click the bat file and choose \"Run as administrator\" from the popup context menu.\n\n"
+		    				+ "You can install J2ME-Polish to a user directory like \"" + System.getProperty("user.home") + "\\J2ME-Polish\" without needing administrator rights."
+		    				);	    			
+	    		} else {
+		    		vistaTitle = new JLabel("Windows Vista Installation");
+		    		area = new JTextArea( "Please note:\n"
+		    				+ "On Windows Vista (tm) you need to run the installer with administrator rights if you want to install J2ME Polish to a restricted location like C:\\Program Files\\J2ME-Polish.\n"
+		    				+ "A batch file for this purpose has been created at " + this.vistaBatchFilePath + ".\n"
+		    				+ "Right click the bat file and choose \"Run as administrator\" from the popup context menu.\n\n"
+		    				+ "You can install J2ME-Polish to a user directory like \"" + System.getProperty("user.home") + "\\J2ME-Polish\" without needing administrator rights."
+		    				);
+	    		}
 	    		vistaTitle.setFont( title.getFont() );
-	    		area = new JTextArea( "Please note:\n"
-	    				+ "On Windows Vista (tm) you need to run the installer with administrator rights if you want to install J2ME Polish to a restricted location like C:\\Program Files\\J2ME-Polish.\n"
-	    				+ "A batch file for this purpose has been created at " + this.vistaBatchFilePath + ".\n"
-	    				+ "Right click the bat file and choose \"Run as administrator\" from the popup context menu.\n\n"
-	    				+ "You can install J2ME-Polish to a user directory like \"" + System.getProperty("user.home") + "\\J2ME-Polish\" without needing administrator rights."
-	    				);
 	    	    area.setEditable( false );
 	    	    area.setLineWrap( true );
 	    	    area.setBackground( title.getBackground() );
@@ -121,7 +134,7 @@ public class ChooseTargetPanel extends IzPanel {
 	/**
 	 * @return true when a batch has been created or when it already exists
 	 */
-	private boolean createVistaInstallerBatchFile()
+	private boolean createVistaOrWindows7InstallerBatchFile()
 	{
     	try {
 	    	URL url = getClass().getResource("/com/izforge/izpack/panels/polish.properties");
@@ -167,7 +180,7 @@ public class ChooseTargetPanel extends IzPanel {
 			polishHome = polishHome.substring(0, index + 1);
 			idata.setVariable("polish.base", polishHome );
 			idata.setInstallPath( polishHome + idata.info.getAppVersion() );
-		} else if (this.isWindowsVista) {
+		} else if (this.isWindowsVistaOrWindows7) {
 			idata.setVariable("polish.base", System.getProperty("user.home") + "\\J2ME-Polish" );
 			idata.setInstallPath( System.getProperty("user.home") + "\\J2ME-Polish"  + idata.info.getAppVersion() );
 		}
@@ -185,9 +198,9 @@ public class ChooseTargetPanel extends IzPanel {
     
 
     /**
-     * Indicates wether the panel has been validated or not.
+     * Indicates whether the panel has been validated or not.
      * 
-     * @return Wether the panel has been validated or not.
+     * @return Whether the panel has been validated or not.
      */
     public boolean isValidated()
     {

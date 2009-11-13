@@ -80,28 +80,28 @@ implements Runnable
 	 * @see com.izforge.izpack.panels.InstallPanel#panelActivate()
 	 */
 	public void panelActivate() {
-    	if (isPackSelected("thirdparty-smaato-soma")) {
-    		// show another window with the HTML content:
-    		 JTextPane tp = new JTextPane();
-    		 tp.setEditable(false);
-    		 tp.setBorder( new EmptyBorder( 20, 20, 20, 20 ));
-    		  JScrollPane js = new JScrollPane();
-    		  js.getViewport().add(tp);
-    		  JFrame jf = new JFrame();
-    		  jf.getContentPane().add(js);
-    		  jf.pack();
-    		  jf.setSize(800,800);
-    		  
-    		  jf.setVisible(true); 
-    		  
-    		  try {
-    		    URL url = new URL("http://www.smaato.com/download/j2mepolish/after-install.html");
-    		    tp.setPage(url);
-    		    }
-    		  catch (Exception e) {
-    		    e.printStackTrace();
-    		    }
-    	}
+		if (isPackSelected("thirdparty-smaato-soma")) {
+			// show another window with the HTML content:
+			JTextPane tp = new JTextPane();
+			tp.setEditable(false);
+			tp.setBorder( new EmptyBorder( 20, 20, 20, 20 ));
+			JScrollPane js = new JScrollPane();
+			js.getViewport().add(tp);
+			JFrame jf = new JFrame();
+			jf.getContentPane().add(js);
+			jf.pack();
+			jf.setSize(800,800);
+
+			jf.setVisible(true); 
+
+			try {
+				URL url = new URL("http://www.smaato.com/download/j2mepolish/after-install.html");
+				tp.setPage(url);
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 		// store variable for substitution in property files - the install path
 		// should not use the backslash on Windows systems:
 		String installPathProperty = this.idata.getInstallPath();
