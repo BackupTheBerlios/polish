@@ -581,6 +581,9 @@ public final class DrawUtil {
 	 * @see #getGradientColor(int, int, int)
 	 */
 	public static final int[] getGradient( int startColor, int endColor, int steps ) {
+		if (steps <= 0) {
+			return new int[0];
+		}
 		int[] gradient = new int[ steps ];
 		getGradient(startColor, endColor, gradient);
 		return gradient;
