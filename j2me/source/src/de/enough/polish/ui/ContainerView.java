@@ -1485,6 +1485,12 @@ extends ItemView
 		this.parentContainer = null;
 	}
 
+	/**
+	 * Checks if this view is a virtual container.
+	 * A virtual container does not contain all items physically, but only contains some items.
+	 * 
+	 * @return true when this is a virtual container
+	 */
 	protected boolean isVirtualContainer() {
 		return false;
 	}
