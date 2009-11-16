@@ -623,8 +623,7 @@
 		<name>AndroidPreCompiler</name>
 		<class>de.enough.polish.android.AndroidPreCompiler</class>
 		<autostart>
-			polish.usePolishGui 
-			and polish.android
+			polish.android
 		</autostart>
 		<classpath>${polish.home}/lib/asm-all.jar:${polish.home}/lib/enough-bytecode.jar</classpath>
 	</extension>
