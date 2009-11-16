@@ -982,10 +982,11 @@ public class Container extends Item {
 					if ( this.enableScrolling && ((isDownwards && (index < previousIndex) || (previousIndex == -1))) ) {
 						// either the first item or the first selectable item has been focused, so scroll to the very top:
 						//#if tmp.supportViewType
-						if (this.containerView == null) {
+						if (this.containerView == null || !this.containerView.isVirtualContainer()) 
+						//#endif
+						{
 							setScrollYOffset(0, true);
 						}
-						//#endif
 					} else {
 						int itemYTop = isDownwards ? item.relativeY : nextItem.relativeY;
 						int itemYBottom = isDownwards ? nextItem.relativeY + nextItem.itemHeight : item.relativeY + item.itemHeight;

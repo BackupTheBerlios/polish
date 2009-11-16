@@ -1484,4 +1484,8 @@ extends ItemView
 		//make sure parent item is dereferenced, else possible mem leak
 		this.parentContainer = null;
 	}
+
+	protected boolean isVirtualContainer() {
+		return false;
+	}
 }
