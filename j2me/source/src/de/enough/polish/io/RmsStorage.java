@@ -363,6 +363,7 @@ public class RmsStorage
 	//#endif
 	throws IOException {
 		byte[] data;
+		RecordStore store = null;
 		try {
 			if (this.masterRecordStore != null) {
 				int recordId = getRecordSetId(name);
@@ -371,7 +372,7 @@ public class RmsStorage
 				}
 				data = this.masterRecordStore.getRecord(recordId);
 			} else {
-				RecordStore store = RecordStore.openRecordStore(name, false);
+				store = RecordStore.openRecordStore(name, false);
 				RecordEnumeration enumeration = store.enumerateRecords(null, null, false);
 				data = enumeration.nextRecord();
 				enumeration.destroy();
@@ -379,6 +380,17 @@ public class RmsStorage
 			}
 		} catch (RecordStoreException e) {
 			throw new IOException( e.toString() );
+		}
+		finally {
+			try {
+				if (store != null) {
+					store.closeRecordStore();
+				}
+			} catch (RecordStoreNotOpenException e) {
+				// Ignore.
+			} catch (RecordStoreException e) {
+				throw new IOException( e.toString() );
+			}
 		}
 		DataInputStream in = new DataInputStream( new ByteArrayInputStream( data ));
 		//#if polish.java5
@@ -452,7 +464,6 @@ public class RmsStorage
 					this.masterRecordStore.closeRecordStore();
 					RecordStore.deleteRecordStore(temp);
 				}
-			 
 			} catch (RecordStoreException e) {
 				throw new IOException( e.toString() );
 			}
