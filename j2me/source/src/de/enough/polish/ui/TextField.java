@@ -2105,7 +2105,18 @@ public class TextField extends StringItem
         		}
 				this.editField.setPaintPosition( x + g.getTranslateX(), y + g.getTranslateY() );
 			} else {
-				super.paintContent(x, y, leftBorder, rightBorder, g);
+				if (this.isUneditable || !this.isFocused) {
+					//#if polish.TextField.showHelpText
+						if(this.text == null || this.text.length() == 0)
+						{
+							this.helpItem.paint(x, y, leftBorder, rightBorder, g);
+						} else
+					//#endif
+		    			super.paintContent(x, y, leftBorder, rightBorder, g);
+					return;
+				}else{
+					super.paintContent(x, y, leftBorder, rightBorder, g);
+				}
 			}
 		//#else
         
