@@ -376,7 +376,6 @@ public class RmsStorage
 				RecordEnumeration enumeration = store.enumerateRecords(null, null, false);
 				data = enumeration.nextRecord();
 				enumeration.destroy();
-				store.closeRecordStore();
 			}
 		} catch (RecordStoreException e) {
 			throw new IOException( e.toString() );
