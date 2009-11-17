@@ -13640,6 +13640,7 @@ These namespaces/schemas will be used soon.
   </device>
   <device>
     <identifier>BlackBerry/8310</identifier>
+    <features>hasTrackballEvents</features>
     <capability name="JavaPlatform" value="MIDP/2.0, BlackBerry/4.2" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
     <capability name="JavaPackage" value="pimapi, btapi, wmapi2.0, fileconnection, locationapi, mmapi1.1, wmapi1.1" />
