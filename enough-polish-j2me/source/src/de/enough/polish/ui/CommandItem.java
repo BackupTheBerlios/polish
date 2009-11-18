@@ -708,7 +708,10 @@ public class CommandItem extends IconItem {
 		return super.getItemAt(relX, relY);
 	}
 
-	/* (Override) */
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#isInItemArea(int, int)
+	 */
 	public boolean isInItemArea(int relX, int relY) {
 		if (this.isOpen) {
 			int itemRelX = relX - this.contentX - this.children.relativeX;
