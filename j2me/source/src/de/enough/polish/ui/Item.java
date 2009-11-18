@@ -2529,13 +2529,12 @@ public abstract class Item implements UiElement, Animatable
 			if (!this.includeLabel) {
 		//#endif
 				int backgroundX = x;
-				if (this.label != null && !this.useSingleRow) {
-					backgroundX += this.contentX - this.paddingLeft - this.marginLeft;
-					if (this.border != null) {
-						backgroundX -= this.border.borderWidthLeft;
-					}
-					if (this.background != null) {
-						backgroundX -= this.background.borderWidth;
+				if (this.label != null) { 
+					backgroundX += this.contentX - this.paddingLeft - this.marginLeft - getBorderWidthLeft();
+					if (this.isLayoutCenter) {
+						//TODO: what happens when having an animated background width?
+                        rightBorder = backgroundX + this.backgroundWidth - this.paddingRight - this.marginRight - getBorderWidthRight();
+                        leftBorder = x + this.contentX;
 					}
 				}
 				paintBackgroundAndBorder(backgroundX, y, this.backgroundWidth, this.backgroundHeight, g);
@@ -2869,8 +2868,8 @@ public abstract class Item implements UiElement, Animatable
 				if (firstLineAdjustedWidth > this.maximumWidth.getValue(firstLineWidth) ) {
 					firstLineAdjustedWidth = this.maximumWidth.getValue(firstLineWidth);
 				} 
-				if (lineAdjustedWidth > this.maximumWidth.getValue(firstLineWidth) ) {
-					lineAdjustedWidth = this.maximumWidth.getValue(firstLineWidth);
+				if (lineAdjustedWidth > this.maximumWidth.getValue(availWidth) ) {
+					lineAdjustedWidth = this.maximumWidth.getValue(availWidth);
 				}
 			}
 			firstLineContentWidth = firstLineAdjustedWidth - noneContentWidth;
@@ -2952,7 +2951,14 @@ public abstract class Item implements UiElement, Animatable
 			}
 		//#endif
 		int noneContentHeight = this.marginTop + getBorderWidthTop() + this.paddingTop 
-			  + this.paddingBottom + getBorderWidthBottom() + this.marginBottom;
+			+ this.paddingBottom + getBorderWidthBottom() + this.marginBottom;
+		if ( this.isLayoutExpand ) {
+			if (this.contentWidth < availableContentWidth) {
+				this.itemWidth += availableContentWidth - this.contentWidth;
+			}
+		} else if (this.itemWidth > availWidth) {
+			this.itemWidth = availWidth;
+		}
 		if (this.itemWidth + labelWidth <= availWidth) {
 			// label and content fit on one row:
 			this.useSingleRow = true;
@@ -2963,7 +2969,7 @@ public abstract class Item implements UiElement, Animatable
 					this.contentY += labelHeight;
 				}
 			}
-			if (this.useSingleRow) {
+			if (this.useSingleRow && labelWidth > 0) {
 				this.itemWidth += labelWidth;
 				this.contentX += labelWidth;
 			}
@@ -2974,16 +2980,6 @@ public abstract class Item implements UiElement, Animatable
 			this.useSingleRow = false;
 			cHeight += labelHeight;
 			this.contentY += labelHeight;
-		}
-		if ( this.isLayoutExpand ) {
-			this.itemWidth = availWidth;
-			//#ifdef polish.css.max-width
-				if (this.maximumWidth != null && availWidth > this.maximumWidth.getValue(firstLineWidth) ) {
-					this.itemWidth = this.maximumWidth.getValue(firstLineWidth);
-				}
-			//#endif
-		} else if (this.itemWidth > availWidth) {
-			this.itemWidth = availWidth;
 		}
 		if (this.minimumHeight != null && cHeight + noneContentHeight < this.minimumHeight.getValue(availWidth)) {
 			cHeight = this.minimumHeight.getValue(availWidth) - noneContentHeight;
@@ -3018,14 +3014,27 @@ public abstract class Item implements UiElement, Animatable
 							  - this.marginTop
 							  - this.marginBottom
 							  - labelHeight;
-			if (labelWidth > this.itemWidth) {
-				int diff = labelWidth - this.itemWidth;
-				if (isLayoutCenter()) {
-					this.contentX += diff/2;
-				} else if (isLayoutRight()) {
-					this.contentX += diff;
-				}
-				this.itemWidth = labelWidth;
+//			if (labelWidth > this.itemWidth) {
+//				int diff = labelWidth - this.itemWidth;
+//				if (isLayoutCenter()) {
+//					this.contentX += diff/2;
+//				} else if (isLayoutRight()) {
+//					this.contentX += diff;
+//				}
+//				this.itemWidth = labelWidth;
+//			}
+		}
+		if (labelWidth > 0 && availableContentWidth > this.contentWidth) {
+			//int diff = availableContentWidth - this.contentWidth;
+			int contX = this.contentX;
+			if (isLayoutCenter()) {
+				contX = (availWidth - availableContentWidth)/2;
+			} else if (isLayoutRight()) {
+				contX = (availWidth - availableContentWidth);
+			}
+			if (contX > this.contentX) {
+				this.contentX = contX;
+				this.itemWidth = availWidth;
 			}
 		}
 		//#if polish.css.background-width
