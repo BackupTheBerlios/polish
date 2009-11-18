@@ -1,8 +1,9 @@
+//#condition false
 package de.enough.skylight.widget;
 /*
  * Copyright (c) Ian F. Darwin, http://www.darwinsys.com/, 1996-2002.
  * All rights reserved. Software written by Ian F. Darwin and others.
- * $Id: TarList.java,v 1.1 2009/10/27 15:07:21 rickyn Exp $
+ * $Id: TarList.java,v 1.2 2009/11/18 16:05:16 rickyn Exp $
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -61,7 +62,7 @@ import java.util.Vector;
  * Demonstrate the Tar archive lister.
  * 
  * @author Ian F. Darwin, http://www.darwinsys.com/
- * @version $Id: TarList.java,v 1.1 2009/10/27 15:07:21 rickyn Exp $
+ * @version $Id: TarList.java,v 1.2 2009/11/18 16:05:16 rickyn Exp $
  */
 public class TarList {
   public static void main(String[] argv) throws IOException, TarException {
@@ -183,7 +184,7 @@ public class TarList {
  * One entry in an archive file.
  * 
  * @author Ian Darwin
- * @version $Id: TarList.java,v 1.1 2009/10/27 15:07:21 rickyn Exp $
+ * @version $Id: TarList.java,v 1.2 2009/11/18 16:05:16 rickyn Exp $
  * @note Tar format info taken from John Gilmore's public domain tar program,
  * @(#)tar.h 1.21 87/05/01 Public Domain, which said: "Created 25 August 1985 by
  *           John Gilmore, ihnp4!hoptoad!gnu." John is now gnu@toad.com, and by
@@ -453,7 +454,7 @@ class TarException extends java.io.IOException {
  * entries there are in the archive.
  * 
  * @author Ian Darwin, http://www.darwinsys.com/
- * @version $Id: TarList.java,v 1.1 2009/10/27 15:07:21 rickyn Exp $
+ * @version $Id: TarList.java,v 1.2 2009/11/18 16:05:16 rickyn Exp $
  */
 
 class TarFile {
