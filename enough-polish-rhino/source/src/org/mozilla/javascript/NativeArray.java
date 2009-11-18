@@ -991,7 +991,7 @@ public class NativeArray extends IdScriptableObject
                                     Scriptable thisObj, Object[] args)
     {
         /* create an empty Array to return. */
-        scope = getTopLevelScope(scope);
+        scope = Js.getTopLevelScope(scope);
         Object result = ScriptRuntime.newObject(cx, scope, "Array", null);
         int argc = args.length;
         if (argc == 0)
@@ -1084,7 +1084,7 @@ public class NativeArray extends IdScriptableObject
                                         Scriptable thisObj, Object[] args)
     {
         // create an empty Array to return.
-        scope = getTopLevelScope(scope);
+        scope = Js.getTopLevelScope(scope);
         Function ctor = ScriptRuntime.getExistingCtor(cx, scope, "Array");
         Scriptable result = ctor.construct(cx, scope, ScriptRuntime.emptyArgs);
         long length;
@@ -1128,7 +1128,7 @@ public class NativeArray extends IdScriptableObject
     private Scriptable js_slice(Context cx, Scriptable thisObj,
                                 Object[] args)
     {
-        Scriptable scope = getTopLevelScope(this);
+        Scriptable scope = Js.getTopLevelScope(this);
         Scriptable result = ScriptRuntime.newObject(cx, scope, "Array", null);
         long length = getLengthProperty(cx, thisObj);
 
@@ -1213,7 +1213,7 @@ public class NativeArray extends IdScriptableObject
                      ScriptRuntime.toString(callbackArg));
         }
         Function f = (Function) callbackArg;
-        Scriptable parent = ScriptableObject.getTopLevelScope(f);
+        Scriptable parent = Js.getTopLevelScope(f);
         Scriptable thisArg = args.length > 1 && args[1] instanceof Scriptable
                              ? (Scriptable) args[1]
                              : parent;

@@ -142,7 +142,7 @@ public final class NativeCall extends IdScriptableObject
             }
             ScriptRuntime.checkDeprecated(cx, "Call");
             NativeCall result = new NativeCall();
-            result.setPrototype(getObjectPrototype(scope));
+            result.setPrototype(Js.getObjectPrototype(scope));
             return result;
         }
         throw new IllegalArgumentException(String.valueOf(id));

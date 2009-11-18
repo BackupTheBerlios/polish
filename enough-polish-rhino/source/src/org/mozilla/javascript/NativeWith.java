@@ -61,7 +61,7 @@ public class NativeWith implements Scriptable, IdFunctionCall, Externalizable {
         NativeWith obj = new NativeWith();
 
         obj.setParentScope(scope);
-        obj.setPrototype(ScriptableObject.getObjectPrototype(scope));
+        obj.setPrototype(Js.getObjectPrototype(scope));
 
         IdFunctionObject ctor = new IdFunctionObject(obj, FTAG, Id_constructor,
                                          "With", 0, scope);
@@ -192,10 +192,10 @@ public class NativeWith implements Scriptable, IdFunctionCall, Externalizable {
     static Object newWithSpecial(Context cx, Scriptable scope, Object[] args)
     {
         ScriptRuntime.checkDeprecated(cx, "With");
-        scope = ScriptableObject.getTopLevelScope(scope);
+        scope = Js.getTopLevelScope(scope);
         NativeWith thisObj = new NativeWith();
         thisObj.setPrototype(args.length == 0
-                             ? ScriptableObject.getClassPrototype(scope,
+                             ? Js.getClassPrototype(scope,
                                                                   "Object")
                              : ScriptRuntime.toObject(cx, scope, args[0]));
         thisObj.setParentScope(scope);

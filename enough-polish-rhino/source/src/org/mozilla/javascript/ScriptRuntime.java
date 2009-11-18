@@ -104,10 +104,10 @@ public class ScriptRuntime {
         BaseFunction.init(scope, sealed);
         NativeObject.init(scope, sealed);
 
-        Scriptable objectProto = ScriptableObject.getObjectPrototype(scope);
+        Scriptable objectProto = Js.getObjectPrototype(scope);
 
         // Function.prototype.__proto__ should be Object.prototype
-        Scriptable functionProto = ScriptableObject.getFunctionPrototype(scope);
+        Scriptable functionProto = Js.getFunctionPrototype(scope);
         functionProto.setPrototype(objectProto);
 
         // Set the prototype of the object passed in if need be
@@ -720,7 +720,7 @@ public class ScriptRuntime {
         }
         if (value instanceof Scriptable) {
             Scriptable obj = (Scriptable)value;
-            Object v = ScriptableObject.getProperty(obj, "toSource");
+            Object v = Js.getProperty(obj, "toSource");
             if (v instanceof Function) {
                 Function f = (Function)v;
                 return toString(f.call(cx, scope, obj, emptyArgs));
@@ -840,7 +840,7 @@ public class ScriptRuntime {
                            null;
         if (className != null) {
             Object[] args = { val };
-            scope = ScriptableObject.getTopLevelScope(scope);
+            scope = Js.getTopLevelScope(scope);
             return newObject(cx, scope, className, args);
         }
 
@@ -854,7 +854,7 @@ public class ScriptRuntime {
     public static Scriptable newObject(Context cx, Scriptable scope,
                                        String constructorName, Object[] args)
     {
-        scope = ScriptableObject.getTopLevelScope(scope);
+        scope = Js.getTopLevelScope(scope);
         Function ctor = getExistingCtor(cx, scope, constructorName);
         if (args == null) { args = ScriptRuntime.emptyArgs; }
         return ctor.construct(cx, scope, args);
@@ -993,7 +993,7 @@ public class ScriptRuntime {
     static Function getExistingCtor(Context cx, Scriptable scope,
                                     String constructorName)
     {
-        Object ctorVal = ScriptableObject.getProperty(scope, constructorName);
+        Object ctorVal = Js.getProperty(scope, constructorName);
         if (ctorVal instanceof Function) {
             return (Function)ctorVal;
         }
@@ -1139,9 +1139,9 @@ public class ScriptRuntime {
         String s = toStringIdOrIndex(cx, elem);
         if (s == null) {
             int index = lastIndexResult(cx);
-            result = ScriptableObject.getProperty(obj, index);
+            result = Js.getProperty(obj, index);
         } else {
-            result = ScriptableObject.getProperty(obj, s);
+            result = Js.getProperty(obj, s);
         }
 
         if (result == Scriptable.NOT_FOUND) {
@@ -1167,7 +1167,7 @@ public class ScriptRuntime {
     public static Object getObjectProp(Scriptable obj, String property,
                                        Context cx)
     {
-        Object result = ScriptableObject.getProperty(obj, property);
+        Object result = Js.getProperty(obj, property);
         if (result == Scriptable.NOT_FOUND) {
             if (cx.hasFeature(Context.FEATURE_STRICT_MODE)) {
                 Context.reportWarning(ScriptRuntime.getMessage1(
@@ -1203,7 +1203,7 @@ public class ScriptRuntime {
     public static Object getObjectIndex(Scriptable obj, int index,
                                         Context cx)
     {
-        Object result = ScriptableObject.getProperty(obj, index);
+        Object result = Js.getProperty(obj, index);
         if (result == Scriptable.NOT_FOUND) {
             result = Undefined.instance;
         }
@@ -1230,9 +1230,9 @@ public class ScriptRuntime {
         String s = toStringIdOrIndex(cx, elem);
         if (s == null) {
             int index = lastIndexResult(cx);
-            ScriptableObject.putProperty(obj, index, value);
+            Js.putProperty(obj, index, value);
         } else {
-            ScriptableObject.putProperty(obj, s, value);
+            Js.putProperty(obj, s, value);
         }
 
         return value;
@@ -1254,7 +1254,7 @@ public class ScriptRuntime {
     public static Object setObjectProp(Scriptable obj, String property,
                                        Object value, Context cx)
     {
-        ScriptableObject.putProperty(obj, property, value);
+        Js.putProperty(obj, property, value);
         return value;
     }
 
@@ -1282,7 +1282,7 @@ public class ScriptRuntime {
     public static Object setObjectIndex(Scriptable obj, int index, Object value,
                                         Context cx)
     {
-        ScriptableObject.putProperty(obj, index, value);
+        Js.putProperty(obj, index, value);
         return value;
     }
 
@@ -1293,9 +1293,9 @@ public class ScriptRuntime {
         String s = toStringIdOrIndex(cx, elem);
         if (s == null) {
             int index = lastIndexResult(cx);
-            result = ScriptableObject.deleteProperty(target, index);
+            result = Js.deleteProperty(target, index);
         } else {
-            result = ScriptableObject.deleteProperty(target, s);
+            result = Js.deleteProperty(target, s);
         }
         return result;
     }
@@ -1308,9 +1308,9 @@ public class ScriptRuntime {
         String s = toStringIdOrIndex(cx, elem);
         if (s == null) {
             int index = lastIndexResult(cx);
-            result = ScriptableObject.hasProperty(target, index);
+            result = Js.hasProperty(target, index);
         } else {
-            result = ScriptableObject.hasProperty(target, s);
+            result = Js.hasProperty(target, s);
         }
 
         return result;
@@ -1391,7 +1391,7 @@ public class ScriptRuntime {
         for (;;) {
             if (scope instanceof NativeWith) {
                 Scriptable withObj = scope.getPrototype();
-                result = ScriptableObject.getProperty(withObj, name);
+                result = Js.getProperty(withObj, name);
                 if (result != Scriptable.NOT_FOUND) {
                     // function this should be the target object of with
                     thisObj = withObj;
@@ -1405,7 +1405,7 @@ public class ScriptRuntime {
                     if (asFunctionCall) {
                         // ECMA 262 requires that this for nested funtions
                         // should be top scope
-                        thisObj = ScriptableObject.
+                        thisObj = Js.
                                       getTopLevelScope(parentScope);
                     }
                     break;
@@ -1413,7 +1413,7 @@ public class ScriptRuntime {
             } else {
                 // Can happen if Rhino embedding decided that nested
                 // scopes are useful for what ever reasons.
-                result = ScriptableObject.getProperty(scope, name);
+                result = Js.getProperty(scope, name);
                 if (result != Scriptable.NOT_FOUND) {
                     thisObj = scope;
                     break;
@@ -1455,7 +1455,7 @@ public class ScriptRuntime {
         if (cx.useDynamicScope) {
             scope = checkDynamicScope(cx.topCallScope, scope);
         }
-        return ScriptableObject.getProperty(scope, name);
+        return Js.getProperty(scope, name);
     }
 
 
@@ -1479,7 +1479,7 @@ public class ScriptRuntime {
             // Check for possibly nested "with" scopes first
             while (scope instanceof NativeWith) {
                 Scriptable withObj = scope.getPrototype();
-                if (ScriptableObject.hasProperty(withObj, id)) {
+                if (Js.hasProperty(withObj, id)) {
                     return withObj;
                 }
                 scope = parent;
@@ -1489,7 +1489,7 @@ public class ScriptRuntime {
                 }
             }
             for (;;) {
-                if (ScriptableObject.hasProperty(scope, id)) {
+                if (Js.hasProperty(scope, id)) {
                     return scope;
                 }
                 scope = parent;
@@ -1503,7 +1503,7 @@ public class ScriptRuntime {
         if (cx.useDynamicScope) {
             scope = checkDynamicScope(cx.topCallScope, scope);
         }
-        if (ScriptableObject.hasProperty(scope, id)) {
+        if (Js.hasProperty(scope, id)) {
             return scope;
         }
         // Nothing was found, but since XML objects always bind
@@ -1515,7 +1515,7 @@ public class ScriptRuntime {
                                  Context cx, Scriptable scope, String id)
     {
         if (bound != null) {
-            ScriptableObject.putProperty(bound, id, value);
+            Js.putProperty(bound, id, value);
         } else {
             // "newname = 7;", where 'newname' has not yet
             // been defined, creates a new property in the
@@ -1527,7 +1527,7 @@ public class ScriptRuntime {
                     ScriptRuntime.getMessage1("msg.assn.create.strict", id));
             }
             // Find the top scope by walking up the scope chain.
-            bound = ScriptableObject.getTopLevelScope(scope);
+            bound = Js.getTopLevelScope(scope);
             if (cx.useDynamicScope) {
                 bound = checkDynamicScope(cx.topCallScope, bound);
             }
@@ -1539,7 +1539,7 @@ public class ScriptRuntime {
     public static Object setConst(Scriptable bound, Object value,
                                  Context cx, String id)
     {
-        ScriptableObject.putConstProperty(bound, id, value);
+        Js.putConstProperty(bound, id, value);
         return value;
     }
 
@@ -1717,7 +1717,7 @@ public class ScriptRuntime {
         Object value;
         for (;;) {
             // Ignore XML lookup as requred by ECMA 357, 11.2.2.1
-            value = ScriptableObject.getProperty(thisObj, index);
+            value = Js.getProperty(thisObj, index);
             if (value != Scriptable.NOT_FOUND) {
                 break;
             }
@@ -1750,7 +1750,7 @@ public class ScriptRuntime {
         Object value;
         for (;;) {
             // Ignore XML lookup as requred by ECMA 357, 11.2.2.1
-            value = ScriptableObject.getProperty(thisObj, property);
+            value = Js.getProperty(thisObj, property);
             if (value != Scriptable.NOT_FOUND) {
                 break;
             }
@@ -1758,7 +1758,7 @@ public class ScriptRuntime {
         }
 
         if (!(value instanceof Callable)) {
-            Object noSuchMethod = ScriptableObject.getProperty(thisObj, "__noSuchMethod__");
+            Object noSuchMethod = Js.getProperty(thisObj, "__noSuchMethod__");
             if (noSuchMethod instanceof Callable)
                 value = new NoSuchMethodShim((Callable)noSuchMethod, property);
             else
@@ -1797,7 +1797,7 @@ public class ScriptRuntime {
                 // as their thisObj
             } else if (thisObj instanceof NativeCall) {
                 // nested functions should have top scope as their thisObj
-                thisObj = ScriptableObject.getTopLevelScope(thisObj);
+                thisObj = Js.getTopLevelScope(thisObj);
             }
         }
         storeScriptable(cx, thisObj);
@@ -2443,7 +2443,7 @@ public class ScriptRuntime {
         if (cx.topCallScope != null) throw new IllegalStateException();
 
         Object result;
-        cx.topCallScope = ScriptableObject.getTopLevelScope(scope);
+        cx.topCallScope = Js.getTopLevelScope(scope);
         cx.useDynamicScope = cx.hasFeature(Context.FEATURE_DYNAMIC_SCOPE);
         ContextFactory f = cx.getFactory();
         try {
@@ -2507,20 +2507,20 @@ public class ScriptRuntime {
                 boolean isConst = funObj.getParamOrVarConst(i);
                 // Don't overwrite existing def if already defined in object
                 // or prototypes of object.
-                if (!ScriptableObject.hasProperty(scope, name)) {
+                if (!Js.hasProperty(scope, name)) {
                     if (!evalScript) {
                         // Global var definitions are supposed to be DONTDELETE
                         if (isConst)
-                            ScriptableObject.defineConstProperty(varScope, name);
+                            Js.defineConstProperty(varScope, name);
                         else
-                            ScriptableObject.defineProperty(
+                            Js.defineProperty(
                                 varScope, name, Undefined.instance,
                                 ScriptableObject.PERMANENT);
                     } else {
                         varScope.put(name, varScope, Undefined.instance);
                     }
                 } else {
-                    ScriptableObject.redefineProperty(scope, name, isConst);
+                    Js.redefineProperty(scope, name, isConst);
                 }
             }
         }
@@ -2621,7 +2621,7 @@ public class ScriptRuntime {
             }
 
             Scriptable errorObject = cx.newObject(scope, errorName, args);
-            ScriptableObject.putProperty(errorObject, "name", errorName);
+            Js.putProperty(errorObject, "name", errorName);
 // war das OK ?
 //            if (javaException != null) {
 //                Object wrap = cx.getWrapFactory().wrap(cx, scope, javaException,
@@ -2689,17 +2689,17 @@ public class ScriptRuntime {
                                                  Scriptable scope)
     {
         fn.setParentScope(scope);
-        fn.setPrototype(ScriptableObject.getFunctionPrototype(scope));
+        fn.setPrototype(Js.getFunctionPrototype(scope));
     }
 
     public static void setObjectProtoAndParent(ScriptableObject object,
                                                Scriptable scope)
     {
         // Compared with function it always sets the scope to top scope
-        scope = ScriptableObject.getTopLevelScope(scope);
+        scope = Js.getTopLevelScope(scope);
         object.setParentScope(scope);
         Scriptable proto
-            = ScriptableObject.getClassPrototype(scope, object.getClassName());
+            = Js.getClassPrototype(scope, object.getClassName());
         object.setPrototype(proto);
     }
 
@@ -2713,7 +2713,7 @@ public class ScriptRuntime {
                 if (!fromEvalCode) {
                     // ECMA specifies that functions defined in global and
                     // function scope outside eval should have DONTDELETE set.
-                    ScriptableObject.defineProperty
+                    Js.defineProperty
                         (scope, name, function, ScriptableObject.PERMANENT);
                 } else {
                     scope.put(name, scope, function);
@@ -2754,7 +2754,7 @@ public class ScriptRuntime {
          */
         if (cx.getLanguageVersion() == Context.VERSION_1_2) {
             arrayObj = cx.newObject(scope, "Array", ScriptRuntime.emptyArgs);
-            ScriptableObject.putProperty(arrayObj, "length", lengthObj);
+            Js.putProperty(arrayObj, "length", lengthObj);
         } else {
             arrayObj = cx.newObject(scope, "Array", new Object[] { lengthObj });
         }
@@ -2764,7 +2764,7 @@ public class ScriptRuntime {
                 ++skip;
                 continue;
             }
-            ScriptableObject.putProperty(arrayObj, i, objects[j]);
+            Js.putProperty(arrayObj, i, objects[j]);
             ++j;
         }
         return arrayObj;
@@ -2782,7 +2782,7 @@ public class ScriptRuntime {
             Object value = propertyValues[i];
             if (id instanceof String) {
                 if (getterSetter == 0)
-                    ScriptableObject.putProperty(object, (String)id, value);
+                    Js.putProperty(object, (String)id, value);
                 else {
                     Callable fun;
                     String definer;
@@ -2800,7 +2800,7 @@ public class ScriptRuntime {
                 }              
             } else {
                 int index = ((Integer)id).intValue();
-                ScriptableObject.putProperty(object, index, value);
+                Js.putProperty(object, index, value);
             }
         }
         return object;
@@ -2820,7 +2820,7 @@ public class ScriptRuntime {
         } else {
             Object[] result = new Object[len];
             for (int i=0; i < len; i++) {
-                Object elem = ScriptableObject.getProperty(object, i);
+                Object elem = Js.getProperty(object, i);
                 result[i] = (elem == Scriptable.NOT_FOUND) ? Undefined.instance
                                                            : elem;
             }

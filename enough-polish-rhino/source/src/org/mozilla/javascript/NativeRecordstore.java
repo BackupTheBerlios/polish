@@ -86,7 +86,7 @@ final public class NativeRecordstore extends IdScriptableObject
 			Object[] argsRs = new Object[1];
 			argsRs[0] = rs;
 	        
-	        Scriptable top = getTopLevelScope(VMBridge.instance.getScope());
+	        Scriptable top = Js.getTopLevelScope(VMBridge.instance.getScope());
 			args[0] = ScriptRuntime.newObject(VMBridge.instance.getContext(), top, "RecordStore", argsRs);
 			args[1] = ScriptRuntime.wrapNumber(type);
 			args[2] = ScriptRuntime.wrapNumber(id);
@@ -540,7 +540,7 @@ final public class NativeRecordstore extends IdScriptableObject
 	}
 
     private Scriptable enumerateRecords(Context cx, Scriptable scope, NativeRecordstore rs) {
-        Scriptable top = getTopLevelScope(VMBridge.instance.getScope());
+        Scriptable top = Js.getTopLevelScope(VMBridge.instance.getScope());
         Object[] args = new Object[1];
 		args[0] = rs;
 		return ScriptRuntime.newObject(VMBridge.instance.getContext(), top, "RecordEnumeration", args);

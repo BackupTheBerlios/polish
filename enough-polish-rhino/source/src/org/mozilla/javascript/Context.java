@@ -873,7 +873,7 @@ public class Context
     public final Scriptable newObject(Scriptable scope, String constructorName,
                                       Object[] args)
     {
-        scope = ScriptableObject.getTopLevelScope(scope);
+        scope = Js.getTopLevelScope(scope);
         Function ctor = ScriptRuntime.getExistingCtor(this, scope,
                                                       constructorName);
         if (args == null) { args = ScriptRuntime.emptyArgs; }

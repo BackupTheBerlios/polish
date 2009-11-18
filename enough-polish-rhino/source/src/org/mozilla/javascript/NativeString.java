@@ -557,7 +557,7 @@ final public class NativeString extends IdScriptableObject
                                    String target, Object[] args)
     {
         // create an empty Array to return;
-        Scriptable top = getTopLevelScope(scope);
+        Scriptable top = Js.getTopLevelScope(scope);
         Scriptable result = ScriptRuntime.newObject(cx, top, "Array", null);
 
         // return an array consisting of the target if no separator given

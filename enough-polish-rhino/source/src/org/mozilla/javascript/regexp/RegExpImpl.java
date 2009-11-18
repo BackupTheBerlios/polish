@@ -39,11 +39,11 @@ package org.mozilla.javascript.regexp;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
+import org.mozilla.javascript.Js;
 import org.mozilla.javascript.Kit;
 import org.mozilla.javascript.RegExpProxy;
 import org.mozilla.javascript.ScriptRuntime;
 import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.Undefined;
 
 /**
@@ -140,7 +140,7 @@ public class RegExpImpl implements RegExpProxy {
 
         String str = ScriptRuntime.toString(thisObj);
         data.strstr = str;
-        Scriptable topScope = ScriptableObject.getTopLevelScope(scope);
+        Scriptable topScope = Js.getTopLevelScope(scope);
 
         if (args.length == 0) {
             Object compiled = NativeRegExp.compileRE(cx, "", "", false);
@@ -300,7 +300,7 @@ public class RegExpImpl implements RegExpProxy {
                                    RegExpImpl reImpl)
     {
         if (mdata.arrayobj == null) {
-            Scriptable s = ScriptableObject.getTopLevelScope(scope);
+            Scriptable s = Js.getTopLevelScope(scope);
             mdata.arrayobj = ScriptRuntime.newObject(cx, s, "Array", null);
         }
         SubString matchsub = reImpl.lastMatch_ren;
@@ -344,7 +344,7 @@ public class RegExpImpl implements RegExpProxy {
             re2.input = reImpl.input;
             ScriptRuntime.setRegExpProxy(cx, re2);
             try {
-                Scriptable parent = ScriptableObject.getTopLevelScope(scope);
+                Scriptable parent = Js.getTopLevelScope(scope);
                 Object result = rdata.fLambda.call(cx, parent, parent, args);
                 lambdaStr = ScriptRuntime.toString(result);
             } finally {

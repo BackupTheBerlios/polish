@@ -49,6 +49,7 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.IdFunctionObject;
 import org.mozilla.javascript.IdScriptableObject;
+import org.mozilla.javascript.Js;
 import org.mozilla.javascript.Kit;
 import org.mozilla.javascript.ScriptRuntime;
 import org.mozilla.javascript.Scriptable;
@@ -153,7 +154,7 @@ public class NativeRegExp extends IdScriptableObject implements Function
         proto.re = (RECompiled)compileRE(cx, "", null, false);
         proto.activatePrototypeMap(MAX_PROTOTYPE_ID);
         proto.setParentScope(scope);
-        proto.setPrototype(getObjectPrototype(scope));
+        proto.setPrototype(Js.getObjectPrototype(scope));
 
         NativeRegExpCtor ctor = new NativeRegExpCtor();
         // Bug #324006: ECMA-262 15.10.6.1 says "The initial value of
@@ -169,7 +170,7 @@ public class NativeRegExp extends IdScriptableObject implements Function
             ctor.sealObject();
         }
 
-        defineProperty(scope, "RegExp", ctor, ScriptableObject.DONTENUM);
+        Js.defineProperty(scope, "RegExp", ctor, ScriptableObject.DONTENUM);
     }
 
     NativeRegExp(Scriptable scope, Object regexpCompiled)
@@ -2281,7 +2282,7 @@ public class NativeRegExp extends IdScriptableObject implements Function
              * matches, an index property telling the length of the left context,
              * and an input property referring to the input string.
              */
-            Scriptable scope = getTopLevelScope(scopeObj);
+            Scriptable scope = Js.getTopLevelScope(scopeObj);
             result = ScriptRuntime.newObject(cx, scope, "Array", null);
             obj = (Scriptable) result;
 

@@ -60,10 +60,10 @@ final public class NativeError extends IdScriptableObject
     static void init(Scriptable scope, boolean sealed)
     {
         NativeError obj = new NativeError();
-        ScriptableObject.putProperty(obj, "name", "Error");
-        ScriptableObject.putProperty(obj, "message", "");
-        ScriptableObject.putProperty(obj, "fileName", "");
-        ScriptableObject.putProperty(obj, "lineNumber", new Integer(0));
+        Js.putProperty(obj, "name", "Error");
+        Js.putProperty(obj, "message", "");
+        Js.putProperty(obj, "fileName", "");
+        Js.putProperty(obj, "lineNumber", new Integer(0));
         obj.exportAsJSClass(MAX_PROTOTYPE_ID, scope, sealed);
     }
 
@@ -78,13 +78,13 @@ final public class NativeError extends IdScriptableObject
 
         int arglen = args.length;
         if (arglen >= 1) {
-            ScriptableObject.putProperty(obj, "message",
+            Js.putProperty(obj, "message",
                     ScriptRuntime.toString(args[0]));
             if (arglen >= 2) {
-                ScriptableObject.putProperty(obj, "fileName", args[1]);
+                Js.putProperty(obj, "fileName", args[1]);
                 if (arglen >= 3) {
                     int line = ScriptRuntime.toInt32(args[2]);
-                    ScriptableObject.putProperty(obj, "lineNumber",
+                    Js.putProperty(obj, "lineNumber",
                             new Integer(line));
                 }
             }
@@ -94,10 +94,10 @@ final public class NativeError extends IdScriptableObject
             // explicitly, see Bugzilla issue #342807
             int[] linep = new int[1];
             String fileName = Context.getSourcePositionFromStack(linep);
-            ScriptableObject.putProperty(obj, "lineNumber", 
+            Js.putProperty(obj, "lineNumber", 
                     new Integer(linep[0]));
             if(arglen < 2) {
-                ScriptableObject.putProperty(obj, "fileName", fileName);
+                Js.putProperty(obj, "fileName", fileName);
             }
         }
         return obj;
@@ -155,10 +155,10 @@ final public class NativeError extends IdScriptableObject
                                       Scriptable thisObj)
     {
         // Emulation of SpiderMonkey behavior
-        Object name = ScriptableObject.getProperty(thisObj, "name");
-        Object message = ScriptableObject.getProperty(thisObj, "message");
-        Object fileName = ScriptableObject.getProperty(thisObj, "fileName");
-        Object lineNumber = ScriptableObject.getProperty(thisObj, "lineNumber");
+        Object name = Js.getProperty(thisObj, "name");
+        Object message = Js.getProperty(thisObj, "message");
+        Object fileName = Js.getProperty(thisObj, "fileName");
+        Object lineNumber = Js.getProperty(thisObj, "lineNumber");
 
         StringBuffer sb = new StringBuffer();
         sb.append("(new ");
@@ -196,7 +196,7 @@ final public class NativeError extends IdScriptableObject
 
     private static String getString(Scriptable obj, String id)
     {
-        Object value = ScriptableObject.getProperty(obj, id);
+        Object value = Js.getProperty(obj, id);
         if (value == NOT_FOUND) return "";
         return ScriptRuntime.toString(value);
     }

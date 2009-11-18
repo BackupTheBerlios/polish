@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="source/src"/>
 	<classpathentry kind="src" output="bin/test" path="source/test"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/java-6-sun-1.6.0.14"/>
 	<classpathentry kind="lib" path="/enough-polish-build/import/cldc-1.1.jar"/>
 	<classpathentry kind="lib" path="/enough-polish-build/import/locationapi-1.0.jar"/>
 	<classpathentry kind="lib" path="/enough-polish-build/import/midp-2.0.jar">
@@ -9,7 +10,7 @@
 			<attribute name="javadoc_location" value="file:/home/mkoch/local/WTK2.2/docs/api/midp/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/enough-polish-j2me"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

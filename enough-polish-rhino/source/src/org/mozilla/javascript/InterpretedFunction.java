@@ -154,7 +154,7 @@ final public class InterpretedFunction extends NativeFunction implements Script
 	        return ret;
     	} catch (RhinoException e){
     		//#debug error
-    		System.out.println("Unable to call interpreted function" + e );
+    		System.out.println("Unable to call interpreted function " + e );
 	        EventManager.fireEvent("js.error", this, e );
     	} catch (Exception e){
     		//#debug error

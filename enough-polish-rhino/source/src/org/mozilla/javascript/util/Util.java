@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.Date;
 
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Js;
 import org.mozilla.javascript.NativeArray;
 import org.mozilla.javascript.NativeBoolean;
 import org.mozilla.javascript.NativeDate;
@@ -16,7 +17,6 @@ import org.mozilla.javascript.NativeRecordstore;
 import org.mozilla.javascript.NativeString;
 import org.mozilla.javascript.ScriptRuntime;
 import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.ScriptableObject;
 
 public class Util {
 	
@@ -69,7 +69,7 @@ public class Util {
 	}
 
 	public static Object createArrayFromRecord(Context cx, Scriptable scope, byte[] record) {
-	    Scriptable top = ScriptableObject.getTopLevelScope(scope);
+	    Scriptable top = Js.getTopLevelScope(scope);
 	    Scriptable result = ScriptRuntime.newObject(cx, top, "Array", null);
 	
 	    ByteArrayInputStream bis = new ByteArrayInputStream(record);
@@ -173,7 +173,7 @@ public class Util {
 
 	public static Object createArrayFromRecord(Context context,
 			Scriptable scope, DataInputStream dis, boolean readSize) {
-	    Scriptable top = ScriptableObject.getTopLevelScope(scope);
+	    Scriptable top = Js.getTopLevelScope(scope);
 	    Scriptable result = ScriptRuntime.newObject(context, top, "Array", null);
 	
 		try {

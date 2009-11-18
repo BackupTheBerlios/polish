@@ -114,7 +114,7 @@ public abstract class IdScriptableObject extends ScriptableObject
                 throw new IllegalArgumentException();
             if (value == NOT_FOUND)
                 throw new IllegalArgumentException();
-            ScriptableObject.checkValidAttributes(attributes);
+            Js.checkValidAttributes(attributes);
             if (obj.findPrototypeId(name) != id)
                 throw new IllegalArgumentException(name);
 
@@ -169,7 +169,7 @@ public abstract class IdScriptableObject extends ScriptableObject
                     +"initialize id="+constructorId);
             }
             constructor.initFunction(obj.getClassName(),
-                                     ScriptableObject.getTopLevelScope(obj));
+                                     Js.getTopLevelScope(obj));
             constructor.markAsConstructor(obj);
             return constructor;
         }
@@ -263,7 +263,7 @@ public abstract class IdScriptableObject extends ScriptableObject
 
         final void setAttributes(int id, int attributes)
         {
-            ScriptableObject.checkValidAttributes(attributes);
+            Js.checkValidAttributes(attributes);
             ensureId(id);
             synchronized (this) {
                 attributeArray[id - 1] = (short)attributes;
@@ -494,7 +494,7 @@ public abstract class IdScriptableObject extends ScriptableObject
 
     public void setAttributes(String name, int attributes)
     {
-        ScriptableObject.checkValidAttributes(attributes);
+        Js.checkValidAttributes(attributes);
         int info = findInstanceIdInfo(name);
         if (info != 0) {
             int currentAttributes = (info >>> 16);
@@ -626,7 +626,7 @@ public abstract class IdScriptableObject extends ScriptableObject
         // Set scope and prototype unless this is top level scope itself
         if (scope != this && scope != null) {
             setParentScope(scope);
-            setPrototype(getObjectPrototype(scope));
+            setPrototype(Js.getObjectPrototype(scope));
         }
 
         activatePrototypeMap(maxPrototypeId);
@@ -660,7 +660,7 @@ public abstract class IdScriptableObject extends ScriptableObject
     public final void initPrototypeMethod(Object tag, int id, String name,
                                           int arity)
     {
-        Scriptable scope = ScriptableObject.getTopLevelScope(this);
+        Scriptable scope = Js.getTopLevelScope(this);
         IdFunctionObject f = newIdFunction(tag, id, name, arity, scope);
         prototypeValues.initValue(id, name, f, DONTENUM);
     }
@@ -699,7 +699,7 @@ public abstract class IdScriptableObject extends ScriptableObject
     protected void addIdFunctionProperty(Scriptable obj, Object tag, int id,
                                          String name, int arity)
     {
-        Scriptable scope = ScriptableObject.getTopLevelScope(obj);
+        Scriptable scope = Js.getTopLevelScope(obj);
         IdFunctionObject f = newIdFunction(tag, id, name, arity, scope);
         f.addAsProperty(obj);
     }

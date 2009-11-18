@@ -178,7 +178,7 @@ public abstract class ScriptableObject implements Scriptable, Externalizable, Co
 
         final synchronized void setAttributes(int value)
         {
-            checkValidAttributes(value);
+            Js.checkValidAttributes(value);
             attributes = (short)value;
         }
 
@@ -223,14 +223,6 @@ public abstract class ScriptableObject implements Scriptable, Externalizable, Co
         GetterSlot(String name, int indexOrHash, int attributes)
         {
             super(name, indexOrHash, attributes);
-        }
-    }
-
-    static void checkValidAttributes(int attributes)
-    {
-        final int mask = READONLY | DONTENUM | PERMANENT | UNINITIALIZED_CONST;
-        if ((attributes & ~mask) != 0) {
-            throw new IllegalArgumentException(String.valueOf(attributes));
         }
     }
 
@@ -619,92 +611,9 @@ public abstract class ScriptableObject implements Scriptable, Externalizable, Co
      */
     public Object getDefaultValue(Class typeHint)
     {
-        return getDefaultValue(this, typeHint);
+        return Js.getDefaultValue(this, typeHint);
     }
     
-    public static Object getDefaultValue(Scriptable object, Class typeHint)
-    {
-        Context cx = null;
-        for (int i=0; i < 2; i++) {
-            boolean tryToString;
-            if (typeHint == ScriptRuntime.StringClass) {
-                tryToString = (i == 0);
-            } else {
-                tryToString = (i == 1);
-            }
-
-            String methodName;
-            Object[] args;
-            if (tryToString) {
-                methodName = "toString";
-                args = ScriptRuntime.emptyArgs;
-            } else {
-                methodName = "valueOf";
-                args = new Object[1];
-                String hint;
-                if (typeHint == null) {
-                    hint = "undefined";
-                } else if (typeHint == ScriptRuntime.StringClass) {
-                    hint = "string";
-                } else if (typeHint == ScriptRuntime.ScriptableClass) {
-                    hint = "object";
-                } else if (typeHint == ScriptRuntime.FunctionClass) {
-                    hint = "function";
-                } else if (typeHint == ScriptRuntime.BooleanClass
-//                           || typeHint == Boolean.TYPE
-                           )
-                {
-                    hint = "boolean";
-                } else if (typeHint == ScriptRuntime.NumberClass ||
-                         typeHint == ScriptRuntime.ByteClass ||
-//                       typeHint == Byte.TYPE ||
-                         typeHint == ScriptRuntime.ShortClass ||
-//                         typeHint == Short.TYPE ||
-                         typeHint == ScriptRuntime.IntegerClass ||
-//                         typeHint == Integer.TYPE ||
-                         typeHint == ScriptRuntime.FloatClass ||
-//                         typeHint == Float.TYPE ||
-                         typeHint == ScriptRuntime.DoubleClass 
-//                        || typeHint == Double.TYPE
-                         )
-                {
-                    hint = "number";
-                } else {
-                    throw Context.reportRuntimeError1(
-                        "msg.invalid.type", typeHint.toString());
-                }
-                args[0] = hint;
-            }
-            Object v = getProperty(object, methodName);
-            if (!(v instanceof Function))
-                continue;
-            Function fun = (Function) v;
-            if (cx == null)
-                cx = Context.getContext();
-            v = fun.call(cx, fun.getParentScope(), object, args);
-            if (v != null) {
-                if (!(v instanceof Scriptable)) {
-                    return v;
-                }
-                if (typeHint == ScriptRuntime.ScriptableClass
-                    || typeHint == ScriptRuntime.FunctionClass)
-                {
-                    return v;
-                }
-                if (tryToString && v instanceof Wrapper) {
-                    // Let a wrapped java.lang.String pass for a primitive
-                    // string.
-                    Object u = ((Wrapper)v).unwrap();
-                    if (u instanceof String)
-                        return u;
-                }
-            }
-        }
-        // fall through to error
-        String arg = (typeHint == null) ? "undefined" : typeHint.getName();
-        throw ScriptRuntime.typeError1("msg.default.value", arg);
-    }
-
     /**
      * Implements the instanceof operator.
      *
@@ -1125,317 +1034,6 @@ public abstract class ScriptableObject implements Scriptable, Externalizable, Co
     }
 
     /**
-	 * Utility method to add properties to arbitrary Scriptable object. If
-	 * destination is instance of ScriptableObject, calls defineProperty there,
-	 * otherwise calls put in destination ignoring attributes
-	 */
-    public static void defineProperty(Scriptable destination,
-                                      String propertyName, Object value,
-                                      int attributes)
-    {
-        if (!(destination instanceof ScriptableObject)) {
-            destination.put(propertyName, destination, value);
-            return;
-        }
-        ScriptableObject so = (ScriptableObject)destination;
-        so.defineProperty(propertyName, value, attributes);
-    }
-
-    /**
-	 * Utility method to add properties to arbitrary Scriptable object. If
-	 * destination is instance of ScriptableObject, calls defineProperty there,
-	 * otherwise calls put in destination ignoring attributes
-	 */
-    public static void defineConstProperty(Scriptable destination,
-                                           String propertyName)
-    {
-        if (destination instanceof ConstProperties) {
-            ConstProperties cp = (ConstProperties)destination;
-            cp.defineConst(propertyName, destination);
-        } else
-            defineProperty(destination, propertyName, Undefined.instance, CONST);
-    }
-
-    /**
-	 * Define a JavaScript property with getter and setter side effects.
-	 * 
-	 * If the setter is not found, the attribute READONLY is added to the given
-	 * attributes.
-	 * <p>
-	 * 
-	 * The getter must be a method with zero parameters, and the setter, if
-	 * found, must be a method with one parameter.
-	 * <p>
-	 * 
-	 * @param propertyName
-	 *            the name of the property to define. This name also affects the
-	 *            name of the setter and getter to search for. If the propertyId
-	 *            is "foo", then <code>clazz</code> will be searched for
-	 *            "getFoo" and "setFoo" methods.
-	 * @param clazz
-	 *            the Java class to search for the getter and setter
-	 * @param attributes
-	 *            the attributes of the JavaScript property
-	 * @see org.mozilla.javascript.Scriptable#put(String, Scriptable, Object)
-	 */
-//    public void defineProperty(String propertyName, Class clazz,
-//                               int attributes)
-//    {
-//        int length = propertyName.length();
-//        if (length == 0) throw new IllegalArgumentException();
-//        char[] buf = new char[3 + length];
-//        propertyName.getChars(0, length, buf, 3);
-//        buf[3] = Character.toUpperCase(buf[3]);
-//        buf[0] = 'g';
-//        buf[1] = 'e';
-//        buf[2] = 't';
-//        String getterName = new String(buf);
-//        buf[0] = 's';
-//        String setterName = new String(buf);
-//
-//        Method[] methods = FunctionObject.getMethodList(clazz);
-//        Method getter = FunctionObject.findSingleMethod(methods, getterName);
-//        Method setter = FunctionObject.findSingleMethod(methods, setterName);
-//        if (setter == null)
-//            attributes |= ScriptableObject.READONLY;
-//        defineProperty(propertyName, null, getter,
-//                       setter == null ? null : setter, attributes);
-//    }
-
-    /**
-     * Define a JavaScript property.
-     *
-     * Use this method only if you wish to define getters and setters for
-     * a given property in a ScriptableObject. To create a property without
-     * special getter or setter side effects, use
-     * <code>defineProperty(String,int)</code>.
-     *
-     * If <code>setter</code> is null, the attribute READONLY is added to
-     * the given attributes.<p>
-     *
-     * Several forms of getters or setters are allowed. In all cases the
-     * type of the value parameter can be any one of the following types:
-     * Object, String, boolean, Scriptable, byte, short, int, long, float,
-     * or double. The runtime will perform appropriate conversions based
-     * upon the type of the parameter (see description in FunctionObject).
-     * The first forms are nonstatic methods of the class referred to
-     * by 'this':
-     * <pre>
-     * Object getFoo();
-     * void setFoo(SomeType value);</pre>
-     * Next are static methods that may be of any class; the object whose
-     * property is being accessed is passed in as an extra argument:
-     * <pre>
-     * static Object getFoo(Scriptable obj);
-     * static void setFoo(Scriptable obj, SomeType value);</pre>
-     * Finally, it is possible to delegate to another object entirely using
-     * the <code>delegateTo</code> parameter. In this case the methods are
-     * nonstatic methods of the class delegated to, and the object whose
-     * property is being accessed is passed in as an extra argument:
-     * <pre>
-     * Object getFoo(Scriptable obj);
-     * void setFoo(Scriptable obj, SomeType value);</pre>
-     *
-     * @param propertyName the name of the property to define.
-     * @param delegateTo an object to call the getter and setter methods on,
-     *                   or null, depending on the form used above.
-     * @param getter the method to invoke to get the value of the property
-     * @param setter the method to invoke to set the value of the property
-     * @param attributes the attributes of the JavaScript property
-     */
-//    public void defineProperty(String propertyName, Object delegateTo,
-//                               Method getter, Method setter, int attributes)
-//    {
-//        MemberBox getterBox = null;
-//        if (getter != null) {
-//            getterBox = new MemberBox(getter);
-//
-//            boolean delegatedForm;
-//            if (!Modifier.isStatic(getter.getModifiers())) {
-//                delegatedForm = (delegateTo != null);
-//                getterBox.delegateTo = delegateTo;
-//            } else {
-//                delegatedForm = true;
-//                // Ignore delegateTo for static getter but store
-//                // non-null delegateTo indicator.
-//                getterBox.delegateTo = Void.TYPE;
-//            }
-//
-//            String errorId = null;
-//            Class[] parmTypes = getter.getParameterTypes();
-//            if (parmTypes.length == 0) {
-//                if (delegatedForm) {
-//                    errorId = "msg.obj.getter.parms";
-//                }
-//            } else if (parmTypes.length == 1) {
-//                Object argType = parmTypes[0];
-//                // Allow ScriptableObject for compatibility
-//                if (!(argType == ScriptRuntime.ScriptableClass ||
-//                      argType == ScriptRuntime.ScriptableObjectClass))
-//                {
-//                    errorId = "msg.bad.getter.parms";
-//                } else if (!delegatedForm) {
-//                    errorId = "msg.bad.getter.parms";
-//                }
-//            } else {
-//                errorId = "msg.bad.getter.parms";
-//            }
-//            if (errorId != null) {
-//                throw Context.reportRuntimeError1(errorId, getter.toString());
-//            }
-//        }
-//
-//        MemberBox setterBox = null;
-//        if (setter != null) {
-//            if (setter.getReturnType() != Void.TYPE)
-//                throw Context.reportRuntimeError1("msg.setter.return",
-//                                                  setter.toString());
-//
-//            setterBox = new MemberBox(setter);
-//
-//            boolean delegatedForm;
-//            if (!Modifier.isStatic(setter.getModifiers())) {
-//                delegatedForm = (delegateTo != null);
-//                setterBox.delegateTo = delegateTo;
-//            } else {
-//                delegatedForm = true;
-//                // Ignore delegateTo for static setter but store
-//                // non-null delegateTo indicator.
-//                setterBox.delegateTo = Void.TYPE;
-//            }
-//
-//            String errorId = null;
-//            Class[] parmTypes = setter.getParameterTypes();
-//            if (parmTypes.length == 1) {
-//                if (delegatedForm) {
-//                    errorId = "msg.setter2.expected";
-//                }
-//            } else if (parmTypes.length == 2) {
-//                Object argType = parmTypes[0];
-//                // Allow ScriptableObject for compatibility
-//                if (!(argType == ScriptRuntime.ScriptableClass ||
-//                      argType == ScriptRuntime.ScriptableObjectClass))
-//                {
-//                    errorId = "msg.setter2.parms";
-//                } else if (!delegatedForm) {
-//                    errorId = "msg.setter1.parms";
-//                }
-//            } else {
-//                errorId = "msg.setter.parms";
-//            }
-//            if (errorId != null) {
-//                throw Context.reportRuntimeError1(errorId, setter.toString());
-//            }
-//        }
-//
-//        GetterSlot gslot = (GetterSlot)getSlot(propertyName, 0,
-//                                               SLOT_MODIFY_GETTER_SETTER);
-//        gslot.setAttributes(attributes);
-//        gslot.getter = getterBox;
-//        gslot.setter = setterBox;
-//    }
-
-    /**
-     * Search for names in a class, adding the resulting methods
-     * as properties.
-     *
-     * <p> Uses reflection to find the methods of the given names. Then
-     * FunctionObjects are constructed from the methods found, and
-     * are added to this object as properties with the given names.
-     *
-     * @param names the names of the Methods to add as function properties
-     * @param clazz the class to search for the Methods
-     * @param attributes the attributes of the new properties
-     * @see org.mozilla.javascript.FunctionObject
-     */
-//    public void defineFunctionProperties(String[] names, Class clazz,
-//                                         int attributes)
-//    {
-//        Method[] methods = FunctionObject.getMethodList(clazz);
-//        for (int i=0; i < names.length; i++) {
-//            String name = names[i];
-//            Method m = FunctionObject.findSingleMethod(methods, name);
-//            if (m == null) {
-//                throw Context.reportRuntimeError2(
-//                    "msg.method.not.found", name, clazz.getName());
-//            }
-//            FunctionObject f = new FunctionObject(name, m, this);
-//            defineProperty(name, f, attributes);
-//        }
-//    }
-
-    /**
-     * Get the Object.prototype property.
-     * See ECMA 15.2.4.
-     */
-    public static Scriptable getObjectPrototype(Scriptable scope) {
-        return getClassPrototype(scope, "Object");
-    }
-
-    /**
-     * Get the Function.prototype property.
-     * See ECMA 15.3.4.
-     */
-    public static Scriptable getFunctionPrototype(Scriptable scope) {
-        return getClassPrototype(scope, "Function");
-    }
-
-    /**
-     * Get the prototype for the named class.
-     *
-     * For example, <code>getClassPrototype(s, "Date")</code> will first
-     * walk up the parent chain to find the outermost scope, then will
-     * search that scope for the Date constructor, and then will
-     * return Date.prototype. If any of the lookups fail, or
-     * the prototype is not a JavaScript object, then null will
-     * be returned.
-     *
-     * @param scope an object in the scope chain
-     * @param className the name of the constructor
-     * @return the prototype for the named class, or null if it
-     *         cannot be found.
-     */
-    public static Scriptable getClassPrototype(Scriptable scope,
-                                               String className)
-    {
-        scope = getTopLevelScope(scope);
-        Object ctor = getProperty(scope, className);
-        Object proto;
-        if (ctor instanceof BaseFunction) {
-            proto = ((BaseFunction)ctor).getPrototypeProperty();
-        } else if (ctor instanceof Scriptable) {
-            Scriptable ctorObj = (Scriptable)ctor;
-            proto = ctorObj.get("prototype", ctorObj);
-        } else {
-            return null;
-        }
-        if (proto instanceof Scriptable) {
-            return (Scriptable)proto;
-        }
-        return null;
-    }
-
-    /**
-     * Get the global scope.
-     *
-     * <p>Walks the parent scope chain to find an object with a null
-     * parent scope (the global object).
-     *
-     * @param obj a JavaScript object
-     * @return the corresponding global scope
-     */
-    public static Scriptable getTopLevelScope(Scriptable obj)
-    {
-        for (;;) {
-            Scriptable parent = obj.getParentScope();
-            if (parent == null) {
-                return obj;
-            }
-            obj = parent;
-        }
-    }
-
-    /**
      * Seal this object.
      *
      * A sealed object may not have properties added or removed. Once
@@ -1469,246 +1067,6 @@ public abstract class ScriptableObject implements Scriptable, Externalizable, Co
 
         String str = (name != null) ? name : Integer.toString(index);
         throw Context.reportRuntimeError1("msg.modify.sealed", str);
-    }
-
-    /**
-     * Gets a named property from an object or any object in its prototype chain.
-     * <p>
-     * Searches the prototype chain for a property named <code>name</code>.
-     * <p>
-     * @param obj a JavaScript object
-     * @param name a property name
-     * @return the value of a property with name <code>name</code> found in
-     *         <code>obj</code> or any object in its prototype chain, or
-     *         <code>Scriptable.NOT_FOUND</code> if not found
-     * @since 1.5R2
-     */
-    public static Object getProperty(Scriptable obj, String name)
-    {
-        Scriptable start = obj;
-        Object result;
-        do {
-            result = obj.get(name, start);
-            if (result != Scriptable.NOT_FOUND)
-                break;
-            obj = obj.getPrototype();
-        } while (obj != null);
-        return result;
-    }
-
-    /**
-     * Gets an indexed property from an object or any object in its prototype chain.
-     * <p>
-     * Searches the prototype chain for a property with integral index
-     * <code>index</code>. Note that if you wish to look for properties with numerical
-     * but non-integral indicies, you should use getProperty(Scriptable,String) with
-     * the string value of the index.
-     * <p>
-     * @param obj a JavaScript object
-     * @param index an integral index
-     * @return the value of a property with index <code>index</code> found in
-     *         <code>obj</code> or any object in its prototype chain, or
-     *         <code>Scriptable.NOT_FOUND</code> if not found
-     * @since 1.5R2
-     */
-    public static Object getProperty(Scriptable obj, int index)
-    {
-        Scriptable start = obj;
-        Object result;
-        do {
-            result = obj.get(index, start);
-            if (result != Scriptable.NOT_FOUND)
-                break;
-            obj = obj.getPrototype();
-        } while (obj != null);
-        return result;
-    }
-
-    /**
-     * Returns whether a named property is defined in an object or any object
-     * in its prototype chain.
-     * <p>
-     * Searches the prototype chain for a property named <code>name</code>.
-     * <p>
-     * @param obj a JavaScript object
-     * @param name a property name
-     * @return the true if property was found
-     * @since 1.5R2
-     */
-    public static boolean hasProperty(Scriptable obj, String name)
-    {
-        return null != getBase(obj, name);
-    }
-
-    /**
-     * If hasProperty(obj, name) would return true, then if the property that
-     * was found is compatible with the new property, this method just returns.
-     * If the property is not compatible, then an exception is thrown.
-     *
-     * A property redefinition is incompatible if the first definition was a
-     * const declaration or if this one is.  They are compatible only if neither
-     * was const.
-     */
-    public static void redefineProperty(Scriptable obj, String name,
-                                        boolean isConst)
-    {
-        Scriptable baseOld = getBase(obj, name);
-        if (baseOld == null)
-            return;
-        if (baseOld instanceof ConstProperties) {
-            ConstProperties cp = (ConstProperties)baseOld;
-
-            if (cp.isConst(name))
-                throw Context.reportRuntimeError1("msg.const.redecl", name);
-        }
-        if (isConst)
-            throw Context.reportRuntimeError1("msg.var.redecl", name);
-    }
-    /**
-     * Returns whether an indexed property is defined in an object or any object
-     * in its prototype chain.
-     * <p>
-     * Searches the prototype chain for a property with index <code>index</code>.
-     * <p>
-     * @param obj a JavaScript object
-     * @param index a property index
-     * @return the true if property was found
-     * @since 1.5R2
-     */
-    public static boolean hasProperty(Scriptable obj, int index)
-    {
-        return null != getBase(obj, index);
-    }
-
-    /**
-     * Puts a named property in an object or in an object in its prototype chain.
-     * <p>
-     * Searches for the named property in the prototype chain. If it is found,
-     * the value of the property in <code>obj</code> is changed through a call
-     * to {@link Scriptable#put(String, Scriptable, Object)} on the
-     * prototype passing <code>obj</code> as the <code>start</code> argument.
-     * This allows the prototype to veto the property setting in case the
-     * prototype defines the property with [[ReadOnly]] attribute. If the
-     * property is not found, it is added in <code>obj</code>.
-     * @param obj a JavaScript object
-     * @param name a property name
-     * @param value any JavaScript value accepted by Scriptable.put
-     * @since 1.5R2
-     */
-    public static void putProperty(Scriptable obj, String name, Object value)
-    {
-        Scriptable baseOld = getBase(obj, name);
-        if (baseOld == null)
-            baseOld = obj;
-        baseOld.put(name, obj, value);
-    }
-
-    /**
-     * Puts a named property in an object or in an object in its prototype chain.
-     * <p>
-     * Searches for the named property in the prototype chain. If it is found,
-     * the value of the property in <code>obj</code> is changed through a call
-     * to {@link Scriptable#put(String, Scriptable, Object)} on the
-     * prototype passing <code>obj</code> as the <code>start</code> argument.
-     * This allows the prototype to veto the property setting in case the
-     * prototype defines the property with [[ReadOnly]] attribute. If the
-     * property is not found, it is added in <code>obj</code>.
-     * @param obj a JavaScript object
-     * @param name a property name
-     * @param value any JavaScript value accepted by Scriptable.put
-     * @since 1.5R2
-     */
-    public static void putConstProperty(Scriptable obj, String name, Object value)
-    {
-        Scriptable baseOld = getBase(obj, name);
-        if (baseOld == null)
-            baseOld = obj;
-        if (baseOld instanceof ConstProperties)
-            ((ConstProperties)baseOld).putConst(name, obj, value);
-    }
-
-    /**
-     * Puts an indexed property in an object or in an object in its prototype chain.
-     * <p>
-     * Searches for the indexed property in the prototype chain. If it is found,
-     * the value of the property in <code>obj</code> is changed through a call
-     * to {@link Scriptable#put(int, Scriptable, Object)} on the prototype
-     * passing <code>obj</code> as the <code>start</code> argument. This allows
-     * the prototype to veto the property setting in case the prototype defines
-     * the property with [[ReadOnly]] attribute. If the property is not found, 
-     * it is added in <code>obj</code>.
-     * @param obj a JavaScript object
-     * @param index a property index
-     * @param value any JavaScript value accepted by Scriptable.put
-     * @since 1.5R2
-     */
-    public static void putProperty(Scriptable obj, int index, Object value)
-    {
-        Scriptable baseOld = getBase(obj, index);
-        if (baseOld == null)
-            baseOld = obj;
-        baseOld.put(index, obj, value);
-    }
-
-    /**
-     * Removes the property from an object or its prototype chain.
-     * <p>
-     * Searches for a property with <code>name</code> in obj or
-     * its prototype chain. If it is found, the object's delete
-     * method is called.
-     * @param obj a JavaScript object
-     * @param name a property name
-     * @return true if the property doesn't exist or was successfully removed
-     * @since 1.5R2
-     */
-    public static boolean deleteProperty(Scriptable obj, String name)
-    {
-        Scriptable baseOld = getBase(obj, name);
-        if (baseOld == null)
-            return true;
-        baseOld.delete(name);
-        return !baseOld.has(name, obj);
-    }
-
-    /**
-     * Removes the property from an object or its prototype chain.
-     * <p>
-     * Searches for a property with <code>index</code> in obj or
-     * its prototype chain. If it is found, the object's delete
-     * method is called.
-     * @param obj a JavaScript object
-     * @param index a property index
-     * @return true if the property doesn't exist or was successfully removed
-     * @since 1.5R2
-     */
-    public static boolean deleteProperty(Scriptable obj, int index)
-    {
-        Scriptable baseOld = getBase(obj, index);
-        if (baseOld == null)
-            return true;
-        baseOld.delete(index);
-        return !baseOld.has(index, obj);
-    }
-
-
-    private static Scriptable getBase(Scriptable obj, String name)
-    {
-        do {
-            if (obj.has(name, obj))
-                break;
-            obj = obj.getPrototype();
-        } while(obj != null);
-        return obj;
-    }
-
-    private static Scriptable getBase(Scriptable obj, int index)
-    {
-        do {
-            if (obj.has(index, obj))
-                break;
-            obj = obj.getPrototype();
-        } while(obj != null);
-        return obj;
     }
 
     /**
@@ -1943,7 +1301,7 @@ public abstract class ScriptableObject implements Scriptable, Externalizable, Co
                     return null;
             } else {
                 int tableSize = slotsLocalRef.length;
-                int slotIndex = getSlotIndex(tableSize, indexOrHash);
+                int slotIndex = Js.getSlotIndex(tableSize, indexOrHash);
                 Slot slot = slotsLocalRef[slotIndex];
                 while (slot != null) {
                     String sname = slot.name;
@@ -1990,10 +1348,10 @@ public abstract class ScriptableObject implements Scriptable, Externalizable, Co
                     // Always throw away old slots if any on empty insert
                     slotsLocalRef = new Slot[5];
                     slots = slotsLocalRef;
-                    insertPos = getSlotIndex(slotsLocalRef.length, indexOrHash);
+                    insertPos = Js.getSlotIndex(slotsLocalRef.length, indexOrHash);
                 } else {
                     int tableSize = slotsLocalRef.length;
-                    insertPos = getSlotIndex(tableSize, indexOrHash);
+                    insertPos = Js.getSlotIndex(tableSize, indexOrHash);
                     Slot prev = slotsLocalRef[insertPos];
                     Slot slot = prev;
                     while (slot != null) {
@@ -2041,9 +1399,9 @@ public abstract class ScriptableObject implements Scriptable, Externalizable, Co
                     // Check if the table is not too full before inserting.
                     if (4 * (count + 1) > 3 * slotsLocalRef.length) {
                         slotsLocalRef = new Slot[slotsLocalRef.length * 2 + 1];
-                        copyTable(slots, slotsLocalRef, count);
+                        Js.copyTable(slots, slotsLocalRef, count);
                         slots = slotsLocalRef;
-                        insertPos = getSlotIndex(slotsLocalRef.length,
+                        insertPos = Js.getSlotIndex(slotsLocalRef.length,
                                 indexOrHash);
                     }
                 }
@@ -2054,7 +1412,7 @@ public abstract class ScriptableObject implements Scriptable, Externalizable, Co
                 if (accessType == SLOT_MODIFY_CONST)
                     newSlot.setAttributes(CONST);
                 ++count;
-                addKnownAbsentSlot(slotsLocalRef, newSlot, insertPos);
+                Js.addKnownAbsentSlot(slotsLocalRef, newSlot, insertPos);
                 return newSlot;
             }
 
@@ -2063,7 +1421,7 @@ public abstract class ScriptableObject implements Scriptable, Externalizable, Co
                 Slot[] slotsLocalRef = slots;
                 if (count != 0) {
                     int tableSize = slots.length;
-                    int slotIndex = getSlotIndex(tableSize, indexOrHash);
+                    int slotIndex = Js.getSlotIndex(tableSize, indexOrHash);
                     Slot prev = slotsLocalRef[slotIndex];
                     Slot slot = prev;
                     while (slot != null) {
@@ -2097,51 +1455,6 @@ public abstract class ScriptableObject implements Scriptable, Externalizable, Co
 
         } else {
             throw Kit.codeBug();
-        }
-    }
-
-    private static int getSlotIndex(int tableSize, int indexOrHash)
-    {
-        return (indexOrHash & 0x7fffffff) % tableSize;
-    }
-
-    // Must be inside synchronized (this)
-    private static void copyTable(Slot[] slots, Slot[] newSlots, int count)
-    {
-        if (count == 0) throw Kit.codeBug();
-
-        int tableSize = newSlots.length;
-        int i = slots.length;
-        for (;;) {
-            --i;
-            Slot slot = slots[i];
-            while (slot != null) {
-                int insertPos = getSlotIndex(tableSize, slot.indexOrHash);
-                Slot next = slot.next;
-                addKnownAbsentSlot(newSlots, slot, insertPos);
-                slot.next = null;
-                slot = next;
-                if (--count == 0)
-                    return;
-            }
-        }
-    }
-
-    /**
-     * Add slot with keys that are known to absent from the table.
-     * This is an optimization to use when inserting into empty table,
-     * after table growth or during deserialization.
-     */
-    private static void addKnownAbsentSlot(Slot[] slots, Slot slot, int insertPos)
-    {
-        if (slots[insertPos] == null) {
-            slots[insertPos] = slot;
-        } else {
-            Slot prev = slots[insertPos];
-            while (prev.next != null) {
-                prev = prev.next;
-            }
-            prev.next = slot;
         }
     }
 
@@ -2186,8 +1499,8 @@ public abstract class ScriptableObject implements Scriptable, Externalizable, Co
             }
             for (int i = 0; i != objectsCount; ++i) {
                 Slot slot = (Slot)Serializer.deserialize(in);
-                int slotIndex = getSlotIndex(tableSize, slot.indexOrHash);
-                addKnownAbsentSlot(slots, slot, slotIndex);
+                int slotIndex = Js.getSlotIndex(tableSize, slot.indexOrHash);
+                Js.addKnownAbsentSlot(slots, slot, slotIndex);
             }
         }
 

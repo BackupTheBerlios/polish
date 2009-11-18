@@ -96,7 +96,7 @@ public class BaseFunction extends IdScriptableObject implements Function
      */
     public boolean hasInstance(Scriptable instance)
     {
-        Object protoProp = ScriptableObject.getProperty(this, "prototype");
+        Object protoProp = Js.getProperty(this, "prototype");
         if (protoProp instanceof Scriptable) {
             return ScriptRuntime.jsDelegatesTo(instance, (Scriptable)protoProp);
         }
@@ -262,7 +262,7 @@ public class BaseFunction extends IdScriptableObject implements Function
         if (protoVal instanceof Scriptable) {
             return (Scriptable) protoVal;
         }
-        return getClassPrototype(this, "Object");
+        return Js.getClassPrototype(this, "Object");
     }
 
     /**
@@ -356,7 +356,7 @@ public class BaseFunction extends IdScriptableObject implements Function
         // wacky case of a user defining a function Object(), we don't
         // get an infinite loop trying to find the prototype.
         prototypeProperty = obj;
-        Scriptable proto = getObjectPrototype(this);
+        Scriptable proto = Js.getObjectPrototype(this);
         if (proto != obj) {
             // not the one we just made, it must remain grounded
             obj.setPrototype(proto);
@@ -428,7 +428,7 @@ public class BaseFunction extends IdScriptableObject implements Function
         String sourceURI = ScriptRuntime.
             makeUrlForGeneratedScript(false, filename, linep[0]);
 
-        Scriptable global = ScriptableObject.getTopLevelScope(scope);
+        Scriptable global = Js.getTopLevelScope(scope);
 
         ErrorReporter reporter;
         reporter = DefaultErrorReporter.forEval(cx.getErrorReporter());

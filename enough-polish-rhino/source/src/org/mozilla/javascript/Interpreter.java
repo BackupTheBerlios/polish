@@ -2943,7 +2943,7 @@ switch (op) {
         }
         Scriptable calleeScope = frame.scope;
         if (frame.useActivation) {
-            calleeScope = ScriptableObject.getTopLevelScope(frame.scope);
+            calleeScope = Js.getTopLevelScope(frame.scope);
         }
         if (fun instanceof InterpretedFunction) {
             InterpretedFunction ifun = (InterpretedFunction)fun;

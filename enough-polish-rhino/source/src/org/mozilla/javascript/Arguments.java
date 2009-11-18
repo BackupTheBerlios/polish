@@ -67,7 +67,7 @@ public final class Arguments extends IdScriptableObject
 
         Scriptable parent = activation.getParentScope();
         setParentScope(parent);
-        setPrototype(ScriptableObject.getObjectPrototype(parent));
+        setPrototype(Js.getObjectPrototype(parent));
 
         args = activation.originalArgs;
         lengthObj = new Integer(args.length);

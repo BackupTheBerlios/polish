@@ -98,7 +98,7 @@ public class IdFunctionObject extends BaseFunction
 
     public final void addAsProperty(Scriptable target)
     {
-        ScriptableObject.defineProperty(target, functionName, this,
+        Js.defineProperty(target, functionName, this,
                                         ScriptableObject.DONTENUM);
     }
 
@@ -113,7 +113,7 @@ public class IdFunctionObject extends BaseFunction
         // may not be called at all
         Scriptable proto = super.getPrototype();
         if (proto == null) {
-            proto = getFunctionPrototype(getParentScope());
+            proto = Js.getFunctionPrototype(getParentScope());
             setPrototype(proto);
         }
         return proto;

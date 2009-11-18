@@ -146,14 +146,14 @@ public class NativeGlobal implements Externalizable, IdFunctionCall
             f.exportAsScopeProperty();
         }
 
-        ScriptableObject.defineProperty(
+        Js.defineProperty(
             scope, "NaN", ScriptRuntime.NaNobj,
             ScriptableObject.DONTENUM);
-        ScriptableObject.defineProperty(
+        Js.defineProperty(
             scope, "Infinity",
             ScriptRuntime.wrapNumber(Double.POSITIVE_INFINITY),
             ScriptableObject.DONTENUM);
-        ScriptableObject.defineProperty(
+        Js.defineProperty(
             scope, "undefined", Undefined.instance,
             ScriptableObject.DONTENUM);
 
@@ -194,6 +194,18 @@ public class NativeGlobal implements Externalizable, IdFunctionCall
             }
             ctor.exportAsScopeProperty();
         }
+        // rickyn: This is the definition of the println method.
+        Js.defineProperty(scope, "println", new BaseFunction() {
+
+			@Override
+			public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
+				for (int i = 0; i < args.length; i++) {
+					System.out.print(args[i]);
+				}
+				System.out.println();
+				return null;
+			}}, ScriptableObject.DONTENUM);
+        // rickyn: End.
     }
 
     public Object execIdCall(IdFunctionObject f, Context cx, Scriptable scope,

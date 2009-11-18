@@ -67,10 +67,10 @@ final public class NativeMath extends IdScriptableObject
     {
         NativeMath obj = new NativeMath();
         obj.activatePrototypeMap(MAX_ID);
-        obj.setPrototype(getObjectPrototype(scope));
+        obj.setPrototype(Js.getObjectPrototype(scope));
         obj.setParentScope(scope);
         if (sealed) { obj.sealObject(); }
-        ScriptableObject.defineProperty(scope, "Math", obj,
+        Js.defineProperty(scope, "Math", obj,
                                         ScriptableObject.DONTENUM);
     }
 
@@ -274,7 +274,7 @@ break L0;} }
 
         LAST_METHOD_ID  = 8;
 
-    // Konstanten dürfen keine Operationen enthalten (Probleme mit Dotter v0.4)
+    // Konstanten dï¿½rfen keine Operationen enthalten (Probleme mit Dotter v0.4)
     private static final int
         Id_E            = 9,
         Id_PI           = 10,
