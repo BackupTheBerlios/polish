@@ -1,0 +1,8 @@
+
+Dependencies
+============
+
+- enough-polish-build
+- enough-polish-j2me
+- enough-polish-rhino
+- enough-skylight
