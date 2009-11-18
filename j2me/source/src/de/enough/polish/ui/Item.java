@@ -2921,12 +2921,18 @@ public abstract class Item implements UiElement, Animatable
 			setInitialized(true);
 			return;
 		}
-		
+		if (this.contentWidth > availableContentWidth) {
+			setContentWidth( availableContentWidth );
+		}
 		this.itemWidth = noneContentWidth + this.contentWidth;
 		//#ifdef polish.css.min-width
 			if (this.minimumWidth != null) {
 				if (this.itemWidth < this.minimumWidth.getValue(availWidth) ) {
-					int diff = this.minimumWidth.getValue(availWidth) - this.itemWidth;
+					int minWidth = this.minimumWidth.getValue(availWidth);
+					if (minWidth > availWidth) {
+						minWidth = availWidth;
+					}
+					int diff = minWidth - this.itemWidth;
 					this.itemWidth += diff;
 					setContentWidth( this.contentWidth + diff );
 				}
