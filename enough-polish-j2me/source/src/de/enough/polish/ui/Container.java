@@ -3668,6 +3668,8 @@ public class Container extends Item {
 	}
 	//#endif
 	
+	
+	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#getAbsoluteX()
 	 */
@@ -3682,6 +3684,18 @@ public class Container extends Item {
 	}
 	
 	
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#isInItemArea(int, int)
+	 */
+	public boolean isInItemArea(int relX, int relY) {
+		Item focItem = this.focusedItem;
+		if (focItem != null && focItem.isInItemArea(relX - focItem.relativeX, relY - focItem.relativeY)) {
+			return true;
+		}
+		return super.isInItemArea(relX, relY);
+	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#fireEvent(java.lang.String, java.lang.Object)
