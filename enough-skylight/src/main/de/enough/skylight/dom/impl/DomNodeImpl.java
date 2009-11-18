@@ -26,26 +26,27 @@ public abstract class DomNodeImpl implements DomNode {
 	private HashMap capturingListeners = new HashMap();
 	private HashMap bubblingListeners = new HashMap();
 
-	// TODO: init also all collection fields again and release all items in them.
-	public void init(DocumentImpl document, DomNodeImpl parent, String name, NamedNodeMapImpl attributes, int type) {
-		this.document = document;
-		this.parent = parent;
-		this.type = type;
-		this.childList = new NodeListImpl();
-		this.name = name;
-		if(attributes == null) {
-			this.attributes = new NamedNodeMapImpl();
+	public void addEventListener(String type, EventListener listener, boolean useCapture) {
+		if(useCapture) {
+			ArrayList listeners = (ArrayList) this.capturingListeners.get(type);
+			if(listeners == null) {
+				listeners = new ArrayList();
+				this.capturingListeners.put(type, listeners);
+			}
+			if( ! listeners.contains(listener)) {
+				listeners.add(listener);
+			}
 		} else {
-			this.attributes = attributes;
+			ArrayList listeners = (ArrayList) this.bubblingListeners.get(type);
+			if(listeners == null) {
+				listeners = new ArrayList();
+				this.bubblingListeners.put(type, listeners);
+			}
+			if( ! listeners.contains(listener)) {
+				listeners.add(listener);
+			}
 		}
-
-        if(this.parent != null) {
-            this.parent.doAppendChild(this);
-        }
-	}
-	
-	private void doAppendChild(DomNodeImpl childNode) {
-		this.childList.add(childNode);
+		
 	}
 	
 	public DomNode appendChild(DomNode newChild) throws DomException {
@@ -55,16 +56,18 @@ public abstract class DomNodeImpl implements DomNode {
 		newChildImpl.doSetParent(this);
 		return newChild;
 	}
-	private void doSetParent(DomNodeImpl domNodeImpl) {
-		this.parent = domNodeImpl;
-	}
+	
 	public DomNode cloneNode(boolean deep) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	public boolean dispatchEvent(Event event) throws EventException {
+		dispatchEventInteral((EventImpl)event,null);
+		return false;
+	}
 	public NamedNodeMap getAttributes() {
-		// TODO Auto-generated method stub
-		return null;
+		//TODO: Return a copy of the attributes so the list can not be changed.
+		return this.attributes;
 	}
 	public NodeList getChildNodes() {
 		return this.childList;
@@ -76,7 +79,10 @@ public abstract class DomNodeImpl implements DomNode {
 		return null;
 	}
 	public DomNode getLastChild() {
-		// TODO Auto-generated method stub
+		int length = this.childList.getLength();
+		if(length > 0) {
+			return this.childList.item(length-1);
+		}
 		return null;
 	}
 	public String getLocalName() {
@@ -114,12 +120,30 @@ public abstract class DomNodeImpl implements DomNode {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	public abstract Scriptable getScriptable();
 	public boolean hasAttributes() {
 		return this.attributes.getLength() > 0;
 	}
 	public boolean hasChildNodes() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	// TODO: init also all collection fields again and release all items in them.
+	public void init(DocumentImpl document, DomNodeImpl parent, String name, NamedNodeMapImpl attributes, int type) {
+		this.document = document;
+		this.parent = parent;
+		this.type = type;
+		this.childList = new NodeListImpl();
+		this.name = name;
+		if(attributes == null) {
+			this.attributes = new NamedNodeMapImpl();
+		} else {
+			this.attributes = attributes;
+		}
+
+        if(this.parent != null) {
+            this.parent.doAppendChild(this);
+        }
 	}
 	public DomNode insertBefore(DomNode newChild, DomNode refChild) throws DomException {
 		// TODO Auto-generated method stub
@@ -137,6 +161,27 @@ public abstract class DomNodeImpl implements DomNode {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	public void removeEventListener(String type, EventListener listener, boolean useCapture) {
+		if(useCapture) {
+			ArrayList listeners = (ArrayList) this.capturingListeners.get(type);
+			if(listeners == null) {
+				return;
+			}
+			listeners.remove(listener);
+			if(listeners.size() == 0) {
+				this.capturingListeners.remove(type);
+			}
+		} else {
+			ArrayList listeners = (ArrayList) this.bubblingListeners.get(type);
+			if(listeners == null) {
+				return;
+			}
+			listeners.remove(listener);
+			if(listeners.size() == 0) {
+				this.bubblingListeners.remove(type);
+			}
+		}
+	}
 	public DomNode replaceChild(DomNode newChild, DomNode oldChild) throws DomException {
 		this.childList.replace((DomNodeImpl)newChild, (DomNodeImpl)oldChild);
 		return oldChild;
@@ -144,6 +189,7 @@ public abstract class DomNodeImpl implements DomNode {
 	public void setNodeValue(String nodeValue) throws DomException {
 		this.value = nodeValue;
 	}
+	
 	public void setPrefix(String prefix) throws DomException {
 		// TODO Auto-generated method stub
 		
@@ -174,33 +220,16 @@ public abstract class DomNodeImpl implements DomNode {
 		buffer.append(">");
 	}
 	
-	public void addEventListener(String type, EventListener listener, boolean useCapture) {
-		if(useCapture) {
-			ArrayList listeners = (ArrayList) this.capturingListeners.get(type);
-			if(listeners == null) {
-				listeners = new ArrayList();
-				this.capturingListeners.put(type, listeners);
-			}
-			if( ! listeners.contains(listener)) {
-				listeners.add(listener);
-			}
-		} else {
-			ArrayList listeners = (ArrayList) this.bubblingListeners.get(type);
-			if(listeners == null) {
-				listeners = new ArrayList();
-				this.bubblingListeners.put(type, listeners);
-			}
-			if( ! listeners.contains(listener)) {
-				listeners.add(listener);
-			}
+	private NodeListImpl createEventChain(DomNodeImpl target) {
+		NodeListImpl nodeList = new NodeListImpl();
+		DomNodeImpl domNode = target;
+		while(domNode != null) {
+			nodeList.add(domNode);
+			domNode = domNode.parent;
 		}
-		
+		return nodeList;
 	}
-	public boolean dispatchEvent(Event event) throws EventException {
-		dispatchEventInteral((EventImpl)event,null);
-		return false;
-	}
-	
+
 	/**
 	 * This method will do the actual dispatch. If the nodeChain is empty, it will be calcuated. This normally happens
 	 * right after the inital dispatch.
@@ -244,43 +273,17 @@ public abstract class DomNodeImpl implements DomNode {
 			// The EventManager chould then be also threaded.
 		}
 	}
-
+	
+	private void doAppendChild(DomNodeImpl childNode) {
+		this.childList.add(childNode);
+	}
+	
 	private void doDefaultAction() {
 		
 	}
 	
-	private NodeListImpl createEventChain(DomNodeImpl target) {
-		NodeListImpl nodeList = new NodeListImpl();
-		DomNodeImpl domNode = target;
-		while(domNode != null) {
-			nodeList.add(domNode);
-			domNode = domNode.parent;
-		}
-		return nodeList;
+	private void doSetParent(DomNodeImpl domNodeImpl) {
+		this.parent = domNodeImpl;
 	}
-	
-	public void removeEventListener(String type, EventListener listener, boolean useCapture) {
-		if(useCapture) {
-			ArrayList listeners = (ArrayList) this.capturingListeners.get(type);
-			if(listeners == null) {
-				return;
-			}
-			listeners.remove(listener);
-			if(listeners.size() == 0) {
-				this.capturingListeners.remove(type);
-			}
-		} else {
-			ArrayList listeners = (ArrayList) this.bubblingListeners.get(type);
-			if(listeners == null) {
-				return;
-			}
-			listeners.remove(listener);
-			if(listeners.size() == 0) {
-				this.bubblingListeners.remove(type);
-			}
-		}
-	}
-	
-	public abstract Scriptable getScriptable();
 
 }
