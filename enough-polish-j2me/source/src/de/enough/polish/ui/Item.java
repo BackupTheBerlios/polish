@@ -2912,8 +2912,11 @@ public abstract class Item implements UiElement, Animatable
 		//#if polish.css.content-visible
 			}
 		//#endif
-		
-		if (this.contentWidth == 0 && this.contentHeight == 0) {
+			
+		int cWidth = this.contentWidth;
+		int cHeight = this.contentHeight;
+
+		if (cWidth == 0 && cHeight == 0) {
 			this.itemWidth = labelWidth;
 			this.itemHeight = labelHeight;
 			this.backgroundHeight = 0;
@@ -2921,10 +2924,10 @@ public abstract class Item implements UiElement, Animatable
 			setInitialized(true);
 			return;
 		}
-		if (this.contentWidth > availableContentWidth) {
-			setContentWidth( availableContentWidth );
+		if (cWidth > availableContentWidth) {
+			cWidth = availableContentWidth;
 		}
-		this.itemWidth = noneContentWidth + this.contentWidth;
+		this.itemWidth = noneContentWidth + cWidth;
 		//#ifdef polish.css.min-width
 			if (this.minimumWidth != null) {
 				if (this.itemWidth < this.minimumWidth.getValue(availWidth) ) {
@@ -2945,22 +2948,21 @@ public abstract class Item implements UiElement, Animatable
 				setContentWidth( this.contentWidth + diff );
 			}
 		//#endif
-		int cHeight = this.contentHeight;
 		//#ifdef polish.css.before
-			if (this.contentHeight < this.beforeHeight) {
+			if (cHeight < this.beforeHeight) {
 				cHeight = this.beforeHeight;
 			}
 		//#endif
 		//#ifdef polish.css.after
-			if (this.contentHeight < this.afterHeight) {
+			if (cHeight < this.afterHeight) {
 				cHeight = this.afterHeight;
 			}
 		//#endif
 		int noneContentHeight = this.marginTop + getBorderWidthTop() + this.paddingTop 
 			+ this.paddingBottom + getBorderWidthBottom() + this.marginBottom;
 		if ( this.isLayoutExpand ) {
-			if (this.contentWidth < availableContentWidth) {
-				this.itemWidth += availableContentWidth - this.contentWidth;
+			if (cWidth < availableContentWidth) {
+				this.itemWidth += availableContentWidth - cWidth;
 			}
 		} else if (this.itemWidth > availWidth) {
 			this.itemWidth = availWidth;
