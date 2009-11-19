@@ -4948,13 +4948,11 @@ implements UiElement, Animatable
 			}
 			Item item = getItemAt(x, y);
 			if (item != null) {
-				if (item instanceof CommandItem) {
-					CommandItem cmdItem = (CommandItem) item;
-					if (cmdItem.isOpen()) {
-						cmdItem.open(false);
-					}
-				}
+				int offset = getScrollYOffset();
 				focus(item);
+				if (offset != getScrollYOffset()) {
+					setScrollYOffset(offset, false );
+				}
 				notifyScreenStateChanged();
 			}
 			// stop scrolling:

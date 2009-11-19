@@ -200,6 +200,9 @@ public class FramedForm extends Form {
 			System.out.println("Ignoring focus for already focused item " + item);
 			return;
 		}
+		if (item.parent != null && item.parent.label == item) {
+            item = item.parent;
+        }
 		ArrayList children = new ArrayList();
 		while (item.parent != null) {
 			if (!(force || item.isInteractive())) {
