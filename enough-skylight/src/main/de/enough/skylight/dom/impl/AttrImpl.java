@@ -46,6 +46,16 @@ public class AttrImpl extends DomNodeImpl implements Attr {
 		return this.value;
 	}
 
+	
+	
+	@Override
+	/**
+	 * This method is not conform with the standard. But its nice to have one mechanism to access values.
+	 */
+	public String getNodeValue() throws DomException {
+		return this.value;
+	}
+
 	public void setValue(String value) throws DomException {
 		this.value = value;
 	}
