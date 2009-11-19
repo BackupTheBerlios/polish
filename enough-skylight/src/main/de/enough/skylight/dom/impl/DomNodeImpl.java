@@ -125,8 +125,7 @@ public abstract class DomNodeImpl implements DomNode {
 		return this.attributes.getLength() > 0;
 	}
 	public boolean hasChildNodes() {
-		// TODO Auto-generated method stub
-		return false;
+		return this.childList.getLength() > 0;
 	}
 	// TODO: init also all collection fields again and release all items in them.
 	public void init(DocumentImpl document, DomNodeImpl parent, String name, NamedNodeMapImpl attributes, int type) {
