@@ -31,7 +31,7 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 //#debug ovidiu
-import com.ovidiuiliescu.*;
+import de.enough.polish.benchmark.Benchmark;
 
 //#if polish.blackberry
 	import net.rim.device.api.ui.Field;
@@ -2359,7 +2359,7 @@ public abstract class Item implements UiElement, Animatable
 		//#endif
 
 		//#debug ovidiu
-		Timer.startTimer(0); 	
+		Benchmark.startSmartTimer("0");
 			
 		// initialise this item if necessary:
 		if (!this.isInitialized) {
@@ -2402,7 +2402,7 @@ public abstract class Item implements UiElement, Animatable
 					this.filterPaintNormally = false;
 				} 
 				//System.out.println("painting RGB data for " + this  + ", pixel=" + Integer.toHexString( rgbData[ rgbData.length / 2 ]));		
-				
+
 				for (int i=0; i<this.filters.length; i++) {
 					RgbFilter filter = this.filters[i];
 					rgbImage = filter.process(rgbImage);
@@ -2419,9 +2419,9 @@ public abstract class Item implements UiElement, Animatable
 				DrawUtil.drawRgb(rgbData, x, y, width, height, true, g );
 				
 				//#mdebug ovidiu
-				Timer.pauseTimer(0);
-				Timer.incrementTimer(1);
-				Timer.check(15000); // Output timer values every ~5 seconds.
+				Benchmark.pauseSmartTimer("0");
+				Benchmark.incrementSmartTimer("1");
+				Benchmark.check();
 				//#enddebug
 				
 				return;

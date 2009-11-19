@@ -191,7 +191,7 @@ public final class StyleSheet {
 				imagesByName = new Hashtable();
 			}
 			if (timer == null) {
-				timer = new Timer();
+				timer = new SmartTimer();
 			}
 			ImageTask task = new ImageTask( url );
 			timer.schedule( task, 10 );

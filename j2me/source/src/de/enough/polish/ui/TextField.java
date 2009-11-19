@@ -937,7 +937,7 @@ public class TextField extends StringItem
 			//So when key is pressed (e.g. '2') view goes to native mode and 'a' character is appended to the current text
 			private char passedChar;
 			//Timer responsible for checking delay between two, subsequent presses 
-			private final Timer keyDelayTimer = new Timer();
+			private final Timer keyDelayTimer = new SmartTimer();
 			private TimerTask keyDelayTimerTask = null;
 			//last time when button was pressed
 			private long lastTimeKeyPressed;

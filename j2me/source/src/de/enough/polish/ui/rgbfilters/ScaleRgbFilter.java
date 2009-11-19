@@ -27,7 +27,7 @@
 package de.enough.polish.ui.rgbfilters;
 
 //#debug ovidiu
-import com.ovidiuiliescu.*;
+import de.enough.polish.benchmark.Benchmark;
 
 import de.enough.polish.ui.Dimension;
 import de.enough.polish.ui.RgbFilter;

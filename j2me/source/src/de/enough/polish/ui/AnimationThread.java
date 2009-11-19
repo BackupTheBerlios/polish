@@ -33,7 +33,7 @@ import de.enough.polish.event.EventListener;
 import de.enough.polish.event.EventManager;
 
 //#debug ovidiu
-import com.ovidiuiliescu.*;
+import de.enough.polish.benchmark.Benchmark;
 
 import de.enough.polish.util.ArrayList;
 
@@ -132,9 +132,9 @@ public class AnimationThread extends Thread
 //		int animationCounter = 0;
 		while ( true ) {
 			//#mdebug ovidiu
-				Timer.startTimer(6);
-				Timer.incrementTimer(5);
-				Timer.check(15000);
+				Benchmark.startSmartTimer("6");
+				Benchmark.incrementSmartTimer("5");
+				Benchmark.check();
 			//#enddebug
 			try {
 				Screen screen = StyleSheet.currentScreen;
@@ -148,13 +148,13 @@ public class AnimationThread extends Thread
 					if ( (currentTime - screen.lastInteractionTime) < ANIMATION_TIMEOUT ) {
 
 						//#debug ovidiu
-						Timer.startTimer(7);
+						Benchmark.startSmartTimer("7");
 
 						screen.animate( currentTime, repaintRegion );
 
 						//#mdebug ovidiu
-						Timer.pauseTimer(7);
-						Timer.incrementTimer(8);
+						Benchmark.pauseSmartTimer("7");
+						Benchmark.incrementSmartTimer("8");
 						//#enddebug
 
 
@@ -169,13 +169,13 @@ public class AnimationThread extends Thread
 								//System.out.println("animating " + animatable);
 
 								//#debug ovidiu
-								Timer.startTimer(7);
+								Benchmark.startSmartTimer("7");
 
 								animatable.animate(currentTime, repaintRegion);
 
 								//#mdebug ovidiu
-								Timer.pauseTimer(7);
-								Timer.incrementTimer(8);
+								Benchmark.pauseSmartTimer("7");
+								Benchmark.incrementSmartTimer("8");
 								//#enddebug
 
 								//#debug repaint
@@ -184,7 +184,7 @@ public class AnimationThread extends Thread
 						}
 
 						//#debug ovidiu
-						Timer.startTimer(9);
+						Benchmark.startSmartTimer("9");
 
 						if (repaintRegion.containsRegion()) {
 							//#debug repaint
@@ -204,7 +204,7 @@ public class AnimationThread extends Thread
 						}
 
 						//#debug ovidiu
-						Timer.pauseTimer(9);
+						Benchmark.pauseSmartTimer("9");
 
 						//#if polish.Animation.fireIdleEvents
 							if (sleeptime == SLEEP_INTERVAL) {
@@ -224,8 +224,8 @@ public class AnimationThread extends Thread
 						//#endif
 
 						//#mdebug ovidiu
-						Timer.pauseTimer(6);
-						Timer.check(15000);
+						Benchmark.pauseSmartTimer("6");
+						Benchmark.check();
 						//#enddebug
 
 						continue;
@@ -240,14 +240,14 @@ public class AnimationThread extends Thread
 
 					if(sleeptime == ANIMATION_YIELD_INTERVAL) {
 						//#mdebug ovidiu
-						Timer.pauseTimer(6);
-						Timer.check(15000);
+						Benchmark.pauseSmartTimer("6");
+						Benchmark.check();
 						//#enddebug
 						Thread.yield();
 					} else {
 						//#mdebug ovidiu
-						Timer.pauseTimer(6);
-						Timer.check(15000);
+						Benchmark.pauseSmartTimer("6");
+						Benchmark.check();
 						//#enddebug
 						Thread.sleep(sleeptime);
 					}
@@ -268,8 +268,8 @@ public class AnimationThread extends Thread
 			}
 
 			//#mdebug ovidiu
-			Timer.pauseTimer(6);
-			Timer.check(15000);
+			Benchmark.pauseSmartTimer("6");
+			Benchmark.check();
 			//#enddebug
 		}
 
