@@ -192,4 +192,36 @@ and rerun the build process. If the error occurs again, increase the settings fo
 	problems, please either use the library in source code or ask the vendor of the library to provide a version without overloaded variable names. 
 </p>
 
+<h3 id="android-troubleshooting-packagehierarchy">Error: Missing argument for flag --package.</h3>
+<p>
+The problem:
+</p>
+<pre>
+[j2mepolish] Invoking precompiler [de.enough.polish.android.AndroidPreCompiler]... 
+[j2mepolish] android: Usage: 
+[j2mepolish] android: Error: Missing argument for flag --package. 
+[j2mepolish] android: android [global options] action [action options] 
+[j2mepolish] android: Global options: 
+[j2mepolish] android: -h --help This help. 
+[j2mepolish] android: -s --silent Silent mode: only errors are printed out. 
+[j2mepolish] android: -v --verbose Verbose mode: errors, warnings and informational messages are printed. 
+[j2mepolish] android: Action "create project": 
+[j2mepolish] android: Creates a new Android Project. 
+[j2mepolish] android: Options: 
+[j2mepolish] android: -k --package Package name [required] 
+[j2mepolish] android: -n --name Project name 
+[j2mepolish] android: -a --activity Activity name [required] 
+[j2mepolish] android: -t --target Target id of the new project [required] 
+[j2mepolish] android: -p --path Location path of new project [required] 
+
+BUILD FAILED 
+C:\somewhere\build.xml:92: Unable to create activity / project: android returned 1
+</pre>
+<p>
+The solution: Your MIDlet needs a package hierarchy of at least two. Add a package definition to your MIDlet file like this:
+</p>
+<pre>
+package foo.bar;
+</pre>
+
 <%include end.txt %>

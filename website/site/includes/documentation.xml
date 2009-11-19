@@ -10,8 +10,10 @@
 			<page file="mepose.html" title="Eclipse">
 				<page file="mepose-features.html" title="Features" />
 				<page file="mepose-install.html" title="Installation" />
+				<!--
 				<page file="mepose-wizard.html" title="Creating Projects" />
 				<page file="mepose-convert.html" title="Converting Projects" />
+				-->
 				<page file="mepose-running.html" title="Running and Debugging" />
 			</page>
 		</page>

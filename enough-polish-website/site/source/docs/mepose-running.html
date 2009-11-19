@@ -8,45 +8,24 @@
 
 <h1 id="top">Running and Debugging a J2ME Polish Project</h1>
 <%index %>
-<p>You can run and debug your MIDlets just by right-clicking your project and choose &quot;Debug As.../J2ME Polish MIDlet&quot; or &quot;Run As.../J2ME Polish MIDlet&quot;.
-</p>
-<h2 id="details">Detailed Debugging/Running Guide</h2>
-<p>
-Open a midlet with the J2ME Polish Editor.
-</p>
-
-<img src="../images/mepose-run_01_openEditor.png" />
-
-<p>
-Choose a target device with the drop down box in the upper right hand side.
-</p>
-
-<img src="../images/mepose-run_03_chooseDevice.png" />
-
-<p>
-Set breakpoints in the code. (v0.7.x: left-clicking the margin does not work. Use right-click and "Toogle Breakpoint" instead.)
-</p>
-
-<img src="../images/mepose-run_04_breakpointSet.png" />
-
-<p>
-Choose &quot;Debug As.../J2ME Polish MIDlet&quot;. In case you just want to launch the emulator, choose &quot;Run As.../J2ME Polish MIDlet&quot;.
-</p>
-
-<img src="../images/mepose-run_05_chooseDebug.png" />
-
-<p>
-The emulator is now starting up and the debugger is connected. If the running midlet hits the breakpoint the source in question is displayed.
-</p>
-
-<img src="../images/mepose-run_07_breakpointHit.png" />
+<div class="screenshots">
+    <div class="screenshot">
+        <div class="screenshot_description">Create a J2ME Polish launch configuration by selecting &quot;Run/Run Configurations...&quot; and then &quot;J2ME Polish&quot;</div>
+        <div class="screenshot_image"><img src="../images/mepose_run_01.png" alt="A J2ME Polish launch configuration" /></div>
+    </div>
+    
+    <div class="screenshot">
+        <div class="screenshot_description">Select the devices you want to build for. You can filter the list of devices by the platform and supported APIs.<p>Then launch!</p></div>
+        <div class="screenshot_image"><img src="../images/mepose_run_03.png" alt="The device chooser" /></div>
+    </div>
+</div>
 
 <p>
 <em>Happy debugging!</em>
 </p>
 
 <h2 id="troubleshooting">Troubleshooting Debugging</h2>
-<p>In case you have trouble with the debugging, please check your debugging preferences in Eclipse (Window &gt; Preferences).</p>
+<p>In case you have trouble with the debugging, please check your debugging preferences in Eclipse (Window/Preferences).</p>
 
 <p>
 Go to the &quot;Debug&quot; panel and uncheck the item &quot;Suspend execution on uncaugt exceptions&quot;.

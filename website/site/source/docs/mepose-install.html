@@ -8,133 +8,80 @@
 
 <h1 id="top">Installing Mepose</h1>
 	<%index %>
+	
 <h2 id="prequisites">Prerequisites</h2>
 <p>You need the following components on your system:</p>
 <ul>
-	<li>Eclipse 3.2 
+	<li>Eclipse 3.2 or higher
 	<a href="http://www.eclipse.org" target="_blank">http://www.eclipse.org</a>
-	<br/>Note: Eclipse 3.1.x is NOT supported.
 	</li>
 	<li>J2ME Polish 2.0 or higher
 	<a href="../download.html">http://www.j2mepolish.org</a>
 	</li>
-	<li>Sun Java Wireless Toolkit, 
-	<a href="http://java.sun.com/products/sjwtoolkit/index.html" target="_blank">http://java.sun.com/products/sjwtoolkit/index.html</a> (for Windows and Linux),
-	<br/>
-	or the Mobile Power Player SDK <a href="http://mpowerplayer.com/" target="_blank">http://mpowerplayer.com</a> (for Mac OS X)	
-	</li>
-	<li>Java 2 Standard Edition SDK 1.4  or higher, 
-	<a href="http://java.sun.com/j2se/" target="_blank">http://java.sun.com/j2se/</a>
+	<li>A device emulator
+	<table id="emulators">
+	   <tr>
+	       <td>for Windows and Linux</td>
+	       <td>Sun Java Wireless Toolkit<br />
+                <a href="http://java.sun.com/products/sjwtoolkit/index.html" target="_blank">http://java.sun.com/products/sjwtoolkit/index.html</a></td>
+	   </tr>
+       <tr>
+	       <td>for Mac OSX</td>
+	       <td>Mobile Power Player SDK<br/>
+	           <a href="http://mpowerplayer.com/" target="_blank">http://mpowerplayer.com</a></td>
+	   </tr>
+	</table>
 	</li>
 </ul>
 
-<h2 id="j2mepolishinstaller">Installing with the J2ME Polish Installer</h2>
-	<p>
-	During the installation of J2ME Polish you can specify the installation directory of Eclipse by setting the <code>eclipse.home</code> property correctly 
+<h2 id="j2mepolishinstaller">Using the J2ME Polish Installer</h2>
+<div class="screenshots">
+
+    <div class="screenshot">
+	<div class="screenshot_description">
+	During the installation of J2ME Polish you can specify the installation directory of Eclipse by setting the <code>eclipse.home</code> property
 	in the Paths dialog:
-		<br/>
-		<img src="../images/mepose-install-eclipsehome-eclipsehomeonly.png" alt="Specify where to find Eclipse" />	
-		<br/>
-		<img src="../images/mepose-install-eclipsehome.png" alt="Specify where to find Eclipse" />
-	</p>
-	<p>
-	Then select to install the Eclipse integration:
-	<br/>
-	<img src="../images/mepose-install-selectpackage-packageonly.png" alt="Select to install the Eclipse integration" />	
-	<br/>
-	<img src="../images/mepose-install-selectpackage.png" alt="Select to install the Eclipse integration" />	
-	</p>
-	<p>
-	You can now use Mepose after restarting Eclipse.
-	</p>
+	</div>
+    <div class="screenshot_image"><img src="../images/mepose-install-eclipsehome.png" alt="Specify where to find Eclipse" /></div>
+    </div>
+    
+	<div class="screenshot">
+	<div class="screenshot_description">
+	On the next page, select 'Eclipse integration' by ticking the corresponding checkbox:
+	</div>
+	<div  class="screenshot_image"><img src="../images/mepose-install-selectpackage.png" alt="Select to install the Eclipse integration" /></div>
+    </div>
 
-<h2 id="installoverview">Update Manager Overview</h2>
-<p>Installing Mepose, the J2ME Polish Eclipse integration, is pretty much straight forward:</p>
-<ul>
-	<li>In the menu under &quot;Help / Software Updates / Find and Install&quot; add a new remote site with http://www.j2mepolish.org/mepose as the URL. Just follow the steps for the installation of Mepose.</li>
-	<li>Open Window Preferences to make 2 adjustments:</li>
-	<ol>
-		<li>Go to the &quot;Debug&quot; panel and uncheck the item &quot;Suspend execution on uncaugt exceptions&quot;.</li>
-		<li>Locate the &quot;Installation&quot; panel within the J2ME Polish menu and enter at least the J2ME Polish installation directory and the WTK installation directory.</li>
-	</ol>
-</ul>
-<p>Detailed information for these steps are given below.</p>
+</div>
 
-<h2 id="installdetails">Installing Mepose</h2>
-<p>
-You need Eclipse 3.2+ to get this thing to work. Let's start.
-</p>
+<h2 id="installdetails">Using the Eclipse Update Manager</h2>
+<div class="screenshots">
 
-<img src="../images/mepose-install-eclipsehome-eclipsehomeonly.png" />
+    <div class="screenshot">
+        <div class="screenshot_description">Open the update manager from the menu with "Help/Install New Software...".</div>
+        <div class="screenshot_image"><img src="../images/mepose_install_01.png" alt="The update manager"/></div>
+    </div>
 
-<p>
-Open the update manager from the menu with "Help/Software Updates/Find and Install...".
-</p>
+    <div class="screenshot">
+        <div class="screenshot_description">Enter the URL <a href="http://www.j2mepolish.org/mepose">http://www.j2mepolish.org/mepose</a> as an update site.</div>
+        <div class="screenshot_image"><img src="../images/mepose_install_02.png" alt="Enter the url in the manager"/></div>
+    </div>
 
-<img src="../images/mepose-install_02_menuOpen.png" />
+    <div class="screenshot">
+        <div class="screenshot_description">Choose the Mepose Feature. Click &quot;Next&quot; and follow the steps of the wizard to finish the installation.</div>
+        <div class="screenshot_image"><img src="../images/mepose_install_03.png" alt="Select the Mepose feature"/></div>
+    </div>
+</div>
 
-<p>
-Choose "Search for new features to install" from the dialog.
-</p>
-
-<img src="../images/mepose-install_03_searchFeature.png" />
-
-<p>
-Hit the button "New Remote Site..." and enter a name for the new update site (there are no restrictions on this name) and the URL <a href="http://www.j2mepolish.org/mepose">http://www.j2mepolish.org/mepose</a>.
-</p>
-
-<img src="../images/mepose-install_04_enterRemoteSite.png" />
-
-<p>
-Than select the newly created update site and hit "Finish".
-</p>
-
-<img src="../images/mepose-install_05_remoteSiteEntered.png" />
-
-<p>
-Choose the Mepose Feature and click "Next".
-</p>
-
-<img src="../images/mepose-install_06_searchResults.png" />
-
-<p>
-Make a mark that you accept the license agreement and click "Next".
-</p>
-
-<img src="../images/mepose-install_07_licenseAgreement.png" />
-
-<p>
-If you want you can alter now the location the plugin will be installed into. Leave the page by clicking "Finish".
-</p>
-
-<img src="../images/mepose-install_08_startInstallation.png" />
-
-<p>
-Click "Install All" to confirm that you want to install this unsigned feature.
-</p>
-
-<img src="../images/mepose-install_09_verification.png" />
-
-<p>
-The plugin itself is now installed. To set it up go to the preference page.
-</p>
-
-<img src="../images/mepose-install_10_preferencePage.png" />
-
-<p>
-Now make two adjustments. Go to the &quot;Debug&quot; panel and uncheck the item &quot;Suspend execution on uncaugt exceptions&quot;.
-</p>
-
-<img src="../images/mepose-install_11_debugPreferences.png" />
-
-<p>
-Locate the &quot;Installation&quot; panel within the J2ME Polish menu and enter at least the J2ME Polish installation directory and the WTK installation directory.
-</p>
-
-<img src="../images/mepose-install_11_pathPreferences.png" />
+<h2 id="settingupeclipse">Setting up Eclipse</h2>
+    <div class="screenshots">
+        <div class="screenshot">
+            <div class="screenshot_description">Open Window Preferences and go to the &quot;Debug&quot; panel. Uncheck the item &quot;Suspend execution on uncaugt exceptions&quot;</div>
+            <div class="screenshot_image"><img src="../images/mepose-install_11_debugPreferences.png" alt="The debug preferences" /></div>
+        </div>
+    </div>
 
 <p>
 <em>The installation is done!</em>
 </p>
-
 <%include end.txt %>

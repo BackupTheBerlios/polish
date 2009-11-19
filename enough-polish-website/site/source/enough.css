@@ -604,6 +604,37 @@ tr th {
 	background-color: white;
 }
 
+#emulators td{
+	vertical-align:top;
+}
+
+.twoColumTable td{
+	vertical-align:top;
+    padding-top:0px;	
+}
+
+.screenshots{
+    display:table
+}
+
+.screenshot{
+	display:table-row;
+}
+
+.screenshot_image {
+	width:500px;
+	display:table-cell;
+	vertical-align:top;
+}
+
+.screenshot_image img{
+	width:500px;
+}
+
+.screenshot_description{
+	display:table-cell;
+	vertical-align:top;
+}
 
 
 																/* >>> END <<< */
