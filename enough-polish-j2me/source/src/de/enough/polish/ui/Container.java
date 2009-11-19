@@ -2987,7 +2987,9 @@ public class Container extends Item {
 			//#debug
 			System.out.println("Container.handlePointerPressed(" + relX + "," + relY + "): found item " + i + "=" + item + " at relative " + itemRelX + "," + itemRelY + ", itemHeight=" + item.itemHeight);
 			// only focus the item when it has not been focused already:
+			int offset = getScrollYOffset();
 			focusChild(i, item, 0, true);
+			setScrollYOffset( offset, false ); // don't move the UI while handling the press event:
 			// let the item also handle the pointer-pressing event:
 			item.handlePointerPressed( itemRelX , itemRelY );
 			if (!this.isFocused) {
