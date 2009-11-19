@@ -286,4 +286,32 @@ public abstract class DomNodeImpl implements DomNode {
 		this.parent = domNodeImpl;
 	}
 
+	@Override
+	public String toString() {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append(getTypeName());
+		if(this.name != null) {
+			buffer.append(":");
+			buffer.append(this.name);
+		}
+		if(this.value != null) {
+			buffer.append(";");
+			buffer.append(this.value);
+		}
+		return buffer.toString();
+	}
+
+	protected String getTypeName() {
+		switch(this.type) {
+		case DomNode.ELEMENT_NODE: return "Element";
+		case DomNode.TEXT_NODE: return "Text";
+		case DomNode.DOCUMENT_NODE: return "Document";
+		case DomNode.COMMENT_NODE: return "Comment";
+		case DomNode.ATTRIBUTE_NODE: return "Attribute";
+		case DomNode.CDATA_SECTION_NODE: return "CDData";
+		case DomNode.PROCESSING_INSTRUCTION_NODE: return "Processing Instruction";
+		default: throw new IllegalStateException("The DomNode type '"+this.type+"' is unknown.");
+		}
+	}
+	
 }
