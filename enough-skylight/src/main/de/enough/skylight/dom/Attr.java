@@ -1,6 +1,6 @@
 package de.enough.skylight.dom;
 
-public interface Attr {
+public interface Attr extends DomNode{
 
 	/**
      * Returns the name of this attribute. If <code>Node.localName</code> is 
