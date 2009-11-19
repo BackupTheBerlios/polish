@@ -36,7 +36,7 @@ import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
 //#debug ovidiu
-import com.ovidiuiliescu.*;
+import de.enough.polish.benchmark.Benchmark;
 
 import de.enough.polish.util.DeviceControl;
 import de.enough.polish.util.Locale; 
@@ -59,34 +59,37 @@ import de.enough.polish.util.Debug;
 public class MenuMidlet extends MIDlet implements CommandListener {
 	
 	//#debug ovidiu
-	public static Timer myTimer = new Timer(50);
+	//public static Timer myTimer = new SmartTimer(50);
 	
-	List menuScreen; 
+	List menuScreen;
 	Command startGameCmd = new Command( Locale.get( "cmd.StartGame" ), Command.ITEM, 8 );
 	Command quitCmd = new Command( Locale.get("cmd.Quit"), Command.EXIT, 10 );
-	//#ifdef polish.debugEnabled
-		Command showLogCmd = new Command( Locale.get("cmd.ShowLog"), Command.ITEM, 9 );
-	//#endif
-	Display display;
+	Command showLogCmd = new Command( Locale.get("cmd.ShowLog"), Command.ITEM, 9 );
+
+	Display display; 
 	
 	
 	public MenuMidlet() {
-		super();
+		super(); 
 		
 		//#mdebug ovidiu
+                System.out.println("OVIDIU");
 		// Set the timer descriptions
-		myTimer.setDescription(0, "Time spent in item.paint()");
-		myTimer.setDescription(1, "No. of calls to item.paint()");
-		myTimer.setDescription(2, "Time spent in GaussianBlur.process()");
-		myTimer.setDescription(3, "No. of calls to GaussianBlur.process()");
-		myTimer.setDescription(4, "Time spent pixel crunching in GaussianBlur.process()");
-		myTimer.setDescription(5, "No. of calls to AnimationThread.run()");
-		myTimer.setDescription(6, "Time spent in AnimationThread.run()");
-		myTimer.setDescription(7, "Time spent in AnimationThread.run().animatable.animate()");
-		myTimer.setDescription(8, "No. of calls to AnimationThread.run().animatable.animate()");
-		myTimer.setDescription(9, "Time spent repainting stuff in AnimationThread.run()");
+		Benchmark.setSmartTimerDescription("0", "Time spent in item.paint()");
+		Benchmark.setSmartTimerDescription("1", "No. of calls to item.paint()");
+		Benchmark.setSmartTimerDescription("2", "Time spent in GaussianBlur.process()");
+		Benchmark.setSmartTimerDescription("3", "No. of calls to GaussianBlur.process()");
+		Benchmark.setSmartTimerDescription("4", "Time spent pixel crunching in GaussianBlur.process()");
+		Benchmark.setSmartTimerDescription("5", "No. of calls to AnimationThread.run()");
+		Benchmark.setSmartTimerDescription("6", "Time spent in AnimationThread.run()");
+		Benchmark.setSmartTimerDescription("7", "Time spent in AnimationThread.run().animatable.animate()");
+		Benchmark.setSmartTimerDescription("8", "No. of calls to AnimationThread.run().animatable.animate()");
+		Benchmark.setSmartTimerDescription("9", "Time spent repainting stuff in AnimationThread.run()");
+
+                // Set the timer interval
+                Benchmark.setSmartTimerCheckInterval(15000);
 		//#enddebug
-		
+                
 		//#ifdef title:defined
 			//#= String title = "${ title }";
 		//#else
@@ -112,9 +115,7 @@ public class MenuMidlet extends MIDlet implements CommandListener {
 		this.menuScreen.setCommandListener(this);
 		this.menuScreen.addCommand( this.startGameCmd ); 
 		this.menuScreen.addCommand( this.quitCmd );
-		//#ifdef polish.debugEnabled
-			this.menuScreen.addCommand( this.showLogCmd );
-		//#endif
+                this.menuScreen.addCommand( this.showLogCmd );
 		
 		// You can also use further localization features like the following: 
 		//System.out.println("Today is " + Locale.formatDate( System.currentTimeMillis() ));
@@ -150,7 +151,9 @@ public class MenuMidlet extends MIDlet implements CommandListener {
 		if (screen == this.menuScreen) {
 			//#ifdef polish.debugEnabled
 				if (cmd == this.showLogCmd ) {
-					myTimer.haltOutput();
+
+                                        //#debug ovidiu
+					Benchmark.haltOutput();
 					Debug.showLog(this.display);
 					return;
 				}
