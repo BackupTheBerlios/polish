@@ -2,6 +2,9 @@ text {
 	font: fnt_text;
 }
 
+h1 {
+	font: fnt_h1;
+}
 
 input_text {
 	font: fnt_input_text;

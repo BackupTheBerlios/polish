@@ -10,6 +10,12 @@ fonts {
 		style: normal;
 	}
 	
+	fnt_h1 {
+		size: large;
+		color: text;
+		style: bold;
+	}
+	
 	fnt_input_text {
 		size: medium;
 		color: text;
