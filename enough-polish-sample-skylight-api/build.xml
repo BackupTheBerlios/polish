@@ -3,6 +3,10 @@
 	default="j2mepolish">
 	
 	<property file="${user.name}.properties" />
+	
+	<!-- Default values for properties -->
+	<property name="rhino.home" value="../enough-polish-rhino" />
+	<property name="skylight.home" value="../enough-skylight" />
 
 	<taskdef name="j2mepolish" 
 		classname="de.enough.polish.ant.PolishTask" 
@@ -54,7 +58,9 @@
 				    <source dir="${skylight.home}/src/main" />
 				    <source dir="${rhino.home}/source/src" />
 				</sources>
-				<debug if="test" showLogOnError="true" verbose="true" level="error"/>
+				<debug if="test" showLogOnError="true" verbose="true" level="error">
+					<!--<filter pattern="de.enough.polish.android.midlet.*" level="debug" />-->
+				</debug>
 			</build>
 			<emulator wait="true" securityDomain="trusted" enableProfiler="false" enableMemoryMonitor="false" enableNetworkMonitor="false" if="test and not debug">
 				<parameter name="-Xheapsize" value="5M" />
