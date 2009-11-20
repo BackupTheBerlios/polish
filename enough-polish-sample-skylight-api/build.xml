@@ -30,7 +30,6 @@
 				symbols=""
 				fullscreen="menu"
 				usePolishGui="true"
-				workDir="${dir.work}"
 			>
 				<postcompiler name="java5" />
 				<midlet class="de.enough.polish.skylight.test.Test" name="SkylightTest" />
@@ -43,17 +42,17 @@
 						<locale name="de" encoding="UTF8"/>
 					</localization>
 					
-					<root dir="/resources/style/base"/>
-					<root dir="/resources/style/common"/>
-					<root dir="/resources/style/node"/>
+					<root dir="${skylight.home}/resources/style/base"/>
+					<root dir="${skylight.home}/resources/style/common"/>
+					<root dir="${skylight.home}/resources/style/node"/>
 					
-					<root dir="/resources/locales"/>
-					<root dir="/resources/test"/>
+					<root dir="${skylight.home}/resources/locales"/>
+					<root dir="${skylight.home}/resources/test"/>
 				</resources>
 				<sources>
 				    <source dir="src" />
-				    <source dir="${skylight.common.home}/src/main" />
-				    <source dir="${skylight.rhino.home}/source/src" />
+				    <source dir="${skylight.home}/src/main" />
+				    <source dir="${rhino.home}/source/src" />
 				</sources>
 				<debug if="test" showLogOnError="true" verbose="true" level="error"/>
 			</build>
