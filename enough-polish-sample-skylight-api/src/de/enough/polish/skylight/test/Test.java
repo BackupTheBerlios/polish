@@ -3,9 +3,9 @@ package de.enough.polish.skylight.test;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
-import de.enough.polish.skylight.renderer.Browser;
 import de.enough.polish.ui.Display;
 import de.enough.polish.ui.Form;
+import de.enough.skylight.renderer.Browser;
 
 public class Test extends MIDlet{
 
@@ -20,9 +20,7 @@ public class Test extends MIDlet{
 		form.append(browserItem);
 		Display.getDisplay(this).setCurrent(form);
 		
-		
 		browserItem.setUrl("file:///appointments.html");
-		//browserItem.setUrl("http://download.j2mepolish.org/daily/");
 	}
 
 }
