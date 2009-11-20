@@ -1,0 +1,31 @@
+colors {
+	text: black;
+	border: #E8E8E8;
+}
+
+fonts {
+	fnt_text {
+		size: medium;
+		color: text;
+		style: normal;
+	}
+	
+	fnt_h1 {
+		size: large;
+		color: text;
+		style: bold;
+	}
+	
+	fnt_input_text {
+		size: medium;
+		color: text;
+		style: normal;
+	}
+}
+
+borders {
+	bdr_input_text {
+		color: border;
+		width: 1;
+	}
+}
