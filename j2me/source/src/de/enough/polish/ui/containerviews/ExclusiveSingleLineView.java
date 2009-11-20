@@ -472,15 +472,32 @@ public class ExclusiveSingleLineView extends ContainerView {
 		if (y < 0 || y > this.contentHeight ) {
 			return false;
 		}
+        x -= this.parentContainer.getContentX();
 		Item[] items = this.parentContainer.getItems();
 		this.currentItem.select( false );
 		int index = this.currentItemIndex;
-		if ( (index > 0 || this.allowRoundTrip) && x >= this.leftArrowStartX  && x <= this.leftArrowEndX ) {
+		if ( (index > 0 || this.allowRoundTrip) && 
+			 (	
+				//#ifdef polish.css.exclusiveview-arrow-position
+					 (
+							 (this.arrowPosition == POSITION_BOTH_SIDES) &&
+				//#endif
+					 (x < this.contentWidth / 2)
+				//#ifdef polish.css.exclusiveview-arrow-position
+					 ) 
+					 || 	(x >= this.leftArrowStartX  && x <= this.leftArrowEndX) 
+				//#endif
+			 ) 
+		) {
 			index--;
 			if (index < 0) {
 				index = items.length - 1;
 			}
-		} else if (! (x >= this.leftArrowStartX  && x <= this.leftArrowEndX && index > 0)) {
+		} else 
+			//#ifdef polish.css.exclusiveview-arrow-position
+				if (! (x >= this.leftArrowStartX  && x <= this.leftArrowEndX && index > 0))
+			//#endif
+		{
 			index = ( index + 1) % items.length;
 		}
 		this.currentItemIndex = index;
