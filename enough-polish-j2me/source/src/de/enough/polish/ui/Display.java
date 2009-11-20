@@ -1044,16 +1044,16 @@ public class Display
 							height = getScreenHeight();
 						}
 						//#if polish.blackberry && polish.hasPointerEvents
-		                    if (nextScreen != null) {
-		                        if (height < this.bbMaxScreenHeight) {
-		                            if (nextScreen.getCurrentItem() == null || nextScreen.getCurrentItem()._bbField == null) {
-		                            height = this.bbMaxScreenHeight;
-		                            nextScreen.sizeChanged( width, height );
-		                        }
-		                        } else if (nextScreen.getCurrentItem() != null && nextScreen.getCurrentItem()._bbField != null) {
-		                            nextScreen.sizeChanged( width, this.bbMinScreenHeight );
-		                        }
-		                    }
+							if (nextScreen != null) {
+								if (height < this.bbMaxScreenHeight) {
+									if (nextScreen.getCurrentItem() == null || nextScreen.getCurrentItem()._bbField == null) {
+										height = this.bbMaxScreenHeight;
+										nextScreen.sizeChanged( width, height );
+									}
+								} else if (nextScreen.getCurrentItem() != null && nextScreen.getCurrentItem()._bbField != null) {
+									nextScreen.sizeChanged( width, this.bbMinScreenHeight );
+								}
+							}
 						//#endif
 						this.currentDisplayable = nextDisplayable;
 						screenAnimation.onShow( screenstyle, this, width, height, lastDisplayable, nextDisplayable, isForwardAnimation );

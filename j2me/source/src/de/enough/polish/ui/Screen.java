@@ -5688,7 +5688,16 @@ implements UiElement, Animatable
 	 * @return the fully available height.
 	 */
 	public int getScreenFullHeight() {
-		return Display.getScreenHeight();
+		int height;
+		//#ifdef tmp.menuFullScreen
+			height = this.fullScreenHeight;
+		//#else
+			height = this.screenHeight;
+		//#endif
+		if (height == 0) {
+			height = Display.getScreenHeight();
+		}
+		return height;
 	}
 	
 	/**
