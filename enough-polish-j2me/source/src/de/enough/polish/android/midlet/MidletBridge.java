@@ -773,6 +773,17 @@ public class MidletBridge extends Activity {
 		//#endif
 	}
 	
+	
+	/**
+	 * Determines whether the softkeyboard is currently shown
+	 * @return true when the virtual keyboard is shown
+	 */
+	public boolean isSoftKeyboadShown() {
+		// TODO ricky implement isSoftKeyboadShown
+		return this.isSoftkeyboardOpen;
+	}
+
+	
 	private Screen getCurrentScreen() {
 		Display display = Display.getInstance();
 		if (display == null) {

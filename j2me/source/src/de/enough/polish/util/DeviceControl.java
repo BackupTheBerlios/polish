@@ -230,6 +230,8 @@ public class DeviceControl
 
 	/**
 	 * Shows the softkeyboard if the device supports it. This method is only supported on the Android platform at the moment.
+	 * @see #hideSoftKeyboard()
+	 * @see #isSoftKeyboardShown()
 	 */
 	public static void showSoftKeyboard() {
 		//#if polish.android1.5
@@ -241,6 +243,8 @@ public class DeviceControl
 	
 	/**
 	 * Hides the softkeyboard if the device supports it. This method is only supported on the Android platform at the moment.
+	 * @see #showSoftKeyboard()
+	 * @see #isSoftKeyboardShown()
 	 */
 	public static void hideSoftKeyboard() {
 		//#if polish.android1.5
@@ -248,6 +252,23 @@ public class DeviceControl
 		//#elif polish.blackberry && polish.hasPointerEvents && polish.usePolishGui
 			((BaseScreen)(Object)Display.getInstance()).getVirtualKeyboard().setVisibility( VirtualKeyboard.HIDE );
 		//#endif
+	}
+	
+	/**
+	 * Checks is a virtual keyboard is currently shown.
+	 * @return true when a virtual keyboard is supported and visible at the moment
+	 * @see #showSoftKeyboard()
+	 * @see #hideSoftKeyboard()
+	 */
+	public static boolean isSoftKeyboardShown() {
+		boolean result = false;
+		//#if polish.android1.5
+			result = MidletBridge.instance.isSoftKeyboadShown();
+		//#elif polish.blackberry && polish.hasPointerEvents && polish.usePolishGui
+			int visibility = ((BaseScreen)(Object)Display.getInstance()).getVirtualKeyboard().getVisibility();
+			result = (visibility ==  VirtualKeyboard.SHOW) || (visibility ==  VirtualKeyboard.SHOW_FORCE);
+		//#endif
+		return result;
 	}
 	
 	//#if polish.android
