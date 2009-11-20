@@ -1,12 +1,14 @@
 package de.enough.skylight.renderer.builder;
 
 import de.enough.polish.ui.Container;
+import de.enough.polish.ui.Style;
 import de.enough.skylight.dom.Document;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.NodeList;
-import de.enough.skylight.renderer.builder.view.HandlerDirectory;
-import de.enough.skylight.renderer.builder.view.NodeHandler;
-import de.enough.skylight.renderer.builder.view.NodeUtils;
+import de.enough.skylight.renderer.view.AttributeUtils;
+import de.enough.skylight.renderer.view.HandlerDirectory;
+import de.enough.skylight.renderer.view.NodeHandler;
+import de.enough.skylight.renderer.view.handler.EmHandler;
 
 public class ViewBuilder {
 	Document document;
@@ -21,7 +23,7 @@ public class ViewBuilder {
 		try {
 			this.root.clear();
 			
-			handleNode(this.root,this.document.getDocumentElement());
+			handleNode(this.root, new Style(), this.document.getDocumentElement());
 		} catch(Exception e) {
 			//#debug error
 			System.out.println("error while building view : " + e);
@@ -29,8 +31,10 @@ public class ViewBuilder {
 		}
 	}
 	
-	protected void handleNode(Container parent, DomNode node) {
+	protected void handleNode(Container parent, Style style, DomNode node) {
 		NodeHandler handler = HandlerDirectory.getHandler(node);
+		
+		handler.setRoot(this.root);
 		
 		if(handler != null) {
 			handler.handleNode(parent, node);
@@ -43,7 +47,7 @@ public class ViewBuilder {
 				for (int index = 0; index < nodes.getLength(); index++) {
 					DomNode childNode = nodes.item(index);
 					
-					handleNodeByType(handler, containingBlock, childNode);
+					handleNodeByType(handler, style, containingBlock, childNode);
 				}
 				
 				parent.add(containingBlock);
@@ -54,13 +58,16 @@ public class ViewBuilder {
 		}
 	}
 	
-	protected void handleNodeByType(NodeHandler handler, Container containingBlock, DomNode node) {
+	protected void handleNodeByType(NodeHandler handler, Style style, Container containingBlock, DomNode node) {
 		switch(node.getNodeType()) {
 			case DomNode.TEXT_NODE : 
-				handler.handleText(containingBlock, node.getNodeValue()); 
+				//TODO extend style
+				Style textStyle = handler.getTextStyle();
+				style = textStyle;
+				handler.handleText(containingBlock, node.getNodeValue(), style, node.getParentNode()); 
 				break;
 			default: 
-				handleNode(containingBlock, node);  
+				handleNode(containingBlock, style, node);  
 		}
 	}
 }

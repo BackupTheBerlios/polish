@@ -1,0 +1,50 @@
+text {
+	font: fnt_text;
+}
+
+h1 {
+	font: fnt_h1;
+}
+
+br {
+	layout: newline-after;
+}
+
+em {
+	font: fnt_h1;
+}
+
+input_text {
+	padding-left: 2%;
+	padding-right: 2%;
+	padding-top: 1%;
+	padding-bottom: 1%;
+	font: fnt_input_text;
+	border: bdr_input;
+}
+
+input_text:hover {
+	border: bdr_input_focus;
+}
+
+input_submit {
+	padding: 1%;
+	font: fnt_input_submit;
+	border: bdr_input;
+	background: bg_input_submit;
+}
+
+input_submit:hover {
+	border: bdr_input_focus;
+}
+
+input_submit:pressed {
+	background: bg_input_submit_focus;
+	border: bdr_input_focus;
+}
+
+input_radio_group {
+	view-type: horizontal;
+}
+
+input_radio_group:hover {}

@@ -1,8 +1,8 @@
-package de.enough.skylight.renderer.builder.view.handler;
+package de.enough.skylight.renderer.view.handler;
 
 import de.enough.polish.ui.Container;
 import de.enough.skylight.dom.DomNode;
-import de.enough.skylight.renderer.builder.view.NodeHandler;
+import de.enough.skylight.renderer.view.NodeHandler;
 
 public class DefaultHandler extends NodeHandler{
 

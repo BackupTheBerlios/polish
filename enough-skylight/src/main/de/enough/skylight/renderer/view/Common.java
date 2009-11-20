@@ -1,4 +1,4 @@
-package de.enough.skylight.renderer.builder.view;
+package de.enough.skylight.renderer.view;
 
 import de.enough.polish.ui.Container;
 

@@ -1,12 +1,15 @@
-package de.enough.skylight.renderer.builder.view;
+package de.enough.skylight.renderer.view;
 
 import de.enough.polish.util.HashMap;
 import de.enough.polish.util.IntHashMap;
 import de.enough.skylight.dom.DomNode;
-import de.enough.skylight.renderer.builder.view.handler.DefaultHandler;
-import de.enough.skylight.renderer.builder.view.handler.FormHandler;
-import de.enough.skylight.renderer.builder.view.handler.H1Handler;
-import de.enough.skylight.renderer.builder.view.handler.InputHandler;
+import de.enough.skylight.renderer.view.handler.BrHandler;
+import de.enough.skylight.renderer.view.handler.DefaultHandler;
+import de.enough.skylight.renderer.view.handler.EmHandler;
+import de.enough.skylight.renderer.view.handler.FormHandler;
+import de.enough.skylight.renderer.view.handler.H1Handler;
+import de.enough.skylight.renderer.view.handler.InputHandler;
+import de.enough.skylight.renderer.view.handler.TitleHandler;
 
 public class HandlerDirectory {
 	HashMap nameDirectory;
@@ -37,6 +40,9 @@ public class HandlerDirectory {
 		directory.put("form", new FormHandler());
 		directory.put("input", new InputHandler());
 		directory.put("h1", new H1Handler());
+		directory.put("br", new BrHandler());
+		directory.put("title", new TitleHandler());
+		directory.put("em", new EmHandler());
 		
 		return directory;
 	}
