@@ -1,8 +1,0 @@
-block {
-	padding: 0;
-	margin: 0;
-}
-
-inline extends block{
-	view-type: horizontal;
-}
