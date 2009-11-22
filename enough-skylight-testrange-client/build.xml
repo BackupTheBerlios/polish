@@ -36,6 +36,7 @@
 				<variables>
 					<variable name="skylight.testrange.url" value="${skylight.testrange.url}" />
 					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
+					<variable name="polish.useScrollBar" value="true" />
 				</variables>	
 				<resources
 					dir="resources"
@@ -61,7 +62,7 @@
 				    <source dir="${rhino.home}/source/src" />
 				</sources>
 				<debug if="test" showLogOnError="true" verbose="true" level="error">
-					<filter pattern="de.enough.skylight.renderer.builder.*" level="error" />
+					<filter pattern="de.enough.skylight.renderer.builder.*" level="benchmark" />
 				</debug>
 			</build>
 			<emulator wait="true" securityDomain="trusted" enableProfiler="false" enableMemoryMonitor="false" enableNetworkMonitor="false" if="test and not debug">

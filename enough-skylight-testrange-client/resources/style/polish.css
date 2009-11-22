@@ -2,6 +2,14 @@ colors {
 	overlay: 0x00000000;	
 }
 
+scrollbar 
+{
+	scrollbar-slider-color: #E8E8E8;
+	scrollbar-slider-width: 5;
+	scrollbar-fadeout: false;
+	padding:0;
+}
+
 browser {
 	background-color: white;
 	title-style: browser_title;

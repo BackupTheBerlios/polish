@@ -1,4 +1,6 @@
 element {
+	padding: 0;
+	margin: 1%;
 }
 
 viewport  extends inline{
@@ -17,10 +19,8 @@ import {
 	view-type: midp2;
 }
 
-inline {
+inline extends element {
 	view-type: midp2;
-	padding: 0;
-	margin: 0;
 }
 
 block extends inline{

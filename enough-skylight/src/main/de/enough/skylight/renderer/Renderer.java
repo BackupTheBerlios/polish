@@ -76,12 +76,16 @@ public class Renderer implements Runnable{
 	}
 
 	public void run() {
+		
+		
+		//#debug debug
+		System.out.println("rendering " + this.url);
+		
+		Benchmark.start("render");
+		
 		setState(RenderState.START);
 		
 		setState(RenderState.BUILD_DOCUMENT);
-		
-		//#debug debug
-		System.out.println("building document");
 		
 		Benchmark.start("document.build");
 		DocumentBuilder documentBuilder = new DocumentBuilder(this.url);
@@ -116,7 +120,7 @@ public class Renderer implements Runnable{
 			Benchmark.stop("view.prefetch","done");
 		}
 		
-		Benchmark.stop("document.build","done");
+		Benchmark.stop("render","done");
 		
 		setState(RenderState.READY);
 	}	
