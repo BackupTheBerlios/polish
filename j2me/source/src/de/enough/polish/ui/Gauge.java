@@ -795,7 +795,7 @@ implements ImageConsumer
 				if(this.useBackgroundColor)
 				{
 					g.setColor(this.backgroundColor);
-					g.fillRect(x, y, this.contentWidth + 1, this.contentHeight + 1 );
+					g.fillRect(x, y, this.contentWidth, this.contentHeight );
 				}
 				//#endif
 				if (this.showValue && this.valuePosition != POSITION_CENTER) {
@@ -803,7 +803,7 @@ implements ImageConsumer
 				}
 				int w = (maxWidth * this.value) / this.maxValue;
 				g.setColor( this.color );
-				g.fillRect(x, y, w + 1, this.contentHeight + 1 );
+				g.fillRect(x, y, w + 1, this.contentHeight );
 			} else {
 				g.drawImage(this.indicatorImage, x, y, Graphics.TOP | Graphics.LEFT );
 			}
