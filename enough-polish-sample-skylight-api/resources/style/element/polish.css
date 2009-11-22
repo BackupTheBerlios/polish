@@ -51,6 +51,7 @@ input_submit extends inline {
 	background: bg_input_submit;
 	min-width: 80;
 	text-layout: vcenter;
+	margin: 2%;
 }
 
 input_submit:hover {
@@ -68,6 +69,7 @@ input_radio_group extends inline {
 input_radio_group:hover {}
 
 input_radio extends block {
+	margin: 2%;
 }
 
 input_radio:hover {

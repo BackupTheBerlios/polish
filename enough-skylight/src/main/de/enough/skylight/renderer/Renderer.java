@@ -88,14 +88,6 @@ public class Renderer implements Runnable{
 		Document document = documentBuilder.build();
 		Benchmark.stop("document.build","done");
 		
-		
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
 		//#debug debug
 		System.out.println("building view");
 		
@@ -105,13 +97,6 @@ public class Renderer implements Runnable{
 		ViewportBuilder viewBuilder = new ViewportBuilder(this.viewport,document);
 		viewBuilder.build();
 		Benchmark.stop("view.build","done");
-		
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 		
 		if(true) {
 			setState(RenderState.PREFETCH);
