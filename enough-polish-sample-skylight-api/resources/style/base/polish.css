@@ -19,7 +19,7 @@ fonts {
 	}
 	
 	fnt_h1 {
-		size: large;
+		size: medium;
 		color: text;
 		style: bold;
 	}

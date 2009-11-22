@@ -1,18 +1,18 @@
 package de.enough.skylight.renderer.view.handler;
 
 import de.enough.polish.ui.Container;
-import de.enough.polish.ui.StringItem;
+import de.enough.polish.ui.Style;
 import de.enough.skylight.dom.DomNode;
-import de.enough.skylight.renderer.view.Common;
-import de.enough.skylight.renderer.view.NodeHandler;
+import de.enough.skylight.renderer.viewport.ElementHandler;
 
-public class FormHandler extends NodeHandler{
-	
-	public Container createContainingBlock() {
-		return Common.inline();
-	}
+public class FormHandler extends ElementHandler{
 
 	public void handleNode(Container parent, DomNode node) {
 		// handle action
+	}
+	
+	public Style getStyle() {
+		//#style form
+		return new Style();
 	}
 }

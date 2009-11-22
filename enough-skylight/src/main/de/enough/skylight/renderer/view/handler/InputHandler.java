@@ -4,16 +4,16 @@ import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.TextField;
 import de.enough.skylight.dom.DomNode;
-import de.enough.skylight.renderer.view.AttributeUtils;
-import de.enough.skylight.renderer.view.NodeHandler;
+import de.enough.skylight.renderer.viewport.AttributeUtils;
+import de.enough.skylight.renderer.viewport.ElementHandler;
 
-public class InputHandler extends NodeHandler{
+public class InputHandler extends ElementHandler{
 	
-	NodeHandler textHandler;
+	ElementHandler textHandler;
 	
-	NodeHandler radioHandler;
+	ElementHandler radioHandler;
 	
-	NodeHandler submitHandler;
+	ElementHandler submitHandler;
 	
 	public InputHandler() {
 		this.textHandler = new InputTextHandler();
@@ -21,31 +21,41 @@ public class InputHandler extends NodeHandler{
 		this.submitHandler = new InputSubmitHandler();
 	}
 	
-	public void handleNode(Container parent, DomNode node) {
+	ElementHandler getTypeHandler(DomNode node) {
 		String type = AttributeUtils.getValue(node, "type");
+		ElementHandler handler = null;
 		
 		if(type != null) {
 			if(type.equals("text")) {
-				this.textHandler.handleNode(parent, node);
+				handler = this.textHandler;
 			} else if(type.equals("radio")) {
-				this.radioHandler.handleNode(parent, node);
+				handler = this.radioHandler;
 			} else if(type.equals("submit")) {
-				this.submitHandler.handleNode(parent, node);
-			}
+				handler = this.submitHandler;
+			} 
 		}
+		
+		if(handler == null) {
+			//#debug error
+			System.out.println("no handler for input type : " + type);
+			
+			handler = DefaultHandler.getInstance();
+		}
+
+		handler.setViewport(getViewport());
+		
+		return handler;
+	}
+	
+	public void handleNode(Container parent, DomNode node) {
+		ElementHandler handler = getTypeHandler(node);
+		
+		handler.handleNode(parent, node);
 	}
 	
 	public void handleText(Container parent, String text, Style style, DomNode parentNode) {
-		String type = AttributeUtils.getValue(parentNode, "type");
+		ElementHandler handler = getTypeHandler(parentNode);
 		
-		if(type != null) {
-			if(type.equals("text")) {
-				this.textHandler.handleText(parent, text, style, parentNode);
-			} else if(type.equals("radio")) {
-				this.radioHandler.handleText(parent, text, style,  parentNode);
-			} else if(type.equals("submit")) {
-				this.submitHandler.handleText(parent, text, style, parentNode);
-			}
-		}
+		handler.handleText(parent, text, style, parentNode);
 	}
 }

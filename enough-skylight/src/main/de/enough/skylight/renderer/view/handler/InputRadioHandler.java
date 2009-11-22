@@ -6,10 +6,10 @@ import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.TextField;
 import de.enough.skylight.dom.DomNode;
-import de.enough.skylight.renderer.view.AttributeUtils;
-import de.enough.skylight.renderer.view.NodeHandler;
+import de.enough.skylight.renderer.viewport.AttributeUtils;
+import de.enough.skylight.renderer.viewport.ElementHandler;
 
-public class InputRadioHandler extends NodeHandler{
+public class InputRadioHandler extends ElementHandler{
 	public void handleNode(Container parent, DomNode node) {
 		String name = AttributeUtils.getValue(node, "name");
 		
@@ -24,8 +24,8 @@ public class InputRadioHandler extends NodeHandler{
 			parent.add(group);
 		}
 		
+		//#style input_radio
 		ChoiceItem choice = new ChoiceItem("",null,ChoiceGroup.EXCLUSIVE);
-		
 		getDirectory().put(node, choice);
 		
 		group.add(choice);

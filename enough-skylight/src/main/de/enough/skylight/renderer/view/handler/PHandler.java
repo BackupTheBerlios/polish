@@ -6,12 +6,12 @@ import de.enough.polish.ui.Style;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.viewport.ElementHandler;
 
-public class EmHandler extends ElementHandler{
+public class PHandler extends ElementHandler{
 	
 	public void handleNode(Container parent, DomNode node) {}
 
 	public Style getStyle() {
-		//#style em
+		//#style p
 		return new Style();
 	}
 }

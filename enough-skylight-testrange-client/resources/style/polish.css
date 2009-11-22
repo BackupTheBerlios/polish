@@ -1,0 +1,49 @@
+colors {
+	overlay: 0x00000000;	
+}
+
+browser {
+	background-color: white;
+	title-style: browser_title;
+	menubar-style: browser_menubar;
+}
+
+browser_title {
+	padding: 2%;
+	background-color: #666666;
+	font-color: white;
+	font-size: small;
+	layout: expand;
+}
+
+browser_menubar {
+	padding: 2%;
+	background-color: #666666;
+	layout: expand;
+}
+
+leftcommand {
+	font-color: white;
+	font-size: small;
+	layout: left;
+}
+
+rightcommand extends leftcommand{
+	layout: right;
+}
+
+refresh {
+	background-color: white;
+	layout: expand | vexpand | center | vcenter;
+}
+
+refresh_progress {
+	gauge-show-value: false;
+	gauge-color: #666666; 
+	margin: 20%;
+	padding: 1%;
+	gauge-height: 5;
+	gauge-mode: continuous;
+	background-color: white;
+	border-color: #666666;
+}

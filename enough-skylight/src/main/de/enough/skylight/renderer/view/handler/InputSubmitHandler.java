@@ -8,10 +8,10 @@ import de.enough.polish.ui.TextField;
 import de.enough.polish.util.HashMap;
 import de.enough.polish.util.Locale;
 import de.enough.skylight.dom.DomNode;
-import de.enough.skylight.renderer.view.AttributeUtils;
-import de.enough.skylight.renderer.view.NodeHandler;
+import de.enough.skylight.renderer.viewport.AttributeUtils;
+import de.enough.skylight.renderer.viewport.ElementHandler;
 
-public class InputSubmitHandler extends NodeHandler{
+public class InputSubmitHandler extends ElementHandler{
 	public void handleNode(Container parent, DomNode node) {
 		String value = AttributeUtils.getValue(node, "value");
 		

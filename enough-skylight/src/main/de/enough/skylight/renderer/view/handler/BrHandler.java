@@ -1,16 +1,16 @@
 package de.enough.skylight.renderer.view.handler;
 
 import de.enough.polish.ui.Container;
-import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
 import de.enough.skylight.dom.DomNode;
-import de.enough.skylight.renderer.view.NodeHandler;
+import de.enough.skylight.renderer.viewport.ElementHandler;
 
-public class BrHandler extends NodeHandler{
+public class BrHandler extends ElementHandler{
 	
-	public void handleNode(Container parent, DomNode node) {
+	public void handleNode(Container parent, DomNode node) {}
+	
+	public Style getStyle() {
 		//#style br
-		StringItem breakItem = new StringItem(null,"br");
-		parent.add(breakItem);
-	}	
+		return new Style();
+	}
 }
