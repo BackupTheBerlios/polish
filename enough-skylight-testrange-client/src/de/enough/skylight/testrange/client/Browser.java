@@ -30,11 +30,9 @@ public class Browser extends Form implements CommandListener, RenderState{
 		super(url);
 		
 		this.viewport = new Viewport();
-		this.renderer = new Renderer(this.viewport, Renderer.POLICY_PREFETCH | Renderer.POLICY_THREAD);
+		this.renderer = new Renderer(this.viewport, Renderer.POLICY_PREFETCH | Renderer.POLICY_THREADED);
 		
 		this.renderer.setUrl(url);
-		this.renderer.addStateListener(this);
-		
 		this.renderer.addStateListener(this);
 		
 		setCommandListener(this);
