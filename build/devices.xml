@@ -13568,7 +13568,6 @@ These namespaces/schemas will be used soon.
     <capability name="SoundFormat" value="amr, nb-amr" />
     <capability name="Emulator.Skin" value="9500" />
     <capability name="Bugs" value="ReservedKeywordSerializable" />
-    <capability name="Bugs" value="ItemStateListenerCalledTooEarly" />
   </device>
   <device>
     <identifier>BlackBerry/5.0</identifier>
