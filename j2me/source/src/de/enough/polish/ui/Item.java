@@ -3768,8 +3768,15 @@ public abstract class Item implements UiElement, Animatable
 	 * @return the style used for focussing this item.
 	 */
 	public Style getFocusedStyle() {
-		if (!this.isStyleInitialised && this.style != null) {
-			setStyle( this.style );
+		if (!this.isStyleInitialised) {
+			if (this.style != null) {
+				setStyle( this.style );
+			}
+			//#ifdef polish.useDynamicStyles
+			else {
+				initStyle();
+			}
+			//#endif
 		}
 		Style focStyle;
 		if (this.focusedStyle != null) {
