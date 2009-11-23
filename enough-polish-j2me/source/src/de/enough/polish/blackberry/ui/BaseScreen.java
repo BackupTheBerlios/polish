@@ -1627,14 +1627,22 @@ class BaseScreenManager extends Manager {
 		BaseScreen baseScreen = this.screen;
 		Screen polishScreen = baseScreen.getPolishScreen();
 		if (polishScreen == null || !polishScreen.isMenuOpened()) {
-			if (polishScreen != null) {
-				int x = polishScreen.getScreenContentX();
-				int y = polishScreen.getScreenContentY();
-				int width = polishScreen.getScreenContentWidth();
-				int height = polishScreen.getScreenContentHeight();
-				g.pushContext(x - g.getTranslateX(), y - g.getTranslateY(), width, height, 0, 0 );
-			}
 			Item currentItem = baseScreen.currentItem;
+			Item parent = currentItem;
+			if (polishScreen != null) {
+				while (parent.getParent() != null) {
+					parent = parent.getParent();
+				}
+				if (parent == polishScreen.getRootContainer()) {
+					int x = polishScreen.getScreenContentX();
+					int y = polishScreen.getScreenContentY();
+					int width = polishScreen.getScreenContentWidth();
+					int height = polishScreen.getScreenContentHeight();
+					g.pushContext(x - g.getTranslateX(), y - g.getTranslateY(), width, height, 0, 0 );
+				} else {
+					polishScreen = null; 
+				}
+			}
 			if (currentItem != null) {
 				Field field = currentItem._bbField;
 				paintChild( g, field );
