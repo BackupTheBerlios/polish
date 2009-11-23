@@ -21,7 +21,7 @@ public class Renderer implements Runnable{
 	int policy = 0;
 	
 	int state = 0;
-	
+	// BLB
 	Viewport viewport;
 	
 	public Renderer(Viewport viewport, int policy) {
