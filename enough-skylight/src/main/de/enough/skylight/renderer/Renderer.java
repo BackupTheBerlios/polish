@@ -10,50 +10,138 @@ import de.enough.skylight.renderer.builder.DocumentBuilder;
 import de.enough.skylight.renderer.builder.ViewportBuilder;
 
 public class Renderer implements Runnable{
-	public static int POLICY_PREFETCH = 1;
-	public static int POLICY_THREAD = 2;
+	/**
+	 * no policies
+	 */
+	public static int POLICY_NONE = 0;
 	
+	/**
+	 * policy to preinit the viewport after build 
+	 */
+	public static int POLICY_PREINIT = 1;
+	
+	/**
+	 * policy to run the rendering in a thread 
+	 */
+	public static int POLICY_THREADED = 2;
+
+	/**
+	 * state that the current render state is void and must be rendered  
+	 */
+	public static int STATE_VOID = Integer.MIN_VALUE;
+	
+	/**
+	 * state that the rendering is started  
+	 */
+	public static int STATE_START = 0x01;
+	
+	/**
+	 * state that the document is being build  
+	 */
+	public static int STATE_BUILD_DOCUMENT = 0x02;
+	
+	/**
+	 * state that the view is being build  
+	 */
+	public static int STATE_BUILD_VIEW = 0x03;
+	
+	/**
+	 * state that the view is preinitializing
+	 */
+	public static int STATE_PREINIT = 0x04;
+	
+	/**
+	 * state that the rendering is completed
+	 */
+	public static int STATE_READY = 0x05;
+	
+	/**
+	 * the url of the document
+	 */
 	String url;
 	
-	
+	/**
+	 * the listeners to this renderer
+	 */
 	ArrayList listeners;
 	
-	int policy = 0;
+	/**
+	 * the policies
+	 */
+	int policy = POLICY_NONE;
 	
-	int state = 0;
-	// BLB
+	/**
+	 * the state
+	 */
+	int state = STATE_VOID;
+	
+	/**
+	 * the viewport to render to
+	 */
 	Viewport viewport;
 	
-	public Renderer(Viewport viewport, int policy) {
+	/**
+	 * Creates a new Renderer instance
+	 * @param viewport the viewport to render to
+	 */
+	public Renderer(Viewport viewport) {
 		this.viewport = viewport; 
-		this.policy = policy;
-		this.state = RenderState.VOID;
 		this.listeners = new ArrayList();
 	}
 	
-	public void addStateListener(RenderState listener) {
+	/**
+	 * Creates a new Renderer instance
+	 * @param viewport the viewport to render to
+	 * @param policy the policy for this renderer
+	 */
+	public Renderer(Viewport viewport, int policy) {
+		this.viewport = viewport; 
+		this.policy = policy;
+		this.listeners = new ArrayList();
+	}
+	
+	/**
+	 * Adds a renderer listener
+	 * @param listener
+	 */
+	public void addListener(RendererListener listener) {
 		this.listeners.add(listener);
 	}
 	
-	boolean isThread() {
-		return (this.policy & POLICY_THREAD) == POLICY_THREAD;  
+	/**
+	 * @return true if the policy indicates that the build should be run in a thread, otherwise false
+	 */
+	boolean isThreaded() {
+		return (this.policy & POLICY_THREADED) == POLICY_THREADED;  
 	}
 	
-	boolean isPrefetch() {
-		return (this.policy & POLICY_PREFETCH) == POLICY_PREFETCH;  
+	/**
+	 * @return true if the policy indicates that the view should be preinitialized, otherwise false
+	 */
+	boolean isPreinit() {
+		return (this.policy & POLICY_PREINIT) == POLICY_PREINIT;  
 	}
 	
+	
+	/**
+	 * Sets the url
+	 * @param url the url
+	 */
 	public void setUrl(String url) {
 		this.url = url;
-		this.state = RenderState.VOID;
+		this.state = STATE_VOID;
 	}
 	
+	/**
+	 * Renders the url depending on the policies in a thread or direct 
+	 * @throws IllegalArgumentException if the url is not set
+	 */
 	public void render() throws IllegalArgumentException {
 		if(this.url == null) {
 			throw new IllegalArgumentException("url is not set");
 		}
 		
-		if(isThread()) {
+		if(isThreaded()) {
 			new Thread(this).start();
 		} else {
 			synchronized (this) {
@@ -62,30 +150,38 @@ public class Renderer implements Runnable{
 		}
 	}
 	
+	/**
+	 * Sets the state and informs the listeners
+	 * @param state the state
+	 */
 	public void setState(int state) {
 		this.state = state;
 		
 		for (int index = 0; index < this.listeners.size(); index++) {
-			RenderState listener = (RenderState)this.listeners.get(index);
-			listener.onRenderState(this, state);
+			RendererListener listener = (RendererListener)this.listeners.get(index);
+			listener.onState(this, state);
 		}
 	}
 	
+	/**
+	 * @return the state
+	 */
 	public int getState() {
 		return this.state;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Runnable#run()
+	 */
 	public void run() {
-		
-		
 		//#debug debug
 		System.out.println("rendering " + this.url);
 		
 		Benchmark.start("render");
 		
-		setState(RenderState.START);
+		setState(STATE_START);
 		
-		setState(RenderState.BUILD_DOCUMENT);
+		setState(STATE_BUILD_DOCUMENT);
 		
 		Benchmark.start("document.build");
 		DocumentBuilder documentBuilder = new DocumentBuilder(this.url);
@@ -95,15 +191,15 @@ public class Renderer implements Runnable{
 		//#debug debug
 		System.out.println("building view");
 		
-		setState(RenderState.BUILD_VIEW);
+		setState(STATE_BUILD_VIEW);
 		
 		Benchmark.start("view.build");
 		ViewportBuilder viewBuilder = new ViewportBuilder(this.viewport,document);
 		viewBuilder.build();
 		Benchmark.stop("view.build","done");
 		
-		if(true) {
-			setState(RenderState.PREFETCH);
+		if(isPreinit()) {
+			setState(STATE_PREINIT);
 			
 			//#debug debug
 			System.out.println("prefetching view");
@@ -122,6 +218,6 @@ public class Renderer implements Runnable{
 		
 		Benchmark.stop("render","done");
 		
-		setState(RenderState.READY);
+		setState(STATE_READY);
 	}	
 }
