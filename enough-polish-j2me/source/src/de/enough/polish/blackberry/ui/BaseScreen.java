@@ -1630,7 +1630,7 @@ class BaseScreenManager extends Manager {
 			Item currentItem = baseScreen.currentItem;
 			Item parent = currentItem;
 			if (polishScreen != null) {
-				while (parent.getParent() != null) {
+				while (parent != null && parent.getParent() != null) {
 					parent = parent.getParent();
 				}
 				if (parent == polishScreen.getRootContainer()) {
