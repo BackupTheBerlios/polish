@@ -195,6 +195,16 @@ public class FramedForm extends Form {
 	 * @see de.enough.polish.ui.Screen#focus(de.enough.polish.ui.Item, boolean)
 	 */
 	public void focus(Item item, boolean force) {
+		focus( item, force, false );
+	}
+	
+	/**
+	 * Focuses the specified item and optionally keeps the current frame focused
+	 * @param item the item
+	 * @param force when the item should be focused even when it is not interactive
+	 * @param keepCurrentFrame true when the currently active container should keep its focus
+	 */
+	public void focus(Item item, boolean force, boolean keepCurrentFrame) {
 		if (item.isFocused) {
 			//#debug
 			System.out.println("Ignoring focus for already focused item " + item);
@@ -212,7 +222,7 @@ public class FramedForm extends Form {
 		}
 		Container frame = null;
 		int offset = 0;
-		if (item != this.currentlyActiveContainer && item instanceof Container) {
+		if (!keepCurrentFrame && item != this.currentlyActiveContainer && item instanceof Container) {
 			frame = (Container)item;
 			offset = frame.getScrollYOffset();
 			setActiveFrame( frame, this.keepContentFocused, 0  );
@@ -1028,6 +1038,8 @@ public class FramedForm extends Form {
 		}
 		
 	}
+	
+	
 
 	//#ifdef polish.hasPointerEvents
 	/* (non-Javadoc)
