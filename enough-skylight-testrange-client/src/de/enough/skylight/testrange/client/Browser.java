@@ -42,6 +42,7 @@ public class Browser extends Form implements CommandListener, RenderState{
 		
 		this.refresh = new Refresh();
 		this.renderer.addStateListener(this.refresh);
+		this.refresh.setTitle(url);
 		
 		this.display = display;
 		

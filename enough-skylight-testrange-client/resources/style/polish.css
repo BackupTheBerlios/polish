@@ -4,7 +4,7 @@ colors {
 
 scrollbar 
 {
-	scrollbar-slider-color: #E8E8E8;
+	scrollbar-slider-color: #B8B8B8;
 	scrollbar-slider-width: 5;
 	scrollbar-fadeout: false;
 	padding:0;
@@ -41,8 +41,10 @@ rightcommand extends leftcommand{
 }
 
 refresh {
-	background-color: white;
+	repaint-previous-screen: true;
 	layout: expand | vexpand | center | vcenter;
+	title-style: browser_title;
+	menubar-style: browser_menubar;
 }
 
 refresh_progress {

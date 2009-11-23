@@ -62,7 +62,8 @@
 				    <source dir="${rhino.home}/source/src" />
 				</sources>
 				<debug if="test" showLogOnError="true" verbose="true" level="error">
-					<filter pattern="de.enough.skylight.renderer.builder.*" level="benchmark" />
+					<!--filter pattern="de.enough.skylight.renderer.builder.*" level="error" /-->
+					<filter pattern="de.enough.skylight.testrange.client.*" level="debug" />
 				</debug>
 			</build>
 			<emulator wait="true" securityDomain="trusted" enableProfiler="false" enableMemoryMonitor="false" enableNetworkMonitor="false" if="test and not debug">

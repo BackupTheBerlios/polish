@@ -21,11 +21,11 @@ public class Refresh extends Form implements RenderState{
 
 	public void onRenderState(Renderer renderer, int state) {
 		if(state == RenderState.START) {
-			this.progress.setValue(25);
+			this.progress.setValue(0);
 		}
 		
 		if(state == RenderState.BUILD_DOCUMENT) {
-			this.progress.setValue(50);	
+			this.progress.setValue(25);	
 		}
 		
 		if(state == RenderState.BUILD_VIEW) {
