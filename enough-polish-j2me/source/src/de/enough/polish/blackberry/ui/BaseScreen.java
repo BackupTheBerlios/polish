@@ -1628,24 +1628,27 @@ class BaseScreenManager extends Manager {
 		Screen polishScreen = baseScreen.getPolishScreen();
 		if (polishScreen == null || !polishScreen.isMenuOpened()) {
 			Item currentItem = baseScreen.currentItem;
-			Item parent = currentItem;
-			if (polishScreen != null) {
-				while (parent != null && parent.getParent() != null) {
-					parent = parent.getParent();
-				}
-				if (parent == polishScreen.getRootContainer()) {
-					int x = polishScreen.getScreenContentX();
-					int y = polishScreen.getScreenContentY();
-					int width = polishScreen.getScreenContentWidth();
-					int height = polishScreen.getScreenContentHeight();
-					g.pushContext(x - g.getTranslateX(), y - g.getTranslateY(), width, height, 0, 0 );
-				} else {
-					polishScreen = null; 
-				}
-			}
 			if (currentItem != null) {
+				Item parent = currentItem;
+				if (polishScreen != null) {
+					while (parent.getParent() != null) {
+						parent = parent.getParent();
+					}
+					if (parent == polishScreen.getRootContainer()) {
+						int x = polishScreen.getScreenContentX();
+						int y = polishScreen.getScreenContentY();
+						int width = polishScreen.getScreenContentWidth();
+						int height = polishScreen.getScreenContentHeight();
+						g.pushContext(x - g.getTranslateX(), y - g.getTranslateY(), width, height, 0, 0 );
+					} else {
+						polishScreen = null; 
+					}
+				}
 				Field field = currentItem._bbField;
 				paintChild( g, field );
+				if (polishScreen != null) {
+					g.popContext();
+				}
 			}
 			if (this.permanentItems != null) {
 				Object[] objects = this.permanentItems.getInternalArray();
@@ -1656,9 +1659,6 @@ class BaseScreenManager extends Manager {
 					}
 					paintChild( g, item._bbField);
 				}			
-			}
-			if (polishScreen != null) {
-				g.popContext();
 			}
 		}
 	}
