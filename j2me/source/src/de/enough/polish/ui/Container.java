@@ -1936,6 +1936,13 @@ public class Container extends Item {
 				return true;
 			}	
 		}
+		//#ifdef tmp.supportViewType
+			if (this.containerView != null) {
+				 if ( this.containerView.handleKeyReleased(keyCode, gameAction) ) {
+					 return true;
+				 }
+			}
+		//#endif
 		return super.handleKeyReleased(keyCode, gameAction);
 	}
 

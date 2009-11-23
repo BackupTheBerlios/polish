@@ -5038,5 +5038,25 @@ public final class UiAccess {
 		//#endif
 	}
 	//#endif
+
+	//#if polish.usePolishGui
+	/**
+	 * Repaints the specified item
+	 * @param item the item
+	 */
+	public static void repaint(Item item) {
+		item.repaint();
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Repaints the specified item
+	 * @param item the item
+	 */
+	public static void repaint(javax.microedition.lcdui.Item item) {
+		// ignore
+	}
+	//#endif
 	
 }

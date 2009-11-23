@@ -4782,6 +4782,35 @@
 		id="408"
 		since="J2ME Polish 2.1.3"
 	/>
+	
+	<attribute
+		name="exclusiveview-arrow-color-pressed"
+		type="color"
+		appliesTo="ExclusiveSingleLineView"
+		description="The color of the currently pressed arrow."
+		default="black"
+		id="409"
+		since="J2ME Polish 2.1.3"
+	/>
+	
+	<attribute
+		name="exclusiveview-right-arrow-pressed"
+		type="imageurl"
+		appliesTo="ExclusiveSingleLineView"
+		description="The URL of the right arrow image when it is pressed."
+		id="410"
+		since="J2ME Polish 2.1.3"
+	/>
+
+	<attribute
+		name="exclusiveview-left-arrow-pressed"
+		type="imageurl"
+		appliesTo="ExclusiveSingleLineView"
+		description="The URL of the left arrow image when it is pressed."
+		id="411"
+		since="J2ME Polish 2.1.3"
+	/>
+	
 
 
 
