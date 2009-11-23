@@ -1,0 +1,82 @@
+/** BLOCK **/
+
+h1 extends block {
+	margin-top: 2%;
+	margin-bottom: 2%;
+	font: fnt_h1;
+}
+
+br extends block {
+}
+
+div extends block {
+	font: fnt_text;
+}
+
+p extends block {
+	margin-top: 5%;
+	margin-bottom: 5%;
+	font: fnt_text;
+}
+
+/** INLINE **/
+
+text extends inline {
+	font: fnt_text;
+}
+
+span extends inline {
+	font: fnt_text;
+}
+
+em extends inline {
+	font: fnt_text;
+}
+
+form extends block {
+}
+
+input_text extends inline{
+	font: fnt_input_text;
+	border: bdr_input;
+}
+
+input_text:hover {
+	border: bdr_input_focus;
+}
+
+input_submit extends inline {
+	font: fnt_input_submit;
+	border: bdr_input;
+	background: bg_input_submit;
+	min-width: 80;
+	text-layout: vcenter;
+	margin: 2%;
+}
+
+input_submit:hover {
+	border: bdr_input_focus;
+}
+
+input_submit:pressed {
+	background: bg_input_submit_focus;
+	border: bdr_input_focus;
+}
+
+input_radio_group extends inline {
+}
+
+input_radio_group:hover {}
+
+input_radio extends block {
+	margin: 2%;
+}
+
+input_radio:hover {
+	border: bdr_input_focus;
+}
+
+input_radio:pressed {
+	background: bg_input_submit_focus;
+	border: bdr_input_focus;
+}

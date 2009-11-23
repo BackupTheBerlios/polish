@@ -1,0 +1,93 @@
+colors {
+	text: black;
+	
+	input: #E8E8E8;
+	input_focus: #FF6600;
+	
+	input_submit: white;
+	input_submit_2: #E8E8E8;
+	
+	input_submit_focus: #FF6600;
+	input_submit_focus_2: #EE6600;
+	/* Bla */
+}
+
+fonts {
+	fnt_text {
+		size: medium;
+		color: text;
+		style: normal;
+	}
+	
+	fnt_h1 {
+		size: medium;
+		color: text;
+		style: bold;
+	}
+	
+	fnt_input_text {
+		size: medium;
+		color: text;
+		style: normal;
+	}
+	
+	fnt_input_submit {
+		size: medium;
+		color: text;
+		style: normal;
+	}
+}
+
+borders {
+	bdr_input {
+		color: input;
+		width: 1;
+	}
+	
+	bdr_input_focus {
+		color: input_focus;
+		width: 1;
+	}
+}
+
+backgrounds {
+	bg_input_submit {
+		type: combined;
+		foreground: bg_input_submit_1;
+		background: bg_input_submit_2;
+	}
+	
+		bg_input_submit_1 {
+			type: partial;
+			color: input_submit;
+			start: 0%;
+			end: 50%;
+		}
+		
+		bg_input_submit_2 {
+			type: partial;
+			color: input_submit_2;
+			start: 50%;
+			end: 100%;
+		}
+	
+	bg_input_submit_focus {
+		type: combined;
+		foreground: bg_input_submit_focus_1;
+		background: bg_input_submit_focus_2;
+	}
+	
+		bg_input_submit_focus_1 {
+			type: partial;
+			color: input_submit_focus;
+			start: 0%;
+			end: 50%;
+		}
+		
+		bg_input_submit_focus_2 {
+			type: partial;
+			color: input_submit_focus_2;
+			start: 50%;
+			end: 100%;
+		}
+}

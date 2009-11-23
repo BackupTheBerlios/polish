@@ -1,0 +1,28 @@
+element {
+	padding: 0;
+	margin: 1%;
+}
+
+viewport  extends inline{
+	layout: expand;
+	label-style: title;
+}
+
+title {
+	background-color: black;
+	font-color: white;
+	layout: expand | newline-after;
+}
+
+import {
+	always-include: true;
+	view-type: midp2;
+}
+
+inline extends element {
+	view-type: midp2;
+}
+
+block extends inline{
+	layout: newline-after | newline-before;
+}
