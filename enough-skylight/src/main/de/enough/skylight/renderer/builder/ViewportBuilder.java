@@ -15,12 +15,31 @@ public class ViewportBuilder {
 	Document document;
 	Viewport viewport;
 	
+	public ViewportBuilder(Document document) {
+		this.document = document;
+	}
+	
 	public ViewportBuilder(Viewport viewport, Document document) {
 		this.viewport = viewport;
 		this.document = document;
 	}
 	
+
+	
+	public Viewport getViewport() {
+		return viewport;
+	}
+
+	public void setViewport(Viewport viewport) {
+		this.viewport = viewport;
+	}
+
+	
 	public void build() {
+		if(this.viewport == null) {
+			throw new IllegalStateException("viewport is null");
+		}
+		
 		try {
 			this.viewport.reset();
 			
