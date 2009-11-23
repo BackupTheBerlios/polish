@@ -11,6 +11,6 @@ public class TitleHandler extends ElementHandler{
 	public void handleNode(Container parent, DomNode node) {}
 
 	public void handleText(Container parent, String text, Style style, DomNode parentNode) {
-		getWindow(parent).setLabel(text);
+		getViewport().setTitle(text);
 	}
 }

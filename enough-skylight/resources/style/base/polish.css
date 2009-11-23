@@ -1,5 +1,6 @@
 colors {
 	text: black;
+	text_focus: white;
 	
 	input: #E8E8E8;
 	input_focus: #FF6600;
@@ -9,7 +10,6 @@ colors {
 	
 	input_submit_focus: #FF6600;
 	input_submit_focus_2: #EE6600;
-	/* Bla */
 }
 
 fonts {
@@ -19,8 +19,14 @@ fonts {
 		style: normal;
 	}
 	
-	fnt_h1 {
+	fnt_text_focus {
 		size: medium;
+		color: text_focus;
+		style: normal;
+	}
+	
+	fnt_h1 {
+		size: large;
 		color: text;
 		style: bold;
 	}

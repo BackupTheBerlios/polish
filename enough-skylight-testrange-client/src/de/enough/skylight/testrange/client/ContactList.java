@@ -8,7 +8,7 @@ import de.enough.polish.ui.Display;
 import de.enough.polish.ui.Form;
 import de.enough.polish.util.Prefetch;
 import de.enough.skylight.dom.Document;
-import de.enough.skylight.renderer.RenderState;
+import de.enough.skylight.renderer.RendererListener;
 import de.enough.skylight.renderer.Renderer;
 import de.enough.skylight.renderer.Viewport;
 import de.enough.skylight.renderer.builder.DocumentBuilder;

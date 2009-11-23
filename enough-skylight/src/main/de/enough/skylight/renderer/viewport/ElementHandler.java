@@ -48,19 +48,6 @@ public abstract class ElementHandler {
 		}
 	}
 	
-	public Container getWindow(Container parent) {
-		Item p = parent;
-		while (p != null) {
-			if(p.getParent() != null) {
-				p = p.getParent();
-			} else {
-				return (Container)p;
-			}
-		}
-		
-		return (Container)p;
-	}
-	
 	public HashMap getDirectory() {
 		HashMap viewportDirectory = this.viewport.getDirectory();
 		HashMap handlerDirectory = (HashMap)this.viewport.getDirectory().get(this);

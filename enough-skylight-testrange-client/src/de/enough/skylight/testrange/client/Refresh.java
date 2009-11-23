@@ -2,10 +2,10 @@ package de.enough.skylight.testrange.client;
 
 import de.enough.polish.ui.Form;
 import de.enough.polish.ui.Gauge;
-import de.enough.skylight.renderer.RenderState;
+import de.enough.skylight.renderer.RendererListener;
 import de.enough.skylight.renderer.Renderer;
 
-public class Refresh extends Form implements RenderState{
+public class Refresh extends Form implements RendererListener{
 
 	Gauge progress;
 	
@@ -19,21 +19,21 @@ public class Refresh extends Form implements RenderState{
 		append(this.progress);
 	}
 
-	public void onRenderState(Renderer renderer, int state) {
+	public void onState(Renderer renderer, int state) {
 		if(isShown()) {
-			if(state == RenderState.START) {
+			if(state == Renderer.STATE_START) {
 				this.progress.setValue(0);
 			}
 			
-			if(state == RenderState.BUILD_DOCUMENT) {
+			if(state == Renderer.STATE_BUILD_DOCUMENT) {
 				this.progress.setValue(25);	
 			}
 			
-			if(state == RenderState.BUILD_VIEW) {
+			if(state == Renderer.STATE_BUILD_VIEW) {
 				this.progress.setValue(75);
 			}
 			
-			if(state == RenderState.READY) {
+			if(state == Renderer.STATE_READY) {
 				this.progress.setValue(100);
 			}
 		}

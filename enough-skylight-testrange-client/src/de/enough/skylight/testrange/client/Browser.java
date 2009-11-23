@@ -8,10 +8,10 @@ import de.enough.polish.ui.Form;
 import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.StyleSheet;
 import de.enough.skylight.renderer.Renderer;
-import de.enough.skylight.renderer.RenderState;
+import de.enough.skylight.renderer.RendererListener;
 import de.enough.skylight.renderer.Viewport;
 
-public class Browser extends Form implements CommandListener, RenderState{
+public class Browser extends Form implements CommandListener, RendererListener{
 
 	Command cmdRefresh = new Command("Refresh",Command.SCREEN,0);
 	
@@ -30,16 +30,16 @@ public class Browser extends Form implements CommandListener, RenderState{
 		super(url);
 		
 		this.viewport = new Viewport();
-		this.renderer = new Renderer(this.viewport, Renderer.POLICY_PREFETCH | Renderer.POLICY_THREADED);
+		this.renderer = new Renderer(this.viewport, Renderer.POLICY_PREINIT | Renderer.POLICY_THREADED);
 		
 		this.renderer.setUrl(url);
-		this.renderer.addStateListener(this);
+		this.renderer.addListener(this);
 		
 		setCommandListener(this);
 		append(this.viewport);
 		
 		this.refresh = new Refresh();
-		this.renderer.addStateListener(this.refresh);
+		this.renderer.addListener(this.refresh);
 		this.refresh.setTitle(url);
 		
 		this.display = display;
@@ -51,17 +51,17 @@ public class Browser extends Form implements CommandListener, RenderState{
 	public void showNotify() {
 		super.showNotify();
 		
-		if(this.renderer.getState() == RenderState.VOID) {
+		if(this.renderer.getState() == Renderer.STATE_VOID) {
 			this.renderer.render();
 		}
 	}
 	
-	public void onRenderState(Renderer renderer, int state) {
-		if(state == RenderState.START) {
+	public void onState(Renderer renderer, int state) {
+		if(state == Renderer.STATE_START) {
 			this.display.setCurrent(this.refresh);
 		}
 		
-		if(state == RenderState.READY) {
+		if(state == Renderer.STATE_READY) {
 			this.display.setCurrent(this);
 		} 
 	}

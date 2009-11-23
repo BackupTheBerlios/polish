@@ -1,8 +1,6 @@
 /** BLOCK **/
 
 h1 extends block {
-	margin-top: 2%;
-	margin-bottom: 2%;
 	font: fnt_h1;
 }
 
@@ -61,6 +59,7 @@ input_submit:hover {
 input_submit:pressed {
 	background: bg_input_submit_focus;
 	border: bdr_input_focus;
+	font: fnt_text_focus;
 }
 
 input_radio_group extends inline {
@@ -69,7 +68,6 @@ input_radio_group extends inline {
 input_radio_group:hover {}
 
 input_radio extends block {
-	margin: 2%;
 }
 
 input_radio:hover {
@@ -79,4 +77,5 @@ input_radio:hover {
 input_radio:pressed {
 	background: bg_input_submit_focus;
 	border: bdr_input_focus;
+	font: fnt_text_focus;
 }
