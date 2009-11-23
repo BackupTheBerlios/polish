@@ -170,11 +170,13 @@ public final class Font extends Object
 	
 	protected net.rim.device.api.ui.Font font;
 
+	private boolean isItalic;
+
 	private Font( int face, int style, int size ) throws ClassNotFoundException {
 		this.face = face;
 		this.style = style;
 		this.size = size;
-		
+		this.isItalic = (style & STYLE_ITALIC) == STYLE_ITALIC;
 		//#if !building.theme
 			if ( face == FACE_SYSTEM && style == STYLE_PLAIN && size == SIZE_MEDIUM) {
 				this.font = net.rim.device.api.ui.Font.getDefault();
@@ -228,6 +230,7 @@ public final class Font extends Object
 		this.face = face;
 		this.style = style;
 		this.size = SIZE_MEDIUM;
+		this.isItalic = (style & STYLE_ITALIC) == STYLE_ITALIC;
 		
 		//#if !building.theme
 			//#if polish.blackberry.font.family:defined
@@ -422,7 +425,7 @@ public final class Font extends Object
 	 */
 	public boolean isItalic()
 	{
-		return (this.style & STYLE_ITALIC) == STYLE_ITALIC;
+		return this.isItalic;
 	}
 
 	/**
@@ -520,7 +523,11 @@ public final class Font extends Object
 	 */
 	public int stringWidth( String str)
 	{
-		return this.font.getAdvance( str );
+		int width = this.font.getAdvance( str );
+		if (this.isItalic) {
+			width++;
+		}
+		return width;
 	}
 
 	/**

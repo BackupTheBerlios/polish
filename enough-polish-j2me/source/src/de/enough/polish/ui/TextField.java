@@ -40,6 +40,7 @@ import javax.microedition.lcdui.Graphics;
 	import de.enough.polish.predictive.trie.TrieProvider;
 //#endif
 import de.enough.polish.util.ArrayList;
+import de.enough.polish.util.DeviceControl;
 import de.enough.polish.util.DeviceInfo;
 import de.enough.polish.util.DrawUtil;
 import de.enough.polish.util.Locale;
@@ -62,7 +63,7 @@ import de.enough.polish.util.Properties;
 //#endif
 
 //#if polish.android1.5
-	import de.enough.polish.android.midlet.MidletBridge;
+import de.enough.polish.android.midlet.MidletBridge;
 //#endif
 
 /**
@@ -4255,7 +4256,7 @@ public class TextField extends StringItem
 				this.editField.focusRemove();
 			}
 			//#if polish.hasPointerEvents && polish.TextField.hideSoftKeyboardOnDefocus
-				//# Display.getInstance().getVirtualKeyboard().setVisibility(net.rim.device.api.ui.VirtualKeyboard.HIDE);
+				DeviceControl.hideSoftKeyboard();
 			//#endif
 		//#elif polish.TextField.showInputInfo != false && !tmp.includeInputInfo
 			if (this.screen != null) {
@@ -4301,10 +4302,12 @@ public class TextField extends StringItem
 			updateDeleteCommand( this.text );
 		//#endif
 		
-		//#if polish.android1.5
+		//#if (polish.blackberry && polish.hasPointerEvents) || polish.android1.5
 			if (this.isShown) {
-				MidletBridge.instance.showSoftKeyboard();
-				this.androidFocusedTime = System.currentTimeMillis();
+				DeviceControl.showSoftKeyboard();
+				//#if polish.android1.5
+					this.androidFocusedTime = System.currentTimeMillis();
+				//#endif
 			}
 		//#endif
 		return unfocusedStyle;
@@ -4395,9 +4398,9 @@ public class TextField extends StringItem
 				updateInfo();
 			}
 		//#endif
-		//#if polish.android1.5
+		//#if (polish.blackberry && polish.hasPointerEvents) || polish.android1.5
 			if (this.isFocused) {
-				MidletBridge.instance.showSoftKeyboard();
+				DeviceControl.showSoftKeyboard();
 			}
 		//#endif
 		super.showNotify();

@@ -1226,7 +1226,7 @@ public abstract class BaseScreen
 	            //System.out.println("Canvas.focus(): focusing field " + item._bbField );
 	            this.dummyFieldHasFocus = false;
 	            //#if polish.hasPointerEvents
-	            	getVirtualKeyboard().setVisibility( VirtualKeyboard.SHOW );
+	            	//getVirtualKeyboard().setVisibility( VirtualKeyboard.SHOW );
 	            //#endif
 	        } else if (!this.dummyFieldHasFocus) {
 	        	this.currentItem = null;
