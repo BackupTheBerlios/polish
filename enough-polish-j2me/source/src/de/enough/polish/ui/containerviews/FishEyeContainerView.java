@@ -493,10 +493,20 @@ public class FishEyeContainerView extends ContainerView {
 	 * @param maxHeight the maximum height of one item
 	 */
 	protected void initItemArrangement(int lineWidth, int availHeight, Item[] myItems, int length, int maxWidth, int maxHeight) {
+		//#debug
+		System.out.println("initItemArrangement: lineWidth=" + lineWidth + ", availHeight=" + availHeight + ", maxWidth="  + maxWidth + ", maxHeight=" + maxHeight + ", length=" + length);
+		if (length == 0) {
+			return;
+		}
 		this.referenceXCenterPositions = new int[length];
 		this.referenceXCenterPositions[this.focusedIndex] = lineWidth >> 1;
 		this.referenceFocusedIndex = this.focusedIndex;
-
+		if (maxWidth==0) {
+			maxWidth = lineWidth;
+		}
+		if (maxHeight == 0) {
+			maxHeight = availHeight;
+		}
 		int completeWidth;
 		//#if polish.midp2
 			completeWidth = maxWidth + ((maxWidth*this.scaleFactor)/100) * (length - 1) + ( length -1 ) * this.paddingHorizontal;
@@ -511,6 +521,7 @@ public class FishEyeContainerView extends ContainerView {
 		} else if (this.focusedWidth == 0) {
 			this.focusedWidth = maxWidth;
 		}
+		
 		int availWidth;
 		if ( (completeWidth > lineWidth && this.includeAllItems) || (completeWidth < lineWidth && isLayoutExpand() ) ) {
 			availWidth = ((lineWidth - this.focusedWidth) >> 1) - this.paddingHorizontal;
@@ -737,8 +748,11 @@ public class FishEyeContainerView extends ContainerView {
 		int itemX;
 		int itemY;
 		
+		int length  = myItems.length;
+		if (length == 0) {
+			return;
+		}
 		//#if polish.css.fisheyeview-max-visible
-			int length  = myItems.length;
 			int maxDistance = length;
 			if (this.maxVisibleItems != 0) {
 				maxDistance = this.maxVisibleItems >> 1;
