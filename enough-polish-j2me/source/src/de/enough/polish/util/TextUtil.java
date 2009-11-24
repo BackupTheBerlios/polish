@@ -195,6 +195,7 @@ public final class TextUtil {
 	 * @param firstLineWidth the allowed width for the first line
 	 * @param lineWidth the allowed width for all other lines, lineWidth >= firstLineWidth
 	 * @param maxLines the maximum number of lines
+	 * @param appendix the appendix that should be added to the last line when the line number is greater than maxLines
 	 * @return the array containing the substrings
 	 */
 	public static String[] wrap( String value, Font font, int firstLineWidth, int lineWidth, int maxLines, String appendix ) {

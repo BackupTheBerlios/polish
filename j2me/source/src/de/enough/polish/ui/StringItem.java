@@ -77,7 +77,7 @@ public class StringItem extends Item
 	//#endif
 	//#ifdef polish.css.max-lines
 		protected int maxLines = TextUtil.MAXLINES_UNLIMITED;
-		protected String maxLinesAppendix;
+		protected String maxLinesAppendix = TextUtil.MAXLINES_APPENDIX;
 	//#endif
 	//#if polish.css.text-layout
 		protected int textLayout;
@@ -713,7 +713,11 @@ public class StringItem extends Item
 		String[] result;
 		//#ifdef tmp.useTextEffect
 		if (this.textEffect != null) {
-			result = this.textEffect.wrap( this, body, this.textColor, this.font, firstLineWidth, availWidth );
+			//#ifdef polish.css.max-lines
+				result = this.textEffect.wrap(this, body, this.textColor, this.font, firstLineWidth, availWidth, this.maxLines, this.maxLinesAppendix);
+			//#else
+				result = this.textEffect.wrap(this, body, this.textColor, this.font, firstLineWidth, availWidth);
+			//#endif
 		} else {
 		//#endif
 			//#ifdef polish.css.max-lines

@@ -1665,15 +1665,6 @@ public class Display
 	 */
 	protected void paint(Graphics g)
 	{
-//		int cx = g.getClipX();
-//		int cy = g.getClipY();
-//		int cw = g.getClipWidth();
-//		int ch = g.getClipHeight();
-		try {
-//			Thread.sleep(1500);
-		} catch (Exception e) {
-			// ignroe
-		}
 		
 		//#if tmp.displayInfo
 			if (this.showInfo) {

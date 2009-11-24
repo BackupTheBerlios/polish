@@ -474,6 +474,7 @@ public abstract class TextEffect implements Serializable
 	 * 
 	 * @param parent the parent item
 	 * @param text the text
+	 * @param textColor color of the text
 	 * @param font used font
 	 * @param firstLineWidth width of the first line
 	 * @param lineWidth width of following lines
@@ -490,6 +491,7 @@ public abstract class TextEffect implements Serializable
 	 * 
 	 * @param parent the parent item
 	 * @param text the text
+	 * @param textColor color of the text
 	 * @param font used font
 	 * @param firstLineWidth width of the first line
 	 * @param lineWidth width of following lines
@@ -497,7 +499,7 @@ public abstract class TextEffect implements Serializable
 	 * @see #wrap(String, int, Font, int, int)
 	 */
 	public String[] wrap(Item parent, String text, int textColor, Font font, int firstLineWidth, int lineWidth) {
-		return wrap(text,textColor,font,firstLineWidth,lineWidth);
+		return wrap(text, textColor, font, firstLineWidth, lineWidth);
 	}
 
 	/**
@@ -505,6 +507,7 @@ public abstract class TextEffect implements Serializable
 	 * The default implementation just calls TextUtil.wrap(text, font, firstLineWidth, lineWidth).
 	 * 
 	 * @param text the text
+	 * @param textColor color of the text
 	 * @param font used font
 	 * @param firstLineWidth width of the first line
 	 * @param lineWidth width of following lines
@@ -514,6 +517,65 @@ public abstract class TextEffect implements Serializable
 	public String[] wrap(String text, int textColor, Font font, int firstLineWidth, int lineWidth) {
 		return TextUtil.wrap(text, font, firstLineWidth, lineWidth);
 	}
+	
+	/**
+	 * Wraps the text into several lines.
+	 * The default implementation just calls TextUtil.wrap(text, font, firstLineWidth, lineWidth, maxLines, maxLinesAppendix).
+	 * 
+	 * @param text the text
+	 * @param textColor color of the text
+	 * @param font used font
+	 * @param firstLineWidth width of the first line
+	 * @param lineWidth width of following lines
+	 * @param maxLines the maximum number of lines
+	 * @param maxLinesAppendix the appendix that should be added to the last line when the line number is greater than maxLines
+	 * @return an arrays with strings all fitting into the specified dimensions
+	 * @see TextUtil#wrap(String, Font, int, int, int, String)
+	 */
+	public String[] wrap(String text, int textColor, Font font, int firstLineWidth, int lineWidth, int maxLines, String maxLinesAppendix) {
+		return TextUtil.wrap(text, font, firstLineWidth, lineWidth, maxLines, maxLinesAppendix);
+	}
+	
+	/**
+	 * Wraps the text into several lines.
+	 * The default implementation just calls the wrap method without parent item..
+	 * 
+	 * @param item the parent item 
+	 * @param text the text
+	 * @param textColor color of the text
+	 * @param font used font
+	 * @param firstLineWidth width of the first line
+	 * @param lineWidth width of following lines
+	 * @param maxLines the maximum number of lines
+	 * @param maxLinesAppendix the appendix that should be added to the last line when the line number is greater than maxLines
+	 * @return the array containing the substrings
+	 * @see #wrap(String, int, Font, int, int, int, String)
+	 */
+	public String[] wrap(Item item, String text, int textColor, Font font, int firstLineWidth, int lineWidth, int maxLines, String maxLinesAppendix) {
+		return wrap(text, textColor, font, firstLineWidth, lineWidth, maxLines, maxLinesAppendix);
+	}
+	
+	//#if polish.LibraryBuild
+	/**
+	 * Wraps the text into several lines.
+	 * The default implementation just calls the wrap method without parent item..
+	 * 
+	 * @param parent the parent item
+	 * @param text the text
+	 * @param textColor color of the text
+	 * @param font used font
+	 * @param firstLineWidth width of the first line
+	 * @param lineWidth width of following lines
+	 * @param maxLines the maximum number of lines
+	 * @param maxLinesAppendix the appendix that should be added to the last line when the line number is greater than maxLines
+	 * @return an arrays with strings all fitting into the specified dimensions
+	 * @see #wrap(String, int, Font, int, int, int, String)
+	 */
+	public String[] wrap(FakeCustomItem parent, String text, int textColor, Font font, int firstLineWidth, int lineWidth, int maxLines, String maxLinesAppendix) {
+		return wrap(text, textColor, font, firstLineWidth, lineWidth, maxLines, maxLinesAppendix);
+	}
+	//#endif
+
 
 	/**
 	 * Draws the specified character using this effect.
@@ -551,4 +613,5 @@ public abstract class TextEffect implements Serializable
 		
 		return maxWidth;
 	}
+
 }
