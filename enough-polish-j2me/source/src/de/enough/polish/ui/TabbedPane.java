@@ -301,7 +301,7 @@ public class TabbedPane extends Screen
 		}
 		this.tabIconsContainer.add( iconItem, tabIconStyle );
 		this.tabDisplayables.add( tab );
-		if (this.tabDisplayables.size() == 1) {
+		if (this.tabDisplayables.size() == 1 && this.isShown()) {
 			// this was the first tab, switch to it by default:
 			setFocus(0);
 		}
@@ -780,7 +780,9 @@ public class TabbedPane extends Screen
 			this.currentScreen = screen;
 			int screenFullWidth = getScreenFullWidth();
 			int screenFullHeight = getScreenFullHeight();
-			init( screenFullWidth, screenFullHeight);
+			if (screenFullWidth != 0 && screenFullHeight != 0) {
+				init( screenFullWidth, screenFullHeight);
+			}
 			if (isShown) {
 				screen.showNotify();
 			}
@@ -794,7 +796,9 @@ public class TabbedPane extends Screen
 		if (this.tabbedFormListener != null && tabIndex != previousIndex) {
 			this.tabbedFormListener.notifyTabChangeCompleted(previousIndex, tabIndex);
 		}
-		repaint();
+		if (isShown) {
+			repaint();
+		}
 	}
 
 	/**
@@ -1300,6 +1304,9 @@ public class TabbedPane extends Screen
 	 * @see de.enough.polish.ui.Screen#showNotify()
 	 */
 	public void showNotify() {
+		if (this.currentDisplayableIndex == -1 && this.tabDisplayables.size() > 0) {
+			focus(0);
+		}
 		if (this.currentScreen != null) {
 			this.currentScreen.showNotify();
 		}
