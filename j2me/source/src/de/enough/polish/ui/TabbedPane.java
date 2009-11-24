@@ -996,7 +996,7 @@ public class TabbedPane extends Screen
 		if (screen != null) {
 			if (!screen.isInitialized) {
 				int w = getScreenFullWidth();
-				int h = getScreenFullHeight();
+				int h = Display.getScreenHeight();
 				h -= this.tabIconsContainer.itemHeight;
 				screen.init( w, h );
 			}
@@ -1084,6 +1084,7 @@ public class TabbedPane extends Screen
 				
 			//#endif
 			if (this.isTabPositionTop) {
+				//todo align tabs to the top
 			} else {
 				//#if tmp.menuFullScreen
 					//#if tmp.useExternalMenuBar

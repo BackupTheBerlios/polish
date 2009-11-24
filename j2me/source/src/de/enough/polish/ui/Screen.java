@@ -686,14 +686,12 @@ implements UiElement, Animatable
 		if (this.border != null) {
 			availableWidth -= this.border.borderWidthLeft + this.border.borderWidthRight;
 		}
-		//#if !tmp.menuFullScreen
-			this.screenHeight = getHeight();
-		//#elif tmp.useExternalMenuBar
-		//#if tmp.usingTitle
-			if (this.title != null) {
-				this.titleHeight = this.title.getItemHeight( availableWidth, availableWidth, this.screenHeight ); 
-			}
-		//#endif
+		//#if tmp.menuFullScreen && tmp.useExternalMenuBar
+			//#if tmp.usingTitle
+				if (this.title != null) {
+					this.titleHeight = this.title.getItemHeight( availableWidth, availableWidth, this.screenHeight ); 
+				}
+			//#endif
 			this.menuBar.relativeY = this.screenHeight;
 		//#endif
 		calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
