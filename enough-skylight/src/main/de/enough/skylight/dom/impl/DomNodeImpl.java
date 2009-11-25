@@ -62,8 +62,9 @@ public abstract class DomNodeImpl implements DomNode {
 		return null;
 	}
 	public boolean dispatchEvent(Event event) throws EventException {
-		dispatchEventInteral((EventImpl)event,null);
-		return false;
+		EventImpl eventImpl = (EventImpl)event;
+		eventImpl.setTarget(this);
+		return EventProcessor.getInstance().processEvent(eventImpl);
 	}
 	public NamedNodeMap getAttributes() {
 		//TODO: Return a copy of the attributes so the list can not be changed.
@@ -219,66 +220,12 @@ public abstract class DomNodeImpl implements DomNode {
 		buffer.append(">");
 	}
 	
-	private NodeListImpl createEventChain(DomNodeImpl target) {
-		NodeListImpl nodeList = new NodeListImpl();
-		DomNodeImpl domNode = target;
-		while(domNode != null) {
-			nodeList.add(domNode);
-			domNode = domNode.parent;
-		}
-		return nodeList;
-	}
-
-	/**
-	 * This method will do the actual dispatch. If the nodeChain is empty, it will be calcuated. This normally happens
-	 * right after the inital dispatch.
-	 * @param event
-	 * @param nodeChain
-	 */
-	private void dispatchEventInteral(EventImpl event, NodeListImpl eventChain) {
-		DomNodeImpl target = (DomNodeImpl) event.getTarget();
-		if(eventChain == null ) {
-			eventChain = createEventChain(target);
-		}
-		int index = eventChain.getIndex();
-		if(index >= eventChain.getLength()-1) {
-			// We reached the event target.
-			event.setEventEnvironment(Event.AT_TARGET, this);
-			if(event.isPreventDefault()) {
-				return;
-			}
-			doDefaultAction();
-			return;
-		}
-		event.setEventEnvironment(this);
-		short eventPhase = event.getEventPhase();
-		if(eventPhase == Event.CAPTURING_PHASE) {
-			ArrayList listeners = (ArrayList)this.capturingListeners.get(event.getType());
-			if(listeners != null) {
-				int numberOfListeners = listeners.size();
-				for(int i = 0; i < numberOfListeners; i++) {
-					EventListener eventListener = (EventListener)listeners.get(i);
-					try {
-						eventListener.handleEvent(event);
-					} catch(Exception exception) {
-						// Do nothing with the exception.
-					}
-				}
-			}
-			eventChain.increaseIndex();
-			// TODO: Now it is breaking. The event propagation should not increase the call stack.
-			// So we should have a EventManager who will do the propagation and calling of listeners
-			// on the current targets and will call doDefaultAction on the event target.
-			// The EventManager chould then be also threaded.
-		}
-	}
-	
 	private void doAppendChild(DomNodeImpl childNode) {
 		this.childList.add(childNode);
 	}
 	
-	private void doDefaultAction() {
-		
+	protected void doDefaultAction() {
+		// TODO: Make this method abstract.
 	}
 	
 	private void doSetParent(DomNodeImpl domNodeImpl) {
@@ -292,10 +239,12 @@ public abstract class DomNodeImpl implements DomNode {
 		if(this.name != null) {
 			buffer.append(":");
 			buffer.append(this.name);
+			buffer.append(".");
 		}
 		if(this.value != null) {
 			buffer.append(";");
 			buffer.append(this.value);
+			buffer.append(".");
 		}
 		return buffer.toString();
 	}
@@ -313,4 +262,35 @@ public abstract class DomNodeImpl implements DomNode {
 		}
 	}
 	
+	public void handleCaptureEvent(EventImpl event) {
+		String type = event.getType();
+		ArrayList listeners = (ArrayList)this.capturingListeners.get(type);
+		if(listeners == null) {
+			return;
+		}
+		for(int i = 0; i < listeners.size(); i++) {
+			EventListener listener = (EventListener)listeners.get(i);
+			try {
+				listener.handleEvent(event);
+			} catch(Exception e) {
+				// Ignoring exception
+			}
+		}
+	}
+
+	public void handleBubblingEvent(EventImpl event) {
+		String type = event.getType();
+		ArrayList listeners = (ArrayList)this.bubblingListeners.get(type);
+		if(listeners == null) {
+			return;
+		}
+		for(int i = 0; i < listeners.size(); i++) {
+			EventListener listener = (EventListener)listeners.get(i);
+			try {
+				listener.handleEvent(event);
+			} catch(Exception e) {
+				// Ignoring exception
+			}
+		}
+	}
 }
