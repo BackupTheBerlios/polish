@@ -13,7 +13,7 @@ import org.mozilla.javascript.Scriptable;
 import de.enough.polish.util.StreamUtil;
 import de.enough.skylight.dom.impl.DocumentImpl;
 import de.enough.skylight.dom.impl.DomParser;
-import de.enough.skylight.dom.impl.HtmlPages;
+import de.enough.skylight.dom.impl.TestResources;
 
 public class DocumentJsTest extends TestCase {
 
@@ -29,11 +29,11 @@ public class DocumentJsTest extends TestCase {
 		String jsFilePath = "";
 		Script script;
 		try {
-			jsFilePath = JsScripts.JS_ASSERT;
+			jsFilePath = TestResources.JS_ASSERT;
 			jsAssert = StreamUtil.getString(new FileInputStream(jsFilePath), null, StreamUtil.DEFAULT_BUFFER);
 			script = this.context.compileString(jsAssert, jsFilePath, 1);
 			script.exec(this.context, this.scope);
-			jsFilePath = JsScripts.JS_TEST_DOCUMENT;
+			jsFilePath = TestResources.JS_TEST_DOCUMENT;
 			jsTestDocument = StreamUtil.getString(new FileInputStream(jsFilePath), null, StreamUtil.DEFAULT_BUFFER);
 			script = this.context.compileString(jsTestDocument, jsFilePath, 1);
 			script.exec(this.context, this.scope);
@@ -52,7 +52,7 @@ public class DocumentJsTest extends TestCase {
 		DocumentImpl document  = null;
 		DomParser domParser = new DomParser();
 		String htmlDocument;
-		htmlDocument = StreamUtil.getString(new FileInputStream(HtmlPages.HTML_PAGE_1), null, StreamUtil.DEFAULT_BUFFER);
+		htmlDocument = StreamUtil.getString(new FileInputStream(TestResources.HTML_PAGE_1), null, StreamUtil.DEFAULT_BUFFER);
 		document = (DocumentImpl)domParser.parseTree(htmlDocument);
 		
 		this.scope.put("document", this.scope, document.getScriptable());
