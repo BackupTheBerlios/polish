@@ -34,15 +34,12 @@ import javax.microedition.lcdui.Image;
  *
  * <p>Copyright Enough Software 2004 - 2009</p>
 
- * <pre>
- * history
- *        09-Nov-2004 - rob creation
- * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
  
  /*
- * Last modified on 25.01.2006 by Radu Zah, Butterfly-effected, raduzah@yahoo.com.
+  * 
+ * Modifications on 25.01.2006 by Radu Zah, Butterfly-effected, raduzah@yahoo.com.
  * 
  * Problem 1 description: a text that needed more than 20 lines caused an ArrayIndexOutOfBounds exception.
  * Reason: The lineWidths array had an hardcoded size of 20 elements.
@@ -83,6 +80,7 @@ public class BitMapFontViewer {
 	private final byte[] actualCharacterWidths;
 	private int orientation;
 	private BitMapFontViewer maxLineAppendixViewer;
+	private int color;
 
 	/**
 	 * Views a specific input string with a specific bitmap font.
@@ -165,6 +163,7 @@ public class BitMapFontViewer {
 		if (color != -1 && color != 0) {
 			this.image = applyColor(image, COLORIZE_MASK, color);
 		}
+		this.color = color;
 	}
 	
 	/**
@@ -404,7 +403,7 @@ public class BitMapFontViewer {
 		// store the width of the last-line: 
 		if (maxLinesReached) {
 			if (maxLinesAppendix != null && maxLinesAppendixFont != null) {
-				BitMapFontViewer appendixViewer = maxLinesAppendixFont.getViewer(maxLinesAppendix);
+				BitMapFontViewer appendixViewer = maxLinesAppendixFont.getViewer(maxLinesAppendix, this.color);
 				appendixViewer.layout(firstLineWidth, lineWidth, paddingVertical, Graphics.LEFT );
 				int lastLineWidth = this.lineWidths[lineIndex];
 				lastLineWidth += appendixViewer.getWidth();
