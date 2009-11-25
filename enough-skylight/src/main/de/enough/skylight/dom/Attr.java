@@ -59,5 +59,5 @@ public interface Attr extends DomNode{
      * <code>null</code> if this attribute is not in use.
      * @since DOM Level 2
      */
-    public DomNode getOwnerElement();
+    public Element getOwnerElement();
 }

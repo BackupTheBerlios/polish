@@ -12,7 +12,7 @@ package de.enough.skylight.dom;
  * <code>Document</code> within whose context they were created.
  * <p>See also the <a href='http://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407'>Document Object Model (DOM) Level 3 Core Specification</a>.
  */
-public interface Document extends DomNode {
+public interface Document extends DomNode, DocumentEvent {
     
     //public DocumentType getDoctype();
     //public DOMImplementation getImplementation();
