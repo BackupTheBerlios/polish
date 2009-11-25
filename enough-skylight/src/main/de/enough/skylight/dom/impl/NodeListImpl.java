@@ -5,15 +5,12 @@ import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.NodeList;
 
 /**
- * This implementation of a NodeList is also able to hold the state of a current index into the list.
- * This is helpful to iterate through the list.
  * @author rickyn
  *
  */
 public class NodeListImpl implements NodeList {
 
 	private ArrayList nodeList = new ArrayList();
-	private int index;
 	
 	public int getLength() {
 		return this.nodeList.size();
@@ -37,21 +34,4 @@ public class NodeListImpl implements NodeList {
 		}
 	}
 
-	// These methods should help with an iterator style list.
-	public void setIndex(int index) {
-		this.index = index;
-	}
-	
-	public int getIndex() {
-		return this.index;
-	}
-	
-	public void resetIndex() {
-		this.index = 0;
-	}
-
-	public void increaseIndex() {
-		this.index++;
-	}
-	
 }
