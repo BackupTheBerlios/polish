@@ -85,12 +85,14 @@ public class MenuMidlet extends MIDlet implements CommandListener {
 		Benchmark.setSmartTimerDescription("7", "Time spent in AnimationThread.run().animatable.animate()");
 		Benchmark.setSmartTimerDescription("8", "No. of calls to AnimationThread.run().animatable.animate()");
 		Benchmark.setSmartTimerDescription("9", "Time spent repainting stuff in AnimationThread.run()");
+                Benchmark.setSmartTimerDescription("gs", "Time spent in Grayscale.process()");
+                Benchmark.setSmartTimerDescription("gs-count", "No. of calls to grayscale.process()");
 
                 // Set the timer interval
                 Benchmark.setSmartTimerCheckInterval(15000);
 		//#enddebug
-                
-		//#ifdef title:defined
+
+                //#ifdef title:defined
 			//#= String title = "${ title }";
 		//#else
 			String title = "J2ME Polish";
