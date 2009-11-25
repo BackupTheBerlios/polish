@@ -35,7 +35,7 @@ public class XmlPullParser implements SimplePullParser {
 
     // general
 
-    public boolean relaxed;
+    public boolean relaxed = false;
     private Hashtable entityMap;
     private int depth;
     private String[] elementStack = new String[4];
