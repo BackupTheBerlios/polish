@@ -78,6 +78,7 @@ public class StringItem extends Item
 	//#ifdef polish.css.max-lines
 		protected int maxLines = TextUtil.MAXLINES_UNLIMITED;
 		protected String maxLinesAppendix = TextUtil.MAXLINES_APPENDIX;
+		protected int maxLinesAppendixPosition = TextUtil.MAXLINES_APPENDIX_POSITION_BEFORE;
 	//#endif
 	//#if polish.css.text-layout
 		protected int textLayout;
@@ -714,14 +715,14 @@ public class StringItem extends Item
 		//#ifdef tmp.useTextEffect
 		if (this.textEffect != null) {
 			//#ifdef polish.css.max-lines
-				result = this.textEffect.wrap(this, body, this.textColor, this.font, firstLineWidth, availWidth, this.maxLines, this.maxLinesAppendix);
+				result = this.textEffect.wrap(this, body, this.textColor, this.font, firstLineWidth, availWidth, this.maxLines, this.maxLinesAppendix, this.maxLinesAppendixPosition);
 			//#else
 				result = this.textEffect.wrap(this, body, this.textColor, this.font, firstLineWidth, availWidth);
 			//#endif
 		} else {
 		//#endif
 			//#ifdef polish.css.max-lines
-				result = TextUtil.wrap(body, this.font, firstLineWidth, availWidth, this.maxLines, this.maxLinesAppendix);
+				result = TextUtil.wrap(body, this.font, firstLineWidth, availWidth, this.maxLines, this.maxLinesAppendix, this.maxLinesAppendixPosition);
 			//#else
 				result = TextUtil.wrap(body, this.font, firstLineWidth, availWidth);
 			//#endif
@@ -858,6 +859,12 @@ public class StringItem extends Item
 				String appendix = style.getProperty("max-lines-appendix");
 				if (resetStyle || appendix != null) {
 					this.maxLinesAppendix = appendix; 
+				}
+			//#endif
+			//#ifdef polish.css.max-lines-appendix-position
+				Integer positionInt = style.getIntProperty("max-lines-appendix-position");
+				if (positionInt != null) {
+					this.maxLinesAppendixPosition = positionInt.intValue(); 
 				}
 			//#endif
 		//#endif

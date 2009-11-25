@@ -47,13 +47,17 @@ public final class TextUtil {
 	/**
 	 * standard maximum lines number for text wrapping 
 	 */
-	public static final int MAXLINES_UNLIMITED = Integer.MAX_VALUE; 
+	public static final int MAXLINES_UNLIMITED = Integer.MAX_VALUE;
+	
+	public static final int MAXLINES_APPENDIX_POSITION_AFTER = 0x00;
+	
+	public static final int MAXLINES_APPENDIX_POSITION_BEFORE = 0x01;
 	
 	/**
 	 * the default appendix to attach to a truncated text
 	 */
 	public static final String MAXLINES_APPENDIX = "...";
-
+	
 	private static final String UNRESERVED = "-_.!~*'()\"";
 	
 	/**
@@ -165,7 +169,7 @@ public final class TextUtil {
 	 * @see #wrap(String, Font, int, int)
 	 */
 	public static String[] split( String value, Font font, int firstLineWidth, int lineWidth ) {
-		return wrap(value, font, firstLineWidth, lineWidth, MAXLINES_UNLIMITED, null);
+		return wrap(value, font, firstLineWidth, lineWidth, MAXLINES_UNLIMITED, (String)null, TextUtil.MAXLINES_APPENDIX_POSITION_AFTER);
 	}
 	//#endif
 	
@@ -182,7 +186,7 @@ public final class TextUtil {
 	 * @return the array containing the substrings
 	 */
 	public static String[] wrap( String value, Font font, int firstLineWidth, int lineWidth) {
-		return wrap(value, font, firstLineWidth, lineWidth, MAXLINES_UNLIMITED, null);
+		return wrap(value, font, firstLineWidth, lineWidth, MAXLINES_UNLIMITED, (String)null, TextUtil.MAXLINES_APPENDIX_POSITION_AFTER);
 	}
 
 	/**
@@ -198,7 +202,7 @@ public final class TextUtil {
 	 * @param appendix the appendix that should be added to the last line when the line number is greater than maxLines
 	 * @return the array containing the substrings
 	 */
-	public static String[] wrap( String value, Font font, int firstLineWidth, int lineWidth, int maxLines, String appendix ) {
+	public static String[] wrap( String value, Font font, int firstLineWidth, int lineWidth, int maxLines, String maxLinesAppendix, int maxLinesAppendixPosition ) {
 		if (firstLineWidth <= 0 || lineWidth <= 0) {
 			//#debug error
 			System.out.println("INVALID LINE WIDTH FOR SPLITTING " + firstLineWidth + " / " + lineWidth + " ( for string " + value + ")");
@@ -220,7 +224,7 @@ public final class TextUtil {
 		// the given string does not fit on the first line:
 		ArrayList lines = new ArrayList();
 		if (!hasLineBreaks) {
-			wrap( value, font, completeWidth, firstLineWidth, lineWidth, lines, maxLines );
+			wrap( value, font, completeWidth, firstLineWidth, lineWidth, lines, maxLines, maxLinesAppendixPosition);
 		} else {
 			// now the string will be split at the line-breaks and
 			// then each line is processed:
@@ -251,7 +255,7 @@ public final class TextUtil {
 							break;
 						}
 					} else {
-						wrap(line, font, completeWidth, firstLineWidth, lineWidth, lines, maxLines);
+						wrap(line, font, completeWidth, firstLineWidth, lineWidth, lines, maxLines, maxLinesAppendixPosition);
 					}
 					if (isCRLF) {
 						i++;
@@ -270,10 +274,10 @@ public final class TextUtil {
 		if(lines.size() >= maxLines)
 		{
 			String line = (String)lines.get(maxLines - 1);
-			if (appendix == null) {
-				appendix = MAXLINES_APPENDIX;
+			if (maxLinesAppendix == null) {
+				maxLinesAppendix = MAXLINES_APPENDIX;
 			}
-			line = addAppendix(line, font, firstLineWidth, appendix);
+			line = addAppendix(line, font, firstLineWidth, maxLinesAppendix, maxLinesAppendixPosition);
 			lines.set(maxLines - 1, line);
 			while (lines.size() > maxLines) {
 				lines.remove( lines.size() -1 );
@@ -311,7 +315,7 @@ public final class TextUtil {
 			int completeWidth, int firstLineWidth, int lineWidth, 
 			ArrayList list ) 
 	{
-		wrap(value, font, completeWidth, firstLineWidth, lineWidth, list, MAXLINES_UNLIMITED);
+		wrap(value, font, completeWidth, firstLineWidth, lineWidth, list, MAXLINES_UNLIMITED, MAXLINES_APPENDIX_POSITION_AFTER);
 	}
 	//#endif
 	
@@ -338,8 +342,14 @@ public final class TextUtil {
 	public static void wrap( String value, Font font, 
 			int completeWidth, int firstLineWidth, int lineWidth, 
 			ArrayList list,
-			int maxLines ) 
+			int maxLines, int maxLinesAppendixPosition ) 
 	{
+		//TODO extend wrapping : bottom line - based wrapping 
+		if(maxLinesAppendixPosition == MAXLINES_APPENDIX_POSITION_BEFORE && maxLines == 1) {
+			list.add(value);
+			return;
+		}
+		
 		int lastLineIndex = maxLines - 1;
 		char[] valueChars = value.toCharArray();
 		int startPos = 0;
@@ -464,7 +474,7 @@ public final class TextUtil {
 	 * @param appendix the appendix to be added
 	 * @return the shortened line with the appendix
 	 */
-	private static String addAppendix(String line, Font font, int availWidth, String appendix)
+	private static String addAppendix(String line, Font font, int availWidth, String appendix, int position)
 	{
 		try
 		{
@@ -476,7 +486,11 @@ public final class TextUtil {
 				completeWidth = appendixWidth;
 				while(completeWidth > availWidth)
 				{
-					line = line.substring(0,line.length() - 1);
+					if(position == TextUtil.MAXLINES_APPENDIX_POSITION_AFTER) {
+						line = line.substring(0,line.length() - 1);
+					} else if(position == TextUtil.MAXLINES_APPENDIX_POSITION_BEFORE) {
+						line = line.substring(1);
+					}
 					completeWidth = font.stringWidth(line);
 				}
 				
@@ -486,11 +500,20 @@ public final class TextUtil {
 			{
 				while(completeWidth > availWidth)
 				{
-					line = line.substring(0,line.length() - 1);
+					if(position == TextUtil.MAXLINES_APPENDIX_POSITION_AFTER) {
+						line = line.substring(0,line.length() - 1);
+					} else if(position == TextUtil.MAXLINES_APPENDIX_POSITION_BEFORE) {
+						line = line.substring(1);
+					}
+						
 					completeWidth = font.stringWidth(line) +  appendixWidth;
 				}
 				
-				return line + appendix;
+				if(position == TextUtil.MAXLINES_APPENDIX_POSITION_AFTER) {
+					return line + appendix;
+				} else {
+					return appendix + line;
+				}
 			}
 		}
 		catch(ArrayIndexOutOfBoundsException e)

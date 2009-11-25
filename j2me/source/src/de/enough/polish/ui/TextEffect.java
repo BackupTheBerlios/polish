@@ -532,8 +532,8 @@ public abstract class TextEffect implements Serializable
 	 * @return an arrays with strings all fitting into the specified dimensions
 	 * @see TextUtil#wrap(String, Font, int, int, int, String)
 	 */
-	public String[] wrap(String text, int textColor, Font font, int firstLineWidth, int lineWidth, int maxLines, String maxLinesAppendix) {
-		return TextUtil.wrap(text, font, firstLineWidth, lineWidth, maxLines, maxLinesAppendix);
+	public String[] wrap(String text, int textColor, Font font, int firstLineWidth, int lineWidth, int maxLines, String maxLinesAppendix, int maxLinesAppendixPosition) {
+		return TextUtil.wrap(text, font, firstLineWidth, lineWidth, maxLines, maxLinesAppendix, maxLinesAppendixPosition);
 	}
 	
 	/**
@@ -551,8 +551,8 @@ public abstract class TextEffect implements Serializable
 	 * @return the array containing the substrings
 	 * @see #wrap(String, int, Font, int, int, int, String)
 	 */
-	public String[] wrap(Item item, String text, int textColor, Font font, int firstLineWidth, int lineWidth, int maxLines, String maxLinesAppendix) {
-		return wrap(text, textColor, font, firstLineWidth, lineWidth, maxLines, maxLinesAppendix);
+	public String[] wrap(Item item, String text, int textColor, Font font, int firstLineWidth, int lineWidth, int maxLines, String maxLinesAppendix, int maxLinesAppendixPosition) {
+		return wrap(text, textColor, font, firstLineWidth, lineWidth, maxLines, maxLinesAppendix, maxLinesAppendixPosition);
 	}
 	
 	//#if polish.LibraryBuild
@@ -571,8 +571,8 @@ public abstract class TextEffect implements Serializable
 	 * @return an arrays with strings all fitting into the specified dimensions
 	 * @see #wrap(String, int, Font, int, int, int, String)
 	 */
-	public String[] wrap(FakeCustomItem parent, String text, int textColor, Font font, int firstLineWidth, int lineWidth, int maxLines, String maxLinesAppendix) {
-		return wrap(text, textColor, font, firstLineWidth, lineWidth, maxLines, maxLinesAppendix);
+	public String[] wrap(FakeCustomItem parent, String text, int textColor, Font font, int firstLineWidth, int lineWidth, int maxLines, String maxLinesAppendix, int maxLinesAppendixPosition) {
+		return wrap(text, textColor, font, firstLineWidth, lineWidth, maxLines, maxLinesAppendix, maxLinesAppendixPosition);
 	}
 	//#endif
 
