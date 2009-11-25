@@ -4938,10 +4938,13 @@ implements UiElement, Animatable
 	public boolean handlePointerTouchDown( int x, int y ) {
 		boolean handled = false;
 		//#ifdef polish.hasTouchEvents
-			Container cont = this.container;
-			if (cont != null) {
-				if (cont.handlePointerTouchDown(x - cont.relativeX, y - cont.relativeY)) {
-					return true;
+			Container cont = null;
+			if (!isMenuOpened()) {
+				cont = this.container;
+				if (cont != null) {
+					if (cont.handlePointerTouchDown(x - cont.relativeX, y - cont.relativeY)) {
+						return true;
+					}
 				}
 			}
 			Item item = getItemAt(x, y);

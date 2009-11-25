@@ -34,6 +34,7 @@ import de.enough.polish.ui.Border;
 import de.enough.polish.ui.ClippingRegion;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.ContainerView;
+import de.enough.polish.ui.Display;
 import de.enough.polish.ui.IconItem;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
@@ -119,6 +120,11 @@ public class FishEyeContainerView extends ContainerView {
 	protected boolean isShowTextInTitle;
 	//#if polish.css.fisheyeview-max-visible
 		protected int maxVisibleItems;
+	//#endif
+	//#if polish.hasPointerEvents
+		private int touchPressX;
+		private int touchCurrentIndex;
+		private static boolean isPointerDraggedEnabled;
 	//#endif
 		
 	private final Object lock = new Object();
@@ -327,6 +333,11 @@ public class FishEyeContainerView extends ContainerView {
 	 * @see de.enough.polish.ui.ContainerView#initContent(de.enough.polish.ui.Container, int, int)
 	 */
 	protected void initContent(Item parentContainerItem, int firstLineWidth, int availWidth, int availHeight) {
+		//#if polish.hasPointerEvents
+			if (!isPointerDraggedEnabled) {
+				isPointerDraggedEnabled = Display.getInstance().hasPointerMotionEvents();
+			}
+		//#endif
 		this.isVertical = false;
 		this.isHorizontal = true;
 		Container parent = (Container) parentContainerItem;		
@@ -932,7 +943,10 @@ public class FishEyeContainerView extends ContainerView {
 	}
 
 
-	/* see ItemView.releaseResources() */
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.ContainerView#releaseResources()
+	 */
 	public void releaseResources() {
 		super.releaseResources();
 		synchronized (this.lock) {
@@ -947,6 +961,65 @@ public class FishEyeContainerView extends ContainerView {
 			//#endif
 		}
 	}
+
+	//#if polish.hasPointerEvents
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.ItemView#handlePointerDragged(int, int)
+	 */
+	public boolean handlePointerDragged( int x, int y ) {
+		int diff = x - this.touchPressX;
+		int minDiff = this.contentWidth / this.parentContainer.size();
+		if (minDiff > 30) {
+			minDiff >>>= 1;
+		}
+		if (Math.abs(diff) < minDiff) {
+			return false;
+		}
+		int current = this.touchCurrentIndex;
+		if (diff < 0) {
+			current++;
+			if (current >=  this.parentContainer.size()) {
+				current = 0;
+			}
+		} else {
+			current--;
+			if (current < 0) {
+				current = this.parentContainer.size() - 1;
+			}
+		}
+		this.touchCurrentIndex = current;
+		this.touchPressX = x;
+		this.parentContainer.focusChild( current );
+		return true;
+	}
+	//#endif
+
+	//#if polish.hasPointerEvents
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.ItemView#handlePointerPressed(int, int)
+	 */
+	public boolean handlePointerPressed( int x, int y ) {
+		if (isPointerDraggedEnabled) {
+			this.touchPressX = x;
+			this.touchCurrentIndex = this.focusedIndex;
+			return true;
+		} else {
+			return super.handlePointerPressed(x, y);
+		}
+	}
+	//#endif
+
+	//#if polish.hasTouchEvents
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.ItemView#handlePointerTouchDown(int, int)
+	 */
+	public boolean handlePointerTouchDown( int x, int y) {
+		return handlePointerPressed( x, y );
+	}
+	//#endif
 
 	
 	
