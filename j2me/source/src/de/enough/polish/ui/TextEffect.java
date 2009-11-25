@@ -529,8 +529,9 @@ public abstract class TextEffect implements Serializable
 	 * @param lineWidth width of following lines
 	 * @param maxLines the maximum number of lines
 	 * @param maxLinesAppendix the appendix that should be added to the last line when the line number is greater than maxLines
+	 * @param maxLinesAppendixPosition either TextUtil.MAXLINES_APPENDIX_POSITION_AFTER or TextUtil.MAXLINES_APPENDIX_POSITION_BEFORE
 	 * @return an arrays with strings all fitting into the specified dimensions
-	 * @see TextUtil#wrap(String, Font, int, int, int, String)
+	 * @see TextUtil#wrap(String, Font, int, int, int, String, int)
 	 */
 	public String[] wrap(String text, int textColor, Font font, int firstLineWidth, int lineWidth, int maxLines, String maxLinesAppendix, int maxLinesAppendixPosition) {
 		return TextUtil.wrap(text, font, firstLineWidth, lineWidth, maxLines, maxLinesAppendix, maxLinesAppendixPosition);
@@ -548,8 +549,9 @@ public abstract class TextEffect implements Serializable
 	 * @param lineWidth width of following lines
 	 * @param maxLines the maximum number of lines
 	 * @param maxLinesAppendix the appendix that should be added to the last line when the line number is greater than maxLines
+	 * @param maxLinesAppendixPosition either TextUtil.MAXLINES_APPENDIX_POSITION_AFTER or TextUtil.MAXLINES_APPENDIX_POSITION_BEFORE
 	 * @return the array containing the substrings
-	 * @see #wrap(String, int, Font, int, int, int, String)
+	 * @see #wrap(String, int, Font, int, int, int, String, int)
 	 */
 	public String[] wrap(Item item, String text, int textColor, Font font, int firstLineWidth, int lineWidth, int maxLines, String maxLinesAppendix, int maxLinesAppendixPosition) {
 		return wrap(text, textColor, font, firstLineWidth, lineWidth, maxLines, maxLinesAppendix, maxLinesAppendixPosition);
@@ -568,8 +570,9 @@ public abstract class TextEffect implements Serializable
 	 * @param lineWidth width of following lines
 	 * @param maxLines the maximum number of lines
 	 * @param maxLinesAppendix the appendix that should be added to the last line when the line number is greater than maxLines
+	 * @param maxLinesAppendixPosition either TextUtil.MAXLINES_APPENDIX_POSITION_AFTER or TextUtil.MAXLINES_APPENDIX_POSITION_BEFORE
 	 * @return an arrays with strings all fitting into the specified dimensions
-	 * @see #wrap(String, int, Font, int, int, int, String)
+	 * @see #wrap(String, int, Font, int, int, int, String, int)
 	 */
 	public String[] wrap(FakeCustomItem parent, String text, int textColor, Font font, int firstLineWidth, int lineWidth, int maxLines, String maxLinesAppendix, int maxLinesAppendixPosition) {
 		return wrap(text, textColor, font, firstLineWidth, lineWidth, maxLines, maxLinesAppendix, maxLinesAppendixPosition);
@@ -594,6 +597,7 @@ public abstract class TextEffect implements Serializable
 
 	/**
 	 * Returns the maximum width of the specified lines
+	 * @param parent the parent item
 	 * @param lines the lines
 	 * @return the maximum width
 	 */

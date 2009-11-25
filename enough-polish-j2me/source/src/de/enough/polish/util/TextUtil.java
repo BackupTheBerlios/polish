@@ -48,9 +48,14 @@ public final class TextUtil {
 	 * standard maximum lines number for text wrapping 
 	 */
 	public static final int MAXLINES_UNLIMITED = Integer.MAX_VALUE;
-	
+	/**
+	 * Constant for adding the appendix at the end of the text when reaching the maximum of wrapped lines.
+	 */
 	public static final int MAXLINES_APPENDIX_POSITION_AFTER = 0x00;
 	
+	/**
+	 * Constant for adding the appendix at the beginning of the text when reaching the maximum of wrapped lines.
+	 */
 	public static final int MAXLINES_APPENDIX_POSITION_BEFORE = 0x01;
 	
 	/**
