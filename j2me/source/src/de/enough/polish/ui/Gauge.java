@@ -1148,7 +1148,7 @@ implements ImageConsumer
 		x -= this.contentX;
 		int val = (x * this.maxValue) / this.contentWidth;
 		if (val != this.value) {
-		setValue( val );
+			setValue( val );
 			notifyStateChanged();
 		}
 		return true;
@@ -1168,7 +1168,7 @@ implements ImageConsumer
 				return true;
 			}
 		//#endif
-		x -= this.contentX;
+		x -= this.contentX - (this.contentWidth / (this.maxValue * 2));
 		int val = (x * this.maxValue) / this.contentWidth;
 		if (val != this.value) {
 			setValue( val );
