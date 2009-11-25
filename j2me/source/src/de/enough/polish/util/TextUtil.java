@@ -188,6 +188,23 @@ public final class TextUtil {
 	public static String[] wrap( String value, Font font, int firstLineWidth, int lineWidth) {
 		return wrap(value, font, firstLineWidth, lineWidth, MAXLINES_UNLIMITED, (String)null, TextUtil.MAXLINES_APPENDIX_POSITION_AFTER);
 	}
+	
+	/**
+	 * Wraps the given string so it fits on the specified lines.
+	 * First of al it is splitted at the line-breaks ('\n'), subsequently the substrings
+	 * are splitted when they do not fit on a single line.
+	 *  
+	 * @param value the string which should be splitted
+	 * @param font the font which is used to display the font
+	 * @param firstLineWidth the allowed width for the first line
+	 * @param lineWidth the allowed width for all other lines, lineWidth >= firstLineWidth
+	 * @param maxLines the maximum number of lines
+	 * @param maxLinesAppendix the appendix that should be added to the last line when the line number is greater than maxLines
+	 * @return the array containing the substrings
+	 */
+	public static String[] wrap( String value, Font font, int firstLineWidth, int lineWidth, int maxLines, String maxLinesAppendix ) {
+		return wrap( value, font, firstLineWidth, lineWidth, maxLines, maxLinesAppendix, MAXLINES_APPENDIX_POSITION_AFTER );
+	}
 
 	/**
 	 * Wraps the given string so it fits on the specified lines.
@@ -199,7 +216,8 @@ public final class TextUtil {
 	 * @param firstLineWidth the allowed width for the first line
 	 * @param lineWidth the allowed width for all other lines, lineWidth >= firstLineWidth
 	 * @param maxLines the maximum number of lines
-	 * @param appendix the appendix that should be added to the last line when the line number is greater than maxLines
+	 * @param maxLinesAppendix the appendix that should be added to the last line when the line number is greater than maxLines
+	 * @param maxLinesAppendixPosition either MAXLINES_APPENDIX_POSITION_AFTER or MAXLINES_APPENDIX_POSITION_BEFORE
 	 * @return the array containing the substrings
 	 */
 	public static String[] wrap( String value, Font font, int firstLineWidth, int lineWidth, int maxLines, String maxLinesAppendix, int maxLinesAppendixPosition ) {
@@ -309,7 +327,7 @@ public final class TextUtil {
 	 * @param lineWidth the allowed width for all other lines, lineWidth >= firstLineWidth
 	 * @param list the list to which the substrings will be added.
 	 * @deprecated please use wrap instead
-	 * @see #wrap(String, Font, int, int, int, ArrayList, int)
+	 * @see #wrap(String, Font, int, int, int, ArrayList, int, int)
 	 */
 	public static void split( String value, Font font, 
 			int completeWidth, int firstLineWidth, int lineWidth, 
@@ -337,6 +355,7 @@ public final class TextUtil {
 	 * @param firstLineWidth the allowed width for the first line
 	 * @param lineWidth the allowed width for all other lines, lineWidth >= firstLineWidth
 	 * @param maxLines the maximum number of lines 
+	 * @param maxLinesAppendixPosition either MAXLINES_APPENDIX_POSITION_AFTER or MAXLINES_APPENDIX_POSITION_BEFORE
 	 * @param list the list to which the substrings will be added.
 	 */
 	public static void wrap( String value, Font font, 

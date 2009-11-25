@@ -191,6 +191,16 @@ public class VerticalScrollTextEffect extends TextEffect{
 		
 		g.setClip(clipX, clipY, clipWidth, clipHeight);
 	}
+	
+	
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.TextEffect#wrap(de.enough.polish.ui.Item, java.lang.String, int, javax.microedition.lcdui.Font, int, int, int, java.lang.String, int)
+	 */
+	public String[] wrap(Item item, String text, int textColor, Font font, int firstLineWidth, int lineWidth, int maxLinesParam, String maxLinesAppendix, int maxLinesAppendixPosition) {
+		return wrap( item, text, textColor, font, firstLineWidth, lineWidth );
+	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.TextEffect#wrap(java.lang.String, int, javax.microedition.lcdui.Font, int, int)
