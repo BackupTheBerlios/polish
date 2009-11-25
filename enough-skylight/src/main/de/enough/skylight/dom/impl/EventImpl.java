@@ -1,11 +1,9 @@
 package de.enough.skylight.dom.impl;
 
-import org.mozilla.javascript.ScriptableObject;
-
 import de.enough.skylight.dom.Event;
 import de.enough.skylight.dom.EventTarget;
 
-public abstract class EventImpl extends ScriptableObject implements Event{
+public abstract class EventImpl implements Event{
 
 	private boolean bubbles;
 	private boolean cancelable;
@@ -110,6 +108,10 @@ public abstract class EventImpl extends ScriptableObject implements Event{
 
 	protected boolean isPreventDefault() {
 		return this.preventDefault;
+	}
+
+	void setTarget(EventTarget newEventTarget) {
+		this.target = newEventTarget;
 	}
 
 }
