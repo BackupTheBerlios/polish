@@ -6,7 +6,9 @@ import de.enough.polish.util.HashMap;
 import de.enough.skylight.dom.Attr;
 import de.enough.skylight.dom.Document;
 import de.enough.skylight.dom.DomException;
+import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.Element;
+import de.enough.skylight.dom.Event;
 import de.enough.skylight.dom.NodeList;
 import de.enough.skylight.dom.impl.rhino.DocumentScriptableObject;
 
@@ -16,8 +18,9 @@ public class DocumentImpl extends DomNodeImpl implements Document {
 	private DocumentScriptableObject scriptableObject;
 	
 	public Element createElement(String tagName) {
-		// TODO Auto-generated method stub
-		return null;
+		ElementImpl elementImpl = new ElementImpl();
+		elementImpl.init(this, null, tagName, null, DomNode.ELEMENT_NODE);
+		return elementImpl;
 	}
 	
 	protected void cacheNodeWithId(String id, DomNodeImpl domNode) {
@@ -59,6 +62,12 @@ public class DocumentImpl extends DomNodeImpl implements Document {
 			this.scriptableObject.init(this);
 		}
 		return this.scriptableObject;
+	}
+
+	@Override
+	public Event createEvent(String eventType) throws DomException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }
