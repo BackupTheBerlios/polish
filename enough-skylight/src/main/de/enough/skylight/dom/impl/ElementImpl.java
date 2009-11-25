@@ -42,8 +42,8 @@ public class ElementImpl extends DomNodeImpl implements Element{
 	}
 
 	public String getTagName() {
-		// TODO Auto-generated method stub
-		return null;
+		// TODO: What about uppercase names which are cannonical for html4
+		return getNodeName();
 	}
 
 	public boolean hasAttribute(String name) {
@@ -62,7 +62,6 @@ public class ElementImpl extends DomNodeImpl implements Element{
 	}
 
 	public void setAttribute(String name, String value) throws DomException {
-		// TODO Auto-generated method stub
 		
 	}
 
