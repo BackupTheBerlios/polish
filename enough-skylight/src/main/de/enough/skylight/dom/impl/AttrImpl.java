@@ -4,17 +4,17 @@ import org.mozilla.javascript.Scriptable;
 
 import de.enough.skylight.dom.Attr;
 import de.enough.skylight.dom.DomException;
-import de.enough.skylight.dom.DomNode;
+import de.enough.skylight.dom.Element;
 import de.enough.skylight.dom.impl.rhino.AttrScriptableObject;
 
 public class AttrImpl extends DomNodeImpl implements Attr {
 
-	private DomNode parent;
+	private Element parent;
 	private String name;
 	private String value;
 	private AttrScriptableObject scriptableObject;
 
-	protected void init(DomNodeImpl parent, String name, String value) {
+	protected void init(ElementImpl parent, String name, String value) {
 		// Do not pass the parent to the super constructor as we do not want to queue this attributes as a proper child of the parent.
 		super.init(null, null, name, null, ATTRIBUTE_NODE);
 		this.parent = parent;
@@ -34,7 +34,7 @@ public class AttrImpl extends DomNodeImpl implements Attr {
 		return this.name;
 	}
 
-	public DomNode getOwnerElement() {
+	public Element getOwnerElement() {
 		return this.parent;
 	}
 
