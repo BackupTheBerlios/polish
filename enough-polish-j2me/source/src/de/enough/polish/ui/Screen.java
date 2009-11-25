@@ -3051,8 +3051,8 @@ implements UiElement, Animatable
 					item.screen = this;
 				} else {
 					this.titleHeight = 0;
-				}
-				if (this.isInitialized && super.isShown()) {
+				}				
+				if (this.isInitialized || super.isShown()) {
 					calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
 					requestRepaint();
 				}
