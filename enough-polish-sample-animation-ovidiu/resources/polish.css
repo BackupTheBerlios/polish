@@ -180,9 +180,9 @@ focused {
 		on: defocus;
 		range: 0%..100%;
 	} */
-	filter: blur;
-	filter-blur-grade: 100%;
-	filter-blur-grade-animation {
+	filter: grayscale;
+	filter-grayscale-grade: 100%;
+	filter-grayscale-grade-animation {
 		on: defocus;
 		range: 0%..100%;
 	}
@@ -192,7 +192,7 @@ focused {
 	font-color: white;
 	text-effect: shadow;
 		
-	filter-blur-grade-animation {
+	filter-grayscale-grade-animation {
 		on: focus;
 		range: 100%..0%;
 	}
