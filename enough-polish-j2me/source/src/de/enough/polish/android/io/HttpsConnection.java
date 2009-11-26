@@ -133,7 +133,7 @@ public interface HttpsConnection extends HttpConnection
 	 * <code>HttpsConnection</code>.
 	 * 
 	 * @return the network port number of the URL for this HttpsConnection. The default HTTPS port number (443) is returned if there was no port number in the string passed to Connector.open.
-	 * @see getPort in interface HttpConnection
+	 * @see HttpConnection#getPort
 	 */
 	public int getPort();
 
