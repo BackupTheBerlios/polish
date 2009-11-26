@@ -599,9 +599,9 @@ implements Comparable
 			if (lastDotIndex != -1) {
 				shortClassName = className.substring(lastDotIndex + 1);
 			}
-			if (this.name.equals("text-layout")) {
-				System.out.println("appliesToMap=" + appliesToMap);
-			}
+//			if (this.name.equals("text-layout")) {
+//				System.out.println("appliesToMap=" + appliesToMap);
+//			}
 			return (this.appliesToMap.get( shortClassName ) != null) || (this.appliesToMap.get( className ) != null);
 		}
 	}
