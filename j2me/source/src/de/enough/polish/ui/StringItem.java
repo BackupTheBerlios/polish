@@ -78,7 +78,7 @@ public class StringItem extends Item
 	//#ifdef polish.css.max-lines
 		protected int maxLines = TextUtil.MAXLINES_UNLIMITED;
 		protected String maxLinesAppendix = TextUtil.MAXLINES_APPENDIX;
-		protected int maxLinesAppendixPosition = TextUtil.MAXLINES_APPENDIX_POSITION_BEFORE;
+		protected int maxLinesAppendixPosition = TextUtil.MAXLINES_APPENDIX_POSITION_AFTER;
 	//#endif
 	//#if polish.css.text-layout
 		protected int textLayout;
