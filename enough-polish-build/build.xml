@@ -992,7 +992,7 @@
 		</convertToWindowsLineEndings>
 	</target>
 
-	<target name="installer" 
+	<target name="installer"
 			 depends="bin-dist, copyfiles, convertWindowsLineEndings"
 			 description="creates the j2mepolish-installer." 
 		>
@@ -1041,7 +1041,7 @@
 		    	nodeprecated="false" 
 		    	packagenames="de.enough.*" 
 		    	sourcepath="source/src" 
-		    	classpath="bin/classes:lib/ant.jar:lib/junit.jar"
+		    	classpath="bin/classes:lib/ant.jar:lib/junit.jar:lib/jdom.jar:lib/AppleJavaExtensions.jar:lib/bluecove-2.0.3.jar:lib/javax.servlet.jar"
 		    	doctitle="The J2ME Polish Build Framework, Version ${Version}"
 		/>	
 		<javadoc 
@@ -1058,9 +1058,11 @@
 		    	nodeprecated="false" 
 		    	packagenames="de.enough.*" 
 		    	sourcepath="../enough-polish-j2me/source/src" 
-		    	classpath="../enough-polish-j2me/bin/classes:import/cldc-1.1.jar:import/midp-2.0.jar" 
+		    	classpath="../enough-polish-j2me/bin/classes:import/cldc-1.1.jar:import/midp-2.0.jar:import/windows.jar:import/advancedmultimedia-1.0.jar:import/android-1.5.jar:import/blackberry-5.0.0.jar:import/doja-2.5.jar:import/m3g.jar:import/nokia-ui.jar:import/sensor.jar:import/siemens-extension-api.jar"
 		    	doctitle="The J2ME Polish Client Framework, Version ${Version}"
-		/>	
+		>
+			<link href="http://java.sun.com/javame/reference/apis/jsr118/" />
+		</javadoc>
 		<!-- copy the whole website to the documentation -->
 		<echo message="starting webprocessor (1/2)" />
 		<webprocessor 
