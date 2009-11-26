@@ -13,7 +13,7 @@ public class ContactFactory {
 	/**
 	 * 
 	 * @param personCursor the cursor object must be at the right position. It is not cleaned up afterwards. The caller is responsible for that.
-	 * @return
+	 * @return the contact
 	 */
 	public static ContactImpl getContactFromCursor(ContentResolver contentResolver, ContactListImpl contactListImpl, Cursor personCursor) {
 		int columnIndex;
