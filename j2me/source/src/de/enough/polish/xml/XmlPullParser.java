@@ -94,11 +94,12 @@ public class XmlPullParser implements SimplePullParser {
             this.eof = true;
             return r;
         }
-        else if (r == '\n' || r == '\r') {
+        else if ((r == '\n' || r == '\r') && this.peek0 != '\n') {
+        	// If we are truly at the end of a line, update the line/column information.
+        	// We do not swallow any newline characters as XML processors always return any characters.
+        	// Its up to the client to trim any unwanted whitespace.
             this.line++;
             this.column = 0;
-            if (r == '\r' && this.peek0 == '\n')
-                this.peek0 = 0;
         }
         this.column++;
 
