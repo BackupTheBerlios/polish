@@ -225,6 +225,10 @@ public class Display
 //#elif polish.midp
 	implements javax.microedition.lcdui.CommandListener
 //#endif
+//#if ${polish.license} == GPL
+	//#define tmp.displayInfo
+	, Runnable
+//#endif
 	
 //#if polish.css.screen-transition || polish.css.screen-change-animation || polish.ScreenChangeAnimation.forward:defined
 	//#define tmp.screenTransitions
@@ -577,8 +581,7 @@ public class Display
 		private final Point pointerEventPoint;
 	//#endif
 	protected boolean enableScreenChangeAnimations = true;
-	//#if ${polish.license} == GPL
-		//#define tmp.displayInfo
+	//#if tmp.displayInfo
 		private boolean showInfo;
 		private int currentInfoColor;
 		private Displayable infoNextDisplayable;
@@ -1675,17 +1678,7 @@ public class Display
 				Font font = g.getFont();
 				g.drawString("powered by", this.screenWidth/2, this.screenHeight/2 - 2, Graphics.BOTTOM | Graphics.HCENTER );
 				g.drawString("J2ME Polish", this.screenWidth/2, this.screenHeight/2 + font.getHeight() + 2, Graphics.BOTTOM | Graphics.HCENTER );
-				
-				col += 0x030303;
-				if (col >= 0xffffff || (System.currentTimeMillis() - this.infoStartTime) > 1500) {
-					this.showInfo = false;
-					if (this.infoNextDisplayable != null) {
-						setCurrent( this.infoNextDisplayable );
-						this.infoNextDisplayable = null;
-					}
-				}
-				this.currentInfoColor = col;
-				repaint();
+				this.nativeDisplay.callSerially(this);
 				return;
 			}
 		//#endif
@@ -2744,6 +2737,22 @@ public class Display
 			Display.this.pointerPressed(x, y);
 		}
 		//#endif
+	}
+	//#endif
+	
+	//#if tmp.displayInfo
+	public void run() {
+		int col = this.currentInfoColor + 0x030303;
+		if (col >= 0xffffff || (System.currentTimeMillis() - this.infoStartTime) > 1500) {
+			this.showInfo = false;
+			if (this.infoNextDisplayable != null) {
+				setCurrent( this.infoNextDisplayable );
+				this.infoNextDisplayable = null;
+			}
+		} else {
+			this.currentInfoColor = col;
+			repaint();
+		}
 	}
 	//#endif
 }
