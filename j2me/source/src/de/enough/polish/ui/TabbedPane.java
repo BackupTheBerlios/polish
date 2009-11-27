@@ -44,7 +44,7 @@ import de.enough.polish.util.ArrayList;
  * on the screen at one time. In that case, implementations must indicate to
  * users that more tabs are available and provide a mechanism for accessing
  * them. An application can be notified of tab navigation events on a given
- * TabbedPane using the <A HREF="../../../javax/microedition/lcdui/TabListener.html" title="interface in javax.microedition.lcdui"><CODE>TabListener</CODE></A> interface.
+ * TabbedPane using the <A HREF="TabListener.html" title="interface in javax.microedition.lcdui"><CODE>TabListener</CODE></A> interface.
  * </P>
  * <img src="doc-files/arrows_in_tab.gif">
  * </P>
