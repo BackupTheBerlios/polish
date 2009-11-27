@@ -968,6 +968,9 @@ public class FishEyeContainerView extends ContainerView {
 	 * @see de.enough.polish.ui.ItemView#handlePointerDragged(int, int)
 	 */
 	public boolean handlePointerDragged( int x, int y ) {
+		if (y < 0 || y > this.contentHeight || x < 0 || x > this.contentWidth) {
+			return false;
+		}
 		int diff = x - this.touchPressX;
 		int minDiff = this.contentWidth / this.parentContainer.size();
 		if (minDiff > 30) {
@@ -1002,6 +1005,9 @@ public class FishEyeContainerView extends ContainerView {
 	 */
 	public boolean handlePointerPressed( int x, int y ) {
 		if (isPointerDraggedEnabled) {
+			if (y < 0 || y > this.contentHeight || x < 0 || x > this.contentWidth) {
+				return false;
+			}
 			this.touchPressX = x;
 			this.touchCurrentIndex = this.focusedIndex;
 			return true;
@@ -1017,6 +1023,9 @@ public class FishEyeContainerView extends ContainerView {
 	 * @see de.enough.polish.ui.ItemView#handlePointerTouchDown(int, int)
 	 */
 	public boolean handlePointerTouchDown( int x, int y) {
+		if (y < 0 || y > this.contentHeight || x < 0 || x > this.contentWidth) {
+			return false;
+		}
 		return handlePointerPressed( x, y );
 	}
 	//#endif
