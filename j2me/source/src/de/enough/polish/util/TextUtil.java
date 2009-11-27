@@ -294,7 +294,7 @@ public final class TextUtil {
 			}
 		}
 		
-		if(lines.size() >= maxLines)
+		if(lines.size() > maxLines)
 		{
 			String line = (String)lines.get(maxLines - 1);
 			if (maxLinesAppendix == null) {
