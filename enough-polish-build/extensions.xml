@@ -98,14 +98,12 @@
 			<mapping from="javax.microedition.midlet.*" to="de.enough.polish.blackberry.midlet.*" />
 			<mapping from="javax.microedition.midlet.MIDlet" to="de.enough.polish.blackberry.midlet.MIDlet" />
 			<mapping from="javax.microedition.midlet.MIDletStateChangeException" to="de.enough.polish.blackberry.midlet.MIDletStateChangeException" />
-			<mapping from="javax.microedition.lcdui.AlertType" to="de.enough.polish.blackberry.ui.AlertType" />
 			<mapping from="javax.microedition.lcdui.Font" to="de.enough.polish.blackberry.ui.Font" />
 			<mapping from="javax.microedition.lcdui.Graphics" to="de.enough.polish.blackberry.ui.Graphics" />
 			<mapping from="javax.microedition.lcdui.Image" to="de.enough.polish.blackberry.ui.Image" />
 			<mapping from="javax.microedition.lcdui.*">
 				<to>
-					de.enough.polish.blackberry.ui.AlertType;
-					import de.enough.polish.blackberry.ui.Font;
+					de.enough.polish.blackberry.ui.Font;
 					import de.enough.polish.blackberry.ui.Graphics;
 					import de.enough.polish.blackberry.ui.Image; 
 					import de.enough.polish.ui.*
@@ -117,13 +115,11 @@
 			<mapping from="javax.microedition.midlet.*" to="de.enough.polish.doja.midlet.*" />
 			<mapping from="javax.microedition.midlet.MIDlet" to="de.enough.polish.doja.midlet.MIDlet" />
 			<mapping from="javax.microedition.midlet.MIDletStateChangeException" to="de.enough.polish.doja.midlet.MIDletStateChangeException" />
-			<mapping from="javax.microedition.lcdui.AlertType" to="de.enough.polish.doja.ui.AlertType" />
 			<mapping from="javax.microedition.lcdui.Font" to="de.enough.polish.doja.ui.Font" />
 			<mapping from="javax.microedition.lcdui.Graphics" to="de.enough.polish.doja.ui.Graphics" />
 			<mapping from="javax.microedition.lcdui.Image" to="de.enough.polish.doja.ui.Image" />
 			<mapping from="javax.microedition.lcdui.*">
 				<to>
-					import de.enough.polish.doja.ui.AlertType;
 					import de.enough.polish.doja.ui.Font;
 					import de.enough.polish.doja.ui.Graphics;
 					import de.enough.polish.doja.ui.Image; 
@@ -152,7 +148,6 @@
 			<mapping from="javax.microedition.midlet.*" to="de.enough.polish.android.midlet.*" />
 			<mapping from="javax.microedition.midlet.MIDlet" to="de.enough.polish.android.midlet.MIDlet" />
 			<mapping from="javax.microedition.midlet.MIDletStateChangeException" to="de.enough.polish.android.midlet.MIDletStateChangeException" />
-			<mapping from="javax.microedition.lcdui.AlertType" to="de.enough.polish.android.lcdui.AlertType" />
 			<mapping from="javax.microedition.lcdui.Font" to="de.enough.polish.android.lcdui.Font" />
 			<mapping from="javax.microedition.lcdui.Graphics" to="de.enough.polish.android.lcdui.Graphics" />
 			<mapping from="javax.microedition.lcdui.Image" to="de.enough.polish.android.lcdui.Image" />
