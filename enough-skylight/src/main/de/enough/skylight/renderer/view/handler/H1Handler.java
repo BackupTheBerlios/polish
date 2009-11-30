@@ -9,12 +9,12 @@ public class H1Handler extends ElementHandler{
 	
 	public void handleNode(Container parent, DomNode node) {}
 	
-	public Style getStyle() {
+	public Style getDefaultStyle() {
 		//#style h1
 		return new Style();
 	}
 
-	public Style getTextStyle() {
+	public Style getDefaultTextStyle() {
 		//#style h1
 		return new Style();
 	}

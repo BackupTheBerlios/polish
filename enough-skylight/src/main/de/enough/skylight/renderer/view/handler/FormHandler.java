@@ -11,7 +11,7 @@ public class FormHandler extends ElementHandler{
 		// handle action
 	}
 	
-	public Style getStyle() {
+	public Style getDefaultStyle() {
 		//#style form
 		return new Style();
 	}

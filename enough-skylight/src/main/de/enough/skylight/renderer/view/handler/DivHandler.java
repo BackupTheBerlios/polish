@@ -10,7 +10,7 @@ public class DivHandler extends ElementHandler{
 	
 	public void handleNode(Container parent, DomNode node) {}
 
-	public Style getStyle() {
+	public Style getDefaultStyle() {
 		//#style div
 		return new Style();
 	}

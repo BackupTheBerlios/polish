@@ -9,7 +9,7 @@ public class BrHandler extends ElementHandler{
 	
 	public void handleNode(Container parent, DomNode node) {}
 	
-	public Style getStyle() {
+	public Style getDefaultStyle() {
 		//#style br
 		return new Style();
 	}

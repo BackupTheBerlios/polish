@@ -32,7 +32,7 @@
 				usePolishGui="true"
 			>
 				<postcompiler name="java5" />
-				<midlet class="de.enough.skylight.testrange.client.Client" name="skylight-testrange" />
+				<midlet class="${skylight.testrange.midlet}" name="skylight-testrange" />
 				<variables>
 					<variable name="skylight.testrange.url" value="${skylight.testrange.url}" />
 					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />

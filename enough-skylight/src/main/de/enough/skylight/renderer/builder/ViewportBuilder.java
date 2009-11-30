@@ -6,7 +6,8 @@ import de.enough.skylight.dom.Document;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.NodeList;
 import de.enough.skylight.renderer.Viewport;
-import de.enough.skylight.renderer.view.element.FormattingBlock;
+import de.enough.skylight.renderer.view.element.ContainingBlock;
+import de.enough.skylight.renderer.view.element.ContainingBlockView;
 import de.enough.skylight.renderer.view.handler.PHandler;
 import de.enough.skylight.renderer.viewport.ElementHandler;
 import de.enough.skylight.renderer.viewport.HandlerDirectory;
@@ -51,30 +52,20 @@ public class ViewportBuilder {
 		}
 	}
 	
-	protected void handleNode(FormattingBlock parentContainingBlock, DomNode node) {
+	protected void handleNode(ContainingBlock parentContainingBlock, DomNode node) {
 		ElementHandler handler = HandlerDirectory.getHandler(node);
 		
 		//#debug debug
 		System.out.println("found handler " + handler + " for " + node);
 		
 		if(handler != null) {
-			FormattingBlock handlerBlock = handler.getFormattingBlock();
-			
-			FormattingBlock containingBlock;
-			
-			if( handlerBlock.isBlock()) {
-				parentContainingBlock.add(handlerBlock);
-				containingBlock = handlerBlock;
-				//#debug debug
-				System.out.println(handler + " is block : " + containingBlock);
-			} else {
-				containingBlock = parentContainingBlock;
-				//#debug debug
-				System.out.println(handler + " is inline : " + containingBlock);
-			}
-			
 			handler.setViewport(this.viewport);
-			handler.handleNode(containingBlock, node);
+			
+			Style style = handler.getStyle(node);
+			
+			ContainingBlock block = new ContainingBlock(handler,style);
+			
+			handler.handleNode(block, node);
 				
 			if(node.hasChildNodes())
 			{
@@ -85,18 +76,20 @@ public class ViewportBuilder {
 				for (int index = 0; index < nodes.getLength(); index++) {
 					DomNode childNode = nodes.item(index);
 					
-					handleNodeByType(handler, containingBlock, childNode);
+					handleNodeByType(handler, block, childNode);
 				}
+				
+				parentContainingBlock.add(block);
 			}
 		} 
 	}
 	
-	protected void handleNodeByType(ElementHandler handler, FormattingBlock containingBlock, DomNode node) {
+	protected void handleNodeByType(ElementHandler handler, ContainingBlock containingBlock, DomNode node) {
 		switch(node.getNodeType()) {
 			case DomNode.TEXT_NODE : 
 				//#debug debug
 				System.out.println("adding text : " + node.getNodeValue() + " to " + containingBlock);
-				Style textStyle = handler.getTextStyle();
+				Style textStyle = handler.getDefaultTextStyle();
 				handler.handleText(containingBlock, node.getNodeValue(), textStyle, node.getParentNode()); 
 				break;
 			default: 

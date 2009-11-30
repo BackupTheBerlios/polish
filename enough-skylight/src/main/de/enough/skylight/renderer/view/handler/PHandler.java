@@ -10,7 +10,7 @@ public class PHandler extends ElementHandler{
 	
 	public void handleNode(Container parent, DomNode node) {}
 
-	public Style getStyle() {
+	public Style getDefaultStyle() {
 		//#style p
 		return new Style();
 	}

@@ -1,17 +1,21 @@
 /** BLOCK **/
 
-h1 extends block {
+h1 {
+	display: block;
 	font: fnt_h1;
 }
 
-br extends block {
+br {
+	display: block;
 }
 
-div extends block {
+div {
+	display: block;
 	font: fnt_text;
 }
 
-p extends block {
+p {
+	display: block;
 	margin-top: 5%;
 	margin-bottom: 5%;
 	font: fnt_text;
@@ -19,22 +23,27 @@ p extends block {
 
 /** INLINE **/
 
-text extends inline {
+text {
+	display: inline;
 	font: fnt_text;
 }
 
-span extends inline {
+span {
+	display: inline;
 	font: fnt_text;
 }
 
-em extends inline {
+em {
+	display: inline;
 	font: fnt_text;
 }
 
-form extends block {
+form {
+	display: inline;
 }
 
-input_text extends inline{
+input_text {
+	display: inline;
 	font: fnt_input_text;
 	border: bdr_input;
 }
@@ -43,7 +52,8 @@ input_text:hover {
 	border: bdr_input_focus;
 }
 
-input_submit extends inline {
+input_submit {
+	display: inline;
 	font: fnt_input_submit;
 	border: bdr_input;
 	background: bg_input_submit;
@@ -62,12 +72,13 @@ input_submit:pressed {
 	font: fnt_text_focus;
 }
 
-input_radio_group extends inline {
+input_radio_group {
 }
 
 input_radio_group:hover {}
 
-input_radio extends block {
+input_radio {
+	display: inline;
 }
 
 input_radio:hover {

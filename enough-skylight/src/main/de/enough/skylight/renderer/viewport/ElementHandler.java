@@ -8,36 +8,18 @@ import de.enough.polish.ui.containerviews.Midp2ContainerView;
 import de.enough.polish.util.HashMap;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.Viewport;
-import de.enough.skylight.renderer.view.element.FormattingBlock;
+import de.enough.skylight.renderer.view.element.ContainingBlock;
 
 public abstract class ElementHandler {
 	Style style;
 	
 	Style textStyle;
 	
-	FormattingBlock formatting;
+	ContainingBlock formatting;
 	
 	Viewport viewport;
 	
 	public abstract void handleNode(Container parent, DomNode node);
-	
-	public Style getStyle() {
-		if(this.style == null) {
-			//#style element
-			this.style = new Style();
-		} 
-		
-		return this.style;
-	}
-	
-	public Style getTextStyle() {
-		if(this.textStyle == null) {
-			//#style text
-			this.textStyle = new Style();
-		} 
-		
-		return this.textStyle;
-	}
 	
 	public void handleText(Container parent, String text, Style style, DomNode parentNode) {
 		text = text.trim();
@@ -46,6 +28,42 @@ public abstract class ElementHandler {
 			
 			parent.add(textItem);
 		}
+	}
+	
+	public Style getStyle(DomNode node) {
+		String clazz = AttributeUtils.getValue(node, "class");
+		
+		if(clazz != null) {
+			clazz = clazz.toLowerCase();
+			try {
+				Style style = getViewport().getStyle(clazz);
+				
+				return style;
+			} catch(NoSuchFieldError e) {
+				//#debug error
+				System.out.println("style " + clazz + " could not be found");
+			}
+		}
+		
+		return getDefaultStyle();
+	}
+	
+	public Style getDefaultStyle() {
+		if(this.style == null) {
+			//#style element
+			this.style = new Style();
+		} 
+		
+		return this.style;
+	}
+	
+	public Style getDefaultTextStyle() {
+		if(this.textStyle == null) {
+			//#style text
+			this.textStyle = new Style();
+		} 
+		
+		return this.textStyle;
 	}
 	
 	public HashMap getDirectory() {
@@ -66,9 +84,5 @@ public abstract class ElementHandler {
 	
 	public Viewport getViewport() {
 		return this.viewport;
-	}
-	
-	public FormattingBlock getFormattingBlock() {
-		return new FormattingBlock(this, getStyle());
 	}
 }

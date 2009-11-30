@@ -11,6 +11,7 @@ import de.enough.skylight.renderer.view.handler.EmHandler;
 import de.enough.skylight.renderer.view.handler.FormHandler;
 import de.enough.skylight.renderer.view.handler.H1Handler;
 import de.enough.skylight.renderer.view.handler.InputHandler;
+import de.enough.skylight.renderer.view.handler.LinkHandler;
 import de.enough.skylight.renderer.view.handler.PHandler;
 import de.enough.skylight.renderer.view.handler.SpanHandler;
 import de.enough.skylight.renderer.view.handler.TitleHandler;
@@ -51,6 +52,7 @@ public class HandlerDirectory {
 		directory.put("div", new DivHandler());
 		directory.put("span", new SpanHandler());
 		directory.put("p", new PHandler());
+		directory.put("link", new LinkHandler());
 		
 		return directory;
 	}

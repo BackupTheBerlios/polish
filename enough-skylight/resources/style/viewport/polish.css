@@ -1,9 +1,16 @@
+import {
+	always-include: true;
+	display: block;	
+	view-type: midp2;
+}
+
 element {
-	padding: 1%;
+	padding: 0;
 	margin: 0;
 }
 
-viewport extends inline{
+viewport {
+	display: inline;
 	layout: expand;
 	label-style: title;
 }
@@ -12,12 +19,4 @@ title {
 	background-color: black;
 	font-color: white;
 	layout: expand | newline-after;
-}
-
-inline extends element {
-	view-type: midp2;
-}
-
-block extends inline{
-	layout: newline-after | newline-before;
 }
