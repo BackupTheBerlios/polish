@@ -1,6 +1,7 @@
 package de.enough.skylight.dom.impl;
 
 import de.enough.skylight.dom.Event;
+import de.enough.skylight.dom.MutationEvent;
 
 public class EventProcessor {
 
@@ -26,36 +27,51 @@ public class EventProcessor {
 		NodeListImpl eventChain = createEventChain(target);
 		int numberOfEventTargets;
 		numberOfEventTargets = eventChain.getLength();
-		
-		// Propagate event downstream
-		event.setEventEnvironment(Event.CAPTURING_PHASE);
-		for(int i = numberOfEventTargets-1; i >= 0; i++){
-			DomNodeImpl chainElement = (DomNodeImpl)eventChain.item(i);
-			event.setEventEnvironment(chainElement);
-			chainElement.handleCaptureEvent(event);
-			// React to capturing.
-			if(event.isStopPropagation()) {
-				return false;
+		boolean doCapture = true;
+		if(event instanceof MutationEvent) {
+			doCapture = false;
+		}
+		if(doCapture) {
+			// Propagate event downstream
+			System.out.println("Capturing event to target");
+			event.setEventEnvironment(Event.CAPTURING_PHASE);
+			for(int i = numberOfEventTargets-1; i >= 0; i--){
+				DomNodeImpl chainElement = (DomNodeImpl)eventChain.item(i);
+				event.setEventEnvironment(chainElement);
+				System.out.println("About to handle capture at element '"+chainElement+"'");
+				chainElement.handleCaptureEvent(event);
+				// React to capturing.
+				if(event.isStopPropagation()) {
+					System.out.println("Stopping propagation");
+					return false;
+				}
 			}
 		}
 		
 		// Deliver event to eventarget
+		System.out.println("Handling event at target '"+target+"'");
 		event.setEventEnvironment(Event.AT_TARGET, target);
 		target.handleCaptureEvent(event);
 		if( ! event.isPreventDefault()) {
 			// Trigger node default action.
+			// TODO: Do not always trigger the default action. On Mutation for example, a link must not be triggered!
 			target.doDefaultAction();
 		}
 		
-		// Bubble event upstream.
-		event.setEventEnvironment(Event.BUBBLING_PHASE);
-		for(int i = 0; i < numberOfEventTargets; i++){
-			DomNodeImpl chainElement = (DomNodeImpl)eventChain.item(i);
-			event.setEventEnvironment(chainElement);
-			chainElement.handleBubblingEvent(event);
-			// React to capturing.
-			if(event.isStopPropagation()) {
-				return false;
+		if(event.getBubbles()) {
+			// Bubble event upstream.
+			System.out.println("Handling bubbling of event");
+			event.setEventEnvironment(Event.BUBBLING_PHASE);
+			for(int i = 0; i < numberOfEventTargets; i++){
+				DomNodeImpl chainElement = (DomNodeImpl)eventChain.item(i);
+				System.out.println("About to handle bubble at element '"+chainElement+"'");
+				event.setEventEnvironment(chainElement);
+				chainElement.handleBubblingEvent(event);
+				// React to capturing.
+				if(event.isStopPropagation()) {
+					System.out.println("Stopping propagation");
+					return false;
+				}
 			}
 		}
 		return event.isPreventDefault();

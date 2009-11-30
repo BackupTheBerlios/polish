@@ -4,7 +4,9 @@ import org.mozilla.javascript.Scriptable;
 
 import de.enough.skylight.dom.Attr;
 import de.enough.skylight.dom.DomException;
+import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.Element;
+import de.enough.skylight.dom.MutationEvent;
 import de.enough.skylight.dom.NodeList;
 import de.enough.skylight.dom.impl.rhino.ElementScriptableObject;
 
@@ -27,13 +29,15 @@ public class ElementImpl extends DomNodeImpl implements Element{
 	}
 
 	public String getAttribute(String name) {
-		// TODO Auto-generated method stub
-		return null;
+		DomNode attributeNode = getAttributes().getNamedItem(name);
+		if(attributeNode == null) {
+			return "";
+		}
+		return attributeNode.getNodeValue();
 	}
 
 	public Attr getAttributeNode(String name) {
-		// TODO Auto-generated method stub
-		return null;
+		return (Attr)getAttributes().getNamedItem(name);
 	}
 
 	public NodeList getElementsByTagName(String name) {
@@ -47,13 +51,11 @@ public class ElementImpl extends DomNodeImpl implements Element{
 	}
 
 	public boolean hasAttribute(String name) {
-		// TODO Auto-generated method stub
-		return false;
+		return getAttributes().getNamedItem(name) != null;
 	}
 
 	public void removeAttribute(String name) throws DomException {
-		// TODO Auto-generated method stub
-		
+		getAttributes().removeNamedItem(name);
 	}
 
 	public Attr removeAttributeNode(Attr oldAttr) throws DomException {
@@ -62,7 +64,20 @@ public class ElementImpl extends DomNodeImpl implements Element{
 	}
 
 	public void setAttribute(String name, String value) throws DomException {
-		
+		AttrImpl attribute = (AttrImpl)getAttributes().getNamedItem(name);
+		String previousValue;
+		if(attribute == null) {
+			attribute = new AttrImpl();
+			attribute.init(this, name, value);
+			previousValue = null;
+		} else {
+			previousValue = attribute.getValue();
+		}
+		getAttributes().setNamedItem(attribute);
+		MutationEventImpl event = new MutationEventImpl();
+		event.init(this);
+		event.initMutationEvent("DOMAttrModified", true, false, this, previousValue, value, name, MutationEvent.MODIFICATION);
+		EventProcessor.getInstance().processEvent(event);
 	}
 
 	public Attr setAttributeNode(Attr newAttr) throws DomException {

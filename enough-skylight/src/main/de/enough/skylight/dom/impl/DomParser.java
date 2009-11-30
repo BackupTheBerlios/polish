@@ -16,6 +16,7 @@ import de.enough.skylight.dom.DomNode;
  */
 public class DomParser {
 
+	// TODO: Rename to parseDocument.
 	public Document parseTree(String document) {
 		try {
 			return parseDocument(document, null);

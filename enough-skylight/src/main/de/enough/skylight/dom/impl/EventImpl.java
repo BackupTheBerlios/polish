@@ -15,8 +15,8 @@ public abstract class EventImpl implements Event{
 	private boolean stopPropagation;
 	private boolean preventDefault;
 
-	public void init(long timeStampArg, EventTarget target) {
-		this.timeStamp = timeStampArg;
+	public void init(EventTarget target) {
+		this.timeStamp = System.currentTimeMillis();
 		this.bubbles = true;
 		this.cancelable = true;
 		this.eventPhase = CAPTURING_PHASE;
