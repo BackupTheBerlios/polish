@@ -4061,7 +4061,10 @@ public class TextField extends StringItem
 	/**
 	 * Shows the TextBox for entering texts.
 	 */
-	private void showTextBox() {
+	protected void showTextBox() {
+	//TODO: drubin better handling of textfield events.
+	//(Currently this is the easiest method to overload if you want to tie into
+	//"is editing mode" events.) that is triggered by both touch and commands
 		if (this.midpTextBox == null) {
 			createTextBox();
 		}
