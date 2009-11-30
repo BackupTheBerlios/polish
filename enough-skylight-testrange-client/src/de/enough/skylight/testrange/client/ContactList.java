@@ -8,6 +8,7 @@ import de.enough.polish.ui.Display;
 import de.enough.polish.ui.Form;
 import de.enough.polish.util.Prefetch;
 import de.enough.skylight.dom.Document;
+import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.RendererListener;
 import de.enough.skylight.renderer.Renderer;
 import de.enough.skylight.renderer.Viewport;
@@ -41,7 +42,16 @@ public class ContactList extends MIDlet{
 		Document document = documentBuilder.build();
 		
 		ViewportBuilder viewportBuilder = new ViewportBuilder(document);
-		for (int i = 0; i < 75; i++) {
+		for (int i = 0; i < 1000; i++) {
+			DomNode nameNode = document.getElementById("name");
+			nameNode.getFirstChild().setNodeValue("" + i);
+			
+			DomNode statusNode = document.getElementById("status");
+			statusNode.getFirstChild().setNodeValue("status " + i);
+			
+			DomNode timeNode = document.getElementById("time");
+			timeNode.getFirstChild().setNodeValue("time " + i);
+			
 			Viewport contact = new Viewport();
 			viewportBuilder.setViewport(contact);
 			viewportBuilder.build();
