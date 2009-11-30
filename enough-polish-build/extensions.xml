@@ -344,6 +344,12 @@
 		<name>lowercase</name>
 		<class>de.enough.polish.propertyfunctions.LowerCaseFunction</class>
 	</extension>
+	
+	<extension>
+		<type>propertyfunction</type>
+		<name>firstuppercase</name>
+		<class>de.enough.polish.propertyfunctions.FirstUpperCaseFunction</class>
+	</extension>
 
 	<extension>
 		<type>propertyfunction</type>
