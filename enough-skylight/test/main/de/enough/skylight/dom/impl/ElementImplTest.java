@@ -1,51 +1,59 @@
 package de.enough.skylight.dom.impl;
 
-import junit.framework.TestCase;
+import de.enough.skylight.dom.Attr;
+import de.enough.skylight.dom.Element;
 
-public class ElementImplTest extends TestCase {
-
-	public void testGetScriptable() {
-		fail("Not yet implemented");
-	}
-
-	public void testInit() {
-		fail("Not yet implemented");
-	}
+public class ElementImplTest extends AbstractDomTest {
 
 	public void testGetAttribute() {
-		fail("Not yet implemented");
+		Element element = this.document1.getElementById("id2");
+		String attribute = element.getAttribute("id");
+		assertEquals("id2",attribute);
+		assertEquals("",element.getAttribute("bjlakfjsd"));
 	}
 
 	public void testGetAttributeNode() {
-		fail("Not yet implemented");
+		Element element = this.document1.getElementById("id2");
+		Attr attribute = element.getAttributeNode("id");
+		assertNotNull(attribute);
+		assertEquals("id",attribute.getName());
+		assertNull(element.getAttributeNode("bjlakfjsd"));
 	}
 
-	public void testGetElementsByTagName() {
-		fail("Not yet implemented");
-	}
-
-	public void testGetTagName() {
-		fail("Not yet implemented");
-	}
-
-	public void testHasAttribute() {
-		fail("Not yet implemented");
-	}
-
-	public void testRemoveAttribute() {
-		fail("Not yet implemented");
-	}
-
-	public void testRemoveAttributeNode() {
-		fail("Not yet implemented");
-	}
-
-	public void testSetAttribute() {
-		fail("Not yet implemented");
-	}
-
-	public void testSetAttributeNode() {
-		fail("Not yet implemented");
-	}
+//	public void testGetScriptable() {
+//		fail("Not yet implemented");
+//	}
+//
+//	public void testInit() {
+//		fail("Not yet implemented");
+//	}
+//	
+//	public void testGetElementsByTagName() {
+//		fail("Not yet implemented");
+//	}
+//
+//	public void testGetTagName() {
+//		fail("Not yet implemented");
+//	}
+//
+//	public void testHasAttribute() {
+//		fail("Not yet implemented");
+//	}
+//
+//	public void testRemoveAttribute() {
+//		fail("Not yet implemented");
+//	}
+//
+//	public void testRemoveAttributeNode() {
+//		fail("Not yet implemented");
+//	}
+//
+//	public void testSetAttribute() {
+//		fail("Not yet implemented");
+//	}
+//
+//	public void testSetAttributeNode() {
+//		fail("Not yet implemented");
+//	}
 
 }

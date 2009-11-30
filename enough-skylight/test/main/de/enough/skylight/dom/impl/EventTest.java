@@ -18,6 +18,6 @@ public class EventTest extends AbstractDomTest implements EventListener {
 	@Override
 	public void handleEvent(Event evt) {
 		DomNodeImpl domNodeImpl = (DomNodeImpl)evt.getCurrentTarget();
-		System.out.println(domNodeImpl.getNodeName());
+		System.out.println("visiting listener at:"+domNodeImpl.getNodeName());
 	}
 }
