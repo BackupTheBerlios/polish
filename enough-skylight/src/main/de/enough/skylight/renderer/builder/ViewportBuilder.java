@@ -25,8 +25,6 @@ public class ViewportBuilder {
 		this.document = document;
 	}
 	
-
-	
 	public Viewport getViewport() {
 		return viewport;
 	}
@@ -52,7 +50,7 @@ public class ViewportBuilder {
 		}
 	}
 	
-	protected void handleNode(ContainingBlock parentContainingBlock, DomNode node) {
+	protected void handleNode(ContainingBlock parentBlock, DomNode node) {
 		ElementHandler handler = HandlerDirectory.getHandler(node);
 		
 		//#debug debug
@@ -63,7 +61,7 @@ public class ViewportBuilder {
 			
 			Style style = handler.getStyle(node);
 			
-			ContainingBlock block = new ContainingBlock(handler,style);
+			ContainingBlock block = new ContainingBlock(handler,node,style);
 			
 			handler.handleNode(block, node);
 				
@@ -79,7 +77,7 @@ public class ViewportBuilder {
 					handleNodeByType(handler, block, childNode);
 				}
 				
-				parentContainingBlock.add(block);
+				parentBlock.add(block);
 			}
 		} 
 	}

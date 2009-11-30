@@ -1,42 +1,50 @@
 /** BLOCK **/
 
-h1 extends block {
+h1 {
 	margin-top: 2%;
 	margin-bottom: 2%;
 	font: fnt_h1;
+	display: block;
 }
 
-br extends block {
+br {
+	layout: newline-after;
 }
 
-div extends block {
+div {
 	font: fnt_text;
+	display: block;
 }
 
-p extends block {
+p {
 	margin-top: 5%;
 	margin-bottom: 5%;
 	font: fnt_text;
+	display: block;
+}
+
+form {
+	display: block;
 }
 
 /** INLINE **/
 
-text extends inline {
+text {
 	font: fnt_text;
+	display: inline;
 }
 
-span extends inline {
+span {
 	font: fnt_text;
+	display: inline;
 }
 
-em extends inline {
+em {
 	font: fnt_text;
+	display: inline;
 }
 
-form extends block {
-}
-
-input_text extends inline{
+input_text{
 	font: fnt_input_text;
 	border: bdr_input;
 }
@@ -45,7 +53,7 @@ input_text:hover {
 	border: bdr_input_focus;
 }
 
-input_submit extends inline {
+input_submit {
 	font: fnt_input_submit;
 	border: bdr_input;
 	background: bg_input_submit;
@@ -63,12 +71,12 @@ input_submit:pressed {
 	border: bdr_input_focus;
 }
 
-input_radio_group extends inline {
+input_radio_group {
 }
 
 input_radio_group:hover {}
 
-input_radio extends block {
+input_radio {
 	margin: 2%;
 }
 

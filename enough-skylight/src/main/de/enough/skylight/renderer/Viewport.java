@@ -19,7 +19,7 @@ public class Viewport extends ContainingBlock {
 	
 	public Viewport() {
 		//#style viewport
-		super(null);
+		super(null,null);
 		
 		this.directory = new HashMap();
 	}

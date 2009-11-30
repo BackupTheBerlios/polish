@@ -6,6 +6,7 @@ import de.enough.polish.ui.ContainerView;
 import de.enough.polish.ui.Dimension;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
+import de.enough.skylight.dom.DomNode;
 
 public class ContainingBlockView extends ContainerView
 {
@@ -103,7 +104,8 @@ public class ContainingBlockView extends ContainerView
 		
 		this.contentHeight = y;
 		
-		if(this.block.isBlock()) {
+		
+		if(this.block.isDisplay(ContainingBlock.DISPLAY_BLOCK)) {
 			this.contentWidth = availWidth;
 		} else {
 			this.contentWidth = maxRowWidth;
