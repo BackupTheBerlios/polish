@@ -20,6 +20,12 @@ public class ElementImplTest extends AbstractDomTest {
 		assertNull(element.getAttributeNode("bjlakfjsd"));
 	}
 
+	public void testGetTagName() {
+		Element element = this.document1.getElementById("id2");
+		String tagName = element.getTagName();
+		assertEquals("div", tagName);
+	}
+
 //	public void testGetScriptable() {
 //		fail("Not yet implemented");
 //	}
@@ -32,9 +38,6 @@ public class ElementImplTest extends AbstractDomTest {
 //		fail("Not yet implemented");
 //	}
 //
-//	public void testGetTagName() {
-//		fail("Not yet implemented");
-//	}
 //
 //	public void testHasAttribute() {
 //		fail("Not yet implemented");
