@@ -53,9 +53,9 @@ public class InputHandler extends ElementHandler{
 		handler.handleNode(parent, node);
 	}
 	
-	public void handleText(Container parent, String text, Style style, DomNode parentNode) {
+	public void handleText(Container parent, DomNode node, Style style, DomNode parentNode) {
 		ElementHandler handler = getTypeHandler(parentNode);
 		
-		handler.handleText(parent, text, style, parentNode);
+		handler.handleText(parent, node, style, parentNode);
 	}
 }

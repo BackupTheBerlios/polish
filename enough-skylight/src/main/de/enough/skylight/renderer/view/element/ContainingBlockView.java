@@ -5,8 +5,6 @@ import javax.microedition.lcdui.Graphics;
 import de.enough.polish.ui.ContainerView;
 import de.enough.polish.ui.Dimension;
 import de.enough.polish.ui.Item;
-import de.enough.polish.ui.Style;
-import de.enough.skylight.dom.DomNode;
 
 public class ContainingBlockView extends ContainerView
 {
@@ -14,7 +12,7 @@ public class ContainingBlockView extends ContainerView
 	Dimension contentX;
 	
 	ContainingBlock block;
-
+	
 	/**
 	 * Creates a new view type
 	 */
@@ -49,12 +47,21 @@ public class ContainingBlockView extends ContainerView
 		int currentRowHeight = 0;
 		int currentRowStartIndex = 0;
 		int maxRowWidth = 0;
+		
 		for (int i = 0; i < items.length; i++)
 		{
 			Item item = items[i];
 			
-			int lo = item.getLayout();
-			if (((lo & Item.LAYOUT_NEWLINE_BEFORE) == Item.LAYOUT_NEWLINE_BEFORE) || (x + item.getContentWidth() > availWidth) ) 
+			Element element;
+			try {
+				element = (Element)item;
+			}catch(ClassCastException e) {
+				//#debug error
+				System.out.println(item + "is not an element");
+				return;
+			}
+			
+			if (element.isDisplay(Element.Display.BLOCK_LEVEL) || (x + item.getContentWidth() > availWidth) ) 
 			{
 				if (currentRowHeight != 0) {
 					lineBreak( items, currentRowStartIndex, i - 1, x, currentRowHeight, availWidth );
@@ -67,17 +74,21 @@ public class ContainingBlockView extends ContainerView
 				x = 0;
 				currentRowStartIndex = i;
 			}
+			
 			item.relativeX = x;
 			item.relativeY = y;
-			if (item.itemWidth > availWidth) {
-				// item has probably expand layout, as the content width fits within this row:
-				item.getItemWidth( availWidth - x, availWidth - x, availHeight );
+			
+			// item has probably expand layout, as the content width fits within this row:
+			int itemWidth = item.getItemWidth( availWidth - x, availWidth - x, availHeight );
+			int itemHeight = item.itemHeight;
+			
+			x += itemWidth;
+			
+			if (itemHeight > currentRowHeight) {
+				currentRowHeight = itemHeight;
 			}
-			x += item.itemWidth;
-			if (item.itemHeight > currentRowHeight) {
-				currentRowHeight = item.itemHeight;
-			}
-			if (x >= availWidth || ((lo & Item.LAYOUT_NEWLINE_AFTER) == Item.LAYOUT_NEWLINE_AFTER) || (i == items.length -1)) {
+			
+			if (x >= availWidth || element.isDisplay(Element.Display.BLOCK_LEVEL) || (i == items.length -1)) {
 				if (currentRowHeight != 0) {
 					lineBreak( items, currentRowStartIndex, i, x, currentRowHeight, availWidth);
 					y += currentRowHeight + this.paddingVertical;
@@ -104,10 +115,13 @@ public class ContainingBlockView extends ContainerView
 		
 		this.contentHeight = y;
 		
-		
-		if(this.block.isDisplay(ContainingBlock.DISPLAY_BLOCK)) {
+		// if this block is block level ...
+		if(this.block.isDisplay(Element.Display.BLOCK_LEVEL)) {
+			// expand width to available
 			this.contentWidth = availWidth;
+		// otherwise ...
 		} else {
+			// set width to maximum row size
 			this.contentWidth = maxRowWidth;
 		}
 	}
@@ -144,7 +158,28 @@ public class ContainingBlockView extends ContainerView
 	public void paintContent(Item[] items, int x, int y, int leftBorder,
 			int rightBorder, Graphics g) 
 	{
-		super.paintContent( null, items, x, y, leftBorder, rightBorder, g.getClipX(), g.getClipY(), g.getClipWidth(), g.getClipHeight(), g);
+		int clipX = g.getClipX();
+		int clipY = g.getClipY();
+		int clipWidth = g.getClipWidth();
+		int clipHeight = g.getClipHeight();
+		
+		for (int i = 0; i < items.length; i++) {
+			if (i != this.focusedIndex) {
+				Item item = items[i];
+				//System.out.println("item " + i + " at " + item.relativeX + "/" + item.relativeY);
+				int itemX = x + item.relativeX;
+				int itemY = y + item.relativeY;
+				leftBorder = itemX;
+				rightBorder = itemX + item.itemWidth;
+				paintItem(item, i, itemX, itemY, leftBorder, rightBorder, clipX, clipY, clipWidth, clipHeight, g);
+			}
+		}
+		
+		Item focItem = this.focusedItem;
+		if (focItem != null) {
+			x += focItem.relativeX;
+			paintItem(focItem, this.focusedIndex, x, y + focItem.relativeY, x, x + focItem.itemWidth, clipX, clipY, clipWidth, clipHeight, g);
+		}
 	}
 } 
 

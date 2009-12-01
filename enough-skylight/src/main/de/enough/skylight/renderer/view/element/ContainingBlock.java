@@ -2,22 +2,16 @@ package de.enough.skylight.renderer.view.element;
 
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Style;
-import de.enough.polish.ui.containerviews.Midp2ContainerView;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.viewport.ElementHandler;
 
-public class ContainingBlock extends Container {
+public class ContainingBlock extends Container implements Element {
 
-	public static Integer DISPLAY_BLOCK = new Integer(0x00);
-	public static Integer DISPLAY_INLINE = new Integer(0x01);
+	String display = Element.Display.BLOCK_LEVEL;
 	
-	Integer display = DISPLAY_BLOCK;
+	String position = Element.Position.STATIC;
 	
-	public static Integer POSITION_STATIC = new Integer(0x00);
-	public static Integer POSITION_ABSOLUTE = new Integer(0x01);
-	public static Integer POSITION_RELATIVE = new Integer(0x02);
-	
-	Integer position = POSITION_STATIC;
+	String floating = Element.Float.NONE;
 	
 	ElementHandler handler;
 	
@@ -60,15 +54,22 @@ public class ContainingBlock extends Container {
 	/**
 	 * @return
 	 */
-	protected boolean isDisplay(Integer display) {
+	public boolean isDisplay(String display) {
 		return this.display == display;
 	}
 	
 	/**
 	 * @return
 	 */
-	protected boolean isPosition(Integer position) {
+	public boolean isPosition(String position) {
 		return this.position == position;
+	}
+	
+	/**
+	 * @return
+	 */
+	public boolean isFloat(String floating) {
+		return this.floating == floating;
 	}
 	
 	/* (non-Javadoc)
@@ -78,17 +79,23 @@ public class ContainingBlock extends Container {
 		super.setStyle(style);
 		
 		//#if polish.css.display
-		Integer displayInt = style.getIntProperty("display");
-		System.out.println(displayInt);
-		if(displayInt != null) {
-			this.display = displayInt;
+		String displayStr = style.getProperty("display");
+		if(displayStr != null) {
+			this.display = displayStr;
 		}
 		//#endif
 		
 		//#if polish.css.position
-		Integer positionInt = style.getIntProperty("position");
-		if(positionInt != null) {
-			this.position = positionInt;
+		String positionStr = style.getProperty("position");
+		if(positionStr != null) {
+			this.position = positionStr;
+		}
+		//#endif
+		
+		//#if polish.css.float
+		String floatStr = style.getProperty("float");
+		if(floatStr != null) {
+			this.floating = floatStr;
 		}
 		//#endif
 	}

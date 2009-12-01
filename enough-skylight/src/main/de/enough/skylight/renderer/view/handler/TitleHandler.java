@@ -10,7 +10,8 @@ public class TitleHandler extends ElementHandler{
 	
 	public void handleNode(Container parent, DomNode node) {}
 
-	public void handleText(Container parent, String text, Style style, DomNode parentNode) {
+	public void handleText(Container parent, DomNode node, Style style, DomNode parentNode) {
+		String text = node.getNodeValue();
 		getViewport().setTitle(text);
 	}
 }

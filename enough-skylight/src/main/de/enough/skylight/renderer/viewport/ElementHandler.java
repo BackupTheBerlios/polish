@@ -8,6 +8,7 @@ import de.enough.polish.ui.containerviews.Midp2ContainerView;
 import de.enough.polish.util.HashMap;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.Viewport;
+import de.enough.skylight.renderer.view.element.AnonymousBlock;
 import de.enough.skylight.renderer.view.element.ContainingBlock;
 
 public abstract class ElementHandler {
@@ -21,13 +22,10 @@ public abstract class ElementHandler {
 	
 	public abstract void handleNode(Container parent, DomNode node);
 	
-	public void handleText(Container parent, String text, Style style, DomNode parentNode) {
-		text = text.trim();
-		if(!text.equals("")) {
-			StringItem textItem = new StringItem(null,text, style);
+	public void handleText(Container parent, DomNode node, Style style, DomNode parentNode) {
+		AnonymousBlock anonymousBlock = new AnonymousBlock(node, style);
 			
-			parent.add(textItem);
-		}
+		parent.add(anonymousBlock);
 	}
 	
 	public Style getStyle(DomNode node) {

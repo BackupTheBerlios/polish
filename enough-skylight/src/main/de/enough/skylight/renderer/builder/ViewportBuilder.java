@@ -77,6 +77,9 @@ public class ViewportBuilder {
 					handleNodeByType(handler, block, childNode);
 				}
 				
+			}
+			
+			if(block.size() > 0) {
 				parentBlock.add(block);
 			}
 		} 
@@ -88,7 +91,7 @@ public class ViewportBuilder {
 				//#debug debug
 				System.out.println("adding text : " + node.getNodeValue() + " to " + containingBlock);
 				Style textStyle = handler.getDefaultTextStyle();
-				handler.handleText(containingBlock, node.getNodeValue(), textStyle, node.getParentNode()); 
+				handler.handleText(containingBlock, node, textStyle, node.getParentNode()); 
 				break;
 			default: 
 				//#debug debug

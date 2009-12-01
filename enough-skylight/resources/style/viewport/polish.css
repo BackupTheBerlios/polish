@@ -9,7 +9,7 @@ element {
 	margin: 0;
 }
 
-viewport {
+viewport extends element {
 	display: inline;
 	layout: expand;
 	label-style: title;
