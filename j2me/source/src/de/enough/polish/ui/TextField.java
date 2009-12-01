@@ -503,6 +503,23 @@ public class TextField extends StringItem
 	 * @since MIDP 2.0
 	 */
 	public static final int DECIMAL = 5;
+	
+	/**
+	 * The user is allowed to enter numeric values with two decimal
+	 * fractions, for example &quot;-123.00&quot;, &quot;0.13&quot;, or
+	 * &quot;0.50&quot;.
+	 * 
+	 * <p>Numbers are appended in the last decimal fraction by default, so when &quot;1&quot; is pressed this results
+	 * in &quot;0.01&quot;. Similarly presseing &quot;1&quot;, &quot;2&quot; and &quot;3&quot; results in &quot;1.23&quot;.
+	 * </p>
+	 * 
+	 * 
+	 * <P>Constant <code>20</code> is assigned to <code>CASH</code>.</p>
+	 * 
+	 * 
+	 * @since J2ME Polish 2.1.3
+	 */
+	public static final int CASH = 20;
 
 	/**
 	 * Indicates that the text entered is confidential data that should be
@@ -1225,7 +1242,8 @@ public class TextField extends StringItem
 			this.isPassword = true;
 		}
 		//#ifndef polish.hasPointerEvents
-			if ((constraints & NUMERIC) == NUMERIC && (constraints & DECIMAL) != DECIMAL) {
+			int fieldType = constraints & 0xffff;
+			if (fieldType == NUMERIC) {
 				this.enableDirectInput = true;
 			}
 		//#endif
@@ -1367,6 +1385,40 @@ public class TextField extends StringItem
 	{
 		//#debug
 		System.out.println("setString [" + text + "]"); // for textfield [" + (this.label != null ? this.label.getText() : "no label") + "].");
+		if (text != null && text.length() > 0) {
+			int fieldType = this.constraints & 0xffff;
+			if (fieldType == CASH) {
+				StringBuffer buffer = new StringBuffer( text.length() + 3 );
+				int added = 0;
+				for (int i=text.length(); --i >= 0; ) {
+					char c = text.charAt(i);
+					if (c >= '0' && c <= '9') {
+						buffer.insert(0, c);
+						added++;
+						if (added == 2) {
+							buffer.insert(0, Locale.DECIMAL_SEPARATOR);
+						}
+					}
+				}
+				while (added > 3) {
+					char c = buffer.charAt(0);
+					if (c == '0') {
+						buffer.deleteCharAt(0);
+						added--;
+					} else {
+						break;
+					}
+				}
+				while (added < 3) {
+					buffer.insert(0, '0');
+					added++;
+					if (added == 2) {
+						buffer.insert(0, Locale.DECIMAL_SEPARATOR);
+					}
+				}
+				text = buffer.toString();
+			}
+		}
 		//#if tmp.useNativeTextBox
 			if (this.midpTextBox != null) {
 				this.midpTextBox.setString( text );
@@ -1822,7 +1874,7 @@ public class TextField extends StringItem
 				bbStyle |= Field.EDITABLE;				
 			}
 			
-			if ( fieldType == DECIMAL) {
+			if ( fieldType == DECIMAL || fieldType == CASH) {
 				bbStyle |= BasicEditField.FILTER_REAL_NUMERIC;
 			} else if (fieldType == NUMERIC) {
 				bbStyle |= BasicEditField.FILTER_INTEGER;
@@ -1888,7 +1940,7 @@ public class TextField extends StringItem
 			} else {
 				this.isNumeric = false;
 			}
-			if (fieldType == DECIMAL) {
+			if (fieldType == DECIMAL || fieldType == CASH) {
 				this.isNumeric = true;
 				this.isDecimal = true;
 				this.inputMode = MODE_NUMBERS;
@@ -4326,11 +4378,17 @@ public class TextField extends StringItem
 	public void fieldChanged(Field field, int context) {
 		if (context != FieldChangeListener.PROGRAMMATIC && this.isInitialized ) {
 			//#if polish.Bugs.ItemStateListenerCalledTooEarly
-				long currentTime = System.currentTimeMillis();
-				this.lastFieldChangedEvent = currentTime;
-				Screen scr = getScreen();
-				if (scr != null) {
-					scr.lastInteractionTime = currentTime;
+				int fieldType = this.constraints & 0xffff;
+				if (fieldType == NUMERIC || fieldType == DECIMAL || fieldType == CASH) {
+					setString( this.editField.getText() );				
+					notifyStateChanged();					
+				} else {
+					long currentTime = System.currentTimeMillis();
+					this.lastFieldChangedEvent = currentTime;
+					Screen scr = getScreen();
+					if (scr != null) {
+						scr.lastInteractionTime = currentTime;
+					}
 				}
 			//#else
 				setString( this.editField.getText() );				

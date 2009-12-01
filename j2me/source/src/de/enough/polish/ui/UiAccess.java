@@ -140,6 +140,20 @@ public final class UiAccess {
 	 * @see #setInputMode(javax.microedition.lcdui.TextField, int)
 	 */
 	public static final int MODE_NATIVE = 4;
+	
+	/**
+	 * A constant for using a CASH constraint on TextFields, e.g.
+	 * TextField cashRegister = new TextField("Price: ",  null, 5, UiAccess.CONSTRAINT_CASH );
+	 * @see TextField#CASH
+	 */
+	public static final int CONSTRAINT_CASH =
+		//#if polish.usePolishGui
+			TextField.CASH
+		//#else
+			//# 20
+		//#endif
+	;
+	
 	private static HashMap attributes;
 
 	/**
