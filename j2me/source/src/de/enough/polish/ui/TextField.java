@@ -518,6 +518,9 @@ public class TextField extends StringItem
 	 * 
 	 * 
 	 * @since J2ME Polish 2.1.3
+	 * @see UiAccess#CONSTRAINT_CASH
+	 * @see #setNumberOfDecimalFractions(int)
+	 * @see #getNumberOfDecimalFractions()
 	 */
 	public static final int CASH = 20;
 
@@ -1007,6 +1010,7 @@ public class TextField extends StringItem
 		private long androidLastPointerPressedTime;
 		private long androidLastInvalidCharacterTime;
 	//#endif
+	private int numberOfDecimalFractions = 2;
 
 	//#if tmp.useDynamicCharset
 	/**
@@ -1388,35 +1392,7 @@ public class TextField extends StringItem
 		if (text != null && text.length() > 0) {
 			int fieldType = this.constraints & 0xffff;
 			if (fieldType == CASH) {
-				StringBuffer buffer = new StringBuffer( text.length() + 3 );
-				int added = 0;
-				for (int i=text.length(); --i >= 0; ) {
-					char c = text.charAt(i);
-					if (c >= '0' && c <= '9') {
-						buffer.insert(0, c);
-						added++;
-						if (added == 2) {
-							buffer.insert(0, Locale.DECIMAL_SEPARATOR);
-						}
-					}
-				}
-				while (added > 3) {
-					char c = buffer.charAt(0);
-					if (c == '0') {
-						buffer.deleteCharAt(0);
-						added--;
-					} else {
-						break;
-					}
-				}
-				while (added < 3) {
-					buffer.insert(0, '0');
-					added++;
-					if (added == 2) {
-						buffer.insert(0, Locale.DECIMAL_SEPARATOR);
-					}
-				}
-				text = buffer.toString();
+				text = convertToCash(text);
 			}
 		}
 		//#if tmp.useNativeTextBox
@@ -1496,6 +1472,71 @@ public class TextField extends StringItem
 				this.predictiveAccess.synchronize();
 			}
 		//#endif
+	}
+	
+	/**
+	 * Sets the number of decimal fractions that are allowed for CASH constrained TextFields
+	 * @param number the number (defaults to 2)
+	 * @see UiAccess#CONSTRAINT_CASH
+	 * @see #CASH
+	 */
+	public void setNumberOfDecimalFractions(int number) {
+		this.numberOfDecimalFractions = number;
+	}
+	
+	/**
+	 * Retrieves the number of decimal fractions that are allowed for CASH constrained TextFields
+	 * @return the number (defaults to 2)
+	 * @see UiAccess#CONSTRAINT_CASH
+	 * @see #CASH
+	 */
+	public int getNumberOfDecimalFractions() {
+		return this.numberOfDecimalFractions;
+	}
+
+	/**
+	 * Converts the given entry into cash format.
+	 * Subclasses may override this to implement their own behavior.
+	 * @param original the original text, e.g. "1"
+	 * @return the processed text, e.g. "0.01"
+	 * @see #CASH
+	 * @see UiAccess#CONSTRAINT_CASH
+	 * @see #getNumberOfDecimalFractions()
+	 * @see #setNumberOfDecimalFractions(int)
+	 */
+	protected String convertToCash(String original) {
+		int fractions = this.numberOfDecimalFractions;
+		StringBuffer buffer = new StringBuffer( original.length() + 3 );
+		int added = 0;
+		for (int i=original.length(); --i >= 0; ) {
+			char c = original.charAt(i);
+			if (c >= '0' && c <= '9') {
+				buffer.insert(0, c);
+				added++;
+				if (added == fractions) {
+					buffer.insert(0, Locale.DECIMAL_SEPARATOR);
+				}
+			}
+		}
+		fractions++;
+		while (added > fractions) {
+			char c = buffer.charAt(0);
+			if (c == '0') {
+				buffer.deleteCharAt(0);
+				added--;
+			} else {
+				break;
+			}
+		}
+		while (added < fractions) {
+			buffer.insert(0, '0');
+			added++;
+			if (added == fractions-1) {
+				buffer.insert(0, Locale.DECIMAL_SEPARATOR);
+			}
+		}
+		original = buffer.toString();
+		return original;
 	}
 	 	
 	protected void updateDeleteCommand(String newText) {

@@ -145,6 +145,8 @@ public final class UiAccess {
 	 * A constant for using a CASH constraint on TextFields, e.g.
 	 * TextField cashRegister = new TextField("Price: ",  null, 5, UiAccess.CONSTRAINT_CASH );
 	 * @see TextField#CASH
+	 * @see #setNumberOfDecimalFractions(TextField, int)
+	 * @see #getNumberOfDecimalFractions(TextField)
 	 */
 	public static final int CONSTRAINT_CASH =
 		//#if polish.usePolishGui
@@ -1597,6 +1599,59 @@ public final class UiAccess {
 		field.setCaretPosition( position ); 
 	}
 	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Sets the number of decimal fractions that are allowed for CASH constrained TextFields
+	 * @param field the textfield the textfield for which the fractions are set
+	 * @param number the number (defaults to 2)
+	 * @see UiAccess#CONSTRAINT_CASH
+	 * @see TextField#CASH
+	 */
+	public static void setNumberOfDecimalFractions( javax.microedition.lcdui.TextField field, int number ) {
+		// ignore
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Sets the number of decimal fractions that are allowed for CASH constrained TextFields
+	 * @param field the textfield the textfield for which the fractions are set
+	 * @param number the number (defaults to 2)
+	 * @see UiAccess#CONSTRAINT_CASH
+	 * @see TextField#CASH
+	 */
+	public static void setNumberOfDecimalFractions( TextField field, int number ) {
+		field.setNumberOfDecimalFractions( number ); 
+	}
+	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Retrieves the number of decimal fractions that are allowed for CASH constrained TextFields
+	 * @param field the textfield the textfield for which the fractions are set
+	 * @return the number (defaults to 2)
+	 * @see UiAccess#CONSTRAINT_CASH
+	 * @see TextField#CASH
+	 */
+	public static int getNumberOfDecimalFractions( javax.microedition.lcdui.TextField field ) {
+		return 2;
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Retrieves the number of decimal fractions that are allowed for CASH constrained TextFields
+	 * @param field the textfield the textfield for which the fractions are set
+	 * @return number the number (defaults to 2)
+	 * @see UiAccess#CONSTRAINT_CASH
+	 * @see TextField#CASH
+	 */
+	public static int getNumberOfDecimalFractions( TextField field ) {
+		return field.getNumberOfDecimalFractions(); 
+	}
+	//#endif
+
 
 	//#if polish.midp
 	/**
