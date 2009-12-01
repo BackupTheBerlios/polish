@@ -1164,17 +1164,10 @@
 		  </tstamp>
 
 		<echo message="Finished J2ME Polish installer on ${builddate} at ${buildtime}." />
-		<exec executable="java" osfamily="mac">
+		<exec executable="java">
 			<arg line="-cp" />
 			<arg line="dist/enough-j2mepolish-build.jar" />
-			<arg line="de.enough.polish.growl.GrowlNotifier" />
-			<arg line="&quot;Build Finished&quot;" />
-			<arg line="&quot;Finished J2ME Polish installer on ${builddate} at ${buildtime}.&quot;" />
-		</exec>
-		<exec executable="java" osfamily="unix">
-			<arg line="-cp" />
-			<arg line="dist/enough-j2mepolish-build.jar" />
-			<arg line="de.enough.polish.linuxnotify.LinuxNotifier" />
+			<arg line="de.enough.polish.notify" />
 			<arg line="&quot;Build Finished&quot;" />
 			<arg line="&quot;Finished J2ME Polish installer on ${builddate} at ${buildtime}.&quot;" />
 		</exec>

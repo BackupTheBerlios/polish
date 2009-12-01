@@ -65,6 +65,7 @@ import de.enough.polish.Extension;
 import de.enough.polish.ExtensionManager;
 import de.enough.polish.ExtensionSetting;
 import de.enough.polish.LicenseLoader;
+import de.enough.polish.Notify;
 import de.enough.polish.PolishProject;
 import de.enough.polish.Variable;
 import de.enough.polish.ant.build.BuildSetting;
@@ -98,11 +99,11 @@ import de.enough.polish.devices.DeviceDatabase;
 import de.enough.polish.devices.LibraryManager;
 import de.enough.polish.emulator.Emulator;
 import de.enough.polish.finalize.Finalizer;
-import de.enough.polish.growl.GrowlNotifier;
+import de.enough.polish.notify.GrowlNotifier;
 import de.enough.polish.jar.DefaultPackager;
 import de.enough.polish.jar.Packager;
 import de.enough.polish.libraryprocessor.LibraryProcessor;
-import de.enough.polish.linuxnotify.LinuxNotifier;
+import de.enough.polish.notify.LinuxNotifier;
 import de.enough.polish.manifest.ManifestCreator;
 import de.enough.polish.obfuscate.Obfuscator;
 import de.enough.polish.postcompile.PostCompiler;
@@ -545,11 +546,8 @@ public class PolishTask extends ConditionalTask {
 					}
 				}
 			}
-		} else if (GrowlNotifier.isGrowlAvailable()) {
-			GrowlNotifier.publish("J2ME Polish Finished", buildFinishedMessage.toString());
-		} else if (LinuxNotifier.isNotifyAvailable()) {
-			LinuxNotifier.publish("J2ME Polish Finished", buildFinishedMessage.toString());
 		}
+                Notify.publish("J2ME Polish Finished", buildFinishedMessage.toString());
 	}
 
 	/**
