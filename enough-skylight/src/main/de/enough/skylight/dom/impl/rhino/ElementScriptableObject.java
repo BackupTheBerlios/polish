@@ -1,5 +1,7 @@
 package de.enough.skylight.dom.impl.rhino;
 
+import org.mozilla.javascript.Scriptable;
+
 import de.enough.skylight.dom.impl.ElementImpl;
 
 public class ElementScriptableObject extends DomNodeScriptableObject{
@@ -15,5 +17,15 @@ public class ElementScriptableObject extends DomNodeScriptableObject{
 		super.init(elementImpl);
 		this.elementImpl = elementImpl;
 	}
+
+	@Override
+	public Object get(String name, Scriptable start) {
+		if("tagName".equals(name)) {
+			return this.elementImpl.getTagName();
+		}
+		return super.get(name, start);
+	}
+	
+	
 
 }
