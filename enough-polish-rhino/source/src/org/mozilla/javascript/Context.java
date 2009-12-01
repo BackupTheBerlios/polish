@@ -1396,10 +1396,26 @@ public class Context
     // ID of the nextWidget to run
     int runWidgetId = -1;
 
+	private boolean optionOnErrorThrowException = false;
+	private boolean optionOnErrorFireEvent = true;
+	
 	public void setCurrentWidgetId(int currentWidgetId) {
 		this.currentWidgetId = currentWidgetId;
 	}
+	
+	public void setOptionOnErrorThrowExeption(boolean optionOnErrorThrowException) {
+		this.optionOnErrorThrowException = optionOnErrorThrowException;
+	}
 
+	public boolean isOptionOnErrorThrowException() {
+		return this.optionOnErrorThrowException;
+	}
 
+	public void setOptionOnErrorFireEvent(boolean optionOnErrorFireEvent) {
+		this.optionOnErrorFireEvent = optionOnErrorFireEvent;
+	}
 
+	public boolean isOptionOnErrorFireEvent() {
+		return this.optionOnErrorFireEvent;
+	}
 }
