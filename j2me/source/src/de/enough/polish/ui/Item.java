@@ -3437,19 +3437,45 @@ public abstract class Item implements UiElement, Animatable
 	 */
 	public boolean isInContentArea( int relX, int relY ) {
 		int contTop = this.contentY;
-		if ( relY < contTop || relY > contTop + this.contentHeight ) {
+		int contLeft = this.contentX;
+		if ( relY < contTop || relX < contLeft || relY > contTop + this.contentHeight || relX > contLeft + this.contentWidth) {
 			//#debug
 			System.out.println("isInContentArea(" + relX + "," + relY + ") = false: contentY=" + this.contentY + ", contentY + contentHeight=" + (contTop + this.contentHeight) + " (" + this +")");
-			return false;
-		}
-		int contLeft = this.contentX;
-		if (relX < contLeft || relX > contLeft + this.contentWidth) {
 			//#debug
 			System.out.println("isInContentArea(" + relX + "," + relY + ") = false: contentX=" + this.contentX + ", contentX + contentWidth=" + (contLeft + this.contentWidth) + " (" + this +")");
 			return false;
 		}
 		//#debug
 		System.out.println("isInContentArea(" + relX + "," + relY + ") = true: contentX=" + this.contentX + ", contentX + contentWidth=" + (contLeft + this.contentWidth) + ", contentY=" + this.contentY + ", contentY + contentHeight=" + (contTop + this.contentHeight) + " (" + this +")");
+		return true;
+	}
+	
+	/**
+	 * Determines whether the given relative x/y position is inside of this item's content area.
+	 * Subclasses which extend their area over the declared/official content area, which is determined
+	 * in the initContent() method (like popup items), might want to override this method or possibly the getContentX(), getContentY() methods.
+	 * It is assumed that the item has been initialized before.
+	 * 
+	 * @param relX the x position relative to this item's left position
+	 * @param relY the y position relative to this item's top position
+	 * @return true when the relX/relY coordinate is within this item's content + padding area.
+	 * @see #initContent(int, int, int)
+	 */
+	public boolean isInContentWithPaddingArea( int relX, int relY ) {
+		int contTop = this.contentY - this.paddingTop;
+		if ( relY < contTop || relY > contTop + this.contentHeight + this.paddingTop + this.paddingBottom ) {
+			//#debug
+			System.out.println("isInContentWithPaddingArea(" + relX + "," + relY + ") = false: contentY=" + this.contentY + ", contentY + contentHeight=" + (contTop + this.contentHeight) + " (" + this +")");
+			return false;
+		}
+		int contLeft = this.contentX - this.paddingLeft;
+		if (relX < contLeft || relX > contLeft + this.contentWidth + this.paddingLeft + this.paddingRight) {
+			//#debug
+			System.out.println("isInContentWithPaddingArea(" + relX + "," + relY + ") = false: contentX=" + this.contentX + ", contentX + contentWidth=" + (contLeft + this.contentWidth) + " (" + this +")");
+			return false;
+		}
+		//#debug
+		System.out.println("isInContentWithPaddingArea(" + relX + "," + relY + ") = true: contentX=" + this.contentX + ", contentX + contentWidth=" + (contLeft + this.contentWidth) + ", contentY=" + this.contentY + ", contentY + contentHeight=" + (contTop + this.contentHeight) + " (" + this +")");
 		return true;
 	}
 

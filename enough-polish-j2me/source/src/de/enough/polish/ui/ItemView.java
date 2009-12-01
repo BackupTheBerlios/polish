@@ -378,6 +378,20 @@ public abstract class ItemView implements Serializable{
 	}
 
 	/**
+	 * Adjusts the given position to the content area of this view
+	 * @param x the horizontal position relative to the parent item's outer left border
+	 * @param y the vertical position relative to the parent item's outer top border
+	 * @return the adjusted position relative to this view's content area
+	 */
+	protected Point adjustToContentArea( int x, int y ) {
+		x -= this.parentItem.getContentX();
+		y -= this.parentItem.getContentY();
+		return new Point( x, y );
+	}
+	
+	
+
+	/**
 	 * Handles pointer pressed events.
 	 * This is an optional feature that doesn't need to be implemented by subclasses, since the parent container already forwards the event to the appropriate item (when this method returns false).
 	 * The default implementation just returns false.

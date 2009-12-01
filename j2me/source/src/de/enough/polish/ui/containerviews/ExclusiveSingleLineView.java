@@ -587,7 +587,7 @@ public class ExclusiveSingleLineView extends ContainerView {
 	 *         will forward the event to the affected item.
 	 */
 	public boolean handlePointerPressed(int x, int y) {
-		if (y < 0 || y > this.contentHeight ) {
+		if ( !this.parentContainer.isInContentWithPaddingArea(x, y) ) {
 			return false;
 		}
 		//#if tmp.supportPress
@@ -637,7 +637,7 @@ public class ExclusiveSingleLineView extends ContainerView {
 	 *         will forward the event to the affected item.
 	 */
 	public boolean handlePointerReleased(int x, int y) {
-		if (y < 0 || y > this.contentHeight ) {
+		if ( !this.parentContainer.isInContentWithPaddingArea(x, y) ) {
 			return false;
 		}
 		//#if tmp.supportPress
