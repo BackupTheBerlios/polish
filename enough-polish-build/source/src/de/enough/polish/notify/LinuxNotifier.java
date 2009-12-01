@@ -16,7 +16,7 @@ public class LinuxNotifier extends Notify {
      * @param text the text
      * @return true when the publishing succeeded
      */
-    public boolean publish(String title, String text) {
+    protected boolean publishInternal(String title, String text) {
         try {
             String[] cmd = new String[]{"notify-send", title, text};
             Runtime.getRuntime().exec(cmd);
@@ -45,8 +45,8 @@ public class LinuxNotifier extends Notify {
             System.exit(1);
         }
         if (isNotifyAvailable()) {
-            LinuxNotifier instance = new LinuxNotifier();
-            instance.publish(args[0], args[1]);
+            LinuxNotifier in = new LinuxNotifier();
+            in.publishInternal(args[0], args[1]);
         }
         System.exit(0);
     }

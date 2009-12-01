@@ -42,10 +42,12 @@ public abstract class Notify {
     public static boolean publish(String title, String message) {
         Notify n = Notify.getInstance();
         if (n != null) {
-            return n.publish(title, message);
+            return n.publishInternal(title, message);
         }
         return false;
     }
+
+    protected abstract boolean publishInternal(String title,String message);
 
     public static void main(String[] args) {
         if (args.length < 2) {

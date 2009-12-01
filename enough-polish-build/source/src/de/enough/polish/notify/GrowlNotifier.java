@@ -39,7 +39,7 @@ public class GrowlNotifier extends Notify {
 	 * @param text the text
 	 * @return true when the publishing succeeded
 	 */
-	public boolean publish( String title, String text ) {
+	protected boolean publishInternal( String title, String text ) {
 		String script = StringUtil.replace( APPLE_SCRIPT, "${title}", title );
 		script = StringUtil.replace( script, "${description}", text );
 		String[] cmd = new String[]{"/usr/bin/osascript", "-e",  script };
@@ -78,8 +78,8 @@ public class GrowlNotifier extends Notify {
 			System.exit(1);
 		}
 		if (isGrowlAvailable()) {
-                    GrowlNotifier instance = new GrowlNotifier();
-			instance.publish( args[0], args[1]);
+                    GrowlNotifier in = new GrowlNotifier();
+			in.publishInternal( args[0], args[1]);
 		}
 		System.exit(0);
 	}
