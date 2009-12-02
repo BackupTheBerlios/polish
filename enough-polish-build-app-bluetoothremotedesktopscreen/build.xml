@@ -1,0 +1,37 @@
+<project name="remote desktop screen" default="dist">
+
+
+	<!--
+	<property name="lib.blucove" location="lib/bluecove-2.0.2.jar" />
+	-->
+	<property name="lib.blucove" location="lib/bluecove-2.0.3-snapshot.jar" />
+	<target name="javac">
+		<mkdir dir="bin/classes" />
+		<javac destdir="bin/classes" target="1.4" source="1.4">
+			<src path="source/src" />
+			<src path="../enough-polish-build-common/source/src" />
+			<classpath path="${lib.blucove}" />
+		</javac>
+	</target>
+	
+	<target name="dist" depends="javac">
+		<mkdir dir="dist" />
+		<mkdir dir="tmp/lib" />
+		<unjar src="${lib.blucove}" dest="tmp/lib" />
+		<manifest file="tmp/manifest">
+			<attribute name="Built-By" value="J2ME-Polish"/>
+			<attribute name="Main-Class" value="de.enough.polish.app.bluetoothscreener.BluetoothRemoteDesktopScreen"/>
+		</manifest>
+		<jar destfile="dist/enough-j2mepolish-bluetoothremotedesktopscreen.jar" manifest="tmp/manifest">
+			<fileset dir="bin/classes" includes="**/*.class" />
+			<fileset dir="tmp/lib" />
+		</jar>
+		<delete dir="tmp"/>
+	</target>
+	
+<target name="clean">
+	<delete dir="dist" />
+	<delete dir="bin/classes" />
+</target>
+	
+</project>
