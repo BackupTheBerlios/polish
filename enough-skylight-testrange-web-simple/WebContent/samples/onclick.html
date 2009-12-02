@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Insert title here</title>
+<script type="text/javascript">
+function init(){
+	var element = document.getElementById('link');
+	var listenerCap = function(event){alert('Event captured!');event.preventDefault();};
+	var listenerBub = function(event){alert('Event bubbled!')};
+	element.addEventListener("click",listenerCap,true);
+	element.addEventListener("click",listenerBub,false);
+	element.onclick = function(){alert('onclick event')};
+}
+</script>
+</head>
+<body onload="init()">
+<div id="bla" onclick="this.firstChild.nodeValue='new text\nwith newline';" >Click this text to change it.</div>
+<div><a id="link" href="end.html">Test event propagation.</a> </div>
+</body>
+</html>
