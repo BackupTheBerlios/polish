@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Enough Sysinfo Provider servlet" basedir=".">
+	<property file="${user.name}.properties" />
+	
+	<!-- init all needed propertys -->
+	<target name="init">
+		<tstamp>
+			<format property="builddate" pattern="yyyy-MM-dd" locale="en"/>
+		</tstamp>
+
+		<property name="builddir" value="build" />
+		<property name="distdir" value="dist" />
+		<property name="deploydir" value="/var/lib/tomcat5.5/webapps" />
+		<property name="sysinfo.home" value="../enough-polish-sysinfo" />
+		<property name="buildtype" value="remote" />
+	</target>
+
+	<!-- compiling all source files except the midlet -->
+	<target name="compile" >
+		<mkdir dir="${builddir}" />
+		<javac srcdir="source/src" destdir="${builddir}" debug="true" source="1.5" target="1.5">
+			<classpath>
+				<pathelement path="${classpath}" />
+				<fileset dir="lib">
+					<include name="**/*.jar" />
+				</fileset>
+			</classpath>
+		</javac>
+	</target>
+	
+	<!-- a small servlet providing the sysinfomidlet download -->
+	<target name="sysinfoprovider" depends="init, compile">
+		<available file="${sysinfo.home}/dist/sysinfo.jad" property="sysinfo.jad.available" />
+		<fail unless="sysinfo.jad.available" message="sysinfo.jad not available. Make sure your build of the sysinfo midlet is up-to-date" />
+		<available file="${sysinfo.home}/dist/sysinfo.jar" property="sysinfo.jar.available" />
+		<fail unless="sysinfo.jar.available" message="sysinfo.jar not available. Make sure your build of the sysinfo midlet is up-to-date" />
+
+		<copy file="conf/web.xml.in" tofile="${builddir}/web.xml" />
+		<replace file="${builddir}/web.xml" token="%%BUILDDATE%%" value="${builddate}" />
+			
+		<echo message="building for ${buildtype}"/>
+		<mkdir dir="${distdir}"/>
+		<war destfile="${distdir}/sysinfoprovider.war" webxml="${builddir}/web.xml">
+			<classes dir="${builddir}">
+				<include name="**/*.class" />
+			</classes>
+			<lib dir="lib" includes="log4j*.jar" />
+			<classes dir="conf/remotebuild" >
+				<include name="log4j.properties"/>
+			</classes>
+			<classes dir="${sysinfo.home}/dist" includes="sysinfo.jad" />
+			<classes dir="${sysinfo.home}/dist" includes="sysinfo.jar" />
+		</war>
+	</target>
+
+	<target name="war" depends="sysinfoprovider" />
+	
+	<!-- clean up -->
+	<target name="clean" depends="init">
+		<delete dir="${builddir}" />
+		<delete dir="${distdir}" />
+	</target>
+
+	<target name="deploy-local" depends="sysinfoprovider">
+		<copy file="${distdir}/sysinfoprovider.war" todir="${deploydir}" overwrite="true" />
+	</target>
+
+</project>
