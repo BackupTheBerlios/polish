@@ -31,8 +31,6 @@ import de.enough.polish.rmi.Remote;
 import de.enough.polish.rmi.RemoteException;
 
 public interface SysInfoServer extends Remote{
-
-	public String sayHello() throws RemoteException;
 	public boolean login(String name, String password) throws RemoteException;
 	public void sendInfos(Hashtable m, String user, String pwd) throws RemoteException;	
 }
