@@ -3321,6 +3321,11 @@ public class Container extends Item {
 		relY -= this.yOffset;
 		relX -= this.contentX;
 		relY -= this.contentY;
+		//#ifdef tmp.supportViewType
+			if (this.containerView != null) {
+				relX -= this.containerView.xOffset;
+			}
+		//#endif
 		Item item = this.focusedItem;
 		if (item != null) {
 			int itemRelX = relX - item.relativeX;

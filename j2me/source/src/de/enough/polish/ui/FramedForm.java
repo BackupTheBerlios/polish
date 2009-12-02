@@ -1166,6 +1166,58 @@ public class FramedForm extends Form {
 	}
 	//#endif
 	
+
+	//#ifdef polish.hasTouchEvents
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#handlePointerTouchDown(int, int)
+	 */
+	public boolean handlePointerTouchDown(int x, int y) {
+		Container frame = this.topFrame;
+		if (frame != null && frame.handlePointerTouchDown(x - frame.relativeX, y - frame.relativeY)) {
+			return true;
+		}
+		frame = this.bottomFrame;
+		if (frame != null && frame.handlePointerTouchDown(x - frame.relativeX, y - frame.relativeY)) {
+			return true;
+		}
+		frame = this.leftFrame;
+		if (frame != null && frame.handlePointerTouchDown(x - frame.relativeX, y - frame.relativeY)) {
+			return true;
+		}
+		frame = this.rightFrame;
+		if (frame != null && frame.handlePointerTouchDown(x - frame.relativeX, y - frame.relativeY)) {
+			return true;
+		}
+		return super.handlePointerTouchDown(x, y);
+	}
+	//#endif
+
+	//#if polish.hasTouchEvents
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#handlePointerTouchUp(int, int)
+	 */
+	public boolean handlePointerTouchUp(int x, int y) {
+		Container frame = this.topFrame;
+		if (frame != null && frame.handlePointerTouchUp(x - frame.relativeX, y - frame.relativeY)) {
+			return true;
+		}
+		frame = this.bottomFrame;
+		if (frame != null && frame.handlePointerTouchUp(x - frame.relativeX, y - frame.relativeY)) {
+			return true;
+		}
+		frame = this.leftFrame;
+		if (frame != null && frame.handlePointerTouchUp(x - frame.relativeX, y - frame.relativeY)) {
+			return true;
+		}
+		frame = this.rightFrame;
+		if (frame != null && frame.handlePointerTouchUp(x - frame.relativeX, y - frame.relativeY)) {
+			return true;
+		}
+		return super.handlePointerTouchUp(x, y);
+	}
+	//#endif
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Screen#animate(long,ClippingRegion)
@@ -1433,6 +1485,7 @@ public class FramedForm extends Form {
 			this.bottomFrame.destroy();
 		}
 	}
+
 	
 	
 	

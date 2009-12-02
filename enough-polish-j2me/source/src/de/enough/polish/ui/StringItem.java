@@ -812,7 +812,7 @@ public class StringItem extends Item
 		//#if polish.css.text-wrap
 			Boolean textWrapBool = style.getBooleanProperty("text-wrap");
 			if (textWrapBool != null) {
-				if (textWrapBool.booleanValue() != this.useSingleLine) {
+				if (textWrapBool.booleanValue() == this.useSingleLine) {
 					this.useSingleLine = !textWrapBool.booleanValue();
 					this.isTextInitializationRequired = true;
 				}

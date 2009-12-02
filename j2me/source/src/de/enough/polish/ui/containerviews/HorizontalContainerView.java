@@ -341,6 +341,20 @@ public class HorizontalContainerView extends ContainerView {
 		return super.handlePointerPressed(x, y);
 	}
 	//#endif
+	
+	//#ifdef polish.hasTouchEvents
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.ItemView#handlePointerTouchDown(int, int)
+	 */
+	public boolean handlePointerTouchDown(int x, int y) {
+		if (this.isClippingRequired && this.parentContainer.isInContentArea(x, y)) {
+			this.isPointerPressedHandled = true;
+			this.pointerPressedX = x;
+		}
+		return super.handlePointerTouchDown(x, y);
+	}
+	//#endif
 
 
 //	//#ifdef polish.hasPointerEvents
