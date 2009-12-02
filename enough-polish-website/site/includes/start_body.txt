@@ -243,8 +243,8 @@
 					<p class="thirdLevel">
 					<a href="<%= basedir %>docs/mepose-features.html">Features</a>
 					<a href="<%= basedir %>docs/mepose-install.html">Installation</a>
-					<a href="<%= basedir %>docs/mepose-wizard.html">Creating Projects</a>
-					<a href="<%= basedir %>docs/mepose-convert.html">Converting Projects</a>
+					<!-- <a href="<%= basedir %>docs/mepose-wizard.html">Creating Projects</a> 
+					<a href="<%= basedir %>docs/mepose-convert.html">Converting Projects</a> -->
 					<a href="<%= basedir %>docs/mepose-running.html">Running and Debugging</a>
 					</p>
 					</div>
