@@ -241,13 +241,21 @@ rightcommand extends leftcommand
 	layout: right;
 }
 
+form {
+	padding: 0;	
+}
+
 linebox {
+	margin-left: 10;
+	margin-right: 10;
 	padding: 0;
 	view-type: horizontal;
 	background-color: red;	
 }
 
 lineboxInner {
+	margin-left: 10;
+	margin-right: 10;
 	padding: 0;
 	view-type: horizontal;
 	background-color: blue;	

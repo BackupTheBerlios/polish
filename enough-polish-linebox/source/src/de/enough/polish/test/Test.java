@@ -57,7 +57,7 @@ public class Test extends MIDlet{
     }
     
     protected void startApp(){
-    	
+    	//#style form
     	Form form = new Form("ListTest");
     	
     	UiAccess.init(form);
@@ -74,19 +74,25 @@ public class Test extends MIDlet{
     		item = new StringItem(null,text);
     		
     		if(i % 3 == 0) {
+    			int remainingSpace = linebox.getRemainingSpace();
+    			System.out.println(linebox + " has remaining space : " + remainingSpace);
     			//#style lineboxInner
-    			LineBox lineboxInner = new LineBox(linebox.getRemainingSpace());
+    			LineBox lineboxInner = new LineBox(remainingSpace);
     			if(lineboxInner.hasSpace(item)) {
+    				System.out.println(lineboxInner + " has space for " + item);
     				lineboxInner.add(item);
     			} 
     			item = lineboxInner.getLine();
-    		}
+    		} 
     		
     		if(!linebox.hasSpace(item)) {
     			form.append(linebox.getLine());
+    			//#style linebox
     			linebox = new LineBox(form.getScreenContentWidth());
+    			System.out.println("new linebox " + linebox);
     		} 
     		
+    		System.out.println("adding " + item + " to " + linebox);
     		linebox.add(item);
 		}
     	

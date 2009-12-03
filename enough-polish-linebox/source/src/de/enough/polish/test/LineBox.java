@@ -41,7 +41,7 @@ public class LineBox {
 	}
 	
 	public int getRemainingSpace() {
-		return this.space - this.line.getContentWidth();
+		return this.space - this.line.itemWidth;
 	}
 	
 	public void add(Item item) {
