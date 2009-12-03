@@ -74,15 +74,17 @@ public class ElementImpl extends DomNodeImpl implements Element{
 			previousValue = attribute.getValue();
 		}
 		getAttributes().setNamedItem(attribute);
-		MutationEventImpl event = new MutationEventImpl();
-		event.init(this);
-		event.initMutationEvent("DOMAttrModified", true, false, this, previousValue, value, name, MutationEvent.MODIFICATION);
-		EventProcessor.getInstance().processEvent(event);
+		EventFactory.getInstance().fireDomAttrModifiedEvent(this, this, previousValue, value, name, MutationEvent.MODIFICATION);
 	}
 
 	public Attr setAttributeNode(Attr newAttr) throws DomException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public boolean hasScriptable() {
+		return this.scriptableObject != null;
 	}
 	
 }

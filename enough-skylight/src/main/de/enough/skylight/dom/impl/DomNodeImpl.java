@@ -121,7 +121,11 @@ public abstract class DomNodeImpl implements DomNode {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	// TODO: Put these two methods in a nice interface.
 	public abstract Scriptable getScriptable();
+	public abstract boolean hasScriptable();
+	
 	public boolean hasAttributes() {
 		return this.attributes.getLength() > 0;
 	}

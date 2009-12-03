@@ -1,5 +1,9 @@
 package de.enough.skylight.dom.impl;
 
+import org.mozilla.javascript.Scriptable;
+
+import de.enough.skylight.Frame;
+import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.Event;
 import de.enough.skylight.dom.MutationEvent;
 
@@ -15,7 +19,10 @@ public class EventProcessor {
 		return instance;
 	}
 	
-
+	private EventProcessor() {
+		// Hidden.
+	}
+	
 	/**
 	 * 
 	 * @param event
@@ -58,6 +65,31 @@ public class EventProcessor {
 			target.doDefaultAction();
 		}
 		
+		
+		/*
+		 * The event propagation mechanism is as follows:
+		 * 1) Event created
+		 * 2) Event capturing
+		 * 3) Event onclick handling from the markup (onclick="alert()")
+		 * 4) Event bubbling
+		 * 5) Event onclick handling from JS (element.onclick = function(){alert()})
+		 * 
+		 * Step 5) only takes place if step 3) was omitted because no markup handling was definied. So 3) and 5) are mutally
+		 * exclusive.
+		 * */
+		boolean onclickTriggered = false;
+		// Do js handling of onclick etc in the markup.
+		if("click".equals(event.getType())){
+			DomNode scriptAttribute = target.getAttributes().getNamedItem("onclick");
+			if(scriptAttribute != null) {
+				String scriptText = scriptAttribute.getNodeValue();
+				if(scriptText != null && scriptText.length() != 0) {
+					Frame.getInstance().getJsEngine().runScript(scriptText);
+					onclickTriggered = true;
+				}
+			}
+		}
+		
 		if(event.getBubbles()) {
 			// Bubble event upstream.
 			System.out.println("Handling bubbling of event");
@@ -74,6 +106,26 @@ public class EventProcessor {
 				}
 			}
 		}
+
+		// Handle js onclick functions on the elements.
+		if( ! onclickTriggered) {
+			// Avoid lazy loading.
+			if( ! target.hasScriptable()) {
+				Scriptable scriptable = target.getScriptable();
+				Object onClickFunction = null;
+				while(scriptable != null) {
+					onClickFunction = scriptable.get("onclick", scriptable);
+					if(onClickFunction != null) {
+						break;
+					}
+					scriptable = scriptable.getParentScope();
+				}
+				if(onClickFunction != null) {
+					Frame.getInstance().getJsEngine().runFunction(onClickFunction);
+				}
+			}
+		}
+		
 		return event.isPreventDefault();
 	}
 	

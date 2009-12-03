@@ -66,8 +66,17 @@ public class DocumentImpl extends DomNodeImpl implements Document {
 
 	@Override
 	public Event createEvent(String eventType) throws DomException {
-		// TODO Auto-generated method stub
+		// TODO: Using this API for generating interal events is not nice as the caller need to cast and he has to do the dispatch
+		// himself.
+		if("DOMAttrModified".equals(eventType)) {
+//			MutationEventImpl event = new MutationEventImpl();
+//			event.ini
+		}
 		return null;
 	}
 	
+	@Override
+	public boolean hasScriptable() {
+		return this.scriptableObject != null;
+	}
 }

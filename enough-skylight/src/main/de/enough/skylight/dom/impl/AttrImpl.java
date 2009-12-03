@@ -79,5 +79,9 @@ public class AttrImpl extends DomNodeImpl implements Attr {
 		return this.scriptableObject;
 	}
 	
+	@Override
+	public boolean hasScriptable() {
+		return this.scriptableObject != null;
+	}
 
 }
