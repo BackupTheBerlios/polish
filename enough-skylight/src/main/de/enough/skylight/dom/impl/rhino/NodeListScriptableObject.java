@@ -44,6 +44,7 @@ public class NodeListScriptableObject extends ScriptableObject{
 		return this.nodeList.getLength();
 	}
 
+	@Override
 	public Object get(String name, Scriptable start) {
 		if("length".equals(name)) {
 			return new Integer(length());
