@@ -2919,7 +2919,7 @@ public class Container extends Item {
 			int viewXOffset = 0;
 			ContainerView contView = this.containerView;
 			if (contView != null) {
-				viewXOffset = contView.xOffset; 
+				viewXOffset = contView.getScrollXOffset(); 
 				relX -= viewXOffset;
 			}
 		//#endif
@@ -3095,7 +3095,7 @@ public class Container extends Item {
 			int viewXOffset = 0;
 			ContainerView contView = this.containerView;
 			if (contView != null) {
-				viewXOffset = contView.xOffset; 
+				viewXOffset = contView.getScrollXOffset(); 
 				relX -= viewXOffset;
 			}
 		//#endif
@@ -3275,7 +3275,7 @@ public class Container extends Item {
 		}
 		//#ifdef tmp.supportViewType
 			if (this.containerView != null) {
-				if ( this.containerView.handlePointerTouchDown(x,y) ) {
+				if ( this.containerView.handlePointerTouchUp(x,y) ) {
 					return true;
 				}
 			}
@@ -3323,7 +3323,7 @@ public class Container extends Item {
 		relY -= this.contentY;
 		//#ifdef tmp.supportViewType
 			if (this.containerView != null) {
-				relX -= this.containerView.xOffset;
+				relX -= this.containerView.getScrollXOffset();
 			}
 		//#endif
 		Item item = this.focusedItem;
@@ -3673,7 +3673,7 @@ public class Container extends Item {
 	public int getAbsoluteX() {
 		int xAdjust = 0;
 		if (this.containerView != null) {
-			xAdjust = this.containerView.xOffset;
+			xAdjust = this.containerView.getScrollXOffset();
 		}
 		return super.getAbsoluteX() + xAdjust;
 	}
@@ -3688,7 +3688,7 @@ public class Container extends Item {
 		relY -= this.yOffset;
 		//#ifdef tmp.supportViewType
 			if (this.containerView != null) {
-				relX -= this.containerView.xOffset;
+				relX -= this.containerView.getScrollXOffset();
 			}
 		//#endif
 		return super.isInItemArea(relX, relY, child);

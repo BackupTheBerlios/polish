@@ -28,7 +28,6 @@ package de.enough.polish.ui.containerviews;
 
 import javax.microedition.lcdui.Graphics;
 
-import de.enough.polish.ui.ClippingRegion;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.ContainerView;
 import de.enough.polish.ui.IconItem;
@@ -48,7 +47,6 @@ public class HorizontalContainerView extends ContainerView {
 	
 	private static final int DISTRIBUTE_EQUALS = 1;
 	
-	protected int targetXOffset;
 	private boolean allowRoundTrip;
 	private boolean isExpandRightLayout;
 	//#if polish.css.horizontalview-align-heights
@@ -62,9 +60,6 @@ public class HorizontalContainerView extends ContainerView {
 		private String[] labels;
 	//#endif
 	private boolean isClippingRequired;
-	private boolean isPointerPressedHandled;
-	private int pointerPressedX;
-	private int completeContentWidth;
 
 	/**
 	 * Creates a new view
@@ -76,37 +71,6 @@ public class HorizontalContainerView extends ContainerView {
 		this.isVertical = false;
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.ItemView#animate(long, de.enough.polish.ui.ClippingRegion)
-	 */
-	public void animate(long currentTime, ClippingRegion repaintRegion)
-	{
-		super.animate(currentTime, repaintRegion);
-		int target = this.targetXOffset;
-		int current = this.xOffset;
-		if (target != current) {
-			int diff = Math.abs( target - current );
-			int delta = diff / 3;
-			if (delta < 2) {
-				delta = 2;
-			}
-			if (target < current) {
-				current -= delta;
-				if (current < target) {
-					current = target;
-				}
-			} else {
-				current += delta;
-				if (current > target) {
-					current = target;
-				}
-			}
-			this.xOffset = current;
-			addFullRepaintRegion(this.parentItem, repaintRegion);
-		}
-	}
-
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#initContent(de.enough.polish.ui.Container, int, int)
@@ -179,10 +143,10 @@ public class HorizontalContainerView extends ContainerView {
 				}
 			//#endif
 			if ( i == selectedItemIndex) {
-				if ( startX + this.xOffset < 0 ) {
-					this.targetXOffset = -startX; 
-				} else if ( completeWidth + this.targetXOffset > availWidth ) {
-					this.targetXOffset = availWidth - completeWidth;
+				if ( startX + getScrollXOffset() < 0 ) {
+					setScrollXOffset( -startX, true ); 
+				} else if ( completeWidth + getScrollTargetXOffset() > availWidth ) {
+					setScrollXOffset( availWidth - completeWidth, true );
 				}
 				//System.out.println("initContent: xOffset=" + xOffset);
 				this.focusedItem = item;
@@ -207,12 +171,10 @@ public class HorizontalContainerView extends ContainerView {
 		this.contentHeight = maxHeight;
 		if (completeWidth > availWidth) {
 			this.isClippingRequired = true;
-			this.contentWidth = availWidth;
 		} else {
 			this.isClippingRequired = false;
-			this.contentWidth = completeWidth;
 		}
-		this.completeContentWidth = completeWidth;
+		this.contentWidth = completeWidth;
 		
     	if (
     			((parent.getLayout() & Item.LAYOUT_RIGHT) == Item.LAYOUT_RIGHT)
@@ -242,10 +204,10 @@ public class HorizontalContainerView extends ContainerView {
 		
 		if(item != null) {
 			if (this.isClippingRequired && item != null) {
-				if (this.targetXOffset + item.relativeX < 0) {
-					this.targetXOffset = -item.relativeX;
-				} else if (this.targetXOffset + item.relativeX + item.itemWidth > this.contentWidth) {
-					this.targetXOffset = this.contentWidth - item.relativeX - item.itemWidth;
+				if (getScrollTargetXOffset() + item.relativeX < 0) {
+					setScrollXOffset( -item.relativeX, true );
+				} else if (getScrollTargetXOffset() + item.relativeX + item.itemWidth > this.contentWidth) {
+					setScrollXOffset( this.contentWidth - item.relativeX - item.itemWidth, true );
 				}
 			}
 			
@@ -290,7 +252,7 @@ public class HorizontalContainerView extends ContainerView {
 	 */
 	protected void paintContent(Container container, Item[] myItems, int x, int y, int leftBorder, int rightBorder, int clipX, int clipY, int clipWidth, int clipHeight, Graphics g) {
 		//#debug
-		System.out.println("paint " + this + " at " + x + ", " + y + ", with xOffset " + this.xOffset + ", clipping req=" + this.isClippingRequired + ", expandRightLayout=" + this.isExpandRightLayout);
+		System.out.println("paint " + this + " at " + x + ", " + y + ", with xOffset " + getScrollXOffset() + ", clipping req=" + this.isClippingRequired + ", expandRightLayout=" + this.isExpandRightLayout);
 		
     	if (this.isExpandRightLayout) {
     		x = rightBorder - this.contentWidth;
@@ -298,7 +260,7 @@ public class HorizontalContainerView extends ContainerView {
     	if (this.isClippingRequired) {
     		g.clipRect( x, y, this.contentWidth + 1, this.contentHeight + 1 );
     	}
-		x += this.xOffset;
+		x += getScrollXOffset();
 		super.paintContent(container, myItems, x, y, leftBorder, rightBorder, clipX,
 				clipY, clipWidth, clipHeight, g);
 		if (this.isClippingRequired) {
@@ -306,68 +268,5 @@ public class HorizontalContainerView extends ContainerView {
 		}
 	}
 
-
-	//#ifdef polish.hasPointerEvents
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.ItemView#handlePointerDragged(int, int)
-	 */
-	public boolean handlePointerDragged(int x, int y) {
-		if (this.isPointerPressedHandled && this.isClippingRequired) {
-			int offset = this.targetXOffset + (x - this.pointerPressedX);
-			if (offset + this.completeContentWidth < this.contentWidth) {
-				offset = this.contentWidth - this.completeContentWidth;
-			} else if (offset > 0) {
-				offset = 0;
-			}
-			this.xOffset = offset;
-			this.targetXOffset = offset;
-			this.pointerPressedX = x;
-			return true;
-		}
-		return super.handlePointerDragged(x, y);
-	}
-	//#endif
-
-
-	//#ifdef polish.hasPointerEvents
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.ItemView#handlePointerPressed(int, int)
-	 */
-	public boolean handlePointerPressed(int x, int y) {
-		if (this.isClippingRequired && this.parentContainer.isInContentArea(x, y)) {
-			this.isPointerPressedHandled = true;
-			this.pointerPressedX = x;
-		}
-		return super.handlePointerPressed(x, y);
-	}
-	//#endif
-	
-	//#ifdef polish.hasTouchEvents
-	/*
-	 * (non-Javadoc)
-	 * @see de.enough.polish.ui.ItemView#handlePointerTouchDown(int, int)
-	 */
-	public boolean handlePointerTouchDown(int x, int y) {
-		if (this.isClippingRequired && this.parentContainer.isInContentArea(x, y)) {
-			this.isPointerPressedHandled = true;
-			this.pointerPressedX = x;
-		}
-		return super.handlePointerTouchDown(x, y);
-	}
-	//#endif
-
-
-//	//#ifdef polish.hasPointerEvents
-//	/* (non-Javadoc)
-//	 * @see de.enough.polish.ui.ItemView#handlePointerReleased(int, int)
-//	 */
-//	public boolean handlePointerReleased(int x, int y) {
-//		// TODO Auto-generated method stub
-//		return super.handlePointerReleased(x, y);
-//	}
-//	//#endif
-
-	
-	
 	
 }

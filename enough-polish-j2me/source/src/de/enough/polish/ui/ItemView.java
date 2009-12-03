@@ -57,15 +57,16 @@ public abstract class ItemView implements Serializable{
 	
 	/**
 	 * Initialises this item view. 
-	 * The implementation needs to calculate and set the contentWidth and 
-	 * contentHeight fields. 
+	 * This method saves the available width and height and then calls initContent(int, int, int).
+	 * Please always call the super.init(..) method when overriding this method.
 	 * 
 	 * @param parent the parent item
 	 * @param firstLineWidth the maximum width of the first line 
 	 * @param availWidth the maximum width of the view
 	 * @param availHeight the maximum height of the view
-	 * @see #contentWidth
-	 * @see #contentHeight
+	 * @see #initContent(Item, int, int, int)
+	 * @see #availableWidth
+	 * @see #availableHeight
 	 */
 	protected void init( Item parent, int firstLineWidth, int availWidth, int availHeight ) {
 		this.parentItem = parent;

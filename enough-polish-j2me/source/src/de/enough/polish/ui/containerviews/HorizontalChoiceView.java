@@ -58,7 +58,6 @@ public class HorizontalChoiceView extends ContainerView {
 	private final static int POSITION_RIGHT = 1; 
 	private final static int POSITION_LEFT = 2; 
 	private final static int POSITION_NONE = 3;
-	protected int targetXOffset;
 	private int arrowColor;
 	//#ifdef polish.css.horizontalview-left-arrow
 		private Image leftArrow;
@@ -96,11 +95,7 @@ public class HorizontalChoiceView extends ContainerView {
 	private int rightArrowStartX;
 	private int rightArrowEndX;
 	//private boolean isInitialized;
-	private int completeWidthOfItems;
 	private int pointerReleasedIndex = -1;
-	private boolean isPointerPressedHandled;
-	private int pointerPressedX;
-	private int innerContentWidth;
 	private int contentStart;
 
 	/**
@@ -122,7 +117,7 @@ public class HorizontalChoiceView extends ContainerView {
 		Container parent = (Container) parentItm;
 		ChoiceGroup choiceGroup = (ChoiceGroup) parent;
 		int selectedItemIndex;
-		
+		int focIndex = parent.getFocusedIndex();
 		boolean isMultiple = choiceGroup.getType() == ChoiceGroup.MULTIPLE;
 		if (!isMultiple) {
 			selectedItemIndex = choiceGroup.getSelectedIndex();
@@ -133,7 +128,7 @@ public class HorizontalChoiceView extends ContainerView {
 //				parent.focusChild (selectedItemIndex, parent.get( selectedItemIndex ), 0, true);
 //			}
 		} else {
-			selectedItemIndex = parent.getFocusedIndex();
+			selectedItemIndex = focIndex;
 		}
 		//parent.focusedIndex = selectedItemIndex;
 		int height = 0;
@@ -241,13 +236,12 @@ public class HorizontalChoiceView extends ContainerView {
 					completeWidth = (availItemWidthWithPaddingShift8 * (i+1)) >> 8;
 				}
 			//#endif
-			if ( i == selectedItemIndex) {
-				if ( startX + this.xOffset < 0 ) {
-					this.xOffset = -startX; 
-				} else if ( completeWidth + this.xOffset > availWidth ) {
-					this.xOffset = availWidth - completeWidth;
+			if ( i == focIndex) {
+				if ( startX + getScrollXOffset() < 0 ) {
+					setScrollXOffset( -startX ); 
+				} else if ( completeWidth + getScrollXOffset() > availWidth ) {
+					setScrollXOffset( availWidth - completeWidth );
 				}
-				this.targetXOffset = this.xOffset;
 			}
 		}
 		// now adjust vertical offsets:
@@ -264,11 +258,11 @@ public class HorizontalChoiceView extends ContainerView {
 
 			}
 		}
-		this.completeWidthOfItems = completeWidth;
-	
+		if (completeWidth < availWidth) { // && parent.isLayoutExpand()) { always adjust width, so that arrows are painted correctly [or later adjust arrow positioning]
+			completeWidth = availWidth;
+		} 
+		this.contentWidth = completeWidth + completeArrowWidth;
 		this.contentHeight = height;
-		this.contentWidth = availWidth + completeArrowWidth;
-		this.innerContentWidth = availWidth;
 		
 		if (items.length > 0) {
 			this.appearanceMode = Item.INTERACTIVE;
@@ -276,7 +270,10 @@ public class HorizontalChoiceView extends ContainerView {
 			this.appearanceMode = Item.PLAIN;
 		}
 		if (selectedItemIndex < items.length && selectedItemIndex != -1) {
-			this.focusedItem = items[ selectedItemIndex ];
+			if (this.focusedItem == null) {
+				this.focusedItem = items[ selectedItemIndex ];
+				this.focusedIndex = selectedItemIndex;
+			}
 			this.currentItemIndex = selectedItemIndex;
 		}
 		//if ( selectedItem.isFocused ) {
@@ -412,7 +409,7 @@ public class HorizontalChoiceView extends ContainerView {
 			} else if (this.arrowPosition == POSITION_RIGHT){
 				rightBorder -= (this.arrowWidth + this.paddingHorizontal) << 1;				
 			}
-		//#endif	
+		//#endif
 				
 		//#ifdef polish.css.horizontalview-expand-background
 			if (!this.isExpandBackground && this.expandBackground != null) {
@@ -427,11 +424,11 @@ public class HorizontalChoiceView extends ContainerView {
 //		g.setColor(0xff0000);
 //		g.drawLine( rightBorder, y, rightBorder, y + this.contentHeight);
 //		g.drawLine( leftBorder, y, leftBorder, y + this.contentHeight);
-		boolean setClip = this.completeWidthOfItems > rightBorder - leftBorder;
+		boolean setClip = this.contentWidth > rightBorder - leftBorder;
 		if (setClip) {
 			g.clipRect(modifiedX, clipY, rightBorder - modifiedX, clipHeight );
 		}
-		super.paintContent(container, myItems, x + this.xOffset, y, leftBorder, rightBorder, clipX, clipY, clipWidth, clipHeight, g);
+		super.paintContent(container, myItems, x + getScrollXOffset(), y, leftBorder, rightBorder, clipX, clipY, clipWidth, clipHeight, g);
 //		int itemX = modifiedX + this.xOffset;
 //		int focusedX = 0;
 //		int cHeight = this.contentHeight;
@@ -616,27 +613,7 @@ public class HorizontalChoiceView extends ContainerView {
 	}
 	
 
-	//#ifdef polish.hasPointerEvents
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.ItemView#handlePointerDragged(int, int)
-	 */
-	public boolean handlePointerDragged(int x, int y) {
-		if (this.isPointerPressedHandled && this.completeWidthOfItems > this.contentWidth) {
-			int offset = this.xOffset + (x - this.pointerPressedX);
-			if (offset + this.completeWidthOfItems < this.innerContentWidth) {
-				offset = this.innerContentWidth - this.completeWidthOfItems;
-			} else if (offset > 0) {
-				offset = 0;
-			}
-			this.xOffset = offset;
-			this.targetXOffset = offset;
-			this.pointerPressedX = x;
-			return true;
-		}
-		return super.handlePointerDragged(x, y);
-	}
-	//#endif
-
+	
 
 	//#ifdef polish.hasPointerEvents
 	/* (non-Javadoc)
@@ -648,10 +625,6 @@ public class HorizontalChoiceView extends ContainerView {
 		if (!this.parentContainer.isInContentArea(x, y)) {
 			this.isPointerPressedHandled = false;
 		} else {
-			if ( this.completeWidthOfItems > this.contentWidth) {
-				this.isPointerPressedHandled = true;
-				this.pointerPressedX = x;
-			}
 			this.pointerReleasedIndex = -1;
 			int index = this.currentItemIndex;
 			int size = this.parentContainer.size();
@@ -675,7 +648,7 @@ public class HorizontalChoiceView extends ContainerView {
 					index = 0;
 				}
 			} else {
-				x -= this.xOffset;
+				x -= getScrollXOffset();
 				for (int i = 0; i < size; i++) {
 					Item item = this.parentContainer.get(i);
 					//System.out.println("item=" + item + ", relativeX=" + item.relativeX  + ", x=" + x);
@@ -699,8 +672,9 @@ public class HorizontalChoiceView extends ContainerView {
 	}
 	//#endif
 	
+	
 	private Item getItemAt( int x ) {
-		x -= this.xOffset - this.contentStart;
+		x -= getScrollXOffset() - this.contentStart;
 		int size = this.parentContainer.size();
 		for (int i = 0; i < size; i++) {
 			Item item = this.parentContainer.get(i);
@@ -731,24 +705,25 @@ public class HorizontalChoiceView extends ContainerView {
 		boolean isMultiple = ((ChoiceGroup)this.parentContainer).getType() == ChoiceGroup.MULTIPLE;
 		if (x >= this.rightArrowStartX  && x <= this.rightArrowEndX ) {
 			if (isMultiple) {
-				if (this.targetXOffset + this.completeWidthOfItems > this.innerContentWidth) {
-					Item mostRightVisibleItem = getItemAt( this.innerContentWidth );
+				int target = getScrollTargetXOffset();
+				if (target + this.contentWidth > this.availableWidth) {
+					Item mostRightVisibleItem = getItemAt( this.availableWidth );
 					int offset;
 					if (mostRightVisibleItem != null) {
 						offset = this.contentStart - mostRightVisibleItem.relativeX; // - this.contentStart + this.paddingHorizontal);
 //						System.out.println("diff=" + diff + ", this.innerContentWidth/2=" + (this.innerContentWidth/2));
-						int diff = this.targetXOffset - offset;
-						if (diff < (this.innerContentWidth/2)) {
-							offset = this.targetXOffset - this.innerContentWidth/2;
+						int diff = target - offset;
+						if (diff < (this.availableWidth/2)) {
+							offset = target - this.availableWidth/2;
 						}
 					} else {
-						offset = this.targetXOffset - this.innerContentWidth/2;
+						offset = target - this.availableWidth/2;
 					}
-					if (offset + this.completeWidthOfItems < this.innerContentWidth) {
-						offset = this.innerContentWidth - this.completeWidthOfItems;
+					if (offset + this.contentWidth < this.availableWidth) {
+						offset = this.availableWidth - this.contentWidth;
 					}
 					//System.out.println("setting offset from " + this.targetXOffset + " to " + offset);
-					this.targetXOffset = offset;
+					setScrollXOffset( offset, true );
 					return true;
 				} else {
 					// handle anyhow, we don't anything funny happening in the original choicegroup:
@@ -757,24 +732,25 @@ public class HorizontalChoiceView extends ContainerView {
 			}
 		} else if (x <= this.leftArrowEndX && x >= this.leftArrowStartX) {
 			if (isMultiple) {
-				if (this.targetXOffset < 0) {
+				int target = getScrollTargetXOffset();
+				if (target < 0) {
 					Item mostLeftVisibleItem = getItemAt( 0 );
 					int offset;
 					if (mostLeftVisibleItem != null) {
-						offset = this.contentStart + this.innerContentWidth - mostLeftVisibleItem.itemWidth - mostLeftVisibleItem.relativeX; // - this.contentStart + this.paddingHorizontal);
+						offset = this.contentStart + this.availableWidth - mostLeftVisibleItem.itemWidth - mostLeftVisibleItem.relativeX; // - this.contentStart + this.paddingHorizontal);
 //						System.out.println("diff=" + diff + ", this.innerContentWidth/2=" + (this.innerContentWidth/2));
-						int diff = offset - this.targetXOffset;
-						if (diff < (this.innerContentWidth/2)) {
-							offset = this.targetXOffset + this.innerContentWidth/2;
+						int diff = offset - target;
+						if (diff < (this.availableWidth/2)) {
+							offset = target + this.availableWidth/2;
 						}
 					} else {
-						offset = this.targetXOffset + this.innerContentWidth/2;
+						offset = target + this.availableWidth/2;
 					}
 					if (offset > 0) {
 						offset = 0;
 					}
 					//System.out.println("setting offset from " + this.targetXOffset + " to " + offset);
-					this.targetXOffset = offset;
+					setScrollXOffset(offset, true);
 					return true;
 				} else {
 					// handle anyhow, we don't anything funny happening in the original choicegroup:
@@ -846,33 +822,4 @@ public class HorizontalChoiceView extends ContainerView {
 		return (parent instanceof ChoiceGroup);
 	}
 
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.ItemView#animate(long, de.enough.polish.ui.ClippingRegion)
-	 */
-	public void animate(long currentTime, ClippingRegion repaintRegion)
-	{
-		super.animate(currentTime, repaintRegion);
-		int target = this.targetXOffset;
-		int current = this.xOffset;
-		if (target != current) {
-			int diff = Math.abs( target - current );
-			int delta = diff / 3;
-			if (delta < 2) {
-				delta = 2;
-			}
-			if (target < current) {
-				current -= delta;
-				if (current < target) {
-					current = target;
-				}
-			} else {
-				current += delta;
-				if (current > target) {
-					current = target;
-				}
-			}
-			this.xOffset = current;
-			addFullRepaintRegion(this.parentItem, repaintRegion);
-		}
-	}
 }

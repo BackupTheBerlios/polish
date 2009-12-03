@@ -57,7 +57,8 @@ extends ItemView
 	protected static final int NORMAL_WIDTH_COLUMNS = 2;
 	protected static final int STATIC_WIDTH_COLUMNS = 3;
 
-	protected int xOffset;
+	private int xOffset;
+	private int targetXOffset;
 	protected int yOffset;
 	protected int focusedIndex = -1;
 	/** this field is set automatically, so that subclasses can use it for referencing the parent-container */
@@ -112,6 +113,20 @@ extends ItemView
 	protected boolean allowsDirectSelectionByPointerEvent = true;
 	private int lastAvailableContentWidth;
 
+	private int scrollDirection;
+	private int scrollSpeed;
+	private int scrollDamping;
+	private long lastAnimationTime;
+	//#if polish.Container.ScrollBounce:defined && polish.Container.ScrollBounce == false
+		//#define tmp.dontBounce
+	//#endif
+	//#if polish.hasPointerEvents
+		private long lastPointerPressTime;
+		private int lastPointerPressXOffset;
+		protected boolean isPointerPressedHandled;
+		private int pointerPressedX;
+	//#endif
+
 
 	/**
 	 * Creates a new view
@@ -120,6 +135,143 @@ extends ItemView
 		super();
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.ItemView#animate(long, de.enough.polish.ui.ClippingRegion)
+	 */
+	public void animate(long currentTime, ClippingRegion repaintRegion) {
+		super.animate(currentTime, repaintRegion);
+		// scroll the container:
+		int target = this.targetXOffset;
+		int current = this.xOffset;
+		if (target != current) {
+			int speed = (target - current) / 3;
+			
+			speed += target > current ? 1 : -1;
+			current += speed;
+			if ( ( speed > 0 && current > target) || (speed < 0 && current < target ) ) {
+				current = target;
+			}
+			int diff = Math.abs( current - this.xOffset);
+			this.xOffset = current;
+//			if (this.focusedItem != null && this.focusedItem.backgroundYOffset != 0) {
+//				this.focusedItem.backgroundYOffset = (this.targetYOffset - this.yOffset);
+//			}
+			// # debug
+			//System.out.println("animate(): adjusting yOffset to " + this.yOffset );
+			
+			// add repaint region:
+			int x, y, width, height;
+			Screen scr = getScreen();
+			x = this.parentContainer.getAbsoluteX() - this.xOffset;
+			y = this.parentContainer.getAbsoluteY();
+			width = this.parentContainer.itemWidth;
+			//#if polish.useScrollBar || polish.classes.ScrollBar:defined
+				width += scr.getScrollBarWidth();
+			//#endif
+			height = this.parentContainer.itemHeight;
+			repaintRegion.addRegion( x, y, width, height + diff + 1 );
+		}
+		int speed = this.scrollSpeed;
+		if (speed != 0) {
+			speed = (speed * (100 - this.scrollDamping)) / 100;
+			if (speed <= 0) {
+				speed = 0;
+			}
+			this.scrollSpeed = speed;
+			long timeDelta = currentTime - this.lastAnimationTime;
+			if (timeDelta > 1000) {
+				timeDelta = AnimationThread.ANIMATION_INTERVAL;
+			}
+			this.lastAnimationTime = currentTime;
+			speed = (int) ((speed * timeDelta) / 1000);
+			if (speed == 0) {
+				this.scrollSpeed = 0;
+			}
+			int offset = this.xOffset;
+			int width = this.contentWidth;
+			if (this.scrollDirection == Canvas.LEFT) {
+				offset += speed;
+				target = offset;
+				if (offset > 0) {
+					this.scrollSpeed = 0;
+					target = 0;
+					//#if polish.Container.ScrollBounce:defined && polish.Container.ScrollBounce == false
+						offset = 0;
+					//#endif
+				}
+			} else {
+				offset -= speed;
+				target = offset;
+				if (offset + width < this.availableWidth) { 
+					this.scrollSpeed = 0;
+					target = this.availableWidth - width;
+					//#if polish.Container.ScrollBounce:defined && polish.Container.ScrollBounce == false
+						offset = target;
+					//#endif
+				}
+			}
+			this.xOffset = offset;
+			this.targetXOffset = target;
+			// add repaint region:
+			int x, y, height;
+			Screen scr = getScreen();
+			x = this.parentContainer.getAbsoluteX() - this.xOffset;
+			y = this.parentContainer.getAbsoluteY();
+			//#if polish.useScrollBar || polish.classes.ScrollBar:defined
+				width += scr.getScrollBarWidth();
+			//#endif
+			height = this.parentContainer.itemHeight;
+			repaintRegion.addRegion( x, y, width, height + 1 );
+		}
+	}
+	
+	/**
+	 * Sets the horizontal scrolling offset of this item.
+	 *  
+	 * @param offset either the new offset
+	 */
+	public void setScrollXOffset( int offset) {
+		setScrollXOffset( offset, false );
+	}
+
+	/**
+	 * Sets the horizontal scrolling offset of this item.
+	 *  
+	 * @param offset either the new offset
+	 * @param smooth scroll to this new offset smooth if allowed
+	 * @see #getScrollXOffset()
+	 */
+	public void setScrollXOffset( int offset, boolean smooth) {
+		//#debug
+		System.out.println("Setting scrollXOffset to " + offset + " for " + this);
+		if (!smooth  
+		//#ifdef polish.css.scroll-mode
+			|| !this.parentContainer.scrollSmooth
+		//#endif
+		) {
+			this.xOffset = offset;			
+		}
+		this.targetXOffset = offset;
+		this.scrollSpeed = 0;
+	}
+
+	/**
+	 * Retrieves the current horizontal scroll offset
+	 * @return the offset in pixel, when scrolled to the left side this offset is negative
+	 */
+	public int getScrollXOffset() {
+		return this.xOffset;
+	}
+
+	/**
+	 * Retrieves the target horizontal scroll offset
+	 * @return the offset in pixel, when scrolling to the left side this offset is negative
+	 */
+	public int getScrollTargetXOffset() {
+		return this.targetXOffset;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see de.enough.polish.ui.ItemView#addFullRepaintRegion(de.enough.polish.ui.Item, de.enough.polish.ui.ClippingRegion)
@@ -132,11 +284,14 @@ extends ItemView
 		);
 	}
 	
+
 	/**
 	 * Initializes this container view. 
 	 * The implementation needs to calculate and set the contentWidth and 
 	 * contentHeight fields. 
 	 * The style of the focused item has already been set.
+	 * When the contentWidth will be larger than the specified availWidth, the container view allows to scroll horizontally automatically using pointer events.
+	 * 
 	 * @param firstLineWidth the maximum width of the first line 
 	 * @param availWidth the maximum width of any following lines
 	 * @param parentContainerItem the Container which uses this view, use parent.getItems() for retrieving all items. 
@@ -1400,6 +1555,119 @@ extends ItemView
 		return false;
 	}
 	
+	//#ifdef polish.hasPointerEvents
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.ItemView#handlePointerPressed(int, int)
+	 */
+	public boolean handlePointerPressed(int x, int y) {
+		if (this.contentWidth > this.availableWidth) {
+			initHorizontalScrolling( x, y );
+		}
+		return super.handlePointerPressed(x, y);
+	}
+	//#endif
+	
+	//#ifdef polish.hasPointerEvents
+	private void initHorizontalScrolling(int x, int y) {
+		//this.lastPointerPressX = x;
+		this.pointerPressedX = x;
+		this.lastPointerPressXOffset = getScrollXOffset();
+		this.lastPointerPressTime = System.currentTimeMillis();
+		this.isPointerPressedHandled = this.parentContainer.isInContentWithPaddingArea(x, y);
+	}
+	//#endif
+	
+	//#ifdef polish.hasTouchEvents
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.ItemView#handlePointerTouchDown(int, int)
+	 */
+	public boolean handlePointerTouchDown(int x, int y) {
+		if (this.contentWidth > this.availableWidth) {
+			initHorizontalScrolling( x, y );
+		}
+		return super.handlePointerTouchDown(x, y);
+	}
+	//#endif
+
+	//#ifdef polish.hasPointerEvents
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.ItemView#handlePointerDragged(int, int)
+	 */
+	public boolean handlePointerDragged(int x, int y) {
+		int availWidth = this.availableWidth;
+		if (this.isPointerPressedHandled && this.contentWidth > availWidth) {
+			int offset = this.xOffset + (x - this.pointerPressedX);
+			//#if tmp.dontBounce
+				if (offset + this.contentWidth < availWidth) {
+					offset = availWidth - this.contentWidth;
+				} else if (offset > 0) {
+					offset = 0;
+				}
+			//#else
+				if (offset + this.contentWidth < availWidth - availWidth/3) {
+					offset = availWidth - availWidth/3 - this.contentWidth;
+				} else if (offset > availWidth/3) {
+					offset = availWidth/3;
+				}
+			//#endif
+			setScrollXOffset( offset, false );
+			this.pointerPressedX = x;
+			return true;
+		}
+		return super.handlePointerDragged(x, y);
+	}
+	//#endif
+	
+	//#ifdef polish.hasPointerEvents
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.ItemView#handlePointerReleased(int, int)
+	 */
+	public boolean handlePointerReleased(int x, int y) {
+		if ((this.contentWidth > this.availableWidth) && startHorizontalScroll(x , y )) {
+			return true;
+		}
+		return super.handlePointerReleased(x, y);
+	}
+	//#endif
+	
+	//#ifdef polish.hasTouchEvents
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.ItemView#handlePointerTouchUp(int, int)
+	 */
+	public boolean handlePointerTouchUp(int x, int y) {
+		if ((this.contentWidth > this.availableWidth) && startHorizontalScroll(x , y )) {
+			return true;
+		}
+		return super.handlePointerTouchUp(x, y);
+	}
+	//#endif
+	
+	//#if polish.hasPointerEvents
+	private boolean startHorizontalScroll(int x, int y) {
+		int scrollDiff = Math.abs(this.xOffset - this.lastPointerPressXOffset);
+		if ( scrollDiff > 20 ) {
+			// we have scrolling in the meantime
+			// check if we should continue the scrolling:
+			long dragTime = System.currentTimeMillis() - this.lastPointerPressTime;
+			if (dragTime < 1000 && dragTime > 1) {
+				int direction = Canvas.RIGHT;
+				if (this.xOffset > this.lastPointerPressXOffset) {
+					direction = Canvas.LEFT;
+				}
+				startScroll( direction,  (int) ((scrollDiff * 1000 ) / dragTime), 20 );
+			} else if (this.xOffset > 0) {
+				setScrollXOffset(0, true);
+			} else if (this.xOffset + this.contentWidth < this.availableWidth) {
+				setScrollXOffset( this.availableWidth - this.contentWidth, true );
+			}
+			return true;
+		}
+		return false;
+	}
+
+	//#endif
 	
 	/**
 	 * Adjusts the yOffset or the targetYOffset so that the given relative values are inside of the visible area.
@@ -1493,5 +1761,23 @@ extends ItemView
 	 */
 	protected boolean isVirtualContainer() {
 		return false;
+	}
+	
+	/**
+	 * Starts to scroll in the specified direction
+	 * @param direction either Canvas.UP or Canvas.DOWN
+	 * @param speed the speed in pixels per second
+	 * @param damping the damping in percent; 0 means no damping at all; 100 means the scrolling will be stopped immediately
+	 */
+	public void startScroll( int direction,int speed, int damping) {
+		if (direction == Canvas.UP || direction == Canvas.DOWN) {
+			this.parentContainer.startScroll(direction, speed, damping);
+		} else {
+			//#debug
+			System.out.println("start horizontal scrolling " + (direction == Canvas.RIGHT ? "right" : "left") + " with speed=" + speed + ", damping=" + damping + " for " + this);
+			this.scrollDirection = direction;
+			this.scrollSpeed = speed;
+			this.scrollDamping = damping;
+		}
 	}
 }

@@ -4398,12 +4398,10 @@ public class TextField extends StringItem
 			updateDeleteCommand( this.text );
 		//#endif
 		
-		//#if (polish.blackberry && polish.hasPointerEvents) || polish.android1.5
+		//#if polish.android1.5
 			if (this.isShown) {
 				DeviceControl.showSoftKeyboard();
-				//#if polish.android1.5
-					this.androidFocusedTime = System.currentTimeMillis();
-				//#endif
+				this.androidFocusedTime = System.currentTimeMillis();
 			}
 		//#endif
 		return unfocusedStyle;
