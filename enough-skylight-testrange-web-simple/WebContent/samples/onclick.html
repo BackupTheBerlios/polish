@@ -3,20 +3,39 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Insert title here</title>
+<title>Some Testcases</title>
+<style type="text/css">
+.hov {
+	background-color:red;
+}
+
+#carrot:hover {
+	background-color:blue;
+}
+</style>
 <script type="text/javascript">
 function init(){
-	var element = document.getElementById('link');
 	var listenerCap = function(event){alert('Event captured!');event.preventDefault();};
 	var listenerBub = function(event){alert('Event bubbled!')};
+	var listenerHov = function(event){event.target.setAttribute('class','hov'); event.stopPropagation();};
+	var listenerCarrot = function(event){event.stopPropagation();};
+
+	element = document.getElementById('link');
 	element.addEventListener("click",listenerCap,true);
 	element.addEventListener("click",listenerBub,false);
 	element.onclick = function(){alert('onclick event')};
+
+	element = document.getElementById('bla');
+	element.addEventListener("mouseover",listenerHov,true);
+
+	element = document.getElementById('carrot');
+	element.addEventListener("mouseover",listenerCarrot,true);
 }
 </script>
 </head>
-<body onload="init()">
+<body onload="init()" id="body">
 <div id="bla" onclick="this.firstChild.nodeValue='new text\nwith newline';" >Click this text to change it.</div>
-<div><a id="link" href="end.html">Test event propagation.</a> </div>
+<div><a id="link" href="end.html">Test event propagation. Click me to start propagation.</a> </div>
+<div id="carrot">Hover over me to see if the style change is canceled.</div>
 </body>
 </html>
