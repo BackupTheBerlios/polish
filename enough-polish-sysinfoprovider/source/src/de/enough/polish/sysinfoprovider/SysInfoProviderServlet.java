@@ -151,12 +151,15 @@ public class SysInfoProviderServlet extends HttpServlet{
 			if (userAgent != null) {
 				String tmp = "user-agent: " + userAgent;
 
-				while (tmp.length() > 72) {
+				/*
+				 * Removing wrapping since it breaks most other phones, Nokia 6300, 
+				 * http://www.j2mepolish.org/forum/viewtopic.php?t=1171
+				 while (tmp.length() > 72) {
 					sb.append(tmp.substring(0, 72));
 					sb.append('\n');
 
 					tmp = " " + tmp.substring(72);
-				}
+				}*/
 
 				sb.append(tmp);
 			}
