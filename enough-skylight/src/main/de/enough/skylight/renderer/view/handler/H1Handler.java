@@ -3,21 +3,14 @@ package de.enough.skylight.renderer.view.handler;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Style;
 import de.enough.skylight.dom.DomNode;
-import de.enough.skylight.renderer.viewport.ElementHandler;
+import de.enough.skylight.renderer.viewport.NodeHandler;
 
-public class H1Handler extends ElementHandler{
+public class H1Handler extends NodeHandler{
 	
-	public void handleNode(Container parent, DomNode node) {}
+	public void handleNode(DomNode node) {}
 	
 	public Style getDefaultStyle() {
 		//#style h1
 		return new Style();
-	}
-
-	public Style getDefaultTextStyle() {
-		//#style h1
-		return new Style();
-	}
-	
-	
+	}	
 }

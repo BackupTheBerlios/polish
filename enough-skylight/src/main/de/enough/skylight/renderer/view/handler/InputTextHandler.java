@@ -1,18 +1,23 @@
 package de.enough.skylight.renderer.view.handler;
 
 import de.enough.polish.ui.Container;
+import de.enough.polish.ui.Item;
+import de.enough.polish.ui.Style;
 import de.enough.polish.ui.TextField;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.viewport.AttributeUtils;
-import de.enough.skylight.renderer.viewport.ElementHandler;
+import de.enough.skylight.renderer.viewport.NodeHandler;
 
-public class InputTextHandler extends ElementHandler{
-	public void handleNode(Container parent, DomNode node) {
+public class InputTextHandler extends NodeHandler{
+	public Item createNodeItem(DomNode node, Style style) {
 		String value = AttributeUtils.getValue(node, "value");
 		
-		//#style input_text
-		TextField textField = new TextField(null,value,512,TextField.ANY);
+		TextField textfield = new TextField(null,value,512,TextField.ANY,style);
 		
-		parent.add(textField);
+		return textfield;
 	}
+
+	public void handleNode(DomNode node) {}
+	
+	
 }

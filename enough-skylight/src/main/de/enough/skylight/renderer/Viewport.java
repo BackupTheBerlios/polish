@@ -13,19 +13,11 @@ import de.enough.skylight.renderer.view.element.ContainingBlock;
  */
 public class Viewport extends ContainingBlock {
 	
-	HashMap directory;
-	
 	Hashtable styles;
 	
 	public Viewport() {
 		//#style viewport
 		super(null,null);
-		
-		this.directory = new HashMap();
-	}
-	
-	public HashMap getDirectory() {
-		return this.directory;
 	}
 	
 	public void setStylesheet(Hashtable stylesheet) {
@@ -43,7 +35,7 @@ public class Viewport extends ContainingBlock {
 	
 	public void reset() {
 		clear();
-		this.directory.clear();
+		getElements().clear();
 	}
 
 	public void setTitle(String title) {

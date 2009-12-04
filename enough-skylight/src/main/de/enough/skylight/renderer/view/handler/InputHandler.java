@@ -4,16 +4,17 @@ import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.TextField;
 import de.enough.skylight.dom.DomNode;
+import de.enough.skylight.renderer.view.element.CssElement;
 import de.enough.skylight.renderer.viewport.AttributeUtils;
-import de.enough.skylight.renderer.viewport.ElementHandler;
+import de.enough.skylight.renderer.viewport.NodeHandler;
 
-public class InputHandler extends ElementHandler{
+public class InputHandler extends NodeHandler{
 	
-	ElementHandler textHandler;
+	NodeHandler textHandler;
 	
-	ElementHandler radioHandler;
+	NodeHandler radioHandler;
 	
-	ElementHandler submitHandler;
+	NodeHandler submitHandler;
 	
 	public InputHandler() {
 		this.textHandler = new InputTextHandler();
@@ -21,9 +22,9 @@ public class InputHandler extends ElementHandler{
 		this.submitHandler = new InputSubmitHandler();
 	}
 	
-	ElementHandler getTypeHandler(DomNode node) {
+	NodeHandler getTypeHandler(DomNode node) {
 		String type = AttributeUtils.getValue(node, "type");
-		ElementHandler handler = null;
+		NodeHandler handler = null;
 		
 		if(type != null) {
 			if(type.equals("text")) {
@@ -47,15 +48,12 @@ public class InputHandler extends ElementHandler{
 		return handler;
 	}
 	
-	public void handleNode(Container parent, DomNode node) {
-		ElementHandler handler = getTypeHandler(node);
-		
-		handler.handleNode(parent, node);
+	public void handleNode(DomNode node) {
+		NodeHandler handler = getTypeHandler(node);
+		handler.handleNode(node);
 	}
 	
-	public void handleText(Container parent, DomNode node, Style style, DomNode parentNode) {
-		ElementHandler handler = getTypeHandler(parentNode);
-		
-		handler.handleText(parent, node, style, parentNode);
+	public int getType() {
+		return CssElement.Type.ELEMENT;
 	}
 }

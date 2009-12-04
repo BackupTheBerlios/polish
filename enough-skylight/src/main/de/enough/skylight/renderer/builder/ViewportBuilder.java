@@ -1,15 +1,21 @@
 package de.enough.skylight.renderer.builder;
 
 import de.enough.polish.ui.Container;
+import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
+import de.enough.polish.ui.UiAccess;
+import de.enough.polish.util.ArrayList;
 import de.enough.skylight.dom.Document;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.NodeList;
 import de.enough.skylight.renderer.Viewport;
 import de.enough.skylight.renderer.view.element.ContainingBlock;
 import de.enough.skylight.renderer.view.element.ContainingBlockView;
+import de.enough.skylight.renderer.view.element.CssElement;
+import de.enough.skylight.renderer.view.element.Element;
+import de.enough.skylight.renderer.view.element.Text;
 import de.enough.skylight.renderer.view.handler.PHandler;
-import de.enough.skylight.renderer.viewport.ElementHandler;
+import de.enough.skylight.renderer.viewport.NodeHandler;
 import de.enough.skylight.renderer.viewport.HandlerDirectory;
 
 public class ViewportBuilder {
@@ -32,7 +38,6 @@ public class ViewportBuilder {
 	public void setViewport(Viewport viewport) {
 		this.viewport = viewport;
 	}
-
 	
 	public void build() {
 		if(this.viewport == null) {
@@ -42,7 +47,9 @@ public class ViewportBuilder {
 		try {
 			this.viewport.reset();
 			
-			handleNode(this.viewport, this.document);
+			prepare(this.viewport, this.document);
+			
+			build(this.viewport);
 		} catch(Exception e) {
 			//#debug error
 			System.out.println("error while building view : " + e);
@@ -50,53 +57,66 @@ public class ViewportBuilder {
 		}
 	}
 	
-	protected void handleNode(ContainingBlock parentBlock, DomNode node) {
-		ElementHandler handler = HandlerDirectory.getHandler(node);
+	protected void prepare(ContainingBlock parent, DomNode node) {
+		NodeHandler handler = HandlerDirectory.getHandler(node);
 		
 		//#debug debug
 		System.out.println("found handler " + handler + " for " + node);
 		
-		if(handler != null) {
-			handler.setViewport(this.viewport);
+		handler.setViewport(this.viewport);
 			
-			Style style = handler.getStyle(node);
+		Style style = handler.getStyle(node);
+		
+		handler.handleNode(node);
+		
+		CssElement element = null;
 			
-			ContainingBlock block = new ContainingBlock(handler,node,style);
+		if(handler.getType() == CssElement.Type.CONTAINING_BLOCK && node.hasChildNodes())
+		{
+			ContainingBlock block = new ContainingBlock(parent,node,style);
 			
-			handler.handleNode(block, node);
+			//#debug debug
+			System.out.println(node + " is containing block has children");
+			
+			NodeList nodes = node.getChildNodes();
+			for (int index = 0; index < nodes.getLength(); index++) {
+				DomNode childNode = nodes.item(index);
 				
-			if(node.hasChildNodes())
-			{
-				//#debug debug
-				System.out.println(node + " has children");
-				
-				NodeList nodes = node.getChildNodes();
-				for (int index = 0; index < nodes.getLength(); index++) {
-					DomNode childNode = nodes.item(index);
-					
-					handleNodeByType(handler, block, childNode);
+				prepare(block,childNode);
+			}
+			
+			element = block;
+		} else {
+			if(node.getNodeType() == DomNode.TEXT_NODE) {
+				System.out.println("new text : " + node.getNodeValue());
+				element = new Text(node,parent);
+			} else {
+				if(handler.getType() == CssElement.Type.ELEMENT) {
+					Item item = handler.createNodeItem(node, style);
+					if(item != null) {
+						element = new Element(item,parent,node);
+					}
 				}
-				
 			}
-			
-			if(block.size() > 0) {
-				parentBlock.add(block);
-			}
+		}
+		
+		if(element != null) {
+			parent.getElements().add(element);
 		} 
 	}
 	
-	protected void handleNodeByType(ElementHandler handler, ContainingBlock containingBlock, DomNode node) {
-		switch(node.getNodeType()) {
-			case DomNode.TEXT_NODE : 
-				//#debug debug
-				System.out.println("adding text : " + node.getNodeValue() + " to " + containingBlock);
-				Style textStyle = handler.getDefaultTextStyle();
-				handler.handleText(containingBlock, node, textStyle, node.getParentNode()); 
-				break;
-			default: 
-				//#debug debug
-				System.out.println("adding node : " + node.getNodeName() + " to " + containingBlock);
-				handleNode(containingBlock, node);  
+	protected void build(ContainingBlock parent) {
+		ArrayList elements = parent.getElements();
+		for (int index = 0; index < elements.size(); index++) {
+			CssElement element = (CssElement)elements.get(index);
+			
+			Item item = element.getItem();
+			
+			if(element.getType() == CssElement.Type.CONTAINING_BLOCK) {
+				build((ContainingBlock)item);
+			}
+			
+			parent.add(item);
 		}
 	}
 }

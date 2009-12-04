@@ -2,9 +2,10 @@ package de.enough.skylight.renderer.view.handler;
 
 import de.enough.polish.ui.Container;
 import de.enough.skylight.dom.DomNode;
-import de.enough.skylight.renderer.viewport.ElementHandler;
+import de.enough.skylight.renderer.view.element.CssElement;
+import de.enough.skylight.renderer.viewport.NodeHandler;
 
-public class BodyHandler extends ElementHandler{
-	
-	public void handleNode(Container parent, DomNode node) {}
+public class BodyHandler extends NodeHandler{
+
+	public void handleNode(DomNode node) {}
 }

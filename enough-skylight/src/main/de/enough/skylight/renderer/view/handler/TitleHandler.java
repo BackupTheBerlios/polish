@@ -4,14 +4,21 @@ import de.enough.polish.ui.Container;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
 import de.enough.skylight.dom.DomNode;
-import de.enough.skylight.renderer.viewport.ElementHandler;
+import de.enough.skylight.renderer.view.element.CssElement;
+import de.enough.skylight.renderer.viewport.NodeHandler;
 
-public class TitleHandler extends ElementHandler{
+public class TitleHandler extends NodeHandler{
 	
-	public void handleNode(Container parent, DomNode node) {}
-
-	public void handleText(Container parent, DomNode node, Style style, DomNode parentNode) {
-		String text = node.getNodeValue();
-		getViewport().setTitle(text);
+	public void handleNode(DomNode node) {
+		DomNode firstChild = node.getFirstChild();
+		
+		if(firstChild.getNodeType() == DomNode.TEXT_NODE) {
+			String text = firstChild.getNodeValue();
+			getViewport().setTitle(text);
+		}
+	}
+	
+	public int getType() {
+		return CssElement.Type.ELEMENT;
 	}
 }

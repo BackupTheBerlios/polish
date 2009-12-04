@@ -4,7 +4,7 @@ import java.io.Reader;
 
 import de.enough.polish.browser.css.CssInterpreter;
 import de.enough.polish.ui.Style;
-import de.enough.skylight.renderer.view.element.Element;
+import de.enough.skylight.renderer.view.element.CssElement;
 
 public class HtmlCssInterpreter extends CssInterpreter{
 
@@ -18,9 +18,9 @@ public class HtmlCssInterpreter extends CssInterpreter{
 		//#if polish.css.display
 		if ("display".equals(name)) {
 			if(value.equals("block")) {
-				style.addAttribute("display", Element.Display.BLOCK_LEVEL);
-			} else if(value.equals(Element.Display.INLINE)) {
-				style.addAttribute("display", Element.Display.INLINE);
+				style.addAttribute("display", CssElement.Display.BLOCK_LEVEL);
+			} else if(value.equals(CssElement.Display.INLINE)) {
+				style.addAttribute("display", CssElement.Display.INLINE);
 			}
 			return;
 		}
@@ -28,12 +28,12 @@ public class HtmlCssInterpreter extends CssInterpreter{
 		
 		//#if polish.css.display
 		if ("position".equals(name)) {
-			if(value.equals(Element.Position.STATIC)) {
-				style.addAttribute("position", Element.Position.STATIC);
-			} else if(value.equals(Element.Position.ABSOLUTE)) {
-				style.addAttribute("position", Element.Position.ABSOLUTE);
-			} else if(value.equals(Element.Position.RELATIVE)) {
-				style.addAttribute("position", Element.Position.RELATIVE);
+			if(value.equals(CssElement.Position.STATIC)) {
+				style.addAttribute("position", CssElement.Position.STATIC);
+			} else if(value.equals(CssElement.Position.ABSOLUTE)) {
+				style.addAttribute("position", CssElement.Position.ABSOLUTE);
+			} else if(value.equals(CssElement.Position.RELATIVE)) {
+				style.addAttribute("position", CssElement.Position.RELATIVE);
 			}
 			return;
 		}
@@ -41,12 +41,12 @@ public class HtmlCssInterpreter extends CssInterpreter{
 		
 		//#if polish.css.float
 		if ("float".equals(name)) {
-			if(value.equals(Element.Float.NONE)) {
-				style.addAttribute("float", Element.Float.NONE);
-			} else if(value.equals(Element.Float.LEFT)) {
-				style.addAttribute("float", Element.Float.LEFT);
-			} else if(value.equals(Element.Float.RIGHT)) {
-				style.addAttribute("float", Element.Float.RIGHT);
+			if(value.equals(CssElement.Float.NONE)) {
+				style.addAttribute("float", CssElement.Float.NONE);
+			} else if(value.equals(CssElement.Float.LEFT)) {
+				style.addAttribute("float", CssElement.Float.LEFT);
+			} else if(value.equals(CssElement.Float.RIGHT)) {
+				style.addAttribute("float", CssElement.Float.RIGHT);
 			}
 			return;
 		}

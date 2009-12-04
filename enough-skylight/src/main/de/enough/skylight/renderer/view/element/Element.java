@@ -1,34 +1,90 @@
 package de.enough.skylight.renderer.view.element;
 
+import javax.microedition.lcdui.Graphics;
+
+import de.enough.polish.ui.Item;
+import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
 import de.enough.skylight.dom.DomNode;
 
-public interface Element {
+public class Element implements CssElement{
+	String display = CssElement.Display.INLINE;
 	
-	public static class Display {
-		public static String BLOCK_LEVEL = "block";
-		public static String INLINE = "inline";
+	String position = CssElement.Position.STATIC;
+	
+	String floating = CssElement.Float.NONE;
+	
+	DomNode node;
+	
+	Item item;
+
+	ContainingBlock parent;
+	
+	public Element(Item item, ContainingBlock parent, DomNode node) {
+		this.item = item;
+		this.node = node;
+		this.parent = parent;
+	}
+		
+	/**
+	 * @return
+	 */
+	public boolean isDisplay(String display) {
+		return this.display == display;
 	}
 	
-	public static class Position {
-		public static String STATIC = "static";
-		public static String ABSOLUTE = "absolute";
-		public static String RELATIVE = "relative";
+	/**
+	 * @return
+	 */
+	public boolean isPosition(String position) {
+		return this.position == position;
 	}
 	
-	public static class Float {
-		public static String NONE = "none";
-		public static String LEFT = "left";
-		public static String RIGHT = "right";
+	/**
+	 * @return
+	 */
+	public boolean isFloat(String floating) {
+		return this.floating == floating;
 	}
 	
-	public DomNode getNode();
+	public DomNode getNode() {
+		return this.node;
+	}
 	
-	public boolean isDisplay(String display);
-	
-	public boolean isPosition(String position);
-	
-	public boolean isFloat(String floating);
-	
-	public void setStyle(Style style);
+	public int getType() {
+		return CssElement.Type.TEXT;
+	}
+
+	public Item getItem() {
+		return this.item;
+	}
+
+	public void setStyle(Style style) {
+		this.item.setStyle(style);
+		
+		//#if polish.css.display
+		String displayStr = style.getProperty("display");
+		if(displayStr != null) {
+			this.display = displayStr;
+		}
+		//#endif
+		
+		//#if polish.css.position
+		String positionStr = style.getProperty("position");
+		if(positionStr != null) {
+			this.position = positionStr;
+		}
+		//#endif
+		
+		//#if polish.css.float
+		String floatStr = style.getProperty("float");
+		if(floatStr != null) {
+			this.floating = floatStr;
+		}
+		//#endif
+	}
+
+	public ContainingBlock getParent() {
+		return this.parent;
+	}
 }

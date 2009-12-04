@@ -1,54 +1,52 @@
 package de.enough.skylight.renderer.view.element;
 
 import de.enough.polish.ui.Container;
+import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
+import de.enough.polish.util.ArrayList;
 import de.enough.skylight.dom.DomNode;
-import de.enough.skylight.renderer.viewport.ElementHandler;
+import de.enough.skylight.renderer.viewport.NodeHandler;
 
-public class ContainingBlock extends Container implements Element {
+public class ContainingBlock extends Container implements CssElement {
 
-	String display = Element.Display.BLOCK_LEVEL;
+	String display = CssElement.Display.BLOCK_LEVEL;
 	
-	String position = Element.Position.STATIC;
+	String position = CssElement.Position.STATIC;
 	
-	String floating = Element.Float.NONE;
+	String floating = CssElement.Float.NONE;
 	
-	ElementHandler handler;
+	ContainingBlock parent;
 	
 	DomNode node;
 	
-	public ContainingBlock(ElementHandler handler, DomNode node) {
-		super(false);
-		
-		this.handler = handler;
-		this.node = node;
-		
-		setView(new ContainingBlockView(this));
+	ArrayList elements;
+	
+	public ContainingBlock(ContainingBlock parent, DomNode node) {
+		this(parent, node, null);
 	}
 	
-	public ContainingBlock(ElementHandler handler, DomNode node, Style style) {
+	public ContainingBlock(ContainingBlock parent, DomNode node, Style style) {
 		super(false, style);
 		
-		this.handler = handler;
+		this.parent = parent;
 		this.node = node;
-		
-		setView(new ContainingBlockView(this));
+		this.elements = new ArrayList();
 	}
 	
-	public ElementHandler getHandler() {
-		return handler;
+	public ArrayList getElements() {
+		return this.elements;
 	}
-
-	public void setHandler(ElementHandler handler) {
-		this.handler = handler;
+	
+	public void reset() {
+		this.elements.clear();
 	}
-
+	
 	public DomNode getNode() {
 		return node;
 	}
-
-	public void setNode(DomNode node) {
-		this.node = node;
+	
+	public int getType() {
+		return CssElement.Type.CONTAINING_BLOCK;
 	}
 	
 	/**
@@ -98,5 +96,13 @@ public class ContainingBlock extends Container implements Element {
 			this.floating = floatStr;
 		}
 		//#endif
+	}
+
+	public Item getItem() {
+		return this;
+	}
+	
+	public ContainingBlock getParent() {
+		return this.parent;
 	}
 }

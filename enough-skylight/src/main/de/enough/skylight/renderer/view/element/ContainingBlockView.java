@@ -48,24 +48,30 @@ public class ContainingBlockView extends ContainerView
 		int currentRowStartIndex = 0;
 		int maxRowWidth = 0;
 		
+		if(this.block.getNode() != null) {
+			if(this.block.getNode().equals("Element:p.")) {
+				System.out.println("break");
+			}
+		}
+		
 		for (int i = 0; i < items.length; i++)
 		{
 			Item item = items[i];
 			
-			Element element;
+			CssElement element;
 			try {
-				element = (Element)item;
+				element = (CssElement)item;
 			}catch(ClassCastException e) {
 				//#debug error
 				System.out.println(item + "is not an element");
 				return;
 			}
 			
-			if (element.isDisplay(Element.Display.BLOCK_LEVEL) || (x + item.getContentWidth() > availWidth) ) 
+			if (element.isDisplay(CssElement.Display.BLOCK_LEVEL) || (x + item.getContentWidth() > availWidth) ) 
 			{
 				if (currentRowHeight != 0) {
 					lineBreak( items, currentRowStartIndex, i - 1, x, currentRowHeight, availWidth );
-					y += currentRowHeight + this.paddingVertical;
+					y += currentRowHeight;
 					currentRowHeight = 0;
 				}
 				if (x > maxRowWidth) {
@@ -88,10 +94,10 @@ public class ContainingBlockView extends ContainerView
 				currentRowHeight = itemHeight;
 			}
 			
-			if (x >= availWidth || element.isDisplay(Element.Display.BLOCK_LEVEL) || (i == items.length -1)) {
+			if (x >= availWidth || element.isDisplay(CssElement.Display.BLOCK_LEVEL) || (i == items.length -1)) {
 				if (currentRowHeight != 0) {
 					lineBreak( items, currentRowStartIndex, i, x, currentRowHeight, availWidth);
-					y += currentRowHeight + this.paddingVertical;
+					y += currentRowHeight;
 					currentRowHeight = 0;
 				}
 				if (x > maxRowWidth) {
@@ -116,7 +122,7 @@ public class ContainingBlockView extends ContainerView
 		this.contentHeight = y;
 		
 		// if this block is block level ...
-		if(this.block.isDisplay(Element.Display.BLOCK_LEVEL)) {
+		if(this.block.isDisplay(CssElement.Display.BLOCK_LEVEL)) {
 			// expand width to available
 			this.contentWidth = availWidth;
 		// otherwise ...

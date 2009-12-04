@@ -25,7 +25,7 @@ public class HandlerDirectory {
 	
 	static HandlerDirectory instance;
 	
-	public static ElementHandler getHandler(DomNode node) {
+	public static NodeHandler getHandler(DomNode node) {
 		if(instance == null) {
 			instance = new HandlerDirectory();
 			instance.load();
@@ -63,7 +63,7 @@ public class HandlerDirectory {
 		return directory;
 	}
 	
-	ElementHandler getNodeHandler(DomNode node) {
+	NodeHandler getNodeHandler(DomNode node) {
 		String name = node.getNodeName();
 		
 		if(name != null) {
@@ -72,11 +72,11 @@ public class HandlerDirectory {
 		
 		int type = node.getNodeType();
 		
-		ElementHandler result;
+		NodeHandler result;
 		if(type == DomNode.ELEMENT_NODE) {
-			result = (ElementHandler)this.nameDirectory.get(name);
+			result = (NodeHandler)this.nameDirectory.get(name);
 		} else {
-			result = (ElementHandler)this.typeDirectory.get(type);
+			result = (NodeHandler)this.typeDirectory.get(type);
 		}
 		
 		if(result != null) {

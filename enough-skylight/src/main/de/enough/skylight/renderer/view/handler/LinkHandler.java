@@ -12,15 +12,16 @@ import de.enough.polish.browser.css.CssInterpreter;
 import de.enough.polish.ui.Container;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.view.css.HtmlCssInterpreter;
+import de.enough.skylight.renderer.view.element.CssElement;
 import de.enough.skylight.renderer.viewport.AttributeUtils;
-import de.enough.skylight.renderer.viewport.ElementHandler;
+import de.enough.skylight.renderer.viewport.NodeHandler;
 
-public class LinkHandler extends ElementHandler{
+public class LinkHandler extends NodeHandler{
 	
 	static String REL_STYLESHEET = "stylesheet";
 	static String TYPE_TEXT_CSS = "text/css";
 
-	public void handleNode(Container parent, DomNode node) {
+	public void handleNode(DomNode node) {
 		String rel = AttributeUtils.getValue(node, "rel");
 		String type = AttributeUtils.getValue(node, "type");
 		String href = AttributeUtils.getValue(node, "href");
@@ -42,5 +43,9 @@ public class LinkHandler extends ElementHandler{
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public int getType() {
+		return CssElement.Type.ELEMENT;
 	}
 }

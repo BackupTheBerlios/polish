@@ -9,23 +9,26 @@ import de.enough.polish.util.HashMap;
 import de.enough.polish.util.Locale;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.viewport.AttributeUtils;
-import de.enough.skylight.renderer.viewport.ElementHandler;
+import de.enough.skylight.renderer.viewport.NodeHandler;
 
-public class InputSubmitHandler extends ElementHandler{
-	public void handleNode(Container parent, DomNode node) {
+public class InputSubmitHandler extends NodeHandler{
+	public void handleNode(DomNode node) {}
+
+	public Item createNodeItem(DomNode node, Style style) {
 		String value = AttributeUtils.getValue(node, "value");
 		
 		if(value == null) {
 			value = Locale.get("default.submit");
 		} 
 		
-		//#style input_submit
-		StringItem submitItem = new StringItem(null,value);
+		StringItem submitItem = new StringItem(null,value,style);
 		
 		submitItem.setAppearanceMode(Item.INTERACTIVE);
 		
-		parent.add(submitItem);
+		return submitItem;
 	}
+	
+	
 	
 	
 }
