@@ -1,18 +1,15 @@
 .myDiv {
 	margin: 5px;
-	padding: 0;
 	background-color: blue;
 }
 
 .myP {
 	padding: 5px;
+	padding-vertical: 0px;
 	margin: 5px;
 	background-color: red;
 }
 
 .mySpan {
-	margin: 0;
-	padding: 0;
-	display: inline;
 	background-color: green;
 }
