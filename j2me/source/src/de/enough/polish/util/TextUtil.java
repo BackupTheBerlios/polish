@@ -247,7 +247,7 @@ public final class TextUtil {
 		// the given string does not fit on the first line:
 		ArrayList lines = new ArrayList();
 		if (!hasLineBreaks) {
-			wrap( value, font, completeWidth, firstLineWidth, lineWidth, lines, maxLines, maxLinesAppendixPosition);
+			wrap( value, font, completeWidth, firstLineWidth, lineWidth, lines, maxLines + 1, maxLinesAppendixPosition);
 		} else {
 			// now the string will be split at the line-breaks and
 			// then each line is processed:
@@ -278,7 +278,7 @@ public final class TextUtil {
 							break;
 						}
 					} else {
-						wrap(line, font, completeWidth, firstLineWidth, lineWidth, lines, maxLines, maxLinesAppendixPosition);
+						wrap(line, font, completeWidth, firstLineWidth, lineWidth, lines, maxLines + 1, maxLinesAppendixPosition);
 					}
 					if (isCRLF) {
 						i++;
@@ -296,6 +296,8 @@ public final class TextUtil {
 		
 		if(lines.size() > maxLines)
 		{
+			lines.remove(lines.size() - 1);
+			
 			String line = (String)lines.get(maxLines - 1);
 			if (maxLinesAppendix == null) {
 				maxLinesAppendix = MAXLINES_APPENDIX;
