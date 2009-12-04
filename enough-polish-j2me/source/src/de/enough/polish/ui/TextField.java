@@ -512,17 +512,20 @@ public class TextField extends StringItem
 	 * <p>Numbers are appended in the last decimal fraction by default, so when &quot;1&quot; is pressed this results
 	 * in &quot;0.01&quot;. Similarly presseing &quot;1&quot;, &quot;2&quot; and &quot;3&quot; results in &quot;1.23&quot;.
 	 * </p>
+	 * <p>Sample usage:</p>
+	 * <pre>
+	 * TextField cashRegister = new TextField("Price: ",  null, 5, UiAccess.CONSTRAINT_FIXED_POINT_DECIMAL );
+	 * </pre>
 	 * 
-	 * 
-	 * <P>Constant <code>20</code> is assigned to <code>CASH</code>.</p>
-	 * 
+	 * <p>Constant <code>20</code> is assigned to <code>FIXED_POINT_DECIMAL</code>.</p>
 	 * 
 	 * @since J2ME Polish 2.1.3
-	 * @see UiAccess#CONSTRAINT_CASH
+	 * @see UiAccess#CONSTRAINT_FIXED_POINT_DECIMAL
 	 * @see #setNumberOfDecimalFractions(int)
 	 * @see #getNumberOfDecimalFractions()
+	 * @see #convertToFixedPointDecimal(String)
 	 */
-	public static final int CASH = 20;
+	public static final int FIXED_POINT_DECIMAL = 20;
 
 	/**
 	 * Indicates that the text entered is confidential data that should be
@@ -1391,8 +1394,8 @@ public class TextField extends StringItem
 		System.out.println("setString [" + text + "]"); // for textfield [" + (this.label != null ? this.label.getText() : "no label") + "].");
 		if (text != null && text.length() > 0) {
 			int fieldType = this.constraints & 0xffff;
-			if (fieldType == CASH) {
-				text = convertToCash(text);
+			if (fieldType == FIXED_POINT_DECIMAL) {
+				text = convertToFixedPointDecimal(text);
 			}
 		}
 		//#if tmp.useNativeTextBox
@@ -1475,20 +1478,20 @@ public class TextField extends StringItem
 	}
 	
 	/**
-	 * Sets the number of decimal fractions that are allowed for CASH constrained TextFields
+	 * Sets the number of decimal fractions that are allowed for FIXED_POINT_DECIMAL constrained TextFields
 	 * @param number the number (defaults to 2)
-	 * @see UiAccess#CONSTRAINT_CASH
-	 * @see #CASH
+	 * @see UiAccess#CONSTRAINT_FIXED_POINT_DECIMAL
+	 * @see #FIXED_POINT_DECIMAL
 	 */
 	public void setNumberOfDecimalFractions(int number) {
 		this.numberOfDecimalFractions = number;
 	}
 	
 	/**
-	 * Retrieves the number of decimal fractions that are allowed for CASH constrained TextFields
+	 * Retrieves the number of decimal fractions that are allowed for FIXED_POINT_DECIMAL constrained TextFields
 	 * @return the number (defaults to 2)
-	 * @see UiAccess#CONSTRAINT_CASH
-	 * @see #CASH
+	 * @see UiAccess#CONSTRAINT_FIXED_POINT_DECIMAL
+	 * @see #FIXED_POINT_DECIMAL
 	 */
 	public int getNumberOfDecimalFractions() {
 		return this.numberOfDecimalFractions;
@@ -1499,12 +1502,12 @@ public class TextField extends StringItem
 	 * Subclasses may override this to implement their own behavior.
 	 * @param original the original text, e.g. "1"
 	 * @return the processed text, e.g. "0.01"
-	 * @see #CASH
-	 * @see UiAccess#CONSTRAINT_CASH
+	 * @see #FIXED_POINT_DECIMAL
+	 * @see UiAccess#CONSTRAINT_FIXED_POINT_DECIMAL
 	 * @see #getNumberOfDecimalFractions()
 	 * @see #setNumberOfDecimalFractions(int)
 	 */
-	protected String convertToCash(String original) {
+	protected String convertToFixedPointDecimal(String original) {
 		int fractions = this.numberOfDecimalFractions;
 		StringBuffer buffer = new StringBuffer( original.length() + 3 );
 		int added = 0;
@@ -1915,7 +1918,7 @@ public class TextField extends StringItem
 				bbStyle |= Field.EDITABLE;				
 			}
 			
-			if ( fieldType == DECIMAL || fieldType == CASH) {
+			if ( fieldType == DECIMAL || fieldType == FIXED_POINT_DECIMAL) {
 				bbStyle |= BasicEditField.FILTER_REAL_NUMERIC;
 			} else if (fieldType == NUMERIC) {
 				bbStyle |= BasicEditField.FILTER_INTEGER;
@@ -1981,7 +1984,7 @@ public class TextField extends StringItem
 			} else {
 				this.isNumeric = false;
 			}
-			if (fieldType == DECIMAL || fieldType == CASH) {
+			if (fieldType == DECIMAL || fieldType == FIXED_POINT_DECIMAL) {
 				this.isNumeric = true;
 				this.isDecimal = true;
 				this.inputMode = MODE_NUMBERS;
@@ -4418,7 +4421,7 @@ public class TextField extends StringItem
 		if (context != FieldChangeListener.PROGRAMMATIC && this.isInitialized ) {
 			//#if polish.Bugs.ItemStateListenerCalledTooEarly
 				int fieldType = this.constraints & 0xffff;
-				if (fieldType == NUMERIC || fieldType == DECIMAL || fieldType == CASH) {
+				if (fieldType == NUMERIC || fieldType == DECIMAL || fieldType == FIXED_POINT_DECIMAL) {
 					setString( this.editField.getText() );				
 					notifyStateChanged();					
 				} else {

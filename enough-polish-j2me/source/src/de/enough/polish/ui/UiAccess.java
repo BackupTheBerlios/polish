@@ -142,15 +142,18 @@ public final class UiAccess {
 	public static final int MODE_NATIVE = 4;
 	
 	/**
-	 * A constant for using a CASH constraint on TextFields, e.g.
-	 * TextField cashRegister = new TextField("Price: ",  null, 5, UiAccess.CONSTRAINT_CASH );
-	 * @see TextField#CASH
+	 * A constant for using the FIXED_POINT_DECIMAL constraint on TextFields.
+	 * Sample usage:
+	 * <pre>
+	 * TextField cashRegister = new TextField("Price: ",  null, 5, UiAccess.CONSTRAINT_FIXED_POINT_DECIMAL );
+	 * </pre>
+	 * @see TextField#FIXED_POINT_DECIMAL
 	 * @see #setNumberOfDecimalFractions(TextField, int)
 	 * @see #getNumberOfDecimalFractions(TextField)
 	 */
-	public static final int CONSTRAINT_CASH =
+	public static final int CONSTRAINT_FIXED_POINT_DECIMAL =
 		//#if polish.usePolishGui
-			TextField.CASH
+			TextField.FIXED_POINT_DECIMAL
 		//#else
 			//# 20
 		//#endif
@@ -1602,11 +1605,11 @@ public final class UiAccess {
 	
 	//#if polish.midp
 	/**
-	 * Sets the number of decimal fractions that are allowed for CASH constrained TextFields
+	 * Sets the number of decimal fractions that are allowed for FIXED_POINT_DECIMAL constrained TextFields
 	 * @param field the textfield the textfield for which the fractions are set
 	 * @param number the number (defaults to 2)
-	 * @see UiAccess#CONSTRAINT_CASH
-	 * @see TextField#CASH
+	 * @see UiAccess#CONSTRAINT_FIXED_POINT_DECIMAL
+	 * @see TextField#FIXED_POINT_DECIMAL
 	 */
 	public static void setNumberOfDecimalFractions( javax.microedition.lcdui.TextField field, int number ) {
 		// ignore
@@ -1615,11 +1618,11 @@ public final class UiAccess {
 	
 	//#if polish.usePolishGui
 	/**
-	 * Sets the number of decimal fractions that are allowed for CASH constrained TextFields
+	 * Sets the number of decimal fractions that are allowed for FIXED_POINT_DECIMAL constrained TextFields
 	 * @param field the textfield the textfield for which the fractions are set
 	 * @param number the number (defaults to 2)
-	 * @see UiAccess#CONSTRAINT_CASH
-	 * @see TextField#CASH
+	 * @see UiAccess#CONSTRAINT_FIXED_POINT_DECIMAL
+	 * @see TextField#FIXED_POINT_DECIMAL
 	 */
 	public static void setNumberOfDecimalFractions( TextField field, int number ) {
 		field.setNumberOfDecimalFractions( number ); 
@@ -1628,11 +1631,11 @@ public final class UiAccess {
 	
 	//#if polish.midp
 	/**
-	 * Retrieves the number of decimal fractions that are allowed for CASH constrained TextFields
+	 * Retrieves the number of decimal fractions that are allowed for FIXED_POINT_DECIMAL constrained TextFields
 	 * @param field the textfield the textfield for which the fractions are set
 	 * @return the number (defaults to 2)
-	 * @see UiAccess#CONSTRAINT_CASH
-	 * @see TextField#CASH
+	 * @see UiAccess#CONSTRAINT_FIXED_POINT_DECIMAL
+	 * @see TextField#FIXED_POINT_DECIMAL
 	 */
 	public static int getNumberOfDecimalFractions( javax.microedition.lcdui.TextField field ) {
 		return 2;
@@ -1641,11 +1644,11 @@ public final class UiAccess {
 	
 	//#if polish.usePolishGui
 	/**
-	 * Retrieves the number of decimal fractions that are allowed for CASH constrained TextFields
+	 * Retrieves the number of decimal fractions that are allowed for FIXED_POINT_DECIMAL constrained TextFields
 	 * @param field the textfield the textfield for which the fractions are set
 	 * @return number the number (defaults to 2)
-	 * @see UiAccess#CONSTRAINT_CASH
-	 * @see TextField#CASH
+	 * @see UiAccess#CONSTRAINT_FIXED_POINT_DECIMAL
+	 * @see TextField#FIXED_POINT_DECIMAL
 	 */
 	public static int getNumberOfDecimalFractions( TextField field ) {
 		return field.getNumberOfDecimalFractions(); 
