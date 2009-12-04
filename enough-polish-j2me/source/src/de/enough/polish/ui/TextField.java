@@ -1951,12 +1951,16 @@ public class TextField extends StringItem
 					}					
 				}
 			}
+			int max = this.maxSize;
+			if (fieldType == FIXED_POINT_DECIMAL) {
+				max++;
+			}
 			if ((constraints & PASSWORD) == PASSWORD) {
 				this.isPassword = true;
-				this.editField = new PolishPasswordEditField( null, getString(), this.maxSize, bbStyle );
+				this.editField = new PolishPasswordEditField( null, getString(), max, bbStyle );
 			} else {
 				this.isPassword = false;
-				this.editField = new PolishEditField( null, getString(), this.maxSize, bbStyle );
+				this.editField = new PolishEditField( null, getString(), max, bbStyle );
 			}
 			if (this.style != null) {
 				this.editField.setStyle( this.style );
@@ -4375,9 +4379,9 @@ public class TextField extends StringItem
 	}
 	//#endif
 	
-	//#if tmp.directInput || !(polish.TextField.suppressDeleteCommand || polish.blackberry) 
+	//#if tmp.directInput || !polish.TextField.suppressDeleteCommand 
 	protected Style focus(Style focStyle, int direction) {
-		//#if tmp.directInput
+		//#if tmp.directInput || polish.blackberry
 			//#ifdef tmp.allowDirectInput
 				if (this.enableDirectInput) {
 			//#endif
@@ -4385,9 +4389,13 @@ public class TextField extends StringItem
 						updateInfo();
 					//#endif
 					//#if polish.TextField.jumpToStartOnFocus
-						if (this.caretPosition != 0) {
-							setCaretPosition( 0 );
-						}
+						//#if !polish.blackberry
+							if (this.caretPosition != 0) {
+						//#endif
+								setCaretPosition( 0 );
+						//#if !polish.blackberry
+							}
+						//#endif
 					//#elif !polish.TextField.keepCaretPosition
 						setCaretPosition( getString().length() );
 					//#endif
@@ -4397,7 +4405,7 @@ public class TextField extends StringItem
 		//#endif
 		
 		Style unfocusedStyle = super.focus(focStyle, direction);
-		//#if tmp.updateDeleteCommand
+		//#if tmp.updateDeleteCommand && !polish.blackberry
 			updateDeleteCommand( this.text );
 		//#endif
 		
