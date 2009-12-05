@@ -17,8 +17,8 @@ public class BrHandler extends NodeHandler{
 	public void handleNode(DomNode node) {
 	}
 
-	public Item createNodeItem(DomNode node, Style style) {
-		return new StringItem(null,null,style);
+	public Item createNodeItem(DomNode node) {
+		return new StringItem(null,null);
 	}
 	
 	public int getType() {

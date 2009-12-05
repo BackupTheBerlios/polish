@@ -16,18 +16,14 @@ import de.enough.skylight.renderer.view.handler.PHandler;
 import de.enough.skylight.renderer.view.handler.SpanHandler;
 import de.enough.skylight.renderer.view.handler.TitleHandler;
 
-public class HandlerDirectory {
+public class NodeHandlerDirectory {
 	HashMap nameDirectory;
 	
-	IntHashMap typeDirectory;
-	
-	static DefaultHandler defaultHandler = new DefaultHandler();
-	
-	static HandlerDirectory instance;
+	static NodeHandlerDirectory instance;
 	
 	public static NodeHandler getHandler(DomNode node) {
 		if(instance == null) {
-			instance = new HandlerDirectory();
+			instance = new NodeHandlerDirectory();
 			instance.load();
 		}
 		
@@ -36,7 +32,6 @@ public class HandlerDirectory {
 	
 	void load() {
 		this.nameDirectory = buildNameDirectory();
-		this.typeDirectory = buildTypeDirectory();
 	}
 	
 	HashMap buildNameDirectory() {
@@ -66,17 +61,11 @@ public class HandlerDirectory {
 	NodeHandler getNodeHandler(DomNode node) {
 		String name = node.getNodeName();
 		
+		NodeHandler result = null;
+		
 		if(name != null) {
 			 name = name.toLowerCase().trim();
-		}
-		
-		int type = node.getNodeType();
-		
-		NodeHandler result;
-		if(type == DomNode.ELEMENT_NODE) {
-			result = (NodeHandler)this.nameDirectory.get(name);
-		} else {
-			result = (NodeHandler)this.typeDirectory.get(type);
+			 result = (NodeHandler)this.nameDirectory.get(name);
 		}
 		
 		if(result != null) {

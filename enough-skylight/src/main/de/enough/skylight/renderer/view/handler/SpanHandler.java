@@ -9,4 +9,9 @@ import de.enough.skylight.renderer.viewport.NodeHandler;
 public class SpanHandler extends NodeHandler{
 	
 	public void handleNode(DomNode node) {}
+	
+	public Style getDefaultStyle() {
+		//#style span
+		return new Style();
+	}
 }

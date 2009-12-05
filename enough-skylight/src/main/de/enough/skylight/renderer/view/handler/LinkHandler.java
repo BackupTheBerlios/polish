@@ -13,7 +13,7 @@ import de.enough.polish.ui.Container;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.view.css.HtmlCssInterpreter;
 import de.enough.skylight.renderer.view.element.CssElement;
-import de.enough.skylight.renderer.viewport.AttributeUtils;
+import de.enough.skylight.renderer.viewport.NodeUtils;
 import de.enough.skylight.renderer.viewport.NodeHandler;
 
 public class LinkHandler extends NodeHandler{
@@ -22,9 +22,9 @@ public class LinkHandler extends NodeHandler{
 	static String TYPE_TEXT_CSS = "text/css";
 
 	public void handleNode(DomNode node) {
-		String rel = AttributeUtils.getValue(node, "rel");
-		String type = AttributeUtils.getValue(node, "type");
-		String href = AttributeUtils.getValue(node, "href");
+		String rel = NodeUtils.getAttributeValue(node, "rel");
+		String type = NodeUtils.getAttributeValue(node, "type");
+		String href = NodeUtils.getAttributeValue(node, "href");
 		
 		if(	rel != null && rel.equals(REL_STYLESHEET) && 
 			type != null && type.equals(TYPE_TEXT_CSS) &&

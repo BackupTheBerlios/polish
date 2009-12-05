@@ -1,9 +1,6 @@
 package de.enough.skylight.renderer.view.element;
 
-import javax.microedition.lcdui.Graphics;
-
 import de.enough.polish.ui.Item;
-import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
 import de.enough.skylight.dom.DomNode;
 
@@ -20,10 +17,12 @@ public class Element implements CssElement{
 
 	ContainingBlock parent;
 	
-	public Element(Item item, ContainingBlock parent, DomNode node) {
+	public Element(Item item, ContainingBlock parent, DomNode node, Style style) {
 		this.item = item;
 		this.node = node;
 		this.parent = parent;
+		
+		setStyle(style);
 	}
 		
 	/**

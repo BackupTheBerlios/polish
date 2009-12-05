@@ -8,20 +8,20 @@ import de.enough.polish.ui.TextField;
 import de.enough.polish.util.HashMap;
 import de.enough.polish.util.Locale;
 import de.enough.skylight.dom.DomNode;
-import de.enough.skylight.renderer.viewport.AttributeUtils;
+import de.enough.skylight.renderer.viewport.NodeUtils;
 import de.enough.skylight.renderer.viewport.NodeHandler;
 
 public class InputSubmitHandler extends NodeHandler{
 	public void handleNode(DomNode node) {}
 
-	public Item createNodeItem(DomNode node, Style style) {
-		String value = AttributeUtils.getValue(node, "value");
+	public Item createNodeItem(DomNode node) {
+		String value = NodeUtils.getAttributeValue(node, "value");
 		
 		if(value == null) {
 			value = Locale.get("default.submit");
 		} 
 		
-		StringItem submitItem = new StringItem(null,value,style);
+		StringItem submitItem = new StringItem(null,value);
 		
 		submitItem.setAppearanceMode(Item.INTERACTIVE);
 		

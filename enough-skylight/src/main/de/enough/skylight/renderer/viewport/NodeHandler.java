@@ -22,12 +22,12 @@ public abstract class NodeHandler {
 		return CssElement.Type.CONTAINING_BLOCK;
 	}
 	
-	public Item createNodeItem(DomNode node, Style style) {
+	public Item createNodeItem(DomNode node) {
 		return null;
 	}
 	
 	public Style getStyle(DomNode node) {
-		String clazz = AttributeUtils.getValue(node, "class");
+		String clazz = NodeUtils.getAttributeValue(node, "class");
 		
 		if(clazz != null) {
 			clazz = clazz.toLowerCase();

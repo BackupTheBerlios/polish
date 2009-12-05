@@ -1,11 +1,12 @@
 package de.enough.skylight.renderer.view.handler;
 
 import de.enough.polish.ui.Container;
+import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.TextField;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.view.element.CssElement;
-import de.enough.skylight.renderer.viewport.AttributeUtils;
+import de.enough.skylight.renderer.viewport.NodeUtils;
 import de.enough.skylight.renderer.viewport.NodeHandler;
 
 public class InputHandler extends NodeHandler{
@@ -23,7 +24,7 @@ public class InputHandler extends NodeHandler{
 	}
 	
 	NodeHandler getTypeHandler(DomNode node) {
-		String type = AttributeUtils.getValue(node, "type");
+		String type = NodeUtils.getAttributeValue(node, "type");
 		NodeHandler handler = null;
 		
 		if(type != null) {
@@ -53,6 +54,11 @@ public class InputHandler extends NodeHandler{
 		handler.handleNode(node);
 	}
 	
+	public Item createNodeItem(DomNode node) {
+		NodeHandler handler = getTypeHandler(node);
+		return handler.createNodeItem(node);
+	}
+
 	public int getType() {
 		return CssElement.Type.ELEMENT;
 	}

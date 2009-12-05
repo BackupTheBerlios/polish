@@ -1,5 +1,7 @@
 package de.enough.skylight.renderer.view.element;
 
+import javax.microedition.lcdui.Font;
+
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
@@ -16,12 +18,21 @@ public class Text implements CssElement{
 	
 	String value;
 	
+	Font font;
+	
 	ContainingBlock parent;
 	
 	public Text(DomNode node, ContainingBlock parent) {
 		this.node = node;
 		this.value = trim(node.getNodeValue());
 		this.parent = parent;
+		
+		Style parentStyle = parent.getStyle();
+		if(parentStyle != null) {
+			this.font = parent.getStyle().getFont();
+		} else {
+			this.font = Font.getDefaultFont();
+		}
 	}
 	
 	String trim(String value) {
@@ -63,7 +74,9 @@ public class Text implements CssElement{
 
 	public Item getItem() {
 		//TODO temporary until lineboxes are implemented
-		return new StringItem(null,this.value,getParent().getStyle());
+		StringItem textItem = new StringItem(null,this.value);
+		textItem.setFont(this.font);
+		return textItem;
 	}
 	
 	public ContainingBlock getParent() {

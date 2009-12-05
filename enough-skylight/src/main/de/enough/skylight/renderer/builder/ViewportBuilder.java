@@ -16,7 +16,7 @@ import de.enough.skylight.renderer.view.element.Element;
 import de.enough.skylight.renderer.view.element.Text;
 import de.enough.skylight.renderer.view.handler.PHandler;
 import de.enough.skylight.renderer.viewport.NodeHandler;
-import de.enough.skylight.renderer.viewport.HandlerDirectory;
+import de.enough.skylight.renderer.viewport.NodeHandlerDirectory;
 
 public class ViewportBuilder {
 	Document document;
@@ -58,7 +58,7 @@ public class ViewportBuilder {
 	}
 	
 	protected void prepare(ContainingBlock parent, DomNode node) {
-		NodeHandler handler = HandlerDirectory.getHandler(node);
+		NodeHandler handler = NodeHandlerDirectory.getHandler(node);
 		
 		//#debug debug
 		System.out.println("found handler " + handler + " for " + node);
@@ -88,13 +88,12 @@ public class ViewportBuilder {
 			element = block;
 		} else {
 			if(node.getNodeType() == DomNode.TEXT_NODE) {
-				System.out.println("new text : " + node.getNodeValue());
 				element = new Text(node,parent);
 			} else {
 				if(handler.getType() == CssElement.Type.ELEMENT) {
-					Item item = handler.createNodeItem(node, style);
+					Item item = handler.createNodeItem(node);
 					if(item != null) {
-						element = new Element(item,parent,node);
+						element = new Element(item,parent,node,style);
 					}
 				}
 			}
