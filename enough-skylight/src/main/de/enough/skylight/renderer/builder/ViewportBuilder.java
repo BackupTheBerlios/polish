@@ -41,6 +41,10 @@ public class ViewportBuilder {
 		this.viewport = viewport;
 	}
 	
+	public void update(DomNode node, Object object) {
+		// build();
+	}
+	
 	public void build() throws IllegalArgumentException {
 		if(this.viewport == null) {
 			throw new IllegalStateException("viewport is null");
@@ -49,9 +53,9 @@ public class ViewportBuilder {
 		try {
 			this.viewport.reset();
 			
-			prepare(this.viewport, this.document);
+			build(this.viewport, this.document);
 			
-			build(this.viewport);
+			layout(this.viewport);
 		} catch(Exception e) {
 			//#debug error
 			System.out.println("error while building view : " + e);
@@ -59,7 +63,7 @@ public class ViewportBuilder {
 		}
 	}
 	
-	protected void prepare(ContainingBlock parent, DomNode node) {
+	protected void build(ContainingBlock parent, DomNode node) {
 		NodeHandler handler = NodeHandlerDirectory.getHandler(node);
 		
 		//#debug debug
@@ -78,13 +82,13 @@ public class ViewportBuilder {
 			ContainingBlock block = new ContainingBlock(parent,node,style);
 			
 			//#debug debug
-			System.out.println(node + " is containing block has children");
+			System.out.println(node + " has children");
 			
 			NodeList nodes = node.getChildNodes();
 			for (int index = 0; index < nodes.getLength(); index++) {
 				DomNode childNode = nodes.item(index);
 				
-				prepare(block,childNode);
+				build(block,childNode);
 			}
 			
 			element = block;
@@ -106,9 +110,13 @@ public class ViewportBuilder {
 		} 
 	}
 	
-	protected void build(ContainingBlock parent) throws IllegalArgumentException {
-		ItemPrefetch.prefetch(parent);
+	protected void layout(ContainingBlock parent) throws IllegalArgumentException {
+		if(!parent.isInitialized()) {
+			ItemPrefetch.prefetch(parent);
+		}
+		
 		int space = parent.getAvailableContentWidth();
+		
 		LineBox linebox = new LineBox(space);
 		
 		ArrayList elements = parent.getElements();
@@ -121,7 +129,7 @@ public class ViewportBuilder {
 					// pass down linebox with build 
 				} else if(element.isDisplay(CssElement.Display.BLOCK_LEVEL)) {
 					parent.add(block);
-					build(block);
+					layout(block);
 				}
 			} else if(element.getType() == CssElement.Type.ELEMENT) {
 				if(element.isDisplay(CssElement.Display.INLINE)) {
