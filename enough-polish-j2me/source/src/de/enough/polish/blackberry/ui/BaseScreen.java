@@ -1467,7 +1467,7 @@ public abstract class BaseScreen
 	
 	public void addCommand( de.enough.polish.ui.Command cmd ) {
 		//#if !tmp.fullscreen
-			CommandMenuItem item = new CommandMenuItem( cmd, Display.getInstance().getCurrent() );
+			CommandMenuItem item = new CommandMenuItem( cmd, Display.getInstance().getNextOrCurrent() );
 			this.addedMenuItems.add(item);
 			addMenuItem( item );
 		//#endif

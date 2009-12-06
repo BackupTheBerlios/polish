@@ -204,15 +204,15 @@ implements UiElement, Animatable
 	//#if polish.ScreenChangeAnimation.forward:defined
 		protected Command lastTriggeredCommand;
 	//#endif	
+	//#ifdef polish.key.ReturnKey:defined
+		private Command backCommand;
+	//#endif
 	//#if (polish.useMenuFullScreen && tmp.fullScreen) || polish.needsManualMenu
 		//#define tmp.menuFullScreen
 		/** the real, complete height of the screen - this includes title, subtitle, content and menubar */
 		protected int fullScreenHeight;
 		protected int menuBarHeight;
 		private boolean excludeMenuBarForBackground;
-		//#ifdef polish.key.ReturnKey:defined
-			private Command backCommand;
-		//#endif
 		
 		private Command okCommand;
 		//#if polish.key.ClearKey:defined
@@ -1315,7 +1315,7 @@ implements UiElement, Animatable
 					// circumvent using screen change animations as the previous screen:
 					Displayable currentDisplayable = StyleSheet.currentScreen;
 					if (currentDisplayable == null || currentDisplayable == this) {
-						currentDisplayable = Display.getInstance().getCurrent();;
+						currentDisplayable = Display.getInstance().getCurrent();
 					}
 					//#if polish.css.screen-change-animation
 						if (currentDisplayable instanceof ScreenChangeAnimation) {
@@ -3446,6 +3446,16 @@ implements UiElement, Animatable
 						return;
 					}
 				//#endif
+				//#if polish.key.ReturnKey:defined && tmp.trackKeyUsage
+					if (!processed) {
+						int backKey = 0;
+						//#= backKey = ${polish.key.ReturnKey};
+						if ( (keyCode == backKey) && this.backCommand != null) {
+							// this is handled in keyReleased():
+							processed = true;
+						}
+					}
+				//#endif
 
 				//#if tmp.trackKeyUsage
 					this.keyPressedProcessed = processed;
@@ -3615,26 +3625,26 @@ implements UiElement, Animatable
 							processed = true;
 						}
 					//#endif
-					//#if polish.key.ReturnKey:defined
-						if (!processed) {
-							int backKey = 0;
-							//#= backKey = ${polish.key.ReturnKey};
-							if ( (keyCode == backKey)) {
-								Command cmd = this.backCommand;
-								//#ifdef tmp.useExternalMenuBar
-									if (cmd == null && this.menuBar.size() == 1 && this.menuBar.getCommand(0).getCommandType() == Command.OK ) {
-										cmd = this.menuBar.getCommand(0);
-									}
-								//#endif
-								if (cmd != null) {
-									//#debug
-									System.out.println("keyPressed: invoking commandListener for " + cmd.getLabel() );
-									callCommandListener( cmd );
-									processed = true;
+				//#endif
+				//#if polish.key.ReturnKey:defined
+					if (!processed) {
+						int backKey = 0;
+						//#= backKey = ${polish.key.ReturnKey};
+						if ( (keyCode == backKey)) {
+							Command cmd = this.backCommand;
+							//#ifdef tmp.useExternalMenuBar
+								if (cmd == null && this.menuBar.size() == 1 && this.menuBar.getCommand(0).getCommandType() == Command.OK ) {
+									cmd = this.menuBar.getCommand(0);
 								}
+							//#endif
+							if (cmd != null) {
+								//#debug
+								System.out.println("keyPressed: invoking commandListener for " + cmd.getLabel() );
+								callCommandListener( cmd );
+								processed = true;
 							}
 						}
-					//#endif
+					}
 				//#endif
 				//#debug
 				System.out.println("keyReleased handled=" + processed);
@@ -3903,27 +3913,32 @@ implements UiElement, Animatable
 		}
 	//#endif
 
-	//#ifdef tmp.menuFullScreen
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Displayable#addCommand(javax.microedition.lcdui.Command)
 	 */
 	public void addCommand(Command cmd) {
-		//#if tmp.useExternalMenuBar 
-			Style menuItemStyle = this.menuBar.getMenuItemStyle();
-			if(menuItemStyle != null)
-			{
-				addCommand(cmd, menuItemStyle);
-			}
-			else
-			{
-		//#endif
-			//#style menuitem, menu, default
-			addCommand( cmd );
-		//#if tmp.useExternalMenuBar 
-			}
+		//#ifdef tmp.menuFullScreen
+			//#if tmp.useExternalMenuBar 
+				Style menuItemStyle = this.menuBar.getMenuItemStyle();
+				if(menuItemStyle != null)
+				{
+					addCommand(cmd, menuItemStyle);
+				}
+				else
+				{
+			//#endif
+				//#style menuitem, menu, default
+				addCommand( cmd );
+			//#if tmp.useExternalMenuBar 
+				}
+			//#endif
+		//#else
+				super.addCommand(cmd);
+				if ((cmd.getCommandType() == Command.BACK || cmd.getCommandType() == Command.CANCEL) && (this.backCommand == null || cmd.getPriority() < this.backCommand.getPriority())) {
+					this.backCommand = cmd;
+				}
 		//#endif
 	}
-	//#endif
 	
 	//#ifdef tmp.menuFullScreen
 	/**

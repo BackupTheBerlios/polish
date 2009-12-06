@@ -17,7 +17,7 @@ import de.enough.polish.util.ImageUtil;
 //#if polish.api.sensor && polish.Screen.AutomaticOrientationChange && polish.midp2
 	//#define tmp.automaticScreenOrientation
 	import de.enough.polish.util.sensor.AccelerationListener;
-	import de.enough.polish.util.sensor.AccelerationUtil;
+import de.enough.polish.util.sensor.AccelerationUtil;
 //#endif
 
 
@@ -615,6 +615,8 @@ public class Display
 		private int bbMaxScreenHeight;
 		private int bbMinScreenHeight = Integer.MAX_VALUE;
 	//#endif
+
+	private Displayable nextOrCurrentDisplayable;
 		
 	//#if polish.build.classes.NativeDisplay:defined
 		//#= private Display( MIDlet midlet, ${polish.build.classes.NativeDisplay} nativeDisplay ) {
@@ -785,6 +787,21 @@ public class Display
 	{
 		return this.currentDisplayable;
 	}
+	
+	/**
+	 * Gets the <code>Displayable</code> that is going to be shown next. If that's not present then the current displayable will be returned.  
+	 * 
+	 * @return the MIDlet's next or current Displayable object
+	 * @see #setCurrent(Displayable)
+	 */
+	public Displayable getNextOrCurrent()
+	{
+		if (this.nextOrCurrentDisplayable != null) {
+			return this.nextOrCurrentDisplayable;
+		}
+		return this.currentDisplayable;
+	}
+
 
 	/**
 	 * Requests that a different <code>Displayable</code> object be
@@ -905,6 +922,7 @@ public class Display
 		//#debug
 		System.out.println("Display.setCurrent " + nextDisplayable + ", current=" + this.currentDisplayable + ", isShown=" + isShown() );
 		//try { throw new RuntimeException("for " + nextDisplayable); } catch (Exception e) { e.printStackTrace(); }
+		this.nextOrCurrentDisplayable = nextDisplayable;
 		
 		//#if tmp.displayInfo
 			if (this.showInfo) {
@@ -918,26 +936,23 @@ public class Display
 		//#endif
 		if (nextDisplayable == this.currentDisplayable) {
 			repaint();
+			this.nextOrCurrentDisplayable = null;
 			return;
 		}
-			if (nextDisplayable == null || !(nextDisplayable instanceof Canvas)) {
-				// this is a native Displayable
-				if (nextDisplayable != null) {
-					if (this.currentCanvas != null) {
-						this.currentCanvas._hideNotify();
-						this.currentCanvas = null;
-					}
-					this.currentDisplayable = nextDisplayable;
+		if (nextDisplayable == null || !(nextDisplayable instanceof Canvas)) {
+			// this is a native Displayable
+			if (nextDisplayable != null) {
+				if (this.currentCanvas != null) {
+					this.currentCanvas._hideNotify();
+					this.currentCanvas = null;
 				}
-				this.nativeDisplay.setCurrent( nextDisplayable );
-				return;
+				this.currentDisplayable = nextDisplayable;
 			}
-		
-		if (this.currentDisplayable == nextDisplayable) {
-			repaint();
+			this.nativeDisplay.setCurrent( nextDisplayable );
+			this.nextOrCurrentDisplayable = null;
 			return;
 		}
-
+		
 		if (nextDisplayable instanceof Alert && this.currentDisplayable != nextDisplayable) {
 			Alert alert = (Alert)nextDisplayable;
 			if (alert.nextDisplayable == null) {
@@ -1080,6 +1095,7 @@ public class Display
 						} else {
 							repaint();
 						}
+						this.nextOrCurrentDisplayable = null;
 						return;
 					}
 				} catch (Exception e) {
@@ -1129,6 +1145,7 @@ public class Display
 		} else {
 			repaint();
 		}
+		this.nextOrCurrentDisplayable = null;
 	}
 
 //	//#if polish.midp2

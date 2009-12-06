@@ -510,7 +510,7 @@ public class TextField extends StringItem
 	 * &quot;0.50&quot;.
 	 * 
 	 * <p>Numbers are appended in the last decimal fraction by default, so when &quot;1&quot; is pressed this results
-	 * in &quot;0.01&quot;. Similarly presseing &quot;1&quot;, &quot;2&quot; and &quot;3&quot; results in &quot;1.23&quot;.
+	 * in &quot;0.01&quot;. Similarly pressing &quot;1&quot;, &quot;2&quot; and &quot;3&quot; results in &quot;1.23&quot;.
 	 * </p>
 	 * <p>Sample usage:</p>
 	 * <pre>
