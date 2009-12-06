@@ -5,6 +5,7 @@ import javax.microedition.lcdui.Font;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
+import de.enough.polish.util.StringTokenizer;
 import de.enough.skylight.dom.DomNode;
 
 public class Text implements CssElement{
@@ -73,10 +74,25 @@ public class Text implements CssElement{
 	}
 
 	public Item getItem() {
-		//TODO temporary until lineboxes are implemented
+		// just for compatibility, use getItems()
 		StringItem textItem = new StringItem(null,this.value);
 		textItem.setFont(this.font);
 		return textItem;
+	}
+	
+	public Item[] getItems() {
+		StringTokenizer tokenizer = new StringTokenizer(this.value, " \n\r\t");
+		int count = tokenizer.countTokens();
+		
+		Item[] items = new Item[count];
+		for (int index = 0; index < count; index++) {
+			String token = tokenizer.nextToken();
+			StringItem tokenItem = new StringItem(null,token);
+			tokenItem.setFont(this.font);
+			items[index] = tokenItem;
+		}
+		
+		return items;
 	}
 	
 	public ContainingBlock getParent() {

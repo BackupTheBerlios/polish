@@ -4,6 +4,7 @@ import java.util.Hashtable;
 
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.HashMap;
+import de.enough.polish.util.ItemPrefetch;
 import de.enough.skylight.renderer.view.element.ContainingBlock;
 
 /**

@@ -1,20 +1,18 @@
 package de.enough.skylight.renderer.builder;
 
-import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
-import de.enough.polish.ui.UiAccess;
 import de.enough.polish.util.ArrayList;
+import de.enough.polish.util.ItemPrefetch;
 import de.enough.skylight.dom.Document;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.NodeList;
 import de.enough.skylight.renderer.Viewport;
 import de.enough.skylight.renderer.view.element.ContainingBlock;
-import de.enough.skylight.renderer.view.element.ContainingBlockView;
 import de.enough.skylight.renderer.view.element.CssElement;
 import de.enough.skylight.renderer.view.element.Element;
+import de.enough.skylight.renderer.view.element.LineBox;
 import de.enough.skylight.renderer.view.element.Text;
-import de.enough.skylight.renderer.view.handler.PHandler;
 import de.enough.skylight.renderer.viewport.NodeHandler;
 import de.enough.skylight.renderer.viewport.NodeHandlerDirectory;
 
@@ -26,7 +24,11 @@ public class ViewportBuilder {
 		this.document = document;
 	}
 	
-	public ViewportBuilder(Viewport viewport, Document document) {
+	public ViewportBuilder(Viewport viewport, Document document) throws IllegalArgumentException {
+		if(!viewport.isInitialized()) {
+			ItemPrefetch.prefetch(viewport);
+		}
+		
 		this.viewport = viewport;
 		this.document = document;
 	}
@@ -39,7 +41,7 @@ public class ViewportBuilder {
 		this.viewport = viewport;
 	}
 	
-	public void build() {
+	public void build() throws IllegalArgumentException {
 		if(this.viewport == null) {
 			throw new IllegalStateException("viewport is null");
 		}
@@ -104,18 +106,59 @@ public class ViewportBuilder {
 		} 
 	}
 	
-	protected void build(ContainingBlock parent) {
+	protected void build(ContainingBlock parent) throws IllegalArgumentException {
+		ItemPrefetch.prefetch(parent);
+		int space = parent.getAvailableContentWidth();
+		LineBox linebox = new LineBox(space);
+		
 		ArrayList elements = parent.getElements();
 		for (int index = 0; index < elements.size(); index++) {
 			CssElement element = (CssElement)elements.get(index);
 			
-			Item item = element.getItem();
-			
 			if(element.getType() == CssElement.Type.CONTAINING_BLOCK) {
-				build((ContainingBlock)item);
+				ContainingBlock block = (ContainingBlock)element.getItem(); 
+				if(element.isDisplay(CssElement.Display.INLINE)) {
+					// pass down linebox with build 
+				} else if(element.isDisplay(CssElement.Display.BLOCK_LEVEL)) {
+					parent.add(block);
+					build(block);
+				}
+			} else if(element.getType() == CssElement.Type.ELEMENT) {
+				if(element.isDisplay(CssElement.Display.INLINE)) {
+					// inline : add to linebox
+					Item item = element.getItem();
+					
+					if(!linebox.hasSpace(item)) {
+						parent.add(linebox.getLine());
+						linebox = new LineBox(space);
+					}
+					
+					linebox.add(item);
+				} else if(element.isDisplay(CssElement.Display.BLOCK_LEVEL)) {
+					// block : add as single expanded linebox, set linebox as new item				
+				} 
+			} else if(element.getType() == CssElement.Type.BREAK) {
+				parent.add(linebox.getLine());
+				linebox = new LineBox(space);
+			} else if(element.getType() == CssElement.Type.TEXT) {
+				// get text items and add to lineboxes
+				Text text = (Text)element;
+				Item[] items = text.getItems();
+				
+				// check if this is first or last to add margins / paddings to linebox
+				// complicated
+				
+				for (int i = 0; i < items.length; i++) {
+					Item item = items[i];
+					
+					if(!linebox.hasSpace(item)) {
+						parent.add(linebox.getLine());
+						linebox = new LineBox(space);
+					}
+					
+					linebox.add(item);
+				}
 			}
-			
-			parent.add(item);
 		}
 	}
 }

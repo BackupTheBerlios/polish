@@ -8,21 +8,10 @@ import de.enough.skylight.renderer.view.element.CssElement;
 import de.enough.skylight.renderer.viewport.NodeHandler;
 
 public class BrHandler extends NodeHandler{
-	
-	public Style getDefaultStyle() {
-		//#style br
-		return new Style();
-	}
-	
-	public void handleNode(DomNode node) {
-	}
-
-	public Item createNodeItem(DomNode node) {
-		return new StringItem(null,null);
-	}
+	public void handleNode(DomNode node) {}
 	
 	public int getType() {
 		// TODO Auto-generated method stub
-		return CssElement.Type.ELEMENT;
+		return CssElement.Type.BREAK;
 	}
 }
