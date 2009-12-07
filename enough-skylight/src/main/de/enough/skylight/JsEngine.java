@@ -4,6 +4,8 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Script;
 import org.mozilla.javascript.Scriptable;
 
+import de.enough.skylight.js.Alert;
+
 public class JsEngine {
 
 	private Context context;
@@ -13,6 +15,7 @@ public class JsEngine {
 		this.context = Context.enter();
 		this.context.setOptionOnErrorThrowExeption(true);
 		this.scope = this.context.initStandardObjects();
+		this.scope.put("alert", this.scope, new Alert());
 	}
 	
 	public void runScript(String scriptText) {
