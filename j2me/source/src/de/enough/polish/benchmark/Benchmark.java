@@ -15,7 +15,7 @@ public class Benchmark {
     /**
      * the benchmarks
      */
-    static HashMap benchmarks = new HashMap();
+    static HashMap benchmarks;
     /**
      * the time the benchmark started
      */
@@ -24,6 +24,24 @@ public class Benchmark {
      * the key to identify the benchmark
      */
     String key;
+    //---
+    // Smart Timer related code follows
+    //---
+    private static long lastTime = 0;
+    private static HashMap totalExecutionTimes;
+    private static HashMap tempExecutionTimes;
+    private static HashMap timerDescriptions;
+    private static boolean outputResults = true;
+    private static long checkInterval = 5000;
+
+    static {
+        //#mdebug benchmark
+        totalExecutionTimes = new HashMap();
+        tempExecutionTimes = new HashMap();
+        timerDescriptions = new HashMap();
+        benchmarks = new HashMap();
+        //#enddebug
+    }
 
     /**
      * Starts a benchmark with the given key
@@ -58,8 +76,7 @@ public class Benchmark {
         long time = System.currentTimeMillis() - benchmark.getTime();
         String formattedTime = getFormattedTime(time);
 
-        System.out.println(key + " : " + name + ": " + formattedTime
-                + " seconds");
+        System.out.println(key + " : " + name + ": " + formattedTime + " seconds");
         //#enddebug
     }
 
@@ -100,15 +117,6 @@ public class Benchmark {
 
         return seconds + "," + millisecondsStr;
     }
-    //---
-    // Smart Timer related code follows
-    //---
-    private static long lastTime = 0;
-    private static HashMap totalExecutionTimes = new HashMap();
-    private static HashMap tempExecutionTimes = new HashMap();
-    private static HashMap timerDescriptions = new HashMap();
-    private static boolean outputResults = true;
-    private static long checkInterval = 5000;
 
     /**
      * Reset all smart timers
