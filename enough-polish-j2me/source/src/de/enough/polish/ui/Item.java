@@ -662,6 +662,8 @@ public abstract class Item implements UiElement, Animatable
 	protected int contentWidth;
 	/** The height of this item's content **/
 	protected int contentHeight;
+	protected int availContentWidth;
+	protected int availContentHeight;
 	protected int backgroundWidth;
 	protected int backgroundHeight;
 	/** The appearance mode of this item, either PLAIN or one of the interactive modes BUTTON, HYPERLINK or INTERACTIVE. */
@@ -2896,7 +2898,9 @@ public abstract class Item implements UiElement, Animatable
 				this.contentHeight = 0;
 			} else {
 		//#endif
-			availHeight -= this.marginTop + getBorderWidthTop() + this.paddingTop + this.paddingBottom + getBorderWidthBottom() + this.marginBottom; 
+			availHeight -= this.marginTop + getBorderWidthTop() + this.paddingTop + this.paddingBottom + getBorderWidthBottom() + this.marginBottom;
+			this.availContentWidth = availableContentWidth;
+			this.availContentHeight = availHeight;
 			//#ifdef polish.css.view-type
 				if (this.view != null) {
 					this.view.parentItem = this;
@@ -4337,6 +4341,24 @@ public abstract class Item implements UiElement, Animatable
 	public int getContentHeight()
 	{
 		return this.contentHeight;
+	}
+	
+	/**
+	 * Retrieves the width of the content.
+	 * @return the content width in pixels
+	 */
+	public int getAvailableContentWidth()
+	{
+		return this.availContentWidth;
+	}
+	
+	/**
+	 * Retrieves the height of the content.
+	 * @return the content height in pixels
+	 */
+	public int getAvailableContentHeight()
+	{
+		return this.availContentHeight;
 	}
 	
 	/**
