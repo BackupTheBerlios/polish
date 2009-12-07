@@ -33,7 +33,6 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.apache.tools.ant.BuildException;
 import org.jdom.Document;
@@ -145,7 +144,22 @@ public class ResourcesPreCompiler extends PreCompiler {
 		}
 		
 		Element usesSdkElement = new Element("uses-sdk");
-		usesSdkElement.setAttribute("minSdkVersion", "3",namespace);
+		String minSdkVersion = env.getVariable("android.minSdkVersion");
+		if(minSdkVersion == null || minSdkVersion.length() == 0) {
+			minSdkVersion = "3";
+		}
+		usesSdkElement.setAttribute("minSdkVersion", minSdkVersion,namespace);
+		
+		String targetSdkVersion = env.getVariable("android.targetSdkVersion");
+		if(targetSdkVersion != null && targetSdkVersion.length() > 0) {
+			usesSdkElement.setAttribute("targetSdkVersion", targetSdkVersion,namespace);
+		}
+		
+		String maxSdkVersion = env.getVariable("android.maxSdkVersion");
+		if(maxSdkVersion != null && maxSdkVersion.length() > 0) {
+			usesSdkElement.setAttribute("maxSdkVersion", maxSdkVersion,namespace);
+		}
+		
 		rootElement.addContent(usesSdkElement);
 		
 		String version = env.getVariable("MIDlet-Version");
@@ -159,7 +173,10 @@ public class ResourcesPreCompiler extends PreCompiler {
 		}
 		rootElement.setAttribute("versionCode", versionCode,namespace);
 		
-		String versionName = version;
+		String versionName = env.getVariable("android.versionName");
+		if(versionName == null || versionName.length() == 0) {
+			versionName = version;
+		}
 		rootElement.setAttribute("versionName", versionName,namespace);
 		
 		String midletName = env.getBuildSetting().getMidlets(env)[0].name;
