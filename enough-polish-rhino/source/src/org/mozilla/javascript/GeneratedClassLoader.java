@@ -60,7 +60,7 @@ public interface GeneratedClassLoader {
      *
      * @param cl Class instance returned from the previous call to
      *        {@link #defineClass(String, byte[])}
-     * @see java.lang.ClassLoader#resolveClass(Class)
+     * @see java.lang.ClassLoader resolveClass(Class)
      */
     public void linkClass(Class cl);
 }
