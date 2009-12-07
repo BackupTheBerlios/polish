@@ -175,7 +175,7 @@ final public class InterpretedFunction extends NativeFunction implements Script
     			EventManager.fireEvent("js.error", this, errorText );
     		}
     		if(cx.isOptionOnErrorThrowException()) {
-    			throw new RuntimeException(e);
+    			throw new RuntimeException(e.getMessage());
     		}
 	    }
     	return null;
