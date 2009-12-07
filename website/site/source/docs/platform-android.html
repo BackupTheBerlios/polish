@@ -80,6 +80,50 @@ To view output send to <code>System.out</code> or <code>System.err</code> you ca
 or start the Android tool <code>ddms</code>, which you can find in <i>${android.home}/tools</i>.
 </p>
 
+<h2 id="android-configuring">Configure your Manifest.xml file</h2>
+<p>
+You can customize the generated Manifest.xml file by defining variables in the build.xml file.
+<pre>
+	&lt;j2mepolish&gt;
+	&lt;build&gt;
+		&lt;variable name="android.targetSdkVersion" value="4" /&gt;
+	&lt;/build&gt;
+	&lt;/j2mepolish>
+</pre>
+</p>
+
+<table class="borderedTable" cellspacing="0" cellpadding="3" border="1">
+<tr>
+	<th>Variable</th>
+	<th>Description</th>
+</tr>
+	<tr>
+		<td>android.minSdkVersion</td>
+		<td>See http://developer.android.com/guide/topics/manifest/uses-sdk-element.html#min for details.</td>
+	</tr>
+	<tr>
+		<td>android.targetSdkVersion</td>
+		<td>See http://developer.android.com/guide/topics/manifest/uses-sdk-element.html#target for details.</td>
+	</tr>
+	<tr>
+		<td>android.maxSdkVersion</td>
+		<td>See http://developer.android.com/guide/topics/manifest/uses-sdk-element.html#max for details.</td>
+	</tr>
+	<tr>
+		<td>android.versionCode</td>
+		<td>See http://developer.android.com/guide/topics/manifest/manifest-element.html#vcode for details.</td>
+	</tr>
+	<tr>
+		<td>android.versionName</td>
+		<td>See http://developer.android.com/guide/topics/manifest/manifest-element.html#vname for details. </td>
+	</tr>
+	<tr>
+		<td>MIDlet-Icon</td>
+		<td>This variable is the path to an icon.</td>
+	</tr>
+	<tr></tr>
+</table>
+
 <h2 id="android-signing">Sign your Application</h2>
 <p>Every Android application needs to be signed. The build process will automatically sign your application with a development signature which is accepted by a device or an emulator. To sign
 your application with your own signature you can use the signing mechanism provided by J2ME Polish. Please see the <a href="build-build.html#sign"><code>sign</code> tag</a> for details.</p>
