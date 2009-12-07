@@ -3934,9 +3934,11 @@ implements UiElement, Animatable
 			//#endif
 		//#else
 				super.addCommand(cmd);
-				if ((cmd.getCommandType() == Command.BACK || cmd.getCommandType() == Command.CANCEL) && (this.backCommand == null || cmd.getPriority() < this.backCommand.getPriority())) {
-					this.backCommand = cmd;
-				}
+				//#ifdef polish.key.ReturnKey:defined
+					if ((cmd.getCommandType() == Command.BACK || cmd.getCommandType() == Command.CANCEL) && (this.backCommand == null || cmd.getPriority() < this.backCommand.getPriority())) {
+						this.backCommand = cmd;
+					}
+				//#endif
 		//#endif
 	}
 	
