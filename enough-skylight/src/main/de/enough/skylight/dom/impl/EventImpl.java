@@ -3,6 +3,11 @@ package de.enough.skylight.dom.impl;
 import de.enough.skylight.dom.Event;
 import de.enough.skylight.dom.EventTarget;
 
+/**
+ * Always call init first and then the more specific init methods.
+ * @author rickyn
+ *
+ */
 public abstract class EventImpl implements Event{
 
 	private boolean bubbles;
