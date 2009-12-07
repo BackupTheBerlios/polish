@@ -40,15 +40,18 @@ public class EventProcessor {
 		}
 		if(doCapture) {
 			// Propagate event downstream
+			//#debug
 			System.out.println("Capturing event to target");
 			event.setEventEnvironment(Event.CAPTURING_PHASE);
 			for(int i = numberOfEventTargets-1; i >= 0; i--){
 				DomNodeImpl chainElement = (DomNodeImpl)eventChain.item(i);
 				event.setEventEnvironment(chainElement);
+				//#debug
 				System.out.println("About to handle capture at element '"+chainElement+"'");
 				chainElement.handleCaptureEvent(event);
 				// React to capturing.
 				if(event.isStopPropagation()) {
+					//#debug
 					System.out.println("Stopping propagation");
 					return false;
 				}
@@ -56,6 +59,7 @@ public class EventProcessor {
 		}
 		
 		// Deliver event to eventarget
+		//#debug
 		System.out.println("Handling event at target '"+target+"'");
 		event.setEventEnvironment(Event.AT_TARGET, target);
 		target.handleCaptureEvent(event);
@@ -92,15 +96,18 @@ public class EventProcessor {
 		
 		if(event.getBubbles()) {
 			// Bubble event upstream.
+			//#debug
 			System.out.println("Handling bubbling of event");
 			event.setEventEnvironment(Event.BUBBLING_PHASE);
 			for(int i = 0; i < numberOfEventTargets; i++){
 				DomNodeImpl chainElement = (DomNodeImpl)eventChain.item(i);
+				//#debug
 				System.out.println("About to handle bubble at element '"+chainElement+"'");
 				event.setEventEnvironment(chainElement);
 				chainElement.handleBubblingEvent(event);
 				// React to capturing.
 				if(event.isStopPropagation()) {
+					//#debug
 					System.out.println("Stopping propagation");
 					return false;
 				}
