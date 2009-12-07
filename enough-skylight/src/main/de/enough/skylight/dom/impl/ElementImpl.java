@@ -74,7 +74,7 @@ public class ElementImpl extends DomNodeImpl implements Element{
 			previousValue = attribute.getValue();
 		}
 		getAttributes().setNamedItem(attribute);
-		EventFactory.getInstance().fireDomAttrModifiedEvent(this, this, previousValue, value, name, MutationEvent.MODIFICATION);
+		EventEmitter.getInstance().fireDomAttrModifiedEvent(this, this, previousValue, value, name, MutationEvent.MODIFICATION);
 	}
 
 	public Attr setAttributeNode(Attr newAttr) throws DomException {
