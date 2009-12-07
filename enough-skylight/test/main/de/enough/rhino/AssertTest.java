@@ -23,8 +23,6 @@ public class AssertTest extends TestCase {
 		AssertScriptableObject assertScriptableObject = new AssertScriptableObject();
 		assertScriptableObject.init();
 		this.scope.put("Assert",this.scope,assertScriptableObject);
-		
-		
 	}
 	
 	public void testEquals() throws FileNotFoundException, IOException {

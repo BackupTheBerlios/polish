@@ -5,12 +5,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-<h1>Überschrift</h1>
-<p>This is a text with <em>inline</em> elements.</p>
-<div id="id1">
-</div>
-<div id="id2">
-    <div class="apple" onclick="var x = 2; alert(x + 40,' bottles of bear');" id="id3">I am an apple.</div>
-</div>
+<!-- This page must be rendered in under 50ms on W810. -->
+<div id="id1" class="high" onclick="this.setAttribute('class','low')">High</div>
 </body>
 </html>
