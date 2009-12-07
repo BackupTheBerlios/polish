@@ -3,6 +3,12 @@
 	default="j2mepolish">
 	
 	<property file="${user.name}.properties" />
+	<!-- Default values. -->
+	
+	<property name="skylight.testrange.midlet" value="de.enough.skylight.testrange.client.Client" />
+	<property name="skylight.testrange.url" value="http://localhost:8080/enough-skylight-testrange-web-simple/samples/complex.html" />
+	<property name="rhino.home" value="../enough-polish-rhino" />
+	<property name="skylight.home" value="./enough-skylight" />
 
 	<taskdef name="j2mepolish" 
 		classname="de.enough.polish.ant.PolishTask" 
