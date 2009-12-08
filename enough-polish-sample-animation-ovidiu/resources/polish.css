@@ -170,32 +170,33 @@ focused {
 	font-style: bold;
 	font-size: small;
 	padding: 0;
-	padding-vertical: 0;
-	icon-image: url( iconlarge%INDEX%.png );
-	icon-image-align: top;
-	layout: center;
-	/*filter: grayscale;
-	filter-grayscale-grade: 100%;
-	filter-grayscale-grade-animation {
-		on: defocus;
-		range: 0%..100%;
-	} */
+	/*
 	filter: grayscale;
 	filter-grayscale-grade: 100%;
 	filter-grayscale-grade-animation {
 		on: defocus;
 		range: 0%..100%;
 	}
+    */
+	
+	filter: scale ;
+        filter-scale-crop: true;
+	filter-scale-grade: 50%;	
+		
+	padding-vertical: 0;
+	icon-image: url( iconlarge%INDEX%.png );
+	icon-image-align: top;
+	layout: center;
 }
 
 .mainItem:hover {
 	font-color: white;
 	text-effect: shadow;
-		
-	filter-grayscale-grade-animation {
-		on: focus;
-		range: 100%..0%;
-	}
+	
+	filter: scale;
+        filter-scale-crop: true;
+	filter-scale-grade: 200%;
+	
 	
 }
 

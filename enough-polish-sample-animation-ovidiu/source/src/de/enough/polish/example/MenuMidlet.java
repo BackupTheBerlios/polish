@@ -73,7 +73,6 @@ public class MenuMidlet extends MIDlet implements CommandListener {
 		super(); 
 		
 		//#mdebug ovidiu
-                System.out.println("OVIDIU");
 		// Set the timer descriptions
 		Benchmark.setSmartTimerDescription("0", "Time spent in item.paint()");
 		Benchmark.setSmartTimerDescription("1", "No. of calls to item.paint()");
@@ -87,9 +86,13 @@ public class MenuMidlet extends MIDlet implements CommandListener {
 		Benchmark.setSmartTimerDescription("9", "Time spent repainting stuff in AnimationThread.run()");
                 Benchmark.setSmartTimerDescription("gs", "Time spent in Grayscale.process()");
                 Benchmark.setSmartTimerDescription("gs-count", "No. of calls to grayscale.process()");
+                Benchmark.setSmartTimerDescription("rs-up", "Time spent in Image.scale() > 100%");
+                Benchmark.setSmartTimerDescription("rs-up-count", "No. of calls to Image.scale() > 100%");
+                Benchmark.setSmartTimerDescription("rs-down", "Time spent in Image.scale() < 100%");
+                Benchmark.setSmartTimerDescription("rs-down-count", "No. of calls to Image.scale() < 100%");
 
                 // Set the timer interval
-                Benchmark.setSmartTimerCheckInterval(15000);
+                Benchmark.setSmartTimerCheckInterval(5000);
 		//#enddebug
 
                 //#ifdef title:defined
