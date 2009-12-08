@@ -25,6 +25,9 @@
  */
 package de.enough.polish.util;
 
+//#debug ovidiu
+import de.enough.polish.benchmark.Benchmark;
+
 //#if polish.midp2 || (!polish.midp && polish.usePolishGui)
 	//#define tmp.supportImageOperations
 	import javax.microedition.lcdui.Graphics;
@@ -42,6 +45,7 @@ import de.enough.polish.math.FP;
  *        15-May-2005 - rob creation
  *        15-Aug-2007 - Simon hq-down scaling added
  * </pre>
+ * @author Ovidiu Iliescu
  * @author Robert Virkus, j2mepolish@enough.de
  * @author Tim Muders, tim.muders@enough.de
  * @author Simon Schmitt, simon.schmitt@enough.de
@@ -66,26 +70,97 @@ public final class ImageUtil {
 	 * @throws ArithmeticException when width of scaleFactor is 0
 	 */
 	public static void scale(int scaleFactor, int width, int height, int[] rgbData, int[] scaledRgbData) {
+
+            /*
+             * We will use a destination to source mapping. This has the advantage
+             * of being considerably faster for downward resizing, since the
+             * smaller the destination image, the fewer pixels have to be
+             * processed.
+             */
+
 		if (scaleFactor < 100){
-			int xStart = ((width*100) - (width*scaleFactor)) / 200;
-			int yStart = ((height*100) - (height*scaleFactor)) / 200;
-			for (int y=yStart; y < height-yStart; y++){
-				for (int x=xStart; x < width-xStart; x++){
-					int xTarget = (x*scaleFactor)/100  + xStart;
-					int yTarget = (y*scaleFactor)/100 + yStart;            
-					scaledRgbData[(yTarget*width) + xTarget] = rgbData[(y*width)+x];
-				}
-			}
+
+                        //#debug ovidiu
+                        Benchmark.startSmartTimer("rs-down");
+
+                        int x, y, dy;
+                        int srcOffset;
+
+                        // Calculate the target width and height
+                        final int targetWidth = (width * scaleFactor) / 100;
+                        final int targetHeight = (height * scaleFactor ) / 100 ;
+
+                        // Calculate the Y and X start offsets
+                        final int xStart = ( width - ( ( scaleFactor * width) / 100 ) ) / 2;
+                        final int yStart = ( height - ( ( scaleFactor * height) / 100 ) ) / 2;
+
+                        // Calculate total fixed destination offset
+                        int destOffset = 0 - width + yStart * width + xStart;
+
+                        // Calculate the pixel ratio ( << 10 )
+                        final int pixelRatio = (1024 * 100 ) / scaleFactor;
+
+                        y = 0;
+                        while ( y < targetHeight) {
+                            dy = ((pixelRatio * y) >> 10) * width;
+                            destOffset += width;
+                            srcOffset = 0 ;
+
+                            x = 0;
+                            while (x < targetWidth) {
+                                scaledRgbData[destOffset + x] = rgbData[dy + (srcOffset >> 10)];
+                                srcOffset += pixelRatio;
+                                x++ ;
+                            }
+                            
+                            y++;
+                        }
+
+                        //#mdebug ovidiu
+                        Benchmark.pauseSmartTimer("rs-down");
+                        Benchmark.incrementSmartTimer("rs-down-count");
+                        //#enddebug
 		} else {
-			int xStart = (width - width * 100 / scaleFactor ) / 2;
-			int yStart = ((height - height * 100 / scaleFactor ) / 2) * width;
-			for (int y = 0; y < height; y++) {
-				int c1 = y * width;
-				int c2 = yStart + (y * 100  / scaleFactor) * width;
-				for (int x = 0; x < width; x++) {
-					scaledRgbData[c1 + x] = rgbData[ c2 + xStart + x * 100/scaleFactor ];
-				}
-			}
+
+                        //#debug ovidiu
+                        Benchmark.startSmartTimer("rs-up");
+
+                        int x,y,dy;
+                        int destOffset = 0 ;
+                        int srcOffset = 0;
+
+                        // Calculate the pixel ratio ( << 10 )
+                        final int pixelRatio = (1024 * 100) / scaleFactor ;
+
+                        // Calculate the start X and Y offsets
+			final int xStart =  ( ( ( (width - (width * 100) / scaleFactor ) / 2 ) ) ) ;
+                        final int yStart =  ( (  ( (height - (height * 100) / scaleFactor ) / 2) ) );
+
+                        // Calculate the total initial source offset offset
+                        final int fixedSrcOffset = xStart + width * yStart ;
+                                              
+			y = 0;
+                        while ( y < height )
+                        {
+                            dy =  fixedSrcOffset + width * ( ( y * pixelRatio) >> 10 );
+                            
+                            x=0;
+                            srcOffset = 0;
+                            while ( x < width )
+                            {
+                                scaledRgbData[destOffset + x] = rgbData[dy + (srcOffset >> 10)];
+                                srcOffset += pixelRatio ;
+                                x++;
+                            }
+
+                            destOffset += width ;
+                            y++ ;
+                        }
+
+                        //#mdebug ovidiu
+                        Benchmark.pauseSmartTimer("rs-up");
+                        Benchmark.incrementSmartTimer("rs-up-count");
+                        //#enddebug
 		}
 	}
 	
@@ -1241,26 +1316,31 @@ public final class ImageUtil {
 	 * @param newRgbData the new rgbdata has to be initialised
 	 */
 	public static final void scale(int[]rgbData,int newWidth,int newHeight,int oldWidth, int oldHeight, int[] newRgbData) {
-		int currentX = 0,currentY = 0;
-		int oldLenght = rgbData.length;
-		int newLength = newRgbData.length;	
-		int targetArrayIndex;
-		int verticalScaleFactorPercent = ((newHeight*100) / oldHeight);
-		int horizontalScaleFactorPercent = ((newWidth*100) / oldWidth);
-		for (int i = 0; i < newLength;i++) {
-			currentX = (currentX + 1) % newWidth;
-			if (currentX == 0){
-				currentY++;
-			}				
-			targetArrayIndex = ((currentX*100)/horizontalScaleFactorPercent)+(oldWidth * ((currentY*100)/verticalScaleFactorPercent));
-			if (targetArrayIndex >= oldLenght) {
-				targetArrayIndex = oldLenght-1;
-			}
-			if (targetArrayIndex < 0) {
-				targetArrayIndex = 0;
-			}
-			newRgbData[i] = rgbData[targetArrayIndex];
-		}
+
+                        int x, y, dy;
+                        int srcOffset;
+                        int destOffset;
+
+                        // Calculate the pixel ratio ( << 10 )
+                        final int pixelRatioWidth = (1024 * oldWidth ) / newWidth;
+                        final int pixelRatioHeight = (1024 * oldHeight ) / newHeight;
+
+                        y = 0;
+                        destOffset = 0;
+                        while ( y < newHeight ) {
+                            dy = ((pixelRatioHeight * y) >> 10) * oldWidth;
+                            srcOffset = 0 ;
+
+                            x = 0;
+                            while (x < newWidth) {
+                                newRgbData[destOffset + x] = rgbData[dy + (srcOffset >> 10)];
+                                srcOffset += pixelRatioWidth;
+                                x++ ;
+                            }
+
+                            destOffset += newWidth;
+                            y++;
+                        }
 	}
 	
 	/**
