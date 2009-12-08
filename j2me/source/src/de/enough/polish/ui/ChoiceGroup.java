@@ -1646,7 +1646,7 @@ implements Choice
 		System.out.println("ChoiceGroup.handlePointerPressed(" + relX + ", " + relY + ") for " + this );
 		int index = this.focusedIndex;
 		boolean handled = super.handlePointerPressed(relX, relY); // focuses the appropriate item, might change this.focusedIndex...
-		relY -= this.yOffset + this.contentY;
+		relY -= this.contentY;
 		relX -= this.contentX;
 		boolean triggerKey = (    
 				(handled || isInItemArea(relX, relY, this.focusedItem))
@@ -1656,7 +1656,6 @@ implements Choice
 		);
 		//#debug
 		System.out.println("triggerKey=" + triggerKey + ", handled=" + handled + ", index=" + index + ", focusedIndex=" + this.focusedIndex + ", focusedItem=" + this.focusedItem  + ", isInItemArea(relX, relY, this.focusedItem)=" + isInItemArea(relX, relY, this.focusedItem));
-		relY += this.yOffset;
 		if (  triggerKey )  
 		{
 			this.isPointerReleaseShouldTriggerKeyRelease = true;
