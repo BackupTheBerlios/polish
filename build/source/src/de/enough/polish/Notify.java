@@ -35,9 +35,9 @@ public abstract class Notify {
 
     /**
      * Shows the message using the desired handlers
-     * @param title
-     * @param message
-     * @return
+     * @param title the title
+     * @param message the message
+     * @return true if publish was successful, otherwise false
      */
     public static boolean publish(String title, String message) {
         Notify n = Notify.getInstance();
