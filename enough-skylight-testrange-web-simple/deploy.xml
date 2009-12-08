@@ -1,0 +1,21 @@
+<project 
+	name="skylight-testrange-web.deploy"
+	default="skylight-testrange-web.deploy">
+	
+	<property file="${user.name}.properties" />
+	
+		 
+	<target name="skylight-testrange-web.deploy">
+		<scp 
+			todir="${skylight-testrange-web.deploy.user}@${skylight-testrange-web.deploy.host}:${skylight-testrange-web.deploy.path}"
+			password="${skylight-testrange-web.deploy.password}"
+			port="12097"
+			trust="yes"
+		>
+			<fileset dir="WebContent/samples/"/>
+		</scp>
+
+	</target>
+</project>
+	
+	
