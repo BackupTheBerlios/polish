@@ -4827,7 +4827,7 @@
 	<attribute
 		name="filter-scale-crop"
 		type="boolean"
-		appliesTo="GrayscaleRgbFilter"
+		appliesTo="ScaleRgbFilter"
 		description="Specifies if the resulting scaled image should be cropped to the original image dimensions. WARNING: May cause OutOfMemory errors! Use at your own risk."
 		default="true"
 		id="413"
