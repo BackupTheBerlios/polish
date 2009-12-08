@@ -6,7 +6,7 @@ import javax.microedition.midlet.MIDletStateChangeException;
 import de.enough.polish.benchmark.Benchmark;
 import de.enough.polish.ui.Display;
 import de.enough.polish.ui.Form;
-import de.enough.polish.util.Prefetch;
+import de.enough.polish.util.Preinit;
 import de.enough.skylight.dom.Document;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.RendererListener;
@@ -58,7 +58,7 @@ public class ContactList extends MIDlet{
 			form.append(contact);
 		}
 		
-		Prefetch.prefetch(form);
+		Preinit.preinit(form);
 		
 		long duration = System.currentTimeMillis() - start;
 		System.out.println(duration);

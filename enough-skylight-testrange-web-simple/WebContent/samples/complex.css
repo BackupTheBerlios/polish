@@ -11,5 +11,7 @@
 }
 
 .mySpan {
+	padding: 0px;
+	display: inline;
 	background-color: green;
 }
