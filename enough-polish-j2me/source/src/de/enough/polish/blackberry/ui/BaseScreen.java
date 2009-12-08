@@ -81,6 +81,8 @@ public abstract class BaseScreen
 		private int keyDownKeyCode;
 		private int keyDownStatus;
 	//#endif
+	private int lastWidth;
+	private int lastHeight;
 	
     /**
      * Constructs a new <code>Canvas</code> object.
@@ -776,8 +778,12 @@ public abstract class BaseScreen
             super.sublayout(width, height);
             int w = net.rim.device.api.ui.Graphics.getScreenWidth();
             int h = net.rim.device.api.ui.Graphics.getScreenHeight();
-            setExtent( w,  h );
-            sizeChanged( w, h );
+            if (w != this.lastWidth || h != this.lastHeight) {
+            	this.lastWidth = w;
+            	this.lastHeight = h;
+            	setExtent( w,  h );
+            	sizeChanged( w, h );
+            }
     }
 
     //#if polish.useFullScreen

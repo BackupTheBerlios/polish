@@ -2205,11 +2205,19 @@ public class Display
 		//#debug
 		System.out.println("sizeChanged=" + width +"x" + height);
 		//#if polish.blackberry && polish.hasPointerEvents
-			if (height > this.bbMaxScreenHeight) {
-				this.bbMaxScreenHeight = height;
-			}
-			if (height < this.bbMinScreenHeight) {
-				this.bbMinScreenHeight = height;
+			if (width == 360) {
+				this.bbMaxScreenHeight = 480;
+				this.bbMinScreenHeight = 248;
+			} else if (width == 480) {
+				this.bbMaxScreenHeight = 360;
+				this.bbMinScreenHeight = 156;
+			} else {
+				if (height > this.bbMaxScreenHeight) {
+					this.bbMaxScreenHeight = height;
+				}
+				if (height < this.bbMinScreenHeight) {
+					this.bbMinScreenHeight = height;
+				}
 			}
 		//#endif
 		//try { throw new RuntimeException(); } catch (Exception e) { e.printStackTrace(); }
