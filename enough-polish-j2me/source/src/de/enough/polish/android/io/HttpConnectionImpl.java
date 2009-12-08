@@ -157,7 +157,7 @@ class HttpConnectionImpl implements HttpConnection {
 		} catch (IOException ex) {
 			return 0;
 		}
-		return this.connection.getHeaderFieldInt("Content-Length", 0);
+		return this.connection.getContentLength();
 	}
 	
 	public String getType() {
