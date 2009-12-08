@@ -1307,9 +1307,11 @@ public class TextField extends StringItem
 			this.midpTextBox.addCommand(StyleSheet.CANCEL_CMD);
 		}
 		this.midpTextBox.setCommandListener( this );
-		if ((this.constraints & TextField.INITIAL_CAPS_NEVER) == TextField.INITIAL_CAPS_NEVER){
-			this.midpTextBox.setInitialInputMode("MIDP_LOWERCASE_LATIN");
-		}
+		//#if polish.midp2
+			if ((this.constraints & TextField.INITIAL_CAPS_NEVER) == TextField.INITIAL_CAPS_NEVER){
+				this.midpTextBox.setInitialInputMode("MIDP_LOWERCASE_LATIN");
+			}
+		//#endif
 	}
 	//#endif
 	

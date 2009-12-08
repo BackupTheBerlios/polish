@@ -1,5 +1,10 @@
 package de.enough.polish.util;
 
+/**
+ * <p>Helps to deal with HTTP GET URLs.</p>
+ *
+ * <p>Copyright Enough Software 2009</p>
+ */
 public class URL {
 	
 	String host;
@@ -98,11 +103,20 @@ public class URL {
 		return this;
 	}
 	
+	//#if polish.hasFloatingPoint
 	public URL addParameter(String key, double value) {
 		addParameter(key, new Double(value));
 		return this;
 	}
-	
+	//#endif
+
+	//#if polish.hasFloatingPoint
+	public URL addParameter(String key, float value) {
+		addParameter(key, new Float(value));
+		return this;
+	}
+	//#endif
+
 	void addParameter(Object key, Object value) {
 		this.parameters.put(key, value);
 		this.needsBuild = true;
