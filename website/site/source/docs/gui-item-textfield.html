@@ -264,7 +264,20 @@ variable is set to <code>true</code>:
 <p>You can define your own set of symbols by defining the variable <code>polish.TextField.Symbols</code>.
 </p>
 
-	<h2 id="textfield-PredictiveInputMode">Predictive Input Mode</h2>
+<h2 id="textfield-fixed_point_decimal">Fixed Point Decimal Constraint</h2>
+<p>
+	J2ME Polish textfields with activated <a href="#textfield-DirectInputMode">direct input mode</a> can make use of a cash register like input
+	constraint. With that constraint the result will always be a decimal number with a fixed number of digital places behind the point. Entering a 
+	&quot;1&quot; results in &quot;0.01&quot;, &quot;123&quot; in &quot;1.23&quot;, and so on. You can create such a TextField with the help
+	of <code>de.enough.polish.ui.UiAccess</code>:
+</p>
+<pre>
+TextField field = new TextField("Price: ", null, 6, UiAccess.CONSTRAINT_FIXED_POINT_DECIMAL );
+// allow 3 decimal places (2 is the default):
+UiAccess.setNumberOfDecimalFractions(field, 3);
+</pre>
+
+<h2 id="textfield-PredictiveInputMode">Predictive Input Mode</h2>
 	<p>
 	The predictive input mode can be activated by setting the variable <code>polish.TextField.usePredictiveInput</code> to true.
 	<br/>
@@ -463,6 +476,9 @@ ArrayList results = UiAccess.getPredictiveMatchingWords(mytextfield);
 		<li><code>UiAccess.setWordNotFound(TextField field, Alert alert)</code>: 
 		Sets an custom alert to show the "Word not found" message of the predictive input.
 		</li>
+		<li><code>UiAccess.CONSTRAINT_FIXED_POINT_DECIMAL</code>: constant for applying a <a href="#textfield-fixed_point_decimal">fixed point decimal</a> constraint on TextFields with direct input mode.</li>
+		<li><code>UiAccess.setNumberOfDecimalFractions( TextField field, int number )</code>: for allowing a different number than 2 decimal places for fixed point decimal fields.</li>
+		<li><code>int UiAccess.getNumberOfDecimalFractions( TextField field )</code>: for retrieving the number of decimal places of fixed point decimal field.</li>
 		
 		<!-- 
 		<li><code>UiAccess.</code>: </li>
