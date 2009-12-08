@@ -1,7 +1,7 @@
 //#condition polish.usePolishGui && polish.api.mmapi
 package de.enough.polish.video;
 
-import de.enough.polish.snapshot.SnapshotUtils;
+import de.enough.polish.snapshot.SnapshotUtil;
 import de.enough.polish.video.VideoCallback;
 
 import java.io.IOException;
@@ -33,7 +33,7 @@ public class VideoSource implements Serializable{
 	
 	static {
 		try {
-			CAPTURE = new VideoSource("capture",SnapshotUtils.getProtocol(),null);
+			CAPTURE = new VideoSource("capture",SnapshotUtil.getProtocol(),null);
 		} catch (MediaException e) {
 			CAPTURE = null;
 			//#debug error

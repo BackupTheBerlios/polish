@@ -1,3 +1,4 @@
+//#condition polish.api.mmapi
 package de.enough.polish.snapshot;
 
 import javax.microedition.media.Manager;
@@ -8,7 +9,7 @@ import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.Arrays;
 import de.enough.polish.util.TextUtil;
 
-public class SnapshotUtils {
+public class SnapshotUtil {
 
 	//private static final long PLAYER_TIMEOUT = 300;
 	/**

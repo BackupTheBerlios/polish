@@ -67,7 +67,7 @@ import javax.microedition.media.control.VideoControl;
 import de.enough.polish.multimedia.AdvancedMultimediaManager;
 //#endif
 
-import de.enough.polish.snapshot.SnapshotUtils;
+import de.enough.polish.snapshot.SnapshotUtil;
 
 /**
  * <p>A convenience screen for taking snapshots. This screen requires support of the MMAPI by the current target device!</p>
@@ -384,7 +384,7 @@ implements Runnable
 		}
 		this.isInitializing = true;
     	try {
-			String protocol = SnapshotUtils.getProtocol();
+			String protocol = SnapshotUtil.getProtocol();
 			
             //#debug info
             System.out.println("The capture protocol is " + protocol);
