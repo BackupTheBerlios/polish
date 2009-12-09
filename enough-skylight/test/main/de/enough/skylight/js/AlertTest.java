@@ -1,4 +1,4 @@
-package de.enough.rhino;
+package de.enough.skylight.js;
 
 import junit.framework.TestCase;
 
@@ -6,7 +6,8 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Script;
 import org.mozilla.javascript.Scriptable;
 
-import de.enough.skylight.js.Alert;
+import de.enough.skylight.js.AlertScriptableObject;
+import de.enough.skylight.js.AssertScriptableObject;
 
 public class AlertTest extends TestCase {
 
@@ -21,7 +22,7 @@ public class AlertTest extends TestCase {
 		AssertScriptableObject assertScriptableObject = new AssertScriptableObject();
 		assertScriptableObject.init();
 		this.scope.put("Assert",this.scope,assertScriptableObject);
-		this.scope.put("alert", this.scope, new Alert());
+		this.scope.put("alert", this.scope, new AlertScriptableObject());
 	}
 	
 	public void testAlertA() {

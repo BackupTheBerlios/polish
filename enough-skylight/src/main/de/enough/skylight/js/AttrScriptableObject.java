@@ -1,4 +1,4 @@
-package de.enough.skylight.dom.impl.rhino;
+package de.enough.skylight.js;
 
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;

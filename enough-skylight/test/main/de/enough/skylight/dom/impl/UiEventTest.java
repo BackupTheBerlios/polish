@@ -4,11 +4,12 @@ import de.enough.skylight.dom.Element;
 
 public class UiEventTest extends AbstractDomTest {
 
+	private static EventEmitter eventEmitter = EventEmitter.getInstance();
+
 	public void testClickEvent() {
-		Element element = this.document1.getElementById("id3");
-		MouseEventImpl event = EventEmitter.getInstance().fireClickEvent(element, 10,20);
-		if (!event.isPreventDefault()) {
-			
-		}
+		Element element = this.documentJsEvent.getElementById("id1");
+		eventEmitter.fireClickEvent(element, 10,20);
+		String classAttribute = element.getAttribute("class");
+		assertEquals("low", classAttribute);
 	}
 }

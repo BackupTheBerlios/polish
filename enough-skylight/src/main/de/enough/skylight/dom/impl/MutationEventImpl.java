@@ -46,4 +46,25 @@ public class MutationEventImpl extends EventImpl implements MutationEvent{
 		this.attrChangeArg = attrChangeArg;
 	}
 
+	protected String getNameForChange(short change) {
+		switch(change) {
+			case MODIFICATION: return "Modification";
+			case ADDITION: return "Addition";
+			case REMOVAL: return "Removal";
+			default: throw new RuntimeException("The change type '"+change+"' is unknown.");
+		}
+	}
+	
+	@Override
+	public String toString() {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("MutationEvent:[change='");
+		buffer.append(getNameForChange(this.attrChangeArg));
+		buffer.append("',prevValue='");
+		buffer.append(this.prevValueArg);
+		buffer.append("',newValue='");
+		buffer.append(this.newValueArg);
+		buffer.append("']");
+		return super.toString();
+	}
 }

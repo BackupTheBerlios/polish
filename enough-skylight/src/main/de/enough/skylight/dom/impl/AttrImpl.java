@@ -5,7 +5,7 @@ import org.mozilla.javascript.Scriptable;
 import de.enough.skylight.dom.Attr;
 import de.enough.skylight.dom.DomException;
 import de.enough.skylight.dom.Element;
-import de.enough.skylight.dom.impl.rhino.AttrScriptableObject;
+import de.enough.skylight.js.AttrScriptableObject;
 
 public class AttrImpl extends DomNodeImpl implements Attr {
 
@@ -56,6 +56,15 @@ public class AttrImpl extends DomNodeImpl implements Attr {
 		return this.value;
 	}
 
+	/**
+	 * This method is a convenience method. Normally you need to call setValue.
+	 */
+	@Override
+	public void setNodeValue(String newValue) {
+		super.setNodeValue(newValue);
+		this.value = newValue;
+	}
+	
 	public void setValue(String value) throws DomException {
 		this.value = value;
 	}

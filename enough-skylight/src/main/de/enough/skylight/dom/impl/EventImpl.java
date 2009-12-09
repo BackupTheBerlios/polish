@@ -119,4 +119,12 @@ public abstract class EventImpl implements Event{
 		this.target = newEventTarget;
 	}
 
+	@Override
+	public String toString() {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("Event:[type='");
+		buffer.append(this.eventType);
+		buffer.append("']");
+		return buffer.toString();
+	}
 }

@@ -4,7 +4,7 @@ import org.mozilla.javascript.BaseFunction;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 
-public class Alert extends BaseFunction{
+public class AlertScriptableObject extends BaseFunction{
 
 	@Override
 	public Object call(Context cx, Scriptable scope, Scriptable thisObj,

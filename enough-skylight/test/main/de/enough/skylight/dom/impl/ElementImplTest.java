@@ -51,9 +51,12 @@ public class ElementImplTest extends AbstractDomTest {
 //		fail("Not yet implemented");
 //	}
 //
-//	public void testSetAttribute() {
-//		fail("Not yet implemented");
-//	}
+	public void testSetAttribute() {
+		Element element = this.document1.getElementById("id2");
+		element.setAttribute("class", "blubb");
+		String value = element.getAttribute("class");
+		assertEquals("blubb",value);
+	}
 //
 //	public void testSetAttributeNode() {
 //		fail("Not yet implemented");

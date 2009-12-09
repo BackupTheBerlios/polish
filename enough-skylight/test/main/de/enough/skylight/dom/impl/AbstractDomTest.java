@@ -10,6 +10,7 @@ import junit.framework.TestCase;
 public abstract class AbstractDomTest extends TestCase {
 
 	protected DocumentImpl document1;
+	protected DocumentImpl documentJsEvent;
 
 	public AbstractDomTest() {
 		super();
@@ -23,15 +24,20 @@ public abstract class AbstractDomTest extends TestCase {
 	public void setUp() {
 		DomParser domParser = new DomParser();
 		String htmlDocument;
+		String jsEventDocument;
 		try {
-			htmlDocument = StreamUtil.getString(new FileInputStream(TestResources.HTML_PAGE_1), null, StreamUtil.DEFAULT_BUFFER);
-		} catch (FileNotFoundException e) {
-			throw new RuntimeException(e.toString());
+			htmlDocument = extractString(TestResources.HTML_PAGE_1);
+			jsEventDocument = extractString(TestResources.HTML_PAGE_JS_EVENT);
 		} catch (IOException e) {
 			throw new RuntimeException(e.toString());
 		}
 		this.document1 = (DocumentImpl)domParser.parseTree(htmlDocument);
+		this.documentJsEvent = (DocumentImpl)domParser.parseTree(jsEventDocument);
 		assertNotNull(this.document1);
+	}
+
+	private String extractString(String path) throws IOException, FileNotFoundException {
+		return StreamUtil.getString(new FileInputStream(path), null, StreamUtil.DEFAULT_BUFFER);
 	}
 
 }

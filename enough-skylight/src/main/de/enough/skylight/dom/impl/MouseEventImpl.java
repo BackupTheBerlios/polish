@@ -95,4 +95,14 @@ public class MouseEventImpl extends EventImpl implements MouseEvent {
 		this.detail = detailArg;
 	}
 	
+	@Override
+	public String toString() {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("MouseEvent:[x='");
+		buffer.append(this.screenX);
+		buffer.append("',y='");
+		buffer.append(this.screenY);
+		buffer.append("']");
+		return buffer.toString();
+	}
 }

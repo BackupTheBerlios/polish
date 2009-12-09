@@ -34,7 +34,12 @@ public class EventProcessor {
 		NodeListImpl eventChain = createEventChain(target);
 		int numberOfEventTargets;
 		numberOfEventTargets = eventChain.getLength();
+		
+		//#debug
+		System.out.println("Processing event '"+event+"' and deliver it to '"+numberOfEventTargets+"' elements");
+		
 		boolean doCapture = true;
+		// TODO: Put this into the MutationEvent as default capture=false;
 		if(event instanceof MutationEvent) {
 			doCapture = false;
 		}
@@ -88,7 +93,7 @@ public class EventProcessor {
 			if(scriptAttribute != null) {
 				String scriptText = scriptAttribute.getNodeValue();
 				if(scriptText != null && scriptText.length() != 0) {
-					Frame.getInstance().getJsEngine().runScript(scriptText);
+					Frame.getInstance().getJsEngine().runScript(target, scriptText);
 					onclickTriggered = true;
 				}
 			}

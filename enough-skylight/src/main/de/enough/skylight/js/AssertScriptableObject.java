@@ -1,7 +1,6 @@
-package de.enough.rhino;
+package de.enough.skylight.js;
 
 import junit.framework.Assert;
-import junit.framework.AssertionFailedError;
 
 import org.mozilla.javascript.BaseFunction;
 import org.mozilla.javascript.Context;

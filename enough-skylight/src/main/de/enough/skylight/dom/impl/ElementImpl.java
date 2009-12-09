@@ -8,7 +8,7 @@ import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.Element;
 import de.enough.skylight.dom.MutationEvent;
 import de.enough.skylight.dom.NodeList;
-import de.enough.skylight.dom.impl.rhino.ElementScriptableObject;
+import de.enough.skylight.js.ElementScriptableObject;
 
 public class ElementImpl extends DomNodeImpl implements Element{
 
@@ -72,6 +72,7 @@ public class ElementImpl extends DomNodeImpl implements Element{
 			previousValue = null;
 		} else {
 			previousValue = attribute.getValue();
+			attribute.setNodeValue(value);
 		}
 		getAttributes().setNamedItem(attribute);
 		EventEmitter.getInstance().fireDomAttrModifiedEvent(this, this, previousValue, value, name, MutationEvent.MODIFICATION);

@@ -10,7 +10,7 @@ import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.Element;
 import de.enough.skylight.dom.Event;
 import de.enough.skylight.dom.NodeList;
-import de.enough.skylight.dom.impl.rhino.DocumentScriptableObject;
+import de.enough.skylight.js.DocumentScriptableObject;
 
 public class DocumentImpl extends DomNodeImpl implements Document {
 

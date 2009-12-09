@@ -1,4 +1,4 @@
-package de.enough.skylight.dom.impl.rhino;
+package de.enough.skylight.js;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

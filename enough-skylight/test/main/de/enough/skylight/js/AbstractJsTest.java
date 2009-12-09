@@ -1,10 +1,10 @@
-package de.enough.skylight.dom.impl.rhino;
+package de.enough.skylight.js;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 
-import de.enough.rhino.AssertScriptableObject;
 import de.enough.skylight.dom.impl.AbstractDomTest;
+import de.enough.skylight.js.AssertScriptableObject;
 
 public abstract class AbstractJsTest extends AbstractDomTest {
 
@@ -21,7 +21,6 @@ public abstract class AbstractJsTest extends AbstractDomTest {
 		assertScriptableObject.init();
 		this.scope.put("Assert",this.scope,assertScriptableObject);
 		this.scope.put("document", this.scope, this.document1.getScriptable());
-		
 	}
 
 }
