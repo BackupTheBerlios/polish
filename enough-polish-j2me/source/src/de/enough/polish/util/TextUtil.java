@@ -388,7 +388,8 @@ public final class TextUtil {
 			} else if (currentLineWidth >= firstLineWidth && i > 0) {
 				if(list.size() == lastLineIndex)
 				{
-					list.add( new String( valueChars, startPos, i - startPos ) );
+					// add the remainder of the value
+					list.add( new String( valueChars, startPos, valueChars.length - startPos ) );
 					break;
 				}
 				
@@ -498,7 +499,8 @@ public final class TextUtil {
 		try
 		{
 			int appendixWidth = font.stringWidth(appendix);
-			int completeWidth = font.stringWidth(line) +  appendixWidth;
+			int lineWidth = font.stringWidth(line);
+			int completeWidth = lineWidth +  appendixWidth;
 			if(availWidth < appendixWidth)
 			{
 				line = appendix;
@@ -517,21 +519,25 @@ public final class TextUtil {
 			}
 			else
 			{
-				while(completeWidth > availWidth)
-				{
-					if(position == TextUtil.MAXLINES_APPENDIX_POSITION_AFTER) {
-						line = line.substring(0,line.length() - 1);
-					} else if(position == TextUtil.MAXLINES_APPENDIX_POSITION_BEFORE) {
-						line = line.substring(1);
+				if(lineWidth > availWidth) {
+					while(completeWidth > availWidth)
+					{
+						if(position == TextUtil.MAXLINES_APPENDIX_POSITION_AFTER) {
+							line = line.substring(0,line.length() - 1);
+						} else if(position == TextUtil.MAXLINES_APPENDIX_POSITION_BEFORE) {
+							line = line.substring(1);
+						}
+							
+						completeWidth = font.stringWidth(line) +  appendixWidth;
 					}
-						
-					completeWidth = font.stringWidth(line) +  appendixWidth;
-				}
-				
-				if(position == TextUtil.MAXLINES_APPENDIX_POSITION_AFTER) {
-					return line + appendix;
+					
+					if(position == TextUtil.MAXLINES_APPENDIX_POSITION_AFTER) {
+						return line + appendix;
+					} else {
+						return appendix + line;
+					}
 				} else {
-					return appendix + line;
+					return line;
 				}
 			}
 		}
