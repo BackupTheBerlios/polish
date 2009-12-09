@@ -104,6 +104,7 @@ implements ImageConsumer
 		private boolean isIconFiltersActive;
 		private RgbImage iconFilterRgbImage;
 		private RgbFilter[] originalIconFilters;
+		private int iconFilterLayout;
 	//#endif
 	
 	/**
@@ -351,6 +352,8 @@ implements ImageConsumer
 							rgbImage = new RgbImage(this.image, true);
 							this.iconFilterRgbImage = rgbImage;
 						} 
+						int origWidth = rgbImage.getWidth();
+						int origHeight = rgbImage.getHeight();
 						//System.out.println("painting RGB data for " + this  + ", pixel=" + Integer.toHexString( rgbData[ rgbData.length / 2 ]));
 						for (int i=0; i<this.iconFilters.length; i++) {
 							RgbFilter filter = this.iconFilters[i];
@@ -358,13 +361,33 @@ implements ImageConsumer
 						}
 						int width = rgbImage.getWidth();
 						int height = rgbImage.getHeight();
+						//System.out.println("Changed dimension from " + this.imageWidth +"x" + this.imageHeight + " to " + width + "x" + height);
 						int[] rgb = rgbImage.getRgbData();
-						if (this.isLayoutRight) {
-							x = rightBorder - width;
-						} else if (this.isLayoutCenter) {
-							x =  leftBorder + ((rightBorder - leftBorder)/2) - (width/2);
-						}
-						DrawUtil.drawRgb(rgb, x + this.relativeIconX, y + this.relativeIconY, width, height, true, g );
+						int filterX = x;
+						int filterY = y;
+						//#if polish.css.icon-filter-layout
+							if (origWidth != width) {
+								if ((this.iconFilterLayout & LAYOUT_CENTER) == LAYOUT_CENTER) {
+									filterX -= (width - origWidth) / 2;
+								} else if ((this.iconFilterLayout & LAYOUT_CENTER) == LAYOUT_RIGHT) {
+									filterX -= (width - origWidth);
+								}
+							}
+							if (origHeight != height) {
+								if ((this.iconFilterLayout & LAYOUT_VCENTER) == LAYOUT_VCENTER) {
+									filterY -= (height - origHeight) / 2; 
+								} else if ((this.iconFilterLayout & LAYOUT_VCENTER) == LAYOUT_TOP) {
+									filterY -= (height - origHeight);
+								}
+							}
+						//#else
+							if (this.isLayoutRight) {
+								x = rightBorder - width;
+							} else if (this.isLayoutCenter) {
+								x =  leftBorder + ((rightBorder - leftBorder)/2) - (width/2);
+							}
+						//#endif
+						DrawUtil.drawRgb(rgb, filterX + this.relativeIconX, filterY + this.relativeIconY, width, height, true, g );
 					} else {
 				//#endif
 						g.drawImage( this.image, x + this.relativeIconX, y + this.relativeIconY, Graphics.TOP | Graphics.LEFT );
@@ -495,7 +518,17 @@ implements ImageConsumer
 						}
 						this.originalIconFilters = filterObjects;
 					}
+				} else if (this.iconFilterRgbImage != null) {
+					this.originalIconFilters = null;
+					this.iconFilters = null;
+					this.iconFilterRgbImage = null;
 				}
+				//#if polish.css.icon-filter-layout
+					Integer iconFilterLayoutInt = style.getIntProperty("icon-filter-layout");
+					if (iconFilterLayoutInt != null) {
+						this.iconFilterLayout = iconFilterLayoutInt.intValue();
+					}
+				//#endif
 			//#endif
 		//#endif	
 		//#if polish.css.icon-inactive

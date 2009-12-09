@@ -45,7 +45,8 @@ public class ScaleRgbFilter extends RgbFilter
 {
 	protected Dimension scaling;
 	protected transient RgbImage output;
-        protected boolean keepOriginalImageDimensions = true ;
+	protected boolean keepOriginalImageDimensions = true;
+
 	/**
 	 * Creates a new grayscale filter
 	 */
@@ -79,32 +80,38 @@ public class ScaleRgbFilter extends RgbFilter
 		int height = input.getHeight();
 		int scalePercent=this.scaling.getValue(100);
 		int[] rgbOutput;
-                int[] rgbInput = input.getRgbData();
-                
-                if ( keepOriginalImageDimensions == true )
-                {
-                    if (this.output == null || this.output.getWidth() != width || this.output.getHeight() != height ) {
-                            this.output = new RgbImage( width, height );
-                    }
-                    else if (scalePercent < 100 )
-                    {
-                            this.output = new RgbImage( width, height );
-                    }
+		int[] rgbInput = input.getRgbData();
 
-                    rgbOutput = this.output.getRgbData();
+		if ( this.keepOriginalImageDimensions == true )
+		{
+			if (this.output == null || this.output.getWidth() != width || this.output.getHeight() != height ) {
+				this.output = new RgbImage( width, height );
+			}
+			else if (scalePercent < 100 )
+			{
+				// TODO : do not recreate the int[] array here, instead use the existing one (possibly need to clean that)
+				this.output = new RgbImage( width, height );
+			}
 
-                    ImageUtil.scale(scalePercent, width, height, rgbInput, rgbOutput);
-                }
-                else
-                {
-                    int newWidth = (width * scalePercent) / 100 ;
-                    int newHeight = ( height * scalePercent ) / 100;
-                    this.output = new RgbImage ( ImageUtil.scale(rgbInput, newWidth, newHeight, width, height), newWidth);
+			rgbOutput = this.output.getRgbData();
 
-                    // TODO :
-                    // Add code to call for a layout refresh, to accomodate for the new image size .
-                }
-                
+			ImageUtil.scale(scalePercent, width, height, rgbInput, rgbOutput);
+		}
+		else
+		{
+			int newWidth = (width * scalePercent) / 100 ;
+			int newHeight = ( height * scalePercent ) / 100;
+			
+			if (this.output == null || this.output.getWidth() != newWidth || this.output.getHeight() != newHeight ) {
+				this.output = new RgbImage( newWidth, newHeight );
+			}
+			rgbOutput = this.output.getRgbData();
+			ImageUtil.scale( rgbInput, newWidth, newHeight, width, height, rgbOutput);
+
+			// TODO :
+				// Add code to call for a layout refresh, to accomodate for the new image size .
+		}
+
 		return this.output;
 	}
 
@@ -115,27 +122,27 @@ public class ScaleRgbFilter extends RgbFilter
 	{
 		super.setStyle(style, resetStyle);
 
-                //#if polish.css.filter-scale-crop
-                Boolean value = style.getBooleanProperty("filter-scale-crop");
-                if ( value != null)
-                {
-                        keepOriginalImageDimensions = value.booleanValue() ;
-                }
-                else
-                {
-                    keepOriginalImageDimensions = true ;
-                }
-                //#endif
-                
+		//#if polish.css.filter-scale-crop
+			Boolean cropBool = style.getBooleanProperty("filter-scale-crop");
+			if ( cropBool != null)
+			{
+				this.keepOriginalImageDimensions = cropBool.booleanValue() ;
+			}
+			else if (resetStyle)
+			{
+				this.keepOriginalImageDimensions = true ;
+			}
+		//#endif
+
 		//#if polish.css.filter-scale-grade
 			Dimension scalingInt = (Dimension) style.getObjectProperty("filter-scale-grade");
 			if (scalingInt != null) {
 				this.scaling = scalingInt;
-				
+	
 			}
 		//#endif
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.RgbFilter#releaseResources()
 	 */
