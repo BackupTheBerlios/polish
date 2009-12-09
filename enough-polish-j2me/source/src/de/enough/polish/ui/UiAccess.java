@@ -4913,7 +4913,7 @@ public final class UiAccess {
 	 * @return the container belonging to the given screen
 	 */
 	public static Container getScreenContainer( Screen screen ) {
-		return screen.container;
+		return screen.getRootContainer();
 	}
 	//#endif
 	
