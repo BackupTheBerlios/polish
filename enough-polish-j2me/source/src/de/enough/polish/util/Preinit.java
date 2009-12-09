@@ -6,12 +6,12 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.UiAccess;
 
-public class Prefetch implements Runnable {
+public class Preinit implements Runnable {
 	boolean threaded;
 	
 	Screen screen;
 	
-	public static void prefetch(Screen screen) throws IllegalArgumentException{
+	public static void preinit(Screen screen) throws IllegalArgumentException{
 		//#debug benchmark
 		Benchmark.start("prefetch : " + screen);
 		if(screen.isShown()) {
@@ -25,11 +25,11 @@ public class Prefetch implements Runnable {
 		Benchmark.stop("prefetch : " + screen," : done" );
 	}
 	
-	public Prefetch(Screen screen) {
+	public Preinit(Screen screen) {
 		this.screen = screen;
 	}
 
 	public void run() {
-		prefetch(this.screen);
+		preinit(this.screen);
 	}
 }
