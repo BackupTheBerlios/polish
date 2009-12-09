@@ -2966,7 +2966,11 @@ public abstract class Item implements UiElement, Animatable
 			+ this.paddingBottom + getBorderWidthBottom() + this.marginBottom;
 		if ( this.isLayoutExpand ) {
 			if (cWidth < availableContentWidth) {
-				this.itemWidth += availableContentWidth - cWidth;
+				if (this.itemWidth + labelWidth <= availWidth) {
+					this.itemWidth += availableContentWidth - cWidth - labelWidth;
+				} else {
+					this.itemWidth += availableContentWidth - cWidth;
+				}
 			}
 		} else if (this.itemWidth > availWidth) {
 			this.itemWidth = availWidth;
