@@ -3106,29 +3106,31 @@ public class TextField extends StringItem
 		this.isKeyPressedHandled = false;
 		
 		//#ifndef tmp.directInput
-			//#if polish.bugs.inversedGameActions
-				if ((gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM8)
-					|| (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM2)
-					|| (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM6)
-					|| (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM4)
-					|| (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5)
-					|| (this.screen.isSoftKey(keyCode, gameAction))
-				) 
-				{
-					return false;
-				}
-			//#else
-				if ((gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) 
-						|| (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
-						|| (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4)
-						|| (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6)
+			if (keyCode < 32 || keyCode > 126) {
+				//#if polish.bugs.inversedGameActions
+					if ((gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM8)
+						|| (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM2)
+						|| (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM6)
+						|| (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM4)
 						|| (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5)
 						|| (this.screen.isSoftKey(keyCode, gameAction))
 					) 
-				{
-					return false;
-				}
-			//#endif
+					{
+						return false;
+					}
+				//#else
+					if ((gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) 
+							|| (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
+							|| (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4)
+							|| (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6)
+							|| (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5)
+							|| (this.screen.isSoftKey(keyCode, gameAction))
+						) 
+					{
+						return false;
+					}
+				//#endif
+			}
 		//#elif !polish.blackberry
 			if (this.inputMode == MODE_NATIVE) {
 				if ((gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) 
