@@ -1397,7 +1397,13 @@ public class TextField extends StringItem
 		if (text != null && text.length() > 0) {
 			int fieldType = this.constraints & 0xffff;
 			if (fieldType == FIXED_POINT_DECIMAL) {
+				int lengthBefore = text.length();
 				text = convertToFixedPointDecimal(text);
+				//#if !polish.blackberry
+				if (text.length() > lengthBefore) {
+					setCaretPosition( getCaretPosition() + text.length() - lengthBefore);
+				}
+				//#endif
 			}
 		}
 		//#if tmp.useNativeTextBox
@@ -4094,9 +4100,12 @@ public class TextField extends StringItem
 	protected boolean handlePointerReleased( int x, int y ) {
 		if (isInItemArea(x, y)) {
 			//#if tmp.useNativeTextBox
-				notifyItemPressedEnd();
-				showTextBox();
-				//# return true;
+				int fieldType = this.constraints & 0xffff;
+				if (fieldType != FIXED_POINT_DECIMAL) {
+					notifyItemPressedEnd();
+					showTextBox();
+					return true;
+				}
 			//#elif polish.android1.5
 				if (this.isFocused && ((System.currentTimeMillis() - this.androidFocusedTime) > 1000)) {
 					notifyItemPressedEnd();
