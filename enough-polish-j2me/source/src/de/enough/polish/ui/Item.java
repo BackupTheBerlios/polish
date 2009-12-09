@@ -2942,6 +2942,7 @@ public abstract class Item implements UiElement, Animatable
 					int diff = minWidth - this.itemWidth;
 					this.itemWidth += diff;
 					setContentWidth( this.contentWidth + diff );
+					cWidth = this.contentWidth;
 				}
 			}
 		//#endif
@@ -2950,6 +2951,7 @@ public abstract class Item implements UiElement, Animatable
 				int diff = this.maximumWidth.getValue(availWidth) - this.itemWidth;
 				this.itemWidth += diff;
 				setContentWidth( this.contentWidth + diff );
+				cWidth = this.contentWidth;
 			}
 		//#endif
 		//#ifdef polish.css.before
