@@ -1306,7 +1306,7 @@ public class TabbedPane extends Screen
 	 */
 	public void showNotify() {
 		if (this.currentDisplayableIndex == -1 && this.tabDisplayables.size() > 0) {
-			focus(0);
+			setFocus(0);
 		}
 		if (this.currentScreen != null) {
 			this.currentScreen.showNotify();
