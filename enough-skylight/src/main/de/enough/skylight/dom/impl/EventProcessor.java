@@ -69,9 +69,8 @@ public class EventProcessor {
 		event.setEventEnvironment(Event.AT_TARGET, target);
 		target.handleCaptureEvent(event);
 		if( ! event.isPreventDefault()) {
-			// Trigger node default action.
-			// TODO: Do not always trigger the default action. On Mutation for example, a link must not be triggered!
-			target.doDefaultAction();
+			// Let the node decide if the default action should be triggered.
+			target.doDefaultAction(event);
 		}
 		
 		

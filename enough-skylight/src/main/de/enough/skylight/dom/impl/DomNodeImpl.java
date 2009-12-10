@@ -228,7 +228,12 @@ public abstract class DomNodeImpl implements DomNode {
 		this.childList.add(childNode);
 	}
 	
-	protected void doDefaultAction() {
+	/**
+	 * This method is called by the event system so the node has time to do its default action. This could be for example
+	 * changing the url after clicking an anchor element.
+	 * @param event
+	 */
+	protected void doDefaultAction(EventImpl event) {
 		// TODO: Make this method abstract.
 	}
 	
