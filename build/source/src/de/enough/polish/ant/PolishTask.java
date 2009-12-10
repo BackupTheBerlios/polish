@@ -2397,12 +2397,12 @@ public class PolishTask extends ConditionalTask {
 							"Please try a clean rebuild by either calling \"ant clean j2mepolish\"" +
 							" or by removing the working directory \"" 
 							+ this.buildSetting.getWorkDir().getAbsolutePath() + "\".");
-					System.out.println("When an API-class was not found, you might need " +
+					System.out.println("If an API-class was not found, you might need " +
 							"to define where to find the device-APIs. Following classpath " +
 							"has been used: [" + completePath + "].");
 					throw new BuildException( "Unable to compile source code for device [" + device.getIdentifier() + "]: " + e.getMessage(), e );
 				} else {
-					System.out.println("When an API-class was not found, you might need to define where to find the device-APIs. Following classpath has been used: [" + completePath + "].");
+					System.out.println("If an API-class was not found, you might need to define where to find the device-APIs. Following classpath has been used: [" + completePath + "].");
 					throw new BuildException( "Unable to compile source code for device [" + device.getIdentifier() + "]: " + e.getMessage(), e );
 				}
 			} else {
