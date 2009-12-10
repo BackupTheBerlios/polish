@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import de.enough.polish.util.StreamUtil;
+import de.enough.skylight.TestResources;
 import junit.framework.TestCase;
 
 public abstract class AbstractDomTest extends TestCase {

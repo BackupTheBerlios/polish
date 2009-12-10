@@ -1,4 +1,4 @@
-package de.enough.skylight.dom.impl;
+package de.enough.skylight;
 
 public interface TestResources {
 
