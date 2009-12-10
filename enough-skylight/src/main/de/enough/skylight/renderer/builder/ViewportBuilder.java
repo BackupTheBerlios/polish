@@ -1,5 +1,6 @@
 package de.enough.skylight.renderer.builder;
 
+import de.enough.polish.ui.Container;
 import de.enough.polish.ui.DebugHelper;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
@@ -57,7 +58,7 @@ public class ViewportBuilder {
 			
 			build(this.viewport, this.document);
 			
-			layoutBlock(this.viewport, null, null);
+			layoutBlock(this.viewport, null);
 		} catch(Exception e) {
 			//#debug error
 			System.out.println("error while building view : " + e);
@@ -116,7 +117,7 @@ public class ViewportBuilder {
 		} 
 	}
 	
-	protected void layoutBlock(ContainingBlock parentBlock, LineBox parentLine, Style lineStyle) throws IllegalArgumentException {
+	protected void layoutBlock(ContainingBlock parentBlock, Style lineStyle) throws IllegalArgumentException {
 		if(!parentBlock.isInitialized()) {
 			ItemPreinit.preinit(parentBlock);
 		}
@@ -131,7 +132,7 @@ public class ViewportBuilder {
 		int space = parentBlock.getAvailableContentWidth();
 		Style style = parentBlock.getStyle();
 		
-		LineBox linebox = LineBox.append(space, parentLine, lineStyle);
+		LineBox blockLine = null;
 		
 		ArrayList elements = parentBlock.getElements();
 		for (int index = 0; index < elements.size(); index++) {
@@ -141,22 +142,23 @@ public class ViewportBuilder {
 				ContainingBlock block = (ContainingBlock)element.getItem();
 				
 				if(element.isDisplay(CssElement.Display.INLINE)) {
-					layoutBlock(parentBlock,linebox,style);
+					/*LineBox inlineLine = LineBox.createForInline(blockLine, space, style);
+					layoutInline(parentBlock,inlineLine,style);*/
 				} else if(element.isDisplay(CssElement.Display.BLOCK_LEVEL)) {
 					parentBlock.add(block);
-					layoutBlock(block, linebox, style);
+					layoutBlock(block, style);
 				}
 			} else if(element.getType() == CssElement.Type.ELEMENT) {
 				if(element.isDisplay(CssElement.Display.INLINE)) {
 					// inline : add to linebox
 					Item item = element.getItem();
 					
-					addToLine(item, space, parentBlock, linebox, parentLine);
+					blockLine = addToBlockLine(item, space, parentBlock, blockLine);
 				} else if(element.isDisplay(CssElement.Display.BLOCK_LEVEL)) {
 					// block : add as single expanded linebox, set linebox as new item				
 				} 
 			} else if(element.getType() == CssElement.Type.BREAK) {
-				addBreak(space, parentBlock, linebox, parentLine);
+				blockLine = addBreak(space, parentBlock, blockLine);
 			} else if(element.getType() == CssElement.Type.TEXT) {
 				// get text items and add to lineboxes
 				Text text = (Text)element;
@@ -168,38 +170,42 @@ public class ViewportBuilder {
 				for (int i = 0; i < items.length; i++) {
 					Item item = items[i];
 					
-					addToLine(item, space, parentBlock, linebox, parentLine);
+					blockLine = addToBlockLine(item, space, parentBlock, blockLine);
 				}
-				
-				parentBlock.add(linebox.getRootLine());
 			}
 		}
 	}
 	
 	protected void layoutInline(ContainingBlock parentBlock, LineBox parentLine, Style lineStyle) throws IllegalArgumentException {
 		
+		System.out.println("layout inline : " + parentLine);
 	}
 	
-	LineBox addToLine(Item item, int space, ContainingBlock block, LineBox line, LineBox parentLine) {
-		Style style = block.getStyle();
+	LineBox addToBlockLine(Item item, int space, ContainingBlock block, LineBox blockLine) {
+		// extract inline style and apply
+		// Style style = block.getStyle();
 		
-		if(!line.hasSpace(item)) {
-			LineBox root = line.getRoot();
-			block.add(root.getRootLine());
-			line = LineBox.append(space, parentLine, style);
+		LineBox result = blockLine;
+		
+		if(result == null || !result.hasSpace(item)) {
+			result = LineBox.createForBlock(space, null);
+			System.out.println("creating block line for " + block);
+			block.add(result.getWorkLine());
 		}
 		
-		line.add(item);
+		System.out.println("adding to block line : " + result);
+		result.add(item);
 		
-		return line;
+		return result;
 	}
 	
-	LineBox addBreak(int space, ContainingBlock block, LineBox line, LineBox parentLine) {
-		Style style = block.getStyle();
+	LineBox addBreak(int space, ContainingBlock block, LineBox blockLine) {
+		System.out.println("addding break");
 		
-		LineBox root = line.getRoot();
-		block.add(root.getRootLine());
+		LineBox result = blockLine;
+		result = LineBox.createForBlock(space, null);
+		block.add(result.getWorkLine());
 		
-		return LineBox.append(space, parentLine, style);
+		return result;
 	}
 }

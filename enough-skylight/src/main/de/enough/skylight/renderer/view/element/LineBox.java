@@ -13,32 +13,33 @@ public class LineBox {
 	
 	LineBox parent;
 	
-	LineBox rootLine;
+	LineBox root;
 	
-	public static LineBox append(LineBox parent, int space, Style style) {
-		LineBox linebox;
-		
-		if(parent != null) {
-			space = parent.getRemainingSpace();
-			linebox = new LineBox(space, parent, style);
-		} else {
-			linebox = new LineBox(space, parent, style);
-		}
-		
-		if(parent != null) {
-			parent.add(linebox.getWorkLine());
-		}
-		
-		return linebox;
+	public static LineBox createForBlock(int space, Style style) {
+		return new LineBox(space, null, style);
 	}
 	
- 
+	public static LineBox createForInline(LineBox parent, int space, Style style) {
+		LineBox linebox = null;
+		
+		if(parent == null) {
+			
+		}
+		
+		if(parent != null) {
+			linebox = new LineBox(parent.getRemainingSpace(), parent, style);
+			parent.add(linebox.getWorkLine());
+			return linebox;
+		} else {
+			throw new IllegalArgumentException("parent is null");
+		}
+	}
 	
 	public static LineBox newline(LineBox base, int space) {
 		return null;
 	}
 
-	LineBox(int space, LineBox parent, Style style) {
+	public LineBox(int space, LineBox parent, Style style) {
 		this.space = space;
 		this.parent = parent;
 		this.workLine = new Container(false,style);
@@ -50,7 +51,7 @@ public class LineBox {
 			LineBox linebox = this;
 			while (linebox != null) {
 				if (linebox.getParent() != null) {
-					this.rootLine = linebox.getParent();
+					this.root = linebox.getParent();
 				}
 				linebox = linebox.getParent();
 			}
@@ -79,16 +80,16 @@ public class LineBox {
 		ItemPreinit.preinit(this.workLine, this.space, Integer.MAX_VALUE);
 	}
 	
-	protected LineBox getParent() {
+	public LineBox getParent() {
 		return this.parent;
 	}
 	
-	protected Container getWorkLine() {
+	public Container getWorkLine() {
 		return this.workLine;
 	}
 	
-	public Container getRootLine() {
-		return this.rootLine.getWorkLine();
+	public LineBox getRootLine() {
+		return this.root;
 	}
 	
 	public String toString() {
