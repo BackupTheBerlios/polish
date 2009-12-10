@@ -41,4 +41,6 @@ public interface CssElement {
 	public Item getItem();
 	
 	public ContainingBlock getParent();
+	
+	public String toString();
 }

@@ -3,34 +3,63 @@ package de.enough.skylight.renderer.view.element;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
-import de.enough.polish.util.ItemPrefetch;
+import de.enough.polish.util.ItemPreinit;
 
 public class LineBox {
-	
-	Container line;
-	
+
 	int space;
 	
+	Container workLine;
+	
 	LineBox parent;
-
-	public LineBox(int space) {
-		this(space, null);
+	
+	LineBox rootLine;
+	
+	public static LineBox append(LineBox parent, int space, Style style) {
+		LineBox linebox;
+		
+		if(parent != null) {
+			space = parent.getRemainingSpace();
+			linebox = new LineBox(space, parent, style);
+		} else {
+			linebox = new LineBox(space, parent, style);
+		}
+		
+		if(parent != null) {
+			parent.add(linebox.getWorkLine());
+		}
+		
+		return linebox;
 	}
 	
-	public LineBox(int space, Style style) {
+ 
+	
+	public static LineBox newline(LineBox base, int space) {
+		return null;
+	}
+
+	LineBox(int space, LineBox parent, Style style) {
 		this.space = space;
 		this.parent = parent;
-		this.line = new Container(false,style);
-		ItemPrefetch.prefetch(this.line, this.space, Integer.MAX_VALUE);
-	}
-	
-	void initContainer() {
-		ItemPrefetch.prefetch(this.line, this.space, Integer.MAX_VALUE);
+		this.workLine = new Container(false,style);
+		this.workLine.setView(new ListBoxView());
+		
+		ItemPreinit.preinit(this.workLine, this.space, Integer.MAX_VALUE);
+
+		if(parent != null) {
+			LineBox linebox = this;
+			while (linebox != null) {
+				if (linebox.getParent() != null) {
+					this.rootLine = linebox.getParent();
+				}
+				linebox = linebox.getParent();
+			}
+		}
 	}
 	
 	public boolean hasSpace(Item item) {
 		if(!item.isInitialized()) {
-			ItemPrefetch.prefetch(item, Integer.MAX_VALUE, Integer.MAX_VALUE);
+			ItemPreinit.preinit(item, Integer.MAX_VALUE, Integer.MAX_VALUE);
 		}
 		
 		int itemWidth = item.itemWidth;
@@ -41,16 +70,39 @@ public class LineBox {
 	}
 	
 	public int getRemainingSpace() {
-		return this.space - this.line.itemWidth;
+		return this.space - this.workLine.itemWidth;
 	}
 	
 	public void add(Item item) {
-		this.line.add(item);
+		this.workLine.add(item);
 		
-		ItemPrefetch.prefetch(this.line, this.space, Integer.MAX_VALUE);
+		ItemPreinit.preinit(this.workLine, this.space, Integer.MAX_VALUE);
 	}
 	
-	public Container getLine() {
-		return this.line;
+	protected LineBox getParent() {
+		return this.parent;
+	}
+	
+	protected Container getWorkLine() {
+		return this.workLine;
+	}
+	
+	public Container getRootLine() {
+		return this.rootLine.getWorkLine();
+	}
+	
+	public String toString() {
+		String string = "LineBox [";
+		
+		for (int i = 0; i < this.workLine.size(); i++) {
+			string += this.workLine.get(i);
+			if(i != this.workLine.size() -1 ) {
+				string += ",";
+			}
+		}
+		
+		string += "]";
+		
+		return string;
 	}
 }

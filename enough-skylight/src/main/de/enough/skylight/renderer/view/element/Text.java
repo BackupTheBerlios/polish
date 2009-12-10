@@ -98,4 +98,8 @@ public class Text implements CssElement{
 	public ContainingBlock getParent() {
 		return this.parent;
 	}
+	
+	public String toString() {
+		return "Text [" + value + "]";
+	}
 }

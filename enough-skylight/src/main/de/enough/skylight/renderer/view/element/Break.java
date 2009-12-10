@@ -4,7 +4,7 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.skylight.dom.DomNode;
 
-public class Element implements CssElement{
+public class Break implements CssElement{
 	String display = CssElement.Display.INLINE;
 	
 	String position = CssElement.Position.STATIC;
@@ -12,17 +12,12 @@ public class Element implements CssElement{
 	String floating = CssElement.Float.NONE;
 	
 	DomNode node;
-	
-	Item item;
 
 	ContainingBlock parent;
 	
-	public Element(Item item, ContainingBlock parent, DomNode node, Style style) {
-		this.item = item;
+	public Break(ContainingBlock parent, DomNode node) {
 		this.node = node;
 		this.parent = parent;
-		
-		setStyle(style);
 	}
 		
 	/**
@@ -51,36 +46,11 @@ public class Element implements CssElement{
 	}
 	
 	public int getType() {
-		return CssElement.Type.TEXT;
+		return CssElement.Type.BREAK;
 	}
 
 	public Item getItem() {
-		return this.item;
-	}
-
-	public void setStyle(Style style) {
-		this.item.setStyle(style);
-		
-		//#if polish.css.display
-		String displayStr = style.getProperty("display");
-		if(displayStr != null) {
-			this.display = displayStr;
-		}
-		//#endif
-		
-		//#if polish.css.position
-		String positionStr = style.getProperty("position");
-		if(positionStr != null) {
-			this.position = positionStr;
-		}
-		//#endif
-		
-		//#if polish.css.float
-		String floatStr = style.getProperty("float");
-		if(floatStr != null) {
-			this.floating = floatStr;
-		}
-		//#endif
+		return null;
 	}
 
 	public ContainingBlock getParent() {
@@ -88,6 +58,6 @@ public class Element implements CssElement{
 	}
 	
 	public String toString() {
-		return "Element [" + this.item + "]";
+		return "Break";
 	}
 }

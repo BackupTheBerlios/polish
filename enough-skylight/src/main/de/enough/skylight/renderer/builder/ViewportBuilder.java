@@ -1,13 +1,15 @@
 package de.enough.skylight.renderer.builder;
 
+import de.enough.polish.ui.DebugHelper;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.ArrayList;
-import de.enough.polish.util.ItemPrefetch;
+import de.enough.polish.util.ItemPreinit;
 import de.enough.skylight.dom.Document;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.NodeList;
 import de.enough.skylight.renderer.Viewport;
+import de.enough.skylight.renderer.view.element.Break;
 import de.enough.skylight.renderer.view.element.ContainingBlock;
 import de.enough.skylight.renderer.view.element.CssElement;
 import de.enough.skylight.renderer.view.element.Element;
@@ -26,7 +28,7 @@ public class ViewportBuilder {
 	
 	public ViewportBuilder(Viewport viewport, Document document) throws IllegalArgumentException {
 		if(!viewport.isInitialized()) {
-			ItemPrefetch.prefetch(viewport);
+			ItemPreinit.preinit(viewport);
 		}
 		
 		this.viewport = viewport;
@@ -55,7 +57,7 @@ public class ViewportBuilder {
 			
 			build(this.viewport, this.document);
 			
-			layout(this.viewport);
+			layoutBlock(this.viewport, null, null);
 		} catch(Exception e) {
 			//#debug error
 			System.out.println("error while building view : " + e);
@@ -79,7 +81,9 @@ public class ViewportBuilder {
 			
 		if(handler.getType() == CssElement.Type.CONTAINING_BLOCK && node.hasChildNodes())
 		{
-			ContainingBlock block = new ContainingBlock(parent,node,style);
+			ContainingBlock block = new ContainingBlock(parent,node);
+			
+			block.setStyle(style);
 			
 			//#debug debug
 			System.out.println(node + " has children");
@@ -101,6 +105,8 @@ public class ViewportBuilder {
 					if(item != null) {
 						element = new Element(item,parent,node,style);
 					}
+				} else if(handler.getType() == CssElement.Type.BREAK) {
+					element = new Break(parent,node);
 				}
 			}
 		}
@@ -110,44 +116,47 @@ public class ViewportBuilder {
 		} 
 	}
 	
-	protected void layout(ContainingBlock parent) throws IllegalArgumentException {
-		if(!parent.isInitialized()) {
-			ItemPrefetch.prefetch(parent);
+	protected void layoutBlock(ContainingBlock parentBlock, LineBox parentLine, Style lineStyle) throws IllegalArgumentException {
+		if(!parentBlock.isInitialized()) {
+			ItemPreinit.preinit(parentBlock);
 		}
 		
-		int space = parent.getAvailableContentWidth();
+		System.out.println("layout : " + parentBlock);
+		if(parentBlock.isDisplay(CssElement.Display.INLINE)) {
+			System.out.println("layout : parent is inline");
+		} else {
+			System.out.println("layout : parent is block");
+		}
 		
-		LineBox linebox = new LineBox(space);
+		int space = parentBlock.getAvailableContentWidth();
+		Style style = parentBlock.getStyle();
 		
-		ArrayList elements = parent.getElements();
+		LineBox linebox = LineBox.append(space, parentLine, lineStyle);
+		
+		ArrayList elements = parentBlock.getElements();
 		for (int index = 0; index < elements.size(); index++) {
 			CssElement element = (CssElement)elements.get(index);
 			
 			if(element.getType() == CssElement.Type.CONTAINING_BLOCK) {
-				ContainingBlock block = (ContainingBlock)element.getItem(); 
+				ContainingBlock block = (ContainingBlock)element.getItem();
+				
 				if(element.isDisplay(CssElement.Display.INLINE)) {
-					// pass down linebox with build 
+					layoutBlock(parentBlock,linebox,style);
 				} else if(element.isDisplay(CssElement.Display.BLOCK_LEVEL)) {
-					parent.add(block);
-					layout(block);
+					parentBlock.add(block);
+					layoutBlock(block, linebox, style);
 				}
 			} else if(element.getType() == CssElement.Type.ELEMENT) {
 				if(element.isDisplay(CssElement.Display.INLINE)) {
 					// inline : add to linebox
 					Item item = element.getItem();
 					
-					if(!linebox.hasSpace(item)) {
-						parent.add(linebox.getLine());
-						linebox = new LineBox(space);
-					}
-					
-					linebox.add(item);
+					addToLine(item, space, parentBlock, linebox, parentLine);
 				} else if(element.isDisplay(CssElement.Display.BLOCK_LEVEL)) {
 					// block : add as single expanded linebox, set linebox as new item				
 				} 
 			} else if(element.getType() == CssElement.Type.BREAK) {
-				parent.add(linebox.getLine());
-				linebox = new LineBox(space);
+				addBreak(space, parentBlock, linebox, parentLine);
 			} else if(element.getType() == CssElement.Type.TEXT) {
 				// get text items and add to lineboxes
 				Text text = (Text)element;
@@ -159,14 +168,38 @@ public class ViewportBuilder {
 				for (int i = 0; i < items.length; i++) {
 					Item item = items[i];
 					
-					if(!linebox.hasSpace(item)) {
-						parent.add(linebox.getLine());
-						linebox = new LineBox(space);
-					}
-					
-					linebox.add(item);
+					addToLine(item, space, parentBlock, linebox, parentLine);
 				}
+				
+				parentBlock.add(linebox.getRootLine());
 			}
 		}
+	}
+	
+	protected void layoutInline(ContainingBlock parentBlock, LineBox parentLine, Style lineStyle) throws IllegalArgumentException {
+		
+	}
+	
+	LineBox addToLine(Item item, int space, ContainingBlock block, LineBox line, LineBox parentLine) {
+		Style style = block.getStyle();
+		
+		if(!line.hasSpace(item)) {
+			LineBox root = line.getRoot();
+			block.add(root.getRootLine());
+			line = LineBox.append(space, parentLine, style);
+		}
+		
+		line.add(item);
+		
+		return line;
+	}
+	
+	LineBox addBreak(int space, ContainingBlock block, LineBox line, LineBox parentLine) {
+		Style style = block.getStyle();
+		
+		LineBox root = line.getRoot();
+		block.add(root.getRootLine());
+		
+		return LineBox.append(space, parentLine, style);
 	}
 }
