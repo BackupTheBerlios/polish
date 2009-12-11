@@ -7,12 +7,15 @@ import de.enough.skylight.dom.DomException;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.Element;
 import de.enough.skylight.dom.MutationEvent;
+import de.enough.skylight.dom.NamedNodeMap;
 import de.enough.skylight.dom.NodeList;
 import de.enough.skylight.js.ElementScriptableObject;
 
 public class ElementImpl extends DomNodeImpl implements Element{
 
 	private ElementScriptableObject scriptableObject;
+	private String tagName;
+	private NamedNodeMapImpl attributes;
 
 	@Override
 	public Scriptable getScriptable() {
@@ -23,13 +26,25 @@ public class ElementImpl extends DomNodeImpl implements Element{
 		return this.scriptableObject;
 	}
 
+	// TODO: Do sanity checks on all init methods.
+	public void init(DocumentImpl document, DomNodeImpl parent, String tagName, NamedNodeMapImpl attributes, int type) {
+		super.init(document, parent, type);
+		this.tagName = tagName;
+		this.attributes = attributes;
+	}
+
 	@Override
-	public void init(DocumentImpl document, DomNodeImpl parent, String name, NamedNodeMapImpl attributes, int type) {
-		super.init(document, parent, name, attributes, type);
+	public NamedNodeMap getAttributes() {
+		return this.attributes;
+	}
+
+	@Override
+	public boolean hasAttributes() {
+		return this.attributes.getLength() > 0;
 	}
 
 	public String getAttribute(String name) {
-		DomNode attributeNode = getAttributes().getNamedItem(name);
+		DomNode attributeNode = this.attributes.getNamedItem(name);
 		if(attributeNode == null) {
 			return "";
 		}
@@ -37,7 +52,7 @@ public class ElementImpl extends DomNodeImpl implements Element{
 	}
 
 	public Attr getAttributeNode(String name) {
-		return (Attr)getAttributes().getNamedItem(name);
+		return (Attr)this.attributes.getNamedItem(name);
 	}
 
 	public NodeList getElementsByTagName(String name) {
@@ -46,16 +61,15 @@ public class ElementImpl extends DomNodeImpl implements Element{
 	}
 
 	public String getTagName() {
-		// TODO: What about uppercase names which are cannonical for html4
-		return getNodeName();
+		return this.tagName;
 	}
 
 	public boolean hasAttribute(String name) {
-		return getAttributes().getNamedItem(name) != null;
+		return this.attributes.getNamedItem(name) != null;
 	}
 
 	public void removeAttribute(String name) throws DomException {
-		getAttributes().removeNamedItem(name);
+		this.attributes.removeNamedItem(name);
 	}
 
 	public Attr removeAttributeNode(Attr oldAttr) throws DomException {
@@ -64,17 +78,17 @@ public class ElementImpl extends DomNodeImpl implements Element{
 	}
 
 	public void setAttribute(String name, String value) throws DomException {
-		AttrImpl attribute = (AttrImpl)getAttributes().getNamedItem(name);
+		AttrImpl attribute = (AttrImpl)this.attributes.getNamedItem(name);
 		String previousValue;
 		if(attribute == null) {
 			attribute = new AttrImpl();
-			attribute.init(this, name, value);
+			attribute.init(this.ownerDocument,this, name, value);
 			previousValue = null;
 		} else {
 			previousValue = attribute.getValue();
 			attribute.setNodeValue(value);
 		}
-		getAttributes().setNamedItem(attribute);
+		this.attributes.setNamedItem(attribute);
 		EventEmitter.getInstance().fireDomAttrModifiedEvent(this, this, previousValue, value, name, MutationEvent.MODIFICATION);
 	}
 
@@ -86,6 +100,18 @@ public class ElementImpl extends DomNodeImpl implements Element{
 	@Override
 	public boolean hasScriptable() {
 		return this.scriptableObject != null;
+	}
+
+	public String getNodeName() {
+		return this.tagName;
+	}
+
+	public String getNodeValue() throws DomException {
+		return null;
+	}
+
+	public void setNodeValue(String nodeValue) throws DomException {
+		// Has no effect.
 	}
 	
 }

@@ -17,9 +17,9 @@ import de.enough.skylight.dom.DomNode;
 public class DomParser {
 
 	// TODO: Rename to parseDocument.
-	public Document parseTree(String document) {
+	public Document parseDocument(String documentText) {
 		try {
-			return parseDocument(document, null);
+			return parseDocument(documentText, null);
 		} catch (UnsupportedEncodingException e) {
 			//#debug error
 			System.out.println("Unable to parse stream in default encoding: " + e);
@@ -28,8 +28,8 @@ public class DomParser {
 	}
 
 	
-	public Document parseDocument(String document, String encoding) throws UnsupportedEncodingException {
-		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(document.getBytes());
+	public Document parseDocument(String documentText, String encoding) throws UnsupportedEncodingException {
+		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(documentText.getBytes());
 		return parseDocument(byteArrayInputStream, encoding);
 	}
 
@@ -59,7 +59,7 @@ public class DomParser {
 	        throw new RuntimeException("Could not create xml parser."+exception);
 	    }
 	    DocumentImpl document = new DocumentImpl();
-	    document.init(null, null, "_DOCUMENT", null, DomNode.DOCUMENT_NODE);
+	    document.init();
 	    DomNodeImpl currentNode = document;
 	    String newName;
 	    int newType;
@@ -81,7 +81,7 @@ public class DomParser {
 	                		String attributeName = parser.getAttributeName(i);
 	                		String attributeValue = parser.getAttributeValue(i);
 	                		AttrImpl attribute = new AttrImpl();
-	                		attribute.init(newNode, attributeName, attributeValue);
+	                		attribute.init(document, newNode, attributeName, attributeValue);
 	                		attributeMap.setNamedItem(attribute);
 	                	}
 	                }
@@ -100,10 +100,8 @@ public class DomParser {
 	                		continue;
 	                	}
 	                }
-	                //TODO: Create a Text element here.
-	                DomNodeImpl newNode = new ElementImpl();
-	                newNode.init(document,currentNode,null,null,DomNode.TEXT_NODE);
-	                newNode.setNodeValue(text);
+	                TextImpl newNode = new TextImpl();
+	                newNode.init(document,currentNode,text);
 	            }
 	        }
 	    } catch (Exception exception) {

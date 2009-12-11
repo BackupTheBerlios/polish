@@ -13,10 +13,10 @@ public class AttrImpl extends DomNodeImpl implements Attr {
 	private String value;
 	private AttrScriptableObject scriptableObject;
 
-	protected void init(ElementImpl parent, String name, String value) {
+	protected void init(DocumentImpl document, ElementImpl owningElement, String name, String value) {
 		// Do not pass the parent to the super constructor as we do not want to queue this attributes as a proper child of the parent.
-		super.init(null, null, name, null, ATTRIBUTE_NODE);
-		this.parent = parent;
+		super.init(document, null, ATTRIBUTE_NODE);
+		this.parent = owningElement;
 		this.name = name;
 		this.value = value;
 		
@@ -24,8 +24,8 @@ public class AttrImpl extends DomNodeImpl implements Attr {
 			// This will update the cache so id getElementById lookups are faster.
 			// TODO: Put this more close to the actual adding of the attributes so we do not need to
 			// remember the step each time we create a new attribute.
-			DocumentImpl ownerDocument = (DocumentImpl)parent.getOwnerDocument();
-			ownerDocument.cacheNodeWithId(value,parent);
+			DocumentImpl ownerDocument = (DocumentImpl)owningElement.getOwnerDocument();
+			ownerDocument.cacheNodeWithId(value,owningElement);
 		}
 	}
 	
@@ -44,23 +44,12 @@ public class AttrImpl extends DomNodeImpl implements Attr {
 	public String getValue() {
 		return this.value;
 	}
-
 	
-	
-	/**
-	 * This method is not conform with the standard. But its nice to have one mechanism to access values.
-	 */
-	@Override
 	public String getNodeValue() throws DomException {
 		return this.value;
 	}
 
-	/**
-	 * This method is a convenience method. Normally you need to call setValue.
-	 */
-	@Override
 	public void setNodeValue(String newValue) {
-		super.setNodeValue(newValue);
 		this.value = newValue;
 	}
 	
@@ -89,6 +78,10 @@ public class AttrImpl extends DomNodeImpl implements Attr {
 	@Override
 	public boolean hasScriptable() {
 		return this.scriptableObject != null;
+	}
+
+	public String getNodeName() {
+		return this.name;
 	}
 
 }
