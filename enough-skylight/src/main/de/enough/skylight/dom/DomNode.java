@@ -559,6 +559,6 @@ public interface DomNode extends EventTarget{
 	 * Retrieves an XML representation of this XML node and its nested children.
 	 * @return the node as an XML string.
 	 */
-	public void toXmlString(StringBuffer buffer);
+	//public void toXmlString(StringBuffer buffer);
 
 }
