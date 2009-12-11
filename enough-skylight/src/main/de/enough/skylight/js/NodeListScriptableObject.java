@@ -1,16 +1,16 @@
 package de.enough.skylight.js;
 
+
 import org.mozilla.javascript.BaseFunction;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
-
 import de.enough.skylight.dom.DomException;
 import de.enough.skylight.dom.impl.NodeListImpl;
 
 public class NodeListScriptableObject extends ScriptableObject{
 
-	private NodeListImpl nodeList;
+	protected NodeListImpl nodeListImpl;
 
 	@Override
 	public String getClassName() {
@@ -18,7 +18,7 @@ public class NodeListScriptableObject extends ScriptableObject{
 	}
 	
 	public void init(NodeListImpl nodeList) {
-		this.nodeList = nodeList;
+		this.nodeListImpl = nodeList;
 		defineProperty("length", null, READONLY|PERMANENT);
 		defineProperty("item", new BaseFunction() {
 			@Override
@@ -28,26 +28,19 @@ public class NodeListScriptableObject extends ScriptableObject{
 				}
 				Object object = args[0];
 				if(object instanceof Double) {
-					return item(((Double)object).intValue());
+					int intValue = ((Double)object).intValue();
+					return NodeListScriptableObject.this.nodeListImpl.item(intValue);
 				}
 				throw new DomException("Unknown type:"+object.getClass());
 			}
 		}, PERMANENT);
 	}
 	
-	protected Object item(int intValue) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	protected int length() {
-		return this.nodeList.getLength();
-	}
-
 	@Override
 	public Object get(String name, Scriptable start) {
 		if("length".equals(name)) {
-			return new Integer(length());
+			int length = this.nodeListImpl.getLength();
+			return new Double(length);
 		} else {
 			return super.get(name, start);
 		}
