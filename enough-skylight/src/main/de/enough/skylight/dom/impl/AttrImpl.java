@@ -1,7 +1,6 @@
 package de.enough.skylight.dom.impl;
 
 import org.mozilla.javascript.Scriptable;
-
 import de.enough.skylight.dom.Attr;
 import de.enough.skylight.dom.DomException;
 import de.enough.skylight.dom.Element;
@@ -48,10 +47,10 @@ public class AttrImpl extends DomNodeImpl implements Attr {
 
 	
 	
-	@Override
 	/**
 	 * This method is not conform with the standard. But its nice to have one mechanism to access values.
 	 */
+	@Override
 	public String getNodeValue() throws DomException {
 		return this.value;
 	}
@@ -69,15 +68,14 @@ public class AttrImpl extends DomNodeImpl implements Attr {
 		this.value = value;
 	}
 
-	@Override
-	public void toXmlString(StringBuffer buffer) {
-		buffer.append(this.name);
-		if(this.value != null) {
-			buffer.append("=\"");
-			buffer.append(this.value);
-			buffer.append("\"");
-		}
-	}
+//	public void toXmlString(StringBuffer buffer) {
+//		buffer.append(this.name);
+//		if(this.value != null) {
+//			buffer.append("=\"");
+//			buffer.append(this.value);
+//			buffer.append("\"");
+//		}
+//	}
 	
 	@Override
 	public Scriptable getScriptable() {

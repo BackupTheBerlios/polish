@@ -1,10 +1,10 @@
 package de.enough.skylight.js;
 
+
 import org.mozilla.javascript.BaseFunction;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
-
 import de.enough.skylight.dom.impl.ElementImpl;
 
 public class ElementScriptableObject extends DomNodeScriptableObject{

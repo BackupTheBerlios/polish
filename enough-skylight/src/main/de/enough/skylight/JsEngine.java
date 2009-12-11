@@ -1,9 +1,9 @@
 package de.enough.skylight;
 
+
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Script;
 import org.mozilla.javascript.Scriptable;
-
 import de.enough.skylight.dom.impl.DomNodeImpl;
 import de.enough.skylight.js.AlertScriptableObject;
 
