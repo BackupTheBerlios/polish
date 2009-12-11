@@ -1,8 +1,8 @@
 package de.enough.skylight.js;
 
+
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
-
 import de.enough.skylight.dom.impl.AbstractDomTest;
 import de.enough.skylight.js.AssertScriptableObject;
 

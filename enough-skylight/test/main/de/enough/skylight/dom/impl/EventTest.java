@@ -15,7 +15,6 @@ public class EventTest extends AbstractDomTest implements EventListener {
 		element.setAttribute("keyblubb", "valuebla");
 	}
 
-	@Override
 	public void handleEvent(Event evt) {
 		DomNodeImpl domNodeImpl = (DomNodeImpl)evt.getCurrentTarget();
 		System.out.println("visiting listener at:"+domNodeImpl.getNodeName());
