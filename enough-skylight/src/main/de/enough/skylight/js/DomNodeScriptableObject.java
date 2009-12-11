@@ -4,9 +4,8 @@ import org.mozilla.javascript.BaseFunction;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
-
-import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.impl.DomNodeImpl;
+import de.enough.skylight.dom.impl.NodeListImpl;
 
 public class DomNodeScriptableObject extends ScriptableObject {
 	
@@ -16,40 +15,45 @@ public class DomNodeScriptableObject extends ScriptableObject {
 			if(args.length < 1) {
 				return null;
 			}
-			return appendChild((DomNodeImpl) args[0]);
+			DomNodeImpl newChild = (DomNodeImpl)args[0];
+			return DomNodeScriptableObject.this.domNodeImpl.appendChild(newChild);
 		}
 	}
 	final class ReplaceChildFunction extends BaseFunction {
 		@Override
 		public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
-			return replaceChild((DomNodeImpl)args[0], (DomNodeImpl)args[1]);
+			DomNodeImpl newChild = (DomNodeImpl)args[0];
+			DomNodeImpl oldChild = (DomNodeImpl)args[1];
+			return DomNodeScriptableObject.this.domNodeImpl.replaceChild(newChild, oldChild);
 		}
 	}
 	
-	private DomNodeImpl domNodeImpl;
+	protected DomNodeImpl domNodeImpl;
 
-	protected DomNode appendChild(DomNodeImpl newChild) {
-		return this.domNodeImpl.appendChild(newChild);
-	}
-	
-	protected DomNode replaceChild(DomNodeImpl newChild, DomNodeImpl oldChild) {
-		return this.domNodeImpl.replaceChild(newChild, oldChild);
-	}
-	
 	@Override
 	public String getClassName() {
-		// TODO: What classname should a ScriptableDomNode have?
 		return "Node";
 	}
 	
 	public void init(DomNodeImpl domNodeImpl) {
 		this.domNodeImpl = domNodeImpl;
-		putConst("ELEMENT_NODE", this, new Integer(5));
+		putConst("ELEMENT_NODE", this, new Integer(1));
+		putConst("ATTRIBUTE_NODE", this, new Integer(2));
+		putConst("TEXT_NODE", this, new Integer(3));
+		putConst("CDATA_SECTION_NODE", this, new Integer(4));
+		putConst("ENTITY_REFERENCE_NODE", this, new Integer(5));
+		putConst("ENTITY_NODE", this, new Integer(6));
+		putConst("PROCESSING_INSTRUCTION_NODE", this, new Integer(7));
+		putConst("COMMENT_NODE", this, new Integer(8));
+		putConst("DOCUMENT_NODE", this, new Integer(9));
+		putConst("DOCUMENT_TYPE_NODE", this, new Integer(10));
+		putConst("DOCUMENT_FRAGMENT_NODE", this, new Integer(11));
+		putConst("NOTATION_NODE", this, new Integer(12));
 		defineProperty("nodeName", this.domNodeImpl.getNodeName(), READONLY|PERMANENT);
 		defineProperty("nodeValue", null, PERMANENT);
 		defineProperty("nodeType", new Integer(this.domNodeImpl.getNodeType()), READONLY|PERMANENT);
-		defineProperty("parentNode", this.domNodeImpl.getParentNode(), READONLY|PERMANENT);
-		defineProperty("childNodes", this.domNodeImpl.getChildNodes(), READONLY|PERMANENT);
+		defineProperty("parentNode", ((DomNodeImpl)this.domNodeImpl.getParentNode()).getScriptable(), READONLY|PERMANENT);
+		defineProperty("childNodes", ((NodeListImpl)this.domNodeImpl.getChildNodes()).getScriptable(), READONLY|PERMANENT);
 		defineProperty("firstChild", null, READONLY|PERMANENT);
 		defineProperty("lastChild", null, READONLY|PERMANENT);
 		defineProperty("previousSibling", null, READONLY|PERMANENT);
