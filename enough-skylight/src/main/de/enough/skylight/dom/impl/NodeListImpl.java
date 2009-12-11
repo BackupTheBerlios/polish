@@ -1,8 +1,10 @@
 package de.enough.skylight.dom.impl;
 
 import de.enough.polish.util.ArrayList;
+import org.mozilla.javascript.Scriptable;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.NodeList;
+import de.enough.skylight.js.NodeListScriptableObject;
 
 /**
  * @author rickyn
@@ -11,6 +13,7 @@ import de.enough.skylight.dom.NodeList;
 public class NodeListImpl implements NodeList {
 
 	private ArrayList nodeList = new ArrayList();
+	private NodeListScriptableObject scriptable;
 	
 	public int getLength() {
 		return this.nodeList.size();
@@ -32,6 +35,18 @@ public class NodeListImpl implements NodeList {
 				return;
 			}
 		}
+	}
+	
+	public Scriptable getScriptable() {
+		if(this.scriptable == null) {
+			this.scriptable = new NodeListScriptableObject();
+			this.scriptable.init(this);
+		}
+		return this.scriptable;
+	}
+	
+	public boolean hasScriptable() {
+		return this.scriptable != null;
 	}
 
 }
