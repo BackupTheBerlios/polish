@@ -198,31 +198,31 @@ public abstract class DomNodeImpl implements DomNode {
 		// TODO Auto-generated method stub
 		
 	}
-	public void toXmlString(StringBuffer buffer) {
-		if(this.type == TEXT_NODE) {
-			buffer.append(getNodeValue());
-			return;
-		}
-		buffer.append("<");
-		buffer.append(this.name);
-		int numberAttributes = this.attributes.getLength();
-		if(numberAttributes > 0) {
-			for(int i = 0; i < numberAttributes; i++) {
-				AttrImpl attr = (AttrImpl)this.attributes.item(i);
-				buffer.append(" ");
-				attr.toXmlString(buffer);
-			}
-		}
-		buffer.append(">");
-		int numberChildren = this.childList.getLength();
-		for(int i = 0; i < numberChildren; i++) {
-			DomNode childNode = this.childList.item(i);
-			childNode.toXmlString(buffer);
-		}
-		buffer.append("</");
-		buffer.append(this.name);
-		buffer.append(">");
-	}
+//	public void toXmlString(StringBuffer buffer) {
+//		if(this.type == TEXT_NODE) {
+//			buffer.append(getNodeValue());
+//			return;
+//		}
+//		buffer.append("<");
+//		buffer.append(this.name);
+//		int numberAttributes = this.attributes.getLength();
+//		if(numberAttributes > 0) {
+//			for(int i = 0; i < numberAttributes; i++) {
+//				AttrImpl attr = (AttrImpl)this.attributes.item(i);
+//				buffer.append(" ");
+//				attr.toXmlString(buffer);
+//			}
+//		}
+//		buffer.append(">");
+//		int numberChildren = this.childList.getLength();
+//		for(int i = 0; i < numberChildren; i++) {
+//			DomNode childNode = this.childList.item(i);
+//			childNode.toXmlString(buffer);
+//		}
+//		buffer.append("</");
+//		buffer.append(this.name);
+//		buffer.append(">");
+//	}
 	
 	private void doAppendChild(DomNodeImpl childNode) {
 		this.childList.add(childNode);

@@ -1,8 +1,7 @@
 package de.enough.skylight.dom.impl;
 
-import org.mozilla.javascript.Scriptable;
-
 import de.enough.polish.util.HashMap;
+import org.mozilla.javascript.Scriptable;
 import de.enough.skylight.dom.Attr;
 import de.enough.skylight.dom.Document;
 import de.enough.skylight.dom.DomException;
@@ -27,15 +26,14 @@ public class DocumentImpl extends DomNodeImpl implements Document {
 		this.elementsById.put(id, domNode);
 	}
 
-	@Override
-	public void toXmlString(StringBuffer buffer) {
-//		buffer.append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
-		NodeList childNodes = this.getChildNodes();
-		if(childNodes.getLength() > 0) {
-			childNodes.item(0).toXmlString(buffer);
-			
-		}
-	}
+//	public void toXmlString(StringBuffer buffer) {
+////		buffer.append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
+//		NodeList childNodes = this.getChildNodes();
+//		if(childNodes.getLength() > 0) {
+//			childNodes.item(0).toXmlString(buffer);
+//			
+//		}
+//	}
 
 	public Attr createAttribute(String name) throws DomException {
 		// TODO Auto-generated method stub
@@ -64,7 +62,6 @@ public class DocumentImpl extends DomNodeImpl implements Document {
 		return this.scriptableObject;
 	}
 
-	@Override
 	public Event createEvent(String eventType) throws DomException {
 		// TODO: Using this API for generating interal events is not nice as the caller need to cast and he has to do the dispatch
 		// himself.

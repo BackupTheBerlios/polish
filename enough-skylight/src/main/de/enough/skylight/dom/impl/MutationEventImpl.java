@@ -11,32 +11,26 @@ public class MutationEventImpl extends EventImpl implements MutationEvent{
 	private short attrChangeArg;
 	private String newValueArg;
 
-	@Override
 	public short getAttrChange() {
 		return this.attrChangeArg;
 	}
 
-	@Override
 	public String getAttrName() {
 		return this.attrNameArg;
 	}
 
-	@Override
 	public String getNewValue() {
 		return this.newValueArg;
 	}
 
-	@Override
 	public String getPrevValue() {
 		return this.prevValueArg;
 	}
 
-	@Override
 	public DomNode getRelatedNode() {
 		return this.relatedNodeArg;
 	}
 
-	@Override
 	public void initMutationEvent(String typeArg, boolean canBubbleArg,boolean cancelableArg, DomNode relatedNodeArg, String prevValueArg,String newValueArg, String attrNameArg, short attrChangeArg) {
 		initEvent(typeArg, canBubbleArg, cancelableArg);
 		this.relatedNodeArg = relatedNodeArg;

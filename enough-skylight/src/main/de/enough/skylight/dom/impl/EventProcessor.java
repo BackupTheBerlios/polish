@@ -1,7 +1,7 @@
 package de.enough.skylight.dom.impl;
 
-import org.mozilla.javascript.Scriptable;
 
+import org.mozilla.javascript.Scriptable;
 import de.enough.skylight.Frame;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.Event;

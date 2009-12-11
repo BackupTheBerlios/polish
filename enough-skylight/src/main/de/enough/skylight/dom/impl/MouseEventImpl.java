@@ -13,57 +13,46 @@ public class MouseEventImpl extends EventImpl implements MouseEvent {
 	private int clientX;
 	private int clientY;
 
-	@Override
 	public boolean getAltKey() {
 		return false;
 	}
 
-	@Override
 	public short getButton() {
 		return 0;
 	}
 
-	@Override
 	public int getClientX() {
 		return this.clientX;
 	}
 
-	@Override
 	public int getClientY() {
 		return this.clientY;
 	}
 
-	@Override
 	public boolean getCtrlKey() {
 		return false;
 	}
 
-	@Override
 	public boolean getMetaKey() {
 		return false;
 	}
 
-	@Override
 	public EventTarget getRelatedTarget() {
 		return null;
 	}
 
-	@Override
 	public int getScreenX() {
 		return this.screenX;
 	}
 
-	@Override
 	public int getScreenY() {
 		return this.screenY;
 	}
 
-	@Override
 	public boolean getShiftKey() {
 		return false;
 	}
 
-	@Override
 	public void initMouseEvent(String typeArg, boolean canBubbleArg,
 			boolean cancelableArg, AbstractView viewArg, int detailArg,
 			int screenXArg, int screenYArg, int clientXArg, int clientYArg,
@@ -77,17 +66,14 @@ public class MouseEventImpl extends EventImpl implements MouseEvent {
 		// All other parameters are not supported.
 	}
 
-	@Override
 	public int getDetail() {
 		return this.detail;
 	}
 
-	@Override
 	public AbstractView getView() {
 		return this.view;
 	}
 
-	@Override
 	public void initUIEvent(String typeArg, boolean canBubbleArg,
 			boolean cancelableArg, AbstractView viewArg, int detailArg) {
 		this.initEvent(typeArg, canBubbleArg, cancelableArg);
