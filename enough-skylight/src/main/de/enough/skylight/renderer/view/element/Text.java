@@ -30,8 +30,10 @@ public class Text implements CssElement{
 		
 		Style parentStyle = parent.getStyle();
 		if(parentStyle != null) {
+			System.out.println("getfont");
 			this.font = parent.getStyle().getFont();
 		} else {
+			System.out.println("getdefaultfont");
 			this.font = Font.getDefaultFont();
 		}
 	}
@@ -87,6 +89,7 @@ public class Text implements CssElement{
 		Item[] items = new Item[count];
 		for (int index = 0; index < count; index++) {
 			String token = tokenizer.nextToken();
+			//#style element
 			StringItem tokenItem = new StringItem(null,token);
 			tokenItem.setFont(this.font);
 			items[index] = tokenItem;

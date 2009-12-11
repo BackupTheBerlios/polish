@@ -27,17 +27,19 @@ public abstract class NodeHandler {
 	}
 	
 	public Style getStyle(DomNode node) {
-		String clazz = NodeUtils.getAttributeValue(node, "class");
-		
-		if(clazz != null) {
-			clazz = clazz.toLowerCase();
-			try {
-				Style style = getViewport().getStyle(clazz);
-				
-				return style;
-			} catch(NoSuchFieldError e) {
-				//#debug error
-				System.out.println("style " + clazz + " could not be found");
+		if(node.getNodeType() == DomNode.ELEMENT_NODE) {
+			String clazz = NodeUtils.getAttributeValue(node, "class");
+			
+			if(clazz != null) {
+				clazz = clazz.toLowerCase();
+				try {
+					Style style = getViewport().getStyle(clazz);
+					
+					return style;
+				} catch(NoSuchFieldError e) {
+					//#debug error
+					System.out.println("style " + clazz + " could not be found");
+				}
 			}
 		}
 		

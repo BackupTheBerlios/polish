@@ -11,23 +11,23 @@ public class LineBox {
 	
 	Container workLine;
 	
+	Style style;
+	
 	LineBox parent;
 	
 	LineBox root;
 	
-	public static LineBox createForBlock(int space, Style style) {
-		return new LineBox(space, null, style);
+	public static LineBox createForBlock(int space) {
+		//#style linebox
+		return new LineBox(space, null);
 	}
 	
-	public static LineBox createForInline(LineBox parent, int space, Style style) {
+	public static LineBox createForInline(LineBox parent, int space) {
 		LineBox linebox = null;
 		
-		if(parent == null) {
-			
-		}
-		
 		if(parent != null) {
-			linebox = new LineBox(parent.getRemainingSpace(), parent, style);
+			//#style linebox
+			linebox = new LineBox(parent.getRemainingSpace(), parent);
 			parent.add(linebox.getWorkLine());
 			return linebox;
 		} else {
@@ -35,13 +35,18 @@ public class LineBox {
 		}
 	}
 	
-	public static LineBox newline(LineBox base, int space) {
-		return null;
+	public LineBox(int space, LineBox parent) {
+		this(space,parent,null);
+	}
+	
+	LineBox copy() {
+		return new LineBox(this.space, this.parent, this.style);
 	}
 
 	public LineBox(int space, LineBox parent, Style style) {
 		this.space = space;
 		this.parent = parent;
+		this.style = style;
 		this.workLine = new Container(false,style);
 		this.workLine.setView(new ListBoxView());
 		

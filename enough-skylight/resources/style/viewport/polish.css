@@ -15,6 +15,9 @@ viewport extends element {
 	label-style: title;
 }
 
+linebox extends element {
+}
+
 title {
 	background-color: black;
 	font-color: white;

@@ -6,6 +6,7 @@ import de.enough.skylight.dom.NamedNodeMap;
 
 public class NodeUtils {
 	public final static String getAttributeValue(DomNode node, String name) {
+		System.out.println(node);
 		NamedNodeMap nodeMap = node.getAttributes();
 		Attr attribute = (Attr)nodeMap.getNamedItem(name); 
 		if(attribute != null) {

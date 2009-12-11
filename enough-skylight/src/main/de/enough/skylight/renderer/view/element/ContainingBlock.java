@@ -75,14 +75,11 @@ public class ContainingBlock extends Container implements CssElement {
 	 */
 	public void setStyle(Style style) {
 		super.setStyle(style);
-		System.out.println("set style for " + this);
 		//#if polish.css.display
 		String displayStr = style.getProperty("display");
 		if(displayStr != null) {
 			this.display = displayStr;
 		}
-		
-		System.out.println("display : " + this.display);
 		
 		if(this.display == CssElement.Display.BLOCK_LEVEL) {
 			setView(new BlockLevelView());

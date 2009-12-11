@@ -58,7 +58,7 @@ public class ViewportBuilder {
 			
 			build(this.viewport, this.document);
 			
-			layoutBlock(this.viewport, null);
+			layoutBlock(this.viewport);
 		} catch(Exception e) {
 			//#debug error
 			System.out.println("error while building view : " + e);
@@ -117,7 +117,7 @@ public class ViewportBuilder {
 		} 
 	}
 	
-	protected void layoutBlock(ContainingBlock parentBlock, Style lineStyle) throws IllegalArgumentException {
+	protected void layoutBlock(ContainingBlock parentBlock) throws IllegalArgumentException {
 		if(!parentBlock.isInitialized()) {
 			ItemPreinit.preinit(parentBlock);
 		}
@@ -142,11 +142,10 @@ public class ViewportBuilder {
 				ContainingBlock block = (ContainingBlock)element.getItem();
 				
 				if(element.isDisplay(CssElement.Display.INLINE)) {
-					/*LineBox inlineLine = LineBox.createForInline(blockLine, space, style);
-					layoutInline(parentBlock,inlineLine,style);*/
+					blockLine = layoutInline(parentBlock, block, blockLine);
 				} else if(element.isDisplay(CssElement.Display.BLOCK_LEVEL)) {
 					parentBlock.add(block);
-					layoutBlock(block, style);
+					layoutBlock(block);
 				}
 			} else if(element.getType() == CssElement.Type.ELEMENT) {
 				if(element.isDisplay(CssElement.Display.INLINE)) {
@@ -176,9 +175,53 @@ public class ViewportBuilder {
 		}
 	}
 	
-	protected void layoutInline(ContainingBlock parentBlock, LineBox parentLine, Style lineStyle) throws IllegalArgumentException {
+	protected LineBox layoutInline(ContainingBlock parentBlock, ContainingBlock inlineBlock, LineBox parentLine) throws IllegalArgumentException {
+		int space = parentBlock.getAvailableContentWidth();
+		Style style = parentBlock.getStyle();
 		
-		System.out.println("layout inline : " + parentLine);
+		LineBox inlineLine = null;
+		
+		ArrayList elements = inlineBlock.getElements();
+		for (int index = 0; index < elements.size(); index++) {
+			CssElement element = (CssElement)elements.get(index);
+			
+			if(element.getType() == CssElement.Type.CONTAINING_BLOCK) {
+				ContainingBlock block = (ContainingBlock)element.getItem();
+				
+				if(element.isDisplay(CssElement.Display.INLINE)) {
+					inlineLine = layoutInline(parentBlock, block, parentLine);
+				} else if(element.isDisplay(CssElement.Display.BLOCK_LEVEL)) {
+					parentBlock.add(block);
+					layoutBlock(block);
+				}
+			} else if(element.getType() == CssElement.Type.ELEMENT) {
+				if(element.isDisplay(CssElement.Display.INLINE)) {
+					// inline : add to linebox
+					Item item = element.getItem();
+					
+					inlineLine = addToInlineLine(item, space, parentBlock, parentLine, inlineLine);
+				} else if(element.isDisplay(CssElement.Display.BLOCK_LEVEL)) {
+					// block : add as single expanded linebox, set linebox as new item				
+				} 
+			} else if(element.getType() == CssElement.Type.BREAK) {
+				inlineLine = addBreak(space, parentBlock, parentLine);
+			} else if(element.getType() == CssElement.Type.TEXT) {
+				// get text items and add to lineboxes
+				Text text = (Text)element;
+				Item[] items = text.getItems();
+				
+				// check if this is first or last to add margins / paddings to linebox
+				// complicated
+				
+				for (int i = 0; i < items.length; i++) {
+					Item item = items[i];
+					
+					inlineLine = addToInlineLine(item, space, parentBlock, parentLine, inlineLine);
+				}
+			}
+		}
+		
+		return parentLine;
 	}
 	
 	LineBox addToBlockLine(Item item, int space, ContainingBlock block, LineBox blockLine) {
@@ -188,7 +231,7 @@ public class ViewportBuilder {
 		LineBox result = blockLine;
 		
 		if(result == null || !result.hasSpace(item)) {
-			result = LineBox.createForBlock(space, null);
+			result = LineBox.createForBlock(space);
 			System.out.println("creating block line for " + block);
 			block.add(result.getWorkLine());
 		}
@@ -199,11 +242,23 @@ public class ViewportBuilder {
 		return result;
 	}
 	
+	LineBox addToInlineLine(Item item, int space, ContainingBlock block, LineBox inlineLine, LineBox parentLine) {
+		LineBox result = inlineLine;
+		
+		if(result == null || !result.hasSpace(item)) {
+			result = LineBox.createForInline(parentLine, space);
+		}
+		
+		result.add(item);
+		
+		return result;
+	}
+	
 	LineBox addBreak(int space, ContainingBlock block, LineBox blockLine) {
 		System.out.println("addding break");
 		
 		LineBox result = blockLine;
-		result = LineBox.createForBlock(space, null);
+		result = LineBox.createForBlock(space);
 		block.add(result.getWorkLine());
 		
 		return result;
