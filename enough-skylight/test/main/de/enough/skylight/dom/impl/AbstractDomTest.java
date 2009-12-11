@@ -32,8 +32,8 @@ public abstract class AbstractDomTest extends TestCase {
 		} catch (IOException e) {
 			throw new RuntimeException(e.toString());
 		}
-		this.document1 = (DocumentImpl)domParser.parseTree(htmlDocument);
-		this.documentJsEvent = (DocumentImpl)domParser.parseTree(jsEventDocument);
+		this.document1 = (DocumentImpl)domParser.parseDocument(htmlDocument);
+		this.documentJsEvent = (DocumentImpl)domParser.parseDocument(jsEventDocument);
 		assertNotNull(this.document1);
 	}
 

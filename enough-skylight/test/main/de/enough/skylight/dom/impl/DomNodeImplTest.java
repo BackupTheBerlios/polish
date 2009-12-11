@@ -11,14 +11,13 @@ public class DomNodeImplTest extends AbstractDomTest {
 	public void testGetAttributes() {
 		NamedNodeMap attributes;
 		attributes = this.document1.getAttributes();
-		assertEquals(0,attributes.getLength());
+		assertNull(attributes);
 		
 		attributes = this.document1.getDocumentElement().getAttributes();
 		assertEquals(1,attributes.getLength());
 		// Attributes do not have attributes
-		attributes = this.document1.getDocumentElement().getAttributes();
-		assertEquals(0,attributes.item(0).getAttributes().getLength());
-	
+		attributes = this.document1.getElementById("id1").getAttributes();
+		assertNull(attributes.item(0).getAttributes());
 	}
 
 	public void testGetChildNodes() {
@@ -62,7 +61,18 @@ public class DomNodeImplTest extends AbstractDomTest {
 		assertEquals(true,this.document1.getDocumentElement().hasChildNodes());
 		assertEquals(false,this.document1.getElementById("id1").hasChildNodes());
 	}
+	
+	public void testGetNextSibling() {
+		Element element = this.document1.getElementById("id1");
+		DomNode nextSibling = element.getNextSibling();
+		assertEquals("id2",nextSibling.getAttributes().item(0).getNodeValue());
+	}
 
+	public void testGetNodeValue() {
+		String nodeValue = this.document1.getElementById("id1").getNodeValue();
+		assertNull(nodeValue);
+	}
+	
 //	public void testAddEventListener() {
 //		fail("Not yet implemented");
 //	}
@@ -119,11 +129,6 @@ public class DomNodeImplTest extends AbstractDomTest {
 //		fail("Not yet implemented");
 //	}
 //
-//	public void testGetNextSibling() {
-//		fail("Not yet implemented");
-//	}
-//
-//
 //	public void testGetParentNode() {
 //		fail("Not yet implemented");
 //	}
@@ -133,14 +138,6 @@ public class DomNodeImplTest extends AbstractDomTest {
 //	}
 //
 //	public void testGetPreviousSibling() {
-//		fail("Not yet implemented");
-//	}
-//
-//	public void testGetScriptable() {
-//		fail("Not yet implemented");
-//	}
-//	
-//	public void testGetNodeValue() {
 //		fail("Not yet implemented");
 //	}
 
