@@ -1170,10 +1170,18 @@ implements Displayable
 		
 	}
 	
+	/**
+	 * Sets the commandlistener for this canvas
+	 * @param l the listener, use null to remove command listener
+	 */
 	public void setCommandListener( CommandListener l) {
 		this._commandListener = l;
 	}
 	
+	/**
+	 * Retrieves the command listener for this canvas.
+	 * @return the current command listener, may be null
+	 */
 	public CommandListener getCommandListener() {
 		return this._commandListener;
 	}
@@ -1207,7 +1215,18 @@ implements Displayable
 		} 		
 	}
 
-	
+	/**
+	 * Retrieves all commands as an object array which may contain null values
+	 * @return all registered commands, may be null
+	 */
+	public Object[] getCommands()
+	{
+		if (this._commands == null) {
+			return null;
+		}
+		Object[] commands = this._commands.getInternalArray();
+		return commands;
+	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Displayable#setTitle(java.lang.String)

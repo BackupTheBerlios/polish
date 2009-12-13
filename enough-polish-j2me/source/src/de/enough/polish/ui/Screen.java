@@ -204,7 +204,8 @@ implements UiElement, Animatable
 	//#if polish.ScreenChangeAnimation.forward:defined
 		protected Command lastTriggeredCommand;
 	//#endif	
-	//#ifdef polish.key.ReturnKey:defined
+	//#if polish.key.ReturnKey:defined || polish.css.repaint-previous-screen
+		//#define tmp.triggerBackCommand
 		private Command backCommand;
 	//#endif
 	//#if (polish.useMenuFullScreen && tmp.fullScreen) || polish.needsManualMenu
@@ -3934,8 +3935,16 @@ implements UiElement, Animatable
 			//#endif
 		//#else
 				super.addCommand(cmd);
-				//#ifdef polish.key.ReturnKey:defined
-					if ((cmd.getCommandType() == Command.BACK || cmd.getCommandType() == Command.CANCEL) && (this.backCommand == null || cmd.getPriority() < this.backCommand.getPriority())) {
+				//#ifdef tmp.triggerBackCommand
+					int cmdType = cmd.getCommandType();
+					if ((	   cmdType == Command.BACK 
+						//#if ! tmp.triggerCancelCommand
+							|| cmdType == Command.CANCEL 
+						//#endif
+							|| cmdType == Command.EXIT
+						) 
+						&& (this.backCommand == null || cmd.getPriority() < this.backCommand.getPriority())) 
+					{
 						this.backCommand = cmd;
 					}
 				//#endif
@@ -3973,7 +3982,7 @@ implements UiElement, Animatable
 			}
 		//#endif
 		
-		//#ifdef polish.key.ReturnKey:defined
+		//#ifdef tmp.triggerBackCommand
 			else if ( (cmdType == Command.BACK
 					//#if ! tmp.triggerCancelCommand
 					|| cmdType == Command.CANCEL 
@@ -4134,14 +4143,15 @@ implements UiElement, Animatable
 	}
 
 	//#ifdef tmp.menuFullScreen
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Displayable#getCommands()
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Canvas#getCommands()
 	 */
 	public Object[] getCommands()
 	{
 		Object[] commands;
 		//#ifdef tmp.useExternalMenuBar
-			commands = this.menuBar.commands.getInternalArray();
+			commands = this.menuBar.getCommands();
 		//#else
 			commands = this.menuCommands.getInternalArray();
 		//#endif
@@ -4884,7 +4894,7 @@ implements UiElement, Animatable
 	 *  
 	 * @param x the absolute x position of the pointer pressing
 	 * @param y the absolute y position of the pointer pressing
-	 * @return true when the pressing of the pointer was actually handled by this item.
+	 * @return true when the pressing of the pointer was actually handled by this screen.
 	 */
 	protected boolean handlePointerPressed( int x, int y ) {
 		boolean handled = false;
@@ -4905,9 +4915,9 @@ implements UiElement, Animatable
 	 * The default implementation returns the result of calling the container's
 	 *  handlePointerReleased-method
 	 *  
-	 * @param x the absolute x position of the pointer pressing
-	 * @param y the absolute y position of the pointer pressing
-	 * @return true when releasing the pointer was actually handled by this item.
+	 * @param x the absolute x position of the pointer release
+	 * @param y the absolute y position of the pointer release
+	 * @return true when releasing the pointer was actually handled by this screen.
 	 */
 	protected boolean handlePointerReleased( int x, int y ) {
 		boolean handled = false;
@@ -4915,6 +4925,71 @@ implements UiElement, Animatable
 			if (this.container != null) {
 				handled = this.container.handlePointerReleased(x - this.container.relativeX, y - this.container.relativeY );
 			}
+			//#if polish.css.repaint-previous-screen
+				if (!handled && this.repaintPreviousScreen) {
+					if (this.container != null) {
+						int left = this.container.relativeX;
+						int top = this.container.relativeY;
+						int right = left + this.container.itemWidth;
+						int bottom = top + Math.min( this.contentHeight, this.container.itemHeight );
+						if (this.title != null) {
+							top -= this.title.itemHeight;
+						}						
+						if (x <= left || y <= top
+							 || x >= right || y >= bottom)
+						{
+							handlePointerReleasedOutsideScreenArea(x, y);
+						}
+					} else {
+						if (x <= this.marginLeft || y <= this.marginTop 
+						 || x >= this.screenWidth - this.marginRight || y >= this.screenHeight - this.marginBottom)
+						{
+							handlePointerReleasedOutsideScreenArea(x, y);
+						}
+					}
+				}
+			//#endif
+		//#endif
+		return handled;
+	}
+	
+	/**
+	 * Handles the release of a pointer outside of this screens area.
+	 * This method should be overwritten only when the polish.hasPointerEvents 
+	 * preprocessing symbol is defined.
+	 * When the screen could handle the pointer release, it needs to 
+	 * return true.
+	 * The default implementation fires the back command, if present. Otherwise it will fire the only command (when there is just one command on this screen).
+	 *  
+	 * @param x the absolute x position of the pointer release (outside of this screen's area)
+	 * @param y the absolute y position of the pointer release (outside of this screen's area)
+	 * @return true when releasing the pointer was actually handled by this screen.
+	 */
+	protected boolean handlePointerReleasedOutsideScreenArea( int x, int y ) {
+		boolean handled = false;
+		//#if polish.hasPointerEvents && polish.css.repaint-previous-screen
+			//#if tmp.triggerBackCommand
+				if (this.backCommand != null) {
+					handleCommand( this.backCommand );
+				} else {
+			//#endif
+					Object[] commands = getCommands();
+					if (commands != null) {
+						int commandCount = 0;
+						for (int i = 0; i < commands.length; i++) {
+							Object cmd = commands[i];
+							if (cmd == null) {
+								break;
+							}
+							commandCount++;
+						}
+						if (commandCount == 1) {
+							handleCommand( (Command) commands[0] );
+						}
+					}
+			//#if tmp.triggerBackCommand
+				}
+			//#endif
 		//#endif
 		return handled;
 	}
@@ -4928,9 +5003,9 @@ implements UiElement, Animatable
 	 * The default implementation returns the result of calling the container's
 	 * handlePointerDragged-method
 	 *  
-	 * @param x the absolute x position of the pointer pressing
-	 * @param y the absolute y position of the pointer pressing
-	 * @return true when the dragging of the pointer was actually handled by this item.
+	 * @param x the absolute x position of the pointer movement
+	 * @param y the absolute y position of the pointer movement
+	 * @return true when the dragging of the pointer was actually handled by this screen.
 	 */
 	protected boolean handlePointerDragged(int x, int y)
 	{

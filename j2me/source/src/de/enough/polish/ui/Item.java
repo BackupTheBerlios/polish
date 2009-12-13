@@ -2968,7 +2968,7 @@ public abstract class Item implements UiElement, Animatable
 			+ this.paddingBottom + getBorderWidthBottom() + this.marginBottom;
 		if ( this.isLayoutExpand ) {
 			if (cWidth < availableContentWidth) {
-				if (this.itemWidth + labelWidth <= availWidth) {
+				if (this.itemWidth + labelWidth <= availWidth && (this.label == null || !this.label.isLayoutNewlineAfter())) {
 					this.itemWidth += availableContentWidth - cWidth - labelWidth;
 				} else {
 					this.itemWidth += availableContentWidth - cWidth;
@@ -4852,6 +4852,29 @@ public abstract class Item implements UiElement, Animatable
 		return ((this.layout & LAYOUT_SHRINK) == LAYOUT_SHRINK);
 	}
 	
+	/**
+	 * Determines the layout of this item.
+	 * Note that either setLayout() or init() has to be called before this method returns valid values.
+	 * 
+	 * @return true when the item has a newwline-after layout.
+	 * @see #setLayout(int)
+	 * @see #init(int,int,int)
+	 */	
+	public boolean isLayoutNewlineAfter() {
+		return ((this.layout & LAYOUT_NEWLINE_AFTER) == LAYOUT_NEWLINE_AFTER);
+	}
+	
+	/**
+	 * Determines the layout of this item.
+	 * Note that either setLayout() or init() has to be called before this method returns valid values.
+	 * 
+	 * @return true when the item has a newwline-after layout.
+	 * @see #setLayout(int)
+	 * @see #init(int,int,int)
+	 */	
+	public boolean isLayoutNewlineBefore() {
+		return ((this.layout & LAYOUT_NEWLINE_BEFORE) == LAYOUT_NEWLINE_BEFORE);
+	}
 	public void setItemTransition( ItemTransition transition ) {
 		this.itemTransition = transition;
 	}

@@ -2357,6 +2357,10 @@ public class MenuBar extends Item {
 		//#endif
 	}
 
+	public Object[] getCommands() {
+		return this.allCommands.keys();
+	}
+
 	
 	
 //#ifdef polish.MenuBar.additionalMethods:defined
