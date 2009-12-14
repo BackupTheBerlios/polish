@@ -712,6 +712,8 @@ public abstract class Item implements UiElement, Animatable
 	 * This is used as a value for internalX to describe that the item has no intenal position set 
 	 */
 	public final static int NO_POSITION_SET = -9999;
+	/** The 'hold' touch gesture is triggered when the user holds an item for more than 500 milliseconds */
+	public static final int GESTURE_HOLD = 1;
 	/** 
 	 * The internal horizontal position of this item's content relative to it's left edge. 
 	 * When it is equal NO_POSITION_SET this item's internal position is not known.
@@ -851,10 +853,18 @@ public abstract class Item implements UiElement, Animatable
 		protected Style portraitStyle;
 	//#endif
 	//#if polish.Item.ShowCommandsOnHold
+		//#define tmp.supportTouchGestures
 		private boolean isShowCommands;
 		private Container commandsContainer;
-		private long pointerPressTime;
-		private boolean isIgnorePointerReleaseForCommands;
+	//#endif
+	//#if polish.supportTouchGestures
+		//#define tmp.supportTouchGestures
+	//#endif
+	//#if tmp.supportTouchGestures
+		private long gestureStartTime;
+		private int gestureStartX;
+		private int gestureStartY;
+		private boolean isIgnorePointerReleaseForGesture;
 	//#endif
 
 
@@ -3638,16 +3648,16 @@ public abstract class Item implements UiElement, Animatable
 				}
 			//#endif
 			if ( isInItemArea(relX, relY) ) {
-				//#if polish.Item.ShowCommandsOnHold
-					if (this.commands != null && !this.isShowCommands) {
-						this.pointerPressTime = System.currentTimeMillis();
-					}
+				//#if tmp.supportTouchGestures
+					this.gestureStartTime = System.currentTimeMillis();
+					this.gestureStartX = relX;
+					this.gestureStartY = relY;
 				//#endif
 				return handleKeyPressed( 0, Canvas.FIRE );
 			}
 			//#if polish.Item.ShowCommandsOnHold
 				else {
-					this.pointerPressTime = 0;
+					this.gestureStartTime = 0;
 					if (this.isShowCommands) {
 						this.isShowCommands = false;
 						return true;
@@ -3680,15 +3690,17 @@ public abstract class Item implements UiElement, Animatable
 		//#ifdef polish.hasPointerEvents
 			//#debug
 			System.out.println("handlePointerReleased " + relX + ", " + relY + " for item " + this + " isPressed=" + this.isPressed);
+			//#if tmp.supportTouchGestures
+				if (this.isIgnorePointerReleaseForGesture) {
+					this.isIgnorePointerReleaseForGesture = false;
+					return true;
+				}
+			//#endif
 			//#if polish.Item.ShowCommandsOnHold
 				if (this.isShowCommands) {
-					if (this.isIgnorePointerReleaseForCommands) {
-						this.isIgnorePointerReleaseForCommands = false;
-					} else {
-						this.commandsContainer.handlePointerReleased(relX - this.commandsContainer.relativeX, relY - this.commandsContainer.relativeY);
-						this.isShowCommands = false;
-						notifyItemPressedEnd();
-					}
+					this.commandsContainer.handlePointerReleased(relX - this.commandsContainer.relativeX, relY - this.commandsContainer.relativeY);
+					this.isShowCommands = false;
+					notifyItemPressedEnd();
 					return true;
 				}
 			//#endif
@@ -3720,6 +3732,12 @@ public abstract class Item implements UiElement, Animatable
 	protected boolean handlePointerDragged(int relX, int relY)
 	{
 		//#ifdef polish.hasPointerEvents
+			//#if tmp.supportTouchGestures
+				if (this.gestureStartTime != 0 && Math.abs( relX - this.gestureStartX) > 30 || Math.abs( relY - this.gestureStartY) > 30) {
+					// abort (hold) gesture after moving out for too much:
+					this.gestureStartTime = 0;
+				}
+			//#endif
 			//#if polish.Item.ShowCommandsOnHold
 				if (this.isShowCommands && this.commandsContainer.handlePointerDragged(relX - this.commandsContainer.relativeX, relY - this.commandsContainer.relativeY)) {
 					return true;
@@ -3765,6 +3783,43 @@ public abstract class Item implements UiElement, Animatable
 	public boolean handlePointerTouchUp( int x, int y ) {
 		//#if polish.hasTouchEvents && polish.css.view-type
 			if (this.view != null && this.view.handlePointerTouchUp(x, y)) {
+				return true;
+			}
+		//#endif
+		return false;
+	}
+	
+	/**
+	 * Handles a touch gestures.
+	 * Note that touch gesture support needs to be activated using the preprocessing variable polish.supportGestures.
+	 * The default implementation calls handleGestureHold() in case GESTURE_HOLD is specified.
+	 * @param gesture the gesture identifier, e.g. GESTURE_HOLD
+	 * @return true when this gesture was handled
+	 * @see #handleGestureHold()
+	 */
+	protected boolean handleGesture(int gesture) {
+		switch (gesture) {
+		case GESTURE_HOLD:
+			return handleGestureHold();
+		}
+		return false;
+	}
+
+	/**
+	 * Handles the hold touch gestures.
+	 * Note that touch gesture support needs to be activated using the preprocessing variable polish.supportGestures
+	 * The default implementation shows the commands of this item, but only when the preprocessing variable
+	 * polish.Item.ShowCommandsOnHold is set to true.
+	 * 
+	 * @return true when this gesture was handled
+	 */
+	protected boolean handleGestureHold() {
+		//#if polish.Item.ShowCommandsOnHold
+			if (this.commands != null && !this.isShowCommands) {
+				this.isShowCommands = true;
+				if (this.commandsContainer != null) {
+					this.commandsContainer.focusChild(-1);
+				}
 				return true;
 			}
 		//#endif
@@ -3904,19 +3959,21 @@ public abstract class Item implements UiElement, Animatable
 				this.view.animate(currentTime, repaintRegion);
 			}
 		//#endif
-		//#if polish.Item.ShowCommandsOnHold
-			if (this.isPressed && (this.pointerPressTime != 0) && (currentTime - this.pointerPressTime > 500)) {
-				this.isIgnorePointerReleaseForCommands = true;
-				notifyItemPressedEnd();
-				this.pointerPressTime = 0;
-				this.isShowCommands = true;
-				Screen scr = getScreen();
-				repaintRegion.addRegion( scr.contentX, scr.contentY, scr.contentWidth, scr.contentHeight );
+		//#if tmp.supportTouchGestures
+			if (this.isPressed && (this.gestureStartTime != 0) && (currentTime - this.gestureStartTime > 500)) {
+				boolean handled = handleGesture( GESTURE_HOLD );
+				if (handled) {
+					notifyItemPressedEnd();
+					this.isIgnorePointerReleaseForGesture = true;
+					this.gestureStartTime = 0;					
+					Screen scr = getScreen();
+					repaintRegion.addRegion( scr.contentX, scr.contentY, scr.contentWidth, scr.contentHeight );
+				}
 			}
 		//#endif
 	}
 	
-	
+
 	/**
 	 * Animates this item.
 	 * Subclasses can override this method to create animations.
