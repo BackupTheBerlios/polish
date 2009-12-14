@@ -66,20 +66,20 @@ public class JDPTask extends Task {
 	String sources;
 	
 	public void execute() throws BuildException {
-		String sourceDir = this.sources.trim() + File.pathSeparator+ "source";
+		String sourceDir = this.sources.trim() + File.separatorChar + "source";
 
-		String resourceDir = this.sources.trim() +File.pathSeparator+ "classes";
+		String resourceDir = this.sources.trim() +File.separatorChar+ "classes";
 
 		try {
 			System.out.println("jdp: Reading template...");
 			
-			String fullPath = path.trim() + File.pathSeparator + this.name + ".jdp";
+			String fullPath = this.path.trim() + File.separatorChar + this.name + ".jdp";
 
 			String content;
 			
-			if(template != null)
+			if(this.template != null)
 			{
-				content = readFile(new File(template)).trim();
+				content = readFile(new File(this.template)).trim();
 			}
 			else
 			{
@@ -104,7 +104,7 @@ public class JDPTask extends Task {
 			String list = getFileList(sourceFiles, resourceFiles).trim();
 			
 			content = StringUtil.replace(content, FILES, list);
-			content = StringUtil.replace(content, NAME, name);
+			content = StringUtil.replace(content, NAME, this.name);
 			
 			writeFile(new File(fullPath),content);
 			
@@ -166,7 +166,7 @@ public class JDPTask extends Task {
 	}
 
 	public String getproject() {
-		return path;
+		return this.path;
 	}
 
 	public void setPath(String path) {
@@ -174,7 +174,7 @@ public class JDPTask extends Task {
 	}
 
 	public String getSources() {
-		return sources;
+		return this.sources;
 	}
 
 	public void setSources(String sources) {
@@ -182,7 +182,7 @@ public class JDPTask extends Task {
 	}
 
 	public String getTemplate() {
-		return template;
+		return this.template;
 	}
 
 	public void setTemplate(String template) {
@@ -190,7 +190,7 @@ public class JDPTask extends Task {
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(String name) {
