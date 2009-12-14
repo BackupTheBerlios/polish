@@ -4813,7 +4813,6 @@
 		since="J2ME Polish 2.1.3"
 	/>
 	
-	
 	<attribute
 		name="max-lines-appendix-position"
 		type="integer"
@@ -4843,6 +4842,16 @@
 		shell="new Integer()"
 		since="J2ME Polish 2.1.3"
 	/>
+
+	<attribute
+		name="commands-style"
+		type="style"
+		appliesTo="Item,FakeCustomItem"
+		description="The style for the commands container of an item that is shown when an item is pressed/hold for a long time and when the preprocesing variable polish.Item.ShowCommandsOnHold is activated."
+		id="415"
+		since="J2ME Polish 2.1.3"
+	/>
+
 
 
 <!--
