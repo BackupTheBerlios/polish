@@ -1771,6 +1771,9 @@ public abstract class Item implements UiElement, Animatable
 //					scr.addCommand( cmd );
 //				}
 			}
+			//#if polish.Item.ShowCommandsOnHold
+				this.commandsContainer = null;
+			//#endif
 			if (this.isInitialized) {
 				repaint();
 			}
@@ -1818,6 +1821,9 @@ public abstract class Item implements UiElement, Animatable
 						scr.removeCommand( cmd );
 					}
 				}
+				//#if polish.Item.ShowCommandsOnHold
+					this.commandsContainer = null;
+				//#endif
 				if (this.isInitialized) {
 					repaint();
 				}
@@ -2972,13 +2978,6 @@ public abstract class Item implements UiElement, Animatable
 		this.contentX = this.marginLeft + getBorderWidthLeft() + this.paddingLeft;
 		this.contentY = this.marginTop + getBorderWidthTop() + this.paddingTop; 
 		
-		//#if polish.css.inline-label
-			if (this.isInlineLabel && labelWidth < (90 * availWidth)/100) {
-				firstLineContentWidth -= labelWidth;
-				availableContentWidth -= labelWidth;
-			}
-		//#endif
-		
 		// initialise content by subclass:
 		//#if polish.css.content-visible
 			if (!this.isContentVisible) {
@@ -3001,9 +3000,16 @@ public abstract class Item implements UiElement, Animatable
 			//#ifdef polish.css.view-type
 				}
 			//#endif
+			//#if polish.css.inline-label
+				if (this.isInlineLabel && labelWidth < (90 * availWidth)/100 && this.contentWidth + labelWidth > availableContentWidth) {
+					setContentWidth( availableContentWidth - labelWidth );
+				}
+			//#endif
+			
 		//#if polish.css.content-visible
 			}
 		//#endif
+
 			
 		int cWidth = this.contentWidth;
 		int cHeight = this.contentHeight;
@@ -3468,7 +3474,11 @@ public abstract class Item implements UiElement, Animatable
 					}
 				}
 			}
-		//#endif	
+		//#endif
+		//#if tmp.handleEvents
+			EventManager.fireEvent( EventManager.EVENT_VISIT, this, null); 
+		//#endif
+
 	}
 	
 	/**
@@ -3507,8 +3517,10 @@ public abstract class Item implements UiElement, Animatable
 					}
 				}
 			}
-			
 		//#endif	
+		//#if tmp.handleEvents
+			EventManager.fireEvent( EventManager.EVENT_UNVISIT, this, null); 
+		//#endif
 	}
 
 	/**
@@ -4018,6 +4030,11 @@ public abstract class Item implements UiElement, Animatable
 					Screen scr = getScreen();
 					repaintRegion.addRegion( scr.contentX, scr.contentY, scr.contentWidth, scr.contentHeight );
 				}
+			}
+		//#endif
+		//#if polish.Item.ShowCommandsOnHold
+			if (this.isShowCommands && this.commandsContainer != null) {
+				this.commandsContainer.animate(currentTime, repaintRegion);
 			}
 		//#endif
 	}

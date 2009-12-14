@@ -61,6 +61,10 @@ public class EventManager {
 	public static final String EVENT_MENU_CLOSE =  "menu-close";
 	/** event when a commands menu is opened */
 	public static final String EVENT_MENU_OPEN =  "menu-open";
+	/** event when an item has been visited */
+	public static final String EVENT_VISIT = "visit";
+	/** event when the visited stated of an item is rolled back */
+	public static final String EVENT_UNVISIT = "unvisit";
 	
 	private static EventManager INSTANCE = new EventManager();
 	private final Hashtable eventListenersByEvent;
