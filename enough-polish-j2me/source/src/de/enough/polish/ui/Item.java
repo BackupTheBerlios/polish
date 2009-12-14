@@ -39,6 +39,7 @@ import de.enough.polish.benchmark.Benchmark;
 
 import de.enough.polish.event.EventManager;
 import de.enough.polish.util.ArrayList;
+import de.enough.polish.util.Arrays;
 import de.enough.polish.util.DrawUtil;
 import de.enough.polish.util.HashMap;
 import de.enough.polish.util.RgbImage;
@@ -3408,24 +3409,7 @@ public abstract class Item implements UiElement, Animatable
 					scr.callCommandListener(item.defaultCommand);
 				}
 				//#if polish.css.visited-style
-					if (this.style != null) {
-						Style visitedStyle = (Style) this.style.getObjectProperty("visited-style");
-						if (visitedStyle != null) {
-							this.hasBeenVisited = true;
-							//#debug
-							System.out.println("found visited style " + visitedStyle.name + " in " + this.style.name);
-							setStyle( visitedStyle );
-						} 
-						if (this.parent instanceof Container) {
-							Container cont = (Container) this.parent;
-							visitedStyle = (Style) cont.itemStyle.getObjectProperty("visited-style");
-							if (visitedStyle != null) {
-								//#debug
-								System.out.println("found visited style " + visitedStyle.name + " in " + cont.itemStyle.name);								
-								cont.itemStyle = visitedStyle;
-							}
-						}
-					}
+					notifyVisited();
 				//#endif
 				return true;
 			}
@@ -3461,7 +3445,72 @@ public abstract class Item implements UiElement, Animatable
 		return false;
 	}
 
+	/**
+	 * Is called when this item has been visited.
+	 */
+	public void notifyVisited() {
+		//#if polish.css.visited-style
+			if (this.style != null && !this.hasBeenVisited) {
+				Style visitedStyle = (Style) this.style.getObjectProperty("visited-style");
+				if (visitedStyle != null) {
+					this.hasBeenVisited = true;
+					//#debug
+					System.out.println("found visited style " + visitedStyle.name + " in " + this.style.name);
+					setStyle( visitedStyle );
+				} 
+				if (this.parent instanceof Container) {
+					Container cont = (Container) this.parent;
+					visitedStyle = (Style) cont.itemStyle.getObjectProperty("visited-style");
+					if (visitedStyle != null) {
+						//#debug
+						System.out.println("found visited style " + visitedStyle.name + " in " + cont.itemStyle.name);								
+						cont.itemStyle = visitedStyle;
+					}
+				}
+			}
+		//#endif	
+	}
 	
+	/**
+	 * Is called when the visited state of this item should be reset.
+	 */
+	public void notifyUnvisited() {
+		//#if polish.css.visited-style
+			if (this.style != null && this.hasBeenVisited) {
+				this.hasBeenVisited = false;
+				Style[] styles = (Style[]) Arrays.toArray(StyleSheet.getStyles().elements(), new Style[ StyleSheet.getStyles().size()] );
+				Container cont = null;
+				if (this.parent instanceof Container) {
+					cont = (Container) this.parent;
+				}
+				boolean oneLeft = false;
+				for (int i = 0; i < styles.length; i++) {
+					Style aStyle = styles[i];
+					Style visitedStyle = (Style) aStyle.getObjectProperty("visited-style");
+					if (visitedStyle == this.style) {
+						setStyle( aStyle );
+						if (oneLeft) {
+							break;
+						} else {
+							oneLeft = true;
+						}
+					}
+					else if (cont != null && cont.itemStyle == visitedStyle) {
+						cont.itemStyle = aStyle;
+						if (!oneLeft) {
+							Style focStyle = (Style) aStyle.getObjectProperty("focused-style");
+							if (focStyle != null) {
+								setStyle( focStyle );
+							}
+						}
+						break;
+					}
+				}
+			}
+			
+		//#endif	
+	}
+
 	/**
 	 * Is called when an item is pressed using the FIRE game action
 	 * 
@@ -4183,6 +4232,9 @@ public abstract class Item implements UiElement, Animatable
 				scr.removeItemCommands(this);
 			}
 		}
+		//#if polish.Item.ShowCommandsOnHold
+			this.isShowCommands = false;
+		//#endif
 		//#if tmp.handleEvents
 			EventManager.fireEvent( EventManager.EVENT_DEFOCUS, this, null); 
 		//#endif
