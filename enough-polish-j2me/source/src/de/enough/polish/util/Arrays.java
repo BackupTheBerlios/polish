@@ -25,6 +25,8 @@
  */
 package de.enough.polish.util;
 
+import java.util.Enumeration;
+
 
 /**
  * Arrays is used for sorting array elements.
@@ -616,6 +618,32 @@ public final class Arrays implements Comparator {
 				destination[destinationOffset+i] = source[sourceOffset+i];
 			}
 		}
+	}
+	
+	/**
+	 * Extracts the array out of the specified enumeration.
+	 * @param enumeration the enumeration
+	 * @return an array of all elements within the enumeration
+	 */
+	public static Object[] toArray( Enumeration enumeration ) {
+		ArrayList list = new ArrayList();
+		while (enumeration.hasMoreElements()) {
+			list.add( enumeration.nextElement() );
+		}
+		return list.toArray();
+	}
+	
+	/**
+	 * Copies the enumeration into the given (possibly typed) array.
+	 * @param enumeration the enumeration
+	 * @param target the array
+	 * @return the original target array
+	 */
+	public static Object[] toArray( Enumeration enumeration, Object[] target ) {
+		for (int i = 0; i < target.length; i++) {
+			target[i] = enumeration.nextElement();
+		}
+		return target;
 	}
 
 }
