@@ -4932,9 +4932,11 @@ implements UiElement, Animatable
 						int top = this.container.relativeY;
 						int right = left + this.container.itemWidth;
 						int bottom = top + Math.min( this.contentHeight, this.container.itemHeight );
-						if (this.title != null) {
-							top -= this.title.itemHeight;
-						}						
+						 //#if tmp.usingTitle
+							if (this.title != null) {
+								top -= this.title.itemHeight;
+							}
+						//#endif
 						if (x <= left || y <= top
 							 || x >= right || y >= bottom)
 						{
