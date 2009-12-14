@@ -850,6 +850,13 @@ public abstract class Item implements UiElement, Animatable
 		protected Style landscapeStyle;
 		protected Style portraitStyle;
 	//#endif
+	//#if polish.Item.ShowCommandsOnHold
+		private boolean isShowCommands;
+		private Container commandsContainer;
+		private long pointerPressTime;
+		private boolean isIgnorePointerReleaseForCommands;
+	//#endif
+
 
 
 
@@ -2359,7 +2366,7 @@ public abstract class Item implements UiElement, Animatable
 				return;
 			}
 		//#endif
-
+			
 		//#debug ovidiu
 		Benchmark.startSmartTimer("0");
 			
@@ -2379,6 +2386,7 @@ public abstract class Item implements UiElement, Animatable
 				this.parent.requestInit();
 			}
 		}
+		
 		//#if polish.css.x-adjust
 			if (this.xAdjustment != null) {
 				int value = this.xAdjustment.getValue(this.itemWidth);
@@ -2392,6 +2400,8 @@ public abstract class Item implements UiElement, Animatable
 				y += this.yAdjustment.getValue(this.itemHeight);
 			}
 		//#endif
+		int origX = x;
+		int origY = y;
 			
 		//#if polish.css.filter && polish.midp2
 			if (this.isFiltersActive && this.filters != null && !this.filterPaintNormally) {
@@ -2425,7 +2435,11 @@ public abstract class Item implements UiElement, Animatable
 				Benchmark.incrementSmartTimer("1");
 				Benchmark.check();
 				//#enddebug
-				
+				//#if polish.Item.ShowCommandsOnHold
+					if (this.isShowCommands) {
+						paintCommands( origX, origY, g );
+					}
+				//#endif
 				return;
 			}
 		//#endif
@@ -2445,6 +2459,11 @@ public abstract class Item implements UiElement, Animatable
 				} 
 				//System.out.println("painting RGB data for " + this  + ", pixel=" + Integer.toHexString( rgbData[ rgbData.length / 2 ]));
 				DrawUtil.drawRgb(rgbData, x, y, this.itemWidth, this.itemHeight, true, g );
+				//#if polish.Item.ShowCommandsOnHold
+					if (this.isShowCommands) {
+						paintCommands( origX, origY, g );
+					}
+				//#endif
 				return;
 			}
 		//#endif
@@ -2661,8 +2680,66 @@ public abstract class Item implements UiElement, Animatable
 //			g.setColor(0x00ff00);
 //			g.drawRect( this.parent.getAbsoluteX()  + this.parent.contentX + this.relativeX, this.parent.getAbsoluteY() + this.parent.contentY + this.relativeY, this.itemWidth, this.itemHeight);
 //		}
+		//#if polish.Item.ShowCommandsOnHold
+			if (this.isShowCommands) {
+				paintCommands( origX, origY, g );
+			}
+		//#endif
 	}
 	
+	/**
+	 * Paints the commands for this item after the user has pressed/clicked on an item for a long time.
+	 * Note that the preproessing variable polish.Item.ShowCommandsOnHold needs to be set to true for this feature.
+	 * 
+	 * @param x horizontal left start position
+	 * @param y vertical top start position
+	 * @param g the graphics context
+	 */
+	protected void paintCommands(int x, int y, Graphics g) {
+		//#if polish.Item.ShowCommandsOnHold
+			if (this.commandsContainer == null) {
+				//#style itemcommands?
+				this.commandsContainer = new Container(true);
+				this.commandsContainer.parent = this;
+				//#if polish.css.commands-style
+					if (this.style != null) {
+						Style commandsStyle = (Style) this.style.getObjectProperty("commands-style");
+						if (commandsStyle != null) {
+							this.commandsContainer.setStyle( commandsStyle );
+						}
+					}
+				//#endif
+				Object[] commandsArr = this.commands.getInternalArray();
+				for (int i = 0; i < commandsArr.length; i++) {
+					Command cmd = (Command) commandsArr[i];
+					if (cmd == null) {
+						break;
+					}
+					CommandItem item = new CommandItem( cmd, this );
+					this.commandsContainer.add(item);
+				}
+				this.commandsContainer.init( this.availableWidth, this.availableWidth, this.availableHeight );
+				int relX = 0;
+				if (this.commandsContainer.isLayoutRight()) {
+					relX = this.availableWidth - this.commandsContainer.itemWidth;
+				} else if (this.commandsContainer.isLayoutCenter()) {
+					relX = (this.availableWidth - this.commandsContainer.itemWidth)/2;
+				}
+				this.commandsContainer.relativeX = relX;
+				int relY = this.itemHeight;
+				if (this.commandsContainer.isLayoutTop()) {
+					relY = - this.commandsContainer.itemHeight;
+				} else if (this.commandsContainer.isLayoutVerticalCenter()) {
+					relY = (this.itemHeight - this.commandsContainer.itemHeight)/2;
+				}
+				this.commandsContainer.relativeY = relY;
+			}
+			x += this.commandsContainer.relativeX;
+			this.commandsContainer.paint(x, y + this.commandsContainer.relativeY, x, x + this.commandsContainer.itemWidth, g);
+		//#endif
+		
+	}
+
 	/**
 	 * Paints the background and border of this item.
 	 * The call is forwarded to paintBackground() and paintBorder().
@@ -3386,7 +3463,7 @@ public abstract class Item implements UiElement, Animatable
 			return false;
 		}
 		//#debug
-		System.out.println("notifyItemPressedStart");
+		System.out.println("notifyItemPressedStart for " + this);
 		this.isPressed = true;
 		boolean handled = false;
 		//#if polish.css.pressed-style
@@ -3535,7 +3612,7 @@ public abstract class Item implements UiElement, Animatable
 	 * The default method discards this event when relX/relY is outside of the item's area.
 	 * When the event took place inside of the content area, the pointer-event is translated into an artificial
 	 * FIRE game-action keyPressed event, which is subsequently handled
-	 * bu the handleKeyPressed(-1, Canvas.FIRE) method.
+	 * by the handleKeyPressed(-1, Canvas.FIRE) method.
 	 * This method needs should be overwritten only when the "polish.hasPointerEvents"
 	 * preprocessing symbol is defined: "//#ifdef polish.hasPointerEvents".
 	 *    
@@ -3550,9 +3627,33 @@ public abstract class Item implements UiElement, Animatable
 	 */
 	protected boolean handlePointerPressed( int relX, int relY ) {
 		//#ifdef polish.hasPointerEvents
-			if ( isInItemArea(relX, relY)) {
+			//#if polish.Item.ShowCommandsOnHold
+				if (this.isShowCommands && this.commandsContainer.handlePointerPressed(relX - this.commandsContainer.relativeX, relY - this.commandsContainer.relativeY)) {
+					return true;
+				}
+			//#endif
+			//#ifdef polish.css.view-type
+				if (this.view != null && this.view.handlePointerPressed(relX, relY)) {
+					return true;
+				}
+			//#endif
+			if ( isInItemArea(relX, relY) ) {
+				//#if polish.Item.ShowCommandsOnHold
+					if (this.commands != null && !this.isShowCommands) {
+						this.pointerPressTime = System.currentTimeMillis();
+					}
+				//#endif
 				return handleKeyPressed( 0, Canvas.FIRE );
 			}
+			//#if polish.Item.ShowCommandsOnHold
+				else {
+					this.pointerPressTime = 0;
+					if (this.isShowCommands) {
+						this.isShowCommands = false;
+						return true;
+					}
+				}
+			//#endif			
 		//#endif
 		return false;
 	}
@@ -3579,7 +3680,24 @@ public abstract class Item implements UiElement, Animatable
 		//#ifdef polish.hasPointerEvents
 			//#debug
 			System.out.println("handlePointerReleased " + relX + ", " + relY + " for item " + this + " isPressed=" + this.isPressed);
-			if ( isInItemArea(relX, relY)) {
+			//#if polish.Item.ShowCommandsOnHold
+				if (this.isShowCommands) {
+					if (this.isIgnorePointerReleaseForCommands) {
+						this.isIgnorePointerReleaseForCommands = false;
+					} else {
+						this.commandsContainer.handlePointerReleased(relX - this.commandsContainer.relativeX, relY - this.commandsContainer.relativeY);
+						this.isShowCommands = false;
+						notifyItemPressedEnd();
+					}
+					return true;
+				}
+			//#endif
+			//#ifdef polish.css.view-type
+				if (this.view != null && this.view.handlePointerReleased(relX, relY)) {
+					return true;
+				}
+			//#endif
+			if ( isInItemArea(relX, relY) ) {
 				return handleKeyReleased( 0, Canvas.FIRE );
 			} else if (this.isPressed) {
 				notifyItemPressedEnd();
@@ -3602,6 +3720,11 @@ public abstract class Item implements UiElement, Animatable
 	protected boolean handlePointerDragged(int relX, int relY)
 	{
 		//#ifdef polish.hasPointerEvents
+			//#if polish.Item.ShowCommandsOnHold
+				if (this.isShowCommands && this.commandsContainer.handlePointerDragged(relX - this.commandsContainer.relativeX, relY - this.commandsContainer.relativeY)) {
+					return true;
+				}
+			//#endif
 			//#ifdef polish.css.view-type
 				if (this.view != null && this.view.handlePointerDragged(relX, relY)) {
 					return true;
@@ -3779,6 +3902,16 @@ public abstract class Item implements UiElement, Animatable
 		//#if polish.css.view-type
 			if (this.view != null) {
 				this.view.animate(currentTime, repaintRegion);
+			}
+		//#endif
+		//#if polish.Item.ShowCommandsOnHold
+			if (this.isPressed && (this.pointerPressTime != 0) && (currentTime - this.pointerPressTime > 500)) {
+				this.isIgnorePointerReleaseForCommands = true;
+				notifyItemPressedEnd();
+				this.pointerPressTime = 0;
+				this.isShowCommands = true;
+				Screen scr = getScreen();
+				repaintRegion.addRegion( scr.contentX, scr.contentY, scr.contentWidth, scr.contentHeight );
 			}
 		//#endif
 	}
