@@ -1145,8 +1145,13 @@ implements ImageConsumer
 				return true;
 			}
 		//#endif
-		x -= this.contentX;
-		int val = (x * this.maxValue) / this.contentWidth;
+		int cw = this.contentWidth;
+		if (this.showValue && this.valuePosition == POSITION_LEFT) {
+			x -= this.valueWidth;
+			cw -= this.valueWidth;
+		}
+		x -= this.contentX - (cw / (this.maxValue * 2));
+		int val = (x * this.maxValue) / cw;
 		if (val != this.value) {
 			setValue( val );
 			notifyStateChanged();
@@ -1168,8 +1173,13 @@ implements ImageConsumer
 				return true;
 			}
 		//#endif
-		x -= this.contentX - (this.contentWidth / (this.maxValue * 2));
-		int val = (x * this.maxValue) / this.contentWidth;
+		int cw = this.contentWidth;
+		if (this.showValue && this.valuePosition == POSITION_LEFT) {
+			x -= this.valueWidth;
+			cw -= this.valueWidth;
+		}
+		x -= this.contentX - (cw / (this.maxValue * 2));
+		int val = (x * this.maxValue) / cw;
 		if (val != this.value) {
 			setValue( val );
 			notifyStateChanged();
