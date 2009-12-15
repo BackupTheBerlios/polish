@@ -4852,8 +4852,33 @@
 		since="J2ME Polish 2.1.3"
 	/>
 
+	<attribute
+		name="child-style"
+		type="style"
+		appliesTo="Container,FakeCustomContainer"
+		description="The style for the items of a Container that don't have a style assigned."
+		id="416"
+		since="J2ME Polish 2.1.3"
+	/>
+	
+	<attribute
+		name="child-style-first"
+		type="style"
+		appliesTo="Container,FakeCustomContainer"
+		description="The style for the first item of a Container in case that doesn't have a style assigned. Can be used only in conjunction with the child-style CSS attribute."
+		id="417"
+		since="J2ME Polish 2.1.3"
+	/>
 
-
+	<attribute
+		name="child-style-last"
+		type="style"
+		appliesTo="Container,FakeCustomContainer"
+		description="The style for the last item of a Container in case that doesn't have a style assigned. Can be used only in conjunction with the child-style CSS attribute."
+		id="418"
+		since="J2ME Polish 2.1.3"
+	/>
+	
 <!--
 	<attribute
 		name="repaint-previous-screen-anchor"
