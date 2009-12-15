@@ -42,6 +42,19 @@ import java.util.Map;
  */
 public final class StringUtil {
 
+        /**
+         * remove unknown charecters from emulaterPlatform string
+         *
+         * @param s String with the name of the plattform
+         * @return the emulator plattform string
+         */
+        public static String parseStringForEmulartorPlattform(String s){
+            s = replace(s, " ", "_");
+            s = replace(s, "(", "_");
+            s = replace(s, ")", "_");
+            s = replace(s, ".", "_");
+            return s;
+        }
 	/**
 	 * Replaces all search-strings in the given input.
 	 *  
