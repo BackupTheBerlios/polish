@@ -3,18 +3,27 @@ package de.enough.polish.sample.rss;
 import java.io.IOException;
 
 import de.enough.polish.browser.rss.RssBrowser;
+import de.enough.polish.browser.rss.RssItem;
 import de.enough.polish.browser.rss.RssTagHandler;
 import de.enough.polish.io.RmsStorage;
+import de.enough.polish.ui.Command;
 import de.enough.polish.ui.Item;
+import de.enough.polish.ui.ItemCommandListener;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.UiAccess;
 import de.enough.polish.util.ArrayList;
 
-public class StylingRssHandler extends RssTagHandler {
+public class StylingRssHandler 
+extends RssTagHandler
+implements ItemCommandListener
+{
 	
 	private ArrayList visitedUrls;
 	private RmsStorage urlsStorage;
 	private boolean visitedUrlsReset;
+	private Command cmdMarkAsUnread = new Command("Mark unread", Command.ITEM, 5 );
+	private Command cmdMarkAsRead = new Command("Mark read", Command.ITEM, 5 );
+	
 
 	/**
 	 * Creates a new RSS handler
@@ -32,6 +41,8 @@ public class StylingRssHandler extends RssTagHandler {
 		if (this.visitedUrls == null) {
 			this.visitedUrls = new ArrayList();
 		}
+		this.cmdMarkAsRead.setItemCommandListener(this);
+		this.cmdMarkAsUnread.setItemCommandListener(this);
 	}
 
 	/*
@@ -50,15 +61,18 @@ public class StylingRssHandler extends RssTagHandler {
 				if (visitedStyle != null) {
 					UiAccess.setStyle(item, visitedStyle);
 				}
+				item.addCommand( this.cmdMarkAsUnread );
+			} else {
+				item.addCommand( this.cmdMarkAsRead );
 			}
 		//#endif
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * @see de.enough.polish.browser.rss.RssTagHandler#onViewUrl(java.lang.String)
+	 * @see de.enough.polish.browser.rss.RssTagHandler#onViewUrl(java.lang.String, Item)
 	 */
-	protected void onViewUrl(String rssUrl) {
+	protected void onViewUrl(String rssUrl, Item item) {
 		if (!this.visitedUrlsReset) {
 			this.visitedUrlsReset = true;
 			if (this.visitedUrls.size() > 30) {
@@ -69,7 +83,9 @@ public class StylingRssHandler extends RssTagHandler {
 		//#debug
 		System.out.println("adding URL " + rssUrl);
 		this.visitedUrls.add(rssUrl);
-		super.onViewUrl(rssUrl);
+		item.removeCommand(this.cmdMarkAsRead);
+		item.addCommand(this.cmdMarkAsUnread);
+		super.onViewUrl(rssUrl, item);
 	}
 
 	/**
@@ -86,6 +102,32 @@ public class StylingRssHandler extends RssTagHandler {
 	 */
 	public void saveVisitedUrls() throws IOException {
 		this.urlsStorage.save(this.visitedUrls, "_urls");
+	}
+
+	/**
+	 * Handles the read/unread commands
+	 */
+	public void commandAction(Command cmd, Item item) {
+		RssItem rssFeed = (RssItem) item.getAttribute(RssTagHandler.ATTR_RSS_ITEM);
+		//#if polish.css.visited-style
+			if (cmd == this.cmdMarkAsRead) {
+				System.out.println("item=" + item);
+				item.notifyVisited();
+				item.removeCommand(this.cmdMarkAsRead);
+				item.addCommand(this.cmdMarkAsUnread);
+				if (rssFeed != null) {
+					this.visitedUrls.add(rssFeed.getLink());
+				}
+			} else if (cmd == this.cmdMarkAsUnread) {
+				item.notifyUnvisited();
+				item.removeCommand(this.cmdMarkAsUnread);
+				item.addCommand(this.cmdMarkAsRead);
+				if (rssFeed != null) {
+					this.visitedUrls.remove(rssFeed.getLink());
+				}
+			}
+		//#endif
+
 	}
 	
 

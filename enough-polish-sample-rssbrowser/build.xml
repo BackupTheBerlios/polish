@@ -88,8 +88,8 @@
 		         You can also define localized attributes in the resources/messages.txt files -->
 			<info
 				name="News Reader"
-				version="1.3.4"
-				description=""
+				version="1.3.7"
+				description="A simple RSS news reader"
 				vendorName="Enough Software"
 				infoUrl="http://www.j2mepolish.org"
 				icon="rss.png"

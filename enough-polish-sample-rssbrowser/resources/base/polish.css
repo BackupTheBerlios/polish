@@ -179,6 +179,7 @@ alertcontent {
 		font-color: #fff;
 		background-color: #f26522;
 	//#endif
+	commands-style: popupCommands;
 }
 
 .browserlink:pressed {
@@ -209,13 +210,73 @@ alertcontent {
 		font-color: #999;
 		background-color: #f26522;
 	//#endif
+	commands-style: popupCommands;
 }
 
 
+.popupCommands {
+	padding: 0px;
+	background {
+		type: round-rect;
+		color: #bfff;
+	}
+	border {
+		type: round-rect;
+		color: #666;
+		width: 1px;
+	}
+	layout: horizontal-center | vertical-center;
+	child-style: popupCommandWithBorder;
+	child-style-last: popupCommand;
+	focused-style-first: popupCommandFocusedFirst;
+	focused-style-last: popupCommandFocusedLast;
+}
+
+.popupCommand {
+	padding: 2px;
+	padding-left: 10%;
+	padding-right: 10%;
+	font-size: large;
+	font-color: #00aeef;
+	font-style: bold;
+	layout: left | expand;
+	max-width: 60%;
+}
+
+.popupCommandWithBorder extends popupCommand {
+	padding-bottom: 1px;
+	border {
+		type: bottom;
+		color: #666;
+	}
+}
+
+.popupCommand:hover {
+	background-color: #00aeef;
+	font-color: #fff;
+}
+
+.popupCommandFocusedFirst extends popupCommandFocused {
+	background {
+		type: round-rect-cornered;
+		color: #00aeef;
+		straight-corners: bottom-left, bottom-right;
+	}
+}
+
+.popupCommandFocusedLast extends popupCommandFocused {
+	background {
+		type: round-rect-cornered;
+		color: #00aeef;
+		straight-corners: top-left, top-right;
+	}
+}
 
 /************************** RSS item alert screen ****************************************************************************/
 
 .rssDescriptionAlert extends aboutAlert {
+	repaint-previous-screen: true;
+	margin-top: 15%;
 	content-style: .rssDescriptionAlertContent;
 	screen-change-animation: right;
 	background-color: #fff;
@@ -262,6 +323,7 @@ menubar {
 
 
 leftcommand {
+	font-size: large;
 	font-style: bold;
 	font-color: #00aeef;
 }
@@ -300,6 +362,7 @@ menuItem {
 	padding: 2px;
 	layout: left;
 	font-color: #00aeef;
+	font-size: large;
 }
 
 
