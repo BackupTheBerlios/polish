@@ -2760,6 +2760,14 @@ public abstract class Item implements UiElement, Animatable
 				} else if (this.commandsContainer.isLayoutVerticalCenter()) {
 					relY = (this.itemHeight - this.commandsContainer.itemHeight)/2;
 				}
+				int absY = getAbsoluteY();
+				Screen scr = getScreen();
+				int contY = scr.getScreenContentY();
+				if (absY + relY < contY) {
+					relY = contY - absY;
+				} else if (absY + relY + this.commandsContainer.itemHeight > contY + scr.getScreenContentHeight()) {
+					relY = contY + scr.getScreenContentHeight() - absY - this.commandsContainer.itemHeight;
+				}
 				this.commandsContainer.relativeY = relY;
 			}
 			x += this.commandsContainer.relativeX;
