@@ -56,11 +56,8 @@ implements ItemCommandListener
 			UiAccess.setStyle(item);
 		}
 		//#if polish.css.visited-style
-			if (this.visitedUrls.contains(rssUrl) && item.getStyle() != null) {
-				Style visitedStyle = (Style) item.getStyle().getObjectProperty("visited-style");
-				if (visitedStyle != null) {
-					UiAccess.setStyle(item, visitedStyle);
-				}
+			if (this.visitedUrls.contains(rssUrl)) {
+				item.notifyVisited();
 				item.addCommand( this.cmdMarkAsUnread );
 			} else {
 				item.addCommand( this.cmdMarkAsRead );
