@@ -108,7 +108,7 @@ public class ScrollBar extends Item {
 	private int screenAvailableContentHeight;
 	private int screenActualContentHeight;
 	private boolean isPointerDraggedHandled;
-	private boolean isPointerPressedHandled;
+	protected boolean isPointerPressedHandled;
 
 	/**
 	 * Creates a new default scrollbar

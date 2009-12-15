@@ -4720,6 +4720,8 @@ implements UiElement, Animatable
 			//#if tmp.useScrollBar
 				if (!processed) {
 					this.scrollBar.handlePointerPressed( x - this.scrollBar.relativeX, y - this.scrollBar.relativeY );
+				} else {
+					this.scrollBar.isPointerPressedHandled = false;
 				}
 			//#endif
 			//#ifdef tmp.usingTitle
