@@ -2726,13 +2726,24 @@ public abstract class Item implements UiElement, Animatable
 						}
 					}
 				//#endif
+				//#if polish.css.child-style
+					Style childStyle = null;
+					if (this.commandsContainer.style != null) {
+						childStyle = (Style) this.commandsContainer.style.getObjectProperty("child-style");
+					}
+				//#endif
+				
 				Object[] commandsArr = this.commands.getInternalArray();
 				for (int i = 0; i < commandsArr.length; i++) {
 					Command cmd = (Command) commandsArr[i];
 					if (cmd == null) {
 						break;
 					}
-					CommandItem item = new CommandItem( cmd, this );
+					CommandItem item = new CommandItem( cmd, this
+							//#if polish.css.child-style
+								, childStyle
+							//#endif
+					);
 					this.commandsContainer.add(item);
 				}
 				this.commandsContainer.init( this.availableWidth, this.availableWidth, this.availableHeight );
@@ -3699,8 +3710,11 @@ public abstract class Item implements UiElement, Animatable
 	protected boolean handlePointerPressed( int relX, int relY ) {
 		//#ifdef polish.hasPointerEvents
 			//#if polish.Item.ShowCommandsOnHold
-				if (this.isShowCommands && this.commandsContainer.handlePointerPressed(relX - this.commandsContainer.relativeX, relY - this.commandsContainer.relativeY)) {
-					return true;
+				if (this.isShowCommands) {
+					Container cmdCont = this.commandsContainer;
+					if (cmdCont != null && cmdCont.handlePointerPressed(relX - cmdCont.relativeX, relY - cmdCont.relativeY)) {
+						return true;
+					}
 				}
 			//#endif
 			//#ifdef polish.css.view-type
@@ -4191,6 +4205,9 @@ public abstract class Item implements UiElement, Animatable
 	 * @return true when the command has been handled by this item
 	 */
 	protected boolean handleCommand( Command cmd ) {
+		if (cmd == this.defaultCommand) {
+			notifyVisited();
+		}
 		if (cmd.commandAction(this, null)) {
 			return true;
 		}

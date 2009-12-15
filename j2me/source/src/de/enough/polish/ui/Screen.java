@@ -4647,9 +4647,11 @@ implements UiElement, Animatable
 		this.lastInteractionTime = System.currentTimeMillis();
 		try {
 			this.ignoreRepaintRequests = true;
+			// let the screen handle the pointer pressing:
+			boolean processed = false;
 			// check for scroll-indicator:
 			//#if tmp.useScrollIndicator
-				if (  this.paintScrollIndicator &&
+				if (  !processed && this.paintScrollIndicator &&
 						(x > this.scrollIndicatorX) &&
 						(y > this.scrollIndicatorY) &&
 						(x < this.scrollIndicatorX + this.scrollIndicatorWidth) &&
@@ -4687,13 +4689,12 @@ implements UiElement, Animatable
 			//#endif
 			//#ifdef tmp.menuFullScreen
 				//#ifdef tmp.useExternalMenuBar
-					if (this.menuBar.handlePointerPressed(x - this.menuBar.relativeX, y - this.menuBar.relativeY)) {
-						repaint();
-						return;
+					if (!processed) {
+						processed = this.menuBar.handlePointerPressed(x - this.menuBar.relativeX, y - this.menuBar.relativeY);
 					}
 				//#else
 					// check if one of the command buttons has been pressed:
-					if (this.menuOpened) {
+					if (!processed && this.menuOpened) {
 						if (y <= this.screenHeight) {
 							// a menu-item could have been selected:
 							if (this.menuContainer.handlePointerPressed( x - this.menuContainer.relativeX, y - this.menuContainer.relativeY )) {
@@ -4710,18 +4711,17 @@ implements UiElement, Animatable
 					}
 				//#endif
 			//#endif
-			if (this.subTitle != null && this.subTitle.handlePointerPressed(x - this.subTitle.relativeX, y - this.subTitle.relativeY)) {
-				repaint();
-				return;
+			if (!processed) {
+				processed = handlePointerPressed( x, y  );
+			}
+			if (!processed && this.subTitle != null) {
+				processed = this.subTitle.handlePointerPressed(x - this.subTitle.relativeX, y - this.subTitle.relativeY);
 			}
 			//#if tmp.useScrollBar
-				if (this.scrollBar.handlePointerPressed( x - this.scrollBar.relativeX, y - this.scrollBar.relativeY )) {
-					//repaint();
-					return;
+				if (!processed) {
+					this.scrollBar.handlePointerPressed( x - this.scrollBar.relativeX, y - this.scrollBar.relativeY );
 				}
 			//#endif
-			// let the screen handle the pointer pressing:
-			boolean processed = handlePointerPressed( x, y  );
 			//#ifdef tmp.usingTitle
 				//boolean processed = handlePointerPressed( x, y - (this.titleHeight + this.infoHeight + this.subTitleHeight) );
 				if (processed || this.isRepaintRequested) {
@@ -4814,15 +4814,15 @@ implements UiElement, Animatable
 		try {
 			this.ignoreRepaintRequests = true;
 			this.lastInteractionTime = System.currentTimeMillis();
+			boolean processed = false;
 			//#ifdef tmp.menuFullScreen
 				//#ifdef tmp.useExternalMenuBar
-					if (this.menuBar.handlePointerReleased(x - this.menuBar.relativeX, y - this.menuBar.relativeY)) {
-						repaint();
-						return;
+					if (!processed) {
+						processed = this.menuBar.handlePointerReleased(x - this.menuBar.relativeX, y - this.menuBar.relativeY);
 					}
 				//#else
 					// check if one of the command buttons has been pressed:
-					if (y > this.screenHeight) {
+					if (!processed && y > this.screenHeight) {
 		//				System.out.println("pointer at x=" + x + ", menuLeftCommandX=" + menuLeftCommandX );
 						if (x >= this.menuRightCommandX && this.menuRightCommandX != 0) {
 							if (this.menuOpened) {
@@ -4830,8 +4830,7 @@ implements UiElement, Animatable
 							} else if (this.menuSingleRightCommand != null) {
 								callCommandListener(this.menuSingleRightCommand );
 							}
-							repaint();
-							return;
+							processed = true;
 						} else if (x <= this.menuLeftCommandX){
 							// assume that the left command has been pressed:
 		//					System.out.println("x <= this.menuLeftCommandX: open=" + this.menuOpened );
@@ -4845,33 +4844,30 @@ implements UiElement, Animatable
 								openMenu( true );
 								//this.menuOpened = true;
 							}
-							repaint();
-							return;
+							processed = true;
 						}
-					} else if (this.menuOpened) {
+					} else if (!processed && this.menuOpened) {
 						// a menu-item could have been selected:
 						//int menuY = this.originalScreenHeight - (this.menuContainer.itemHeight + 1);
 						if (!this.menuContainer.handlePointerReleased( x - this.menuContainer.relativeX, y - this.menuContainer.relativeY )) {
 							openMenu( false );
 						}
-						repaint();
-						return;
+						processed = true;
 					}
 				//#endif
 			//#endif
-			if (this.subTitle != null && this.subTitle.handlePointerReleased(x - this.subTitle.relativeX, y - this.subTitle.relativeY)) {
-				repaint();
-				return;
+			if (!processed) {
+				processed = handlePointerReleased(x, y);
+			}
+			if (!processed && this.subTitle != null) {
+				processed = this.subTitle.handlePointerReleased(x - this.subTitle.relativeX, y - this.subTitle.relativeY);
 			}
 			//#if tmp.useScrollBar
-				if (this.scrollBar.handlePointerReleased( x - this.scrollBar.relativeX, y - this.scrollBar.relativeY )) {
-					repaint();
-					return;
+				if (!processed) {
+					processed = this.scrollBar.handlePointerReleased( x - this.scrollBar.relativeX, y - this.scrollBar.relativeY );
 				}
 			//#endif
 				
-			boolean processed = false;
-			processed = handlePointerReleased(x, y);
 			if (processed || this.isRepaintRequested) {
 				this.isRepaintRequested = false;
 				repaint();

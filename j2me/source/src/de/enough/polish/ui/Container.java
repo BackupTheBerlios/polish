@@ -131,6 +131,9 @@ public class Container extends Item {
 		private int showDelayIndex;
 		private long showNotifyTime;
 	//#endif
+	//#if polish.css.child-style
+		private Style childStyle;
+	//#endif
 	boolean appearanceModeSet;
 	private int scrollDirection;
 	private int scrollSpeed;
@@ -307,6 +310,11 @@ public class Container extends Item {
 		if (itemAddStyle != null) {
 			item.setStyle( itemAddStyle );
 		}
+		//#if polish.css.child-style
+			else if (item.style == null && this.childStyle != null) {
+				item.setStyle( this.childStyle );
+			}
+		//#endif
 	}
 
 	/**
@@ -1220,6 +1228,39 @@ public class Container extends Item {
 			int myContentWidth = 0;
 			int myContentHeight = 0;
 			Item[] myItems = (Item[]) this.itemsList.toArray( new Item[ this.itemsList.size() ]);
+			//#if (polish.css.child-style-first || polish.css.child-style-last) && polish.css.child-style
+				if (this.style != null && this.childStyle != null) {
+					Style firstStyle = null;
+					//#if polish.css.child-style-first					
+						firstStyle = (Style) this.style.getObjectProperty("child-style-first");
+					//#endif
+					Style lastStyle = null;
+					//#if polish.css.child-style-last					
+						lastStyle = (Style) this.style.getObjectProperty("child-style-last");
+					//#endif
+					if (firstStyle != null || lastStyle != null) {
+						int lastIndex = myItems.length - 1;
+						for (int i = 0; i < myItems.length; i++) {
+							Item item = myItems[i];
+							if (item.style == null) {
+								item.setStyle( this.childStyle );
+							}
+							if (i != 0 && item.style == firstStyle) {
+								item.setStyle( this.childStyle );
+							}
+							if (i != lastIndex && item.style == lastStyle) {
+								item.setStyle( this.childStyle );
+							}
+							if (i == 0 && firstStyle != null && item.style != firstStyle) {
+								item.setStyle( firstStyle );
+							}
+							if (i == lastIndex && lastStyle != null && item.style != lastStyle) {
+								item.setStyle( lastStyle );
+							}
+						}
+					}
+				}
+			//#endif
 			this.containerItems = myItems;
 			if (this.autoFocusEnabled && this.autoFocusIndex >= myItems.length ) {
 				this.autoFocusIndex = 0;
@@ -2251,6 +2292,12 @@ public class Container extends Item {
 			Integer showDelayInt = style.getIntProperty("show-delay");
 			if (showDelayInt != null) {
 				this.showDelay = showDelayInt.intValue();
+			}
+		//#endif
+		//#if polish.css.child-style
+			Style childStyleObj = (Style) style.getObjectProperty("child-style");
+			if (childStyleObj != null) {
+				this.childStyle = childStyleObj;
 			}
 		//#endif
 	}
