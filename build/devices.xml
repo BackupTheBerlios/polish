@@ -416,13 +416,14 @@ These namespaces/schemas will be used soon.
     <capability name="HeapSize" value="20MB" />
     <capability name="MenuBar.OptionsPosition" value="right" />
   </device>
+
   <device supportsPolishGui="true">
     <identifier>Native/iPhone</identifier>
     <features>hasPointerEvents, hasPointerMotionEvents, hasCommandKeyEvents, isVirtual</features>
     <description>An Apple iPhone.</description>
     <capability name="JavaPlatform" value="MIDP/2.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
-    <capability name="JavaPackage" value="btapi,fileconnection,location,pim,wmapi1.1,iphone" />
+    <capability name="JavaPackage" value="btapi,fileconnection,location,pim,mmapi,wmapi1.1,iphone" />
     <capability name="CanvasSize" value="320x460" />
     <capability name="ScreenSize" value="320x460" />
     <capability name="FullScreenSize" value="320x480" />
