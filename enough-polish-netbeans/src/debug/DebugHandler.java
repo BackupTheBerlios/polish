@@ -18,7 +18,7 @@ import org.openide.util.Exceptions;
  * @author marcels
  */
 public class DebugHandler {
-    public static final boolean enable = true;
+    public static final boolean enable = false;
     public static final String PATH_AND_FILENAME = "c:\\SE\\debug.txt";
     
     public static void save(String s) {
