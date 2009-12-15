@@ -119,6 +119,38 @@ alertcontent {
 	screen-change-animation: right;
 }
 
+.updateIntervalGroup {
+	view-type: horizontal;
+}
+
+.updateIntervalGroup:hover {
+	background-color: #f26522;
+}
+
+.updateIntervalItem {
+	padding: 2px;
+	font-color: #666;
+	font-size: large;
+	font-style: bold;
+	radiobox-selected: none;
+	radiobox-plain: none;
+}
+
+.updateIntervalItem:hover {
+}
+
+.updateIntervalItem:checked {
+	font-color: #00aeef;
+}
+
+.volumeGauge {
+	gauge-color:  #00aeef;
+}
+
+.volumeGauge:hover {
+	background-color: #f26522;
+}
+
 .itemInput {
 	layout: left | horizontal-expand;
 	padding: 2px;
@@ -346,7 +378,7 @@ middlecommand:pressed {
 
 menu {
 	padding: 0px;
-	min-width: 65%;
+	max-width: 65%;
 	/* you can slide the menu when it is opened:
 	view-type: slide;
 	*/
@@ -355,7 +387,6 @@ menu {
 		color: #fff;
 	}
 	focused-style-first: menuItemFocusedFirst;
-	expand-items: true;
 }
 
 menuItem {
@@ -363,6 +394,11 @@ menuItem {
 	layout: left;
 	font-color: #00aeef;
 	font-size: large;
+	border {
+		type: bottom;
+		color: #666;
+	}
+	layout: expand | left;
 }
 
 

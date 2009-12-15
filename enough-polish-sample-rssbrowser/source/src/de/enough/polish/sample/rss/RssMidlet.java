@@ -4,11 +4,13 @@ import java.io.IOException;
 
 import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.Choice;
+import javax.microedition.lcdui.ChoiceGroup;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Form;
+import javax.microedition.lcdui.Gauge;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.Item;
 import javax.microedition.lcdui.ItemCommandListener;
@@ -76,7 +78,7 @@ public class RssMidlet
          //#style itemMain
          menu.append("Quick Launch", null);
          //#style itemMain
-         menu.append("Go to URL", null);
+         menu.append("Settings", null);
          //#style itemMain
          menu.append("About", null);
          //#style itemMain
@@ -233,9 +235,34 @@ public class RssMidlet
 	private void showSettings() {
 		if (this.settingsForm == null) {
 			//#style screenSettings
-			Form form = new Form("Enter URL");
+			Form form = new Form("Settings");
+			//#style updateIntervalGroup
+			ChoiceGroup updateInterval  = new ChoiceGroup("Update Interval: ", ChoiceGroup.EXCLUSIVE);
+			//#style updateIntervalItem
+			updateInterval.append("never", null);
+			//#style updateIntervalItem
+			updateInterval.append("5m", null);
+			//#style updateIntervalItem
+			updateInterval.append("15m", null);
+			//#style updateIntervalItem
+			updateInterval.append("30m", null);
+			//#style updateIntervalItem
+			updateInterval.append("1h", null);
+			//#style updateIntervalItem
+			updateInterval.append("2h", null);
+			//#style updateIntervalItem
+			updateInterval.append("daily", null);
+			//#style updateIntervalItem
+			updateInterval.append("weekly", null);
+			//#style updateIntervalItem
+			updateInterval.append("monthly", null);
+			updateInterval.setSelectedIndex(0, true);
+			form.append( updateInterval );
+			//#style volumeGauge
+			Gauge gauge = new Gauge( "Volume: ", true, 100, 20 );
+			form.append( gauge );
 			//#style itemInput
-			TextField textField = new TextField("URL: ", "http://", 80, TextField.URL );
+			TextField textField = new TextField("Default URL: ", "http://", 80, TextField.URL );
 			form.append(textField);
 			form.setCommandListener( this );
 			form.addCommand( CMD_BACK );
