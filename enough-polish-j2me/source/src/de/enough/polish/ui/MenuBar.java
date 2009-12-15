@@ -1772,6 +1772,24 @@ public class MenuBar extends Item {
 			this.commandsContainer.handlePointerDragged( x, y );
 			return true;
 		}
+		//#if polish.css.pressed-style
+			if (relY < 0) {
+				if (this.singleLeftCommandItem.isPressed) {
+					this.singleLeftCommandItem.notifyItemPressedEnd();
+					return true;
+				}
+				if (this.singleRightCommandItem.isPressed) {
+					this.singleRightCommandItem.notifyItemPressedEnd();
+					return true;
+				}
+				//#if tmp.useMiddleCommand
+				if (this.singleMiddleCommandItem.isPressed) {
+					this.singleMiddleCommandItem.notifyItemPressedEnd();
+					return true;
+				}
+				//#endif
+			}
+		//#endif
 		return super.handlePointerDragged( relX, relY );
 	}
 	//#endif
