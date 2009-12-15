@@ -300,9 +300,10 @@ public class RssTagHandler
 	 * Subclasses may override this to react accordingly (e.g. by storing the URL for using visited styles within applyStylingForRssLink).
 	 * 
 	 * @param rssUrl the URL of the RSS item that is to be shown
+	 * @param item the UI item that is associated with the specified RSS URL 
 	 * @see #applyStylingForRssLink(Item, int, String)
 	 */
-	protected void onViewUrl( String rssUrl ) {
+	protected void onViewUrl( String rssUrl, Item item ) {
 		// ignore
 	}
 	

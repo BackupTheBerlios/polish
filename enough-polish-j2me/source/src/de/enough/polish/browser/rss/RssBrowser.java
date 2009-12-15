@@ -153,9 +153,8 @@ public class RssBrowser
 		{
 			Item rssItem = getFocusedItem();
 			String rssUrl = (String) rssItem.getAttribute(HtmlTagHandler.ATTR_HREF);
-			System.out.println("going to article, url=" + rssUrl);
 			if (rssUrl != null) {
-				this.rssTagHandler.onViewUrl(rssUrl);
+				this.rssTagHandler.onViewUrl(rssUrl, rssItem);
 			}
 			getRssItemCommandListener().commandAction(command, rssItem);
 			return true;
