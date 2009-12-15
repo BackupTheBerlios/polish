@@ -3132,7 +3132,7 @@ public class Container extends Item {
 				return true;
 			}
 		}
-		// an item within this container was selected:
+		// foward event to currently focused item:
 		int origRelX = relX;
 		int origRelY = relY;
 		relY -= this.yOffset;
@@ -3142,6 +3142,9 @@ public class Container extends Item {
 			int viewXOffset = 0;
 			ContainerView contView = this.containerView;
 			if (contView != null) {
+				if (contView.handlePointerReleased(relX + this.contentX, relY + this.contentY)) {
+					return true;
+				}
 				viewXOffset = contView.getScrollXOffset(); 
 				relX -= viewXOffset;
 			}
@@ -3177,15 +3180,6 @@ public class Container extends Item {
 				return this.defaultCommand != null && super.handlePointerReleased(origRelX, origRelY);
 			}
 		}
-		//#ifdef tmp.supportViewType
-			if (this.containerView != null) {
-				relX += viewXOffset;
-				if ( this.containerView.handlePointerReleased(relX + this.contentX,relY + this.contentY) ) {
-					return true;
-				}
-				relX -= viewXOffset;
-			}
-		//#endif
 		if (!isInItemArea(origRelX, origRelY)) {
 			return this.defaultCommand != null && super.handlePointerReleased(origRelX, origRelY);
 		}
