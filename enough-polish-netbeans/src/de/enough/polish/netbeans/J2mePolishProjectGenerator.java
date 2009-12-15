@@ -119,6 +119,8 @@ public class J2mePolishProjectGenerator {
         if (j2mePlatform == null) {
             j2mePlatform = "MPowerPlayer";
         }
+        j2mePlatform = StringUtil.parseStringForEmulartorPlattform(j2mePlatform);
+        
         String j2mePlatformDescription = "Emulator Platform"; 
         StringBuffer allIdentifiers = new StringBuffer();
         boolean usePolishGui = "true".equals( buildProperties.get("polish.usePolishGui") );
