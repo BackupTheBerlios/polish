@@ -2,6 +2,7 @@ Manifest-Version: 1.0
 OpenIDE-Module: de.enough.polish.netbeans
 OpenIDE-Module-Layer: de/enough/polish/netbeans/layer.xml
 OpenIDE-Module-Localizing-Bundle: de/enough/polish/netbeans/Bundle.properties
-OpenIDE-Module-Display-Category: Mobility
-OpenIDE-Module-Specification-Version: 1.2
+OpenIDE-Module-Display-Category: Java ME
+AutoUpdate-Show-In-Client: true
+OpenIDE-Module-Specification-Version: 1.2.8.8
 
