@@ -709,6 +709,13 @@ public class StringItem extends Item
 		this.lastContentHeight = this.contentHeight;
 	}
 	
+	/**
+	 * Wraps the specified text
+	 * @param body the text
+	 * @param firstLineWidth the available width for the first line
+	 * @param availWidth the available width for subsequent lines
+	 * @return an array of text lines that fit into the specified dimensions
+	 */
 	String[] wrap(String body, int firstLineWidth, int availWidth)
 	{
 		String[] result;
@@ -733,6 +740,17 @@ public class StringItem extends Item
 	}
 	
 	
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#setContentWidth(int)
+	 */
+	protected void setContentWidth(int width) {
+		if (width < this.contentWidth) {
+			initContent( width, width, this.availContentHeight );
+		}
+		super.setContentWidth(width);
+		
+	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#setStyle(de.enough.polish.ui.Style)
