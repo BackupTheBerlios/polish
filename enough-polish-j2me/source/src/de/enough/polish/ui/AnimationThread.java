@@ -88,6 +88,7 @@ public class AnimationThread extends Thread
 	//#else
 		private final static int SLEEP_INTERVAL = 300;
 	//#endif
+	private final static int ANIMATION_MIN_INTERVAL = 10;
 	protected static boolean releaseResourcesOnScreenChange;
 	private static ArrayList animationList;
 	//#if polish.Animation.MaxIdleTime:defined
@@ -243,7 +244,9 @@ public class AnimationThread extends Thread
 						Benchmark.pauseSmartTimer("6");
 						Benchmark.check();
 						//#enddebug
-						Thread.yield();
+						//Thread.yield();
+						Thread.sleep(ANIMATION_MIN_INTERVAL);
+						
 					} else {
 						//#mdebug ovidiu
 						Benchmark.pauseSmartTimer("6");
@@ -259,6 +262,8 @@ public class AnimationThread extends Thread
 						releaseResourcesOnScreenChange = false;
 					}
 					sleeptime = SLEEP_INTERVAL;
+					
+					Thread.sleep(sleeptime);
 				}
 			} catch (InterruptedException e) {
 				// ignore
