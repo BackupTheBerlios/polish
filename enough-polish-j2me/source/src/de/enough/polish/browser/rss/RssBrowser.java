@@ -49,6 +49,7 @@ public class RssBrowser
 {
 	private ItemCommandListener rssItemCommandListener;
 	private RssTagHandler rssTagHandler;
+	private Command linkCommand = HtmlTagHandler.CMD_LINK;
 
 	/**
 	 * Creates a new RSS reader
@@ -125,7 +126,16 @@ public class RssBrowser
 	 * @return the Command triggered by links
 	 */
 	public Command getLinkCommand() {
-		return HtmlTagHandler.CMD_LINK;
+		return this.linkCommand  ;
+	}
+	
+	/**
+	 * Sets the command that is used for opening &lt;a href...&gt; links. 
+	 * @param link the new command
+	 */
+	public void setLinkCommand( Command link ) {
+		this.linkCommand = link;
+		this.rssTagHandler.setLinkCommand( link );
 	}
 	
 	

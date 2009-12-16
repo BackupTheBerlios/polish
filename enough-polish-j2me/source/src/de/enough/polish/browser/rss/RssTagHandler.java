@@ -123,6 +123,15 @@ public class RssTagHandler
 			}
 		//#endif
 	}
+	
+	/**
+	 * Sets the command that is used for opening &lt;a href...&gt; links. 
+	 * @param link the new command
+	 */
+	public void setLinkCommand( Command link ) {
+		this.linkCommand = link;
+	}
+
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.browser.TagHandler#register(de.enough.polish.browser.Browser)

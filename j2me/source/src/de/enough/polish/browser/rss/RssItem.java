@@ -23,6 +23,9 @@ package de.enough.polish.browser.rss;
  * http://www.j2mepolish.org for details.
  */
 
+/**
+ * Encapsulates an item within an RSS feed.
+ */
 public class RssItem
 {
 	private String title;
@@ -32,7 +35,7 @@ public class RssItem
 	public RssItem(String title, String description, String link)
 	{
 		this.title = title;
-		this.description = description;
+		setDescription( description );
 		this.link = link;
 	}
 
@@ -43,7 +46,21 @@ public class RssItem
 
 	public void setDescription(String description)
 	{
-		this.description = description;
+		StringBuffer buffer = new StringBuffer(description.length());
+		boolean isInTag = false;
+		for (int i=0; i<description.length(); i++) {
+			char c = description.charAt(i);
+			if (isInTag) {
+				if (c == '>') {
+					isInTag = false;
+				}
+			} else if (c == '<') {
+				isInTag = true;
+			} else {
+				buffer.append(c);
+			}
+		}
+		this.description = buffer.toString();
 	}
 
 	public String getTitle()
