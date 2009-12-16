@@ -78,7 +78,7 @@ public class AnimationThread extends Thread
 	public static final String EVENT_IDLE_MODE_OFF = "idle-off";
 
 	//#ifdef polish.animationInterval:defined
-		//#= public final static int ANIMATION_INTERVAL = ${polish.animationInterval};
+		//#= public final static int ANIMATION_INTERVAL = ${time(polish.animationInterval)};
 	//#else
 		public final static int ANIMATION_INTERVAL = 50;
 	//#endif
@@ -88,7 +88,11 @@ public class AnimationThread extends Thread
 	//#else
 		private final static int SLEEP_INTERVAL = 300;
 	//#endif
-	private final static int ANIMATION_MIN_INTERVAL = 10;
+	//#ifdef polish.minAnimationInterval:defined
+		//#= private final static int ANIMATION_MIN_INTERVAL = ${time(polish.minAnimationInterval)};
+	//#else
+		private final static int ANIMATION_MIN_INTERVAL = 10;
+	//#endif
 	protected static boolean releaseResourcesOnScreenChange;
 	private static ArrayList animationList;
 	//#if polish.Animation.MaxIdleTime:defined
@@ -244,8 +248,12 @@ public class AnimationThread extends Thread
 						Benchmark.pauseSmartTimer("6");
 						Benchmark.check();
 						//#enddebug
-						//Thread.yield();
-						Thread.sleep(ANIMATION_MIN_INTERVAL);
+						//#if polish.vendor.sony-ericsson
+							Thread.yield();
+						//#else
+							// on other platforms (most notably Nokia Series 60), yield doesn't work so well, so we better sleep:
+							Thread.sleep(ANIMATION_MIN_INTERVAL);
+						//#endif
 						
 					} else {
 						//#mdebug ovidiu
