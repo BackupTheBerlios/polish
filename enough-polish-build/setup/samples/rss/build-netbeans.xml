@@ -125,6 +125,8 @@
 					<variable name="polish.TextField.supportSymbolsEntry" value="true" />
 					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
 					<variable name="polish.useScrollBar" value="true" />
+					<variable name="polish.handleEvents" value="true" />
+					<variable name="polish.Item.ShowCommandsOnHold" value="true" />
 				</variables>
 				<!-- obfuscator settings: do not obfuscate when the test-property is true -->
 				<obfuscator name="ProGuard" unless="test or polish.blackberry">
