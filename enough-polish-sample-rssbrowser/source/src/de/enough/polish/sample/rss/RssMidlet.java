@@ -20,6 +20,7 @@ import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
 import de.enough.polish.browser.html.FormListener;
+import de.enough.polish.browser.protocols.ExternalProtocolHandler;
 import de.enough.polish.browser.rss.RssBrowser;
 import de.enough.polish.browser.rss.RssItem;
 import de.enough.polish.browser.rss.RssTagHandler;
@@ -35,13 +36,13 @@ import de.enough.polish.ui.splash.InitializerSplashScreen;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class RssMidlet 
-	extends MIDlet
-	implements CommandListener, ApplicationInitializer
+extends MIDlet
+implements CommandListener, ApplicationInitializer
 {
 	private static final Command CMD_MAIN_MENU = new Command("Main Menu", Command.BACK, 5 );
 	private static final Command CMD_BACK = new Command("Back", Command.BACK, 5 );
 	private static final Command CMD_EXIT = new Command("Exit", Command.EXIT, 10);
-	private static final Command CMD_GO = new Command("Go", Command.OK, 2 );
+	//private static final Command CMD_GO = new Command("Go", Command.OK, 2 );
 
 	private Display display;
 	private Form browserScreen;
@@ -51,82 +52,78 @@ public class RssMidlet
 	private Form settingsForm;
 	private StylingRssHandler rssTagHandler;
 
-     protected void startApp()
-     	throws MIDletStateChangeException
-     {
-          this.display = Display.getDisplay(this);
-          
-          try {
-	          Image splashImage = Image.createImage("/splash.png");
-	          InitializerSplashScreen splashScreen = new InitializerSplashScreen(this.display, splashImage, 0xffffff, null, 0, this  );
-	          this.display.setCurrent( splashScreen );
-          } catch (Exception e) {
-        	  //#debug error
-        	  System.out.println("Unable to create splash screen" + e);
-        	  Displayable disp = initApp();
-        	  this.display.setCurrent( disp );
-          }
-     }
-     
+	protected void startApp()
+	throws MIDletStateChangeException
+	{
+		this.display = Display.getDisplay(this);
 
- 	/* (non-Javadoc)
- 	 * @see de.enough.polish.ui.splash.ApplicationInitializer#initApp()
- 	 */
- 	public Displayable initApp() {
- 		 //#style screenMain
-         List menu = new List("RSS Menu", Choice.IMPLICIT);
-         //#style itemMain
-         menu.append("Quick Launch", null);
-         //#style itemMain
-         menu.append("Settings", null);
-         //#style itemMain
-         menu.append("About", null);
-         //#style itemMain
-         menu.append("Exit", null);
-         menu.addCommand( CMD_EXIT );
-         menu.setCommandListener(this);
-         this.mainMenu = menu;
-                  
-         //#style rssBrowserForm
-         this.browserScreen = new Form("Browser");
-         //#style rssBrowser
-         this.rssBrowser = new RssBrowser();
-         StylingRssHandler handler = new StylingRssHandler(this.rssBrowser);
-         this.rssBrowser.setRssTagHandler(handler);
-         this.rssTagHandler = handler;
-         	
-         this.browserScreen.append( this.rssBrowser );
-         this.browserScreen.addCommand(CMD_BACK);
-         this.browserScreen.addCommand(CMD_EXIT);
-         this.browserScreen.addCommand(CMD_MAIN_MENU);
-         this.browserScreen.setCommandListener( new ThreadedCommandListener(this) );
-         
-         try { Thread.sleep(500); } catch (Exception e) { // just wait a little bit so that the splash screen can be recognized 
-        	 // ignore
-         }
-         
- 		return menu;
- 	}
+		try {
+			Image splashImage = Image.createImage("/splash.png");
+			InitializerSplashScreen splashScreen = new InitializerSplashScreen(this.display, splashImage, 0xffffff, null, 0, this  );
+			this.display.setCurrent( splashScreen );
+		} catch (Exception e) {
+			//#debug error
+			System.out.println("Unable to create splash screen" + e);
+			Displayable disp = initApp();
+			this.display.setCurrent( disp );
+		}
+	}
 
-     protected void pauseApp(){
-          // ignore
-     }
-     
-     protected void exit() {
- 		if (this.rssTagHandler != null) {
- 			try {
- 				this.rssTagHandler.saveVisitedUrls();
- 			} catch (IOException e) {
- 				//#debug error
- 				System.out.println("Unable to save visited URLs" + e);
- 			}
- 		}
- 		notifyDestroyed();
- 	}
 
-     protected void destroyApp(boolean unconditional) throws MIDletStateChangeException{
-          // nothing to clean up
-     }
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.splash.ApplicationInitializer#initApp()
+	 */
+	public Displayable initApp() {
+		//#style screenMain
+		List menu = new List("News Cup", Choice.IMPLICIT);
+		//#style itemMain
+		menu.append("Quick Launch", null);
+		//#style itemMain
+		menu.append("Settings", null);
+		//#style itemMain
+		menu.append("About", null);
+		//#style itemMain
+		menu.append("Exit", null);
+		menu.addCommand( CMD_EXIT );
+		menu.setCommandListener(this);
+		this.mainMenu = menu;
+
+		//#style rssBrowserForm
+		this.browserScreen = new Form("News");
+		//#style rssBrowser
+		this.rssBrowser = new RssBrowser();
+		StylingRssHandler handler = new StylingRssHandler(this.rssBrowser);
+		this.rssBrowser.setRssTagHandler(handler);
+		//this.rssBrowser.addProtocolHandler("http", new ExternalProtocolHandler("http", this ));
+		this.rssTagHandler = handler;
+
+		this.browserScreen.append( this.rssBrowser );
+		this.browserScreen.addCommand(CMD_BACK);
+		this.browserScreen.addCommand(CMD_EXIT);
+		this.browserScreen.addCommand(CMD_MAIN_MENU);
+		this.browserScreen.setCommandListener( new ThreadedCommandListener(this) );
+		return menu;
+	}
+
+	protected void pauseApp(){
+		// ignore
+	}
+
+	protected void exit() {
+		if (this.rssTagHandler != null) {
+			try {
+				this.rssTagHandler.saveVisitedUrls();
+			} catch (IOException e) {
+				//#debug error
+				System.out.println("Unable to save visited URLs" + e);
+			}
+		}
+		notifyDestroyed();
+	}
+
+	protected void destroyApp(boolean unconditional) throws MIDletStateChangeException{
+		// nothing to clean up
+	}
 
 	public void commandAction(Command command, Displayable displayable) {
 		//#debug
@@ -167,7 +164,7 @@ public class RssMidlet
 				this.display.setCurrent( this.mainMenu );
 			} else if (command == RssTagHandler.CMD_RSS_ITEM_SELECT || command.getLabel().equals("Select")) {
 				Item item = UiAccess.cast( this.rssBrowser.getFocusedItem() );
-				RssItem rssItem = (RssItem) UiAccess.getAttribute(item, RssTagHandler.ATTR_RSS_ITEM);
+				RssItem rssItem = (RssItem) UiAccess.getAttribute(item, RssItem.ATTRIBUTE_KEY);
 				showRssNewsItem( rssItem );
 			}
 		} else if (displayable == this.settingsForm) {
@@ -186,21 +183,21 @@ public class RssMidlet
 			exit();
 		}
 	}
-	
+
 //	public void commandAction(Command command, Item item)
 //	{
-//		//#debug
-//		System.out.println("commandAction: cmd=" + command.getLabel() + " for item " + item);
-//		if (command == RssTagHandler.CMD_RSS_ITEM_SELECT) {
-//			RssItem rssItem = (RssItem) UiAccess.getAttribute(item, RssTagHandler.ATTR_RSS_ITEM);
-//			showRssNewsItem( rssItem );
-//		}
-//		else {
-//			//#debug warn
-//			System.err.println("Unhandled command " + command);
-//		}
+//	//#debug
+//	System.out.println("commandAction: cmd=" + command.getLabel() + " for item " + item);
+//	if (command == RssTagHandler.CMD_RSS_ITEM_SELECT) {
+//	RssItem rssItem = (RssItem) UiAccess.getAttribute(item, RssTagHandler.ATTR_RSS_ITEM);
+//	showRssNewsItem( rssItem );
 //	}
-	
+//	else {
+//	//#debug warn
+//	System.err.println("Unhandled command " + command);
+//	}
+//	}
+
 	private void showRssNewsItem( RssItem rssItem ) {
 		if (rssItem != null) {
 			//#debug
@@ -217,16 +214,16 @@ public class RssMidlet
 	 */
 	private void showAbout() {
 		//#style aboutAlert
-        Alert alert = new Alert("About", "Enough Software (c) 2008", null, null);
-        alert.setTimeout(Alert.FOREVER);
-        try {
-	          Image splashImage = Image.createImage("/splash.png");
-	          alert.setImage(splashImage);
-        } catch (Exception e) {
-        	//#debug error
-        	System.out.println("Unable to load splash image" + e );
-        }
-        this.display.setCurrent( alert );
+		Alert alert = new Alert("About", "Enough Software (c) 2010\nYou can use this application as a basis for your own apps.\nPowered by J2ME Polish.", null, null);
+		alert.setTimeout(Alert.FOREVER);
+		try {
+			Image splashImage = Image.createImage("/splash.png");
+			alert.setImage(splashImage);
+		} catch (Exception e) {
+			//#debug error
+			System.out.println("Unable to load splash image" + e );
+		}
+		this.display.setCurrent( alert );
 	}
 
 	/**
@@ -261,12 +258,12 @@ public class RssMidlet
 			//#style volumeGauge
 			Gauge gauge = new Gauge( "Volume: ", true, 100, 20 );
 			form.append( gauge );
-			//#style itemInput
-			TextField textField = new TextField("Default URL: ", "http://", 80, TextField.URL );
-			form.append(textField);
+//			//#style itemInput
+//			TextField textField = new TextField("Default URL: ", "http://", 80, TextField.URL );
+//			form.append(textField);
 			form.setCommandListener( this );
 			form.addCommand( CMD_BACK );
-			form.addCommand( CMD_GO );
+			//form.addCommand( CMD_GO );
 			this.settingsForm = form;
 		}
 		this.display.setCurrent( this.settingsForm );
@@ -290,6 +287,6 @@ public class RssMidlet
 		return this.defaultRssUrl ;
 	}
 
-	
+
 
 }

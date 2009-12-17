@@ -5,6 +5,9 @@ import java.io.IOException;
 import de.enough.polish.browser.rss.RssBrowser;
 import de.enough.polish.browser.rss.RssItem;
 import de.enough.polish.browser.rss.RssTagHandler;
+import de.enough.polish.event.EventListener;
+import de.enough.polish.event.EventManager;
+import de.enough.polish.event.GestureEvent;
 import de.enough.polish.io.RmsStorage;
 import de.enough.polish.ui.Command;
 import de.enough.polish.ui.Item;
@@ -15,7 +18,7 @@ import de.enough.polish.util.ArrayList;
 
 public class StylingRssHandler 
 extends RssTagHandler
-implements ItemCommandListener
+implements ItemCommandListener, EventListener
 {
 	
 	private ArrayList visitedUrls;
@@ -43,6 +46,9 @@ implements ItemCommandListener
 		}
 		this.cmdMarkAsRead.setItemCommandListener(this);
 		this.cmdMarkAsUnread.setItemCommandListener(this);
+		
+		EventManager.getInstance().addEventListener(GestureEvent.EVENT_GESTURE_SWIPE_LEFT, this);
+		EventManager.getInstance().addEventListener(GestureEvent.EVENT_GESTURE_SWIPE_RIGHT, this);
 	}
 
 	/*
@@ -105,26 +111,52 @@ implements ItemCommandListener
 	 * Handles the read/unread commands
 	 */
 	public void commandAction(Command cmd, Item item) {
-		RssItem rssFeed = (RssItem) item.getAttribute(RssTagHandler.ATTR_RSS_ITEM);
+		RssItem rssFeed = (RssItem) item.getAttribute(RssItem.ATTRIBUTE_KEY);
 		//#if polish.css.visited-style
 			if (cmd == this.cmdMarkAsRead) {
-				System.out.println("item=" + item);
-				item.notifyVisited();
-				item.removeCommand(this.cmdMarkAsRead);
-				item.addCommand(this.cmdMarkAsUnread);
-				if (rssFeed != null) {
-					this.visitedUrls.add(rssFeed.getLink());
-				}
+				visit( item, rssFeed );
 			} else if (cmd == this.cmdMarkAsUnread) {
-				item.notifyUnvisited();
-				item.removeCommand(this.cmdMarkAsUnread);
-				item.addCommand(this.cmdMarkAsRead);
-				if (rssFeed != null) {
-					this.visitedUrls.remove(rssFeed.getLink());
-				}
+				unvisit(item, rssFeed);
 			}
 		//#endif
 
+	}
+
+	/**
+	 * @param item
+	 * @param rssFeed
+	 */
+	private void unvisit(Item item, RssItem rssFeed) {
+		item.notifyUnvisited();
+		item.removeCommand(this.cmdMarkAsUnread);
+		item.addCommand(this.cmdMarkAsRead);
+		if (rssFeed != null) {
+			this.visitedUrls.remove(rssFeed.getLink());
+		}
+	}
+
+	private void visit(Item item, RssItem rssFeed) {
+		item.notifyVisited();
+		item.removeCommand(this.cmdMarkAsRead);
+		item.addCommand(this.cmdMarkAsUnread);
+		if (rssFeed != null) {
+			this.visitedUrls.add(rssFeed.getLink());
+		}
+	}
+
+	public void handleEvent(String name, Object source, Object evntData) {		
+		Item item = (Item) source;
+		RssItem feedData = (RssItem) item.getAttribute(RssItem.ATTRIBUTE_KEY);
+		if (feedData != null) {
+			if (GestureEvent.EVENT_GESTURE_SWIPE_LEFT.equals(name)) {
+				unvisit(item, feedData);
+			} else {
+				visit(item, feedData);
+			}
+			GestureEvent event = (GestureEvent) evntData;
+			event.setHandled();
+		}
+		
 	}
 	
 

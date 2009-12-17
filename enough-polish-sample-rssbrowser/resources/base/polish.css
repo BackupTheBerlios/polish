@@ -98,6 +98,8 @@ label {
 /************************** about screen  *********************************************************************************/
 
 .aboutAlert {
+	margin-top: 15%;
+	repaint-previous-screen: true;
 	layout: horizontal-center | vertical-center;
 	padding: 5%;
 	background-color: #000;
@@ -116,7 +118,12 @@ alertcontent {
 
 /************************** settings screen  ******************************************************************************/
 .screenSettings extends screenMain {
+	margin-top: 15%;
+	padding-top: 5%;
+	padding-bottom: 5%;
+	repaint-previous-screen: true;
 	screen-change-animation: right;
+	layout: vertical-shrink | bottom;
 }
 
 .updateIntervalGroup {
@@ -310,22 +317,18 @@ alertcontent {
 	repaint-previous-screen: true;
 	margin-top: 15%;
 	content-style: .rssDescriptionAlertContent;
+	title-style: .rssDescriptionAlertTitle;
 	screen-change-animation: right;
 	background-color: #fff;
 	background-top: title;
 	background-bottom: menubar;
 	scroll-up-background: rssScrollUpBg;
 	scroll-down-background: rssScrollDownBg;	
+	layout: vertical-shrink | bottom;
 }
 
-.rssDescriptionAlertTitle  {
-	font-color: #222;
-	background-color: #fff;
-	text-wrap: false;
-	border {
-		type: bottom;
-		border-color: #222;
-	}
+.rssDescriptionAlertTitle extends title {
+	max-lines: 1;
 }
 
 .rssDescriptionAlertContent {
