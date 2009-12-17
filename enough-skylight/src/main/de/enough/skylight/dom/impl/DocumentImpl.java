@@ -4,7 +4,7 @@ import de.enough.polish.util.HashMap;
 import org.mozilla.javascript.Scriptable;
 import de.enough.skylight.dom.Attr;
 import de.enough.skylight.dom.Document;
-import de.enough.skylight.dom.DomException;
+import de.enough.skylight.dom.DOMException;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.Element;
 import de.enough.skylight.dom.Event;
@@ -24,7 +24,7 @@ public class DocumentImpl extends DomNodeImpl implements Document {
 		this.elementsById.put(id, domNode);
 	}
 	
-	public Attr createAttribute(String name) throws DomException {
+	public Attr createAttribute(String name) throws DOMException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -35,7 +35,7 @@ public class DocumentImpl extends DomNodeImpl implements Document {
 		return elementImpl;
 	}
 
-	public Event createEvent(String eventType) throws DomException {
+	public Event createEvent(String eventType) throws DOMException {
 		// TODO: Using this API for generating interal events is not nice as the caller need to cast and he has to do the dispatch
 		// himself.
 		if("DOMAttrModified".equals(eventType)) {
@@ -76,11 +76,11 @@ public class DocumentImpl extends DomNodeImpl implements Document {
 		return this.scriptableObject != null;
 	}
 
-	public String getNodeValue() throws DomException {
+	public String getNodeValue() throws DOMException {
 		return null;
 	}
 
-	public void setNodeValue(String nodeValue) throws DomException {
+	public void setNodeValue(String nodeValue) throws DOMException {
 		// Has no effect.
 	}
 }

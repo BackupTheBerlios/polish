@@ -4,8 +4,8 @@ import org.mozilla.javascript.Scriptable;
 
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.HashMap;
+import de.enough.skylight.dom.DOMException;
 import de.enough.skylight.dom.Document;
-import de.enough.skylight.dom.DomException;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.Event;
 import de.enough.skylight.dom.EventException;
@@ -46,7 +46,7 @@ public abstract class DomNodeImpl implements DomNode {
 
 	}
 
-	public DomNode appendChild(DomNode newChild) throws DomException {
+	public DomNode appendChild(DomNode newChild) throws DOMException {
 		// TODO: We need handling for DocumentFragments.
 		DomNodeImpl newChildImpl = (DomNodeImpl) newChild;
 		this.childList.add(newChildImpl);
@@ -177,7 +177,7 @@ public abstract class DomNodeImpl implements DomNode {
 	}
 
 	public DomNode insertBefore(DomNode newChild, DomNode refChild)
-			throws DomException {
+			throws DOMException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -192,7 +192,7 @@ public abstract class DomNodeImpl implements DomNode {
 
 	}
 
-	public DomNode removeChild(DomNode oldChild) throws DomException {
+	public DomNode removeChild(DomNode oldChild) throws DOMException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -221,12 +221,12 @@ public abstract class DomNodeImpl implements DomNode {
 	}
 
 	public DomNode replaceChild(DomNode newChild, DomNode oldChild)
-			throws DomException {
+			throws DOMException {
 		this.childList.replace((DomNodeImpl) newChild, (DomNodeImpl) oldChild);
 		return oldChild;
 	}
 
-	public void setPrefix(String prefix) throws DomException {
+	public void setPrefix(String prefix) throws DOMException {
 		// TODO Auto-generated method stub
 
 	}
@@ -259,17 +259,6 @@ public abstract class DomNodeImpl implements DomNode {
 
 	private void doAppendChild(DomNodeImpl childNode) {
 		this.childList.add(childNode);
-	}
-
-	/**
-	 * This method is called by the event system so the node has time to do its
-	 * default action. This could be for example changing the url after clicking
-	 * an anchor element.
-	 * 
-	 * @param event
-	 */
-	protected void doDefaultAction(EventImpl event) {
-		// TODO: Make this method abstract.
 	}
 
 	private void doSetParent(DomNodeImpl domNodeImpl) {
@@ -305,9 +294,23 @@ public abstract class DomNodeImpl implements DomNode {
 		}
 	}
 
-	public void handleCaptureEvent(EventImpl event) {
+	public void propagateEvent(EventImpl event) {
 		String type = event.getType();
-		ArrayList listeners = (ArrayList) this.capturingListeners.get(type);
+		ArrayList listeners;
+		short eventPhase = event.getEventPhase();
+		switch(eventPhase) {
+			case Event.CAPTURING_PHASE:
+				listeners = (ArrayList) this.capturingListeners.get(type);
+				break;
+			case Event.AT_TARGET:
+				listeners = (ArrayList) this.capturingListeners.get(type);
+				break;
+			case Event.BUBBLING_PHASE:
+				listeners = (ArrayList) this.bubblingListeners.get(type);
+				break;
+			default: throw new IllegalArgumentException("An event contains the illegal phase value '"+eventPhase+"'");
+		}
+		 
 		if (listeners == null) {
 			return;
 		}
@@ -319,21 +322,9 @@ public abstract class DomNodeImpl implements DomNode {
 				// Ignoring exception
 			}
 		}
-	}
-
-	public void handleBubblingEvent(EventImpl event) {
-		String type = event.getType();
-		ArrayList listeners = (ArrayList) this.bubblingListeners.get(type);
-		if (listeners == null) {
-			return;
-		}
-		for (int i = 0; i < listeners.size(); i++) {
-			EventListener listener = (EventListener) listeners.get(i);
-			try {
-				listener.handleEvent(event);
-			} catch (Exception e) {
-				// Ignoring exception
-			}
+		
+		if(eventPhase == Event.AT_TARGET) {
+			// TODO: Question: Are all click event handler on all parents triggered?
 		}
 	}
 }

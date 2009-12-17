@@ -46,33 +46,27 @@ public class EventProcessor {
 		if(doCapture) {
 			// Propagate event downstream
 			//#debug
-			System.out.println("Capturing event to target");
-			event.setEventEnvironment(Event.CAPTURING_PHASE);
+			System.out.println("Capturing event '"+event+"' to target '"+event.getTarget()+"'");
 			for(int i = numberOfEventTargets-1; i >= 0; i--){
 				DomNodeImpl chainElement = (DomNodeImpl)eventChain.item(i);
-				event.setEventEnvironment(chainElement);
+				event.setEventEnvironment(Event.CAPTURING_PHASE,chainElement);
 				//#debug
-				System.out.println("About to handle capture at element '"+chainElement+"'");
-				chainElement.handleCaptureEvent(event);
+				System.out.println("About to handle event '"+event+"' in capture phase at node '"+chainElement+"'");
+				chainElement.propagateEvent(event);
 				// React to capturing.
 				if(event.isStopPropagation()) {
 					//#debug
-					System.out.println("Stopping propagation");
+					System.out.println("Stopping propagation of event '"+event+"'");
 					return false;
 				}
 			}
 		}
 		
-		// Deliver event to eventarget
+		// Deliver event to event target
 		//#debug
-		System.out.println("Handling event at target '"+target+"'");
+		System.out.println("Handling event '"+event+"' at target '"+target+"'");
 		event.setEventEnvironment(Event.AT_TARGET, target);
-		target.handleCaptureEvent(event);
-		if( ! event.isPreventDefault()) {
-			// Let the node decide if the default action should be triggered.
-			target.doDefaultAction(event);
-		}
-		
+		target.propagateEvent(event);
 		
 		/*
 		 * The event propagation mechanism is as follows:
@@ -102,13 +96,12 @@ public class EventProcessor {
 			// Bubble event upstream.
 			//#debug
 			System.out.println("Handling bubbling of event");
-			event.setEventEnvironment(Event.BUBBLING_PHASE);
 			for(int i = 0; i < numberOfEventTargets; i++){
 				DomNodeImpl chainElement = (DomNodeImpl)eventChain.item(i);
 				//#debug
 				System.out.println("About to handle bubble at element '"+chainElement+"'");
-				event.setEventEnvironment(chainElement);
-				chainElement.handleBubblingEvent(event);
+				event.setEventEnvironment(Event.BUBBLING_PHASE,chainElement);
+				chainElement.propagateEvent(event);
 				// React to capturing.
 				if(event.isStopPropagation()) {
 					//#debug

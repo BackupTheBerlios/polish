@@ -43,7 +43,7 @@ public interface Text extends CharacterData {
      *   <br>NO_MODIFICATION_ALLOWED_ERR: Raised if this node is readonly.
      */
     public Text splitText(int offset)
-                          throws DomException;
+                          throws DOMException;
 
     /**
      * Returns whether this text node contains <a href='http://www.w3.org/TR/2004/REC-xml-infoset-20040204#infoitem.character'>
@@ -140,6 +140,6 @@ public interface Text extends CharacterData {
      * @since DOM Level 3
      */
     public Text replaceWholeText(String content)
-                                 throws DomException;
+                                 throws DOMException;
 
 }

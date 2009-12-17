@@ -47,7 +47,7 @@ public interface Document extends DomNode, DocumentEvent {
      *   <code>Document.xmlVersion</code> attribute.
      */
     public Element createElement(String tagName)
-                                 throws DomException;
+                                 throws DOMException;
 
     /**
      * Creates an empty <code>DocumentFragment</code> object.
@@ -119,7 +119,7 @@ public interface Document extends DomNode, DocumentEvent {
      *   <code>Document.xmlVersion</code> attribute.
      */
     public Attr createAttribute(String name)
-                                throws DomException;
+                                throws DOMException;
 
     /**
      * Creates an <code>EntityReference</code> object. In addition, if the 

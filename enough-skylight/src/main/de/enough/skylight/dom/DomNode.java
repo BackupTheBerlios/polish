@@ -187,7 +187,7 @@ public interface DomNode extends EventTarget{
      *   fit in a <code>DOMString</code> variable on the implementation 
      *   platform.
      */
-    public String getNodeValue() throws DomException;
+    public String getNodeValue() throws DOMException;
     /**
      * The value of this node, depending on its type; see the table above. 
      * When it is defined to be <code>null</code>, setting it has no effect, 
@@ -196,7 +196,7 @@ public interface DomNode extends EventTarget{
      *   NO_MODIFICATION_ALLOWED_ERR: Raised when the node is readonly and if 
      *   it is not defined to be <code>null</code>.
      */
-    public void setNodeValue(String nodeValue) throws DomException;
+    public void setNodeValue(String nodeValue) throws DOMException;
 
     /**
      * A code representing the type of the underlying object, as defined above.
@@ -295,7 +295,7 @@ public interface DomNode extends EventTarget{
      */
     public DomNode insertBefore(DomNode newChild, 
     		DomNode refChild)
-                             throws DomException;
+                             throws DOMException;
 
     /**
      * Replaces the child node <code>oldChild</code> with <code>newChild</code>
@@ -332,7 +332,7 @@ public interface DomNode extends EventTarget{
      */
     public DomNode replaceChild(DomNode newChild, 
     		DomNode oldChild)
-                             throws DomException;
+                             throws DOMException;
 
     /**
      * Removes the child node indicated by <code>oldChild</code> from the list 
@@ -350,7 +350,7 @@ public interface DomNode extends EventTarget{
      * @version DOM Level 3
      */
     public DomNode removeChild(DomNode oldChild)
-                            throws DomException;
+                            throws DOMException;
 
     /**
      * Adds the node <code>newChild</code> to the end of the list of children 
@@ -378,7 +378,7 @@ public interface DomNode extends EventTarget{
      * @version DOM Level 3
      */
     public DomNode appendChild(DomNode newChild)
-                            throws DomException;
+                            throws DOMException;
 
     /**
      * Returns whether this node has any children.
@@ -535,7 +535,7 @@ public interface DomNode extends EventTarget{
      * @since DOM Level 2
      */
     public void setPrefix(String prefix)
-                               throws DomException;
+                               throws DOMException;
 
     /**
      * Returns the local part of the qualified name of this node.

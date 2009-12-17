@@ -52,7 +52,7 @@ public interface NamedNodeMap {
      *   Entities.
      */
     public DomNode setNamedItem(DomNode arg)
-                             throws DomException;
+                             throws DOMException;
 
     /**
      * Removes a node specified by name. When this map contains the attributes 
@@ -69,7 +69,7 @@ public interface NamedNodeMap {
      *   <br>NO_MODIFICATION_ALLOWED_ERR: Raised if this map is readonly.
      */
     public DomNode removeNamedItem(String name)
-                                throws DomException;
+                                throws DOMException;
 
     /**
      * Returns the <code>index</code>th item in the map. If <code>index</code> 
@@ -105,7 +105,7 @@ public interface NamedNodeMap {
      */
 //    public DomNode getNamedItemNS(String namespaceURI, 
 //                               String localName)
-//                               throws DomException;
+//                               throws DOMException;
 
     /**
      * Adds a node using its <code>namespaceURI</code> and 
@@ -140,7 +140,7 @@ public interface NamedNodeMap {
      * @since DOM Level 2
      */
 //    public DomNode setNamedItemNS(DomNode arg)
-//                               throws DomException;
+//                               throws DOMException;
 
     /**
      * Removes a node specified by local name and namespace URI. A removed 
@@ -167,6 +167,6 @@ public interface NamedNodeMap {
      */
 //    public DomNode removeNamedItemNS(String namespaceURI, 
 //                                  String localName)
-//                                  throws DomException;
+//                                  throws DOMException;
 
 }

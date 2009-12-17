@@ -2,7 +2,7 @@ package de.enough.skylight.dom.impl;
 
 import org.mozilla.javascript.Scriptable;
 import de.enough.skylight.dom.Attr;
-import de.enough.skylight.dom.DomException;
+import de.enough.skylight.dom.DOMException;
 import de.enough.skylight.dom.Element;
 import de.enough.skylight.js.AttrScriptableObject;
 
@@ -45,7 +45,7 @@ public class AttrImpl extends DomNodeImpl implements Attr {
 		return this.value;
 	}
 	
-	public String getNodeValue() throws DomException {
+	public String getNodeValue() throws DOMException {
 		return this.value;
 	}
 
@@ -53,7 +53,7 @@ public class AttrImpl extends DomNodeImpl implements Attr {
 		this.value = newValue;
 	}
 	
-	public void setValue(String value) throws DomException {
+	public void setValue(String value) throws DOMException {
 		this.value = value;
 	}
 

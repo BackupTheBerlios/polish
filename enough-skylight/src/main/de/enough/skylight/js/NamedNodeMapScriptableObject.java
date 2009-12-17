@@ -5,7 +5,7 @@ import org.mozilla.javascript.BaseFunction;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
-import de.enough.skylight.dom.DomException;
+import de.enough.skylight.dom.DOMException;
 import de.enough.skylight.dom.impl.DomNodeImpl;
 import de.enough.skylight.dom.impl.NamedNodeMapImpl;
 
@@ -30,13 +30,13 @@ public class NamedNodeMapScriptableObject extends ScriptableObject {
 			@Override
 			public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
 				if(args.length == 0) {
-					throw new DomException();
+					throw new DOMException(DOMException.INVALID_ARGUMENT_ERR,"This method needs one numeric parameter.");
 				}
 				Object object = args[0];
 				if(object instanceof Double) {
 					return item(((Double)object).intValue());
 				}
-				throw new DomException("Unknown type:"+object.getClass());
+				throw new DOMException(DOMException.INVALID_ARGUMENT_ERR,"Unknown type:"+object.getClass());
 			}
 		}, PERMANENT);
 		defineProperty("getNamedItemNS", null, PERMANENT);

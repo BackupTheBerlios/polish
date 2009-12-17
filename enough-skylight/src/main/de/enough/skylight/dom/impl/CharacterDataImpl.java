@@ -1,7 +1,7 @@
 package de.enough.skylight.dom.impl;
 
 import de.enough.skylight.dom.CharacterData;
-import de.enough.skylight.dom.DomException;
+import de.enough.skylight.dom.DOMException;
 
 public abstract class CharacterDataImpl extends DomNodeImpl implements CharacterData{
 
@@ -12,19 +12,19 @@ public abstract class CharacterDataImpl extends DomNodeImpl implements Character
 		this.buffer = new StringBuffer(data);
 	}
 	
-	public void appendData(String arg) throws DomException {
+	public void appendData(String arg) throws DOMException {
 		this.buffer.append(arg);
 	}
 
-	public void deleteData(int offset, int count) throws DomException {
+	public void deleteData(int offset, int count) throws DOMException {
 		try{
 			this.buffer.delete(offset,offset+count);
 		} catch(Exception e) {
-			throw throwDomException(e);
+			throw throwDOMException(DOMException.INDEX_SIZE_ERR,e);
 		}
 	}
 
-	public String getData() throws DomException {
+	public String getData() throws DOMException {
 		return this.buffer.toString();
 	}
 
@@ -32,34 +32,34 @@ public abstract class CharacterDataImpl extends DomNodeImpl implements Character
 		return this.buffer.length();
 	}
 
-	public void insertData(int offset, String arg) throws DomException {
+	public void insertData(int offset, String arg) throws DOMException {
 		try {
 			this.buffer.insert(offset, arg);
 		} catch(Exception e) {
-			throw throwDomException(e);
+			throw throwDOMException(DOMException.INDEX_SIZE_ERR,e);
 		}
 	}
 
 	public void replaceData(int offset, int count, String arg)
-			throws DomException {
+			throws DOMException {
 		// TODO Auto-generated method stub
 	}
 
-	public void setData(String data) throws DomException {
+	public void setData(String data) throws DOMException {
 		this.buffer = new StringBuffer(data);
 	}
 
-	public String substringData(int offset, int count) throws DomException {
+	public String substringData(int offset, int count) throws DOMException {
 		try {
 			return this.buffer.toString().substring(offset, count);
 		} catch(Exception e) {
-			throw throwDomException(e);
+			throw throwDOMException(DOMException.INDEX_SIZE_ERR,e);
 		}
 	}
 	
 	// TODO: This could cause problems with the call stack.
-	private DomException throwDomException(Throwable t) throws DomException{
-		return new DomException(t.getClass().getName()+":"+t.getMessage());
+	private DOMException throwDOMException(short code, Throwable t){
+		return new DOMException(code, t.getClass().getName()+":"+t.getMessage());
 	}
 
 }

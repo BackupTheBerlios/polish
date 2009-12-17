@@ -2,7 +2,7 @@ package de.enough.skylight.dom.impl;
 
 import org.mozilla.javascript.Scriptable;
 
-import de.enough.skylight.dom.DomException;
+import de.enough.skylight.dom.DOMException;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.Text;
 import de.enough.skylight.js.TextScriptableObject;
@@ -39,12 +39,12 @@ public class TextImpl extends CharacterDataImpl implements Text{
 		return false;
 	}
 
-	public Text replaceWholeText(String content) throws DomException {
+	public Text replaceWholeText(String content) throws DOMException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Text splitText(int offset) throws DomException {
+	public Text splitText(int offset) throws DOMException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -53,11 +53,11 @@ public class TextImpl extends CharacterDataImpl implements Text{
 		return "#text";
 	}
 
-	public String getNodeValue() throws DomException {
+	public String getNodeValue() throws DOMException {
 		return this.buffer.toString();
 	}
 
-	public void setNodeValue(String nodeValue) throws DomException {
+	public void setNodeValue(String nodeValue) throws DOMException {
 		this.buffer = new StringBuffer(nodeValue);
 	}
 

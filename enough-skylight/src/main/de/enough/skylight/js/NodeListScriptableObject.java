@@ -5,7 +5,7 @@ import org.mozilla.javascript.BaseFunction;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
-import de.enough.skylight.dom.DomException;
+import de.enough.skylight.dom.DOMException;
 import de.enough.skylight.dom.impl.NodeListImpl;
 
 public class NodeListScriptableObject extends ScriptableObject{
@@ -24,14 +24,14 @@ public class NodeListScriptableObject extends ScriptableObject{
 			@Override
 			public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
 				if(args.length == 0) {
-					throw new DomException();
+					throw new DOMException(DOMException.INVALID_ARGUMENT_ERR,"This method needs one numeric parameter.");
 				}
 				Object object = args[0];
 				if(object instanceof Double) {
 					int intValue = ((Double)object).intValue();
 					return NodeListScriptableObject.this.nodeListImpl.item(intValue);
 				}
-				throw new DomException("Unknown type:"+object.getClass());
+				throw new DOMException(DOMException.INVALID_ARGUMENT_ERR,"Unknown type:"+object.getClass());
 			}
 		}, PERMANENT);
 	}

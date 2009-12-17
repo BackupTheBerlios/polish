@@ -28,7 +28,7 @@ public interface CharacterData extends DomNode {
      *   platform.
      */
     public String getData()
-                            throws DomException;
+                            throws DOMException;
     /**
      * The character data of the node that implements this interface. The DOM 
      * implementation may not put arbitrary limits on the amount of data 
@@ -41,7 +41,7 @@ public interface CharacterData extends DomNode {
      *   NO_MODIFICATION_ALLOWED_ERR: Raised when the node is readonly.
      */
     public void setData(String data)
-                            throws DomException;
+                            throws DOMException;
 
     /**
      * The number of 16-bit units that are available through <code>data</code> 
@@ -67,7 +67,7 @@ public interface CharacterData extends DomNode {
      */
     public String substringData(int offset, 
                                 int count)
-                                throws DomException;
+                                throws DOMException;
 
     /**
      * Append the string to the end of the character data of the node. Upon 
@@ -78,7 +78,7 @@ public interface CharacterData extends DomNode {
      *   NO_MODIFICATION_ALLOWED_ERR: Raised if this node is readonly.
      */
     public void appendData(String arg)
-                           throws DomException;
+                           throws DOMException;
 
     /**
      * Insert a string at the specified 16-bit unit offset.
@@ -92,7 +92,7 @@ public interface CharacterData extends DomNode {
      */
     public void insertData(int offset, 
                            String arg)
-                           throws DomException;
+                           throws DOMException;
 
     /**
      * Remove a range of 16-bit units from the node. Upon success, 
@@ -111,7 +111,7 @@ public interface CharacterData extends DomNode {
      */
     public void deleteData(int offset, 
                            int count)
-                           throws DomException;
+                           throws DOMException;
 
     /**
      * Replace the characters starting at the specified 16-bit unit offset 
@@ -135,6 +135,6 @@ public interface CharacterData extends DomNode {
     public void replaceData(int offset, 
                             int count, 
                             String arg)
-                            throws DomException;
+                            throws DOMException;
 
 }

@@ -1,7 +1,7 @@
 package de.enough.skylight.dom.impl;
 
 import de.enough.polish.util.HashMap;
-import de.enough.skylight.dom.DomException;
+import de.enough.skylight.dom.DOMException;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.NamedNodeMap;
 
@@ -27,12 +27,12 @@ public class NamedNodeMapImpl implements NamedNodeMap{
 		return (DomNode)values[index];
 	}
 
-	public DomNode removeNamedItem(String name) throws DomException {
+	public DomNode removeNamedItem(String name) throws DOMException {
 		// TODO Auto-generated method stub
 		throw new RuntimeException("This method is not yet implemented");
 	}
 
-	public DomNode setNamedItem(DomNode domNode) throws DomException {
+	public DomNode setNamedItem(DomNode domNode) throws DOMException {
 		return (DomNode)this.hashMap.put(domNode.getNodeName(), domNode);
 	}
 

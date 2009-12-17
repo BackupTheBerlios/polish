@@ -52,7 +52,7 @@ public interface Attr extends DomNode{
      *   NO_MODIFICATION_ALLOWED_ERR: Raised when the node is readonly.
      */
     public void setValue(String value)
-                            throws DomException;
+                            throws DOMException;
 
     /**
      * The <code>Element</code> node this attribute is attached to or 

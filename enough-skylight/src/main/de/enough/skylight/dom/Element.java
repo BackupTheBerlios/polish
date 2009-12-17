@@ -64,7 +64,7 @@ public interface Element extends DomNode {
      */
     public void setAttribute(String name, 
                              String value)
-                             throws DomException;
+                             throws DOMException;
 
     /**
      * Removes an attribute by name. If a default value for the removed 
@@ -82,7 +82,7 @@ public interface Element extends DomNode {
      *   NO_MODIFICATION_ALLOWED_ERR: Raised if this node is readonly.
      */
     public void removeAttribute(String name)
-                                throws DomException;
+                                throws DOMException;
 
     /**
      * Retrieves an attribute node by name.
@@ -117,7 +117,7 @@ public interface Element extends DomNode {
      *   elements.
      */
     public Attr setAttributeNode(Attr newAttr)
-                                 throws DomException;
+                                 throws DOMException;
 
     /**
      * Removes the specified attribute node. If a default value for the 
@@ -137,7 +137,7 @@ public interface Element extends DomNode {
      *   of the element.
      */
     public Attr removeAttributeNode(Attr oldAttr)
-                                    throws DomException;
+                                    throws DOMException;
 
     /**
      * Returns a <code>NodeList</code> of all descendant <code>Elements</code> 
@@ -166,7 +166,7 @@ public interface Element extends DomNode {
      */
 //    public String getAttributeNS(String namespaceURI, 
 //                                 String localName)
-//                                 throws DomException;
+//                                 throws DOMException;
 
     /**
      * Adds a new attribute. If an attribute with the same local name and 
@@ -213,7 +213,7 @@ public interface Element extends DomNode {
 //    public void setAttributeNS(String namespaceURI, 
 //                               String qualifiedName, 
 //                               String value)
-//                               throws DomException;
+//                               throws DOMException;
 
     /**
      * Removes an attribute by local name and namespace URI. If a default 
@@ -241,7 +241,7 @@ public interface Element extends DomNode {
      */
 //    public void removeAttributeNS(String namespaceURI, 
 //                                  String localName)
-//                                  throws DomException;
+//                                  throws DOMException;
 
     /**
      * Retrieves an <code>Attr</code> node by local name and namespace URI.
@@ -262,7 +262,7 @@ public interface Element extends DomNode {
      */
 //    public Attr getAttributeNodeNS(String namespaceURI, 
 //                                   String localName)
-//                                   throws DomException;
+//                                   throws DOMException;
 
     /**
      * Adds a new attribute. If an attribute with that local name and that 
@@ -291,7 +291,7 @@ public interface Element extends DomNode {
      * @since DOM Level 2
      */
 //    public Attr setAttributeNodeNS(Attr newAttr)
-//                                   throws DomException;
+//                                   throws DOMException;
 
     /**
      * Returns a <code>NodeList</code> of all the descendant 
@@ -311,7 +311,7 @@ public interface Element extends DomNode {
      */
 //    public NodeList getElementsByTagNameNS(String namespaceURI, 
 //                                           String localName)
-//                                           throws DomException;
+//                                           throws DOMException;
 
     /**
      * Returns <code>true</code> when an attribute with a given name is 
@@ -346,7 +346,7 @@ public interface Element extends DomNode {
      */
 //    public boolean hasAttributeNS(String namespaceURI, 
 //                                  String localName)
-//                                  throws DomException;
+//                                  throws DOMException;
 
     /**
      *  The type information associated with this element. 
@@ -376,7 +376,7 @@ public interface Element extends DomNode {
      */
 //    public void setIdAttribute(String name, 
 //                               boolean isId)
-//                               throws DomException;
+//                               throws DOMException;
 
     /**
      *  If the parameter <code>isId</code> is <code>true</code>, this method 
@@ -400,7 +400,7 @@ public interface Element extends DomNode {
 //    public void setIdAttributeNS(String namespaceURI, 
 //                                 String localName, 
 //                                 boolean isId)
-//                                 throws DomException;
+//                                 throws DOMException;
 
     /**
      *  If the parameter <code>isId</code> is <code>true</code>, this method 
@@ -422,6 +422,6 @@ public interface Element extends DomNode {
      */
 //    public void setIdAttributeNode(Attr idAttr, 
 //                                   boolean isId)
-//                                   throws DomException;
+//                                   throws DOMException;
 
 }

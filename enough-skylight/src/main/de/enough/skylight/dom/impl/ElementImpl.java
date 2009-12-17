@@ -3,7 +3,7 @@ package de.enough.skylight.dom.impl;
 
 import org.mozilla.javascript.Scriptable;
 import de.enough.skylight.dom.Attr;
-import de.enough.skylight.dom.DomException;
+import de.enough.skylight.dom.DOMException;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.Element;
 import de.enough.skylight.dom.MutationEvent;
@@ -68,16 +68,16 @@ public class ElementImpl extends DomNodeImpl implements Element{
 		return this.attributes.getNamedItem(name) != null;
 	}
 
-	public void removeAttribute(String name) throws DomException {
+	public void removeAttribute(String name) throws DOMException {
 		this.attributes.removeNamedItem(name);
 	}
 
-	public Attr removeAttributeNode(Attr oldAttr) throws DomException {
+	public Attr removeAttributeNode(Attr oldAttr) throws DOMException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public void setAttribute(String name, String value) throws DomException {
+	public void setAttribute(String name, String value) throws DOMException {
 		AttrImpl attribute = (AttrImpl)this.attributes.getNamedItem(name);
 		String previousValue;
 		if(attribute == null) {
@@ -89,10 +89,10 @@ public class ElementImpl extends DomNodeImpl implements Element{
 			attribute.setNodeValue(value);
 		}
 		this.attributes.setNamedItem(attribute);
-		EventEmitter.getInstance().fireDomAttrModifiedEvent(this, this, previousValue, value, name, MutationEvent.MODIFICATION);
+		EventEmitter.getInstance().emitDomAttrModifiedEvent(this, this, previousValue, value, name, MutationEvent.MODIFICATION);
 	}
 
-	public Attr setAttributeNode(Attr newAttr) throws DomException {
+	public Attr setAttributeNode(Attr newAttr) throws DOMException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -106,11 +106,11 @@ public class ElementImpl extends DomNodeImpl implements Element{
 		return this.tagName;
 	}
 
-	public String getNodeValue() throws DomException {
+	public String getNodeValue() throws DOMException {
 		return null;
 	}
 
-	public void setNodeValue(String nodeValue) throws DomException {
+	public void setNodeValue(String nodeValue) throws DOMException {
 		// Has no effect.
 	}
 	

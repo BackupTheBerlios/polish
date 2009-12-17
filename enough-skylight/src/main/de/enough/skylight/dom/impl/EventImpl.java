@@ -87,26 +87,6 @@ public abstract class EventImpl implements Event{
 		this.currentTarget = currentTarget;
 	}
 	
-	/**
-	 * This method is used to set the environment of the event. If the current target or the event phase changes,
-	 * the event engine will change the state of this event accordingly.
-	 * @param eventPhase
-	 * @param currentTarget
-	 */
-	protected void setEventEnvironment(short eventPhase) {
-		this.eventPhase = eventPhase;
-	}
-	
-	/**
-	 * This method is used to set the environment of the event. If the current target or the event phase changes,
-	 * the event engine will change the state of this event accordingly.
-	 * @param eventPhase
-	 * @param currentTarget
-	 */
-	protected void setEventEnvironment(EventTarget currentTarget) {
-		this.currentTarget = currentTarget;
-	}
-
 	protected boolean isStopPropagation() {
 		return this.stopPropagation;
 	}
