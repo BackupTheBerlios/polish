@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Insert title here</title>
+<script type="text/javascript">
+var counter = 0;
+function init(){
+	document.getElementById('body').addEventListener('click', function(event){event.counter = counter++},true);
+	document.getElementById('body').addEventListener('DOMCharacterDataModified', function(event){event.counter = counter++},true);
+	document.getElementById('id1').addEventListener('click', function(event){alert(event.counter+':capture and change text'); document.getElementById('output').firstChild.nodeValue='Changed'},true);
+	document.getElementById('id1').addEventListener('click',function(event){alert(event.counter+':bubble')},false);
+	document.getElementById('output').addEventListener('DOMCharacterDataModified',function(event){alert(event.counter+': text was modified')},true);
+
+	document.getElementById('id2').addEventListener('click',function(event){try{b = document.documentElement.childNodes.item()}catch(e){alert('exception'+e.code)};alert(b)},true);
+}
+function doForm(){
+	alert('Default action');
+}
+</script>
+</head>
+<body id="body" onload="init()">
+<form action="javascript:doForm()">
+<input id="id1" type="submit" value="click"/>
+<div id="output">Hello</div>
+<div id="id2">Blubber</div>
+</form>
+</body>
+</html>
