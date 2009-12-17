@@ -78,20 +78,20 @@ public class AnimationThread extends Thread
 	public static final String EVENT_IDLE_MODE_OFF = "idle-off";
 
 	//#ifdef polish.animationInterval:defined
-		//#= public final static int ANIMATION_INTERVAL = ${time(polish.animationInterval)};
+		//#= public final static long ANIMATION_INTERVAL = ${time(polish.animationInterval)};
 	//#else
-		public final static int ANIMATION_INTERVAL = 50;
+		public final static long ANIMATION_INTERVAL = 50L;
 	//#endif
 	private static final int ANIMATION_YIELD_INTERVAL = Integer.MIN_VALUE;
 	//#ifdef polish.sleepInterval:defined
-		//#= private final static int SLEEP_INTERVAL = ${time(polish.sleepInterval)};
+		//#= private final static long SLEEP_INTERVAL = ${time(polish.sleepInterval)};
 	//#else
-		private final static int SLEEP_INTERVAL = 300;
+		private final static long SLEEP_INTERVAL = 300L;
 	//#endif
 	//#ifdef polish.minAnimationInterval:defined
-		//#= private final static int ANIMATION_MIN_INTERVAL = ${time(polish.minAnimationInterval)};
+		//#= private final static long ANIMATION_MIN_INTERVAL = ${time(polish.minAnimationInterval)};
 	//#else
-		private final static int ANIMATION_MIN_INTERVAL = 10;
+		private final static long ANIMATION_MIN_INTERVAL = 10L;
 	//#endif
 	protected static boolean releaseResourcesOnScreenChange;
 	private static ArrayList animationList;
