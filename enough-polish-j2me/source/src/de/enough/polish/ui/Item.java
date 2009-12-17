@@ -38,6 +38,7 @@ import de.enough.polish.benchmark.Benchmark;
 //#endif
 
 import de.enough.polish.event.EventManager;
+import de.enough.polish.event.GestureEvent;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.Arrays;
 import de.enough.polish.util.DrawUtil;
@@ -713,8 +714,6 @@ public abstract class Item implements UiElement, Animatable
 	 * This is used as a value for internalX to describe that the item has no intenal position set 
 	 */
 	public final static int NO_POSITION_SET = -9999;
-	/** The 'hold' touch gesture is triggered when the user holds an item for more than 500 milliseconds */
-	public static final int GESTURE_HOLD = 1;
 	/** 
 	 * The internal horizontal position of this item's content relative to it's left edge. 
 	 * When it is equal NO_POSITION_SET this item's internal position is not known.
@@ -3007,6 +3006,12 @@ public abstract class Item implements UiElement, Animatable
 			availHeight -= this.marginTop + getBorderWidthTop() + this.paddingTop + this.paddingBottom + getBorderWidthBottom() + this.marginBottom;
 			this.availContentWidth = availableContentWidth;
 			this.availContentHeight = availHeight;
+			//#if polish.css.inline-label
+				if (this.isInlineLabel && labelWidth < (90 * availWidth)/100) {
+					firstLineContentWidth -= labelWidth;
+					availableContentWidth -= labelWidth;
+				}
+			//#endif
 			//#ifdef polish.css.view-type
 				if (this.view != null) {
 					this.view.parentItem = this;
@@ -3020,8 +3025,8 @@ public abstract class Item implements UiElement, Animatable
 				}
 			//#endif
 			//#if polish.css.inline-label
-				if (this.isInlineLabel && labelWidth < (90 * availWidth)/100 && this.contentWidth + labelWidth > availableContentWidth) {
-					setContentWidth( availableContentWidth - labelWidth );
+				if (this.isInlineLabel && labelWidth < (90 * availWidth)/100) {
+					availableContentWidth += labelWidth;
 				}
 			//#endif
 			
@@ -3476,6 +3481,9 @@ public abstract class Item implements UiElement, Animatable
 	public void notifyVisited() {
 		//#if polish.css.visited-style
 			if (this.style != null && !this.hasBeenVisited) {
+				if (this.isPressed) {
+					notifyItemPressedEnd();
+				}
 				Style visitedStyle = (Style) this.style.getObjectProperty("visited-style");
 				if (visitedStyle != null) {
 					this.hasBeenVisited = true;
@@ -3506,6 +3514,9 @@ public abstract class Item implements UiElement, Animatable
 	public void notifyUnvisited() {
 		//#if polish.css.visited-style
 			if (this.style != null && this.hasBeenVisited) {
+				if (this.isPressed) {
+					notifyItemPressedEnd();
+				}
 				this.hasBeenVisited = false;
 				Style[] styles = (Style[]) Arrays.toArray(StyleSheet.getStyles().elements(), new Style[ StyleSheet.getStyles().size()] );
 				Container cont = null;
@@ -3547,7 +3558,7 @@ public abstract class Item implements UiElement, Animatable
 	 * 
 	 * @return true when the item requests a repaint after this action
 	 */
-	protected boolean notifyItemPressedStart() {
+	public boolean notifyItemPressedStart() {
 		//try { throw new RuntimeException(); } catch (Exception e) { e.printStackTrace(); }
 		if (this.isPressed) {
 			return false;
@@ -3571,9 +3582,17 @@ public abstract class Item implements UiElement, Animatable
 	}
 	
 	/**
+	 * Determines whether this item is currently pressed.
+	 * @return true when this item is pressed
+	 */
+	public boolean isPresed() {
+		return this.isPressed;
+	}
+	
+	/**
 	 * Is called when an item is pressed
 	 */
-	protected void notifyItemPressedEnd() {
+	public void notifyItemPressedEnd() {
 		if (!this.isPressed) {
 			return;
 		}
@@ -3787,6 +3806,21 @@ public abstract class Item implements UiElement, Animatable
 					return true;
 				}
 			//#endif
+			//#if tmp.supportTouchGestures
+				int verticalDiff = Math.abs( relY - this.gestureStartY );
+				if (verticalDiff < 20) {
+					int horizontalDiff = relX - this.gestureStartX;
+					if (horizontalDiff > this.availableWidth/2) {
+						if (handleGestureSwipeRight(relX, relY)) {
+							return true;
+						}
+					} else if (horizontalDiff < -this.availableWidth/2) {
+						if (handleGestureSwipeLeft(relX, relY)) {
+							return true;
+						}						
+					}
+				}
+			//#endif
 			//#ifdef polish.css.view-type
 				if (this.view != null && this.view.handlePointerReleased(relX, relY)) {
 					return true;
@@ -3880,10 +3914,14 @@ public abstract class Item implements UiElement, Animatable
 	 * @return true when this gesture was handled
 	 * @see #handleGestureHold()
 	 */
-	protected boolean handleGesture(int gesture) {
+	protected boolean handleGesture(int gesture, int x, int y) {
 		switch (gesture) {
-		case GESTURE_HOLD:
-			return handleGestureHold();
+		case GestureEvent.GESTURE_HOLD:
+			return handleGestureHold(x, y);
+		case GestureEvent.GESTURE_SWIPE_LEFT:
+			return handleGestureSwipeLeft(x, y);
+		case GestureEvent.GESTURE_SWIPE_RIGHT:
+			return handleGestureSwipeRight(x, y);
 		}
 		return false;
 	}
@@ -3893,10 +3931,11 @@ public abstract class Item implements UiElement, Animatable
 	 * Note that touch gesture support needs to be activated using the preprocessing variable polish.supportGestures
 	 * The default implementation shows the commands of this item, but only when the preprocessing variable
 	 * polish.Item.ShowCommandsOnHold is set to true.
+	 * Also the EventManager.EVENT_GESTURE_HOLD is fired.
 	 * 
 	 * @return true when this gesture was handled
 	 */
-	protected boolean handleGestureHold() {
+	protected boolean handleGestureHold(int x, int y) {
 		//#if polish.Item.ShowCommandsOnHold
 			if (this.commands != null && !this.isShowCommands) {
 				this.isShowCommands = true;
@@ -3906,8 +3945,51 @@ public abstract class Item implements UiElement, Animatable
 				return true;
 			}
 		//#endif
+		//#if tmp.handleEvents
+			GestureEvent event = GestureEvent.getInstance();
+			event.reset( GestureEvent.GESTURE_HOLD, x, y );
+			EventManager.fireEvent(GestureEvent.EVENT_GESTURE_HOLD, this, event );
+			if (event.isHandled()) {
+				return true;
+			}
+		//#endif
 		return false;
 	}
+	
+	/**
+	 * Handles the swipe left gesture.
+	 * By default the EventManager.EVENT_GESTURE_SWIPE_LEFT is fired but the event is not handled.
+	 * @return true when the gesture was handled
+	 */
+	protected boolean handleGestureSwipeLeft(int x, int y) {
+		//#if tmp.handleEvents
+			GestureEvent event = GestureEvent.getInstance();
+			event.reset( GestureEvent.GESTURE_SWIPE_LEFT, x, y );
+			EventManager.fireEvent(GestureEvent.EVENT_GESTURE_SWIPE_LEFT, this, event );
+			if (event.isHandled()) {
+				return true;
+			}
+		//#endif
+		return false;
+	}
+	
+	/**
+	 * Handles the swipe right gesture.
+	 * By default the EventManager.EVENT_GESTURE_SWIPE_RIGHT is fired but the event is not handled.
+	 * @return true when the gesture was handled
+	 */
+	protected boolean handleGestureSwipeRight(int x, int y) {
+		//#if tmp.handleEvents
+			GestureEvent event = GestureEvent.getInstance();
+			event.reset( GestureEvent.GESTURE_SWIPE_RIGHT, x, y );
+			EventManager.fireEvent(GestureEvent.EVENT_GESTURE_SWIPE_RIGHT, this, event );
+			if (event.isHandled()) {
+				return true;
+			}
+		//#endif
+		return false;
+	}
+
 
 	/**
 	 * Adds a repaint request for this item's space.
@@ -4044,7 +4126,7 @@ public abstract class Item implements UiElement, Animatable
 		//#endif
 		//#if tmp.supportTouchGestures
 			if (this.isPressed && (this.gestureStartTime != 0) && (currentTime - this.gestureStartTime > 500)) {
-				boolean handled = handleGesture( GESTURE_HOLD );
+				boolean handled = handleGesture( GestureEvent.GESTURE_HOLD, this.gestureStartX, this.gestureStartY );
 				if (handled) {
 					notifyItemPressedEnd();
 					this.isIgnorePointerReleaseForGesture = true;

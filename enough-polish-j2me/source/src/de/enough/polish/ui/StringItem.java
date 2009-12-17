@@ -627,7 +627,7 @@ public class StringItem extends Item
 	 */
 	protected void initContent(int firstLineWidth, int availWidth, int availHeight){
 		//#debug
-		System.out.println("initContent for " + this.text);
+		System.out.println("initContent for " + this.text + " with firstLineWidth=" + firstLineWidth + ", availWidth=" + availWidth + ", availHeight=" + this.availableHeight);
 		String body = this.text;
 		if (body != null && this.font == null) {
 			this.font = Font.getDefaultFont();

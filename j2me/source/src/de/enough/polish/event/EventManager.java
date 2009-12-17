@@ -65,6 +65,13 @@ public class EventManager {
 	public static final String EVENT_VISIT = "visit";
 	/** event when the visited stated of an item is rolled back */
 	public static final String EVENT_UNVISIT = "unvisit";
+//	/** event when the recognized HOLD gesture was actually handled */
+//	public static final String EVENT_GESTURE_HOLD_HANDLED = "hold-handled";
+	/** event when a pointer press or release event was handled */
+	public static final String EVENT_POINTER_HANDLED = "touch-handled";
+	/** event when a key press or release event was handled */
+	public static final String EVENT_KEY_HANDLED = "key-handled";
+	
 	
 	private static EventManager INSTANCE = new EventManager();
 	private final Hashtable eventListenersByEvent;

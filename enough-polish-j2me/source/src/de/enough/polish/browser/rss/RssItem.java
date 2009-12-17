@@ -28,6 +28,9 @@ package de.enough.polish.browser.rss;
  */
 public class RssItem
 {
+	/** key for item attribute */
+	public static final String ATTRIBUTE_KEY = "RSS_ITEM";
+	
 	private String title;
 	private String description;
 	private String link;
