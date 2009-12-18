@@ -8235,10 +8235,13 @@ These namespaces/schemas will be used soon.
   </device>
   <device>
     <identifier>Nokia/N97</identifier>
+    <groups>Series60E5</groups>
     <capability name="alphalevels" value="256" />
     <capability name="bugs" value="FillPolygonRequiresPositiveXYInNokiaUiApi" />
     <capability name="build.bootclasspath" value="cldc-1.1.jar,midp-2.0.jar,midp-2.1.jar" />
     <capability name="build.implicitgroups" value="jtwi" />
+    <!-- <capability name="Emulator.Class" value="NokiaEmulator" /> -->
+    <capability name="build.Emulator.Skin" value="\devices\Nokia_N97_SDK_v1.0" />
     <capability name="canvas.isdoublebuffered" value="true" />
     <capability name="canvassize" value="502x288" />
     <capability name="classes.fullscreen" value="com.nokia.mid.ui.FullCanvas" />
@@ -8257,19 +8260,20 @@ These namespaces/schemas will be used soon.
     <capability name="key.addsymbolkey" value="42" />
     <capability name="key.changeinputmodekey" value="35" />
     <capability name="key.clearkey" value="8" />
-    <capability name="key.down" value="99" />
+    <capability name="key.down" value="-2" />
     <capability name="key.fire" value="106" />
     <capability name="key.gamea" value="117" />
     <capability name="key.gameb" value="105" />
     <capability name="key.gamec" value="111" />
     <capability name="key.gamed" value="112" />
-    <capability name="key.left" value="100" />
+    <capability name="key.left" value="-3" />
     <capability name="key.leftsoftkey" value="-6" />
     <capability name="key.returnsoftkey" value="10" />
-    <capability name="key.right" value="103" />
+    <capability name="key.right" value="-4" />
     <capability name="key.rightsoftkey" value="-7" />
-    <capability name="key.up" value="114" />
+    <capability name="key.up" value="-1" />
     <capability name="key.supportsAsciiKeyMap" value="true" />
+    <capability name="key.maybeSupportsAsciiKeyMap" value="true" />
     <capability name="menubar.optionsposition" value="left" />
     <capability name="microedition.commports" value="USB2,COM1,IR1,USB1,BT1,BT2,BT3,BT4,BT5,BT6,BT7,BT8,BT9,BT10,BT11,BT12,BT13,BT14,BT15,BT16,BT17,BT18,BT19,BT20,BT21,BT22,BT23,BT24,BT25,BT26,BT27,BT28,BT29,BT30,BT31,BT32,BT33,BT34,BT35,BT36,BT37,BT38,BT39,BT40,BT41,BT42,BT43,BT44,BT45,BT46,BT47,BT48,BT49,BT50,BT51,BT52,BT53,BT54,BT55,BT56,BT57,BT58,BT59,BT60,BT61,BT62,BT63,BT64" />
     <capability name="microedition.configuration" value="CLDC-1.1" />
