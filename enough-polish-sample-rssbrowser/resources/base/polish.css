@@ -121,6 +121,8 @@ alertcontent {
 	margin-top: 15%;
 	padding-top: 5%;
 	padding-bottom: 5%;
+	padding-left: 3px;
+	padding-right: 3px;
 	repaint-previous-screen: true;
 	screen-change-animation: right;
 	layout: vertical-shrink | bottom;
@@ -172,6 +174,34 @@ alertcontent {
 .itemInput:hover {
 	font-color: #fff;
 	background-color: #f26522;
+}
+
+/************************** gestures screen  ******************************************************************************/
+.sectionHeader {
+	font-color: #00aeef;
+	font-style: bold;
+	font-size: large;
+}
+
+.sectionText {
+	font-color: #fff;
+	font-size: small;
+}
+
+.testButton {
+	padding: 3px;
+	layout: expand | center;
+	background {
+		type: round-rect;
+		color: #666;
+	}
+}
+
+.testButton:hover {
+	background {
+		type: round-rect;
+		color: #fff;
+	}
 }
 
 /************************** RSS browser screen ****************************************************************************/

@@ -15,6 +15,7 @@ import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.Item;
 import javax.microedition.lcdui.ItemCommandListener;
 import javax.microedition.lcdui.List;
+import javax.microedition.lcdui.StringItem;
 import javax.microedition.lcdui.TextField;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
@@ -24,10 +25,15 @@ import de.enough.polish.browser.protocols.ExternalProtocolHandler;
 import de.enough.polish.browser.rss.RssBrowser;
 import de.enough.polish.browser.rss.RssItem;
 import de.enough.polish.browser.rss.RssTagHandler;
+import de.enough.polish.event.GestureEvent;
 import de.enough.polish.event.ThreadedCommandListener;
+import de.enough.polish.event.UiEvent;
+import de.enough.polish.event.UiEventListener;
 import de.enough.polish.ui.UiAccess;
 import de.enough.polish.ui.splash.ApplicationInitializer;
 import de.enough.polish.ui.splash.InitializerSplashScreen;
+import de.enough.polish.util.DeviceInfo;
+import de.enough.polish.util.Locale;
 
 /**
  * <p>Shows RSS news feeds</p>
@@ -51,6 +57,7 @@ implements CommandListener, ApplicationInitializer
 	private String defaultRssUrl = "http://www.digg.com/rss/containerscience.xml";
 	private Form settingsForm;
 	private StylingRssHandler rssTagHandler;
+	private boolean hasPointerEvents;
 
 	protected void startApp()
 	throws MIDletStateChangeException
@@ -59,7 +66,7 @@ implements CommandListener, ApplicationInitializer
 
 		try {
 			Image splashImage = Image.createImage("/splash.png");
-			InitializerSplashScreen splashScreen = new InitializerSplashScreen(this.display, splashImage, 0xffffff, null, 0, this  );
+			InitializerSplashScreen splashScreen = new InitializerSplashScreen(this.display, splashImage, this  );
 			this.display.setCurrent( splashScreen );
 		} catch (Exception e) {
 			//#debug error
@@ -77,11 +84,16 @@ implements CommandListener, ApplicationInitializer
 		//#style screenMain
 		List menu = new List("News Cup", Choice.IMPLICIT);
 		//#style itemMain
-		menu.append("Quick Launch", null);
+		menu.append(Locale.get("main.news"), null);
 		//#style itemMain
 		menu.append("Settings", null);
 		//#style itemMain
 		menu.append("About", null);
+		this.hasPointerEvents = DeviceInfo.hasPointerEvents();
+		if (this.hasPointerEvents) {
+			//#style itemMain
+			menu.append("Gestures", null);
+		}
 		//#style itemMain
 		menu.append("Exit", null);
 		menu.addCommand( CMD_EXIT );
@@ -144,8 +156,14 @@ implements CommandListener, ApplicationInitializer
 					showAbout();
 					break;
 				case 3:
-					exit();
+					if (this.hasPointerEvents) {
+						showGestures();
+					} else {
+						exit();
+					}
 					break;
+				case 4:
+					exit();
 				}
 			}
 		} else if (displayable == this.browserScreen){
@@ -167,22 +185,85 @@ implements CommandListener, ApplicationInitializer
 				RssItem rssItem = (RssItem) UiAccess.getAttribute(item, RssItem.ATTRIBUTE_KEY);
 				showRssNewsItem( rssItem );
 			}
-		} else if (displayable == this.settingsForm) {
-			if (command == CMD_BACK) {
-				this.display.setCurrent( this.mainMenu );
-			} else {
-				TextField textField = (TextField) UiAccess.getFocusedItem(this.settingsForm);
-				String url = textField.getString();
-				if (!url.startsWith("http://")) {
-					url = "http://" + url;
-				}
-				showRssBrowser(url);
-			}
+//		} else if (displayable == this.settingsForm) {
+//			if (command == CMD_BACK) {
+//				this.display.setCurrent( this.mainMenu );
+//			} else {
+//				TextField textField = (TextField) UiAccess.getFocusedItem(this.settingsForm);
+//				String url = textField.getString();
+//				if (!url.startsWith("http://")) {
+//					url = "http://" + url;
+//				}
+//				showRssBrowser(url);
+//			}
+		} else if (command == CMD_BACK) {
+			this.display.setCurrent( this.mainMenu );
 		}
 		if (command == CMD_EXIT) {
 			exit();
 		}
 	}
+
+	/**
+	 * Displays information about gestures
+	 *
+	 */
+	private void showGestures() {
+		//#style screenSettings
+		Form form = new Form( Locale.get("gestures.title"));
+		//#style sectionText
+		form.append( Locale.get("gestures.text"));
+		//#style sectionHeader
+		form.append( Locale.get("gestures.back.title"));
+		//#style sectionText
+		form.append( Locale.get("gestures.back.text"));
+		//#style sectionHeader
+		form.append( Locale.get("gestures.click.title"));
+		//#style sectionText
+		form.append( Locale.get("gestures.click.text"));
+		//#style sectionHeader
+		form.append( Locale.get("gestures.hold.title"));
+		//#style sectionText
+		form.append( Locale.get("gestures.hold.text"));
+		//#style sectionHeader
+		form.append( Locale.get("gestures.swipe.title"));
+		//#style sectionText
+		form.append( Locale.get("gestures.swipe.text"));
+		//#style sectionHeader
+		form.append( Locale.get("gestures.test.title"));
+		//#style sectionText
+		form.append( Locale.get("gestures.test.text"));
+		//#style testButton
+		StringItem stringItem = new StringItem( null, Locale.get("gestures.test.button"));
+		UiAccess.setUiEventListener(stringItem,
+			new UiEventListener() {
+				public void handleUiEvent(UiEvent event, Object source) {
+					if (event instanceof GestureEvent) {
+						GestureEvent gesture = (GestureEvent)event;
+						StringItem item = (StringItem)source;
+						item.setText( gesture.getGestureName());
+						gesture.setHandled();
+					}
+				}
+			}
+		);
+		de.enough.polish.ui.Command cmd = new de.enough.polish.ui.Command(Locale.get("gestures.test.button"), Command.OK, 1 );
+		cmd.setItemCommandListener(
+				new ItemCommandListener() {
+					public void commandAction(Command c, Item i) {
+						((StringItem)i).setText( Locale.get("gestures.test.click"));
+					}
+					
+				}
+		);
+		stringItem.setDefaultCommand(cmd);
+		form.append( stringItem );
+
+		form.addCommand(CMD_BACK);
+		form.setCommandListener(this);
+		this.display.setCurrent(form);
+	}
+
 
 //	public void commandAction(Command command, Item item)
 //	{
