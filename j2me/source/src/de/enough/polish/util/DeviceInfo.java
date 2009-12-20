@@ -27,8 +27,12 @@ package de.enough.polish.util;
 
 //#if polish.midp || polish.android
 	import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Image;
+	import javax.microedition.lcdui.Graphics;
+	import javax.microedition.lcdui.Image;
+//#endif
+
+//#if polish.usePolishGui
+	import de.enough.polish.ui.Display;
 //#endif
 
 /**
@@ -239,5 +243,29 @@ public class DeviceInfo
 	}
 
 
+	/**
+	 * Tests if the current device has pointer events
+	 * 
+	 * @return true when this device has pointer events
+	 */
+	public static boolean hasPointerEvents() {
+		//#if polish.usePolishGui
+			Display disp = Display.getInstance();
+			if (disp != null) {
+				return disp.hasPointerEvents();
+			}
+		//#endif
+		//#if polish.midp
+			Canvas canvas = new Canvas() {
+				public void paint(Graphics g) {
+					// ignore
+				}
+			};
+			if ( canvas.hasPointerEvents() ) {
+				return true;
+			}
+		//#endif
+		return false;
+	}
 
 }
