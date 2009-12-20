@@ -33,8 +33,6 @@ package de.enough.polish.event;
  */
 public class UiEvent {
 	private boolean isHandled;
-	private int keyCode;
-	private int gameAction;
 	
 	/**
 	 * Determines whether this event has been handled.

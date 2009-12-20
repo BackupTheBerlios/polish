@@ -30,6 +30,7 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 import de.enough.polish.event.EventManager;
+import de.enough.polish.event.UiEventListener;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.HashMap;
 
@@ -5130,5 +5131,93 @@ public final class UiAccess {
 		// ignore
 	}
 	//#endif
+
+	//#if polish.midp
+	/**
+	 * Sets an UiEventListener for the specified screen and its items.
+	 * @param screen the screen
+	 * @param listener the listener, use null to remove a listener
+	 */
+	public static void setUiEventListener( javax.microedition.lcdui.Screen screen, UiEventListener listener) {
+		// ignore
+	}
+	//#endif
 	
+	//#if polish.midp
+	/**
+	 * Sets an UiEventListener for the specified item and its children.
+	 * @param item the item for which the listener should be registered
+	 * @param listener the listener, use null to remove a listener
+	 */
+	public static void setUiEventListener( javax.microedition.lcdui.Item item, UiEventListener listener) {
+		// ignore
+	}
+	//#endif
+
+	//#if polish.midp
+	/**
+	 * Retrieves an UiEventListener for the specified screen and its items.
+	 * @param screen the screen
+	 * @return the listener or null
+	 */
+	public static UiEventListener getUiEventListener( javax.microedition.lcdui.Screen screen) {
+		return null;
+	}
+	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Retrieves an UiEventListener for the specified item
+	 * @param item the item
+	 * @return the listener of the item or one of its parents or null
+	 */
+	public static UiEventListener getUiEventListener( javax.microedition.lcdui.Item item ) {
+		return null;
+	}
+	//#endif
+
+	
+	//#if polish.usePolishGui
+	/**
+	 * Sets an UiEventListener for the specified screen and its items.
+	 * @param screen the screen
+	 * @param listener the listener, use null to remove a listener
+	 */
+	public static void setUiEventListener( Screen screen, UiEventListener listener) {
+		screen.setUiEventListener( listener );
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Sets an UiEventListener for the specified item and its children.
+	 * @param item the item for which the listener should be registered
+	 * @param listener the listener, use null to remove a listener
+	 */
+	public static void setUiEventListener( Item item, UiEventListener listener) {
+		item.setUiEventListener( listener );
+	}
+	//#endif
+
+	//#if polish.usePolishGui
+	/**
+	 * Retrieves an UiEventListener for the specified screen and its items.
+	 * @param screen the screen
+	 * @return the listener or null
+	 */
+	public static UiEventListener getUiEventListener(Screen screen) {
+		return screen.getUiEventListener();
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Retrieves an UiEventListener for the specified item
+	 * @param item the item
+	 * @return the listener of the item or one of its parents or null
+	 */
+	public static UiEventListener getUiEventListener(Item item ) {
+		return item.getUiEventListener();
+	}
+	//#endif
 }

@@ -1,5 +1,5 @@
 /*
- * Created on Dec 16, 2009 at 7:22:48 PM.
+ * Created on Dec 20, 2009 at 8:02:13 PM.
  * 
  * Copyright (c) 2007 Robert Virkus / Enough Software
  *
@@ -25,35 +25,23 @@
  */
 package de.enough.polish.event;
 
+
 /**
- * <p>Allows to handle UI events separately from the UI</p>
+ * <p>Allows to handle UI events without extending J2ME Polish UI components</p>
  *
- * <p>Copyright Enough Software 2009, 2010</p>
+ * <p>Copyright Enough Software 2009</p>
  * @author Robert Virkus, j2mepolish@enough.de
+ * @see de.enough.polish.ui.UiAccess#setUiEventListener(de.enough.polish.ui.Screen, UiEventListener)
+ * @see de.enough.polish.ui.UiAccess#setUiEventListener(de.enough.polish.ui.Item, UiEventListener)
  */
-public class UiEvent {
-	private boolean isHandled;
-	
+public interface UiEventListener {
 	/**
-	 * Determines whether this event has been handled.
+	 * Processes a UI event.
+	 * When the processing of this ui event should be stopped subsequently, the called method needs to call event.setHandled().
 	 * 
-	 * @return true when it was handled - in that case this event shoudld not be processed anymore.
+	 * @param event the event
+	 * @param source the source of the event, typically either a Screen or an Item
+	 * @see UiEvent#setHandled()
 	 */
-	public boolean isHandled() {
-		return this.isHandled;
-	}
-	
-	/**
-	 * Sets the state of this event to 'handled', so that other elements don't handle this event anymore.
-	 */
-	public void setHandled() {
-		this.isHandled = true;
-	}
-	
-	/**
-	 * Resets this event so that it can be reused.
-	 */
-	public void reset() {
-		this.isHandled = false;
-	}
+	public void handleUiEvent( UiEvent event, Object source );
 }

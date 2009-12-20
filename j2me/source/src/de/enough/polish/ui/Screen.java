@@ -37,6 +37,7 @@ import com.nttdocomo.ui.Frame;
 
 import de.enough.polish.event.AsynchronousMultipleCommandListener;
 import de.enough.polish.event.EventManager;
+import de.enough.polish.event.UiEventListener;
 import de.enough.polish.ui.backgrounds.TranslucentSimpleBackground;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.Locale;
@@ -378,8 +379,9 @@ implements UiElement, Animatable
 		private boolean isMoveScrollBackgrounds = true;
 	//#endif
 	//#if polish.css.screen-change-animation	
-	protected boolean enableScreenChangeAnimation = true;
+		protected boolean enableScreenChangeAnimation = true;
 	//#endif
+	private UiEventListener uiEventListener;
 	
 	/**
 	 * Creates a new screen, this constructor can be used together with the //#style directive.
@@ -6224,7 +6226,22 @@ implements UiElement, Animatable
 	public void setLastInteractionTime(long currentTimeMillis) {
 		this.lastInteractionTime = currentTimeMillis;
 	}
+	
+	/**
+	 * Sets an UiEventListener for this screen and its items.
+	 * @param listener the listener, use null to remove a listener
+	 */
+	public void setUiEventListener(UiEventListener listener) {
+		this.uiEventListener = listener;
+	}
 
+	/**
+	 * Retrieves the UiEventListener for this screen
+	 * @return the listener or null, if none has been registered
+	 */
+	public UiEventListener getUiEventListener() {
+		return this.uiEventListener;
+	}
 
 
 //#ifdef polish.Screen.additionalMethods:defined

@@ -32,34 +32,34 @@ package de.enough.polish.event;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class KeyEvent extends UiEvent {	
-	private int pointerX;
-	private int pointerY;
+	private int keyCode;
+	private int gameAction;
 
 	/**
-	 * Resets this pointer event for re-using it.
-	 * @param x the last pointer x position relative to the source of this event
-	 * @param y the last pointer y position relative to the source of this event
+	 * Resets this key event for re-using it.
+	 * @param key the last pressed or released key code
+	 * @param action the last associated game action
 	 */
-	public void reset( int x, int y ) {
-		this.pointerX = x;
-		this.pointerY = y;
+	public void reset( int key, int action ) {
+		this.keyCode = key;
+		this.gameAction = action;
 		super.reset();
 	}
 
 	/**
-	 * Retrieves the horizontal pointer position relative to the source of this event
-	 * @return the pointerX value
+	 * Retrieves the last pressed or released key code
+	 * @return the keyCode value
 	 */
-	public int getPointerX() {
-		return this.pointerX;
+	public int getKeyCode() {
+		return this.keyCode;
 	}
 
 	/**
-	 * Retrieves the vertical pointer position relative to the source of this event
-	 * @return the pointerY value
+	 * Retrieves the last associated game action
+	 * @return the gameAction value
 	 */
-	public int getPointerY() {
-		return this.pointerY;
+	public int getGameAction() {
+		return this.gameAction;
 	}
 	
 	

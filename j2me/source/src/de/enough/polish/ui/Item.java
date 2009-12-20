@@ -39,6 +39,7 @@ import de.enough.polish.benchmark.Benchmark;
 
 import de.enough.polish.event.EventManager;
 import de.enough.polish.event.GestureEvent;
+import de.enough.polish.event.UiEventListener;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.Arrays;
 import de.enough.polish.util.DrawUtil;
@@ -866,6 +867,7 @@ public abstract class Item implements UiElement, Animatable
 		private int gestureStartY;
 		private boolean isIgnorePointerReleaseForGesture;
 	//#endif
+	private UiEventListener uiEventListener;
 
 
 
@@ -3811,11 +3813,11 @@ public abstract class Item implements UiElement, Animatable
 				if (verticalDiff < 20) {
 					int horizontalDiff = relX - this.gestureStartX;
 					if (horizontalDiff > this.availableWidth/2) {
-						if (handleGestureSwipeRight(relX, relY)) {
+						if (handleGesture(GestureEvent.GESTURE_SWIPE_RIGHT, relX, relY)) {
 							return true;
 						}
 					} else if (horizontalDiff < -this.availableWidth/2) {
-						if (handleGestureSwipeLeft(relX, relY)) {
+						if (handleGesture(GestureEvent.GESTURE_SWIPE_LEFT, relX, relY)) {
 							return true;
 						}						
 					}
@@ -3915,15 +3917,31 @@ public abstract class Item implements UiElement, Animatable
 	 * @see #handleGestureHold()
 	 */
 	protected boolean handleGesture(int gesture, int x, int y) {
+		boolean handled = false;
 		switch (gesture) {
 		case GestureEvent.GESTURE_HOLD:
-			return handleGestureHold(x, y);
+			handled = handleGestureHold(x, y);
 		case GestureEvent.GESTURE_SWIPE_LEFT:
-			return handleGestureSwipeLeft(x, y);
+			handled = handleGestureSwipeLeft(x, y);
 		case GestureEvent.GESTURE_SWIPE_RIGHT:
-			return handleGestureSwipeRight(x, y);
+			handled = handleGestureSwipeRight(x, y);
 		}
-		return false;
+		if (!handled) {
+			GestureEvent event = GestureEvent.getInstance();
+			event.reset( gesture, x, y );
+			UiEventListener listener = getUiEventListener();
+			if (listener != null) {
+				listener.handleUiEvent(event, this);
+				handled = event.isHandled();
+			}
+			//#if tmp.handleEvents
+				if (!handled) {
+					EventManager.fireEvent(event.getGestureName(), this, event );
+					handled = event.isHandled();
+				}
+			//#endif			
+		}
+		return handled;
 	}
 
 	/**
@@ -3931,25 +3949,16 @@ public abstract class Item implements UiElement, Animatable
 	 * Note that touch gesture support needs to be activated using the preprocessing variable polish.supportGestures
 	 * The default implementation shows the commands of this item, but only when the preprocessing variable
 	 * polish.Item.ShowCommandsOnHold is set to true.
-	 * Also the EventManager.EVENT_GESTURE_HOLD is fired.
 	 * 
 	 * @return true when this gesture was handled
 	 */
 	protected boolean handleGestureHold(int x, int y) {
 		//#if polish.Item.ShowCommandsOnHold
-			if (this.commands != null && !this.isShowCommands) {
+			if (this.commands != null && !this.isShowCommands && this.commands.size() > 1) {
 				this.isShowCommands = true;
 				if (this.commandsContainer != null) {
 					this.commandsContainer.focusChild(-1);
 				}
-				return true;
-			}
-		//#endif
-		//#if tmp.handleEvents
-			GestureEvent event = GestureEvent.getInstance();
-			event.reset( GestureEvent.GESTURE_HOLD, x, y );
-			EventManager.fireEvent(GestureEvent.EVENT_GESTURE_HOLD, this, event );
-			if (event.isHandled()) {
 				return true;
 			}
 		//#endif
@@ -3958,35 +3967,19 @@ public abstract class Item implements UiElement, Animatable
 	
 	/**
 	 * Handles the swipe left gesture.
-	 * By default the EventManager.EVENT_GESTURE_SWIPE_LEFT is fired but the event is not handled.
 	 * @return true when the gesture was handled
 	 */
 	protected boolean handleGestureSwipeLeft(int x, int y) {
-		//#if tmp.handleEvents
-			GestureEvent event = GestureEvent.getInstance();
-			event.reset( GestureEvent.GESTURE_SWIPE_LEFT, x, y );
-			EventManager.fireEvent(GestureEvent.EVENT_GESTURE_SWIPE_LEFT, this, event );
-			if (event.isHandled()) {
-				return true;
-			}
-		//#endif
+		System.out.println("swipe left");
 		return false;
 	}
 	
 	/**
 	 * Handles the swipe right gesture.
-	 * By default the EventManager.EVENT_GESTURE_SWIPE_RIGHT is fired but the event is not handled.
 	 * @return true when the gesture was handled
 	 */
 	protected boolean handleGestureSwipeRight(int x, int y) {
-		//#if tmp.handleEvents
-			GestureEvent event = GestureEvent.getInstance();
-			event.reset( GestureEvent.GESTURE_SWIPE_RIGHT, x, y );
-			EventManager.fireEvent(GestureEvent.EVENT_GESTURE_SWIPE_RIGHT, this, event );
-			if (event.isHandled()) {
-				return true;
-			}
-		//#endif
+		System.out.println("swipe right");
 		return false;
 	}
 
@@ -5322,6 +5315,33 @@ public abstract class Item implements UiElement, Animatable
 	 */
 	public int getAvailableHeight() {
 		return this.availableHeight;
+	}
+
+	/**
+	 * Sets an UiEventListener for the this item and its children.
+	 * @param listener the listener, use null to remove a listener
+	 */
+	public void setUiEventListener(UiEventListener listener) {
+		this.uiEventListener = listener;
+	}
+	
+	/**
+	 * Retrieves the UiEventListener for this item or for one of its parents.
+	 * @return the listener or null, if none has been registered
+	 */
+	public UiEventListener getUiEventListener() {
+		UiEventListener listener = this.uiEventListener;
+		if (listener == null) {
+			Item parentItem = this.parent;
+			while (parentItem != null && listener == null) {
+				listener = parentItem.uiEventListener;
+				parentItem = parentItem.parent;
+			}
+			if (listener == null) {
+				listener = getScreen().getUiEventListener();
+			}
+		}
+		return listener;
 	}
 	
 //#ifdef polish.Item.additionalMethods:defined
