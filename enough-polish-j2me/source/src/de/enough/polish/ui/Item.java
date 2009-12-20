@@ -3970,7 +3970,6 @@ public abstract class Item implements UiElement, Animatable
 	 * @return true when the gesture was handled
 	 */
 	protected boolean handleGestureSwipeLeft(int x, int y) {
-		System.out.println("swipe left");
 		return false;
 	}
 	
@@ -3979,7 +3978,6 @@ public abstract class Item implements UiElement, Animatable
 	 * @return true when the gesture was handled
 	 */
 	protected boolean handleGestureSwipeRight(int x, int y) {
-		System.out.println("swipe right");
 		return false;
 	}
 
