@@ -2979,7 +2979,7 @@ public class Container extends Item {
 			boolean processed = item.handlePointerPressed(relX - item.relativeX, relY - item.relativeY );
 			if (processed) {
 				//#debug
-				System.out.println("pointerPressed at " + relX + "," + relY + " consumed by focusedItem.");
+				System.out.println("pointerPressed at " + relX + "," + relY + " consumed by focusedItem " + item);
 				// layout could have been changed:
 				if (item.layout != itemLayout && isInitialized()) {
 					if (item.availableWidth != 0) {
@@ -3002,7 +3002,7 @@ public class Container extends Item {
 			if (contView != null) {
 				relX += viewXOffset;
 				if ( contView.handlePointerPressed(relX + this.contentX, relY + this.contentY) ) {
-					//System.out.println("ContainerView consumed pointer press event");
+					//System.out.println("ContainerView " + contView + " consumed pointer press event");
 					return true;
 				}
 				relX -= viewXOffset;

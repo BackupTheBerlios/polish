@@ -3689,7 +3689,7 @@ public abstract class Item implements UiElement, Animatable
 	 * @see #initContent(int, int, int)
 	 */
 	public boolean isInItemArea( int relX, int relY ) {
-		if (relY < 0 || relY > this.itemHeight || relX < 0 || relX > Math.max(this.itemWidth, this.contentX + this.contentWidth)) {
+		if (relY < 0 || relY > this.itemHeight || relX < 0 || relX > this.itemWidth) { //Math.max(this.itemWidth, this.contentX + this.contentWidth)) {
 			//#debug
 			System.out.println("isInItemArea(" + relX + "," + relY + ") = false: itemWidth=" + this.itemWidth + ", itemHeight=" + this.itemHeight + " (" + this + ")");
 			return false;

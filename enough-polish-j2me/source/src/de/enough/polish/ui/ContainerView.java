@@ -245,6 +245,7 @@ extends ItemView
 	public void setScrollXOffset( int offset, boolean smooth) {
 		//#debug
 		System.out.println("Setting scrollXOffset to " + offset + " for " + this);
+		//try { throw new RuntimeException(); } catch (Exception e) { e.printStackTrace(); }
 		if (!smooth  
 		//#ifdef polish.css.scroll-mode
 			|| !this.parentContainer.scrollSmooth
@@ -1646,6 +1647,9 @@ extends ItemView
 	
 	//#if polish.hasPointerEvents
 	private boolean startHorizontalScroll(int x, int y) {
+		if (!this.parentContainer.isInItemArea(x, y)) {
+			return false;
+		}
 		int scrollDiff = Math.abs(this.xOffset - this.lastPointerPressXOffset);
 		if ( scrollDiff > 20 ) {
 			// we have scrolling in the meantime

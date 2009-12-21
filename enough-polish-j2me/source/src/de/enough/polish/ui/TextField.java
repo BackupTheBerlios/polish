@@ -3274,13 +3274,14 @@ public class TextField extends StringItem
                         }
 	                        
 						// Navigate the caret
-						if (   (gameAction == Canvas.UP 	|| 
+						if (  !handled && 
+								(gameAction == Canvas.UP 	|| 
 								gameAction == Canvas.DOWN 	||
 								gameAction == Canvas.LEFT 	||
 								gameAction == Canvas.RIGHT  ||
-								gameAction == Canvas.FIRE)  &&
-								!handled) 
-						{
+								gameAction == Canvas.FIRE
+								)
+						) {
 							handled = handleKeyNavigation(keyCode, gameAction);
 							if (!handled && getScreen().isGameActionFire(keyCode, gameAction) && this.defaultCommand != null) {
 								notifyItemPressedStart();
@@ -3405,10 +3406,12 @@ public class TextField extends StringItem
 						&& !this.isNumeric
 						&& this.screen.isKeyboardAccessible() 
 						&& !( 	(insertChar < 'a' || insertChar > 'z')
-								&& (gameAction == Canvas.UP     &&  insertChar != '2' && keyCode == this.screen.getKeyCode(Canvas.UP) ) 
-								|| (gameAction == Canvas.DOWN   &&  insertChar != '8' && keyCode == this.screen.getKeyCode(Canvas.DOWN)  )
+								&& 
+								(  (gameAction == Canvas.UP     &&  insertChar != '2' && keyCode == this.screen.getKeyCode(Canvas.UP)   ) 
+								|| (gameAction == Canvas.DOWN   &&  insertChar != '8' && keyCode == this.screen.getKeyCode(Canvas.DOWN) )
 								|| (gameAction == Canvas.LEFT   &&  insertChar != '4' && keyCode == this.screen.getKeyCode(Canvas.LEFT)	)
 								|| (gameAction == Canvas.RIGHT  &&  insertChar != '6' && keyCode == this.screen.getKeyCode(Canvas.RIGHT))
+								)
 								//|| (gameAction == Canvas.FIRE   &&  keyCode == this.screen.getKeyCode(Canvas.FIRE) )  
 							)
 						) 
