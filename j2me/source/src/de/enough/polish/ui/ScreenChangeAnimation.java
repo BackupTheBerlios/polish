@@ -234,6 +234,9 @@ implements Runnable
 						if (title != null) {
 							height += title.itemHeight;
 							contentY += title.itemHeight;
+							if (title.itemWidth > width) {
+ 								width = title.itemWidth;
+							}
 						}
 						// this creates an unmutable image and cannot be used:
 //						//#if polish.midp2
