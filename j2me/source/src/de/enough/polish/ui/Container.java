@@ -3002,7 +3002,7 @@ public class Container extends Item {
 			if (contView != null) {
 				relX += viewXOffset;
 				if ( contView.handlePointerPressed(relX + this.contentX, relY + this.contentY) ) {
-					//System.out.println("ContainerView consumed pointer event");
+					//System.out.println("ContainerView consumed pointer press event");
 					return true;
 				}
 				relX -= viewXOffset;
@@ -3143,6 +3143,7 @@ public class Container extends Item {
 			ContainerView contView = this.containerView;
 			if (contView != null) {
 				if (contView.handlePointerReleased(relX + this.contentX, relY + this.contentY)) {
+					//System.out.println("ContainerView consumed pointer release event " + contView);
 					return true;
 				}
 				viewXOffset = contView.getScrollXOffset(); 

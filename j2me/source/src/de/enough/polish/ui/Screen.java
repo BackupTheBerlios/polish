@@ -4142,6 +4142,12 @@ implements UiElement, Animatable
 				requestRepaint();
 			}
 		//#endif
+		//#ifdef tmp.triggerBackCommand
+			this.backCommand = null;
+		//#endif
+		//#ifdef tmp.triggerCancelCommand
+			this.cancelCommand = null;
+		//#endif
 	}
 
 	//#ifdef tmp.menuFullScreen
@@ -4225,68 +4231,94 @@ implements UiElement, Animatable
 		//#endif
 	}
 	
-	//#ifdef tmp.menuFullScreen
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Displayable#removeCommand(javax.microedition.lcdui.Command)
 	 */
 	public void removeCommand(Command cmd) {
 		//#debug
 		System.out.println("removing command " + cmd.getLabel() + " from screen " + this );
-		if (this.okCommand == cmd) {
-			this.okCommand = null;
-		}
-		//#ifdef tmp.useExternalMenuBar
-			this.menuBar.removeCommand(cmd);
-			if (this.isInitialized) {
-				initMenuBar();
+		//#ifdef tmp.triggerBackCommand
+			if (cmd == this.backCommand) {
+				this.backCommand = null;
+				Object[] commands = getCommands();
+				for (int i = 0; i < commands.length; i++) {
+					Command command = (Command) commands[i];
+					if (command == null) {
+						break;
+					}
+					int cmdType = command.getCommandType();
+					if (command != cmd && 
+							(cmdType == Command.BACK 
+							//#if ! tmp.triggerCancelCommand
+								|| cmdType == Command.CANCEL 
+							//#endif
+								|| cmdType == Command.EXIT
+							)
+							&& (this.backCommand == null || command.getPriority() < this.backCommand.getPriority())
+					) {
+						this.backCommand = command;
+					}
+				}
 			}
-			if (super.isShown()) {
-				requestRepaint();
+		//#endif
+		//#ifdef tmp.menuFullScreen
+			if (this.okCommand == cmd) {
+				this.okCommand = null;
 			}
-		//#else
-			if (this.menuSingleRightCommand == cmd) {
-				this.menuSingleRightCommand = null;
-				//move another suitable command-item to the right-pos:
-				if (this.menuCommands != null) {
-					Object[] commands = this.menuCommands.getInternalArray();
-					for (int i = 0; i < commands.length; i++) {
-						Command command = (Command) commands[i];
-						if (command == null) {
-							break;
-						}
-						int type = command.getCommandType(); 
-						if ( type == Command.BACK || type == Command.CANCEL ) {
-							//System.out.println("removing right command [" + cmd.getLabel() + "], now using " + command.getLabel() + ", menuContainer=" + this.menuContainer.size() + ", menuCommands=" + this.menuCommands.size() + ",i=" + i );
-							this.menuCommands.remove( i );
-							this.menuContainer.remove( i );
-							this.menuSingleRightCommand = command;
-							break;
+			//#ifdef tmp.useExternalMenuBar
+				this.menuBar.removeCommand(cmd);
+				if (this.isInitialized) {
+					initMenuBar();
+				}
+				if (super.isShown()) {
+					requestRepaint();
+				}
+			//#else
+				if (this.menuSingleRightCommand == cmd) {
+					this.menuSingleRightCommand = null;
+					//move another suitable command-item to the right-pos:
+					if (this.menuCommands != null) {
+						Object[] commands = this.menuCommands.getInternalArray();
+						for (int i = 0; i < commands.length; i++) {
+							Command command = (Command) commands[i];
+							if (command == null) {
+								break;
+							}
+							int type = command.getCommandType(); 
+							if ( type == Command.BACK || type == Command.CANCEL ) {
+								//System.out.println("removing right command [" + cmd.getLabel() + "], now using " + command.getLabel() + ", menuContainer=" + this.menuContainer.size() + ", menuCommands=" + this.menuCommands.size() + ",i=" + i );
+								this.menuCommands.remove( i );
+								this.menuContainer.remove( i );
+								this.menuSingleRightCommand = command;
+								break;
+							}
 						}
 					}
+					updateMenuTexts();
+					requestRepaint();
+					return;
+				}
+				if (this.menuCommands == null) {
+					return;
+				}
+				int index = this.menuCommands.indexOf(cmd);
+				if (index == -1) {
+					return;
+				}
+				this.menuCommands.remove(index);
+				if (this.menuSingleLeftCommand == cmd ) {
+					this.menuSingleLeftCommand = null;
+					this.menuContainer.remove(index);			
+				} else {
+					this.menuContainer.remove(index);			
 				}
 				updateMenuTexts();
 				requestRepaint();
-				return;
-			}
-			if (this.menuCommands == null) {
-				return;
-			}
-			int index = this.menuCommands.indexOf(cmd);
-			if (index == -1) {
-				return;
-			}
-			this.menuCommands.remove(index);
-			if (this.menuSingleLeftCommand == cmd ) {
-				this.menuSingleLeftCommand = null;
-				this.menuContainer.remove(index);			
-			} else {
-				this.menuContainer.remove(index);			
-			}
-			updateMenuTexts();
-			requestRepaint();
+			//#endif
+		//#else
+			super.removeCommand(cmd);
 		//#endif
 	}
-	//#endif
 
 	/**
 	 * Removes the given command as a subcommand.
@@ -4520,12 +4552,7 @@ implements UiElement, Animatable
 				if (command == null) {
 					break;
 				}
-				
-				//#ifdef tmp.useExternalMenuBar
-					this.menuBar.removeCommand(command);
-				//#else
-					removeCommand(command);
-				//#endif
+				removeCommand(command);
 			}
 		}
 		//#ifdef tmp.useExternalMenuBar
@@ -4563,17 +4590,8 @@ implements UiElement, Animatable
 					break;
 				}
 				
-//				if(commandsFromItem != null && commandsFromItem.contains(command))
-//				{
-					//#ifdef tmp.useExternalMenuBar
-						this.menuBar.removeCommand(command);
-					//#else
-						removeCommand(command);
-					//#endif
-						
-//					this.itemCommands.remove(command);
-				}
-//			}
+				removeCommand(command);
+			}
 			this.itemCommands.clear();
 			//#ifdef tmp.useExternalMenuBar
 				if (this.menuBar.size() ==0) {

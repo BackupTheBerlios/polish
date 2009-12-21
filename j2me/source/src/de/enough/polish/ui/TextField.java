@@ -730,7 +730,7 @@ public class TextField extends StringItem
 			
 		// the delete command is a Command.ITEM type when the extended menubar is used in conjunction with a defined return-key, 
 		// because CANCEL will be mapped on special keys like the return key on Sony Ericsson devices.
-		//#if polish.MenuBar.useExtendedMenuBar && polish.key.ReturnKey:defined
+		//#if polish.MenuBar.useExtendedMenuBar && (polish.key.ReturnKey:defined || polish.css.repaint-previous-screen && polish.hasPointerEvents)
 			//#ifdef polish.i18n.useDynamicTranslations
 				//#	public static Command DELETE_CMD = new Command( Locale.get("polish.command.delete"), Command.ITEM, DELETE_PRIORITY );
 			//#elifdef polish.command.delete:defined
