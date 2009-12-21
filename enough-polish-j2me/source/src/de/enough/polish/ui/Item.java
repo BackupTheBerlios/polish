@@ -3921,8 +3921,10 @@ public abstract class Item implements UiElement, Animatable
 		switch (gesture) {
 		case GestureEvent.GESTURE_HOLD:
 			handled = handleGestureHold(x, y);
+			break;
 		case GestureEvent.GESTURE_SWIPE_LEFT:
 			handled = handleGestureSwipeLeft(x, y);
+			break;
 		case GestureEvent.GESTURE_SWIPE_RIGHT:
 			handled = handleGestureSwipeRight(x, y);
 		}
@@ -4119,11 +4121,13 @@ public abstract class Item implements UiElement, Animatable
 			if (this.isPressed && (this.gestureStartTime != 0) && (currentTime - this.gestureStartTime > 500)) {
 				boolean handled = handleGesture( GestureEvent.GESTURE_HOLD, this.gestureStartX, this.gestureStartY );
 				if (handled) {
-					notifyItemPressedEnd();
 					this.isIgnorePointerReleaseForGesture = true;
+					notifyItemPressedEnd();
 					this.gestureStartTime = 0;					
 					Screen scr = getScreen();
 					repaintRegion.addRegion( scr.contentX, scr.contentY, scr.contentWidth, scr.contentHeight );
+				} else {
+					this.gestureStartTime = 0;
 				}
 			}
 		//#endif
