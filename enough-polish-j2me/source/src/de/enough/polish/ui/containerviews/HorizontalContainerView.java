@@ -258,7 +258,7 @@ public class HorizontalContainerView extends ContainerView {
     		x = rightBorder - this.contentWidth;
     	}
     	if (this.isClippingRequired) {
-    		g.clipRect( x, y, this.contentWidth + 1, this.contentHeight + 1 );
+    		g.clipRect( x, y, rightBorder - x + 1, this.contentHeight + 1 );
     	}
 		x += getScrollXOffset();
 		super.paintContent(container, myItems, x, y, leftBorder, rightBorder, clipX,
