@@ -1228,6 +1228,7 @@ public class Container extends Item {
 			int myContentWidth = 0;
 			int myContentHeight = 0;
 			Item[] myItems = (Item[]) this.itemsList.toArray( new Item[ this.itemsList.size() ]);
+			this.containerItems = myItems;
 			//#if (polish.css.child-style-first || polish.css.child-style-last) && polish.css.child-style
 				if (this.style != null && this.childStyle != null) {
 					Style firstStyle = null;
@@ -1261,7 +1262,6 @@ public class Container extends Item {
 					}
 				}
 			//#endif
-			this.containerItems = myItems;
 			if (this.autoFocusEnabled && this.autoFocusIndex >= myItems.length ) {
 				this.autoFocusIndex = 0;
 			}
@@ -1402,9 +1402,10 @@ public class Container extends Item {
 				}
 				item.relativeY = myContentHeight;
 				// the container layouts the items itself, items should not do layout work at all:
-				if (item.isLayoutExpand) {
-					item.relativeX = 0;
-				} else if (item.isLayoutCenter) {
+//				if (item.isLayoutExpand) {
+//					item.relativeX = 0;
+//				} else 
+				if (item.isLayoutCenter) {
 					item.relativeX = (availWidth - width) / 2;
 					myContentWidth = availWidth;
 				} else if (item.isLayoutRight) {
