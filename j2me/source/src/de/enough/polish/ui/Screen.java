@@ -836,7 +836,7 @@ implements UiElement, Animatable
 			borderWidthB = this.border.borderWidthBottom;
 			height -= borderWidthT + borderWidthB;
 		}
-		x += this.marginRight;
+		x += this.marginLeft;
 		width -= this.marginLeft + this.marginRight;
 		y += this.marginTop;
 		height -= this.marginTop + this.marginBottom;
