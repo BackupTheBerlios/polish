@@ -8237,7 +8237,7 @@ These namespaces/schemas will be used soon.
     <identifier>Nokia/N97</identifier>
     <groups>Series60E5</groups>
     <capability name="alphalevels" value="256" />
-    <capability name="bugs" value="FillPolygonRequiresPositiveXYInNokiaUiApi" />
+    <capability name="bugs" value="FillPolygonRequiresPositiveXYInNokiaUiApi,NormalKeyMappedToFire" />
     <capability name="build.bootclasspath" value="cldc-1.1.jar,midp-2.0.jar,midp-2.1.jar" />
     <capability name="build.implicitgroups" value="jtwi" />
     <!-- <capability name="Emulator.Class" value="NokiaEmulator" /> -->
