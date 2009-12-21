@@ -3812,11 +3812,11 @@ public abstract class Item implements UiElement, Animatable
 				int verticalDiff = Math.abs( relY - this.gestureStartY );
 				if (verticalDiff < 20) {
 					int horizontalDiff = relX - this.gestureStartX;
-					if (horizontalDiff > this.availableWidth/2) {
+					if (horizontalDiff > this.itemWidth/2) {
 						if (handleGesture(GestureEvent.GESTURE_SWIPE_RIGHT, relX, relY)) {
 							return true;
 						}
-					} else if (horizontalDiff < -this.availableWidth/2) {
+					} else if (horizontalDiff < -this.itemWidth/2) {
 						if (handleGesture(GestureEvent.GESTURE_SWIPE_LEFT, relX, relY)) {
 							return true;
 						}						
