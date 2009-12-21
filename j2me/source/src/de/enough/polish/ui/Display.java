@@ -1639,7 +1639,7 @@ public class Display
 		//#if polish.Bugs.NormalKeyMappedToFire
 			if ((gameAction == FIRE && (keyCode == Canvas.KEY_POUND || keyCode == Canvas.KEY_STAR || keyCode == 'a' || keyCode == 'j'))
 				|| (gameAction == UP && (keyCode == 'r' || keyCode == 'p'))
-				|| (gameAction == DOWN && (keyCode == 'v' || keyCode == 'y' || keyCode == 'z'))
+				|| (gameAction == DOWN && (keyCode == 'v' || keyCode == 'y' || keyCode == 'z' || keyCode == 'c'))
 				|| (gameAction == LEFT && (keyCode == 'd' || keyCode == 'l'))
 				|| (gameAction == RIGHT && keyCode == 'g')
 				|| (gameAction == GAME_A && keyCode == 'h')
