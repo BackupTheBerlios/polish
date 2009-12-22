@@ -86,15 +86,14 @@ public abstract class BaseScreen
 	
     /**
      * Constructs a new <code>Canvas</code> object.
-     * 
-     * 
      */
     protected BaseScreen()
     {
     	//#if polish.useFullScreen
     		//# super( BaseScreenManager.getInstance(), 0 );
     	//#else
-    		super();
+    		super( DEFAULT_MENU );
+    		super.setDefaultClose(false);
     	//#endif
     	this.addedItems = new ArrayList();
         this.graphics = new Graphics();
