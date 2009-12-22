@@ -1673,13 +1673,7 @@ public class TextField extends StringItem
 	 */
 	public void insert( String src, int position)
 	{
-		String txt = getString();
-		if(txt == null)
-			txt = "";
-		
-		if (this.isPassword) {
-			txt = this.passwordText;
-		}
+		String txt = getString(); // cannot be null
 		String start = txt.substring( 0, position );
 		String end = txt.substring( position );
 		setString( start + src + end );
