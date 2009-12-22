@@ -1909,6 +1909,9 @@ public class Display
 				return;
 			}
 		//#endif
+		//#if polish.css.mediaquery
+			StyleSheet.showNotify();
+		//#endif
 		if (this.nonFullScreenHeight == 0) {
 			this.nonFullScreenHeight = getHeight();
 		}
@@ -2280,6 +2283,10 @@ public class Display
 	}
 	//#endif
 	
+	/**
+	 * Retrieves the height of screens including space used for title and menubar (when in fullscreen mode).
+	 * @return the height in pixels
+	 */
 	public static int getScreenHeight() {
 		int h = 0;
 		if (instance != null) {
@@ -2320,6 +2327,10 @@ public class Display
 		return h;
 	}
 	
+	/**
+	 * Retrieves the width of screens including space used for a scrollbar (when used).
+	 * @return the width in pixels
+	 */
 	public static int getScreenWidth() {
 		int w = 0;
 		if (instance != null) {

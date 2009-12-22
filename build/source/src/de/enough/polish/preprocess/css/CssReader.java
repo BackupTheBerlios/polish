@@ -146,10 +146,29 @@ public final class CssReader {
 		String[] cssBlocks = split( buffer );
 		for (int i = 0; i < cssBlocks.length; i++) {
 			String cssBlock = cssBlocks[i];
-			addCssBlock( new CssBlock( cssBlock ) );
+			if (cssBlock.startsWith("@media")) {
+				addMediaQuery( cssBlock );
+			} else {
+				addCssBlock( new CssBlock( cssBlock ) );
+			}
 		}
 	}
 	
+	protected void addMediaQuery(String block) {
+		StyleSheet mediaQuery = new StyleSheet();
+		int startIndex = block.indexOf('{');
+		String condition = block.substring("@media ".length(), startIndex).trim();
+		int endIndex = block.lastIndexOf('}');
+		block = block.substring(startIndex+1, endIndex).trim();
+		String[] cssBlocks = split( block );
+		mediaQuery.setMediaQueryCondition( condition );
+		for (int i = 0; i < cssBlocks.length; i++) {
+			String cssBlock = cssBlocks[i];
+			mediaQuery.addCssBlock( new CssBlock( cssBlock ) );
+		}
+		this.styleSheet.addMediaQuery( mediaQuery );
+	}
+
 	/**
 	 * Adds the given CSS-block.
 	 * 
@@ -239,10 +258,22 @@ public final class CssReader {
 	 * @return the buffer split into chunks.
 	 */
 	public static final String[] split(StringBuffer buffer) {
+		return split( buffer.toString() );
+	}
+	
+	/**
+	 * Splits a CSS-StringBuffer into chunks.
+	 * Each chunk will start with the name of class and end with
+	 * the appropriate closing parenthesis '}'.
+	 * 
+	 * @param str the raw string containing the CSS definitions
+	 * @return the string split into chunks.
+	 */
+	public static final String[] split(String str) {
 		int parenthesisCount = 0;
 		ArrayList chunksList = new ArrayList();
 		int blockStart = 0;
-		char[] chars = buffer.toString().toCharArray();
+		char[] chars = str.toCharArray();
 		for (int i = 0; i < chars.length; i++) {
 			char c = chars[i];
 			if (c == '{') {
@@ -250,15 +281,15 @@ public final class CssReader {
 			} else if (c == '}') {
 				parenthesisCount--;
 				if (parenthesisCount == 0) {
-					chunksList.add( buffer.substring(blockStart, i + 1) );
+					chunksList.add( str.substring(blockStart, i + 1) );
 					blockStart = i+ 1;
 				} else if (parenthesisCount < 0) {
-					throw new BuildException("Invalid CSS - there is at least one closing parenthesis '}' too much in this CSS code: " + buffer.toString() );
+					throw new BuildException("Invalid CSS - there is at least one closing parenthesis '}' too much in this CSS code: " + str.toString() );
 				}
 			}
 		}
 		if (parenthesisCount > 0) {
-			throw new BuildException("Invalid CSS - there is at least one opening parenthesis '{' too much in this CSS code: " + buffer.toString() );
+			throw new BuildException("Invalid CSS - there is at least one opening parenthesis '{' too much in this CSS code: " + str.toString() );
 		}
 		return (String[]) chunksList.toArray( new String[ chunksList.size()]);
 	}

@@ -1009,6 +1009,21 @@ public class Style implements Externalizable
 		Serializer.serialize(this.attributeValues, out);
 	}
 
+	/**
+	 * Retrieves the internal attribute keys 
+	 * @return a short array with all the keys or null when this style has no attributes
+	 */
+	public short[] getRawAttributeKeys() {
+		return this.attributeKeys;
+	}
+
+	/**
+	 * Retrieves the internal attribute values that are defined in this style.
+	 * @return the attribute values or none in case no attributes are defined for this style
+	 */
+	public Object[] getRawAttributeValues() {
+		return this.attributeValues;
+	}
 
 
 

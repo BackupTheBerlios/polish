@@ -124,6 +124,10 @@ public class StyleSheet {
 	private HashMap cssPreprocessingSymbols;
 	private HashMap cssAttributes;
 	private Map attributesIds;
+
+	private String mediaQueryCondition;
+
+	private ArrayList mediaQueries;
 	
 	/**
 	 * Creates a new empty style sheet
@@ -563,57 +567,74 @@ public class StyleSheet {
 			if (KEYWORDS.get(selector) != null) {
 				throw new BuildException( "Invalid CSS code: The style-selector [" + selector + "] uses a reserved keyword, please choose another name.");
 			}
-			String styleName = StringUtil.replace( selector, '-', '_' );
-			if (isDynamicStyle) {
-				selector = StringUtil.replace( selector, ".", "");
-				selector = StringUtil.replace( selector, '\t', ' ');
-				selector = StringUtil.replace( selector, " > ", ">");
-				selector = StringUtil.replace( selector, " > ", ">");
-				selector = StringUtil.replace( selector, " * ", "*");
-				selector = StringUtil.replace( selector, "  ", " ");
-				styleName = StringUtil.replace( selector, ' ', '_');
-				styleName = StringUtil.replace( styleName, ">", "__");
-				styleName = StringUtil.replace( styleName, "*", "___");
-			}
-			
-			// check style name for invalid characters:
-			if ( (styleName.indexOf('.') != -1 )
-				|| (styleName.indexOf('"') != -1 )
-				|| (styleName.indexOf('\'') != -1 )
-				|| (styleName.indexOf('*') != -1 )
-				|| (styleName.indexOf('+') != -1 )
-				|| (styleName.indexOf('-') != -1 )
-				|| (styleName.indexOf('/') != -1 )
-				|| (styleName.indexOf(':') != -1 )
-				|| (styleName.indexOf('=') != -1 )
-				|| (styleName.indexOf('|') != -1 )
-				|| (styleName.indexOf('&') != -1 )
-				|| (styleName.indexOf('~') != -1 )
-				|| (styleName.indexOf('!') != -1 )
-				|| (styleName.indexOf('^') != -1 )
-				|| (styleName.indexOf('(') != -1 )
-				|| (styleName.indexOf(')') != -1 )
-				|| (styleName.indexOf('%') != -1 )
-				|| (styleName.indexOf('?') != -1 )
-				|| (styleName.indexOf('#') != -1 )
-				|| (styleName.indexOf('$') != -1 )
-				|| (styleName.indexOf('@') != -1 ) ) {
-				throw new BuildException( "Invalid CSS code: The style-selector [" + selector + "] contains invalid characters, please use only alpha-numeric characters for style-names.");
-			}
-				
-			
-			Style style = (Style) this.stylesByName.get( styleName );
-			if (style == null) {
-				style = new Style( selector, styleName, isDynamicStyle, parent, cssBlock );
-				this.styles.add( style );
-				//System.out.println("added new style [" + style.getStyleName() + "].");
-				this.stylesByName.put(  selector, style );
+			if (selector.startsWith("@media ")) {
+				addMediaQuery( selector.substring("@media ".length()).trim(), cssBlock );
 			} else {
-				style.add( cssBlock );
+				// this is a traditional style:
+				String styleName = StringUtil.replace( selector, '-', '_' );
+				if (isDynamicStyle) {
+					selector = StringUtil.replace( selector, ".", "");
+					selector = StringUtil.replace( selector, '\t', ' ');
+					selector = StringUtil.replace( selector, " > ", ">");
+					selector = StringUtil.replace( selector, " > ", ">");
+					selector = StringUtil.replace( selector, " * ", "*");
+					selector = StringUtil.replace( selector, "  ", " ");
+					styleName = StringUtil.replace( selector, ' ', '_');
+					styleName = StringUtil.replace( styleName, ">", "__");
+					styleName = StringUtil.replace( styleName, "*", "___");
+				}
+				
+				// check style name for invalid characters:
+				if ( (styleName.indexOf('.') != -1 )
+					|| (styleName.indexOf('"') != -1 )
+					|| (styleName.indexOf('\'') != -1 )
+					|| (styleName.indexOf('*') != -1 )
+					|| (styleName.indexOf('+') != -1 )
+					|| (styleName.indexOf('-') != -1 )
+					|| (styleName.indexOf('/') != -1 )
+					|| (styleName.indexOf(':') != -1 )
+					|| (styleName.indexOf('=') != -1 )
+					|| (styleName.indexOf('|') != -1 )
+					|| (styleName.indexOf('&') != -1 )
+					|| (styleName.indexOf('~') != -1 )
+					|| (styleName.indexOf('!') != -1 )
+					|| (styleName.indexOf('^') != -1 )
+					|| (styleName.indexOf('(') != -1 )
+					|| (styleName.indexOf(')') != -1 )
+					|| (styleName.indexOf('%') != -1 )
+					|| (styleName.indexOf('?') != -1 )
+					|| (styleName.indexOf('#') != -1 )
+					|| (styleName.indexOf('$') != -1 )
+					|| (styleName.indexOf('@') != -1 ) ) {
+					throw new BuildException( "Invalid CSS code: The style-selector [" + selector + "] contains invalid characters, please use only alpha-numeric characters for style-names.");
+				}
+					
+				
+				Style style = (Style) this.stylesByName.get( styleName );
+				if (style == null) {
+					style = new Style( selector, styleName, isDynamicStyle, parent, cssBlock );
+					this.styles.add( style );
+					//System.out.println("added new style [" + style.getStyleName() + "].");
+					this.stylesByName.put(  selector, style );
+				} else {
+					style.add( cssBlock );
+				}
 			}
 		}
 	}
 	
+	private void addMediaQuery(String query, CssBlock cssBlock) {
+		System.out.println("adding media query " + query );
+		String[] groups = cssBlock.getGroupNames();
+		for (int i = 0; i < groups.length; i++) {
+			String group = groups[i];
+			HashMap map = cssBlock.getGroupDeclarations(group);
+			System.out.println("style " + group + " has " + map.size() + " attributes ");
+		}
+		// TODO Besitzer implement addMediaQuery
+		
+	}
+
 	/**
 	 * Determines whether this sheet contains dynamic styles.
 	 * Dynamic styles are set during runtime and can be used
@@ -897,6 +918,9 @@ public class StyleSheet {
 		if (this.cssPreprocessingSymbols == null) {
 			HashMap symbols = new HashMap();
 			HashMap attributesByName = new HashMap();
+			if (this.mediaQueries != null) {
+				symbols.put("polish.css.mediaquery", Boolean.TRUE);
+			}
 			Style[] myStyles = getAllStyles();
 			for (int i = 0; i < myStyles.length; i++) {
 				Style style = myStyles[i];
@@ -1006,5 +1030,41 @@ public class StyleSheet {
 		}
 	}
 
+	/**
+	 * Stores the condition for this set of styles
+	 * @param condition the media query condition, compare http://www.w3.org/TR/css3-mediaqueries/
+	 */
+	public void setMediaQueryCondition(String condition) {
+		this.mediaQueryCondition = condition;
+	}
 
+	/**
+	 * Retrieves the condition for this set of styles
+	 * @return the media query condition, compare http://www.w3.org/TR/css3-mediaqueries/
+	 */
+	public String getMediaQueryCondition() {
+		return this.mediaQueryCondition;
+	}
+
+	/**
+	 * Adds a media query to this style sheet
+	 * @param mediaQuery the style sheet with conditional style
+	 */
+	public void addMediaQuery(StyleSheet mediaQuery) {
+		if (this.mediaQueries == null) {
+			this.mediaQueries = new ArrayList();
+		}
+		this.mediaQueries.add(mediaQuery);
+	}
+
+	/**
+	 * Retrieves all media queries
+	 * @return an array of all added media queries, null when none are registered;
+	 */
+	public StyleSheet[] getMediaQueries() {
+		if (this.mediaQueries == null) {
+			return null;
+		}
+		return (StyleSheet[]) this.mediaQueries.toArray( new StyleSheet[ this.mediaQueries.size() ] );
+	}
 }
