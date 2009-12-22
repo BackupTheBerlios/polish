@@ -190,6 +190,9 @@ alertcontent {
 
 .testButton {
 	padding: 3px;
+	padding-top: 5%;
+	padding-bottom: 5%;
+	max-width: 70%;
 	layout: expand | center;
 	background {
 		type: round-rect;

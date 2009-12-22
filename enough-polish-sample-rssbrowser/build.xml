@@ -88,7 +88,7 @@
 		         You can also define localized attributes in the resources/messages.txt files -->
 			<info
 				name="News Cup"
-				version="1.3.9"
+				version="2.1.3"
 				description="A simple RSS news reader"
 				vendorName="Enough Software"
 				infoUrl="http://www.j2mepolish.org"
@@ -141,8 +141,10 @@
 					<variable name="polish.Browser.Gzip" value="false" />
 					<variable name="polish.Browser.PaintDownloadIndicator" value="true" />
 					<variable name="polish.Browser.MemorySaver" value="true" />
+					<!--
 					<variable name="polish.TextField.useDirectInput" value="true" />
 					<variable name="polish.TextField.supportSymbolsEntry" value="true" />
+					-->
 					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
 					<variable name="polish.useScrollBar" value="true" />
 					<variable name="polish.handleEvents" value="true" />
@@ -167,6 +169,8 @@
 					<!--
 					You can set additional parameters here, e.g.:
 					<parameter name="optimize" value="false" />
+					<parameter name="-verbose" value="true" />
+					<parameter name="-whyareyoukeeping" value="public class de.enough.polish.ui.TextField" />
 					-->
 				</obfuscator>
 				

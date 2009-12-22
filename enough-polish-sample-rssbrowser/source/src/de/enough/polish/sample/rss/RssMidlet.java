@@ -264,21 +264,6 @@ implements CommandListener, ApplicationInitializer
 		this.display.setCurrent(form);
 	}
 
-
-//	public void commandAction(Command command, Item item)
-//	{
-//	//#debug
-//	System.out.println("commandAction: cmd=" + command.getLabel() + " for item " + item);
-//	if (command == RssTagHandler.CMD_RSS_ITEM_SELECT) {
-//	RssItem rssItem = (RssItem) UiAccess.getAttribute(item, RssTagHandler.ATTR_RSS_ITEM);
-//	showRssNewsItem( rssItem );
-//	}
-//	else {
-//	//#debug warn
-//	System.err.println("Unhandled command " + command);
-//	}
-//	}
-
 	private void showRssNewsItem( RssItem rssItem ) {
 		if (rssItem != null) {
 			//#debug
@@ -339,12 +324,9 @@ implements CommandListener, ApplicationInitializer
 			//#style volumeGauge
 			Gauge gauge = new Gauge( "Volume: ", true, 100, 20 );
 			form.append( gauge );
-//			//#style itemInput
-//			TextField textField = new TextField("Default URL: ", "http://", 80, TextField.URL );
-//			form.append(textField);
 			form.setCommandListener( this );
 			form.addCommand( CMD_BACK );
-			//form.addCommand( CMD_GO );
+
 			this.settingsForm = form;
 		}
 		this.display.setCurrent( this.settingsForm );
