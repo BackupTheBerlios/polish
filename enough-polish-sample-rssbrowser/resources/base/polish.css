@@ -144,9 +144,19 @@ alertcontent {
 	radiobox-selected: none;
 	radiobox-plain: none;
 }
-
+//#if polish.hasPointerEvents
 .updateIntervalItem:hover {
 }
+//#endif
+
+//#if polish.vendor == Generic
+/** CSS media query example: when not using a touchscreen then we need to highlight the focused updateIntervalItem: */
+@media not touchscreen {
+	.updateIntervalItem:hover {
+		background-color: white;
+	}
+}
+//#endif
 
 .updateIntervalItem:checked {
 	font-color: #00aeef;
