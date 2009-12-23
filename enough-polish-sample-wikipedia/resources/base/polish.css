@@ -61,14 +61,14 @@ label {
 .screenMain {
 	layout: horizontal-center | vertical-center;
 	margin: 0;
-	padding: 10;
-	padding-vertical: 5;
+	padding: 10px;
+	padding-vertical: 5px;
 	background: mainBackground;
 }
 
 .itemMain {
-	padding: 2;
-	padding-left: 20;
+	padding: 2px;
+	padding-left: 20px;
 	font-color: #150020;
 	layout: expand | left;
 }
@@ -95,8 +95,8 @@ label {
 
 .aboutAlert {
 	layout: horizontal-center | vertical-center;
-	margin: 0;
-	padding: 1;
+	margin: 0px;
+	padding: 1px;
 	background: mainBackground;
 	//#if polish.midp2
 	    screen-change-animation: zoomInAndHide;
@@ -117,10 +117,9 @@ alertcontent {
 }
 
 .itemInput {
+	margin: 1px;
+	padding: 3px;
 	layout: left | horizontal-expand;
-	margin: 0;
-	padding: 3;
-	padding-vertical: 2;
 	font-color: #666;
 	background {
 		type: round-rect;
@@ -128,8 +127,9 @@ alertcontent {
 	}		
 }
 
+
 .itemInput:hover {
-	padding: 2;
+	margin: 0px;
 	font-color: black;
 	border {
 		type: round-rect;
@@ -137,13 +137,24 @@ alertcontent {
 	}
 }
 
+/** input indicator within text textfield: */
+info {
+	padding: 0px;
+	layout: right;
+	font-color: #666;
+	font-style: italic;
+}
+
+
 .projectChoice {
-	margin: 1;
-	include-label: true;
+	margin: 1px;
+	padding: 3px;
 	layout: expand;
 	view-type: exclusive-choice;
 	exclusiveview-left-arrow: url( arrow-left.png );
 	exclusiveview-right-arrow: url( arrow-right.png );
+	exclusiveview-left-arrow-pressed: url( arrow-left-press.png );
+	exclusiveview-right-arrow-pressed: url( arrow-right-press.png );
 	exclusiveview-roundtrip: true;
 	background {
 		type: round-rect;
@@ -152,7 +163,7 @@ alertcontent {
 }
 
 .projectChoice:hover {
-	margin: 0;
+	margin: 0px;
 	border {
 		type: round-rect;
 		color: #444;
@@ -168,11 +179,6 @@ alertcontent {
 	font-color: black;
 }
 
-info {
-	layout: right;
-	font-color: #666;
-	font-style: italic;
-}
 
 /************************** HTML browser screen ****************************************************************************/
 
