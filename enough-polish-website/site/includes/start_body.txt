@@ -274,6 +274,7 @@
 				<a href="<%= basedir %>docs/extending-gui.html">Extending the UI</a>
 				</p>
 				</div>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/gui-visualguide.html">Visual Guide</a></div>
 			<%else %>
 				<div class="secondLevelLink"><a href="<%= basedir %>docs/gui-concepts.html">Design</a></div>
 				<div class="secondLevelLink"><a href="<%= basedir %>docs/gui-visualguide.html">Visual Guide</a></div>
