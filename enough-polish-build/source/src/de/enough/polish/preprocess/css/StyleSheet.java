@@ -521,7 +521,7 @@ public class StyleSheet {
 					}
 					
 					parentStyle = getStyle( parent );
-					if (parentStyle == null) {
+					if (parentStyle == null && this.mediaQueryCondition == null) {
 						throw new BuildException("Invalid CSS: the :" + subName+  " CSS style \"" + selector + "\" needs to follow AFTER the referenced style definition. Please adjust your polish.css design settings.");
 					} 
 					// found parent style, now set the implicit focused-style attribute:
@@ -537,9 +537,11 @@ public class StyleSheet {
 					colonPos = selector.indexOf(':');
 				}
 				cssBlock.setSelector( selector );
-				HashMap referenceMap = new HashMap(1);
-				referenceMap.put("style", parent + subName );
-				parentStyle.addGroup(subName, referenceMap );
+				if (parentStyle != null) {
+					HashMap referenceMap = new HashMap(1);
+					referenceMap.put("style", parent + subName );
+					parentStyle.addGroup(subName, referenceMap );
+				}
 				
 			}
 			boolean isDynamicStyle = false;
