@@ -21898,47 +21898,6 @@ These namespaces/schemas will be used soon.
     <capability name="wap.useragent" value="Mozilla/4.0 (compatible; MSIE 6.0; Windows CE; IEMobile 7.6) Vodafone/1.0/SFR_v1615/1.56.163.8" />
   </device>
   <device>
-    <identifier>LG/KS360</identifier>
-	<features>isDoubleBuffered</features>
-    <capability name="CanvasSize" value="240x278" />
-    <capability name="colors" value="65536" />
-    <capability name="Font.default" value="22" />
-    <capability name="Font.large" value="26" />
-    <capability name="Font.medium" value="22" />
-    <capability name="Font.small" value="18" />
-    <capability name="JavaConfiguration" value="CLDC/1.1" />
-    <capability name="JavaPackage" value="fileconnection, wmapi1.1, mmapi1.1" />
-    <capability name="JavaPlatform" value="JTWI/1.0, MIDP/2.0, MIDP/2.0" />
-    <capability name="key.ClearKey" value="-8" />
-    <capability name="key.down" value="-2" />
-    <capability name="key.fire" value="-5" />
-    <capability name="key.gamea" value="49" />
-    <capability name="key.gameb" value="51" />
-    <capability name="key.gamec" value="57" />
-    <capability name="key.gamed" value="55" />
-    <capability name="key.left" value="-3" />
-    <capability name="key.LeftSoftKey" value="-6" />
-    <capability name="key.MiddleSoftKey" value="-5" />
-    <capability name="key.right" value="-4" />
-    <capability name="key.RightSoftKey" value="-7" />
-    <capability name="key.up" value="-1" />
-    <capability name="microedition.configuration" value="CLDC-1.1" />
-    <capability name="microedition.encoding" value="ISO-8859-1" />
-    <capability name="microedition.jtwi.version" value="1.0" />
-    <capability name="microedition.platform" value="LG-KS360/V10b Teleca/WAP2.0 MIDP-2.0/CLDC-1.1" />
-    <capability name="microedition.profiles" value="MIDP-2.0" />
-    <capability name="mmapi.protocol.device" value="audio/x-tone-seq, audio/midi" />
-    <capability name="mmapi.protocol.file" value="audio/x-tone-seq, audio/midi, audio/x-midi, audio/sp-midi, application/vnd.smaf, application/x-smaf, audio/x-wav, audio/amr, audio/mpeg, audio/mp3, audio/mpeg3, audio/x-m4a, audio/aac, audio/3gp, audio/3gpp" />
-    <capability name="mmapi.protocol.http" value="audio/x-tone-seq, audio/midi, audio/x-midi, audio/sp-midi, application/vnd.smaf, application/x-smaf, audio/x-wav, audio/amr, audio/mpeg, audio/mp3, audio/mpeg3, audio/x-m4a, audio/aac, audio/3gp, audio/3gpp, audio/x-tone-seq, audio/midi, audio/x-midi, audio/sp-midi, application/vnd.smaf, application/x-smaf, audio/x-wav, audio/amr, audio/mpeg, audio/mp3, audio/mpeg3, audio/x-m4a, audio/aac, audio/3gp, audio/3gpp" />
-    <capability name="mmapi.supportsaudiocapture" value="true" />
-    <capability name="mmapi.supportsvideocapture" value="true" />
-    <capability name="ImageFormat" value="jpeg" />
-    <capability name="properties" value="supports.mixing, fileconn.dir.photos, microedition.configuration, fileconn.dir.private, microedition.io.file.FileConnection.version, microedition.locale, file.separator, microedition.jtwi.version, microedition.smartcardslots, fileconn.dir.photos.name, microedition.platform, supports.video.capture, fileconn.dir.memorycard, fileconn.dir.videos, wireless.messaging.sms.smsc, microedition.encoding, fileconn.dir.tones, fileconn.dir.videos.name, fileconn.dir.tones.name, microedition.profiles, supports.recording, supports.audio.capture, microedition.media.version" />
-    <capability name="timezones" value="GMT" />
-    <capability name="totalmemory" value="4194240" />
-    <capability name="wap.useragent" value="Wget/1.11.4" />
-  </device>
-  <device>
     <identifier>Samsung/Corby, Samsung/S3650</identifier>
 	<features>isDoubleBuffered</features>
     <capability name="CanvasSize" value="240x204" />
@@ -22224,62 +22183,9 @@ These namespaces/schemas will be used soon.
     <capability name="totalmemory" value="2097152" />
     <capability name="wap.useragent" value="SAMSUNG-GT-S5230/1.0 SHP/VPP/R5 Jasmine/0.8 NexPlayer/2.12 S" />
   </device>
-  
-  
-  
+
   <device>
-    <identifier>Nokia/6303_classic</identifier>
-	<features>isDoubleBuffered</features>
-    <capability name="CanvasSize" value="240x248" />
-    <capability name="colors" value="16777216" />
-    <capability name="Font.default" value="26" />
-    <capability name="Font.large" value="26" />
-    <capability name="Font.medium" value="21" />
-    <capability name="Font.small" value="18" />
-    <capability name="FullCanvasSize" value="240x320" />
-    <capability name="hasRepeatEvents" value="true" />
-    <capability name="JavaConfiguration" value="CLDC/1.1" />
-    <capability name="JavaPackage" value="wmapi2.0, btapi, webservice, locationapi, m3g, 3dapi, mmapi1.1, fileconnection, pimapi, wmapi1.1, nokia-ui, svg" />
-    <capability name="JavaPlatform" value="MIDP/2.1, JTWI/1.0" />
-    <capability name="key.down" value="56" />
-    <capability name="key.fire" value="53" />
-    <capability name="key.gamea" value="55" />
-    <capability name="key.gameb" value="57" />
-    <capability name="key.gamec" value="42" />
-    <capability name="key.gamed" value="35" />
-    <capability name="key.left" value="52" />
-    <capability name="key.LeftSoftKey" value="-6" />
-    <capability name="key.MiddleSoftKey" value="-5" />
-    <capability name="key.right" value="54" />
-    <capability name="key.RightSoftKey" value="-7" />
-    <capability name="key.SelectSoftKey" value="-5" />
-    <capability name="key.up" value="50" />
-    <capability name="microedition.commports" value="USB1" />
-    <capability name="microedition.configuration" value="CLDC-1.1" />
-    <capability name="microedition.encoding" value="ISO-8859-1" />
-    <capability name="microedition.jtwi.version" value="1.0" />
-    <capability name="microedition.platform" value="Nokia6303classic/06.40" />
-    <capability name="microedition.profiles" value="MIDP-2.1" />
-    <capability name="mmapi.audio.encodings" value="encoding=audio/amr" />
-    <capability name="mmapi.protocol.capture" value="radio, video, image, audio" />
-    <capability name="mmapi.protocol.device" value="audio/midi, audio/x-tone-seq" />
-    <capability name="mmapi.protocol.file" value="audio/wav, audio/x-wav, audio/mpeg3, audio/mpg3, audio/mpeg, audio/mp3, audio/x-mpeg, audio/x-mpeg3, audio/mp4, audio/mpeg4, audio/aac, audio/mp4, audio/m4a, audio/3gpp, audio/3gpp, audio/x-ms-wma, audio/amr, audio/amr-wb, audio/mid, audio/midi, audio/x-mid, audio/x-midi, application/x-midi, audio/sp-midi, audio/vnd.nokia.mobile-xmf, audio/x-tone-seq, image/gif, image/jpg, image/jpeg, image/jpeg, image/bmp, image/x-bmp, image/png, image/x-png, image/vnd.nokia.ota-bitmap, image/x-ota-bitmap, image/vnd.wap.wbmp, video/3gpp, application/3gp, video/3gpp2, video/mp4, video/mpeg, video/x-ms-asf, video/x-ms-wmv" />
-    <capability name="mmapi.protocol.http" value="audio/wav, audio/x-wav, audio/mpeg3, audio/mpg3, audio/mpeg, audio/mp3, audio/x-mpeg, audio/x-mpeg3, audio/mp4, audio/mpeg4, audio/aac, audio/mp4, audio/m4a, audio/3gpp, audio/3gpp, audio/x-ms-wma, audio/amr, audio/amr-wb, audio/mid, audio/midi, audio/x-mid, audio/x-midi, application/x-midi, audio/sp-midi, audio/vnd.nokia.mobile-xmf, audio/x-tone-seq, image/gif, image/jpg, image/jpeg, image/jpeg, image/bmp, image/x-bmp, image/png, image/x-png, image/vnd.nokia.ota-bitmap, image/x-ota-bitmap, image/vnd.wap.wbmp, video/3gpp, application/3gp, video/3gpp2, video/mp4, video/mpeg, video/x-ms-asf, video/x-ms-wmv" />
-    <capability name="mmapi.supportsaudiocapture" value="true" />
-    <capability name="mmapi.supportsvideocapture" value="true" />
-    <capability name="mmapi.video.encodings" value="encoding=video/3gpp" />
-    <capability name="nokiasound" value="true" />
-    <capability name="objectmemory" value="12" />
-    <capability name="api.svg" value="true" />
-    <capability name="ImageFormat" value="jpeg, gif, bmp" />
-    <capability name="protocol.resource" value="audio/wav, audio/x-wav, audio/mpeg3, audio/mpg3, audio/mpeg, audio/mp3, audio/x-mpeg, audio/x-mpeg3, audio/mp4, audio/mpeg4, audio/aac, audio/mp4, audio/m4a, audio/3gpp, audio/3gpp, audio/x-ms-wma, audio/amr, audio/amr-wb, audio/mid, audio/midi, audio/x-mid, audio/x-midi, application/x-midi, audio/sp-midi, audio/vnd.nokia.mobile-xmf, audio/x-tone-seq, image/gif, image/jpg, image/jpeg, image/jpeg, image/bmp, image/x-bmp, image/png, image/x-png, image/vnd.nokia.ota-bitmap, image/x-ota-bitmap, image/vnd.wap.wbmp, video/3gpp, application/3gp, video/3gpp2, video/mp4, video/mpeg, video/x-ms-asf, video/x-ms-wmv" />
-    <capability name="protocol.rtsp" value="application/octet-stream, video/3gpp, application/3gp, video/3gpp2, video/mp4, video/mpeg, video/x-ms-asf, video/x-ms-wmv" />
-    <capability name="timezones" value="GMT, UTC" />
-    <capability name="totalmemory" value="2097152" />
-    <capability name="wap.useragent" value="Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.0.7) Gecko/20060909 Firefox/1.5.0.7 MG(Novarra-Vision/7.3)" />
-  </device>
-  <device>
-    <identifier>Samsumg/F330</identifier>
+    <identifier>Samsung/F330</identifier>
 	<features>isDoubleBuffered</features>
     <capability name="CanvasSize" value="240x279" />
     <capability name="colors" value="65536" />
@@ -23319,56 +23225,7 @@ These namespaces/schemas will be used soon.
     <capability name="wap.useragent" value="SonyEricssonZ750i/R1FA Browser/NetFront/3.4 Profile/MIDP-2.1" />
   </device>
   <device>
-    <identifier>Samsung/S8000</identifier>
-    <features>isDoubleBuffered</features>
-    <capability name="CanvasSize" value="480x540" />
-    <capability name="colors" value="65536" />
-    <capability name="device.model" value="S8000" />
-    <capability name="Font.default" value="20" />
-    <capability name="Font.large" value="22" />
-    <capability name="Font.medium" value="20" />
-    <capability name="Font.small" value="18" />
-    <capability name="hasRepeatEvents" value="true" />
-    <capability name="JavaConfiguration" value="CLDC/1.1" />
-    <capability name="JavaPackage" value="btapi, m3g, pimapi, webservice, locationapi, fileconnection, wmapi2.0, wmapi1.1, 3dapi, mmapi1.1, svg" />
-    <capability name="JavaPlatform" value="MIDP/2.1, JTWI/1.0" />
-    <capability name="key.down" value="-2" />
-    <capability name="key.fire" value="-5" />
-    <capability name="key.gamea" value="49" />
-    <capability name="key.gameb" value="51" />
-    <capability name="key.gamec" value="55" />
-    <capability name="key.gamed" value="57" />
-    <capability name="key.left" value="-3" />
-    <capability name="key.LeftSoftKey" value="-6" />
-    <capability name="key.MiddleSoftKey" value="-5" />
-    <capability name="key.right" value="-4" />
-    <capability name="key.RightSoftKey" value="-7" />
-    <capability name="key.SelectSoftKey" value="-5" />
-    <capability name="key.up" value="-1" />
-    <capability name="microedition.commports" value="COM1,USB" />
-    <capability name="microedition.configuration" value="CLDC-1.1" />
-    <capability name="microedition.encoding" value="ISO8859_1" />
-    <capability name="microedition.jtwi.version" value="1.0" />
-    <capability name="microedition.platform" value="S8000/S8000AOIG2" />
-    <capability name="microedition.profiles" value="MIDP-2.1" />
-    <capability name="mmapi.audio.encodings" value="encoding=audio/amr " />
-    <capability name="mmapi.protocol.capture" value="audio/amr, audio/x-amr, image/jpeg" />
-    <capability name="mmapi.protocol.device" value="audio/x-tone-seq, audio/midi" />
-    <capability name="mmapi.protocol.file" value="audio/x-tone-seq, audio/amr, audio/x-amr, audio/midi, audio/mid, audio/sp-midi, audio/x-midi, audio/mmf, audio/x-mmf, audio/smaf, audio/x-smaf, application/x-smaf, audio/x-wav, audio/wav, audio/mpeg, audio/mp3, audio/mpg, audio/x-mpg, audio/mp4, audio/mp4a-latm, audio/m4a, audio/qcelp, audio/vnd.qcelp, audio/aac, audio/apl, audio/x-aac, audio/adpcm, audio/wma, audio/x-ms-wma, audio/3gpp, audio/3gpp2, audio/3gp, video/3gpp, video/3gpp2, video/3gp, video/H263, video/H264, video/mpeg, video/mp4, video/x-ms-wmv, image/gif, application/sdp, application/vnd.oma.drm.dcf, application/vnd.oma.drm.roap-trigger+xml, audio/vnd.rn-realaudio, audio/x-pn-realaudio, audio/x-pn-multirate-realaudio, audio/x-pn-multirate-realaudio-live, video/vnd.rn-realvideo, video/vnd.rn-realmedia, video/x-pn-realvideo, video/x-pn-multimrate-realvideo, application/ram" />
-    <capability name="mmapi.protocol.http" value="audio/x-tone-seq, audio/amr, audio/x-amr, audio/midi, audio/mid, audio/sp-midi, audio/x-midi, audio/mmf, audio/x-mmf, audio/smaf, audio/x-smaf, application/x-smaf, audio/x-wav, audio/wav, audio/mpeg, audio/mp3, audio/mpg, audio/x-mpg, audio/mp4, audio/mp4a-latm, audio/m4a, audio/qcelp, audio/vnd.qcelp, audio/aac, audio/apl, audio/x-aac, audio/adpcm, audio/wma, audio/x-ms-wma, audio/3gpp, audio/3gpp2, audio/3gp, video/3gpp, video/3gpp2, video/3gp, video/H263, video/H264, video/mpeg, video/mp4, video/x-ms-wmv, image/gif, application/sdp, application/vnd.oma.drm.dcf, application/vnd.oma.drm.roap-trigger+xml, audio/vnd.rn-realaudio, audio/x-pn-realaudio, audio/x-pn-multirate-realaudio, audio/x-pn-multirate-realaudio-live, video/vnd.rn-realvideo, video/vnd.rn-realmedia, video/x-pn-realvideo, video/x-pn-multimrate-realvideo, application/ram" />
-    <capability name="mmapi.supportsaudiocapture" value="true" />
-    <capability name="mmapi.supportsvideocapture" value="true" />
-    <capability name="mmapi.video.encodings" value="encoding=jpeg" />
-    <capability name="ImageFormat" value="jpeg, gif, bmp, wbmp" />
-    <capability name="properties" value="microedition.smartcardslots, microedition.commports, microedition.satsa.pki.version, microedition.satsa.apdu.version, microedition.satsa.crypto.version, microedition.io.file.FileConnection.version, fileconn.dir.tones.name, bluetooth.connected.page.scan, microedition.profiles, bluetooth.connected.devices.max, microedition.platform, streamable.contents, microedition.jtwi.version, microedition.m3g.version, microedition.configuration, microedition.msa.version, file.separator, audio3d.simultaneouslocations, xml.jaxp.subset.version, fileconn.dir.videos.name, fileconn.dir.videos, camera.resolutions, bluetooth.l2cap.receiveMTU.max, fileconn.dir.photos, bluetooth.connected.page, supports.recording, bluetooth.api.version, bluetooth.connected.inquiry.scan, fileconn.dir.private, wireless.messaging.sms.smsc, xml.rpc.subset.version, microedition.locale, microedition.m2g.svg.version, video.snapshot.encodings, wireless.messaging.mms.mmsc, fileconn.dir.tones, wireless.messaging.version, supports.mediacapabilities, microedition.sensor.version, microedition.payment.version, fileconn.dir.photos.name, camera.orientations, supports.video.capture, bluetooth.sd.attr.retrievable.max, microedition.chapi.version, audio.samplerates, microedition.amms.version, supports.mixing, video.encodings, bluetooth.connected.inquiry, microedition.m2g.version, microedition.encoding, microedition.location.version, tuner.modulations, microedition.m2g.svg.baseProfile, microedition.pim.version, microedition.media.version, microedition.global.version, obex.api.version, audio.encodings, bluetooth.sd.trans.max, bluetooth.master.switch, supports.audio.capture" />
-    <capability name="protocol.rtsp" value="audio/amr, audio/x-amr, audio/mpeg, audio/mp3, audio/mpg, audio/x-mpg, audio/mp4, audio/mp4a-latm, audio/m4a, audio/aac, audio/apl, audio/x-aac, audio/wma, audio/x-ms-wma, audio/3gpp, audio/3gpp2, audio/3gp, video/3gpp, video/3gpp2, video/3gp, video/H263, video/H264, video/mpeg, video/mp4, video/x-ms-wmv, audio/vnd.rn-realaudio, audio/x-pn-realaudio, audio/x-pn-multirate-realaudio, audio/x-pn-multirate-realaudio-live, video/vnd.rn-realvideo, video/vnd.rn-realmedia, video/x-pn-realvideo, video/x-pn-multimrate-realvideo, application/ram" />
-    <capability name="timezones" value="GMT, UTC" />
-    <capability name="totalmemory" value="19922432" />
-    <capability name="wap.useragent" value="SAMSUNG-S8000/S8000AOIG2 SHP/VPP/R5 Jasmine/1.0 Nextreaming" />
-  </device>
-  
-  <device>
-    <identifier>Samsung-B2100</identifier>
+    <identifier>Samsung/B2100</identifier>
     <features>isDoubleBuffered</features>
     <capability name="CanvasSize" value="128x142" />
     <capability name="colors" value="65536" />
@@ -23458,7 +23315,7 @@ These namespaces/schemas will be used soon.
   </device>
   
   <device>
-    <identifier>Sony-Ericsson /W715</identifier>
+    <identifier>Sony-Ericsson/W715</identifier>
     <features>isDoubleBuffered</features>
     <capability name="CanvasSize" value="240x266" />
     <capability name="colors" value="65536" />
@@ -23589,96 +23446,6 @@ These namespaces/schemas will be used soon.
     <capability name="wap.useragent" value="MOT-MOTORAZRV9x/9E.03.39R BER2.2 Mozilla/4.0 (compatible; MSIE 6.0; 13003352) Profile/MIDP-2.0 Configuration/CLDC-1.1  Opera 8.60 [en] UP.Link/6.3.1.20.0" />
   </device>
   <device>
-    <identifier>Samsung/SGH-i560</identifier>
-    <features>isDoubleBuffered</features>
-    <capability name="CanvasSize" value="240x235" />
-    <capability name="colors" value="65536" />
-    <capability name="Font.default" value="21" />
-    <capability name="Font.large" value="24" />
-    <capability name="Font.medium" value="21" />
-    <capability name="Font.small" value="19" />
-    <capability name="FullCanvasSize" value="240x320" />
-    <capability name="hasRepeatEvents" value="true" />
-    <capability name="JavaConfiguration" value="CLDC/1.1" />
-    <capability name="JavaPackage" value="locationapi, pimapi, m3g, btapi, mmapi1.1, sipapi, webservice, 3dapi, nokia-ui, fileconnection, wmapi2.0, wmapi1.1, svg" />
-    <capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
-    <capability name="key.ClearKey" value="-8" />
-    <capability name="key.down" value="-2" />
-    <capability name="key.fire" value="-10" />
-    <capability name="key.gamea" value="55" />
-    <capability name="key.gameb" value="57" />
-    <capability name="key.gamec" value="42" />
-    <capability name="key.gamed" value="35" />
-    <capability name="key.left" value="-3" />
-    <capability name="key.LeftSoftKey" value="-6" />
-    <capability name="key.MiddleSoftKey" value="-5" />
-    <capability name="key.ReturnKey" value="-7" />
-    <capability name="key.right" value="-4" />
-    <capability name="key.RightSoftKey" value="-7" />
-    <capability name="key.SelectSoftKey" value="-5" />
-    <capability name="key.up" value="-1" />
-    <capability name="mmapi.audio.encodings" value="encoding=audio/amr encoding=audio/basic encoding=audio/x-au encoding=audio/au encoding=audio/x-basic encoding=audio/wav encoding=audio/x-wav encoding=pcm encoding=ulaw encoding=gsm" />
-    <capability name="mmapi.protocol.capture" value="audio/amr, audio/basic, audio/x-au, audio/au, audio/x-basic, audio/wav, audio/x-wav, video/3gpp2, video/mp4, video/3gpp" />
-    <capability name="mmapi.protocol.device" value="audio/rmf, audio/xmf, audio/xmf0, audio/xmf1, audio/sp-midi, audio/mobile-xmf, audio/x-beatnik-rmf, audio/x-rmf, audio/midi, audio/x-midi, audio/mid, audio/x-mid, audio/x-tone-seq" />
-    <capability name="mmapi.protocol.file" value="application/sdp, video/mp4, video/mpeg4, video/3gpp, application/vnd.rn-realmedia, audio/amr-wb, audio/amr, video/3gpp2, audio/mp3, audio/rmf, audio/xmf, audio/xmf0, audio/xmf1, application/vnd.smaf, application/vnd.x-smaf, audio/smaf, audio/imelody, audio/x-imelody, audio/x-nokia-rng, audio/sp-midi, audio/mobile-xmf, audio/x-beatnik-rmf, audio/x-rmf, audio/midi, audio/x-midi, audio/mid, audio/x-mid, audio/mp4, audio/3gpp2, audio/3gpp, audio/3gpp, audio/aac, audio/mpeg, audio/x-ms-wma, audio/basic, audio/x-au, audio/au, audio/x-basic, audio/wav, audio/x-wav, image/gif, audio/x-tone-seq" />
-    <capability name="mmapi.protocol.http" value="application/sdp, video/mp4, video/mpeg4, video/3gpp, application/vnd.rn-realmedia, audio/amr-wb, audio/amr, video/3gpp2, audio/mp3, audio/rmf, audio/xmf, audio/xmf0, audio/xmf1, application/vnd.smaf, application/vnd.x-smaf, audio/smaf, audio/imelody, audio/x-imelody, audio/x-nokia-rng, audio/sp-midi, audio/mobile-xmf, audio/x-beatnik-rmf, audio/x-rmf, audio/midi, audio/x-midi, audio/mid, audio/x-mid, audio/mp4, audio/3gpp2, audio/3gpp, audio/3gpp, audio/aac, audio/mpeg, audio/x-ms-wma, audio/basic, audio/x-au, audio/au, audio/x-basic, audio/wav, audio/x-wav, image/gif, audio/x-tone-seq, application/sdp, video/mp4, video/mpeg4, video/3gpp, application/vnd.rn-realmedia, audio/amr-wb, audio/amr, video/3gpp2, audio/mp3, audio/rmf, audio/xmf, audio/xmf0, audio/xmf1, application/vnd.smaf, application/vnd.x-smaf, audio/smaf, audio/imelody, audio/x-imelody, audio/x-nokia-rng, audio/sp-midi, audio/mobile-xmf, audio/x-beatnik-rmf, audio/x-rmf, audio/midi, audio/x-midi, audio/mid, audio/x-mid, audio/mp4, audio/3gpp2, audio/3gpp, audio/3gpp, audio/aac, audio/mpeg, audio/x-ms-wma, audio/basic, audio/x-au, audio/au, audio/x-basic, audio/wav, audio/x-wav, image/gif, audio/x-tone-seq" />
-    <capability name="mmapi.supportsaudiocapture" value="true" />
-    <capability name="mmapi.supportsvideocapture" value="true" />
-    <capability name="mmapi.video.encodings" value="encoding=video/3gpp2 encoding=video/mp4 encoding=video/3gpp" />
-    <capability name="nokiasound" value="true" />
-    <capability name="ImageFormat" value="jpeg, gif, bmp, wbmp" />
-    <capability name="properties" value="microedition.commports, microedition.io.file.FileConnection.version, fileconn.dir.tones.name, microedition.profiles, microedition.platform, microedition.hostname, fileconn.dir.memorycard.name, microedition.jtwi.version, microedition.m3g.version, microedition.configuration, file.separator, audio3d.simultaneouslocations, fileconn.dir.videos.name, fileconn.dir.videos, fileconn.dir.photos, microedition.sip.version, supports.recording, fileconn.dir.private, wireless.messaging.sms.smsc, microedition.locale, microedition.m2g.svg.version, video.snapshot.encodings, fileconn.dir.tones, supports.mediacapabilities, fileconn.dir.photos.name, supports.video.capture, audio.samplerates, microedition.amms.version, supports.mixing, video.encodings, microedition.m2g.version, microedition.encoding, microedition.location.version, microedition.m2g.svg.baseProfile, microedition.pim.version, microedition.media.version, audio.encodings, fileconn.dir.memorycard, supports.audio.capture" />
-    <capability name="protocol.rtsp" value="audio/3gpp, audio/3gpp2, audio/amr, audio/mp4, audio/mp4-latm, audio/qcelp, audio/vnd.qcelp, video/3gpp, video/3gpp2, video/mp4, application/vnd.rn-realmedia, application/sdp" />
-    <capability name="timezones" value="GMT, UTC" />
-    <capability name="totalmemory" value="512000" />
-    <capability name="wap.useragent" value="Mozilla/5.0 (Windows; U; Windows NT 5.1; pl; rv:1.9.0.11) Gecko/2009060215 Firefox/3.0.11" />
-  </device>
-  <device>
-    <identifier>Nokia/6300</identifier>
-    <features>isDoubleBuffered</features>
-    <capability name="CanvasSize" value="240x248" />
-    <capability name="colors" value="16777216" />
-    <capability name="Font.default" value="26" />
-    <capability name="Font.large" value="26" />
-    <capability name="Font.medium" value="21" />
-    <capability name="Font.small" value="18" />
-    <capability name="FullCanvasSize" value="240x320" />
-    <capability name="hasRepeatEvents" value="true" />
-    <capability name="JavaConfiguration" value="CLDC/1.1" />
-    <capability name="JavaPackage" value="btapi, nokia-ui, wmapi2.0, m3g, fileconnection, mmapi1.1, wmapi1.1, pimapi, 3dapi, svg" />
-    <capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
-    <capability name="key.down" value="56" />
-    <capability name="key.fire" value="53" />
-    <capability name="key.gamea" value="55" />
-    <capability name="key.gameb" value="57" />
-    <capability name="key.gamec" value="42" />
-    <capability name="key.gamed" value="35" />
-    <capability name="key.left" value="52" />
-    <capability name="key.LeftSoftKey" value="-6" />
-    <capability name="key.MiddleSoftKey" value="-5" />
-    <capability name="key.right" value="54" />
-    <capability name="key.RightSoftKey" value="-7" />
-    <capability name="key.SelectSoftKey" value="-5" />
-    <capability name="key.up" value="50" />
-    <capability name="mmapi.audio.encodings" value="encoding=audio/amr" />
-    <capability name="mmapi.protocol.capture" value="radio, video, image, audio" />
-    <capability name="mmapi.protocol.device" value="audio/midi, audio/x-tone-seq" />
-    <capability name="mmapi.protocol.file" value="audio/wav, audio/x-wav, audio/mpeg3, audio/mpg3, audio/mpeg, audio/mp3, audio/x-mpeg, audio/x-mpeg3, audio/mp4, audio/mpeg4, audio/aac, audio/mp4, audio/m4a, audio/3gpp, audio/3gpp, audio/x-ms-wma, audio/amr, audio/amr-wb, audio/mid, audio/midi, audio/x-mid, audio/x-midi, application/x-midi, audio/sp-midi, audio/vnd.nokia.mobile-xmf, audio/x-tone-seq, image/gif, image/jpg, image/jpeg, image/jpeg, image/bmp, image/x-bmp, image/png, image/x-png, image/vnd.nokia.ota-bitmap, image/x-ota-bitmap, image/vnd.wap.wbmp, video/3gpp, application/3gp, video/3gpp2, video/mp4, video/mpeg" />
-    <capability name="mmapi.protocol.http" value="audio/wav, audio/x-wav, audio/mpeg3, audio/mpg3, audio/mpeg, audio/mp3, audio/x-mpeg, audio/x-mpeg3, audio/mp4, audio/mpeg4, audio/aac, audio/mp4, audio/m4a, audio/3gpp, audio/3gpp, audio/x-ms-wma, audio/amr, audio/amr-wb, audio/mid, audio/midi, audio/x-mid, audio/x-midi, application/x-midi, audio/sp-midi, audio/vnd.nokia.mobile-xmf, audio/x-tone-seq, image/gif, image/jpg, image/jpeg, image/jpeg, image/bmp, image/x-bmp, image/png, image/x-png, image/vnd.nokia.ota-bitmap, image/x-ota-bitmap, image/vnd.wap.wbmp, video/3gpp, application/3gp, video/3gpp2, video/mp4, video/mpeg" />
-    <capability name="mmapi.supportsaudiocapture" value="true" />
-    <capability name="mmapi.supportsvideocapture" value="true" />
-    <capability name="mmapi.video.encodings" value="encoding=video/3gpp" />
-    <capability name="nokiasound" value="true" />
-    <capability name="ImageFormat" value="jpeg, gif, bmp" />
-    <capability name="properties" value="microedition.smartcardslots, microedition.commports, com.nokia.mid.timeformat, microedition.io.file.FileConnection.version, fileconn.dir.tones.name, com.nokia.mid.dateformat, microedition.profiles, microedition.platform, fileconn.dir.memorycard.name, microedition.jtwi.version, microedition.m3g.version, microedition.configuration, file.separator, fileconn.dir.videos.name, fileconn.dir.videos, fileconn.dir.photos, supports.recording, wireless.messaging.sms.smsc, microedition.locale, microedition.m2g.svg.version, video.snapshot.encodings, fileconn.dir.tones, fileconn.dir.photos.name, supports.video.capture, com.nokia.network.access, supports.mixing, video.encodings, microedition.m2g.version, microedition.encoding, microedition.m2g.svg.baseProfile, microedition.pim.version, microedition.media.version, audio.encodings, fileconn.dir.memorycard, supports.audio.capture" />
-    <capability name="protocol.rtsp" value="application/octet-stream, video/3gpp, application/3gp, video/3gpp2, video/mp4, video/mpeg" />
-    <capability name="timezones" value="GMT, UTC" />
-    <capability name="totalmemory" value="2097152" />
-    <capability name="wap.useragent" value="Mozilla/5.0 (Windows; U; Windows NT 5.1; zh-CN; rv:1.9.0.10) Gecko/2009042316 Firefox/3.0.10" />
-  </device>
-  
-  
-  <device>
     <identifier>Nokia/5130_classic</identifier>
     <features>isDoubleBuffered</features>
     <capability name="CanvasSize" value="240x248" />
@@ -23726,7 +23493,7 @@ These namespaces/schemas will be used soon.
   
   
   <device>
-    <identifier>Nokia6267/6267</identifier>
+    <identifier>Nokia/6267</identifier>
     <features>isDoubleBuffered</features>
     <capability name="CanvasSize" value="240x248" />
     <capability name="colors" value="16777216" />
@@ -24263,43 +24030,6 @@ These namespaces/schemas will be used soon.
     <capability name="totalmemory" value="4194240" />
     <capability name="wap.useragent" value="Mozilla/5.0 (Windows; U; Windows NT 5.1; es-ES; rv:1.9.0.10) Gecko/2009042316 Firefox/3.0.10" />
   </device>
-  
- <device>
-    <identifier>Samsung/SGH-I600</identifier>
-    <features>isDoubleBuffered</features>
-    <capability name="CanvasSize" value="de.enough.polish.interactivedevicedb.server.persistence.SysinfoCapability@11d444cxde.enough.polish.interactivedevicedb.server.persistence.SysinfoCapability@1c7e3e3" />
-    <capability name="colors" value="65536" />
-    <capability name="file.separator" value="\" />
-    <capability name="Font.default" value="13" />
-    <capability name="Font.large" value="20" />
-    <capability name="Font.medium" value="13" />
-    <capability name="Font.small" value="10" />
-    <capability name="hasRepeatEvents" value="true" />
-    <capability name="key.down" value="-2" />
-    <capability name="key.fire" value="-5" />
-    <capability name="key.gamea" value="65" />
-    <capability name="key.gameb" value="66" />
-    <capability name="key.gamec" value="67" />
-    <capability name="key.gamed" value="68" />
-    <capability name="key.left" value="-3" />
-    <capability name="key.right" value="-4" />
-    <capability name="key.up" value="-1" />
-    <capability name="microedition.commports" value="COM1,COM2,COM3" />
-    <capability name="microedition.configuration" value="CLDC-1.1" />
-    <capability name="microedition.encoding" value="CP1252" />
-    <capability name="microedition.hostname" value="WM_gerrie_vanz1" />
-    <capability name="microedition.platform" value="Windows CE" />
-    <capability name="microedition.profiles" value="MIDP-2.0" />
-    <capability name="mmapi.protocol.device" value="audio/x-tone-seq" />
-    <capability name="mmapi.protocol.file" value="audio/x-wav, audio/x-tone-seq, audio/midi" />
-    <capability name="mmapi.protocol.http" value="audio/x-wav, audio/x-tone-seq, audio/midi, audio/x-wav, audio/x-tone-seq, audio/midi" />
-    <capability name="ImageFormat" value="jpeg, gif, bmp" />
-    <capability name="key.ReturnKey" value="-5" />
-    <capability name="key.SelectSoftKey" value="-5" />
-    <capability name="timezones" value="ROK, PRC, CST, ECT, MET, JST, Europe/Bucharest, EET, Australia/Brisbane, BST, America/Halifax, IST, CAT, GMT, Europe/London, Atlantic/South_Georgia, Africa/Algiers, MIT, Asia/Jerusalem, Africa/Cairo, AST, CNT, PST, Africa/Harare, Australia/Adelaide, HST, CET, America/Costa_Rica, UTC, Asia/Tehran, PLT, VST, BET, NST, CTT, ACT, PNT, IET, AET, Australia/Hobart, MST, ART, WET, AGT, PRT, EST, Europe/Moscow, Asia/Kabul, SST, NET, EAT" />
-    <capability name="totalmemory" value="1572864" />
-    <capability name="wap.useragent" value="Mozilla/4.0 (compatible; MSIE 6.0; Windows CE; Smartphone; 240x320) Opera 8.65 [en]" />
-  </device>
   <device>
     <identifier>LG/U450</identifier>
     <features>isDoubleBuffered</features>
@@ -24311,6 +24041,8 @@ These namespaces/schemas will be used soon.
     <capability name="Font.medium" value="18" />
     <capability name="Font.small" value="16" />
     <capability name="hasRepeatEvents" value="true" />
+    <capability name="JavaConfiguration" value="CLDC/1.1" />
+    <capability name="JavaPlatform" value="MIDP/2.0" />
     <capability name="JavaPackage" value="pimapi, fileconnection, m3g, mmapi1.1, 3dapi, wmapi1.1" />
     <capability name="key.down" value="-2" />
     <capability name="key.fire" value="-5" />
