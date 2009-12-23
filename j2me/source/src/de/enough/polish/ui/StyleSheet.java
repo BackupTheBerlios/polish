@@ -394,7 +394,9 @@ public final class StyleSheet {
 	
 	//#if polish.css.mediaquery
 		/**
-		 * Adds a media query to this set of styles if the condition is fullfilled
+		 * Adds a media query to this set of styles if the condition is fullfilled.
+		 * This method is only accessible when the preprocesing symbol <code>polish.css.mediaquery</code> is true.
+		 * 
 		 * @param condition the condition, compare http://www.w3.org/TR/css3-mediaqueries/
 		 * @param styles the styles that should be modified by this condition
 		 */
