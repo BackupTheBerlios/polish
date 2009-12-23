@@ -2996,7 +2996,9 @@ public abstract class Item implements UiElement, Animatable
 		//#endif
 		
 		this.contentX = this.marginLeft + getBorderWidthLeft() + this.paddingLeft;
-		this.contentY = this.marginTop + getBorderWidthTop() + this.paddingTop; 
+		int noneContentHeight = this.marginTop + getBorderWidthTop() + this.paddingTop;
+		this.contentY = noneContentHeight; 
+		noneContentHeight += this.paddingBottom + getBorderWidthBottom() + this.marginBottom;
 		
 		// initialise content by subclass:
 		//#if polish.css.content-visible
@@ -3005,7 +3007,7 @@ public abstract class Item implements UiElement, Animatable
 				this.contentHeight = 0;
 			} else {
 		//#endif
-			availHeight -= this.marginTop + getBorderWidthTop() + this.paddingTop + this.paddingBottom + getBorderWidthBottom() + this.marginBottom;
+			availHeight -= noneContentHeight;
 			this.availContentWidth = availableContentWidth;
 			this.availContentHeight = availHeight;
 			//#if polish.css.inline-label
@@ -3084,8 +3086,6 @@ public abstract class Item implements UiElement, Animatable
 				cHeight = this.afterHeight;
 			}
 		//#endif
-		int noneContentHeight = this.marginTop + getBorderWidthTop() + this.paddingTop 
-			+ this.paddingBottom + getBorderWidthBottom() + this.marginBottom;
 		if ( this.isLayoutExpand ) {
 			if (cWidth < availableContentWidth) {
 				if (this.itemWidth + labelWidth <= availWidth && (this.label == null || !this.label.isLayoutNewlineAfter())) {
@@ -3110,9 +3110,9 @@ public abstract class Item implements UiElement, Animatable
 			if (this.useSingleRow && labelWidth > 0) {
 				this.itemWidth += labelWidth;
 				this.contentX += labelWidth;
-			}
-			if ( cHeight + noneContentHeight < labelHeight ) {
-				cHeight = labelHeight - noneContentHeight;
+				if ( cHeight + noneContentHeight < labelHeight ) {
+					cHeight = labelHeight - noneContentHeight;
+				}
 			}
 		} else {
 			this.useSingleRow = false;

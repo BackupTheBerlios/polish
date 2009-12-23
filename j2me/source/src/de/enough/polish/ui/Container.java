@@ -926,8 +926,14 @@ public class Container extends Item {
 				int hAfter = previouslyFocusedItem.itemHeight;
 				int layoutAfter = previouslyFocusedItem.layout;
 				if (wAfter != wBefore || hAfter != hBefore || layoutAfter != layoutBefore ) {
+					//#debug
+					System.out.println("dimension changed from " + wBefore + "x" + hBefore + " to " + wAfter + "x" + hAfter + " for previous " + previouslyFocusedItem);
 					isReinitializationRequired = true;
-					previouslyFocusedItem.setInitialized(false); // could be that a container view poses restrictions on the possible size, i.e. within a table
+					//#if tmp.supportViewType
+						if (this.containerView != null) {
+							previouslyFocusedItem.setInitialized(false); // could be that a container view poses restrictions on the possible size, i.e. within a table
+						}
+					//#endif
 				}
 			}
 		}
@@ -966,8 +972,14 @@ public class Container extends Item {
 			int hAfter = item.itemHeight;
 			int layoutAfter = item.layout;
 			if (wAfter != wBefore || hAfter != hBefore || layoutAfter != layoutBefore ) {
+				//#debug
+				System.out.println("dimension changed from " + wBefore + "x" + hBefore + " to " + wAfter + "x" + hAfter + " for next " + item);
 				isReinitializationRequired = true;
-				item.setInitialized(false); // could be that a container view poses restrictions on the possible size, i.e. within a table
+				//#if tmp.supportViewType
+					if (this.containerView != null) {
+						item.setInitialized(false); // could be that a container view poses restrictions on the possible size, i.e. within a table
+					}
+				//#endif
 			}
 			updateInternalPosition(item);
 			if (getScrollHeight() != -1) {	

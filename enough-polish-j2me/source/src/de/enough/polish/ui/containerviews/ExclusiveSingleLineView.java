@@ -116,7 +116,7 @@ public class ExclusiveSingleLineView extends ContainerView {
 	protected void initContent(Item parentItm, int firstLineWidth, int availWidth, int availHeight) 
 	{
 		//#debug
-		System.out.println("Initalizing ExclusiveSingleLineView");
+		System.out.println("Initalizing ExclusiveSingleLineView: available=" + availWidth + "x" + availHeight);
 		Container parent = (Container) parentItm;
 		int selectedItemIndex = ((ChoiceGroup) parent).getSelectedIndex();
 		if (selectedItemIndex == -1) {
@@ -221,7 +221,7 @@ public class ExclusiveSingleLineView extends ContainerView {
 				this.rightYOffset = (this.contentHeight - this.rightArrow.getHeight()) / 2; // always center vertically
 			}
 		//#endif
-
+		//System.out.println("content: " + this.contentWidth + "x" + this.contentHeight + ", available=" + availWidth + "x" + availHeight);
 		
 //		System.out.println("leftX=" + this.leftArrowStartX);
 //		System.out.println("rightX=" + this.rightArrowStartX);
@@ -567,11 +567,12 @@ public class ExclusiveSingleLineView extends ContainerView {
 			//#if polish.blackberry
 				this.bbReleaseArrow = this.isLeftArrowPressed || this.isRightArrowPressed;
 				this.bbKeyReleaseTime = System.currentTimeMillis();
+				//# return super.handleKeyReleased(keyCode, gameAction);
 			//#else
 				this.isLeftArrowPressed = false;
 				this.isRightArrowPressed = false;
+				return true;
 			//#endif
-			return super.handleKeyReleased(keyCode, gameAction);
 		}
 	//#endif
 	
@@ -587,7 +588,7 @@ public class ExclusiveSingleLineView extends ContainerView {
 	 *         will forward the event to the affected item.
 	 */
 	public boolean handlePointerPressed(int x, int y) {
-		if ( !this.parentContainer.isInContentWithPaddingArea(x, y) ) {
+		if ( !this.parentContainer.isInItemArea(x, y) ) {
 			return false;
 		}
 		//#if tmp.supportPress
@@ -637,7 +638,7 @@ public class ExclusiveSingleLineView extends ContainerView {
 	 *         will forward the event to the affected item.
 	 */
 	public boolean handlePointerReleased(int x, int y) {
-		if ( !this.parentContainer.isInContentWithPaddingArea(x, y) ) {
+		if ( !this.parentContainer.isInItemArea(x, y) ) {
 			return false;
 		}
 		//#if tmp.supportPress
