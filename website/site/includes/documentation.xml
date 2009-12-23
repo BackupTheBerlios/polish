@@ -28,8 +28,9 @@
 		<page file="gui-css-basics.html" title="CSS Basics" />
 		<page file="gui-css-animations.html" title="CSS Animations" />
 		<page file="gui-css-mediaqueries.html" title="CSS Media Queries" />
+		<page file="gui-touchsupport.html" title="Touch Support" />
 		<page file="gui-programming.html" title="Programming Concepts" />
-		<page file="gui-localization.html" title="GUI Localozation" />
+		<page file="gui-localization.html" title="GUI Localization" />
 		<page file="gui-configuration.html" title="Configuration Options" />
 	</page>
 	<page file="customization.html" title="Customization" />
