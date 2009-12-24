@@ -707,7 +707,7 @@ public class TextField extends StringItem
 	//#else
 		private final static int CLEAR_PRIORITY = 8;
 	//#endif
-	//ifdef polish.command.clear.type:defined
+	//#ifdef polish.command.clear.type:defined
 		//#= private final static int CLEAR_TYPE = ${polish.command.clear.type};
 	//#else
 		private final static int CLEAR_TYPE = Command.ITEM;
