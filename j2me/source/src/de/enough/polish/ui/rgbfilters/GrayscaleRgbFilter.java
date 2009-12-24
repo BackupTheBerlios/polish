@@ -59,7 +59,7 @@ public class GrayscaleRgbFilter extends RgbFilter {
     public boolean isActive() {
         boolean isActive = false;
         if (this.grayscale != null) {
-            isActive = (this.grayscale.getValue(255) != 0);
+            isActive = (this.grayscale.getValue(1024) != 0);
         }
         return isActive;
     }
@@ -87,7 +87,7 @@ public class GrayscaleRgbFilter extends RgbFilter {
          * To support this, we will "redefine" 1 in the original formulas
          * as being 1024 ( 2 ^ 10 ). We will modify all the formulas accordingly.
          */
-        int saturation = this.grayscale.getValue(1024);
+        int saturation = 1024 - this.grayscale.getValue(1024);
 
         int alpha, red, green, blue;
         int output_red, output_green, output_blue;
