@@ -814,7 +814,7 @@ implements UiElement, Animatable
 	 *        info height and ticker height.
 	 */
 	protected void calculateContentArea( int x, int y, int width, int height ) {
-		// #debug
+		//#debug
 		System.out.println("calculateContentArea(" + x + ", " + y + ", " + width + ", " + height + ") for " + this);
 		if (width < 1 || height < 1 ) {
 			//#debug info
