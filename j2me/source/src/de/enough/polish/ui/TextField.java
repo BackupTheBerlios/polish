@@ -723,35 +723,34 @@ public class TextField extends StringItem
 		
 	//#ifndef tmp.suppressCommands
 	
-		//#ifdef polish.command.delete.priority:defined
-		//#= private final static int DELETE_PRIORITY = ${polish.command.delete.priority};
-		//#else
-			private final static int DELETE_PRIORITY = 1;
-		//#endif
-			
 		//#if (polish.TextField.suppressDeleteCommand != true) && !polish.blackberry && !polish.TextField.keepDeleteCommand
 			//#define tmp.updateDeleteCommand
 		//#endif
 			
+		//#ifdef polish.command.delete.priority:defined
+			//#= private final static int DELETE_PRIORITY = ${polish.command.delete.priority};
+		//#else
+			private final static int DELETE_PRIORITY = 1;
+		//#endif
+		
+			
 		// the delete command is a Command.ITEM type when the extended menubar is used in conjunction with a defined return-key, 
 		// because CANCEL will be mapped on special keys like the return key on Sony Ericsson devices.
-		//#if polish.MenuBar.useExtendedMenuBar && (polish.key.ReturnKey:defined || polish.css.repaint-previous-screen && polish.hasPointerEvents)
-			//#ifdef polish.i18n.useDynamicTranslations
-				//#	public static Command DELETE_CMD = new Command( Locale.get("polish.command.delete"), Command.ITEM, DELETE_PRIORITY );
-			//#elifdef polish.command.delete:defined
-				//#= public static final Command DELETE_CMD = new Command( "${polish.command.delete}", Command.ITEM, DELETE_PRIORITY );
-			//#else
-				//# public static final Command DELETE_CMD = new Command( "Delete", Command.ITEM, DELETE_PRIORITY ); 
-			//#endif
+		private final static int DELETE_TYPE = 
+				//#ifdef polish.command.delete.type:defined
+					//#= ${polish.command.delete.type};
+				//#elif polish.MenuBar.useExtendedMenuBar && (polish.key.ReturnKey:defined || polish.css.repaint-previous-screen && polish.hasPointerEvents)
+					//# Command.ITEM;
+				//#else
+					Command.CANCEL;
+				//#endif
+		//#ifdef polish.i18n.useDynamicTranslations
+			public static Command DELETE_CMD = new Command( Locale.get("polish.command.delete"), DELETE_TYPE, DELETE_PRIORITY );
+		//#elifdef polish.command.delete:defined
+			//#= public static final Command DELETE_CMD = new Command( "${polish.command.delete}", DELETE_TYPE, DELETE_PRIORITY );
 		//#else
-			//#ifdef polish.i18n.useDynamicTranslations
-				public static Command DELETE_CMD = new Command( Locale.get("polish.command.delete"), Command.CANCEL, DELETE_PRIORITY );
-			//#elifdef polish.command.delete:defined
-				//#= public static final Command DELETE_CMD = new Command( "${polish.command.delete}", Command.CANCEL, DELETE_PRIORITY );
-			//#else
-				//# public static final Command DELETE_CMD = new Command( "Delete", Command.CANCEL, DELETE_PRIORITY ); 
-			//#endif
-	  	//#endif
+			//# public static final Command DELETE_CMD = new Command( "Delete", DELETE_TYPE, DELETE_PRIORITY ); 
+		//#endif
 	//#endif	
 	
 	//#if polish.key.maybeSupportsAsciiKeyMap
