@@ -794,6 +794,16 @@
 			<fileset dir="setup/samples/serialization" excludes="**/macosx/**,**/CVS" />
 			<fileset dir="../enough-polish-sample-serialization" includes="resources/**/*.*" excludes="CVS"/>
 		</copy>
+		<!-- copy rgbfilter sample application -->
+		<mkdir dir="tmp/samples/rgbfilter/source" />
+		<copy todir="tmp/samples/rgbfilter/source">
+			<fileset dir="../enough-polish-sample-rgbfilter/source" includes="**/*.java,**/*.xml" excludes="**/macosx/**,**/CVS" />
+		</copy>
+		<copy todir="tmp/samples/rgbfilter/" 
+			>
+			<fileset dir="setup/samples/rgbfilter" excludes="**/macosx/**,**/CVS" />
+			<fileset dir="../enough-polish-sample-rgbfilter" includes="resources/**/*.*" excludes="**/CVS"/>
+		</copy>
 		<!-- copy rmi sample application -->
 		<mkdir dir="tmp/samples/rmi/source" />
 		<copy todir="tmp/samples/rmi/source">
