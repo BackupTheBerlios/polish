@@ -723,8 +723,8 @@
 		depends="tmpsetup" >
 		<!-- copy blank application -->
 		<mkdir dir="tmp/samples/blank/source/src" />
-		<copy todir="tmp/samples/menu/source/src">
-			<fileset dir="../enough-polish-sample-localization/source/src" includes="**/*.java, **/*.txt" />
+		<copy todir="tmp/samples/blank/source/src">
+			<fileset dir="../enough-polish-sample-blank/source/src" includes="**/*.java, **/*.txt" />
 		</copy>
 		<copy todir="tmp/samples/blank/" 
 			>
