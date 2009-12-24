@@ -1,0 +1,220 @@
+/** 
+  * The polish.css files contains all
+  * design information about a project.
+  */
+
+
+/**
+  * The title style is a predefined style which is used
+  * for all screen-titles unless the screen style defines the title-style CSS attribute.
+  */
+title {
+	padding: 2px;
+	font-face: proportional;
+	font-size: large;
+	font-style: bold;
+	font-color: #fff;
+	text-effect: shadow;
+	border: none;
+	layout: horizontal-center | horizontal-expand;
+	background {
+		type: vertical-gradient;
+		top-color: #333;
+		bottom-color: #eee;
+	}
+}
+
+
+/** 
+  * The .mainScreen style is a static style, which
+  * is set in the MIDlet source-code with the //#style directive.
+  */
+.mainScreen {
+	padding: 2px;
+	padding-left: 5%;
+	padding-right: 5%;
+	background {
+		type: horizontal-stripes;
+		first-top-color: white;
+		second-top-color: white;
+		first-bottom-color: #333;
+		second-bottom-color: black;
+	}
+
+	layout: horizontal-expand | horizontal-center | vertical-center;
+	columns: 2;
+	columns-width: equal;
+}
+
+/**
+  * The .mainItem style is also a static style, which
+  * is set in the MIDlet source-code with the //#style directive.
+  */
+.mainItem {
+	font-style: bold;
+	font-size: medium;
+	padding: 0px;
+	icon-image: url( icon%INDEX%.png );
+	icon-image-align: top;
+	layout: center;
+	/*
+	icon-filter: grayscale;
+	filter-grayscale-grade: 100%;
+	filter-grayscale-grade-animation {
+		on: defocus;
+		range: 0%..100%;
+	}
+	*/
+	icon-filter: blur;
+	filter-blur-grade: 100%;
+	filter-blur-grade-animation {
+		on: defocus;
+		range: 0%..100%;
+	}
+}
+
+.mainItem:hover {
+	font-color: white;
+	text-effect: shadow;
+	/*
+	filter-grayscale-grade-animation {
+		on: focus;
+		range: 100%..0%;
+	}
+	*/
+	filter-blur-grade-animation {
+		on: focus;
+		range: 100%..0%;
+	}
+}
+
+.mainItem:pressed {
+	view-type: particle;
+}
+
+
+
+.messageAlert extends .mainScreen {
+	padding: 5px;
+	padding-left: 15px;
+	padding-right: 15px;
+	view-type: none;
+	layout: horizontal-shrink | vertical-shrink | horizontal-center | bottom;
+	background-type: simple;
+	background-color: argb( 150, 255, 255, 255 );
+	repaint-previous-screen: true;
+}
+
+alertcontent {
+	font-color: white;
+	font-size: small;
+	font-style: bold;
+	text-effect: shadow;
+}
+
+.input {
+	margin: 1;
+	background-color: white;
+	layout: expand;
+}
+
+.input:hover {
+	margin: 0;
+	background-color: yellow;
+	border-color: black;
+}
+
+info {
+	margin: 1;
+	font-color: gray;
+	layout: right;
+}
+
+/*************   MENU BAR     *************/
+
+menubar {
+	margin: 0;
+	padding-top: 3;
+	padding: 2;
+	background {
+		type: vertical-gradient;
+		top-color: #333;
+		bottom-color: #ddd;
+		start: 10%;
+		end: 100%;
+	}
+}
+
+/**
+ * Commands within the menubar on the left side
+ */
+leftcommand
+{
+	margin: 0;
+    //#if polish.key.MiddleSoftKey:defined or polish.MenuBar.useMiddleCommand
+    	/* the middle command is used, so lower the left and right commands relatively */
+		padding-top: 7;
+	//#endif
+	padding-bottom: 0;
+	font-color: white;
+	font-style: bold;
+	text-effect: shadow;
+	text-shadow-color: #333;
+	font-size: large;
+}
+
+/**
+ * Commands within the menubar on the right side
+ */
+rightcommand extends leftcommand
+{
+	layout: right;
+}
+
+middlecommand extends leftcommand {
+	padding-top: 1;
+	font-color: black;
+}
+
+
+
+/**
+  * the menu style is a predefined style for
+  * designing the fullscreen-menu.
+  */
+menu {
+	margin-left: 2px;
+	padding: 2px;
+	background {
+		type: round-rect;
+		color: #fff;
+		border-width: 2;
+		border-color: #333;
+	}
+}
+
+
+
+/**
+  * The menuItem style is a predefined style
+  * for the actual commands in a fullscreen-menu.
+  */
+menuItem {
+	padding: 2px;
+	padding-left: 5px;
+	font {
+		color: #fff;
+		style: bold;
+	}
+	layout: left;
+}
+
+/**
+  * A focused menuItem
+  */
+menuItem:hover {
+	background-color: #333;
+	font-color: #fff;
+	layout: left | horizontal-expand;
+}
+
