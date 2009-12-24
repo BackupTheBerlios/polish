@@ -265,6 +265,7 @@
 				<a href="<%= basedir %>docs/gui-visualguide-texteffects.html">Visual Guide to Text Effect</a>
 				<a href="<%= basedir %>docs/gui-visualguide-screenchangeanimations.html">Visual Guide to Screen Transitions</a>
 				<a href="<%= basedir %>docs/gui-visualguide-viewtypes.html">Visual Guide to Item Views</a>
+				<a href="<%= basedir %>docs/gui-visualguide-filters.html">Visual Guide to Filters</a>
 				<a href="<%= basedir %>docs/gui-css-basics.html">CSS Basics</a>
 				<a href="<%= basedir %>docs/gui-css-animations.html">CSS Animations</a>
 				<a href="<%= basedir %>docs/gui-css-mediaqueries.html">CSS Media Queries</a>

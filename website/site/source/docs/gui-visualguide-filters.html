@@ -1,0 +1,67 @@
+<%define inDocumentationSection %>
+<%define inDocumentationSection.gui %>
+<%set title = J2ME Polish: Visual Guide to Filters %>
+<%set basedir = ../ %>
+
+<%include start.txt %>
+
+	<h1 id="top">Visual Guide to Filters</h1>
+	<ul class="relatedtechnologies">
+		<li class="relatedtechnologiesheader">Related Topics:</li>
+		<li><a href="gui-visualguide.html">Visual Guide</a></li>
+		<li><a href="gui-visualguide-backgrounds.html">Visual Guide to Backgrounds</a></li>
+		<li><a href="gui-visualguide-borders.html">Visual Guide to Borders</a></li>
+		<li><a href="gui-visualguide-texteffects.html">Visual Guide to Text Effects</a></li>
+		<li><a href="gui-visualguide-viewtypes.html">Visual Guide to Item Views</a></li>
+		<li><a href="gui-visualguide-screenchangeanimations.html">Visual Guide to Screen Transitions</a></li>
+		<li><a href="gui-concepts.html">GUI Concepts</a></li>
+		<li><a href="gui-css-basics.html">CSS Basics</a></li>
+		<li><a href="gui-css-animations.html">CSS Animations</a></li>
+		<li><a href="customization.html">Customization</a></li>
+		<li><a href="../lush/index.html">Lush (UI)</a></li>
+	</ul>
+	<%index %>
+	<p>
+	RGB filters are a powerful tool for adding some 'wow' to your applications. This movie demonstrates the <code>blur</code> filter
+	in combination with <a href="gui-css-animations.html">CSS Animations</a>. You can even combine filters by defining them in a comma separated list.
+	<br />
+	<object width="425" height="344"><param name="movie" value="http://www.youtube.com/v/kAIA1FHjwOs&hl=en&fs=1"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/kAIA1FHjwOs&hl=en&fs=1" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="425" height="344"></embed></object>
+	</p>
+<pre>
+.mainItem {
+	font-style: bold;
+	font-size: medium;
+	padding: 0px;
+	icon-image: url( icon%INDEX%.png );
+	icon-image-align: top;
+	layout: center;
+	<b>icon-filter: blur;
+	filter-blur-grade: 100%;
+	filter-blur-grade-animation {
+		on: defocus;
+		range: 0%..100%;
+	}</b>
+}
+
+.mainItem:hover {
+	font-color: white;
+	text-effect: shadow;
+	<b>filter-blur-grade-animation {
+		on: focus;
+		range: 100%..0%;
+	}</b>
+}</pre>
+
+
+<h2 id="filter-blur">blur Filter</h2>
+	<table><tr>
+		<td>
+		<object width="425" height="344"><param name="movie" value="http://www.youtube.com/v/kAIA1FHjwOs&hl=en&fs=1"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/kAIA1FHjwOs&hl=en&fs=1" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="425" height="344"></embed></object>
+		</td>
+		<td>Apply a gaussian blur to elements using
+		<a href="gui-filter-blur.html">blur filter</a>.
+		</td>
+	</tr></table>
+
+
+<%include end.txt %>

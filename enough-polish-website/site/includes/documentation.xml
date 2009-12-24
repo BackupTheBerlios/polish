@@ -25,6 +25,7 @@
 		<page file="gui-visualguide-texteffects.html" title="Visual Guide to Text Effects" />
 		<page file="gui-visualguide-screenchangeanimations.html" title="Visual Guide to Screen Transitions" />
 		<page file="gui-visualguide-viewtypes.html" title="Visual Guide to Item Views" />
+		<page file="gui-visualguide-filters.html" title="Visual Guide to Filters" />
 		<page file="gui-css-basics.html" title="CSS Basics" />
 		<page file="gui-css-animations.html" title="CSS Animations" />
 		<page file="gui-css-mediaqueries.html" title="CSS Media Queries" />
