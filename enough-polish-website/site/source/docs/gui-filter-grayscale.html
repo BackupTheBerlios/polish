@@ -13,14 +13,14 @@
 		<li><a href="gui-css-basics.html">CSS Basics</a></li>
 	</ul>
 	<p>
-		<object width="425" height="344"><param name="movie" value="http://www.youtube.com/v/kAIA1FHjwOs&hl=en&fs=1"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/kAIA1FHjwOs&hl=en&fs=1" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="425" height="344"></embed></object>
+		<object width="425" height="344"><param name="movie" value="http://www.youtube.com/v/WHWNXeAjqQI&hl=en&fs=1"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/WHWNXeAjqQI&hl=en&fs=1" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="425" height="344"></embed></object>
 	</p>
 	<p>
-		The <code>blur</code> filter blurs the affected elements in various degrees.
+		The <code>grayscale</code> filter removes the color from the affected elements in various degrees.
 	</p>
 	<h2 id="filter-Design">Usage</h2>
 	<p>
-	Use this animation like this:
+	Use this filter like this:
 	</p>
 <pre>
 .mainItem {
@@ -30,9 +30,9 @@
 	icon-image: url( icon%INDEX%.png );
 	icon-image-align: top;
 	layout: center;
-	<b>icon-filter: blur;
-	filter-blur-grade: 100%;
-	filter-blur-grade-animation {
+	<b>icon-filter: grayscale;
+	filter-grayscale-grade: 100%;
+	filter-grayscale-grade-animation {
 		on: defocus;
 		range: 0%..100%;
 	}</b>
@@ -41,18 +41,18 @@
 .mainItem:hover {
 	font-color: white;
 	text-effect: shadow;
-	<b>filter-blur-grade-animation {
+	<b>filter-grayscale-grade-animation {
 		on: focus;
 		range: 100%..0%;
 	}</b>
 }</pre>
-	<%cssattributes de.enough.polish.ui.rgbfilters.GaussianBlurRgbFilter %>
+	<%cssattributes de.enough.polish.ui.rgbfilters.GrayscaleRgbFilter %>
 
 	
 	
 	<h2 id="filter-JavaDoc">JavaDoc</h2>
 	<p>
-		<a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/rgbfilters/GaussianBlurRgbFilter.html">GaussianBlurRgbFilter</a>.
+		<a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/rgbfilters/GrayscaleRgbFilter.html">GrayscaleRgbFilter</a>.
 	</p>
 
 <%include end.txt %>
