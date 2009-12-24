@@ -814,7 +814,7 @@ implements UiElement, Animatable
 	 *        info height and ticker height.
 	 */
 	protected void calculateContentArea( int x, int y, int width, int height ) {
-		//#debug
+		// #debug
 		System.out.println("calculateContentArea(" + x + ", " + y + ", " + width + ", " + height + ") for " + this);
 		if (width < 1 || height < 1 ) {
 			//#debug info
@@ -846,7 +846,7 @@ implements UiElement, Animatable
 //		int containerHeight = 0; 
 		int originalWidth = width;
 		if (cont != null && this.isLayoutHorizontalShrink) {
-			width = cont.getItemWidth(width, width, height);
+			width = cont.getItemWidth(width, width, height) + cont.paddingLeft + cont.paddingRight;
 //			containerHeight = cont.itemHeight;
 //			width = containerWidth;
 		}
@@ -2582,7 +2582,11 @@ implements UiElement, Animatable
 				//#endif
 				)
 			{
-				t.paint( t.relativeX, t.relativeY, t.relativeX, t.relativeX + t.itemWidth, g);
+				int clipY = g.getClipY();
+				if (clipY < t.relativeY + t.itemHeight) {
+					// since most of the cases the title is at the top, this will remove most unecessary paint actions:
+					t.paint( t.relativeX, t.relativeY, t.relativeX, t.relativeX + t.itemWidth, g);
+				}
 			}
 		//#endif
 		Item st = this.subTitle;
