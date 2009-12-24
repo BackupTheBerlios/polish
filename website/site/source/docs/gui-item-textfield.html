@@ -505,6 +505,11 @@ ArrayList results = UiAccess.getPredictiveMatchingWords(mytextfield);
 	 <td>Priority of the clear command.</td>
 	</tr>
 	<tr>
+	 <td>polish.command.clear.type</td>
+	 <td>Command.ITEM</td>
+	 <td>Type of the clear command.</td>
+	</tr>
+	<tr>
 	 <td>polish.command.delete</td>
 	 <td>Delete</td>
 	 <td>Command text for deleting a single character.</td>
@@ -513,6 +518,11 @@ ArrayList results = UiAccess.getPredictiveMatchingWords(mytextfield);
 	 <td>polish.command.delete.priority</td>
 	 <td>1</td>
 	 <td>Priority of the delete command.</td>
+	</tr>
+	<tr>
+	 <td>polish.command.delete.type</td>
+	 <td>Command.CANCEL | Command.ITEM</td>
+	 <td>Type of the delete command. On devices with a return/back key or when the device supports pointer events and you use popup screens this is Command.ITEM, otherwise its Command.CANCEL.</td>
 	</tr>
 	<tr>
 	 <td>polish.command.entersymbol</td>
