@@ -3914,7 +3914,7 @@ public abstract class Item implements UiElement, Animatable
 	 * The default implementation calls handleGestureHold() in case GESTURE_HOLD is specified.
 	 * @param gesture the gesture identifier, e.g. GESTURE_HOLD
 	 * @return true when this gesture was handled
-	 * @see #handleGestureHold()
+	 * @see #handleGestureHold(int, int)
 	 */
 	protected boolean handleGesture(int gesture, int x, int y) {
 		boolean handled = false;
