@@ -33,10 +33,12 @@
 		<page file="gui-localization.html" title="GUI Localization" />
 		<page file="gui-configuration.html" title="Configuration Options" />
 	</page>
+	<page file="gui-visualguide.html" title="Visual Guide" />
 	<page file="customization.html" title="Customization" />
 	<page file="localization.html" title="Localization" />
 	<page file="persistence.html" title="Persistence" />
 	<page file="rmi.html" title="RMI/RPC" />
+	<page file="logging.html" title="Logging" />
 	<page file="build.html" title="Building" >
 		<page file="" title="Resource Handling:" >
 			<page file="resource-assembling.html" title="Resource Assembling" />
