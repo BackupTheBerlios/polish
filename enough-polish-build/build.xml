@@ -1308,6 +1308,81 @@
 		</j2mepolish>
 	</target>
 
+	<target name="check-build">
+		<mkdir dir="build/testclasses" />
+		<javac
+			srcdir="source/test"
+			destdir="build/testclasses"
+			debug="true"
+			source="1.4"
+			target="1.4">
+			<classpath>
+				<pathelement location="lib/asm-all.jar" />
+				<pathelement location="lib/enough-bytecode.jar" />
+				<pathelement location="build/clientclasses" />
+				<pathelement location="build/coreclasses" />
+				<pathelement location="build/extensionsclasses" />
+			</classpath>
+		</javac>
+
+		<junit printsummary="yes" fork="yes" haltonfailure="no" showoutput="no">
+			<classpath>
+				<pathelement location="lib/asm-all.jar" />
+				<pathelement location="lib/enough-bytecode.jar" />
+				<pathelement location="lib/jdom.jar" />
+				<pathelement location="lib/junit.jar" />
+				<pathelement location="build/clientclasses" />
+				<pathelement location="build/coreclasses" />
+				<pathelement location="build/extensionsclasses" />
+				<pathelement location="build/testclasses" />
+			</classpath>
+			<formatter type="plain" />
+			<batchtest>
+				<fileset dir="source/test">
+					<exclude name="**/TestSerialization_*.java" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
+	<target name="check-client">
+		<mkdir dir="build/clienttestclasses" />
+		<javac
+			srcdir="../enough-polish-j2me/source/test"
+			encoding="latin1"
+			destdir="build/clienttestclasses"
+			debug="true"
+			source="1.5"
+			target="1.5">
+			<classpath>
+				<pathelement location="import/cldc-1.1.jar" />
+				<pathelement location="import/midp-2.1.jar" />
+				<pathelement location="build/clientclasses" />
+			</classpath>
+			<exclude name="**/TestL2CapConnection.java" />
+			<exclude name="**/L2CapStreamTest.java" />
+			<exclude name="**/CssInterpreterTest.java" />
+			<exclude name="**/LayerManagerTest.java" />
+			<exclude name="**/HashMapTest.java" />
+		</javac>
+
+		<junit printsummary="yes" fork="yes" haltonfailure="no" showoutput="no">
+			<classpath>
+				<pathelement location="lib/junit.jar" />
+				<pathelement location="import/cldc-1.1.jar" />
+				<pathelement location="import/midp-2.1.jar" />
+				<pathelement location="build/clientclasses" />
+				<pathelement location="build/clienttestclasses" />
+				<pathelement location="../enough-polish-j2me" />
+			</classpath>
+			<formatter type="plain" />
+			<batchtest>
+				<fileset dir="../enough-polish-j2me/source/test">
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
 	<target name="checkstyle">
 		<checkstyle config="checkstyle-config.xml">
 			<!--
