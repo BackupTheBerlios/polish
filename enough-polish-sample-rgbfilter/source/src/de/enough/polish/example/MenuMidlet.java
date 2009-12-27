@@ -82,10 +82,10 @@ public class MenuMidlet extends MIDlet implements CommandListener {
 		this.menuScreen.append("Settings", null);
 		//#style mainItem
 		this.menuScreen.append("Applications", null);
-		//#style mainItem
-		this.menuScreen.append("Help", null);
-		//#style mainItem
-		this.menuScreen.append("Quit", null);
+//		//#style mainItem
+//		this.menuScreen.append("Help", null);
+//		//#style mainItem
+//		this.menuScreen.append("Quit", null);
 		
 		this.menuScreen.setCommandListener(this);
 		this.menuScreen.addCommand( this.startGameCmd ); 

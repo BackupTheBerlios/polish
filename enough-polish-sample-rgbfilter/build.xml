@@ -81,6 +81,7 @@
 				<variable name="polish.TextField.includeInputInfo" value="true" />
 				<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
 				<variable name="polish.Screen.dontBufferPreviousScreen" value="true" />
+				<variable name="polish.useScrollBar" value="true" />
 				<variable name="update-url" value="http://www.enough.de/update"/>
 				<!--
 				<variable name="polish.css.allowAllAttributes" value="true" />

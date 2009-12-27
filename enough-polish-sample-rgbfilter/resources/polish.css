@@ -33,17 +33,8 @@ title {
 	padding: 2px;
 	padding-left: 5%;
 	padding-right: 5%;
-	background {
-		type: horizontal-stripes;
-		first-top-color: white;
-		second-top-color: white;
-		first-bottom-color: #333;
-		second-bottom-color: black;
-	}
-
+	background-color: #666;
 	layout: horizontal-expand | horizontal-center | vertical-center;
-	columns: 2;
-	columns-width: equal;
 }
 
 /**
@@ -53,39 +44,61 @@ title {
 .mainItem {
 	font-style: bold;
 	font-size: medium;
+	font-color: #555;
 	padding: 0px;
 	icon-image: url( icon%INDEX%.png );
-	icon-image-align: top;
-	layout: center;
-	/*
-	icon-filter: grayscale;
+	icon-image-align: left;
+	layout: left | expand;
+	padding-left: 10%;
+	padding-horizontal: 7%;
+	icon-filter: scale, grayscale;
+	filter-scale-grade: 60%;
+	filter-scale-grade-animation {
+		on: defocus;
+		range: 100%..60%;
+		duration: 400ms;
+	}
 	filter-grayscale-grade: 100%;
 	filter-grayscale-grade-animation {
 		on: defocus;
 		range: 0%..100%;
+		duration: 400ms;
 	}
-	*/
+	font-color-animation {
+		on: defocus;
+		range: #000..#555;
+	}
+	/*
 	icon-filter: blur;
 	filter-blur-grade: 100%;
 	filter-blur-grade-animation {
 		on: defocus;
 		range: 0%..100%;
 	}
+	*/
 }
 
 .mainItem:hover {
-	font-color: white;
-	text-effect: shadow;
-	/*
+	font-color-animation {
+		on: focus;
+		range: #555..#000;
+	}
+	filter-scale-grade-animation {
+		on: focus;
+		range: 60%..100%;
+		duration: 400ms;
+	}
 	filter-grayscale-grade-animation {
 		on: focus;
 		range: 100%..0%;
+		duration: 400ms;
 	}
-	*/
+	/*
 	filter-blur-grade-animation {
 		on: focus;
 		range: 100%..0%;
 	}
+	*/
 }
 
 .mainItem:pressed {
@@ -130,7 +143,16 @@ info {
 	layout: right;
 }
 
-/*************   MENU BAR     *************/
+/*************    Scrollbar          ***************************************************************************************************/
+scrollbar {
+	scrollbar-slider-color: #fff;
+	scrollbar-slider-width: 6px;
+	scrollbar-fadeout: true;
+	opacity: 180;
+}
+
+
+/*************    Commands Menu      ***************************************************************************************************/
 
 menubar {
 	margin: 0;
