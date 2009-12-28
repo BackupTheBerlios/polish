@@ -5122,7 +5122,7 @@ public final class UiAccess {
 	}
 	//#endif
 	
-	//#if polish.usePolishGui
+	//#if polish.midp
 	/**
 	 * Repaints the specified item
 	 * @param item the item
