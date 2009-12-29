@@ -29,8 +29,11 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.tools.ant.types.CommandlineJava.SysProperties;
+
 import de.enough.polish.BuildException;
 
+import de.enough.polish.propertyfunctions.VersionFunction;
 import de.enough.polish.util.CastUtil;
 import de.enough.polish.util.PropertyUtil;
 import de.enough.polish.util.StringUtil;
@@ -328,11 +331,32 @@ public class BooleanEvaluator {
 					int numVar = -1;
 					int numLastVar = -1;
 					try {
+						boolean nonNumeric = false;
+						String versionIdentifier = null;
 						try {
 							numVar = CastUtil.getInt( var );
 						} catch (NumberFormatException e ) {
-							System.out.println("Warn: " + fileName + " line " + line + ": integer-variable [" + var + "] could not be parsed.");
+							nonNumeric = true;
+							int separatorIndex = var.indexOf('/');
+							if (separatorIndex != -1) {
+								versionIdentifier = var.substring(0, separatorIndex);
+								var = var.substring(separatorIndex+1);
+							}
+							if (var.indexOf('.') != -1) {
+								// assuming version:
+								var = VersionFunction.process(var);
+								try {
+									numVar = Integer.parseInt(var);
+								} catch (Exception e2) {
+									System.out.println("Warn: " + fileName + " line " + line + ": integer-variable [" + var + "] could not be parsed.");
+								}
+							} else {
+								System.out.println("Warn: " + fileName + " line " + line + ": integer-variable [" + var + "] could not be parsed.");
+							}
 						}
+						if (nonNumeric) {
+							lastVar = VersionFunction.process(lastVar, versionIdentifier);
+						} 
 						try {
 							numLastVar = CastUtil.getInt( lastVar );
 						} catch (NumberFormatException e ) {
