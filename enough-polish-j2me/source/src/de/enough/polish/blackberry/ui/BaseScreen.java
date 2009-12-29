@@ -74,7 +74,7 @@ public abstract class BaseScreen
 	private boolean isObscured;
 	public Item currentItem;
 	//#if !polish.blackberry.keyUpCalledOnKeyRelease
-		//#if ${ version(polish.JavaPlatform, BlackBerry) } >= ${version(4.3)}
+		//#if polish.JavaPlatform >= BlackBerry/4.3
 			//#define tmp.checkKeyUp
 			private static boolean versionHigherThan46 = checkSoftwareVersionHigherThan(4.6);
 		//#endif
@@ -108,7 +108,7 @@ public abstract class BaseScreen
      * @return
      */
     private static boolean checkSoftwareVersionHigherThan(double version) {
-    	//#if ${ version(polish.JavaPlatform, BlackBerry) } >= ${version(4.3)}
+    	//#if polish.JavaPlatform >= BlackBerry/4.3
     		String versionStr = DeviceInfo.getSoftwareVersion();
     		if (versionStr != null && versionStr.length() > 0) {
     			double foundVersion = -1D;
