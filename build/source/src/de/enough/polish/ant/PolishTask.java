@@ -1333,6 +1333,13 @@ public class PolishTask extends ConditionalTask {
 	 * @return true when the J2ME Polish UI should be activated
 	 */
 	protected boolean usePolishGui( Device device ) {
+                //Basically if use device defaults unless we have "always"
+                // suports gui enabled.
+                if (!this.buildSetting.alwaysUsePolishGui() &&
+                    ( device != null && !device.supportsPolishGui())){
+                    return false;
+                }
+
 		String usePolishGuiVariable;
 		if (this.environment == null) {
 			usePolishGuiVariable = getProject().getProperty("polish.usePolishGui");
@@ -1346,7 +1353,7 @@ public class PolishTask extends ConditionalTask {
 				&& ( device == null || device.supportsPolishGui() || this.buildSetting.alwaysUsePolishGui()))
 				|| (( "true".equals( usePolishGuiVariable) || "yes".equals( usePolishGuiVariable ) || "always".equals( usePolishGuiVariable )) );
 		//		System.out.println("enabling J2ME Polish UI=" + usePolishGui);
-		return usePolishGui;
+                return usePolishGui;
 	}
 
 	/**
@@ -1569,8 +1576,11 @@ public class PolishTask extends ConditionalTask {
 		// check if a preprocessing variable is set for using the Polish GUI:
 		boolean usePolishGui = usePolishGui(device);
 		if ( usePolishGui) {
-			this.environment.addSymbol("polish.usePolishGui");
-		}
+                    this.environment.addSymbol("polish.usePolishGui");
+		}else {
+                    this.environment.removeSymbol("polish.usePolishGui");
+                    this.environment.removeVariable("polish.usePolishGui");
+                }
 
 		// set conditional variables:
 		BooleanEvaluator evaluator = this.environment.getBooleanEvaluator();
@@ -1638,13 +1648,12 @@ public class PolishTask extends ConditionalTask {
 		}
 
 		// set support for the J2ME Polish GUI, part 2:
-		if (usePolishGui(device)) {
-			usePolishGui = true;					
+		if ( usePolishGui(device)) {
 			this.environment.addSymbol("polish.usePolishGui");
-		} else {
-			usePolishGui = false;					
-			this.environment.removeSymbol("polish.usePolishGui");
-		}
+		}else {
+                    this.environment.removeSymbol("polish.usePolishGui");
+                    this.environment.removeVariable("polish.usePolishGui");
+                }
 
 		// set the temporary build path used for preprocessing, compilation, preverification, etc:
 		String deviceSpecificBuildPath = File.separatorChar + device.getVendorName() 
@@ -1781,6 +1790,7 @@ public class PolishTask extends ConditionalTask {
 
 			this.numberOfChangedFiles = 0;
 			String targetDir = device.getSourceDir();
+                        boolean usePolishGui = this.environment.hasSymbol("polish.usePolishGui");
 
 			notifyPolishBuildListeners( PolishBuildListener.EVENT_PREPROCESS_SOURCE_DIR, new File( targetDir ) );
 			// initialise the preprocessor (other initialisation is done in the initialized() method):
@@ -1823,8 +1833,8 @@ public class PolishTask extends ConditionalTask {
 					+ File.separatorChar + "build.xml" );
 			long buildXmlLastModified = buildXml.lastModified();
 			// check if the polish gui is used at all:
-			boolean usePolishGui = this.environment.hasSymbol("polish.usePolishGui");
-			//this.preprocessor.setUsePolishGui(usePolishGui);
+			
+			//this.preprocessor.setUsePolishGui(useP;olishGui);
 			long lastCssModification = lastLocaleModification;
 			StyleSheet cssStyleSheet = null;
 			if (usePolishGui) {
@@ -1833,8 +1843,9 @@ public class PolishTask extends ConditionalTask {
 				if (cssStyleSheet.lastModified() > lastLocaleModification) {
 					lastCssModification = cssStyleSheet.lastModified();
 				}
+                                this.preprocessor.setSyleSheet( cssStyleSheet, device );
 			}
-			this.preprocessor.setSyleSheet( cssStyleSheet, device );
+			
 			this.preprocessor.notifyDevice(device, usePolishGui);
 			this.preprocessor.notifyLocale( locale );
 			// preprocess each source file:
