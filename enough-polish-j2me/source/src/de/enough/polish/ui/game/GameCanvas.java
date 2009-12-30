@@ -104,7 +104,7 @@ public abstract class GameCanvas
 		// a fullscreen class is available
 		//#if (polish.GameCanvas.useFullScreen == false) || (polish.GameCanvas.useFullScreen == no)
 			//# extends Canvas
-		//#elif (polish.GameCanvas.useFullScreen == true) || (polish.GameCanvas.useFullScreen == yes)
+		//#elif ((polish.GameCanvas.useFullScreen == true) || (polish.GameCanvas.useFullScreen == yes) && polish.classes.fullscreen:defined)
 			//#define tmp.useFullScreen
 			//#= extends ${polish.classes.fullscreen}
 		//#elif (polish.GameCanvas.useFullScreen == menu) || ( polish.useFullScreen && polish.useMenuFullScreen ) 
@@ -116,7 +116,7 @@ public abstract class GameCanvas
 			//#else
 				//# extends Canvas
 			//#endif
-		//#elif (polish.useFullScreen && !polish.useMenuFullScreen)
+		//#elif (polish.useFullScreen && !polish.useMenuFullScreen && polish.classes.fullscreen:defined)
 			//#define tmp.useFullScreen
 			//#= extends ${polish.classes.fullscreen}
 		//#else
