@@ -17,10 +17,12 @@ import de.enough.polish.util.FileUtil;
  * <pre>
  * history
  *        29-Dec-2009 - David refactored JDE detection 
- *                    - Better linux support, Wine can be spesificed by wine.cmd
+ *                    - Better linux support, Wine can be specified  by wine.cmd
+ *        30-Dec-2009 - David Blackberry Emultors work completely in wine now.
  * </pre>
  * @author Robert Virkus
  * @author David Rubin
+ * TODO: filter out wine noise fixme: and error: by config
  */
 public class BlackBerryEmulator extends Emulator {
 
@@ -45,14 +47,14 @@ public class BlackBerryEmulator extends Emulator {
             System.out.println("Extracting params from ["+executable+"] for use in wine.");
             try{
                 String [] data =  FileUtil.readTextFile( executable);
-                String args="";
+                String [] args=new String[0];
+                //Only include data from the running application line.
                 for (int i =0;i<data.length;i++){
                      if (data[i].trim().startsWith("fledge.exe")){
-                        args = data[i].trim().substring("fledge.exe ".length());
-                        System.out.println(args);
+                        args = data[i].split(" ");
                      }
                 }
-                if (args.length()>0){
+                if (args.length>0){
                     //
                     String wineBinary=env.getVariable("wine.cmd");
                     if (wineBinary != null && wineBinary.length()>0){
@@ -60,8 +62,10 @@ public class BlackBerryEmulator extends Emulator {
                     }else {
                         argumentsList.add("wine");
                     }
-                    argumentsList.add("fledge.exe");
-                    argumentsList.add(args);
+                    //Should include the fledge.exe
+                    for(int i=0;i<args.length;i++){
+                        argumentsList.add(args[i]);
+                    }
                 }
             }catch(IOException e){
                 e.printStackTrace();
