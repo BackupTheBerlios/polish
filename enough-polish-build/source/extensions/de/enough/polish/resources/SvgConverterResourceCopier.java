@@ -194,7 +194,7 @@ public class SvgConverterResourceCopier extends ResourceCopier {
 	  		newWidth = iconSize.width;
 	  		newHeight = iconSize.height; 
 		} else if(file.getName().startsWith("bg")){
-	    	if(screenSize == null && this.scaleToFit != true){
+	    	if(screenSize == null && !this.scaleToFit){
 	    		  screenSize = new Dimension(128,160);
 	    	}
 			newWidth = screenSize.width;
