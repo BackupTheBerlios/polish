@@ -99,11 +99,9 @@ import de.enough.polish.devices.DeviceDatabase;
 import de.enough.polish.devices.LibraryManager;
 import de.enough.polish.emulator.Emulator;
 import de.enough.polish.finalize.Finalizer;
-import de.enough.polish.notify.GrowlNotifier;
 import de.enough.polish.jar.DefaultPackager;
 import de.enough.polish.jar.Packager;
 import de.enough.polish.libraryprocessor.LibraryProcessor;
-import de.enough.polish.notify.LinuxNotifier;
 import de.enough.polish.manifest.ManifestCreator;
 import de.enough.polish.obfuscate.Obfuscator;
 import de.enough.polish.postcompile.PostCompiler;
@@ -603,7 +601,7 @@ public class PolishTask extends ConditionalTask {
 	 * 
 	 * @param device the current device
 	 * @param locale the current locale, can be null
-	 * @param hasExtensions true when there are <java>-extensions
+	 * @param hasExtensions true when there are &lt;java&gt;-extensions
 	 */
 	protected void execute(Device device, Locale locale, boolean hasExtensions) {
 		initialize( device, locale );
