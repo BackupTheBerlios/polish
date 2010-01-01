@@ -70,7 +70,7 @@ extends ConditionalElement
 
 	
 	/**
-	 * Adds the contents of the corresponding <jadFilter> or <manifestFilter> to this filter-setting.
+	 * Adds the contents of the corresponding &lt;jadFilter&gt; or &lt;manifestFilter^gt; to this filter-setting.
 	 * 
 	 * @param text the text specifying what elements should be included in what order
 	 */
