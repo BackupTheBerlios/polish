@@ -102,7 +102,7 @@ public final class StackTraceUtil {
 	 * Retrieves the position of the decompiled code in the source code.
 	 * @param className the name of the class
 	 * @param methodName the name of the method.
-	 * @param searchForConstructor when the <init>-method is looked for
+	 * @param searchForConstructor when the &lt;init&gt;-method is looked for
 	 * @param sourceCode
 	 * @param preprocessedSourcePath
 	 * @param sourceDirs
