@@ -170,7 +170,7 @@ public class CssAttributesManager {
 	/**
 	 * Loads type definitions from the css-attributes.xml file.
 	 * 
-	 * @param xmlList the list of <type> elements
+	 * @param xmlList the list of &lt;type&gt; elements
 	 */
 	private void registerTypes(List xmlList) {
 		for (Iterator iter = xmlList.iterator(); iter.hasNext();) {
