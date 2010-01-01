@@ -32,14 +32,16 @@ import de.enough.polish.preprocess.Preprocessor;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.StringList;
 
-import java.io.*;
+import java.io.File;
+import java.io.InputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
  * <p>Reads CSS files and combines the found style-definitions.</p>
  *
  * <p>Copyright Enough Software 2004, 2005</p>
-
+ *
  * <pre>
  * history
  *        01-Mar-2004 - rob creation
