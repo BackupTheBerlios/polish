@@ -102,7 +102,7 @@ public final class ReflectionUtil {
 			} catch (NoSuchMethodException e2) {
 				try {
 					method = objectClass.getMethod(methodName, new Class[]{ Boolean.TYPE } );
-					argument = new Boolean( CastUtil.getBoolean(value) );
+					argument = Boolean.valueOf( CastUtil.getBoolean(value) );
 				} catch (NoSuchMethodException e3) {
 					throw new IllegalArgumentException( "Unable to retrieve method " + methodName + ": " + e3.toString() );
 				}				
@@ -242,7 +242,7 @@ public final class ReflectionUtil {
 		if (paramType == String.class) {
 			method.invoke(object, new Object[]{ value } );
 		} else if (paramType == Boolean.TYPE ) {
-			Boolean argument = new Boolean( CastUtil.getBoolean(value) );
+			Boolean argument = Boolean.valueOf( CastUtil.getBoolean(value) );
 			method.invoke(object, new Object[]{ argument } );
 		} else {
 			File file = new File( value );
