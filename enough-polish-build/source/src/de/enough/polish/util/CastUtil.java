@@ -86,11 +86,7 @@ public final class CastUtil {
 	 */
 	public static final int toUnsignedInt( byte value ) {
 		int intValue = value & 0x7F;
-		if ( value < 0 ) {
-			return ( intValue + 128 );
-		} else {
-			return intValue;
-		}
+		return value < 0 ? intValue + 128 : intValue;
 	}
 	
 	/**
