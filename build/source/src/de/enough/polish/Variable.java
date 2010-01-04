@@ -29,8 +29,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-import de.enough.polish.BuildException;
-
 import de.enough.polish.preprocess.Preprocessor;
 import de.enough.polish.util.CastUtil;
 import de.enough.polish.util.FileUtil;
