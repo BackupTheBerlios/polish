@@ -81,7 +81,7 @@ public class SerializationVisitor
   
   protected static String getSerializableClassName( ASMClassLoader loader, Environment env ) {
 	  String className = getClassName( SERIALIZABLE, env);
-	  if (env.hasSymbol("polish.Bugs.ReservedKeywordSerializable")) 
+	  if (env != null && env.hasSymbol("polish.Bugs.ReservedKeywordSerializable")) 
 	  {
 		  try
 		{
