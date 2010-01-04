@@ -544,7 +544,7 @@ implements Comparable
 	 * @return true when this CSS attribute has a fix list of allowed values
 	 */
 	public boolean hasFixValues() {
-		return (this.allowedValues != null);
+		return this.allowedValues != null;
 	}
 	
 	/**
@@ -889,7 +889,7 @@ implements Comparable
 	}
 
 	public boolean isDeprecated() {
-		return (this.deprecatedMessage != null);
+		return this.deprecatedMessage != null;
 	}
 	
 	public String getDeprecatedMessage() {

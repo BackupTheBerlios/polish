@@ -112,7 +112,7 @@ implements Comparator
 	throws IOException
 	{
 		this.localizationSetting = localizationSetting;
-		this.isDynamic = (localizationSetting == null ? false : localizationSetting.isDynamic() );
+		this.isDynamic = localizationSetting == null ? false : localizationSetting.isDynamic();
 		this.locale = locale;
 		this.device = device;
 		this.environment = environment;

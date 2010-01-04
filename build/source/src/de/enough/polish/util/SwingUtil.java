@@ -192,7 +192,7 @@ public final class SwingUtil {
 		 * @see javax.swing.filechooser.FileFilter#accept(java.io.File)
 		 */
 		public boolean accept(File f) {
-			return (f.isDirectory() || f.getName().endsWith( this.lowerCaseType ) || f.getName().endsWith(this.upperCaseType));
+			return f.isDirectory() || f.getName().endsWith( this.lowerCaseType ) || f.getName().endsWith(this.upperCaseType);
 		}
 		/* (non-Javadoc)
 		 * @see javax.swing.filechooser.FileFilter#getDescription()
@@ -201,8 +201,4 @@ public final class SwingUtil {
 			return this.lowerCaseType;
 		}	
 	}
-	
-	
-
-
 }
