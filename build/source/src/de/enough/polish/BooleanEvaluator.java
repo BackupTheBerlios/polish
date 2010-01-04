@@ -32,14 +32,13 @@ import java.util.regex.Pattern;
 import org.apache.tools.ant.types.CommandlineJava.SysProperties;
 
 import de.enough.polish.BuildException;
-
 import de.enough.polish.propertyfunctions.VersionFunction;
 import de.enough.polish.util.CastUtil;
 import de.enough.polish.util.PropertyUtil;
 import de.enough.polish.util.StringUtil;
 
 /**
- * <p>Evaluates boolean expressions based on defined (or undefined) symbols and the operators &&, ||, ! and ^.</p>
+ * <p>Evaluates boolean expressions based on defined (or undefined) symbols and the operators &amp;&amp;, ||, ! and ^.</p>
  *
  * <p>Copyright Enough Software 2004, 2005</p>
 
@@ -144,8 +143,8 @@ public class BooleanEvaluator {
 	/**
 	 * Evaluates the given expression.
 	 * 
-	 * @param expression the expression containing defined (or undefined) symbols and the operators &&, ||, ! and ^.
-	 *              A valid expression is for example "( symbol1 ||symbol2 ) && !symbol3" 
+	 * @param expression the expression containing defined (or undefined) symbols and the operators &amp;&amp;, ||, ! and ^.
+	 *              A valid expression is for example "( symbol1 ||symbol2 ) &amp;&amp; !symbol3" 
 	 * @param fileName the name of the source code file
 	 * @param line the line number in the source code file (first line is 1)
 	 * @return true when the expression yields to true
@@ -219,7 +218,7 @@ public class BooleanEvaluator {
 
 	/**
 	 * Evaluates the given simple term.
-	 * @param term the simple term without any paranthesis, e.g. "symbol1 && ! symbol2"
+	 * @param term the simple term without any paranthesis, e.g. "symbol1 &amp;&amp; ! symbol2"
 	 * @param fileName the name of the source file
 	 * @param line the line number of this term
 	 * @return true when the term represents true
