@@ -26,9 +26,6 @@
  */
 package de.enough.polish.ui.rgbfilters;
 
-//#debug ovidiu
-import de.enough.polish.benchmark.Benchmark;
-
 import de.enough.polish.ui.Dimension;
 import de.enough.polish.ui.RgbFilter;
 import de.enough.polish.ui.Style;
@@ -38,8 +35,8 @@ import de.enough.polish.util.RgbImage;
  * <p>Transforms the color of a specified RGB image.</p>
  *
  * <p>Copyright Enough Software 2008</p>
- * @author Ovidiu Iliescu
  * @author Robert Virkus, j2mepolish@enough.de
+ * @author Ovidiu Iliescu
  */
 public class GrayscaleRgbFilter extends RgbFilter {
 
@@ -68,8 +65,6 @@ public class GrayscaleRgbFilter extends RgbFilter {
      * @see de.enough.polish.ui.RgbFilter#process(de.enough.polish.util.RgbImage)
      */
     public RgbImage process(RgbImage input) {
-        //#debug ovidiu
-        Benchmark.startSmartTimer("gs");
 
         if (!isActive()) {
             return input;
@@ -126,11 +121,6 @@ public class GrayscaleRgbFilter extends RgbFilter {
             rgbOutput[p] = alpha | output_red | output_green | output_blue;
         }
 
-
-        //#mdebug ovidiu
-        Benchmark.pauseSmartTimer("gs");
-        Benchmark.incrementSmartTimer("gs-count");
-        //#enddebug
         return this.output;
     }
 

@@ -25,9 +25,6 @@
  */
 package de.enough.polish.util;
 
-//#debug ovidiu
-import de.enough.polish.benchmark.Benchmark;
-
 //#if polish.midp2 || (!polish.midp && polish.usePolishGui)
 //#define tmp.supportImageOperations
 import javax.microedition.lcdui.Graphics;
@@ -45,11 +42,11 @@ import de.enough.polish.math.FP;
  *        15-May-2005 - rob creation
  *        15-Aug-2007 - Simon hq-down scaling added
  * </pre>
- * @author Ovidiu Iliescu
  * @author Robert Virkus, j2mepolish@enough.de
  * @author Tim Muders, tim.muders@enough.de
  * @author Simon Schmitt, simon.schmitt@enough.de
  * @author Anders Bo Pedersen, andersbo.pedersen@gmail.com
+ * @author Ovidiu Iliescu
  */
 public final class ImageUtil {
 
@@ -79,9 +76,6 @@ public final class ImageUtil {
          */
 
         if (scaleFactor < 100) {
-
-            //#debug ovidiu
-            Benchmark.startSmartTimer("rs-down");
 
             int x, y, dy;
             int srcOffset;
@@ -116,14 +110,8 @@ public final class ImageUtil {
                 y++;
             }
 
-            //#mdebug ovidiu
-            Benchmark.pauseSmartTimer("rs-down");
-            Benchmark.incrementSmartTimer("rs-down-count");
-            //#enddebug
         } else {
 
-            //#debug ovidiu
-            Benchmark.startSmartTimer("rs-up");
 
             int x, y, dy;
             int destOffset = 0;
@@ -155,10 +143,6 @@ public final class ImageUtil {
                 y++;
             }
 
-            //#mdebug ovidiu
-            Benchmark.pauseSmartTimer("rs-up");
-            Benchmark.incrementSmartTimer("rs-up-count");
-            //#enddebug
         }
     }
 
@@ -875,10 +859,7 @@ public final class ImageUtil {
      * @param rotatedWidth the width of the rotated rgb data
      * @param rotatedHeight the height of the rotated rgb data
      */
-    public static void rotate(int[] sourceRgbData, int width, int height, int referenceX, int referenceY, int backgroundColor, double degreeCos, double degreeSin, int[] rotatedRGB, int rotatedWidth, int rotatedHeight) {
-
-        //#debug ovidiu
-        Benchmark.startSmartTimer("rotate-time");
+     public static void rotate(int[] sourceRgbData, int width, int height, int referenceX, int referenceY, int backgroundColor, double degreeCos, double degreeSin, int[] rotatedRGB, int rotatedWidth, int rotatedHeight) {
 
         // Declare needed variables
         int sourcePos;
@@ -888,6 +869,8 @@ public final class ImageUtil {
         int x, y;
         final int halfOfWidth = width / 2;
         final int halfOfHeight = height / 2;
+        final int halfOfRotatedHeight = rotatedHeight/2;
+        final int halfOfRotatedWidth = rotatedWidth/2;
         final int degCos = (int) (1024 * degreeCos) ;
         final int degSin = (int) (1024 * degreeSin) ;
         final int rotatedHeightMinus1 = rotatedHeight -1;
@@ -900,8 +883,8 @@ public final class ImageUtil {
         final int yMinusRefYTimesDegCos[] = new int[rotatedHeight];
 
         for (y = 0; y < rotatedHeight; y++) {
-            yMinusRefYTimesDegSin[y] = ((y - referenceY) * degSin) >> 10;
-            yMinusRefYTimesDegCos[y] = ((y - referenceY) * degCos) >> 10;
+            yMinusRefYTimesDegSin[y] = ( halfOfWidth ) + (((y - halfOfRotatedHeight) * degSin) >> 10);
+            yMinusRefYTimesDegCos[y] = ( halfOfHeight) + (((y - halfOfRotatedHeight) * degCos) >> 10);
         }
 
         // Rotate the image!
@@ -914,8 +897,9 @@ public final class ImageUtil {
         x=-1;
         while ( ++x < rotatedWidth) {
 
-            xMinusRefXTimesDegCosXPlusHalfWidth = (((x - referenceX) * degCos) >> 10) + halfOfWidth  ;
-            xMinusRefXTimesDegSinXMinusHalfOfHeight = (((x - referenceX) * degSin) >> 10) - halfOfHeight ;
+            xMinusRefXTimesDegCosXPlusHalfWidth = (((x - halfOfRotatedWidth) * degCos) >> 10)  ;
+            xMinusRefXTimesDegSinXMinusHalfOfHeight = (((x - halfOfRotatedWidth) * degSin) >> 10)  ;
+
 
             y=-1;
             while ( ++y < rotatedHeightMinus1){
@@ -932,11 +916,6 @@ public final class ImageUtil {
             }
         }
 
-
-        //#mdebug ovidiu
-        Benchmark.pauseSmartTimer("rotate-time");
-        Benchmark.incrementSmartTimer("rotate-count");
-        //#enddebug
     }
     //#endif
 

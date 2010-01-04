@@ -26,9 +26,6 @@
  */
 package de.enough.polish.ui.rgbfilters;
 
-//#debug ovidiu
-import de.enough.polish.benchmark.Benchmark;
-
 import de.enough.polish.ui.Dimension;
 import de.enough.polish.ui.RgbFilter;
 import de.enough.polish.ui.Style;
@@ -40,6 +37,7 @@ import de.enough.polish.util.RgbImage;
  *
  * <p>Copyright Enough Software 2008</p>
  * @author Nagendra Sharma, nagendra@prompttechnologies.net
+ * @author Ovidiu Iliescu
  */
 public class ScaleRgbFilter extends RgbFilter
 {
@@ -107,9 +105,6 @@ public class ScaleRgbFilter extends RgbFilter
 			}
 			rgbOutput = this.output.getRgbData();
 			ImageUtil.scale( rgbInput, newWidth, newHeight, width, height, rgbOutput);
-
-			// TODO :
-				// Add code to call for a layout refresh, to accomodate for the new image size .
 		}
 
 		return this.output;

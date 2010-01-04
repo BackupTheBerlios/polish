@@ -26,9 +26,6 @@
  */
 package de.enough.polish.ui.rgbfilters;
 
-//#debug ovidiu
-import de.enough.polish.benchmark.Benchmark;
-
 import de.enough.polish.ui.Dimension;
 import de.enough.polish.ui.RgbFilter;
 import de.enough.polish.ui.Style;
@@ -43,9 +40,9 @@ import de.enough.polish.util.RgbImage;
  * Copyright Enough Software 2008
  * </p>
  *
- * @author Ovidiu Iliescu
  * @author Nagendra Sharma, nagendra@prompttechnologies.net
  * @author Robert Virkus, j2mepolish@enough.de (blur animation & fixes)
+ * @author Ovidiu Iliescu
  */
 public class GaussianBlurRgbFilter extends RgbFilter {
 
@@ -81,17 +78,15 @@ public class GaussianBlurRgbFilter extends RgbFilter {
         int[] rgbOutput = this.output.getRgbData();
 
         // Define all variables here instead of inside the loops.
-        int sourcePixel = 0;
         int red = 0;
         int green = 0;
         int blue = 0;
         int totalPercentage = 100;
         int startY = 0;
         int endY = 0;
-        int x = 0, y = 0, dx = 0, dy = 0, startX = 0, endX, c = 0, percentage = 0;
+        int x = 0, y = 0, c = 0, percentage = 0;
         int yTimesWidth = 0;
         int tempEnd = 0;
-        int tempVal = 0;
         int dimensionDivTwo = 0;
         int imgWidth = this.width;
         int imgHeight = this.height;
@@ -105,9 +100,6 @@ public class GaussianBlurRgbFilter extends RgbFilter {
         int dimension = this.blur.getValue(100);
         dimension = Math.max(2, (imgHeight * dimension) / 100);
         dimensionDivTwo = dimension / 2;
-
-        //#debug ovidiu
-        Benchmark.startSmartTimer("4");
 
         // HORIZONTAL PASS
 
@@ -197,10 +189,6 @@ public class GaussianBlurRgbFilter extends RgbFilter {
 
         }
 
-        //#mdebug ovidiu
-        Benchmark.pauseSmartTimer("4");
-        Benchmark.check();
-        //#enddebug
 
         return this.output;
     }
@@ -214,17 +202,13 @@ public class GaussianBlurRgbFilter extends RgbFilter {
         int[] rgbOutput = this.output.getRgbData();
 
         // Define all variables here instead of inside the loops.
-        int sourcePixel = 0;
         int red = 0;
         int green = 0;
         int blue = 0;
         int totalPercentage = 100;
-        int startY = 0;
-        int endY = 0;
-        int x = 0, y = 0, dx = 0, dy = 0, startX = 0, endX, c = 0, percentage = 0;
+        int x = 0, y = 0,  startX = 0, endX, c = 0, percentage = 0;
         int yTimesWidth = 0;
         int tempEnd = 0;
-        int tempVal = 0;
         int dimensionDivTwo = 0;
         int imgWidth = this.width;
         int imgHeight = this.height;
@@ -238,9 +222,6 @@ public class GaussianBlurRgbFilter extends RgbFilter {
         int dimension = this.blur.getValue(100);
         dimension = Math.max(2, imgWidth * dimension / 100);
         dimensionDivTwo = dimension / 2;
-
-        //#debug ovidiu
-        Benchmark.startSmartTimer("4");
 
         // VERTICAL PASS
         yTimesWidth = 0;
@@ -323,11 +304,6 @@ public class GaussianBlurRgbFilter extends RgbFilter {
             y++;
         }
 
-        //#mdebug ovidiu
-        Benchmark.check();
-        Benchmark.pauseSmartTimer("4");
-        //#enddebug
-
         return this.output;
     }
 
@@ -382,9 +358,6 @@ public class GaussianBlurRgbFilter extends RgbFilter {
          *
          */
 
-        //#debug ovidiu
-        Benchmark.startSmartTimer("2");
-
         this.width = input.getWidth();
         this.height = input.getHeight();
         if (this.output == null || this.output.getWidth() != input.getWidth()
@@ -394,10 +367,6 @@ public class GaussianBlurRgbFilter extends RgbFilter {
 
         this.output = verticalPass(horizontalPass(input));
 
-        //#mdebug ovidiu
-        Benchmark.pauseSmartTimer("2");
-        Benchmark.incrementSmartTimer("3");
-        //#enddebug
 
         return this.output;
     }
