@@ -641,7 +641,7 @@ public class Preprocessor {
 			}
 			// when the argument is within an if-branch, there might be other valid directives:
 			return checkInvalidDirective( className, lines, line, trimmedLine.substring(3).trim(), null );
-		} else if (this.ifDirectiveCount > 0 &&  spacePos == 3) {
+		} else if (this.ifDirectiveCount > 0 && spacePos == 3) {
 			// this is just an outcommented line
 			return NOT_CHANGED;
 		}
@@ -929,7 +929,7 @@ public class Preprocessor {
 	/**
 	 * Checks whether an if-condition is true.
 	 * 
-	 * @param argument the if-expression e.g. "(symbol1 || symbol2) && symbol3"
+	 * @param argument the if-expression e.g. "(symbol1 || symbol2) &amp;&amp; symbol3"
 	 * @param className the name of the file
 	 * @param lines the list of source code
 	 * @return true when the argument results in true

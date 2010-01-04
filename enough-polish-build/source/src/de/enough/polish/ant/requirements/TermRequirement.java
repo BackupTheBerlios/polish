@@ -50,7 +50,7 @@ public class TermRequirement extends Requirement {
 	/**
 	 * Creates a new requirement for a device feature.
 	 * 
-	 * @param term the preprocessing term, e.g. "polish.supportsPolishGui && !polish.isVirtual" 
+	 * @param term the preprocessing term, e.g. "polish.supportsPolishGui &amp;&amp; !polish.isVirtual" 
 	 */
 	public TermRequirement(String term ) {
 		super(term, "Term");
