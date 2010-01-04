@@ -25,16 +25,11 @@
  */
 package de.enough.polish.preprocess.css.attributes;
 
-import org.jdom.Element;
-
-import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.BuildException;
 import de.enough.polish.Environment;
 import de.enough.polish.preprocess.css.CssAnimationSetting;
-import de.enough.polish.preprocess.css.CssAttribute;
 import de.enough.polish.preprocess.css.CssMapping;
 import de.enough.polish.preprocess.css.Style;
-import de.enough.polish.util.StringUtil;
 
 /**
  * <p>An attribute that consists of a mapped value or a combination.</p>
