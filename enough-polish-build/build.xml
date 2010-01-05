@@ -32,7 +32,7 @@
 	<taskdef name="setAttribute" classname="de.enough.polish.ant.SetAttributeTask" classpath=".:bin/classes:build/bootstrapclasses" onerror="report" />
 	<taskdef resource="genjar.properties" classpath="import/GenJar.jar" />
 	<taskdef resource="proguard/ant/task.properties" classpath="lib/proguard.jar" />	
-	<taskdef resource="checkstyletask.properties" classpath="lib/checkstyle-4.1.jar:lib/commons-beanutils-core.jar:lib/commons-logging.jar:lib/antlr.jar" />
+	<taskdef resource="checkstyletask.properties" classpath="lib/checkstyle-all-5.0.jar" />
 	
 	<!-- build targets, each target can be called via "ant [name]", e.g. "ant clean" -->
 	
