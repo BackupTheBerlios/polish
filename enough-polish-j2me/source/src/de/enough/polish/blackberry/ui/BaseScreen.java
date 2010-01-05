@@ -93,7 +93,9 @@ public abstract class BaseScreen
     		//# super( BaseScreenManager.getInstance(), 0 );
     	//#else
     		super( DEFAULT_MENU );
-    		super.setDefaultClose(false);
+    		//#if polish.BlackBerry.addDefaultClose != true
+    			super.setDefaultClose(false);
+    		//#endif
     	//#endif
     	this.addedItems = new ArrayList();
         this.graphics = new Graphics();
