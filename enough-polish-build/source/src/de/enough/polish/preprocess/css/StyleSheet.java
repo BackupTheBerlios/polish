@@ -30,7 +30,13 @@ import de.enough.polish.util.StringUtil;
 
 import de.enough.polish.BuildException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * <p>Represents a StyleSheet for a specific application.</p>
@@ -237,7 +243,7 @@ public class StyleSheet {
 			// the default style is always defined!
 			return true;
 		}
-		return (this.stylesByName.get(name) != null);
+		return this.stylesByName.get(name) != null;
 	}
 	
 	/**
@@ -337,7 +343,7 @@ public class StyleSheet {
 		tmpStyles = (Style[]) stylesList.toArray( new Style[ stylesList.size() ]);
 		for (int i = 0; i < tmpStyles.length; i++) {
 			Style style = tmpStyles[i];
-			if (( style.isReferenced() && !style.hasReferences() )) {
+			if ( style.isReferenced() && !style.hasReferences() ) {
 				//System.out.println( style.getSelector());
 				finalStylesList.add( style );
 				stylesList.remove( style );
@@ -830,7 +836,7 @@ public class StyleSheet {
 	 * @return true when the style is being used.
 	 */
 	public boolean isUsed(String name) {
-		return ( this.usedStyles.get( name ) != null );
+		return this.usedStyles.get( name ) != null;
 	}
 
 	/**

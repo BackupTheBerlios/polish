@@ -372,7 +372,7 @@ public class ResourceManager {
 			return directories;
 		}
 		if (this.resourceDirectories == null) {
-			System.out.println("Error: resourceDirectories == null, resourceSetting=" + this.resourceSetting + ", resourceSetting.getRootDirs=" +  (this.resourceSetting == null ? "null" : "" + this.resourceSetting.getRootDirectories(this.environment)));
+			System.out.println("Error: resourceDirectories == null, resourceSetting=" + this.resourceSetting + ", resourceSetting.getRootDirs=" +  (this.resourceSetting == null ? "null" : this.resourceSetting.getRootDirectories(this.environment).toString()));
 			this.resourceDirectories = this.resourceSetting.getRootDirectories(this.environment);
 		}
 		ArrayList dirs = new ArrayList();

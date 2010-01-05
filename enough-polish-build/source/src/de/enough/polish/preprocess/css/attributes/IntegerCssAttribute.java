@@ -95,16 +95,20 @@ public class IntegerCssAttribute extends CssAttribute {
 					}
 				}
 			}
-			String message = "Invalid CSS: the attribute [" + this.name + "] needs to be one "
-						+ "of the following values: [";
+			StringBuffer sb = new StringBuffer();
+			sb.append("Invalid CSS: the attribute [");
+			sb.append(this.name);
+			sb.append("] needs to be one of the following values: [");
 			for (int i = 0; i < this.allowedValues.length; i++) {
-				message += this.allowedValues[i];
+				sb.append(this.allowedValues[i]);
 				if (i < this.allowedValues.length - 1) {
-					message += "], [";
+					sb.append("], [");
 				}
 			}		
-			message += "]. The value [" + value + "] is not supported.";
-			throw new BuildException( message );
+			sb.append("]. The value [");
+			sb.append(value);
+			sb.append("] is not supported.");
+			throw new BuildException( sb.toString() );
 		}
 	}
 

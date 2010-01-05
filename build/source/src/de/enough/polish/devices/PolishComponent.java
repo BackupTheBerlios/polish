@@ -144,9 +144,6 @@ implements Comparable
 			if (capValue == null) {
 				capValue = element.getChildTextTrim("capability-value");
 			}
-			if (capName == null) {
-				throw new InvalidComponentException("The component [" + componentName + "] has an invalid [capability] - every capability needs to define the attribute [value]. Please check you [" + fileName + "].");
-			}
 			// add the capability:
 			addCapability( capName, capValue );
 		} // end of reading all capabilties

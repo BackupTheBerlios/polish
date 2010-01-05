@@ -73,7 +73,7 @@ public final class SwingUtil {
 	 * @param parent the frame which wants to show the FileChooser
 	 * @return the chosen file or null, when cancel was selected
 	 */
-	public final static File openFile(String extension, boolean open, File currentDirectory, JFrame parent ) {
+	public static File openFile(String extension, boolean open, File currentDirectory, JFrame parent ) {
 		JFileChooser fileChooser = new JFileChooser( currentDirectory );
 		if (extension != null) {
 			fileChooser.setFileFilter( INSTANCE.new CustomFileFilter( extension ) );

@@ -63,7 +63,7 @@ public final class ResourceUtil {
 	 * @return the InputStream for the specified resource.
 	 * @throws FileNotFoundException when the specified resource could not be found
 	 */
-	public final InputStream open( String baseDir, String url ) 
+	public InputStream open( String baseDir, String url ) 
 	throws FileNotFoundException 
 	{
 		File baseDirFile = null;

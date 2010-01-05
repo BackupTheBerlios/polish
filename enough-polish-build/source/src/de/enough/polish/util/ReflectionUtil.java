@@ -76,7 +76,7 @@ public final class ReflectionUtil {
 	 * @throws  IllegalArgumentException when a parameter has a syntax error
 	 *        or when a needed method has not be found. 
 	 */
-	public final static void populate( Object object, Variable parameter, File baseDir ) {
+	public static void populate( Object object, Variable parameter, File baseDir ) {
 		String methodName = parameter.getName();
 		if (methodName == null) {
 			throw new IllegalArgumentException( "The parameter does not contain a name." );
@@ -143,7 +143,7 @@ public final class ReflectionUtil {
 	 * @throws  IllegalArgumentException when a parameter has a syntax error
 	 *        or when a needed method has not be found. 
 	 */
-	public final static void populate( Object object, Variable[] parameters, File baseDir ) {
+	public static void populate( Object object, Variable[] parameters, File baseDir ) {
 		Class objectClass = object.getClass();
 		try {
 			// first check whether the object in question has implmented the setParameters( Variable[] parameters, File baseDir ) method.

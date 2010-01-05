@@ -115,16 +115,16 @@ public class JDPTask extends Task {
 
 	private String readFile(File file) throws IOException {
 		FileInputStream stream = new FileInputStream(file);
-		
 		int len = stream.available();
-		
-		String result = " ";
+		StringBuffer sb = new StringBuffer();
+		sb.append(" ");
 
 		for (int i = 1; i <= len; i++) {
-			result = result + (char) stream.read();
+			sb.append((char) stream.read());
 		}
 
-		return result;
+		stream.close();
+		return sb.toString();
 	}
 	
 	private void writeFile(File file, String content) throws IOException
@@ -135,22 +135,20 @@ public class JDPTask extends Task {
 		}
 		
 		FileWriter writer = new FileWriter(file);
-
 		writer.write(content);
-		
 		writer.close();
 	}
 
 	private String getFileList(List classes, List resources) {
-		String result = "";
-		
 		String filename;
+		StringBuffer sb = new StringBuffer();
 
 		for (int i = 0; i < classes.size(); i++) {
 			File file = (File) classes.get(i);
 			if (file.getName().charAt(0) != '.') {
 				filename = file.getAbsolutePath().replace("\\", "\\\\");
-				result += filename + "\r\n";
+				sb.append(filename);
+				sb.append("\r\n");
 			}
 		}
 
@@ -158,11 +156,12 @@ public class JDPTask extends Task {
 			File file = (File) resources.get(i);
 			if (file.getName().charAt(0) != '.' && !file.getName().endsWith(".class")) {
 				filename = file.getAbsolutePath().replace("\\", "\\\\");
-				result += filename + "\r\n";
+				sb.append(filename);
+				sb.append("\r\n");
 			}
 		}
 
-		return result;
+		return sb.toString();
 	}
 
 	public String getproject() {

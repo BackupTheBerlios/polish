@@ -221,7 +221,7 @@ public final class CssReader {
 	 * @param buffer the CSS declarations
 	 * @return the CSS declarations without comments.
 	 */
-	public final static StringBuffer removeCssComments( StringBuffer buffer ) {
+	public static StringBuffer removeCssComments( StringBuffer buffer ) {
 		StringBuffer clean = new StringBuffer( buffer.length() );
 		char[] chars = buffer.toString().toCharArray();
 		boolean inComment = false;
@@ -259,7 +259,7 @@ public final class CssReader {
 	 * @param buffer the raw buffer containing the CSS definitions
 	 * @return the buffer split into chunks.
 	 */
-	public static final String[] split(StringBuffer buffer) {
+	public static String[] split(StringBuffer buffer) {
 		return split( buffer.toString() );
 	}
 	
@@ -271,7 +271,7 @@ public final class CssReader {
 	 * @param str the raw string containing the CSS definitions
 	 * @return the string split into chunks.
 	 */
-	public static final String[] split(String str) {
+	public static String[] split(String str) {
 		int parenthesisCount = 0;
 		ArrayList chunksList = new ArrayList();
 		int blockStart = 0;

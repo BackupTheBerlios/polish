@@ -928,10 +928,10 @@ public class PolishTask extends ConditionalTask {
 		}
 		// add all ant properties if desired: 
 		if (this.buildSetting.includeAntProperties()) {
-			Set keySet = buildProperties.keySet();
-			for (Iterator iter = keySet.iterator(); iter.hasNext();) {
-				String key = (String) iter.next();
-				this.polishProject.addDirectCapability( key, (String) buildProperties.get(key) );
+			Set entrySet = buildProperties.entrySet();
+			for (Iterator iter = entrySet.iterator(); iter.hasNext();) {
+				Map.Entry entry = (Map.Entry) iter.next();
+				this.polishProject.addDirectCapability( (String) entry.getKey(), (String) entry.getValue() );
 			}
 		}
 		// add all variables from the build.xml:
@@ -3266,7 +3266,7 @@ public class PolishTask extends ConditionalTask {
 	 * </pre>
 	 * @author Robert Virkus, robert@enough.de
 	 */
-	class CssFileFilter implements FileFilter {
+	private static class CssFileFilter implements FileFilter {
 
 		/* (non-Javadoc)
 		 * @see java.io.FileFilter#accept(java.io.File)
@@ -3289,7 +3289,7 @@ public class PolishTask extends ConditionalTask {
 		}
 	}
 
-	class FailureInfo {
+	private static class FailureInfo {
 		private final Date time;
 		private final Device device;
 		private final Locale locale;

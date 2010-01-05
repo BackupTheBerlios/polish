@@ -54,7 +54,7 @@ public final class StringUtil {
 	 * @throws IllegalArgumentException when on of the parameters is null.
 	 * @see #replace(String, char, char) for a fast alternative
 	 */
-	public static final String replace(String input, String search, String replacement) {
+	public static String replace(String input, String search, String replacement) {
 		if (input == null || search == null || replacement == null) {
 			throw new IllegalArgumentException( "StringUtil.replace( \"" + input + "\", \"" + search + "\", \"" + replacement + "\" ): given input parameters must not be null.");
 		}
@@ -381,4 +381,16 @@ public final class StringUtil {
 		return buffer.toString();
 	}
 
+	public static String join(String[] array, String delimiter)
+	{
+		StringBuffer sb = new StringBuffer();
+		if (array.length != 0) {
+			sb.append(array[0]);
+		}
+		for (int i = 1; i < array.length; i++) {
+			sb.append(delimiter);
+			sb.append(array[i]);
+		}
+		return sb.toString();
+	}
 }
