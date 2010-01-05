@@ -1327,6 +1327,7 @@
 
 		<junit printsummary="yes" fork="yes" haltonfailure="no" showoutput="no">
 			<classpath>
+				<pathelement location="source/test" />
 				<pathelement location="lib/asm-all.jar" />
 				<pathelement location="lib/enough-bytecode.jar" />
 				<pathelement location="lib/jdom.jar" />
