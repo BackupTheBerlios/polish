@@ -1385,15 +1385,16 @@
 	</target>
 
 	<target name="checkstyle">
-		<checkstyle config="checkstyle-config.xml">
-			<!--
+		<checkstyle config="checkstyle-config.xml" failOnViolation="false">
 			<fileset dir="source/src" includes="**/*.java"/>
-			-->
+			<fileset dir="source/extensions" includes="**/*.java"/>
+			<formatter type="plain"/>
+			<formatter type="xml" toFile="build/checkstyle_errors.xml"/>
+		</checkstyle>
+		<checkstyle config="checkstyle-config-client.xml" failOnViolation="false">
 			<fileset dir="../enough-polish-j2me/source/src" includes="**/*.java"/>
 			<formatter type="plain"/>
-			<!--
-			<formatter type="xml" toFile="build/checkstyle_errors.xml"/>
-			-->
+			<formatter type="xml" toFile="build/checkstyle_errors_client.xml"/>
 		</checkstyle>
 	</target>
 
