@@ -1,10 +1,11 @@
 package de.enough.skylight.dom.impl;
 
+import de.enough.skylight.Services;
 import de.enough.skylight.dom.Element;
 
 public class UiEventTest extends AbstractDomTest {
 
-	private static EventEmitter eventEmitter = EventEmitter.getInstance();
+	private static EventEmitter eventEmitter = Services.getInstance().getEventEmitter();
 
 	public void testClickEvent() {
 		Element element = this.documentJsEvent.getElementById("id1");
