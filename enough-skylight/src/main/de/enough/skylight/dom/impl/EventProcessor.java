@@ -1,26 +1,46 @@
 package de.enough.skylight.dom.impl;
 
-
-import org.mozilla.javascript.Scriptable;
-import de.enough.skylight.Frame;
-import de.enough.skylight.dom.DomNode;
+import de.enough.polish.util.ArrayList;
 import de.enough.skylight.dom.Event;
 import de.enough.skylight.dom.MutationEvent;
 
+/**
+ * This class propagates an event through the DOM. Depending on the event, the capturing and bubbling phases are processed.
+ * EventProcessorListener objects are informed about the current status of the event.
+ * <br/>
+ * The event propagation mechanism is as follows:
+ * <ol>
+ * <li> Event created
+ * <li> Event capturing
+ * <li> Event onclick handling from the markup at the target element (onclick="alert()")
+ * <li> Event bubbling
+ * <li> Event onclick handling from JS at the DOM Node object (element.onclick = function(){alert()})
+ * </ol>
+ * Step 5) only takes place if step 3) was omitted because no markup handling was definied. So 3) and 5) are mutally
+ * exclusive.
+ * <br/>
+ * This class is not threadsafe.
+ * 
+ * @author rickyn
+ *
+ */
 public class EventProcessor {
 
-	private static EventProcessor instance;
+	private ArrayList<EventProcessorListener> eventProcessorListeners;
 	
-	// TODO: Static methods are not nice. Inject this object as a dependency or register as a listener on an event source.
-	public static EventProcessor getInstance() {
-		if(instance == null) {
-			instance = new EventProcessor();
-		}
-		return instance;
+	public EventProcessor() {
+		// Hidden.
+		this.eventProcessorListeners = new ArrayList<EventProcessorListener>();
 	}
 	
-	private EventProcessor() {
-		// Hidden.
+	public void addEventProcessorListener(EventProcessorListener eventProcessorListener) {
+		if( ! this.eventProcessorListeners.contains(eventProcessorListener)) {
+			this.eventProcessorListeners.add(eventProcessorListener);
+		}
+	}
+
+	public void removeEventProcessorListener(EventProcessorListener eventProcessorListener) {
+		this.eventProcessorListeners.remove(eventProcessorListener);
 	}
 	
 	/**
@@ -32,11 +52,8 @@ public class EventProcessor {
 		DomNodeImpl target = (DomNodeImpl) event.getTarget();
 		
 		NodeListImpl eventChain = createEventChain(target);
-		int numberOfEventTargets;
-		numberOfEventTargets = eventChain.getLength();
-		
-		//#debug
-		System.out.println("Processing event '"+event+"' and deliver it to '"+numberOfEventTargets+"' elements");
+		informAboutEventProcessingStart(event,eventChain);
+		int numberOfEventTargets = eventChain.getLength();
 		
 		boolean doCapture = true;
 		// TODO: Put this into the MutationEvent as default capture=false;
@@ -45,94 +62,117 @@ public class EventProcessor {
 		}
 		if(doCapture) {
 			// Propagate event downstream
-			//#debug
-			System.out.println("Capturing event '"+event+"' to target '"+event.getTarget()+"'");
 			for(int i = numberOfEventTargets-1; i >= 0; i--){
 				DomNodeImpl chainElement = (DomNodeImpl)eventChain.item(i);
 				event.setEventEnvironment(Event.CAPTURING_PHASE,chainElement);
-				//#debug
-				System.out.println("About to handle event '"+event+"' in capture phase at node '"+chainElement+"'");
+				
+				informListenersAboutToDeliverEvent(event);
 				chainElement.propagateEvent(event);
-				// React to capturing.
+				informListenersDeliveredEvent(event);
+
+				// React to stopping.
 				if(event.isStopPropagation()) {
 					//#debug
 					System.out.println("Stopping propagation of event '"+event+"'");
+					informListenersEventProcessingAborted(event);
 					return false;
 				}
 			}
 		}
 		
 		// Deliver event to event target
-		//#debug
-		System.out.println("Handling event '"+event+"' at target '"+target+"'");
 		event.setEventEnvironment(Event.AT_TARGET, target);
-		target.propagateEvent(event);
 		
-		/*
-		 * The event propagation mechanism is as follows:
-		 * 1) Event created
-		 * 2) Event capturing
-		 * 3) Event onclick handling from the markup (onclick="alert()")
-		 * 4) Event bubbling
-		 * 5) Event onclick handling from JS (element.onclick = function(){alert()})
-		 * 
-		 * Step 5) only takes place if step 3) was omitted because no markup handling was definied. So 3) and 5) are mutally
-		 * exclusive.
-		 * */
-		boolean onclickTriggered = false;
-		// Do js handling of onclick etc in the markup.
-		if("click".equals(event.getType())){
-			DomNode scriptAttribute = target.getAttributes().getNamedItem("onclick");
-			if(scriptAttribute != null) {
-				String scriptText = scriptAttribute.getNodeValue();
-				if(scriptText != null && scriptText.length() != 0) {
-					Frame.getInstance().getJsEngine().runScript(target, scriptText);
-					onclickTriggered = true;
-				}
-			}
-		}
+		informListenersAboutToDeliverEvent(event);
+		target.propagateEvent(event);
+		informListenersDeliveredEvent(event);
 		
 		if(event.getBubbles()) {
 			// Bubble event upstream.
-			//#debug
-			System.out.println("Handling bubbling of event");
 			for(int i = 0; i < numberOfEventTargets; i++){
 				DomNodeImpl chainElement = (DomNodeImpl)eventChain.item(i);
-				//#debug
-				System.out.println("About to handle bubble at element '"+chainElement+"'");
 				event.setEventEnvironment(Event.BUBBLING_PHASE,chainElement);
+				
+				informListenersAboutToDeliverEvent(event);
 				chainElement.propagateEvent(event);
-				// React to capturing.
+				informListenersDeliveredEvent(event);
+				
+				// React to stopping.
 				if(event.isStopPropagation()) {
 					//#debug
 					System.out.println("Stopping propagation");
+					
+					informListenersEventProcessingAborted(event);
 					return false;
 				}
 			}
 		}
 
+		informListenersEventProcessingStopped(event);
 		// Handle js onclick functions on the elements.
-		if( ! onclickTriggered) {
-			// Avoid lazy loading.
-			if( ! target.hasScriptable()) {
-				Scriptable scriptable = target.getScriptable();
-				Object onClickFunction = null;
-				while(scriptable != null) {
-					onClickFunction = scriptable.get("onclick", scriptable);
-					if(onClickFunction != null) {
-						break;
-					}
-					scriptable = scriptable.getParentScope();
-				}
-				if(onClickFunction != null) {
-					Frame.getInstance().getJsEngine().runFunction(onClickFunction);
-				}
-			}
-		}
-		
 		return event.isPreventDefault();
 	}
 	
+	private void informAboutEventProcessingStart(EventImpl event, NodeListImpl eventChain) {
+		int numberOfEventProcessorListeners = this.eventProcessorListeners.size();
+		for(int i = 0; i < numberOfEventProcessorListeners; i++) {
+			try {
+				EventProcessorListener eventProcessorListener = this.eventProcessorListeners.get(i);
+				eventProcessorListener.handleEventProcessingStart(event,eventChain);
+			} catch(Exception e) {
+				// Do nothing.
+			}
+		}
+	}
+	
+	private void informListenersEventProcessingStopped(EventImpl event) {
+		int numberOfEventProcessorListeners = this.eventProcessorListeners.size();
+		for(int i = 0; i < numberOfEventProcessorListeners; i++) {
+			try {
+				EventProcessorListener eventProcessorListener = this.eventProcessorListeners.get(i);
+				eventProcessorListener.handleEventProcessingStopped(event);
+			} catch(Exception e) {
+				// Do nothing.
+			}
+		}
+	}
+
+	private void informListenersEventProcessingAborted(EventImpl event) {
+		int numberOfEventProcessorListeners = this.eventProcessorListeners.size();
+		for(int i = 0; i < numberOfEventProcessorListeners; i++) {
+			try {
+				EventProcessorListener eventProcessorListener = this.eventProcessorListeners.get(i);
+				eventProcessorListener.handleEventProcessingAborted(event);
+			} catch(Exception e) {
+				// Do nothing.
+			}
+		}
+	}
+
+	private void informListenersAboutToDeliverEvent(EventImpl event) {
+		int numberOfEventProcessorListeners = this.eventProcessorListeners.size();
+		for(int i = 0; i < numberOfEventProcessorListeners; i++) {
+			try {
+				EventProcessorListener eventProcessorListener = this.eventProcessorListeners.get(i);
+				eventProcessorListener.handleAboutToDeliverEvent(event);
+			} catch(Exception e) {
+				// Do nothing.
+			}
+		}
+	}
+
+	private void informListenersDeliveredEvent(EventImpl event) {
+		int numberOfEventProcessorListeners = this.eventProcessorListeners.size();
+		for(int i = 0; i < numberOfEventProcessorListeners; i++) {
+			try {
+				EventProcessorListener eventProcessorListener = this.eventProcessorListeners.get(i);
+				eventProcessorListener.handleDeliveredEvent(event);
+			} catch(Exception e) {
+				// Do nothing.
+			}
+		}
+	}
+
 	/**
 	 * This method creates a list of EventTarget objects which are the direct ancestors of the parameter dom node.
 	 * The first item is the parent of the target, the last node is the root of the hierarchy.

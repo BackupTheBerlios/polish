@@ -40,25 +40,34 @@ public class MutationEventImpl extends EventImpl implements MutationEvent{
 		this.attrChangeArg = attrChangeArg;
 	}
 
-	protected String getNameForChange(short change) {
-		switch(change) {
+	protected String getNameForChange() {
+		switch(this.attrChangeArg) {
 			case MODIFICATION: return "Modification";
 			case ADDITION: return "Addition";
 			case REMOVAL: return "Removal";
-			default: throw new RuntimeException("The change type '"+change+"' is unknown.");
+			default: throw new RuntimeException("The change type '"+this.attrChangeArg+"' is unknown.");
 		}
+	}
+	
+	@Override
+	protected void toStringOfProperties(StringBuffer buffer) {
+		buffer.append("change='");
+		buffer.append(getNameForChange());
+		buffer.append("',prevValue='");
+		buffer.append(this.prevValueArg);
+		buffer.append("',newValue='");
+		buffer.append(this.newValueArg);
+		buffer.append("'");
 	}
 	
 	@Override
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("MutationEvent:[change='");
-		buffer.append(getNameForChange(this.attrChangeArg));
-		buffer.append("',prevValue='");
-		buffer.append(this.prevValueArg);
-		buffer.append("',newValue='");
-		buffer.append(this.newValueArg);
-		buffer.append("']");
-		return super.toString();
+		buffer.append("MutationEvent:[");
+		super.toStringOfProperties(buffer);
+		buffer.append(",");
+		toStringOfProperties(buffer);
+		buffer.append("]");
+		return buffer.toString();
 	}
 }

@@ -4,6 +4,7 @@ import org.mozilla.javascript.Scriptable;
 
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.HashMap;
+import de.enough.skylight.Services;
 import de.enough.skylight.dom.DOMException;
 import de.enough.skylight.dom.Document;
 import de.enough.skylight.dom.DomNode;
@@ -62,7 +63,7 @@ public abstract class DomNodeImpl implements DomNode {
 	public boolean dispatchEvent(Event event) throws EventException {
 		EventImpl eventImpl = (EventImpl) event;
 		eventImpl.setTarget(this);
-		return EventProcessor.getInstance().processEvent(eventImpl);
+		return Services.getInstance().getEventProcessor().processEvent(eventImpl);
 	}
 
 	public NamedNodeMap getAttributes() {
@@ -265,10 +266,17 @@ public abstract class DomNodeImpl implements DomNode {
 		this.parent = domNodeImpl;
 	}
 
+	protected void toStringOfProperties(StringBuffer buffer) {
+		buffer.append("children='");
+		buffer.append(this.childList.getLength());
+	}
+	
 	@Override
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append(getTypeName());
+		buffer.append("DomNode:[");
+		toStringOfProperties(buffer);
+		buffer.append("]");
 		return buffer.toString();
 	}
 

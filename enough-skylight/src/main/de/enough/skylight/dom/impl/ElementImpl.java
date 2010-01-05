@@ -2,6 +2,8 @@ package de.enough.skylight.dom.impl;
 
 
 import org.mozilla.javascript.Scriptable;
+
+import de.enough.skylight.Services;
 import de.enough.skylight.dom.Attr;
 import de.enough.skylight.dom.DOMException;
 import de.enough.skylight.dom.DomNode;
@@ -89,7 +91,7 @@ public class ElementImpl extends DomNodeImpl implements Element{
 			attribute.setNodeValue(value);
 		}
 		this.attributes.setNamedItem(attribute);
-		EventEmitter.getInstance().emitDomAttrModifiedEvent(this, this, previousValue, value, name, MutationEvent.MODIFICATION);
+		Services.getInstance().getEventEmitter().emitDomAttrModifiedEvent(this, this, previousValue, value, name, MutationEvent.MODIFICATION);
 	}
 
 	public Attr setAttributeNode(Attr newAttr) throws DOMException {
@@ -112,6 +114,22 @@ public class ElementImpl extends DomNodeImpl implements Element{
 
 	public void setNodeValue(String nodeValue) throws DOMException {
 		// Has no effect.
+	}
+	
+	@Override
+	protected void toStringOfProperties(StringBuffer buffer) {
+		buffer.append("name='");
+		buffer.append(this.tagName);
+	}
+	
+	@Override
+	public String toString() {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("Element:[");
+		toStringOfProperties(buffer);
+		buffer.append(",");
+		super.toStringOfProperties(buffer);
+		return buffer.toString();
 	}
 	
 }

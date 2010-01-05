@@ -6,25 +6,26 @@ import de.enough.skylight.dom.EventTarget;
 public class EventEmitter {
 
 	private static EventEmitter instance;
-	private static EventProcessor eventProcessorInstance;
 	
-	public static EventEmitter getInstance() {
+	private EventProcessor eventProcessorInstance;
+	
+	public static EventEmitter getInstance(EventProcessor eventProcessor) {
 		if(instance == null) {
-			instance = new EventEmitter();
-			eventProcessorInstance = EventProcessor.getInstance();
+			instance = new EventEmitter(eventProcessor);
 		}
 		return instance;
 	}
 	
-	private EventEmitter() {
+	private EventEmitter(EventProcessor eventProcessor) {
 		// Hidden.
+		this.eventProcessorInstance = eventProcessor;
 	}
 	
 	public MouseEventImpl emitClickEvent(EventTarget target, int x, int y) {
 		MouseEventImpl event = new MouseEventImpl();
 		event.init(target);
 		event.initMouseEvent("click", true, true, null, 0, x, y, x, y, false, false, false, false,(short) 0, null);
-		eventProcessorInstance.processEvent(event);
+		this.eventProcessorInstance.processEvent(event);
 		return event;
 	}
 	
@@ -32,7 +33,7 @@ public class EventEmitter {
 		MutationEventImpl event = new MutationEventImpl();
 		event.init(target);
 		event.initMutationEvent("DOMAttrModified", true, false, relatedNode, previousValue, newValue, attrName, attrChange);
-		eventProcessorInstance.processEvent(event);
+		this.eventProcessorInstance.processEvent(event);
 		// TODO: Inform the 
 	}
 }

@@ -99,12 +99,33 @@ public abstract class EventImpl implements Event{
 		this.target = newEventTarget;
 	}
 
+	protected void toStringOfProperties(StringBuffer buffer) {
+		buffer.append("type='");
+		buffer.append(this.eventType);
+		buffer.append("',phase='");
+		buffer.append(getNameOfPhase());
+		buffer.append("',currentTarget='");
+		buffer.append(this.currentTarget);
+		buffer.append("',target='");
+		buffer.append(this.target);
+		buffer.append("'");
+	}
+	
 	@Override
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("Event:[type='");
-		buffer.append(this.eventType);
-		buffer.append("']");
+		buffer.append("Event:[");
+		toStringOfProperties(buffer);
+		buffer.append("]");
 		return buffer.toString();
+	}
+	
+	private String getNameOfPhase() {
+		switch(this.eventPhase) {
+			case Event.BUBBLING_PHASE: return "bubbling";
+			case Event.CAPTURING_PHASE: return "capturing";
+			case Event.AT_TARGET: return "at target";
+			default:throw new RuntimeException("Unknown event phase: "+this.eventPhase);
+		}
 	}
 }
