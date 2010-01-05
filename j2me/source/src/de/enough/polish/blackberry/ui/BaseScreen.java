@@ -106,8 +106,8 @@ public abstract class BaseScreen
 
     /**
      * Checks if the software version of this device is higher than the specified one
-     * @param version
-     * @return
+     * @param version the version as double value, e.g. 4.7
+     * @return true when the software version of this device is higher than the specified one
      */
     private static boolean checkSoftwareVersionHigherThan(double version) {
     	//#if polish.JavaPlatform >= BlackBerry/4.3
