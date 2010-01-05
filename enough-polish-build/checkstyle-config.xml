@@ -29,8 +29,6 @@
     <!--
     <module name="JavadocVariable"/>
     -->
-    <!--
-    -->
     <module name="JavadocStyle">
       <property name="checkEmptyJavadoc" value="false"/>
       <property name="checkFirstSentence" value="false"/>
@@ -43,8 +41,8 @@
         <property name="ordered" value="true"/>
         <property name="separated" value="true"/>
     </module>
-    <module name="UnusedImports"/>
     -->
+    <module name="UnusedImports"/>
     <module name="AvoidStarImport"/>
     <!--
     <module name="ConstantName"/>
