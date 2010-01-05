@@ -26,34 +26,15 @@
 package de.enough.polish.android.precompiler;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.apache.tools.ant.BuildException;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.Namespace;
-import org.jdom.input.SAXBuilder;
-import org.jdom.output.XMLOutputter;
 
-import de.enough.polish.Attribute;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
-import de.enough.polish.ant.Jad;
 import de.enough.polish.ant.android.ArgumentHelper;
-import de.enough.polish.descriptor.DescriptorCreator;
-import de.enough.polish.manifest.ManifestCreator;
 import de.enough.polish.precompile.PreCompiler;
-import de.enough.polish.propertyfunctions.VersionFunction;
 import de.enough.polish.util.FileUtil;
-import de.enough.polish.util.ProcessUtil;
 
 /**
  * <p>Creates the R.java and Manifest.java</p>
