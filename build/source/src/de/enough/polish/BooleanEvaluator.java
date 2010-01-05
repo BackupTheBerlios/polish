@@ -29,8 +29,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.tools.ant.types.CommandlineJava.SysProperties;
-
 import de.enough.polish.propertyfunctions.VersionFunction;
 import de.enough.polish.util.CastUtil;
 import de.enough.polish.util.PropertyUtil;
