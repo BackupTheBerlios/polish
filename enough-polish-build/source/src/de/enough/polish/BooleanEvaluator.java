@@ -312,7 +312,7 @@ public class BooleanEvaluator {
 				if (lastVar == null) {
 					lastVar = lastSymbol;
 				}
-				if ( operator == EQUALS ) {
+				if ( operator == EQUALS || operator == NOT_EQUALS ) {
 					if ( (var.charAt( 0 ) == '\"') && (var.charAt( var.length() - 1 ) == '\"')) {
 						var = var.substring( 1, var.length() - 1 );
 					}
@@ -320,10 +320,29 @@ public class BooleanEvaluator {
 						lastVar = lastVar.substring( 1, lastVar.length() - 1 );
 					}
 					result = var.equals( lastVar );
+					if (!result && var.indexOf('.') != -1) {
+						// check if this is a version comparison:
+						int separatorIndex = var.indexOf('/');
+						String versionIdentifier = null;
+						if (separatorIndex != -1) {
+							versionIdentifier = var.substring(0, separatorIndex);
+							var = var.substring(separatorIndex+1);
+						}
+						var = VersionFunction.process(var);
+						try {
+							int numVar = Integer.parseInt(var);
+							// okay, a version could be parsed, continue with last value:
+							lastVar = VersionFunction.process(lastVar, versionIdentifier);
+							int numLastVar = Integer.parseInt( lastVar );
+							result = (numVar == numLastVar);
+						} catch (Exception e2) {
+							// ignore
+						}
+					}
+					if ( operator == NOT_EQUALS ) {
+						result = !result;
+					}
 					//System.out.println( var + " == " + lastVar + " = " + result);
-				} else if ( operator == NOT_EQUALS ) {
-					result = ! var.equals( lastVar );
-					//System.out.println( var + " != " + lastVar + " = " + result);
 				} else {
 					// this is either >, <, >= or <= - so a numerical comparison is required
 					int numVar = -1;

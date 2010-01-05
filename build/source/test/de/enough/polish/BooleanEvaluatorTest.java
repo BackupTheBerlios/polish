@@ -485,7 +485,25 @@ public class BooleanEvaluatorTest extends TestCase {
 		BooleanEvaluator evaluator = new BooleanEvaluator( symbols, variables );
 		String term = "polish.JavaPlatform >  BlackBerry/4.6";
 		assertTrue( evaluator.evaluateTerm( term, "MyClass", 12) );
-	}
+		
+		term = "polish.JavaPlatform >=  BlackBerry/4.6";
+		assertTrue( evaluator.evaluateTerm( term, "MyClass", 12) );
+
+		term = "polish.JavaPlatform <=  BlackBerry/4.6";
+		assertFalse( evaluator.evaluateTerm( term, "MyClass", 12) );
+
+		term = "polish.JavaPlatform ==  BlackBerry/4.6";
+		assertFalse( evaluator.evaluateTerm( term, "MyClass", 12) );
+
+		term = "polish.JavaPlatform >=  BlackBerry/4.7";
+		assertTrue( evaluator.evaluateTerm( term, "MyClass", 12) );
+
+		term = "polish.JavaPlatform <=  BlackBerry/4.7";
+		assertTrue( evaluator.evaluateTerm( term, "MyClass", 12) );
+
+		term = "polish.JavaPlatform ==  BlackBerry/4.7";
+		assertTrue( evaluator.evaluateTerm( term, "MyClass", 12) );
+}
 	
 	
 	public void testCompareWithFunctions() {
