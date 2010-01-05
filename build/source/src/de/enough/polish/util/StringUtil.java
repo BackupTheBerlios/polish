@@ -113,8 +113,8 @@ public final class StringUtil {
 	/**
 	 * Splits the given String around the matches defined by the given delimiter into an array.
 	 * Example:
-	 * <value>TextUtil.split("one;;two;;three", ";;")</value> results into the array
-	 * <value>{"one", "two", "three"}</value>.
+	 * <pre>TextUtil.split("one;;two;;three", ";;")</pre> results into the array
+	 * <pre>{"one", "two", "three"}</pre>.
 	 *
 	 * @param value the String which should be split into an array
 	 * @param delimiter the delimiter which marks the boundaries of the array 
@@ -143,8 +143,8 @@ public final class StringUtil {
 	/**
 	 * Splits the given String around the matches defined by the given delimiter into an array.
 	 * Example:
-	 * <value>TextUtil.split("one;two;three", ';')</value> results into the array
-	 * <value>{"one", "two", "three"}</value>.
+	 * <pre>TextUtil.split("one;two;three", ';')</pre> results into the array
+	 * <pre>{"one", "two", "three"}</pre>.
 	 *
 	 * @param value the String which should be split into an array
 	 * @param delimiter the delimiter which marks the boundaries of the array 
@@ -176,8 +176,8 @@ public final class StringUtil {
 	 * Splits the given String around the matches defined by the given delimiter into an array.
 	 * The resulting text-chunks will be trimmed afterwards.
 	 * Example:
-	 * <value>TextUtil.split("one ; two;   three ", ';')</value> results into the array
-	 * <value>{"one", "two", "three"}</value>.
+	 * <pre>TextUtil.split("one ; two;   three ", ';')</pre> results into the array
+	 * <pre>{"one", "two", "three"}</pre>.
 	 *
 	 * @param value the String which should be split into an array
 	 * @param delimiter the delimiter which marks the boundaries of the array 
@@ -194,8 +194,8 @@ public final class StringUtil {
 	/**
 	 * Splits the given String around the matches defined by the given delimiter into an array while not breaking up areas that are marked with parentheses ().
 	 * Example:
-	 * <value>TextUtil.split("one; two; three(test;test2)", ';')</value> results into the array
-	 * <value>{"one", " two", " three(test;test2)"}</value>.
+	 * <pre>TextUtil.split("one; two; three(test;test2)", ';')</pre> results into the array
+	 * <pre>{"one", " two", " three(test;test2)"}</pre>.
 	 *
 	 * @param value the String which should be split into an array
 	 * @param delimiter the delimiter which marks the boundaries of the array 
@@ -232,8 +232,8 @@ public final class StringUtil {
 	/**
 	 * Splits the given String around the matches defined by the given delimiter into an array while not breaking up areas that are marked with parentheses ().
 	 * Example:
-	 * <value>TextUtil.split("one; two; three(test;test2)", ';')</value> results into the array
-	 * <value>{"one", "two", "three(test;test2)"}</value>.
+	 * <pre>TextUtil.split("one; two; three(test;test2)", ';')</pre> results into the array
+	 * <pre>{"one", "two", "three(test;test2)"}</pre>.
 	 *
 	 * @param value the String which should be split into an array
 	 * @param delimiter the delimiter which marks the boundaries of the array 
@@ -252,8 +252,8 @@ public final class StringUtil {
 	 * Splits the given String around the matches defined by the given delimiter into an array.
 	 * The resulting text-chunks will be trimmed afterwards.
 	 * Example:
-	 * <value>TextUtil.split(" one ;;  two ;;three ", ";;")</value> results into the array
-	 * <value>{"one", "two", "three"}</value>.
+	 * <pre>TextUtil.split(" one ;;  two ;;three ", ";;")</pre> results into the array
+	 * <pre>{"one", "two", "three"}</pre>.
 	 *
 	 * @param value the String which should be split into an array
 	 * @param delimiter the delimiter which marks the boundaries of the array 
