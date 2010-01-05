@@ -50,6 +50,7 @@ import de.enough.polish.util.Properties;
 	import de.enough.polish.blackberry.ui.PolishTextField;
 	import de.enough.polish.blackberry.ui.PolishEditField;
 	import de.enough.polish.blackberry.ui.PolishPasswordEditField;
+    import de.enough.polish.blackberry.ui.PolishEmailAddressEditField;
 	import net.rim.device.api.system.Application;
 	import net.rim.device.api.ui.Field;
 	import net.rim.device.api.ui.FieldChangeListener;
@@ -1961,13 +1962,16 @@ public class TextField extends StringItem
 			if (fieldType == FIXED_POINT_DECIMAL) {
 				max++;
 			}
+			this.isPassword = false;
 			if ((constraints & PASSWORD) == PASSWORD) {
 				this.isPassword = true;
 				this.editField = new PolishPasswordEditField( null, getString(), max, bbStyle );
-			} else {
-				this.isPassword = false;
-				this.editField = new PolishEditField( null, getString(), max, bbStyle );
-			}
+			}else if((bbStyle & BasicEditField.FILTER_EMAIL) == BasicEditField.FILTER_EMAIL) {
+                this.editField = new PolishEmailAddressEditField( null, getString(), max, bbStyle );
+            } else {
+                    this.editField = new PolishEditField( null, getString(), max, bbStyle );
+            } 
+
 			if (this.style != null) {
 				this.editField.setStyle( this.style );
 			}
