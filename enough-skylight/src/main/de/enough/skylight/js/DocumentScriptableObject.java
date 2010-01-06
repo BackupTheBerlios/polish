@@ -36,8 +36,10 @@ public class DocumentScriptableObject extends ScriptableObject {
 		defineProperty("getElementById", new BaseFunction() {
 			@Override
 			public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
+				if(args.length < 1) {
+					throw new RuntimeException("The function 'getElementById' need exactly one parameter.");
+				}
 				ElementImpl element = (ElementImpl)getElementById((String)args[0]);
-				// TODO: NPE here!
 				if(element != null) {
 					return element.getScriptable();
 				}
