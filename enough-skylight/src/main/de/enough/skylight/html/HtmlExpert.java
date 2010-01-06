@@ -12,7 +12,7 @@ import de.enough.skylight.dom.impl.EventProcessorListener;
 import de.enough.skylight.dom.impl.NodeListImpl;
 
 /**
- * This listener will react to events when they reach their target and performs HTML stuff like following a link.
+ * This listener reacts to events when they reach their target and performs HTML stuff like following a link.
  * @author rickyn
  *
  */
@@ -49,6 +49,22 @@ public class HtmlExpert implements EventProcessorListener{
 	}
 
 	public void handleDeliveredEvent(EventImpl event) {
+		invokeMarkupEventHandler(event);
+	}
+
+	public void handleEventProcessingAborted(EventImpl event) {
+		// Ignore.
+	}
+
+	public void handleEventProcessingStart(EventImpl event,NodeListImpl nodeList) {
+		// Ignore.
+	}
+
+	public void handleEventProcessingStopped(EventImpl event) {
+		invokeJsEventHandler(event);
+	}
+	
+	private void invokeMarkupEventHandler(EventImpl event) {
 		if(event.getEventPhase() != Event.AT_TARGET) {
 			return;
 		}
@@ -70,15 +86,7 @@ public class HtmlExpert implements EventProcessorListener{
 		}
 	}
 
-	public void handleEventProcessingAborted(EventImpl event) {
-		// Ignore.
-	}
-
-	public void handleEventProcessingStart(EventImpl event,NodeListImpl nodeList) {
-		// Ignore.
-	}
-
-	public void handleEventProcessingStopped(EventImpl event) {
+	private void invokeJsEventHandler(EventImpl event) {
 		String eventType = event.getType();
 		String eventHandlerName = this.eventTypeToEventHandlerMap.get(eventType);
 		

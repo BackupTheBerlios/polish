@@ -38,7 +38,7 @@ public class AssertTest extends TestCase {
 			script.exec(this.context, this.scope);
 			fail();
 		}
-		catch(Error e) {/* Ok. */}
+		catch(Throwable e) {/* Ok. */}
 	}
 	
 	public void testNotNull() throws FileNotFoundException, IOException {
@@ -51,7 +51,7 @@ public class AssertTest extends TestCase {
 		try {
 			script.exec(this.context, this.scope);
 			fail();
-		} catch(Error e) {/* Ok. */}
+		} catch(Throwable e) {/* Ok. */}
 	}
 	
 	

@@ -28,6 +28,22 @@ public class DocumentTest extends AbstractJsTest {
 		try {
 			script.exec(this.context, this.scope);
 			fail();
-		} catch (Error e) {/* Ok. */}
+		} catch (Throwable e) {/* Ok. */}
+	}
+	
+	public void testGetElementByIdZeroParametersWithTryInJs() throws FileNotFoundException, IOException {
+		Script script = this.context.compileString("try{var element = document.getElementById();Assert.fail('bla')} catch(e){}", "test1", 1);
+		try {
+			script.exec(this.context, this.scope);
+			fail();
+		} catch (Throwable e) {/* Ok. */}
+	}
+	
+	public void testGetElementByIdZeroParameters() throws FileNotFoundException, IOException {
+		Script script = this.context.compileString("var element = document.getElementById();Assert.fail('No exception was thrown although getElementById need at least one parameter.')", "test1", 1);
+		try {
+			script.exec(this.context, this.scope);
+			fail();
+		} catch (Throwable e) {/* Ok. */}
 	}
 }
