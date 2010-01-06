@@ -40,9 +40,12 @@ public abstract class CharacterDataImpl extends DomNodeImpl implements Character
 		}
 	}
 
+	/**
+	 * @unimplemented
+	 */
 	public void replaceData(int offset, int count, String arg)
 			throws DOMException {
-		// TODO Auto-generated method stub
+		// Unimplemented.
 	}
 
 	public void setData(String data) throws DOMException {

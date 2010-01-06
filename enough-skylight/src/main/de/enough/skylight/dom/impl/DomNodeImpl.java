@@ -55,8 +55,10 @@ public abstract class DomNodeImpl implements DomNode {
 		return newChild;
 	}
 
+	/**
+	 * @unimplemented
+	 */
 	public DomNode cloneNode(boolean deep) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -89,13 +91,17 @@ public abstract class DomNodeImpl implements DomNode {
 		return null;
 	}
 
+	/**
+	 * @unimplemented
+	 */
 	public String getLocalName() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/**
+	 * @unimplemented
+	 */
 	public String getNamespaceURI() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -130,8 +136,10 @@ public abstract class DomNodeImpl implements DomNode {
 		return this.parent;
 	}
 
+	/**
+	 * @unimplemented
+	 */
 	public String getPrefix() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -154,7 +162,6 @@ public abstract class DomNodeImpl implements DomNode {
 		return null;
 	}
 
-	// TODO: Put these two methods in a nice interface.
 	public abstract Scriptable getScriptable();
 
 	public abstract boolean hasScriptable();
@@ -177,24 +184,32 @@ public abstract class DomNodeImpl implements DomNode {
 		}
 	}
 
+	/**
+	 * @unimplemented
+	 */
 	public DomNode insertBefore(DomNode newChild, DomNode refChild)
 			throws DOMException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/**
+	 * @unimplemented
+	 */
 	public boolean isSupported(String feature, String version) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
+	/**
+	 * @unimplemented
+	 */
 	public void normalize() {
-		// TODO Auto-generated method stub
-
+		// Unimplemented.
 	}
 
+	/**
+	 * @unimplemented
+	 */
 	public DomNode removeChild(DomNode oldChild) throws DOMException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -227,36 +242,12 @@ public abstract class DomNodeImpl implements DomNode {
 		return oldChild;
 	}
 
+	/**
+	 * @unimplemented
+	 */
 	public void setPrefix(String prefix) throws DOMException {
-		// TODO Auto-generated method stub
-
+		// Unimplemented.
 	}
-
-	// public void toXmlString(StringBuffer buffer) {
-	// if(this.type == TEXT_NODE) {
-	// buffer.append(getNodeValue());
-	// return;
-	// }
-	// buffer.append("<");
-	// buffer.append(this.name);
-	// int numberAttributes = this.attributes.getLength();
-	// if(numberAttributes > 0) {
-	// for(int i = 0; i < numberAttributes; i++) {
-	// AttrImpl attr = (AttrImpl)this.attributes.item(i);
-	// buffer.append(" ");
-	// attr.toXmlString(buffer);
-	// }
-	// }
-	// buffer.append(">");
-	// int numberChildren = this.childList.getLength();
-	// for(int i = 0; i < numberChildren; i++) {
-	// DomNode childNode = this.childList.item(i);
-	// childNode.toXmlString(buffer);
-	// }
-	// buffer.append("</");
-	// buffer.append(this.name);
-	// buffer.append(">");
-	// }
 
 	private void doAppendChild(DomNodeImpl childNode) {
 		this.childList.add(childNode);

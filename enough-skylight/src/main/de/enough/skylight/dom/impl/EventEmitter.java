@@ -34,6 +34,5 @@ public class EventEmitter {
 		event.init(target);
 		event.initMutationEvent("DOMAttrModified", true, false, relatedNode, previousValue, newValue, attrName, attrChange);
 		this.eventProcessorInstance.processEvent(event);
-		// TODO: Inform the 
 	}
 }
