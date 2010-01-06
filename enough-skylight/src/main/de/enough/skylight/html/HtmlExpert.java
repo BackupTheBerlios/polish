@@ -2,6 +2,7 @@ package de.enough.skylight.html;
 
 import org.mozilla.javascript.Scriptable;
 
+import de.enough.polish.util.HashMap;
 import de.enough.skylight.Services;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.Event;
@@ -10,24 +11,59 @@ import de.enough.skylight.dom.impl.EventImpl;
 import de.enough.skylight.dom.impl.EventProcessorListener;
 import de.enough.skylight.dom.impl.NodeListImpl;
 
+/**
+ * This listener will react to events when they reach their target and performs HTML stuff like following a link.
+ * @author rickyn
+ *
+ */
 public class HtmlExpert implements EventProcessorListener{
 
-	public void handleAboutToDeliverEvent(EventImpl event) {
-		// TODO Auto-generated method stub
+	private HashMap<String,String> eventTypeToEventHandlerMap = new HashMap<String,String>();
+	
+	public HtmlExpert() {
+		this.eventTypeToEventHandlerMap.put("load", "onload");
+		this.eventTypeToEventHandlerMap.put("unload", "onunload");
+		this.eventTypeToEventHandlerMap.put("abort", "onabort");
+		this.eventTypeToEventHandlerMap.put("error", "onerror");
+		this.eventTypeToEventHandlerMap.put("select", "onselect");
+		this.eventTypeToEventHandlerMap.put("change", "onchange");
+		this.eventTypeToEventHandlerMap.put("submit", "onsubmit");
+		this.eventTypeToEventHandlerMap.put("reset", "onreset");
+		this.eventTypeToEventHandlerMap.put("focus", "onfocus");
+		this.eventTypeToEventHandlerMap.put("blur", "onblur");
+		this.eventTypeToEventHandlerMap.put("click", "onclick");
+		this.eventTypeToEventHandlerMap.put("mousedown", "onmousedown");
+		this.eventTypeToEventHandlerMap.put("mouseup", "onmouseup");
+		this.eventTypeToEventHandlerMap.put("mouseover", "onmouseover");
+		this.eventTypeToEventHandlerMap.put("mousemove", "onmousemove");
+		this.eventTypeToEventHandlerMap.put("mouseout", "onmouseout");
 		
+		// These three are not conform to the specification but needed anyway.
+		this.eventTypeToEventHandlerMap.put("onkeypress", "onkeypress");
+		this.eventTypeToEventHandlerMap.put("keydown", "onkeydown");
+		this.eventTypeToEventHandlerMap.put("keyup", "onkeyup");
+	}
+	
+	public void handleAboutToDeliverEvent(EventImpl event) {
+		// Ignore.
 	}
 
 	public void handleDeliveredEvent(EventImpl event) {
 		if(event.getEventPhase() != Event.AT_TARGET) {
 			return;
 		}
-		// TODO: Refactor this out.
-		if("click".equals(event.getType())){
+		
+		String eventType = event.getType();
+		String eventHandlerName = this.eventTypeToEventHandlerMap.get(eventType);
+		
+		// There could be a attribute in the markup with a js script to execute.
+		if(eventHandlerName != null) {
 			DomNodeImpl target = (DomNodeImpl) event.getTarget();
-			DomNode scriptAttribute = target.getAttributes().getNamedItem("onclick");
+			DomNode scriptAttribute = target.getAttributes().getNamedItem(eventHandlerName);
 			if(scriptAttribute != null) {
 				String scriptText = scriptAttribute.getNodeValue();
 				if(scriptText != null && scriptText.length() != 0) {
+					// There is a script in the markup for the event. Execute it.
 					Services.getInstance().getJsEngine().runScript(target, scriptText);
 				}
 			}
@@ -35,34 +71,31 @@ public class HtmlExpert implements EventProcessorListener{
 	}
 
 	public void handleEventProcessingAborted(EventImpl event) {
-		// TODO Auto-generated method stub
-		
+		// Ignore.
 	}
 
 	public void handleEventProcessingStart(EventImpl event,NodeListImpl nodeList) {
-		// TODO Auto-generated method stub
-		
+		// Ignore.
 	}
 
 	public void handleEventProcessingStopped(EventImpl event) {
-		// TODO: Here is a problem. The following must only run if the 'onclick' attribute was not evaluated.
-		// This information must be carried on by the event.
-		DomNodeImpl target = (DomNodeImpl) event.getTarget();
-		// Avoid lazy loading by using hasScriptable() instead of getScriptable().
-		if( ! target.hasScriptable()) {
-			Scriptable scriptable = target.getScriptable();
-			Object onClickFunction = null;
-			while(scriptable != null) {
-				onClickFunction = scriptable.get("onclick", scriptable);
-				if(onClickFunction != null) {
-					break;
+		String eventType = event.getType();
+		String eventHandlerName = this.eventTypeToEventHandlerMap.get(eventType);
+		
+		if(eventHandlerName != null) {
+			DomNodeImpl target = (DomNodeImpl) event.getTarget();
+			// Avoid lazy loading by using hasScriptable() instead of getScriptable().
+			if( ! target.hasScriptable()) {
+				Scriptable scriptable = target.getScriptable();
+				Object eventHandlerFunction = null;
+				while(scriptable != null) {
+					eventHandlerFunction = scriptable.get(eventHandlerName, scriptable);
+					if(eventHandlerFunction != null) {
+						Services.getInstance().getJsEngine().runFunction(eventHandlerFunction);
+					}
+					scriptable = scriptable.getParentScope();
 				}
-				scriptable = scriptable.getParentScope();
-			}
-			if(onClickFunction != null) {
-				Services.getInstance().getJsEngine().runFunction(onClickFunction);
 			}
 		}
 	}
-
 }
