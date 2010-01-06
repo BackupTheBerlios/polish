@@ -33,6 +33,8 @@ import javax.microedition.lcdui.Canvas;
 
 
 import de.enough.polish.ui.Displayable;
+import de.enough.polish.ui.keyboard.view.KeyboardView;
+
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 //#if polish.TextField.useDirectInput && polish.TextField.usePredictiveInput && !(polish.blackberry || polish.android)
@@ -958,7 +960,7 @@ public class TextField extends StringItem
 		//#endif
 		private int bbLastCursorPosition;
 	//#endif
-	//#if polish.midp && !polish.blackberry && !polish.api.windows
+	//#if polish.midp && !polish.blackberry && !polish.api.windows && !polish.TextField.useVirtualKeyboard
 		//#define tmp.useNativeTextBox
 		private de.enough.polish.midp.ui.TextBox midpTextBox;
 		//#if polish.TextField.passCharacterToNativeEditor
@@ -4117,6 +4119,10 @@ public class TextField extends StringItem
 					MidletBridge.instance.toggleSoftKeyboard();
 					return true;
 				}
+			//#elif polish.TextField.useVirtualKeyboard
+				Form keyboardView = KeyboardView.getInstance(getLabel(), this, getScreen(), de.enough.polish.ui.keyboard.Keyboard.MODE_ALPHA);
+				Display.getInstance().setCurrent(keyboardView);
+				return true;
 			//#endif
 		}
 		return super.handlePointerReleased(x, y);
