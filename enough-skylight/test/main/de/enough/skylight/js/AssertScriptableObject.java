@@ -1,6 +1,7 @@
 package de.enough.skylight.js;
 
 import junit.framework.Assert;
+import junit.framework.AssertionFailedError;
 
 import org.mozilla.javascript.BaseFunction;
 import org.mozilla.javascript.Context;
@@ -14,7 +15,17 @@ import org.mozilla.javascript.ScriptableObject;
  */
 public class AssertScriptableObject extends ScriptableObject{
 
-	public class NotNullFunction extends BaseFunction {
+	public class FailFunction extends BaseFunction {
+		@Override
+		public Object call(Context cx, Scriptable scope,Scriptable thisObj, Object[] args) {
+			if(args.length > 0) {
+				throw new AssertionFailedError((String)args[0]);
+			}
+			throw new AssertionFailedError();
+		}
+	}
+
+	public final class NotNullFunction extends BaseFunction {
 		@Override
 		public Object call(Context cx, Scriptable scope,Scriptable thisObj, Object[] args) {
 			Object expected = args[0];
@@ -37,6 +48,7 @@ public class AssertScriptableObject extends ScriptableObject{
 	public void init() {
 		defineProperty("equals", new EqualsFunction(), PERMANENT);
 		defineProperty("notNull",new NotNullFunction(),PERMANENT);
+		defineProperty("fail",new FailFunction(),PERMANENT);
 	}
 	
 	@Override
