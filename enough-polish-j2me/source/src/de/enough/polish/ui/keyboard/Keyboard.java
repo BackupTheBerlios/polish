@@ -20,9 +20,9 @@ import de.enough.polish.util.Properties;
 public class Keyboard
 	extends Container
 {
-	static String KEYS_ALPHA = "0,0=a\n0,1=b\n0,2=[123]";
+	static String KEYS_ALPHA = "0,0=a\n0,1=b\n0,2=c\n0,3=d\n0,4=e\n1,0=f\n1,1=g\n1,2=h\n1,3=i\n1,4=j\n2,0=k\n2,1=l\n2,2=m\n2,3=n\n2,4=o\n3,0=p\n3,1=q\n3,2=r\n3,3=s\n3,4=t\n4,0=u\n4,1=v\n4,2=x\n4,3=y\n4,4=z\n5,0=[SHIFT]\n5,1=[SPACE]\n5,2=[DELETE]\n5,3=[123]\n";
 
-	static String KEYS_NUMERIC = "0,0=1\n0,1=2\n0,2=[ABC]";
+	static String KEYS_NUMERIC = "0,0=1\n0,1=2\n0,2=3\n0,3=4\n0,4=5\n0,5=6\n1,0=7\n1,1=8\n1,2=9\n1,3=0\n1,4=!\n1,5=\"\n2,0=%\n2,1=&\n2,2=/\n2,3=(\n2,4=)\n2,5==\n3,0=?\n3,1=\'\n3,2=*\n3,3=+\n3,4=-\n3,5=#\n4,0=,\n4,1=.\n4,2=:\n4,3=;\n4,4=[\n4,5=]\n5,0=[]\n5,1=[SPACE]\n5,2=[CLEAR]\n5,3=[ABC]\n";
 	
 	public static final int MODE_NONE = Integer.MIN_VALUE;
 	public static final int MODE_ALPHA = 0x00;
