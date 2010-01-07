@@ -855,6 +855,64 @@ public class Container extends Item {
 		return false;
 	}
 	
+	
+	
+	
+	//#if polish.hasPointerEvents
+		//#ifdef tmp.supportFocusItemsInVisibleContentArea
+			/**
+			 * Checks if an item in the visible range is
+			 *  
+			 * @param item the Item to check
+			 * @return ture if item is in visible content area else false 
+			 */
+			private boolean isItemInVisibleContentArea(Item item){
+				if(item == null)
+					return false;
+				int relativeY = (item.getAbsoluteY() + this.getCurrentScrollYOffset() - this.getScrollYOffset());
+				if(relativeY <= this.getAvailableContentHeight() && relativeY >= 0){
+					return true;
+				}
+				return false;
+			}
+			
+			/**
+			 * Find the position of first item in visible area
+			 * 
+			 * @param isInteractive true to check only interactive items else false
+			 * @return the positon of the first item in visible area or -1 if no item was found
+			 */
+			private int getFirstItemInVisibleContentArea(boolean isInteractive){
+				Item[] items = this.getItems();
+				for(int i = 0; i < items.length; i++){			
+					Item item = items[i];
+					if((!isInteractive || item.isInteractive()) && isItemInVisibleContentArea(item)) {
+						return i;
+					}
+				}
+				return -1;
+			}
+			
+			/**
+			 * Find the position of last item in visible area
+			 * 
+			 * @param isInteractive true to check only interactive items else false
+			 * @return the positon of the last item in visible area or -1 if no item was found
+			 */
+			private int getLastItemInVisibleContentArea(boolean isInteractive){
+				Item[] items = this.getItems();
+				for(int i = items.length-1; i >= 0 ; i--){
+					Item item = items[i];
+					if((!isInteractive || item.isInteractive()) && isItemInVisibleContentArea(item)) {
+						return i;
+					}
+				}
+				return -1;
+			}
+		//#endif
+	//#endif
+	
+	
 	/**
 	 * Sets the focus to the given item.
 	 * 
@@ -1740,6 +1798,28 @@ public class Container extends Item {
 		}
 		
 		Item item = this.focusedItem;
+		
+		//looking for the next focusable Item if the focusedItem is not in 
+		//the visible content area	
+		//#ifdef tmp.supportFocusItemsInVisibleContentArea
+			//#if polish.hasPointerEvents
+				if(item != null && !isItemInVisibleContentArea(item)){
+					System.out.println("tmp.supportFocusItemsInVisibleContentArea is set");
+					int next = -1;
+					if(gameAction == Canvas.DOWN || gameAction == Canvas.RIGHT){
+						next = getFirstItemInVisibleContentArea(true);
+					}else if(gameAction == Canvas.UP || gameAction == Canvas.LEFT){
+						next = getLastItemInVisibleContentArea(true)+1;
+					}
+					if(next != -1){
+						focusChild( next, this.get(next), gameAction,  false );
+						item = get(next);
+					}
+				}
+			//#endif
+		//#endif
+		
+		
 		if (item != null) {
 			if (!item.isInitialized()) {
 				if (item.availableWidth != 0) {
