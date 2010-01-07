@@ -33,7 +33,10 @@ import javax.microedition.lcdui.Canvas;
 
 
 import de.enough.polish.ui.Displayable;
-import de.enough.polish.ui.keyboard.view.KeyboardView;
+
+//#if polish.TextField.useVirtualKeyboard
+	import de.enough.polish.ui.keyboard.view.KeyboardView;
+//#endif
 
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
