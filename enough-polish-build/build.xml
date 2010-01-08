@@ -1365,7 +1365,6 @@
 			</classpath>
 			<exclude name="**/TestL2CapConnection.java" />
 			<exclude name="**/L2CapStreamTest.java" />
-			<exclude name="**/CssInterpreterTest.java" />
 			<exclude name="**/LayerManagerTest.java" />
 			<exclude name="**/HashMapTest.java" />
 		</javac>
