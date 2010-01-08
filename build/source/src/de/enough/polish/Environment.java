@@ -632,9 +632,10 @@ public class Environment {
 	 * @param vars
 	 */
 	public void addVariables(Map vars) {
-		for (Iterator iter = vars.keySet().iterator(); iter.hasNext();) {
-			String name = (String) iter.next();
-			String value = (String) vars.get(name);
+		for (Iterator iter = vars.entrySet().iterator(); iter.hasNext();) {
+			Map.Entry entry = (Map.Entry) iter.next();
+			String name = (String) entry.getKey();
+			String value = (String) entry.getValue();
 			addVariable(name, value);
 		}
 	}
