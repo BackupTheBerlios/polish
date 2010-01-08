@@ -147,7 +147,9 @@ focused {
 
 
 alert extends .mainScreen {
-	screen-change-animation: fade;
+	//#if polish.midp2
+		screen-change-animation: fade;
+	//#endif
 }
 
 alertcontent {
