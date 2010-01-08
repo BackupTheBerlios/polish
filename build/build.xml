@@ -1341,6 +1341,7 @@
 			<formatter type="plain" />
 			<batchtest>
 				<fileset dir="source/test">
+					<!-- Never test these classes directly. They are used by SerializationVisitorTest. -->
 					<exclude name="**/TestSerialization_*.java" />
 				</fileset>
 			</batchtest>
