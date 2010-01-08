@@ -127,7 +127,7 @@ public class MidletSetting extends ConditionalElement {
 	 * </pre>
 	 * @author Robert Virkus, robert@enough.de
 	 */
-	class MidletComparator implements Comparator {
+	static class MidletComparator implements Comparator {
 
 		/* (non-Javadoc)
 		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
