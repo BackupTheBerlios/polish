@@ -4128,12 +4128,13 @@
 		<mapping from="plain" to="null" />
 		<mapping from="opacity" to="new de.enough.polish.ui.rgbfilters.OpacityRgbFilter()" />
 		<mapping from="grayscale" to="new de.enough.polish.ui.rgbfilters.GrayscaleRgbFilter()" />
+		<mapping from="rotate" to="new de.enough.polish.ui.rgbfilters.RotateRgbFilter()" />
 		<mapping from="blur" to="new de.enough.polish.ui.rgbfilters.GaussianBlurRgbFilter()" />
 		<mapping from="scale" to="new de.enough.polish.ui.rgbfilters.ScaleRgbFilter()" />
 		
 	</attribute>
 	
-	
+
 	<attribute
 		name="filter-opacity"
 		type="dimension"
@@ -4915,6 +4916,17 @@
 		since="J2ME Polish 2.1"
 	/>
  -->
+ 
+ 	<attribute
+		name="filter-rotation-angle"
+		type="integer"
+		appliesTo="RotateRgbFilter"
+		description="The angle of rotation (in degrees)."
+		default="0"
+		id="419"
+		since="J2ME Polish 2.1.4"
+	/>
+
 	
 	
 </attributes>
