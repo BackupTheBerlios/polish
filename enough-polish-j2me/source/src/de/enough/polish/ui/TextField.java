@@ -35,7 +35,7 @@ import javax.microedition.lcdui.Canvas;
 import de.enough.polish.ui.Displayable;
 
 //#if polish.TextField.useVirtualKeyboard
-	import de.enough.polish.ui.keyboard.view.KeyboardView;
+import de.enough.polish.ui.keyboard.view.KeyboardView;
 //#endif
 
 import javax.microedition.lcdui.Font;
@@ -48,6 +48,7 @@ import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.DeviceControl;
 import de.enough.polish.util.DeviceInfo;
 import de.enough.polish.util.DrawUtil;
+import de.enough.polish.util.IntHashMap;
 import de.enough.polish.util.Locale;
 import de.enough.polish.util.Properties;
 
@@ -1024,6 +1025,10 @@ public class TextField extends StringItem
 		private long androidLastInvalidCharacterTime;
 	//#endif
 	private int numberOfDecimalFractions = 2;
+	
+	//#if polish.TextField.useVirtualKeyboard
+	static IntHashMap keyboardViews = new IntHashMap();
+	//#endif
 
 	//#if tmp.useDynamicCharset
 	/**
@@ -4123,7 +4128,7 @@ public class TextField extends StringItem
 					return true;
 				}
 			//#elif polish.TextField.useVirtualKeyboard
-				Form keyboardView = KeyboardView.getInstance(getLabel(), this, getScreen(), de.enough.polish.ui.keyboard.Keyboard.MODE_ALPHA);
+				Form keyboardView = KeyboardView.getInstance(getLabel(), this, getScreen());
 				Display.getInstance().setCurrent(keyboardView);
 				return true;
 			//#endif

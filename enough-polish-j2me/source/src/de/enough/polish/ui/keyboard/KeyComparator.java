@@ -3,17 +3,25 @@ package de.enough.polish.ui.keyboard;
 
 import de.enough.polish.util.Comparator;
 
+/**
+ * A key comparator to sort KeyItems by their specified position
+ * @author Andre
+ *
+ */
 public class KeyComparator implements Comparator{
 
-	public int compare(Object o1, Object o2) {
-		KeyItem first = (KeyItem)o1;
+	/* (non-Javadoc)
+	 * @see de.enough.polish.util.Comparator#compare(java.lang.Object, java.lang.Object)
+	 */
+	public int compare(Object firstObject, Object secondObject) {
+		KeyItem first = (KeyItem)firstObject;
 		
-		if(o2 == null) 
+		if(secondObject == null) 
 		{
 			return 0; 
 		}
 		
-		KeyItem second = (KeyItem)o2;
+		KeyItem second = (KeyItem)secondObject;
 		
 		if(first.getRow() < second.getRow()) {
 			return -1;
