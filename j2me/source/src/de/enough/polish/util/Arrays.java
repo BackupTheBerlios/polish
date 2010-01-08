@@ -206,6 +206,7 @@ public final class Arrays implements Comparator {
         int rStack[] = new int[sSize];
         Object tmp;
         int i, j;
+        Object pivot;
 
         lStack[top] = left; rStack[top] = right;
 
@@ -219,12 +220,12 @@ public final class Arrays implements Comparator {
                 {
                         i = left;
                         j = right;
-                        tmp = obj[(left+right)/2];
+                        pivot = obj[(left+right)/2];
 
-                        while (i <= j)
+                        while (i < j)
                         {
-                        	while (comparator.compare(tmp,obj[i]) > 0 )i++;
-                            while (comparator.compare(tmp,obj[j]) < 0) j--;
+                        	while (comparator.compare(pivot,obj[i]) > 0 )i++;
+                            while (comparator.compare(pivot,obj[j]) < 0) j--;
 
                                 if (i<=j)
                                 {
