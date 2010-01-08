@@ -1319,6 +1319,7 @@
 			<classpath>
 				<pathelement location="lib/asm-all.jar" />
 				<pathelement location="lib/enough-bytecode.jar" />
+				<pathelement location="lib/junit.jar" />
 				<pathelement location="build/clientclasses" />
 				<pathelement location="build/coreclasses" />
 				<pathelement location="build/extensionsclasses" />
