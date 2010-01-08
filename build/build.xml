@@ -1360,6 +1360,7 @@
 			<classpath>
 				<pathelement location="import/cldc-1.1.jar" />
 				<pathelement location="import/midp-2.1.jar" />
+				<pathelement location="lib/junit.jar" />
 				<pathelement location="build/clientclasses" />
 			</classpath>
 			<exclude name="**/TestL2CapConnection.java" />
