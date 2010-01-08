@@ -123,7 +123,7 @@ public class ArraysTest extends TestCase {
 			String j2me = j2meObjects[i];
 			String j2se = j2seObjects[i];
 			System.out.print("'"+j2me+"'"+",");
-//			assertEquals( j2se, j2me );
+			assertEquals( j2se, j2me );
 //			System.out.println(j2me );
 		}
 
