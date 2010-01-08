@@ -31,7 +31,6 @@ import java.util.Locale;
 import org.apache.tools.ant.Project;
 
 import de.enough.polish.Device;
-import de.enough.polish.BuildException;
 import de.enough.polish.Environment;
 import de.enough.polish.Extension;
 import de.enough.polish.ExtensionManager;
@@ -63,13 +62,8 @@ public abstract class Finalizer extends Extension {
 		return finalizer;
 	}
 	
-	/**
-	 * Executes this extension.
-	 * 
-	 * @param device the current device
-	 * @param locale the current locale, can be null
-	 * @param env environment variables and settings
-	 * @throws BuildException when this extension failed to get executed
+	/* (non-Javadoc)
+	 * @see de.enough.polish.Extension#execute(de.enough.polish.Device, java.util.Locale, de.enough.polish.Environment)
 	 */
 	public void execute( Device device, Locale locale, Environment env ) {
 		String jadPath = env.getVariable( "polish.jadPath" );
