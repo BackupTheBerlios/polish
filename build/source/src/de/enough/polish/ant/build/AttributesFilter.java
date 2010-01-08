@@ -120,7 +120,7 @@ extends ConditionalElement
 	 * </pre>
 	 * @author Robert Virkus, j2mepolish@enough.de
 	 */
-	class FilterElement {
+	static class FilterElement {
 		boolean isOptional;
 		boolean isPattern;
 		boolean isRest;
