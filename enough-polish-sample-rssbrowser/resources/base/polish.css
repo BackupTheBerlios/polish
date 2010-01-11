@@ -495,3 +495,171 @@ info {
 	layout: right;
 	background-color: #afff;
 }
+
+/**************** keyboard *********/
+
+keyboardView {
+	padding: 0;
+	
+	background-color: black;	
+		
+	layout: vcenter | hcenter;	
+}
+
+keyboardViewSubmit {
+	margin: 1%;
+	min-height: 15%;
+	min-width: 15%;
+	background-color: #f26522;
+	border-color: #f26522;
+	border-width: 1;
+	font-color: #fff;
+	font-size: large;
+	text-layout: center | vcenter;
+	layout: vcenter;
+}
+
+keyboardViewDisplay {
+	margin: 1%;
+	text-layout: left | vcenter;
+	layout: expand | vcenter;
+	border-color: #f26522;
+	border-width: 1;
+	font-color: #f26522;
+	font-size: large;
+	max-lines: 1;
+	max-lines-appendix-position: before;
+}
+
+keyboardViewSubmit:hover {}
+
+keyboardViewSubmit:pressed {}
+
+key extends keyDimension {
+	margin: 1%;
+	
+	border-color: #00aeef;
+	border-width: 1;
+	
+	font-color: #00aeef;
+	font-size: large;
+	
+	text-layout: center | vcenter;
+	layout: center | vcenter;
+}
+
+key:pressed {
+	border-color: #f26522;
+	font-color: #fff;
+	background-color: #f26522;
+}
+
+key:hover {}
+
+keySpace extends keySpaceDimension {
+	margin: 1%;
+	
+	border-color: #00aeef;
+	border-width: 1;
+	
+	font-color: #00aeef;
+	font-size: large;
+	
+	layout: center | vcenter;
+}
+
+keySpace:pressed {
+	border-color: #f26522;
+	font-color: #fff;
+	background-color: #f26522;
+}
+
+keySpace:hover{}
+
+keyShift {
+	margin: 1%;
+	
+	border-color: #00aeef;
+	border-width: 1;
+	
+	font-color: black;
+	font-size: large;
+	
+	background-color: #00aeef; 
+	
+	layout: center | vcenter;
+}
+
+keyShift:pressed {
+	border-color: #f26522;
+	font-color: #fff;
+	background-color: #f26522;
+}
+
+keyShift:hover {}
+
+keyMode {
+	margin: 1%;
+	
+	border-color: #00aeef;
+	border-width: 1;
+	
+	font-color: black;
+	font-size: large;
+	
+	background-color: #00aeef; 
+	
+	layout: center | vcenter;
+}
+
+keyMode:pressed {
+	border-color: #f26522;
+	font-color: #fff;
+	background-color: #f26522;
+}
+
+keyMode:hover {}
+
+keyDelete {
+	margin: 1%;
+	
+	border-color: #00aeef;
+	border-width: 1;
+	
+	font-color: black;
+	font-size: large;
+	
+	background-color: #00aeef; 
+	
+	layout: center | vcenter;
+}
+
+keyDelete:pressed {
+	border-color: #f26522;
+	font-color: #fff;
+	background-color: #f26522;
+}
+
+keyDelete:hover {}
+
+keyClear {
+	margin: 1%;
+	
+	border-color: #00aeef;
+	border-width: 1;
+	
+	font-color: black;
+	font-size: large;
+	
+	background-color: #00aeef; 
+	
+	layout: center | vcenter;
+}
+
+keyClear:pressed {
+	border-color: #f26522;
+	font-color: #fff;
+	background-color: #f26522;
+}
+
+keyClear:hover {}

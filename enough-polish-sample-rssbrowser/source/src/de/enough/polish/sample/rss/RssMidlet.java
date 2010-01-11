@@ -321,6 +321,9 @@ implements CommandListener, ApplicationInitializer
 			updateInterval.append("monthly", null);
 			updateInterval.setSelectedIndex(0, true);
 			form.append( updateInterval );
+			//#style itemInput
+			TextField textField = new TextField("URL: ", "http://", 80, TextField.ANY );
+			form.append(textField);
 			//#style volumeGauge
 			Gauge gauge = new Gauge( "Volume: ", true, 100, 20 );
 			form.append( gauge );

@@ -149,6 +149,11 @@
 					<variable name="polish.useScrollBar" value="true" />
 					<variable name="polish.handleEvents" value="true" />
 					<variable name="polish.Item.ShowCommandsOnHold" value="true" />
+					
+					<!-- use the virtual keyboard for pointer devices -->
+					<variable name="polish.TextField.useVirtualKeyboard" value="true" />
+					<variable name="virtualKeyboard.KeyMap.Any.Alpha" value="/keys.any.alpha.properties" />
+					<variable name="virtualKeyboard.KeyMap.Any.Numeric" value="/keys.any.numeric.properties" />
 				</variables>
 				<!-- Here you can set the dir attribute to "resources2" for an alternative design. -->
 				<resources
@@ -158,6 +163,9 @@
 				>
 					<root dir="resources/base/images" />
 					<root dir="resources/base/sounds" />
+					
+					<!-- keyboard mappings -->
+					<root dir="resources/keyboard" if="polish.hasPointerEvents" />
 					<!-- add the localization element for created localized
 					     versions of your application: -->
 					<localization locales="en_US" unless="test" />
