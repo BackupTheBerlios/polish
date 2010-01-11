@@ -465,7 +465,7 @@ public final class Font extends Object
 	 */
 	public int charsWidth(char[] ch, int offset, int length)
 	{
-		return (int)this.paint.measureText(new String(ch), offset, length - offset);
+		return (int)this.paint.measureText(new String(ch), offset, length + offset);
 	}
 
 	/**
