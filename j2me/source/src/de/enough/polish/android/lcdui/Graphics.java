@@ -15,6 +15,7 @@ import android.graphics.Region.Op;
 /**
  * Provides simple 2D geometric rendering capability.
  * 
+ * 
  * Provides simple 2D geometric rendering capability.
  * 
  * <p>Drawing primitives are provided for text, images, lines, rectangles,
