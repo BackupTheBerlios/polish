@@ -176,12 +176,12 @@ public final class Font extends Object
 			int androidStyle = Typeface.NORMAL;
 			if ( (style & STYLE_BOLD) == STYLE_BOLD  ) {
 				if ( (style & STYLE_ITALIC) == STYLE_ITALIC  ) {
-					style = Typeface.BOLD_ITALIC;
+					androidStyle = Typeface.BOLD_ITALIC;
 				} else {
-					style = Typeface.BOLD;
+					androidStyle = Typeface.BOLD;
 				}
 			} else if ( (style & STYLE_ITALIC) == STYLE_ITALIC  ) {
-				style = Typeface.ITALIC;
+				androidStyle = Typeface.ITALIC;
 			}
 			Typeface family = Typeface.DEFAULT;
 			if (face == FACE_MONOSPACE) {
