@@ -528,7 +528,7 @@ public final class Font extends Object
 	{
 		//#debug
 		System.out.println("Measuring test for string '"+str+"' with offset '"+offset+"' and length '"+len+"'");
-		return (int)this.paint.measureText(str, offset, len - offset);
+		return (int)this.paint.measureText(str, offset, len + offset);
 	}
 
 
