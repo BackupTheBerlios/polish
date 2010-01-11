@@ -397,12 +397,7 @@ UiAccess.setNumberOfDecimalFractions(field, 3);
 }
 	</pre>	
 	
-	<h3 id="textfield-predictive-arraymode">Array mode</h3>
-	
-	<p>
-	Rather than using the dictionary the predictive input can be used with a simple array of words. These words
-	are checked if they match the predictive input of the user and the matches are returned with a method call.
-	</p>
+	<h2>Array mode</h2>
 	
 	<p>
 	To initialize the array mode, the method <code>setPredictiveDictionary(TextField field, String[] words)</code>
@@ -442,6 +437,178 @@ ArrayList results = UiAccess.getPredictiveMatchingWords(mytextfield);
 	The source set of strings for the array mode can be changed everytime by calling 
 	<code>UiAccess.setPredictiveDictionary(TextField field, String[] words)</code>.
 	</p>
+	
+	<h2 id="textfield-PredictiveInputMode">Virtual keyboard</h2>
+	
+	<p>
+	To ease the input of text to TextField on touch device the virtual keyboard can be used.
+	This is basically an on-screen keyboard which can be styled and suited to the developers needs. 
+	To activate the keyboard simply add the following variable to the variables section of your projects
+	build.xml :
+	</p>
+	
+	<code>polish.TextField.useVirtualKeyboard</code>
+	
+	<p>
+	When you know select a TextField it will create and display a simple virtual keyboard with default key layouts.
+	The layouts displayed are chosen by the type of a text field. Currently these types are supported :
+	</p>
+	
+	<code>TextField.ANY</code></br>
+	<code>TextField.NUMBER</code></br>
+	<code>TextField.PHONENUMBER</code>
+	
+	<p>
+	For each of these modes, the suitable default layouts are selected and displayed.
+	</p>
+	
+	<h3>Layouts</h3>
+	
+	<p>
+	While the default layouts should be sufficient for most tasks when writing an english-based application, you might want
+	to create your own layouts to support i.e. other languages.
+	</p>
+	
+	<p>
+	Here's a simple example of how the default layout of the type TextField.NUMBER is created :
+	</p>
+	
+	<p>
+	<code>
+	0,0=1</br>
+	0,1=2</br>
+	0,2=3</br>
+	1,0=4</br>
+	1,1=5</br>
+	1,2=6</br>
+	2,0=7</br>
+	2,2=8</br>
+	2,2=9</br>
+	3,0=[]</br>
+	3,1=0</br>
+	3,2=[]</br>
+	</code>
+	</p>
+	
+	<p>
+	The layouts are written in the syntax of a Java .properties file. Each line represents a key. 
+	The first part (e.g. <code>0,0</code>) defines the position of the key inside the layout. The
+	second part defines the value. The value can be any UTF8 character.
+	</p>
+	
+	<h3>Special Keys</h3>
+	
+	<p>At the position 3,2 in the above example there is one of the placeholders to use special keys
+	in your layouts. Here's an overview of the placeholders you can use :</p>
+	
+	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+		<tr><th>Placeholder</th><th>Description</th></tr>
+		<tr>
+		 <td>[SPACE]</td>
+		 <td>inserts a space bar to your layout.</td>
+		</tr>
+		<tr>
+		 <td>[SHIFT]</td>
+		 <td>inserts a shift key to your layout.</td>
+		</tr>
+		<tr>
+		 <td>[MODE]</td>
+		 <td>inserts a mode key to your layout. This is used e.g. for the TextField.ANY type where two layouts are present and the user needs to switch between these two</td>
+		</tr>
+		<tr>
+		 <td>[DELETE]</td>
+		 <td>inserts a delete key to your layout which will remove the last character of the written text</td>
+		</tr>
+		<tr>
+		 <td>[CLEAR]</td>
+		 <td>inserts a clear key to your layout which will clear the written text</td>
+		</tr>
+		<tr>
+		 <td>[]</td>
+		 <td>inserts a blank to your layout</td>
+		</tr>
+	</table>
+	
+	<h3>Using your own layouts</h3>
+	
+	<p>
+	To use your own layouts you need to overwrite the default mappings for the TextField types you wish to use with another layout.
+	There are 3 variables that can be set to a path of a layout .properties file within your JAR file. 
+	</p>
+	
+	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+		<tr><th>Name</th><th>Description</th></tr>
+		<tr>
+		 <td>virtualKeyboard.KeyMap.Any.Alpha</td>
+		 <td>the URL of a .properties file that describes the layout of the alphabetic (abcdef) section of the TextField.ANY type</td>
+		</tr>
+		<tr>
+		 <td>virtualKeyboard.KeyMap.Any.Numeric</td>
+		 <td>the layout of the numeric (0123.,()) section of the TextField.ANY type</td>
+		</tr>
+		<tr>
+		 <td>virtualKeyboard.KeyMap.Number</td>
+		 <td>the layout for the TextField.NUMBER type</td>
+		</tr>
+		<tr>
+		 <td>virtualKeyboard.KeyMap.Any.Phonenumber</td>
+		 <td>the layout for the TextField.PHONENUMBER type</td>
+		</tr>
+	</table>
+	
+	<h3>Styling</h3>
+	
+	<p>
+	To style your keyboard there are several styles that can be overwritten :
+	</p>
+	
+	 <table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+		<tr><th>Style</th><th>Description</th></tr>
+		<tr>
+		 <td>keyDimension</td>
+		 <td>serves as the base style for general key styles. It defines the minimum width of a key which defaults to 15% of the screen</td>
+		</tr>
+		<tr>
+		 <td>keySpaceDimension</td>
+		 <td>serves as the base style for the space key style. It defines the minimum width of the space key which defaults to 45% of the screen</td>
+		</tr>
+		<tr>
+		 <td>key</td>
+		 <td>serves as the style for all standard style.</td>
+		</tr>
+		<tr>
+		 <td>key</td>
+		 <td>serves as the style for all standard style.</td>
+		</tr>
+		<tr>
+		 <td>keySpace</br>keyShift</br>keyClear</br>keyDelete</br>keyMode</br>keyBlank</br></td>
+		 <td>the styles for the spcial keys</td>
+		</tr>
+		<tr>
+		 <td>keyRow</td>
+		 <td>the style for a row of keys inside a keyboard layout. Defaults to a horizontal list which should be inherited</td>
+		</tr>
+		<tr>
+		 <td>keyboard</td>
+		 <td>the overall style of the keyboard</td>
+		</tr>
+		<tr>
+		 <td>keyboardView</td>
+		 <td>the style of the screen which hold the keyboard, the text display and the submit button</td>
+		</tr>
+		<tr>
+		 <td>keyboardViewHeader</td>
+		 <td>the style of the header of the keyboard view which holds the text display and the submit button. Defaults to a 2-column layout which should be inherited</td>
+		</tr>
+		<tr>
+		 <td>keyboardViewDisplay</td>
+		 <td>the style of the text display of the keyboard view</td>
+		</tr>
+		<tr>
+		 <td>keyboardViewSubmit</td>
+		 <td>the style of the submit button of the keyboard view</td>
+		</tr>
+	</table>
 	
 	<h2 id="textfield-Programming">Programming</h2>
 	<p>
