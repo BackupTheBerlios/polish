@@ -1220,7 +1220,7 @@ public class Graphics
 	 */
 	public void drawSubstring( String str, int offset, int len, int x, int y, int anchor)
 	{
-		drawString( str.substring( offset, len), x, y, anchor );
+		drawString( str.substring( offset, offset+len), x, y, anchor );
 	}
 
 	/**
