@@ -21,7 +21,6 @@ import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
 import de.enough.polish.browser.html.FormListener;
-import de.enough.polish.browser.protocols.ExternalProtocolHandler;
 import de.enough.polish.browser.rss.RssBrowser;
 import de.enough.polish.browser.rss.RssItem;
 import de.enough.polish.browser.rss.RssTagHandler;
