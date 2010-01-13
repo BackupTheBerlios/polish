@@ -35,7 +35,7 @@
     </module>
 
     <module name="RedundantImport"/>
-    <!--
+    <!-- Disabled. We don't sort imports yet.
     <module name="ImportOrder">
         <property name="groups" value="de,java,javax,org"/>
         <property name="ordered" value="true"/>
@@ -50,7 +50,7 @@
     <module name="EmptyBlock">
 		<property name="option" value="text" />
 	</module>
-	<!--
+	<!-- Disabled. We don't check for modifier order yet.
 	<module name="ModifierOrder"/>
     -->
     <module name="RedundantModifier"/>
@@ -60,12 +60,10 @@
         <property name="checkMethods" value="false"/>
     </module>
     -->
-    <!--
     <module name="UnnecessaryParentheses"/>
-    -->
 	<module name="ArrayTypeStyle" />
 	<module name="UpperEll"/>
-	<!--
+	<!-- Disabled. We don't check for parameters or local variables hiding fields.
 	<module name="HiddenField">
 		<property name="tokens" value="VARIABLE_DEF"/>
 	</module>
