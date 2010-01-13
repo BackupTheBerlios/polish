@@ -126,7 +126,6 @@ public class Preprocessor {
 	private boolean isNetBeans;
 	private boolean isDeviceSupportsJ2mePolishApi;
 	private boolean isLibraryBuild;
-	private boolean isDebugTrace;
 
 	/**
 	 * Creates a new Preprocessor - usually for a specific device or a device group.
@@ -427,7 +426,7 @@ public class Preprocessor {
 		if (result == SKIP_FILE) {
 			return false;
 		}
-		boolean preprocessed = (result == CHANGED);
+		boolean preprocessed = result == CHANGED;
 		if (this.newExtension != null) {
 			// change the extension of the file:
 			int dotPos = fileName.indexOf('.');
@@ -525,7 +524,6 @@ public class Preprocessor {
 				String symbol = debuggingSymbols[i];
 				this.environment.addTemporarySymbol( symbol );
 			}
-			this.isDebugTrace = (this.debugManager.getClassLevel(className) == DebugManager.TRACE);
 		}
 		// adding all normal variables and symbols to the temporary ones:
 		/*
@@ -701,7 +699,7 @@ public class Preprocessor {
 		if (result == SKIP_REST ) {
 			return SKIP_REST;
 		} else if (result != -1){
-			changed = (result == CHANGED);
+			changed = result == CHANGED;
 		}
 		if (changed) {
 			return CHANGED;
@@ -1460,7 +1458,7 @@ public class Preprocessor {
 			debugLevel = "debug";
 		}
 		if (this.debugManager.isDebugEnabled( className, debugLevel )) {
-			return (uncommentLine( line, lines ) | convertSystemOut( lines, debugLevel, className ));
+			return uncommentLine( line, lines ) | convertSystemOut( lines, debugLevel, className );
 		} else {
 			boolean changed  = false;
 			while (line.indexOf(';') == -1) {
@@ -1522,8 +1520,8 @@ public class Preprocessor {
 					+ ": missing #enddebug directive for multi-line debug directive #mdebug."
 			);
 		}
-		//return (verboseDebug || changed);
-		return (changed);
+		//return verboseDebug || changed;
+		return changed;
 	}
 	
 	/**
@@ -1732,7 +1730,7 @@ public class Preprocessor {
 	 * @return true when the given file is in the queue
 	 */
 	public boolean isInPreprocessQueue(String fileName) {
-		return (this.preprocessQueue.get( fileName ) != null);
+		return this.preprocessQueue.get( fileName ) != null;
 	}
 	
 	/**
