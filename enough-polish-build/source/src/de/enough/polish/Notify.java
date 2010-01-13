@@ -37,19 +37,20 @@ import de.enough.polish.notify.LinuxNotifier;
  */
 public abstract class Notify {
 
-    public static Notify instance;
+    private static Notify INSTANCE;
 
-    public static Notify getInstance() {
-        if (instance != null) {
-            return instance;
+    public synchronized static Notify getInstance() {
+        if (INSTANCE != null) {
+            return INSTANCE;
         }
 
         if (GrowlNotifier.isGrowlAvailable()) {
-            instance = new GrowlNotifier();
+            INSTANCE = new GrowlNotifier();
         } else if (LinuxNotifier.isNotifyAvailable()) {
-            instance = new LinuxNotifier();
+            INSTANCE = new LinuxNotifier();
         }
-        return instance;
+
+        return INSTANCE;
     }
 
     /**
@@ -74,9 +75,7 @@ public abstract class Notify {
             System.out.println("java de.enough.polish.notify [title] [description]");
             System.exit(1);
         }
-        if (getInstance() != null) {
-            getInstance().publish(args[0], args[1]);
-        }
+        publish(args[0], args[1]);
         System.exit(0);
     }
 }
