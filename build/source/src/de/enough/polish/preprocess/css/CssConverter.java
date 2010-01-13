@@ -668,11 +668,12 @@ public class CssConverter extends Converter {
 				if (group == null) {
 					System.err.println("unable to get group [" + groupName + "] of style : " + style.toString());
 				}
-				Set keys = group.keySet();
+				Set keys = group.entrySet();
 				for (Iterator iter = keys.iterator(); iter.hasNext();) {
 					currentAttribute++;
-					String key = (String) iter.next();
-					String value = (String) group.get( key );
+					Map.Entry entry = (Map.Entry) iter.next();
+					String key = (String) entry.getKey();
+					String value = (String) entry.getValue();
 					String attributeName;
 					if (key.equals(groupName)) {
 						attributeName = groupName;
