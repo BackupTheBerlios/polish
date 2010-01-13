@@ -456,7 +456,7 @@ public final class StackTraceUtil {
 		
 		public boolean matches( String line ) {
 			if (this.chunks.length == 0) {
-				return (line.indexOf( this.code ) != -1);
+				return line.indexOf( this.code ) != -1;
 			}
 			int minPos = 0; 
 			int newPos;

@@ -374,7 +374,7 @@ public class Style {
 	 * @param group the group
 	 */
 	public void addGroup(String groupName, Map group) {
-		boolean addName = (this.groupsByName.get( groupName ) == null);
+		boolean addName = this.groupsByName.get( groupName ) == null;
 		this.groupsByName.put( groupName, group );
 		if (addName) {
 			this.groupNamesList.add( groupName );
