@@ -193,7 +193,7 @@ public class ResourceManager {
 				ResourceCopierSetting setting = copierSettings[i];
 				ResourceCopier resourceCopier = ResourceCopier.getInstance( setting, this.extensionManager, this.environment );
 				File tempTargetDir;
-				boolean lastRound = (i == copierSettings.length - 1); 
+				boolean lastRound = i == copierSettings.length - 1; 
 				if ( lastRound ) {
 					tempTargetDir = targetDir;
 				} else {
