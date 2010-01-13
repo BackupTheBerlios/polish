@@ -60,10 +60,10 @@ import de.enough.polish.util.StringUtil;
  */
 public class BuildSetting {
 	
-	public final static String IMG_LOAD_BACKGROUND = "images.backgroundLoad";
-	public final static String IMG_LOAD_FOREGROUND = "images.directLoad";
-	public final static String TARGET_1_1 = "1.1";
-	public final static String TARGET_1_2 = "1.2";
+	public static final String IMG_LOAD_BACKGROUND = "images.backgroundLoad";
+	public static final String IMG_LOAD_FOREGROUND = "images.directLoad";
+	public static final String TARGET_1_1 = "1.1";
+	public static final String TARGET_1_2 = "1.2";
 	
 	private static final String DEFAULT_JAD_FILTER_PATTERN = "MIDlet-Name, MIDlet-Version, MIDlet-Vendor, MIDlet-Jar-URL, MIDlet-Jar-Size, MIDlet-Description?, MIDlet-Icon?, MIDlet-Info-URL?, MIDlet-Data-Size?, MIDlet-*, *";
 	private static final String DEFAULT_MANIFEST_FILTER_PATTERN = "Manifest-Version, Main-Class?, MIDlet-Name, MIDlet-Version, MIDlet-Vendor, MIDlet-Description?, MIDlet-Icon?, MIDlet-Info-URL?, MIDlet-Data-Size?, MIDlet-*, *";

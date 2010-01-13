@@ -20,7 +20,7 @@ public final class FileListing {
 	 * @param directory
 	 *            is a valid directory, which can be read.
 	 */
-	static public List getFileListing(File directory, String filetype, boolean recursive)
+	public static List getFileListing(File directory, String filetype, boolean recursive)
 			throws FileNotFoundException {
 		validateDirectory(directory);
 		List result = new ArrayList();
@@ -62,7 +62,7 @@ public final class FileListing {
 	 * Directory is valid if it exists, does not represent a file, and can be
 	 * read.
 	 */
-	static private void validateDirectory(File aDirectory)
+	private static void validateDirectory(File aDirectory)
 			throws FileNotFoundException {
 		if (aDirectory == null) {
 			throw new IllegalArgumentException("Directory should not be null.");
