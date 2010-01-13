@@ -131,7 +131,7 @@ public class PathClassLoader extends ClassLoader {
         	if (!this.isInitialized) {
         		findNextResource();
         	}
-            return (this.nextResource != null);
+            return this.nextResource != null;
         }
 
         /**
