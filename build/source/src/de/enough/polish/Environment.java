@@ -348,8 +348,7 @@ public class Environment {
 		this.symbols.remove(name);
 		this.temporarySymbols.remove(name);
 		name = name.toLowerCase();
-		boolean removed = ((this.symbols.remove(name) != null) | (this.temporarySymbols
-				.remove(name) != null));
+		boolean removed = this.symbols.remove(name) != null || this.temporarySymbols.remove(name) != null;
 		return removed;
 	}
 
@@ -374,7 +373,7 @@ public class Environment {
 
 	public boolean removeTemporarySymbol(String name) {
 		name = name.toLowerCase();
-		return (this.temporarySymbols.remove(name) != null);
+		return this.temporarySymbols.remove(name) != null;
 	}
 
 	public Locale getLocale() {
@@ -756,7 +755,7 @@ public class Environment {
 	 * @return true when the variable is defined
 	 */
 	public boolean hasVariable(String name) {
-		return (getVariable(name) != null);
+		return getVariable(name) != null;
 	}
 
 	/**

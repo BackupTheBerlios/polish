@@ -1203,7 +1203,7 @@ public class BuildSetting {
 	 * @return true when there is a filter defined.
 	 */
 	public boolean hasUserDefinedJadAttributesFilter() {
-		return (this.jadAttributesFilters != null);
+		return this.jadAttributesFilters != null;
 	}
 
 	/**
@@ -1235,7 +1235,7 @@ public class BuildSetting {
 	 * @return true when there is a filter defined.
 	 */
 	public boolean hasUserDefinedManifestAttributesFilter() {
-		return (this.manifestAttributesFilters != null);
+		return this.manifestAttributesFilters != null;
 	}
 
 	/**
@@ -1582,7 +1582,7 @@ public class BuildSetting {
 	}
 
 	public boolean doPreCompile() {
-		return (this.preCompilers != null);
+		return this.preCompilers != null;
 	}
 	
 	public PostObfuscatorSetting[] getPostObfuscators() {
@@ -1601,7 +1601,7 @@ public class BuildSetting {
 	 * @return true when there are postcompilers
 	 */
 	public boolean doPostCompile() {
-		return (this.postCompilers != null);
+		return this.postCompilers != null;
 	}
 	
 	public PostCompilerSetting[] getPostCompilers() {
@@ -1620,7 +1620,7 @@ public class BuildSetting {
 	 * @return true when there are postobfuscators
 	 */
 	public boolean doPostObfuscate() {
-		return (this.postObfuscators != null);
+		return this.postObfuscators != null;
 	}
 	
 	/**

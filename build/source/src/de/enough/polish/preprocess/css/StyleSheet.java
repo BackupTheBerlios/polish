@@ -356,7 +356,7 @@ public class StyleSheet {
 		ArrayList sortedList = new ArrayList();
 		for (int i = 0; i < tmpStyles.length; i++) {
 			Style style = tmpStyles[i];
-			if (( style.isReferenced())) {
+			if (style.isReferenced()) {
 				//System.out.println( style.getSelector());
 				sortedList.add( style );
 				stylesList.remove( style );
@@ -1001,7 +1001,7 @@ public class StyleSheet {
 		if (this.cssAttributes == null) {
 			getCssPreprocessingSymbols( device );
 		}
-		return (this.cssAttributes.get( name ) != null);
+		return this.cssAttributes.get( name ) != null;
 	}
 
 

@@ -247,7 +247,7 @@ public class BooleanEvaluator {
 			// evaluate symbol:
 			symbol = symbolMatcher.group();
 			int negatePos = term.indexOf( '!', lastSymbolEnd );
-			boolean negate = ( (negatePos != -1) && (negatePos < symbolMatcher.start()) );
+			boolean negate = negatePos != -1 && negatePos < symbolMatcher.start();
 			lastSymbolEnd = symbolMatcher.end();
 			boolean symbolResult = false;
 			if ("true".equals( symbol )) {
@@ -262,7 +262,7 @@ public class BooleanEvaluator {
 					symbolResult = this.device.hasFeature( symbol )  || "true".equals( this.device.getCapability(symbol) );
 				} else {
 					//System.out.println("BooleanEvaluator: checking symbol " + symbol + " directly...");
-					symbolResult = ( ( this.symbols.get( symbol ) != null) || "true".equals( this.variables.get(symbol) ) );
+					symbolResult = this.symbols.get( symbol ) != null || "true".equals( this.variables.get(symbol) );
 				}
 			}
 			if (negate) {
@@ -332,7 +332,7 @@ public class BooleanEvaluator {
 							// okay, a version could be parsed, continue with last value:
 							lastVar = VersionFunction.process(lastVar, versionIdentifier);
 							int numLastVar = Integer.parseInt( lastVar );
-							result = (numVar == numLastVar);
+							result = numVar == numLastVar;
 						} catch (Exception e2) {
 							// ignore
 						}
