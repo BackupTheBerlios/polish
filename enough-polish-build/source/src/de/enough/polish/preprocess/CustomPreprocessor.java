@@ -286,7 +286,7 @@ public abstract class CustomPreprocessor extends Extension {
 		// ignore...
 	}
 	
-	class Directive {
+	static class Directive {
 		String directive;
 		Method method;
 		public Directive( String directive, Method method ) {
