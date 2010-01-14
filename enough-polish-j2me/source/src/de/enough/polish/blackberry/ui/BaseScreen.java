@@ -1086,37 +1086,24 @@ public abstract class BaseScreen
      * @see net.rim.device.api.ui.Screen#keyRepeat(int, int)
      */
     protected boolean keyRepeat(int keyCode, int status) {
-        //#if !polish.blackberry.keyUpCalledOnKeyRelease
-	    	// note: this is only a notification triggered for the CAPS key,
-			// not a keyReleased action on platforms before 4.7:
-			//# return keyDown( keyCode, status );
-		//#else
-	        Screen screen = getPolishScreen();
-	        if ( screen != null ) {
-	           if (forwardEventToNativeField( screen, keyCode) 
-	        		   && (Keypad.map( keyCode ) != Keypad.KEY_ESCAPE))
-	           {
-	        	   try {
-	        		   return super.keyDown(keyCode, status);                	   
-	        	   } catch (Exception e) {
-	        		   //#debug error
-	        		   System.out.println("super.keyRepeat(" + keyCode + ", " + status + ") failed" + e );
-	        	   }
-	           }
-	        }
-	        //#debug
-	    	System.out.println("keyRepeat: keyCode=" + keyCode + ", key=" + Keypad.key( keyCode) + ", char=" + Keypad.map( keyCode ) );
-	    	keyCode = getMidpKeyCode(keyCode, status);
-	        keyPressed( keyCode );
-	        //#if !polish.blackberry.keyUpCalledOnKeyRelease
-	       		keyReleased( keyCode );
-	       	//#endif
-	        if ( screen != null ) {
-	        	return (screen.keyPressedProcessed || screen.keyReleasedProcessed);
-	        } else { 
-	        	return true; // consume the key event
-	        } 
-		//#endif    
+        Screen screen = getPolishScreen();
+        if ( screen != null ) {
+           if (forwardEventToNativeField( screen, keyCode) 
+        		   && (Keypad.map( keyCode ) != Keypad.KEY_ESCAPE))
+           {
+        	   try {
+        		   return super.keyRepeat(keyCode, status);                	   
+        	   } catch (Exception e) {
+        		   //#debug error
+        		   System.out.println("super.keyRepeat(" + keyCode + ", " + status + ") failed" + e );
+        	   }
+           }
+        }
+        //#debug
+    	System.out.println("keyRepeat: keyCode=" + keyCode + ", key=" + Keypad.key( keyCode) + ", char=" + Keypad.map( keyCode ) );
+    	keyCode = getMidpKeyCode(keyCode, status);
+        keyRepeated(keyCode);
+    	return true; // consume the key event
 	}
     
     //#if polish.hasPointerEvents
