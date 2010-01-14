@@ -4134,7 +4134,7 @@
 		
 	</attribute>
 	
-
+	
 	<attribute
 		name="filter-opacity"
 		type="dimension"
@@ -4879,6 +4879,28 @@
 		id="418"
 		since="J2ME Polish 2.1.3"
 	/>
+
+	<attribute
+		name="filter-rotation-angle"
+		type="integer"
+		appliesTo="RotateRgbFilter"
+		description="The angle of rotation (in degrees)."
+		default="0"
+		id="419"
+		since="J2ME Polish 2.1.4"
+	/>
+	
+	
+	<attribute
+		name="fisheyeview-place-label-at-top"
+		type="boolean"
+		appliesTo="FishEyeContainerView"
+		description="Allows to place the label on top of the view. By default the label is rendered below the icons. This is only applicable when fisheyeview-remove-text is true."
+		default="false"
+		id="420"
+		since="J2ME Polish 2.1.4"
+	/>
+	
 	
 <!--
 	<attribute
@@ -4916,17 +4938,6 @@
 		since="J2ME Polish 2.1"
 	/>
  -->
+	
  
- 	<attribute
-		name="filter-rotation-angle"
-		type="integer"
-		appliesTo="RotateRgbFilter"
-		description="The angle of rotation (in degrees)."
-		default="0"
-		id="419"
-		since="J2ME Polish 2.1.4"
-	/>
-
-	
-	
 </attributes>
