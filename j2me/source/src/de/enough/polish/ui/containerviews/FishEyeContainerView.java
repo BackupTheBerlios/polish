@@ -126,6 +126,9 @@ public class FishEyeContainerView extends ContainerView {
 		private int touchCurrentIndex;
 		private static boolean isPointerDraggedEnabled;
 	//#endif
+	//#if polish.css.fisheyeview-place-label-at-top
+		private boolean isPlaceLabelAtTop;
+	//#endif
 		
 	private final Object lock = new Object();
 	
@@ -733,6 +736,13 @@ public class FishEyeContainerView extends ContainerView {
 		int itemLabelDiff = 0;
 		if (this.isRemoveText && this.focusedLabel != null) {
 			itemLabelDiff = this.focusedLabel.itemHeight - this.focusedLabel.getContentHeight();
+			//#if polish.css.fisheyeview-place-label-at-top
+				if (this.isPlaceLabelAtTop) {
+					int labelX = x + ((rightBorder - leftBorder) >> 1) - (this.focusedLabel.getItemWidth( lineWidth, lineWidth, this.availableHeight ) >> 1);
+					this.focusedLabel.paint( labelX, y, labelX, labelX + this.focusedLabel.itemWidth, g);
+					y += this.focusedLabel.itemHeight;
+				}
+			//#endif
 		}
 		if (this.focusedItem != null && (this.focusedBackground != null || this.focusedBorder != null)) {
 			Item item = this.focusedItem;
@@ -831,7 +841,12 @@ public class FishEyeContainerView extends ContainerView {
 			paintItem(item, this.focusedIndex, itemX, itemY, itemX, itemX + item.itemWidth, clipX, clipY, clipWidth, clipHeight, g);
 
 			// now paint label:
-			if (this.isRemoveText && this.focusedLabel != null) {
+			if (this.isRemoveText 
+					&& this.focusedLabel != null
+					//#if polish.css.fisheyeview-place-label-at-top
+					&& !this.isPlaceLabelAtTop
+					//#endif
+			) {
 				//System.out.println("painting focused label with style " + this.focusedLabel.getStyle() );
 				int labelX = x + ((rightBorder - leftBorder) >> 1) - (this.focusedLabel.getItemWidth( lineWidth, lineWidth, this.availableHeight ) >> 1);
 				int labelY = y + this.contentHeight - this.focusedLabel.itemHeight;  // item.itemHeight + itemLabelDiff;
@@ -896,7 +911,12 @@ public class FishEyeContainerView extends ContainerView {
 				this.isRemoveText = removeTextBool.booleanValue();
 			}
 		//#endif
-			
+		//#if polish.css.fisheyeview-place-label-at-top
+			Boolean placeLabelAtTopBool = style.getBooleanProperty("fisheyeview-place-label-at-top");
+			if (placeLabelAtTopBool != null) {
+				this.isPlaceLabelAtTop = placeLabelAtTopBool.booleanValue();
+			}
+		//#endif
 		//#if polish.css.fisheyeview-scale && polish.midp2
 			Integer scaleInt = style.getIntProperty( "fisheyeview-scale" );
 			if (scaleInt != null) {
