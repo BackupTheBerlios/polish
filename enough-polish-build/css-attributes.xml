@@ -4901,6 +4901,16 @@
 		since="J2ME Polish 2.1.4"
 	/>
 	
+	<attribute
+		name="box-align"
+		type="integer"
+		appliesTo="ChoiceItem, ChoiceGroup"
+		description="Allows to the radio- or checkbox of a choice element on the right side."
+		default="left"
+		values="left,right"
+		id="421"
+		since="J2ME Polish 2.1.4"
+	/>
 	
 <!--
 	<attribute
