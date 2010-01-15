@@ -204,7 +204,7 @@ public class StringItem extends Item
 	
 	
 	
-	//#if tmp.useTextEffect
+	//#if tmp.useTextEffect || polish.css.text-wrap
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#animate(long, de.enough.polish.ui.ClippingRegion)
 	 */
