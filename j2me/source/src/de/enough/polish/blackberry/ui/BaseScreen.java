@@ -21,7 +21,8 @@ import de.enough.polish.ui.Canvas;
 import de.enough.polish.ui.CommandItem;
 import de.enough.polish.ui.Display;
 import de.enough.polish.ui.Displayable;
-import de.enough.polish.util.ArrayList;;
+import de.enough.polish.util.ArrayList;
+import de.enough.polish.util.DeviceControl;
 
 /**
  * Provides the base screen / displayable implementation for BlackBerry devices.
@@ -1433,10 +1434,10 @@ public abstract class BaseScreen
 	        if (nextDisplayable instanceof Screen) {
 	            Screen screen = (Screen) nextDisplayable;
 	            if (screen.getCurrentItem() == null || screen.getCurrentItem()._bbField == null) {
-	                getVirtualKeyboard().setVisibility( VirtualKeyboard.HIDE );
+	            	DeviceControl.hideSoftKeyboard();
 	            }
 	        } else {
-	            getVirtualKeyboard().setVisibility( VirtualKeyboard.HIDE );
+            	DeviceControl.hideSoftKeyboard();
 	        }
 	    //#endif
 		//#if !tmp.fullscreen

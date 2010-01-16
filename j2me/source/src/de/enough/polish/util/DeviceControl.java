@@ -237,7 +237,13 @@ public class DeviceControl
 		//#if polish.android1.5
 			MidletBridge.instance.showSoftKeyboard();
 		//#elif polish.blackberry && polish.hasPointerEvents && polish.usePolishGui
-			((BaseScreen)(Object)Display.getInstance()).getVirtualKeyboard().setVisibility( VirtualKeyboard.SHOW );
+			Display disp = Display.getInstance();
+			if (disp != null) {
+				VirtualKeyboard keyboard = ((BaseScreen)(Object)disp).getVirtualKeyboard();
+				if (keyboard != null) {
+					keyboard.setVisibility( VirtualKeyboard.SHOW );					
+				}
+			}
 		//#endif
 	}
 	
@@ -250,7 +256,13 @@ public class DeviceControl
 		//#if polish.android1.5
 			MidletBridge.instance.hideSoftKeyboard();
 		//#elif polish.blackberry && polish.hasPointerEvents && polish.usePolishGui
-			((BaseScreen)(Object)Display.getInstance()).getVirtualKeyboard().setVisibility( VirtualKeyboard.HIDE );
+			Display disp = Display.getInstance();
+			if (disp != null) {
+				VirtualKeyboard keyboard = ((BaseScreen)(Object)disp).getVirtualKeyboard();
+				if (keyboard != null) {
+					keyboard.setVisibility( VirtualKeyboard.HIDE );					
+				}
+			}
 		//#endif
 	}
 	
@@ -265,8 +277,14 @@ public class DeviceControl
 		//#if polish.android1.5
 			result = MidletBridge.instance.isSoftKeyboadShown();
 		//#elif polish.blackberry && polish.hasPointerEvents && polish.usePolishGui
-			int visibility = ((BaseScreen)(Object)Display.getInstance()).getVirtualKeyboard().getVisibility();
-			result = (visibility ==  VirtualKeyboard.SHOW) || (visibility ==  VirtualKeyboard.SHOW_FORCE);
+			Display disp = Display.getInstance();
+			if (disp != null) {
+				VirtualKeyboard keyboard = ((BaseScreen)(Object)disp).getVirtualKeyboard();
+				if (keyboard != null) {
+					int visibility = keyboard.getVisibility();
+					result = (visibility ==  VirtualKeyboard.SHOW) || (visibility ==  VirtualKeyboard.SHOW_FORCE);
+				}
+			}
 		//#endif
 		return result;
 	}
