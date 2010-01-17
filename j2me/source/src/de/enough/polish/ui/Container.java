@@ -2952,7 +2952,15 @@ public class Container extends Item {
 				}
 			}
 		//#endif
-
+		//#if polish.css.focus-all
+			if (this.isFocusAllChildren && this.isFocused) {
+				Item[] items = this.getItems();
+				for (int i = 0; i < items.length; i++) {
+					Item item = items[i];
+					item.animate(currentTime, repaintRegion);
+				}
+			}
+		//#endif
 	}
 	
 	/**
