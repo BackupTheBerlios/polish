@@ -457,7 +457,8 @@ public final class StyleSheet {
 			String lastFeature = null;
 			boolean isExpectingFeatureName = false;
 			boolean isExpectingValue = false;
-			for (int i=0; i<condition.length();i++) {
+			int length = condition.length()-1;
+			for (int i=0; i<=length;i++) {
 				c = condition.charAt(i);
 				if (c != ' ' && c != ')') {
 					if (c == '(') {
@@ -467,7 +468,11 @@ public final class StyleSheet {
 					} else {
 						buffer.append(c);
 					}
-				} else if (buffer.length() > 0) {
+					if (i<length) {
+						continue;
+					}
+				}
+				if (buffer.length() > 0) {
 					// part ending here:
 					part = buffer.toString().toLowerCase();
 					//System.out.println("part=" + part + ", expectingFeatureName=" + isExpectingFeatureName + ", isExpectingValue=" + isExpectingValue);
@@ -484,6 +489,7 @@ public final class StyleSheet {
 						if (!isExpectingFeatureName) {
 							if ("touchscreen".equals(part)) {
 								result = DeviceInfo.hasPointerEvents();
+								System.out.println("found touchscreen, result=" + result);
 							} else if (!("all".equals(part) || "screen".equals(part))) {
 								// this is a unsupported media type (otherwise a parentheses would have been necessary):
 								result = false;
