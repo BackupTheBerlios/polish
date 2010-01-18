@@ -875,6 +875,7 @@ public final class ImageUtil {
         final int degSin = (int) (1024 * degreeSin) ;
         final int rotatedHeightMinus1 = rotatedHeight -1;
         final int rgbDataLen = sourceRgbData.length -1;
+        final int maxWidth = width -1;
 
         // Initialize and precalculate trigonometry data
         // Thse calculations are used many times throughout the rotation
@@ -904,7 +905,7 @@ public final class ImageUtil {
             y=-1;
             while ( ++y < rotatedHeightMinus1){
                 newX = xMinusRefXTimesDegCosXPlusHalfWidth + yMinusRefYTimesDegSin[y] ;
-                if (newX < 0 || newX > width) {
+                if (newX < 0 || newX > maxWidth) {
                     continue;
                 }
                 newY = yMinusRefYTimesDegCos[y] - xMinusRefXTimesDegSinXMinusHalfOfHeight ;
