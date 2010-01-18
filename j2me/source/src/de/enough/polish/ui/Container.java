@@ -866,7 +866,7 @@ public class Container extends Item {
 			 * Checks if an item in the visible range is
 			 *  
 			 * @param item the Item to check
-			 * @return ture if item is in visible content area else false 
+			 * @return true if item is in visible content area else false 
 			 */
 			private boolean isItemInVisibleContentArea(Item item){
 				if(item == null)
@@ -882,7 +882,7 @@ public class Container extends Item {
 			 * Find the position of first item in visible area
 			 * 
 			 * @param isInteractive true to check only interactive items else false
-			 * @return the positon of the first item in visible area or -1 if no item was found
+			 * @return the position of the first item in visible area or -1 if no item was found
 			 */
 			private int getFirstItemInVisibleContentArea(boolean isInteractive){
 				Item[] items = this.getItems();
@@ -899,7 +899,7 @@ public class Container extends Item {
 			 * Find the position of last item in visible area
 			 * 
 			 * @param isInteractive true to check only interactive items else false
-			 * @return the positon of the last item in visible area or -1 if no item was found
+			 * @return the position of the last item in visible area or -1 if no item was found
 			 */
 			private int getLastItemInVisibleContentArea(boolean isInteractive){
 				Item[] items = this.getItems();
@@ -1807,7 +1807,7 @@ public class Container extends Item {
 			//#if polish.hasPointerEvents	
 				
 				if(this.needsCheckItemInVisibleContent && item != null && !isItemInVisibleContentArea(item) 
-						&& (gameAction == Canvas.DOWN || gameAction == Canvas.UP )){
+						&& (gameAction == Canvas.DOWN || gameAction == Canvas.UP || gameAction == Canvas.LEFT || gameAction == Canvas.RIGHT)){
 					int next = -1;
 					int offset = 0;
 					//System.out.println("tmp.supportFocusItemsInVisibleContentArea is set");		
@@ -1820,13 +1820,20 @@ public class Container extends Item {
 					}
 					if(next != -1){
 						focusChild( next, this.get(next), gameAction,  false );
-						this.needsCheckItemInVisibleContent = false;
 						item = get(next);	
 					}
 					else{
-						setScrollYOffset(offset, true);
+						if(gameAction == Canvas.DOWN || gameAction == Canvas.UP ){
+							boolean scrollSmooth = true;
+							//#ifdef polish.css.scroll-mode
+								scrollSmooth = this.scrollSmooth;
+							//#endif			
+							setScrollYOffset(offset, scrollSmooth);
+						}
 						return true;
 					}
+				}else{
+					this.needsCheckItemInVisibleContent = false;
 				}
 			//#endif
 		//#endif
