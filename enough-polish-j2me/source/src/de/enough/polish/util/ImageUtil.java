@@ -45,7 +45,7 @@ import de.enough.polish.math.FP;
  * @author Robert Virkus, j2mepolish@enough.de
  * @author Tim Muders, tim.muders@enough.de
  * @author Simon Schmitt, simon.schmitt@enough.de
- * @author Anders Bo Pedersen, andersbo.pedersen@gmail.com
+ * @author Anders Bo Pedersen, anders@wicore.dk
  * @author Ovidiu Iliescu
  */
 public final class ImageUtil {
