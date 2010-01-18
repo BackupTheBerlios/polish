@@ -87,8 +87,10 @@ public class ScaleRgbFilter extends RgbFilter
 			}
 			else if (scalePercent < 100 )
 			{
-				// TODO : do not recreate the int[] array here, instead use the existing one (possibly need to clean that)
-				this.output = new RgbImage( width, height );
+				rgbOutput = this.output.getRgbData();
+				for (int i = 0; i < rgbOutput.length; i++) {
+					rgbOutput[i] = 0;
+				}
 			}
 
 			rgbOutput = this.output.getRgbData();
@@ -146,4 +148,19 @@ public class ScaleRgbFilter extends RgbFilter
 		this.output = null;
 	}
 
+	/**
+	 * Sets the scale factor in percent.
+	 * @param factor the factor in percent, e.g. 100 keeps the original size, 200 doubles it, 50 scales down to the half size
+	 */
+	public void setScaleFactor(int factor) {
+		this.scaling = new Dimension( factor, true );
+	}
+
+	/**
+	 * Specifies if the processed RgbImage should be the same size as the original one.
+	 * @param keepOriginalDimensions true when the dimensions should be kept, false when the result RgbImage should be able to increase in size
+	 */
+	public void setCropImage(boolean keepOriginalDimensions) {
+		this.keepOriginalImageDimensions = keepOriginalDimensions;
+	}
 }

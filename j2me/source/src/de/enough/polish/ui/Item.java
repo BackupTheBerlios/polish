@@ -832,8 +832,9 @@ public abstract class Item implements UiElement, Animatable
 		private RgbFilter[] filters;
 		private boolean isFiltersActive;
 		private boolean filterPaintNormally;
-		private RgbImage filterRgbImage;
 		private RgbFilter[] originalFilters;
+		private RgbImage filterRgbImage;
+		private RgbImage filterProcessedRgbImage;
 	//#endif
 	//#if polish.css.inline-label
 		protected boolean isInlineLabel;
@@ -2432,22 +2433,22 @@ public abstract class Item implements UiElement, Animatable
 					this.filterPaintNormally = false;
 				} 
 				//System.out.println("painting RGB data for " + this  + ", pixel=" + Integer.toHexString( rgbData[ rgbData.length / 2 ]));		
-
-				for (int i=0; i<this.filters.length; i++) {
-					RgbFilter filter = this.filters[i];
-					rgbImage = filter.process(rgbImage);
-				}				
-				
-				int width = rgbImage.getWidth();
-				int height = rgbImage.getHeight();
-				int[] rgbData = rgbImage.getRgbData();
-				if (this.isLayoutRight) {
-					x = rightBorder - width;
-				} else if (this.isLayoutCenter) {
-					x =  leftBorder + ((rightBorder - leftBorder)/2) - (width/2);
-				}
-				DrawUtil.drawRgb(rgbData, x, y, width, height, true, g );
-				
+				this.filterProcessedRgbImage = paintFilter(x, y, this.filters, rgbImage, this.layout, g);
+//				for (int i=0; i<this.filters.length; i++) {
+//					RgbFilter filter = this.filters[i];
+//					rgbImage = filter.process(rgbImage);
+//				}				
+//				
+//				int width = rgbImage.getWidth();
+//				int height = rgbImage.getHeight();
+//				int[] rgbData = rgbImage.getRgbData();
+//				if (this.isLayoutRight) {
+//					x = rightBorder - width;
+//				} else if (this.isLayoutCenter) {
+//					x =  leftBorder + ((rightBorder - leftBorder)/2) - (width/2);
+//				}
+//				DrawUtil.drawRgb(rgbData, x, y, width, height, true, g );
+//				
 				//#mdebug ovidiu
 				Benchmark.pauseSmartTimer("0");
 				Benchmark.incrementSmartTimer("1");
@@ -2895,6 +2896,46 @@ public abstract class Item implements UiElement, Animatable
 		//#if polish.css.view-type
 			}
 		//#endif
+	}
+	
+	/**
+	 * Paints the given filters and retrieves the last processed RGB image.
+	 * @param x horizontal paint position
+	 * @param y vertical paint position
+	 * @param partFilters the filters
+	 * @param rgbImage the initial RGB image
+	 * @param lo the layout for the processed RGB image
+	 * @param g the graphics context
+	 * @return the processed RGB image
+	 */
+	protected RgbImage paintFilter(int x, int y, RgbFilter[] partFilters, RgbImage rgbImage, int lo, Graphics g) {
+		//System.out.println("painting RGB data for " + this  + ", pixel=" + Integer.toHexString( rgbData[ rgbData.length / 2 ]));
+		int origWidth = rgbImage.getWidth();
+		int origHeight = rgbImage.getHeight();
+		for (int i=0; i<partFilters.length; i++) {
+			RgbFilter filter = partFilters[i];
+			rgbImage = filter.process(rgbImage);
+		}
+		int width = rgbImage.getWidth();
+		int height = rgbImage.getHeight();
+		//System.out.println("Changed dimension from " + this.imageWidth +"x" + this.imageHeight + " to " + width + "x" + height);
+		int[] rgb = rgbImage.getRgbData();
+		if (origWidth != width) {
+			if ((lo & LAYOUT_CENTER) == LAYOUT_CENTER) {
+				x -= (width - origWidth) / 2;
+			} else if ((lo & LAYOUT_CENTER) == LAYOUT_RIGHT) {
+				x -= (width - origWidth);
+			}
+		}
+		if (origHeight != height) {
+			if ((lo & LAYOUT_VCENTER) == LAYOUT_VCENTER) {
+				y -= (height - origHeight) / 2; 
+			} else if ((lo & LAYOUT_VCENTER) == LAYOUT_TOP) {
+				y -= (height - origHeight);
+			}
+		}
+		DrawUtil.drawRgb(rgb, x , y, width, height, true, g );
+		return rgbImage;
 	}
 
 	/**
@@ -3989,12 +4030,42 @@ public abstract class Item implements UiElement, Animatable
 	 * @param repaintRegion the clipping rectangle to which the repaint area should be added
 	 */
 	public void addRepaintArea( ClippingRegion repaintRegion ) {
+		int absX = getAbsoluteX();
+		int absY = getAbsoluteY();
+		int w = this.itemWidth;
+		int h = this.itemHeight + 1;
+		//#if polish.css.filter
+			RgbImage img = this.filterProcessedRgbImage;
+			if (img != null && (img.getHeight() > h || img.getWidth() > w)) {
+				int lo = this.layout;
+				int wFilter = img.getWidth();
+				int hFilter = img.getHeight();
+				int horDiff = wFilter - w;
+				int verDiff = hFilter - h;
+				if ((lo & LAYOUT_CENTER) == LAYOUT_CENTER) {
+					absX -= horDiff / 2;
+					w += horDiff;
+				} else if ((lo & LAYOUT_CENTER) == LAYOUT_RIGHT) {
+					absX -= horDiff;
+				} else {
+					w += horDiff;
+				}
+				if ((lo & LAYOUT_VCENTER) == LAYOUT_VCENTER) {
+					absY -= verDiff / 2;
+					h += verDiff;
+				} else if ((lo & LAYOUT_VCENTER) == LAYOUT_TOP) {
+					absY -= verDiff; 
+				} else {
+					h += verDiff;
+				}
+			}
+		//#endif
 		//System.out.println("adding repaint area x=" + getAbsoluteX() + ", width=" + this.itemWidth + ", y=" + getAbsoluteY() + " for " + this);
 		repaintRegion.addRegion(
-				getAbsoluteX(),
-				getAbsoluteY(),
-				this.itemWidth, 
-				this.itemHeight + 1 );
+				absX,
+				absY,
+				w, 
+				h );
 	}
 	
 	/**
