@@ -276,15 +276,19 @@ public class StringItem extends Item
 	public void addRepaintArea(ClippingRegion repaintRegion) {
 		super.addRepaintArea(repaintRegion);
 		RgbImage img = this.textFilterProcessedRgbImage;
-		if (img != null && (img.getHeight() > this.contentHeight || img.getWidth() > this.contentWidth)) {
-			int lo = this.layout;
-			//#if polish.css.text-layout
+		if (img != null && (img.getHeight() > this.lastContentHeight || img.getWidth() > this.lastContentWidth)) {
+			int lo;
+			//#if polish.css.text-filter-layout
+				lo = this.textFilterLayout;
+			//#elif polish.css.text-layout
 				lo = this.textLayout;
-			//#endif 
+			//#else
+				lo = this.layout;
+			//#endif
 			int w = img.getWidth();
 			int h = img.getHeight();
-			int horDiff = w - this.contentWidth;
-			int verDiff = h - this.contentHeight;
+			int horDiff = w - this.lastContentWidth;
+			int verDiff = h - this.lastContentHeight;
 			int absX = getAbsoluteX();
 			int absY = getAbsoluteY();
 			if ((lo & LAYOUT_CENTER) == LAYOUT_CENTER) {
