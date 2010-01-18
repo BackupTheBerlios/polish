@@ -108,7 +108,7 @@
 			description=""
 			vendorName="Enough Software"
 			infoUrl="http://www.j2mepolish.org"
-			icon="dot.png"
+			icon="icon.png"
 			jarName="${polish.vendor}-${polish.name}-${polish.locale}-table.jar" 
 			jarUrl="${deploy-url}${polish.jarName}"
 			copyright="Copyright 2009 Enough Software. All rights reserved."
