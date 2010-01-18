@@ -289,6 +289,8 @@ public class StringItem extends Item
 			int h = img.getHeight();
 			int horDiff = w - this.lastContentWidth;
 			int verDiff = h - this.lastContentHeight;
+			w += this.contentWidth - this.lastContentWidth;
+			h += this.contentHeight - this.lastContentHeight;
 			int absX = getAbsoluteX();
 			int absY = getAbsoluteY();
 			if ((lo & LAYOUT_CENTER) == LAYOUT_CENTER) {
