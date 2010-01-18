@@ -4829,7 +4829,7 @@
 		type="boolean"
 		appliesTo="ScaleRgbFilter"
 		description="Specifies if the resulting scaled image should be cropped to the original image dimensions. WARNING: May cause OutOfMemory errors when set to false! Use at your own risk."
-		default="true"
+		default="false"
 		id="413"
 		since="J2ME Polish 2.1.3"
 	/>

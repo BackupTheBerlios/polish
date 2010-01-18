@@ -43,7 +43,7 @@ public class ScaleRgbFilter extends RgbFilter
 {
 	protected Dimension scaling;
 	protected transient RgbImage output;
-	protected boolean keepOriginalImageDimensions = true;
+	protected boolean keepOriginalImageDimensions = false;
 
 	/**
 	 * Creates a new grayscale filter
