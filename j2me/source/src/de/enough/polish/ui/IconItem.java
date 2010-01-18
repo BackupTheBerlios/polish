@@ -551,7 +551,7 @@ implements ImageConsumer
 				}
 			//#endif
 				
-			//#if polish.css.icon-filter && polish.midp2
+			//#if polish.css.icon-filter
 				if (this.iconFilters != null) {
 					boolean isActive = false;
 					for (int i=0; i<this.iconFilters.length; i++) {
@@ -684,7 +684,6 @@ implements ImageConsumer
 			repaintRegion.addRegion( absX, absY, w, h );
 		}
 	}
-
 	//#endif
 
 	//#if polish.midp2 && polish.css.scale-factor
