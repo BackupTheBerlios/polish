@@ -138,7 +138,9 @@ public class Container extends Item {
 	private int scrollDirection;
 	private int scrollSpeed;
 	private int scrollDamping;
-
+	//#ifdef tmp.supportFocusItemsInVisibleContentArea
+		private boolean needsCheckItemInVisibleContent = false;
+	//#endif
 	
 	/**
 	 * Creates a new empty container.
@@ -901,7 +903,7 @@ public class Container extends Item {
 			 */
 			private int getLastItemInVisibleContentArea(boolean isInteractive){
 				Item[] items = this.getItems();
-				for(int i = items.length-1; i >= 0 ; i--){
+				for(int i = items.length-1; i > 0 ; i--){
 					Item item = items[i];
 					if((!isInteractive || item.isInteractive()) && isItemInVisibleContentArea(item)) {
 						return i;
@@ -1802,18 +1804,28 @@ public class Container extends Item {
 		//looking for the next focusable Item if the focusedItem is not in 
 		//the visible content area	
 		//#ifdef tmp.supportFocusItemsInVisibleContentArea
-			//#if polish.hasPointerEvents
-				if(item != null && !isItemInVisibleContentArea(item)){
-					System.out.println("tmp.supportFocusItemsInVisibleContentArea is set");
+			//#if polish.hasPointerEvents	
+				
+				if(this.needsCheckItemInVisibleContent && item != null && !isItemInVisibleContentArea(item) 
+						&& (gameAction == Canvas.DOWN || gameAction == Canvas.UP )){
 					int next = -1;
-					if(gameAction == Canvas.DOWN || gameAction == Canvas.RIGHT){
+					int offset = 0;
+					//System.out.println("tmp.supportFocusItemsInVisibleContentArea is set");		
+					if(gameAction == Canvas.DOWN ){
 						next = getFirstItemInVisibleContentArea(true);
-					}else if(gameAction == Canvas.UP || gameAction == Canvas.LEFT){
-						next = getLastItemInVisibleContentArea(true)+1;
+						offset = getScrollYOffset()-(this.getAvailableContentHeight());
+					}else if(gameAction == Canvas.UP ){
+						next = getLastItemInVisibleContentArea(true);
+						offset = getScrollYOffset()+(this.getAvailableContentHeight());
 					}
 					if(next != -1){
 						focusChild( next, this.get(next), gameAction,  false );
-						item = get(next);
+						this.needsCheckItemInVisibleContent = false;
+						item = get(next);	
+					}
+					else{
+						setScrollYOffset(offset, true);
+						return true;
 					}
 				}
 			//#endif
@@ -3196,6 +3208,13 @@ public class Container extends Item {
 	protected boolean handlePointerReleased(int relX, int relY) {
 		//#debug
 		System.out.println("Container.handlePointerReleased(" + relX + ", " + relY + ") for " + this  );
+		
+		//#ifdef tmp.supportFocusItemsInVisibleContentArea
+			//#if polish.hasPointerEvents		
+				this.needsCheckItemInVisibleContent=true;
+			//#endif
+		//#endif
+		
 		Item item = this.focusedItem;
 		if (this.enableScrolling) {
 			int scrollDiff = Math.abs(getScrollYOffset() - this.lastPointerPressYOffset);
