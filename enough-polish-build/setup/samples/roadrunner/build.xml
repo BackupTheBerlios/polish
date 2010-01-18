@@ -49,7 +49,7 @@
 				name="RoadRunner" 
 				vendorName="Enough Software" 
 				version="1.0.1"
-				copyright="Copyright 2005 - 2009 Enough Software. All rights reserved." 
+				copyright="Copyright 2005 - 2010 Enough Software. All rights reserved." 
 				description="A frogger clone." 
 				icon="dot.png"
 				infoUrl="http://www.enough.de" 
