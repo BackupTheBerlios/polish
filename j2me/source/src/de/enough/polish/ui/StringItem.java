@@ -27,7 +27,9 @@ package de.enough.polish.ui;
 
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
 
+import de.enough.polish.util.RgbImage;
 import de.enough.polish.util.TextUtil;
 
 /**
@@ -90,7 +92,14 @@ public class StringItem extends Item
 	private int lastAvailableContentWidth;
 	private int lastContentWidth;
 	private int lastContentHeight;
-
+	//#if polish.css.text-filter && polish.midp2
+		private RgbFilter[] textFilters;
+		private boolean isTextFiltersActive;
+		private RgbImage textFilterRgbImage;
+		private RgbImage textFilterProcessedRgbImage;
+		private RgbFilter[] originalTextFilters;
+		private int textFilterLayout;
+	//#endif
 	
 	/**
 	 * Creates a new <code>StringItem</code> object.  Calling this
@@ -260,6 +269,38 @@ public class StringItem extends Item
 	}
 	//#endif
 
+	//#if polish.css.text-filter
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#addRepaintArea(de.enough.polish.ui.ClippingRegion)
+	 */
+	public void addRepaintArea(ClippingRegion repaintRegion) {
+		super.addRepaintArea(repaintRegion);
+		RgbImage img = this.textFilterProcessedRgbImage;
+		if (img != null && (img.getHeight() > this.contentHeight || img.getWidth() > this.contentWidth)) {
+			int lo = this.layout;
+			//#if polish.css.text-layout
+				lo = this.textLayout;
+			//#endif 
+			int w = img.getWidth();
+			int h = img.getHeight();
+			int horDiff = w - this.contentWidth;
+			int verDiff = h - this.contentHeight;
+			int absX = getAbsoluteX();
+			int absY = getAbsoluteY();
+			if ((lo & LAYOUT_CENTER) == LAYOUT_CENTER) {
+				absX -= horDiff / 2;
+			} else if ((lo & LAYOUT_CENTER) == LAYOUT_RIGHT) {
+				absX -= horDiff;
+			}
+			if ((lo & LAYOUT_VCENTER) == LAYOUT_VCENTER) {
+				absY -= verDiff / 2; 
+			} else if ((lo & LAYOUT_VCENTER) == LAYOUT_TOP) {
+				absY -= verDiff; 
+			}
+			repaintRegion.addRegion( absX, absY, w, h );
+		}
+	}
+	//#endif
 	
 	//#if polish.css.text-wrap
 	/* (non-Javadoc)
@@ -436,6 +477,49 @@ public class StringItem extends Item
 				return;
 			}
 		//#endif
+		//#if polish.css.text-filter && polish.midp2
+			if (this.isTextFiltersActive && this.textFilters != null) {
+				RgbImage rgbImage = this.textFilterRgbImage;
+				if ( rgbImage == null) {
+					int w = this.lastContentWidth;
+					int h = this.lastContentHeight;
+					Image image = Image.createImage( w, h );
+					int transparentColor = 0x12345678;
+					Graphics imgG = image.getGraphics();
+					imgG.setColor(transparentColor);
+					imgG.fillRect(0, 0, w+1, h+1 );
+					int[] transparentColorRgb = new int[1];
+					image.getRGB(transparentColorRgb, 0, 1, 0, 0, 1, 1 );
+					transparentColor = transparentColorRgb[0];
+					paintText( 0, 0, 0, w, imgG );
+					int[] textRgbData = new int[ w*h ];
+					image.getRGB(textRgbData, 0, w, 0, 0, w, h );
+					// ensure transparent parts are indeed transparent
+					for (int i = 0; i < textRgbData.length; i++) {
+						if( textRgbData[i] == transparentColor ) {
+							textRgbData[i] = 0;
+						}
+					}
+					rgbImage = new RgbImage(textRgbData, w);
+					this.textFilterRgbImage = rgbImage;
+				} 
+				int lo;
+				//#if polish.css.text-filter-layout
+					lo = this.textFilterLayout;
+				//#elif polish.css.text-layout
+					lo = this.textLayout;
+				//#else
+					lo = this.layout;
+				//#endif
+				this.textFilterProcessedRgbImage = paintFilter( x, y, this.textFilters, rgbImage, lo, g );
+			} else {
+				paintText(x, y, leftBorder, rightBorder, g);
+			}
+		//#endif		
+	//#if polish.css.text-filter && polish.midp2
+	}
+	private void paintText( int x, int y, int leftBorder, int rightBorder, Graphics g) {
+	//#endif
 		String[] lines = this.textLines;
 		if (lines != null) {
 			//#if polish.css.text-wrap
@@ -793,6 +877,37 @@ public class StringItem extends Item
 				this.textLayout = style.layout;
 			}
 		//#endif 
+		//#if polish.css.text-filter && polish.midp2
+			RgbFilter[] filterObjects = (RgbFilter[]) style.getObjectProperty("text-filter");
+			if (filterObjects != null) {
+				if (filterObjects != this.originalTextFilters) {
+					this.textFilters = new RgbFilter[ filterObjects.length ];
+					for (int i = 0; i < filterObjects.length; i++)
+					{
+						RgbFilter rgbFilter = filterObjects[i];
+						try
+						{
+							this.textFilters[i] = (RgbFilter) rgbFilter.getClass().newInstance();
+						} catch (Exception e)
+						{
+							//#debug warn
+							System.out.println("Unable to initialize filter class " + rgbFilter.getClass().getName() + e );
+						}
+					}
+					this.originalTextFilters = filterObjects;
+				}
+			} else if (this.textFilterRgbImage != null) {
+				this.originalTextFilters = null;
+				this.textFilters = null;
+				this.textFilterRgbImage = null;
+			}
+			//#if polish.css.text-filter-layout
+				Integer textFilterLayoutInt = style.getIntProperty("text-filter-layout");
+				if (textFilterLayoutInt != null) {
+					this.textFilterLayout = textFilterLayoutInt.intValue();
+				}
+			//#endif
+		//#endif
 	}
 
 	/* (non-Javadoc)
@@ -890,8 +1005,20 @@ public class StringItem extends Item
 			Boolean textVisibleBool = style.getBooleanProperty("text-visible");
 			if (textVisibleBool != null) {
 				this.isTextVisible = textVisibleBool.booleanValue();
-			} else {
+			} else if (resetStyle){
 				this.isTextVisible = true;
+			}
+		//#endif
+		//#if polish.css.text-filter && polish.midp2
+			if (this.textFilters != null) {
+				boolean isActive = false;
+				for (int i=0; i<this.textFilters.length; i++) {
+					RgbFilter filter = this.textFilters[i];
+					filter.setStyle(style, resetStyle);
+					isActive |= filter.isActive();
+				}
+				this.isTextFiltersActive = isActive;
+				this.textFilterRgbImage = null;
 			}
 		//#endif
 	}
