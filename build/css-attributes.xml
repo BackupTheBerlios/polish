@@ -4912,6 +4912,26 @@
 		since="J2ME Polish 2.1.4"
 	/>
 	
+	<attribute
+		name="text-filter"
+		type="filter"
+		appliesTo="StringItem,FakeStringCustomItem"
+		description="Specifies an RGB filter for the text of an StringItem or one of its subclasses"
+		default="none"
+		id="422"
+		since="J2ME Polish 2.1.4"
+	/>
+	
+	<attribute
+		name="text-filter-layout"
+		type="layout"
+		appliesTo="text-filter"
+		description="Specifies the position of the text filter result in case a size change is involved."
+		id="423"
+		shell="new Integer()"
+		since="J2ME Polish 2.1.4"
+	/>
+	
 <!--
 	<attribute
 		name="repaint-previous-screen-anchor"
