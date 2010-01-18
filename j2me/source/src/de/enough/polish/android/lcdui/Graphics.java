@@ -1094,7 +1094,7 @@ public class Graphics
 		y += this.translateY;
 		this.paint.setStyle(Style.FILL);
 		RectF rect = new RectF(x,y,x+width,y+height);
-		this.canvas.drawArc(rect, startAngle, arcAngle, false, this.paint);
+		this.canvas.drawArc(rect, startAngle, arcAngle, true, this.paint);
 		this.paint.setStyle(Style.STROKE);
 	}
 
