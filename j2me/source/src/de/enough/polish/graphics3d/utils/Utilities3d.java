@@ -1,3 +1,4 @@
+//#condition polish.midp || polish.usePolishGui
 package de.enough.polish.graphics3d.utils;
 
 import javax.microedition.lcdui.Graphics;
