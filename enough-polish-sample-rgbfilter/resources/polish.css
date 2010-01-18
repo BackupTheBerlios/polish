@@ -53,6 +53,7 @@ title {
 	padding-horizontal: 7%;
 	icon-filter: scale, grayscale;
 	filter-scale-grade: 60%;
+	filter-scale-crop: false;
 	filter-scale-grade-animation {
 		on: defocus;
 		range: 100%..60%;
@@ -67,6 +68,14 @@ title {
 	font-color-animation {
 		on: defocus;
 		range: #000..#555;
+	}
+	text-filter: rotate;
+	text-filter-layout: hcenter | vcenter;
+	filter-rotation-angle: 0;
+	filter-rotation-angle-animation {
+		on: defocus;
+		range: -30..0;
+		duration: 400ms;
 	}
 	/*
 	icon-filter: blur;
@@ -93,6 +102,12 @@ title {
 		range: 100%..0%;
 		duration: 400ms;
 	}
+	filter-rotation-angle-animation {
+		on: focus;
+		range: 0..-30;
+		duration: 400ms;
+	}
+	
 	/*
 	filter-blur-grade-animation {
 		on: focus;
