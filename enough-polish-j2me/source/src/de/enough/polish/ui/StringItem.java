@@ -841,7 +841,6 @@ public class StringItem extends Item
 	 */
 	public void setStyle(Style style)
 	{
-		super.setStyle(style);
 		//#ifdef tmp.useTextEffect
 			TextEffect effect = (TextEffect) style.getObjectProperty( "text-effect" );
 			if (effect != null)  {
@@ -908,6 +907,7 @@ public class StringItem extends Item
 				}
 			//#endif
 		//#endif
+		super.setStyle(style);
 	}
 
 	/* (non-Javadoc)
