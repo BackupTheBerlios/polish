@@ -34,7 +34,7 @@
 		<page file="gui-localization.html" title="GUI Localization" />
 		<page file="gui-configuration.html" title="Configuration Options" />
 	</page>
-	<page file="gui-visualguide.html" title="Visual Guide" />
+	
 	<page file="customization.html" title="Customization" />
 	<page file="localization.html" title="Localization" />
 	<page file="persistence.html" title="Persistence" />
