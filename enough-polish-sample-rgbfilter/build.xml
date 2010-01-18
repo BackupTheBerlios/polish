@@ -45,7 +45,7 @@
 	    <!-- general settings -->
 		<info copyright="Copyright 2009 Enough Software. All rights reserved." 
 			description="Animation example." 
-			icon="iconlarge0.png" 
+			icon="icon0.png" 
 			infoUrl="http://www.enough.de/dictionary" 
 			jarName="${polish.vendor}-${polish.name}-${polish.locale}-rgbfilter.jar" 
 			jarUrl="${deploy-url}${polish.jarName}" 

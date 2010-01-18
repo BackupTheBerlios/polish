@@ -101,14 +101,13 @@ title {
 		on: focus;
 		range: 100%..0%;
 		duration: 400ms;
-	}
+	}	
 	/*
 	filter-rotation-angle-animation {
 		on: focus;
 		range: -20..0;
 		duration: 400ms;
 	}
-	
 	filter-blur-grade-animation {
 		on: focus;
 		range: 100%..0%;
@@ -221,13 +220,8 @@ middlecommand extends leftcommand {
   */
 menu {
 	margin-left: 2px;
-	padding: 2px;
-	background {
-		type: round-rect;
-		color: #fff;
-		border-width: 2;
-		border-color: #333;
-	}
+	padding: 0px;
+	background-color: #fff;
 }
 
 
@@ -240,7 +234,7 @@ menuItem {
 	padding: 2px;
 	padding-left: 5px;
 	font {
-		color: #fff;
+		color: #333;
 		style: bold;
 	}
 	layout: left;
