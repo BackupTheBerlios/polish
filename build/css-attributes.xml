@@ -1509,6 +1509,7 @@
 		<mapping from="3drotation" to="new de.enough.polish.ui.screenanimations.Rotate3DScreenChangeAnimation()"  condition="polish.api.3d" />
 		<mapping from="3dRotation" to="new de.enough.polish.ui.screenanimations.Rotate3DScreenChangeAnimation()"  condition="polish.api.3d" />
 		<mapping from="3d" to="new de.enough.polish.ui.screenanimations.Rotate3DScreenChangeAnimation()"  condition="polish.api.3d" />
+		<mapping from="rotate3d-m3g" to="new de.enough.polish.ui.screenanimations.RotatingScreenM3GScreenChangeAnimation()"  condition="polish.javapackage.jsr184" />
 		<mapping from="scale" to="new de.enough.polish.ui.screenanimations.ScaleScreenChangeAnimation()" />
 		<mapping from="leftshutter" to="new de.enough.polish.ui.screenanimations.LeftShutterScreenChangeAnimation()" />
 		<mapping from="leftShutter" to="new de.enough.polish.ui.screenanimations.LeftShutterScreenChangeAnimation()" />
