@@ -69,7 +69,7 @@ public class RotateRgbFilter extends RgbFilter
 			return input;
 		}
 
-		return ImageUtil.rotate(new RgbImage(input), angle);
+		return ImageUtil.rotate(new RgbImage(input), this.angle);
 	}
 
 	/* (non-Javadoc)
