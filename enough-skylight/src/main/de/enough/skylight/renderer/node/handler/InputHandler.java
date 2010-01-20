@@ -2,6 +2,7 @@ package de.enough.skylight.renderer.node.handler;
 
 import de.enough.polish.ui.Item;
 import de.enough.skylight.dom.DomNode;
+import de.enough.skylight.renderer.node.NodeHandler;
 import de.enough.skylight.renderer.node.NodeUtils;
 
 public class InputHandler extends NodeHandler{

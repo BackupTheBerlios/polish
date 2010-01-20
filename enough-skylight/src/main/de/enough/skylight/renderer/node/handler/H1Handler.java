@@ -4,6 +4,7 @@ import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.skylight.dom.DomNode;
+import de.enough.skylight.renderer.node.NodeHandler;
 
 public class H1Handler extends NodeHandler{
 	

@@ -6,6 +6,7 @@ import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.css.HtmlCssElement;
+import de.enough.skylight.renderer.node.NodeHandler;
 
 public class DivHandler extends NodeHandler{
 	

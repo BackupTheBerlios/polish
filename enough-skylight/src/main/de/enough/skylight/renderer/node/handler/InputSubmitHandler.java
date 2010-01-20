@@ -4,6 +4,7 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.util.Locale;
 import de.enough.skylight.dom.DomNode;
+import de.enough.skylight.renderer.node.NodeHandler;
 import de.enough.skylight.renderer.node.NodeUtils;
 
 public class InputSubmitHandler extends NodeHandler{
