@@ -610,6 +610,15 @@ ArrayList results = UiAccess.getPredictiveMatchingWords(mytextfield);
 		</tr>
 	</table>
 	
+	<h2 id="textfield-Programming">Custom info item</h2>
+	
+	<p>
+	Some requirements need to display the current input info (abc,123 etc.) in another place than the default left or right inside the TextField.
+	For these cases there's the following method :
+	<code>setInfoItem(StringItem)</code>
+	You simply create a StringItem, add it to your screen layout and call the method with the given StringItem.
+	</p>
+	
 	<h2 id="textfield-Programming">Programming</h2>
 	<p>
 	You can use 
