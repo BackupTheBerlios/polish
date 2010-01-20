@@ -237,22 +237,68 @@ info {
 	layout: right;
 }
 </pre>
+	<h4 id="textfield-embedded">Embedded Input Indicator</h4>
 <p>You can include the info item in the TextField instead of showing it at the top of the screen by specifying 
 <code>polish.TextField.includeInputInfo</code> in your <i>build.xml</i> script:
 </p>
 <pre>
 &lt;variable name=&quot;polish.TextField.includeInputInfo&quot; value=&quot;true&quot; /&gt;
 </pre>
+	<p>For aligning the input indicator to the right side of the textfield, just specify a 'right' layout within the &quot;info&quot; style.</p>
+	<h4 id="textfield-external">External Input Indicator</h4>
+	<p>
+	Some requirements need to display the current input info in another place.
+	For these cases you can call <code>TextField.setInfoItem(StringItem)</code> or <code>UiAccess.setTextfieldInfoItem(TextField, StringItem)</code>:
+	</p>
+<pre>
+//#style externalInputIndicator
+StringItem external = new StringItem( null, null );
+UiAccess.setTextfieldInfoItem( textField, external);
+</pre>
+	<p>
+	You simply create a StringItem, add it to your screen layout and call the method with the given StringItem.
+	To use the method the following variable has to be set to <code>true</code>:
+</p>
+<pre>
+&lt;variable name=&quot;polish.TextField.useExternalInfo&quot; value=&quot;true&quot; /&gt;	
+</pre>
+	<p>
+	Note: On BlackBerry platforms this feature is not available.
+	</p>
+	<h4 id="textfield-deactivate">Deactivate Input Indicator</h4>
 <p>
 The info item can be deactivated globally by setting the &quot;polish.TextField.showInputInfo&quot; variable to &quot;false&quot;:
 </p>
 <pre>
 &lt;variable name=&quot;polish.TextField.showInputInfo&quot; value=&quot;false&quot; /&gt;
 </pre>
-<p>
-Next to using the CSS-attributes &quot;textfield-caret-color&quot; and &quot;textfield-show-length&quot; 
-you can adjust the behavior of the direct input mode with several preprocessing variables. 
-</p>
+	
+	<h3 id="textfield-help">Help text</h3>
+	
+	<p>
+	To display a text to an empty TextField to indicate the required input (e.g. &quot;Enter username here ...&quot;) 
+	you can use <code>TextField.setHelpText(String)</code> or <code>UiAccess.setTextfieldHelp(TextField, String)</code>:
+	</p>
+<pre>
+UiAccess.setTextfieldHelp( textField,  Locale.get("input.help.userName" ) );
+</pre>
+	<p>
+	To use the method the following variable has to be set:
+	</p>
+<pre>
+&lt;variable name=&quot;polish.TextField.showHelpText&quot; value=&quot;true&quot; /&gt;
+</pre>
+	<p>	
+	To style the help text you can set the style <code>.help</code> which will apply to help texts in all TextField instances:
+	</p>
+<pre>
+.help { 
+	font-color: grey; 
+	font-size: normal; 
+} 
+</pre>
+<p>Alternatively you can call <code>TextField.setHelpStyle(Style)</code> for specifying a custom style.</p>
+	
 <h3 id="textfield-symbols">Adding Symbols in the TextField</h3>
 <p>
 The user can also add special symbols into a TextField, when the <code>polish.TextField.supportSymbolsEntry</code> preprocessing
@@ -302,7 +348,7 @@ UiAccess.setNumberOfDecimalFractions(field, 3);
 		The first mode installs the dictionary in a shared record store for all applications to use the same unique dictionary.
 		This mode is available to most of the devices supporting MIDP2 (exceptions are listed in the second mode).
 		The dictionary is contained within a setup that will be downloaded and installed as an j2me application to the
-		user's device. The user just needs to follow the instructions. (NOTE : Some devices will download the application
+		user's device. The user just needs to follow the instructions. (NOTE: Some devices will download the application
 		but will not automatically launch the setup. In this case, just start the setup manually)
 		</li>
 		<li>
@@ -401,7 +447,7 @@ UiAccess.setNumberOfDecimalFractions(field, 3);
 	
 	<p>
 	To initialize the array mode, the method <code>setPredictiveDictionary(TextField field, String[] words)</code>
-	of <code>UIAccess</code> must be called. The method takes two arguments : the array of <code>String</code> objects
+	of <code>UIAccess</code> must be called. The method takes two arguments: the array of <code>String</code> objects
 	and the textfield that should be used to provide the input to filter strings. A call with <code>null</code> as the array
 	resets the source for the given textfield to the RMS dictionary.
 	</p>
@@ -444,14 +490,14 @@ ArrayList results = UiAccess.getPredictiveMatchingWords(mytextfield);
 	To ease the input of text to TextField on touch device the virtual keyboard can be used.
 	This is basically an on-screen keyboard which can be styled and suited to the developers needs. 
 	To activate the keyboard simply add the following variable to the variables section of your projects
-	build.xml :
+	build.xml:
 	</p>
 	
 	<code>polish.TextField.useVirtualKeyboard</code>
 	
 	<p>
 	When you know select a TextField it will create and display a simple virtual keyboard with default key layouts.
-	The layouts displayed are chosen by the type of a text field. Currently these types are supported :
+	The layouts displayed are chosen by the type of a text field. Currently these types are supported:
 	</p>
 	
 	<code>TextField.ANY</code></br>
@@ -470,7 +516,7 @@ ArrayList results = UiAccess.getPredictiveMatchingWords(mytextfield);
 	</p>
 	
 	<p>
-	Here's a simple example of how the default layout of the type TextField.NUMBER is created :
+	Here's a simple example of how the default layout of the type TextField.NUMBER is created:
 	</p>
 	
 	<p>
@@ -499,7 +545,7 @@ ArrayList results = UiAccess.getPredictiveMatchingWords(mytextfield);
 	<h3>Special Keys</h3>
 	
 	<p>At the position 3,2 in the above example there is one of the placeholders to use special keys
-	in your layouts. Here's an overview of the placeholders you can use :</p>
+	in your layouts. Here's an overview of the placeholders you can use:</p>
 	
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
 		<tr><th>Placeholder</th><th>Description</th></tr>
@@ -559,7 +605,7 @@ ArrayList results = UiAccess.getPredictiveMatchingWords(mytextfield);
 	<h3>Styling</h3>
 	
 	<p>
-	To style your keyboard there are several styles that can be overwritten :
+	To style your keyboard there are several styles that can be overwritten:
 	</p>
 	
 	 <table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
@@ -609,34 +655,6 @@ ArrayList results = UiAccess.getPredictiveMatchingWords(mytextfield);
 		 <td>the style of the submit button of the keyboard view</td>
 		</tr>
 	</table>
-	
-	<h2 id="textfield-Programming">Custom info item</h2>
-	
-	<p>
-	Some requirements need to display the current input info (abc,123 etc.) in another place than the default left or right inside the TextField.
-	For these cases there's the following method : <br/><br/>
-	<code>setInfoItem(StringItem)</code><br/><br/>
-	You simply create a StringItem, add it to your screen layout and call the method with the given StringItem.
-	To use the method the following variable has to be set : <br/><br/>
-	<code>polish.TextField.useExternalInfo</code> <br/><br/>
-	Note: This feature is not available for blackberry
-	</p>
-	
-	<h2 id="textfield-Programming">Help text</h2>
-	
-	<p>
-	To display a text to an empty TextField to indicate the required input (e.g. "Enter username here ...") you can use the following method : <br/><br/> 
-	<code>setHelpText(StringItem)</code> <br/><br/>
-	To use the method the following variable has to be set : <br/><br/>
-	<code>polish.TextField.showHelpText</code> <br/><br/>
-	To style the help text you can set the style "help" which will apply to help texts in all TextField instances : <br/><br/>
-	<pre>
-	help { 
-		font-color: grey; 
-		font-size: normal; 
-	} 
-	</pre>
-	</p>
 	
 	<h2 id="textfield-Programming">Programming</h2>
 	<p>
