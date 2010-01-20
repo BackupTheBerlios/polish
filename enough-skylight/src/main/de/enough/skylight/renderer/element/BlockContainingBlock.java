@@ -13,7 +13,6 @@ import de.enough.skylight.renderer.linebox.LineBoxFactory;
 import de.enough.skylight.renderer.linebox.LineBoxList;
 import de.enough.skylight.renderer.partition.Partable;
 import de.enough.skylight.renderer.partition.PartitionList;
-import de.enough.skylight.renderer.view.element.ElementDescription;
 
 public class BlockContainingBlock extends Container implements Partable {
 

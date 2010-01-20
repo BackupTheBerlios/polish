@@ -8,9 +8,8 @@ import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.NodeList;
 import de.enough.skylight.renderer.Viewport;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
-import de.enough.skylight.renderer.view.element.ElementDescription;
-import de.enough.skylight.renderer.viewport.NodeHandler;
-import de.enough.skylight.renderer.viewport.NodeHandlerDirectory;
+import de.enough.skylight.renderer.node.NodeHandler;
+import de.enough.skylight.renderer.node.NodeHandlerDirectory;
 
 public class ViewportBuilder {
 	Document document;

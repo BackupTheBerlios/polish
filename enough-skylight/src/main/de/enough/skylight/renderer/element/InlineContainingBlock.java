@@ -8,7 +8,6 @@ import de.enough.polish.util.ItemPreinit;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.partition.Partable;
 import de.enough.skylight.renderer.partition.PartitionList;
-import de.enough.skylight.renderer.view.element.ElementDescription;
 
 public class InlineContainingBlock extends Container implements Partable {
 
