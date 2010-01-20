@@ -614,9 +614,28 @@ ArrayList results = UiAccess.getPredictiveMatchingWords(mytextfield);
 	
 	<p>
 	Some requirements need to display the current input info (abc,123 etc.) in another place than the default left or right inside the TextField.
-	For these cases there's the following method :
-	<code>setInfoItem(StringItem)</code>
+	For these cases there's the following method : <br/><br/>
+	<code>setInfoItem(StringItem)</code><br/><br/>
 	You simply create a StringItem, add it to your screen layout and call the method with the given StringItem.
+	To use the method the following variable has to be set : <br/><br/>
+	<code>polish.TextField.useExternalInfo</code> <br/><br/>
+	Note: This feature is not available for blackberry
+	</p>
+	
+	<h2 id="textfield-Programming">Help text</h2>
+	
+	<p>
+	To display a text to an empty TextField to indicate the required input (e.g. "Enter username here ...") you can use the following method : <br/><br/> 
+	<code>setHelpText(StringItem)</code> <br/><br/>
+	To use the method the following variable has to be set : <br/><br/>
+	<code>polish.TextField.showHelpText</code> <br/><br/>
+	To style the help text you can set the style "help" which will apply to help texts in all TextField instances : <br/><br/>
+	<pre>
+	help { 
+		font-color: grey; 
+		font-size: normal; 
+	} 
+	</pre>
 	</p>
 	
 	<h2 id="textfield-Programming">Programming</h2>
