@@ -12,6 +12,7 @@ import de.enough.skylight.renderer.node.handler.FormHandler;
 import de.enough.skylight.renderer.node.handler.H1Handler;
 import de.enough.skylight.renderer.node.handler.InputHandler;
 import de.enough.skylight.renderer.node.handler.LinkHandler;
+import de.enough.skylight.renderer.node.handler.NodeHandler;
 import de.enough.skylight.renderer.node.handler.PHandler;
 import de.enough.skylight.renderer.node.handler.SpanHandler;
 import de.enough.skylight.renderer.node.handler.TitleHandler;

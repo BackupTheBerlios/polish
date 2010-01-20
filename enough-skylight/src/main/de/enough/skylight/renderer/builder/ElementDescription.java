@@ -8,7 +8,7 @@ import de.enough.skylight.renderer.css.HtmlCssElement;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.element.InlineContainingBlock;
 import de.enough.skylight.renderer.element.TextBlock;
-import de.enough.skylight.renderer.node.NodeHandler;
+import de.enough.skylight.renderer.node.handler.NodeHandler;
 
 public class ElementDescription implements HtmlCssElement{
 	String display = HtmlCssElement.Display.INLINE;
