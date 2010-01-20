@@ -1,13 +1,14 @@
 package de.enough.skylight.renderer.view.handler;
 
-import de.enough.polish.ui.Container;
-import de.enough.polish.ui.StringItem;
-import de.enough.polish.ui.Style;
+import de.enough.polish.ui.Item;
 import de.enough.skylight.dom.DomNode;
-import de.enough.skylight.renderer.view.element.CssElement;
 import de.enough.skylight.renderer.viewport.NodeHandler;
 
 public class TitleHandler extends NodeHandler{
+	
+	public String getTag() {
+		return "title";
+	}
 	
 	public void handleNode(DomNode node) {
 		DomNode firstChild = node.getFirstChild();
@@ -18,7 +19,8 @@ public class TitleHandler extends NodeHandler{
 		}
 	}
 	
-	public int getType() {
-		return CssElement.Type.ELEMENT;
+	public Item createContent(DomNode node) {
+		return null;
 	}
+
 }

@@ -2,10 +2,9 @@ package de.enough.skylight.renderer.viewport;
 
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
-import de.enough.polish.util.HashMap;
+import de.enough.polish.ui.StyleSheet;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.Viewport;
-import de.enough.skylight.renderer.view.element.CssElement;
 
 public abstract class NodeHandler {
 	Style style;
@@ -16,30 +15,24 @@ public abstract class NodeHandler {
 		this.style = getDefaultStyle();
 	}
 	
+	public abstract String getTag();
+	
 	public abstract void handleNode(DomNode node);
 	
-	public int getType() {
-		return CssElement.Type.CONTAINING_BLOCK;
-	}
-	
-	public Item createNodeItem(DomNode node) {
-		return null;
-	}
+	public abstract Item createContent(DomNode node);
 	
 	public Style getStyle(DomNode node) {
-		if(node.getNodeType() == DomNode.ELEMENT_NODE) {
-			String clazz = NodeUtils.getAttributeValue(node, "class");
+		String clazz = NodeUtils.getAttributeValue(node, "class");
+		
+		if(clazz != null) {
+			clazz = clazz.toLowerCase();
+			Style style = StyleSheet.getStyle(clazz);
 			
-			if(clazz != null) {
-				clazz = clazz.toLowerCase();
-				try {
-					Style style = getViewport().getStyle(clazz);
-					
-					return style;
-				} catch(NoSuchFieldError e) {
-					//#debug error
-					System.out.println("style " + clazz + " could not be found");
-				}
+			if(style != null) {
+				return style;
+			} else {
+				//#debug error
+				System.out.println("style " + clazz + " could not be found");
 			}
 		}
 		

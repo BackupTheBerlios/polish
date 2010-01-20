@@ -1,44 +1,19 @@
 package de.enough.skylight.renderer;
 
-import java.util.Hashtable;
-
-import de.enough.polish.ui.Style;
-import de.enough.polish.util.HashMap;
-import de.enough.polish.util.ItemPreinit;
-import de.enough.skylight.renderer.view.element.ContainingBlock;
+import de.enough.skylight.renderer.element.BlockContainingBlock;
 
 /**
  * A viewport to render to
  * @author Andre Schmidt
  *
  */
-public class Viewport extends ContainingBlock {
-	
-	Hashtable styles;
+public class Viewport extends BlockContainingBlock {
 	
 	public Viewport() {
 		//#style viewport
-		super(null,null);
+		super();
 	}
 	
-	public void setStylesheet(Hashtable stylesheet) {
-		this.styles = stylesheet;
-	}
-	
-	public Style getStyle(String name) throws NoSuchFieldError{
-		Style style = (Style)this.styles.get(name);
-		if(style == null) {
-			throw new NoSuchFieldError();
-		} else {
-			return style;
-		}
-	}
-	
-	public void reset() {
-		clear();
-		getElements().clear();
-	}
-
 	public void setTitle(String title) {
 		setLabel(title);
 	}

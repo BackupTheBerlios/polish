@@ -34,26 +34,24 @@ public class NodeHandlerDirectory {
 		this.nameDirectory = buildNameDirectory();
 	}
 	
+	void addHandler(HashMap directory, NodeHandler handler) {
+		directory.put(handler.getTag(), handler);
+	}
+	
 	HashMap buildNameDirectory() {
 		HashMap directory = new HashMap();
 		
-		directory.put("form", new FormHandler());
-		directory.put("input", new InputHandler());
-		directory.put("h1", new H1Handler());
-		directory.put("br", new BrHandler());
-		directory.put("title", new TitleHandler());
-		directory.put("em", new EmHandler());
-		directory.put("body", new BodyHandler());
-		directory.put("div", new DivHandler());
-		directory.put("span", new SpanHandler());
-		directory.put("p", new PHandler());
-		directory.put("link", new LinkHandler());
-		
-		return directory;
-	}
-	
-	IntHashMap buildTypeDirectory() {
-		IntHashMap directory = new IntHashMap();
+		addHandler(directory,new FormHandler());
+		addHandler(directory,new InputHandler());
+		addHandler(directory,new H1Handler());
+		addHandler(directory,new BrHandler());
+		addHandler(directory,new TitleHandler());
+		addHandler(directory,new EmHandler());
+		addHandler(directory,new BodyHandler());
+		addHandler(directory,new DivHandler());
+		addHandler(directory,new SpanHandler());
+		addHandler(directory,new PHandler());
+		addHandler(directory,new LinkHandler());
 		
 		return directory;
 	}
