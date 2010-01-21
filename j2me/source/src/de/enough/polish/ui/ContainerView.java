@@ -833,10 +833,13 @@ extends ItemView
 				}
 				myContentWidth += cw + this.paddingHorizontal;
 				//#if polish.css.colspan
-					columnIndex += item.colSpan;
-				//#else
-					columnIndex++;
+					if (item.colSpan > 1) {
+					    for (int j = 2; j <= item.colSpan; j++) {
+					    	myContentWidth += this.columnsWidths[++columnIndex].getValue( availWidth ) + this.paddingHorizontal;
+					    }
+					}	
 				//#endif
+				columnIndex++;
 				if (columnIndex == this.numberOfColumns) {
 					columnIndex = 0;
 					myContentWidth = 0;
