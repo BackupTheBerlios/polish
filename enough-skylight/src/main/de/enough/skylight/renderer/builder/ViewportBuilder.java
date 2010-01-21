@@ -48,7 +48,9 @@ public class ViewportBuilder {
 		try {
 			this.viewport.clear();
 			
-			build(this.viewport, this.viewport, this.document);
+			Element root = buildDescription(this.document, null);
+			
+			buildLayout(this.viewport, this.viewport, root);
 		} catch(Exception e) {
 			//#debug error
 			System.out.println("error while building view : " + e);
@@ -56,23 +58,43 @@ public class ViewportBuilder {
 		}
 	}
 	
-	protected void build(Container parent, BlockContainingBlock parentBlock, DomNode node) {
+	protected Element buildDescription(DomNode node, Element parent) {
 		NodeHandler handler = NodeHandlerDirectory.getHandler(node);
-		
-		//#debug debug
-		System.out.println("found handler " + handler + " for " + node);
 		
 		handler.setViewport(this.viewport);
 			
 		handler.handleNode(node);
 		
-		ElementDescription description = new ElementDescription(handler,node,null);
+		Element element = new Element(handler,node,parent);
 		
-		if(node.hasChildNodes())
+		if(parent != null) {
+			parent.add(element);
+		}
+		
+		if(node.hasChildNodes()) {
+			NodeList nodes = node.getChildNodes();
+			for (int index = 0; index < nodes.getLength(); index++) {
+				DomNode childNode = nodes.item(index);
+				
+				buildDescription(childNode, element);
+			}
+		}
+		
+		return element;
+	}
+	
+	protected void buildLayout(Container parent, BlockContainingBlock parentBlock, Element element) {
+		if(element.isFloat()) {
+			// float the shit
+		}
+		
+		if(element.hasElements())
 		{
-			Container block = description.getContainingBlock(parentBlock);
+			Container block = element.getContainingBlock(parentBlock);
 			
-			parent.add((Item)block);
+			element.setContent(block);
+			
+			parent.add(block);
 			
 			BlockContainingBlock childBlock;
 			if(block instanceof BlockContainingBlock) {
@@ -81,14 +103,15 @@ public class ViewportBuilder {
 				childBlock = parentBlock;
 			}
 			
-			NodeList nodes = node.getChildNodes();
-			for (int index = 0; index < nodes.getLength(); index++) {
-				DomNode childNode = nodes.item(index);
+			for (int index = 0; index < element.size(); index++) {
+				Element childElement = element.get(index);
 				
-				build(block,childBlock,childNode);
+				buildLayout(block,childBlock,childElement);
 			}
 		} else {
-			Item item = description.getContent();
+			Item item = element.createContent();
+			
+			element.setContent(item);
 			
 			if(item != null) {
 				parent.add(item);

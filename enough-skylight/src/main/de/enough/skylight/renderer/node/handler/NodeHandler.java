@@ -5,6 +5,7 @@ import de.enough.polish.ui.Style;
 import de.enough.polish.ui.StyleSheet;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.Viewport;
+import de.enough.skylight.renderer.builder.Element;
 import de.enough.skylight.renderer.node.NodeUtils;
 
 public abstract class NodeHandler {

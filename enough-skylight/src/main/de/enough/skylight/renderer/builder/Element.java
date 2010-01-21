@@ -3,6 +3,7 @@ package de.enough.skylight.renderer.builder;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
+import de.enough.polish.util.ArrayList;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.css.HtmlCssElement;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
@@ -10,7 +11,7 @@ import de.enough.skylight.renderer.element.InlineContainingBlock;
 import de.enough.skylight.renderer.element.TextBlock;
 import de.enough.skylight.renderer.node.handler.NodeHandler;
 
-public class ElementDescription implements HtmlCssElement{
+public class Element implements HtmlCssElement{
 	String display = HtmlCssElement.Display.INLINE;
 	
 	String position = HtmlCssElement.Position.STATIC;
@@ -21,11 +22,15 @@ public class ElementDescription implements HtmlCssElement{
 	
 	DomNode node;
 	
+	Item content;
+	
 	Style style;
 	
-	ElementDescription parent;
+	Element parent;
 	
-	public ElementDescription(NodeHandler handler, DomNode node, ElementDescription parent) {
+	ArrayList children;
+	
+	public Element(NodeHandler handler, DomNode node, Element parent) {
 		this.handler = handler;
 		
 		this.node = node;
@@ -34,14 +39,32 @@ public class ElementDescription implements HtmlCssElement{
 		
 		this.parent = parent;
 		
+		this.children = new ArrayList();
+		
 		setStyle(this.style);
+	}
+	
+	public void add(Element child) {
+		this.children.add(child);
+	}
+	
+	public Element get(int index) {
+		return (Element)this.children.get(index);
+	}
+	
+	public int size() {
+		return this.children.size();
+	}
+	
+	public boolean hasElements() {
+		return size() > 0; 
 	}
 		
 	public DomNode getNode() {
 		return this.node;
 	}
 	
-	public Item getContent() {
+	public Item createContent() {
 		if(isNodeType(DomNode.TEXT_NODE)) {
 			TextBlock textBlock = new TextBlock(this.style);
 			textBlock.setText(this.node.getNodeValue());
@@ -49,6 +72,14 @@ public class ElementDescription implements HtmlCssElement{
 		} else {
 			return this.handler.createContent(this.node);
 		}
+	}
+	
+	public void setContent(Item content) {
+		this.content = content;
+	}
+	
+	public Item getContent() {
+		return this.content;
 	}
 	
 	public Container getContainingBlock(BlockContainingBlock parentBlock) {
@@ -60,55 +91,43 @@ public class ElementDescription implements HtmlCssElement{
 	}
 	
 	public void setStyle(Style style) {
-		//#if polish.css.display
 		String displayStr = style.getProperty("display");
 		if(displayStr != null) {
 			this.display = displayStr;
 		}
-		//#endif
 		
-		//#if polish.css.position
 		String positionStr = style.getProperty("position");
 		if(positionStr != null) {
 			this.position = positionStr;
 		}
-		//#endif
 		
-		//#if polish.css.float
 		String floatStr = style.getProperty("float");
 		if(floatStr != null) {
 			this.floating = floatStr;
 		}
-		//#endif
 	}
 	
-
-	/**
-	 * @return
-	 */
 	public boolean isDisplay(String display) {
 		return this.display == display;
 	}
 	
-	/**
-	 * @return
-	 */
 	public boolean isPosition(String position) {
 		return this.position == position;
 	}
 	
-	/**
-	 * @return
-	 */
 	public boolean isFloat(String floating) {
 		return this.floating == floating;
+	}
+	
+	public boolean isFloat() {
+		return this.floating != HtmlCssElement.Float.NONE;
 	}
 	
 	public boolean isNodeType(int type) {
 		return this.node.getNodeType() == type;
 	}
 	
-	public String toString() {
-		return "Element []";
+	public Element getParent() {
+		return this.parent;
 	}
 }
