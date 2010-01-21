@@ -12,8 +12,19 @@
 	background-color: red;
 }
 
-.mySpan {
+myInnerP {
 	padding: 5px;
+	display: block;
+	background-color: yellow;
+}
+
+.mySpan {
+	padding: 0px;
 	display: inline;
 	background-color: green;
+}
+
+.myFloat {
+	padding: 0px;
+	float: left;
 }
