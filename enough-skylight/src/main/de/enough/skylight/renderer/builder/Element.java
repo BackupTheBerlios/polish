@@ -7,6 +7,7 @@ import de.enough.polish.util.ArrayList;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.css.HtmlCssElement;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
+import de.enough.skylight.renderer.element.ContainingBlock;
 import de.enough.skylight.renderer.element.InlineContainingBlock;
 import de.enough.skylight.renderer.element.TextBlock;
 import de.enough.skylight.renderer.node.handler.NodeHandler;
@@ -64,6 +65,10 @@ public class Element implements HtmlCssElement{
 		return this.node;
 	}
 	
+	public Style getStyle() {
+		return this.style;
+	}
+	
 	public Item createContent() {
 		if(isNodeType(DomNode.TEXT_NODE)) {
 			TextBlock textBlock = new TextBlock(this.style);
@@ -82,11 +87,11 @@ public class Element implements HtmlCssElement{
 		return this.content;
 	}
 	
-	public Container getContainingBlock(BlockContainingBlock parentBlock) {
+	public ContainingBlock createContainingBlock(BlockContainingBlock parentBlock) {
 		if(isDisplay(HtmlCssElement.Display.BLOCK_LEVEL)) {
-			return new BlockContainingBlock(this.style);
+			return new BlockContainingBlock(this);
 		} else {
-			return new InlineContainingBlock(parentBlock, this.style);
+			return new InlineContainingBlock(this, parentBlock);
 		} 
 	}
 	
@@ -121,6 +126,10 @@ public class Element implements HtmlCssElement{
 	
 	public boolean isFloat() {
 		return this.floating != HtmlCssElement.Float.NONE;
+	}
+	
+	public boolean isParentFloat() {
+		return this.parent.isFloat();
 	}
 	
 	public boolean isNodeType(int type) {

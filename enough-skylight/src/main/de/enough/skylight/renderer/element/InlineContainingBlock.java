@@ -6,21 +6,40 @@ import de.enough.polish.ui.Style;
 import de.enough.polish.ui.backgrounds.SimpleBackground;
 import de.enough.polish.util.ItemPreinit;
 import de.enough.skylight.dom.DomNode;
+import de.enough.skylight.renderer.builder.Element;
 import de.enough.skylight.renderer.partition.Partable;
 import de.enough.skylight.renderer.partition.PartitionList;
 
-public class InlineContainingBlock extends Container implements Partable {
+public class InlineContainingBlock extends Container implements ContainingBlock, Partable {
 
+	Element element;
+	
 	BlockContainingBlock parentBlock;
 	
-	public InlineContainingBlock(BlockContainingBlock block) {
-		this(block, null);
+	public InlineContainingBlock(Element element, BlockContainingBlock block) {
+		this(element, block, element.getStyle());
 	}
 	
-	public InlineContainingBlock(BlockContainingBlock parentBlock, Style style) {
+	public InlineContainingBlock(Element element, BlockContainingBlock parentBlock, Style style) {
 		super(false,style);
 		
 		this.parentBlock = parentBlock;
+	}
+
+	public void addToBody(Item item) {
+		add(item);
+	}
+
+	public void addToLeftFloat(Item item) {
+		this.parentBlock.addToLeftFloat(item);
+	}
+	
+	public void addToRightFloat(Item item) {
+		this.parentBlock.addToRightFloat(item);
+	}
+	
+	public Element getElement() {
+		return this.element;
 	}
 	
 	protected void initContent(int firstLineWidth, int availWidth,
@@ -50,10 +69,8 @@ public class InlineContainingBlock extends Container implements Partable {
 	
 	protected void initItem(Item item) {
 		if(item instanceof BlockContainingBlock) {
-			int availWidth = this.parentBlock.getAvailableContentWidth();
-			int availHeight = this.parentBlock.getAvailableContentHeight();
-			
-			ItemPreinit.preinit(item,availWidth,availHeight);
+			ItemPreinit.preinit(item,	this.parentBlock.getAvailableContentWidth(),
+										this.parentBlock.getAvailableContentHeight());
 		} else {
 			ItemPreinit.preinit(item,Integer.MAX_VALUE,Integer.MAX_VALUE);
 		}

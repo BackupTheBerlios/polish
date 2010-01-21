@@ -1,13 +1,14 @@
 package de.enough.skylight.renderer.builder;
 
-import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.util.ItemPreinit;
 import de.enough.skylight.dom.Document;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.NodeList;
 import de.enough.skylight.renderer.Viewport;
+import de.enough.skylight.renderer.css.HtmlCssElement;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
+import de.enough.skylight.renderer.element.ContainingBlock;
 import de.enough.skylight.renderer.node.NodeHandlerDirectory;
 import de.enough.skylight.renderer.node.handler.NodeHandler;
 
@@ -20,10 +21,6 @@ public class ViewportBuilder {
 	}
 	
 	public ViewportBuilder(Viewport viewport, Document document) throws IllegalArgumentException {
-		if(!viewport.isInitialized()) {
-			ItemPreinit.preinit(viewport);
-		}
-		
 		this.viewport = viewport;
 		this.document = document;
 	}
@@ -46,11 +43,15 @@ public class ViewportBuilder {
 		}
 		
 		try {
-			this.viewport.clear();
+			this.viewport.reset();
 			
 			Element root = buildDescription(this.document, null);
 			
 			buildLayout(this.viewport, this.viewport, root);
+			
+			this.viewport.requestInit();
+			
+			ItemPreinit.preinit(this.viewport);
 		} catch(Exception e) {
 			//#debug error
 			System.out.println("error while building view : " + e);
@@ -83,18 +84,22 @@ public class ViewportBuilder {
 		return element;
 	}
 	
-	protected void buildLayout(Container parent, BlockContainingBlock parentBlock, Element element) {
-		if(element.isFloat()) {
-			// float the shit
-		}
-		
+	protected void buildLayout(ContainingBlock parent, BlockContainingBlock parentBlock, Element element) {
 		if(element.hasElements())
 		{
-			Container block = element.getContainingBlock(parentBlock);
+			ContainingBlock block = element.createContainingBlock(parentBlock);
 			
-			element.setContent(block);
-			
-			parent.add(block);
+			element.setContent((Item)block);
+		
+			if(element.isFloat()) {
+				if(element.isFloat(HtmlCssElement.Float.LEFT)) {
+					parent.addToLeftFloat((Item)block);
+				} else if(element.isFloat(HtmlCssElement.Float.RIGHT)) {
+					parent.addToRightFloat((Item)block);
+				}
+			} else {
+				parent.addToBody((Item)block);
+			}
 			
 			BlockContainingBlock childBlock;
 			if(block instanceof BlockContainingBlock) {
@@ -114,7 +119,15 @@ public class ViewportBuilder {
 			element.setContent(item);
 			
 			if(item != null) {
-				parent.add(item);
+				if(element.isFloat()) {
+					if(element.isFloat(HtmlCssElement.Float.LEFT)) {
+						parent.addToLeftFloat(item);
+					} else if(element.isFloat(HtmlCssElement.Float.RIGHT)) {
+						parent.addToRightFloat(item);
+					}
+				} else {
+					parent.addToBody(item);
+				}
 			}
 		}
 	}

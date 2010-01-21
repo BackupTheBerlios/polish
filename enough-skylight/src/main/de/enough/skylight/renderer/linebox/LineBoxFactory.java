@@ -4,8 +4,8 @@ import de.enough.skylight.renderer.partition.Partition;
 import de.enough.skylight.renderer.partition.PartitionList;
 
 public class LineBoxFactory {
-	
-	public static LineBoxList getLineBoxes(PartitionList partitions, int availableWidth) {
+	public static LineBoxList getLineBoxes(PartitionList partitions, int width) {
+		
 		LineBoxList lineboxes = new LineBoxList();
 		
 		LineBox linebox = null;
@@ -18,7 +18,7 @@ public class LineBoxFactory {
 					if(linebox != null && !linebox.overflows() && linebox.fits(partition) && !partition.isNewline()) {
 						linebox.addPartition(partition);
 					} else {
-						linebox = new LineBox(partition,availableWidth);
+						linebox = new LineBox(partition,width);
 						lineboxes.add(linebox);
 					}
 				}

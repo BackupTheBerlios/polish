@@ -22,6 +22,8 @@ public class TextBlock extends StringItem implements Partable {
 	public void setText(String text) {
 		super.setText(text.trim());
 	}
+	
+	
 
 	public void partition(BlockContainingBlock block, PartitionList partitions) {
 		String text = getText();
@@ -56,5 +58,4 @@ public class TextBlock extends StringItem implements Partable {
 			}
 		}
 	}
-
 }

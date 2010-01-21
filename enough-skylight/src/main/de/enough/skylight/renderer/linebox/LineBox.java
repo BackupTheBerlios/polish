@@ -14,6 +14,8 @@ public class LineBox {
 
 	int right = Integer.MIN_VALUE;
 	
+	int top;
+	
 	int height = Integer.MIN_VALUE;
 	
 	public LineBox(Partition partition, int availableWidth) {
@@ -67,7 +69,7 @@ public class LineBox {
 	}
 	
 	public int getLeft() {
-		return left;
+		return this.left;
 	}
 	
 	public void setLeft(int left) {
@@ -75,7 +77,7 @@ public class LineBox {
 	}
 	
 	public int getRight() {
-		return right;
+		return this.right;
 	}
 	
 	public void setRight(int right) {
@@ -83,7 +85,15 @@ public class LineBox {
 	}
 
 	public int getHeight() {
-		return height;
+		return this.height;
+	}
+	
+	public void setTop(int top) {
+		this.top = top;
+	}
+	
+	public int getTop() {
+		return this.top;
 	}
 
 	public void setHeight(int height) {
