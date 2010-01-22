@@ -3,6 +3,8 @@ package de.enough.skylight.renderer.node.handler;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.skylight.dom.DomNode;
+import de.enough.skylight.renderer.node.NodeElement;
+import de.enough.skylight.renderer.node.NodeHandler;
 
 public class SpanHandler extends NodeHandler{
 	
@@ -10,14 +12,14 @@ public class SpanHandler extends NodeHandler{
 		return "span";
 	}
 	
-	public void handleNode(DomNode node) {}
+	public void handleNode(NodeElement element) {}
 	
 	public Style getDefaultStyle() {
 		//#style span
 		return new Style();
 	}
 
-	public Item createContent(DomNode node, Style style) {
+	public Item createContent(NodeElement element) {
 		return null;
 	}
 

@@ -5,10 +5,10 @@ import javax.microedition.lcdui.Graphics;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
-import de.enough.skylight.renderer.builder.Element;
 import de.enough.skylight.renderer.linebox.LineBox;
 import de.enough.skylight.renderer.linebox.LineBoxLayout;
 import de.enough.skylight.renderer.linebox.LineBoxList;
+import de.enough.skylight.renderer.node.NodeElement;
 import de.enough.skylight.renderer.partition.Partable;
 import de.enough.skylight.renderer.partition.PartitionList;
 
@@ -26,13 +26,13 @@ public class BlockContainingBlock extends Container implements ContainingBlock, 
 	
 	protected InlineContainingBlock floatRight;
 	
-	Element element;
+	NodeElement element;
 	
-	public BlockContainingBlock(Element element) {
+	public BlockContainingBlock(NodeElement element) {
 		this(element,element.getStyle());
 	}
 	
-	public BlockContainingBlock(Element element, Style style) {
+	public BlockContainingBlock(NodeElement element, Style style) {
 		super(false,style);
 		
 		this.element = element;
@@ -81,7 +81,7 @@ public class BlockContainingBlock extends Container implements ContainingBlock, 
 		this.floatRight.add(item);
 	}
 	
-	public Element getElement() {
+	public NodeElement getElement() {
 		return this.element;
 	}
 	

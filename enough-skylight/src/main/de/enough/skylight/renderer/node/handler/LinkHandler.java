@@ -17,6 +17,8 @@ import de.enough.polish.ui.StyleSheet;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.css.HtmlCssElement;
 import de.enough.skylight.renderer.css.HtmlCssInterpreter;
+import de.enough.skylight.renderer.node.NodeElement;
+import de.enough.skylight.renderer.node.NodeHandler;
 import de.enough.skylight.renderer.node.NodeUtils;
 
 public class LinkHandler extends NodeHandler{
@@ -28,11 +30,12 @@ public class LinkHandler extends NodeHandler{
 		return "link";
 	}
 	
-	public Item createContent(DomNode node, Style style) {
+	public Item createContent(NodeElement element) {
 		return null;
 	}
 
-	public void handleNode(DomNode node) {
+	public void handleNode(NodeElement element) {
+		DomNode node = element.getNode();
 		String rel = NodeUtils.getAttributeValue(node, "rel");
 		String type = NodeUtils.getAttributeValue(node, "type");
 		String href = NodeUtils.getAttributeValue(node, "href");

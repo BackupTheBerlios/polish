@@ -1,23 +1,25 @@
-package de.enough.skylight.renderer.builder;
+package de.enough.skylight.renderer.node;
 
-import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
+import de.enough.polish.ui.StyleSheet;
 import de.enough.polish.util.ArrayList;
 import de.enough.skylight.dom.DomNode;
+import de.enough.skylight.renderer.Viewport;
 import de.enough.skylight.renderer.css.HtmlCssElement;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.element.ContainingBlock;
 import de.enough.skylight.renderer.element.InlineContainingBlock;
 import de.enough.skylight.renderer.element.TextBlock;
-import de.enough.skylight.renderer.node.handler.NodeHandler;
 
-public class Element implements HtmlCssElement{
+public class NodeElement implements HtmlCssElement{
 	String display = HtmlCssElement.Display.INLINE;
 	
 	String position = HtmlCssElement.Position.STATIC;
 	
 	String floating = HtmlCssElement.Float.NONE;
+	
+	Viewport viewport;
 	
 	NodeHandler handler;
 	
@@ -27,30 +29,57 @@ public class Element implements HtmlCssElement{
 	
 	Style style;
 	
-	Element parent;
+	NodeElement parent;
 	
 	ArrayList children;
 	
-	public Element(NodeHandler handler, DomNode node, Element parent) {
+	static Style getStyle(NodeHandler handler, DomNode node) {
+		String clazz = NodeUtils.getAttributeValue(node, "class");
+		
+		Style defaultStyle = handler.getDefaultStyle();
+		
+		if(clazz != null) {
+			clazz = clazz.toLowerCase();
+			Style style = StyleSheet.getStyle(clazz);
+			
+			if(style != null) {
+				//TODO extend style with default style
+				return style;
+			} else {
+				//#debug error
+				System.out.println("style " + clazz + " could not be found");
+			}
+		}
+		
+		return defaultStyle;
+	}
+	
+	public NodeElement(NodeHandler handler, DomNode node, NodeElement parent, Viewport viewport) {
 		this.handler = handler;
 		
 		this.node = node;
-		
-		this.style = handler.getStyle(node);
 		
 		this.parent = parent;
 		
 		this.children = new ArrayList();
 		
+		this.viewport = viewport;
+	}
+	
+	public void handle() throws ClassCastException, IllegalArgumentException {
+		this.handler.handleNode(this);
+		
+		this.style = getStyle(this.handler, this.node);
+		
 		setStyle(this.style);
 	}
 	
-	public void add(Element child) {
+	public void add(NodeElement child) {
 		this.children.add(child);
 	}
 	
-	public Element get(int index) {
-		return (Element)this.children.get(index);
+	public NodeElement get(int index) {
+		return (NodeElement)this.children.get(index);
 	}
 	
 	public int size() {
@@ -75,7 +104,7 @@ public class Element implements HtmlCssElement{
 			textBlock.setText(this.node.getNodeValue());
 			return textBlock;
 		} else {
-			return this.handler.createContent(this.node, this.style);
+			return this.handler.createContent(this);
 		}
 	}
 	
@@ -89,9 +118,9 @@ public class Element implements HtmlCssElement{
 	
 	public ContainingBlock createContainingBlock(BlockContainingBlock parentBlock) {
 		if(isDisplay(HtmlCssElement.Display.BLOCK_LEVEL)) {
-			return new BlockContainingBlock(this);
+			return new BlockContainingBlock(this, this.style);
 		} else {
-			return new InlineContainingBlock(this, parentBlock);
+			return new InlineContainingBlock(this, parentBlock, this.style);
 		} 
 	}
 	
@@ -136,7 +165,15 @@ public class Element implements HtmlCssElement{
 		return this.node.getNodeType() == type;
 	}
 	
-	public Element getParent() {
+	public NodeElement getParent() {
 		return this.parent;
+	}
+
+	public void setViewport(Viewport viewport) {
+		this.viewport = viewport;
+	}
+	
+	public Viewport getViewport() {
+		return this.viewport;
 	}
 }

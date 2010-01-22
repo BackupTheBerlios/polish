@@ -3,6 +3,8 @@ package de.enough.skylight.renderer.node.handler;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.skylight.dom.DomNode;
+import de.enough.skylight.renderer.node.NodeElement;
+import de.enough.skylight.renderer.node.NodeHandler;
 import de.enough.skylight.renderer.node.NodeUtils;
 
 public class InputHandler extends NodeHandler{
@@ -23,7 +25,8 @@ public class InputHandler extends NodeHandler{
 		this.submitHandler = new InputSubmitHandler();
 	}
 	
-	NodeHandler getTypeHandler(DomNode node) {
+	NodeHandler getTypeHandler(NodeElement element) {
+		DomNode node = element.getNode();
 		String type = NodeUtils.getAttributeValue(node, "type");
 		NodeHandler handler = null;
 		
@@ -44,18 +47,18 @@ public class InputHandler extends NodeHandler{
 			handler = DefaultHandler.getInstance();
 		}
 
-		handler.setViewport(getViewport());
+		element.setViewport(element.getViewport());
 		
 		return handler;
 	}
 	
-	public void handleNode(DomNode node) {
-		NodeHandler handler = getTypeHandler(node);
-		handler.handleNode(node);
+	public void handleNode(NodeElement element) {
+		NodeHandler handler = getTypeHandler(element);
+		handler.handleNode(element);
 	}
 	
-	public Item createContent(DomNode node, Style style) {
-		NodeHandler handler = getTypeHandler(node);
-		return handler.createContent(node, style);
+	public Item createContent(NodeElement element) {
+		NodeHandler handler = getTypeHandler(element);
+		return handler.createContent(element);
 	}
 }

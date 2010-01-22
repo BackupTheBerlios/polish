@@ -61,4 +61,15 @@ public class TextBlock extends StringItem implements Partable {
 			}
 		}
 	}
+
+	protected void init(int firstLineWidth, int availWidth, int availHeight) {
+		super.init(firstLineWidth, availWidth, availHeight);
+	}
+
+	protected void initContent(int firstLineWidth, int availWidth,
+			int availHeight) {
+		super.initContent(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
+	}
+	
+	
 }

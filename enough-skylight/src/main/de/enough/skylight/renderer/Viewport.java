@@ -1,6 +1,7 @@
 package de.enough.skylight.renderer;
 
 import de.enough.skylight.renderer.element.BlockContainingBlock;
+import de.enough.skylight.renderer.node.NodeElement;
 
 /**
  * A viewport to render to
@@ -9,7 +10,7 @@ import de.enough.skylight.renderer.element.BlockContainingBlock;
  */
 public class Viewport extends BlockContainingBlock {
 	
-	boolean build = false;
+	NodeElement rootElement;
 	
 	public Viewport() {
 		//#style viewport
@@ -30,5 +31,13 @@ public class Viewport extends BlockContainingBlock {
 		if(this.floatRight != null) {
 			this.floatRight.clear();
 		}
+	}
+	
+	public NodeElement getRootElement() {
+		return this.rootElement;
+	}
+	
+	public void setRootElement(NodeElement rootElement) {
+		this.rootElement = rootElement;
 	}
 }

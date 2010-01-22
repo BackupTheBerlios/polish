@@ -1,28 +1,24 @@
 package de.enough.skylight.renderer.element;
 
-import javax.microedition.lcdui.Graphics;
-
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
-import de.enough.polish.ui.backgrounds.SimpleBackground;
 import de.enough.polish.util.ItemPreinit;
-import de.enough.skylight.dom.DomNode;
-import de.enough.skylight.renderer.builder.Element;
+import de.enough.skylight.renderer.node.NodeElement;
 import de.enough.skylight.renderer.partition.Partable;
 import de.enough.skylight.renderer.partition.PartitionList;
 
 public class InlineContainingBlock extends Container implements ContainingBlock, Partable {
 
-	Element element;
+	NodeElement element;
 	
 	BlockContainingBlock parentBlock;
 	
-	public InlineContainingBlock(Element element, BlockContainingBlock block) {
-		this(element, block, element.getStyle());
+	public InlineContainingBlock(NodeElement element, BlockContainingBlock block) {
+		this(element, block, null);
 	}
 	
-	public InlineContainingBlock(Element element, BlockContainingBlock parentBlock, Style style) {
+	public InlineContainingBlock(NodeElement element, BlockContainingBlock parentBlock, Style style) {
 		super(false,style);
 		
 		this.parentBlock = parentBlock;
@@ -42,7 +38,7 @@ public class InlineContainingBlock extends Container implements ContainingBlock,
 		this.parentBlock.addToRightFloat(item);
 	}
 	
-	public Element getElement() {
+	public NodeElement getElement() {
 		return this.element;
 	}
 	

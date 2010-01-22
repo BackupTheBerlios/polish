@@ -1,6 +1,5 @@
 package de.enough.skylight.renderer.builder;
 
-import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.util.ItemPreinit;
 import de.enough.skylight.dom.Document;
@@ -10,11 +9,13 @@ import de.enough.skylight.renderer.Viewport;
 import de.enough.skylight.renderer.css.HtmlCssElement;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.element.ContainingBlock;
+import de.enough.skylight.renderer.node.NodeElement;
+import de.enough.skylight.renderer.node.NodeHandler;
 import de.enough.skylight.renderer.node.NodeHandlerDirectory;
-import de.enough.skylight.renderer.node.handler.NodeHandler;
 
 public class ViewportBuilder {
 	Document document;
+	
 	Viewport viewport;
 	
 	public ViewportBuilder(Document document) {
@@ -34,8 +35,7 @@ public class ViewportBuilder {
 		this.viewport = viewport;
 	}
 	
-	public void update(DomNode node, Object object) {
-		// build();
+	public void update(DomNode node) {
 	}
 	
 	public void build() throws IllegalArgumentException {
@@ -46,7 +46,7 @@ public class ViewportBuilder {
 		try {
 			this.viewport.reset();
 			
-			Element root = buildDescription(this.document, null);
+			NodeElement root = buildDescription(this.document, null);
 			
 			buildLayout(this.viewport, this.viewport, root);
 			
@@ -60,14 +60,20 @@ public class ViewportBuilder {
 		}
 	}
 	
-	protected Element buildDescription(DomNode node, Element parent) {
+	protected NodeElement buildDescription(DomNode node, NodeElement parent) {
 		NodeHandler handler = NodeHandlerDirectory.getHandler(node);
 		
-		handler.setViewport(this.viewport);
-			
-		handler.handleNode(node);
+		NodeElement element = handler.createElement(node, parent, this.viewport); 
 		
-		Element element = new Element(handler,node,parent);
+		try {
+			element.handle();
+		} catch(IllegalArgumentException e) {
+			//#debug error
+			System.out.println("illegal argument for " + node + ":" + e.getMessage());
+		} catch(ClassCastException e) {
+			//#debug error
+			System.out.println("could not cast the given element, please implement createElement()");
+		}
 		
 		if(parent != null) {
 			parent.add(element);
@@ -85,7 +91,7 @@ public class ViewportBuilder {
 		return element;
 	}
 	
-	protected void buildLayout(ContainingBlock parent, BlockContainingBlock parentBlock, Element element) {
+	protected void buildLayout(ContainingBlock parent, BlockContainingBlock parentBlock, NodeElement element) {
 		if(element.hasElements())
 		{
 			ContainingBlock block = element.createContainingBlock(parentBlock);
@@ -97,7 +103,7 @@ public class ViewportBuilder {
 					parent.addToLeftFloat((Item)block);
 				} else if(element.isFloat(HtmlCssElement.Float.RIGHT)) {
 					parent.addToRightFloat((Item)block);
-				}
+				} 
 			} else {
 				parent.addToBody((Item)block);
 			}
@@ -110,7 +116,7 @@ public class ViewportBuilder {
 			}
 			
 			for (int index = 0; index < element.size(); index++) {
-				Element childElement = element.get(index);
+				NodeElement childElement = element.get(index);
 				
 				buildLayout(block,childBlock,childElement);
 			}
