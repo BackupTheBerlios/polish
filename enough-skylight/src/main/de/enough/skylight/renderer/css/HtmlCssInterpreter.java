@@ -6,6 +6,8 @@ import de.enough.polish.browser.css.CssInterpreter;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.ArrayList;
 import de.enough.skylight.renderer.css.handler.AttributeHandler;
+import de.enough.skylight.renderer.css.handler.BorderColorHandler;
+import de.enough.skylight.renderer.css.handler.BorderWidthHandler;
 import de.enough.skylight.renderer.css.handler.DisplayHandler;
 import de.enough.skylight.renderer.css.handler.FloatHandler;
 import de.enough.skylight.renderer.css.handler.MaxHeightHandler;
@@ -34,6 +36,8 @@ public class HtmlCssInterpreter extends CssInterpreter{
 		addAttributeHandler(new MaxHeightHandler());
 		addAttributeHandler(new MinWidthHandler());
 		addAttributeHandler(new MaxWidthHandler());
+		addAttributeHandler(new BorderWidthHandler());
+		addAttributeHandler(new BorderColorHandler());
 	}
 	
 	void addAttributeHandler(AttributeHandler handler) {

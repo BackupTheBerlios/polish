@@ -9,12 +9,11 @@ colors {
 	
 	input_submit_focus: #FF6600;
 	input_submit_focus_2: #EE6600;
-	/* Bla */
 }
 
 fonts {
 	fnt_text {
-		size: medium;
+		size: small;
 		color: text;
 		style: normal;
 	}
@@ -26,13 +25,13 @@ fonts {
 	}
 	
 	fnt_input_text {
-		size: medium;
+		size: small;
 		color: text;
 		style: normal;
 	}
 	
 	fnt_input_submit {
-		size: medium;
+		size: small;
 		color: text;
 		style: normal;
 	}

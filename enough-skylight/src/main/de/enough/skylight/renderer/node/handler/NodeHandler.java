@@ -21,7 +21,7 @@ public abstract class NodeHandler {
 	
 	public abstract void handleNode(DomNode node);
 	
-	public abstract Item createContent(DomNode node);
+	public abstract Item createContent(DomNode node, Style style);
 	
 	public Style getStyle(DomNode node) {
 		String clazz = NodeUtils.getAttributeValue(node, "class");
@@ -38,6 +38,7 @@ public abstract class NodeHandler {
 			}
 		}
 		
+		System.out.println("returning original style" + this.style.name);
 		return this.style;
 	}
 	

@@ -75,7 +75,7 @@ public class Element implements HtmlCssElement{
 			textBlock.setText(this.node.getNodeValue());
 			return textBlock;
 		} else {
-			return this.handler.createContent(this.node);
+			return this.handler.createContent(this.node, this.style);
 		}
 	}
 	

@@ -10,6 +10,7 @@ import de.enough.skylight.renderer.node.handler.DivHandler;
 import de.enough.skylight.renderer.node.handler.EmHandler;
 import de.enough.skylight.renderer.node.handler.FormHandler;
 import de.enough.skylight.renderer.node.handler.H1Handler;
+import de.enough.skylight.renderer.node.handler.ImgHandler;
 import de.enough.skylight.renderer.node.handler.InputHandler;
 import de.enough.skylight.renderer.node.handler.LinkHandler;
 import de.enough.skylight.renderer.node.handler.NodeHandler;
@@ -53,6 +54,7 @@ public class NodeHandlerDirectory {
 		addHandler(directory,new SpanHandler());
 		addHandler(directory,new PHandler());
 		addHandler(directory,new LinkHandler());
+		addHandler(directory,new ImgHandler());
 		
 		return directory;
 	}

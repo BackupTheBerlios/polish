@@ -19,4 +19,16 @@ public class Viewport extends BlockContainingBlock {
 	public void setTitle(String title) {
 		setLabel(title);
 	}
+	
+	public void reset() {
+		this.body.clear();
+		
+		if(this.floatLeft != null) {
+			this.floatLeft.clear();
+		}
+		
+		if(this.floatRight != null) {
+			this.floatRight.clear();
+		}
+	}
 }

@@ -1,5 +1,6 @@
 package de.enough.skylight.renderer.css.handler;
 
+import de.enough.polish.ui.Color;
 import de.enough.polish.ui.Dimension;
 import de.enough.polish.ui.Style;
 
@@ -10,6 +11,8 @@ public abstract class AttributeHandler {
 	public static int TYPE_DIMENSION = 0x00;
 	
 	public static int TYPE_RANGE = 0x01;
+	
+	public static int TYPE_COLOR = 0x02;
 	
 	int hash;
 
@@ -43,7 +46,9 @@ public abstract class AttributeHandler {
 			}
 		} else if(this.type == TYPE_DIMENSION) {
 			return getDimension(text); 
-		} else {
+		} else if(this.type == TYPE_COLOR) {
+			return getColor(text); 
+		}else {
 			//#debug error
 			System.out.println("invalid type for handler " + this.name);
 		}
@@ -71,6 +76,11 @@ public abstract class AttributeHandler {
 	
 	protected Object getDimension(String text) {
 		return new Dimension(text);
+	}
+	
+	protected Object getColor(String text) {
+		int color = Integer.parseInt(text);
+		return new Color(color);
 	}
 	
 	public void addToStyle(Style style, String text) {

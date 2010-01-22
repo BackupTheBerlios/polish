@@ -44,6 +44,8 @@ public class ViewportBuilder {
 		}
 		
 		try {
+			this.viewport.reset();
+			
 			Element root = buildDescription(this.document, null);
 			
 			buildLayout(this.viewport, this.viewport, root);

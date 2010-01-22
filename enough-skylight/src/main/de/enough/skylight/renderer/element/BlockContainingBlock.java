@@ -89,6 +89,7 @@ public class BlockContainingBlock extends Container implements ContainingBlock, 
 			int availHeight) {
 		super.initContent(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
 		
+		LineBoxLayout floatLeftLayout = null;
 		if(this.floatLeft != null) {
 			PartitionList floatLeftPartitions = new PartitionList();
 			
@@ -96,13 +97,14 @@ public class BlockContainingBlock extends Container implements ContainingBlock, 
 			
 			floatLeftPartitions.sort();
 			
-			LineBoxLayout floatLeftLayout = new LineBoxLayout(availWidth);
+			floatLeftLayout = new LineBoxLayout(availWidth);
 					
 			floatLeftLayout.addPartitions(floatLeftPartitions, this.floatLeft);
 			
 			this.floatLeftLines = floatLeftLayout.getLineBoxes();
 		}
 		
+		LineBoxLayout floatRightLayout = null;
 		if(this.floatRight != null) {
 			PartitionList floatRightPartitions = new PartitionList();
 			
@@ -110,7 +112,7 @@ public class BlockContainingBlock extends Container implements ContainingBlock, 
 			
 			floatRightPartitions.sort();
 			
-			LineBoxLayout floatRightLayout = new LineBoxLayout(availWidth);
+			floatRightLayout = new LineBoxLayout(availWidth);
 			
 			floatRightLayout.addPartitions(floatRightPartitions, this.floatRight);
 			
@@ -135,7 +137,21 @@ public class BlockContainingBlock extends Container implements ContainingBlock, 
 			this.contentWidth = availWidth;
 		}
 		
-		this.contentHeight = bodyLayout.getHeight();
+		this.contentHeight = getLayoutHeight(bodyLayout,floatLeftLayout,floatRightLayout);
+	}
+	
+	public int getLayoutHeight(LineBoxLayout body, LineBoxLayout floatLeft, LineBoxLayout floatRight) {
+		int height = body.getHeight();
+		
+		if(floatLeft != null && floatLeft.getHeight() > height) {
+			height = floatLeft.getHeight();
+		}
+		
+		if(floatRight != null && floatRight.getHeight() > height) {
+			height = floatRight.getHeight();
+		}
+
+		return height;
 	}
 	
 	protected void paintContent(int x, int y, int leftBorder, int rightBorder,

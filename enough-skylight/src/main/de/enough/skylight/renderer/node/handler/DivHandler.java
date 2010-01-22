@@ -6,7 +6,6 @@ import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.css.HtmlCssElement;
-import de.enough.skylight.renderer.node.NodeHandler;
 
 public class DivHandler extends NodeHandler{
 	
@@ -21,7 +20,7 @@ public class DivHandler extends NodeHandler{
 
 	public void handleNode(DomNode node) {}
 
-	public Item createContent(DomNode node) {
+	public Item createContent(DomNode node, Style style) {
 		return null;
 	}
 

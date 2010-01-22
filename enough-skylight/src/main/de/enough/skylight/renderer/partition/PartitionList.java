@@ -4,9 +4,8 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.UiAccess;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.Arrays;
-import de.enough.polish.util.IntList;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
-import de.enough.skylight.renderer.element.InlineContainingBlock;
+import de.enough.skylight.renderer.element.ContainingBlock;
 
 public class PartitionList {
 	
@@ -18,7 +17,16 @@ public class PartitionList {
 	public static void partitionInline(Item item, BlockContainingBlock block, PartitionList partitions) {
 		int x = getBlockRelativeX(item, block); 
 		
-		int height = item.itemHeight;
+		int height;
+		if(item instanceof ContainingBlock) {
+			if(item instanceof BlockContainingBlock) {
+				height = item.itemHeight;
+			} else {
+				height = 0;
+			}
+		} else {
+			height = item.getContentHeight();
+		}
 		
 		int marginLeft = x;
 		int paddingLeft = x + UiAccess.getMarginLeft(item);

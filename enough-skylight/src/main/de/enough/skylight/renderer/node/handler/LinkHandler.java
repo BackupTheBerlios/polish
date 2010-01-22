@@ -17,7 +17,6 @@ import de.enough.polish.ui.StyleSheet;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.css.HtmlCssElement;
 import de.enough.skylight.renderer.css.HtmlCssInterpreter;
-import de.enough.skylight.renderer.node.NodeHandler;
 import de.enough.skylight.renderer.node.NodeUtils;
 
 public class LinkHandler extends NodeHandler{
@@ -29,7 +28,7 @@ public class LinkHandler extends NodeHandler{
 		return "link";
 	}
 	
-	public Item createContent(DomNode node) {
+	public Item createContent(DomNode node, Style style) {
 		return null;
 	}
 

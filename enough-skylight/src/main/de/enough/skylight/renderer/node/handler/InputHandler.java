@@ -1,8 +1,8 @@
 package de.enough.skylight.renderer.node.handler;
 
 import de.enough.polish.ui.Item;
+import de.enough.polish.ui.Style;
 import de.enough.skylight.dom.DomNode;
-import de.enough.skylight.renderer.node.NodeHandler;
 import de.enough.skylight.renderer.node.NodeUtils;
 
 public class InputHandler extends NodeHandler{
@@ -54,8 +54,8 @@ public class InputHandler extends NodeHandler{
 		handler.handleNode(node);
 	}
 	
-	public Item createContent(DomNode node) {
+	public Item createContent(DomNode node, Style style) {
 		NodeHandler handler = getTypeHandler(node);
-		return handler.createContent(node);
+		return handler.createContent(node, style);
 	}
 }

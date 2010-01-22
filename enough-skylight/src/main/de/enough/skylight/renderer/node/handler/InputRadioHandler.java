@@ -7,7 +7,6 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.TextField;
 import de.enough.skylight.dom.DomNode;
-import de.enough.skylight.renderer.node.NodeHandler;
 import de.enough.skylight.renderer.node.NodeUtils;
 
 public class InputRadioHandler extends NodeHandler {
@@ -18,8 +17,8 @@ public class InputRadioHandler extends NodeHandler {
 	public void handleNode(DomNode node) {
 	}
 
-	public Item createContent(DomNode node) {
+	public Item createContent(DomNode node, Style style) {
 		// TODO make independent choice item
-		return new ChoiceItem("", null, ChoiceGroup.EXCLUSIVE);
+		return new ChoiceItem("", null, ChoiceGroup.EXCLUSIVE, style);
 	}
 }

@@ -10,6 +10,8 @@ import {
 	max-height: 0;
 	min-width: 0;
 	max-width: 0;
+	border-color: red;
+	border-width: 1;
 }
 
 element {
@@ -29,8 +31,4 @@ title {
 	background-color: black;
 	font-color: white;
 	layout: expand | newline-after;
-}
-
-text {
-	font-size: small;
 }
