@@ -6,25 +6,33 @@
 }
 
 .myP {
-	padding: 5px;
-	margin: 20px;
+	padding: 1px;
+	margin: 10px;
 	display: block;
-	background-color: red;
+	background-color: #A0A0A0;
 }
 
-myInnerP {
-	padding: 5px;
+.myInnerP {
+	padding: 0px;
 	display: block;
-	background-color: yellow;
+	background-color: white;
 }
 
 .mySpan {
-	padding: 0px;
+	padding: 0px; 
 	display: inline;
 	background-color: green;
 }
 
 .myFloat {
-	padding: 0px;
 	float: left;
+	display: block;
+	padding: 2px;
+}
+
+.mySecondFloat {
+	float: left;
+	display: block;
+	background-color: blue;
+	margin: 2px;
 }
