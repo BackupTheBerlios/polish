@@ -13,11 +13,22 @@ public class LineBoxList {
 		this.lineboxList.add(linebox);
 	}
 	
+	public void addAll(LineBoxList lineboxes) {
+		for (int i = 0; i < lineboxes.size(); i++) {
+			LineBox linebox = lineboxes.get(i);
+			add(linebox);
+		}
+	}
+	
 	public LineBox get(int index) {
 		return (LineBox)this.lineboxList.get(index);
 	}
 	
 	public int size() {
 		return this.lineboxList.size();
+	}
+	
+	public void clear() {
+		this.lineboxList.clear();
 	}
 }

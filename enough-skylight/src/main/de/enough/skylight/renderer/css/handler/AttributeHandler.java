@@ -7,9 +7,9 @@ import de.enough.polish.ui.Style;
 public abstract class AttributeHandler {
 	public static Object VALUE_INVALID = new Object();
 	
-	public static int TYPE_DIMENSION;
+	public static int TYPE_DIMENSION = 0x00;
 	
-	public static int TYPE_RANGE;
+	public static int TYPE_RANGE = 0x01;
 	
 	int hash;
 

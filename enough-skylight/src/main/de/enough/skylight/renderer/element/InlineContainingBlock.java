@@ -1,5 +1,7 @@
 package de.enough.skylight.renderer.element;
 
+import javax.microedition.lcdui.Graphics;
+
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
@@ -24,6 +26,8 @@ public class InlineContainingBlock extends Container implements ContainingBlock,
 		super(false,style);
 		
 		this.parentBlock = parentBlock;
+		
+		setAppearanceMode(Item.PLAIN);
 	}
 
 	public void addToBody(Item item) {
@@ -75,7 +79,7 @@ public class InlineContainingBlock extends Container implements ContainingBlock,
 			ItemPreinit.preinit(item,Integer.MAX_VALUE,Integer.MAX_VALUE);
 		}
 	}
-	
+		
 	public void partition(BlockContainingBlock block, PartitionList partitions) {
 		PartitionList.partitionInline(this, block, partitions);
 		
@@ -90,4 +94,5 @@ public class InlineContainingBlock extends Container implements ContainingBlock,
 		}
 	}
 
+	
 }

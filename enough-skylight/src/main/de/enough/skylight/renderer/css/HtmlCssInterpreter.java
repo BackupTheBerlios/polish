@@ -8,6 +8,10 @@ import de.enough.polish.util.ArrayList;
 import de.enough.skylight.renderer.css.handler.AttributeHandler;
 import de.enough.skylight.renderer.css.handler.DisplayHandler;
 import de.enough.skylight.renderer.css.handler.FloatHandler;
+import de.enough.skylight.renderer.css.handler.MaxHeightHandler;
+import de.enough.skylight.renderer.css.handler.MaxWidthHandler;
+import de.enough.skylight.renderer.css.handler.MinHeightHandler;
+import de.enough.skylight.renderer.css.handler.MinWidthHandler;
 import de.enough.skylight.renderer.css.handler.PositionHandler;
 
 public class HtmlCssInterpreter extends CssInterpreter{
@@ -26,6 +30,10 @@ public class HtmlCssInterpreter extends CssInterpreter{
 		addAttributeHandler(new DisplayHandler());
 		addAttributeHandler(new FloatHandler());
 		addAttributeHandler(new PositionHandler());
+		addAttributeHandler(new MinHeightHandler());
+		addAttributeHandler(new MaxHeightHandler());
+		addAttributeHandler(new MinWidthHandler());
+		addAttributeHandler(new MaxWidthHandler());
 	}
 	
 	void addAttributeHandler(AttributeHandler handler) {

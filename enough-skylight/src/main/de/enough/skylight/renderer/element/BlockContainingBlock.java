@@ -7,14 +7,18 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.skylight.renderer.builder.Element;
 import de.enough.skylight.renderer.linebox.LineBox;
-import de.enough.skylight.renderer.linebox.LineBoxFactory;
+import de.enough.skylight.renderer.linebox.LineBoxLayout;
 import de.enough.skylight.renderer.linebox.LineBoxList;
 import de.enough.skylight.renderer.partition.Partable;
 import de.enough.skylight.renderer.partition.PartitionList;
 
 public class BlockContainingBlock extends Container implements ContainingBlock, Partable {
 
-	LineBoxList lineboxes;
+	LineBoxList bodyLines;
+	
+	LineBoxList floatLeftLines;
+	
+	LineBoxList floatRightLines;
 	
 	protected InlineContainingBlock body;
 
@@ -35,25 +39,10 @@ public class BlockContainingBlock extends Container implements ContainingBlock, 
 		
 		//#style element
 		this.body = new InlineContainingBlock(null, this);
-
-		//#style element
-		this.floatLeft = new InlineContainingBlock(null, this);
-		
-		//#style element
-		this.floatRight = new InlineContainingBlock(null, this);
 		
 		add(this.body);
-		add(this.floatLeft);
-	}
-	
-	protected int getContentHeight(LineBoxList lineboxes) {
-		int height = 0;
-		for (int index = 0; index < lineboxes.size(); index++) {
-			LineBox linebox = lineboxes.get(index);
-			height += linebox.getHeight();
-		}
-
-		return height;
+		
+		setAppearanceMode(Item.PLAIN);
 	}
 	
 	protected int getContentWidth(LineBoxList lineboxes) {
@@ -73,10 +62,22 @@ public class BlockContainingBlock extends Container implements ContainingBlock, 
 	}
 	
 	public void addToLeftFloat(Item item) {
+		if(this.floatLeft == null) {
+			//#style element
+			this.floatLeft = new InlineContainingBlock(null, this);
+			add(this.floatLeft);
+		}
+		
 		this.floatLeft.add(item);
 	}
 	
 	public void addToRightFloat(Item item) {
+		if(this.floatRight == null) {
+			//#style element
+			this.floatRight = new InlineContainingBlock(null, this);
+			add(this.floatRight);
+		}
+		
 		this.floatRight.add(item);
 	}
 	
@@ -88,67 +89,82 @@ public class BlockContainingBlock extends Container implements ContainingBlock, 
 			int availHeight) {
 		super.initContent(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
 		
-		PartitionList partitionList = new PartitionList();
+		if(this.floatLeft != null) {
+			PartitionList floatLeftPartitions = new PartitionList();
+			
+			this.floatLeft.partition(this, floatLeftPartitions);
+			
+			floatLeftPartitions.sort();
+			
+			LineBoxLayout floatLeftLayout = new LineBoxLayout(availWidth);
+					
+			floatLeftLayout.addPartitions(floatLeftPartitions, this.floatLeft);
+			
+			this.floatLeftLines = floatLeftLayout.getLineBoxes();
+		}
 		
-		this.body.partition(this, partitionList);
+		if(this.floatRight != null) {
+			PartitionList floatRightPartitions = new PartitionList();
+			
+			this.floatRight.partition(this, floatRightPartitions);
+			
+			floatRightPartitions.sort();
+			
+			LineBoxLayout floatRightLayout = new LineBoxLayout(availWidth);
+			
+			floatRightLayout.addPartitions(floatRightPartitions, this.floatRight);
+			
+			this.floatRightLines = floatRightLayout.getLineBoxes();
+		}
 		
-		partitionList.sort();
+		PartitionList bodyPartitions = new PartitionList();
 		
-//		System.out.println("partitions for " + this + ":");
-//		for (int i = 0; i < partitionList.size(); i++) {
-//			System.out.println(partitionList.get(i));
-//		}
+		this.body.partition(this, bodyPartitions);
+		
+		bodyPartitions.sort();
+		
+		LineBoxLayout bodyLayout = new LineBoxLayout(availWidth, this.floatLeftLines, this.floatRightLines);
+		
+		bodyLayout.addPartitions(bodyPartitions, this.body);
+		
+		this.bodyLines = bodyLayout.getLineBoxes();
 
-		this.lineboxes = LineBoxFactory.getLineBoxes(partitionList, availWidth);
-
-//		System.out.println("lineboxes for " + this + ":");
-//		for (int i = 0; i < this.lineboxes.size(); i++) {
-//			System.out.println(this.lineboxes.get(i));
-//		}
-
-		if(this.element != null && this.element.isParentFloat()) {
-			this.contentWidth = getContentWidth(this.lineboxes);
+		if(this.element != null && (this.element.isFloat() || this.element.isParentFloat())) {
+			this.contentWidth = bodyLayout.getWidth();
 		} else {
 			this.contentWidth = availWidth;
 		}
-		this.contentHeight = getContentHeight(this.lineboxes);
+		
+		this.contentHeight = bodyLayout.getHeight();
 	}
 	
 	protected void paintContent(int x, int y, int leftBorder, int rightBorder,
 			Graphics g) {
-		this.floatLeft.paint(x, y, leftBorder, rightBorder, g);
-		for (int index = 0; index < this.lineboxes.size(); index++) {
-			LineBox linebox = this.lineboxes.get(index);
-
-			paintLinebox(x, y, linebox, this.body, g);
-
-			int lineboxHeight = linebox.getHeight();
-			y += lineboxHeight;
-		}
-	}
-
-	protected void paintLinebox(int x, int y, LineBox linebox, InlineContainingBlock block, Graphics g) {
-		int clipX = g.getClipX();
-		int clipY = g.getClipY();
-		int clipWidth = g.getClipWidth();
-		int clipHeight = g.getClipHeight();
-
-		int left = linebox.getTrimmedLeft();
-		int width = linebox.getTrimmedWidth();
-		int height = linebox.getHeight();
-
-		g.clipRect(x, y, width, height);
-
-		int leftBorder = x - left;
-		int rightBorder = (x + this.itemWidth) - left;
+		LineBox linebox;
 		
-		block.paint(x - left, y, leftBorder, rightBorder, g);
-
-		g.setClip(clipX, clipY, clipWidth, clipHeight);
+		if(this.floatLeftLines != null) {
+			for (int index = 0; index < this.floatLeftLines.size(); index++) {
+				linebox = this.floatLeftLines.get(index);
+				linebox.paint(x, y, g);
+			}
+		}
+		
+		if(this.floatRightLines != null) {
+			for (int index = 0; index < this.floatRightLines.size(); index++) {
+				linebox = this.floatRightLines.get(index);
+				linebox.paint(x, y, g);
+			}
+		}
+		
+		if(this.bodyLines != null) {
+			for (int index = 0; index < this.bodyLines.size(); index++) {
+				linebox = this.bodyLines.get(index);
+				linebox.paint(x, y, g);
+			}
+		}
 	}
 	
 	public void partition(BlockContainingBlock block, PartitionList partitions) {
 		PartitionList.partitionBlock(this, block, partitions);
 	}
-
 }

@@ -1,5 +1,6 @@
 package de.enough.skylight.renderer.builder;
 
+import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.util.ItemPreinit;
 import de.enough.skylight.dom.Document;
@@ -43,8 +44,6 @@ public class ViewportBuilder {
 		}
 		
 		try {
-			this.viewport.reset();
-			
 			Element root = buildDescription(this.document, null);
 			
 			buildLayout(this.viewport, this.viewport, root);

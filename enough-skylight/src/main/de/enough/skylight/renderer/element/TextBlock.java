@@ -1,6 +1,7 @@
 package de.enough.skylight.renderer.element;
 
 import javax.microedition.lcdui.Font;
+import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
@@ -12,19 +13,14 @@ import de.enough.skylight.renderer.partition.PartitionList;
 public class TextBlock extends StringItem implements Partable {
 
 	public TextBlock() {
-		this(null);
-	}
-	
-	public TextBlock(Style style) {
-		super(null,null,style);
+		//#style text
+		super(null,null);
 	}
 	
 	public void setText(String text) {
 		super.setText(text.trim());
 	}
 	
-	
-
 	public void partition(BlockContainingBlock block, PartitionList partitions) {
 		String text = getText();
 		Font font = getFont();

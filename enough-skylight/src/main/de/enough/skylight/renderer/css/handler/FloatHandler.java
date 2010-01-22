@@ -2,7 +2,6 @@ package de.enough.skylight.renderer.css.handler;
 
 import de.enough.polish.ui.Style;
 import de.enough.skylight.renderer.css.HtmlCssElement;
-import de.enough.skylight.renderer.css.HtmlCssElement.Float;
 
 
 
