@@ -1,7 +1,7 @@
 package de.enough.skylight.renderer.element;
 
 import de.enough.polish.ui.Item;
-import de.enough.skylight.renderer.node.NodeElement;
+import de.enough.skylight.renderer.node.CssElement;
 
 public interface ContainingBlock {
 	public void addToBody(Item item);
@@ -10,5 +10,9 @@ public interface ContainingBlock {
 	
 	public void addToRightFloat(Item item);
 	
-	public NodeElement getElement();
+	public CssElement getElement();
+	
+	public void setParentBlock(BlockContainingBlock block);
+	
+	public BlockContainingBlock getParentBlock();
 }

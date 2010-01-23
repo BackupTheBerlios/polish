@@ -4,24 +4,30 @@ import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.ItemPreinit;
-import de.enough.skylight.renderer.node.NodeElement;
+import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.partition.Partable;
 import de.enough.skylight.renderer.partition.PartitionList;
 
 public class InlineContainingBlock extends Container implements ContainingBlock, Partable {
 
-	NodeElement element;
+	CssElement element;
 	
 	BlockContainingBlock parentBlock;
 	
-	public InlineContainingBlock(NodeElement element, BlockContainingBlock block) {
-		this(element, block, null);
+	public InlineContainingBlock() {
+		this(null,null);
 	}
 	
-	public InlineContainingBlock(NodeElement element, BlockContainingBlock parentBlock, Style style) {
+	public InlineContainingBlock(Style style) {
+		this(null, style);
+	}
+	
+	public InlineContainingBlock(CssElement element) {
+		this(element, null);
+	}
+	
+	public InlineContainingBlock(CssElement element, Style style) {
 		super(false,style);
-		
-		this.parentBlock = parentBlock;
 		
 		setAppearanceMode(Item.PLAIN);
 	}
@@ -38,7 +44,7 @@ public class InlineContainingBlock extends Container implements ContainingBlock,
 		this.parentBlock.addToRightFloat(item);
 	}
 	
-	public NodeElement getElement() {
+	public CssElement getElement() {
 		return this.element;
 	}
 	
@@ -75,7 +81,7 @@ public class InlineContainingBlock extends Container implements ContainingBlock,
 			ItemPreinit.preinit(item,Integer.MAX_VALUE,Integer.MAX_VALUE);
 		}
 	}
-		
+	
 	public void partition(BlockContainingBlock block, PartitionList partitions) {
 		PartitionList.partitionInline(this, block, partitions);
 		
@@ -90,5 +96,11 @@ public class InlineContainingBlock extends Container implements ContainingBlock,
 		}
 	}
 
-	
+	public BlockContainingBlock getParentBlock() {
+		return this.parentBlock;
+	}
+
+	public void setParentBlock(BlockContainingBlock block) {
+		this.parentBlock = block;
+	}	
 }

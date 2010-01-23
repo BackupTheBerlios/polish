@@ -1,22 +1,22 @@
-package de.enough.skylight.renderer.node.handler;
+package de.enough.skylight.renderer.node.handler.html;
 
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.Locale;
 import de.enough.skylight.dom.DomNode;
-import de.enough.skylight.renderer.node.NodeElement;
+import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.node.NodeHandler;
 import de.enough.skylight.renderer.node.NodeUtils;
 
-public class InputSubmitHandler extends NodeHandler{
+public class InputSubmitHandler extends BodyElementHandler {
 	public String getTag() {
 		return null;
 	}
 	
-	public void handleNode(NodeElement element) {}
+	public void handleNode(CssElement element) {}
 
-	public Item createContent(NodeElement element) {
+	public Item createContent(CssElement element) {
 		DomNode node = element.getNode();
 		String value = NodeUtils.getAttributeValue(node, "value");
 		

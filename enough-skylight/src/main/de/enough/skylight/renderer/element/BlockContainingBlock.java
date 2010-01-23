@@ -8,7 +8,7 @@ import de.enough.polish.ui.Style;
 import de.enough.skylight.renderer.linebox.LineBox;
 import de.enough.skylight.renderer.linebox.LineBoxLayout;
 import de.enough.skylight.renderer.linebox.LineBoxList;
-import de.enough.skylight.renderer.node.NodeElement;
+import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.partition.Partable;
 import de.enough.skylight.renderer.partition.PartitionList;
 
@@ -26,19 +26,22 @@ public class BlockContainingBlock extends Container implements ContainingBlock, 
 	
 	protected InlineContainingBlock floatRight;
 	
-	NodeElement element;
+	CssElement element;
 	
-	public BlockContainingBlock(NodeElement element) {
+	BlockContainingBlock parentBlock;
+	
+	public BlockContainingBlock(CssElement element) {
 		this(element,element.getStyle());
 	}
 	
-	public BlockContainingBlock(NodeElement element, Style style) {
+	public BlockContainingBlock(CssElement element, Style style) {
 		super(false,style);
 		
 		this.element = element;
 		
 		//#style element
-		this.body = new InlineContainingBlock(null, this);
+		this.body = new InlineContainingBlock();
+		this.body.setParentBlock(this);
 		
 		add(this.body);
 		
@@ -64,7 +67,8 @@ public class BlockContainingBlock extends Container implements ContainingBlock, 
 	public void addToLeftFloat(Item item) {
 		if(this.floatLeft == null) {
 			//#style element
-			this.floatLeft = new InlineContainingBlock(null, this);
+			this.floatLeft = new InlineContainingBlock();
+			this.floatLeft.setParentBlock(this);
 			add(this.floatLeft);
 		}
 		
@@ -74,14 +78,15 @@ public class BlockContainingBlock extends Container implements ContainingBlock, 
 	public void addToRightFloat(Item item) {
 		if(this.floatRight == null) {
 			//#style element
-			this.floatRight = new InlineContainingBlock(null, this);
+			this.floatRight = new InlineContainingBlock();
+			this.floatRight.setParentBlock(this);
 			add(this.floatRight);
 		}
 		
 		this.floatRight.add(item);
 	}
 	
-	public NodeElement getElement() {
+	public CssElement getElement() {
 		return this.element;
 	}
 	
@@ -182,5 +187,13 @@ public class BlockContainingBlock extends Container implements ContainingBlock, 
 	
 	public void partition(BlockContainingBlock block, PartitionList partitions) {
 		PartitionList.partitionBlock(this, block, partitions);
+	}
+	
+	public BlockContainingBlock getParentBlock() {
+		return this.parentBlock;
+	}
+
+	public void setParentBlock(BlockContainingBlock block) {
+		this.parentBlock = block;
 	}
 }

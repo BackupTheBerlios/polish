@@ -1,13 +1,13 @@
-package de.enough.skylight.renderer.node.handler;
+package de.enough.skylight.renderer.node.handler.html;
 
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.skylight.dom.DomNode;
-import de.enough.skylight.renderer.node.NodeElement;
+import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.node.NodeHandler;
 import de.enough.skylight.renderer.node.NodeUtils;
 
-public class InputHandler extends NodeHandler{
+public class InputHandler extends BodyElementHandler{
 	
 	NodeHandler textHandler;
 	
@@ -25,7 +25,7 @@ public class InputHandler extends NodeHandler{
 		this.submitHandler = new InputSubmitHandler();
 	}
 	
-	NodeHandler getTypeHandler(NodeElement element) {
+	NodeHandler getTypeHandler(CssElement element) {
 		DomNode node = element.getNode();
 		String type = NodeUtils.getAttributeValue(node, "type");
 		NodeHandler handler = null;
@@ -52,12 +52,12 @@ public class InputHandler extends NodeHandler{
 		return handler;
 	}
 	
-	public void handleNode(NodeElement element) {
+	public void handleNode(CssElement element) {
 		NodeHandler handler = getTypeHandler(element);
 		handler.handleNode(element);
 	}
 	
-	public Item createContent(NodeElement element) {
+	public Item createContent(CssElement element) {
 		NodeHandler handler = getTypeHandler(element);
 		return handler.createContent(element);
 	}

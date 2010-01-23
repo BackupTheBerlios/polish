@@ -1,7 +1,7 @@
 package de.enough.skylight.renderer;
 
 import de.enough.skylight.renderer.element.BlockContainingBlock;
-import de.enough.skylight.renderer.node.NodeElement;
+import de.enough.skylight.renderer.node.CssElement;
 
 /**
  * A viewport to render to
@@ -10,7 +10,7 @@ import de.enough.skylight.renderer.node.NodeElement;
  */
 public class Viewport extends BlockContainingBlock {
 	
-	NodeElement rootElement;
+	CssElement rootElement;
 	
 	public Viewport() {
 		//#style viewport
@@ -33,11 +33,11 @@ public class Viewport extends BlockContainingBlock {
 		}
 	}
 	
-	public NodeElement getRootElement() {
+	public CssElement getRootElement() {
 		return this.rootElement;
 	}
 	
-	public void setRootElement(NodeElement rootElement) {
+	public void setRootElement(CssElement rootElement) {
 		this.rootElement = rootElement;
 	}
 }

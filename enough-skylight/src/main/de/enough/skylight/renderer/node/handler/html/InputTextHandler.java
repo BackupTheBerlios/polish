@@ -1,19 +1,19 @@
-package de.enough.skylight.renderer.node.handler;
+package de.enough.skylight.renderer.node.handler.html;
 
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.TextField;
 import de.enough.skylight.dom.DomNode;
-import de.enough.skylight.renderer.node.NodeElement;
+import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.node.NodeHandler;
 import de.enough.skylight.renderer.node.NodeUtils;
 
-public class InputTextHandler extends NodeHandler {
+public class InputTextHandler extends BodyElementHandler {
 	public String getTag() {
 		return null;
 	}
 
-	public Item createContent(NodeElement element) {
+	public Item createContent(CssElement element) {
 		DomNode node = element.getNode();
 		String value = NodeUtils.getAttributeValue(node, "value");
 
@@ -23,7 +23,7 @@ public class InputTextHandler extends NodeHandler {
 		return textfield;
 	}
 	
-	public void handleNode(NodeElement element) {
+	public void handleNode(CssElement element) {
 	}
 
 	public Style getDefaultStyle() {

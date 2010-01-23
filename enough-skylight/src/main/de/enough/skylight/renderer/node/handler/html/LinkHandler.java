@@ -1,4 +1,4 @@
-package de.enough.skylight.renderer.node.handler;
+package de.enough.skylight.renderer.node.handler.html;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,56 +17,48 @@ import de.enough.polish.ui.StyleSheet;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.css.HtmlCssElement;
 import de.enough.skylight.renderer.css.HtmlCssInterpreter;
-import de.enough.skylight.renderer.node.NodeElement;
+import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.node.NodeHandler;
 import de.enough.skylight.renderer.node.NodeUtils;
 
-public class LinkHandler extends NodeHandler{
-	
+public class LinkHandler extends HeadElementHandler {
+
 	static String REL_STYLESHEET = "stylesheet";
 	static String TYPE_TEXT_CSS = "text/css";
 
 	public String getTag() {
 		return "link";
 	}
-	
-	public Item createContent(NodeElement element) {
-		return null;
-	}
 
-	public void handleNode(NodeElement element) {
+	public void handleNode(CssElement element) {
 		DomNode node = element.getNode();
 		String rel = NodeUtils.getAttributeValue(node, "rel");
 		String type = NodeUtils.getAttributeValue(node, "type");
 		String href = NodeUtils.getAttributeValue(node, "href");
-		
-		if(	rel != null && rel.equals(REL_STYLESHEET) && 
-			type != null && type.equals(TYPE_TEXT_CSS) &&
-			href != null) {
-			
+
+		if (rel != null && rel.equals(REL_STYLESHEET) && type != null
+				&& type.equals(TYPE_TEXT_CSS) && href != null) {
+
 			try {
-				HttpConnection connection = (HttpConnection)Connector.open(href);
+				HttpConnection connection = (HttpConnection) Connector
+						.open(href);
 				InputStream stream = connection.openInputStream();
 				InputStreamReader reader = new InputStreamReader(stream);
-				
+
 				HtmlCssInterpreter interpreter = new HtmlCssInterpreter(reader);
 				Hashtable styles = interpreter.getAllStyles();
-				
+
 				Enumeration elements = styles.elements();
-				while(elements.hasMoreElements()) {
-					Style style = (Style)elements.nextElement();
-					addToStylesheet(StyleSheet.getStyles(), style);
+				while (elements.hasMoreElements()) {
+					Style style = (Style) elements.nextElement();
+					StyleSheet.getStyles().put(style.name, style);
 				}
-				
+
 			} catch (IOException e) {
 				//#debug error
 				System.out.println("unable to open stylesheet " + e);
 				e.printStackTrace();
 			}
 		}
-	}
-	
-	void addToStylesheet(Hashtable styles, Style style) {
-		styles.put(style.name, style);
 	}
 }

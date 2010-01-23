@@ -9,16 +9,20 @@ import de.enough.skylight.renderer.Viewport;
 public abstract class NodeHandler {
 	public abstract String getTag();
 	
-	public abstract void handleNode(NodeElement element) throws ClassCastException, IllegalArgumentException;
+	public CssElement createElement(DomNode node, CssElement parent, Viewport viewport) {
+		return new CssElement(this,node,parent,viewport);
+	}
 	
-	public abstract Item createContent(NodeElement element);
+	public abstract void handleNode(CssElement element) throws ClassCastException, IllegalArgumentException;
+	
+	public abstract Item createContent(CssElement element);
+	
+	public boolean isValid(DomNode node) {
+		return true;
+	}
 	
 	public Style getDefaultStyle() {
 		//#style element
 		return new Style();
-	}
-	
-	public NodeElement createElement(DomNode node, NodeElement parent, Viewport viewport) {
-		return new NodeElement(this,node,parent,viewport);
 	}
 }

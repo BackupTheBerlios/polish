@@ -3,75 +3,85 @@ package de.enough.skylight.renderer.node;
 import de.enough.polish.util.HashMap;
 import de.enough.polish.util.IntHashMap;
 import de.enough.skylight.dom.DomNode;
-import de.enough.skylight.renderer.node.handler.BodyHandler;
-import de.enough.skylight.renderer.node.handler.BrHandler;
-import de.enough.skylight.renderer.node.handler.DefaultHandler;
-import de.enough.skylight.renderer.node.handler.DivHandler;
-import de.enough.skylight.renderer.node.handler.EmHandler;
-import de.enough.skylight.renderer.node.handler.FormHandler;
-import de.enough.skylight.renderer.node.handler.H1Handler;
-import de.enough.skylight.renderer.node.handler.ImgHandler;
-import de.enough.skylight.renderer.node.handler.InputHandler;
-import de.enough.skylight.renderer.node.handler.LinkHandler;
-import de.enough.skylight.renderer.node.handler.PHandler;
-import de.enough.skylight.renderer.node.handler.SpanHandler;
-import de.enough.skylight.renderer.node.handler.TitleHandler;
+import de.enough.skylight.renderer.node.handler.html.BodyHandler;
+import de.enough.skylight.renderer.node.handler.html.BrHandler;
+import de.enough.skylight.renderer.node.handler.html.DefaultHandler;
+import de.enough.skylight.renderer.node.handler.html.DivHandler;
+import de.enough.skylight.renderer.node.handler.html.EmHandler;
+import de.enough.skylight.renderer.node.handler.html.FormHandler;
+import de.enough.skylight.renderer.node.handler.html.H1Handler;
+import de.enough.skylight.renderer.node.handler.html.ImgHandler;
+import de.enough.skylight.renderer.node.handler.html.InputHandler;
+import de.enough.skylight.renderer.node.handler.html.LinkHandler;
+import de.enough.skylight.renderer.node.handler.html.PHandler;
+import de.enough.skylight.renderer.node.handler.html.SpanHandler;
+import de.enough.skylight.renderer.node.handler.html.TextHandler;
+import de.enough.skylight.renderer.node.handler.html.TitleHandler;
 
 public class NodeHandlerDirectory {
-	HashMap nameDirectory;
+	HashMap directory;
 	
 	static NodeHandlerDirectory instance;
 	
-	public static NodeHandler getHandler(DomNode node) {
+	private NodeHandlerDirectory() {
+		this.directory = new HashMap();
+	}
+	
+	public static NodeHandlerDirectory getInstance() {
 		if(instance == null) {
 			instance = new NodeHandlerDirectory();
-			instance.load();
 		}
 		
-		return instance.getNodeHandler(node);
+		return instance;
 	}
 	
-	void load() {
-		this.nameDirectory = buildNameDirectory();
+	public void addHtmlHandlers() {
+		addHandler(new FormHandler());
+		addHandler(new InputHandler());
+		addHandler(new H1Handler());
+		addHandler(new BrHandler());
+		addHandler(new TitleHandler());
+		addHandler(new EmHandler());
+		addHandler(new BodyHandler());
+		addHandler(new DivHandler());
+		addHandler(new SpanHandler());
+		addHandler(new PHandler());
+		addHandler(new LinkHandler());
+		addHandler(new ImgHandler());
 	}
 	
-	void addHandler(HashMap directory, NodeHandler handler) {
-		directory.put(handler.getTag(), handler);
+	public void addRssHandlers() {
+		// add rss handlers
 	}
 	
-	HashMap buildNameDirectory() {
-		HashMap directory = new HashMap();
+	public void addHandler(NodeHandler handler) {
+		String tag = handler.getTag();
+		if(this.directory.get(tag) != null) {
+			//#debug warn
+			System.out.println("node handler for " + tag + " already exists in directory, overwritten");
+		} 
 		
-		addHandler(directory,new FormHandler());
-		addHandler(directory,new InputHandler());
-		addHandler(directory,new H1Handler());
-		addHandler(directory,new BrHandler());
-		addHandler(directory,new TitleHandler());
-		addHandler(directory,new EmHandler());
-		addHandler(directory,new BodyHandler());
-		addHandler(directory,new DivHandler());
-		addHandler(directory,new SpanHandler());
-		addHandler(directory,new PHandler());
-		addHandler(directory,new LinkHandler());
-		addHandler(directory,new ImgHandler());
-		
-		return directory;
+		this.directory.put(handler.getTag(), handler);
 	}
 	
-	NodeHandler getNodeHandler(DomNode node) {
-		String name = node.getNodeName();
-		
-		NodeHandler result = null;
-		
-		if(name != null) {
-			 name = name.toLowerCase().trim();
-			 result = (NodeHandler)this.nameDirectory.get(name);
-		}
-		
-		if(result != null) {
-			return result;
-		} else {
-			return DefaultHandler.getInstance();
-		}
+	public NodeHandler getNodeHandler(DomNode node) {
+		if(node.getNodeType() == DomNode.TEXT_NODE) {
+			return TextHandler.getInstance();
+		} else{
+			String name = node.getNodeName();
+			
+			NodeHandler result = null;
+			
+			if(name != null) {
+				 name = name.toLowerCase().trim();
+				 result = (NodeHandler)this.directory.get(name);
+			}
+			
+			if(result != null) {
+				return result;
+			} else {
+				return DefaultHandler.getInstance();
+			}
+		} 
 	}
 }

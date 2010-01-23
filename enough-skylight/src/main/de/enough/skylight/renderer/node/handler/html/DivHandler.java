@@ -1,27 +1,29 @@
-package de.enough.skylight.renderer.node.handler;
+package de.enough.skylight.renderer.node.handler.html;
 
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
 import de.enough.skylight.dom.DomNode;
-import de.enough.skylight.renderer.node.NodeElement;
+import de.enough.skylight.renderer.css.HtmlCssElement;
+import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.node.NodeHandler;
 
-public class EmHandler extends NodeHandler{
+public class DivHandler extends BodyElementHandler{
 	
 	public String getTag() {
-		return "em";
+		return "div";
 	}
 	
 	public Style getDefaultStyle() {
-		//#style em
+		//#style div
 		return new Style();
 	}
 
-	public void handleNode(NodeElement element) {}
+	public void handleNode(CssElement element) {}
 
-	public Item createContent(NodeElement element) {
+	public Item createContent(CssElement element) {
 		return null;
 	}
+
 }

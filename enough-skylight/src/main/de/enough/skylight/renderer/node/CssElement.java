@@ -11,8 +11,9 @@ import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.element.ContainingBlock;
 import de.enough.skylight.renderer.element.InlineContainingBlock;
 import de.enough.skylight.renderer.element.TextBlock;
+import de.enough.skylight.renderer.node.handler.html.TextHandler;
 
-public class NodeElement implements HtmlCssElement{
+public class CssElement implements HtmlCssElement{
 	String display = HtmlCssElement.Display.INLINE;
 	
 	String position = HtmlCssElement.Position.STATIC;
@@ -25,16 +26,19 @@ public class NodeElement implements HtmlCssElement{
 	
 	DomNode node;
 	
+	ContainingBlock block;
+	
 	Item content;
 	
 	Style style;
 	
-	NodeElement parent;
+	CssElement parent;
 	
 	ArrayList children;
 	
 	static Style getStyle(NodeHandler handler, DomNode node) {
 		String clazz = NodeUtils.getAttributeValue(node, "class");
+		String tag = node.getNodeName();
 		
 		Style defaultStyle = handler.getDefaultStyle();
 		
@@ -48,13 +52,13 @@ public class NodeElement implements HtmlCssElement{
 			} else {
 				//#debug error
 				System.out.println("style " + clazz + " could not be found");
-			}
+			} 
 		}
 		
 		return defaultStyle;
 	}
 	
-	public NodeElement(NodeHandler handler, DomNode node, NodeElement parent, Viewport viewport) {
+	public CssElement(NodeHandler handler, DomNode node, CssElement parent, Viewport viewport) {
 		this.handler = handler;
 		
 		this.node = node;
@@ -66,20 +70,26 @@ public class NodeElement implements HtmlCssElement{
 		this.viewport = viewport;
 	}
 	
-	public void handle() throws ClassCastException, IllegalArgumentException {
+	public void build() throws ClassCastException, IllegalArgumentException {
 		this.handler.handleNode(this);
 		
 		this.style = getStyle(this.handler, this.node);
 		
 		setStyle(this.style);
+		
+		this.content = createContent();
+		
+		if(this.node.hasChildNodes()) {
+			this.block = createContainingBlock();
+		}
 	}
 	
-	public void add(NodeElement child) {
+	public void add(CssElement child) {
 		this.children.add(child);
 	}
 	
-	public NodeElement get(int index) {
-		return (NodeElement)this.children.get(index);
+	public CssElement get(int index) {
+		return (CssElement)this.children.get(index);
 	}
 	
 	public int size() {
@@ -98,30 +108,24 @@ public class NodeElement implements HtmlCssElement{
 		return this.style;
 	}
 	
-	public Item createContent() {
-		if(isNodeType(DomNode.TEXT_NODE)) {
-			TextBlock textBlock = new TextBlock();
-			textBlock.setText(this.node.getNodeValue());
-			return textBlock;
-		} else {
-			return this.handler.createContent(this);
-		}
-	}
-	
-	public void setContent(Item content) {
-		this.content = content;
+	Item createContent() {
+		return this.handler.createContent(this);
 	}
 	
 	public Item getContent() {
 		return this.content;
 	}
 	
-	public ContainingBlock createContainingBlock(BlockContainingBlock parentBlock) {
+	ContainingBlock createContainingBlock() {
 		if(isDisplay(HtmlCssElement.Display.BLOCK_LEVEL)) {
 			return new BlockContainingBlock(this, this.style);
 		} else {
-			return new InlineContainingBlock(this, parentBlock, this.style);
+			return new InlineContainingBlock(this, this.style);
 		} 
+	}
+	
+	public ContainingBlock getContainingBlock() {
+		return this.block;
 	}
 	
 	public void setStyle(Style style) {
@@ -165,7 +169,7 @@ public class NodeElement implements HtmlCssElement{
 		return this.node.getNodeType() == type;
 	}
 	
-	public NodeElement getParent() {
+	public CssElement getParent() {
 		return this.parent;
 	}
 

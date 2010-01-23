@@ -1,25 +1,25 @@
-package de.enough.skylight.renderer.node.handler;
+package de.enough.skylight.renderer.node.handler.html;
 
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.skylight.dom.DomNode;
-import de.enough.skylight.renderer.node.NodeElement;
+import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.node.NodeHandler;
 
-public class SpanHandler extends NodeHandler{
+public class SpanHandler extends BodyElementHandler {
 	
 	public String getTag() {
 		return "span";
 	}
 	
-	public void handleNode(NodeElement element) {}
+	public void handleNode(CssElement element) {}
 	
 	public Style getDefaultStyle() {
 		//#style span
 		return new Style();
 	}
 
-	public Item createContent(NodeElement element) {
+	public Item createContent(CssElement element) {
 		return null;
 	}
 

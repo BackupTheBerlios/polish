@@ -10,6 +10,7 @@ import de.enough.polish.util.TextUtil;
 import de.enough.skylight.renderer.partition.Partable;
 import de.enough.skylight.renderer.partition.Partition;
 import de.enough.skylight.renderer.partition.PartitionList;
+import de.enough.skylight.renderer.partition.TextPartition;
 
 public class TextBlock extends StringItem implements Partable {
 
@@ -36,21 +37,26 @@ public class TextBlock extends StringItem implements Partable {
 		int right;
 		int height = font.getHeight();
 		int tokenWidth;
+		int tokenLength;
 		
 		int spaceWidth = font.charWidth(' ');
 		
 		StringTokenizer st = new StringTokenizer(text, " \r\n\t");
+		
+		int index = 0;
 		
 		while (st.hasMoreTokens())
 		{
 			String token = st.nextToken();
 			
 			tokenWidth = font.stringWidth(token);
+			tokenLength = token.length();
 			right = left + tokenWidth;
 			
-			partitions.add(new Partition(left,right, height,this));
+			partitions.add(new TextPartition(index, tokenLength, left,right, height,this));
 			
 			left += tokenWidth;
+			index += token.length();
 			
 			if(st.hasMoreTokens()) {
 				right = left + spaceWidth;
@@ -58,18 +64,20 @@ public class TextBlock extends StringItem implements Partable {
 				partition.setWhitespace(true);
 				partitions.add(partition);
 				left += spaceWidth;
+				index++;
 			}
 		}
 	}
 
-	protected void init(int firstLineWidth, int availWidth, int availHeight) {
-		super.init(firstLineWidth, availWidth, availHeight);
+	public void paintContent(int x, int y, int leftBorder, int rightBorder,
+			Graphics g) {
+		super.paintContent(x, y, leftBorder, rightBorder, g);
 	}
-
-	protected void initContent(int firstLineWidth, int availWidth,
-			int availHeight) {
-		super.initContent(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
-	}
+	
+	
+	
+	
+	
 	
 	
 }

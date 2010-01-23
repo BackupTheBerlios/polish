@@ -1,7 +1,7 @@
-package de.enough.skylight.renderer.node.handler;
+package de.enough.skylight.renderer.node.handler.html;
 
 import de.enough.polish.ui.Item;
-import de.enough.skylight.renderer.node.NodeElement;
+import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.node.NodeHandler;
 
 public class DefaultHandler extends NodeHandler{
@@ -16,11 +16,11 @@ public class DefaultHandler extends NodeHandler{
 		return null;
 	}
 	
-	public void handleNode(NodeElement element) {
+	public void handleNode(CssElement element) {
 		// hey hey what can i do ?
 	}
 
-	public Item createContent(NodeElement element) {
+	public Item createContent(CssElement element) {
 		return null;
 	}
 }

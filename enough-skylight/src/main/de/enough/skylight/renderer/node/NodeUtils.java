@@ -5,6 +5,7 @@ import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.NamedNodeMap;
 
 public class NodeUtils {
+	
 	public final static String getAttributeValue(DomNode node, String name) {
 		NamedNodeMap nodeMap = node.getAttributes();
 		
@@ -14,6 +15,18 @@ public class NodeUtils {
 				return attribute.getValue();
 			} 
 		}
+		
+		return null;
+	}
+	
+	public final static DomNode getAncestor(DomNode node, String name) {
+		DomNode parentNode = node.getParentNode();
+		while(parentNode != null) {
+			if(parentNode.getNodeName().equals(name)) {
+				return parentNode;
+			}
+			parentNode = parentNode.getParentNode();
+		}		
 		
 		return null;
 	}

@@ -9,22 +9,22 @@ import de.enough.skylight.renderer.Viewport;
 import de.enough.skylight.renderer.css.HtmlCssElement;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.element.ContainingBlock;
-import de.enough.skylight.renderer.node.NodeElement;
+import de.enough.skylight.renderer.element.TextBlock;
+import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.node.NodeHandler;
 import de.enough.skylight.renderer.node.NodeHandlerDirectory;
+import de.enough.skylight.renderer.node.handler.html.TextHandler;
 
 public class ViewportBuilder {
 	Document document;
 	
 	Viewport viewport;
 	
-	public ViewportBuilder(Document document) {
-		this.document = document;
+	public ViewportBuilder() {
 	}
 	
-	public ViewportBuilder(Viewport viewport, Document document) throws IllegalArgumentException {
+	public ViewportBuilder(Viewport viewport) {
 		this.viewport = viewport;
-		this.document = document;
 	}
 	
 	public Viewport getViewport() {
@@ -34,8 +34,13 @@ public class ViewportBuilder {
 	public void setViewport(Viewport viewport) {
 		this.viewport = viewport;
 	}
-	
-	public void update(DomNode node) {
+
+	public Document getDocument() {
+		return this.document;
+	}
+
+	public void setDocument(Document document) {
+		this.document = document;
 	}
 	
 	public void build() throws IllegalArgumentException {
@@ -43,12 +48,18 @@ public class ViewportBuilder {
 			throw new IllegalStateException("viewport is null");
 		}
 		
+		if(this.document == null) {
+			throw new IllegalStateException("document is null");
+		}
+		
 		try {
+			CssElement rootElement = buildDescription(this.document, null);
+			
 			this.viewport.reset();
 			
-			NodeElement root = buildDescription(this.document, null);
+			this.viewport.setRootElement(rootElement);
 			
-			buildLayout(this.viewport, this.viewport, root);
+			buildLayout(this.viewport, this.viewport, rootElement);
 			
 			this.viewport.requestInit();
 			
@@ -60,43 +71,53 @@ public class ViewportBuilder {
 		}
 	}
 	
-	protected NodeElement buildDescription(DomNode node, NodeElement parent) {
-		NodeHandler handler = NodeHandlerDirectory.getHandler(node);
+	protected CssElement buildDescription(DomNode node, CssElement parent) {
+		NodeHandler handler = NodeHandlerDirectory.getInstance().getNodeHandler(node);
 		
-		NodeElement element = handler.createElement(node, parent, this.viewport); 
-		
-		try {
-			element.handle();
-		} catch(IllegalArgumentException e) {
-			//#debug error
-			System.out.println("illegal argument for " + node + ":" + e.getMessage());
-		} catch(ClassCastException e) {
-			//#debug error
-			System.out.println("could not cast the given element, please implement createElement()");
-		}
-		
-		if(parent != null) {
-			parent.add(element);
-		}
-		
-		if(node.hasChildNodes()) {
-			NodeList nodes = node.getChildNodes();
-			for (int index = 0; index < nodes.getLength(); index++) {
-				DomNode childNode = nodes.item(index);
+		if(handler != null) {
+			if(handler.isValid(node)) {
+				CssElement element = handler.createElement(node, parent, this.viewport); 
 				
-				buildDescription(childNode, element);
+				try {
+					element.build();
+				} catch(IllegalArgumentException e) {
+					//#debug error
+					System.out.println("illegal argument for " + node + ":" + e.getMessage());
+				} catch(ClassCastException e) {
+					//#debug error
+					System.out.println("could not cast the given element, please implement createElement()");
+				}
+				
+				if(parent != null) {
+					parent.add(element);
+				}
+				
+				if(node.hasChildNodes()) {
+					NodeList nodes = node.getChildNodes();
+					for (int index = 0; index < nodes.getLength(); index++) {
+						DomNode childNode = nodes.item(index);
+						
+						buildDescription(childNode, element);
+					}
+				}
+				
+				return element;
+			} else {
+				if(handler != TextHandler.getInstance()) {
+					//#debug error
+					System.out.println(node.getNodeName() + " is not valid");
+				}
 			}
 		}
 		
-		return element;
+		return null;
 	}
 	
-	protected void buildLayout(ContainingBlock parent, BlockContainingBlock parentBlock, NodeElement element) {
+	protected void buildLayout(ContainingBlock parent, BlockContainingBlock parentBlock, CssElement element) {
 		if(element.hasElements())
 		{
-			ContainingBlock block = element.createContainingBlock(parentBlock);
-			
-			element.setContent((Item)block);
+			ContainingBlock block = element.getContainingBlock();
+			block.setParentBlock(parentBlock);
 		
 			if(element.isFloat()) {
 				if(element.isFloat(HtmlCssElement.Float.LEFT)) {
@@ -116,14 +137,12 @@ public class ViewportBuilder {
 			}
 			
 			for (int index = 0; index < element.size(); index++) {
-				NodeElement childElement = element.get(index);
+				CssElement childElement = element.get(index);
 				
 				buildLayout(block,childBlock,childElement);
 			}
 		} else {
-			Item item = element.createContent();
-			
-			element.setContent(item);
+			Item item = element.getContent();
 			
 			if(item != null) {
 				if(element.isFloat()) {
