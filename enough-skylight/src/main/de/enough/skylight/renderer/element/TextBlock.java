@@ -68,16 +68,4 @@ public class TextBlock extends StringItem implements Partable {
 			}
 		}
 	}
-
-	public void paintContent(int x, int y, int leftBorder, int rightBorder,
-			Graphics g) {
-		super.paintContent(x, y, leftBorder, rightBorder, g);
-	}
-	
-	
-	
-	
-	
-	
-	
 }

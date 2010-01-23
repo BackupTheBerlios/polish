@@ -21,7 +21,7 @@ import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.node.NodeHandler;
 import de.enough.skylight.renderer.node.NodeUtils;
 
-public class LinkHandler extends HeadElementHandler {
+public class LinkHandler extends HeadNodeHandler {
 
 	static String REL_STYLESHEET = "stylesheet";
 	static String TYPE_TEXT_CSS = "text/css";

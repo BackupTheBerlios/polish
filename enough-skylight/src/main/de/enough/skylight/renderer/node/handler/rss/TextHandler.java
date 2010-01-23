@@ -1,4 +1,4 @@
-package de.enough.skylight.renderer.node.handler.html;
+package de.enough.skylight.renderer.node.handler.rss;
 
 import de.enough.polish.ui.Item;
 import de.enough.skylight.dom.DomNode;
@@ -6,7 +6,7 @@ import de.enough.skylight.renderer.element.TextBlock;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.node.NodeHandler;
 
-public class TextHandler extends BodyNodeHandler{
+public class TextHandler extends ItemNodeHandler{
 	
 	static TextHandler instance = new TextHandler();
 
@@ -30,7 +30,7 @@ public class TextHandler extends BodyNodeHandler{
 		
 		return textBlock;
 	}
-	
+
 	public boolean isValid(DomNode node) {
 		return super.isValid(node) && node.getNodeType() == DomNode.TEXT_NODE;
 	}

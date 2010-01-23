@@ -8,7 +8,7 @@ import de.enough.skylight.renderer.element.Break;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.node.NodeHandler;
 
-public class BrHandler extends BodyElementHandler {
+public class BrHandler extends BodyNodeHandler {
 	public String getTag() {
 		return "br";
 	}

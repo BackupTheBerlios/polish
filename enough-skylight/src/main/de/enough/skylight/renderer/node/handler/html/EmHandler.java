@@ -8,7 +8,7 @@ import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.node.NodeHandler;
 
-public class EmHandler extends BodyElementHandler{
+public class EmHandler extends BodyNodeHandler{
 	
 	public String getTag() {
 		return "em";

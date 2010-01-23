@@ -7,7 +7,7 @@ import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.node.NodeHandler;
 
-public class FormHandler extends BodyElementHandler{
+public class FormHandler extends BodyNodeHandler{
 
 	public String getTag() {
 		return "form";

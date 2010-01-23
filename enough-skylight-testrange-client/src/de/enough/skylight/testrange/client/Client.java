@@ -25,7 +25,11 @@ public class Client extends MIDlet{
 			return;
 		}
 		
+		//#if skylight.testrange.type == html
 		NodeHandlerDirectory.getInstance().addHtmlHandlers();
+		//#elif skylight.testrange.type == rss
+		NodeHandlerDirectory.getInstance().addRssHandlers();
+		//#endif
 		
 		Browser browser = new Browser(url, Display.getDisplay(this));
 		

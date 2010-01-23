@@ -9,7 +9,7 @@ import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.node.NodeHandler;
 import de.enough.skylight.renderer.node.NodeUtils;
 
-public class InputSubmitHandler extends BodyElementHandler {
+public class InputSubmitHandler extends BodyNodeHandler {
 	public String getTag() {
 		return null;
 	}

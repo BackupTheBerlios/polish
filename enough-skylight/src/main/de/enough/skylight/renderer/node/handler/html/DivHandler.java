@@ -9,7 +9,7 @@ import de.enough.skylight.renderer.css.HtmlCssElement;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.node.NodeHandler;
 
-public class DivHandler extends BodyElementHandler{
+public class DivHandler extends BodyNodeHandler{
 	
 	public String getTag() {
 		return "div";

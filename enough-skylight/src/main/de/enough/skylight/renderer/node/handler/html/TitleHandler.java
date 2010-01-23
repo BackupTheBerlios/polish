@@ -3,7 +3,7 @@ package de.enough.skylight.renderer.node.handler.html;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.node.CssElement;
 
-public class TitleHandler extends HeadElementHandler {
+public class TitleHandler extends HeadNodeHandler {
 	
 	public String getTag() {
 		return "title";

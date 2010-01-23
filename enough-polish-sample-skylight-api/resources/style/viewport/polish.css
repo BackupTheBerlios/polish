@@ -1,3 +1,7 @@
+colors {
+	overlay: #00000000;
+}
+
 import {
 	always-include: true;
 	padding: 0;

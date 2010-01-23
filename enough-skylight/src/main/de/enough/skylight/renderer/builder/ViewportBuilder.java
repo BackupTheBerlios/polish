@@ -104,7 +104,7 @@ public class ViewportBuilder {
 				return element;
 			} else {
 				if(handler != TextHandler.getInstance()) {
-					//#debug error
+					//#debug warn
 					System.out.println(node.getNodeName() + " is not valid");
 				}
 			}

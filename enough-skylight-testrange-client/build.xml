@@ -55,7 +55,8 @@
 					
 					<root dir="${skylight.home}/resources/style/base"/>
 					<root dir="${skylight.home}/resources/style/viewport"/>
-					<root dir="${skylight.home}/resources/style/element"/>
+					<root dir="${skylight.home}/resources/style/html"/>
+					<root dir="${skylight.home}/resources/style/rss"/>
 					
 					<root dir="${skylight.home}/resources/locales"/>
 					<root dir="${skylight.home}/resources/test"/>

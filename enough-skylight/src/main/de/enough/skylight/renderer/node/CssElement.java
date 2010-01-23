@@ -177,6 +177,10 @@ public class CssElement implements HtmlCssElement{
 		this.viewport = viewport;
 	}
 	
+	public String toString() {
+		return "Element [" + this.node.getNodeName() +"]";
+	}
+	
 	public Viewport getViewport() {
 		return this.viewport;
 	}

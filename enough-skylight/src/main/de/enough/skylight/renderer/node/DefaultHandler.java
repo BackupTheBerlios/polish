@@ -1,8 +1,6 @@
-package de.enough.skylight.renderer.node.handler.html;
+package de.enough.skylight.renderer.node;
 
 import de.enough.polish.ui.Item;
-import de.enough.skylight.renderer.node.CssElement;
-import de.enough.skylight.renderer.node.NodeHandler;
 
 public class DefaultHandler extends NodeHandler{
 	

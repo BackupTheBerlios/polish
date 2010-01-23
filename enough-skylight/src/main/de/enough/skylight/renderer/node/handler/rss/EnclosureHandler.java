@@ -1,7 +1,10 @@
-package de.enough.skylight.renderer.node.handler.html;
+package de.enough.skylight.renderer.node.handler.rss;
 
 import java.io.IOException;
+import java.io.InputStream;
 
+import javax.microedition.io.Connector;
+import javax.microedition.io.HttpConnection;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
@@ -12,15 +15,14 @@ import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.Viewport;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.node.ImgElement;
-import de.enough.skylight.renderer.node.NodeHandler;
 import de.enough.skylight.renderer.node.NodeUtils;
 
-public class ImgHandler extends BodyNodeHandler{
-	
-	public String getTag() {
-		return "img";
-	}
+public class EnclosureHandler extends ItemNodeHandler {
 
+	public String getTag() {
+		return "enclosure";
+	} 
+	
 	public CssElement createElement(DomNode node, CssElement parent, Viewport viewport) {
 		return new ImgElement(this, node, parent, viewport);
 	}
@@ -28,15 +30,17 @@ public class ImgHandler extends BodyNodeHandler{
 	public void handleNode(CssElement element) {
 		ImgElement imgElement = (ImgElement)element;
 		
-		String src = NodeUtils.getAttributeValue(element.getNode(), "src");
+		String url = NodeUtils.getAttributeValue(element.getNode(), "url");
 		
 		Image image;
 		try {
-			image = Image.createImage(src);
+			HttpConnection connection = (HttpConnection)Connector.open(url);
+			InputStream stream = connection.openInputStream();
+			image = Image.createImage(stream);
 			imgElement.setImage(image);
 		} catch (IOException e) {
 			//#debug error
-			System.out.println("unable to open image " + src);
+			System.out.println("unable to open image " + url);
 		} 
 	}
 
@@ -51,4 +55,9 @@ public class ImgHandler extends BodyNodeHandler{
 		
 		return item;
 	}
+
+	public Style getDefaultStyle() {
+		//#style enclosure
+		return new Style();
+	}	
 }

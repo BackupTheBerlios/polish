@@ -4,10 +4,11 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.node.CssElement;
+import de.enough.skylight.renderer.node.DefaultHandler;
 import de.enough.skylight.renderer.node.NodeHandler;
 import de.enough.skylight.renderer.node.NodeUtils;
 
-public class InputHandler extends BodyElementHandler{
+public class InputHandler extends BodyNodeHandler{
 	
 	NodeHandler textHandler;
 	

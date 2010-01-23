@@ -7,7 +7,7 @@ import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.node.NodeHandler;
 
-public class H1Handler extends BodyElementHandler{
+public class H1Handler extends BodyNodeHandler{
 	
 	public String getTag() {
 		return "h1";

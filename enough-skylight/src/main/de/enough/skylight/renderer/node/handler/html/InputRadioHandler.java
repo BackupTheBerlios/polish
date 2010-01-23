@@ -11,7 +11,7 @@ import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.node.NodeHandler;
 import de.enough.skylight.renderer.node.NodeUtils;
 
-public class InputRadioHandler extends BodyElementHandler {
+public class InputRadioHandler extends BodyNodeHandler {
 	public String getTag() {
 		return null;
 	}
