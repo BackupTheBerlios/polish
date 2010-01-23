@@ -10,6 +10,8 @@ import de.enough.polish.ui.StyleSheet;
 import de.enough.skylight.renderer.Renderer;
 import de.enough.skylight.renderer.RendererListener;
 import de.enough.skylight.renderer.Viewport;
+import de.enough.skylight.renderer.builder.DocumentBuilder;
+import de.enough.skylight.renderer.builder.ViewportBuilder;
 
 public class Browser extends Form implements CommandListener, RendererListener{
 
@@ -30,17 +32,18 @@ public class Browser extends Form implements CommandListener, RendererListener{
 		super(url);
 		
 		this.viewport = new Viewport();
-		this.renderer = new Renderer(this.viewport, Renderer.POLICY_PREINIT | Renderer.POLICY_THREADED);
 		
-		this.renderer.setUrl(url);
+		DocumentBuilder documentBuilder = new DocumentBuilder(url);
+		ViewportBuilder viewportBuilder = new ViewportBuilder(this.viewport);
+		
+		this.renderer = new Renderer(documentBuilder, viewportBuilder);
 		this.renderer.addListener(this);
 		
-		setCommandListener(this);
 		append(this.viewport);
+		setCommandListener(this);
 		
 		this.refresh = new Refresh();
 		this.renderer.addListener(this.refresh);
-		this.refresh.setTitle(url);
 		
 		this.display = display;
 		

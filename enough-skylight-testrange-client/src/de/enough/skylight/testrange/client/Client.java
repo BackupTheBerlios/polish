@@ -4,6 +4,7 @@ import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
 import de.enough.polish.ui.Display;
+import de.enough.skylight.renderer.node.NodeHandlerDirectory;
 
 public class Client extends MIDlet{
 	
@@ -23,6 +24,8 @@ public class Client extends MIDlet{
 			System.out.println("url is not set, please set skylight.testrange.url in your user.properties");
 			return;
 		}
+		
+		NodeHandlerDirectory.getInstance().addHtmlHandlers();
 		
 		Browser browser = new Browser(url, Display.getDisplay(this));
 		

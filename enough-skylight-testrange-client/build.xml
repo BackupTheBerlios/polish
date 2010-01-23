@@ -29,7 +29,7 @@
 				jarUrl="${polish.jarName}"
 				copyright="Copyright 2009 Enough Software. All rights reserved."
 			/>
-			<deviceRequirements if="test">
+			<deviceRequirements>
 				<requirement name="Identifier" value="${device}" />
 			</deviceRequirements>
 			<build
@@ -61,6 +61,7 @@
 					<root dir="${skylight.home}/resources/test"/>
 					
 					<root dir="resources/style"/>
+					<root dir="resources/images"/>
 				</resources>
 				<sources>
 				    <source dir="src" />
@@ -71,6 +72,8 @@
 					<!--filter pattern="de.enough.skylight.renderer.builder.*" level="error" /-->
 					<filter pattern="de.enough.skylight.testrange.client.*" level="debug" />
 				</debug>
+				<obfuscator useDefaultPackage="true" name="ProGuard" unless="test || polish.blackberry">
+				</obfuscator>
 			</build>
 			<emulator wait="true" securityDomain="trusted" enableProfiler="false" enableMemoryMonitor="false" enableNetworkMonitor="false" if="test and not debug">
 				<parameter name="-Xheapsize" value="5M" />
