@@ -5,6 +5,12 @@
 	background-color: #A0A0A0;
 }
 
+.company {
+	display: block;
+	padding: 1px;
+	background-color: #C0C0C0;
+}
+
 .content {
 	padding: 0px;
 	display: block;
