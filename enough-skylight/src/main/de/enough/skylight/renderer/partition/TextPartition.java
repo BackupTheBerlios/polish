@@ -13,4 +13,16 @@ public class TextPartition extends Partition{
 		this.index = index;
 		this.length = length;
 	}
+	
+	public int getIndex() {
+		return this.index;
+	}
+	
+	public int getLength() {
+		return this.length;
+	}
+	
+	public String toString() {
+		return "Partition [" + this.index + "," + this.length + "," + this.left + "," + this.right + "," + this.height + "," + this.newline + "," + this.whitespace + "," + this.parent + "]";
+	}
 }

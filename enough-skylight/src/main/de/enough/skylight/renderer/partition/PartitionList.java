@@ -70,12 +70,27 @@ public class PartitionList {
 		}
 	}
 	
+	public void addAll(PartitionList partitions) {
+		for (int i = 0; i < partitions.size(); i++) {
+			Partition partition = partitions.get(i);
+			add(partition);
+		}
+	}
+	
 	public Partition get(int index) {
 		return (Partition)this.partitionList.get(index);
 	}
 	
 	public int size() {
 		return this.partitionList.size();
+	}
+	
+	public void clear() {
+		this.partitionList.clear();
+	}
+	
+	public boolean contains(Partition partition) {
+		return this.partitionList.contains(partition);
 	}
 	
 	public void sort() {
