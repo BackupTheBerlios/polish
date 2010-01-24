@@ -57,6 +57,7 @@ public class ViewportBuilder {
 			CssElement rootElement = buildDescription(this.document, null);
 			
 			this.viewport.setVisible(false);
+			this.viewport.getLabelItem().setVisible(false);
 			
 			this.viewport.reset();
 			
@@ -65,6 +66,7 @@ public class ViewportBuilder {
 			buildLayout(this.viewport, this.viewport, rootElement);
 			
 			this.viewport.setVisible(true);
+			this.viewport.getLabelItem().setVisible(true);
 			
 			this.viewport.requestInit();
 			
