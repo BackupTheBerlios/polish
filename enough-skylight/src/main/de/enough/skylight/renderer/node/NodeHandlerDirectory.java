@@ -24,6 +24,8 @@ public class NodeHandlerDirectory {
 	
 	static NodeHandlerDirectory instance;
 	
+	NodeHandler defaultHandler = DefaultHandler.getInstance();
+	
 	private NodeHandlerDirectory() {
 		this.directory = new HashMap();
 	}
@@ -59,6 +61,10 @@ public class NodeHandlerDirectory {
 		addHandler(new de.enough.skylight.renderer.node.handler.rss.TextHandler());
 	}
 	
+	public void setDefaultHandler(NodeHandler handler) {
+		this.defaultHandler = handler;
+	}
+	
 	public void addHandler(NodeHandler handler) {
 		String tag = handler.getTag();
 		if(this.directory.get(tag) != null) {
@@ -82,7 +88,11 @@ public class NodeHandlerDirectory {
 		if(result != null) {
 			return result;
 		} else {
-			return DefaultHandler.getInstance();
+			if(this.defaultHandler != null) {
+				return DefaultHandler.getInstance();
+			} else {
+				return null;
+			}
 		}
 	}
 }
