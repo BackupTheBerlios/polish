@@ -1,5 +1,7 @@
 package de.enough.skylight.renderer.element;
 
+import javax.microedition.lcdui.Graphics;
+
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
@@ -12,7 +14,7 @@ public class InlineContainingBlock extends Container implements ContainingBlock,
 
 	CssElement element;
 	
-	BlockContainingBlock parentBlock;
+	BlockContainingBlock block;
 	
 	public InlineContainingBlock() {
 		this(null,null);
@@ -37,11 +39,11 @@ public class InlineContainingBlock extends Container implements ContainingBlock,
 	}
 
 	public void addToLeftFloat(Item item) {
-		this.parentBlock.addToLeftFloat(item);
+		this.block.addToLeftFloat(item);
 	}
 	
 	public void addToRightFloat(Item item) {
-		this.parentBlock.addToRightFloat(item);
+		this.block.addToRightFloat(item);
 	}
 	
 	public CssElement getElement() {
@@ -75,13 +77,13 @@ public class InlineContainingBlock extends Container implements ContainingBlock,
 	
 	protected void initItem(Item item) {
 		if(item instanceof BlockContainingBlock) {
-			ItemPreinit.preinit(item,	this.parentBlock.getAvailableContentWidth(),
-										this.parentBlock.getAvailableContentHeight());
+			ItemPreinit.preinit(item,	this.block.getAvailableContentWidth(),
+										this.block.getAvailableContentHeight());
 		} else {
 			ItemPreinit.preinit(item,Integer.MAX_VALUE,Integer.MAX_VALUE);
 		}
 	}
-	
+
 	public void partition(BlockContainingBlock block, PartitionList partitions) {
 		PartitionList.partitionInline(this, block, partitions);
 		
@@ -89,18 +91,18 @@ public class InlineContainingBlock extends Container implements ContainingBlock,
 			Item item = (Item)this.itemsList.get(i);
 			if(item instanceof Partable) {
 				Partable partable = (Partable)item;
-				partable.partition(block, partitions);
+				partable.partition(this.block, partitions);
 			} else {
-				PartitionList.partitionInline(item, block, partitions);
+				PartitionList.partitionInline(item, this.block, partitions);
 			}
 		}
 	}
-
+	
 	public BlockContainingBlock getParentBlock() {
-		return this.parentBlock;
+		return this.block;
 	}
 
 	public void setParentBlock(BlockContainingBlock block) {
-		this.parentBlock = block;
-	}	
+		this.block = block;
+	}
 }

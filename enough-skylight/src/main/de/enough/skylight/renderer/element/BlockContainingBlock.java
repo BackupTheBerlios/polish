@@ -42,6 +42,7 @@ public class BlockContainingBlock extends Container implements ContainingBlock, 
 		//#style element
 		this.body = new InlineContainingBlock();
 		this.body.setParentBlock(this);
+		System.out.println(this + " has body : " + this.body);
 		
 		add(this.body);
 		
@@ -61,6 +62,7 @@ public class BlockContainingBlock extends Container implements ContainingBlock, 
 	}
 	
 	public void addToBody(Item item) {
+		System.out.println("adding to body " + item);
 		this.body.add(item);
 	}
 	
@@ -161,26 +163,64 @@ public class BlockContainingBlock extends Container implements ContainingBlock, 
 	
 	protected void paintContent(int x, int y, int leftBorder, int rightBorder,
 			Graphics g) {
+		paintLayout(x, y, leftBorder, rightBorder, g);
+	}
+		
+	public void paintLineBox(LineBox linebox, InlineContainingBlock block, int x, int y, Graphics g) {
+		int clipX = g.getClipX();
+		int clipY = g.getClipY();
+		int clipWidth = g.getClipWidth();
+		int clipHeight = g.getClipHeight();
+
+		x = x + linebox.getOffset();
+
+		int left = linebox.getTrimmedLeft();
+		int width = linebox.getTrimmedWidth();
+		int top = linebox.getTop();
+		int height = linebox.getHeight();
+
+		g.clipRect(x, y + top, width, height);
+
+		int leftBorder = x - left;
+		int rightBorder = (x - left) +  width;
+		
+		block.paint(x - left, y + top, leftBorder, rightBorder, g);
+
+		g.setClip(clipX, clipY, clipWidth, clipHeight);
+	}
+	
+	LineBox paintLineBox;
+	
+	public LineBox getPaintLineBox() {
+		return this.paintLineBox;
+	}
+	
+	public void paintLayout(int x, int y, int leftBorder, int rightBorder,
+			Graphics g) {
+
 		LineBox linebox;
 		
 		if(this.floatLeftLines != null) {
 			for (int index = 0; index < this.floatLeftLines.size(); index++) {
 				linebox = this.floatLeftLines.get(index);
-				linebox.paint(x, y, g);
+				this.paintLineBox = linebox;
+				paintLineBox(linebox,this.floatLeft,x,y,g);
 			}
 		}
 		
 		if(this.floatRightLines != null) {
 			for (int index = 0; index < this.floatRightLines.size(); index++) {
 				linebox = this.floatRightLines.get(index);
-				linebox.paint(x, y, g);
+				this.paintLineBox = linebox;
+				paintLineBox(linebox,this.floatRight,x,y,g);
 			}
 		}
 		
 		if(this.bodyLines != null) {
 			for (int index = 0; index < this.bodyLines.size(); index++) {
 				linebox = this.bodyLines.get(index);
-				linebox.paint(x, y, g);
+				this.paintLineBox = linebox;
+				paintLineBox(linebox,this.body,x,y,g);
 			}
 		}
 	}

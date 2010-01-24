@@ -153,4 +153,12 @@ public class LineBox {
 	public String toString() {
 		return "LineBox [" + this.left + "," + this.right + "," + this.top + "," + this.height + "," + this.offset + "," + this.availableWidth + "]";
 	}
+	
+	public int getOffset() {
+		return this.offset;
+	}
+	
+	public PartitionList getPartitions() {
+		return this.partitions;
+	}
 }

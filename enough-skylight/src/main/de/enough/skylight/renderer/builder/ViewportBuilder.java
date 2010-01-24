@@ -9,6 +9,7 @@ import de.enough.skylight.renderer.Viewport;
 import de.enough.skylight.renderer.css.HtmlCssElement;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.element.ContainingBlock;
+import de.enough.skylight.renderer.element.InlineContainingBlock;
 import de.enough.skylight.renderer.element.TextBlock;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.node.NodeHandler;
@@ -70,7 +71,7 @@ public class ViewportBuilder {
 			e.printStackTrace();
 		}
 	}
-	
+
 	protected CssElement buildDescription(DomNode node, CssElement parent) {
 		NodeHandler handler = NodeHandlerDirectory.getInstance().getNodeHandler(node);
 		
@@ -127,6 +128,7 @@ public class ViewportBuilder {
 				} 
 			} else {
 				parent.addToBody((Item)block);
+				System.out.println("adding " + block + " to " + parent);
 			}
 			
 			BlockContainingBlock childBlock;
@@ -153,6 +155,7 @@ public class ViewportBuilder {
 					}
 				} else {
 					parent.addToBody(item);
+					System.out.println("adding " + item + " to " + parent);
 				}
 			}
 		}
