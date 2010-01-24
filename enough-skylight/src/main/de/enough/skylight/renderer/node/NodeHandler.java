@@ -5,12 +5,17 @@ import de.enough.polish.ui.Style;
 import de.enough.polish.ui.StyleSheet;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.Viewport;
+import de.enough.skylight.renderer.element.BlockContainingBlock;
 
 public abstract class NodeHandler {
 	public abstract String getTag();
 	
 	public CssElement createElement(DomNode node, CssElement parent, Viewport viewport) {
-		return new CssElement(this,node,parent,viewport);
+		return new CssElement(this,node,parent, viewport);
+	}
+	
+	public void handleResources(CssElement element) {
+		// handle node resources here
 	}
 	
 	public abstract void handleNode(CssElement element) throws ClassCastException, IllegalArgumentException;

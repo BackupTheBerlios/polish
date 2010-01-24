@@ -22,7 +22,9 @@ import de.enough.skylight.renderer.node.NodeHandler;
 import de.enough.skylight.renderer.node.NodeUtils;
 
 public class LinkHandler extends HeadNodeHandler {
-
+	final static String PREFIX_HTTP = "http://";
+	final static String PREFIX_FILE = "file://";
+	
 	static String REL_STYLESHEET = "stylesheet";
 	static String TYPE_TEXT_CSS = "text/css";
 
@@ -40,9 +42,18 @@ public class LinkHandler extends HeadNodeHandler {
 				&& type.equals(TYPE_TEXT_CSS) && href != null) {
 
 			try {
-				HttpConnection connection = (HttpConnection) Connector
-						.open(href);
-				InputStream stream = connection.openInputStream();
+				InputStream stream = null;
+				
+				if(href.startsWith("file://")) {
+					String filename = href.substring(PREFIX_FILE.length());
+					stream = getClass().getResourceAsStream(filename);
+				}
+				else if(href.startsWith("http://")) {
+					HttpConnection connection = (HttpConnection) Connector
+							.open(href);
+					stream = connection.openInputStream();
+				}
+				
 				InputStreamReader reader = new InputStreamReader(stream);
 
 				HtmlCssInterpreter interpreter = new HtmlCssInterpreter(reader);
