@@ -56,15 +56,20 @@ public class ViewportBuilder {
 		try {
 			CssElement rootElement = buildDescription(this.document, null);
 			
+			this.viewport.setVisible(false);
+			
 			this.viewport.reset();
 			
 			this.viewport.setRootElement(rootElement);
 			
 			buildLayout(this.viewport, this.viewport, rootElement);
 			
+			this.viewport.setVisible(true);
+			
 			this.viewport.requestInit();
 			
 			ItemPreinit.preinit(this.viewport);
+			
 		} catch(Exception e) {
 			//#debug error
 			System.out.println("error while building view : " + e);
@@ -128,7 +133,6 @@ public class ViewportBuilder {
 				} 
 			} else {
 				parent.addToBody((Item)block);
-				System.out.println("adding " + block + " to " + parent);
 			}
 			
 			BlockContainingBlock childBlock;
@@ -155,7 +159,6 @@ public class ViewportBuilder {
 					}
 				} else {
 					parent.addToBody(item);
-					System.out.println("adding " + item + " to " + parent);
 				}
 			}
 		}

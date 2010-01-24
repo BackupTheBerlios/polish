@@ -10,6 +10,7 @@ import de.enough.skylight.renderer.linebox.LineBoxLayout;
 import de.enough.skylight.renderer.linebox.LineBoxList;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.partition.Partable;
+import de.enough.skylight.renderer.partition.Partition;
 import de.enough.skylight.renderer.partition.PartitionList;
 
 public class BlockContainingBlock extends Container implements ContainingBlock, Partable {
@@ -30,6 +31,8 @@ public class BlockContainingBlock extends Container implements ContainingBlock, 
 	
 	BlockContainingBlock parentBlock;
 	
+	PartitionList blockPartitions;
+	
 	public BlockContainingBlock(CssElement element) {
 		this(element,element.getStyle());
 	}
@@ -42,7 +45,8 @@ public class BlockContainingBlock extends Container implements ContainingBlock, 
 		//#style element
 		this.body = new InlineContainingBlock();
 		this.body.setParentBlock(this);
-		System.out.println(this + " has body : " + this.body);
+		
+		this.blockPartitions = new PartitionList();
 		
 		add(this.body);
 		
@@ -62,7 +66,6 @@ public class BlockContainingBlock extends Container implements ContainingBlock, 
 	}
 	
 	public void addToBody(Item item) {
-		System.out.println("adding to body " + item);
 		this.body.add(item);
 	}
 	
@@ -163,28 +166,43 @@ public class BlockContainingBlock extends Container implements ContainingBlock, 
 	
 	protected void paintContent(int x, int y, int leftBorder, int rightBorder,
 			Graphics g) {
-		paintLayout(x, y, leftBorder, rightBorder, g);
+
+		if(this.blockPartitions.size() > 0) { 
+			Partition blockPartition = this.blockPartitions.get(0);
+			
+			LineBox linebox = this.parentBlock.getPaintLineBox();
+			
+			if(	(	blockPartition.getLeft() >= linebox.getLeft() && 
+					blockPartition.getLeft() <= linebox.getRight()) ||
+				(	blockPartition.getRight() >= linebox.getLeft() && 
+					blockPartition.getRight() <= linebox.getRight()) ||
+				(	blockPartition.getLeft() <= linebox.getLeft() && 
+					blockPartition.getRight() >= linebox.getRight())) {
+				paintLayout(x, y, leftBorder, rightBorder, g);
+			} 
+		} else {
+			paintLayout(x, y, leftBorder, rightBorder, g);
+		}
 	}
-		
+	
 	public void paintLineBox(LineBox linebox, InlineContainingBlock block, int x, int y, Graphics g) {
+		x = x + linebox.getOffset();
+		y = y + linebox.getTop();
+		
 		int clipX = g.getClipX();
 		int clipY = g.getClipY();
 		int clipWidth = g.getClipWidth();
 		int clipHeight = g.getClipHeight();
-
-		x = x + linebox.getOffset();
-
+		
 		int left = linebox.getTrimmedLeft();
 		int width = linebox.getTrimmedWidth();
-		int top = linebox.getTop();
 		int height = linebox.getHeight();
-
-		g.clipRect(x, y + top, width, height);
+		
+		g.clipRect(x, y, width, height);
 
 		int leftBorder = x - left;
 		int rightBorder = (x - left) +  width;
-		
-		block.paint(x - left, y + top, leftBorder, rightBorder, g);
+		block.paint(x - left, y, leftBorder, rightBorder, g);
 
 		g.setClip(clipX, clipY, clipWidth, clipHeight);
 	}
@@ -197,7 +215,6 @@ public class BlockContainingBlock extends Container implements ContainingBlock, 
 	
 	public void paintLayout(int x, int y, int leftBorder, int rightBorder,
 			Graphics g) {
-
 		LineBox linebox;
 		
 		if(this.floatLeftLines != null) {
@@ -217,6 +234,7 @@ public class BlockContainingBlock extends Container implements ContainingBlock, 
 		}
 		
 		if(this.bodyLines != null) {
+			// painting lineboxes
 			for (int index = 0; index < this.bodyLines.size(); index++) {
 				linebox = this.bodyLines.get(index);
 				this.paintLineBox = linebox;
@@ -226,7 +244,10 @@ public class BlockContainingBlock extends Container implements ContainingBlock, 
 	}
 	
 	public void partition(BlockContainingBlock block, PartitionList partitions) {
-		PartitionList.partitionBlock(this, block, partitions);
+		this.blockPartitions.clear();
+		PartitionList.partitionBlock(this, block, this.blockPartitions);
+		
+		partitions.addAll(this.blockPartitions);
 	}
 	
 	public BlockContainingBlock getParentBlock() {
