@@ -93,7 +93,7 @@ public class LineBox {
 	
 	public boolean fits(Partition partition) {
 		int maxRight = (this.left + this.availableWidth);
-		return partition.getRight() < maxRight;
+		return partition.getRight() <= maxRight;
 	}
 	
 	public boolean overflows() {
@@ -125,29 +125,6 @@ public class LineBox {
 	
 	public boolean isInLine(int top) {
 		return (top >= getTop()) && (top <= getBottom() - 1); 
-	}
-	
-	public void paint(int x, int y, Graphics g) {
-		int clipX = g.getClipX();
-		int clipY = g.getClipY();
-		int clipWidth = g.getClipWidth();
-		int clipHeight = g.getClipHeight();
-		
-		x = x + this.offset;
-
-		int left = getTrimmedLeft();
-		int width = getTrimmedWidth();
-		int top = getTop();
-		int height = getHeight();
-
-		g.clipRect(x, y + top, width, height);
-
-		int leftBorder = x - left;
-		int rightBorder = (x - left) +  width;
-		
-		this.block.paint(x - left, y + top, leftBorder, rightBorder, g);
-
-		g.setClip(clipX, clipY, clipWidth, clipHeight);
 	}
 	
 	public String toString() {
