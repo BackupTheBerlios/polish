@@ -35,6 +35,7 @@ form {
 /** INLINE **/
 
 text {
+	padding: 0px;
 	font: fnt_text;
 	display: inline;
 }
