@@ -57,11 +57,11 @@ public class LineBoxLayout {
 						int offset = getLineOffset(top);
 						int width = getLineWidth(top);
 						linebox = null;
-						if(partition.isWhitespace()) {
-							continue;
-						} else {
+						if(!partition.isWhitespace()) {
 							linebox = new LineBox(partition, block, offset, top, width);
 							lineboxes.add(linebox);
+						} else {
+							continue;
 						}
 					}
 				}
