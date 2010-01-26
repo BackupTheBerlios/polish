@@ -40,4 +40,8 @@ public class Viewport extends BlockContainingBlock {
 	public void setRootElement(CssElement rootElement) {
 		this.rootElement = rootElement;
 	}
+	
+	public String toString() {
+		return "Viewport";
+	}
 }

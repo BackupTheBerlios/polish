@@ -1,5 +1,6 @@
 package de.enough.skylight.renderer.builder;
 
+import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.util.ItemPreinit;
 import de.enough.skylight.dom.Document;
@@ -135,6 +136,9 @@ public class ViewportBuilder {
 				} 
 			} else {
 				parent.addToBody((Item)block);
+				
+				//#debug debug
+				System.out.println("added " + block + " to " + parent);
 			}
 			
 			BlockContainingBlock childBlock;
@@ -161,6 +165,9 @@ public class ViewportBuilder {
 					}
 				} else {
 					parent.addToBody(item);
+					
+					//#debug debug
+					System.out.println("added " + item + " to " + parent);
 				}
 			}
 		}

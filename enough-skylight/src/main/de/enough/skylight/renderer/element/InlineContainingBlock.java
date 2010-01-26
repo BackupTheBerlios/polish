@@ -20,6 +20,8 @@ public class InlineContainingBlock extends Container implements ContainingBlock,
 	
 	PartitionList blockPartitions;
 	
+	int[] itemOffsets;
+	
 	public InlineContainingBlock() {
 		this(null,null);
 	}
@@ -61,20 +63,38 @@ public class InlineContainingBlock extends Container implements ContainingBlock,
 		int maxHeight = 0;
 		int completeWidth = 0;
 		Item[] items = getItems();
+		
+		int length = items.length;
+		
+		this.itemOffsets = new int[length]; 
+		
+		boolean interactive = false;
 
-		for (int i = 0; i < items.length; i++) {
+		for (int i = 0; i < length; i++) {
 			Item item = items[i];
 			
 			initItem(item);
+			
+			if (item.appearanceMode != PLAIN) {
+				interactive = true;
+			}
 			
 			int itemHeight = item.itemHeight;
 			int itemWidth = item.itemWidth;
 			if (itemHeight > maxHeight ) {
 				maxHeight = itemHeight;
 			}
+			
 			item.relativeX = completeWidth;
 			item.relativeY = 0;
+			
+			this.itemOffsets[i] = completeWidth;
+			
 			completeWidth += itemWidth;
+		}
+		
+		if(interactive) {
+			setAppearanceMode(Item.INTERACTIVE);
 		}
 		
 		this.contentHeight = maxHeight;
@@ -106,8 +126,6 @@ public class InlineContainingBlock extends Container implements ContainingBlock,
 		}
 	}
 	
-	
-	
 	public BlockContainingBlock getParentBlock() {
 		return this.block;
 	}
@@ -135,4 +153,9 @@ public class InlineContainingBlock extends Container implements ContainingBlock,
 			super.paintContent(x, y, leftBorder, rightBorder, g);
 		}
 	}
+	
+	public String toString() {
+		return "InlineContainingBlock [" + this.element + "]";
+	}
+
 }

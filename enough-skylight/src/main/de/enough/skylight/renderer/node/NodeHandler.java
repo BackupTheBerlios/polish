@@ -14,6 +14,23 @@ public abstract class NodeHandler {
 		return new CssElement(this,node,parent, viewport);
 	}
 	
+	public void handle(CssElement element) {
+		handleNode(element);
+		
+		handleResources(element);
+		
+		handleInteraction(element);
+	}
+	
+	public void handleInteraction(CssElement element) {
+		DomNode node = element.getNode();
+		String onClick = NodeUtils.getAttributeValue(node, "onClick");
+		
+		if(onClick != null) {
+			element.setInteractive(true);
+		}
+	}
+	
 	public void handleResources(CssElement element) {
 		// handle node resources here
 	}

@@ -38,7 +38,7 @@ public class BlockContainingBlock extends Container implements ContainingBlock, 
 	}
 	
 	public BlockContainingBlock(CssElement element, Style style) {
-		super(false,style);
+		super( false, style );
 		
 		this.element = element;
 		
@@ -50,7 +50,7 @@ public class BlockContainingBlock extends Container implements ContainingBlock, 
 		
 		add(this.body);
 		
-		setAppearanceMode(Item.PLAIN);
+		//setAppearanceMode(Item.PLAIN);
 	}
 	
 	protected int getContentWidth(LineBoxList lineboxes) {
@@ -101,6 +101,9 @@ public class BlockContainingBlock extends Container implements ContainingBlock, 
 		
 		LineBoxLayout floatLeftLayout = null;
 		if(this.floatLeft != null) {
+			this.floatLeft.relativeX = 0;
+			this.floatLeft.relativeY = 0;
+			
 			PartitionList floatLeftPartitions = new PartitionList();
 			
 			this.floatLeft.partition(this, floatLeftPartitions);
@@ -116,6 +119,9 @@ public class BlockContainingBlock extends Container implements ContainingBlock, 
 		
 		LineBoxLayout floatRightLayout = null;
 		if(this.floatRight != null) {
+			this.floatRight.relativeX = 0;
+			this.floatRight.relativeY = 0;
+			
 			PartitionList floatRightPartitions = new PartitionList();
 			
 			this.floatRight.partition(this, floatRightPartitions);
@@ -131,6 +137,9 @@ public class BlockContainingBlock extends Container implements ContainingBlock, 
 		
 		PartitionList bodyPartitions = new PartitionList();
 		
+		this.body.relativeX = 0;
+		this.body.relativeY = 0;
+		
 		this.body.partition(this, bodyPartitions);
 		
 		bodyPartitions.sort();
@@ -140,7 +149,26 @@ public class BlockContainingBlock extends Container implements ContainingBlock, 
 		bodyLayout.addPartitions(bodyPartitions, this.body);
 		
 		this.bodyLines = bodyLayout.getLineBoxes();
-
+		
+		for (int i = 0; i < this.bodyLines.size(); i++) {
+			LineBox linebox = this.bodyLines.get(i);
+			
+			int top = linebox.getTop();
+			
+			PartitionList partitions = linebox.getPartitions();
+			for (int j = 0; j < partitions.size(); j++) {
+				Partition partition = partitions.get(j);
+				int x = partition.getLeft();
+				
+				Item parent = partition.getParent();
+				if(parent != null) {
+					System.out.println(parent);
+					System.out.println("x : " + (x - linebox.getLeft() + linebox.getOffset()));
+					System.out.println("y : " + top);
+				}
+			}
+		}
+		
 		if(this.element != null && (this.element.isFloat() || this.element.isParentFloat())) {
 			this.contentWidth = bodyLayout.getWidth();
 		} else {
@@ -256,5 +284,9 @@ public class BlockContainingBlock extends Container implements ContainingBlock, 
 
 	public void setParentBlock(BlockContainingBlock block) {
 		this.parentBlock = block;
+	}
+	
+	public String toString() {
+		return "BlockContainingBlock [" + this.element + "]";
 	}
 }

@@ -36,6 +36,8 @@ public class CssElement implements HtmlCssElement{
 	
 	ArrayList children;
 	
+	boolean interactive;
+	
 	static Style getStyle(NodeHandler handler, DomNode node) {
 		String clazz = NodeUtils.getAttributeValue(node, "class");
 		String tag = node.getNodeName();
@@ -71,7 +73,7 @@ public class CssElement implements HtmlCssElement{
 	}
 	
 	public void build() throws ClassCastException, IllegalArgumentException {
-		this.handler.handleNode(this);
+		this.handler.handle(this);
 		
 		this.style = getStyle(this.handler, this.node);
 		
@@ -118,9 +120,17 @@ public class CssElement implements HtmlCssElement{
 	
 	ContainingBlock createContainingBlock() {
 		if(isDisplay(HtmlCssElement.Display.BLOCK_LEVEL)) {
-			return new BlockContainingBlock(this, this.style);
+			BlockContainingBlock block = new BlockContainingBlock(this, this.style);
+			if(this.interactive) {
+				block.setAppearanceMode(Item.INTERACTIVE);
+			} 
+			return block;
 		} else {
-			return new InlineContainingBlock(this, this.style);
+			InlineContainingBlock block = new InlineContainingBlock(this, this.style);
+			if(this.interactive) {
+				block.setAppearanceMode(Item.INTERACTIVE);
+			} 
+			return block;
 		} 
 	}
 	
@@ -177,11 +187,19 @@ public class CssElement implements HtmlCssElement{
 		this.viewport = viewport;
 	}
 	
-	public String toString() {
-		return "Element [" + this.node.getNodeName() +"]";
-	}
-	
 	public Viewport getViewport() {
 		return this.viewport;
+	}
+	
+	public String toString() {
+		return "CssElement [" + this.node + "]";
+	}
+
+	public boolean isInteractive() {
+		return this.interactive;
+	}
+
+	public void setInteractive(boolean interactive) {
+		this.interactive = interactive;
 	}
 }

@@ -4,6 +4,7 @@ import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.benchmark.Benchmark;
+import de.enough.polish.ui.Item;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.StringTokenizer;
@@ -105,4 +106,8 @@ public class TextBlock extends StringItem implements Partable {
 		
 		g.drawSubstring(text, index, length, x + textXOffset, y, anchor);
 	}	
+	
+	public String toString() {
+		return "TextBlock [" + this.text + "]"; 
+	}
 }
