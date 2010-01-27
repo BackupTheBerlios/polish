@@ -661,5 +661,13 @@ public class ChoiceItem extends IconItem
 		return this.selected;
 	}
 
+	/**
+	 * Determines whether this choice is selected.
+	 * @return true when this choice is selected
+	 */
+	public boolean isSelected() {
+		return this.isSelected;
+	}
+
 
 }

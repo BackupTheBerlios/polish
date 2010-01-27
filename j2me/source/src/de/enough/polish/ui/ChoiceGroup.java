@@ -1013,6 +1013,11 @@ implements Choice
 			setInitialized(false);
 			repaint();
 		}
+		//#if polish.useNativeGui
+			if (this.nativeItem != null) {
+				this.nativeItem.onValueChanged(this, null);
+			}
+		//#endif
 	}
 
 	/**
@@ -1084,6 +1089,11 @@ implements Choice
 			setInitialized(false);
 			repaint();
 		}
+		//#if polish.useNativeGui
+			if (this.nativeItem != null) {
+				this.nativeItem.onValueChanged(this, null);
+			}
+		//#endif
 	}
 
 	/**

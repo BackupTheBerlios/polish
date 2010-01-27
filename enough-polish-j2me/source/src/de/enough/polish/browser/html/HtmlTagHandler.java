@@ -586,6 +586,7 @@ public class HtmlTagHandler
 				}
 				return false;
 			}
+			//#if polish.Browser.supportTextInput != false
 			else if (TAG_TEXT_AREA.equals(tagName)) 
 			{
 				parser.next();
@@ -621,6 +622,7 @@ public class HtmlTagHandler
 				}
 				return true;
 			}
+			//#endif
 			else if (TAG_BUTTON.equals(tagName) && this.currentForm != null) {
 				String name = (String) attributeMap.get(INPUT_NAME);
 				String value = (String) attributeMap.get(INPUT_VALUE);
@@ -662,7 +664,7 @@ public class HtmlTagHandler
 					if (this.formListener != null && name != null) {
 						value = this.formListener.verifyInitialFormValue(this.currentForm.getAction(),  name, value);
 					}
-
+					//#if polish.Browser.supportTextInput != false
 					if (INPUTTYPE_TEXT.equals(type) || INPUTTYPE_PASSWORD.equals(type))
 					{
 						//#style browserInput
@@ -683,7 +685,9 @@ public class HtmlTagHandler
 							textField.setAttribute(ATTR_VALUE, value);
 						}
 					}
-					else if (INPUTTYPE_SUBMIT.equals(type))
+					else
+					//#endif
+					if (INPUTTYPE_SUBMIT.equals(type))
 					{
 
 						if (value == null) {

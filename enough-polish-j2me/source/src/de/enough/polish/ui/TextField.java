@@ -1421,6 +1421,11 @@ public class TextField extends StringItem
 				//#endif
 			}
 		}
+		//#if polish.useNativeGui
+			if (this.nativeItem != null) {
+				this.nativeItem.onValueChanged(this, text);
+			}
+		//#endif
 		//#if tmp.useNativeTextBox
 			if (this.midpTextBox != null) {
 				this.midpTextBox.setString( text );
@@ -3007,6 +3012,11 @@ public class TextField extends StringItem
 	{
 		//#if tmp.usePredictiveInput
 			this.predictiveAccess.animateChoices(currentTime, repaintRegion );
+		//#endif
+		//#if polish.useNativeGui
+			if (this.nativeItem != null) {
+				this.nativeItem.animate(currentTime, repaintRegion);
+			}
 		//#endif
 		super.animate(currentTime, repaintRegion);
 	}
@@ -4800,6 +4810,23 @@ public class TextField extends StringItem
 		//#if polish.blackberry
 			this.setConstraints(this.constraints);
 		//#endif
+	}
+
+	/**
+	 * Checks if the textfield should accept the enter key as an input which results in a new line.
+	 * 
+	 * @return true if new lines should be ignored
+	 */
+	public boolean isNoNewLine() {
+		return this.noNewLine;
+	}
+
+	/**
+	 * Checks if this textfield is edtiable.
+	 * @return true when this field is editable
+	 */
+	public boolean isEditable() {
+		return ((this.constraints & TextField.UNEDITABLE) != TextField.UNEDITABLE);
 	}
 	
 //#ifdef polish.TextField.additionalMethods:defined

@@ -5220,4 +5220,37 @@ public final class UiAccess {
 		return item.getUiEventListener();
 	}
 	//#endif
+
+	//#if polish.usePolishGui
+	/**
+	 * Paints the content of the specified item.
+	 * 
+	 * @param item the item which content should be painted 
+	 * @param x the left start position
+	 * @param y the upper start position
+	 * @param leftBorder the left border, nothing must be painted left of this position
+	 * @param rightBorder the right border, nothing must be painted right of this position
+	 * @param g the Graphics on which this item should be painted.
+	 */
+	public static void paintContent(Item item, int x, int y, int leftBorder, int rightBorder, Graphics g) {
+		item.paintContent(x, y, leftBorder, rightBorder, g);
+	}
+	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Paints the content of the specified item.
+	 * 
+	 * @param item the item which content should be painted 
+	 * @param x the left start position
+	 * @param y the upper start position
+	 * @param leftBorder the left border, nothing must be painted left of this position
+	 * @param rightBorder the right border, nothing must be painted right of this position
+	 * @param g the Graphics on which this item should be painted.
+	 */
+	public static void paintContent(javax.microedition.lcdui.Item item, int x, int y, int leftBorder, int rightBorder, Graphics g) {
+		// ignore
+	}
+	//#endif
+
 }

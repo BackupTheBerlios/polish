@@ -513,7 +513,7 @@ public class Graphics extends Object
 
 	private boolean isContextPushed;
 	
-	protected Graphics() {
+	public Graphics() {
 		this.font = Font.getDefaultFont();
 		//#if polish.ScreenSize:defined
 			//#= this.clipWidth = ${polish.ScreenWidth}; 
@@ -1557,6 +1557,20 @@ public class Graphics extends Object
 			this.clipWidth = net.rim.device.api.ui.Graphics.getScreenWidth();
 			this.clipHeight = net.rim.device.api.ui.Graphics.getScreenHeight();
 		}
+	}
+
+	public
+	//#if true
+		//# Graphics
+	//#else
+		javax.microedition.lcdui.Graphics
+	//#endif
+	getMidpGraphics() {
+		//#if true
+			//# return this;
+		//#else
+			return null;
+		//#endif
 	}
 
 }

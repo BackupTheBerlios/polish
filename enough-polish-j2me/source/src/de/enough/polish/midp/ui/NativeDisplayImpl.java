@@ -158,10 +158,6 @@ public class NativeDisplayImpl implements NativeDisplay
 		this.display.setCurrent(dis);
 	}
 
-        public void setCurrent( javax.microedition.lcdui.Displayable dis ){
-            this.display.setCurrent(dis);
-        }
-        
 	public void setCurrentNative( javax.microedition.lcdui.Displayable dis ) {
 		this.display.setCurrent(dis);
 	}
@@ -198,9 +194,9 @@ public class NativeDisplayImpl implements NativeDisplay
 	}
 
 
-	public void notifyDisplayableChange(Displayable currentDisplayable, Displayable nextDisplayable) {
+	public boolean notifyDisplayableChange(Displayable currentDisplayable, Displayable nextDisplayable) {
 		//ignore
-		
+		return false;
 	}
 
 }

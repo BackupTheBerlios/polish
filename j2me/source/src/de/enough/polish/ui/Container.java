@@ -297,6 +297,11 @@ public class Container extends Item {
 		if (this.isShown) {
 			repaint();
 		}
+		//#if polish.useNativeGui
+			if (this.nativeItem != null) {
+				this.nativeItem.onValueChanged(this, item);
+			}
+		//#endif
 	}
 	
 
@@ -480,6 +485,11 @@ public class Container extends Item {
 		if (this.isShown) {
 			item.showNotify();
 		}
+		//#if polish.useNativeGui
+			if (this.nativeItem != null) {
+				this.nativeItem.onValueChanged(this, item);
+			}
+		//#endif
 		return last;
 	}
 	
@@ -581,6 +591,11 @@ public class Container extends Item {
 			}
 		}
 		repaint();
+		//#if polish.useNativeGui
+			if (this.nativeItem != null) {
+				this.nativeItem.onValueChanged(this, removedItem);
+			}
+		//#endif
 		return removedItem;
 	}
 	

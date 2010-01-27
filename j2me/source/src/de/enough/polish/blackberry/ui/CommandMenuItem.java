@@ -31,6 +31,7 @@ import de.enough.polish.ui.Command;
 import de.enough.polish.ui.CommandListener;
 import de.enough.polish.ui.Display;
 import de.enough.polish.ui.Displayable;
+import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.UiAccess;
 import net.rim.device.api.ui.MenuItem;
@@ -44,7 +45,8 @@ import net.rim.device.api.ui.MenuItem;
 public class CommandMenuItem extends MenuItem {
 
 	final Command cmd;
-	private final Displayable displayable;
+	private Displayable displayable;
+	private Item item;
 
 	/**
 	 * @param cmd 
@@ -57,16 +59,30 @@ public class CommandMenuItem extends MenuItem {
 	}
 
 
+	public CommandMenuItem(Command cmd, Item item) {
+		super(cmd.getLabel(), cmd.getPriority(), cmd.getPriority() );
+		this.cmd = cmd;
+		this.item = item;
+	}
+
+
 	/* (non-Javadoc)
 	 * @see java.lang.Runnable#run()
 	 */
 	public void run() {
-		if (this.displayable instanceof Screen) {
-			UiAccess.handleCommand((Screen)this.displayable, this.cmd);
-		} else if (this.displayable instanceof CommandListener) {
-			((CommandListener)this.displayable).commandAction(this.cmd, this.displayable);
-//		} else {
-//			Display.getInstance().commandAction(this.cmd, this.displayable);
+		if (this.displayable != null) {
+			if (this.displayable instanceof Screen) {
+				UiAccess.handleCommand((Screen)this.displayable, this.cmd);
+			} else if (this.displayable instanceof CommandListener) {
+				((CommandListener)this.displayable).commandAction(this.cmd, this.displayable);
+	//		} else {
+	//			Display.getInstance().commandAction(this.cmd, this.displayable);
+			}
+		} else {
+			boolean handled = UiAccess.handleCommand(this.item, this.cmd);
+			if (!handled) {
+				UiAccess.handleCommand(this.item.getScreen(), this.cmd);
+			}
 		}
 	}
 

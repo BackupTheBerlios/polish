@@ -537,7 +537,8 @@ public interface NativeDisplay
 	 * Informs the native implementation about a change of displays
 	 * @param currentDisplayable the current displayed screen
 	 * @param nextDisplayable the next displayed screen
+	 * @return true when processing should be stopped
 	 */
-	public void notifyDisplayableChange(Displayable currentDisplayable, Displayable nextDisplayable);
+	public boolean notifyDisplayableChange(Displayable currentDisplayable, Displayable nextDisplayable);
 
 }

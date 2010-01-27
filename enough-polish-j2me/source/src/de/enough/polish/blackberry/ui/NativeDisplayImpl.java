@@ -26,16 +26,26 @@
  */
 package de.enough.polish.blackberry.ui;
 
+import javax.microedition.lcdui.AlertType;
+
 import de.enough.polish.blackberry.midlet.MIDlet;
+import de.enough.polish.blackberry.nativeui.FormScreen;
+import de.enough.polish.ui.Alert;
+import de.enough.polish.ui.AnimationThread;
 import de.enough.polish.ui.Display;
 import de.enough.polish.ui.Displayable;
+import de.enough.polish.ui.Form;
 import de.enough.polish.ui.NativeDisplay;
+import de.enough.polish.ui.NativeScreen;
+import de.enough.polish.ui.StyleSheet;
 
 //#if blackberry.certificate.dir:defined
 	import net.rim.device.api.system.Backlight;
 //#endif
 
 import net.rim.device.api.system.Application;
+import net.rim.device.api.ui.UiApplication;
+import net.rim.device.api.ui.component.Dialog;
 
 /**
  * <p>Integrates native blackberry functions.</p>
@@ -171,10 +181,46 @@ public class NativeDisplayImpl implements NativeDisplay
 		return false;
 	}
 
-	public void notifyDisplayableChange(Displayable currentDisplayable, Displayable nextDisplayable) {
+	public boolean notifyDisplayableChange(Displayable currentDisplayable, Displayable nextDisplayable) {
     	// remove all fields but the dummy field:
 		BaseScreen screen = (BaseScreen)(Object)Display.getInstance();
 		screen.notifyDisplayableChange( currentDisplayable, nextDisplayable );
+		//#if polish.useNativeGui
+			if (nextDisplayable instanceof Form) {
+				Form polishForm = (Form)nextDisplayable;
+				FormScreen bbForm = (FormScreen) polishForm.getNativeScreen();
+				if (bbForm == null) {
+					FormScreen form = new FormScreen( polishForm );
+					polishForm.setNativeScreen(form);
+				}
+		        Object lock = Application.getEventLock();
+		        synchronized (lock) {
+		        	if (screen.isDisplayed()) {
+		        		this.midlet.popScreen(screen);
+		        	}
+		        	this.midlet.pushScreen(bbForm);
+		        }
+		        StyleSheet.currentScreen = polishForm;
+				if (StyleSheet.animationThread == null) {
+					StyleSheet.animationThread = new AnimationThread();
+					StyleSheet.animationThread.start();
+				}
+				return true;
+			} else if (nextDisplayable instanceof Alert) {
+				Alert alert = (Alert) nextDisplayable;
+				String text =  alert.getString();
+				if (text == null) {
+					text = alert.getTitle();
+				}
+				if (alert.getType() == AlertType.INFO) {
+					Dialog.inform( text );
+				} else {
+					Dialog.alert( text );
+				}
+				return true;
+			}
+		//#endif
+		return false;
 	}
 
 	public void setCurrent(Displayable nextDisplayable) {

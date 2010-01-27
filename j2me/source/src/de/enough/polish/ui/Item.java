@@ -868,6 +868,9 @@ public abstract class Item implements UiElement, Animatable
 		private int gestureStartY;
 		private boolean isIgnorePointerReleaseForGesture;
 	//#endif
+	//#if polish.useNativeGui
+		protected NativeItem nativeItem;
+	//#endif
 	private UiEventListener uiEventListener;
 
 
@@ -5425,6 +5428,28 @@ public abstract class Item implements UiElement, Animatable
 		return listener;
 	}
 	
+	//#if polish.useNativeGui
+		/**
+		 * Species a native implementation for this item.
+		 * This method is only available when the preprocessing variable polish.useNativeGui is set to true.
+		 * @param nativeItem the native implementation
+		 */
+		public void setNativeItem( NativeItem nativeItem ) {
+			this.nativeItem = nativeItem;
+		}
+	//#endif
+
+	//#if polish.useNativeGui
+		/**
+		 * Species a native implementation for this item.
+		 * This method is only available when the preprocessing variable polish.useNativeGui is set to true.
+		 * @return the native implementation, can be null
+		 */
+		public NativeItem getNativeItem() {
+			return this.nativeItem;
+		}
+	//#endif
+
 //#ifdef polish.Item.additionalMethods:defined
 	//#include ${polish.Item.additionalMethods}
 //#endif

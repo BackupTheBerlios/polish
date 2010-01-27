@@ -1155,10 +1155,11 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 		// TODO implement getBestImageHeight
 	}
 
-	public void notifyDisplayableChange(
+	public boolean notifyDisplayableChange(
 			de.enough.polish.ui.Displayable currentDisplayable2,
-			de.enough.polish.ui.Displayable nextDisplayable) {
-		//
+			de.enough.polish.ui.Displayable nextDisplayable) 
+	{
+		return false;
 	}
 
 	public void setCurrent(de.enough.polish.ui.Display nextDisplayable) {

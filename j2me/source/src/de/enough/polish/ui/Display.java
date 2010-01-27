@@ -619,9 +619,9 @@ public class Display
 	private Displayable nextOrCurrentDisplayable;
 		
 	//#if polish.build.classes.NativeDisplay:defined
-		//#= private Display( MIDlet midlet, ${polish.build.classes.NativeDisplay} nativeDisplay ) {
+		//#= protected Display( MIDlet midlet, ${polish.build.classes.NativeDisplay} nativeDisplay ) {
 	//#else
-		private Display( MIDlet midlet, NativeDisplay nativeDisplay ) {
+		protected Display( MIDlet midlet, NativeDisplay nativeDisplay ) {
 	//#endif
 		this.midlet = midlet;
 		this.nativeDisplay = nativeDisplay;
@@ -932,7 +932,10 @@ public class Display
 		//#endif
 		
 		//#if polish.blackberry
-			this.nativeDisplay.notifyDisplayableChange( this.currentDisplayable, nextDisplayable );
+			if (this.nativeDisplay.notifyDisplayableChange( this.currentDisplayable, nextDisplayable )) {
+				this.currentDisplayable = null;
+				return;
+			}
 		//#endif
 		if (nextDisplayable == this.currentDisplayable) {
 			repaint();

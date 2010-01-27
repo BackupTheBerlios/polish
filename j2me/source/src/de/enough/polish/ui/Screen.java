@@ -381,6 +381,9 @@ implements UiElement, Animatable
 	//#if polish.css.screen-change-animation	
 		protected boolean enableScreenChangeAnimation = true;
 	//#endif
+	//#if polish.useNativeGui
+		private NativeScreen nativeScreen;
+	//#endif
 	private UiEventListener uiEventListener;
 	
 	/**
@@ -1987,6 +1990,11 @@ implements UiElement, Animatable
 	 * @param repaintRegion the repaint area that needs to be updated when this item is animated
 	 */
 	public void animate( long currentTime, ClippingRegion repaintRegion) {
+		//#if polish.useNativeGui
+			if (this.nativeScreen != null) {
+				this.nativeScreen.animate(currentTime, repaintRegion);
+			}
+		//#endif
 		if (!this.isInitialized) {
 			return;
 		}
@@ -6264,6 +6272,28 @@ implements UiElement, Animatable
 	public UiEventListener getUiEventListener() {
 		return this.uiEventListener;
 	}
+	
+	//#if polish.useNativeGui
+		/**
+		 * Species a native implementation for this screen.
+		 * This method is only available when the preprocessing variable polish.useNativeGui is set to true.
+		 * @param nativeScreen the native implementation
+		 */
+		public void setNativeScreen( NativeScreen nativeScreen ) {
+			this.nativeScreen = nativeScreen;
+		}
+	//#endif
+	
+	//#if polish.useNativeGui
+		/**
+		 * Species a native implementation for this screen.
+		 * This method is only available when the preprocessing variable polish.useNativeGui is set to true.
+		 * @return the native implementation, can be null
+		 */
+		public NativeScreen getNativeScreen() {
+			return this.nativeScreen;
+		}
+	//#endif
 
 
 //#ifdef polish.Screen.additionalMethods:defined
