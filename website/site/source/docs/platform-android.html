@@ -268,4 +268,12 @@ The solution: Your MIDlet needs a package hierarchy of at least two. Add a packa
 package foo.bar;
 </pre>
 
+<h3 id="android-troubleshooting-packagehierarchy">Failure [-12]</h3>
+<p>
+The problem: When you build for the Android platform, you get the error <code>message Failure [-12]</code>.
+</p>
+<p>
+The solution: Your <code>android.home</code> points to an old Android SDK version. Please upgrade your Android installation and point the build property <code>android.home</code> to this upgraded installation.
+</p>
+
 <%include end.txt %>
