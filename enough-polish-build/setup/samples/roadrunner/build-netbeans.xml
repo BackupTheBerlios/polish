@@ -96,7 +96,7 @@
 				description="A frogger clone." 
 				vendorName="Enough Software"
 				infoUrl="http://www.j2mepolish.org"
-				icon="dot.png"
+				icon="icon.png"
 				jarName="${polish.vendor}-${polish.name}-${polish.locale}-roadrunner.jar" 
 				jarUrl="${deploy-url}${polish.jarName}" 
 				copyright="Copyright 2005 - 2010 Enough Software. All rights reserved."
