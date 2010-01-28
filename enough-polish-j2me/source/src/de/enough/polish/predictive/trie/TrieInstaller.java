@@ -104,7 +104,11 @@ public class TrieInstaller {
 					byteStream.write(TrieUtils.charToByte(childReference));
 				}
 			}
-		}catch(EOFException e){}
+		}
+		catch(EOFException e)
+		{
+			// Do nothing.
+		}
 		
 		return byteStream.toByteArray();
 	}
