@@ -190,7 +190,7 @@ public class BlackBerryEmulator extends Emulator {
         return executable;
     }
 
-    class DirectoryFilter implements FileFilter {
+    static class DirectoryFilter implements FileFilter {
 
         private final String requiredName;
 
