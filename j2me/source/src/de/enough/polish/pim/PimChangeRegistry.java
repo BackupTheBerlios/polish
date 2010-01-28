@@ -76,7 +76,7 @@ public class PimChangeRegistry {
 						}
 					}
 				}
-				if(flag == false) {
+				if(!flag) {
 					addedContacts.add(this.pimUtility.findContactByUid(pimContact.getUid()));
 				}
 			}
@@ -144,7 +144,7 @@ public class PimChangeRegistry {
 						}
 					}
 				}
-				if(flag == true) {
+				if(flag) {
 					removedContacts.addElement(changedItem.getUid());
 				}
 			}
@@ -176,7 +176,7 @@ public class PimChangeRegistry {
 						}
 					}
 				}
-				if(flag == false) {
+				if(!flag) {
 					addedEvents.add(this.pimUtility.findEventByUid(calendarEntry.getId()));
 				}
 			}
@@ -243,7 +243,7 @@ public class PimChangeRegistry {
 						}
 					}
 				}
-				if(flag == true) {
+				if(flag) {
 					removedEvents.addElement(changedItem.getUid());
 				}
 			}
@@ -276,7 +276,7 @@ public class PimChangeRegistry {
 						}
 					}
 				}
-				if(flag == false) {
+				if(!flag) {
 					addedToDos.add(this.pimUtility.findToDoByUid(pimToDo.getUid()));
 				}
 			}
@@ -342,7 +342,7 @@ public class PimChangeRegistry {
 						}
 					}
 				}
-				if(flag == true) {
+				if(flag) {
 					removedToDos.addElement(changedItem.getUid());
 				}
 			}
@@ -359,7 +359,7 @@ public class PimChangeRegistry {
 			this.storage.delete("PimItems");
 			this.createSnapShot();
 		}  catch (Exception e) {
-			
+			// Ignored.
 		}	
 	}
 	
