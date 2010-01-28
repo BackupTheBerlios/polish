@@ -117,7 +117,7 @@ public class FileSystemRegistry extends java.lang.Object
 	 */
     public static java.util.Enumeration listRoots()
     {
-        File files[];
+        File[] files;
         try
         {
             files=File.listRoots();
@@ -139,6 +139,4 @@ public class FileSystemRegistry extends java.lang.Object
         }                 
         return v.elements();
     }
-
-
 }

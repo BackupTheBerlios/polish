@@ -131,7 +131,7 @@ implements FileConnection
 
     public Enumeration list() throws IOException
     {
-        String files[]=this.file.list();        
+        String[] files = this.file.list();        
         Vector v=new Vector(files.length);
         for (int i = 0; i < files.length; i++) {
 			v.addElement(files[i]);
