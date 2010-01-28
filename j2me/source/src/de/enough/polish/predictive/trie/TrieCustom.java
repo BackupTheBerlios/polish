@@ -109,7 +109,7 @@ public class TrieCustom {
 						}
 					}
 					
-					if(relevant == true)
+					if(relevant)
 					{
 						words.add(getWord(this.bytes, i));
 					}
