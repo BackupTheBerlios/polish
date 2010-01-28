@@ -642,7 +642,7 @@ public class StringItem extends Item
 					//#endif
 					for (int i = 0; i < lines.length; i++) {
 						String line = lines[i];
-						g.drawString( line, lineX, lineY, orientation );
+						drawString( line, lineX, lineY, orientation, g );
 						lineY += lineHeight;
 					}
 			//#if tmp.useTextEffect
@@ -654,6 +654,16 @@ public class StringItem extends Item
 				}
 			//#endif
 		}
+	}
+	
+	/**
+	 * @param line
+	 * @param x
+	 * @param y
+	 * @param anchor
+	 */
+	public void drawString(String line, int x, int y, int anchor, Graphics g) {
+		g.drawString( line, x, y, anchor );
 	}
 	
 	/**
