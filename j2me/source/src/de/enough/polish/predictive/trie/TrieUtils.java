@@ -3,9 +3,9 @@ package de.enough.polish.predictive.trie;
 
 public class TrieUtils {
 	
-	static byte charBuffer[] = new byte[2];
-	static byte integerBuffer[] = new byte[4];
-	static byte byteBuffer[] = new byte[1];
+	static byte[] charBuffer = new byte[2];
+	static byte[] integerBuffer = new byte[4];
+	static byte[] byteBuffer = new byte[1];
 		
 	private TrieUtils(){}
 	

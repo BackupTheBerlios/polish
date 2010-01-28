@@ -221,10 +221,10 @@ public class GZipOutputStream extends OutputStream {
 		this.crc32 = ZipHelper.crc32(this.crc32Table, this.crc32, bb, 0, 1);
 		
 	}
-    public void write(byte b[]) throws IOException {
+    public void write(byte[] b) throws IOException {
     	write(b, 0, b.length);
     }
-    public void write(byte b[], int off, int len) throws IOException {
+    public void write(byte[] b, int off, int len) throws IOException {
     	int processed=0; 
 
     	// refresh checksum
@@ -447,8 +447,8 @@ public class GZipOutputStream extends OutputStream {
     	}
     	
     	// process the inputbuffer
-    	int pointer[] = new int[2];
-    	int lastpointer[] = new int[2];
+    	int[] pointer = new int[2];
+    	int[] lastpointer = new int[2];
     	
     	int distance;
     	int length;

@@ -12,11 +12,11 @@ import de.enough.polish.ui.Background;
 
 
 public class BallBackground extends Background {
-	private transient int directionArray[][] = {{1,5,8},{3,7,8}, {2,5,6}, {4,6,7}};
-	private int color,borderColor,roundWidth ,  roundHeight ,number;
+	private transient int[][] directionArray = {{1,5,8},{3,7,8}, {2,5,6}, {4,6,7}};
+	private int color, borderColor, roundWidth, roundHeight, number, width, height;
 	private transient Random random;
 	private boolean gameover;
-	private int  changeX[],changeY[],detective[],width, height,direction[];
+	private int[] changeX, changeY, detective, direction;
 	//private final String imageURL;
 	private transient Sprite[] sprite;
 //	x--{1,5,8}, y--{2,5,6}, y++{3,7,8}, x++{4,6,7}

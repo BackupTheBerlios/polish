@@ -620,7 +620,7 @@ public class GZipInputStream extends InputStream {
     	System.out.println("refillSmallCodeBuffer");
     	
     	// (re)fill this.smallBuffer reading this.inStream
-    	if (this.inStreamEnded==false){
+    	if (!this.inStreamEnded){
 	    	
 	    	int wanted=(int)(BL-this.smallCodeBuffer[1]/8-1);
 	    	int count= this.inStream.read(this.tmpRef,0,wanted);
@@ -662,7 +662,7 @@ public class GZipInputStream extends InputStream {
     	//#debug
     	System.out.println("skip(" + n + ")");
     	long skipped=0;
-    	byte b[]=new byte[this.buffsize];
+    	byte[] b=new byte[this.buffsize];
     	
 		while(skipped<n && this.status != GZipInputStream.FINISHED){
 			skipped+=this.read(b);
@@ -683,14 +683,14 @@ public class GZipInputStream extends InputStream {
 		}
 	}
 	
-    public int read(byte b[]) throws IOException {
+    public int read(byte[] b) throws IOException {
     	return read(b, 0, b.length);
     }
     
     /* (non-Javadoc)
      * @see java.io.InputStream#read(byte[], int, int)
      */
-    public int read(byte b[], int off, int len) throws IOException  {
+    public int read(byte[] b, int off, int len) throws IOException  {
     	//#debug
     	System.out.println("read[byte[],off,len)");
     	// inflate as much as possible
