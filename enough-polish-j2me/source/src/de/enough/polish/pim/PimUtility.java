@@ -1672,9 +1672,9 @@ public class PimUtility {
 	 */
 	public String[] getFieldLabelsOfContactList(String nameOfList) throws PIMException {
 		ContactList contactList= this.getContactList(nameOfList);
-		int fields[] = contactList.getSupportedFields();
+		int[] fields = contactList.getSupportedFields();
 		
-		String fieldLabels[] = new String[fields.length];
+		String[] fieldLabels = new String[fields.length];
 		for(int i = 0 ; i < fields.length ; i++) {
 			fieldLabels[i] = contactList.getFieldLabel(fields[i]);
 		}
@@ -1689,8 +1689,8 @@ public class PimUtility {
 	 */
 	public String[] getFieldLabelsOfEventList(String nameOfList) throws PIMException {
 		EventList eventList= this.getEventList(nameOfList);
-		int fields[] = eventList.getSupportedFields();
-		String fieldLabels[] = new String[fields.length];
+		int[] fields = eventList.getSupportedFields();
+		String[] fieldLabels = new String[fields.length];
 		for(int i = 0 ; i < fields.length ; i++) {
 			fieldLabels[i] = eventList.getFieldLabel(fields[i]);
 		}
@@ -1704,8 +1704,8 @@ public class PimUtility {
 	 */
 	public String[] getFieldLabelsOfToDoList(String nameOfList) throws PIMException {
 		ToDoList toDoList = this.getToDoList(nameOfList);
-		int fields[] = toDoList.getSupportedFields();
-		String fieldLabels[] = new String[fields.length];
+		int[] fields = toDoList.getSupportedFields();
+		String[] fieldLabels = new String[fields.length];
 		for(int i = 0 ; i < fields.length ; i++) {
 			fieldLabels[i] = toDoList.getFieldLabel(fields[i]);
 		}
@@ -1801,7 +1801,7 @@ public class PimUtility {
 	        String label = contactList.getFieldLabel(field);
 	        if(dataType == PIMItem.STRING_ARRAY) {
 	        	if(fieldLabel.equals(label)) {
-	        		int supportedArrayElements[] = contactList.getSupportedArrayElements(field);
+	        		int[] supportedArrayElements = contactList.getSupportedArrayElements(field);
 	        		arrayElementNames = new String[supportedArrayElements.length];
 	        		for(int j = 0 ; j < supportedArrayElements.length ; j++) {
 	        			arrayElementNames[j] = contactList.getArrayElementLabel(field, supportedArrayElements[j]);
@@ -1834,7 +1834,7 @@ public class PimUtility {
 	        String label = contactList.getFieldLabel(field);
 	        
 	        if(fieldLabel.equals(label)) {
-	        	int supportedAttributes[] = contactList.getSupportedAttributes(field);
+	        	int[] supportedAttributes = contactList.getSupportedAttributes(field);
         		if(supportedAttributes != null) {
 	        		attributeNames = new String[supportedAttributes.length];
 	        		for(int j = 0 ; j < supportedAttributes.length ; j++) {
@@ -1870,7 +1870,7 @@ public class PimUtility {
 	        String label = eventList.getFieldLabel(field);
 	        if(dataType == PIMItem.STRING_ARRAY) {
 	        	if(fieldLabel.equals(label)) {
-	        		int supportedArrayElements[] = eventList.getSupportedArrayElements(field);
+	        		int[] supportedArrayElements = eventList.getSupportedArrayElements(field);
 	        		arrayElementNames = new String[supportedArrayElements.length];
 	        		for(int j = 0 ; j < supportedArrayElements.length ; j++) {
 	        			arrayElementNames[j] = eventList.getArrayElementLabel(field, supportedArrayElements[j]);
@@ -1902,7 +1902,7 @@ public class PimUtility {
 	        // Get the field's data type
 	        String label = eventList.getFieldLabel(field);
 	        if(fieldLabel.equals(label)) {
-	        	int supportedAttributes[] = eventList.getSupportedAttributes(field);
+	        	int[] supportedAttributes = eventList.getSupportedAttributes(field);
 	        	if(supportedAttributes != null) {
 	        		attributeNames = new String[supportedAttributes.length];
 	        		for(int j = 0 ; j < supportedAttributes.length ; j++) {
@@ -1938,7 +1938,7 @@ public class PimUtility {
 	        String label = toDoList.getFieldLabel(field);
 	        if(dataType == PIMItem.STRING_ARRAY) {
 	        	if(fieldLabel.equals(label)) {
-	        		int supportedArrayElements[] = toDoList.getSupportedArrayElements(field);
+	        		int[] supportedArrayElements = toDoList.getSupportedArrayElements(field);
 	        		arrayElementNames = new String[supportedArrayElements.length];
 	        		for(int j = 0 ; j < supportedArrayElements.length ; j++) {
 	        			arrayElementNames[j] = toDoList.getArrayElementLabel(field, supportedArrayElements[j]);
@@ -1971,7 +1971,7 @@ public class PimUtility {
 	        String label = toDoList.getFieldLabel(field);
 	        
 	        if(fieldLabel.equals(label)) {
-        		int supportedAttributes[] = toDoList.getSupportedAttributes(field);
+        		int[] supportedAttributes = toDoList.getSupportedAttributes(field);
 	        	if(supportedAttributes != null) {
 	        		attributeNames = new String[supportedAttributes.length];
 	        		for(int j = 0 ; j < supportedAttributes.length ; j++) {
