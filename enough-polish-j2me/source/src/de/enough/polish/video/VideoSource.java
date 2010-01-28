@@ -2,7 +2,6 @@
 package de.enough.polish.video;
 
 import de.enough.polish.snapshot.SnapshotUtil;
-import de.enough.polish.video.VideoCallback;
 
 import java.io.IOException;
 import java.io.InputStream;
