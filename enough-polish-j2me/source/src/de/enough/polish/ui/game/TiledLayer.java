@@ -55,7 +55,7 @@ import javax.microedition.lcdui.Image;
  * convenient for the game developer.
  * <br>
  * <center><img src="doc-files/tiles.gif" width=588 height=412
- * ALT="Tiles"></center>
+ * ALT="Tiles" /></center>
  * <br>
  * Each tile is assigned a unique index number.  The tile located in
  * the upper-left corner
@@ -114,7 +114,7 @@ import javax.microedition.lcdui.Image;
  * created using a TiledLayer.
  * <br>
  * <center><img src="doc-files/grid.gif" width=735 height=193
- * ALT="TiledLayer Grid"></center>
+ * ALT="TiledLayer Grid" /></center>
  * <br>
  * In this example, the area of water is filled with an animated tile
  * having an index of -1, which
@@ -124,7 +124,7 @@ import javax.microedition.lcdui.Image;
  * 7)</code>.
  * <br>
  * <center><img src="doc-files/grid2.gif" width=735 height=193
- * ALT="TiledLayer Grid 2"></center>
+ * ALT="TiledLayer Grid 2" /></center>
  * <br>
  * <h3>Rendering a TiledLayer</h3>
  * A TiledLayer can be rendered by manually calling its paint method;

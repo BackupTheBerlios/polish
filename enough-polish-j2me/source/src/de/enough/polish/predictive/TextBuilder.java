@@ -380,6 +380,7 @@ public abstract class TextBuilder {
 	 * If the current align is <code>ALIGN_FOCUS</code>, the align is set to
 	 * <code>ALIGN_LEFT</code>.
 	 * </p>
+	 * <p>
 	 * If the current align is <code>ALIGN_RIGHT</code> or
 	 * <code>ALIGN_RIGHT</code> and the element is not the last element in
 	 * <code>textElements</code>, the align is set to

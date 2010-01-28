@@ -53,8 +53,7 @@ import javax.microedition.lcdui.Image;
  * be stored in several different arrangements depending on what is the most
  * convenient for the game developer.
  * <br>
- * <center><img src="doc-files/frames.gif" width=777 height=402
- * ALT="Sprite Frames"></center>
+ * <center><img src="doc-files/frames.gif" width=777 height=402 ALT="Sprite Frames" /></center>
  * <br>
  * <p>
  * Each frame is assigned a unique index number.  The frame located in the
@@ -69,8 +68,7 @@ import javax.microedition.lcdui.Image;
  * frame index.  This also means that the length of the default frame sequence
  * is equal to the number of raw frames.  For example, if a Sprite has 4
  * frames, its default frame sequence is {0, 1, 2, 3}.
- * <center><img src="doc-files/defaultSequence.gif" width=182 height=269
- * ALT="Default Frame Sequence"></center>
+ * <center><img src="doc-files/defaultSequence.gif" width=182 height=269 ALT="Default Frame Sequence" /></center>
  * The developer must manually switch the current frame in the frame sequence.
  * This may be accomplished by calling <A HREF="../../../../javax/microedition/lcdui/game/Sprite.html#setFrame(int)"><CODE>setFrame(int)</CODE></A>,
  * <A HREF="../../../../javax/microedition/lcdui/game/Sprite.html#prevFrame()"><CODE>prevFrame()</CODE></A>, or <A HREF="../../../../javax/microedition/lcdui/game/Sprite.html#nextFrame()"><CODE>nextFrame()</CODE></A>.  Note that these methods
@@ -86,12 +84,11 @@ import javax.microedition.lcdui.Image;
  * used to animate a mosquito.  The frame sequence is designed so that the
  * mosquito flaps its wings three times and then pauses for a moment before
  * the cycle is repeated.
- * <center><img src="doc-files/specialSequence.gif" width=346 height=510
- * ALT="Special Frame Sequence"></center>
+ * <center><img src="doc-files/specialSequence.gif" width=346 height=510 ALT="Special Frame Sequence" /></center>
  * By calling <A HREF="../../../../javax/microedition/lcdui/game/Sprite.html#nextFrame()"><CODE>nextFrame()</CODE></A> each time the display is updated, the
  * resulting animation would like this:
  * <br>
- * <center><img src="doc-files/sequenceDemo.gif" width=96 height=36></center>
+ * <center><img src="doc-files/sequenceDemo.gif" width=96 height=36 /></center>
  * <h3>Reference Pixel</h3>
  * Being a subclass of Layer, Sprite inherits various methods for setting and
  * retrieving its location such as <A HREF="../../../../javax/microedition/lcdui/game/Layer.html#setPosition(int, int)"><CODE>setPosition(x,y)</CODE></A>,
@@ -111,8 +108,7 @@ import javax.microedition.lcdui.Image;
  * In this example, the reference pixel is defined to be the pixel that
  * the monkey appears to be hanging from:
  * <p>
- * <center><img src="doc-files/refpixel.gif" width=304 height=199
- * ALT="Defining The Reference Pixel"></center>
+ * <center><img src="doc-files/refpixel.gif" width=304 height=199 ALT="Defining The Reference Pixel" /></center>
  * <p>
  * <A HREF="../../../../javax/microedition/lcdui/game/Sprite.html#getRefPixelX()"><CODE>getRefPixelX()</CODE></A> and <A HREF="../../../../javax/microedition/lcdui/game/Sprite.html#getRefPixelY()"><CODE>getRefPixelY()</CODE></A>
  * can be used to query the location of the reference pixel in the painter's
@@ -126,8 +122,7 @@ import javax.microedition.lcdui.Image;
  * of a tree branch; the Sprite's location changes so that the reference pixel
  * appears at this point and the monkey appears to be hanging from the branch:
  * <p>
- * <center><img src="doc-files/setrefposition.gif" width=332 height=350
- * ALT="Setting The Reference Pixel Position"></center>
+ * <center><img src="doc-files/setrefposition.gif" width=332 height=350 ALT="Setting The Reference Pixel Position" /></center>
  * <p>
  * <a name="transforms"></a>
  * <h3>Sprite Transforms</h3>
@@ -136,8 +131,7 @@ import javax.microedition.lcdui.Image;
  * the vertical axis) versions of each of the rotations.  A Sprite's transform
  * is set by calling <A HREF="../../../../javax/microedition/lcdui/game/Sprite.html#setTransform(int)"><CODE>setTransform(transform)</CODE></A>.
  * <p>
- * <center><img src="doc-files/transforms.gif" width=355 height=575
- * ALT="Transforms"></center>
+ * <center><img src="doc-files/transforms.gif" width=355 height=575 ALT="Transforms" /></center>
  * <br>
  * When a transform is applied, the Sprite is automatically repositioned
  * such that the  reference pixel appears stationary in the painter's
@@ -153,8 +147,7 @@ import javax.microedition.lcdui.Image;
  * is applied, thereby making it appear as if the monkey is swinging
  * from the branch:
  * <p>
- * <center><img src="doc-files/transcenter.gif" width=333 height=350
- * ALT="Transform Center"></center>
+ * <center><img src="doc-files/transcenter.gif" width=333 height=350 ALT="Transform Center" /></center>
  * <p>
  * <h3>Sprite Drawing</h3>
  * Sprites can be drawn at any time using the <A HREF="../../../../javax/microedition/lcdui/game/Sprite.html#paint(javax.microedition.lcdui.Graphics)"><CODE>paint(Graphics)</CODE></A> method.
