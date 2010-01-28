@@ -239,7 +239,7 @@ public class ColorConverter {
 		buffer.append("0x");
 		for (int i = 0; i < numbers.length; i++) {
 			String numberStr = numbers[i];
-			boolean isPercentage = (numberStr.charAt( numberStr.length() - 1) == '%');
+			boolean isPercentage = numberStr.charAt( numberStr.length() - 1) == '%';
 			int number = -1;			
 			try {
 				if (isPercentage) {
@@ -272,10 +272,11 @@ public class ColorConverter {
 	 */
 	public void oldSetTemporaryColors( Map newColors ) {
 		this.tempColors = new HashMap();
-		Set keys = newColors.keySet();
+		Set keys = newColors.entrySet();
 		for (Iterator iter = keys.iterator(); iter.hasNext();) {
-			String colorName = (String) iter.next();
-			HashMap map = (HashMap) newColors.get( colorName );
+			Map.Entry entry = (Map.Entry) iter.next();
+			String colorName = (String) entry.getKey();
+			HashMap map = (HashMap) entry.getValue();
 			String color = (String) map.get(colorName);
 			this.tempColors.put( colorName, parseColor( color ));
 		}
@@ -365,10 +366,9 @@ public class ColorConverter {
 	 * @return true when the color has an alpha channel defined.
 	 */
 	public boolean isAlphaColor( String color ) {
-		return (color.startsWith( "0x") 
+		return color.startsWith( "0x") 
 				&& color.length() > "0xRRGGBB".length() 
-				&& !color.startsWith("0xff"));
-		
+				&& !color.startsWith("0xff");
 	}
 
 	/**
