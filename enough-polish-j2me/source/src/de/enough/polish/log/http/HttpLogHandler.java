@@ -205,6 +205,7 @@ public class HttpLogHandler extends LogHandler implements Runnable
 			}
 			catch(IOException exc)
 			{
+				// Stream is already closed.
 			}
 		}
 		if(os != null)
@@ -215,6 +216,7 @@ public class HttpLogHandler extends LogHandler implements Runnable
 			}
 			catch(IOException exc)
 			{
+				// Stream is already closed.
 			}
 		}
 		if(c != null)
@@ -225,6 +227,7 @@ public class HttpLogHandler extends LogHandler implements Runnable
 			}
 			catch(IOException exc)
 			{
+				// Stream is already closed.
 			}
 		}
 	}
