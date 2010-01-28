@@ -43,6 +43,7 @@
 					<variable name="skylight.testrange.url" value="${skylight.testrange.url}" />
 					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
 					<variable name="polish.useScrollBar" value="true" />
+					<variable name="polish.Container.allowCycling" value="false" />
 				</variables>	
 				<resources
 					dir="resources"
@@ -71,8 +72,20 @@
 				    <source dir="${rhino.home}/source/src" />
 				</sources>
 				<debug if="test" showLogOnError="true" verbose="true" level="error">
-					<!--filter pattern="de.enough.skylight.renderer.builder.*" level="error" /-->
-					<filter pattern="de.enough.skylight.testrange.client.*" level="debug" />
+					<!-- debugging -->
+					<!--
+					<filter pattern="de.enough.skylight.*" level="sl.debug.render" />
+					<filter pattern="de.enough.skylight.*" level="sl.debug.layout" />
+					<filter pattern="de.enough.skylight.*" level="sl.debug.style" />
+					<filter pattern="de.enough.skylight.*" level="sl.debug.build" />
+					-->
+					<!-- profiling -->
+					<!--
+					<filter pattern="de.enough.skylight.*" level="benchmark" />
+					<filter pattern="de.enough.skylight.*" level="sl.profile.layout" />
+					<filter pattern="de.enough.skylight.*" level="sl.profile.style" />
+					<filter pattern="de.enough.skylight.*" level="sl.profile.render" />
+					-->
 				</debug>
 				<obfuscator useDefaultPackage="true" name="ProGuard" unless="test || polish.blackberry">
 				</obfuscator>
