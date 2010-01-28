@@ -49,11 +49,13 @@ import de.enough.polish.util.ProcessUtil;
  * @author Andre Schmidt, j2mepolish@enough.de
  */
 public class AndroidEmulator extends Emulator{
-	public final static String QVGA_P = "QVGA-P";
-	public final static String QVGA_L = "QVGA-L";
-	public final static String HVGA = "HVGA";
-	public final static String HVGA_P = "HVGA-P";
-	public final static String HVGA_L = "HVGA-L";
+	private static final byte[] NEWLINE = "\n".getBytes();
+
+	public static final String QVGA_P = "QVGA-P";
+	public static final String QVGA_L = "QVGA-L";
+	public static final String HVGA = "HVGA";
+	public static final String HVGA_P = "HVGA-P";
+	public static final String HVGA_L = "HVGA-L";
 		
 	String[] stateArguments;
 	ArrayList emulatorArguments;
@@ -135,10 +137,10 @@ public class AndroidEmulator extends Emulator{
 					int result = -1;
 					try {
 						Thread.sleep(500);
-						out.write( "\n".getBytes() );
-						out.write( "\n".getBytes() );
-						out.write( "\n".getBytes() );
-						out.write( "\n".getBytes() );
+						out.write( NEWLINE );
+						out.write( NEWLINE );
+						out.write( NEWLINE );
+						out.write( NEWLINE );
 						out.flush();
 						result = process.waitFor();
 					} catch (InterruptedException e) {
