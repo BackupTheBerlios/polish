@@ -29,14 +29,15 @@ package de.enough.polish.blackberry.ui;
 import javax.microedition.lcdui.AlertType;
 
 import de.enough.polish.blackberry.midlet.MIDlet;
+//#if polish.useNativeGui
 import de.enough.polish.blackberry.nativeui.FormScreen;
+//#endif
 import de.enough.polish.ui.Alert;
 import de.enough.polish.ui.AnimationThread;
 import de.enough.polish.ui.Display;
 import de.enough.polish.ui.Displayable;
 import de.enough.polish.ui.Form;
 import de.enough.polish.ui.NativeDisplay;
-import de.enough.polish.ui.NativeScreen;
 import de.enough.polish.ui.StyleSheet;
 
 //#if blackberry.certificate.dir:defined
@@ -44,7 +45,6 @@ import de.enough.polish.ui.StyleSheet;
 //#endif
 
 import net.rim.device.api.system.Application;
-import net.rim.device.api.ui.UiApplication;
 import net.rim.device.api.ui.component.Dialog;
 
 /**
