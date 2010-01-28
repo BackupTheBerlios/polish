@@ -25,8 +25,8 @@
  */
 package de.enough.polish.devices;
 
+import java.io.Serializable;
 import java.util.Comparator;
-
 
 /**
  * <p>Compares two polish components by their identifier.</p>
@@ -39,7 +39,9 @@ import java.util.Comparator;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class IdentifierComparator implements Comparator {
+public class IdentifierComparator implements Comparator, Serializable {
+
+	private static final long serialVersionUID = 5431007417799828218L;
 
 	/* (non-Javadoc)
 	 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
