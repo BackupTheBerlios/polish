@@ -35,7 +35,7 @@ import de.enough.polish.preprocess.css.Style;
 import de.enough.polish.util.StringList;
 
 /**
- * <p>Calls another Ant target in the preprocessing phase.</p>
+ * <p>Serializes styles during preprocessing stage.</p>
  *
  * <p>Copyright Enough Software 2005</p>
  * <pre>
