@@ -5220,7 +5220,7 @@ public final class UiAccess {
 		return item.getUiEventListener();
 	}
 	//#endif
-
+	
 	//#if polish.usePolishGui
 	/**
 	 * Paints the content of the specified item.
@@ -5252,5 +5252,40 @@ public final class UiAccess {
 		// ignore
 	}
 	//#endif
-
+	
+	/**
+	 * Returns the current left margin of the given item
+	 * @param item the item
+	 * @return the current left margin
+	 */
+	public static int getMarginLeft(Item item) {
+		return item.marginLeft;
+	}
+	
+	/**
+	 * Returns the current right margin of the given item
+	 * @param item the item
+	 * @return the current right margin
+	 */
+	public static int getMarginRight(Item item) {
+		return item.marginRight;
+	}
+	
+	/**
+	 * Returns the current left padding of the given item
+	 * @param item the item
+	 * @return the current left padding 
+	 */
+	public static int getPaddingLeft(Item item) {
+		return item.paddingLeft;
+	}
+	
+	/**
+	 * Returns the current right padding of the given item
+	 * @param item the item
+	 * @return the current right padding 
+	 */
+	public static int getPaddingRight(Item item) {
+		return item.paddingLeft;
+	}
 }
