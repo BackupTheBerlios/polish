@@ -1,10 +1,59 @@
 package de.enough.skylight.renderer.partition;
 
-import de.enough.polish.ui.DebugHelper;
 import de.enough.polish.ui.Item;
+import de.enough.polish.ui.UiAccess;
+import de.enough.skylight.renderer.element.BlockContainingBlock;
+import de.enough.skylight.renderer.element.ContainingBlock;
+import de.enough.skylight.renderer.element.ElementAttributes;
 
 
 public class Partition {
+	
+	public static int getBlockRelativeX(Item item) {
+		BlockContainingBlock block = ElementAttributes.getBlock(item);
+		int blockContentX = block.getAbsoluteX() + block.getContentX();
+		return item.getAbsoluteX() - blockContentX;
+	}
+	
+	public static void partitionInline(Item item, PartitionList partitions) {
+		int x = getBlockRelativeX(item);
+		
+		int height;
+		if(item instanceof ContainingBlock) {
+			if(item instanceof BlockContainingBlock) {
+				height = item.itemHeight;
+			} else {
+				height = 0;
+			}
+		} else {
+			height = item.getContentHeight();
+		}
+		
+		int marginLeft = x;
+		int paddingLeft = x + UiAccess.getMarginLeft(item);
+		int contentLeft = paddingLeft + UiAccess.getPaddingLeft(item);
+		int contentRight = contentLeft + item.getContentWidth();
+		int paddingRight = contentRight + UiAccess.getPaddingRight(item);
+		int marginRight = paddingRight + UiAccess.getMarginRight(item);
+		
+		partitions.add(new Partition(marginLeft, paddingLeft, height, item));
+		partitions.add(new Partition(paddingLeft, contentLeft, height, item));
+		partitions.add(new Partition(contentLeft, contentRight, height, item));
+		partitions.add(new Partition(contentRight, paddingRight, height, item));
+		partitions.add(new Partition(paddingRight, marginRight, height, item));
+	}
+	
+	public static Partition partitionBlock(Item item) {
+		int x = getBlockRelativeX(item);
+		
+		int width = item.itemWidth;
+		int height = item.itemHeight;
+		
+		int left = x;
+		int right = x + width;
+		
+		return new Partition(left,right, height, item);	
+	}
 	
 	int left;
 	
@@ -96,7 +145,13 @@ public class Partition {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return "Partition [" + this.left + "," + this.right + "," + this.height + "," + this.newline + "," + this.whitespace + "," + this.parent + "]";
+		return "Partition [" + 
+		"left:" + this.left + "," + 
+		"right:"+ this.right + "," + 
+		"height:" + this.height + "," + 
+		"newline:" + this.newline + "," + 
+		"whitespace:" + this.whitespace + "," + 
+		"parent:" + this.parent + "]";
 	}
 	
 }

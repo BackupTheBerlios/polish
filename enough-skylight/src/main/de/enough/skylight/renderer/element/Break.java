@@ -14,14 +14,14 @@ public class Break extends Item implements Partable {
 	}
 
 	protected void initContent(int firstLineWidth, int availWidth,
-			int availHeight) {}
+			int availHeight) {
+	}
 
 	protected void paintContent(int x, int y, int leftBorder, int rightBorder,
 			Graphics g) {}
 
-	public void partition(BlockContainingBlock block, PartitionList partitions) {
-		int blockRelativeX = PartitionList.getBlockRelativeX(this, block);
-		Partition partition = new Partition(blockRelativeX,blockRelativeX,0,this);
+	public void partition(PartitionList partitions) {
+		Partition partition = new Partition(Partition.getBlockRelativeX(this),Partition.getBlockRelativeX(this),0,this);
 		partition.setNewline(true);
 		partitions.add(partition);
 	}

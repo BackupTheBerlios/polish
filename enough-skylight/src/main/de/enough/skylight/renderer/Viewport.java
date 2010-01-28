@@ -1,5 +1,7 @@
 package de.enough.skylight.renderer;
 
+import javax.microedition.lcdui.Graphics;
+
 import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.node.CssElement;
 
@@ -9,6 +11,7 @@ import de.enough.skylight.renderer.node.CssElement;
  *
  */
 public class Viewport extends BlockContainingBlock {
+	boolean ready;
 	
 	CssElement rootElement;
 	
@@ -22,6 +25,8 @@ public class Viewport extends BlockContainingBlock {
 	}
 	
 	public void reset() {
+		this.ready = false;
+		
 		this.body.clear();
 		
 		if(this.floatLeft != null) {
@@ -43,5 +48,19 @@ public class Viewport extends BlockContainingBlock {
 	
 	public String toString() {
 		return "Viewport";
+	}
+
+	public boolean isReady() {
+		return this.ready;
+	}
+
+	public void setReady(boolean ready) {
+		this.ready = ready;
+	}
+
+	public void paint(int x, int y, int leftBorder, int rightBorder, Graphics g) {
+		if(isReady()) {
+			super.paint(x, y, leftBorder, rightBorder, g);
+		}
 	}
 }

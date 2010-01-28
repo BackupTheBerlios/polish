@@ -128,7 +128,7 @@ public class LineBox {
 	}
 	
 	public String toString() {
-		return "LineBox [" + this.left + "," + this.right + "," + this.top + "," + this.height + "," + this.offset + "," + this.availableWidth + "]";
+		return "LineBox [" + this.left + "," + this.right + "," + this.top + "," + this.height + "," + this.offset + "," + this.availableWidth + "," + this.partitions.size() + "]";
 	}
 	
 	public int getOffset() {

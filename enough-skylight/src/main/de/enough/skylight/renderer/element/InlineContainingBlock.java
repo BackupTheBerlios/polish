@@ -1,26 +1,15 @@
 package de.enough.skylight.renderer.element;
 
-import javax.microedition.lcdui.Graphics;
-
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
-import de.enough.polish.util.ItemPreinit;
-import de.enough.skylight.renderer.linebox.LineBox;
+import de.enough.skylight.renderer.element.view.InlineContainingBlockView;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.partition.Partable;
 import de.enough.skylight.renderer.partition.Partition;
 import de.enough.skylight.renderer.partition.PartitionList;
 
-public class InlineContainingBlock extends Container implements ContainingBlock, Partable {
-
-	CssElement element;
-	
-	BlockContainingBlock block;
-	
-	PartitionList blockPartitions;
-	
-	int[] itemOffsets;
+public class InlineContainingBlock extends Container implements ContainingBlock {
 	
 	public InlineContainingBlock() {
 		this(null,null);
@@ -37,125 +26,45 @@ public class InlineContainingBlock extends Container implements ContainingBlock,
 	public InlineContainingBlock(CssElement element, Style style) {
 		super(false,style);
 		
-		this.blockPartitions = new PartitionList();
+		setView(new InlineContainingBlockView(this));
 		
 		setAppearanceMode(Item.PLAIN);
 	}
 
 	public void addToBody(Item item) {
 		add(item);
+		ElementAttributes.setContainingBlock(item, this);
 	}
 
 	public void addToLeftFloat(Item item) {
-		this.block.addToLeftFloat(item);
+		BlockContainingBlock block = ElementAttributes.getBlock(this);
+		block.addToLeftFloat(item);
 	}
 	
 	public void addToRightFloat(Item item) {
-		this.block.addToRightFloat(item);
+		BlockContainingBlock block = ElementAttributes.getBlock(this);
+		block.addToRightFloat(item);
 	}
 	
-	public CssElement getElement() {
-		return this.element;
-	}
-	
-	protected void initContent(int firstLineWidth, int availWidth,
-			int availHeight) {
-		int maxHeight = 0;
-		int completeWidth = 0;
-		Item[] items = getItems();
-		
-		int length = items.length;
-		
-		this.itemOffsets = new int[length]; 
-		
-		boolean interactive = false;
-
-		for (int i = 0; i < length; i++) {
-			Item item = items[i];
-			
-			initItem(item);
-			
-			if (item.appearanceMode != PLAIN) {
-				interactive = true;
-			}
-			
-			int itemHeight = item.itemHeight;
-			int itemWidth = item.itemWidth;
-			if (itemHeight > maxHeight ) {
-				maxHeight = itemHeight;
-			}
-			
-			item.relativeX = completeWidth;
-			item.relativeY = 0;
-			
-			this.itemOffsets[i] = completeWidth;
-			
-			completeWidth += itemWidth;
-		}
-		
-		if(interactive) {
-			setAppearanceMode(Item.INTERACTIVE);
-		}
-		
-		this.contentHeight = maxHeight;
-		this.contentWidth = completeWidth;
-	}
-	
-	protected void initItem(Item item) {
-		if(item instanceof BlockContainingBlock) {
-			ItemPreinit.preinit(item,	this.block.getAvailableContentWidth(),
-										this.block.getAvailableContentHeight());
-		} else {
-			ItemPreinit.preinit(item,Integer.MAX_VALUE,Integer.MAX_VALUE);
-		}
-	}
-
-	public void partition(BlockContainingBlock block, PartitionList partitions) {
-		PartitionList.partitionBlock(this, block, this.blockPartitions);
-		
-		PartitionList.partitionInline(this, block, partitions);
+	public void partition(PartitionList partitions) {
+		Partition.partitionInline(this, partitions);
 		
 		for (int i = 0; i < this.itemsList.size(); i++) {
 			Item item = (Item)this.itemsList.get(i);
 			if(item instanceof Partable) {
 				Partable partable = (Partable)item;
-				partable.partition(this.block, partitions);
+				partable.partition(partitions);
 			} else {
-				PartitionList.partitionInline(item, this.block, partitions);
+				Partition.partitionInline(item, partitions);
 			}
 		}
 	}
 	
-	public BlockContainingBlock getParentBlock() {
-		return this.block;
-	}
-
-	public void setParentBlock(BlockContainingBlock block) {
-		this.block = block;
-	}
-
-	protected void paintContent(int x, int y, int leftBorder, int rightBorder,
-			Graphics g) {
-		if(this.blockPartitions.size() > 0) { 
-			Partition blockPartition = this.blockPartitions.get(0);
-			
-			LineBox linebox = this.block.getPaintLineBox();
-			
-			if(	(	blockPartition.getLeft() >= linebox.getLeft() && 
-					blockPartition.getLeft() <= linebox.getRight()) ||
-				(	blockPartition.getRight() >= linebox.getLeft() && 
-					blockPartition.getRight() <= linebox.getRight()) ||
-				(	blockPartition.getLeft() <= linebox.getLeft() && 
-					blockPartition.getRight() >= linebox.getRight())) {
-				super.paintContent(x, y, leftBorder, rightBorder, g);
-			} 
-		} else {
-			super.paintContent(x, y, leftBorder, rightBorder, g);
-		}
+	public Container getContainer() {
+		return this;
 	}
 	
 	public String toString() {
-		return "InlineContainingBlock [" + this.element + "]";
+		return ElementAttributes.toString(this);
 	}
-
 }

@@ -1,5 +1,6 @@
 package de.enough.skylight.renderer.builder;
 
+import de.enough.polish.benchmark.Benchmark;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.util.ItemPreinit;
@@ -10,6 +11,7 @@ import de.enough.skylight.renderer.Viewport;
 import de.enough.skylight.renderer.css.HtmlCssElement;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.element.ContainingBlock;
+import de.enough.skylight.renderer.element.ElementAttributes;
 import de.enough.skylight.renderer.element.InlineContainingBlock;
 import de.enough.skylight.renderer.element.TextBlock;
 import de.enough.skylight.renderer.node.CssElement;
@@ -55,23 +57,41 @@ public class ViewportBuilder {
 		}
 		
 		try {
+			//#debug sl.profile.build
+			Benchmark.start("description");
+			
 			CssElement rootElement = buildDescription(this.document, null);
 			
+			//#debug sl.profile.build
+			Benchmark.stop("description","done");
+			
 			this.viewport.setVisible(false);
-			this.viewport.getLabelItem().setVisible(false);
 			
 			this.viewport.reset();
 			
 			this.viewport.setRootElement(rootElement);
 			
+			//#debug sl.profile.build
+			Benchmark.start("layout");
+			
 			buildLayout(this.viewport, this.viewport, rootElement);
 			
+			//#debug sl.profile.build
+			Benchmark.stop("layout","done");
+			
 			this.viewport.setVisible(true);
-			this.viewport.getLabelItem().setVisible(true);
+			
+			//#debug sl.profile.build
+			Benchmark.start("preinit");
 			
 			this.viewport.requestInit();
 			
 			ItemPreinit.preinit(this.viewport);
+			
+			//#debug sl.profile.build
+			Benchmark.stop("preinit","done");
+			
+			this.viewport.setReady(true);
 			
 		} catch(Exception e) {
 			//#debug error
@@ -126,19 +146,25 @@ public class ViewportBuilder {
 		if(element.hasElements())
 		{
 			ContainingBlock block = element.getContainingBlock();
-			block.setParentBlock(parentBlock);
-		
+			ElementAttributes.set(block.getContainer(), element, parent, parentBlock);
+			
 			if(element.isFloat()) {
 				if(element.isFloat(HtmlCssElement.Float.LEFT)) {
 					parent.addToLeftFloat((Item)block);
+					
+					//#debug sl.debug.build
+					System.out.println("added " + block + " to left float of " + parent);
 				} else if(element.isFloat(HtmlCssElement.Float.RIGHT)) {
 					parent.addToRightFloat((Item)block);
+					
+					//#debug sl.debug.build
+					System.out.println("added " + block + " to right float of " + parent);
 				} 
 			} else {
 				parent.addToBody((Item)block);
 				
-				//#debug debug
-				System.out.println("added " + block + " to " + parent);
+				//#debug sl.debug.build
+				System.out.println("added " + block + " to body of " + parent);
 			}
 			
 			BlockContainingBlock childBlock;
@@ -157,17 +183,24 @@ public class ViewportBuilder {
 			Item item = element.getContent();
 			
 			if(item != null) {
+				ElementAttributes.set(item, element, parent, parentBlock);
 				if(element.isFloat()) {
 					if(element.isFloat(HtmlCssElement.Float.LEFT)) {
 						parent.addToLeftFloat(item);
+						
+						//#debug sl.debug.build
+						System.out.println("added " + item + " to left float of " + parent);
 					} else if(element.isFloat(HtmlCssElement.Float.RIGHT)) {
 						parent.addToRightFloat(item);
+						
+						//#debug sl.debug.build
+						System.out.println("added " + item + " to right float of " + parent);
 					}
 				} else {
 					parent.addToBody(item);
 					
-					//#debug debug
-					System.out.println("added " + item + " to " + parent);
+					//#debug sl.debug.build
+					System.out.println("added " + item + " to body of " + parent);
 				}
 			}
 		}

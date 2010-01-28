@@ -1,59 +1,9 @@
 package de.enough.skylight.renderer.partition;
 
-import de.enough.polish.ui.Item;
-import de.enough.polish.ui.UiAccess;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.Arrays;
-import de.enough.skylight.renderer.element.BlockContainingBlock;
-import de.enough.skylight.renderer.element.ContainingBlock;
 
 public class PartitionList {
-	
-	public static int getBlockRelativeX(Item item, BlockContainingBlock block) {
-		int blockContentX = block.getAbsoluteX() + block.getContentX();
-		return item.getAbsoluteX() - blockContentX;
-	}
-	
-	public static void partitionInline(Item item, BlockContainingBlock block, PartitionList partitions) {
-		int x = getBlockRelativeX(item, block); 
-		
-		int height;
-		if(item instanceof ContainingBlock) {
-			if(item instanceof BlockContainingBlock) {
-				height = item.itemHeight;
-			} else {
-				height = 0;
-			}
-		} else {
-			height = item.getContentHeight();
-		}
-		
-		int marginLeft = x;
-		int paddingLeft = x + UiAccess.getMarginLeft(item);
-		int contentLeft = paddingLeft + UiAccess.getPaddingLeft(item);
-		int contentRight = contentLeft + item.getContentWidth();
-		int paddingRight = contentRight + UiAccess.getPaddingRight(item);
-		int marginRight = paddingRight + UiAccess.getMarginRight(item);
-		
-		partitions.add(new Partition(marginLeft, paddingLeft, height, item));
-		partitions.add(new Partition(paddingLeft, contentLeft, height, item));
-		partitions.add(new Partition(contentLeft, contentRight, height, item));
-		partitions.add(new Partition(contentRight, paddingRight, height, item));
-		partitions.add(new Partition(paddingRight, marginRight, height, item));
-	}
-	
-	public static void partitionBlock(Item item, BlockContainingBlock block, PartitionList partitions) {
-		int x = getBlockRelativeX(item, block);
-		
-		int width = item.itemWidth;
-		int height = item.itemHeight;
-		
-		int left = x;
-		int right = x + width;
-		
-		partitions.add(new Partition(left,right, height, item));	
-	}
-	
 	ArrayList partitionList;
 	
 	public PartitionList() {

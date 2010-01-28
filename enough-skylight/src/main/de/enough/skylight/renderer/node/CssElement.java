@@ -39,14 +39,19 @@ public class CssElement implements HtmlCssElement{
 	boolean interactive;
 	
 	static Style getStyle(NodeHandler handler, DomNode node) {
-		String clazz = NodeUtils.getAttributeValue(node, "class");
-		String tag = node.getNodeName();
-		
 		Style defaultStyle = handler.getDefaultStyle();
+		
+		//#debug sl.debug.style
+		System.out.println("default style for " + handler.getTag() + " : " + defaultStyle.name);
+		
+		String clazz = NodeUtils.getAttributeValue(node, "class");
 		
 		if(clazz != null) {
 			clazz = clazz.toLowerCase();
 			Style style = StyleSheet.getStyle(clazz);
+			
+			//#debug sl.debug.style
+			System.out.println("got style for " + handler.getTag() + " : " + clazz);
 			
 			if(style != null) {
 				//TODO extend style with default style

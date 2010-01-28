@@ -110,27 +110,16 @@ public class Renderer implements Runnable{
 	 * @see java.lang.Runnable#run()
 	 */
 	public void run() {
-		Benchmark.start("render");
-		
 		setState(STATE_START);
 		
 		setState(STATE_BUILD_DOCUMENT);
 		
-		Benchmark.start("document.build");
 		Document document = this.documentBuilder.build();
-		Benchmark.stop("document.build","done");
-		
-		//#debug debug
-		System.out.println("building view");
 		
 		setState(STATE_BUILD_VIEW);
 		
-		Benchmark.start("view.build");
 		this.viewportBuilder.setDocument(document);
 		this.viewportBuilder.build();
-		Benchmark.stop("view.build","done");
-		
-		Benchmark.stop("render","done");
 		
 		setState(STATE_READY);
 	}

@@ -17,11 +17,7 @@ import de.enough.skylight.renderer.partition.TextPartition;
 
 public class TextBlock extends StringItem implements Partable {
 	
-	BlockContainingBlock block;
-	
 	PartitionList textPartitions;
-	
-	LineBox linebox;
 	
 	public TextBlock() {
 		//#style text
@@ -40,14 +36,13 @@ public class TextBlock extends StringItem implements Partable {
 		return TextUtil.replace(text, "\n", " ");
 	}
 	
-	public void partition(BlockContainingBlock block, PartitionList partitions) {
-		this.block = block;
+	public void partition(PartitionList partitions) {
 		this.textPartitions.clear();
 		
 		String text = getText();
 		Font font = getFont();
 		
-		int left = PartitionList.getBlockRelativeX(this, block);
+		int left = Partition.getBlockRelativeX(this);
 		int right;
 		int height = font.getHeight();
 		int tokenWidth;
@@ -86,7 +81,7 @@ public class TextBlock extends StringItem implements Partable {
 	}
 	
 	public void drawString(String line, int x, int y, int anchor, Graphics g) {
-		LineBox linebox = this.block.getPaintLineBox();
+		LineBox linebox = ElementAttributes.getBlock(this).getPaintLineBox();
 		PartitionList lineboxPartitions = linebox.getPartitions();
 		
 		TextPartition firstPartition = (TextPartition)this.textPartitions.get(0);
