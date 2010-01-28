@@ -233,7 +233,7 @@ public class BlockContainingBlockView extends ContainerView {
 			
 			if(	Culling.isVisible(partition, linebox)) {
 				//#debug sl.debug.render
-				System.out.println("rendered " + this.block + " : linebox : " + linebox + " : partition : " + partition );
+				System.out.println("painted " + this.block + " : linebox : " + linebox + " : partition : " + partition );
 				paintLayout(x, y, leftBorder, rightBorder, g);
 			} else {
 				//#debug sl.debug.render
