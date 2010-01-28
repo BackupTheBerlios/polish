@@ -43,24 +43,24 @@ public interface BluetoothRemoteClient
 	 * 
 	 * @throws IOException when the connection fails
 	 */
-	public void connect() throws IOException;
+	void connect() throws IOException;
 	
 	/**
 	 * Disconnects the client, e.g. at the application end.
 	 * @throws IOException when the connection cannot be closed 
 	 */
-	public void disconnect() throws IOException;
+	void disconnect() throws IOException;
 	
 	/**
 	 * Sets the connection that should be used.
 	 * @param connection the connection
 	 */
-	public void setConnection( Connection connection );
+	void setConnection( Connection connection );
 	
 	/**
 	 * Retrieves the connection that is used
 	 * @return the used connection, can be null
 	 */
-	public Connection getConnection();
+	Connection getConnection();
 
 }

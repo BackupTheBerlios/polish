@@ -43,7 +43,6 @@ public interface EventListener {
 	 * @param source the source of the event e.g. an item
 	 * @param data optional additional data, might be null
 	 */
-	public void handleEvent( String name, Object source, Object data );
-
+	void handleEvent( String name, Object source, Object data );
 
 }

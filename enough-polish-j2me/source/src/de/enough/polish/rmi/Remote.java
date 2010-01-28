@@ -37,11 +37,9 @@ package de.enough.polish.rmi;
  */
 public interface Remote {
 	/** indicates the method call finished normally */
-	public static final int STATUS_OK = 0;
+	int STATUS_OK = 0;
 	/** indicates the method call threw a checked exception */
-	public static final int STATUS_CHECKED_EXCEPTION = 1;
+	int STATUS_CHECKED_EXCEPTION = 1;
 	/** indicates the method call threw an unchecked exception */
-	public static final int STATUS_UNCHECKED_EXCEPTION = 2;
-	
-	// no method definitions...
+	int STATUS_UNCHECKED_EXCEPTION = 2;
 }

@@ -43,5 +43,5 @@ public interface UiEventListener {
 	 * @param source the source of the event, typically either a Screen or an Item
 	 * @see UiEvent#setHandled()
 	 */
-	public void handleUiEvent( UiEvent event, Object source );
+	void handleUiEvent( UiEvent event, Object source );
 }

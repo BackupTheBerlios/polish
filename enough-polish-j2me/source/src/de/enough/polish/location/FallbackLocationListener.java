@@ -14,6 +14,6 @@ public interface FallbackLocationListener {
 	 * Notifies that a provider has been enabled
 	 * @param criteria the criteria, can be null
 	 */
-	public void providerEnabled(Criteria criteria);
+	void providerEnabled(Criteria criteria);
 
 }
