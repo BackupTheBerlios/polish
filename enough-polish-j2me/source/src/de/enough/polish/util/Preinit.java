@@ -12,8 +12,6 @@ public class Preinit implements Runnable {
 	Screen screen;
 	
 	public static void preinit(Screen screen) throws IllegalArgumentException{
-		//#debug benchmark
-		Benchmark.start("prefetch : " + screen);
 		if(screen.isShown()) {
 			synchronized(screen.getPaintLock()) {
 				UiAccess.init(screen);
@@ -21,8 +19,6 @@ public class Preinit implements Runnable {
 		} else {
 			UiAccess.init(screen);
 		}
-		//#debug benchmark
-		Benchmark.stop("prefetch : " + screen," : done" );
 	}
 	
 	public Preinit(Screen screen) {
