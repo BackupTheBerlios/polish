@@ -685,7 +685,7 @@ public class CssInterpreter {
 	
 	/**
 	 * Retrieves all read styles.
-	 * @return all styles in Hashtable<String name, Style style> format
+	 * @return all styles in Hashtable&lt;String name, Style style&gt; format
 	 */
 	public Hashtable getAllStyles() {
 		if (this.styles == null) {

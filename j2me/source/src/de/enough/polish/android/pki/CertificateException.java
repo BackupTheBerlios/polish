@@ -19,100 +19,85 @@ public class CertificateException extends IOException
 {
 	/**
 	 * Indicates a certificate has unrecognized critical extensions.
-	 * The value is 1.</DL>
-	 * 
+	 * The value is 1.
 	 */
 	public static final byte BAD_EXTENSIONS = 1;
 
 	/**
 	 * Indicates the server certificate chain exceeds the length allowed
 	 * by an issuer's policy.
-	 * The value is 2.</DL>
-	 * 
+	 * The value is 2.
 	 */
 	public static final byte CERTIFICATE_CHAIN_TOO_LONG = 2;
 
 	/**
 	 * Indicates a certificate is expired.
-	 * The value is 3.</DL>
-	 * 
+	 * The value is 3.
 	 */
 	public static final byte EXPIRED = 3;
 
 	/**
 	 * Indicates an intermediate certificate in the chain does not have the
-	 * authority to be a intermediate CA. The value is 4.</DL>
-	 * 
+	 * authority to be a intermediate CA. The value is 4.
 	 */
 	public static final byte UNAUTHORIZED_INTERMEDIATE_CA = 4;
 
 	/**
 	 * Indicates a certificate object does not contain a signature.
-	 * The value is 5.</DL>
-	 * 
+	 * The value is 5.
 	 */
 	public static final byte MISSING_SIGNATURE = 5;
 
 	/**
 	 * Indicates a certificate is not yet valid.
-	 * The value is 6.</DL>
-	 * 
+	 * The value is 6.
 	 */
 	public static final byte NOT_YET_VALID = 6;
 
 	/**
 	 * Indicates a certificate does not contain the correct site name.
-	 * The value is 7.</DL>
-	 * 
+	 * The value is 7.
 	 */
 	public static final byte SITENAME_MISMATCH = 7;
 
 	/**
 	 * Indicates a certificate was issued by an unrecognized entity.
-	 * The value is 8.</DL>
-	 * 
+	 * The value is 8.
 	 */
 	public static final byte UNRECOGNIZED_ISSUER = 8;
 
 	/**
 	 * Indicates a certificate was signed using an unsupported algorithm.
-	 * The value is 9.</DL>
-	 * 
+	 * The value is 9.
 	 */
 	public static final byte UNSUPPORTED_SIGALG = 9;
 
 	/**
 	 * Indicates a certificate public key has been used in way deemed
-	 * inappropriate by the issuer. The value is 10.</DL>
-	 * 
+	 * inappropriate by the issuer. The value is 10.
 	 */
 	public static final byte INAPPROPRIATE_KEY_USAGE = 10;
 
 	/**
 	 * Indicates a certificate in a chain was not issued by the next
-	 * authority in the chain. The value is 11.</DL>
-	 * 
+	 * authority in the chain. The value is 11.
 	 */
 	public static final byte BROKEN_CHAIN = 11;
 
 	/**
-	 * Indicates the root CA's public key is expired. The value is 12.</DL>
-	 * 
+	 * Indicates the root CA's public key is expired. The value is 12.
 	 */
 	public static final byte ROOT_CA_EXPIRED = 12;
 
 	/**
 	 * Indicates that type of the public key in a certificate is not
-	 * supported by the device. The value is 13.</DL>
-	 * 
+	 * supported by the device. The value is 13.
 	 */
 	public static final byte UNSUPPORTED_PUBLIC_KEY_TYPE = 13;
 
 	/**
 	 * Indicates a certificate failed verification.
-	 * The value is 14.</DL>
-	 * 
-	 * 
+	 * The value is 14.
 	 */
 	public static final byte VERIFICATION_FAILED = 14;
 
