@@ -602,7 +602,7 @@ implements Runnable, ResourceLoader
 
 	/**
 	 * Retrieves all dynamically registered styles
-	 * @return the styles in a Hashtable<String name, Style value> form
+	 * @return the styles in a Hashtable&lt;String name, Style value&gt; form
 	 */
 	public Hashtable getCssStyles() {
 		return this.cssStyles;
@@ -618,7 +618,7 @@ implements Runnable, ResourceLoader
 
 	/**
 	 * Sets dynamically registered styles
-	 * @param table the styles in a Hashtable<String name, Style value> form
+	 * @param table the styles in a Hashtable&lt;String name, Style value&gt; form
 	 */
 	public void setCssStyles(Hashtable table) {
 		this.cssStyles = table;
@@ -1274,7 +1274,7 @@ implements Runnable, ResourceLoader
 					this.nextUrl = null;
 					this.nextPostData = null;
 
-					if (this.isCancelRequested != true)
+					if (!this.isCancelRequested)
 					{
 						//#if polish.Browser.MemorySaver
 							int size = 50 * 1024;
