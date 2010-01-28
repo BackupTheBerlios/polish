@@ -313,7 +313,7 @@ public interface Player extends Controllable
 	 * Value 100 is assigned to <code>UNREALIZED</code>.</DL>
 	 * 
 	 */
-	public static final int UNREALIZED = 100;
+	int UNREALIZED = 100;
 
 	/**
 	 * The state of the <code>Player</code> indicating that it has
@@ -322,7 +322,7 @@ public interface Player extends Controllable
 	 * Value 200 is assigned to <code>REALIZED</code>.</DL>
 	 * 
 	 */
-	public static final int REALIZED = 200;
+	int REALIZED = 200;
 
 	/**
 	 * The state of the <code>Player</code> indicating that it has
@@ -331,7 +331,7 @@ public interface Player extends Controllable
 	 * Value 300 is assigned to <code>PREFETCHED</code>.</DL>
 	 * 
 	 */
-	public static final int PREFETCHED = 300;
+	int PREFETCHED = 300;
 
 	/**
 	 * The state of the <code>Player</code> indicating that the
@@ -340,7 +340,7 @@ public interface Player extends Controllable
 	 * Value 400 is assigned to <code>STARTED</code>.</DL>
 	 * 
 	 */
-	public static final int STARTED = 400;
+	int STARTED = 400;
 
 	/**
 	 * The state of the <code>Player</code> indicating that the
@@ -349,7 +349,7 @@ public interface Player extends Controllable
 	 * Value 0 is assigned to <code>CLOSED</code>.</DL>
 	 * 
 	 */
-	public static final int CLOSED = 0;
+	int CLOSED = 0;
 
 	/**
 	 * The returned value indicating that the requested time is unknown.
@@ -358,7 +358,7 @@ public interface Player extends Controllable
 	 * 
 	 * 
 	 */
-	public static final long TIME_UNKNOWN = -1;
+	long TIME_UNKNOWN = -1;
 
 	/**
 	 * Constructs portions of the <code>Player</code> without
@@ -378,7 +378,7 @@ public interface Player extends Controllable
 	 * @throws MediaException - Thrown if the Player cannot be realized.
 	 * @throws SecurityException - Thrown if the caller does not have security permission to realize the Player.
 	 */
-	public void realize() throws MediaException;
+	void realize() throws MediaException;
 
 	/**
 	 * Acquires the scarce and exclusive resources
@@ -414,7 +414,7 @@ public interface Player extends Controllable
 	 * @throws MediaException - Thrown if the Player cannot be prefetched.
 	 * @throws SecurityException - Thrown if the caller does not have security permission to prefetch the Player.
 	 */
-	public void prefetch() throws MediaException;
+	void prefetch() throws MediaException;
 
 	/**
 	 * Starts the <code>Player</code> as soon as possible.
@@ -447,7 +447,7 @@ public interface Player extends Controllable
 	 * @throws MediaException - Thrown if the Player cannot be started.
 	 * @throws SecurityException - Thrown if the caller does not have security permission to start the Player.
 	 */
-	public void start() throws MediaException;
+	void start() throws MediaException;
 
 	/**
 	 * Stops the <code>Player</code>.  It will pause the playback at
@@ -464,7 +464,7 @@ public interface Player extends Controllable
 	 * @throws IllegalStateException - Thrown if the Player is in the CLOSED state.
 	 * @throws MediaException - Thrown if the Player cannot be stopped.
 	 */
-	public void stop() throws MediaException;
+	void stop() throws MediaException;
 
 	/**
 	 * Release the scarce or exclusive
@@ -490,7 +490,7 @@ public interface Player extends Controllable
 	 * 
 	 * @throws IllegalStateException - Thrown if the Player is in the CLOSED state.
 	 */
-	public void deallocate();
+	void deallocate();
 
 	/**
 	 * Close the <code>Player</code> and release its resources.
@@ -504,7 +504,7 @@ public interface Player extends Controllable
 	 * the request is ignored.
 	 * 
 	 */
-	public void close();
+	void close();
 
 	/**
 	 * Sets the <code>Player</code>'s&nbsp;<i>media time</i>.
@@ -528,7 +528,7 @@ public interface Player extends Controllable
 	 * @throws MediaException - Thrown if the media time cannot be set.
 	 * @see #getMediaTime()
 	 */
-	public long setMediaTime(long now) throws MediaException;
+	long setMediaTime(long now) throws MediaException;
 
 	/**
 	 * Gets this <code>Player</code>'s current <i>media time</i>.
@@ -539,7 +539,7 @@ public interface Player extends Controllable
 	 * @throws IllegalStateException - Thrown if the Player is in the CLOSED state.
 	 * @see #setMediaTime(long)
 	 */
-	public long getMediaTime();
+	long getMediaTime();
 
 	/**
 	 * Gets the current state of this <code>Player</code>.
@@ -548,7 +548,7 @@ public interface Player extends Controllable
 	 * 
 	 * @return The Player's current state.
 	 */
-	public int getState();
+	int getState();
 
 	/**
 	 * Get the duration of the media.
@@ -562,7 +562,7 @@ public interface Player extends Controllable
 	 * @return The duration in microseconds or TIME_UNKNOWN.
 	 * @throws IllegalStateException - Thrown if the Player is in the CLOSED state.
 	 */
-	public long getDuration();
+	long getDuration();
 
 	/**
 	 * Get the content type of the media that's
@@ -574,7 +574,7 @@ public interface Player extends Controllable
 	 * @return The content type being played back by this  Player.
 	 * @throws IllegalStateException - Thrown if the Player is in the UNREALIZED or CLOSED state.
 	 */
-	public String getContentType();
+	String getContentType();
 
 	/**
 	 * Set the number of times the <code>Player</code> will loop
@@ -614,7 +614,7 @@ public interface Player extends Controllable
 	 * @throws IllegalArgumentException - Thrown if the given count is invalid.
 	 * @throws IllegalStateException - Thrown if the Player is in the STARTED or CLOSED state.
 	 */
-	public void setLoopCount(int count);
+	void setLoopCount(int count);
 
 	/**
 	 * Add a player listener for this player.
@@ -623,7 +623,7 @@ public interface Player extends Controllable
 	 * @throws IllegalStateException - Thrown if the Player is in the CLOSED state.
 	 * @see #removePlayerListener(PlayerListener)
 	 */
-	public void addPlayerListener( PlayerListener playerListener);
+	void addPlayerListener( PlayerListener playerListener);
 
 	/**
 	 * Remove a player listener for this player.
@@ -632,6 +632,6 @@ public interface Player extends Controllable
 	 * @throws IllegalStateException - Thrown if the Player is in the CLOSED state.
 	 * @see #addPlayerListener(PlayerListener)
 	 */
-	public void removePlayerListener( PlayerListener playerListener);
+	void removePlayerListener( PlayerListener playerListener);
 
 }

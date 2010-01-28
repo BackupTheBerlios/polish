@@ -43,7 +43,7 @@ public interface TextMessage extends Message
 	 * @return the payload of this message, or null if the payload for the message is not set
 	 * @see #setPayloadText(java.lang.String)
 	 */
-	public java.lang.String getPayloadText();
+	java.lang.String getPayloadText();
 
 	/**
 	 * Sets the payload data of this message. The payload data
@@ -52,6 +52,6 @@ public interface TextMessage extends Message
 	 * @param data - payload data as a String
 	 * @see #getPayloadText()
 	 */
-	public void setPayloadText(java.lang.String data);
+	void setPayloadText(java.lang.String data);
 
 }

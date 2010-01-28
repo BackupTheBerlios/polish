@@ -40,6 +40,6 @@ public interface ScannerListener
 	 * 
 	 * @param devices the devices, can be empty but not null
 	 */
-	public void notifyBluetoothDevices(BluetoothDevice[] devices);
+	void notifyBluetoothDevices(BluetoothDevice[] devices);
 
 }

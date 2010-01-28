@@ -65,7 +65,7 @@ public interface VideoControl extends GUIControl
 	 * 
 	 * 
 	 */
-	static final int USE_DIRECT_VIDEO = 1;
+	int USE_DIRECT_VIDEO = 1;
 
 	/**
 	 * Initialize the mode on how the video is displayed.

@@ -63,6 +63,6 @@ public interface ApplicationInitializer {
 	 * 
 	 * @return the first screen that should be shown after the splash screen.
 	 */
-	public Displayable initApp();
+	Displayable initApp();
 
 }

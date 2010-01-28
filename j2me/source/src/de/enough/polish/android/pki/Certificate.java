@@ -116,14 +116,14 @@ public interface Certificate
 	 * 
 	 * @return The subject of this Certificate; the value MUST NOT be null.
 	 */
-	public String getSubject();
+	String getSubject();
 
 	/**
 	 * Gets the name of this certificate's issuer.
 	 * 
 	 * @return The issuer of the Certificate; the value MUST NOT be null.
 	 */
-	public String getIssuer();
+	String getIssuer();
 
 	/**
 	 * Get the type of the <CODE>Certificate</CODE>.
@@ -131,7 +131,7 @@ public interface Certificate
 	 * 
 	 * @return The type of the Certificate; the value MUST NOT be null.
 	 */
-	public String getType();
+	String getType();
 
 	/**
 	 * Gets the version number of this <CODE>Certificate</CODE>.
@@ -141,7 +141,7 @@ public interface Certificate
 	 * 
 	 * @return The version number of the Certificate; the value MUST NOT be null.
 	 */
-	public String getVersion();
+	String getVersion();
 
 	/**
 	 * Gets the name of the algorithm used to sign the
@@ -151,7 +151,7 @@ public interface Certificate
 	 * 
 	 * @return The name of signature algorithm; the value MUST NOT be null.
 	 */
-	public String getSigAlgName();
+	String getSigAlgName();
 
 	/**
 	 * Gets the time before which this <CODE>Certificate</CODE> may not be used
@@ -159,7 +159,7 @@ public interface Certificate
 	 * 
 	 * @return The time in milliseconds before which the Certificate is not valid; it MUST be positive, 0 is returned if the certificate does not have its validity restricted based on the time.
 	 */
-	public long getNotBefore();
+	long getNotBefore();
 
 	/**
 	 * Gets the time after which this <CODE>Certificate</CODE> may not be used
@@ -167,7 +167,7 @@ public interface Certificate
 	 * 
 	 * @return The time in milliseconds after which the Certificate is not valid (expiration date); it MUST be positive; Long.MAX_VALUE is returned if the certificate does not have its validity restricted based on the time.
 	 */
-	public long getNotAfter();
+	long getNotAfter();
 
 	/**
 	 * Gets the printable form of the serial number of this
@@ -179,6 +179,6 @@ public interface Certificate
 	 * 
 	 * @return A string containing the serial number in user-friendly form; null is returned if there is no serial number.
 	 */
-	public String getSerialNumber();
+	String getSerialNumber();
 
 }

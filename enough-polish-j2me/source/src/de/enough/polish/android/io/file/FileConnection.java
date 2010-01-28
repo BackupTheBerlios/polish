@@ -136,7 +136,7 @@ public interface FileConnection extends Connection
 	 * 
 	 * @return true if the file connection is open, false otherwise.
 	 */
-	public boolean isOpen();
+	boolean isOpen();
 
 	/**
 	 * 
@@ -151,7 +151,7 @@ public interface FileConnection extends Connection
 	 * @throws java.lang.SecurityException - If the application is not granted read access to the connection's target.
 	 * @see #openInputStream in interface de.enough.polish.android.io.InputConnection
 	 */
-	public java.io.InputStream openInputStream() throws java.io.IOException;
+	java.io.InputStream openInputStream() throws java.io.IOException;
 
 	/**
 	 * 
@@ -166,7 +166,7 @@ public interface FileConnection extends Connection
 	 * @throws java.lang.SecurityException - If the application is not granted read access to the connection's target.
 	 * @see #openDataInputStream in interface de.enough.polish.android.io.InputConnection
 	 */
-	public java.io.DataInputStream openDataInputStream() throws java.io.IOException;
+	java.io.DataInputStream openDataInputStream() throws java.io.IOException;
 
 	/**
 	 * 
@@ -197,7 +197,7 @@ public interface FileConnection extends Connection
 	 * @see #openOutputStream in interface de.enough.polish.android.io.OutputConnection
 	 * @see #openOutputStream(long)
 	 */
-	public java.io.OutputStream openOutputStream() throws java.io.IOException;
+	java.io.OutputStream openOutputStream() throws java.io.IOException;
 
 	/**
 	 * 
@@ -228,7 +228,7 @@ public interface FileConnection extends Connection
 	 * @see #openDataOutputStream in interface de.enough.polish.android.io.OutputConnection
 	 * @see #openOutputStream(long)
 	 */
-	public java.io.DataOutputStream openDataOutputStream() throws java.io.IOException;
+	java.io.DataOutputStream openDataOutputStream() throws java.io.IOException;
 
 	/**
 	 * 
@@ -257,7 +257,7 @@ public interface FileConnection extends Connection
 	 * @throws java.lang.SecurityException - if the security if the application does not allow write access to the file.
 	 * @throws java.lang.IllegalArgumentException - if byteOffset has a negative value.
 	 */
-	public java.io.OutputStream openOutputStream(long byteOffset) throws java.io.IOException;
+	java.io.OutputStream openOutputStream(long byteOffset) throws java.io.IOException;
 
 	/**
 	 * 
@@ -272,7 +272,7 @@ public interface FileConnection extends Connection
 	 * @throws IllegalModeException - if the application does have read access to the connection's target but has opened the connection in Connector.WRITE mode.
 	 * @throws ConnectionClosedException - if the connection is closed.
 	 */
-	public long totalSize();
+	long totalSize();
 
 	/**
 	 * 
@@ -288,7 +288,7 @@ public interface FileConnection extends Connection
 	 * @throws IllegalModeException - if the application does have read access to the directory but has opened the connection in Connector.WRITE mode.
 	 * @throws ConnectionClosedException - if the connection is closed.
 	 */
-	public long availableSize();
+	long availableSize();
 
 	/**
 	 * 
@@ -304,7 +304,7 @@ public interface FileConnection extends Connection
 	 * @throws IllegalModeException - if the application does have read access to the directory but has opened the connection in Connector.WRITE mode.
 	 * @throws ConnectionClosedException - if the connection is closed.
 	 */
-	public long usedSize();
+	long usedSize();
 
 	/**
 	 * 
@@ -318,7 +318,7 @@ public interface FileConnection extends Connection
 	 * @throws IllegalModeException - if the application does have read access to the directory but has opened the connection in Connector.WRITE mode.
 	 * @throws ConnectionClosedException - if the connection is closed.
 	 */
-	public long directorySize(boolean includeSubDirs) throws java.io.IOException;
+	long directorySize(boolean includeSubDirs) throws java.io.IOException;
 
 	/**
 	 * 
@@ -337,7 +337,7 @@ public interface FileConnection extends Connection
 	 * @throws IllegalModeException - if the application does have read access to the file but has opened the connection in Connector.WRITE mode.
 	 * @throws ConnectionClosedException - if the connection is closed.
 	 */
-	public long fileSize() throws java.io.IOException;
+	long fileSize() throws java.io.IOException;
 
 	/**
 	 * 
@@ -355,7 +355,7 @@ public interface FileConnection extends Connection
 	 * @throws ConnectionClosedException - if the connection is closed.
 	 * @see #setReadable(boolean)
 	 */
-	public boolean canRead();
+	boolean canRead();
 
 	/**
 	 * 
@@ -373,7 +373,7 @@ public interface FileConnection extends Connection
 	 * @throws ConnectionClosedException - if the connection is closed.
 	 * @see #setWritable(boolean)
 	 */
-	public boolean canWrite();
+	boolean canWrite();
 
 	/**
 	 * 
@@ -393,7 +393,7 @@ public interface FileConnection extends Connection
 	 * @throws IllegalModeException - if the application does have read access to the connection's target but has opened the connection in Connector.WRITE mode.
 	 * @see #setHidden(boolean)
 	 */
-	public boolean isHidden();
+	boolean isHidden();
 
 	/**
 	 * 
@@ -413,7 +413,7 @@ public interface FileConnection extends Connection
 	 * @throws IllegalModeException - if the application does have write access to the connection's target but has opened the connection in Connector.READ mode.
 	 * @see #canRead()
 	 */
-	public void setReadable(boolean readable) throws java.io.IOException;
+	void setReadable(boolean readable) throws java.io.IOException;
 
 	/**
 	 * 
@@ -433,7 +433,7 @@ public interface FileConnection extends Connection
 	 * @throws IllegalModeException - if the application does have write access to the connection's target but has opened the connection in Connector.READ mode.
 	 * @see #canWrite()
 	 */
-	public void setWritable(boolean writable) throws java.io.IOException;
+	void setWritable(boolean writable) throws java.io.IOException;
 
 	/**
 	 * 
@@ -460,7 +460,7 @@ public interface FileConnection extends Connection
 	 * @throws IllegalModeException - if the application does have write access to the connection's target but has opened the connection in Connector.READ mode.
 	 * @see #isHidden()
 	 */
-	public void setHidden(boolean hidden) throws java.io.IOException;
+	void setHidden(boolean hidden) throws java.io.IOException;
 
 	/**
 	 * 
@@ -476,7 +476,7 @@ public interface FileConnection extends Connection
 	 * @throws java.lang.SecurityException - if the security of the application does not have read access for the directory.
 	 * @throws IllegalModeException - if the application does have read access to the directory but has opened the connection in Connector.WRITE mode.
 	 */
-	public java.util.Enumeration list() throws java.io.IOException;
+	java.util.Enumeration list() throws java.io.IOException;
 
 	/**
 	 * 
@@ -496,7 +496,7 @@ public interface FileConnection extends Connection
 	 * @throws java.lang.NullPointerException - if filter is null.
 	 * @throws java.lang.IllegalArgumentException - if filter contains any path specification or is an invalid filename for the platform (e.g. contains characters invalid for a filename on the platform).
 	 */
-	public java.util.Enumeration list(java.lang.String filter, boolean includeHidden) throws java.io.IOException;
+	java.util.Enumeration list(java.lang.String filter, boolean includeHidden) throws java.io.IOException;
 
 	/**
 	 * 
@@ -515,7 +515,7 @@ public interface FileConnection extends Connection
 	 * @throws java.io.IOException - if invoked on an existing file or on any directory ( mkdir() is used to create directories), the connection's target has a trailing "/" to denote a directory, the target file system is not accessible, or an unspecified error occurs preventing creation of the file.
 	 * @throws ConnectionClosedException - if the connection is closed.
 	 */
-	public void create() throws java.io.IOException;
+	void create() throws java.io.IOException;
 
 	/**
 	 * 
@@ -533,7 +533,7 @@ public interface FileConnection extends Connection
 	 * @throws java.io.IOException - if invoked on an existing directory or on any file ( create() is used to create files), the target file sytem is not accessible, or an unspecified error occurs preventing creation of the directory.
 	 * @throws ConnectionClosedException - if the connection is closed.
 	 */
-	public void mkdir() throws java.io.IOException;
+	void mkdir() throws java.io.IOException;
 
 	/**
 	 * 
@@ -548,7 +548,7 @@ public interface FileConnection extends Connection
 	 * @throws IllegalModeException - if the application does have read access to the connection's target but has opened the connection in Connector.WRITE mode.
 	 * @throws ConnectionClosedException - if the connection is closed.
 	 */
-	public boolean exists();
+	boolean exists();
 
 	/**
 	 * 
@@ -562,7 +562,7 @@ public interface FileConnection extends Connection
 	 * @throws ConnectionClosedException - if the connection is closed.
 	 * @throws IllegalModeException - if the application does have read access to the connection's target but has opened the connection in Connector.WRITE mode.
 	 */
-	public boolean isDirectory();
+	boolean isDirectory();
 
 	/**
 	 * 
@@ -580,7 +580,7 @@ public interface FileConnection extends Connection
 	 * @throws IllegalModeException - if the application does have write access to the connection's target but has opened the connection in Connector.READ mode.
 	 * @throws java.io.IOException - If the target is a directory and it is not empty, the connection target does not exist or is unaccessible, or an unspecified error occurs preventing deletion of the target.
 	 */
-	public void delete() throws java.io.IOException;
+	void delete() throws java.io.IOException;
 
 	/**
 	 * 
@@ -603,7 +603,7 @@ public interface FileConnection extends Connection
 	 * @throws java.lang.NullPointerException - if newName is null.
 	 * @throws java.lang.IllegalArgumentException - if newName contains any path specification.
 	 */
-	public void rename(java.lang.String newName) throws java.io.IOException;
+	void rename(java.lang.String newName) throws java.io.IOException;
 
 	/**
 	 * 
@@ -622,7 +622,7 @@ public interface FileConnection extends Connection
 	 * @throws IllegalModeException - if the application does have write access to the file but has opened the connection in Connector.READ mode.
 	 * @throws java.lang.IllegalArgumentException - if byteOffset is less than zero.
 	 */
-	public void truncate(long byteOffset) throws java.io.IOException;
+	void truncate(long byteOffset) throws java.io.IOException;
 
 	/**
 	 * 
@@ -644,7 +644,7 @@ public interface FileConnection extends Connection
 	 * @throws java.io.IOException - if the current FileConnection is opened on a file, the connection's target is not accessible, or fileName is an invalid filename for the platform (e.g. contains characters invalid in a filename on the platform).
 	 * @throws ConnectionClosedException - if the connection is closed.
 	 */
-	public void setFileConnection(java.lang.String fileName) throws java.io.IOException;
+	void setFileConnection(java.lang.String fileName) throws java.io.IOException;
 
 	/**
 	 * 
@@ -668,7 +668,7 @@ public interface FileConnection extends Connection
 	 * 
 	 * @return The name of a file or directory.
 	 */
-	public java.lang.String getName();
+	java.lang.String getName();
 
 	/**
 	 * 
@@ -687,7 +687,7 @@ public interface FileConnection extends Connection
 	 * 
 	 * @return The path of a file or directory in the format specified above.
 	 */
-	public java.lang.String getPath();
+	java.lang.String getPath();
 
 	/**
 	 * 
@@ -708,7 +708,7 @@ public interface FileConnection extends Connection
 	 * 
 	 * @return The URL of a file or directory in the format specified above.
 	 */
-	public java.lang.String getURL();
+	java.lang.String getURL();
 
 	/**
 	 * 
@@ -723,7 +723,7 @@ public interface FileConnection extends Connection
 	 * @throws IllegalModeException - if the application does have read access to the connection's target but has opened the connection in Connector.WRITE mode.
 	 * @throws ConnectionClosedException - if the connection is closed.
 	 */
-	public long lastModified();
+	long lastModified();
 
 
 }

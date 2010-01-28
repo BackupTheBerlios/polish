@@ -192,7 +192,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int ADDR = 100;
+	int ADDR = 100;
 
 	/**
 	 * 
@@ -211,7 +211,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int BIRTHDAY = 101;
+	int BIRTHDAY = 101;
 
 	/**
 	 * 
@@ -225,7 +225,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int CLASS = 102;
+	int CLASS = 102;
 
 	/**
 	 * 
@@ -235,7 +235,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int EMAIL = 103;
+	int EMAIL = 103;
 
 	/**
 	 * 
@@ -251,7 +251,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int FORMATTED_ADDR = 104;
+	int FORMATTED_ADDR = 104;
 
 	/**
 	 * 
@@ -264,7 +264,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int FORMATTED_NAME = 105;
+	int FORMATTED_NAME = 105;
 
 	/**
 	 * 
@@ -275,7 +275,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int NAME = 106;
+	int NAME = 106;
 
 	/**
 	 * 
@@ -288,7 +288,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int NICKNAME = 107;
+	int NICKNAME = 107;
 
 	/**
 	 * 
@@ -302,7 +302,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int NOTE = 108;
+	int NOTE = 108;
 
 	/**
 	 * 
@@ -316,7 +316,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int ORG = 109;
+	int ORG = 109;
 
 	/**
 	 * 
@@ -330,7 +330,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int PHOTO = 110;
+	int PHOTO = 110;
 
 	/**
 	 * 
@@ -345,7 +345,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int PHOTO_URL = 111;
+	int PHOTO_URL = 111;
 
 	/**
 	 * 
@@ -359,7 +359,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int PUBLIC_KEY = 112;
+	int PUBLIC_KEY = 112;
 
 	/**
 	 * 
@@ -373,7 +373,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int PUBLIC_KEY_STRING = 113;
+	int PUBLIC_KEY_STRING = 113;
 
 	/**
 	 * 
@@ -395,7 +395,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int REVISION = 114;
+	int REVISION = 114;
 
 	/**
 	 * 
@@ -408,7 +408,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int TEL = 115;
+	int TEL = 115;
 
 	/**
 	 * 
@@ -421,7 +421,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int TITLE = 116;
+	int TITLE = 116;
 
 	/**
 	 * 
@@ -438,7 +438,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int UID = 117;
+	int UID = 117;
 
 	/**
 	 * 
@@ -451,7 +451,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int URL = 118;
+	int URL = 118;
 
 	/**
 	 * 
@@ -461,7 +461,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int ATTR_ASST = 1;
+	int ATTR_ASST = 1;
 
 	/**
 	 * 
@@ -471,7 +471,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int ATTR_AUTO = 2;
+	int ATTR_AUTO = 2;
 
 	/**
 	 * 
@@ -481,7 +481,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int ATTR_FAX = 4;
+	int ATTR_FAX = 4;
 
 	/**
 	 * 
@@ -491,7 +491,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int ATTR_HOME = 8;
+	int ATTR_HOME = 8;
 
 	/**
 	 * 
@@ -501,7 +501,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int ATTR_MOBILE = 16;
+	int ATTR_MOBILE = 16;
 
 	/**
 	 * 
@@ -511,7 +511,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int ATTR_OTHER = 32;
+	int ATTR_OTHER = 32;
 
 	/**
 	 * 
@@ -521,7 +521,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int ATTR_PAGER = 64;
+	int ATTR_PAGER = 64;
 
 	/**
 	 * 
@@ -534,7 +534,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int ATTR_PREFERRED = 128;
+	int ATTR_PREFERRED = 128;
 
 	/**
 	 * 
@@ -544,7 +544,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int ATTR_SMS = 256;
+	int ATTR_SMS = 256;
 
 	/**
 	 * 
@@ -554,7 +554,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int ATTR_WORK = 512;
+	int ATTR_WORK = 512;
 
 	/**
 	 * 
@@ -566,7 +566,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int ADDR_POBOX = 0;
+	int ADDR_POBOX = 0;
 
 	/**
 	 * 
@@ -578,7 +578,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int ADDR_EXTRA = 1;
+	int ADDR_EXTRA = 1;
 
 	/**
 	 * 
@@ -590,7 +590,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int ADDR_STREET = 2;
+	int ADDR_STREET = 2;
 
 	/**
 	 * 
@@ -602,7 +602,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int ADDR_LOCALITY = 3;
+	int ADDR_LOCALITY = 3;
 
 	/**
 	 * 
@@ -614,7 +614,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int ADDR_REGION = 4;
+	int ADDR_REGION = 4;
 
 	/**
 	 * 
@@ -626,7 +626,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int ADDR_POSTALCODE = 5;
+	int ADDR_POSTALCODE = 5;
 
 	/**
 	 * 
@@ -638,7 +638,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int ADDR_COUNTRY = 6;
+	int ADDR_COUNTRY = 6;
 
 	/**
 	 * 
@@ -651,7 +651,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int NAME_FAMILY = 0;
+	int NAME_FAMILY = 0;
 
 	/**
 	 * 
@@ -664,7 +664,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int NAME_GIVEN = 1;
+	int NAME_GIVEN = 1;
 
 	/**
 	 * 
@@ -677,7 +677,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int NAME_OTHER = 2;
+	int NAME_OTHER = 2;
 
 	/**
 	 * 
@@ -690,7 +690,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int NAME_PREFIX = 3;
+	int NAME_PREFIX = 3;
 
 	/**
 	 * 
@@ -703,7 +703,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int NAME_SUFFIX = 4;
+	int NAME_SUFFIX = 4;
 
 	/**
 	 * 
@@ -713,7 +713,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int CLASS_CONFIDENTIAL = 200;
+	int CLASS_CONFIDENTIAL = 200;
 
 	/**
 	 * 
@@ -723,7 +723,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int CLASS_PRIVATE = 201;
+	int CLASS_PRIVATE = 201;
 
 	/**
 	 * 
@@ -733,7 +733,7 @@ public interface Contact extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int CLASS_PUBLIC = 202;
+	int CLASS_PUBLIC = 202;
 
 
 	/**
@@ -753,6 +753,6 @@ public interface Contact extends PIMItem
 	 * @throws java.lang.IllegalArgumentException - if field is not a valid field for a Contact.
 	 * @throws UnsupportedFieldException - if the field is not supported by the implementing class.
 	 */
-	public int getPreferredIndex(int field);
+	int getPreferredIndex(int field);
 
 }

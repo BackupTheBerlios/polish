@@ -44,7 +44,7 @@ public interface LocationListener
 	 * @param provider - the source of the event
 	 * @param location - the location to which the event relates, i.e. the new position
 	 */
-	public void locationUpdated( LocationProvider provider, Location location);
+	void locationUpdated( LocationProvider provider, Location location);
 
 	/**
 	 * Called by the <code>LocationProvider</code> to which this listener is
@@ -66,6 +66,6 @@ public interface LocationListener
 	 * @param provider - the source of the event
 	 * @param newState - the new state of the LocationProvider. This value is one of the constants for the state defined in the LocationProvider class.
 	 */
-	public void providerStateChanged( LocationProvider provider, int newState);
+	void providerStateChanged( LocationProvider provider, int newState);
 
 }

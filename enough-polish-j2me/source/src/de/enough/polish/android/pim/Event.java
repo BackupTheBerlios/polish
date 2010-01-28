@@ -173,7 +173,7 @@ public interface Event extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int ALARM = 100;
+	int ALARM = 100;
 
 	/**
 	 * 
@@ -187,7 +187,7 @@ public interface Event extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int CLASS = 101;
+	int CLASS = 101;
 
 	/**
 	 * 
@@ -212,7 +212,7 @@ public interface Event extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int END = 102;
+	int END = 102;
 
 	/**
 	 * 
@@ -225,7 +225,7 @@ public interface Event extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int LOCATION = 103;
+	int LOCATION = 103;
 
 	/**
 	 * 
@@ -238,7 +238,7 @@ public interface Event extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int NOTE = 104;
+	int NOTE = 104;
 
 	/**
 	 * 
@@ -260,7 +260,7 @@ public interface Event extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int REVISION = 105;
+	int REVISION = 105;
 
 	/**
 	 * 
@@ -285,7 +285,7 @@ public interface Event extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int START = 106;
+	int START = 106;
 
 	/**
 	 * 
@@ -298,7 +298,7 @@ public interface Event extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int SUMMARY = 107;
+	int SUMMARY = 107;
 
 	/**
 	 * 
@@ -315,7 +315,7 @@ public interface Event extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int UID = 108;
+	int UID = 108;
 
 	/**
 	 * 
@@ -325,7 +325,7 @@ public interface Event extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int CLASS_CONFIDENTIAL = 200;
+	int CLASS_CONFIDENTIAL = 200;
 
 	/**
 	 * 
@@ -335,7 +335,7 @@ public interface Event extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int CLASS_PRIVATE = 201;
+	int CLASS_PRIVATE = 201;
 
 	/**
 	 * 
@@ -345,7 +345,7 @@ public interface Event extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int CLASS_PUBLIC = 202;
+	int CLASS_PUBLIC = 202;
 
 	
 
@@ -362,7 +362,7 @@ public interface Event extends PIMItem
 	 * 
 	 * @return the RepeatRule describing how often this Event occurs or null if a RepeatRule has not been set.
 	 */
-	public RepeatRule getRepeat();
+	RepeatRule getRepeat();
 
 	/**
 	 * 
@@ -376,6 +376,6 @@ public interface Event extends PIMItem
 	 * 
 	 * @param value - A RepeatRule describing how often this Event occurs or null to clear any RepeatRule.
 	 */
-	public void setRepeat( RepeatRule value);
+	void setRepeat( RepeatRule value);
 
 }

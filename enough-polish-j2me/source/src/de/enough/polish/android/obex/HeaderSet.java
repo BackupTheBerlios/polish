@@ -511,7 +511,7 @@ public interface HeaderSet
 	 * <DT><B>See Also:</B>
 	 * 
 	 */
-	static final int COUNT = 0xC0;
+	int COUNT = 0xC0;
 
 	/**
 	 * Represents the OBEX Name header.  This specifies the name of the object.
@@ -521,7 +521,7 @@ public interface HeaderSet
 	 * <DT><B>See Also:</B>
 	 * 
 	 */
-	static final int NAME = 0x01;
+	int NAME = 0x01;
 
 	/**
 	 * Represents the OBEX Type header.  This allows a request to specify the
@@ -532,7 +532,7 @@ public interface HeaderSet
 	 * <DT><B>See Also:</B>
 	 * 
 	 */
-	static final int TYPE = 0x42;
+	int TYPE = 0x42;
 
 	/**
 	 * Represents the OBEX Length header.  This is the length of the object in
@@ -543,7 +543,7 @@ public interface HeaderSet
 	 * <DT><B>See Also:</B>
 	 * 
 	 */
-	static final int LENGTH = 0xC3;
+	int LENGTH = 0xC3;
 
 	/**
 	 * Represents the OBEX Time header using the ISO 8601 standards.  This is
@@ -554,7 +554,7 @@ public interface HeaderSet
 	 * <DT><B>See Also:</B>
 	 * 
 	 */
-	static final int TIME_ISO_8601 = 0x44;
+	int TIME_ISO_8601 = 0x44;
 
 	/**
 	 * Represents the OBEX Time header using the 4 byte representation.  This
@@ -566,7 +566,7 @@ public interface HeaderSet
 	 * <DT><B>See Also:</B>
 	 * 
 	 */
-	static final int TIME_4_BYTE = 0xC4;
+	int TIME_4_BYTE = 0xC4;
 
 	/**
 	 * Represents the OBEX Description header.  This is a text description of
@@ -577,7 +577,7 @@ public interface HeaderSet
 	 * <DT><B>See Also:</B>
 	 * 
 	 */
-	static final int DESCRIPTION = 0x05;
+	int DESCRIPTION = 0x05;
 
 	/**
 	 * Represents the OBEX Target header.  This is the name of the service an
@@ -588,7 +588,7 @@ public interface HeaderSet
 	 * <DT><B>See Also:</B>
 	 * 
 	 */
-	static final int TARGET = 0x46;
+	int TARGET = 0x46;
 
 	/**
 	 * Represents the OBEX HTTP header.  This allows an HTTP 1.X header to be
@@ -599,7 +599,7 @@ public interface HeaderSet
 	 * <DT><B>See Also:</B>
 	 * 
 	 */
-	static final int HTTP = 0x47;
+	int HTTP = 0x47;
 
 	/**
 	 * Represents the OBEX Who header.  Identifies the OBEX application to
@@ -610,7 +610,7 @@ public interface HeaderSet
 	 * <DT><B>See Also:</B>
 	 * 
 	 */
-	static final int WHO = 0x4A;
+	int WHO = 0x4A;
 
 	/**
 	 * Represents the OBEX Object Class header.  This header specifies the
@@ -621,7 +621,7 @@ public interface HeaderSet
 	 * <DT><B>See Also:</B>
 	 * 
 	 */
-	static final int OBJECT_CLASS = 0x4F;
+	int OBJECT_CLASS = 0x4F;
 
 	/**
 	 * Represents the OBEX Application Parameter header.  This header specifies
@@ -633,7 +633,7 @@ public interface HeaderSet
 	 * 
 	 * 
 	 */
-	static final int APPLICATION_PARAMETER = 0x4C;
+	int APPLICATION_PARAMETER = 0x4C;
 
 	
 

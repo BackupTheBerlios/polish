@@ -176,7 +176,7 @@ public interface PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int BINARY = 0;
+	int BINARY = 0;
 
 	/**
 	 * 
@@ -189,7 +189,7 @@ public interface PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int BOOLEAN = 1;
+	int BOOLEAN = 1;
 
 	/**
 	 * 
@@ -204,7 +204,7 @@ public interface PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int DATE = 2;
+	int DATE = 2;
 
 	/**
 	 * 
@@ -217,7 +217,7 @@ public interface PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int INT = 3;
+	int INT = 3;
 
 	/**
 	 * 
@@ -230,7 +230,7 @@ public interface PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int STRING = 4;
+	int STRING = 4;
 
 	/**
 	 * 
@@ -243,7 +243,7 @@ public interface PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int STRING_ARRAY = 5;
+	int STRING_ARRAY = 5;
 
 	/**
 	 * 
@@ -254,7 +254,7 @@ public interface PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int ATTR_NONE = 0;
+	int ATTR_NONE = 0;
 
 	/**
 	 * 
@@ -264,7 +264,7 @@ public interface PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int EXTENDED_FIELD_MIN_VALUE = 16777216;
+	int EXTENDED_FIELD_MIN_VALUE = 16777216;
 
 	/**
 	 * 
@@ -275,7 +275,7 @@ public interface PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int EXTENDED_ATTRIBUTE_MIN_VALUE = 16777216;
+	int EXTENDED_ATTRIBUTE_MIN_VALUE = 16777216;
 
 
 	/**
@@ -288,7 +288,7 @@ public interface PIMItem
 	 * 
 	 * @return the PIMList that this item belongs to. If the item does not belong to any list, null is returned.
 	 */
-	public PIMList getPIMList();
+	PIMList getPIMList();
 
 	/**
 	 * 
@@ -317,7 +317,7 @@ public interface PIMItem
 	 * @throws PIMException - if the commit encounters an error and cannot complete. Also thrown if the item does not belong to any list, or the list is closed or inaccessible.
 	 * @throws java.lang.SecurityException - if the application has not been granted write access to the PIM list or the list is opened READ_ONLY.
 	 */
-	public void commit() throws PIMException;
+	void commit() throws PIMException;
 
 	/**
 	 * 
@@ -328,7 +328,7 @@ public interface PIMItem
 	 * 
 	 * @return boolean true if any fields have been modified since the item was last retrieved or committed, false otherwise.
 	 */
-	public boolean isModified();
+	boolean isModified();
 
 	/**
 	 * 
@@ -341,7 +341,7 @@ public interface PIMItem
 	 * 
 	 * @return int array of fields that have data currently stored for them. If no fields contain data, a zero length array is returned.
 	 */
-	public int[] getFields();
+	int[] getFields();
 
 	/**
 	 * 
@@ -358,7 +358,7 @@ public interface PIMItem
 	 * @throws java.lang.IndexOutOfBoundsException - if the index is negative or greater than or equal to the number of values currently contained in the field.
 	 * @throws UnsupportedFieldException - if the field is not supported in the implementing instance of the class.
 	 */
-	public byte[] getBinary(int field, int index);
+	byte[] getBinary(int field, int index);
 
 	/**
 	 * 
@@ -380,7 +380,7 @@ public interface PIMItem
 	 * @throws UnsupportedFieldException - if the field is not supported in the implementing instance of the class.
 	 * @throws FieldFullException - if the field already contains the maximum number of data values it can hold.
 	 */
-	public void addBinary(int field, int attributes, byte[] value, int offset, int length);
+	void addBinary(int field, int attributes, byte[] value, int offset, int length);
 
 	/**
 	 * 
@@ -404,7 +404,7 @@ public interface PIMItem
 	 * @throws UnsupportedFieldException - if the field is not supported in the implementing instance of the class.
 	 * @throws java.lang.IndexOutOfBoundsException - if the index is negative or greater than or equal to the number of values currently contained in the field.
 	 */
-	public void setBinary(int field, int index, int attributes, byte[] value, int offset, int length);
+	void setBinary(int field, int index, int attributes, byte[] value, int offset, int length);
 
 	/**
 	 * 
@@ -421,7 +421,7 @@ public interface PIMItem
 	 * @throws java.lang.IndexOutOfBoundsException - if the index is negative or greater than or equal to the number of values currently contained in the field.
 	 * @throws UnsupportedFieldException - if the field is not supported in the implementing instance of the class.
 	 */
-	public long getDate(int field, int index);
+	long getDate(int field, int index);
 
 	/**
 	 * 
@@ -447,7 +447,7 @@ public interface PIMItem
 	 * @throws UnsupportedFieldException - if the field is not supported in the implementing instance of the class.
 	 * @throws FieldFullException - if the field already contains the maximum number of data values it can hold.
 	 */
-	public void addDate(int field, int attributes, long value);
+	void addDate(int field, int attributes, long value);
 
 	/**
 	 * 
@@ -476,7 +476,7 @@ public interface PIMItem
 	 * @throws UnsupportedFieldException - if the field is not supported in the implementing instance of the class.
 	 * @throws java.lang.IndexOutOfBoundsException - if the index is negative or greater than or equal to the number of values currently contained in the field.
 	 */
-	public void setDate(int field, int index, int attributes, long value);
+	void setDate(int field, int index, int attributes, long value);
 
 	/**
 	 * 
@@ -493,7 +493,7 @@ public interface PIMItem
 	 * @throws java.lang.IndexOutOfBoundsException - if the index is negative or greater than or equal to the number of values currently contained in the field.
 	 * @throws UnsupportedFieldException - if the field is not supported in the implementing instance of the class.
 	 */
-	public int getInt(int field, int index);
+	int getInt(int field, int index);
 
 	/**
 	 * 
@@ -511,7 +511,7 @@ public interface PIMItem
 	 * @throws UnsupportedFieldException - if the field is not supported in the implementing instance of the class.
 	 * @throws FieldFullException - if the field already contains the maximum number of data values it can hold.
 	 */
-	public void addInt(int field, int attributes, int value);
+	void addInt(int field, int attributes, int value);
 
 	/**
 	 * 
@@ -532,7 +532,7 @@ public interface PIMItem
 	 * @throws UnsupportedFieldException - if the field is not supported in the implementing instance of the class.
 	 * @throws java.lang.IndexOutOfBoundsException - if the index is negative or greater than or equal to the number of values currently contained in the field.
 	 */
-	public void setInt(int field, int index, int attributes, int value);
+	void setInt(int field, int index, int attributes, int value);
 
 	/**
 	 * 
@@ -551,7 +551,7 @@ public interface PIMItem
 	 * @throws java.lang.IndexOutOfBoundsException - if the index is negative or greater than or equal to the number of values currently contained in the field.
 	 * @throws UnsupportedFieldException - if the field is not supported in the implementing instance of the class.
 	 */
-	public java.lang.String getString(int field, int index);
+	java.lang.String getString(int field, int index);
 
 	/**
 	 * 
@@ -574,7 +574,7 @@ public interface PIMItem
 	 * @throws UnsupportedFieldException - if the field is not supported in the implementing instance of the class.
 	 * @throws FieldFullException - if the field already contains the maximum number of data values it can hold.
 	 */
-	public void addString(int field, int attributes, java.lang.String value);
+	void addString(int field, int attributes, java.lang.String value);
 
 	/**
 	 * 
@@ -600,7 +600,7 @@ public interface PIMItem
 	 * @throws UnsupportedFieldException - if the field is not supported in the implementing instance of the class.
 	 * @throws java.lang.IndexOutOfBoundsException - if the index is negative or greater than or equal to the number of values currently contained in the field.
 	 */
-	public void setString(int field, int index, int attributes, java.lang.String value);
+	void setString(int field, int index, int attributes, java.lang.String value);
 
 	/**
 	 * 
@@ -617,7 +617,7 @@ public interface PIMItem
 	 * @throws java.lang.IndexOutOfBoundsException - if the index is negative or greater than or equal to the number of values currently contained in the field.
 	 * @throws UnsupportedFieldException - if the field is not supported in the implementing instance of the class.
 	 */
-	public boolean getBoolean(int field, int index);
+	boolean getBoolean(int field, int index);
 
 	/**
 	 * 
@@ -635,7 +635,7 @@ public interface PIMItem
 	 * @throws UnsupportedFieldException - if the field is not supported in the implementing instance of the class.
 	 * @throws FieldFullException - if the field already contains the maximum number of data values it can hold.
 	 */
-	public void addBoolean(int field, int attributes, boolean value);
+	void addBoolean(int field, int attributes, boolean value);
 
 	/**
 	 * 
@@ -656,7 +656,7 @@ public interface PIMItem
 	 * @throws UnsupportedFieldException - if the field is not supported in the implementing instance of the class.
 	 * @throws java.lang.IndexOutOfBoundsException - if the index is negative or greater than or equal to the number of values currently contained in the field.
 	 */
-	public void setBoolean(int field, int index, int attributes, boolean value);
+	void setBoolean(int field, int index, int attributes, boolean value);
 
 	/**
 	 * 
@@ -680,7 +680,7 @@ public interface PIMItem
 	 * @throws java.lang.IndexOutOfBoundsException - if the index is negative or greater than or equal to the number of values currently contained in the field.
 	 * @throws UnsupportedFieldException - if the field is not supported in the implementing instance of the class.
 	 */
-	public java.lang.String[] getStringArray(int field, int index);
+	java.lang.String[] getStringArray(int field, int index);
 
 	/**
 	 * 
@@ -709,7 +709,7 @@ public interface PIMItem
 	 * @throws UnsupportedFieldException - if the field is not supported in the implementing instance of the class.
 	 * @throws FieldFullException - if the field already contains the maximum number of data values it can hold.
 	 */
-	public void addStringArray(int field, int attributes, java.lang.String[] value);
+	void addStringArray(int field, int attributes, java.lang.String[] value);
 
 	/**
 	 * 
@@ -739,7 +739,7 @@ public interface PIMItem
 	 * @throws UnsupportedFieldException - if the field is not supported in the implementing instance of the class.
 	 * @throws java.lang.IndexOutOfBoundsException - if the index is negative or greater than or equal to the number of values currently contained in the field.
 	 */
-	public void setStringArray(int field, int index, int attributes, java.lang.String[] value);
+	void setStringArray(int field, int index, int attributes, java.lang.String[] value);
 
 	/**
 	 * 
@@ -752,7 +752,7 @@ public interface PIMItem
 	 * @throws java.lang.IllegalArgumentException - if the field is not valid for the implementing class.
 	 * @throws UnsupportedFieldException - if the field is not supported in the implementing instance of the class.
 	 */
-	public int countValues(int field);
+	int countValues(int field);
 
 	/**
 	 * 
@@ -770,7 +770,7 @@ public interface PIMItem
 	 * @throws java.lang.IndexOutOfBoundsException - if the index is negative or greater than or equal to the number of values currently contained in the field.
 	 * @throws UnsupportedFieldException - if the field is not supported in the implementing instance of the class.
 	 */
-	public void removeValue(int field, int index);
+	void removeValue(int field, int index);
 
 	/**
 	 * 
@@ -787,7 +787,7 @@ public interface PIMItem
 	 * @throws java.lang.IndexOutOfBoundsException - if the index is negative or greater than or equal to the number of values currently contained in the field.
 	 * @throws UnsupportedFieldException - if the field is not supported in the implementing instance of the class.
 	 */
-	public int getAttributes(int field, int index);
+	int getAttributes(int field, int index);
 
 	/**
 	 * 
@@ -813,7 +813,7 @@ public interface PIMItem
 	 * @throws java.lang.NullPointerException - if category is null.
 	 * @throws PIMException - may be thrown if category is not in the list's category list and the list prevents that condition from occurring. Also thrown if categories are not supported in the implementation. Also thrown if the max categories that this item can be assigned to is exceeded.
 	 */
-	public void addToCategory(java.lang.String category) throws PIMException;
+	void addToCategory(java.lang.String category) throws PIMException;
 
 	/**
 	 * 
@@ -831,7 +831,7 @@ public interface PIMItem
 	 * @param category - the category to remove
 	 * @throws java.lang.NullPointerException - if category is null
 	 */
-	public void removeFromCategory(java.lang.String category);
+	void removeFromCategory(java.lang.String category);
 
 	/**
 	 * 
@@ -842,7 +842,7 @@ public interface PIMItem
 	 * 
 	 * @return a string array of all the categories for the item.
 	 */
-	public java.lang.String[] getCategories();
+	java.lang.String[] getCategories();
 
 	/**
 	 * 
@@ -852,6 +852,6 @@ public interface PIMItem
 	 * 
 	 * @return int the number of categories this item can be assigned to. 0 indicates no category support and -1 indicates there is no limit to the number of categories that this item can be assigned to.
 	 */
-	public int maxCategories();
+	int maxCategories();
 
 }

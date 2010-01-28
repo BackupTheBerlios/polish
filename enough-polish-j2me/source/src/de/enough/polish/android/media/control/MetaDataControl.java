@@ -24,7 +24,7 @@ public interface MetaDataControl extends Control
 	 * <DT><B>See Also:</B>
 	 * 
 	 */
-	public static final java.lang.String AUTHOR_KEY = "author";
+	java.lang.String AUTHOR_KEY = "author";
 
 	/**
 	 * Default key for COPYRIGHT information.
@@ -34,7 +34,7 @@ public interface MetaDataControl extends Control
 	 * <DT><B>See Also:</B>
 	 * 
 	 */
-	public static final java.lang.String COPYRIGHT_KEY = "copyright";
+	java.lang.String COPYRIGHT_KEY = "copyright";
 
 	/**
 	 * Default key for DATE information.
@@ -44,7 +44,7 @@ public interface MetaDataControl extends Control
 	 * <DT><B>See Also:</B>
 	 * 
 	 */
-	public static final java.lang.String DATE_KEY = "date";
+	java.lang.String DATE_KEY = "date";
 
 	/**
 	 * Default key for TITLE information.
@@ -55,7 +55,7 @@ public interface MetaDataControl extends Control
 	 * 
 	 * 
 	 */
-	public static final java.lang.String TITLE_KEY = "title";
+	java.lang.String TITLE_KEY = "title";
 
 	/**
 	 * Return the list of keys for the available metadata values.
@@ -66,7 +66,7 @@ public interface MetaDataControl extends Control
 	 * 
 	 * @return The list of keys for the available metadata values.
 	 */
-	public java.lang.String[] getKeys();
+	java.lang.String[] getKeys();
 
 	/**
 	 * Retrieve the value found in the metadata associated with the
@@ -92,7 +92,7 @@ public interface MetaDataControl extends Control
 	 * @return the value of the key or null if the given key is valid but the value is not yet available.
 	 * @throws java.lang.IllegalArgumentException - Thrown if the given key is null or invalid.
 	 */
-	public java.lang.String getKeyValue(java.lang.String key);
+	java.lang.String getKeyValue(java.lang.String key);
 
 	
 

@@ -10,36 +10,36 @@ public interface VideoCallback {
 	/**
 	 * Called when a video is fully prepared
 	 */
-	public void onVideoReady();
+	void onVideoReady();
 	
 	/**
 	 * Called when a video is destroyed
 	 */
-	public void onVideoClose();
+	void onVideoClose();
 	
 	/**
 	 * Called when an error occures
 	 */
-	public void onVideoError(Exception e);
+	void onVideoError(Exception e);
 	
 	/**
 	 * Called when the video is paused
 	 */
-	public void onVideoPause();
+	void onVideoPause();
 	
 	/**
 	 * Called when the video is played
 	 */
-	public void onVideoPlay();
+	void onVideoPlay();
 	
 	/**
 	 * Called when the video is stopped
 	 */
-	public void onVideoStop();
+	void onVideoStop();
 	
 	/**
 	 * Called when a capture is done
 	 * @param data the resulting data of the capture
 	 */
-	public void onSnapshot(byte[] data, String encoding);
+	void onSnapshot(byte[] data, String encoding);
 }

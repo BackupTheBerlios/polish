@@ -3,9 +3,7 @@
 package de.enough.polish.android.pim;
 
 /**
- * Represents a ToDo list containing ToDo items.
- * 
- * Represents a ToDo list containing ToDo items.
+ * <p>Represents a ToDo list containing ToDo items.
  * A ToDo List is responsible for determining which of the fields from a ToDo are
  * retained when a ToDo is persisted into the List. A ToDo List does not have to
  * retain all of the fields in a ToDo when the ToDo is persisted into the List.
@@ -18,13 +16,13 @@ package de.enough.polish.android.pim;
  * is thrown.
  * </P>
  * <h3>Inherited Method Behavior</h3>
- * A ToDoList only accepts objects implementing the ToDo interface as a parameter
+ * <p>A ToDoList only accepts objects implementing the ToDo interface as a parameter
  * to <A HREF="../../../javax/microedition/pim/PIMList.html#items(javax.microedition.pim.PIMItem)">
  * <CODE>PIMList.items(PIMItem)</CODE></A>). A <code>java.lang.IllegalArgumentException</code>
  * is thrown by this method if the input parameter does not implement the ToDo
  * interface.
  * </P>
- * Enumerations returned by <A HREF="../../../javax/microedition/pim/PIMList.html#items()">
+ * <p>Enumerations returned by <A HREF="../../../javax/microedition/pim/PIMList.html#items()">
  * <CODE>PIMList.items()</CODE></A>, <A HREF="../../../javax/microedition/pim/PIMList.html#items(javax.microedition.pim.PIMItem)">
  * <CODE>PIMList.items(PIMItem)</CODE></A>, and <A HREF="../../../javax/microedition/pim/ToDoList.html#items(int, long, long)">
  * <CODE>items(int, long, long)</CODE></A> contain only objects implementing a
@@ -49,7 +47,7 @@ public interface ToDoList extends PIMList
 	 * 
 	 * @return a new, empty ToDo object associated with this list. However, the ToDo is still not persistent in the list until a call to PIMItem.commit() for the ToDo is made.
 	 */
-	public ToDo createToDo();
+	ToDo createToDo();
 
 	/**
 	 * 
@@ -75,7 +73,7 @@ public interface ToDoList extends PIMList
 	 * @return a newly created ToDo item.
 	 * @throws java.lang.NullPointerException - If the input ToDo is null.
 	 */
-	public ToDo importToDo( ToDo item);
+	ToDo importToDo( ToDo item);
 
 	/**
 	 * 
@@ -90,7 +88,7 @@ public interface ToDoList extends PIMList
 	 * @throws java.lang.NullPointerException - If the ToDo is null.
 	 * @throws java.lang.SecurityException - if the application is not given permission to write to the ToDo list or the list is opened READ_ONLY.
 	 */
-	public void removeToDo( ToDo item) throws PIMException;
+	void removeToDo( ToDo item) throws PIMException;
 
 	/**
 	 * 
@@ -110,6 +108,6 @@ public interface ToDoList extends PIMList
 	 * @throws PIMException - If the operation is unsupported, an error occurs, or is no longer accessible or closed.
 	 * @throws java.lang.SecurityException - if the application is not given permission to write to the ToDo list or the list is opened WRITE_ONLY.
 	 */
-	public java.util.Enumeration items(int field, long startDate, long endDate) throws PIMException;
+	java.util.Enumeration items(int field, long startDate, long endDate) throws PIMException;
 
 }

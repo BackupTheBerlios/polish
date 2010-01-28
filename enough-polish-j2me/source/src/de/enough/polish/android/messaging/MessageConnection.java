@@ -70,7 +70,7 @@ public interface MessageConnection extends Connection
 	 * implementing the <code>TextMessage</code> interface.</DL>
 	 * 
 	 */
-	public static final java.lang.String TEXT_MESSAGE = "text";
+	java.lang.String TEXT_MESSAGE = "text";
 
 	/**
 	 * Constant for a message type for <strong>binary</strong>
@@ -83,7 +83,7 @@ public interface MessageConnection extends Connection
 	 * 
 	 * 
 	 */
-	public static final java.lang.String BINARY_MESSAGE = "binary";
+	java.lang.String BINARY_MESSAGE = "binary";
 
 	/**
 	 * Constructs a new message object of a given type. When the
@@ -118,7 +118,7 @@ public interface MessageConnection extends Connection
 	 * @return Message object for a given type of message
 	 * @throws java.lang.IllegalArgumentException - if the message type is not TEXT_MESSAGE or BINARY_MESSAGE
 	 */
-	public Message newMessage(java.lang.String type);
+	Message newMessage(java.lang.String type);
 
 	/**
 	 * Constructs a new <code>Message</code> object of a given type and
@@ -133,7 +133,7 @@ public interface MessageConnection extends Connection
 	 * @throws java.lang.IllegalArgumentException - if the message type is not TEXT_MESSAGE or BINARY_MESSAGE
 	 * @see #newMessage(String type)
 	 */
-	public Message newMessage(java.lang.String type, java.lang.String address);
+	Message newMessage(java.lang.String type, java.lang.String address);
 
 	/**
 	 * Sends a message.
@@ -146,7 +146,7 @@ public interface MessageConnection extends Connection
 	 * @throws java.lang.SecurityException - if the application does not have permission to send the message
 	 * @see #receive()
 	 */
-	public void send( Message msg) throws java.io.IOException, java.io.InterruptedIOException;
+	void send( Message msg) throws java.io.IOException, java.io.InterruptedIOException;
 
 	/**
 	 * Receives a message.
@@ -163,7 +163,7 @@ public interface MessageConnection extends Connection
 	 * @throws java.lang.SecurityException - if the application does not have permission to receive messages using the given port number
 	 * @see #send(Message)
 	 */
-	public Message receive() throws java.io.IOException, java.io.InterruptedIOException;
+	Message receive() throws java.io.IOException, java.io.InterruptedIOException;
 
 	/**
 	 * Registers a <code>MessageListener</code> object that the platform
@@ -190,7 +190,7 @@ public interface MessageConnection extends Connection
 	 * @throws java.lang.SecurityException - if the application does not have permission to receive messages using the given port number
 	 * @throws java.io.IOException - if the connection has been closed, or if an attempt is made to register a listener on a client connection
 	 */
-	public void setMessageListener( MessageListener l) throws java.io.IOException;
+	void setMessageListener( MessageListener l) throws java.io.IOException;
 
 	/**
 	 * Returns the number of segments in the underlying protocol that would
@@ -213,6 +213,6 @@ public interface MessageConnection extends Connection
 	 * @param msg - the message to be used for the calculation
 	 * @return number of protocol segments needed for sending the message. Returns 0 if the Message object cannot be sent using the underlying protocol.
 	 */
-	public int numberOfSegments( Message msg);
+	int numberOfSegments( Message msg);
 
 }

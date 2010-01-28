@@ -49,7 +49,7 @@ public interface PlayerListener
 	 * Value <code>started</code> is assigned to <code>STARTED</code>.</DL>
 	 * 
 	 */
-	public static final String STARTED = "started";
+	String STARTED = "started";
 
 	/**
 	 * Posted when a <code>Player</code> stops in response to the
@@ -61,7 +61,7 @@ public interface PlayerListener
 	 * Value <code>stopped</code> is assigned to <code>STOPPED</code>.</DL>
 	 * 
 	 */
-	public static final String STOPPED = "stopped";
+	String STOPPED = "stopped";
 
 	/**
 	 * Posted when a <code>Player</code> has reached the
@@ -74,7 +74,7 @@ public interface PlayerListener
 	 * <code>END_OF_MEDIA</code>.</DL>
 	 * 
 	 */
-	public static final String END_OF_MEDIA = "endOfMedia";
+	String END_OF_MEDIA = "endOfMedia";
 
 	/**
 	 * Posted when the duration of a <code>Player</code> is updated.
@@ -92,7 +92,7 @@ public interface PlayerListener
 	 * <code>DURATION_UPDATED</code>.</DL>
 	 * 
 	 */
-	public static final String DURATION_UPDATED = "durationUpdated";
+	String DURATION_UPDATED = "durationUpdated";
 
 	/**
 	 * Posted when the system or another higher priority
@@ -116,7 +116,7 @@ public interface PlayerListener
 	 * <code>DEVICE_UNAVAILABLE</code>.</DL>
 	 * 
 	 */
-	public static final String DEVICE_UNAVAILABLE = "deviceUnavailable";
+	String DEVICE_UNAVAILABLE = "deviceUnavailable";
 
 	/**
 	 * Posted when the system or another higher priority
@@ -138,7 +138,7 @@ public interface PlayerListener
 	 * <code>DEVICE_AVAILABLE</code>.</DL>
 	 * 
 	 */
-	public static final String DEVICE_AVAILABLE = "deviceAvailable";
+	String DEVICE_AVAILABLE = "deviceAvailable";
 
 	/**
 	 * Posted when the volume of an audio device is changed.
@@ -152,7 +152,7 @@ public interface PlayerListener
 	 * <code>VOLUME_CHANGED</code>.</DL>
 	 * 
 	 */
-	public static final String VOLUME_CHANGED = "volumeChanged";
+	String VOLUME_CHANGED = "volumeChanged";
 
 	/**
 	 * Posted when an error had occurred.
@@ -162,7 +162,7 @@ public interface PlayerListener
 	 * Value <code>error</code> is assigned to <code>ERROR</code>.</DL>
 	 * 
 	 */
-	public static final String ERROR = "error";
+	String ERROR = "error";
 
 	/**
 	 * Posted when a <code>Player</code> is closed.
@@ -173,7 +173,7 @@ public interface PlayerListener
 	 * 
 	 * 
 	 */
-	public static final String CLOSED = "closed";
+	String CLOSED = "closed";
 
 	/**
 	 * This method is called to deliver an event to a registered
@@ -183,6 +183,6 @@ public interface PlayerListener
 	 * @param event - The event generated as defined by the enumerated types.
 	 * @param eventData - The associated event data.
 	 */
-	public void playerUpdate( Player player, String event, Object eventData);
+	void playerUpdate( Player player, String event, Object eventData);
 
 }

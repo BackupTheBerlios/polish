@@ -113,7 +113,7 @@ public interface GUIControl extends Control
 	 * 
 	 * 
 	 */
-	public static final int USE_GUI_PRIMITIVE = 0;
+	int USE_GUI_PRIMITIVE = 0;
 
 	/**
 	 * Initialize the mode on how the GUI is displayed.
@@ -125,7 +125,7 @@ public interface GUIControl extends Control
 	 * @throws java.lang.IllegalStateException - Thrown if initDisplayMode is called again after it has previously been called successfully.
 	 * @throws java.lang.IllegalArgumentException - Thrown if the mode or arg argument is invalid.   mode must be defined by GUIControl or its subclasses; or a custom mode supported by this implementation. arg must conform to the constraints defined by the respective mode definitions. Refer to the mode definitions for the required type of arg.
 	 */
-	public java.lang.Object initDisplayMode(int mode, java.lang.Object arg);
+	java.lang.Object initDisplayMode(int mode, java.lang.Object arg);
 
 
 }

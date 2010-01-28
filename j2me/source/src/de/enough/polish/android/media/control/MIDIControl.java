@@ -121,7 +121,7 @@ public interface MIDIControl extends Control
 	 * <A HREF="../../../../constant-values.html#de.enough.polish.android.media.control.MIDIControl.NOTE_ON">Constant Field Values</A></DL>
 	 * 
 	 */
-	static final int NOTE_ON = 0x90;
+	int NOTE_ON = 0x90;
 
 	/**
 	 * Command value for Control Change message (0xB0, or 176).
@@ -131,7 +131,7 @@ public interface MIDIControl extends Control
 	 * 
 	 * 
 	 */
-	static final int CONTROL_CHANGE = 0xB0;
+	int CONTROL_CHANGE = 0xB0;
 
 	/**
 	 * Returns whether banks of the synthesizer can be queried.
@@ -177,7 +177,7 @@ public interface MIDIControl extends Control
 	 * @see #isBankQuerySupported()
 	 * @see #setProgram(int, int, int)
 	 */
-	public int[] getProgram(int channel) throws MediaException;
+	int[] getProgram(int channel) throws MediaException;
 
 	/**
 	 * Get volume for the given channel. The return value is
@@ -195,7 +195,7 @@ public interface MIDIControl extends Control
 	 * @throws java.lang.IllegalStateException - Thrown if the player has not been prefetched.
 	 * @see #setChannelVolume(int, int)
 	 */
-	public int getChannelVolume(int channel);
+	int getChannelVolume(int channel);
 
 	/**
 	 * Set program of a channel. This sets the current program for the
@@ -232,7 +232,7 @@ public interface MIDIControl extends Control
 	 * @throws java.lang.IllegalStateException - Thrown if the player has not been prefetched.
 	 * @see #getProgram(int)
 	 */
-	public void setProgram(int channel, int bank, int program);
+	void setProgram(int channel, int bank, int program);
 
 	/**
 	 * Set volume for the given channel. To mute, set to 0.
@@ -267,7 +267,7 @@ public interface MIDIControl extends Control
 	 * @throws java.lang.IllegalStateException - Thrown if the player has not been prefetched.
 	 * @see #getChannelVolume(int)
 	 */
-	public void setChannelVolume(int channel, int volume);
+	void setChannelVolume(int channel, int volume);
 
 	/**
 	 * Returns list of installed banks.
@@ -285,7 +285,7 @@ public interface MIDIControl extends Control
 	 * @throws java.lang.IllegalStateException - Thrown if the player has not been prefetched.
 	 * @see #isBankQuerySupported()
 	 */
-	public int[] getBankList(boolean custom) throws MediaException;
+	int[] getBankList(boolean custom) throws MediaException;
 
 	/**
 	 * Given bank, get list of program numbers. If and only if
@@ -304,7 +304,7 @@ public interface MIDIControl extends Control
 	 * @see #setProgram(int, int, int)
 	 * @see #isBankQuerySupported()
 	 */
-	public int[] getProgramList(int bank) throws MediaException;
+	int[] getProgramList(int bank) throws MediaException;
 
 	/**
 	 * Given bank and program, get name of program.
@@ -323,7 +323,7 @@ public interface MIDIControl extends Control
 	 * @throws java.lang.IllegalStateException - Thrown if the player has not been prefetched.
 	 * @see #isBankQuerySupported()
 	 */
-	public java.lang.String getProgramName(int bank, int prog) throws MediaException;
+	java.lang.String getProgramName(int bank, int prog) throws MediaException;
 
 	/**
 	 * Given bank, program and key, get name of key.
@@ -352,7 +352,7 @@ public interface MIDIControl extends Control
 	 * @throws java.lang.IllegalStateException - Thrown if the player has not been prefetched.
 	 * @see #isBankQuerySupported()
 	 */
-	public java.lang.String getKeyName(int bank, int prog, int key) throws MediaException;
+	java.lang.String getKeyName(int bank, int prog, int key) throws MediaException;
 
 	/**
 	 * Sends a short MIDI event to the device.
@@ -382,7 +382,7 @@ public interface MIDIControl extends Control
 	 * @throws java.lang.IllegalArgumentException - Thrown if one of the parameters is out of range.
 	 * @throws java.lang.IllegalStateException - Thrown if the player has not been prefetched.
 	 */
-	public void shortMidiEvent(int type, int data1, int data2);
+	void shortMidiEvent(int type, int data1, int data2);
 
 	/**
 	 * Sends a long MIDI event to the device, typically a system exclusive message.
@@ -399,7 +399,7 @@ public interface MIDIControl extends Control
 	 * @throws java.lang.IllegalArgumentException - Thrown if any one of the given parameters is not valid.
 	 * @throws java.lang.IllegalStateException - Thrown if the player has not been prefetched.
 	 */
-	public int longMidiEvent(byte[] data, int offset, int length);
+	int longMidiEvent(byte[] data, int offset, int length);
 
 
 

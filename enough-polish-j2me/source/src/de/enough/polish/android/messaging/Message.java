@@ -66,7 +66,7 @@ public interface Message
 	 * @return the address of this message, or null if the address is not set
 	 * @see #setAddress(String)
 	 */
-	public java.lang.String getAddress();
+	java.lang.String getAddress();
 
 	/**
 	 * Sets the address associated with this message,
@@ -76,7 +76,7 @@ public interface Message
 	 * @param addr - address for the message
 	 * @see #getAddress()
 	 */
-	public void setAddress(java.lang.String addr);
+	void setAddress(java.lang.String addr);
 
 	/**
 	 * Returns the timestamp indicating when this message has been
@@ -84,6 +84,6 @@ public interface Message
 	 * 
 	 * @return Date indicating the timestamp in the message or null if the timestamp is not set or if the time information is not available in the underlying protocol message
 	 */
-	public java.util.Date getTimestamp();
+	java.util.Date getTimestamp();
 
 }

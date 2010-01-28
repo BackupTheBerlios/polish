@@ -39,7 +39,7 @@ public interface BinaryMessage extends Message
 	 * @return the payload data of this message or null if the data has not been set
 	 * @see #setPayloadData(byte[])
 	 */
-	public byte[] getPayloadData();
+	byte[] getPayloadData();
 
 	/**
 	 * Sets the payload data of this message. The payload may
@@ -55,6 +55,6 @@ public interface BinaryMessage extends Message
 	 * @param data - payload data as a byte array
 	 * @see #getPayloadData()
 	 */
-	public void setPayloadData(byte[] data);
+	void setPayloadData(byte[] data);
 
 }

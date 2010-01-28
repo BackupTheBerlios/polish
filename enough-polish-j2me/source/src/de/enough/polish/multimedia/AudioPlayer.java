@@ -556,7 +556,7 @@ public class AudioPlayer implements PlayerListener
 		return false;
 	}
 
-	private static final void addTypes(String[] types) {
+	private static void addTypes(String[] types) {
 		Hashtable nestedMap = new Hashtable();
 		for (int i = 0; i < types.length; i++) {
 			String type = types[i];

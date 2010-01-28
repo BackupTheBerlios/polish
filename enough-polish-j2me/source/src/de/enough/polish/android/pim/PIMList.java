@@ -30,7 +30,7 @@ public interface PIMList
 	 * <P>
 	 * 
 	 */
-	public static final java.lang.String UNCATEGORIZED = null;
+	java.lang.String UNCATEGORIZED = null;
 
 
 	/**
@@ -42,7 +42,7 @@ public interface PIMList
 	 * 
 	 * @return a String representation of the list name.
 	 */
-	public java.lang.String getName();
+	java.lang.String getName();
 
 	/**
 	 * 
@@ -53,7 +53,7 @@ public interface PIMList
 	 * 
 	 * @throws PIMException - If the list is no longer accessible.
 	 */
-	public void close() throws PIMException;
+	void close() throws PIMException;
 
 	/**
 	 * 
@@ -65,7 +65,7 @@ public interface PIMList
 	 * @throws PIMException - If an error occurs or the list is no longer accessible or closed.
 	 * @throws java.lang.SecurityException - if the application is not given permission to read the PIM list or the list is opened WRITE_ONLY.
 	 */
-	public java.util.Enumeration items() throws PIMException;
+	java.util.Enumeration items() throws PIMException;
 
 	/**
 	 * 
@@ -130,7 +130,7 @@ public interface PIMList
 	 * @throws java.lang.NullPointerException - if matching is null.
 	 * @throws java.lang.SecurityException - if the application is not given permission to read the PIM list or the list is opened WRITE_ONLY.
 	 */
-	public java.util.Enumeration items( PIMItem matchingItem) throws PIMException;
+	java.util.Enumeration items( PIMItem matchingItem) throws PIMException;
 
 	/**
 	 * 
@@ -165,7 +165,7 @@ public interface PIMList
 	 * @throws java.lang.NullPointerException - if matching is null.
 	 * @throws java.lang.SecurityException - if the application is not given permission to read the PIM list or the list is opened WRITE_ONLY.
 	 */
-	public java.util.Enumeration items(java.lang.String matchingValue) throws PIMException;
+	java.util.Enumeration items(java.lang.String matchingValue) throws PIMException;
 
 	/**
 	 * 
@@ -204,7 +204,7 @@ public interface PIMList
 	 * @throws PIMException - If an error occurs or the list is no longer accessible or closed.
 	 * @throws java.lang.SecurityException - If the application is not given permission to read the PIM list or the list is opened WRITE_ONLY.
 	 */
-	public java.util.Enumeration itemsByCategory(java.lang.String category) throws PIMException;
+	java.util.Enumeration itemsByCategory(java.lang.String category) throws PIMException;
 
 	/**
 	 * 
@@ -217,7 +217,7 @@ public interface PIMList
 	 * @return A string array containing the categories defined for the PIM list.
 	 * @throws PIMException - If an error occurs or the list is no longer accessible or closed.
 	 */
-	public java.lang.String[] getCategories() throws PIMException;
+	java.lang.String[] getCategories() throws PIMException;
 
 	/**
 	 * 
@@ -231,7 +231,7 @@ public interface PIMList
 	 * @throws java.lang.NullPointerException - if category is null.
 	 * @throws PIMException - If an error occurs or the list is no longer accessible or closed.
 	 */
-	public boolean isCategory(java.lang.String category) throws PIMException;
+	boolean isCategory(java.lang.String category) throws PIMException;
 
 	/**
 	 * 
@@ -259,7 +259,7 @@ public interface PIMList
 	 * @throws java.lang.SecurityException - if the application is not given permission to write to the PIM list or the list is opened READ_ONLY.
 	 * @throws java.lang.NullPointerException - if category is null.
 	 */
-	public void addCategory(java.lang.String category) throws PIMException;
+	void addCategory(java.lang.String category) throws PIMException;
 
 	/**
 	 * 
@@ -280,7 +280,7 @@ public interface PIMList
 	 * @throws java.lang.SecurityException - if the application is not given permission to write to the PIM list or the list is opened READ_ONLY.
 	 * @throws java.lang.NullPointerException - if category is null.
 	 */
-	public void deleteCategory(java.lang.String category, boolean deleteUnassignedItems) throws PIMException;
+	void deleteCategory(java.lang.String category, boolean deleteUnassignedItems) throws PIMException;
 
 	/**
 	 * 
@@ -303,7 +303,7 @@ public interface PIMList
 	 * @throws java.lang.SecurityException - if the application is not given permission to write to the PIM list or the list is opened READ_ONLY.
 	 * @throws java.lang.NullPointerException - if currentCategory or newCategory is null.
 	 */
-	public void renameCategory(java.lang.String currentCategory, java.lang.String newCategory) throws PIMException;
+	void renameCategory(java.lang.String currentCategory, java.lang.String newCategory) throws PIMException;
 
 	/**
 	 * 
@@ -313,7 +313,7 @@ public interface PIMList
 	 * 
 	 * @return int the number of categories supported by this list. 0 indicates no category support and -1 indicates there is no limit the the number of categories that this list can have.
 	 */
-	public int maxCategories();
+	int maxCategories();
 
 	/**
 	 * 
@@ -324,7 +324,7 @@ public interface PIMList
 	 * @param field - The field to check, as defined by in the class implementing the PIMItem.
 	 * @return true if supported in this list, false otherwise. Invalid fields return false.
 	 */
-	public boolean isSupportedField(int field);
+	boolean isSupportedField(int field);
 
 	/**
 	 * 
@@ -335,7 +335,7 @@ public interface PIMList
 	 * 
 	 * @return an int array containing all fields supported by this list. The order of the fields returned is unspecified. If there are no supported fields, a zero-length array is returned.
 	 */
-	public int[] getSupportedFields();
+	int[] getSupportedFields();
 
 	/**
 	 * 
@@ -348,7 +348,7 @@ public interface PIMList
 	 * @param attribute - The single attribute to check
 	 * @return true if supported, false otherwise. Invalid fields and invalid attributes return false.
 	 */
-	public boolean isSupportedAttribute(int field, int attribute);
+	boolean isSupportedAttribute(int field, int attribute);
 
 	/**
 	 * 
@@ -364,7 +364,7 @@ public interface PIMList
 	 * @throws java.lang.IllegalArgumentException - if field is not a valid field (i.e. not a standard field and not an extended field). IllegalArgumentException takes precedence over UnsupportedFieldException when checking the provided field.
 	 * @throws UnsupportedFieldException - if the field is not supported in the implementing instance of the class.
 	 */
-	public int[] getSupportedAttributes(int field);
+	int[] getSupportedAttributes(int field);
 
 	/**
 	 * 
@@ -377,7 +377,7 @@ public interface PIMList
 	 * @param arrayElement - The element in the array to check, as defined in the classes implementing the PIMItem interface.
 	 * @return true if supported in this list, false otherwise. Invalid fields and invalid array elements return false.
 	 */
-	public boolean isSupportedArrayElement(int stringArrayField, int arrayElement);
+	boolean isSupportedArrayElement(int stringArrayField, int arrayElement);
 
 	/**
 	 * 
@@ -392,7 +392,7 @@ public interface PIMList
 	 * @throws java.lang.IllegalArgumentException - if field is not a valid StringArray field (i.e. not a standard field and not an extended field that has a data type of StringArray). IllegalArgumentException takes precedence over UnsupportedFieldException when checking the provided field.
 	 * @throws UnsupportedFieldException - if the field is not supported in the implementing instance of the class.
 	 */
-	public int[] getSupportedArrayElements(int stringArrayField);
+	int[] getSupportedArrayElements(int stringArrayField);
 
 	/**
 	 * 
@@ -408,7 +408,7 @@ public interface PIMList
 	 * @throws java.lang.IllegalArgumentException - if the field is not valid for the implementing class. IllegalArgumentException takes precedence over UnsupportedFieldException when checking the provided field.
 	 * @throws UnsupportedFieldException - if the field is not supported in the implementing instance of the class.
 	 */
-	public int getFieldDataType(int field);
+	int getFieldDataType(int field);
 
 	/**
 	 * 
@@ -428,7 +428,7 @@ public interface PIMList
 	 * @throws java.lang.IllegalArgumentException - if the field is not valid for the implementing class. IllegalArgumentException takes precedence over UnsupportedFieldException when checking the provided field.
 	 * @throws UnsupportedFieldException - if the field is not supported in the implementing instance of the class.
 	 */
-	public java.lang.String getFieldLabel(int field);
+	java.lang.String getFieldLabel(int field);
 
 	/**
 	 * 
@@ -449,7 +449,7 @@ public interface PIMList
 	 * @throws java.lang.IllegalArgumentException - if the attribute is not valid for the implementing class. IllegalArgumentException takes precedence over UnsupportedFieldException when checking the provided field.
 	 * @throws UnsupportedFieldException - if the attribute is not supported in the implementing instance of the class.
 	 */
-	public java.lang.String getAttributeLabel(int attribute);
+	java.lang.String getAttributeLabel(int attribute);
 
 	/**
 	 * 
@@ -470,7 +470,7 @@ public interface PIMList
 	 * @throws java.lang.IllegalArgumentException - if the array element or the field is not valid for the implementing class. IllegalArgumentException takes precedence over UnsupportedFieldException when checking the provided parameters.
 	 * @throws UnsupportedFieldException - if the field or array element is not supported in the implementing instance of the class.
 	 */
-	public java.lang.String getArrayElementLabel(int stringArrayField, int arrayElement);
+	java.lang.String getArrayElementLabel(int stringArrayField, int arrayElement);
 
 	/**
 	 * 
@@ -483,7 +483,7 @@ public interface PIMList
 	 * @return int indicating the number of values that can be stored in the field. Additionally, -1 indicates this field supports having an unlimited number of added values in it, and 0 indicates the field is not supported by this list.
 	 * @throws java.lang.IllegalArgumentException - if the field is not valid for the implementing class.
 	 */
-	public int maxValues(int field);
+	int maxValues(int field);
 
 	/**
 	 * 
@@ -496,6 +496,6 @@ public interface PIMList
 	 * @return int the size of the array of a single data instance of a string array field.
 	 * @throws java.lang.IllegalArgumentException - if the field is not valid for the implementing class or not a string array field.
 	 */
-	public int stringArraySize(int stringArrayField);
+	int stringArraySize(int stringArrayField);
 
 }

@@ -21,7 +21,7 @@ public interface StopTimeControl extends Control
 	 * 
 	 * 
 	 */
-	static final long RESET = Long.MAX_VALUE;
+	long RESET = Long.MAX_VALUE;
 
 	/**
 	 * Sets the <i>media time</i> at which you want the <code>Player</code>
@@ -63,14 +63,9 @@ public interface StopTimeControl extends Control
 	 * 
 	 * Returns the constant <CODE>RESET</CODE> if no stop time is set.
 	 * This is the default.
-	 * <P>
-	 * 
 	 * 
 	 * @return The current stop time in microseconds.
 	 * @see #setStopTime(long)
 	 */
 	long getStopTime();
-
-
-
 }

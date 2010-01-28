@@ -45,6 +45,6 @@ public interface AccelerationListener
 	 * @param minimumZ
 	 * @param maximumZ
 	 */
-	public void notifyAcceleration(int x, int minimumX, int maximumX, int y, int minimumY, int maximumY, int z, int minimumZ, int maximumZ);
+	void notifyAcceleration(int x, int minimumX, int maximumX, int y, int minimumY, int maximumY, int z, int minimumZ, int maximumZ);
 
 }

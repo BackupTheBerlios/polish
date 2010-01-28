@@ -238,7 +238,7 @@ public interface ToneControl extends Control
 	 * Value -2 is assigned to <code>VERSION</code>.</DL>
 	 * 
 	 */
-	public static final byte VERSION = -2;
+	byte VERSION = -2;
 
 	/**
 	 * The TEMPO event tag.
@@ -246,7 +246,7 @@ public interface ToneControl extends Control
 	 * Value -3 is assigned to <code>TEMPO</code>.</DL>
 	 * 
 	 */
-	public static final byte TEMPO = -3;
+	byte TEMPO = -3;
 
 	/**
 	 * The RESOLUTION event tag.
@@ -254,7 +254,7 @@ public interface ToneControl extends Control
 	 * Value -4 is assigned to <code>RESOLUTION</code>.</DL>
 	 * 
 	 */
-	public static final byte RESOLUTION = -4;
+	byte RESOLUTION = -4;
 
 	/**
 	 * Defines a starting point for a block.
@@ -262,7 +262,7 @@ public interface ToneControl extends Control
 	 * Value -5 is assigned to <code>BLOCK_START</code>.</DL>
 	 * 
 	 */
-	public static final byte BLOCK_START = -5;
+	byte BLOCK_START = -5;
 
 	/**
 	 * Defines an ending point for a block.
@@ -270,7 +270,7 @@ public interface ToneControl extends Control
 	 * Value -6 is assigned to <code>BLOCK_END</code>.</DL>
 	 * 
 	 */
-	public static final byte BLOCK_END = -6;
+	byte BLOCK_END = -6;
 
 	/**
 	 * Play a defined block.
@@ -278,7 +278,7 @@ public interface ToneControl extends Control
 	 * Value -7 is assigned to <code>PLAY_BLOCK</code>.</DL>
 	 * 
 	 */
-	public static final byte PLAY_BLOCK = -7;
+	byte PLAY_BLOCK = -7;
 
 	/**
 	 * The SET_VOLUME event tag.
@@ -286,7 +286,7 @@ public interface ToneControl extends Control
 	 * Value -8 is assigned to <code>SET_VOLUME</code>.</DL>
 	 * 
 	 */
-	public static final byte SET_VOLUME = -8;
+	byte SET_VOLUME = -8;
 
 	/**
 	 * The REPEAT event tag.
@@ -294,7 +294,7 @@ public interface ToneControl extends Control
 	 * Value -9 is assigned to <code>REPEAT</code>.</DL>
 	 * 
 	 */
-	public static final byte REPEAT = -9;
+	byte REPEAT = -9;
 
 	/**
 	 * Middle C.
@@ -302,7 +302,7 @@ public interface ToneControl extends Control
 	 * Value 60 is assigned to <code>C4</code>.</DL>
 	 * 
 	 */
-	public static final byte C4 = 60;
+	byte C4 = 60;
 
 	/**
 	 * Silence.
@@ -311,7 +311,7 @@ public interface ToneControl extends Control
 	 * 
 	 * 
 	 */
-	public static final byte SILENCE = -1;
+	byte SILENCE = -1;
 
 	/**
 	 * Sets the tone sequence.<p>
@@ -320,6 +320,6 @@ public interface ToneControl extends Control
 	 * @throws IllegalArgumentException - Thrown if the sequence is  null or invalid.
 	 * @throws IllegalStateException - Thrown if the Player that this control belongs to is in the PREFETCHED or STARTED state.
 	 */
-	public void setSequence(byte[] sequence);
+	void setSequence(byte[] sequence);
 
 }

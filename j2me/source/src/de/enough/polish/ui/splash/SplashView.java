@@ -50,6 +50,6 @@ import javax.microedition.lcdui.Graphics;
  */
 public interface SplashView {
 	
-	public void paint( int width, int height, boolean isInitialized, Graphics g );
+	void paint( int width, int height, boolean isInitialized, Graphics g );
 
 }

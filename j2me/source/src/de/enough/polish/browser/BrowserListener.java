@@ -35,10 +35,10 @@ package de.enough.polish.browser;
  */
 public interface BrowserListener
 {
-	public void notifyPageStart(String url);
-	public void notifyPageEnd();
+	void notifyPageStart(String url);
+	void notifyPageEnd();
 
-	public void notifyDownloadStart(String url);
-	public void notifyDownloadEnd();
-	public void notifyPageError(String url, Exception e);
+	void notifyDownloadStart(String url);
+	void notifyDownloadEnd();
+	void notifyPageError(String url, Exception e);
 }

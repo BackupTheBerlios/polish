@@ -25,6 +25,6 @@ public interface RecordFilter
 	 * @param candidate - the record to consider. Within this method, the application must treat this parameter as read-only.
 	 * @return true if the candidate matches the implemented criterion
 	 */
-	public boolean matches(byte[] candidate);
+	boolean matches(byte[] candidate);
 
 }

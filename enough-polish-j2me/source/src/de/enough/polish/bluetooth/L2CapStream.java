@@ -40,12 +40,12 @@ public interface L2CapStream
 	 * Error code for not receiving a confirmation from the input stream that the connection now can be closed.
 	 * The value of this code is 1.
 	 */
-	public static final int ERROR_NO_EOF_CONFIRMATION_FROM_INPUT_STREAM = 1;
+	int ERROR_NO_EOF_CONFIRMATION_FROM_INPUT_STREAM = 1;
 	
 	/** magic sequence for detecting eof streams */
-	public static final byte[] EOF_SEQUENCE = new byte[]{ 74, 50, 77, 69, 1, 2, 3 };
+	byte[] EOF_SEQUENCE = new byte[]{ 74, 50, 77, 69, 1, 2, 3 };
 	
 	/** The minimum transfer size for byte arrays is 48 */
-	public static final int MINIMUM_MTU = L2CAPConnection.MINIMUM_MTU;
+	int MINIMUM_MTU = L2CAPConnection.MINIMUM_MTU;
 
 }

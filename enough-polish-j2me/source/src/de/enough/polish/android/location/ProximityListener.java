@@ -34,7 +34,7 @@ public interface ProximityListener
 	 * @param coordinates - the registered coordinates to which proximity has been detected
 	 * @param location - the current location of the terminal
 	 */
-	public void proximityEvent( Coordinates coordinates, Location location);
+	void proximityEvent( Coordinates coordinates, Location location);
 
 	/**
 	 * Called to notify that the state of the proximity monitoring
@@ -56,6 +56,6 @@ public interface ProximityListener
 	 * 
 	 * @param isMonitoringActive - a boolean indicating the new state of the proximity monitoring. true indicates that the proximity monitoring is active and false indicates that the proximity monitoring can't be done currently.
 	 */
-	public void monitoringStateChanged(boolean isMonitoringActive);
+	void monitoringStateChanged(boolean isMonitoringActive);
 
 }

@@ -34,7 +34,7 @@ import de.enough.polish.android.media.Control;
  * <code>VOLUME_CHANGED</code> event is delivered through
  * the <code>PlayerListener</code>.
  * <A HREF="../../../../de/enough/polish/android/media/Player.html"><CODE>Player</CODE></A>,
- * <A HREF="../../../../de/enough/polish/android/media/PlayerListener.html"><CODE>PlayerListener</CODE></A></DL>
+ * <A HREF="../../../../de/enough/polish/android/media/PlayerListener.html"><CODE>PlayerListener</CODE></A>
  * <HR>
  * 
  */
@@ -57,7 +57,7 @@ public interface VolumeControl extends Control
 	 * @param mute - Specify true to mute the signal, false to unmute the signal.
 	 * @see #isMuted()
 	 */
-	public void setMute(boolean mute);
+	void setMute(boolean mute);
 
 	/**
 	 * Get the mute state of the signal associated with this
@@ -66,7 +66,7 @@ public interface VolumeControl extends Control
 	 * @return The mute state.
 	 * @see #setMute(boolean)
 	 */
-	public boolean isMuted();
+	boolean isMuted();
 
 	/**
 	 * Set the volume using a linear point scale
@@ -86,7 +86,7 @@ public interface VolumeControl extends Control
 	 * @return The level that was actually set.
 	 * @see #getLevel()
 	 */
-	public int setLevel(int level);
+	int setLevel(int level);
 
 	/**
 	 * Get the current volume level set.
@@ -99,6 +99,6 @@ public interface VolumeControl extends Control
 	 * @return The current volume level or -1.
 	 * @see #setLevel(int)
 	 */
-	public int getLevel();
+	int getLevel();
 
 }

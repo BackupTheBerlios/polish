@@ -28,7 +28,7 @@ public interface RecordComparator
 	 * <DT><B>See Also:</B>
 	 * 
 	 */
-	public static final int EQUIVALENT = 0;
+	int EQUIVALENT = 0;
 
 	/**
 	 * FOLLOWS means that the left (first parameter) record <em>follows</em>
@@ -39,7 +39,7 @@ public interface RecordComparator
 	 * <DT><B>See Also:</B>
 	 * 
 	 */
-	public static final int FOLLOWS = 1;
+	int FOLLOWS = 1;
 
 	/**
 	 * PRECEDES means that the left (first parameter) record <em>precedes</em>
@@ -51,7 +51,7 @@ public interface RecordComparator
 	 * 
 	 * 
 	 */
-	public static final int PRECEDES = -1;
+	int PRECEDES = -1;
 
 	/**
 	 * Returns <code>RecordComparator.PRECEDES</code> if rec1
@@ -65,6 +65,6 @@ public interface RecordComparator
 	 * @param rec2 - the second record to use for comparison. Within this method, the application must treat this parameter as read-only.
 	 * @return RecordComparator.PRECEDES if rec1 precedes rec2 in sort order, or RecordComparator.FOLLOWS if rec1 follows rec2 in sort order, or RecordComparator.EQUIVALENT if rec1 and rec2 are equivalent in terms of sort order
 	 */
-	public int compare(byte[] rec1, byte[] rec2);
+	int compare(byte[] rec1, byte[] rec2);
 
 }

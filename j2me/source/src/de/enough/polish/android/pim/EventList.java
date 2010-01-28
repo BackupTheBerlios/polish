@@ -41,7 +41,7 @@ public interface EventList extends PIMList
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int STARTING = 0;
+	int STARTING = 0;
 
 	/**
 	 * 
@@ -52,7 +52,7 @@ public interface EventList extends PIMList
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int ENDING = 1;
+	int ENDING = 1;
 
 	/**
 	 * 
@@ -63,7 +63,7 @@ public interface EventList extends PIMList
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int OCCURRING = 2;
+	int OCCURRING = 2;
 
 	
 
@@ -83,7 +83,7 @@ public interface EventList extends PIMList
 	 * 
 	 * @return a new, empty Event object associated with this list. However, the Event is still not persistent in the list until a call to PIMItem.commit() for the Event is made.
 	 */
-	public Event createEvent();
+	Event createEvent();
 
 	/**
 	 * 
@@ -109,7 +109,7 @@ public interface EventList extends PIMList
 	 * @return a newly created Event.
 	 * @throws java.lang.NullPointerException - If the item is null.
 	 */
-	public Event importEvent( Event item);
+	Event importEvent( Event item);
 
 	/**
 	 * 
@@ -124,7 +124,7 @@ public interface EventList extends PIMList
 	 * @throws java.lang.NullPointerException - If item is null.
 	 * @throws java.lang.SecurityException - if the application is not given permission to write to the Event list or the list is opened READ_ONLY.
 	 */
-	public void removeEvent( Event item) throws PIMException;
+	void removeEvent( Event item) throws PIMException;
 
 	/**
 	 * 
@@ -152,7 +152,7 @@ public interface EventList extends PIMList
 	 * @throws PIMException - If the operation is unsupported, an error occurs, or the list is no longer accessible or closed.
 	 * @throws java.lang.SecurityException - if the application is not given permission to read the Event list or the list is opened WRITE_ONLY.
 	 */
-	public java.util.Enumeration items(int searchType, long startDate, long endDate, boolean initialEventOnly) throws PIMException;
+	java.util.Enumeration items(int searchType, long startDate, long endDate, boolean initialEventOnly) throws PIMException;
 
 	/**
 	 * 
@@ -186,6 +186,6 @@ public interface EventList extends PIMList
 	 * @throws java.lang.IllegalArgumentException - if frequncy is not  RepeatRule.YEARLY,  RepeatRule.MONTHLY,  RepeatRule.WEEKLY, or  RepeatRule.DAILY.
 	 * @see RepeatRule
 	 */
-	public int[] getSupportedRepeatRuleFields(int frequency);
+	int[] getSupportedRepeatRuleFields(int frequency);
 
 }

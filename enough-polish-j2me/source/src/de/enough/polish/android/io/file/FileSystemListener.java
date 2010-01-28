@@ -20,7 +20,7 @@ public interface FileSystemListener
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int ROOT_ADDED = 0;
+	int ROOT_ADDED = 0;
 
 	/**
 	 * 
@@ -30,7 +30,7 @@ public interface FileSystemListener
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int ROOT_REMOVED = 1;
+	int ROOT_REMOVED = 1;
 
 	/**
 	 * 
@@ -44,7 +44,6 @@ public interface FileSystemListener
 	 * @throws java.lang.NullPointerException - if rootName is null.
 	 * @see FileConnection
 	 */
-	public void rootChanged(int state, java.lang.String rootName);
-
+	void rootChanged(int state, String rootName);
 
 }

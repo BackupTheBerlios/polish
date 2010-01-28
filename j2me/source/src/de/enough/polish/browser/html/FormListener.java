@@ -42,7 +42,7 @@ public interface FormListener
 	 * @param value the original value that should be used for the form element, can be null
 	 * @return the value that should be used, the listener should return the speicifed value by default if no change is requested
 	 */
-	public String verifyInitialFormValue( String formAction, String name, String value );
+	String verifyInitialFormValue( String formAction, String name, String value );
 
 	/**
 	 * Verifies the submission value for a HTML form element.
@@ -51,6 +51,6 @@ public interface FormListener
 	 * @param value the original value that should be used for the form element, can be null
 	 * @return the value that should be used, the listener should return the speicifed value by default if no change is requested
 	 */
-	public String verifySubmitFormValue(  String formAction, String name, String value );
+	String verifySubmitFormValue(  String formAction, String name, String value );
 
 }

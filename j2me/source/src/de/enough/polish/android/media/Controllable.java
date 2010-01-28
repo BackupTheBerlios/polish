@@ -48,7 +48,7 @@ public interface Controllable
 	 * @return the collection of Control objects.
 	 * @throws IllegalStateException - Thrown if getControls is called in a wrong state. See Player for more details.
 	 */
-	public Control[] getControls();
+	Control[] getControls();
 
 	/**
 	 * Obtain the object that implements the specified
@@ -68,6 +68,6 @@ public interface Controllable
 	 * @throws IllegalArgumentException - Thrown if controlType is null.
 	 * @throws IllegalStateException - Thrown if getControl is called in a wrong state. See Player for more details.
 	 */
-	public Control getControl( String controlType);
+	Control getControl( String controlType);
 
 }

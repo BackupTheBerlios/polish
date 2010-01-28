@@ -67,7 +67,7 @@ public interface RecordEnumeration
 	 * 
 	 * @return the number of records available in this enumeration's set. That is, the number of records that have matched the filter criterion.
 	 */
-	public int numRecords();
+	int numRecords();
 
 	/**
 	 * Returns a copy of the <em>next</em> record in this enumeration,
@@ -85,7 +85,7 @@ public interface RecordEnumeration
 	 * @throws RecordStoreNotOpenException - if the record store is not open
 	 * @throws RecordStoreException - if a general record store exception occurs
 	 */
-	public byte[] nextRecord() throws InvalidRecordIDException, RecordStoreNotOpenException, RecordStoreException;
+	byte[] nextRecord() throws InvalidRecordIDException, RecordStoreNotOpenException, RecordStoreException;
 
 	/**
 	 * Returns the recordId of the <em>next</em> record in this enumeration,
@@ -99,7 +99,7 @@ public interface RecordEnumeration
 	 * @return the recordId of the next record in this enumeration
 	 * @throws InvalidRecordIDException - when no more records are available. Subsequent calls to this method will continue to throw this exception until reset() has been called to reset the enumeration.
 	 */
-	public int nextRecordId() throws InvalidRecordIDException;
+	int nextRecordId() throws InvalidRecordIDException;
 
 	/**
 	 * Returns a copy of the <em>previous</em> record in this enumeration,
@@ -117,7 +117,7 @@ public interface RecordEnumeration
 	 * @throws RecordStoreNotOpenException - if the record store is not open
 	 * @throws RecordStoreException - if a general record store exception occurs.
 	 */
-	public byte[] previousRecord() throws InvalidRecordIDException, RecordStoreNotOpenException, RecordStoreException;
+	byte[] previousRecord() throws InvalidRecordIDException, RecordStoreNotOpenException, RecordStoreException;
 
 	/**
 	 * Returns the recordId of the <em>previous</em> record in this
@@ -131,7 +131,7 @@ public interface RecordEnumeration
 	 * @return the recordId of the previous record in this enumeration
 	 * @throws InvalidRecordIDException - when no more records are available. Subsequent calls to this method will continue to throw this exception until reset() has been called to reset the enumeration.
 	 */
-	public int previousRecordId() throws InvalidRecordIDException;
+	int previousRecordId() throws InvalidRecordIDException;
 
 	/**
 	 * Returns true if more elements exist in the <em>next</em> direction.
@@ -140,7 +140,7 @@ public interface RecordEnumeration
 	 * 
 	 * @return true if more elements exist in the next direction
 	 */
-	public boolean hasNextElement();
+	boolean hasNextElement();
 
 	/**
 	 * Returns true if more elements exist in the <em>previous</em> direction.
@@ -149,7 +149,7 @@ public interface RecordEnumeration
 	 * 
 	 * @return true if more elements exist in the previous direction
 	 */
-	public boolean hasPreviousElement();
+	boolean hasPreviousElement();
 
 	/**
 	 * Returns the enumeration index to the same state as right
@@ -157,7 +157,7 @@ public interface RecordEnumeration
 	 * <P>
 	 * 
 	 */
-	public void reset();
+	void reset();
 
 	/**
 	 * Request that the enumeration be updated to reflect the current
@@ -168,7 +168,7 @@ public interface RecordEnumeration
 	 * 
 	 * @see #keepUpdated(boolean)
 	 */
-	public void rebuild();
+	void rebuild();
 
 	/**
 	 * Used to set whether the enumeration will be keep its internal
@@ -181,7 +181,7 @@ public interface RecordEnumeration
 	 * @param keepUpdated - if true, the enumerator will keep its enumeration current with any changes in the records of the record store. Use with caution as there are possible performance consequences. Calling keepUpdated(true) has the same effect as calling RecordEnumeration.rebuild: the enumeration will be updated to reflect the current record set.  If false the enumeration will not be kept current and may return recordIds for records that have been deleted or miss records that are added later. It may also return records out of order that have been modified after the enumeration was built. Note that any changes to records in the record store are accurately reflected when the record is later retrieved, either directly or through the enumeration. The thing that is risked by setting this parameter false is the filtering and sorting order of the enumeration when records are modified, added, or deleted.
 	 * @see #rebuild()
 	 */
-	public void keepUpdated(boolean keepUpdated);
+	void keepUpdated(boolean keepUpdated);
 
 	/**
 	 * Returns true if the enumeration keeps its enumeration
@@ -191,7 +191,7 @@ public interface RecordEnumeration
 	 * 
 	 * @return true if the enumeration keeps its enumeration current with any changes in the records
 	 */
-	public boolean isKeptUpdated();
+	boolean isKeptUpdated();
 
 	/**
 	 * Frees internal resources used by this RecordEnumeration.
@@ -205,6 +205,6 @@ public interface RecordEnumeration
 	 * <P>
 	 * 
 	 */
-	public void destroy();
+	void destroy();
 
 }

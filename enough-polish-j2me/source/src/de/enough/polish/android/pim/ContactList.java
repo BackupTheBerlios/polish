@@ -53,7 +53,7 @@ public interface ContactList extends PIMList
 	 * 
 	 * @return a new, empty Contact object associated with this list. However, the Contact is still not persistent in the list until a call to PIMItem.commit() for the Contact is made.
 	 */
-	public Contact createContact();
+	Contact createContact();
 
 	/**
 	 * 
@@ -79,7 +79,7 @@ public interface ContactList extends PIMList
 	 * @return a newly created Contact.
 	 * @throws java.lang.NullPointerException - If contact is null.
 	 */
-	public Contact importContact( Contact contact);
+	Contact importContact( Contact contact);
 
 	/**
 	 * 
@@ -94,6 +94,6 @@ public interface ContactList extends PIMList
 	 * @throws java.lang.NullPointerException - If contact is null.
 	 * @throws java.lang.SecurityException - if the application is not given permission to write to the Contact list or the list is opened READ_ONLY.
 	 */
-	public void removeContact( Contact contact) throws PIMException;
+	void removeContact( Contact contact) throws PIMException;
 
 }

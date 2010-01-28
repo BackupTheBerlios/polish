@@ -25,7 +25,7 @@ public interface SourceStream extends Controllable
 	 * <DT><B>See Also:</B>
 	 * 
 	 */
-	public static final int NOT_SEEKABLE = 0;
+	int NOT_SEEKABLE = 0;
 
 	/**
 	 * The value returned by <code>getSeekType</code> indicating that this
@@ -37,7 +37,7 @@ public interface SourceStream extends Controllable
 	 * <DT><B>See Also:</B>
 	 * 
 	 */
-	public static final int SEEKABLE_TO_START = 1;
+	int SEEKABLE_TO_START = 1;
 
 	/**
 	 * The value returned by <code>getSeekType</code> indicating that this
@@ -49,7 +49,7 @@ public interface SourceStream extends Controllable
 	 * 
 	 * 
 	 */
-	public static final int RANDOM_ACCESSIBLE = 2;
+	int RANDOM_ACCESSIBLE = 2;
 
 	/**
 	 * Get the content type for this stream.
@@ -58,7 +58,7 @@ public interface SourceStream extends Controllable
 	 * 
 	 * @return The current ContentDescriptor for this stream.
 	 */
-	public ContentDescriptor getContentDescriptor();
+	ContentDescriptor getContentDescriptor();
 
 	/**
 	 * Get the size in bytes of the content on this stream.
@@ -67,7 +67,7 @@ public interface SourceStream extends Controllable
 	 * 
 	 * @return The content length in bytes.  -1 is returned if the  length is not known.
 	 */
-	public long getContentLength();
+	long getContentLength();
 
 	/**
 	 * Reads up to <code>len</code> bytes of data from the input stream into
@@ -111,7 +111,7 @@ public interface SourceStream extends Controllable
 	 * @return the total number of bytes read into the buffer, or -1 if there is no more data because the end of the stream has been reached.
 	 * @throws java.io.IOException - if an I/O error occurs.
 	 */
-	public int read(byte[] b, int off, int len) throws java.io.IOException;
+	int read(byte[] b, int off, int len) throws java.io.IOException;
 
 	/**
 	 * Get the size of a "logical" chunk of media data from the source.
@@ -124,7 +124,7 @@ public interface SourceStream extends Controllable
 	 * @return The minimum size of the buffer needed to read a "logical" chunk of data from the source.  Returns -1 if the size cannot be determined.
 	 * @see #read(byte[], int, int)
 	 */
-	public int getTransferSize();
+	int getTransferSize();
 
 	/**
 	 * Seek to the specified point in the stream.  The <code>seek</code>
@@ -150,7 +150,7 @@ public interface SourceStream extends Controllable
 	 * @return The new stream position.
 	 * @throws java.io.IOException - Thrown if an I/O error occurs.
 	 */
-	public long seek(long where) throws java.io.IOException;
+	long seek(long where) throws java.io.IOException;
 
 	/**
 	 * Obtain the current position in the stream.
@@ -175,7 +175,7 @@ public interface SourceStream extends Controllable
 	 * 
 	 * @return Returns an enumerated value to indicate the level of seekability. 
 	 */
-	public int getSeekType();
+	int getSeekType();
 
 
 }

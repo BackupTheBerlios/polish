@@ -158,7 +158,7 @@ public interface ToDo extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int CLASS = 100;
+	int CLASS = 100;
 
 	/**
 	 * 
@@ -169,7 +169,7 @@ public interface ToDo extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int COMPLETED = 101;
+	int COMPLETED = 101;
 
 	/**
 	 * 
@@ -189,7 +189,7 @@ public interface ToDo extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int COMPLETION_DATE = 102;
+	int COMPLETION_DATE = 102;
 
 	/**
 	 * 
@@ -208,7 +208,7 @@ public interface ToDo extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int DUE = 103;
+	int DUE = 103;
 
 	/**
 	 * 
@@ -221,7 +221,7 @@ public interface ToDo extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int NOTE = 104;
+	int NOTE = 104;
 
 	/**
 	 * 
@@ -236,7 +236,7 @@ public interface ToDo extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int PRIORITY = 105;
+	int PRIORITY = 105;
 
 	/**
 	 * 
@@ -257,7 +257,7 @@ public interface ToDo extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int REVISION = 106;
+	int REVISION = 106;
 
 	/**
 	 * 
@@ -270,7 +270,7 @@ public interface ToDo extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int SUMMARY = 107;
+	int SUMMARY = 107;
 
 	/**
 	 * 
@@ -287,7 +287,7 @@ public interface ToDo extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int UID = 108;
+	int UID = 108;
 
 	/**
 	 * 
@@ -297,7 +297,7 @@ public interface ToDo extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int CLASS_CONFIDENTIAL = 200;
+	int CLASS_CONFIDENTIAL = 200;
 
 	/**
 	 * 
@@ -307,7 +307,7 @@ public interface ToDo extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int CLASS_PRIVATE = 201;
+	int CLASS_PRIVATE = 201;
 
 	/**
 	 * 
@@ -317,6 +317,6 @@ public interface ToDo extends PIMItem
 	 * Field Values</A></DD></DL>
 	 * 
 	 */
-	public static final int CLASS_PUBLIC = 202;
+	int CLASS_PUBLIC = 202;
 
 }

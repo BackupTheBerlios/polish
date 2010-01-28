@@ -3,14 +3,12 @@
 package de.enough.polish.android.pim;
 
 /**
- * Represents a description for a repeating pattern for an Event item.
- * 
  * Represents a description for a repeating pattern for an Event item. The fields
  * are a subset of the capabilities of the RRULE field in VEVENT defined by the
  * vCalendar 1.0 specification from the Internet Mail Consortium
  * (http://www.imc.org). It is use to determine how often an associated Event
  * occurs.
- * </P>
+ * 
  * The fields of a Repeat Rule can conceptually be grouped into two categories:
  * <ul>
  * <li>
@@ -202,7 +200,6 @@ public class RepeatRule extends java.lang.Object
 	 * <P>
 	 * <DT><B>See Also:</B>
 	 * Field Values</A></DD></DL>
-	 * 
 	 */
 	public static final int FREQUENCY = 0;
 
@@ -215,7 +212,6 @@ public class RepeatRule extends java.lang.Object
 	 * <P>
 	 * <DT><B>See Also:</B>
 	 * Field Values</A></DD></DL>
-	 * 
 	 */
 	public static final int DAY_IN_MONTH = 1;
 
@@ -230,7 +226,6 @@ public class RepeatRule extends java.lang.Object
 	 * <P>
 	 * <DT><B>See Also:</B>
 	 * Field Values</A></DD></DL>
-	 * 
 	 */
 	public static final int DAY_IN_WEEK = 2;
 
@@ -243,7 +238,6 @@ public class RepeatRule extends java.lang.Object
 	 * <P>
 	 * <DT><B>See Also:</B>
 	 * Field Values</A></DD></DL>
-	 * 
 	 */
 	public static final int DAY_IN_YEAR = 4;
 
