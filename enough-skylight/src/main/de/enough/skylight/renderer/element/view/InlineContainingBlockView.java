@@ -53,7 +53,7 @@ public class InlineContainingBlockView extends ContainerView {
 			
 			initItem(item, block);
 			
-			if (item.appearanceMode != Item.PLAIN) {
+			if (item.isInteractive()) {
 				interactive = true;
 			}
 			
@@ -94,7 +94,7 @@ public class InlineContainingBlockView extends ContainerView {
 		if(Culling.isVisible(partition, linebox)) {
 			paintLine(myItems,x,y,leftBorder,rightBorder,clipX,clipY,clipWidth,clipHeight,g);
 			//#debug sl.debug.render
-			System.out.println("painted " + this.containingBlock + " : linebox : " + linebox + " : partition : " + partition );
+			System.out.println("rendered " + this.containingBlock + " : linebox : " + linebox + " : partition : " + partition );
 		} else {
 			//#debug sl.debug.render
 			System.out.println("culled " + this.containingBlock + " : linebox : " + linebox + " : partition : " + partition );

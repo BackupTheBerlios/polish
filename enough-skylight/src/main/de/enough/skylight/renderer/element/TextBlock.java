@@ -26,6 +26,12 @@ public class TextBlock extends StringItem implements Partable {
 		this.textPartitions = new PartitionList();
 	}
 	
+	public TextBlock(Style style) {
+		super(null,null, style);
+		
+		this.textPartitions = new PartitionList();
+	}
+	
 	public void setText(String text) {
 		text = prepareText(text);
 		super.setText(text);

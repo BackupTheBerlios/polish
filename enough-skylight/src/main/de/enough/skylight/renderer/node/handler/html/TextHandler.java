@@ -1,9 +1,11 @@
 package de.enough.skylight.renderer.node.handler.html;
 
 import de.enough.polish.ui.Item;
+import de.enough.polish.ui.Style;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.element.TextBlock;
 import de.enough.skylight.renderer.node.CssElement;
+import de.enough.skylight.renderer.node.CssStyle;
 import de.enough.skylight.renderer.node.NodeHandler;
 
 public class TextHandler extends BodyNodeHandler{
@@ -19,11 +21,12 @@ public class TextHandler extends BodyNodeHandler{
 	}
 	
 	public void handleNode(CssElement element) {
-		// hey hey what can i do ?
 	}
 
 	public Item createContent(CssElement element) {
-		TextBlock textBlock = new TextBlock();
+		Style parentStyle = element.getParent().getStyle();
+		Style style = CssStyle.getTextStyle(parentStyle);
+		TextBlock textBlock = new TextBlock(style);
 		
 		DomNode node = element.getNode();
 		textBlock.setText(node.getNodeValue());

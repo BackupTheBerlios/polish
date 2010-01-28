@@ -1,5 +1,7 @@
 package de.enough.skylight.renderer.node;
 
+import javax.microedition.lcdui.Font;
+
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.StyleSheet;
@@ -38,36 +40,6 @@ public class CssElement implements HtmlCssElement{
 	
 	boolean interactive;
 	
-	static void extendStyle(Style baseStyle, Style extendStyle) {
-		
-	}
-	
-	static Style getStyle(NodeHandler handler, DomNode node) {
-		Style style = handler.getDefaultStyle();
-		
-		//#debug sl.debug.style
-		System.out.println("default style for " + handler.getTag() + " : " + style.name);
-		
-		String clazz = NodeUtils.getAttributeValue(node, "class");
-		
-		if(clazz != null) {
-			clazz = clazz.toLowerCase();
-			Style classStyle = StyleSheet.getStyle(clazz);
-			
-			if(classStyle != null) {
-				style = classStyle;
-				
-				//#debug sl.debug.style
-				System.out.println("got style for " + handler.getTag() + " : " + clazz);
-			} else {
-				//#debug error
-				System.out.println("style " + clazz + " could not be found");
-			} 
-		}
-		
-		return style;
-	}
-	
 	public CssElement(NodeHandler handler, DomNode node, CssElement parent, Viewport viewport) {
 		this.handler = handler;
 		
@@ -83,7 +55,7 @@ public class CssElement implements HtmlCssElement{
 	public void build() throws ClassCastException, IllegalArgumentException {
 		this.handler.handle(this);
 		
-		this.style = getStyle(this.handler, this.node);
+		this.style = CssStyle.getStyle(this.handler, this.node);
 		
 		setStyle(this.style);
 		
