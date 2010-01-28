@@ -221,7 +221,7 @@ public class DeviceManager {
 				String identifier = identifiers[i];
 				String identifierLowerCase = identifier.toLowerCase();
 				if (identifierList != null) {
-					boolean isRequiredIdentifier = (identifierList.remove( identifier ) || identifierList.remove( identifierLowerCase) );
+					boolean isRequiredIdentifier = identifierList.remove( identifier ) || identifierList.remove( identifierLowerCase);
 					if (!isRequiredIdentifier) {
 						// skip the loading of devices which are not needed. When a device later onwards
 						// refers to a parent device, this will be loaded in the getDevice( String identifier ) method.
