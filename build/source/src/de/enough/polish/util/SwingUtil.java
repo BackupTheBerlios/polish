@@ -42,9 +42,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileFilter;
 
-
-
-
 /**
  * <p>Provides some often used methods for Swing applications.</p>
  *
@@ -57,8 +54,6 @@ import javax.swing.filechooser.FileFilter;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public final class SwingUtil {
-	
-	private final static SwingUtil INSTANCE = new SwingUtil();
 	
 	private SwingUtil() {
 		// do nothin
@@ -76,7 +71,7 @@ public final class SwingUtil {
 	public static File openFile(String extension, boolean open, File currentDirectory, JFrame parent ) {
 		JFileChooser fileChooser = new JFileChooser( currentDirectory );
 		if (extension != null) {
-			fileChooser.setFileFilter( INSTANCE.new CustomFileFilter( extension ) );
+			fileChooser.setFileFilter( new CustomFileFilter( extension ) );
 		}
 		int result;
 		if (open) {
@@ -181,7 +176,7 @@ public final class SwingUtil {
 	}
 
 
-	class CustomFileFilter extends FileFilter {
+	static class CustomFileFilter extends FileFilter {
 		private final String lowerCaseType;
 		private final String upperCaseType;
 		public CustomFileFilter( String type ) {
