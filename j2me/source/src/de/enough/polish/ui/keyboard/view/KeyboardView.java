@@ -3,7 +3,6 @@ package de.enough.polish.ui.keyboard.view;
 
 import java.io.IOException;
 
-import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.ui.Command;
