@@ -64,7 +64,6 @@
 					
 					<root dir="resources/style"/>
 					<root dir="resources/images"/>
-					<root dir="resources/sites"/>
 				</resources>
 				<sources>
 				    <source dir="src" />
