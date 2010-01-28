@@ -1538,6 +1538,7 @@ public class Preprocessor {
 		String line = lines.getCurrent().trim();
 		try {
 		if (line.startsWith("System")) {
+			StringBuffer sb = new StringBuffer();
 			while (line.indexOf(';') == -1) {
 				commentLine(line, line,  lines);
 				lines.next();
@@ -1548,8 +1549,9 @@ public class Preprocessor {
 				if (commentIndex != -1) {
 					uncommentedLine = uncommentedLine.substring(0, commentIndex).trim();
 				}
-				line += uncommentedLine;
+				sb.append(uncommentedLine);
 			}
+			line += sb.toString();
 		}
 		} catch (Throwable e) {
 			e.printStackTrace();
