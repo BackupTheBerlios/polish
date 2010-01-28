@@ -1,56 +1,54 @@
 /** BLOCK **/
 
-body {
-	padding: 0;
-	margin: 0;
+body extends element {
+	display: block;
 }
 
-h1 {
+h1 extends element {
 	margin-top: 2%;
 	margin-bottom: 2%;
 	font: fnt_h1;
 	display: block;
 }
 
-br {
+br extends element {
 	layout: newline-after;
 }
 
-div {
+div extends element {
 	font: fnt_text;
 	display: block;
 }
 
-p {
+p extends element {
 	margin-top: 5%;
 	margin-bottom: 5%;
 	font: fnt_text;
 	display: block;
 }
 
-form {
+form extends element {
 	display: block;
 }
 
 /** INLINE **/
 
-text {
-	padding: 0px;
+text extends element {
 	font: fnt_text;
 	display: inline;
 }
 
-span {
+span extends element {
 	font: fnt_text;
 	display: inline;
 }
 
-em {
+em extends element {
 	font: fnt_text;
 	display: inline;
 }
 
-input_text{
+input_text extends element {
 	font: fnt_input_text;
 	border: bdr_input;
 }
@@ -59,7 +57,7 @@ input_text:hover {
 	border: bdr_input_focus;
 }
 
-input_submit {
+input_submit extends element {
 	font: fnt_input_submit;
 	border: bdr_input;
 	background: bg_input_submit;
@@ -77,12 +75,12 @@ input_submit:pressed {
 	border: bdr_input_focus;
 }
 
-input_radio_group {
+input_radio_group extends element {
 }
 
 input_radio_group:hover {}
 
-input_radio {
+input_radio extends element {
 	margin: 2%;
 }
 

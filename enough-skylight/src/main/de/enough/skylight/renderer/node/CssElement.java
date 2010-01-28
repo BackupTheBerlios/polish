@@ -38,31 +38,34 @@ public class CssElement implements HtmlCssElement{
 	
 	boolean interactive;
 	
+	static void extendStyle(Style baseStyle, Style extendStyle) {
+		
+	}
+	
 	static Style getStyle(NodeHandler handler, DomNode node) {
-		Style defaultStyle = handler.getDefaultStyle();
+		Style style = handler.getDefaultStyle();
 		
 		//#debug sl.debug.style
-		System.out.println("default style for " + handler.getTag() + " : " + defaultStyle.name);
+		System.out.println("default style for " + handler.getTag() + " : " + style.name);
 		
 		String clazz = NodeUtils.getAttributeValue(node, "class");
 		
 		if(clazz != null) {
 			clazz = clazz.toLowerCase();
-			Style style = StyleSheet.getStyle(clazz);
+			Style classStyle = StyleSheet.getStyle(clazz);
 			
-			//#debug sl.debug.style
-			System.out.println("got style for " + handler.getTag() + " : " + clazz);
-			
-			if(style != null) {
-				//TODO extend style with default style
-				return style;
+			if(classStyle != null) {
+				style = classStyle;
+				
+				//#debug sl.debug.style
+				System.out.println("got style for " + handler.getTag() + " : " + clazz);
 			} else {
 				//#debug error
 				System.out.println("style " + clazz + " could not be found");
 			} 
 		}
 		
-		return defaultStyle;
+		return style;
 	}
 	
 	public CssElement(NodeHandler handler, DomNode node, CssElement parent, Viewport viewport) {

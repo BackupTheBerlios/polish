@@ -14,6 +14,8 @@ public abstract class AttributeHandler {
 	
 	public static int TYPE_COLOR = 0x02;
 	
+	public static int TYPE_BOOLEAN = 0x03;
+	
 	int hash;
 
 	String name;
@@ -48,7 +50,9 @@ public abstract class AttributeHandler {
 			return getDimension(text); 
 		} else if(this.type == TYPE_COLOR) {
 			return getColor(text); 
-		}else {
+		} else if(this.type == TYPE_BOOLEAN) {
+			return getColor(text); 
+		} else {
 			//#debug error
 			System.out.println("invalid type for handler " + this.name);
 		}
@@ -81,6 +85,16 @@ public abstract class AttributeHandler {
 	protected Object getColor(String text) {
 		int color = Integer.parseInt(text);
 		return new Color(color);
+	}
+	
+	protected Object getBoolean(String text) {
+		if(text.equals("true")) {
+			return new Boolean(true);
+		} else if(text.equals("false")) {
+			return new Boolean(false);
+		} else {
+			return VALUE_INVALID;
+		}
 	}
 	
 	public void addToStyle(Style style, String text) {

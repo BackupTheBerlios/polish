@@ -148,6 +148,12 @@ public class ViewportBuilder {
 			ContainingBlock block = element.getContainingBlock();
 			ElementAttributes.set(block.getContainer(), element, parent, parentBlock);
 			
+			if(element.isInteractive()) {
+				//#debug sl.debug.event
+				System.out.println("setting " + block + " to interactive");
+				block.getContainer().setAppearanceMode(Item.INTERACTIVE);
+			}
+			
 			if(element.isFloat()) {
 				if(element.isFloat(HtmlCssElement.Float.LEFT)) {
 					parent.addToLeftFloat((Item)block);
@@ -181,6 +187,12 @@ public class ViewportBuilder {
 			}
 		} else {
 			Item item = element.getContent();
+			
+			if(element.isInteractive()) {
+				//#debug sl.debug.event
+				System.out.println("setting " + item + " to interactive");
+				item.setAppearanceMode(Item.INTERACTIVE);
+			}
 			
 			if(item != null) {
 				ElementAttributes.set(item, element, parent, parentBlock);

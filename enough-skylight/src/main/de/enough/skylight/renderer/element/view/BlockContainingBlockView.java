@@ -232,6 +232,8 @@ public class BlockContainingBlockView extends ContainerView {
 			LineBox linebox = block.getPaintLineBox();
 			
 			if(	Culling.isVisible(partition, linebox)) {
+				//#debug sl.debug.render
+				System.out.println("rendered " + this.block + " : linebox : " + linebox + " : partition : " + partition );
 				paintLayout(x, y, leftBorder, rightBorder, g);
 			} else {
 				//#debug sl.debug.render
@@ -261,9 +263,6 @@ public class BlockContainingBlockView extends ContainerView {
 		int leftBorder = x - left;
 		int rightBorder = (x - left) +  width;
 		block.paint(x - left, y, leftBorder, rightBorder, g);
-		
-		//#debug sl.debug.render
-		System.out.println("painted " + block);
 
 		g.setClip(clipX, clipY, clipWidth, clipHeight);
 	}

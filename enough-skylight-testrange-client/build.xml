@@ -54,6 +54,7 @@
 						<locale name="de" encoding="UTF8"/>
 					</localization>
 					
+					<root dir="${skylight.home}/resources/style/import"/>
 					<root dir="${skylight.home}/resources/style/base"/>
 					<root dir="${skylight.home}/resources/style/viewport"/>
 					<root dir="${skylight.home}/resources/style/html"/>
@@ -74,6 +75,7 @@
 					<!-- debugging -->
 					<!--
 					<filter pattern="de.enough.skylight.*" level="sl.debug.render" />
+					<filter pattern="de.enough.skylight.*" level="sl.debug.event" />
 					<filter pattern="de.enough.skylight.*" level="sl.debug.layout" />
 					<filter pattern="de.enough.skylight.*" level="sl.debug.style" />
 					<filter pattern="de.enough.skylight.*" level="sl.debug.build" />

@@ -27,6 +27,9 @@ public abstract class NodeHandler {
 		String onClick = NodeUtils.getAttributeValue(node, "onClick");
 		
 		if(onClick != null) {
+			//#debug sl.debug.event
+			System.out.println(element + " has events");
+			
 			element.setInteractive(true);
 		}
 	}

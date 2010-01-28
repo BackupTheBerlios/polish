@@ -19,10 +19,9 @@
 <attributes>
 	<attribute
 		name="display"
-		type="integer"
+		type="string"
 		appliesTo="ContainerView"
 		default="block"
-		values="block,inline"
 		since="J2ME Polish 2.1.3"
 	/>
 </attributes>
