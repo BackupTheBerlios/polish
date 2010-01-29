@@ -31,4 +31,9 @@ public class InputSubmitHandler extends BodyNodeHandler {
 		
 		return submitItem;
 	}
+	
+	public Style getDefaultStyle(CssElement element) {
+		//#style input_submit
+		return new Style();
+	}
 }

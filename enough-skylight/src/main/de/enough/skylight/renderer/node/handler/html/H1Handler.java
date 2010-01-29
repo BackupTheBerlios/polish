@@ -15,7 +15,7 @@ public class H1Handler extends BodyNodeHandler{
 	
 	public void handleNode(CssElement element) {}
 	
-	public Style getDefaultStyle() {
+	public Style getDefaultStyle(CssElement element) {
 		//#style h1
 		return new Style();
 	}

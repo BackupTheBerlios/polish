@@ -25,7 +25,7 @@ public class TextHandler extends BodyNodeHandler{
 
 	public Item createContent(CssElement element) {
 		Style parentStyle = element.getParent().getStyle();
-		Style style = CssStyle.getTextStyle(parentStyle);
+		Style style = CssStyle.getTextStyle(parentStyle, element.getStyle());
 		TextBlock textBlock = new TextBlock(style);
 		
 		DomNode node = element.getNode();

@@ -12,7 +12,7 @@ public class BodyHandler extends HtmlNodeHandler {
 		return "body";
 	}
 	
-	public Style getDefaultStyle() {
+	public Style getDefaultStyle(CssElement element) {
 		//#style body
 		return new Style();
 	}

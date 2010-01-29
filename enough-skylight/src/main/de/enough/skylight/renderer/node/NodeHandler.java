@@ -46,7 +46,7 @@ public abstract class NodeHandler {
 		return true;
 	}
 	
-	public Style getDefaultStyle() {
+	public Style getDefaultStyle(CssElement element) {
 		//#style element
 		return new Style();
 	}

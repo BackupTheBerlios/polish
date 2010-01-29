@@ -12,18 +12,15 @@ h1 extends element {
 }
 
 br extends element {
-	layout: newline-after;
 }
 
 div extends element {
-	font: fnt_text;
 	display: block;
 }
 
 p extends element {
 	margin-top: 5%;
 	margin-bottom: 5%;
-	font: fnt_text;
 	display: block;
 }
 
@@ -35,17 +32,18 @@ form extends element {
 
 text extends element {
 	font: fnt_text;
-	display: inline;
 }
 
 span extends element {
 	font: fnt_text;
-	display: inline;
+}
+
+strong extends element {
+	font-style: bold;
 }
 
 em extends element {
-	font: fnt_text;
-	display: inline;
+	font-style: cursive;
 }
 
 input_text extends element {

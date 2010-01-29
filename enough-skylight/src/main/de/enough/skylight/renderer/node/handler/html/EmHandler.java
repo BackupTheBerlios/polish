@@ -14,7 +14,7 @@ public class EmHandler extends BodyNodeHandler{
 		return "em";
 	}
 	
-	public Style getDefaultStyle() {
+	public Style getDefaultStyle(CssElement element) {
 		//#style em
 		return new Style();
 	}

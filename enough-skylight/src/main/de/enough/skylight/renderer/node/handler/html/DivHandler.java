@@ -15,7 +15,7 @@ public class DivHandler extends BodyNodeHandler{
 		return "div";
 	}
 	
-	public Style getDefaultStyle() {
+	public Style getDefaultStyle(CssElement element) {
 		//#style div
 		return new Style();
 	}

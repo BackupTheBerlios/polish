@@ -13,7 +13,7 @@ public class FormHandler extends BodyNodeHandler{
 		return "form";
 	}
 	
-	public Style getDefaultStyle() {
+	public Style getDefaultStyle(CssElement element) {
 		//#style form
 		return new Style();
 	}

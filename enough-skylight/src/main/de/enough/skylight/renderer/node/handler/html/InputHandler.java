@@ -47,8 +47,6 @@ public class InputHandler extends BodyNodeHandler{
 			
 			handler = DefaultHandler.getInstance();
 		}
-
-		element.setViewport(element.getViewport());
 		
 		return handler;
 	}
@@ -61,5 +59,10 @@ public class InputHandler extends BodyNodeHandler{
 	public Item createContent(CssElement element) {
 		NodeHandler handler = getTypeHandler(element);
 		return handler.createContent(element);
+	}
+
+	public Style getDefaultStyle(CssElement element) {
+		NodeHandler handler = getTypeHandler(element);
+		return handler.getDefaultStyle(element);
 	}
 }

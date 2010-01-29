@@ -59,6 +59,7 @@ public class InlineContainingBlockView extends ContainerView {
 			
 			//TODO cant be used 
 			item.relativeX = completeWidth;
+			item.relativeY = 0;
 			
 			int itemHeight = item.itemHeight;
 			int itemWidth = item.itemWidth;
@@ -118,7 +119,7 @@ public class InlineContainingBlockView extends ContainerView {
 		Item focItem = this.focusedItem;
 		if (focItem != null) {
 			int focItemX = x + this.itemOffsets[this.focusedIndex];
-			int focItemY = 0;
+			int focItemY = y;
 			paintItem(focItem, this.focusedIndex, focItemX, focItemY, focItemX, focItemX + focItem.itemWidth, clipX, clipY, clipWidth, clipHeight, g);
 		}
 	}

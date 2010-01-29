@@ -26,7 +26,7 @@ public class InputTextHandler extends BodyNodeHandler {
 	public void handleNode(CssElement element) {
 	}
 
-	public Style getDefaultStyle() {
+	public Style getDefaultStyle(CssElement element) {
 		//#style input_text
 		return new Style();
 	}

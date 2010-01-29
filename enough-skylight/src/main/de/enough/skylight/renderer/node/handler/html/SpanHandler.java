@@ -14,7 +14,7 @@ public class SpanHandler extends BodyNodeHandler {
 	
 	public void handleNode(CssElement element) {}
 	
-	public Style getDefaultStyle() {
+	public Style getDefaultStyle(CssElement element) {
 		//#style span
 		return new Style();
 	}

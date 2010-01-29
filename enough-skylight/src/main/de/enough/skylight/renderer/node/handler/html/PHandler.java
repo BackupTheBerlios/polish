@@ -13,7 +13,7 @@ public class PHandler extends BodyNodeHandler {
 	
 	public void handleNode(CssElement element) {}
 
-	public Style getDefaultStyle() {
+	public Style getDefaultStyle(CssElement element) {
 		//#style p
 		return new Style();
 	}
