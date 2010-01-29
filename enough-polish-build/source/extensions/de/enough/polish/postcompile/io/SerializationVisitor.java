@@ -362,7 +362,7 @@ public class SerializationVisitor
         return;
       }
 
-    int maxStack = 2;
+    int maxStack = 0;
     int maxVars = 2;
     
     MethodVisitor mv = 
@@ -376,9 +376,14 @@ public class SerializationVisitor
         mv.visitVarInsn(ALOAD, 0);
         mv.visitVarInsn(ALOAD, 1);
         mv.visitMethodInsn(INVOKESPECIAL, this.superClassName, "read", "(Ljava/io/DataInputStream;)V");
+        maxStack = 2;
       }
     
     String[] fields = getSortedFields();
+
+    if (fields.length != 0) {
+    	maxStack = 2;
+    }
 
     for (int i = 0; i < fields.length; i++)
       {
@@ -561,7 +566,7 @@ public class SerializationVisitor
         return;
       }
 
-    int maxStack = 2;
+    int maxStack = 0;
     int maxVars = 2;
     
     MethodVisitor mv =
@@ -575,9 +580,14 @@ public class SerializationVisitor
         mv.visitVarInsn(ALOAD, 0);
         mv.visitVarInsn(ALOAD, 1);
         mv.visitMethodInsn(INVOKESPECIAL, this.superClassName, "write", "(Ljava/io/DataOutputStream;)V");
+        maxStack = 2;
       }
     
     String[] fields = getSortedFields();
+
+    if (fields.length != 0) {
+    	maxStack = 2;
+    }
 
     for (int i = 0; i < fields.length; i++)
       {
