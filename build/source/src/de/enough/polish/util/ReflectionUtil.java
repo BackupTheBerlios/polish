@@ -580,8 +580,14 @@ public final class ReflectionUtil {
 	 * @return true when the signature fits
 	 */
 	private static boolean signatureFits(Class[] parameterTypes, Object[] parameters) {
-		if ((parameterTypes == null && parameters != null) || (parameterTypes != null && parameters == null) || (parameterTypes.length != parameters.length)) {
+		if ((parameterTypes == null && parameters != null) || (parameterTypes != null && parameters == null)) {
 			return false;
+		}
+ 		if (parameterTypes != null && parameters != null && parameterTypes.length != parameters.length) {
+			return false;
+		}
+		if (parameterTypes == null && parameters == null) {
+			return true;
 		}
 		for (int i = 0; i < parameters.length; i++) {
 			Object parameter = parameters[i];
