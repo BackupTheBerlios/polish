@@ -90,7 +90,7 @@ implements TreeExpansionListener
 		addTreeExpansionListener( this );
 	}
 
-	class DeviceTreeItemCellRenderer extends DefaultTreeCellRenderer {
+	static class DeviceTreeItemCellRenderer extends DefaultTreeCellRenderer {
 		private static final long serialVersionUID = -6531995911250649576L;
 
 		public Component getTreeCellRendererComponent(

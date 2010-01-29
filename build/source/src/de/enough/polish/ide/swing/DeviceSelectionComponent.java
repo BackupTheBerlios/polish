@@ -296,7 +296,7 @@ implements DocumentListener, PolishComponentSelectionListener, DeviceSelector
         return this.platformsList;
     }
 
-    class CheckBoxCellRenderer implements ListCellRenderer {
+    static class CheckBoxCellRenderer implements ListCellRenderer {
 
 		public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 			JCheckBox box = (JCheckBox) value; 
