@@ -2,6 +2,7 @@ package de.enough.skylight.renderer.element.view;
 
 import javax.microedition.lcdui.Graphics;
 
+import de.enough.polish.ui.Canvas;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.ContainerView;
 import de.enough.polish.ui.Item;
@@ -128,5 +129,19 @@ public class InlineContainingBlockView extends ContainerView {
 			int focItemY = y;
 			paintItem(focItem, this.focusedIndex, focItemX, focItemY, focItemX, focItemX + focItem.itemWidth, clipX, clipY, clipWidth, clipHeight, g);
 		}
+	}
+	
+	public boolean handleKeyPressed(int keyCode, int gameAction) {
+		boolean handled = super.handleKeyPressed(keyCode, gameAction);
+		
+		if(gameAction == Canvas.FIRE) {
+			CssElement element = ElementAttributes.getCssElement(this.parentItem);
+			
+			if(element != null && element.isInteractive()) {
+				System.out.println("FIRE " + element);
+			}
+		}
+		
+		return handled;
 	}
 }

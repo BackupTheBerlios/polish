@@ -88,10 +88,15 @@ public class CssElement implements HtmlCssElement{
 	Item createContent() {
 		Item item = this.handler.createContent(this);
 		
-		if(item != null && isInteractive()) {
-			//#debug sl.debug.event
-			System.out.println("element " + this + " is interactive");
-			item.setAppearanceMode(Item.INTERACTIVE);
+		if(item != null) {
+//			ElementView view = new ElementView();
+//			item.setView(view);
+			
+			if(isInteractive()) {
+				//#debug sl.debug.event
+				System.out.println("element " + this + " is interactive");
+				item.setAppearanceMode(Item.INTERACTIVE);
+			}
 		}
 		
 		return item;

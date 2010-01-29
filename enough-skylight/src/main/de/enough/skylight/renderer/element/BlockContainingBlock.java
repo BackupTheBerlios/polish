@@ -89,8 +89,10 @@ public class BlockContainingBlock extends Container implements ContainingBlock, 
 	}
 	
 	public void partition(PartitionList partitions) {
-		Partition partition = Partition.partitionBlock(this);
-		partitions.add(partition);
+		if(isVisible()) {
+			Partition partition = Partition.partitionBlock(this);
+			partitions.add(partition);
+		}
 	}
 	
 	public Container getContainer() {

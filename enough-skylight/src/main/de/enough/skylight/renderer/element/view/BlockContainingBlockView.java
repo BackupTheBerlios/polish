@@ -3,6 +3,7 @@ package de.enough.skylight.renderer.element.view;
 import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.benchmark.Benchmark;
+import de.enough.polish.ui.Canvas;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.ContainerView;
 import de.enough.polish.ui.Item;
@@ -307,4 +308,20 @@ public class BlockContainingBlockView extends ContainerView {
 	public LineBox getPaintLineBox() {
 		return this.paintLineBox;
 	}
+
+	public boolean handleKeyPressed(int keyCode, int gameAction) {
+		boolean handled = super.handleKeyPressed(keyCode, gameAction);
+		
+		if(gameAction == Canvas.FIRE) {
+			CssElement element = ElementAttributes.getCssElement(this.parentItem);
+			
+			if(element != null && element.isInteractive()) {
+				System.out.println("FIRE " + element);
+			}
+		}
+		
+		return handled;
+	}
+	
+	
 }

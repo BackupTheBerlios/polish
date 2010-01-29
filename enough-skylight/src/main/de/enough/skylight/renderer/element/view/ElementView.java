@@ -2,9 +2,12 @@ package de.enough.skylight.renderer.element.view;
 
 import javax.microedition.lcdui.Graphics;
 
+import de.enough.polish.ui.Canvas;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.ItemView;
 import de.enough.polish.ui.UiAccess;
+import de.enough.skylight.renderer.element.ElementAttributes;
+import de.enough.skylight.renderer.node.CssElement;
 
 public class ElementView extends ItemView {
 	
@@ -19,10 +22,16 @@ public class ElementView extends ItemView {
 	}
 
 	public boolean handleKeyPressed(int keyCode, int gameAction) {
-		return super.handleKeyPressed(keyCode, gameAction);
-	}
-
-	public boolean handlePointerPressed(int x, int y) {
-		return super.handlePointerPressed(x, y);
+		boolean handled = super.handleKeyPressed(keyCode, gameAction);
+		
+		if(gameAction == Canvas.FIRE) {
+			CssElement element = ElementAttributes.getCssElement(this.parentItem);
+			
+			if(element != null && element.isInteractive()) {
+				System.out.println("FIRE " + element);
+			}
+		}
+		
+		return handled;
 	}
 }

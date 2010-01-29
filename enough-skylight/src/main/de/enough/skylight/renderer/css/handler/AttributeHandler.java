@@ -51,7 +51,7 @@ public abstract class AttributeHandler {
 		} else if(this.type == TYPE_COLOR) {
 			return getColor(text); 
 		} else if(this.type == TYPE_BOOLEAN) {
-			return getColor(text); 
+			return getBoolean(text); 
 		} else {
 			//#debug error
 			System.out.println("invalid type for handler " + this.name);
@@ -100,9 +100,14 @@ public abstract class AttributeHandler {
 	public void addToStyle(Style style, String text) {
 		Object result = getValue(text);
 		
-		if(result != null && result != AttributeHandler.VALUE_INVALID) {
-			addAttribute(style, result);
-		} 
+		if(result != null) { 
+			if(result != AttributeHandler.VALUE_INVALID) {
+				addAttribute(style, result);
+			} else {
+				//#debug error
+				System.out.println("invalid value for " + getName());
+			}
+		}
 	}
 	
 	public int getHash() {
