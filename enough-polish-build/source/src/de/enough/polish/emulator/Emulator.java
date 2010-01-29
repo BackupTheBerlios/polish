@@ -61,13 +61,11 @@ public abstract class Emulator
 extends Extension 
 implements Runnable, OutputFilter
 {
-
 	protected EmulatorSetting emulatorSetting;
 	protected boolean isFinished = false;
 	private File[] sourceDirs;
 	private String preprocessedSourcePath;
 	private String classPath;
-	protected Environment environment;
 	protected Device device;
 	private boolean decompilerInstalled;
 	private String header;
