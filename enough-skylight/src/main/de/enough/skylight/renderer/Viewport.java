@@ -2,6 +2,8 @@ package de.enough.skylight.renderer;
 
 import javax.microedition.lcdui.Graphics;
 
+import de.enough.polish.event.EventListener;
+import de.enough.polish.util.ArrayList;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.node.CssElement;
 
@@ -15,9 +17,21 @@ public class Viewport extends BlockContainingBlock {
 	
 	CssElement rootElement;
 	
+	ArrayList eventListeners;
+	
 	public Viewport() {
 		//#style viewport
 		super(null);
+		
+		this.eventListeners = new ArrayList();
+	}
+	
+	public void addEventListener(EventListener listener) {
+		this.eventListeners.add(listener);
+	}
+	
+	public void removeEventListener(EventListener listener) {
+		this.eventListeners.remove(listener);
 	}
 	
 	public void setTitle(String title) {

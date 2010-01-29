@@ -11,6 +11,7 @@ import de.enough.skylight.renderer.element.ContainingBlock;
 import de.enough.skylight.renderer.element.ElementAttributes;
 import de.enough.skylight.renderer.element.render.Culling;
 import de.enough.skylight.renderer.linebox.LineBox;
+import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.partition.Partition;
 
 public class InlineContainingBlockView extends ContainerView {
@@ -39,14 +40,19 @@ public class InlineContainingBlockView extends ContainerView {
 		
 		Container container = (Container)parentContainerItem;
 		BlockContainingBlock block = ElementAttributes.getBlock(container);
+		CssElement element = ElementAttributes.getCssElement(container);
+		
+		boolean interactive = false;
+		
+		if(element != null && element.isInteractive()) {
+			interactive = true;
+		}
 		
 		Item[] items = container.getItems();
 		
 		int length = items.length;
 		
-		this.itemOffsets = new int[length]; 
-		
-		boolean interactive = false;
+		this.itemOffsets = new int[length];
 
 		for (int i = 0; i < length; i++) {
 			Item item = items[i];
@@ -76,7 +82,7 @@ public class InlineContainingBlockView extends ContainerView {
 			//#debug sl.debug.event
 			System.out.println(this.containingBlock + " has interactive children, setting to interactive");
 			
-			container.setAppearanceMode(Item.INTERACTIVE);
+			setAppearanceMode(Item.INTERACTIVE);
 		}
 		
 		this.contentHeight = maxHeight;

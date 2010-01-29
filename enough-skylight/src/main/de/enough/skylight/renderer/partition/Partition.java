@@ -29,18 +29,20 @@ public class Partition {
 			height = item.getContentHeight();
 		}
 		
-		int marginLeft = x;
-		int paddingLeft = x + UiAccess.getMarginLeft(item);
-		int contentLeft = paddingLeft + UiAccess.getPaddingLeft(item);
-		int contentRight = contentLeft + item.getContentWidth();
-		int paddingRight = contentRight + UiAccess.getPaddingRight(item);
-		int marginRight = paddingRight + UiAccess.getMarginRight(item);
-		
-		partitions.add(new Partition(marginLeft, paddingLeft, height, item));
-		partitions.add(new Partition(paddingLeft, contentLeft, height, item));
-		partitions.add(new Partition(contentLeft, contentRight, height, item));
-		partitions.add(new Partition(contentRight, paddingRight, height, item));
-		partitions.add(new Partition(paddingRight, marginRight, height, item));
+		if(item.isVisible()) {
+			int marginLeft = x;
+			int paddingLeft = x + UiAccess.getMarginLeft(item);
+			int contentLeft = paddingLeft + UiAccess.getPaddingLeft(item);
+			int contentRight = contentLeft + item.getContentWidth();
+			int paddingRight = contentRight + UiAccess.getPaddingRight(item);
+			int marginRight = paddingRight + UiAccess.getMarginRight(item);
+			
+			partitions.add(new Partition(marginLeft, paddingLeft, height, item));
+			partitions.add(new Partition(paddingLeft, contentLeft, height, item));
+			partitions.add(new Partition(contentLeft, contentRight, height, item));
+			partitions.add(new Partition(contentRight, paddingRight, height, item));
+			partitions.add(new Partition(paddingRight, marginRight, height, item));
+		}
 	}
 	
 	public static Partition partitionBlock(Item item) {

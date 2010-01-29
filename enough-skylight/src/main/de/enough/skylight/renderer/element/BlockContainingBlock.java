@@ -100,4 +100,10 @@ public class BlockContainingBlock extends Container implements ContainingBlock, 
 	public LineBox getPaintLineBox() {
 		return this.blockView.getPaintLineBox();
 	}
+	
+	public String toString() {
+		return ElementAttributes.toString(this);
+	}
+	
+	
 }

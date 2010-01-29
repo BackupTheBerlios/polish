@@ -9,17 +9,29 @@ import de.enough.skylight.dom.DomNode;
 
 public class CssStyle {
 	
-	public static Style getTextStyle(Style style) {
+	public static Style getTextStyle(Style baseStyle, Style extendStyle) {
 		//#debug sl.debug.style
-		System.out.println("creating text style from style " + style.name);
+		System.out.println("creating text style from style " + baseStyle.name);
 		
-		Font font = style.getFont();
+		Font font = baseStyle.getFont();
 		Style textStyle = new Style();
 		textStyle.addAttribute("font", font);
+		
 		return textStyle;
 	}
 	
+	public static Integer extendFlag(Integer baseFlag, Integer extendFlag ) {
+		if(baseFlag != null && extendFlag != null) {
+			return new Integer(baseFlag.intValue() | extendFlag.intValue());
+		} else {
+			return null;
+		}
+	}
+	
 	public static Style extendStyle(Style baseStyle, Style extendStyle) {
+		//#debug sl.debug.style
+		System.out.println("extending style " + baseStyle.name + " with style " + extendStyle.name);
+		
 		Style result = new Style(baseStyle);
 		
 		if(extendStyle.layout != Item.LAYOUT_DEFAULT) {
@@ -34,6 +46,13 @@ public class CssStyle {
 			result.background = extendStyle.background;
 		}
 		
+//		Integer baseFontStyle = baseStyle.getIntProperty("font-style");
+//		Integer extendFontStyle = baseStyle.getIntProperty("font-style");
+//		Integer fontStyle = extendStyleFlag(baseFontStyle, extendFontStyle);
+//		if(fontStyle != null) {
+//			result.addAttribute("font-style", fontStyle);
+//		}
+		
 		short[] keys = extendStyle.getRawAttributeKeys();
 		
 		for (int i = 0; i < keys.length; i++) {
@@ -47,11 +66,9 @@ public class CssStyle {
 		return result;
 	}
 	
-	static Style getStyle(NodeHandler handler, DomNode node) {
-		Style style = handler.getDefaultStyle();
-		
-		//#debug sl.debug.style
-		System.out.println("default style for " + handler.getTag() + " : " + style.name);
+	static Style getStyle(CssElement element) {
+		NodeHandler handler = element.getHandler();
+		DomNode node = element.getNode();
 		
 		String clazz = NodeUtils.getAttributeValue(node, "class");
 		
@@ -60,16 +77,20 @@ public class CssStyle {
 			Style classStyle = StyleSheet.getStyle(clazz);
 			
 			if(classStyle != null) {
-				style = classStyle;
-				
 				//#debug sl.debug.style
-				System.out.println("got style for " + handler.getTag() + " : " + clazz);
+				System.out.println("create style for " + handler.getTag() + " : " + clazz);
+				
+				return classStyle;
 			} else {
 				//#debug error
 				System.out.println("style " + clazz + " could not be found");
 			} 
 		}
 		
-		return style;
+		Style defaultStyle = handler.getDefaultStyle(element);
+		//#debug sl.debug.style
+		System.out.println("returning default style for " + handler.getTag() + " : " + defaultStyle.name);
+		
+		return defaultStyle;
 	}
 }

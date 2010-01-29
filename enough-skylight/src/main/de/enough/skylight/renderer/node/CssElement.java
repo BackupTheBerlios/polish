@@ -1,10 +1,7 @@
 package de.enough.skylight.renderer.node;
 
-import javax.microedition.lcdui.Font;
-
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
-import de.enough.polish.ui.StyleSheet;
 import de.enough.polish.util.ArrayList;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.Viewport;
@@ -12,8 +9,6 @@ import de.enough.skylight.renderer.css.HtmlCssElement;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.element.ContainingBlock;
 import de.enough.skylight.renderer.element.InlineContainingBlock;
-import de.enough.skylight.renderer.element.TextBlock;
-import de.enough.skylight.renderer.node.handler.html.TextHandler;
 
 public class CssElement implements HtmlCssElement{
 	String display = HtmlCssElement.Display.INLINE;
@@ -55,7 +50,7 @@ public class CssElement implements HtmlCssElement{
 	public void build() throws ClassCastException, IllegalArgumentException {
 		this.handler.handle(this);
 		
-		this.style = CssStyle.getStyle(this.handler, this.node);
+		this.style = CssStyle.getStyle(this);
 		
 		setStyle(this.style);
 		
@@ -91,24 +86,40 @@ public class CssElement implements HtmlCssElement{
 	}
 	
 	Item createContent() {
-		return this.handler.createContent(this);
+		Item item = this.handler.createContent(this);
+		
+		if(item != null && isInteractive()) {
+			//#debug sl.debug.event
+			System.out.println("element " + this + " is interactive");
+			item.setAppearanceMode(Item.INTERACTIVE);
+		}
+		
+		return item;
 	}
 	
 	public Item getContent() {
 		return this.content;
 	}
 	
+	public NodeHandler getHandler() {
+		return this.handler;
+	}
+	
 	ContainingBlock createContainingBlock() {
 		if(isDisplay(HtmlCssElement.Display.BLOCK_LEVEL)) {
 			BlockContainingBlock block = new BlockContainingBlock(this, this.style);
 			if(this.interactive) {
-				block.setAppearanceMode(Item.INTERACTIVE);
+				//#debug sl.debug.event
+				System.out.println("element " + this + " is interactive");
+				block.getContainer().setAppearanceMode(Item.INTERACTIVE);
 			} 
 			return block;
 		} else {
 			InlineContainingBlock block = new InlineContainingBlock(this, this.style);
 			if(this.interactive) {
-				block.setAppearanceMode(Item.INTERACTIVE);
+				//#debug sl.debug.event
+				System.out.println("element " + this + " is interactive");
+				block.getContainer().setAppearanceMode(Item.INTERACTIVE);
 			} 
 			return block;
 		} 

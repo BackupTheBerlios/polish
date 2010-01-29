@@ -38,8 +38,9 @@ public class TextBlock extends StringItem implements Partable {
 	}
 	
 	public String prepareText(String text) {
-		text = text.trim();
-		return TextUtil.replace(text, "\n", " ");
+		String result = text.trim();
+		result = TextUtil.replace(result, "\n", " ");
+		return result;
 	}
 	
 	public void partition(PartitionList partitions) {

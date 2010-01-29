@@ -69,6 +69,6 @@ public class ElementAttributes {
 	}
 	
 	public static String toString(Item item) {
-		return item.getClass().getName();
+		return item.getClass().getName() + ElementAttributes.getCssElement(item);
 	}
 }

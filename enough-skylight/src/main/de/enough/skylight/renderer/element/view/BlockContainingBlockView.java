@@ -40,9 +40,15 @@ public class BlockContainingBlockView extends ContainerView {
 		Benchmark.start("initContent for block " + this.block);
 		
 		super.initContent(parentContainerItem, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
-
+		
 		//#debug sl.profile.layout
 		Benchmark.stop("initContent for block " + this.block,"done");
+		
+		CssElement element = ElementAttributes.getCssElement(parentContainerItem);
+		
+		if(element != null && element.isInteractive()) {
+			setAppearanceMode(Item.INTERACTIVE);
+		}
 		
 		InlineContainingBlock floatLeft = this.block.getLeftFloat();
 		
@@ -160,7 +166,6 @@ public class BlockContainingBlockView extends ContainerView {
 		}
 		//#enddebug
 
-		CssElement element = ElementAttributes.getCssElement(parentContainerItem);
 		if(element != null && (element.isFloat() || element.isParentFloat())) {
 			this.contentWidth = bodyLayout.getWidth();
 		} else {
@@ -233,7 +238,7 @@ public class BlockContainingBlockView extends ContainerView {
 			
 			if(	Culling.isVisible(partition, linebox)) {
 				//#debug sl.debug.render
-				System.out.println("painted " + this.block + " : linebox : " + linebox + " : partition : " + partition );
+				System.out.println("rendered " + this.block + " : linebox : " + linebox + " : partition : " + partition );
 				paintLayout(x, y, leftBorder, rightBorder, g);
 			} else {
 				//#debug sl.debug.render

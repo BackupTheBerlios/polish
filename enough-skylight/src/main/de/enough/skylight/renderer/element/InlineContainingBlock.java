@@ -11,6 +11,8 @@ import de.enough.skylight.renderer.partition.PartitionList;
 
 public class InlineContainingBlock extends Container implements ContainingBlock {
 	
+	InlineContainingBlockView inlineView;
+	
 	public InlineContainingBlock() {
 		this(null,null);
 	}
@@ -26,9 +28,8 @@ public class InlineContainingBlock extends Container implements ContainingBlock 
 	public InlineContainingBlock(CssElement element, Style style) {
 		super(false,style);
 		
-		setView(new InlineContainingBlockView(this));
-		
-		setAppearanceMode(Item.PLAIN);
+		this.inlineView = new InlineContainingBlockView(this);
+		setView(this.inlineView);
 	}
 
 	public void addToBody(Item item) {
