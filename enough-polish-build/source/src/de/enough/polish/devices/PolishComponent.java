@@ -389,7 +389,7 @@ implements Comparable
 			Capability capability = this.capabilityManager.getCapability( name );
 			if ( capability != null ) {
 				value = capability.getValue(existingValue, value);
-				if (value == existingValue) {
+				if (value.equals(existingValue)) {
 					// this is a duplicate:
 					return;
 				}
@@ -605,9 +605,9 @@ implements Comparable
 			return this.supportsPolishGui;
 		}
 		name = name.toLowerCase();
-		boolean hasFeature = (this.features.get(name) != null);
+		boolean hasFeature = this.features.get(name) != null;
 		if (!hasFeature) {
-			hasFeature = (this.features.get("polish." + name) != null);
+			hasFeature = this.features.get("polish." + name) != null;
 		}
 		return hasFeature;
 	}
