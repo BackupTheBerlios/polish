@@ -82,7 +82,7 @@ implements NativeItem, FieldChangeListener
 		}
 	}
 
-	public void onValueChanged(Item parent, Object value) {
+	public void notifyValueChanged(Item parent, Object value) {
 		if (!this.isIgnoreValueChanged) {
 			if (value instanceof ChoiceItem) {
 				// an item has been added or removed:

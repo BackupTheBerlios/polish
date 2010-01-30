@@ -28,7 +28,7 @@ package de.enough.polish.blackberry.nativeui;
 
 import net.rim.device.api.ui.Field;
 import net.rim.device.api.ui.FieldChangeListener;
-import net.rim.device.api.ui.component.LabelField;
+import net.rim.device.api.ui.component.ButtonField;
 import de.enough.polish.ui.ClippingRegion;
 import de.enough.polish.ui.Command;
 import de.enough.polish.ui.Item;
@@ -44,7 +44,7 @@ import de.enough.polish.ui.UiAccess;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class StringItemButtonField 
-extends LabelField
+extends ButtonField
 implements NativeItem, FieldChangeListener
 {
 	
@@ -58,7 +58,7 @@ implements NativeItem, FieldChangeListener
 	 * @param defaultCommand the default command that should be triggered
 	 */
 	public StringItemButtonField(StringItem parent, Command defaultCommand) {
-		this( parent, defaultCommand, FieldHelper.getStyle(parent) );
+		this( parent, defaultCommand, FieldHelper.getStyle(parent) | ButtonField.CONSUME_CLICK);
 	}
 
 	/**
@@ -78,8 +78,8 @@ implements NativeItem, FieldChangeListener
 		return this.stringItem;
 	}
 
-	public void onValueChanged(Item parent, Object value) {
-		super.setText(value);
+	public void notifyValueChanged(Item parent, Object value) {
+		super.setLabel((String)value);
 	}
 
 	public void animate(long currentTime, ClippingRegion repaintRegion) {

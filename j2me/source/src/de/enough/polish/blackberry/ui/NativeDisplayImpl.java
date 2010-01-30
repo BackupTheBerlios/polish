@@ -190,8 +190,8 @@ public class NativeDisplayImpl implements NativeDisplay
 				Form polishForm = (Form)nextDisplayable;
 				FormScreen bbForm = (FormScreen) polishForm.getNativeScreen();
 				if (bbForm == null) {
-					FormScreen form = new FormScreen( polishForm );
-					polishForm.setNativeScreen(form);
+					bbForm = new FormScreen( polishForm );
+					polishForm.setNativeScreen(bbForm);
 				}
 		        Object lock = Application.getEventLock();
 		        synchronized (lock) {

@@ -38,11 +38,16 @@ import net.rim.device.api.ui.XYRect;
  * <p>Copyright Enough Software 2010</p>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class ItemField extends Field {
+public class ItemField 
+extends Field
+implements NativeItem
+{
 	
 	
 	private static Graphics graphics = new Graphics();
-	protected Item parent;
+	protected Item polishItem;
+	private int layoutHeight;
+	private int layoutWidth;
 
 	/**
 	 * Creates a new custom field with a FIELD_LEFT style
@@ -60,16 +65,18 @@ public class ItemField extends Field {
 	 */
 	public ItemField(Item parent, long style) {
 		super(style);
-		this.parent = parent;
+		this.polishItem = parent;
 	}
 
 	/* (non-Javadoc)
 	 * @see net.rim.device.api.ui.Field#layout(int, int)
 	 */
 	protected void layout(int width, int height) {
+		this.layoutWidth = width;
+		this.layoutHeight = height;
 		// layout the item, if necessary:
-		this.parent.getItemWidth(width, width, height);
-		setExtent( this.parent.getContentWidth(), this.parent.getContentHeight() );
+		this.polishItem.getItemWidth(width, width, height);
+		setExtent( this.polishItem.getContentWidth(), this.polishItem.getContentHeight() );
 	}
 
 	/* (non-Javadoc)
@@ -78,7 +85,33 @@ public class ItemField extends Field {
 	protected void paint(net.rim.device.api.ui.Graphics g) {
 		graphics.setGraphics(g);
 		XYRect clip = g.getClippingRect();
-		UiAccess.paintContent( this.parent, clip.x, clip.y, clip.x, clip.x + clip.width, graphics.getMidpGraphics() );
+		UiAccess.paintContent( this.polishItem, clip.x, clip.y, clip.x, clip.x + clip.width, graphics.getMidpGraphics() );
+	}
+
+
+	public Item getPolishItem() {
+		return this.polishItem;
+	}
+
+
+	public void notifyValueChanged(Item parent, Object value) {
+		if (this.layoutWidth != 0) {
+			XYRect rect = getExtent();	
+			int currentWidth = rect.width;
+			int currentHeight = rect.height;
+			int itemWidth = this.polishItem.getItemWidth(this.layoutWidth, this.layoutWidth, this.layoutHeight);
+			int itemHeight = this.polishItem.itemHeight;
+			if (itemWidth != currentWidth || itemHeight != currentHeight) {
+				updateLayout();
+			} else {
+				invalidate();
+			}
+		}
+	}
+
+
+	public void animate(long currentTime, ClippingRegion repaintRegion) {
+		// typically can be ignored?
 	}
 
 }

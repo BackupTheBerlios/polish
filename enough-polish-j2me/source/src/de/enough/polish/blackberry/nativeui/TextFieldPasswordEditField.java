@@ -26,11 +26,15 @@
  */
 package de.enough.polish.blackberry.nativeui;
 
+import net.rim.device.api.ui.ContextMenu;
 import net.rim.device.api.ui.DrawTextParam;
 import net.rim.device.api.ui.Field;
 import net.rim.device.api.ui.FieldChangeListener;
 import net.rim.device.api.ui.Graphics;
 import net.rim.device.api.ui.component.PasswordEditField;
+import de.enough.polish.ui.ClippingRegion;
+import de.enough.polish.ui.Item;
+import de.enough.polish.ui.NativeItem;
 import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.TextField;
 
@@ -43,11 +47,13 @@ import de.enough.polish.ui.TextField;
  */
 public class TextFieldPasswordEditField 
 extends PasswordEditField
-implements FieldChangeListener
+implements NativeItem, FieldChangeListener
 {
 	
 	
 	protected TextField textField;
+	private long lastFieldChangedEvent;
+	private boolean isIgnoreValueChange;
 
 	/**
 	 * Creates a new TextFieldPasswordEditField
@@ -68,27 +74,83 @@ implements FieldChangeListener
 		super.setChangeListener(this);
 	}
 
+	/* (non-Javadoc)
+	 * @see net.rim.device.api.ui.Field#makeContextMenu(net.rim.device.api.ui.ContextMenu, int)
+	 */
+	protected void makeContextMenu(ContextMenu menu, int index) {
+		super.makeContextMenu(menu, index);
+		FieldHelper.makeContextMenu(menu, this.textField);
+	}
+
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.rim.device.api.ui.FieldChangeListener#fieldChanged(net.rim.device.api.ui.Field, int)
+	 */
 	public void fieldChanged(Field field, int context) {
 		if (context != FieldChangeListener.PROGRAMMATIC) {
-			//#if polish.Bugs.ItemStateListenerCalledTooEarly
-				int fieldType = this.textField.getConstraints ()& 0xffff;
-				if (fieldType == TextField.NUMERIC || fieldType == TextField.DECIMAL || fieldType == TextField.FIXED_POINT_DECIMAL) {
-					this.textField.setString( getText() );				
-					this.textField.notifyStateChanged();					
-				} else {
-					long currentTime = System.currentTimeMillis();
-					//todo implement fieldChanged
-	//				this.lastFieldChangedEvent = currentTime;
-	//				Screen scr = getScreen();
-	//				if (scr != null) {
-	//					scr.lastInteractionTime = currentTime;
-	//				}
-				}
-			//#else
-				this.textField.setString( getText() );				
-				this.textField.notifyStateChanged();
-			//#endif
+			this.isIgnoreValueChange = true;
+				try {
+				TextField tf = this.textField;
+				//#if polish.Bugs.ItemStateListenerCalledTooEarly
+					int fieldType = tf.getConstraints ()& 0xffff;
+					if (fieldType == TextField.NUMERIC || fieldType == TextField.DECIMAL || fieldType == TextField.FIXED_POINT_DECIMAL) {
+						tf.setString( getText() );				
+						tf.notifyStateChanged();					
+					} else {
+						long currentTime = System.currentTimeMillis();
+						this.lastFieldChangedEvent = currentTime;
+						Screen scr = this.textField.getScreen();
+						if (scr != null) {
+							scr.setLastInteractionTime(currentTime);
+						}
+					}
+				//#else
+					tf.setString( getText() );				
+					tf.notifyStateChanged();
+				//#endif
+			} finally {
+				this.isIgnoreValueChange = false;
+			}
 		}
+	}
+	
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.NativeItem#onValueChanged(de.enough.polish.ui.Item, java.lang.Object)
+	 */
+	public void notifyValueChanged(Item parent, Object value) {
+		if (!this.isIgnoreValueChange) {
+			setText( (String) value );
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Animatable#animate(long, de.enough.polish.ui.ClippingRegion)
+	 */
+	public void animate(long currentTime, ClippingRegion repaintRegion) {
+		//#if polish.Bugs.ItemStateListenerCalledTooEarly
+			if (this.lastFieldChangedEvent != 0 && currentTime - this.lastFieldChangedEvent > 500) {
+				this.lastFieldChangedEvent = 0;
+				this.isIgnoreValueChange = true;
+				try {
+					this.textField.setString( getText() );
+					this.textField.notifyStateChanged();
+				} finally {
+					this.isIgnoreValueChange = false;
+				}
+			}
+		//#endif
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.NativeItem#getPolishItem()
+	 */
+	public Item getPolishItem() {
+		return this.textField;
 	}
 
 

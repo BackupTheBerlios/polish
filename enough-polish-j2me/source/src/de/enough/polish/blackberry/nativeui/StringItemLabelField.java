@@ -69,7 +69,7 @@ implements NativeItem
 		return this.stringItem;
 	}
 
-	public void onValueChanged(Item parent, Object value) {
+	public void notifyValueChanged(Item parent, Object value) {
 		super.setText(value);
 	}
 

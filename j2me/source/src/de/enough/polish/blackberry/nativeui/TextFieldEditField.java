@@ -113,15 +113,21 @@ implements FieldChangeListener, NativeItem
 		FieldHelper.makeContextMenu(menu, this.textField);
 	}
 	
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.rim.device.api.ui.FieldChangeListener#fieldChanged(net.rim.device.api.ui.Field, int)
+	 */
 	public void fieldChanged(Field field, int context) {
 		if (context != FieldChangeListener.PROGRAMMATIC) {
 			this.isIgnoreValueChange = true;
 				try {
+				TextField tf = this.textField;
 				//#if polish.Bugs.ItemStateListenerCalledTooEarly
-					int fieldType = this.textField.getConstraints ()& 0xffff;
+					int fieldType = tf.getConstraints ()& 0xffff;
 					if (fieldType == TextField.NUMERIC || fieldType == TextField.DECIMAL || fieldType == TextField.FIXED_POINT_DECIMAL) {
-						this.textField.setString( getText() );				
-						this.textField.notifyStateChanged();					
+						tf.setString( getText() );				
+						tf.notifyStateChanged();					
 					} else {
 						long currentTime = System.currentTimeMillis();
 						this.lastFieldChangedEvent = currentTime;
@@ -131,8 +137,8 @@ implements FieldChangeListener, NativeItem
 						}
 					}
 				//#else
-					this.textField.setString( getText() );				
-					this.textField.notifyStateChanged();
+					tf.setString( getText() );				
+					tf.notifyStateChanged();
 				//#endif
 			} finally {
 				this.isIgnoreValueChange = false;
@@ -140,12 +146,20 @@ implements FieldChangeListener, NativeItem
 		}
 	}
 
-	public void onValueChanged(Item parent, Object value) {
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.NativeItem#onValueChanged(de.enough.polish.ui.Item, java.lang.Object)
+	 */
+	public void notifyValueChanged(Item parent, Object value) {
 		if (!this.isIgnoreValueChange) {
 			setText( (String) value );
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Animatable#animate(long, de.enough.polish.ui.ClippingRegion)
+	 */
 	public void animate(long currentTime, ClippingRegion repaintRegion) {
 		//#if polish.Bugs.ItemStateListenerCalledTooEarly
 			if (this.lastFieldChangedEvent != 0 && currentTime - this.lastFieldChangedEvent > 500) {
@@ -161,6 +175,10 @@ implements FieldChangeListener, NativeItem
 		//#endif
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.NativeItem#getPolishItem()
+	 */
 	public Item getPolishItem() {
 		return this.textField;
 	}

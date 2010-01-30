@@ -53,9 +53,9 @@ implements NativeItem
 		}
 	}
 
-	public void onValueChanged(Item parent, Object value) {
+	public void notifyValueChanged(Item parent, Object value) {
 		if (this.nativeItem != null) {
-			this.nativeItem.onValueChanged(parent, value);
+			this.nativeItem.notifyValueChanged(parent, value);
 		}
 		
 	}
