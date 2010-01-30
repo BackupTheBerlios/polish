@@ -281,6 +281,7 @@ public class ImageItem extends Item
 		{
 			repaint();
 		}
+		notifyValueChanged(image);
 	}
 
 	/**

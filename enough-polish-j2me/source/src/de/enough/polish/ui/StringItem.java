@@ -401,8 +401,9 @@ public class StringItem extends Item
 			this.isTextInitializationRequired = true;
 			requestInit();
 		}
+		notifyValueChanged(text);
 	}
-	
+
 	//#if tmp.useTextEffect
 	public void setTextEffect(TextEffect effect)
 	{

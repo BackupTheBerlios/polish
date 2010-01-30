@@ -2341,6 +2341,27 @@ public abstract class Item implements UiElement, Animatable
 		}
 	}
 	
+	/**
+	 * Notifies this item about a change event, e.g. when the text of a StringItem has been changed or similar.
+	 * In contrast to notifyStateChanged() this method is also called when the change is not user initiated, i.e. when
+	 * the application itself changes the value.
+	 * The default implementation notfies native UI items about the change and fires an Event when either CSS animations are used 
+	 * or when the preprocessing variable <code>polish.handleEvents</code> is set to <code>true</code>.
+	 * @param newValue the changed value of this object
+	 * @see #notifyStateChanged()
+	 */
+	protected void notifyValueChanged(Object newValue) {
+		//#if polish.useNativeGui
+			if (this.nativeItem != null) {
+				this.nativeItem.notifyValueChanged(this, newValue);
+			}
+		//#endif
+		//#if tmp.handleEvents
+			EventManager.fireEvent( EventManager.EVENT_VALUE_CHANGE, this, newValue); 
+		//#endif
+	}
+
+	
 	void setAvailableDimensions(int leftBorder, int rightBorder)
 	{
 		int w = rightBorder - leftBorder;

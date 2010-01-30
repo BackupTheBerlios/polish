@@ -720,6 +720,9 @@ public class TextField extends StringItem
 		private final static int CLEAR_TYPE = Command.ITEM;
 	//#endif
 	//#ifdef polish.i18n.useDynamicTranslations
+			/**
+			 * Command for clearing the complete text of this field
+			 */
 			public static Command CLEAR_CMD = new Command( Locale.get("polish.command.clear"), CLEAR_TYPE, CLEAR_PRIORITY );
 	//#elifdef polish.command.clear:defined
 		//#= public static final Command CLEAR_CMD = new Command( "${polish.command.clear}", CLEAR_TYPE, CLEAR_PRIORITY );
@@ -1421,11 +1424,6 @@ public class TextField extends StringItem
 				//#endif
 			}
 		}
-		//#if polish.useNativeGui
-			if (this.nativeItem != null) {
-				this.nativeItem.onValueChanged(this, text);
-			}
-		//#endif
 		//#if tmp.useNativeTextBox
 			if (this.midpTextBox != null) {
 				this.midpTextBox.setString( text );

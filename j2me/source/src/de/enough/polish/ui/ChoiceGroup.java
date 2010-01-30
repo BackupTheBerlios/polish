@@ -1013,11 +1013,7 @@ implements Choice
 			setInitialized(false);
 			repaint();
 		}
-		//#if polish.useNativeGui
-			if (this.nativeItem != null) {
-				this.nativeItem.onValueChanged(this, null);
-			}
-		//#endif
+		notifyValueChanged(null);
 	}
 
 	/**
@@ -1089,11 +1085,7 @@ implements Choice
 			setInitialized(false);
 			repaint();
 		}
-		//#if polish.useNativeGui
-			if (this.nativeItem != null) {
-				this.nativeItem.onValueChanged(this, null);
-			}
-		//#endif
+		notifyValueChanged(null);
 	}
 
 	/**

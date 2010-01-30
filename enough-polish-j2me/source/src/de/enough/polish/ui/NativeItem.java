@@ -46,7 +46,7 @@ public interface NativeItem extends Animatable {
 	 * @param parent the J2ME Polish parent item.
 	 * @param value the new value, might be null
 	 */
-	void onValueChanged( Item parent, Object value );
+	void notifyValueChanged( Item parent, Object value );
 	
 	/**
 	 * Retrieves access to the parent item of this Native item.
