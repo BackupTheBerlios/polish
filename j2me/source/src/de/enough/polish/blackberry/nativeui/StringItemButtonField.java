@@ -33,8 +33,10 @@ import de.enough.polish.ui.ClippingRegion;
 import de.enough.polish.ui.Command;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.NativeItem;
+import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.UiAccess;
+import de.enough.polish.util.ArrayList;
 
 
 /**
@@ -58,7 +60,16 @@ implements NativeItem, FieldChangeListener
 	 * @param defaultCommand the default command that should be triggered
 	 */
 	public StringItemButtonField(StringItem parent, Command defaultCommand) {
-		this( parent, defaultCommand, FieldHelper.getStyle(parent) | ButtonField.CONSUME_CLICK);
+		this( parent, defaultCommand, getButtonStyle( parent ));
+	}
+
+	private static long getButtonStyle(StringItem parent) {
+		long style = FieldHelper.getStyle(parent);
+		ArrayList itemCommands = parent.getItemCommands();
+		if (itemCommands == null || itemCommands.size() <= 1) {
+			style |= ButtonField.CONSUME_CLICK;
+		}
+		return style;
 	}
 
 	/**
@@ -88,9 +99,11 @@ implements NativeItem, FieldChangeListener
 
 	public void fieldChanged(Field field, int context) {
 		if (context != PROGRAMMATIC) {
+			ArrayList itemCommands = this.stringItem.getItemCommands();
+			Screen screen = this.stringItem.getScreen();
 			// button has been clicked:
-			if (this.stringItem.getScreen() != null) {
-				UiAccess.handleCommand( this.stringItem.getScreen(), this.defaultCommand );
+			if (screen != null && itemCommands == null || itemCommands.size() <= 1) {
+				UiAccess.handleCommand( screen, this.defaultCommand );
 			}
 		}
 	}
