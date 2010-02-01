@@ -638,7 +638,11 @@ public class TableItem
 						startRow = this.selectedRowIndex - 1;
 						endRow = -1;
 						addRow = -1;
+						if (startRow < 0) {
+							return false;
+						}
 					}
+					
 					for (int row=startRow; row != endRow; row += addRow) {
 						if (selectCell) {
 							Object cell = get( this.selectedColumnIndex, row );
