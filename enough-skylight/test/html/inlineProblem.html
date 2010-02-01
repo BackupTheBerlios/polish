@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Inline Problem</title>
+</head>
+<body style="position:absolute;background-color:yellow">
+<div style="width:100px;background-color:blue">
+<p>
+bla fdkjhds hjdfif ifdd <span style="background-color:green"><em style="position:relative; top:10px; background-color:red;margin:10px;padding:0px 10px">blub fdugfdgg ftgsdfg fgfdgs tgr t gj ifufh ioshfirzzur hnoi</em></span>foo ajfd adfdshf hakfhdufh
+</p>
+</div>
+
+<div style="width:400px;">
+
+lange linebox
+reihenfolge des males
+relative zu letzt
+
+Build
+1) "Unbeschränkte" Linebox (UL) erstellen
+2) Sollbruchstellen in der Linebox ermitteln (vor/nach Worten/Leerzeichen/paddings/margins)
+
+Paint
+3) Fuer erste Ebene (div, static), UL von/bis zu den möglichen Sollbruchstellen mittels Clipping zeichnen (Ganze UL zeichen, durch Clipping beschraenken)
+4) Fuer zweite Ebene (span, static), UL von/bis zu den möglichen Sollbruchstellen mittels Clipping zeichnen
+5) Fuer dritte Ebene (em, relative), UL von/bis zu den möglichen Sollbruchstellen mittels Clipping und als letzten Schritt zeichnen
+6) Abtropfen lassen, fertig
+</div>
+</body>
+</html>
