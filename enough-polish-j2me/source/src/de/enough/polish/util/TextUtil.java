@@ -27,7 +27,9 @@
 package de.enough.polish.util;
 
 //#if polish.midp || polish.usePolishGui
-	import javax.microedition.lcdui.Font;
+import java.io.UnsupportedEncodingException;
+
+import javax.microedition.lcdui.Font;
 //#endif
 
 
@@ -834,6 +836,87 @@ public final class TextUtil {
 		 {
 			 return false;
 		 }
-	 } 
+	 }
+	 
+	 private static final String HEXES = "0123456789ABCDEF";
+		
+		/**
+		 * This method encodes a string to a quoted-printable string according to <a href="http://tools.ietf.org/html/rfc2045#section-6.7">RFC 2045</a>.
+		 * All five rules are implemented.
+		 * @param clearText
+		 * @param enc The encoding which sould be used to interpret the cleartext.
+		 * @return
+		 * @throws UnsupportedEncodingException 
+		 */
+		public static String encodeAsQuotedPrintable(String clearText, String enc) throws UnsupportedEncodingException {
+			StringBuffer buffer = new StringBuffer();
+
+			int lastIndex = clearText.length()-1;
+			int numberCharsInRow = 0;
+			for(int i = 0; i <= lastIndex; i++) {
+				char character = clearText.charAt(i);
+				if(character == '=') {
+					// Quote the quote character.
+					numberCharsInRow = numberCharsInRow + encodeCharacterAsQP(buffer,character,enc);
+				} else {
+					if((33 <= character && character <= 60) || (62 <= character && character <= 126)) {
+						// Rule 2. Literal representation
+						buffer.append(character);
+						numberCharsInRow = numberCharsInRow + 1;
+					} else {
+						// Rule 3. White Space
+						if(character == 9 || character == 32) {
+							if(i+2 <= lastIndex && clearText.charAt(i+1) == '\r' && clearText.charAt(i+2) == '\n') {
+								// Encode whitespace at the end of line of the clear text.
+								numberCharsInRow = numberCharsInRow + encodeCharacterAsQP(buffer,character,enc);
+							} else {
+								buffer.append(character);
+								numberCharsInRow++;
+							}
+						} else {
+							// Other non-printable character.
+							// Rule 4. Line Breaks
+							if(i+1 <= lastIndex && character == '\r' && clearText.charAt(i+1) == '\n') {
+								buffer.append('\r');
+							} else {
+								// Rule 4. Line Breaks
+								if(i-1>=0 && character == '\n' && clearText.charAt(i-1) == '\r') {
+									buffer.append('\n');
+									numberCharsInRow = 0;
+								} else {
+									// Rule 1. General 8bit representation
+									numberCharsInRow = numberCharsInRow + encodeCharacterAsQP(buffer,character,enc);
+								}
+							}
+						}
+					}
+				}
+				// Rule 5. Soft Line Breaks
+				if(numberCharsInRow > 76) {
+					int lastIndexOfBuffer = buffer.length()-1;
+					int numberOfCharsOverflowingLine = numberCharsInRow-76;
+					int lastIndexOnLine = lastIndexOfBuffer-numberOfCharsOverflowingLine;
+					buffer.insert(lastIndexOnLine,"=\r\n");
+					// Add the one character that was the last on the previous line.
+					numberCharsInRow = numberOfCharsOverflowingLine + 1;
+				}
+			}
+			return buffer.toString();
+		}
+
+		private static int encodeCharacterAsQP(StringBuffer buffer, char character,String encoding) throws UnsupportedEncodingException {
+			int numberCharactersGenerated = 0;
+//			byte[] bytes = Character.toString(character).getBytes(encoding);
+			byte[] bytes = new String(new char[] {character}).getBytes(encoding);
+			for (int i = 0; i < bytes.length; i++) {
+				byte b = bytes[i];
+				buffer.append("=");
+				// Encode the byte as hex
+				buffer.append(HEXES.charAt((b & 0xF0) >> 4));
+				buffer.append(HEXES.charAt((b & 0x0F)));
+				numberCharactersGenerated = numberCharactersGenerated + 3;
+			}
+			return numberCharactersGenerated;
+		}
 
 }
