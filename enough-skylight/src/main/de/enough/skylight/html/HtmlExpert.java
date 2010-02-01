@@ -64,6 +64,11 @@ public class HtmlExpert implements EventProcessorListener{
 		invokeJsEventHandler(event);
 	}
 	
+	/**
+	 * This method will invoke the handler which is set in the markup. If for example a 'click'
+	 * event is triggered, an 'onclick' handler is executed.
+	 * @param event
+	 */
 	private void invokeMarkupEventHandler(EventImpl event) {
 		if(event.getEventPhase() != Event.AT_TARGET) {
 			return;
@@ -86,6 +91,13 @@ public class HtmlExpert implements EventProcessorListener{
 		}
 	}
 
+	/**
+	 * This method will invoke a handler which is registered on the DOM object itself.
+	 * The order of calling the javascript handler and markup hanlder is different.
+	 * At first the markup handler is called, if this one is not present, then the js handler
+	 * is called at the end of the event cycle.
+	 * @param event
+	 */
 	private void invokeJsEventHandler(EventImpl event) {
 		String eventType = event.getType();
 		String eventHandlerName = this.eventTypeToEventHandlerMap.get(eventType);
