@@ -1784,4 +1784,12 @@ extends ItemView
 			this.scrollDamping = damping;
 		}
 	}
+	
+	/**
+	 * Sets the appearance mode for this view
+	 * @param appearanceMode the appearance mode 
+	 */
+	public void setAppearanceMode(int appearanceMode) {
+		this.appearanceMode = appearanceMode;
+	}
 }
