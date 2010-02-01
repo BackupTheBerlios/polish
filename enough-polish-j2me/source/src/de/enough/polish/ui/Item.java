@@ -2468,7 +2468,7 @@ public abstract class Item implements UiElement, Animatable
                                 // Do not use the cached item image.
                                 // Used for real-time dynamic objects
                                 // suct as ProcessingItem
-                                if ( cacheItemImage == false )
+                                if ( this.cacheItemImage == false )
                                 {
                                   rgbImage = null ;
                                 }
@@ -2482,10 +2482,10 @@ public abstract class Item implements UiElement, Animatable
 				} 
 				//System.out.println("painting RGB data for " + this  + ", pixel=" + Integer.toHexString( rgbData[ rgbData.length / 2 ]));		
 				this.filterProcessedRgbImage = paintFilter(x, y, this.filters, rgbImage, this.layout, g);
-                                if ( (filterProcessedRgbImage.getWidth() != itemWidth ) || ( filterProcessedRgbImage.getHeight() != itemHeight) )
-                                {
-                                    repaint(0, 0, filterProcessedRgbImage.getWidth(), filterProcessedRgbImage.getHeight());
-                                }
+                if ( (this.filterProcessedRgbImage.getWidth() != this.itemWidth ) || ( this.filterProcessedRgbImage.getHeight() != this.itemHeight) )
+                {
+                    repaint(0, 0, this.filterProcessedRgbImage.getWidth(), this.filterProcessedRgbImage.getHeight());
+                }
 //				for (int i=0; i<this.filters.length; i++) {
 //					RgbFilter filter = this.filters[i];
 //					rgbImage = filter.process(rgbImage);
@@ -2575,7 +2575,14 @@ public abstract class Item implements UiElement, Animatable
 				this.label.paint( x, y, leftBorder, rightBorder - (this.contentWidth + this.paddingHorizontal), g );
 				leftBorder += this.label.itemWidth;
 			} else {
-				this.label.paint( x, y, leftBorder, rightBorder, g );
+				int labelX = x;
+				int labelLeftBorder = leftBorder;
+				if (this.isLayoutRight && (this.label.itemWidth > this.itemWidth)) {
+					int diff = this.label.itemWidth - this.itemWidth;
+					labelX -= diff;
+					labelLeftBorder -= diff;
+				}
+				this.label.paint( labelX, y, labelLeftBorder, rightBorder, g );
 				y += this.label.itemHeight;
 			}
 		}
@@ -3077,8 +3084,9 @@ public abstract class Item implements UiElement, Animatable
 				if (firstLineAdjustedWidth > this.maximumWidth.getValue(firstLineWidth) ) {
 					firstLineAdjustedWidth = this.maximumWidth.getValue(firstLineWidth);
 				} 
-				if (lineAdjustedWidth > this.maximumWidth.getValue(availWidth) ) {
-					lineAdjustedWidth = this.maximumWidth.getValue(availWidth);
+				int maxWidth = this.maximumWidth.getValue(availWidth);
+				if (lineAdjustedWidth > maxWidth ) {
+					lineAdjustedWidth = maxWidth;
 				}
 			}
 			firstLineContentWidth = firstLineAdjustedWidth - noneContentWidth;
@@ -3162,11 +3170,14 @@ public abstract class Item implements UiElement, Animatable
 			}
 		//#endif
 		//#ifdef polish.css.max-width
-			if (this.maximumWidth != null && this.itemWidth > this.maximumWidth.getValue(availWidth) ) {
-				int diff = this.maximumWidth.getValue(availWidth) - this.itemWidth;
-				this.itemWidth += diff;
-				setContentWidth( this.contentWidth + diff );
-				cWidth = this.contentWidth;
+			if (this.maximumWidth != null) {
+				int maxWidth = this.maximumWidth.getValue(availWidth);
+				if (this.itemWidth > maxWidth ) {
+					int diff = maxWidth - this.itemWidth;
+					this.itemWidth += diff;
+					setContentWidth( this.contentWidth + diff );
+					cWidth = this.contentWidth;
+				}
 			}
 		//#endif
 		//#ifdef polish.css.before
