@@ -1,0 +1,17 @@
+item extends element {
+	margin: 10px;
+	display: block;
+	background-color: #FF6600;
+}
+
+title extends element {
+	display: block;
+}
+
+description extends element {
+	display: block;
+	background-color: white;
+}
+
+enclosure {
+}

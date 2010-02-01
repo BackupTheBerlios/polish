@@ -1,22 +1,19 @@
-import {
-	always-include: true;
-	display: block;	
-	view-type: midp2;
-}
-
 element {
+	display: inline;
 	padding: 0;
 	margin: 0;
 }
 
+element:hover{}
+
 viewport extends element {
-	display: inline;
 	layout: expand;
 	label-style: title;
+	font: fnt_text;
+	display: inline;
 }
 
-linebox extends element {
-}
+viewport:hover{}
 
 title {
 	background-color: black;
