@@ -1,0 +1,12 @@
+- window object
+- navigator object
+- Event 'DOMContentLoaded' on document
+- Event 'load' on window
+- toString method must return special form like [object Function]
+- document.createTextNode needed.
+- document.createElement
+- div.style.display
+- div.innerHTML
+- getElementsByTagName
+- AJAX
+
