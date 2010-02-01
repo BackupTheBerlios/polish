@@ -32,7 +32,6 @@ import com.grimo.me.product.midpsysinfo.SysPropCollector;
 import com.grimo.me.product.midpsysinfo.SystemInfoCollector;
 
 import de.enough.polish.rmi.RemoteClient;
-import de.enough.polish.util.DeviceControl;
 import de.enough.polish.util.DeviceInfo;
 import de.enough.polish.util.Locale;
 

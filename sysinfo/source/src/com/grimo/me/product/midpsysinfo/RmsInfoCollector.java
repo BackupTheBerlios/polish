@@ -6,13 +6,9 @@
 
 package com.grimo.me.product.midpsysinfo;
 
-
-
 import javax.microedition.lcdui.Display;
 import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
-import javax.microedition.rms.RecordStoreFullException;
-import javax.microedition.rms.RecordStoreNotFoundException;
 import de.enough.sysinfo.MIDPSysInfoMIDlet;
 
 /**
