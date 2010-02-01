@@ -821,17 +821,17 @@ public class ProcessingContext implements ProcessingInterface  {
         _colorRange3 = range3;
     }
 
-    public color color(int gray) {
+    public Color color(int gray) {
         int col = (255 << 24) | (gray << 16) | (gray << 8) | (gray);
-        return new color(col);
+        return new Color(col);
     }
 
-    public color color(int gray, int alpha) {
+    public Color color(int gray, int alpha) {
         int col = (alpha << 24) | (gray << 16) | (gray << 8) | (gray);
-        return new color(col);
+        return new Color(col);
     }
 
-    public color color(int value1, int value2, int value3, int alpha) {
+    public Color color(int value1, int value2, int value3, int alpha) {
         if (_colorMode == RGB)
         {
             // Normalize the color values according to the parameters set by
@@ -841,7 +841,7 @@ public class ProcessingContext implements ProcessingInterface  {
             value3 = value3 * 255 / _colorRange3;
 
             int col = (alpha << 24) | (value1 << 16) | (value2 << 8) | (value3);
-            return new color(col);
+            return new Color(col);
         }
         else if (_colorMode == HSB)
         {
@@ -881,21 +881,21 @@ public class ProcessingContext implements ProcessingInterface  {
             Bi = (int) B;
 
             int col = (alpha << 24) | (Ri << 16) | (Gi << 8) | (Bi);
-            return new color(col);
+            return new Color(col);
         }
         else
         {
-            return new color(0xFFFFFF);
+            return new Color(0xFFFFFF);
         }
     }
 
     public void background(int gray) {
         _bgImageMode = false;
-        color x = color(gray);
+        Color x = color(gray);
         _bgColor = x.color ;
     }
 
-    public void background(color color)
+    public void background(Color color)
     {
         _bgImageMode = false;
         _bgColor = color.color ;
@@ -904,7 +904,7 @@ public class ProcessingContext implements ProcessingInterface  {
     public void background(int value1, int value2, int value3)
     {
         _bgImageMode = false;
-        color x = color (value1, value2, value3,255);
+        Color x = color (value1, value2, value3,255);
         _bgColor = x.color ;
         
     }
@@ -919,19 +919,19 @@ public class ProcessingContext implements ProcessingInterface  {
         _strokeWidth = width;
     }
 
-    public void stroke(color whatColor) {
+    public void stroke(Color whatColor) {
         _hasStroke = true;
         _strokeColor = whatColor.color;
     }
 
     public void stroke(int color) {
-        color temp = color(color);
+        Color temp = color(color);
         _strokeColor = temp.color ;
         _hasStroke = true;
     }
 
     public void stroke(int v1, int v2, int v3) {
-        color temp = color(v1,v2,v3,255);
+        Color temp = color(v1,v2,v3,255);
         _strokeColor = temp.color ;
         _hasStroke = true;
     }
@@ -943,11 +943,11 @@ public class ProcessingContext implements ProcessingInterface  {
     public void fill(int gray)
     {
         _hasFill = true;
-        color x = color(gray);
+        Color x = color(gray);
         _fillColor = x.color ;
     }
 
-    public void fill(color color)
+    public void fill(Color color)
     {
         _hasFill = true;
         _fillColor = color.color;
@@ -956,7 +956,7 @@ public class ProcessingContext implements ProcessingInterface  {
     public void fill(int value1, int value2, int value3)
     {
         _hasFill = true;
-        color x = color(value1,value2,value3,255);
+        Color x = color(value1,value2,value3,255);
         _fillColor = x.color ;
     }
 
@@ -2399,16 +2399,16 @@ public class ProcessingContext implements ProcessingInterface  {
         }
     }
 
-    public PFont loadFont(String fontname, color fgColor, color bgColor) {
+    public PFont loadFont(String fontname, Color fgColor, Color bgColor) {
         return new PFont(fontname, fgColor, bgColor);
     }
 
-    public PFont loadFont(String fontname, color fgColor) {
-        return new PFont (fontname, fgColor, new color(0x00FFFFFF));
+    public PFont loadFont(String fontname, Color fgColor) {
+        return new PFont (fontname, fgColor, new Color(0x00FFFFFF));
     }
 
     public PFont loadFont(String fontname) {
-        return new PFont(fontname, new color(0x00FFFFFF), new color(0x00FFFFFF));
+        return new PFont(fontname, new Color(0x00FFFFFF), new Color(0x00FFFFFF));
     }
 
     public PFont loadFont() {

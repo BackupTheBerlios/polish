@@ -30,11 +30,11 @@ package de.enough.polish.processing;
  *
  * @author Ovidiu Iliescu
  */
-public class color {
+public class Color {
 
     public int color = 0;
 
-    public color(int color) {
+    public Color(int color) {
         this.color = color;
     }
 

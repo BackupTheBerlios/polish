@@ -188,13 +188,13 @@ public interface ProcessingInterface {
 
     public void colorMode(int mode, int range1, int range2, int range3);
 
-    public color color(int gray);
+    public Color color(int gray);
 
-    public color color(int gray, int alpha);
+    public Color color(int gray, int alpha);
 
-    public color color(int value1, int value2, int value3, int alpha);
+    public Color color(int value1, int value2, int value3, int alpha);
 
-    public void stroke(color whatColor);
+    public void stroke(Color whatColor);
 
     public void stroke(int gray);
 
@@ -206,7 +206,7 @@ public interface ProcessingInterface {
 
     public void fill(int gray);
 
-    public void fill(color color);
+    public void fill(Color color);
 
     public void fill(int value1, int value2, int value3);
 
@@ -214,7 +214,7 @@ public interface ProcessingInterface {
 
     public void background(int gray);
 
-    public void background(color x);
+    public void background(Color x);
 
     public void background(int value1, int value2, int value3);
 
@@ -510,9 +510,9 @@ public interface ProcessingInterface {
 
     public InputStream openStream(String fileName);
 
-    public PFont loadFont(String fontname, color fgColor, color bgColor) ;
+    public PFont loadFont(String fontname, Color fgColor, Color bgColor) ;
 
-    public PFont loadFont(String fontname, color fgColor) ;
+    public PFont loadFont(String fontname, Color fgColor) ;
 
     public PFont loadFont(String fontname) ;
 
