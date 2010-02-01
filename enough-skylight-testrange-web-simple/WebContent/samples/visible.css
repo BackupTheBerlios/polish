@@ -1,0 +1,23 @@
+.button {
+	display: block;
+	margin: 1px;
+	padding: 1px;
+	background-color: #A0A0A0;
+}
+
+.button:hover {
+	background-color: #FF9900;
+}
+
+.content {
+	display: block;
+	margin: 1px;
+	padding: 1px;
+	background-color: #A0A0A0;
+}
+
+.text {
+	display: block;
+	background-color: white;	
+}
+
