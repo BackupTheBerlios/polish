@@ -132,6 +132,7 @@ public class MidletBridge extends Activity {
 		//#= this.appProperties.put("MIDlet-Name", "${MIDlet-Name}");
 		//#= this.appProperties.put("MIDlet-Vendor", "${MIDlet-Vendor}");
 		//#= this.appProperties.put("MIDlet-Version", "${MIDlet-Version}");
+		//#= this.appProperties.put("microedition.pim.version", "1.0");
 	}
 	
 	/*
