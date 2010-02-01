@@ -618,7 +618,7 @@ public class StringItem extends Item
 					int orientation;
 					// adjust the painting according to the layout:
 					if (isRight) {
-						lineX = x + this.backgroundWidth - this.paddingLeft - this.paddingRight; // rightBorder;
+						lineX = rightBorder; //x + this.backgroundWidth - this.paddingLeft - this.paddingRight; // rightBorder can be influenced by sub classes such as IconItem, the rest not.
 						orientation = Graphics.RIGHT;
 					} else if (isCenter) {
 						lineX = centerX;
