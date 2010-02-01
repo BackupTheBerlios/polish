@@ -21,9 +21,9 @@ public class ContactListImpl extends AbstractPIMList implements ContactList {
 
 	private ContactDao contactDao;
 
-	ContactListImpl(String name, int mode) {
+	ContactListImpl(String name, int mode, ContactDao contactDao) {
 		super(name,mode);
-		this.contactDao = new ContactDao(this);
+		this.contactDao = contactDao;
 		setFieldInfos(new FieldInfo[] {CONTACT_ADDR_FIELD_INFO,CONTACT_EMAIL_FIELD_INFO,CONTACT_NAME_FIELD_INFO,CONTACT_TEL_FIELD_INFO,CONTACT_NOTE_FIELD_INFO,CONTACT_FORMATTED_NAME_FIELD_INFO});
 	}
 
@@ -37,7 +37,7 @@ public class ContactListImpl extends AbstractPIMList implements ContactList {
 		ensureListReadable();
 		Enumeration items;
 		try {
-			items = this.contactDao.items();
+			items = this.contactDao.items(this);
 		} catch(Exception e) {
 			throw new PIMException(e.getMessage());
 		}

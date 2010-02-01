@@ -16,9 +16,11 @@ public class ContactEnumeration implements Enumeration{
 	private final ContactDao contactDao;
 	private final int count;
 	private int position;
+	private final ContactListImpl contactListImpl;
 
-	public ContactEnumeration(ContactDao contactDao) {
+	public ContactEnumeration(ContactDao contactDao, ContactListImpl contactListImpl) {
 		this.contactDao = contactDao;
+		this.contactListImpl = contactListImpl;
 		this.contentResolver = MidletBridge.instance.getContentResolver();
 		this.peopleCursor = this.contentResolver.query(People.CONTENT_URI, null, null, null, null);
 		this.count = this.peopleCursor.getCount();
@@ -36,7 +38,7 @@ public class ContactEnumeration implements Enumeration{
 		this.position++;
 		// Do not use moveToNext() as it will break if items are removed while iterating the cursor.
 		this.peopleCursor.moveToPosition(this.position);
-		ContactImpl contactFromCursor = this.contactDao.getContactFromCursor(this.peopleCursor);
+		ContactImpl contactFromCursor = this.contactDao.getContactFromCursor(this.peopleCursor,this.contactListImpl);
 		return contactFromCursor;
 	}
 
