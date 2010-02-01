@@ -46,6 +46,20 @@ public abstract class Background implements Serializable
 	 */
 	public int borderWidth;
 
+        /**
+         * The Item which uses the background.
+         */
+        public transient Item parent ;
+
+        /**
+         * Set the parent item.
+         * @param parent
+         */
+        public void setParentItem(Item parent)
+        {
+            this.parent = parent;
+        }
+
 	/**
 	 * Creates a new Background.
 	 * The width of this background is set to 0 here.

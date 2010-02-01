@@ -35,7 +35,9 @@ import de.enough.polish.event.EventManager;
 //#debug ovidiu
 import de.enough.polish.benchmark.Benchmark;
 
+import de.enough.polish.processing.ProcessingInterface;
 import de.enough.polish.util.ArrayList;
+import java.util.Enumeration;
 
 /**
  * <p>Is used to animate Screens, Backgrounds and Items.</p>
@@ -135,12 +137,41 @@ public class AnimationThread extends Thread
 
 		ClippingRegion repaintRegion = new ClippingRegion();
 //		int animationCounter = 0;
+
+                Enumeration items ;
+                ProcessingInterface tempProcessingObject;
 		while ( true ) {
-			//#mdebug ovidiu
-				Benchmark.startSmartTimer("6");
-				Benchmark.incrementSmartTimer("5");
-				Benchmark.check();
-			//#enddebug
+
+                        // Go through all the Processing Context based objects
+                        // and update them if necessary.
+                        items = ProcessingInterface.processingContextObjects.elements();
+                        while ( items.hasMoreElements()  )
+                        {
+                            tempProcessingObject = (ProcessingInterface) items.nextElement() ;
+                            if ( tempProcessingObject.checkForRefresh() )
+                            {
+                                // Only execute a refresh if we're in a loop.
+                                // The reason for this is that if checkForRefresh() does
+                                // return true and we're not in a loop, then the
+                                // refresh mush have been triggered by an event handler
+                                // which in turn called redraw() (thus the refresh flag was set to true ).
+                                // Since redraw was already called, we should not call it again
+                                // by asking for a hard refresh.
+                                if ( tempProcessingObject.isLooping() )
+                                {
+                                    tempProcessingObject.executeRefresh(true);
+
+                                    // Avoid a potential extra refresh in other places.
+                                    // It's safe to do this, as we'll request a scren repaint
+                                    // below.
+                                    tempProcessingObject.checkForRefresh();
+                                }
+
+                                tempProcessingObject.triggerRepaint();
+                            }
+                        }
+
+                        
 			try {
 				Screen screen = StyleSheet.currentScreen;
 				//System.out.println("AnimationThread: animating " + screen + ", current=" + StyleSheet.display.getCurrent());
@@ -152,16 +183,8 @@ public class AnimationThread extends Thread
 					currentTime = System.currentTimeMillis();
 					if ( (currentTime - screen.lastInteractionTime) < ANIMATION_TIMEOUT ) {
 
-						//#debug ovidiu
-						Benchmark.startSmartTimer("7");
-
+						
 						screen.animate( currentTime, repaintRegion );
-
-						//#mdebug ovidiu
-						Benchmark.pauseSmartTimer("7");
-						Benchmark.incrementSmartTimer("8");
-						//#enddebug
-
 
 						if (animationList != null) {
 							animationItems = animationList.getInternalArray();
@@ -173,24 +196,16 @@ public class AnimationThread extends Thread
 								}
 								//System.out.println("animating " + animatable);
 
-								//#debug ovidiu
-								Benchmark.startSmartTimer("7");
+								
 
 								animatable.animate(currentTime, repaintRegion);
-
-								//#mdebug ovidiu
-								Benchmark.pauseSmartTimer("7");
-								Benchmark.incrementSmartTimer("8");
-								//#enddebug
 
 								//#debug repaint
 								System.out.println("called animate for " + animatable + " : " + repaintRegion);
 							}
 						}
 
-						//#debug ovidiu
-						Benchmark.startSmartTimer("9");
-
+						
 						if (repaintRegion.containsRegion()) {
 							//#debug repaint
 							System.out.println("repainting for " + repaintRegion);
@@ -208,8 +223,6 @@ public class AnimationThread extends Thread
 							screen.serviceRepaints();
 						}
 
-						//#debug ovidiu
-						Benchmark.pauseSmartTimer("9");
 
 						//#if polish.Animation.fireIdleEvents
 							if (sleeptime == SLEEP_INTERVAL) {
@@ -228,10 +241,6 @@ public class AnimationThread extends Thread
 							EventManager.fireEvent( EVENT_IDLE_MODE_ON, this, null);
 						//#endif
 
-						//#mdebug ovidiu
-						Benchmark.pauseSmartTimer("6");
-						Benchmark.check();
-						//#enddebug
 
 						continue;
 					}
@@ -256,10 +265,6 @@ public class AnimationThread extends Thread
 						//#endif
 						
 					} else {
-						//#mdebug ovidiu
-						Benchmark.pauseSmartTimer("6");
-						Benchmark.check();
-						//#enddebug
 						Thread.sleep(sleeptime);
 					}
 
@@ -280,10 +285,6 @@ public class AnimationThread extends Thread
 				System.out.println("unable to animate screen" + e );
 			}
 
-			//#mdebug ovidiu
-			Benchmark.pauseSmartTimer("6");
-			Benchmark.check();
-			//#enddebug
 		}
 
 	}

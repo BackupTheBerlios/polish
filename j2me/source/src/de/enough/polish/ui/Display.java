@@ -2623,7 +2623,7 @@ public class Display
 			if (this.commandListener != null) {
 				this.commandListener.commandAction((Command)c, this.currentDisplayable );
 			} else if (this.currentCanvas instanceof Screen) {
-				((Screen)this.currentCanvas).handleCommand( (Command)c);
+                            	((Screen)this.currentCanvas).handleCommand( (Command)c);
 			}
 		}
 	}

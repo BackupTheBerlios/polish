@@ -835,6 +835,7 @@ public abstract class Item implements UiElement, Animatable
 		private RgbFilter[] originalFilters;
 		private RgbImage filterRgbImage;
 		private RgbImage filterProcessedRgbImage;
+                public boolean cacheItemImage ;
 	//#endif
 	//#if polish.css.inline-label
 		protected boolean isInlineLabel;
@@ -924,6 +925,10 @@ public abstract class Item implements UiElement, Animatable
 			this.style = style;
 			this.isStyleInitialised = false;
 		}
+
+                //#if polish.css.filter
+                cacheItemImage = true ;
+                //#endif
 	}
 
 	/**
@@ -1108,6 +1113,7 @@ public abstract class Item implements UiElement, Animatable
 	public void setBackground( Background background ) {
 		this.preserveBackground = true;
 		this.background = background;
+                this.background.setParentItem(this);
 	}
 	
 	/**
@@ -2456,8 +2462,18 @@ public abstract class Item implements UiElement, Animatable
 			
 		//#if polish.css.filter && polish.midp2
 			if (this.isFiltersActive && this.filters != null && !this.filterPaintNormally) {
+
 				RgbImage rgbImage = this.filterRgbImage;
-				if ( rgbImage == null) {
+
+                                // Do not use the cached item image.
+                                // Used for real-time dynamic objects
+                                // suct as ProcessingItem
+                                if ( cacheItemImage == false )
+                                {
+                                  rgbImage = null ;
+                                }
+                                
+				if ( (rgbImage == null) ) {
 					this.filterPaintNormally = true;
 					int[] rgbData = UiAccess.getRgbData( this );
 					rgbImage = new RgbImage( rgbData, this.itemWidth);
@@ -2466,6 +2482,10 @@ public abstract class Item implements UiElement, Animatable
 				} 
 				//System.out.println("painting RGB data for " + this  + ", pixel=" + Integer.toHexString( rgbData[ rgbData.length / 2 ]));		
 				this.filterProcessedRgbImage = paintFilter(x, y, this.filters, rgbImage, this.layout, g);
+                                if ( (filterProcessedRgbImage.getWidth() != itemWidth ) || ( filterProcessedRgbImage.getHeight() != itemHeight) )
+                                {
+                                    repaint(0, 0, filterProcessedRgbImage.getWidth(), filterProcessedRgbImage.getHeight());
+                                }
 //				for (int i=0; i<this.filters.length; i++) {
 //					RgbFilter filter = this.filters[i];
 //					rgbImage = filter.process(rgbImage);
@@ -3651,7 +3671,7 @@ public abstract class Item implements UiElement, Animatable
 			}
 		//#endif
 		//#if tmp.handleEvents
-			EventManager.fireEvent( EventManager.EVENT_PRESS, this, null); 
+			EventManager.fireEvent( EventManager.EVENT_PRESS, this, null);
 		//#endif
 		return handled;
 	}
@@ -4193,6 +4213,7 @@ public abstract class Item implements UiElement, Animatable
 	 * @see #addRelativeToContentRegion(ClippingRegion, int, int, int, int)
 	 */
 	public void animate( long currentTime, ClippingRegion repaintRegion) {
+
 		if (this.label != null) {
 			this.label.animate( currentTime, repaintRegion );
 		}

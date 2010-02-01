@@ -1,0 +1,223 @@
+/*
+ * Copyright (c) 2009 Robert Virkus / Enough Software
+ *
+ * This file is part of J2ME Polish.
+ *
+ * J2ME Polish is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * J2ME Polish is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with J2ME Polish; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * Commercial licenses are also available, please
+ * refer to the accompanying LICENSE.txt or visit
+ * http://www.j2mepolish.org for details.
+ */
+
+package de.enough.polish.processing;
+
+import de.enough.polish.ui.ClippingRegion;
+import de.enough.polish.ui.Item;
+import de.enough.polish.ui.Screen;
+import de.enough.polish.ui.Style;
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Graphics;
+
+/**
+ *
+ * @author Ovidiu
+ */
+public class ProcessingItem extends Item implements ProcessingContextContainerInterface {
+
+    protected ProcessingInterface context ;
+    protected Command cmd = new Command ( "" , Command.ITEM, 0);
+
+    public ProcessingItem( ProcessingInterface context)
+    {
+        super();
+
+        // Disable item image caching.
+        
+        //#if polish.css.filter
+        cacheItemImage = false ;
+        //#endif
+
+        this.context = context;
+        this.context.setParent(this);
+        this.appearanceMode = INTERACTIVE;
+        context.signalInitialization();
+        
+    }
+
+    /**
+     * Checks if a given pixel (relative to the item) is within the bounds
+     * of the Processing canvas.
+     * @param x
+     * @param y
+     * @return true if the pixel is within bounds, false otherwise
+     */
+    protected boolean isWithinBounds(int x, int y)
+    {
+        if ( (x<paddingLeft) || (x>itemWidth-paddingRight) ||
+              (y<paddingTop) || (y>itemHeight-paddingBottom) )
+        {
+            return false;
+        }
+        return true;
+    }
+    
+    public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
+
+        setContentWidth ( itemWidth - paddingLeft - paddingRight );
+        setContentHeight ( itemHeight - paddingTop - paddingBottom );
+        
+        // Resize the Processing canvas area if needed.
+        context.signalSizeChange( contentWidth , contentHeight );
+        
+        // Draw the processing buffer.
+        g.drawImage( context.getBuffer(), x, y ,  Graphics.TOP | Graphics.LEFT );
+
+    }
+
+    public void destroy()
+    {
+         context.signalDestroy();
+         super.destroy();
+    }
+
+    protected void defocus(Style style)
+    {
+        // Remove the Item command (if any)
+        removeCommand((de.enough.polish.ui.Command) cmd);
+        cmd = null;
+        
+        context.lostFocus();
+        super.defocus(style);
+    }
+
+    protected Style focus(Style style, int direction)
+    {
+        // If requested by the Processing code, add an Item command
+        if ( context.getSoftkeyLabel() != null )
+        {
+            cmd = new Command ( context.getSoftkeyLabel(), Command.ITEM, 0);
+            addCommand(cmd);
+        }
+
+        context.focus();
+        return super.focus(style, direction);
+    }
+
+    protected boolean handleCommand(Command cmd)
+    {
+        context.signalSoftkeyPressed(cmd.getLabel());
+        return super.handleCommand(cmd);
+    }
+
+    protected void initContent(int firstLineWidth, int availWidth, int availHeight) {
+
+        setContentWidth ( availWidth );
+        setContentHeight ( availHeight );
+
+    }
+
+    protected boolean handleKeyPressed( int keyCode, int gameAction ) {
+
+        context.signalKeyPressed(keyCode);
+        return false;
+        
+    }
+
+    protected boolean handleKeyReleased( int keyCode, int gameAction ) {
+
+        context.signalKeyReleased(keyCode);
+        return false;
+    }
+
+    protected boolean handleKeyRepeated( int keyCode, int gameAction ) {
+
+        context.signalKeyPressed(keyCode);
+        return false;
+        
+    }
+
+
+    protected boolean handlePointerPressed(int x, int y)
+    {
+        if ( ! isWithinBounds(x, y) )
+        {
+            return false;
+        }
+        x -= paddingLeft;
+        y -= paddingTop;
+        context.signalPointerPressed(x, y);
+        return false;
+    }
+
+    protected boolean handlePointerReleased(int x, int y)
+    {
+        if ( ! isWithinBounds(x, y) )
+        {
+            return false;
+        }
+        x -= paddingLeft;
+        y -= paddingTop;
+        context.signalPointerReleased(x, y);
+        return false;
+    }
+
+    protected boolean handlePointerDragged(int x, int y)
+    {
+        if ( ! isWithinBounds(x, y) )
+        {
+            return false;
+        }
+        x -= paddingLeft;
+        y -= paddingTop;
+        context.signalPointerDragged(x, y);
+        return false;
+    }
+
+    public boolean handlePointerTouchDown(int x, int y)
+    {
+        if ( ! isWithinBounds(x, y) )
+        {
+            return false;
+        }
+        x -= paddingLeft;
+        y -= paddingTop;
+        context.signalPointerPressed(x, y);
+        return false;
+    }
+
+    public boolean handlePointerTouchUp(int x, int y)
+    {
+        if ( ! isWithinBounds(x, y) )
+        {
+            return false;
+        }
+        x -= paddingLeft;
+        y -= paddingTop;
+        context.signalPointerReleased(x, y);
+        return false;
+    }
+
+    protected String createCssSelector() {
+            return "processing";
+    }
+
+    public void processingRequestRepaint() 
+    {
+        // An explicit refresh has been requested by Processing
+        repaint(0,0,itemWidth,itemHeight);
+    }
+
+}
