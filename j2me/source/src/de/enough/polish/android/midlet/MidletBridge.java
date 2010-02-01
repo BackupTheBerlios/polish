@@ -315,6 +315,8 @@ public class MidletBridge extends Activity {
 		System.out.println("onResume().");
 		super.onResume();
 		AndroidDisplay display = AndroidDisplay.getDisplay(midlet);
+		// The following call is needed to initialize the display instance variable. This is needed for the GameCanvas.
+		//#= Display.getDisplay(midlet);
 		setContentView(display);
 		// This should allow to control the audio volume with the volume keys on the handset when the application has focus.
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
