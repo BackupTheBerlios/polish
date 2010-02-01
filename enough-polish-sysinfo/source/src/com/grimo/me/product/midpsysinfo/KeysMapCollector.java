@@ -105,7 +105,7 @@ implements DynamicTestView
 		g.setColor( 0 );
 		g.setFont( this.font );
 		String message = null;
-		char c = this.charactersMapStr.charAt( this.step );
+		char c = charactersMapStr.charAt( this.step );
 		message = "Please press [" + c  + "]";
 		g.drawString(message, 1, 1, Graphics.TOP | Graphics.LEFT );
 		int fontHeight = this.font.getHeight() + 5; 
@@ -118,14 +118,14 @@ implements DynamicTestView
 	 */
 	public void keyPressed(int keyCode) {
 		this.step++;
-		if (this.step > this.charactersMapStr.length()) {
+		if (this.step > charactersMapStr.length()) {
 			this.isFinished = true;
 			if (this.view != null) {
 				this.display.setCurrent( this.view );
 			}
 		}
 		if (keyCode != Canvas.KEY_NUM0) {
-				addInfo( "Key_" + this.charactersMapStr.charAt( this.step - 1), "" + keyCode );
+				addInfo( "Key_" + charactersMapStr.charAt( this.step - 1), "" + keyCode );
 		}
 		this.test.repaint();
 	}
