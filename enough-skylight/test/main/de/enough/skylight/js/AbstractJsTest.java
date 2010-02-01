@@ -21,6 +21,7 @@ public abstract class AbstractJsTest extends AbstractDomTest {
 		assertScriptableObject.init();
 		this.scope.put("Assert",this.scope,assertScriptableObject);
 		this.scope.put("document", this.scope, this.document1.getScriptable());
+		this.scope.put("alert", this.scope, new AlertScriptableObject());
 	}
 
 }
