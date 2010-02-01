@@ -5237,6 +5237,20 @@ public final class UiAccess {
 	}
 	//#endif
 	
+	//#if polish.usePolishGui
+	
+	/**
+	 * Initializes the content of the specified item.
+	 * @param item the item which content should be initialized
+	 * @param firstLineWidth the first line width
+	 * @param availWidth the available width
+	 * @param availHeight the available height
+	 */
+	public static void initContent(Item item,int firstLineWidth, int availWidth, int availHeight) {
+		item.initContent(firstLineWidth, availWidth, availHeight);
+	}
+	//#endif
+	
 	//#if polish.midp
 	/**
 	 * Paints the content of the specified item.
