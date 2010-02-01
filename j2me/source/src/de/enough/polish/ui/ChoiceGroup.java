@@ -1246,8 +1246,7 @@ implements Choice
 				this.originalContentWidth = this.contentWidth;
 				this.originalContentHeight = this.contentHeight;
 			}
-			int noneContentWidth = availWidth + this.marginLeft + getBorderWidthLeft() + this.paddingLeft + this.marginRight + getBorderWidthRight() + this.paddingRight;
-			this.popupItem.getItemWidth( noneContentWidth, noneContentWidth, availHeight );
+			this.popupItem.getItemWidth( this.availableWidth, this.availableWidth, this.availableHeight );
 			this.originalBackgroundHeight = this.contentHeight + this.marginTop + this.marginBottom;
 			if (!this.useSingleRow && this.label != null) {
 				this.originalBackgroundHeight += this.label.itemHeight + this.paddingVertical;
