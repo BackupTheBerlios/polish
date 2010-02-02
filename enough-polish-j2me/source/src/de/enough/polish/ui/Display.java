@@ -538,7 +538,7 @@ public class Display
 	
 	protected Displayable currentDisplayable;
 	protected Canvas currentCanvas;
-	protected final MIDlet midlet;
+	protected MIDlet midlet;
 	//#if polish.build.classes.NativeDisplay:defined
 		//#= private ${polish.build.classes.NativeDisplay} nativeDisplay;
 	//#else
@@ -2794,4 +2794,8 @@ public class Display
 		}
 	}
 	//#endif
+
+	public void setMidlet(MIDlet midlet) {
+		this.midlet = midlet;
+	}
 }
