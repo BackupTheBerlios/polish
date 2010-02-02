@@ -2468,7 +2468,7 @@ public abstract class Item implements UiElement, Animatable
                                 // Do not use the cached item image.
                                 // Used for real-time dynamic objects
                                 // suct as ProcessingItem
-                                if ( this.cacheItemImage == false )
+                                if ( !this.cacheItemImage )
                                 {
                                   rgbImage = null ;
                                 }
