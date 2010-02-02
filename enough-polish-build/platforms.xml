@@ -177,7 +177,6 @@
 	<platform>
 		<identifier>BlackBerry/4.7</identifier>
 		<parent>BlackBerry</parent>
-		<features>hasPointerEvents, hasTouchEvents</features>
 		<capability name="build.BootClassPath" value="blackberry-4.7.0.jar" />
 		<capability name="build.BlackBerry.JDE-Version" value="4.7" />
 		<!-- key for opening/closing the menu -->
@@ -189,7 +188,6 @@
 	<platform>
 		<identifier>BlackBerry/5.0</identifier>
 		<parent>BlackBerry</parent>
-		<features>hasPointerEvents, hasTouchEvents</features>
 		<capability name="build.BootClassPath" value="blackberry-5.0.0.jar" />
 		<capability name="build.BlackBerry.JDE-Version" value="5.0" />
 		<!-- key for opening/closing the menu -->
