@@ -84,7 +84,7 @@ public class SysInfoProviderServlet extends HttpServlet{
 
 		try {
 			String line = null;
-			String jarUrl = "MIDlet-Jar-URL: " + request.getRequestURL() + "/?download=jar";
+			String jarUrl = "MIDlet-Jar-URL: " + request.getRequestURL() + "?download=jar";
 			jadReader = new BufferedReader(new InputStreamReader(is));
 
 			while ((line = jadReader.readLine()) != null) {
@@ -185,7 +185,7 @@ public class SysInfoProviderServlet extends HttpServlet{
 			try {
 				// Send the jar file.
 				response.setContentType("application/java-archive");
-				
+				response.setHeader("Content-Disposition", "attachment;filename=\"sysinfo.jar\"");
 				bis = new BufferedInputStream(is);
 				os = response.getOutputStream();
 				int readBytes = 0;
