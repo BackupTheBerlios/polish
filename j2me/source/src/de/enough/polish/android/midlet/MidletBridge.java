@@ -203,6 +203,10 @@ public class MidletBridge extends Activity {
 		String appDirectory = getApplicationContext().getFilesDir().getAbsolutePath();
 		setSystemProperty("fileconn.dir.private", appDirectory);
 		
+		// rickyn: This fixes the bootstrap problem for GameCanvas.
+		new AndroidDisplay(this);
+		Display display = Display.getDisplay(null);
+		
 		// now create MIDlet:
 		try {
 			//#if false
@@ -215,6 +219,7 @@ public class MidletBridge extends Activity {
 			e.printStackTrace();
 			notifyDestroyed();
 		}
+		//#= display.setMidlet(midlet);
 	}
 
 	public void backlightOn() {
@@ -315,8 +320,6 @@ public class MidletBridge extends Activity {
 		System.out.println("onResume().");
 		super.onResume();
 		AndroidDisplay display = AndroidDisplay.getDisplay(midlet);
-		// The following call is needed to initialize the display instance variable. This is needed for the GameCanvas.
-		//#= Display.getDisplay(midlet);
 		setContentView(display);
 		// This should allow to control the audio volume with the volume keys on the handset when the application has focus.
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
