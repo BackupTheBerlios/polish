@@ -28,8 +28,13 @@
 		</javac>
 	</target>
 	
+	<target name="jar" depends="init, compile">
+		<mkdir dir="${distdir}"/>
+		<jar jarfile="${distdir}/sysinfoprovider.jar" basedir="${builddir}" />
+	</target>
+
 	<!-- a small servlet providing the sysinfomidlet download -->
-	<target name="sysinfoprovider" depends="init, compile">
+	<target name="war" depends="jar">
 		<available file="${sysinfo.home}/dist/sysinfo.jad" property="sysinfo.jad.available" />
 		<fail unless="sysinfo.jad.available" message="sysinfo.jad not available. Make sure your build of the sysinfo midlet is up-to-date" />
 		<available file="${sysinfo.home}/dist/sysinfo.jar" property="sysinfo.jar.available" />
@@ -39,11 +44,8 @@
 		<replace file="${builddir}/web.xml" token="%%BUILDDATE%%" value="${builddate}" />
 			
 		<echo message="building for ${buildtype}"/>
-		<mkdir dir="${distdir}"/>
 		<war destfile="${distdir}/sysinfoprovider.war" webxml="${builddir}/web.xml">
-			<classes dir="${builddir}">
-				<include name="**/*.class" />
-			</classes>
+			<lib file="${distdir}/sysinfoprovider.jar" />
 			<lib dir="lib" includes="log4j*.jar" />
 			<classes dir="conf/remotebuild" >
 				<include name="log4j.properties"/>
@@ -53,15 +55,13 @@
 		</war>
 	</target>
 
-	<target name="war" depends="sysinfoprovider" />
-	
 	<!-- clean up -->
 	<target name="clean" depends="init">
 		<delete dir="${builddir}" />
 		<delete dir="${distdir}" />
 	</target>
 
-	<target name="deploy-local" depends="sysinfoprovider">
+	<target name="deploy-local" depends="war">
 		<copy file="${distdir}/sysinfoprovider.war" todir="${deploydir}" overwrite="true" />
 	</target>
 
