@@ -105,7 +105,7 @@ public class AndroidEmulator extends Emulator{
 		try {
 			// check if an Android Virtual Device (avd) needs to be created:
 			Environment env = this.environment;
-			String avd = getAndroidVirtualDevice(this.device.getIdentifier());
+			String avd = getAVDforIdentifier(this.device.getIdentifier());
 			if (ArgumentHelper.isAndroidVersionHigherOrEquals15(env)) {
 				String[] args = new String[] {
 						ArgumentHelper.android(env),
@@ -190,7 +190,7 @@ public class AndroidEmulator extends Emulator{
 		}
 	}
 
-	private String getAndroidVirtualDevice(String identifier) {
+	private String getAVDforIdentifier(String identifier) {
 		identifier = identifier.replace('/', '_');
 		identifier = identifier.replace(' ', '_');
 		identifier = identifier.replace('.', '_');
