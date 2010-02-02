@@ -89,12 +89,24 @@ public interface ProcessingInterface {
 
     public void triggerRepaint();
 
+    public boolean areKeypressesCaptured();
+
+    public boolean arePointerEventsCaptured();
+
     /**
      * J2ME Polish extension methods that shoud be implemented
      */
     public void focus();
 
     public void lostFocus();
+
+    public void captureKeyPresses();
+
+    public void releaseKeyPresses();
+
+    public void capturePointerEvents();
+
+    public void releasePointerEvents();
 
     /*
      * Variables that need defining :

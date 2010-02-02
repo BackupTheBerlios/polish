@@ -120,6 +120,11 @@ public class ProcessingBackground extends Background implements ProcessingContex
     public void releaseResources() {
 		context.signalDestroy();
 	}
+
+    public void setSoftkey(String text)
+    {
+        // Do nothing
+    }
     
 
 }

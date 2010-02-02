@@ -25,6 +25,9 @@
 
 package de.enough.polish.processing;
 
+import de.enough.polish.ui.Animatable;
+import de.enough.polish.ui.AnimationThread;
+import de.enough.polish.ui.ClippingRegion;
 import de.enough.polish.util.DrawUtil;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -46,7 +49,7 @@ import javax.microedition.rms.RecordStoreNotFoundException;
  *
  * @author Ovidiu Iliescu
  */
-public class ProcessingContext implements ProcessingInterface  {
+public class ProcessingContext implements ProcessingInterface, Animatable  {
 
     // Inner-working methods. Not related to the Mobile Processing specs
     // -----------------------------------------------------------------
@@ -103,6 +106,9 @@ public class ProcessingContext implements ProcessingInterface  {
     public boolean   _multitapIsUpperCase;
     public String    _multitapPunctuation;
     public boolean   _pointerPressed = false ;
+
+    public boolean _areKeypressesCaptured = false ;
+    public boolean _arePointerEventsCaptured = false ;
 
     public Calendar _calendar = null ;
     public Runtime _runtime ;
@@ -396,14 +402,16 @@ public class ProcessingContext implements ProcessingInterface  {
 
     public void signalDestroy()
     {
-        processingContextObjects.removeElement(this);
+      //  processingContextObjects.removeElement(this);
+        AnimationThread.removeAnimationItem(this);
         destroy();
     }
 
     public void signalInitialization()
     {
-        ProcessingContext.processingContextObjects.removeElement(this);
-        ProcessingContext.processingContextObjects.addElement(this);
+      /*  ProcessingContext.processingContextObjects.removeElement(this);
+        ProcessingContext.processingContextObjects.addElement(this); */
+        AnimationThread.addAnimationItem(this);
     }
 
     public void signalHasFocus()
@@ -419,6 +427,36 @@ public class ProcessingContext implements ProcessingInterface  {
     public String getSoftkeyLabel()
     {
         return _softkeyLabel;
+    }
+
+    public void captureKeyPresses()
+    {
+        _areKeypressesCaptured = true ;
+    }
+
+    public void releaseKeyPresses()
+    {
+        _areKeypressesCaptured = false;
+    }
+
+    public boolean areKeypressesCaptured()
+    {
+        return _areKeypressesCaptured;
+    }
+
+    public void capturePointerEvents()
+    {
+        _arePointerEventsCaptured = true ;
+    }
+
+    public void releasePointerEvents()
+    {
+        _arePointerEventsCaptured = false ;
+    }
+
+    public boolean arePointerEventsCaptured()
+    {
+        return _arePointerEventsCaptured ;
     }
 
     public void _initVars(int width, int height)
@@ -1355,6 +1393,10 @@ public class ProcessingContext implements ProcessingInterface  {
     public void softkey(String label)
     {
         _softkeyLabel = label ;
+        if ( _parent != null )
+        {
+            _parent.setSoftkey(label);
+        }
     }
 
     public final void multitapDeleteChar() {
@@ -2548,6 +2590,32 @@ public class ProcessingContext implements ProcessingInterface  {
         popMatrix();
 
         _bufferg.setColor(currentColor);
+    }
+
+    public void animate(long currentTime, ClippingRegion repaintRegion) {
+        
+        if ( checkForRefresh() )
+        {
+            // Only execute a refresh if we're in a loop.
+            // The reason for this is that if checkForRefresh() does
+            // return true and we're not in a loop, then the
+            // refresh mush have been triggered by an event handler
+            // which in turn called redraw() (thus the refresh flag was set to true ).
+            // Since redraw was already called, we should not call it again
+            // by asking for a hard refresh.
+            if ( isLooping() )
+            {
+                executeRefresh(true);
+
+                // Avoid a potential extra refresh in other places.
+                // It's safe to do this, as we'll request a scren repaint
+                // below.
+                checkForRefresh();
+            }
+
+            triggerRepaint();
+        }
+        
     }
 
     

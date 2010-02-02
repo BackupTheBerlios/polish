@@ -1,6 +1,5 @@
-//#condition polish.usePolishGui
 /*
- * Copyright (c) 2009 Robert Virkus / Enough Software
+ * Copyright (c) 2010 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -25,39 +24,56 @@
 
 package de.enough.polish.processing;
 
-import de.enough.polish.ui.Item;
-import de.enough.polish.ui.Style;
 import de.enough.polish.ui.Command;
 import javax.microedition.lcdui.Graphics;
+import de.enough.polish.ui.Screen;
+import de.enough.polish.ui.Style;
 
 /**
  *
- * @author Ovidiu
+ * @author Ovidiu Iliescu
  */
-public class ProcessingItem extends Item implements ProcessingContextContainerInterface {
+public class ProcessingScreen extends Screen implements ProcessingContextContainerInterface {
 
-    protected ProcessingInterface context ;
-    protected Command cmd = new Command ( "" , Command.ITEM, 0);
-    protected String softkeyCommandText = null ;
+        protected Command cmd = new Command ( "" , Command.ITEM, 0);
+        protected String softkeyCommandText = null ;
+        ProcessingInterface context = null;
 
-    public ProcessingItem( ProcessingInterface context)
-    {
-        super();
 
-        // Disable item image caching.
+        public void initProcessingContext()
+        {
+            context.signalInitialization();
+            context.setParent(this);
+            context.signalHasFocus();
+        }
         
-        //#if polish.css.filter
-        cacheItemImage = false ;
-        //#endif
+        /**
+	 * Creates a new, empty <code>ProcessingScreen</code>.
+	 *
+	 * @param title the Form's title, or null for no title
+	 */
+	public ProcessingScreen( String title, ProcessingInterface context)
+	{
+		super( title, null, true );
+                this.context = context;
+                initProcessingContext();
+	}
 
-        this.context = context;
-        this.context.setParent(this);
-        this.appearanceMode = INTERACTIVE;
-        context.signalInitialization();
-        
-    }
 
-    /**
+	/**
+	 * Creates a new, empty <code>ProcessingScreen</code>.
+	 *
+	 * @param title the Form's title, or null for no title
+	 * @param style the style of this form
+	 */
+	public ProcessingScreen( String title, ProcessingInterface context, Style style )
+	{
+		super( title, style, true );
+                this.context = context;
+                initProcessingContext();
+	}
+
+        /**
      * Checks if a given pixel (relative to the item) is within the bounds
      * of the Processing canvas.
      * @param x
@@ -66,74 +82,30 @@ public class ProcessingItem extends Item implements ProcessingContextContainerIn
      */
     protected boolean isWithinBounds(int x, int y)
     {
-        if ( (x<paddingLeft) || (x>itemWidth-paddingRight) ||
-              (y<paddingTop) || (y>itemHeight-paddingBottom) )
+        if ( (x<contentX) || (x>contentWidth+contentX) ||
+              (y<contentY) || (y>contentHeight+contentY) )
         {
             return false;
         }
         return true;
-    }
-    
-    public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
-
-        setContentWidth ( itemWidth - paddingLeft - paddingRight );
-        setContentHeight ( itemHeight - paddingTop - paddingBottom );
-        
-        // Resize the Processing canvas area if needed.
-        context.signalSizeChange( contentWidth , contentHeight );
-        
-        // Draw the processing buffer.
-        g.drawImage( context.getBuffer(), x, y ,  Graphics.TOP | Graphics.LEFT );
 
     }
 
-    public void destroy()
-    {
-         context.signalDestroy();
-         super.destroy();
-    }
-
-    protected void defocus(Style style)
-    {
-        // Remove the Item command (if any)
-        removeCommand( cmd);
-        cmd = null;
-        
-        context.lostFocus();
-        super.defocus(style);
-    }
-
-    protected Style focus(Style style, int direction)
-    {
-        // If requested by the Processing code, add an Item command
-        if ( softkeyCommandText != null )
+        protected void paintScreen(Graphics g)
         {
-            cmd = new Command ( softkeyCommandText, Command.ITEM, 0);
-            addCommand(cmd);
+
+            context.signalSizeChange(contentWidth, contentHeight);
+
+            
+            g.drawImage(context.getBuffer(), contentX, contentY, Graphics.TOP | Graphics.LEFT );
         }
 
-        context.focus();
-        return super.focus(style, direction);
-    }
-
-    protected boolean handleCommand(Command cmd)
-    {
-        context.signalSoftkeyPressed(cmd.getLabel());
-        return super.handleCommand(cmd);
-    }
-
-    protected void initContent(int firstLineWidth, int availWidth, int availHeight) {
-
-        setContentWidth ( availWidth );
-        setContentHeight ( availHeight );
-
-    }
 
     protected boolean handleKeyPressed( int keyCode, int gameAction ) {
 
         context.signalKeyPressed(keyCode);
         return context.areKeypressesCaptured();
-        
+
     }
 
     protected boolean handleKeyReleased( int keyCode, int gameAction ) {
@@ -146,18 +118,17 @@ public class ProcessingItem extends Item implements ProcessingContextContainerIn
 
         context.signalKeyPressed(keyCode);
         return context.areKeypressesCaptured();
-        
-    }
 
+    }
 
     protected boolean handlePointerPressed(int x, int y)
     {
         if ( ! isWithinBounds(x, y) )
         {
-            return false;
+            return context.arePointerEventsCaptured();
         }
-        x -= paddingLeft;
-        y -= paddingTop;
+        x -= contentX;
+        y -= contentY;
         context.signalPointerPressed(x, y);
         return context.arePointerEventsCaptured();
     }
@@ -166,10 +137,10 @@ public class ProcessingItem extends Item implements ProcessingContextContainerIn
     {
         if ( ! isWithinBounds(x, y) )
         {
-            return context.arePointerEventsCaptured();
+            return false;
         }
-        x -= paddingLeft;
-        y -= paddingTop;
+        x -= contentX;
+        y -= contentY;
         context.signalPointerReleased(x, y);
         return context.arePointerEventsCaptured();
     }
@@ -180,8 +151,8 @@ public class ProcessingItem extends Item implements ProcessingContextContainerIn
         {
             return context.arePointerEventsCaptured();
         }
-        x -= paddingLeft;
-        y -= paddingTop;
+        x -= contentX;
+        y -= contentY;
         context.signalPointerDragged(x, y);
         return context.arePointerEventsCaptured();
     }
@@ -192,8 +163,8 @@ public class ProcessingItem extends Item implements ProcessingContextContainerIn
         {
             return context.arePointerEventsCaptured();
         }
-        x -= paddingLeft;
-        y -= paddingTop;
+        x -= contentX;
+        y -= contentY;
         context.signalPointerPressed(x, y);
         return context.arePointerEventsCaptured();
     }
@@ -204,26 +175,43 @@ public class ProcessingItem extends Item implements ProcessingContextContainerIn
         {
             return context.arePointerEventsCaptured();
         }
-        x -= paddingLeft;
-        y -= paddingTop;
+        x -= contentX;
+        y -= contentY;
         context.signalPointerReleased(x, y);
         return context.arePointerEventsCaptured();
     }
 
-    protected String createCssSelector() {
-            return "processing";
+    protected boolean handleCommand(Command cmd)
+    {
+        context.signalSoftkeyPressed(cmd.getLabel());
+        return super.handleCommand(cmd);
     }
 
-    public void processingRequestRepaint() 
+    protected String createCssSelector() {
+        return "processing";
+    }
+
+    public void processingRequestRepaint() {
+
+        repaint();
+    }
+
+    public void hideNotify()
     {
-        // An explicit refresh has been requested by Processing
-        repaint(0,0,itemWidth,itemHeight);
+        context.signalLostFocus();
+        super.hideNotify();
+    }
+
+    public void releaseResources()
+    {
+        context.signalDestroy();
+        super.releaseResources();
     }
 
     public void setSoftkey(String text)
     {
-        softkeyCommandText = text ;
-        
+        softkeyCommandText = text;
+
         // If requested by the Processing code, add an Item command
         if ( softkeyCommandText != null )
         {
@@ -235,6 +223,7 @@ public class ProcessingItem extends Item implements ProcessingContextContainerIn
         {
             removeCommand(cmd);
         }
+        
     }
 
 }

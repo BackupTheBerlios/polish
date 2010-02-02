@@ -33,4 +33,6 @@ public interface ProcessingContextContainerInterface
 {
 
     public void processingRequestRepaint();
+
+    public void setSoftkey(String text);
 }

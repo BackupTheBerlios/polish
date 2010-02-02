@@ -138,39 +138,7 @@ public class AnimationThread extends Thread
 		ClippingRegion repaintRegion = new ClippingRegion();
 //		int animationCounter = 0;
 
-                Enumeration items ;
-                ProcessingInterface tempProcessingObject;
 		while ( true ) {
-
-                        // Go through all the Processing Context based objects
-                        // and update them if necessary.
-                        items = ProcessingInterface.processingContextObjects.elements();
-                        while ( items.hasMoreElements()  )
-                        {
-                            tempProcessingObject = (ProcessingInterface) items.nextElement() ;
-                            if ( tempProcessingObject.checkForRefresh() )
-                            {
-                                // Only execute a refresh if we're in a loop.
-                                // The reason for this is that if checkForRefresh() does
-                                // return true and we're not in a loop, then the
-                                // refresh mush have been triggered by an event handler
-                                // which in turn called redraw() (thus the refresh flag was set to true ).
-                                // Since redraw was already called, we should not call it again
-                                // by asking for a hard refresh.
-                                if ( tempProcessingObject.isLooping() )
-                                {
-                                    tempProcessingObject.executeRefresh(true);
-
-                                    // Avoid a potential extra refresh in other places.
-                                    // It's safe to do this, as we'll request a scren repaint
-                                    // below.
-                                    tempProcessingObject.checkForRefresh();
-                                }
-
-                                tempProcessingObject.triggerRepaint();
-                            }
-                        }
-
                         
 			try {
 				Screen screen = StyleSheet.currentScreen;

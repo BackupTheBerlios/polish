@@ -27,8 +27,7 @@ package de.enough.polish.processing;
 
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
-
-import javax.microedition.lcdui.Command;
+import de.enough.polish.ui.Command;
 import javax.microedition.lcdui.Graphics;
 
 /**
@@ -39,6 +38,7 @@ public class ProcessingItem extends Item implements ProcessingContextContainerIn
 
     protected ProcessingInterface context ;
     protected Command cmd = new Command ( "" , Command.ITEM, 0);
+    protected String softkeyCommandText = null ;
 
     public ProcessingItem( ProcessingInterface context)
     {
@@ -96,7 +96,7 @@ public class ProcessingItem extends Item implements ProcessingContextContainerIn
     protected void defocus(Style style)
     {
         // Remove the Item command (if any)
-        removeCommand((de.enough.polish.ui.Command) cmd);
+        removeCommand( cmd);
         cmd = null;
         
         context.lostFocus();
@@ -106,9 +106,9 @@ public class ProcessingItem extends Item implements ProcessingContextContainerIn
     protected Style focus(Style style, int direction)
     {
         // If requested by the Processing code, add an Item command
-        if ( context.getSoftkeyLabel() != null )
+        if ( softkeyCommandText != null )
         {
-            cmd = new Command ( context.getSoftkeyLabel(), Command.ITEM, 0);
+            cmd = new Command ( softkeyCommandText, Command.ITEM, 0);
             addCommand(cmd);
         }
 
@@ -132,20 +132,20 @@ public class ProcessingItem extends Item implements ProcessingContextContainerIn
     protected boolean handleKeyPressed( int keyCode, int gameAction ) {
 
         context.signalKeyPressed(keyCode);
-        return false;
+        return context.areKeypressesCaptured();
         
     }
 
     protected boolean handleKeyReleased( int keyCode, int gameAction ) {
 
         context.signalKeyReleased(keyCode);
-        return false;
+        return context.areKeypressesCaptured();
     }
 
     protected boolean handleKeyRepeated( int keyCode, int gameAction ) {
 
         context.signalKeyPressed(keyCode);
-        return false;
+        return context.areKeypressesCaptured();
         
     }
 
@@ -159,55 +159,55 @@ public class ProcessingItem extends Item implements ProcessingContextContainerIn
         x -= paddingLeft;
         y -= paddingTop;
         context.signalPointerPressed(x, y);
-        return false;
+        return context.arePointerEventsCaptured();
     }
 
     protected boolean handlePointerReleased(int x, int y)
     {
         if ( ! isWithinBounds(x, y) )
         {
-            return false;
+            return context.arePointerEventsCaptured();
         }
         x -= paddingLeft;
         y -= paddingTop;
         context.signalPointerReleased(x, y);
-        return false;
+        return context.arePointerEventsCaptured();
     }
 
     protected boolean handlePointerDragged(int x, int y)
     {
         if ( ! isWithinBounds(x, y) )
         {
-            return false;
+            return context.arePointerEventsCaptured();
         }
         x -= paddingLeft;
         y -= paddingTop;
         context.signalPointerDragged(x, y);
-        return false;
+        return context.arePointerEventsCaptured();
     }
 
     public boolean handlePointerTouchDown(int x, int y)
     {
         if ( ! isWithinBounds(x, y) )
         {
-            return false;
+            return context.arePointerEventsCaptured();
         }
         x -= paddingLeft;
         y -= paddingTop;
         context.signalPointerPressed(x, y);
-        return false;
+        return context.arePointerEventsCaptured();
     }
 
     public boolean handlePointerTouchUp(int x, int y)
     {
         if ( ! isWithinBounds(x, y) )
         {
-            return false;
+            return context.arePointerEventsCaptured();
         }
         x -= paddingLeft;
         y -= paddingTop;
         context.signalPointerReleased(x, y);
-        return false;
+        return context.arePointerEventsCaptured();
     }
 
     protected String createCssSelector() {
@@ -218,6 +218,23 @@ public class ProcessingItem extends Item implements ProcessingContextContainerIn
     {
         // An explicit refresh has been requested by Processing
         repaint(0,0,itemWidth,itemHeight);
+    }
+
+    public void setSoftkey(String text)
+    {
+        softkeyCommandText = text ;
+        
+        // If requested by the Processing code, add an Item command
+        if ( softkeyCommandText != null )
+        {
+            removeCommand(cmd);
+            cmd = new Command ( softkeyCommandText, Command.ITEM, 0);
+            addCommand(cmd);
+        }
+        else
+        {
+            removeCommand(cmd);
+        }
     }
 
 }
