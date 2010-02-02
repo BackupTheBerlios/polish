@@ -1,3 +1,4 @@
+//#condition polish.usePolishGui
 /*
  * Copyright (c) 2009 Robert Virkus / Enough Software
  *
@@ -22,12 +23,9 @@
  * http://www.j2mepolish.org for details.
  */
 
-
 package de.enough.polish.processing;
 
 import de.enough.polish.ui.Background;
-import de.enough.polish.ui.ClippingRegion;
-import de.enough.polish.ui.Display;
 import javax.microedition.lcdui.Graphics;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;

@@ -1,3 +1,4 @@
+//#condition polish.usePolishGui
 /*
  * Copyright (c) 2009 Robert Virkus / Enough Software
  *
@@ -24,10 +25,9 @@
 
 package de.enough.polish.processing;
 
-import de.enough.polish.ui.ClippingRegion;
 import de.enough.polish.ui.Item;
-import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.Style;
+
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Graphics;
 

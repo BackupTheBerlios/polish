@@ -1,8 +1,10 @@
+//#condition polish.usePolishGui
+
 package de.enough.polish.processing;
 
 import de.enough.polish.util.BitMapFont;
 import de.enough.polish.util.BitMapFontViewer;
-import java.io.InputStream;
+
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 
