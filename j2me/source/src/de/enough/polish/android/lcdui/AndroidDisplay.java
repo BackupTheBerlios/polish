@@ -240,6 +240,9 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 		setOnTouchListener(this);
 		setFocusable(true);
 		setFocusableInTouchMode(true);
+		if(instance == null) {
+			instance = this;
+		}
 	}
 	
 	/* (non-Javadoc)
@@ -597,12 +600,13 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 	 *             if m is null
 	 */
 	public static AndroidDisplay getDisplay(MIDlet m) {
+		if(instance != null) {
+			return instance;
+		}
 		if(m == null) {
-			throw new NullPointerException("The first parameter is null but it must reference an object.");
+			throw new NullPointerException("The display is requested without providing a MIDlet reference.");
 		}
-		if(instance == null) {
-			instance = new AndroidDisplay(m._getMidletBridge());
-		}
+		instance = new AndroidDisplay(m._getMidletBridge());
 		return instance;
 	}
 	
