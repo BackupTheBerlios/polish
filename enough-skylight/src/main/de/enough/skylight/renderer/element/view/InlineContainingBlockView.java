@@ -7,10 +7,11 @@ import de.enough.polish.ui.Container;
 import de.enough.polish.ui.ContainerView;
 import de.enough.polish.ui.Item;
 import de.enough.polish.util.ItemPreinit;
+import de.enough.skylight.event.UserEvent;
+import de.enough.skylight.renderer.Viewport;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.element.ContainingBlock;
 import de.enough.skylight.renderer.element.ElementAttributes;
-import de.enough.skylight.renderer.element.render.Culling;
 import de.enough.skylight.renderer.linebox.LineBox;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.partition.Partition;
@@ -36,6 +37,7 @@ public class InlineContainingBlockView extends ContainerView {
 	
 	protected void initContent(Item parentContainerItem, int firstLineWidth,
 			int availWidth, int availHeight) {
+		
 		int maxHeight = 0;
 		int completeWidth = 0;
 		
@@ -59,6 +61,7 @@ public class InlineContainingBlockView extends ContainerView {
 			Item item = items[i];
 			
 			initItem(item, block);
+			ElementAttributes.setPartition(item);
 			
 			if (item.isInteractive()) {
 				interactive = true;
@@ -83,6 +86,7 @@ public class InlineContainingBlockView extends ContainerView {
 			//#debug sl.debug.event
 			System.out.println(this.containingBlock + " has interactive children, setting to interactive");
 			
+			this.parentContainer.setAppearanceMode(Item.INTERACTIVE);
 			setAppearanceMode(Item.INTERACTIVE);
 		}
 		
@@ -99,14 +103,11 @@ public class InlineContainingBlockView extends ContainerView {
 		Partition partition = ElementAttributes.getPartition(container);
 		LineBox linebox = ElementAttributes.getBlock(container).getPaintLineBox();
 		
-		if(Culling.isVisible(partition, linebox)) {
-			paintLine(myItems,x,y,leftBorder,rightBorder,clipX,clipY,clipWidth,clipHeight,g);
-			//#debug sl.debug.render
-			System.out.println("rendered " + this.containingBlock + " : linebox : " + linebox + " : partition : " + partition );
-		} else {
-			//#debug sl.debug.render
-			System.out.println("culled " + this.containingBlock + " : linebox : " + linebox + " : partition : " + partition );
-		}
+		//TODO add culling
+		
+		paintLine(myItems,x,y,leftBorder,rightBorder,clipX,clipY,clipWidth,clipHeight,g);
+		//#debug sl.debug.render
+		System.out.println("rendered " + this.containingBlock + " : linebox : " + linebox + " : partition : " + partition );
 	}
 	
 	protected void paintLine(Item[] myItems, int x,
@@ -131,14 +132,15 @@ public class InlineContainingBlockView extends ContainerView {
 		}
 	}
 	
-	public boolean handleKeyPressed(int keyCode, int gameAction) {
-		boolean handled = super.handleKeyPressed(keyCode, gameAction);
+	public boolean handleKeyReleased(int keyCode, int gameAction) {
+		boolean handled = super.handleKeyReleased(keyCode, gameAction);
 		
 		if(gameAction == Canvas.FIRE) {
 			CssElement element = ElementAttributes.getCssElement(this.parentItem);
-			
 			if(element != null && element.isInteractive()) {
-				System.out.println("FIRE " + element);
+				Viewport viewport = element.getViewport();
+				UserEvent event = new UserEvent();
+				viewport.notifyUserEvent(element, event);
 			}
 		}
 		

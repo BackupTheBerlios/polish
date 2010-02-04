@@ -4,8 +4,12 @@ import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.event.EventListener;
 import de.enough.polish.util.ArrayList;
+import de.enough.skylight.dom.DomNode;
+import de.enough.skylight.event.UserEvent;
+import de.enough.skylight.event.UserEventListener;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.node.CssElement;
+import de.enough.skylight.renderer.node.NodeUtils;
 
 /**
  * A viewport to render to
@@ -17,21 +21,28 @@ public class Viewport extends BlockContainingBlock {
 	
 	CssElement rootElement;
 	
-	ArrayList eventListeners;
+	ArrayList userEventListeners;
 	
 	public Viewport() {
 		//#style viewport
 		super(null);
 		
-		this.eventListeners = new ArrayList();
+		this.userEventListeners = new ArrayList();
 	}
 	
-	public void addEventListener(EventListener listener) {
-		this.eventListeners.add(listener);
+	public void addUserEventListener(UserEventListener listener) {
+		this.userEventListeners.add(listener);
 	}
 	
-	public void removeEventListener(EventListener listener) {
-		this.eventListeners.remove(listener);
+	public void removeUserEventListener(EventListener listener) {
+		this.userEventListeners.remove(listener);
+	}
+	
+	public void notifyUserEvent(CssElement element, UserEvent event) {
+		for (int i = 0; i < this.userEventListeners.size(); i++) {
+			UserEventListener listener = (UserEventListener)this.userEventListeners.get(i);
+			listener.onUserEvent(element, event);
+		}
 	}
 	
 	public void setTitle(String title) {
@@ -76,5 +87,10 @@ public class Viewport extends BlockContainingBlock {
 		if(isReady()) {
 			super.paint(x, y, leftBorder, rightBorder, g);
 		}
+	}
+	
+	public void nodeUpdated(DomNode node) {
+		CssElement element = CssElement.getElementWithNode(this.rootElement, node);
+		element.update();
 	}
 }

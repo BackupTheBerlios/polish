@@ -7,11 +7,11 @@ import de.enough.polish.ui.Canvas;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.ContainerView;
 import de.enough.polish.ui.Item;
+import de.enough.skylight.event.UserEvent;
 import de.enough.skylight.renderer.Viewport;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.element.ElementAttributes;
 import de.enough.skylight.renderer.element.InlineContainingBlock;
-import de.enough.skylight.renderer.element.render.Culling;
 import de.enough.skylight.renderer.linebox.LineBox;
 import de.enough.skylight.renderer.linebox.LineBoxLayout;
 import de.enough.skylight.renderer.linebox.LineBoxList;
@@ -48,6 +48,7 @@ public class BlockContainingBlockView extends ContainerView {
 		CssElement element = ElementAttributes.getCssElement(parentContainerItem);
 		
 		if(element != null && element.isInteractive()) {
+			this.parentContainer.setAppearanceMode(Item.INTERACTIVE);
 			setAppearanceMode(Item.INTERACTIVE);
 		}
 		
@@ -159,6 +160,29 @@ public class BlockContainingBlockView extends ContainerView {
 		
 		this.bodyLines = bodyLayout.getLineBoxes();
 		
+		//TODO set relative y for scrolling
+		/*Item item = null;
+		for (int i = 0; i < this.bodyLines.size(); i++) {
+			LineBox linebox = this.bodyLines.get(i);
+			
+			int top = linebox.getTop();
+			
+			PartitionList partitions = linebox.getPartitions();
+			for (int j = 0; j < partitions.size(); j++) {
+				Partition partition = partitions.get(j);
+				int x = partition.getLeft();
+		
+				Item parent = partition.getParent();
+				if(parent instanceof TextBlock) {
+					item = parent;
+				}
+				
+				if(parent != null) {
+					parent.relativeY = top;
+				}
+			}
+		}	*/
+		
 		//#mdebug sl.debug.layout
 		System.out.println("lineboxes for body " + body + " : ");
 		for (int i = 0; i < this.bodyLines.size(); i++) {
@@ -167,53 +191,26 @@ public class BlockContainingBlockView extends ContainerView {
 		}
 		//#enddebug
 
-		if(element != null && (element.isFloat() || element.isParentFloat())) {
-			this.contentWidth = bodyLayout.getWidth();
-		} else {
-			this.contentWidth = availWidth;
-		}
-		
-		this.contentHeight = getLayoutHeight(bodyLayout,floatLeftLayout,floatRightLayout);
+		this.contentWidth = getContentWidth(element, bodyLayout, availWidth);
+		this.contentHeight = getContentHeight(bodyLayout,floatLeftLayout,floatRightLayout);
 		
 		//#debug sl.debug.layout
 		System.out.println(this.block + " has dimension : " + this.contentWidth + "/" + this.contentHeight);
 	}
 	
-	public void setRelativePositions() {
-//		Item item = null;
-//		for (int i = 0; i < this.bodyLines.size(); i++) {
-//			LineBox linebox = this.bodyLines.get(i);
-//			
-//			int top = linebox.getTop();
-//			
-//			PartitionList partitions = linebox.getPartitions();
-//			for (int j = 0; j < partitions.size(); j++) {
-//				Partition partition = partitions.get(j);
-//				int x = partition.getLeft();
-//				
-//				Item parent = partition.getParent();
-//				if(parent instanceof TextBlock) {
-//					item = parent;
-//				}
-//				
-//				if(parent != null) {
-//					System.out.println(parent);
-//					System.out.println("x : " + (x - linebox.getLeft() + linebox.getOffset()));
-//					System.out.println("y : " + top);
-//					parent.relativeX = (x - linebox.getLeft() + linebox.getOffset());
-//					parent.relativeY = top;
-//				}
-//			}
-//		}
-//		
-//		if(item != null) {
-//		System.out.println("item : " + item);
-//		System.out.println(item.getAbsoluteX());
-//		System.out.println(item.getAbsoluteY());
-//		}
+	public int getContentWidth(CssElement element, LineBoxLayout bodyLayout, int availWidth) {
+		if(element != null && (element.isFloat() || element.isParentFloat())) {
+			return bodyLayout.getWidth();
+		} else {
+			if(this.parentContainer.getMinimumWidth() != 0) {
+				return availWidth;
+			} else {
+				return availWidth;
+			}
+		}
 	}
 	
-	public int getLayoutHeight(LineBoxLayout body, LineBoxLayout floatLeft, LineBoxLayout floatRight) {
+	public int getContentHeight(LineBoxLayout body, LineBoxLayout floatLeft, LineBoxLayout floatRight) {
 		int height = body.getHeight();
 		
 		if(floatLeft != null && floatLeft.getHeight() > height) {
@@ -237,14 +234,11 @@ public class BlockContainingBlockView extends ContainerView {
 			Partition partition = ElementAttributes.getPartition(container);
 			LineBox linebox = block.getPaintLineBox();
 			
-			if(	Culling.isVisible(partition, linebox)) {
-				//#debug sl.debug.render
-				System.out.println("rendered " + this.block + " : linebox : " + linebox + " : partition : " + partition );
-				paintLayout(x, y, leftBorder, rightBorder, g);
-			} else {
-				//#debug sl.debug.render
-				System.out.println("culled " + this.block + " : linebox : " + linebox + " : partition : " + partition );
-			}
+			//TODO add culling
+			
+			//#debug sl.debug.render
+			System.out.println("rendered " + this.block + " : linebox : " + linebox + " : partition : " + partition );
+			paintLayout(x, y, leftBorder, rightBorder, g);
 		}
 	}
 	
@@ -309,14 +303,15 @@ public class BlockContainingBlockView extends ContainerView {
 		return this.paintLineBox;
 	}
 
-	public boolean handleKeyPressed(int keyCode, int gameAction) {
-		boolean handled = super.handleKeyPressed(keyCode, gameAction);
+	public boolean handleKeyReleased(int keyCode, int gameAction) {
+		boolean handled = super.handleKeyReleased(keyCode, gameAction);
 		
 		if(gameAction == Canvas.FIRE) {
 			CssElement element = ElementAttributes.getCssElement(this.parentItem);
-			
 			if(element != null && element.isInteractive()) {
-				System.out.println("FIRE " + element);
+				Viewport viewport = element.getViewport();
+				UserEvent event = new UserEvent();
+				viewport.notifyUserEvent(element, event);
 			}
 		}
 		
