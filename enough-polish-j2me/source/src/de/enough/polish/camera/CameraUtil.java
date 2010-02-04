@@ -1,3 +1,5 @@
+//#condition polish.api.amms
+
 package de.enough.polish.camera;
 
 import javax.microedition.amms.control.camera.CameraControl;
