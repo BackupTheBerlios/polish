@@ -4,7 +4,7 @@ package de.enough.polish.snapshot;
 import javax.microedition.media.Manager;
 import javax.microedition.media.MediaException;
 
-import de.enough.polish.ui.Point;
+import de.enough.polish.camera.CameraResolution;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.Arrays;
 import de.enough.polish.util.TextUtil;
@@ -118,7 +118,7 @@ public class SnapshotUtil {
 	 * Tries to determine the available resolutions from the supported encodings
 	 * @return an array of detected resolutions, may be empty but not null. Each resolution is returned as a Point object, where x defines the width and y defines the height of the resolution.
 	 */
-	public static Point[] getSnapshotResolutions() {
+	public static CameraResolution[] getSnapshotResolutions() {
 		String[] encodings = getSnapshotEncodings();
 		ArrayList resolutionsList = new ArrayList();
 		for (int i = 0; i < encodings.length; i++)
@@ -142,7 +142,7 @@ public class SnapshotUtil {
 					} else {
 						height = encoding.substring(heightIndex + "height=".length(), splitPos);
 					}
-					Point resolution = new Point( Integer.parseInt( width ), Integer.parseInt( height ) );
+					CameraResolution resolution = new CameraResolution( Integer.parseInt( width ), Integer.parseInt( height ) );
 					if (!resolutionsList.contains(resolution)) {
 						resolutionsList.add(resolution);
 					}
@@ -167,7 +167,7 @@ public class SnapshotUtil {
 					if (start != middlePos && end != middlePos) {
 						String resolutionStr = encoding.substring(start, end + 1 );
 						int xIndex = resolutionStr.indexOf('x');
-						Point resolution = new Point( Integer.parseInt( resolutionStr.substring(0, xIndex) ), 
+						CameraResolution resolution = new CameraResolution( Integer.parseInt( resolutionStr.substring(0, xIndex) ), 
 								Integer.parseInt( resolutionStr.substring(xIndex + 1) ) );
 						if (!resolutionsList.contains(resolution)) {
 							resolutionsList.add(resolution);
@@ -176,7 +176,7 @@ public class SnapshotUtil {
 				}
 			}
 		}
-		Point[] resolutions = (Point[]) resolutionsList.toArray( new Point[ resolutionsList.size() ] );
+		CameraResolution[] resolutions = (CameraResolution[]) resolutionsList.toArray( new CameraResolution[ resolutionsList.size() ] );
 		Arrays.sort( resolutions );
 		return resolutions;
 	}
@@ -186,7 +186,7 @@ public class SnapshotUtil {
 	 * 
 	 * @return the default resolution as a point object - x represents the width, y the height. This can be null if no resolution is specified in "video.snapshot.encodings"!
 	 */
-	public static Point getDefaultResolution() {
+	public static CameraResolution getDefaultResolution() {
 		String encoding = System.getProperty("video.snapshot.encodings");
 		if(encoding == null){
 			return null;
@@ -213,7 +213,7 @@ public class SnapshotUtil {
 				} else {
 					height = encoding.substring(heightIndex + "height=".length(), splitPos);
 				}
-				return new Point( Integer.parseInt(width), Integer.parseInt( height ));
+				return new CameraResolution( Integer.parseInt(width), Integer.parseInt( height ));
 			}
 		} else {
 			int middlePos = encoding.indexOf('x');
@@ -235,7 +235,7 @@ public class SnapshotUtil {
 				if (start != middlePos && end != middlePos) {
 					String resolution = encoding.substring(start, end + 1 );
 					splitPos = resolution.indexOf('x');
-					return new Point( Integer.parseInt(resolution.substring(0, splitPos)), Integer.parseInt( resolution.substring(splitPos + 1)  ));
+					return new CameraResolution( Integer.parseInt(resolution.substring(0, splitPos)), Integer.parseInt( resolution.substring(splitPos + 1)  ));
 				}
 			}
 		}
@@ -264,7 +264,7 @@ public class SnapshotUtil {
 	 *         the array will be empty (but not null) when no suitable encoding is found
 	 */
 	public static String[] getSnapshotEncodingsWithResolutionCloseTo( int width, int height, boolean needsToBeLarger, boolean needsToBeSmaller, String format ) {
-		Point[] resolutions = getSnapshotResolutions();
+		CameraResolution[] resolutions = getSnapshotResolutions();
 		String defaultEncoding;
 		if (format != null) {
 			defaultEncoding = "encoding=" + format + "&width=" + width + "&height=" + height;
@@ -279,9 +279,9 @@ public class SnapshotUtil {
 		int closestHeight = 0;
 		for (int i = 0; i < resolutions.length; i++)
 		{
-			Point point = resolutions[i];
-			int resWidth = point.x;
-			int resHeight = point.y;
+			CameraResolution resolution = resolutions[i];
+			int resWidth = resolution.width;
+			int resHeight = resolution.height;
 			if (
 				(needsToBeLarger && (resWidth < width || resHeight < height))
 				|| (needsToBeSmaller && (resWidth > width || resHeight > height))
