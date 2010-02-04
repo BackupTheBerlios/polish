@@ -1604,6 +1604,7 @@ public class CameraScreen extends SnapshotScreen implements Runnable,
 	protected String createCssSelector() {
 		return "camerascreen";
 	}
+	//#endif
 
 	public boolean isFocusSupported() {
 		if (this.focusControl != null)
