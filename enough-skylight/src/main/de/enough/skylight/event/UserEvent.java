@@ -1,5 +1,5 @@
 package de.enough.skylight.event;
 
-public class EventListener {
+public class UserEvent {
 
 }
