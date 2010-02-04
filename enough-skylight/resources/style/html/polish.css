@@ -11,6 +11,9 @@ h1 extends element {
 	display: block;
 }
 
+br extends element {
+}
+
 div extends element {
 	display: block;
 }
