@@ -1,5 +1,6 @@
 package de.enough.skylight.renderer.node;
 
+import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.ArrayList;
@@ -35,6 +36,24 @@ public class CssElement implements HtmlCssElement{
 	
 	boolean interactive;
 	
+	public static CssElement getElementWithNode(CssElement root, DomNode node) {
+		if(root.hasElements()) {
+			for (int i = 0; i < root.size(); i++) {
+				CssElement child = root.get(i);
+				if(child.hasNode(node)) {
+					return child;
+				} else {
+					CssElement found = getElementWithNode(child,node);
+					if(found != null) {
+						return found;
+					}
+				}
+			}
+		}
+		
+		return null;
+	}
+	
 	public CssElement(NodeHandler handler, DomNode node, CssElement parent, Viewport viewport) {
 		this.handler = handler;
 		
@@ -58,6 +77,42 @@ public class CssElement implements HtmlCssElement{
 		
 		if(this.node.hasChildNodes()) {
 			this.block = createContainingBlock();
+		}
+	}
+	
+	public void update() {
+		this.handler.handle(this);
+		
+		this.style = CssStyle.getStyle(this);
+		
+		setStyle(this.style);
+
+		if(this.content != null) {
+			this.handler.setContent(this, this.content);
+			this.content.requestInit();
+			this.content.getScreen().repaint();
+		}
+		
+		if(this.block != null) {
+			setContainingBlock(this.block);
+			Container container = this.block.getContainer();
+			container.requestInit();
+			container.getScreen().repaint();
+		}
+	}
+	
+	public void setContainingBlock(ContainingBlock containingBlock) {
+		if(containingBlock != null) {
+			Container container = containingBlock.getContainer();
+			container.setStyle(this.style);
+			
+			if(this.interactive) {
+				//#debug sl.debug.event
+				System.out.println("element " + this + " is interactive");
+				container.setAppearanceMode(Item.INTERACTIVE);
+			} else {
+				container.setAppearanceMode(Item.PLAIN);
+			}
 		}
 	}
 	
@@ -197,5 +252,13 @@ public class CssElement implements HtmlCssElement{
 
 	public void setInteractive(boolean interactive) {
 		this.interactive = interactive;
+	}
+	
+	public boolean hasNode(DomNode node) {
+		if(node == null || this.node == null) {
+			return false;
+		} else {
+			return node.equals(this.node);
+		}
 	}
 }

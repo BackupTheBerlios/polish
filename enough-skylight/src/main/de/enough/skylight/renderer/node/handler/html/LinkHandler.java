@@ -72,4 +72,6 @@ public class LinkHandler extends HeadNodeHandler {
 			}
 		}
 	}
+
+	public void setContent(CssElement element, Item item) {}
 }

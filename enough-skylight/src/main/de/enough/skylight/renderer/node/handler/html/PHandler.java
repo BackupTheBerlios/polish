@@ -22,4 +22,5 @@ public class PHandler extends BodyNodeHandler {
 		return null;
 	}
 
+	public void setContent(CssElement element, Item item) {}
 }

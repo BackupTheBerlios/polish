@@ -37,4 +37,6 @@ public class TextHandler extends BodyNodeHandler{
 	public boolean isValid(DomNode node) {
 		return super.isValid(node) && node.getNodeType() == DomNode.TEXT_NODE;
 	}
+	
+	public void setContent(CssElement element, Item item) {}
 }

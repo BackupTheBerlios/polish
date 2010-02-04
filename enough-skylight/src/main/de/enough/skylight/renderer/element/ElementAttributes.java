@@ -60,7 +60,7 @@ public class ElementAttributes {
 	public static Partition getPartition(Item item) {
 		Partition partition = (Partition)item.getAttribute(SL_KEY_PARTITION);
 		
-		if(partition != null) {
+		if(partition == null) {
 			setPartition(item);
 			return (Partition)item.getAttribute(SL_KEY_PARTITION);
 		} else {

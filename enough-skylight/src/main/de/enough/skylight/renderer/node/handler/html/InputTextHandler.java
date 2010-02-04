@@ -14,13 +14,11 @@ public class InputTextHandler extends BodyNodeHandler {
 	}
 
 	public Item createContent(CssElement element) {
-		DomNode node = element.getNode();
-		String value = NodeUtils.getAttributeValue(node, "value");
+		TextField field = new TextField(null, null, 512, TextField.ANY, null);
+		
+		setContent(element, field);
 
-		Style style = element.getStyle();
-		TextField textfield = new TextField(null, value, 512, TextField.ANY, style);
-
-		return textfield;
+		return field;
 	}
 	
 	public void handleNode(CssElement element) {
@@ -29,5 +27,17 @@ public class InputTextHandler extends BodyNodeHandler {
 	public Style getDefaultStyle(CssElement element) {
 		//#style input_text
 		return new Style();
+	}
+
+	public void setContent(CssElement element, Item item) {
+		TextField textField = (TextField)item; 
+		
+		DomNode node = element.getNode();
+		String value = NodeUtils.getAttributeValue(node, "value");
+
+		Style style = element.getStyle();
+
+		textField.setStyle(style);
+		textField.setString(value);
 	}
 }

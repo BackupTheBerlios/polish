@@ -41,14 +41,22 @@ public class ImgHandler extends BodyNodeHandler{
 	}
 
 	public Item createContent(CssElement element) {
+		ImageItem item = new ImageItem(null,null,Graphics.LEFT | Graphics.TOP,null);
+		
+		setContent(element,item);
+		
+		return item;
+	}
+	
+	public void setContent(CssElement element, Item item) {
 		ImgElement imgElement = (ImgElement)element;
+		ImageItem imgItem = (ImageItem)item; 
 		
 		Style style = element.getStyle();
 		Image image = imgElement.getImage();
-		ImageItem item = new ImageItem(null,image,Graphics.LEFT | Graphics.TOP,null,style);
-			
-		item.setAppearanceMode(Item.PLAIN);
 		
-		return item;
+		imgItem.setImage(image);
+		imgItem.setStyle(style);
+		imgItem.setAppearanceMode(Item.PLAIN);
 	}
 }

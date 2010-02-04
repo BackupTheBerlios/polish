@@ -18,18 +18,19 @@ public class Partition {
 	public static void partitionInline(Item item, PartitionList partitions) {
 		int x = getBlockRelativeX(item);
 		
-		int height;
-		if(item instanceof ContainingBlock) {
-			if(item instanceof BlockContainingBlock) {
-				height = item.itemHeight;
-			} else {
-				height = 0;
-			}
-		} else {
-			height = item.getContentHeight();
-		}
-		
 		if(item.isVisible()) {
+			int height;
+			if(item instanceof ContainingBlock) {
+				if(item instanceof BlockContainingBlock) {
+					height = item.itemHeight;
+				} else {
+					height = 0;
+				}
+			} else {
+				height = item.getContentHeight();
+			}
+			
+		
 			int marginLeft = x;
 			int paddingLeft = x + UiAccess.getMarginLeft(item);
 			int contentLeft = paddingLeft + UiAccess.getPaddingLeft(item);
@@ -48,13 +49,16 @@ public class Partition {
 	public static Partition partitionBlock(Item item) {
 		int x = getBlockRelativeX(item);
 		
-		int width = item.itemWidth;
-		int height = item.itemHeight;
-		
-		int left = x;
-		int right = x + width;
-		
-		return new Partition(left,right, height, item);	
+		if(item.isVisible()) {
+			int width = item.itemWidth;
+			int height = item.itemHeight;
+			
+			int left = x;
+			int right = x + width;
+			return new Partition(left,right, height, item);
+		} else {
+			return new Partition(x,x, 0, item);
+		}	
 	}
 	
 	int left;
@@ -104,7 +108,7 @@ public class Partition {
 	}
 
 	public int getHeight() {
-		return height;
+		return this.height;
 	}
 
 	public void setHeight(int height) {

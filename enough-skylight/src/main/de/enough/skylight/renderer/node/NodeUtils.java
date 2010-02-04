@@ -19,6 +19,17 @@ public class NodeUtils {
 		return null;
 	}
 	
+	public final static void setAttributeValue(DomNode node, String name, String value) {
+		NamedNodeMap nodeMap = node.getAttributes();
+		
+		if(nodeMap != null) {
+			Attr attribute = (Attr)nodeMap.getNamedItem(name); 
+			if(attribute != null) {
+				attribute.setValue(value);
+			} 
+		}
+	}
+	
 	public final static DomNode getAncestor(DomNode node, String name) {
 		DomNode parentNode = node.getParentNode();
 		while(parentNode != null) {

@@ -17,6 +17,21 @@ public class InputSubmitHandler extends BodyNodeHandler {
 	public void handleNode(CssElement element) {}
 
 	public Item createContent(CssElement element) {
+		StringItem submitItem = new StringItem(null, null);
+		
+		setContent(element, submitItem);
+		
+		return submitItem;
+	}
+	
+	public Style getDefaultStyle(CssElement element) {
+		//#style input_submit
+		return new Style();
+	}
+
+	public void setContent(CssElement element, Item item) {
+		StringItem submitItem = (StringItem)item;
+		
 		DomNode node = element.getNode();
 		String value = NodeUtils.getAttributeValue(node, "value");
 		
@@ -25,15 +40,9 @@ public class InputSubmitHandler extends BodyNodeHandler {
 		} 
 		
 		Style style = element.getStyle();
-		StringItem submitItem = new StringItem(null,value, style);
+		submitItem.setStyle(style);
+		submitItem.setText(value);
 		
 		submitItem.setAppearanceMode(Item.INTERACTIVE);
-		
-		return submitItem;
-	}
-	
-	public Style getDefaultStyle(CssElement element) {
-		//#style input_submit
-		return new Style();
 	}
 }

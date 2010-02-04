@@ -22,4 +22,7 @@ public class BodyHandler extends HtmlNodeHandler {
 	public Item createContent(CssElement element) {
 		return null;
 	}
+	
+	public void setContent(CssElement element, Item item) {
+	}
 }

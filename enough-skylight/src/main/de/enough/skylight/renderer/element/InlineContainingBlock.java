@@ -65,6 +65,17 @@ public class InlineContainingBlock extends Container implements ContainingBlock 
 		return this;
 	}
 	
+	protected Style focus(Style focusStyle, int direction) {
+		requestInit();
+		Style style = super.focus(focusStyle, direction);
+		return style;
+	}
+
+	public void defocus(Style originalStyle) {
+		requestInit();
+		super.defocus(originalStyle);
+	}
+	
 	public String toString() {
 		return ElementAttributes.toString(this);
 	}

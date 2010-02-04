@@ -42,6 +42,8 @@ public abstract class NodeHandler {
 	
 	public abstract Item createContent(CssElement element);
 	
+	public abstract void setContent(CssElement element, Item item);
+	
 	public boolean isValid(DomNode node) {
 		return true;
 	}

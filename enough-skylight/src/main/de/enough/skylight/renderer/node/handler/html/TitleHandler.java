@@ -1,5 +1,6 @@
 package de.enough.skylight.renderer.node.handler.html;
 
+import de.enough.polish.ui.Item;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.node.CssElement;
 
@@ -17,4 +18,6 @@ public class TitleHandler extends HeadNodeHandler {
 			element.getViewport().setTitle(text);
 		}
 	}
+	
+	public void setContent(CssElement element, Item item) {}
 }

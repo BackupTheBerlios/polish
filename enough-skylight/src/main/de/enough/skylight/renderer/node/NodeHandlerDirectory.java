@@ -1,7 +1,6 @@
 package de.enough.skylight.renderer.node;
 
 import de.enough.polish.util.HashMap;
-import de.enough.polish.util.IntHashMap;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.node.handler.html.BodyHandler;
 import de.enough.skylight.renderer.node.handler.html.BrHandler;
@@ -16,8 +15,6 @@ import de.enough.skylight.renderer.node.handler.html.PHandler;
 import de.enough.skylight.renderer.node.handler.html.SpanHandler;
 import de.enough.skylight.renderer.node.handler.html.TextHandler;
 import de.enough.skylight.renderer.node.handler.html.TitleHandler;
-import de.enough.skylight.renderer.node.handler.rss.DescriptionHandler;
-import de.enough.skylight.renderer.node.handler.rss.ItemHandler;
 
 public class NodeHandlerDirectory {
 	HashMap directory;
@@ -52,13 +49,6 @@ public class NodeHandlerDirectory {
 		addHandler(new LinkHandler());
 		addHandler(new ImgHandler());
 		addHandler(new TextHandler());
-	}
-	
-	public void addRssHandlers() {
-		addHandler(new ItemHandler());
-		addHandler(new de.enough.skylight.renderer.node.handler.rss.TitleHandler());
-		addHandler(new DescriptionHandler());
-		addHandler(new de.enough.skylight.renderer.node.handler.rss.TextHandler());
 	}
 	
 	public void setDefaultHandler(NodeHandler handler) {

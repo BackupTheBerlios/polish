@@ -23,5 +23,6 @@ public class FormHandler extends BodyNodeHandler{
 	public Item createContent(CssElement element) {
 		return null;
 	}
-
+	
+	public void setContent(CssElement element, Item item) {}
 }

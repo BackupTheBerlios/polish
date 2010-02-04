@@ -1,6 +1,7 @@
 package de.enough.skylight.renderer.element;
 
 import de.enough.polish.ui.Container;
+import de.enough.polish.ui.DebugHelper;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.skylight.renderer.element.view.BlockContainingBlockView;
@@ -89,10 +90,8 @@ public class BlockContainingBlock extends Container implements ContainingBlock, 
 	}
 	
 	public void partition(PartitionList partitions) {
-		if(isVisible()) {
-			Partition partition = Partition.partitionBlock(this);
-			partitions.add(partition);
-		}
+		Partition partition = Partition.partitionBlock(this);
+		partitions.add(partition);
 	}
 	
 	public Container getContainer() {
@@ -105,6 +104,17 @@ public class BlockContainingBlock extends Container implements ContainingBlock, 
 	
 	public String toString() {
 		return ElementAttributes.toString(this);
+	}
+
+	protected Style focus(Style focusStyle, int direction) {
+		requestInit();
+		Style style = super.focus(focusStyle, direction);
+		return style;
+	}
+
+	public void defocus(Style originalStyle) {
+		requestInit();
+		super.defocus(originalStyle);
 	}
 	
 	

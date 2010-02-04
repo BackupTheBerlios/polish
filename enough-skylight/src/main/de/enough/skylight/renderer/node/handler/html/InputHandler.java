@@ -65,4 +65,9 @@ public class InputHandler extends BodyNodeHandler{
 		NodeHandler handler = getTypeHandler(element);
 		return handler.getDefaultStyle(element);
 	}
+	
+	public void setContent(CssElement element, Item item) {
+		NodeHandler handler = getTypeHandler(element);
+		handler.setContent(element, item);
+	}
 }
