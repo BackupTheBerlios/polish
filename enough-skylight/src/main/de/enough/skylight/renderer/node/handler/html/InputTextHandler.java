@@ -4,6 +4,7 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.TextField;
 import de.enough.skylight.dom.DomNode;
+import de.enough.skylight.renderer.element.InputTextField;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.node.NodeHandler;
 import de.enough.skylight.renderer.node.NodeUtils;
@@ -14,7 +15,7 @@ public class InputTextHandler extends BodyNodeHandler {
 	}
 
 	public Item createContent(CssElement element) {
-		TextField field = new TextField(null, null, 512, TextField.ANY, null);
+		InputTextField field = new InputTextField();
 		
 		setContent(element, field);
 
@@ -30,14 +31,14 @@ public class InputTextHandler extends BodyNodeHandler {
 	}
 
 	public void setContent(CssElement element, Item item) {
-		TextField textField = (TextField)item; 
+		InputTextField field = (InputTextField)item; 
 		
 		DomNode node = element.getNode();
 		String value = NodeUtils.getAttributeValue(node, "value");
 
 		Style style = element.getStyle();
 
-		textField.setStyle(style);
-		textField.setString(value);
+		field.setStyle(style);
+		field.setString(value);
 	}
 }

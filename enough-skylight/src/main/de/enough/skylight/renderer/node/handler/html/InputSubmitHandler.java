@@ -5,6 +5,7 @@ import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.Locale;
 import de.enough.skylight.dom.DomNode;
+import de.enough.skylight.renderer.element.InputSubmitField;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.node.NodeHandler;
 import de.enough.skylight.renderer.node.NodeUtils;
@@ -17,11 +18,11 @@ public class InputSubmitHandler extends BodyNodeHandler {
 	public void handleNode(CssElement element) {}
 
 	public Item createContent(CssElement element) {
-		StringItem submitItem = new StringItem(null, null);
+		InputSubmitField field = new InputSubmitField();
 		
-		setContent(element, submitItem);
+		setContent(element, field);
 		
-		return submitItem;
+		return field;
 	}
 	
 	public Style getDefaultStyle(CssElement element) {
@@ -30,7 +31,7 @@ public class InputSubmitHandler extends BodyNodeHandler {
 	}
 
 	public void setContent(CssElement element, Item item) {
-		StringItem submitItem = (StringItem)item;
+		InputSubmitField field = (InputSubmitField)item;
 		
 		DomNode node = element.getNode();
 		String value = NodeUtils.getAttributeValue(node, "value");
@@ -40,9 +41,9 @@ public class InputSubmitHandler extends BodyNodeHandler {
 		} 
 		
 		Style style = element.getStyle();
-		submitItem.setStyle(style);
-		submitItem.setText(value);
+		field.setStyle(style);
+		field.setText(value);
 		
-		submitItem.setAppearanceMode(Item.INTERACTIVE);
+		field.setAppearanceMode(Item.INTERACTIVE);
 	}
 }

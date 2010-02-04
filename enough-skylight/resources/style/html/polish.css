@@ -49,6 +49,7 @@ em extends element {
 input_text extends element {
 	font: fnt_input_text;
 	border: bdr_input;
+	min-width: 80px;
 }
 
 input_text:hover {
@@ -59,9 +60,8 @@ input_submit extends element {
 	font: fnt_input_submit;
 	border: bdr_input;
 	background: bg_input_submit;
-	min-width: 80;
-	text-layout: vcenter;
-	margin: 2%;
+	min-width: 80px;
+	text-layout: vcenter | center;
 }
 
 input_submit:hover {
