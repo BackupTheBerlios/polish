@@ -37,6 +37,10 @@ package de.enough.polish.util;
 
 /**
  * <p>Provides information about the current device</p>
+ * <pre>
+ *  History
+ *   04/02/2010  - David Rubin Added support for RIM vendor results in vendor
+ * </pre>
  *
  * <p>Copyright Enough Software 2009</p>
  * @author Robert Virkus, j2mepolish@enough.de
@@ -111,7 +115,7 @@ public class DeviceInfo
 		if (platform.startsWith("zte")) {
 			return VENDOR_ZTE;
 		}
-		if (platform.startsWith("blackberry")) {
+		if (platform.startsWith("blackberry") || platform.startsWith("rim")) {
 			return VENDOR_BLACKBERRY;
 		}
 		String model = System.getProperty( "device.model" );
