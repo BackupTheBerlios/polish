@@ -12,8 +12,6 @@ public class InputHandler extends BodyNodeHandler{
 	
 	NodeHandler textHandler;
 	
-	NodeHandler radioHandler;
-	
 	NodeHandler submitHandler;
 	
 	public String getTag() {
@@ -22,7 +20,6 @@ public class InputHandler extends BodyNodeHandler{
 	
 	public InputHandler() {
 		this.textHandler = new InputTextHandler();
-		this.radioHandler = new InputRadioHandler();
 		this.submitHandler = new InputSubmitHandler();
 	}
 	
@@ -34,8 +31,6 @@ public class InputHandler extends BodyNodeHandler{
 		if(type != null) {
 			if(type.equals("text")) {
 				handler = this.textHandler;
-			} else if(type.equals("radio")) {
-				handler = this.radioHandler;
 			} else if(type.equals("submit")) {
 				handler = this.submitHandler;
 			} 

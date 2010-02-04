@@ -4,14 +4,14 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.skylight.renderer.node.CssElement;
 
-public class EmHandler extends BodyNodeHandler{
+public class StrongHandler extends BodyNodeHandler{
 	
 	public String getTag() {
-		return "em";
+		return "strong";
 	}
 	
 	public Style getDefaultStyle(CssElement element) {
-		//#style em
+		//#style strong
 		return new Style();
 	}
 

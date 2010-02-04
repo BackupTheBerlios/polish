@@ -11,9 +11,6 @@ h1 extends element {
 	display: block;
 }
 
-br extends element {
-}
-
 div extends element {
 	display: block;
 }
@@ -46,10 +43,14 @@ em extends element {
 	font-style: cursive;
 }
 
+strong extends element {
+	font-style: bold;	
+}
+
 input_text extends element {
 	font: fnt_input_text;
 	border: bdr_input;
-	min-width: 80px;
+	min-width: 120px;
 }
 
 input_text:hover {
@@ -60,7 +61,7 @@ input_submit extends element {
 	font: fnt_input_submit;
 	border: bdr_input;
 	background: bg_input_submit;
-	min-width: 80px;
+	min-width: 120px;
 	text-layout: vcenter | center;
 }
 

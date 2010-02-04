@@ -13,26 +13,35 @@ public class CssStyle {
 		//#debug sl.debug.style
 		System.out.println("creating text style from style " + baseStyle.name);
 		
-		Font font = baseStyle.getFont();
+		Font resultFont = baseStyle.getFont();
+		
+		/*Font baseFont = baseStyle.getFont();
+		Font extendFont = extendStyle.getFont();
+		
+		int baseFontStyle = baseFont.getStyle();
+		int extendFontStyle = extendFont.getStyle();
+		
+		int resultFontStyle = extendFlag(baseFontStyle, extendFontStyle);
+		
+		resultFont = Font.getFont(0, 0, resultFontStyle);*/
+		
 		Style textStyle = new Style();
-		textStyle.addAttribute("font", font);
+		textStyle.addAttribute("font", resultFont);
 		
 		return textStyle;
 	}
 	
-	public static Integer extendFlag(Integer baseFlag, Integer extendFlag ) {
-		if(baseFlag != null && extendFlag != null) {
-			return new Integer(baseFlag.intValue() | extendFlag.intValue());
-		} else {
-			return null;
-		}
+	static int extendFlag(int baseFlag, int extendFlag ) {
+		return baseFlag | extendFlag;
 	}
 	
-	public static Style extendStyle(Style baseStyle, Style extendStyle) {
+	static Style extendStyle(Style baseStyle, Style extendStyle) {
 		//#debug sl.debug.style
 		System.out.println("extending style " + baseStyle.name + " with style " + extendStyle.name);
 		
 		Style result = new Style(baseStyle);
+		
+		result.name = extendStyle.name;
 		
 		if(extendStyle.layout != Item.LAYOUT_DEFAULT) {
 			result.layout = extendStyle.layout;
@@ -45,13 +54,6 @@ public class CssStyle {
 		if(extendStyle.background != null) {
 			result.background = extendStyle.background;
 		}
-		
-//		Integer baseFontStyle = baseStyle.getIntProperty("font-style");
-//		Integer extendFontStyle = baseStyle.getIntProperty("font-style");
-//		Integer fontStyle = extendStyleFlag(baseFontStyle, extendFontStyle);
-//		if(fontStyle != null) {
-//			result.addAttribute("font-style", fontStyle);
-//		}
 		
 		short[] keys = extendStyle.getRawAttributeKeys();
 		
@@ -72,25 +74,26 @@ public class CssStyle {
 		
 		String clazz = NodeUtils.getAttributeValue(node, "class");
 		
+		Style style = handler.getDefaultStyle(element);
+		
 		if(clazz != null) {
 			clazz = clazz.toLowerCase();
 			Style classStyle = StyleSheet.getStyle(clazz);
-			
+			 
 			if(classStyle != null) {
 				//#debug sl.debug.style
 				System.out.println("create style for " + handler.getTag() + " : " + clazz);
 				
-				return classStyle;
+				return extendStyle(style, classStyle);
 			} else {
 				//#debug error
 				System.out.println("style " + clazz + " could not be found");
 			} 
 		}
 		
-		Style defaultStyle = handler.getDefaultStyle(element);
 		//#debug sl.debug.style
-		System.out.println("returning default style for " + handler.getTag() + " : " + defaultStyle.name);
+		System.out.println("returning default style for " + handler.getTag() + " : " + style.name);
 		
-		return defaultStyle;
+		return style;
 	}
 }

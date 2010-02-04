@@ -2,6 +2,7 @@ element {
 	display: inline;
 	padding: 0;
 	margin: 0;
+	font: fnt_text;
 }
 
 element:hover{}
@@ -9,7 +10,6 @@ element:hover{}
 viewport extends element {
 	layout: expand;
 	label-style: title;
-	font: fnt_text;
 	display: inline;
 }
 
