@@ -24,6 +24,7 @@
  */
 package de.enough.polish.processing;
 
+import de.enough.polish.util.RgbImage;
 import java.io.InputStream;
 import java.util.Vector;
 import javax.microedition.lcdui.Canvas;
@@ -85,6 +86,10 @@ public interface ProcessingInterface {
 
     public void setParent ( ProcessingContextContainerInterface parent);
 
+    public void setPointerCoordinates ( int x, int y);
+
+    public void setKeyAndKeyCode (char key, int keyCode);
+
     public void executeRefresh(boolean alsoUpdateLastFrameTime);
 
     public void triggerRepaint();
@@ -92,6 +97,14 @@ public interface ProcessingInterface {
     public boolean areKeypressesCaptured();
 
     public boolean arePointerEventsCaptured();
+
+    public boolean isDrawingTransparent();
+
+    public RgbImage getTransparentRgbImage();
+
+    public int getTransparentColor();
+
+
 
     /**
      * J2ME Polish extension methods that shoud be implemented
@@ -108,6 +121,16 @@ public interface ProcessingInterface {
 
     public void releasePointerEvents();
 
+    public void repaintBackground();
+
+    public void dontRepaintBackground();
+
+    public void transparentDrawing();
+
+    public void opaqueDrawing();
+
+    public void setTransparentColor ( color color );
+
     /*
      * Variables that need defining :
      *
@@ -120,7 +143,7 @@ public interface ProcessingInterface {
      */
 
 
-        // Color modes
+        // color modes
     public static final int RGB = 1;
     public static final int HSB = 2;
 
@@ -201,13 +224,13 @@ public interface ProcessingInterface {
 
     public void colorMode(int mode, int range1, int range2, int range3);
 
-    public Color color(int gray);
+    public color color(int gray);
 
-    public Color color(int gray, int alpha);
+    public color color(int gray, int alpha);
 
-    public Color color(int value1, int value2, int value3, int alpha);
+    public color color(int value1, int value2, int value3, int alpha);
 
-    public void stroke(Color whatColor);
+    public void stroke(color whatColor);
 
     public void stroke(int gray);
 
@@ -219,7 +242,7 @@ public interface ProcessingInterface {
 
     public void fill(int gray);
 
-    public void fill(Color color);
+    public void fill(color color);
 
     public void fill(int value1, int value2, int value3);
 
@@ -227,7 +250,7 @@ public interface ProcessingInterface {
 
     public void background(int gray);
 
-    public void background(Color x);
+    public void background(color x);
 
     public void background(int value1, int value2, int value3);
 
@@ -495,7 +518,7 @@ public interface ProcessingInterface {
 
     public void resetMatrix();
 
-    public void translate(int x, int y); /*
+    public void translate(int x, int y); 
 
     public int abs(int value);
 
@@ -507,11 +530,41 @@ public interface ProcessingInterface {
 
     public int pow(int base, int exponent);
 
-    public int constrain(int value, int min, int max); */
+    public int constrain(int value, int min, int max); 
 
     public int random(int value1);
 
     public int random(int value1, int value2);
+
+    public int mul(int value1, int value2);
+
+    public int div(int dividend, int divisor);
+
+    public int itofp(int value1);
+
+    public int fptoi(int value1);
+
+    public int sqrt(int value_fp);
+
+    public int dist(int x1, int y1, int x2, int y2);
+
+    public int dist_fp(int x1, int y1, int x2, int y2);
+
+    public int floor(int value1);
+
+    public int ceil(int value1);
+
+    public int round(int value1);
+
+    public int radians(int angle);
+
+    public int sin(int rad);
+
+    public int cos(int rad);
+
+    public int atan(int value1);
+
+    public int atan2(int x, int y);
 
     public byte[] loadBytes(String filename);
 
@@ -523,9 +576,9 @@ public interface ProcessingInterface {
 
     public InputStream openStream(String fileName);
 
-    public PFont loadFont(String fontname, Color fgColor, Color bgColor) ;
+    public PFont loadFont(String fontname, color fgColor, color bgColor) ;
 
-    public PFont loadFont(String fontname, Color fgColor) ;
+    public PFont loadFont(String fontname, color fgColor) ;
 
     public PFont loadFont(String fontname) ;
 

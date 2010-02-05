@@ -28,7 +28,11 @@ package de.enough.polish.processing;
 import de.enough.polish.ui.Animatable;
 import de.enough.polish.ui.AnimationThread;
 import de.enough.polish.ui.ClippingRegion;
+import de.enough.polish.ui.Display;
+import de.enough.polish.ui.Displayable;
+import de.enough.polish.ui.TextField;
 import de.enough.polish.util.DrawUtil;
+import de.enough.polish.util.RgbImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,7 +53,7 @@ import javax.microedition.rms.RecordStoreNotFoundException;
  *
  * @author Ovidiu Iliescu
  */
-public class ProcessingContext implements ProcessingInterface, Animatable  {
+public class ProcessingContext implements ProcessingInterface {
 
     // Inner-working methods. Not related to the Mobile Processing specs
     // -----------------------------------------------------------------
@@ -86,10 +90,16 @@ public class ProcessingContext implements ProcessingInterface, Animatable  {
     public int _bgColor = 0;
     public PImage _bgImage = null;
     public boolean _bgImageMode = false ;
+    public volatile boolean _repaintBackground = false ;
+    public boolean _transparentDrawing = false;
+    public int _transparentColor = 0x00FFFFFF;
     public int _colorMode = RGB;
     public int _colorRange1 = 255;
     public int _colorRange2 = 255;
     public int _colorRange3 = 255;
+    
+    public long _lastTransparentRgbImageTime = 0;
+    transient RgbImage _transparentImage = null ;
 
     public static final String SOFTKEY1_NAME    = "SOFT1";
     public static final String SOFTKEY2_NAME    = "SOFT2";
@@ -129,6 +139,7 @@ public class ProcessingContext implements ProcessingInterface, Animatable  {
     // all offspring class members that are initialized directly in their
     // declarations are properly initialized _before_ setup() is called.
     public boolean _hasBeenInitialized = false ;
+
 
 
     public ProcessingContext ()
@@ -241,27 +252,33 @@ public class ProcessingContext implements ProcessingInterface, Animatable  {
 
         if (_hasBeenInitialized == false )
         {
-            _initVars(_prevWidth,_prevHeight);
             _hasBeenInitialized = true ;
+            _startTime = System.currentTimeMillis() ;
+            signalSizeChange(_prevWidth,_prevHeight);
         }
 
         if ( _bufferg != null )
         {
             // Paint the background
-            if ( _bgImageMode == false )
+            if ( _repaintBackground == true )
             {
-                    int lastColor = _bufferg.getColor() ;
-                    _bufferg.setColor(_bgColor);
-                    _bufferg.fillRect(0, 0, width, height);
-                    _bufferg.setColor(lastColor);
-            }
-            else
-            {
-                _bgImage.paint( (width - _bgImage.getWidth()) / 2, (height - _bgImage.getHeight()) /2, _bufferg );
+                
+                if ( _bgImageMode == false )
+                {
+                        int lastColor = _bufferg.getColor() ;
+                        _bufferg.setColor(_bgColor);
+                        _bufferg.fillRect(0, 0, width, height);
+                        _bufferg.setColor(lastColor);
+                }
+                else
+                {
+                    _bgImage.paint( (width - _bgImage.getWidth()) / 2, (height - _bgImage.getHeight()) /2, _bufferg );
+                }
             }
 
 
         draw();
+
         _lastFrameTime = System.currentTimeMillis();
         _refreshFlag = true;
         
@@ -322,9 +339,11 @@ public class ProcessingContext implements ProcessingInterface, Animatable  {
     {       
             _buffer = Image.createImage(width, height);
             _bufferg = _buffer.getGraphics() ;
+            _bufferg.setColor(0x00FFFFFF);
+            _bufferg.fillRect(0, 0, width, height);
             this.width = width;
             this.height = height;
-            setup();
+            ProcessingThread.queueEvent(new ProcessingEvent(this,ProcessingEvent.EVENT_SETUP));
             redraw();
     }
 
@@ -346,27 +365,115 @@ public class ProcessingContext implements ProcessingInterface, Animatable  {
 
     }
 
+    public void repaintBackground()
+    {
+        _repaintBackground = true;
+    }
+
+    public void dontRepaintBackground()
+    {
+        _repaintBackground = false ;
+    }
+
+    public void transparentDrawing()
+    {
+        _transparentDrawing = true ;
+    }
+
+    public void opaqueDrawing()
+    {
+        _transparentDrawing = false ;
+    }
+
+    public void setTransparentColor(color color)
+    {
+        _transparentColor = color.color ;
+    }
+
+    public int getTransparentColor()
+    {
+        return _transparentColor;
+    }
+
+    public boolean isDrawingTransparent()
+    {
+        return _transparentDrawing ;
+    }
+
+    public RgbImage getTransparentRgbImage()
+    {
+       // Initialize the transparent RgbImage if necessary
+       if ( _transparentImage == null )
+       {
+           _transparentImage = new RgbImage(new int[getBuffer().getWidth() * getBuffer().getHeight()], getBuffer().getWidth());
+       }
+
+       // Only update the RGB image if another frame has been drawn since the last time
+       // it was updated
+       if ( _lastTransparentRgbImageTime != getLastFrameTime() )
+       {
+           _lastTransparentRgbImageTime = getLastFrameTime() ;
+
+           if ( (_transparentImage.getWidth() != getBuffer().getWidth() ) ||
+                   ( _transparentImage.getHeight() != getBuffer().getHeight() ) )
+           {
+               _transparentImage = new RgbImage(getBuffer(),true);
+           }
+           else
+           {
+              getBuffer().getRGB( _transparentImage.getRgbData(), 0, _transparentImage.getWidth(), 0,0,_transparentImage.getWidth(), _transparentImage.getHeight());
+           }
+
+           // Process transparency
+           int maskColor = ( getTransparentColor() << 8);
+           int data[] = _transparentImage.getRgbData();
+           int dataLength = data.length -1;
+           while (dataLength>=0)
+           {
+               if ( (data[dataLength] << 8 ) == maskColor )
+               {
+                   data[dataLength] = 0x00000000;
+               }
+               dataLength--;
+           }
+
+       }
+
+       return _transparentImage;
+    }
+
     public void signalPointerDragged(int x, int y)
     {
-        pointerX = x;
-        pointerY = y;
-        pointerDragged();
+        ProcessingThread.queueEvent(new ProcessingEvent(this,ProcessingEvent.EVENT_POINTER_DRAGGED,x,y));
     }
 
     public void signalPointerReleased(int x, int y)
     {
-        pointerX = x;
-        pointerY = y;
-        pointerReleased();
+        ProcessingThread.queueEvent(new ProcessingEvent(this,ProcessingEvent.EVENT_POINTER_RELEASED,x,y));
     }
 
     public void signalPointerPressed(int x, int y)
     {
-        pointerX = x;
-        pointerY = y;
-        pointerPressed();
+        ProcessingThread.queueEvent(new ProcessingEvent(this,ProcessingEvent.EVENT_POINTER_PRESSED,x,y));
     }
 
+    public void setPointerCoordinates(int x, int y)
+    {
+        pointerX = x;
+        pointerY = y;
+    }
+
+    public void setRawKeyCode(int keyCode)
+    {
+        _key(keyCode);
+    }
+
+
+   public void setKeyAndKeyCode(char key, int keyCode)
+   {
+       this.key = key;
+       this.keyCode = keyCode;
+   }
 
    public void signalKeyPressed(int keyCode) {
         keyPressed = true;
@@ -376,52 +483,48 @@ public class ProcessingContext implements ProcessingInterface, Animatable  {
         }
 
         _key(keyCode);
-        keyPressed();
+        ProcessingThread.queueEvent(new ProcessingEvent(this,ProcessingEvent.EVENT_KEY_PRESSED,this.key,this.keyCode));
     }
 
     public void signalKeyReleased(int keyCode) {
         keyPressed = false;
 
         _key(keyCode);
-        keyReleased();
+        ProcessingThread.queueEvent(new ProcessingEvent(this,ProcessingEvent.EVENT_KEY_RELEASED,this.key,this.keyCode));
     }
 
     public void signalSoftkeyPressed(String label) {
-        softkeyPressed(label);
+        ProcessingThread.queueEvent(new ProcessingEvent(this,ProcessingEvent.EVENT_SOFTKEY_PRESSED,label));
     }
 
     public void signalApplicationSuspend()
     {
-        suspend();
+        ProcessingThread.queueEvent(new ProcessingEvent(this,ProcessingEvent.EVENT_APP_SUSPEND));
     }
 
     public void signalApplicationResume()
     {
-        resume();
+        ProcessingThread.queueEvent(new ProcessingEvent(this,ProcessingEvent.EVENT_APP_RESUME));
     }
 
     public void signalDestroy()
     {
-      //  processingContextObjects.removeElement(this);
-        AnimationThread.removeAnimationItem(this);
-        destroy();
+        ProcessingThread.queueEvent(new ProcessingEvent(this,ProcessingEvent.EVENT_APP_DESTROY));
     }
 
     public void signalInitialization()
     {
-      /*  ProcessingContext.processingContextObjects.removeElement(this);
-        ProcessingContext.processingContextObjects.addElement(this); */
-        AnimationThread.addAnimationItem(this);
+        ProcessingThread.addProcessingObject(this);
     }
 
     public void signalHasFocus()
     {
-        focus();
+        ProcessingThread.queueEvent( new ProcessingEvent(this,ProcessingEvent.EVENT_HAS_FOCUS));
     }
 
     public void signalLostFocus()
     {
-        lostFocus();
+        ProcessingThread.queueEvent( new ProcessingEvent(this,ProcessingEvent.EVENT_LOST_FOCUS));
     }
 
     public String getSoftkeyLabel()
@@ -461,42 +564,41 @@ public class ProcessingContext implements ProcessingInterface, Animatable  {
 
     public void _initVars(int width, int height)
     {
-        background(200);
-        signalSizeChange(width,height);
+            background(200);
 
-        _runtime = Runtime.getRuntime() ;
-        _hasFill = true;
-        _fillColor = 0xFFFFFF;
+            _runtime = Runtime.getRuntime() ;
+            _hasFill = true;
+            _fillColor = 0xFFFFFF;
 
-        _rectMode = CORNER;
-        _ellipseMode = CENTER;
-        _imageMode = CORNER;
+            _rectMode = CORNER;
+            _ellipseMode = CENTER;
+            _imageMode = CORNER;
 
-        _prevHeight = - 1;
-        _prevWidth = -1;
+            _prevHeight = - 1;
+            _prevWidth = -1;
 
-        _shapeMode = -1;
-        _vertex = new int[16];
-        _vertexIndex = 0;
+            _shapeMode = -1;
+            _vertex = new int[16];
+            _vertexIndex = 0;
 
-        _curveVertex = new int[8];
-        _curveVertexIndex = 0;
+            _curveVertex = new int[8];
+            _curveVertexIndex = 0;
 
-        multitapBuffer = new char[64];
-        multitapText = "";
-        _multitapKeySettings = new char[] { '#', '*' };
-        _multitapPunctuation = MULTITAP_PUNCTUATION;
-        _multitapEditDuration = 1000;
+            multitapBuffer = new char[64];
+            multitapText = "";
+            _multitapKeySettings = new char[] { '#', '*' };
+            _multitapPunctuation = MULTITAP_PUNCTUATION;
+            _multitapEditDuration = 1000;
 
-        _startTime = System.currentTimeMillis() ;
-        _lastFrameTime = -1 ;
+            
+            _lastFrameTime = -1 ;
 
-        _stack = new int[6];
-        _stackIndex = 0;
-        
-        // setup() is called in a lazy manner in checkForRefresh();
-        // see the comment above the "hasBeenInitialized" variable
-        // for more information
+            _stack = new int[6];
+            _stackIndex = 0;
+
+            // setup() is called in a lazy manner in checkForRefresh();
+            // see the comment above the "hasBeenInitialized" variable
+            // for more information
     }
 
     public double _Hue_2_RGB(double v1, double v2, double vH) //Function Hue_2_RGB
@@ -810,7 +912,7 @@ public class ProcessingContext implements ProcessingInterface, Animatable  {
      * Forces a redraw by calling draw();
      */
     public void redraw() {
-        executeRefresh(false);
+        ProcessingThread.queueEvent(new ProcessingEvent(this,ProcessingEvent.EVENT_DRAW));
     }
 
     public void loop() {
@@ -860,17 +962,17 @@ public class ProcessingContext implements ProcessingInterface, Animatable  {
         _colorRange3 = range3;
     }
 
-    public Color color(int gray) {
+    public color color(int gray) {
         int col = (255 << 24) | (gray << 16) | (gray << 8) | (gray);
-        return new Color(col);
+        return new color(col);
     }
 
-    public Color color(int gray, int alpha) {
+    public color color(int gray, int alpha) {
         int col = (alpha << 24) | (gray << 16) | (gray << 8) | (gray);
-        return new Color(col);
+        return new color(col);
     }
 
-    public Color color(int value1, int value2, int value3, int alpha) {
+    public color color(int value1, int value2, int value3, int alpha) {
         if (_colorMode == RGB)
         {
             // Normalize the color values according to the parameters set by
@@ -880,7 +982,7 @@ public class ProcessingContext implements ProcessingInterface, Animatable  {
             value3 = value3 * 255 / _colorRange3;
 
             int col = (alpha << 24) | (value1 << 16) | (value2 << 8) | (value3);
-            return new Color(col);
+            return new color(col);
         }
         else if (_colorMode == HSB)
         {
@@ -920,31 +1022,34 @@ public class ProcessingContext implements ProcessingInterface, Animatable  {
             Bi = (int) B;
 
             int col = (alpha << 24) | (Ri << 16) | (Gi << 8) | (Bi);
-            return new Color(col);
+            return new color(col);
         }
         else
         {
-            return new Color(0xFFFFFF);
+            return new color(0xFFFFFF);
         }
     }
 
     public void background(int gray) {
         _bgImageMode = false;
-        Color x = color(gray);
+        color x = color(gray);
         _bgColor = x.color ;
+        _repaintBackground = true ;
     }
 
-    public void background(Color color)
+    public void background(color color)
     {
         _bgImageMode = false;
         _bgColor = color.color ;
+        _repaintBackground = true ;
     }
 
     public void background(int value1, int value2, int value3)
     {
         _bgImageMode = false;
-        Color x = color (value1, value2, value3,255);
+        color x = color (value1, value2, value3,255);
         _bgColor = x.color ;
+        _repaintBackground = true ;
         
     }
 
@@ -952,25 +1057,26 @@ public class ProcessingContext implements ProcessingInterface, Animatable  {
     {
         _bgImageMode = true;
         _bgImage = image;
+        _repaintBackground = true ;
     }
 
     public void strokeWeight(int width) {
         _strokeWidth = width;
     }
 
-    public void stroke(Color whatColor) {
+    public void stroke(color whatColor) {
         _hasStroke = true;
         _strokeColor = whatColor.color;
     }
 
     public void stroke(int color) {
-        Color temp = color(color);
+        color temp = color(color);
         _strokeColor = temp.color ;
         _hasStroke = true;
     }
 
     public void stroke(int v1, int v2, int v3) {
-        Color temp = color(v1,v2,v3,255);
+        color temp = color(v1,v2,v3,255);
         _strokeColor = temp.color ;
         _hasStroke = true;
     }
@@ -982,11 +1088,11 @@ public class ProcessingContext implements ProcessingInterface, Animatable  {
     public void fill(int gray)
     {
         _hasFill = true;
-        Color x = color(gray);
+        color x = color(gray);
         _fillColor = x.color ;
     }
 
-    public void fill(Color color)
+    public void fill(color color)
     {
         _hasFill = true;
         _fillColor = color.color;
@@ -995,7 +1101,7 @@ public class ProcessingContext implements ProcessingInterface, Animatable  {
     public void fill(int value1, int value2, int value3)
     {
         _hasFill = true;
-        Color x = color(value1,value2,value3,255);
+        color x = color(value1,value2,value3,255);
         _fillColor = x.color ;
     }
 
@@ -1516,8 +1622,28 @@ public class ProcessingContext implements ProcessingInterface, Animatable  {
 
     public String textInput(String title, String text, int max) {
 
-        // TO BE IMPLEMENTED
-        return "not implemented";
+        Displayable current = Display.getInstance().getCurrent() ;
+        ProcessingTextInputForm form = new ProcessingTextInputForm(title, text, max);
+        Thread t = new Thread(form);
+        t.start();
+        
+        String result = null;
+        synchronized ( form.getExternalLockObject() )
+        {
+            try
+            {
+                form.getExternalLockObject().wait();
+            }
+            catch (Exception ex)
+            {
+                //
+            }
+
+            result = form.getText() ;
+        }
+
+        Display.getInstance().setCurrent(current);
+        return result;
 
     }
 
@@ -2442,16 +2568,16 @@ public class ProcessingContext implements ProcessingInterface, Animatable  {
         }
     }
 
-    public PFont loadFont(String fontname, Color fgColor, Color bgColor) {
+    public PFont loadFont(String fontname, color fgColor, color bgColor) {
         return new PFont(fontname, fgColor, bgColor);
     }
 
-    public PFont loadFont(String fontname, Color fgColor) {
-        return new PFont (fontname, fgColor, new Color(0x00FFFFFF));
+    public PFont loadFont(String fontname, color fgColor) {
+        return new PFont (fontname, fgColor, new color(0x00FFFFFF));
     }
 
     public PFont loadFont(String fontname) {
-        return new PFont(fontname, new Color(0x00FFFFFF), new Color(0x00FFFFFF));
+        return new PFont(fontname, new color(0x00FFFFFF), new color(0x00FFFFFF));
     }
 
     public PFont loadFont() {
@@ -2591,37 +2717,548 @@ public class ProcessingContext implements ProcessingInterface, Animatable  {
 
         _bufferg.setColor(currentColor);
     }
+    
+    /** Precision, in number of bits for the fractional part. */
+    public static final int FP_PRECISION    = 8;
+    /** Convenience constant of the value 1 in fixed point. */
+    public static final int ONE             = 1 << FP_PRECISION;
+    /** Convenience constant of the value of pi in fixed point. */
+    public static final int PI              = (int) ((3.14159265358979323846f) * ONE);
+    /** Convenience constant of the value of 2*pi in fixed point. */
+    public static final int TWO_PI          = 2 * PI;
+    /** Convenience constant of the value of pi/2 in fixed point. */
+    public static final int HALF_PI         = PI / 2;
 
-    public void animate(long currentTime, ClippingRegion repaintRegion) {
-        
-        if ( checkForRefresh() )
-        {
-            // Only execute a refresh if we're in a loop.
-            // The reason for this is that if checkForRefresh() does
-            // return true and we're not in a loop, then the
-            // refresh mush have been triggered by an event handler
-            // which in turn called redraw() (thus the refresh flag was set to true ).
-            // Since redraw was already called, we should not call it again
-            // by asking for a hard refresh.
-            if ( isLooping() )
-            {
-                executeRefresh(true);
 
-                // Avoid a potential extra refresh in other places.
-                // It's safe to do this, as we'll request a scren repaint
-                // below.
-                checkForRefresh();
-            }
-
-            triggerRepaint();
-        }
-        
+    public final int abs(int value) {
+        return Math.abs(value);
     }
 
-    
+    public final int max(int value1, int value2) {
+        return Math.max(value1, value2);
+    }
 
+    public final int min(int value1, int value2) {
+        return Math.min(value1, value2);
+    }
 
+    public final int sq(int value) {
+        return value * value;
+    }
 
-    
+    public final int pow(int base, int exponent) {
+        int value = 1;
+        for (int i = 0; i < exponent; i++) {
+            value *= base;
+        }
+
+        return value;
+    }
+
+    public final int constrain(int value, int min, int max) {
+        return Math.min(Math.max(value, min), max);
+    }
+
+    /** Multiplies two fixed point values and returns a fixed point value. */
+    public final int mul(int value1, int value2) {
+        return (value1 * value2) >> FP_PRECISION;
+    }
+
+    /** Returns the fixed point quotient from dividing the fixed point dividend by the fixed point divisor. */
+    public final int div(int dividend, int divisor) {
+        return (dividend << FP_PRECISION) / divisor;
+    }
+
+    /** Returns the fixed point representation of the specified integer value. */
+    public final int itofp(int value1) {
+        return value1 << FP_PRECISION;
+    }
+
+    /** Returns the integer less than or equal to the fixed point value. */
+    public final int fptoi(int value1) {
+        if (value1 < 0) {
+            value1 += ONE - 1;
+        }
+        return value1 >> FP_PRECISION;
+    }
+
+    /** Returns the fixed-point square root of a fixed-point value, approximated using Newton's method. */
+    public final int sqrt(int value_fp) {
+        int prev_fp, next_fp, error_fp, prev;
+        //// initialize previous result
+        prev_fp = value_fp;
+        next_fp = 0;
+        do {
+            prev = prev_fp >> FP_PRECISION;
+            if (prev == 0) {
+                break;
+            }
+            //// calculate a new approximation
+            next_fp = (prev_fp + value_fp / prev) / 2;
+            if (prev_fp > next_fp) {
+                error_fp = prev_fp - next_fp;
+            } else {
+                error_fp = next_fp - prev_fp;
+            }
+            prev_fp = next_fp;
+        } while (error_fp > ONE);
+
+        return next_fp;
+    }
+
+    public final int dist(int x1, int y1, int x2, int y2) {
+        int dx = x2 - x1;
+        int dy = y2 - y1;
+        return sqrt((dx * dx + dy * dy) << FP_PRECISION);
+    }
+
+    public final int dist_fp(int x1, int y1, int x2, int y2) {
+        int dx = x2 - x1;
+        int dy = y2 - y1;
+        return sqrt(((dx * dx) >> FP_PRECISION) + ((dy * dy) >> FP_PRECISION));
+    }
+
+    /** Returns the closest integer fixed-point value less than or equal to the specified fixed point value. */
+    public final int floor(int value1) {
+        return (value1 >> FP_PRECISION) << FP_PRECISION;
+    }
+
+    /** Returns the closest integer fixed-point value greater than or equal to the specified fixed point value. */
+    public final int ceil(int value1) {
+        return ((value1 + ONE - 1) >> FP_PRECISION) << FP_PRECISION;
+    }
+
+    /** Returns the nearest integer fixed-point value to the specified fixed point value. */
+    public final int round(int value1) {
+        //// return result
+        return ((value1 + (ONE >> 1)) >> FP_PRECISION) << FP_PRECISION;
+    }
+
+    /** Returns the fixed point radian equivalent to the specified fixed point degree value. */
+    public final int radians(int angle) {
+        return angle * PI / (180 << FP_PRECISION);
+    }
+
+    /** Returns the sin of the specified fixed-point radian angle as a fixed point value. */
+    public final int sin(int rad) {
+        //// convert to degrees
+        int index = rad * 180 / PI % 360;
+        if (index < 0) {
+            index += 360;
+        }
+        return sin[index];
+    }
+
+    /** Returns the cos of the specified fixed-point radian angle as a fixed point value. */
+    public final int cos(int rad) {
+        //// convert to degrees
+        int index = (rad * 180 / PI + 90) % 360;
+        if (index < 0) {
+            index += 360;
+        }
+        return sin[index];
+    }
+
+    public final int atan(int value1) {
+        int result;
+        int sign = 1;
+        if (value1 < 0) {
+            sign = -1;
+            value1 = -value1;
+        }
+        if (value1 <= ONE) {
+            result = div(value1, ONE + mul(((int) (0.28f * ONE)), mul(value1, value1)));
+        } else {
+            result = HALF_PI - div(value1, (mul(value1, value1) + ((int) (0.28f * ONE))));
+        }
+        return sign * result;
+    }
+
+    public final int atan2(int y, int x) {
+        int result;
+        if ((y == 0) && (x == 0)) {
+            result = 0;
+        } else if (x > 0) {
+            result = atan(div(y, x));
+        } else if (x < 0) {
+            if (y < 0) {
+                result = -(PI - atan(div(-y, -x)));
+            } else {
+                result = PI - atan(div(y, -x));
+            }
+        } else {
+            if (y < 0) {
+                result = -HALF_PI;
+            } else {
+                result = HALF_PI;
+            }
+        }
+        return result;
+    }
+
+    /** Lookup table for sin function, indexed by degrees. */
+    public static final int[] sin = {
+        (int) (0f * ONE),
+        (int) (0.0174524064372835f * ONE),
+        (int) (0.034899496702501f * ONE),
+        (int) (0.0523359562429438f * ONE),
+        (int) (0.0697564737441253f * ONE),
+        (int) (0.0871557427476582f * ONE),
+        (int) (0.104528463267653f * ONE),
+        (int) (0.121869343405147f * ONE),
+        (int) (0.139173100960065f * ONE),
+        (int) (0.156434465040231f * ONE),
+        (int) (0.17364817766693f * ONE),
+        (int) (0.190808995376545f * ONE),
+        (int) (0.207911690817759f * ONE),
+        (int) (0.224951054343865f * ONE),
+        (int) (0.241921895599668f * ONE),
+        (int) (0.258819045102521f * ONE),
+        (int) (0.275637355816999f * ONE),
+        (int) (0.292371704722737f * ONE),
+        (int) (0.309016994374947f * ONE),
+        (int) (0.325568154457157f * ONE),
+        (int) (0.342020143325669f * ONE),
+        (int) (0.3583679495453f * ONE),
+        (int) (0.374606593415912f * ONE),
+        (int) (0.390731128489274f * ONE),
+        (int) (0.4067366430758f * ONE),
+        (int) (0.422618261740699f * ONE),
+        (int) (0.438371146789077f * ONE),
+        (int) (0.453990499739547f * ONE),
+        (int) (0.469471562785891f * ONE),
+        (int) (0.484809620246337f * ONE),
+        (int) (0.5f * ONE),
+        (int) (0.515038074910054f * ONE),
+        (int) (0.529919264233205f * ONE),
+        (int) (0.544639035015027f * ONE),
+        (int) (0.559192903470747f * ONE),
+        (int) (0.573576436351046f * ONE),
+        (int) (0.587785252292473f * ONE),
+        (int) (0.601815023152048f * ONE),
+        (int) (0.615661475325658f * ONE),
+        (int) (0.629320391049837f * ONE),
+        (int) (0.642787609686539f * ONE),
+        (int) (0.656059028990507f * ONE),
+        (int) (0.669130606358858f * ONE),
+        (int) (0.681998360062498f * ONE),
+        (int) (0.694658370458997f * ONE),
+        (int) (0.707106781186547f * ONE),
+        (int) (0.719339800338651f * ONE),
+        (int) (0.73135370161917f * ONE),
+        (int) (0.743144825477394f * ONE),
+        (int) (0.754709580222772f * ONE),
+        (int) (0.766044443118978f * ONE),
+        (int) (0.777145961456971f * ONE),
+        (int) (0.788010753606722f * ONE),
+        (int) (0.798635510047293f * ONE),
+        (int) (0.809016994374947f * ONE),
+        (int) (0.819152044288992f * ONE),
+        (int) (0.829037572555042f * ONE),
+        (int) (0.838670567945424f * ONE),
+        (int) (0.848048096156426f * ONE),
+        (int) (0.857167300702112f * ONE),
+        (int) (0.866025403784439f * ONE),
+        (int) (0.874619707139396f * ONE),
+        (int) (0.882947592858927f * ONE),
+        (int) (0.891006524188368f * ONE),
+        (int) (0.898794046299167f * ONE),
+        (int) (0.90630778703665f * ONE),
+        (int) (0.913545457642601f * ONE),
+        (int) (0.92050485345244f * ONE),
+        (int) (0.927183854566787f * ONE),
+        (int) (0.933580426497202f * ONE),
+        (int) (0.939692620785908f * ONE),
+        (int) (0.945518575599317f * ONE),
+        (int) (0.951056516295154f * ONE),
+        (int) (0.956304755963035f * ONE),
+        (int) (0.961261695938319f * ONE),
+        (int) (0.965925826289068f * ONE),
+        (int) (0.970295726275996f * ONE),
+        (int) (0.974370064785235f * ONE),
+        (int) (0.978147600733806f * ONE),
+        (int) (0.981627183447664f * ONE),
+        (int) (0.984807753012208f * ONE),
+        (int) (0.987688340595138f * ONE),
+        (int) (0.99026806874157f * ONE),
+        (int) (0.992546151641322f * ONE),
+        (int) (0.994521895368273f * ONE),
+        (int) (0.996194698091746f * ONE),
+        (int) (0.997564050259824f * ONE),
+        (int) (0.998629534754574f * ONE),
+        (int) (0.999390827019096f * ONE),
+        (int) (0.999847695156391f * ONE),
+        (int) (1f * ONE),
+        (int) (0.999847695156391f * ONE),
+        (int) (0.999390827019096f * ONE),
+        (int) (0.998629534754574f * ONE),
+        (int) (0.997564050259824f * ONE),
+        (int) (0.996194698091746f * ONE),
+        (int) (0.994521895368273f * ONE),
+        (int) (0.992546151641322f * ONE),
+        (int) (0.99026806874157f * ONE),
+        (int) (0.987688340595138f * ONE),
+        (int) (0.984807753012208f * ONE),
+        (int) (0.981627183447664f * ONE),
+        (int) (0.978147600733806f * ONE),
+        (int) (0.974370064785235f * ONE),
+        (int) (0.970295726275996f * ONE),
+        (int) (0.965925826289068f * ONE),
+        (int) (0.961261695938319f * ONE),
+        (int) (0.956304755963036f * ONE),
+        (int) (0.951056516295154f * ONE),
+        (int) (0.945518575599317f * ONE),
+        (int) (0.939692620785908f * ONE),
+        (int) (0.933580426497202f * ONE),
+        (int) (0.927183854566787f * ONE),
+        (int) (0.92050485345244f * ONE),
+        (int) (0.913545457642601f * ONE),
+        (int) (0.90630778703665f * ONE),
+        (int) (0.898794046299167f * ONE),
+        (int) (0.891006524188368f * ONE),
+        (int) (0.882947592858927f * ONE),
+        (int) (0.874619707139396f * ONE),
+        (int) (0.866025403784439f * ONE),
+        (int) (0.857167300702112f * ONE),
+        (int) (0.848048096156426f * ONE),
+        (int) (0.838670567945424f * ONE),
+        (int) (0.829037572555042f * ONE),
+        (int) (0.819152044288992f * ONE),
+        (int) (0.809016994374947f * ONE),
+        (int) (0.798635510047293f * ONE),
+        (int) (0.788010753606722f * ONE),
+        (int) (0.777145961456971f * ONE),
+        (int) (0.766044443118978f * ONE),
+        (int) (0.754709580222772f * ONE),
+        (int) (0.743144825477394f * ONE),
+        (int) (0.731353701619171f * ONE),
+        (int) (0.719339800338651f * ONE),
+        (int) (0.707106781186548f * ONE),
+        (int) (0.694658370458997f * ONE),
+        (int) (0.681998360062499f * ONE),
+        (int) (0.669130606358858f * ONE),
+        (int) (0.656059028990507f * ONE),
+        (int) (0.642787609686539f * ONE),
+        (int) (0.629320391049838f * ONE),
+        (int) (0.615661475325658f * ONE),
+        (int) (0.601815023152048f * ONE),
+        (int) (0.587785252292473f * ONE),
+        (int) (0.573576436351046f * ONE),
+        (int) (0.559192903470747f * ONE),
+        (int) (0.544639035015027f * ONE),
+        (int) (0.529919264233205f * ONE),
+        (int) (0.515038074910054f * ONE),
+        (int) (0.5f * ONE),
+        (int) (0.484809620246337f * ONE),
+        (int) (0.469471562785891f * ONE),
+        (int) (0.453990499739547f * ONE),
+        (int) (0.438371146789077f * ONE),
+        (int) (0.422618261740699f * ONE),
+        (int) (0.4067366430758f * ONE),
+        (int) (0.390731128489274f * ONE),
+        (int) (0.374606593415912f * ONE),
+        (int) (0.3583679495453f * ONE),
+        (int) (0.342020143325669f * ONE),
+        (int) (0.325568154457157f * ONE),
+        (int) (0.309016994374948f * ONE),
+        (int) (0.292371704722737f * ONE),
+        (int) (0.275637355817f * ONE),
+        (int) (0.258819045102521f * ONE),
+        (int) (0.241921895599668f * ONE),
+        (int) (0.224951054343865f * ONE),
+        (int) (0.207911690817759f * ONE),
+        (int) (0.190808995376545f * ONE),
+        (int) (0.17364817766693f * ONE),
+        (int) (0.156434465040231f * ONE),
+        (int) (0.139173100960066f * ONE),
+        (int) (0.121869343405148f * ONE),
+        (int) (0.104528463267654f * ONE),
+        (int) (0.0871557427476586f * ONE),
+        (int) (0.0697564737441255f * ONE),
+        (int) (0.0523359562429438f * ONE),
+        (int) (0.0348994967025007f * ONE),
+        (int) (0.0174524064372834f * ONE),
+        (int) (1.22514845490862E-16f * ONE),
+        (int) (-0.0174524064372832f * ONE),
+        (int) (-0.0348994967025009f * ONE),
+        (int) (-0.0523359562429436f * ONE),
+        (int) (-0.0697564737441248f * ONE),
+        (int) (-0.0871557427476579f * ONE),
+        (int) (-0.104528463267653f * ONE),
+        (int) (-0.121869343405148f * ONE),
+        (int) (-0.139173100960066f * ONE),
+        (int) (-0.156434465040231f * ONE),
+        (int) (-0.17364817766693f * ONE),
+        (int) (-0.190808995376545f * ONE),
+        (int) (-0.207911690817759f * ONE),
+        (int) (-0.224951054343865f * ONE),
+        (int) (-0.241921895599668f * ONE),
+        (int) (-0.25881904510252f * ONE),
+        (int) (-0.275637355816999f * ONE),
+        (int) (-0.292371704722736f * ONE),
+        (int) (-0.309016994374948f * ONE),
+        (int) (-0.325568154457157f * ONE),
+        (int) (-0.342020143325669f * ONE),
+        (int) (-0.3583679495453f * ONE),
+        (int) (-0.374606593415912f * ONE),
+        (int) (-0.390731128489274f * ONE),
+        (int) (-0.4067366430758f * ONE),
+        (int) (-0.422618261740699f * ONE),
+        (int) (-0.438371146789077f * ONE),
+        (int) (-0.453990499739546f * ONE),
+        (int) (-0.469471562785891f * ONE),
+        (int) (-0.484809620246337f * ONE),
+        (int) (-0.5f * ONE),
+        (int) (-0.515038074910054f * ONE),
+        (int) (-0.529919264233205f * ONE),
+        (int) (-0.544639035015027f * ONE),
+        (int) (-0.559192903470747f * ONE),
+        (int) (-0.573576436351046f * ONE),
+        (int) (-0.587785252292473f * ONE),
+        (int) (-0.601815023152048f * ONE),
+        (int) (-0.615661475325658f * ONE),
+        (int) (-0.629320391049838f * ONE),
+        (int) (-0.642787609686539f * ONE),
+        (int) (-0.656059028990507f * ONE),
+        (int) (-0.669130606358858f * ONE),
+        (int) (-0.681998360062498f * ONE),
+        (int) (-0.694658370458997f * ONE),
+        (int) (-0.707106781186547f * ONE),
+        (int) (-0.719339800338651f * ONE),
+        (int) (-0.73135370161917f * ONE),
+        (int) (-0.743144825477394f * ONE),
+        (int) (-0.754709580222772f * ONE),
+        (int) (-0.766044443118978f * ONE),
+        (int) (-0.777145961456971f * ONE),
+        (int) (-0.788010753606722f * ONE),
+        (int) (-0.798635510047293f * ONE),
+        (int) (-0.809016994374947f * ONE),
+        (int) (-0.819152044288992f * ONE),
+        (int) (-0.829037572555041f * ONE),
+        (int) (-0.838670567945424f * ONE),
+        (int) (-0.848048096156426f * ONE),
+        (int) (-0.857167300702112f * ONE),
+        (int) (-0.866025403784438f * ONE),
+        (int) (-0.874619707139396f * ONE),
+        (int) (-0.882947592858927f * ONE),
+        (int) (-0.891006524188368f * ONE),
+        (int) (-0.898794046299167f * ONE),
+        (int) (-0.90630778703665f * ONE),
+        (int) (-0.913545457642601f * ONE),
+        (int) (-0.92050485345244f * ONE),
+        (int) (-0.927183854566787f * ONE),
+        (int) (-0.933580426497202f * ONE),
+        (int) (-0.939692620785908f * ONE),
+        (int) (-0.945518575599317f * ONE),
+        (int) (-0.951056516295154f * ONE),
+        (int) (-0.956304755963035f * ONE),
+        (int) (-0.961261695938319f * ONE),
+        (int) (-0.965925826289068f * ONE),
+        (int) (-0.970295726275996f * ONE),
+        (int) (-0.974370064785235f * ONE),
+        (int) (-0.978147600733806f * ONE),
+        (int) (-0.981627183447664f * ONE),
+        (int) (-0.984807753012208f * ONE),
+        (int) (-0.987688340595138f * ONE),
+        (int) (-0.99026806874157f * ONE),
+        (int) (-0.992546151641322f * ONE),
+        (int) (-0.994521895368273f * ONE),
+        (int) (-0.996194698091746f * ONE),
+        (int) (-0.997564050259824f * ONE),
+        (int) (-0.998629534754574f * ONE),
+        (int) (-0.999390827019096f * ONE),
+        (int) (-0.999847695156391f * ONE),
+        (int) (-1f * ONE),
+        (int) (-0.999847695156391f * ONE),
+        (int) (-0.999390827019096f * ONE),
+        (int) (-0.998629534754574f * ONE),
+        (int) (-0.997564050259824f * ONE),
+        (int) (-0.996194698091746f * ONE),
+        (int) (-0.994521895368273f * ONE),
+        (int) (-0.992546151641322f * ONE),
+        (int) (-0.99026806874157f * ONE),
+        (int) (-0.987688340595138f * ONE),
+        (int) (-0.984807753012208f * ONE),
+        (int) (-0.981627183447664f * ONE),
+        (int) (-0.978147600733806f * ONE),
+        (int) (-0.974370064785235f * ONE),
+        (int) (-0.970295726275997f * ONE),
+        (int) (-0.965925826289068f * ONE),
+        (int) (-0.961261695938319f * ONE),
+        (int) (-0.956304755963035f * ONE),
+        (int) (-0.951056516295154f * ONE),
+        (int) (-0.945518575599317f * ONE),
+        (int) (-0.939692620785909f * ONE),
+        (int) (-0.933580426497202f * ONE),
+        (int) (-0.927183854566787f * ONE),
+        (int) (-0.92050485345244f * ONE),
+        (int) (-0.913545457642601f * ONE),
+        (int) (-0.90630778703665f * ONE),
+        (int) (-0.898794046299167f * ONE),
+        (int) (-0.891006524188368f * ONE),
+        (int) (-0.882947592858927f * ONE),
+        (int) (-0.874619707139396f * ONE),
+        (int) (-0.866025403784439f * ONE),
+        (int) (-0.857167300702112f * ONE),
+        (int) (-0.848048096156426f * ONE),
+        (int) (-0.838670567945424f * ONE),
+        (int) (-0.829037572555042f * ONE),
+        (int) (-0.819152044288992f * ONE),
+        (int) (-0.809016994374948f * ONE),
+        (int) (-0.798635510047293f * ONE),
+        (int) (-0.788010753606722f * ONE),
+        (int) (-0.777145961456971f * ONE),
+        (int) (-0.766044443118978f * ONE),
+        (int) (-0.754709580222772f * ONE),
+        (int) (-0.743144825477395f * ONE),
+        (int) (-0.731353701619171f * ONE),
+        (int) (-0.719339800338652f * ONE),
+        (int) (-0.707106781186548f * ONE),
+        (int) (-0.694658370458998f * ONE),
+        (int) (-0.681998360062498f * ONE),
+        (int) (-0.669130606358858f * ONE),
+        (int) (-0.656059028990507f * ONE),
+        (int) (-0.64278760968654f * ONE),
+        (int) (-0.629320391049838f * ONE),
+        (int) (-0.615661475325659f * ONE),
+        (int) (-0.601815023152048f * ONE),
+        (int) (-0.587785252292473f * ONE),
+        (int) (-0.573576436351046f * ONE),
+        (int) (-0.559192903470747f * ONE),
+        (int) (-0.544639035015027f * ONE),
+        (int) (-0.529919264233206f * ONE),
+        (int) (-0.515038074910054f * ONE),
+        (int) (-0.5f * ONE),
+        (int) (-0.484809620246337f * ONE),
+        (int) (-0.469471562785891f * ONE),
+        (int) (-0.453990499739547f * ONE),
+        (int) (-0.438371146789077f * ONE),
+        (int) (-0.4226182617407f * ONE),
+        (int) (-0.4067366430758f * ONE),
+        (int) (-0.390731128489275f * ONE),
+        (int) (-0.374606593415912f * ONE),
+        (int) (-0.358367949545301f * ONE),
+        (int) (-0.342020143325669f * ONE),
+        (int) (-0.325568154457158f * ONE),
+        (int) (-0.309016994374948f * ONE),
+        (int) (-0.292371704722736f * ONE),
+        (int) (-0.275637355817f * ONE),
+        (int) (-0.258819045102521f * ONE),
+        (int) (-0.241921895599668f * ONE),
+        (int) (-0.224951054343865f * ONE),
+        (int) (-0.20791169081776f * ONE),
+        (int) (-0.190808995376545f * ONE),
+        (int) (-0.173648177666931f * ONE),
+        (int) (-0.156434465040231f * ONE),
+        (int) (-0.139173100960066f * ONE),
+        (int) (-0.121869343405148f * ONE),
+        (int) (-0.104528463267653f * ONE),
+        (int) (-0.0871557427476583f * ONE),
+        (int) (-0.0697564737441248f * ONE),
+        (int) (-0.0523359562429444f * ONE),
+        (int) (-0.0348994967025008f * ONE),
+        (int) (-0.0174524064372844f * ONE),
+    };
+        
 
 }

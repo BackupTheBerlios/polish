@@ -83,7 +83,14 @@ public class ProcessingItem extends Item implements ProcessingContextContainerIn
         context.signalSizeChange( contentWidth , contentHeight );
         
         // Draw the processing buffer.
-        g.drawImage( context.getBuffer(), x, y ,  Graphics.TOP | Graphics.LEFT );
+        if ( context.isDrawingTransparent() == false )
+       {
+        g.drawImage(context.getBuffer(), x, y, Graphics.TOP | Graphics.LEFT );
+       }
+       else
+       {
+          context.getTransparentRgbImage().paint(x, y, g);
+       }
 
     }
 
@@ -130,7 +137,6 @@ public class ProcessingItem extends Item implements ProcessingContextContainerIn
     }
 
     protected boolean handleKeyPressed( int keyCode, int gameAction ) {
-
         context.signalKeyPressed(keyCode);
         return context.areKeypressesCaptured();
         

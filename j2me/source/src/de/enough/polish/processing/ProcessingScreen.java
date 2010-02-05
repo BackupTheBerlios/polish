@@ -21,7 +21,6 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-
 package de.enough.polish.processing;
 
 import de.enough.polish.ui.Command;
@@ -35,55 +34,48 @@ import de.enough.polish.ui.Style;
  */
 public class ProcessingScreen extends Screen implements ProcessingContextContainerInterface {
 
-        protected Command cmd = new Command ( "" , Command.ITEM, 0);
-        protected String softkeyCommandText = null ;
-        ProcessingInterface context = null;
+    protected Command cmd = new Command("", Command.ITEM, 0);
+    protected String softkeyCommandText = null;
+    ProcessingInterface context = null;
 
+    public void initProcessingContext() {
+        context.signalInitialization();
+        context.setParent(this);
+        context.signalHasFocus();
+    }
 
-        public void initProcessingContext()
-        {
-            context.signalInitialization();
-            context.setParent(this);
-            context.signalHasFocus();
-        }
-        
-        /**
-	 * Creates a new, empty <code>ProcessingScreen</code>.
-	 *
-	 * @param title the Form's title, or null for no title
-	 */
-	public ProcessingScreen( String title, ProcessingInterface context)
-	{
-		super( title, null, true );
-                this.context = context;
-                initProcessingContext();
-	}
+    /**
+     * Creates a new, empty <code>ProcessingScreen</code>.
+     *
+     * @param title the Form's title, or null for no title
+     */
+    public ProcessingScreen(String title, ProcessingInterface context) {
+        super(title, null, true);
+        this.context = context;
+        initProcessingContext();
+    }
 
+    /**
+     * Creates a new, empty <code>ProcessingScreen</code>.
+     *
+     * @param title the Form's title, or null for no title
+     * @param style the style of this form
+     */
+    public ProcessingScreen(String title, ProcessingInterface context, Style style) {
+        super(title, style, true);
+        this.context = context;
+        initProcessingContext();
+    }
 
-	/**
-	 * Creates a new, empty <code>ProcessingScreen</code>.
-	 *
-	 * @param title the Form's title, or null for no title
-	 * @param style the style of this form
-	 */
-	public ProcessingScreen( String title, ProcessingInterface context, Style style )
-	{
-		super( title, style, true );
-                this.context = context;
-                initProcessingContext();
-	}
-
-        /**
+    /**
      * Checks if a given pixel (relative to the item) is within the bounds
      * of the Processing canvas.
      * @param x
      * @param y
      * @return true if the pixel is within bounds, false otherwise
      */
-    protected boolean isWithinBounds(int x, int y)
-    {
-        if ( (x<contentX) || (x>contentWidth+contentX) ||
-              (y<contentY) || (y>contentHeight+contentY) )
+    protected boolean isWithinBounds(int x, int y) {
+        if ((x < contentX) || (x > contentWidth + contentX) || (y < contentY) || (y > contentHeight + contentY))
         {
             return false;
         }
@@ -91,39 +83,44 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
 
     }
 
-        protected void paintScreen(Graphics g)
-        {
+    protected void paintScreen(Graphics g) {
 
-            context.signalSizeChange(contentWidth, contentHeight);
-
-            
-            g.drawImage(context.getBuffer(), contentX, contentY, Graphics.TOP | Graphics.LEFT );
-        }
+        context.signalSizeChange(contentWidth, contentHeight);
 
 
-    protected boolean handleKeyPressed( int keyCode, int gameAction ) {
+        // Draw the processing buffer
+        if ( context.isDrawingTransparent() == false )
+       {
+        g.drawImage(context.getBuffer(), contentX, contentY, Graphics.TOP | Graphics.LEFT );
+       }
+       else
+       {
+          context.getTransparentRgbImage().paint(contentX, contentY, g);
+       }
+    }
+
+    protected boolean handleKeyPressed(int keyCode, int gameAction) {
 
         context.signalKeyPressed(keyCode);
         return context.areKeypressesCaptured();
 
     }
 
-    protected boolean handleKeyReleased( int keyCode, int gameAction ) {
+    protected boolean handleKeyReleased(int keyCode, int gameAction) {
 
         context.signalKeyReleased(keyCode);
         return context.areKeypressesCaptured();
     }
 
-    protected boolean handleKeyRepeated( int keyCode, int gameAction ) {
+    protected boolean handleKeyRepeated(int keyCode, int gameAction) {
 
         context.signalKeyPressed(keyCode);
         return context.areKeypressesCaptured();
 
     }
 
-    protected boolean handlePointerPressed(int x, int y)
-    {
-        if ( ! isWithinBounds(x, y) )
+    protected boolean handlePointerPressed(int x, int y) {
+        if (!isWithinBounds(x, y))
         {
             return context.arePointerEventsCaptured();
         }
@@ -133,9 +130,8 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
         return context.arePointerEventsCaptured();
     }
 
-    protected boolean handlePointerReleased(int x, int y)
-    {
-        if ( ! isWithinBounds(x, y) )
+    protected boolean handlePointerReleased(int x, int y) {
+        if (!isWithinBounds(x, y))
         {
             return false;
         }
@@ -145,9 +141,8 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
         return context.arePointerEventsCaptured();
     }
 
-    protected boolean handlePointerDragged(int x, int y)
-    {
-        if ( ! isWithinBounds(x, y) )
+    protected boolean handlePointerDragged(int x, int y) {
+        if (!isWithinBounds(x, y))
         {
             return context.arePointerEventsCaptured();
         }
@@ -157,9 +152,8 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
         return context.arePointerEventsCaptured();
     }
 
-    public boolean handlePointerTouchDown(int x, int y)
-    {
-        if ( ! isWithinBounds(x, y) )
+    public boolean handlePointerTouchDown(int x, int y) {
+        if (!isWithinBounds(x, y))
         {
             return context.arePointerEventsCaptured();
         }
@@ -169,9 +163,8 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
         return context.arePointerEventsCaptured();
     }
 
-    public boolean handlePointerTouchUp(int x, int y)
-    {
-        if ( ! isWithinBounds(x, y) )
+    public boolean handlePointerTouchUp(int x, int y) {
+        if (!isWithinBounds(x, y))
         {
             return context.arePointerEventsCaptured();
         }
@@ -181,8 +174,7 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
         return context.arePointerEventsCaptured();
     }
 
-    protected boolean handleCommand(Command cmd)
-    {
+    protected boolean handleCommand(Command cmd) {
         context.signalSoftkeyPressed(cmd.getLabel());
         return super.handleCommand(cmd);
     }
@@ -196,34 +188,30 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
         repaint();
     }
 
-    public void hideNotify()
-    {
+    public void hideNotify() {
         context.signalLostFocus();
         super.hideNotify();
     }
 
-    public void releaseResources()
-    {
+    public void releaseResources() {
         context.signalDestroy();
         super.releaseResources();
     }
 
-    public void setSoftkey(String text)
-    {
+    public void setSoftkey(String text) {
         softkeyCommandText = text;
 
         // If requested by the Processing code, add an Item command
-        if ( softkeyCommandText != null )
+        if (softkeyCommandText != null)
         {
             removeCommand(cmd);
-            cmd = new Command ( softkeyCommandText, Command.ITEM, 0);
+            cmd = new Command(softkeyCommandText, Command.ITEM, 0);
             addCommand(cmd);
         }
         else
         {
             removeCommand(cmd);
         }
-        
-    }
 
+    }
 }

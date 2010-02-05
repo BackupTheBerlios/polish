@@ -25,7 +25,7 @@ public class PFont {
         platformFont = font ;
     }
 
-    public PFont(String fontUrl, Color textColor, Color bgColor)
+    public PFont(String fontUrl, color textColor, color bgColor)
     {
         this.color = textColor.color;
         this.bgColor = bgColor.color;
