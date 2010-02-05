@@ -16,10 +16,14 @@ public class ProcessingBackgroundExample extends ProcessingContext {
 
     boolean isFocused = false ;
 
+    int ceva = 22;
+
     public void setup()
     {
         framerate(3);
-        background(120);
+
+        // The default transparent color is white
+        transparentDrawing();
     };
 
     public void draw()
@@ -32,31 +36,28 @@ public class ProcessingBackgroundExample extends ProcessingContext {
         {
             background(255,millis() % 100, millis() % 255);
         }
+        else
+        {
+            // If we're not focused, make the background transparent
+            background(255,255,255);
+        }
+
+        stroke(255,255,255);
+        strokeWeight(10);
+        line(0,0,100,100);
+
         
     }
 
-
     public void focus()
     {
-        isFocused = true ;
-        loop();
-
-        // If the FPS is too low, we want an immediate redraw.
+        isFocused = true;
         redraw();
     }
 
     public void lostFocus()
     {
-        isFocused = false ;
-
-        // Item is not focused, the background will be static,
-        // so there is no need to loop.
-        noLoop();
-
-        // Change the BG color
-        background(120);
-
-        // One last redraw to clear the screen and apply the BG color.
+        isFocused = false;
         redraw();
     }
 

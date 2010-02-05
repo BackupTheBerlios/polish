@@ -118,7 +118,7 @@ public class MenuMidlet extends MIDlet implements CommandListener {
                 //#style mainItem
                 this.menuScreen.append(noBgIconItem);
                 
-		//#style mainItem
+                //#style mainItem
                 this.menuScreen.append("Settings");
 		
 		//#style mainItem

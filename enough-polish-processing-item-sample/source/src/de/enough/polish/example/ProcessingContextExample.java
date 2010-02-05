@@ -7,7 +7,6 @@ package de.enough.polish.example;
 
 import de.enough.polish.processing.PFont;
 import de.enough.polish.processing.ProcessingContext;
-import de.enough.polish.processing.color;
 
 /**
  * An example ProcessingContext
@@ -25,9 +24,11 @@ public class ProcessingContextExample extends ProcessingContext {
         framerate(10);
         softkey("Hello! :)");
         strokeWeight(10);
-        test = loadFont("example.bmf", color(120,100,50,255));
+        test = loadFont("example.bmf", color(120,100,255,255));
         textFont(test);
         textAlign(CENTER);
+        transparentDrawing();
+        background(255,255,255);
     };
 
     public void draw()
@@ -49,15 +50,16 @@ public class ProcessingContextExample extends ProcessingContext {
     {
         strokeWeight(20);
         background(255,255,0);
-        text = "I have focus!" ;
+        text = "Press 9 to change this text." ;
     }
 
     public void lostFocus()
     {
         text = "I don't have focus.";
         strokeWeight(10);
-        background(120);
+        background(255,255,255);
     }
+
 
     public void keyPressed()
     {
@@ -66,6 +68,11 @@ public class ProcessingContextExample extends ProcessingContext {
 
     public void keyReleased()
     {
+        if ( key == '9' )
+        {
+            text = textInput("Please enter new text", "Lorem ipsum lorem.",999);
+        }
+        
         System.out.println("Released key: " + key );
     }
 
