@@ -7,19 +7,29 @@ import de.enough.polish.ui.Displayable;
 import de.enough.polish.ui.Form;
 import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.StyleSheet;
+import de.enough.skylight.dom.Document;
+import de.enough.skylight.dom.DomNode;
+import de.enough.skylight.event.UserEvent;
+import de.enough.skylight.event.UserEventListener;
 import de.enough.skylight.renderer.Renderer;
 import de.enough.skylight.renderer.RendererListener;
 import de.enough.skylight.renderer.Viewport;
 import de.enough.skylight.renderer.builder.DocumentBuilder;
 import de.enough.skylight.renderer.builder.ViewportBuilder;
+import de.enough.skylight.renderer.node.CssElement;
+import de.enough.skylight.renderer.node.NodeUtils;
 
-public class Browser extends Form implements CommandListener, RendererListener{
+public class Browser extends Form implements CommandListener, RendererListener, UserEventListener{
 
 	Command cmdRefresh = new Command("Refresh",Command.SCREEN,0);
 	
 	Command cmdExit = new Command("Exit",Command.EXIT,Integer.MAX_VALUE);
 	
 	Viewport viewport;
+	
+	DocumentBuilder documentBuilder;
+	
+	ViewportBuilder viewportBuilder;
 	
 	Renderer renderer;
 	
@@ -32,11 +42,12 @@ public class Browser extends Form implements CommandListener, RendererListener{
 		super(url);
 		
 		this.viewport = new Viewport();
+		this.viewport.addUserEventListener(this);
 		
-		DocumentBuilder documentBuilder = new DocumentBuilder(url);
-		ViewportBuilder viewportBuilder = new ViewportBuilder(this.viewport);
+		this.documentBuilder = new DocumentBuilder(url);
+		this.viewportBuilder = new ViewportBuilder(this.viewport);
 		
-		this.renderer = new Renderer(documentBuilder, viewportBuilder);
+		this.renderer = new Renderer(this.documentBuilder, this.viewportBuilder);
 		this.renderer.addListener(this);
 		
 		append(this.viewport);
@@ -77,5 +88,19 @@ public class Browser extends Form implements CommandListener, RendererListener{
 		if(command == cmdExit) {
 			StyleSheet.midlet.notifyDestroyed();
 		}
+	}
+	
+	public void onUserEvent(CssElement element, UserEvent event) {
+Document document = this.viewportBuilder.getDocument();
+		DomNode node = document.getElementById("content");
+		String clazz = NodeUtils.getAttributeValue(node, "class");
+		
+		if(clazz.equals("content")) {
+			NodeUtils.setAttributeValue(node, "class", "contenthide");
+		} else {
+			NodeUtils.setAttributeValue(node, "class", "content");
+		}
+		
+		this.viewport.nodeUpdated(node);
 	}
 }

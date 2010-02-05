@@ -5,7 +5,6 @@ import javax.microedition.midlet.MIDletStateChangeException;
 
 import de.enough.polish.ui.Display;
 import de.enough.skylight.renderer.node.NodeHandlerDirectory;
-import de.enough.skylight.renderer.node.handler.skylight.PropertyHandler;
 
 public class Client extends MIDlet{
 	
@@ -26,13 +25,7 @@ public class Client extends MIDlet{
 			return;
 		}
 		
-		//#if skylight.testrange.type == html
 		NodeHandlerDirectory.getInstance().addHtmlHandlers();
-		//#elif skylight.testrange.type == rss
-		NodeHandlerDirectory.getInstance().addRssHandlers();
-		//#endif
-		
-		NodeHandlerDirectory.getInstance().addHandler(new PropertyHandler());
 		
 		Browser browser = new Browser(url, Display.getDisplay(this));
 		
