@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="j2mepolish" name="enough-polish-example">
+
+	<property file="${user.name}.properties" />
+	<!-- the device used for test builds:                         -->
+	<property  name="device" value="Nokia/Series60E2" />
+
+
+	<property name="wtk.home" location="/home/enough/dev/WTK2.2" />
+	<property name="nokia.home" location="/home/enough/dev/Nokia" />
+	<property name="polish.home" location="../enough-polish-build" />
+	<property  name="mpp.home" location="/home/enough/dev/mpp-sdk"/>
+
+	
+	<!-- task definitions -->
+	<taskdef 
+		name="j2mepolish"
+		classname="de.enough.polish.ant.PolishTask" 
+		classpath="${polish.home}/bin/classes:${polish.home}/lib/jdom.jar" 
+	/>
+
+		
+<!-- build targets, each target can be called via "ant [name]", 
+	 e.g. "ant clean", "ant notest j2mepolish" or just "ant" for calling the default-target -->
+
+<target name="test">
+	<property name="test" value="true"/>
+</target>
+	
+<target name="deploy">
+	<property name="deploy-url" value="http://193.22.164.185:8080/"/>
+</target>
+		
+<target name="init">
+  	<property name="test" value="false"/>
+	<property name="deploy-url" value=""/>
+</target>
+    
+<target depends="init" name="j2mepolish">
+	<j2mepolish>
+	    <!-- general settings -->
+		<info copyright="Copyright 2006 Enough Software. All rights reserved." 
+			description="Test" 
+			infoUrl="http://www.enough.de" 
+			jarName="${polish.vendor}-${polish.name}-${polish.locale}-test.jar" 
+			jarUrl="${deploy-url}${polish.jarName}" 
+			license="GPL" 
+			name="Test" 
+			vendorName="Enough Software" 
+			version="1.0.4"
+	    />
+		<!-- selection of supported devices -->
+		<deviceRequirements if="test">
+			<requirement name="Identifier" value="${device}"/>
+			<!--
+			<requirement name="Name" value="MppPhone"/>
+			-->
+		</deviceRequirements>
+		<deviceRequirements unless="test">
+			<requirement name="Identifier" value="${device}"/>
+		</deviceRequirements>
+	    <!-- build settings -->
+		<build fullscreen="menu" 
+                polishDir="../enough-polish-j2me/source/src" 
+                symbols="polish.skipArgumentCheck" 
+                usePolishGui="true"
+			>
+			<!-- midlets definition -->
+			<midlet class="de.enough.polish.test.Test" name="Test" />
+			<!-- project-wide variables - used for preprocessing  -->
+			<variables>
+				<variable name="polish.TextField.useDirectInput" value="true" />
+				<variable name="polish.TextField.supportSymbolsEntry" value="true" />
+				<!--
+				<variable name="polish.Container.allowCycling" value="false" />
+				-->
+				<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
+				<variable name="polish.useScrollBar" value="true" />
+			</variables>
+			<!-- obfuscator settings: do not obfuscate when the test-property is true -->
+			<obfuscator useDefaultPackage="false" name="ProGuard" unless="test">
+				<keep class="de.enough.polish.example.Dummy" />
+			</obfuscator>
+			<!-- debug settings: only include debug setting when the test-property is true -->
+			<debug if="test" level="error" showLogOnError="true" verbose="false">
+				<!--
+				<filter level="debug" class="de.enough.polish.ui.ChoiceTextField" />
+				<filter level="debug" class="de.enough.polish.ui.TreeItem" />
+				-->
+			</debug>
+			<resources
+				dir="resources"
+				defaultexcludes="yes"
+				excludes="readme.txt"
+			>
+				<localization>
+					<locale name="de" encoding="UTF8"/>
+				</localization>
+			</resources>
+			
+			<sources>
+				<source dir="source/src" />
+				<source dir="source/test" if="test" />
+				<source dir="../twitter-library/source/src" />
+			</sources>
+
+		</build>
+		<emulator wait="true" securityDomain="trusted" enableProfiler="false" enableMemoryMonitor="false" enableNetworkMonitor="false" if="test and not debug">
+			<parameter name="-Xheapsize" value="5M" />
+		</emulator>
+
+		<emulator wait="true" securityDomain="trusted" enableProfiler="false" enableMemoryMonitor="false" enableNetworkMonitor="false" if="debug">
+			<debugger port="8000" />
+			<parameter name="-Xheapsize" value="5M" />
+		</emulator>
+	</j2mepolish>
+</target>
+
+
+<target description="allows a clean build. You should call [ant clean] whenever you made changes to devices.xml, vendors.xml or groups.xml" name="clean">
+	<delete dir="build"/>
+	<delete dir="dist"/>
+</target>
+	
+	<target name="emulator" depends="test,j2mepolish" />
+
+	<target name="cleanbuild" depends="clean,j2mepolish" />
+
+</project>
