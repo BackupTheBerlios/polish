@@ -80,7 +80,6 @@ public abstract class BaseScreen
 			private static boolean versionHigherThan46 = checkSoftwareVersionHigherThan(4.6);
 		//#endif
 		private int keyDownKeyCode;
-		private int keyDownStatus;
 	//#endif
 	private int lastWidth;
 	private int lastHeight;
@@ -936,13 +935,12 @@ public abstract class BaseScreen
 	/* (non-Javadoc)
      * @see net.rim.device.api.ui.Screen#keyDown(int, int)
      */
-    protected boolean keyDown(int keyCode, int status) {
+    protected boolean keyDown(int keyCode, int time) {
         //#if !polish.blackberry.keyUpCalledOnKeyRelease
 			//#if tmp.checkKeyUp
     		if (!versionHigherThan46) {
     		//#endif
         		this.keyDownKeyCode = keyCode;
-        		this.keyDownStatus = status;
 			//#if tmp.checkKeyUp
     		}
     		//#endif
@@ -959,16 +957,16 @@ public abstract class BaseScreen
         		   && (Keypad.map( keyCode ) != Keypad.KEY_ESCAPE))
            {
         	   try {
-        		   return super.keyDown(keyCode, status);                	   
+        		   return super.keyDown(keyCode, time);                	   
         	   } catch (Exception e) {
         		   //#debug error
-        		   System.out.println("super.keyDown(" + keyCode + ", " + status + ") failed" + e );
+        		   System.out.println("super.keyDown(" + keyCode + ", " + time + ") failed" + e );
         	   }
            }
         }
         //#debug
     	System.out.println("keyDown: keyCode=" + keyCode + ", key=" + Keypad.key( keyCode) + ", char=" + Keypad.map( keyCode ) );
-    	keyCode = getMidpKeyCode(keyCode, status);
+    	keyCode = getMidpKeyCode(keyCode);
         keyPressed( keyCode );
         //#if !polish.blackberry.keyUpCalledOnKeyRelease
 			//#if tmp.checkKeyUp
@@ -1005,7 +1003,7 @@ public abstract class BaseScreen
 	 * @param status the status of the BlackBerry keyboard
 	 * @return the MIDP equivalent of the key event
 	 */
-	private int getMidpKeyCode(int keyCode, int status)
+	private int getMidpKeyCode(int keyCode)
 	{
 		int key = Keypad.key( keyCode );
         switch ( Keypad.map( key, 1 ) ) { // 1 is the ALT status
@@ -1038,15 +1036,15 @@ public abstract class BaseScreen
 	/* (non-Javadoc)
      * @see net.rim.device.api.ui.Screen#keyUp(int, int)
      */ 
-	protected boolean keyUp(int keyCode, int status) {
+	protected boolean keyUp(int keyCode, int time) {
         //#if !polish.blackberry.keyUpCalledOnKeyRelease
 	    	// note: this is only a notification triggered for the CAPS key,
 			// not a keyReleased action on platforms before 4.7:
 			//#if tmp.checkKeyUp
 			if (!versionHigherThan46) {
 			//#endif
-				if (keyCode != this.keyDownKeyCode || status != this.keyDownStatus) {
-					return keyDown( keyCode, status );
+				if (keyCode != this.keyDownKeyCode) {
+					return keyDown( keyCode, time );
 				}
 				return false;
 			//#if tmp.checkKeyUp
@@ -1061,16 +1059,16 @@ public abstract class BaseScreen
 		        		   && (Keypad.map( keyCode ) != Keypad.KEY_ESCAPE))
 		           {
 		        	   try {
-		        		   return super.keyUp(keyCode, status);                	   
+		        		   return super.keyUp(keyCode, time);                	   
 		        	   } catch (Exception e) {
 		        		   //#debug error
-		        		   System.out.println("super.keyUp(" + keyCode + ", " + status + ") failed" + e );
+		        		   System.out.println("super.keyUp(" + keyCode + ", " + time + ") failed" + e );
 		        	   }
 		           }
 		        }
 		        //#debug
 		    	System.out.println("keyUp: keyCode=" + keyCode + ", key=" + Keypad.key( keyCode) + ", char=" + Keypad.map( keyCode ) );
-		    	keyCode = getMidpKeyCode(keyCode, status);
+		    	keyCode = getMidpKeyCode(keyCode);
 		        keyReleased( keyCode );
 		        if ( screen != null ) {
 		        	return (screen.keyReleasedProcessed);
@@ -1086,23 +1084,23 @@ public abstract class BaseScreen
 	/* (non-Javadoc)
      * @see net.rim.device.api.ui.Screen#keyRepeat(int, int)
      */
-    protected boolean keyRepeat(int keyCode, int status) {
+    protected boolean keyRepeat(int keyCode, int time) {
         Screen screen = getPolishScreen();
         if ( screen != null ) {
            if (forwardEventToNativeField( screen, keyCode) 
         		   && (Keypad.map( keyCode ) != Keypad.KEY_ESCAPE))
            {
         	   try {
-        		   return super.keyRepeat(keyCode, status);                	   
+        		   return super.keyRepeat(keyCode, time);                	   
         	   } catch (Exception e) {
         		   //#debug error
-        		   System.out.println("super.keyRepeat(" + keyCode + ", " + status + ") failed" + e );
+        		   System.out.println("super.keyRepeat(" + keyCode + ", " + time + ") failed" + e );
         	   }
            }
         }
         //#debug
     	System.out.println("keyRepeat: keyCode=" + keyCode + ", key=" + Keypad.key( keyCode) + ", char=" + Keypad.map( keyCode ) );
-    	keyCode = getMidpKeyCode(keyCode, status);
+    	keyCode = getMidpKeyCode(keyCode);
         keyRepeated(keyCode);
     	return true; // consume the key event
 	}
