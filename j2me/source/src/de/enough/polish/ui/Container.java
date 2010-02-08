@@ -2755,9 +2755,7 @@ public class Container extends Item {
 				}
 			//#endif
 			Item item = this.focusedItem;
-			//#if polish.css.change-styles
-				if (item != null) {
-			//#endif
+			if (item != null) {
 					//#if polish.css.focus-all
 						if (item.isFocused) {
 					//#endif
@@ -2773,9 +2771,7 @@ public class Container extends Item {
 							scr.removeItemCommands(this);
 						}
 					}
-			//#if polish.css.change-styles
-				}
-			//#endif
+			}
 			// change the label-style of this container:
 			//#ifdef polish.css.label-style
 				Style tmpLabelStyle = null;
