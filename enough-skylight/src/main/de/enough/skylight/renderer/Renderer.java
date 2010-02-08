@@ -115,10 +115,10 @@ public class Renderer implements Runnable{
 		setState(STATE_BUILD_DOCUMENT);
 		
 		Document document = this.documentBuilder.build();
+		this.viewportBuilder.setDocument(document);
 		
 		setState(STATE_BUILD_VIEW);
 		
-		this.viewportBuilder.setDocument(document);
 		this.viewportBuilder.build();
 		
 		setState(STATE_READY);
