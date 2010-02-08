@@ -24,7 +24,7 @@ public abstract class NodeHandler {
 	
 	public void handleInteraction(CssElement element) {
 		DomNode node = element.getNode();
-		String onClick = NodeUtils.getAttributeValue(node, "onClick");
+		String onClick = NodeUtils.getAttributeValue(node, "onclick");
 		
 		if(onClick != null) {
 			//#debug sl.debug.event
