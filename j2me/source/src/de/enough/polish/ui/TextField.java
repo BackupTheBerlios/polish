@@ -1994,6 +1994,9 @@ public class TextField extends StringItem
 			if (this.midpTextBox != null) {
 				this.midpTextBox.setConstraints(constraints);
 			}
+			if ((constraints & PASSWORD) == PASSWORD) {
+				this.isPassword = true;
+			}
 		//#endif
 		//#ifdef tmp.directInput
 			this.characters = CHARACTERS;
