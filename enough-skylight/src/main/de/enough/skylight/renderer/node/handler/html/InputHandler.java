@@ -14,6 +14,8 @@ public class InputHandler extends BodyNodeHandler{
 	
 	NodeHandler submitHandler;
 	
+	NodeHandler passwordHandler;
+	
 	public String getTag() {
 		return "input";
 	}
@@ -21,6 +23,7 @@ public class InputHandler extends BodyNodeHandler{
 	public InputHandler() {
 		this.textHandler = new InputTextHandler();
 		this.submitHandler = new InputSubmitHandler();
+		this.passwordHandler = new InputPasswordHandler();
 	}
 	
 	NodeHandler getTypeHandler(CssElement element) {
@@ -33,6 +36,9 @@ public class InputHandler extends BodyNodeHandler{
 				handler = this.textHandler;
 			} else if(type.equals("submit")) {
 				handler = this.submitHandler;
+			} else if(type.equals("password")) {
+				handler = this.passwordHandler;
+				System.out.println("get password");
 			} 
 		}
 		
