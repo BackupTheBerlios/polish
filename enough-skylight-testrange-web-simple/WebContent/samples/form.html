@@ -10,14 +10,20 @@
 				<form class="form">
 					<div class="field">
 						Username<br/>
-						<input type="text" value=""/><br/>
+						<input type="text" id="usernameField" value=""/><br/>
+						<div class="note">
+							please enter your username
+						</div>
 					</div>
 					<div class="field">
 						Password<br/>
-						<input type="password" value=""/><br/>
+						<input type="password" id="passwordField" value=""/><br/>
+						<div class="note">
+							please enter your password
+						</div>
 					</div>
 					<div class="field">
-						<input type="submit" value="submit"/>
+						<input type="submit" value="submit" onclick="alert('Welcome '+document.getElementById('usernameField').value+'\nThe gates of hell are opening')"/>
 					</div>
 				</form>
 			</div>
