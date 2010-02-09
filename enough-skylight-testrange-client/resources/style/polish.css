@@ -41,10 +41,13 @@ middlecommand extends leftcommand{
 }
 
 popup {
-	repaint-previous-screen: true;
 	layout: expand | vexpand | center | vcenter;
 	title-style: browser_title;
 	menubar-style: browser_menubar;
+}
+
+refresh extends popup {
+	repaint-previous-screen: true;
 }
 
 refresh_progress {
@@ -58,7 +61,8 @@ refresh_progress {
 	border-color: #666666;
 }
 
-alert extends popup{
+alert extends popup {
+	repaint-previous-screen: true;
 }
 
 alertMessage {
@@ -68,6 +72,6 @@ alertMessage {
 	border-color: white;
 	padding: 10%;
 	padding-vertical: 0px;
-	background-color: #66000000;
+	background-color: #A0000000;
 }
 
