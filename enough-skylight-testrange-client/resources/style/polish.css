@@ -63,10 +63,10 @@ alert extends popup{
 
 alertMessage {
 	layout: center;
-	font-color: #666666;
+	font-color: white;
 	font-style: bold;
-	background-color: white;
-	border-color: #666666;
+	border-color: white;
 	padding: 10%;
+	padding-vertical: 0px;
 }
 

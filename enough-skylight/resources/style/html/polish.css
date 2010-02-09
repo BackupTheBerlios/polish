@@ -11,9 +11,6 @@ h1 extends element {
 	display: block;
 }
 
-br extends element {
-}
-
 div extends element {
 	display: block;
 }
@@ -51,6 +48,7 @@ strong extends element {
 }
 
 input_text extends element {
+	padding: 1px;
 	font: fnt_input_text;
 	border: bdr_input;
 	min-width: 120px;
@@ -58,23 +56,26 @@ input_text extends element {
 
 input_text:hover {
 	border: bdr_input_focus;
+	font: fnt_input_text_focus;
 }
 
 input_submit extends element {
 	font: fnt_input_submit;
 	border: bdr_input;
 	background: bg_input_submit;
-	min-width: 120px;
+	padding: 1px;
 	text-layout: vcenter | center;
 }
 
 input_submit:hover {
 	border: bdr_input_focus;
+	font: fnt_input_submit_focus;
 }
 
 input_submit:pressed {
 	background: bg_input_submit_focus;
 	border: bdr_input_focus;
+	font: fnt_input_submit_pressed;
 }
 
 input_radio_group extends element {

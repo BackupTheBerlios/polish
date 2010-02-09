@@ -2,6 +2,7 @@ package de.enough.skylight.renderer.node;
 
 import javax.microedition.lcdui.Font;
 
+import de.enough.polish.ui.Color;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.StyleSheet;
@@ -14,19 +15,25 @@ public class CssStyle {
 		System.out.println("creating text style from style " + baseStyle.name);
 		
 		Font resultFont = baseStyle.getFont();
+		Color resultFontColor = baseStyle.getColorProperty("font-color");
 		
-		/*Font baseFont = baseStyle.getFont();
-		Font extendFont = extendStyle.getFont();
-		
-		int baseFontStyle = baseFont.getStyle();
-		int extendFontStyle = extendFont.getStyle();
-		
-		int resultFontStyle = extendFlag(baseFontStyle, extendFontStyle);
-		
-		resultFont = Font.getFont(0, 0, resultFontStyle);*/
-		
+		//#style element
 		Style textStyle = new Style();
 		textStyle.addAttribute("font", resultFont);
+		textStyle.addAttribute("font-color", resultFontColor);
+		
+		Style focusedBaseStyle = (Style)baseStyle.getObjectProperty("focused-style");
+		if(focusedBaseStyle != null) {
+			Font focusedResultFont = focusedBaseStyle.getFont();
+			Color focusedResultColor = focusedBaseStyle.getColorProperty("font-color");
+			
+			//#style element
+			Style focusedTextStyle = new Style();
+			focusedTextStyle.addAttribute("font", focusedResultFont);
+			focusedTextStyle.addAttribute("font-color", focusedResultColor);
+			
+			textStyle.addAttribute("focused-style", focusedBaseStyle);
+		}
 		
 		return textStyle;
 	}

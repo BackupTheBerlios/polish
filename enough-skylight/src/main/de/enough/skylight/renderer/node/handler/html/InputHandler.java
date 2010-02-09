@@ -38,7 +38,6 @@ public class InputHandler extends BodyNodeHandler{
 				handler = this.submitHandler;
 			} else if(type.equals("password")) {
 				handler = this.passwordHandler;
-				System.out.println("get password");
 			} 
 		}
 		
