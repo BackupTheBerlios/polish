@@ -1,4 +1,3 @@
-//#condition polish.usePolishGui
 /*
  * Copyright (c) 2009 Robert Virkus / Enough Software
  *
@@ -30,6 +29,7 @@ import java.util.Enumeration;
 import java.util.Vector;
 
 /**
+ * Implements a thread that is responsible for managing all Processing related activities and events. The thread automatically starts when there is at least one Processing object in the Processing objects list and automatically stops when the object list is empty.
  *
  * @author Ovidiu Iliescu
  */
@@ -37,44 +37,82 @@ public class ProcessingThread extends Thread implements Runnable {
 
     protected static Vector objects = new Vector();
     protected static Vector events = new Vector();
+
     protected static Thread thread = null;
-    
+
+    /**
+     * Add a new Processing object to the internal Processing objects list.
+     * @param object
+     */
     public static void addProcessingObject ( ProcessingInterface object )
     {
-        removeProcessingObject(object);
-        objects.addElement(object);
-
-        if ( (objects.size() == 1) && (thread == null) )
+        if ( ! objects.contains(object) )
         {
-            startThread(new ProcessingThread());
+            objects.addElement(object);
+        }
+
+        if ( (objects.size() == 1) && (thread == null)  )
+        {
+            thread = new ProcessingThread();
+            startThread(thread);
         }
     }
 
 
+    /**
+     * Queue an event
+     * @param event
+     */
     public static void queueEvent(ProcessingEvent event)
     {
-        events.addElement(event);
+        
+        if ( ! (event.eventType == ProcessingEvent.EVENT_INIT) )
+        {
+            events.addElement(event);
+        }
+        else // Special handling for the init event
+        {
+            addProcessingObject(event.object);
+        }
     }
-    
+
+    /**
+     * Remove a processing object from the internal list.
+     * @param object
+     */
     public static void removeProcessingObject ( ProcessingInterface object )
     {
         objects.removeElement(object);
     }
 
+    /**
+     * Start a new thread
+     * @param object
+     */
     protected static void startThread(Runnable object)
     {
             thread = new Thread(object);
             thread.start();
     }
 
+    /**
+     * The actual code of the thread.
+     */
     public void run()
     {
         Enumeration objList;
         ProcessingInterface temp;
         ProcessingEvent event;
-        
-        while (true)
+
+
+        while ( true )
         {
+
+            // End the thread if there are no Processing objects left.
+            if ( objects.size() == 0 )
+            {
+                break;
+            }
 
             // Check if draw events have to be triggered.
             objList = objects.elements();
@@ -99,7 +137,7 @@ public class ProcessingThread extends Thread implements Runnable {
             }
             
 
-            // Execute any events that might be queued
+            // Process any events that might be queued
             objList = events.elements();
             while ( objList.hasMoreElements() )
             {
@@ -167,6 +205,11 @@ public class ProcessingThread extends Thread implements Runnable {
 
             }
         }
+
+        // Make the thread variable null so another thread can be started in
+        // the future.
+        thread = null;
+
     }
 
 

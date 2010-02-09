@@ -1,4 +1,3 @@
-//#condition polish.usePolishGui
 /*
  * Copyright (c) 2009 Robert Virkus / Enough Software
  *
@@ -31,6 +30,7 @@ import de.enough.polish.ui.Command;
 import javax.microedition.lcdui.Graphics;
 
 /**
+ * Implements a ProcessingItem.
  *
  * @author Ovidiu
  */
@@ -40,6 +40,10 @@ public class ProcessingItem extends Item implements ProcessingContextContainerIn
     protected Command cmd = new Command ( "" , Command.ITEM, 0);
     protected String softkeyCommandText = null ;
 
+    /**
+     * Create a ProcessingItem based on the specified context.
+     * @param context
+     */
     public ProcessingItem( ProcessingInterface context)
     {
         super();
@@ -73,7 +77,10 @@ public class ProcessingItem extends Item implements ProcessingContextContainerIn
         }
         return true;
     }
-    
+
+    /**
+     * @see de.enough.polish.ui.Item#paintContent(int, int, int, int, javax.microedition.lcdui.Graphics) 
+     */
     public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 
         setContentWidth ( itemWidth - paddingLeft - paddingRight );
@@ -94,12 +101,18 @@ public class ProcessingItem extends Item implements ProcessingContextContainerIn
 
     }
 
+     /**
+     * @see de.enough.polish.ui.Item#destroy() 
+     */
     public void destroy()
     {
          context.signalDestroy();
          super.destroy();
     }
 
+     /**
+     * @see de.enough.polish.ui.Item#defocus(de.enough.polish.ui.Style) 
+     */
     protected void defocus(Style style)
     {
         // Remove the Item command (if any)
@@ -110,6 +123,9 @@ public class ProcessingItem extends Item implements ProcessingContextContainerIn
         super.defocus(style);
     }
 
+     /**
+     * @see de.enough.polish.ui.Item#focus(de.enough.polish.ui.Style, int) 
+     */
     protected Style focus(Style style, int direction)
     {
         // If requested by the Processing code, add an Item command
@@ -123,31 +139,46 @@ public class ProcessingItem extends Item implements ProcessingContextContainerIn
         return super.focus(style, direction);
     }
 
+     /**
+     * @see de.enough.polish.ui.Item#handleCommand(de.enough.polish.ui.Command) 
+     */
     protected boolean handleCommand(Command cmd)
     {
         context.signalSoftkeyPressed(cmd.getLabel());
         return super.handleCommand(cmd);
     }
 
+     /**
+     * @see de.enough.polish.ui.Item#initContent(int, int, int) 
+     */
     protected void initContent(int firstLineWidth, int availWidth, int availHeight) {
 
         setContentWidth ( availWidth );
         setContentHeight ( availHeight );
 
     }
-
+    
+    /**
+     * @see de.enough.polish.ui.Item#handleKeyPressed(int, int) 
+     */
     protected boolean handleKeyPressed( int keyCode, int gameAction ) {
         context.signalKeyPressed(keyCode);
         return context.areKeypressesCaptured();
         
     }
 
+     /**
+     * @see de.enough.polish.ui.Item#handleKeyReleased(int, int) 
+     */
     protected boolean handleKeyReleased( int keyCode, int gameAction ) {
 
         context.signalKeyReleased(keyCode);
         return context.areKeypressesCaptured();
     }
 
+     /**
+     * @see de.enough.polish.ui.Item#handleKeyRepeated(int, int) 
+     */
     protected boolean handleKeyRepeated( int keyCode, int gameAction ) {
 
         context.signalKeyPressed(keyCode);
@@ -156,6 +187,9 @@ public class ProcessingItem extends Item implements ProcessingContextContainerIn
     }
 
 
+     /**
+     * @see de.enough.polish.ui.Item#handlePointerPressed(int, int) 
+     */
     protected boolean handlePointerPressed(int x, int y)
     {
         if ( ! isWithinBounds(x, y) )
@@ -168,6 +202,9 @@ public class ProcessingItem extends Item implements ProcessingContextContainerIn
         return context.arePointerEventsCaptured();
     }
 
+     /**
+     * @see de.enough.polish.ui.Item#handlePointerReleased(int, int) 
+     */
     protected boolean handlePointerReleased(int x, int y)
     {
         if ( ! isWithinBounds(x, y) )
@@ -180,6 +217,9 @@ public class ProcessingItem extends Item implements ProcessingContextContainerIn
         return context.arePointerEventsCaptured();
     }
 
+     /**
+     * @see de.enough.polish.ui.Item#handlePointerDragged(int, int) 
+     */
     protected boolean handlePointerDragged(int x, int y)
     {
         if ( ! isWithinBounds(x, y) )
@@ -192,6 +232,9 @@ public class ProcessingItem extends Item implements ProcessingContextContainerIn
         return context.arePointerEventsCaptured();
     }
 
+     /**
+     * @see de.enough.polish.ui.Item#handlePointerTouchDown(int, int) 
+     */
     public boolean handlePointerTouchDown(int x, int y)
     {
         if ( ! isWithinBounds(x, y) )
@@ -204,6 +247,9 @@ public class ProcessingItem extends Item implements ProcessingContextContainerIn
         return context.arePointerEventsCaptured();
     }
 
+     /**
+     * @see de.enough.polish.ui.Item#handlePointerTouchUp(int, int) 
+     */
     public boolean handlePointerTouchUp(int x, int y)
     {
         if ( ! isWithinBounds(x, y) )
@@ -216,16 +262,25 @@ public class ProcessingItem extends Item implements ProcessingContextContainerIn
         return context.arePointerEventsCaptured();
     }
 
+     /**
+     * @see de.enough.polish.ui.Item#createCssSelector() 
+     */
     protected String createCssSelector() {
             return "processing";
     }
 
+     /**
+     * @see de.enough.polish.processing.ProcessingContextContainerInterface#processingRequestRepaint() 
+     */
     public void processingRequestRepaint() 
     {
         // An explicit refresh has been requested by Processing
         repaint(0,0,itemWidth,itemHeight);
     }
 
+    /**
+     * @see de.enough.polish.processing.ProcessingContextContainerInterface#setSoftkey(java.lang.String) 
+     */
     public void setSoftkey(String text)
     {
         softkeyCommandText = text ;

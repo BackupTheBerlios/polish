@@ -29,6 +29,7 @@ import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.Style;
 
 /**
+ * Implements a ProcessingScreen
  *
  * @author Ovidiu Iliescu
  */
@@ -38,6 +39,9 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
     protected String softkeyCommandText = null;
     ProcessingInterface context = null;
 
+    /**
+     * Initializes the context
+     */
     public void initProcessingContext() {
         context.signalInitialization();
         context.setParent(this);
@@ -45,9 +49,10 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
     }
 
     /**
-     * Creates a new, empty <code>ProcessingScreen</code>.
+     * Creates a new ProcessingScreen based on the specified ProcessingContext.
      *
-     * @param title the Form's title, or null for no title
+     * @param screen's title
+     * @param the context
      */
     public ProcessingScreen(String title, ProcessingInterface context) {
         super(title, null, true);
@@ -56,10 +61,11 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
     }
 
     /**
-     * Creates a new, empty <code>ProcessingScreen</code>.
+     * Creates a new ProcessingScreen based on the specified ProcessingContext, with the given style.
      *
-     * @param title the Form's title, or null for no title
-     * @param style the style of this form
+     * @param screen's title
+     * @param the context
+     * @param the style to use
      */
     public ProcessingScreen(String title, ProcessingInterface context, Style style) {
         super(title, style, true);
@@ -83,6 +89,9 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
 
     }
 
+    /**
+     * @see de.enough.polish.ui.Screen#paintScreen(javax.microedition.lcdui.Graphics) 
+     */
     protected void paintScreen(Graphics g) {
 
         context.signalSizeChange(contentWidth, contentHeight);
@@ -98,7 +107,9 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
           context.getTransparentRgbImage().paint(contentX, contentY, g);
        }
     }
-
+    /**
+     * @see de.enough.polish.ui.Screen#handleKeyPressed(int, int) 
+     */
     protected boolean handleKeyPressed(int keyCode, int gameAction) {
 
         context.signalKeyPressed(keyCode);
@@ -106,12 +117,18 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
 
     }
 
+    /**
+     * @see de.enough.polish.ui.Screen#handleKeyReleased(int, int) 
+     */
     protected boolean handleKeyReleased(int keyCode, int gameAction) {
 
         context.signalKeyReleased(keyCode);
         return context.areKeypressesCaptured();
     }
 
+    /**
+     * @see de.enough.polish.ui.Screen#handleKeyRepeated(int, int) 
+     */
     protected boolean handleKeyRepeated(int keyCode, int gameAction) {
 
         context.signalKeyPressed(keyCode);
@@ -119,6 +136,9 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
 
     }
 
+    /**
+     * @see de.enough.polish.ui.Screen#handlePointerPressed(int, int) 
+     */
     protected boolean handlePointerPressed(int x, int y) {
         if (!isWithinBounds(x, y))
         {
@@ -130,6 +150,9 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
         return context.arePointerEventsCaptured();
     }
 
+    /**
+     * @see de.enough.polish.ui.Screen#handlePointerReleased(int, int) 
+     */
     protected boolean handlePointerReleased(int x, int y) {
         if (!isWithinBounds(x, y))
         {
@@ -141,6 +164,9 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
         return context.arePointerEventsCaptured();
     }
 
+    /**
+     * @see de.enough.polish.ui.Screen#handlePointerDragged(int, int) 
+     */
     protected boolean handlePointerDragged(int x, int y) {
         if (!isWithinBounds(x, y))
         {
@@ -152,6 +178,9 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
         return context.arePointerEventsCaptured();
     }
 
+    /**
+     * @see de.enough.polish.ui.Screen#handlePointerTouchDown(int, int) 
+     */
     public boolean handlePointerTouchDown(int x, int y) {
         if (!isWithinBounds(x, y))
         {
@@ -163,6 +192,9 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
         return context.arePointerEventsCaptured();
     }
 
+    /**
+     * @see de.enough.polish.ui.Screen#handlePointerTouchUp(int, int)
+     */
     public boolean handlePointerTouchUp(int x, int y) {
         if (!isWithinBounds(x, y))
         {
@@ -174,30 +206,48 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
         return context.arePointerEventsCaptured();
     }
 
+    /**
+     * @see de.enough.polish.ui.Screen#handleCommand(de.enough.polish.ui.Command) 
+     */
     protected boolean handleCommand(Command cmd) {
         context.signalSoftkeyPressed(cmd.getLabel());
         return super.handleCommand(cmd);
     }
 
+    /**
+     * @see de.enough.polish.ui.Screen#createCssSelector() 
+     */
     protected String createCssSelector() {
         return "processing";
     }
 
+    /**
+     * @see de.enough.polish.processing.ProcessingContextContainerInterface#processingRequestRepaint() 
+     */
     public void processingRequestRepaint() {
 
         repaint();
     }
 
+    /**
+     * @see de.enough.polish.ui.Screen#hideNotify() 
+     */
     public void hideNotify() {
         context.signalLostFocus();
         super.hideNotify();
     }
 
+    /**
+     * @see de.enough.polish.ui.Screen#releaseResources() 
+     */
     public void releaseResources() {
         context.signalDestroy();
         super.releaseResources();
     }
 
+    /**
+     * @see de.enough.polish.processing.ProcessingContextContainerInterface#setSoftkey(java.lang.String) 
+     */
     public void setSoftkey(String text) {
         softkeyCommandText = text;
 

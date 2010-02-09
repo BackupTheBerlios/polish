@@ -1,4 +1,3 @@
-//#condition polish.usePolishGui
 /*
  * Copyright (c) 2009 Robert Virkus / Enough Software
  *
@@ -25,31 +24,46 @@
 
 package de.enough.polish.processing;
 
-import de.enough.polish.util.RgbImage;
 import javax.microedition.lcdui.Image;
 
 /**
- * PImage class that extends the existing RgbImage class from J2ME Polish.
- * For compatibility purposes.
+ * Placeholder class that emulates the behavior of a Mobile Processing PImage, for compatibility with existing Mobile Processing scripts.
  *
  * @author Ovidiu Iliescu
  */
 
-public class PImage extends RgbImage {
+public class PImage {
 
+    private Image img = null ;
+    
     public PImage(int width, int height)
     {
-        super(width, height);
+        img = Image.createImage(width, height);
     }
 
     public PImage(Image img)
     {
-        super(img, true);
+        this.img = img;
     }
 
     public PImage(byte[] data)
     {
-        super(Image.createImage(data, 0, data.length), true);
+        img = Image.createImage(data, 0, data.length);
+    }
+
+    public Image getImage()
+    {
+        return img;
+    }
+
+    public int getWidth()
+    {
+        return img.getWidth();
+    }
+
+    public int getHeight()
+    {
+        return img.getHeight();
     }
 
 }

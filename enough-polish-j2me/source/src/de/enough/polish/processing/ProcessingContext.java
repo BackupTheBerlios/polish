@@ -1,4 +1,3 @@
-//#condition polish.usePolishGui
 /*
  * Copyright (c) 2009 Robert Virkus / Enough Software
  *
@@ -50,6 +49,7 @@ import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreNotFoundException;
 
 /**
+ * This is the standard Mobile Processing implementation for J2ME Polish.
  *
  * @author Ovidiu Iliescu
  */
@@ -142,16 +142,27 @@ public class ProcessingContext implements ProcessingInterface {
 
 
 
+    /**
+     * Creates a new ProcessingContext of size (-1,-1)
+     */
     public ProcessingContext ()
     {
         _initVars (-1,-1);
     }
-    
+
+    /**
+     * Creates a new ProcessingContext with the specified size
+     * @param width
+     * @param height
+     */
     public ProcessingContext(int width, int height)
     {
             _initVars(width, height);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#triggerRepaint()
+     */
     public void triggerRepaint()
     {
             if ( _parent != null )
@@ -172,6 +183,7 @@ public class ProcessingContext implements ProcessingInterface {
      * Checks if a refresh of the buffer is needed.
      * 
      * @return true if the buffer should be refreshed, false otherwise.
+     * @see de.enough.polish.processing.ProcessingInterface#checkForRefresh() 
      */
     public boolean checkForRefresh() {
                 
@@ -209,6 +221,7 @@ public class ProcessingContext implements ProcessingInterface {
     /**
      * Sets the parent of this Processing Context
      * @param parent
+     * @see de.enough.polish.processing.ProcessingInterface#setParent(de.enough.polish.processing.ProcessingContextContainerInterface) 
      */
     public void setParent ( ProcessingContextContainerInterface parent)
     {
@@ -221,6 +234,7 @@ public class ProcessingContext implements ProcessingInterface {
      * of the context. If the refresh is forced (outside of the animation timeline)
      * then the last frame time should not be updated in order to avoid potential issues.
      * @param specified if the last frame time should be updated also
+     * @see de.enough.polish.processing.ProcessingInterface#executeRefresh(boolean) 
      */
     public void executeRefresh(boolean alsoUpdateLastFrameTime)
     {
@@ -272,7 +286,7 @@ public class ProcessingContext implements ProcessingInterface {
                 }
                 else
                 {
-                    _bgImage.paint( (width - _bgImage.getWidth()) / 2, (height - _bgImage.getHeight()) /2, _bufferg );
+                    _bufferg.drawImage(_bgImage.getImage(), width - _bgImage.getWidth() / 2, height - _bgImage.getHeight() /2, Graphics.TOP | Graphics.LEFT );
                 }
             }
 
@@ -365,41 +379,65 @@ public class ProcessingContext implements ProcessingInterface {
 
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#repaintBackground()
+     */
     public void repaintBackground()
     {
         _repaintBackground = true;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#dontRepaintBackground()
+     */
     public void dontRepaintBackground()
     {
         _repaintBackground = false ;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#transparentDrawing()
+     */
     public void transparentDrawing()
     {
         _transparentDrawing = true ;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#opaqueDrawing() 
+     */
     public void opaqueDrawing()
     {
         _transparentDrawing = false ;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#setTransparentColor(color)
+     */
     public void setTransparentColor(color color)
     {
         _transparentColor = color.color ;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#getTransparentColor() 
+     */
     public int getTransparentColor()
     {
         return _transparentColor;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#isDrawingTransparent()
+     */
     public boolean isDrawingTransparent()
     {
         return _transparentDrawing ;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#getTransparentRgbImage() 
+     */
     public RgbImage getTransparentRgbImage()
     {
        // Initialize the transparent RgbImage if necessary
@@ -442,39 +480,60 @@ public class ProcessingContext implements ProcessingInterface {
        return _transparentImage;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#signalPointerDragged(int, int)
+     */
     public void signalPointerDragged(int x, int y)
     {
         ProcessingThread.queueEvent(new ProcessingEvent(this,ProcessingEvent.EVENT_POINTER_DRAGGED,x,y));
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#signalPointerReleased(int, int) 
+     */
     public void signalPointerReleased(int x, int y)
     {
         ProcessingThread.queueEvent(new ProcessingEvent(this,ProcessingEvent.EVENT_POINTER_RELEASED,x,y));
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#signalPointerPressed(int, int)
+     */
     public void signalPointerPressed(int x, int y)
     {
         ProcessingThread.queueEvent(new ProcessingEvent(this,ProcessingEvent.EVENT_POINTER_PRESSED,x,y));
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#setPointerCoordinates(int, int)
+     */
     public void setPointerCoordinates(int x, int y)
     {
         pointerX = x;
         pointerY = y;
     }
 
+    /**
+     * Sets the raw keycode to use for processing the next keypress.
+     * @param keycode
+     */
     public void setRawKeyCode(int keyCode)
     {
         _key(keyCode);
     }
 
-
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#setKeyAndKeyCode(int, int)
+     */
    public void setKeyAndKeyCode(char key, int keyCode)
    {
        this.key = key;
        this.keyCode = keyCode;
    }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#signalKeyPressed(int) 
+     */
    public void signalKeyPressed(int keyCode) {
         keyPressed = true;
 
@@ -486,6 +545,9 @@ public class ProcessingContext implements ProcessingInterface {
         ProcessingThread.queueEvent(new ProcessingEvent(this,ProcessingEvent.EVENT_KEY_PRESSED,this.key,this.keyCode));
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#signalKeyReleased(int) 
+     */
     public void signalKeyReleased(int keyCode) {
         keyPressed = false;
 
@@ -493,75 +555,123 @@ public class ProcessingContext implements ProcessingInterface {
         ProcessingThread.queueEvent(new ProcessingEvent(this,ProcessingEvent.EVENT_KEY_RELEASED,this.key,this.keyCode));
     }
 
+
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#signalSoftkeyPressed(String)
+     */
     public void signalSoftkeyPressed(String label) {
         ProcessingThread.queueEvent(new ProcessingEvent(this,ProcessingEvent.EVENT_SOFTKEY_PRESSED,label));
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#signalApplicationSuspend() 
+     */
     public void signalApplicationSuspend()
     {
         ProcessingThread.queueEvent(new ProcessingEvent(this,ProcessingEvent.EVENT_APP_SUSPEND));
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#signalApplicationResume()
+     */
     public void signalApplicationResume()
     {
         ProcessingThread.queueEvent(new ProcessingEvent(this,ProcessingEvent.EVENT_APP_RESUME));
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#signalDestroy()
+     */
     public void signalDestroy()
     {
         ProcessingThread.queueEvent(new ProcessingEvent(this,ProcessingEvent.EVENT_APP_DESTROY));
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#signalInitialization()
+     */
     public void signalInitialization()
     {
-        ProcessingThread.addProcessingObject(this);
+        ProcessingThread.queueEvent(new ProcessingEvent(this,ProcessingEvent.EVENT_INIT));
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#signalHasFocus()
+     */
     public void signalHasFocus()
     {
         ProcessingThread.queueEvent( new ProcessingEvent(this,ProcessingEvent.EVENT_HAS_FOCUS));
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#signalLostFocus
+     */
     public void signalLostFocus()
     {
         ProcessingThread.queueEvent( new ProcessingEvent(this,ProcessingEvent.EVENT_LOST_FOCUS));
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#getSoftkeyLabel()
+     */
     public String getSoftkeyLabel()
     {
         return _softkeyLabel;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#captureKeyPresses() 
+     */
     public void captureKeyPresses()
     {
         _areKeypressesCaptured = true ;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#releaseKeyPresses() 
+     */
     public void releaseKeyPresses()
     {
         _areKeypressesCaptured = false;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#areKeypressesCaptured() 
+     */
     public boolean areKeypressesCaptured()
     {
         return _areKeypressesCaptured;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#capturePointerEvents()
+     */
     public void capturePointerEvents()
     {
         _arePointerEventsCaptured = true ;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#releasePointerEvents()
+     */
     public void releasePointerEvents()
     {
         _arePointerEventsCaptured = false ;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#arePointerEventsCaptured()
+     */
     public boolean arePointerEventsCaptured()
     {
         return _arePointerEventsCaptured ;
     }
 
+    /**
+     * Initializes the inteernal variables of this context and sets the image buufer width and height
+     * @param width
+     * @param height
+     */
     public void _initVars(int width, int height)
     {
             background(200);
@@ -601,7 +711,14 @@ public class ProcessingContext implements ProcessingInterface {
             // for more information
     }
 
-    public double _Hue_2_RGB(double v1, double v2, double vH) //Function Hue_2_RGB
+    /**
+     * Helper function used in converting colors from HSB to RGB.
+     * @param v1
+     * @param v2
+     * @param vH
+     * @return
+     */
+    public double _Hue_2_RGB(double v1, double v2, double vH)
     {
         if (vH < 0)
         {
@@ -626,7 +743,11 @@ public class ProcessingContext implements ProcessingInterface {
         return (v1);
     }
 
-
+    /**
+     * Draws the a polygon based on the vertexes in the vertex buffer. You can specify the indexes of the first and last vertexes of the polygon.
+     * @param start vertex index
+     * @param end vertex index
+     */
     public void _polygon(int startIndex, int endIndex) {
         //// make sure at least 2 vertices
         if (endIndex >= (startIndex + 2)) {
@@ -663,7 +784,17 @@ public class ProcessingContext implements ProcessingInterface {
     }
 
    
-
+    /**
+     * Converts a curve to a series of vertexes and adds said vertexes to the vertex buffer.
+     * @param x0
+     * @param y0
+     * @param x1
+     * @param y1
+     * @param dx0
+     * @param dx1
+     * @param dy0
+     * @param dy1
+     */
     public void _plotCurveVertices(int x0, int y0, int x1, int y1, int dx0, int dx1, int dy0, int dy1) {
         int x, y, t, t2, t3, h0, h1, h2, h3;
         vertex(x0 >> 8, y0 >> 8);
@@ -683,6 +814,13 @@ public class ProcessingContext implements ProcessingInterface {
         vertex(x1 >> 8, y1 >> 8);
     }
 
+    /**
+     * Sets the clip region for the image buffer.
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     */
     public void _clip(int x, int y, int width, int height) {
         int x2 = x + width;
         int y2 = y + height;
@@ -703,7 +841,10 @@ public class ProcessingContext implements ProcessingInterface {
     }
 
 
-
+    /**
+     * Converts a keyCode to its corresponding key (as a char - e.g. '9', '*' , '#') and sets the key variable accordingly.
+     * @param keyCode
+     */
     public void _key(int keyCode) {
         this.rawKeyCode = keyCode;
         //// MIDP 1.0 says the KEY_ values map to ASCII values, but I've seen it
@@ -745,6 +886,10 @@ public class ProcessingContext implements ProcessingInterface {
 
 
 
+    /**
+     * Processes the given keycode when in multitap mode.
+     * @param keyCode
+     */
     public final void _multitapKeyPressed(int keyCode) {
         boolean editing = (keyCode == this.keyCode) && ((millis() - _multitapLastEdit) <= _multitapEditDuration);
         char newChar = 0;
@@ -878,6 +1023,9 @@ public class ProcessingContext implements ProcessingInterface {
         }
     }
 
+    /**
+     * Checks if the internal Calendar variable is initialized and if not initializes it.
+     */
     public void _checkCalendar() {
         if (_calendar == null) {
             _calendar = Calendar.getInstance();
@@ -910,51 +1058,80 @@ public class ProcessingContext implements ProcessingInterface {
 
     /**
      * Forces a redraw by calling draw();
+     * @see de.enough.polish.processing.ProcessingInterface#redraw() 
      */
     public void redraw() {
         ProcessingThread.queueEvent(new ProcessingEvent(this,ProcessingEvent.EVENT_DRAW));
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#loop()
+     */
     public void loop() {
         _loop = true;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#noLoop()
+     */
     public void noLoop() {
         _loop = false;
     }
 
-    //#if !tmp.includeContext
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#destroy()
+     */
     public void destroy() {        
         // Do nothing by default
     }
-    //#endif
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#suspend()
+     */
     public void suspend() {
         // Do nothing by default
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#resume()
+     */
     public void resume() {
         // Do nothing by default
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#setup()
+     */
     public void setup() {
         // Do nothing by default
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#exit()
+     */
     public void exit() {
-        destroy();
+        signalDestroy();
         _haltExecution = true;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#colorMode(int) 
+     */
     public void colorMode(int mode) {
         _colorMode = mode;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#colorMode(int, int) 
+     */
     public void colorMode(int mode, int range) {
         _colorMode = mode;
         _colorRange1 = _colorRange2 = _colorRange3 = range;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#colorMode(int, int, int, int) 
+     */
     public void colorMode(int mode, int range1, int range2, int range3) {
         _colorMode = mode;
         _colorRange1 = range1;
@@ -962,16 +1139,25 @@ public class ProcessingContext implements ProcessingInterface {
         _colorRange3 = range3;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#color(int)
+     */
     public color color(int gray) {
         int col = (255 << 24) | (gray << 16) | (gray << 8) | (gray);
         return new color(col);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#color(int, int)
+     */
     public color color(int gray, int alpha) {
         int col = (alpha << 24) | (gray << 16) | (gray << 8) | (gray);
         return new color(col);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#colorMode(int, int, int, int) 
+     */
     public color color(int value1, int value2, int value3, int alpha) {
         if (_colorMode == RGB)
         {
@@ -1030,6 +1216,9 @@ public class ProcessingContext implements ProcessingInterface {
         }
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#background(int) 
+     */
     public void background(int gray) {
         _bgImageMode = false;
         color x = color(gray);
@@ -1037,6 +1226,9 @@ public class ProcessingContext implements ProcessingInterface {
         _repaintBackground = true ;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#background(de.enough.polish.processing.color) 
+     */
     public void background(color color)
     {
         _bgImageMode = false;
@@ -1044,6 +1236,9 @@ public class ProcessingContext implements ProcessingInterface {
         _repaintBackground = true ;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#background(int, int, int) 
+     */
     public void background(int value1, int value2, int value3)
     {
         _bgImageMode = false;
@@ -1053,6 +1248,9 @@ public class ProcessingContext implements ProcessingInterface {
         
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#background(de.enough.polish.processing.PImage) 
+     */
     public void background(PImage image)
     {
         _bgImageMode = true;
@@ -1060,31 +1258,49 @@ public class ProcessingContext implements ProcessingInterface {
         _repaintBackground = true ;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#strokeWeight(int) 
+     */
     public void strokeWeight(int width) {
         _strokeWidth = width;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#stroke(de.enough.polish.processing.color) 
+     */
     public void stroke(color whatColor) {
         _hasStroke = true;
         _strokeColor = whatColor.color;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#stroke(int) 
+     */
     public void stroke(int color) {
         color temp = color(color);
         _strokeColor = temp.color ;
         _hasStroke = true;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#stroke(int, int, int) 
+     */
     public void stroke(int v1, int v2, int v3) {
         color temp = color(v1,v2,v3,255);
         _strokeColor = temp.color ;
         _hasStroke = true;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#noStroke()
+     */
     public void noStroke() {
         _hasStroke = false;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#fill(int)
+     */
     public void fill(int gray)
     {
         _hasFill = true;
@@ -1092,12 +1308,18 @@ public class ProcessingContext implements ProcessingInterface {
         _fillColor = x.color ;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#fill(de.enough.polish.processing.color) 
+     */
     public void fill(color color)
     {
         _hasFill = true;
         _fillColor = color.color;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#fill(int, int, int) 
+     */
     public void fill(int value1, int value2, int value3)
     {
         _hasFill = true;
@@ -1105,20 +1327,32 @@ public class ProcessingContext implements ProcessingInterface {
         _fillColor = x.color ;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#noFill()
+     */
     public void noFill()
     {
         _hasFill = false;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#framerate(int)
+     */
     public void framerate(int framerate) {
         _timeBetweenFrames = 1000 / framerate;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#draw()
+     */
     public void draw() 
     {
         // Does nothing by default
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#line(int, int, int, int) 
+     */
     public void line(int x1, int y1, int x2, int y2) {
         if (_hasStroke) {
             _bufferg.setColor(_strokeColor);
@@ -1168,6 +1402,9 @@ public class ProcessingContext implements ProcessingInterface {
         }
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#point(int, int) 
+     */
     public void point(int x1, int y1) {
         if (_hasStroke) {
             _bufferg.setColor(_strokeColor);
@@ -1175,6 +1412,9 @@ public class ProcessingContext implements ProcessingInterface {
         }
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#triangle(int, int, int, int, int, int) 
+     */
     public void triangle(int x1, int y1, int x2, int y2, int x3, int y3) {
         int prevShapeMode = _shapeMode ;
         _shapeMode = POLYGON;
@@ -1189,6 +1429,9 @@ public class ProcessingContext implements ProcessingInterface {
         _shapeMode = prevShapeMode ;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#quad(int, int, int, int, int, int, int, int) 
+     */
     public void quad(int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4) {
         int prevShapeMode = _shapeMode ;
         _shapeMode = POLYGON;
@@ -1205,6 +1448,9 @@ public class ProcessingContext implements ProcessingInterface {
         _shapeMode = prevShapeMode ;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#rect(int, int, int, int) 
+     */
      public void rect(int x, int y, int width, int height) {
         int temp;
         switch (_rectMode) {
@@ -1231,12 +1477,18 @@ public class ProcessingContext implements ProcessingInterface {
         }
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#rectMode(int) 
+     */
      public void rectMode(int mode) {
         if ((mode >= CENTER) && (mode <= CORNER)) {
             _rectMode = mode;
         }
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#ellipse(int, int, int, int) 
+     */
      public void ellipse(int x, int y, int width, int height) {
         int temp;
         switch (_ellipseMode) {
@@ -1269,12 +1521,18 @@ public class ProcessingContext implements ProcessingInterface {
         }
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#ellipseMode(int) 
+     */
     public void ellipseMode(int mode) {
         if ((mode >= CENTER) && (mode <= CORNERS)) {
             _ellipseMode = mode;
         }
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#curve(int, int, int, int, int, int, int, int) 
+     */
     public void curve(int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4) {
         int prevShapeMode = _shapeMode ;
         beginShape(LINE_STRIP);
@@ -1288,6 +1546,9 @@ public class ProcessingContext implements ProcessingInterface {
         _shapeMode = prevShapeMode ;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#bezier(int, int, int, int, int, int, int, int) 
+     */
     public void bezier(int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4) {
         int prevShapeMode = _shapeMode ;
         beginShape(LINE_STRIP);
@@ -1297,6 +1558,9 @@ public class ProcessingContext implements ProcessingInterface {
         _shapeMode = prevShapeMode;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#curveVertex(int, int) 
+     */
      public void curveVertex(int x, int y) {
         //// use fixed point, 8-bit precision
         _curveVertex[_curveVertexIndex] = x << 8;
@@ -1323,6 +1587,9 @@ public class ProcessingContext implements ProcessingInterface {
         }
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#loop()
+     */
     public void bezierVertex(int x1, int y1, int x2, int y2, int x3, int y3) {
 
         //// plotCurveVertices will add x0, y0 back
@@ -1350,6 +1617,9 @@ public class ProcessingContext implements ProcessingInterface {
                           dx0, dx1, dy0, dy1);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#vertex(int, int)
+     */
     public void vertex(int x, int y) {
         _vertex[_vertexIndex] = x;
         _vertexIndex++;
@@ -1364,8 +1634,9 @@ public class ProcessingContext implements ProcessingInterface {
         }
     }
 
-
-
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#beginShape(int) 
+     */
     public void beginShape(int mode) {
         if ((mode >= POINTS) && (mode <= POLYGON)) {
             _shapeMode = mode;
@@ -1377,6 +1648,9 @@ public class ProcessingContext implements ProcessingInterface {
     }
 
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#endShape() 
+     */
     public void endShape() {
         int i;
         int step;
@@ -1448,6 +1722,9 @@ public class ProcessingContext implements ProcessingInterface {
     }
 
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#loadImage(java.lang.String) 
+     */
     public PImage loadImage(String filename) {
         try {
             Image img = Image.createImage("/" + filename);
@@ -1457,45 +1734,77 @@ public class ProcessingContext implements ProcessingInterface {
         }
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#loadImage(byte[]) 
+     */
     public PImage loadImage(byte[] data)
     {
         return new PImage(data);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#image(de.enough.polish.processing.PImage, int, int) 
+     */
     public void image(PImage img, int x, int y)
     {
-        img.paint(x, y, _bufferg);
+        _bufferg.drawImage(img.getImage(), x, y, Graphics.TOP | Graphics.LEFT);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#image(de.enough.polish.processing.PImage, int, int, int, int, int, int) 
+     */
    public void image(PImage img, int sx, int sy, int swidth, int sheight, int dx, int dy) {
         if (_imageMode == CORNERS) {
             swidth = swidth - sx;
             sheight = sheight - sy;
         }
         _clip(dx, dy, swidth, sheight);
-        img.paint(dx - sx, dy - sy, _bufferg);
+        _bufferg.drawImage(img.getImage(), dx - sx, dy - sy, Graphics.TOP | Graphics.LEFT);
         _clip (0,0,width,height);
    }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#imageMode(int) 
+     */
+   public void imageMode (int mode)
+   {
+       _imageMode = mode ;
+   }
+
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#multitap() 
+     */
    public final void multitap() {
         _multitap = true;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#noMultitap() 
+     */
     public final void noMultitap() {
         _multitap = false;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#multitapClear()
+     */
     public final void multitapClear() {
         multitapBufferIndex = 0;
         multitapBufferLength = 0;
         multitapText = "";
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#softkeyPressed(java.lang.String) 
+     */
     public void softkeyPressed(String label)
     {
         // Do nothing by default
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#softkey(java.lang.String) 
+     */
     public void softkey(String label)
     {
         _softkeyLabel = label ;
@@ -1505,6 +1814,9 @@ public class ProcessingContext implements ProcessingInterface {
         }
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#multitapDeleteChar() 
+     */
     public final void multitapDeleteChar() {
         if (multitapBufferIndex > 0) {
             System.arraycopy(multitapBuffer, multitapBufferIndex, multitapBuffer, multitapBufferIndex - 1, multitapBufferLength - multitapBufferIndex);
@@ -1515,6 +1827,12 @@ public class ProcessingContext implements ProcessingInterface {
         multitapText = new String(multitapBuffer, 0, multitapBufferLength);
     }
 
+    /**
+     * Called when an uppercase key is pressed in multitap mode
+     * @param editing mode state (enabled/disabled)
+     * @param character pressed
+     * @return
+     */
     public char _multitapUpperKeyPressed(boolean editing, char newChar) {
         _multitapIsUpperCase = !_multitapIsUpperCase;
         if (editing) {
@@ -1533,69 +1851,111 @@ public class ProcessingContext implements ProcessingInterface {
     }
 
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#keyPressed()
+     */
     public void keyPressed() {
 
         // Do nothing by default
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#keyReleased()
+     */
     public void keyReleased() {
 
         // Do nothing by default
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#pointerDragged() 
+     */
     public void pointerDragged()
     {
         // Do nothing by default
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#pointerPressed()
+     */
     public void pointerPressed()
     {
         // Do nothing by default
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#pointerReleased()
+     */
     public void pointerReleased()
     {
         // Do nothing by default
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#millis()
+     */
     public final int millis() {
         return (int) (System.currentTimeMillis() - _startTime);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#second()
+     */
     public final int second() {
         _checkCalendar();
         return _calendar.get(Calendar.SECOND);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#minute()
+     */
     public final int minute() {
         _checkCalendar();
         return _calendar.get(Calendar.MINUTE);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#hour()
+     */
     public final int hour() {
         _checkCalendar();
         return _calendar.get(Calendar.HOUR_OF_DAY);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#day()
+     */
     public final int day() {
         _checkCalendar();
         return _calendar.get(Calendar.DAY_OF_MONTH);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#month()
+     */
     public final int month() {
         _checkCalendar();
         return _calendar.get(Calendar.MONTH);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#year()
+     */
     public final int year() {
         _checkCalendar();
         return _calendar.get(Calendar.YEAR);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#currentMemory()
+     */
     public final int currentMemory() {
         return (int) _runtime.freeMemory();
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#reportedMemory()
+     */
     public final int reportedMemory() {
         return (int) _runtime.totalMemory();
     }
@@ -1603,6 +1963,7 @@ public class ProcessingContext implements ProcessingInterface {
     /**
      * This method is called when the processing context (or processing context)
      * container receives focus
+     * @see de.enough.polish.processing.ProcessingInterface#focus() 
      */
     public void focus() {
         // Do nothig by default
@@ -1611,15 +1972,22 @@ public class ProcessingContext implements ProcessingInterface {
     /**
      * This method is called when the processing context (or processing context)
      * container looses focus
+     * @see de.enough.polish.processing.ProcessingInterface#lostFocus() 
      */
     public void lostFocus() {
         // Do nothing by default
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#textInput() 
+     */
     public String textInput() {
         return textInput ("", "", Integer.MAX_VALUE);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#textInput(java.lang.String, java.lang.String, int) 
+     */
     public String textInput(String title, String text, int max) {
 
         Displayable current = Display.getInstance().getCurrent() ;
@@ -1647,74 +2015,128 @@ public class ProcessingContext implements ProcessingInterface {
 
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#print(boolean)
+     */
      public void print(boolean data) {
         System.out.print(String.valueOf(data));
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#print(byte)
+     */
     public void print(byte data) {
         System.out.print(String.valueOf(data));
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#print(char)
+     */
     public void print(char data) {
         System.out.print(String.valueOf(data));
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#print(int)
+     */
     public void print(int data) {
         System.out.print(String.valueOf(data));
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#print(java.lang.Object) 
+     */
     public void print(Object data) {
         System.out.print(String.valueOf(data));
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#print(java.lang.String) 
+     */
     public void print(String data) {
         System.out.print(data);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#println(boolean)
+     */
     public void println(boolean data) {
         System.out.println(String.valueOf(data));
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#println(byte)
+     */
     public void println(byte data) {
         System.out.println(String.valueOf(data));
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#println(char) 
+     */
     public void println(char data) {
         System.out.println(String.valueOf(data));
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#println(int) 
+     */
     public void println(int data) {
         System.out.println(String.valueOf(data));
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#println(java.lang.Object) 
+     */
     public void println(Object data) {
         System.out.println(String.valueOf(data));
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#print(java.lang.String) 
+     */
     public void println(String data) {
         System.out.println(data);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#length(boolean[]) 
+     */
     public int length(boolean[] array) {
         return array.length;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#length(byte[]) 
+     */
     public int length(byte[] array) {
         return array.length;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#length(char[]) 
+     */
     public int length(char[] array) {
         return array.length;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#length(int[]) 
+     */
     public int length(int[] array) {
         return array.length;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#length(java.lang.Object[]) 
+     */
     public int length(Object[] array) {
         return array.length;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#join(java.lang.String[], java.lang.String) 
+     */
     public String join(String[] anyArray, String separator) {
         StringBuffer buffer = new StringBuffer();
         for (int i = 0, length = anyArray.length; i < length; i++) {
@@ -1726,6 +2148,9 @@ public class ProcessingContext implements ProcessingInterface {
         return buffer.toString();
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#join(int[], java.lang.String) 
+     */
     public String join(int[] anyArray, String separator) {
         StringBuffer buffer = new StringBuffer();
         for (int i = 0, length = anyArray.length; i < length; i++) {
@@ -1737,6 +2162,9 @@ public class ProcessingContext implements ProcessingInterface {
         return buffer.toString();
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#join(int[], java.lang.String, int) 
+     */
     public String join(int[] intArray, String separator, int digits) {
         StringBuffer buffer = new StringBuffer();
         for (int i = 0, length = intArray.length; i < length; i++) {
@@ -1748,6 +2176,9 @@ public class ProcessingContext implements ProcessingInterface {
         return buffer.toString();
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#nf(int, int) 
+     */
     public String nf(int intValue, int digits) {
         StringBuffer buffer = new StringBuffer();
         for (int j = Integer.toString(intValue).length(); j < digits; j++) {
@@ -1757,6 +2188,9 @@ public class ProcessingContext implements ProcessingInterface {
         return buffer.toString();
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#nfp(int, int)
+     */
     public String nfp(int intValue, int digits) {
         StringBuffer buffer = new StringBuffer();
         if (intValue < 0) {
@@ -1767,58 +2201,18 @@ public class ProcessingContext implements ProcessingInterface {
         buffer.append(nf(intValue, digits));
         return buffer.toString();
     }
+   
 
-    public String nfs(int intValue, int digits) {
-        StringBuffer buffer = new StringBuffer();
-        if (intValue < 0) {
-            buffer.append("-");
-        } else {
-            buffer.append(" ");
-        }
-        buffer.append(nf(intValue, digits));
-        return buffer.toString();
-    }
-
-    public String[] split(String str) {
-        Vector v = new Vector();
-        StringBuffer buffer = new StringBuffer();
-        char c;
-        boolean whitespace = false;
-        for (int i = 0, length = str.length(); i < length; i++ ) {
-            c = str.charAt(i);
-            switch (c) {
-                case '\n':
-                case '\r':
-                case '\f':
-                case '\t':
-                case ' ':
-                case 160:
-                    whitespace = true;
-                    break;
-                default:
-                    if (whitespace) {
-                        v.addElement(buffer.toString());
-                        buffer.delete(0, buffer.length());
-
-                        whitespace = false;
-                    }
-                    buffer.append(c);
-            }
-        }
-        if (buffer.length() > 0) {
-            v.addElement(buffer.toString());
-        }
-
-        String[] tokens = new String[v.size()];
-        v.copyInto(tokens);
-
-        return tokens;
-    }
-
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#split(java.lang.String, char) 
+     */
     public String[] split(String str, char delim) {
         return split(str, new String(new char[] { delim }));
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#split(java.lang.String, java.lang.String) 
+     */
     public String[] split(String str, String delim) {
         Vector v = new Vector();
         int prevIndex = 0;
@@ -1839,11 +2233,17 @@ public class ProcessingContext implements ProcessingInterface {
         return tokens;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#trim(java.lang.String) 
+     */
     public String trim(String str) {
         //// deal with unicode nbsp later
         return str.trim();
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#append(java.lang.String[], java.lang.String) 
+     */
     public String[] append(String[] array, String element) {
         String[] old = array;
         int length = old.length;
@@ -1853,6 +2253,9 @@ public class ProcessingContext implements ProcessingInterface {
         return array;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#append(boolean[], boolean) 
+     */
     public boolean[] append(boolean[] array, boolean element) {
         boolean[] old = array;
         int length = old.length;
@@ -1862,6 +2265,9 @@ public class ProcessingContext implements ProcessingInterface {
         return array;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#append(byte[], byte) 
+     */
     public byte[] append(byte[] array, byte element) {
         byte[] old = array;
         int length = old.length;
@@ -1871,6 +2277,9 @@ public class ProcessingContext implements ProcessingInterface {
         return array;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#append(char[], char) 
+     */
     public char[] append(char[] array, char element) {
         char[] old = array;
         int length = old.length;
@@ -1880,6 +2289,9 @@ public class ProcessingContext implements ProcessingInterface {
         return array;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#append(int[], int) 
+     */
     public int[] append(int[] array, int element) {
         int[] old = array;
         int length = old.length;
@@ -1889,10 +2301,9 @@ public class ProcessingContext implements ProcessingInterface {
         return array;
     }
 
-    public void arraycopy(Object src, int srcPos, Object dest, int destPos, int length) {
-        System.arraycopy(src, srcPos, dest, destPos, length);
-    }
-
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#concat(java.lang.String[], java.lang.String[]) 
+     */
     public String[] concat(String[] array1, String[] array2) {
         int length1 = array1.length;
         int length2 = array2.length;
@@ -1902,6 +2313,9 @@ public class ProcessingContext implements ProcessingInterface {
         return array;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#concat(boolean[], boolean[]) 
+     */
     public boolean[] concat(boolean[] array1, boolean[] array2) {
         int length1 = array1.length;
         int length2 = array2.length;
@@ -1911,6 +2325,9 @@ public class ProcessingContext implements ProcessingInterface {
         return array;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#concat(byte[], byte[]) 
+     */
     public byte[] concat(byte[] array1, byte[] array2) {
         int length1 = array1.length;
         int length2 = array2.length;
@@ -1920,6 +2337,9 @@ public class ProcessingContext implements ProcessingInterface {
         return array;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#concat(char[], char[]) 
+     */
     public char[] concat(char[] array1, char[] array2) {
         int length1 = array1.length;
         int length2 = array2.length;
@@ -1929,6 +2349,9 @@ public class ProcessingContext implements ProcessingInterface {
         return array;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#concat(int[], int[]) 
+     */
     public int[] concat(int[] array1, int[] array2) {
         int length1 = array1.length;
         int length2 = array2.length;
@@ -1938,6 +2361,9 @@ public class ProcessingContext implements ProcessingInterface {
         return array;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#contract(boolean[], int) 
+     */
     public boolean[] contract(boolean[] array, int newSize) {
         int length = array.length;
         if (length > newSize) {
@@ -1948,6 +2374,9 @@ public class ProcessingContext implements ProcessingInterface {
         return array;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#contract(byte[], int) 
+     */
     public byte[] contract(byte[] array, int newSize) {
         int length = array.length;
         if (length > newSize) {
@@ -1958,6 +2387,9 @@ public class ProcessingContext implements ProcessingInterface {
         return array;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#contract(char[], int) 
+     */
     public char[] contract(char[] array, int newSize) {
         int length = array.length;
         if (length > newSize) {
@@ -1968,6 +2400,9 @@ public class ProcessingContext implements ProcessingInterface {
         return array;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#contract(int[], int) 
+     */
     public int[] contract(int[] array, int newSize) {
         int length = array.length;
         if (length > newSize) {
@@ -1978,6 +2413,9 @@ public class ProcessingContext implements ProcessingInterface {
         return array;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#contract(java.lang.String[], int) 
+     */
     public String[] contract(String[] array, int newSize) {
         int length = array.length;
         if (length > newSize) {
@@ -1988,10 +2426,16 @@ public class ProcessingContext implements ProcessingInterface {
         return array;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#expand(boolean[]) 
+     */
     public boolean[] expand(boolean[] array) {
         return expand(array, array.length * 2);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#expand(boolean[], int) 
+     */
     public boolean[] expand(boolean[] array, int newSize) {
         int length = array.length;
         if (length < newSize) {
@@ -2002,10 +2446,16 @@ public class ProcessingContext implements ProcessingInterface {
         return array;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#expand(byte[]) 
+     */
     public byte[] expand(byte[] array) {
         return expand(array, array.length * 2);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#expand(byte[], int) 
+     */
     public byte[] expand(byte[] array, int newSize) {
         int length = array.length;
         if (length < newSize) {
@@ -2016,10 +2466,16 @@ public class ProcessingContext implements ProcessingInterface {
         return array;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#expand(char[]) 
+     */
     public char[] expand(char[] array) {
         return expand(array, array.length * 2);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#expand(char[], int) 
+     */
     public char[] expand(char[] array, int newSize) {
         int length = array.length;
         if (length < newSize) {
@@ -2030,10 +2486,16 @@ public class ProcessingContext implements ProcessingInterface {
         return array;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#expand(int[]) 
+     */
     public int[] expand(int[] array) {
         return expand(array, array.length * 2);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#expand(int[], int) 
+     */
     public int[] expand(int[] array, int newSize) {
         int length = array.length;
         if (length < newSize) {
@@ -2044,10 +2506,16 @@ public class ProcessingContext implements ProcessingInterface {
         return array;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#expand(java.lang.String[]) 
+     */
     public String[] expand(String[] array) {
         return expand(array, array.length * 2);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#expand(java.lang.String[], int) 
+     */
     public String[] expand(String[] array, int newSize) {
         int length = array.length;
         if (length < newSize) {
@@ -2058,6 +2526,9 @@ public class ProcessingContext implements ProcessingInterface {
         return array;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#reverse(boolean[]) 
+     */
     public boolean[] reverse(boolean[] array) {
         int length = array.length;
         boolean[] reversed = new boolean[length];
@@ -2067,6 +2538,9 @@ public class ProcessingContext implements ProcessingInterface {
         return reversed;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#reverse(byte[]) 
+     */
     public byte[] reverse(byte[] array) {
         int length = array.length;
         byte[] reversed = new byte[length];
@@ -2076,6 +2550,9 @@ public class ProcessingContext implements ProcessingInterface {
         return reversed;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#reverse(char[]) 
+     */
     public char[] reverse(char[] array) {
         int length = array.length;
         char[] reversed = new char[length];
@@ -2085,6 +2562,9 @@ public class ProcessingContext implements ProcessingInterface {
         return reversed;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#reverse(int[]) 
+     */
     public int[] reverse(int[] array) {
         int length = array.length;
         int[] reversed = new int[length];
@@ -2094,6 +2574,9 @@ public class ProcessingContext implements ProcessingInterface {
         return reversed;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#reverse(java.lang.String[]) 
+     */
     public String[] reverse(String[] array) {
         int length = array.length;
         String[] reversed = new String[length];
@@ -2103,6 +2586,9 @@ public class ProcessingContext implements ProcessingInterface {
         return reversed;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#shorten(boolean[]) 
+     */
     public boolean[] shorten(boolean[] array) {
         boolean[] old = array;
         int length = old.length - 1;
@@ -2111,6 +2597,9 @@ public class ProcessingContext implements ProcessingInterface {
         return array;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#shorten(byte[]) 
+     */
     public byte[] shorten(byte[] array) {
         byte[] old = array;
         int length = old.length - 1;
@@ -2119,6 +2608,9 @@ public class ProcessingContext implements ProcessingInterface {
         return array;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#shorten(char[])
+     */
     public char[] shorten(char[] array) {
         char[] old = array;
         int length = old.length - 1;
@@ -2127,6 +2619,9 @@ public class ProcessingContext implements ProcessingInterface {
         return array;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#shorten(int[]) 
+     */
     public int[] shorten(int[] array) {
         int[] old = array;
         int length = old.length - 1;
@@ -2135,6 +2630,9 @@ public class ProcessingContext implements ProcessingInterface {
         return array;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#shorten(java.lang.String[]) 
+     */
     public String[] shorten(String[] array) {
         String[] old = array;
         int length = old.length - 1;
@@ -2143,56 +2641,89 @@ public class ProcessingContext implements ProcessingInterface {
         return array;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#subset(boolean[], int) 
+     */
     public boolean[] subset(boolean[] array, int offset) {
         return subset(array, offset, array.length - offset);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#subset(boolean[], int, int) 
+     */
     public boolean[] subset(boolean[] array, int offset, int length) {
         boolean[] subset = new boolean[length];
         System.arraycopy(array, offset, subset, 0, length);
         return subset;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#subset(byte[], int) 
+     */
     public byte[] subset(byte[] array, int offset) {
         return subset(array, offset, array.length - offset);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#subset(byte[], int, int) 
+     */
     public byte[] subset(byte[] array, int offset, int length) {
         byte[] subset = new byte[length];
         System.arraycopy(array, offset, subset, 0, length);
         return subset;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#subset(char[], int) 
+     */
     public char[] subset(char[] array, int offset) {
         return subset(array, offset, array.length - offset);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#subset(char[], int, int) 
+     */
     public char[] subset(char[] array, int offset, int length) {
         char[] subset = new char[length];
         System.arraycopy(array, offset, subset, 0, length);
         return subset;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#subset(int[], int) 
+     */
     public int[] subset(int[] array, int offset) {
         return subset(array, offset, array.length - offset);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#subset(int[], int, int) 
+     */
     public int[] subset(int[] array, int offset, int length) {
         int[] subset = new int[length];
         System.arraycopy(array, offset, subset, 0, length);
         return subset;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#subset(java.lang.String[], int) 
+     */
     public String[] subset(String[] array, int offset) {
         return subset(array, offset, array.length - offset);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#subset(java.lang.String[], int, int) 
+     */
     public String[] subset(String[] array, int offset, int length) {
         String[] subset = new String[length];
         System.arraycopy(array, offset, subset, 0, length);
         return subset;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#splice(boolean[], boolean, int)
+     */
     public boolean[] splice(boolean[] array, boolean value, int index) {
         int length = array.length;
         boolean[] splice = new boolean[length + 1];
@@ -2202,6 +2733,9 @@ public class ProcessingContext implements ProcessingInterface {
         return splice;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#splice(boolean[], boolean[], int) 
+     */
     public boolean[] splice(boolean[] array, boolean[] array2, int index) {
         int length = array.length;
         int length2 = array2.length;
@@ -2212,6 +2746,9 @@ public class ProcessingContext implements ProcessingInterface {
         return splice;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#splice(byte[], byte, int) 
+     */
     public byte[] splice(byte[] array, byte value, int index) {
         int length = array.length;
         byte[] splice = new byte[length + 1];
@@ -2221,6 +2758,9 @@ public class ProcessingContext implements ProcessingInterface {
         return splice;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#splice(byte[], byte[], int) 
+     */
     public byte[] splice(byte[] array, byte[] array2, int index) {
         int length = array.length;
         int length2 = array2.length;
@@ -2231,6 +2771,9 @@ public class ProcessingContext implements ProcessingInterface {
         return splice;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#splice(char[], char, int) 
+     */
     public char[] splice(char[] array, char value, int index) {
         int length = array.length;
         char[] splice = new char[length + 1];
@@ -2240,6 +2783,9 @@ public class ProcessingContext implements ProcessingInterface {
         return splice;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#splice(char[], char[], int) 
+     */
     public char[] splice(char[] array, char[] array2, int index) {
         int length = array.length;
         int length2 = array2.length;
@@ -2250,6 +2796,9 @@ public class ProcessingContext implements ProcessingInterface {
         return splice;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#splice(int[], int, int) 
+     */
     public int[] splice(int[] array, int value, int index) {
         int length = array.length;
         int[] splice = new int[length + 1];
@@ -2259,6 +2808,9 @@ public class ProcessingContext implements ProcessingInterface {
         return splice;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#splice(int[], int[], int) 
+     */
     public int[] splice(int[] array, int[] array2, int index) {
         int length = array.length;
         int length2 = array2.length;
@@ -2269,6 +2821,9 @@ public class ProcessingContext implements ProcessingInterface {
         return splice;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#splice(java.lang.String[], java.lang.String, int) 
+     */
     public String[] splice(String[] array, String value, int index) {
         int length = array.length;
         String[] splice = new String[length + 1];
@@ -2278,6 +2833,9 @@ public class ProcessingContext implements ProcessingInterface {
         return splice;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#splice(java.lang.String[], java.lang.String[], int) 
+     */
     public String[] splice(String[] array, String[] array2, int index) {
         int length = array.length;
         int length2 = array2.length;
@@ -2289,22 +2847,37 @@ public class ProcessingContext implements ProcessingInterface {
     }
 
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#str(boolean) 
+     */
     public String str(boolean val) {
         return String.valueOf(val);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#str(byte) 
+     */
     public String str(byte val) {
         return String.valueOf(val);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#str(char) 
+     */
     public String str(char val) {
         return String.valueOf(val);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#str(int) 
+     */
     public String str(int val) {
         return String.valueOf(val);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#str(boolean[]) 
+     */
     public String[] str(boolean[] val) {
         String[] result = new String[val.length];
         for (int i = val.length - 1; i >= 0; i--) {
@@ -2313,6 +2886,9 @@ public class ProcessingContext implements ProcessingInterface {
         return result;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#str(byte) 
+     */
     public String[] str(byte[] val) {
         String[] result = new String[val.length];
         for (int i = val.length - 1; i >= 0; i--) {
@@ -2321,6 +2897,9 @@ public class ProcessingContext implements ProcessingInterface {
         return result;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#str(char[]) 
+     */
     public String[] str(char[] val) {
         String[] result = new String[val.length];
         for (int i = val.length - 1; i >= 0; i--) {
@@ -2329,6 +2908,9 @@ public class ProcessingContext implements ProcessingInterface {
         return result;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#str(int[]) 
+     */
     public String[] str(int[] val) {
         String[] result = new String[val.length];
         for (int i = val.length - 1; i >= 0; i--) {
@@ -2338,6 +2920,9 @@ public class ProcessingContext implements ProcessingInterface {
     }
 
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#pushMatrix()
+     */
     public void pushMatrix() {
         if (_stackIndex == _stack.length) {
             int[] old = _stack;
@@ -2352,6 +2937,9 @@ public class ProcessingContext implements ProcessingInterface {
         _stack[_stackIndex++] = _bufferg.getClipHeight();
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#popMatrix()
+     */
     public void popMatrix() {
         if (_stackIndex > 0) {
             _stackIndex -= 6;
@@ -2367,20 +2955,32 @@ public class ProcessingContext implements ProcessingInterface {
         }
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#resetMatrix() 
+     */
     public void resetMatrix() {
         _stackIndex = 0;
         _bufferg.translate(-_bufferg.getTranslateX(), -_bufferg.getTranslateY());
         _bufferg.setClip(0, 0, width, height);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#translate(int, int) 
+     */
     public void translate(int x, int y) {
         _bufferg.translate(x, y);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#random(int) 
+     */
     public final int random(int value1) {
         return random(0, value1);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#random(int, int) 
+     */
     public final int random(int value1, int value2) {
         if (_random == null) {
             _random = new Random();
@@ -2391,6 +2991,9 @@ public class ProcessingContext implements ProcessingInterface {
         return min + Math.abs((_random.nextInt() % range));
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#loadBytes(java.lang.String)
+     */
     public final byte[] loadBytes(String filename) {
         byte [] result = null ;
         try {
@@ -2442,6 +3045,9 @@ public class ProcessingContext implements ProcessingInterface {
         return result;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#loadStrings(java.lang.String) 
+     */
     public final String[] loadStrings(String filename) {
         try {
             RecordStore store = null;
@@ -2517,6 +3123,9 @@ public class ProcessingContext implements ProcessingInterface {
         return strings;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#saveBytes(java.lang.String, byte[]) 
+     */
     public final void saveBytes(String filename, byte[] data) {
         //// max 32 char names on recordstores
         if (filename.length() > 32) {
@@ -2535,6 +3144,9 @@ public class ProcessingContext implements ProcessingInterface {
         }
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#saveStrings(java.lang.String, java.lang.String[]) 
+     */
     public final void saveStrings(String filename, String[] strings) {
         //// max 32 char names on recordstores
         if (filename.length() > 32) {
@@ -2560,6 +3172,9 @@ public class ProcessingContext implements ProcessingInterface {
         }
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#openStream(java.lang.String) 
+     */
     public InputStream openStream(String fileName) {
         try {
             return getClass().getResourceAsStream("/" + fileName);
@@ -2568,35 +3183,59 @@ public class ProcessingContext implements ProcessingInterface {
         }
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#loadFont(java.lang.String, de.enough.polish.processing.color, de.enough.polish.processing.color) 
+     */
     public PFont loadFont(String fontname, color fgColor, color bgColor) {
         return new PFont(fontname, fgColor, bgColor);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#loadFont(java.lang.String, de.enough.polish.processing.color) 
+     */
     public PFont loadFont(String fontname, color fgColor) {
         return new PFont (fontname, fgColor, new color(0x00FFFFFF));
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#loadFont(java.lang.String) 
+     */
     public PFont loadFont(String fontname) {
         return new PFont(fontname, new color(0x00FFFFFF), new color(0x00FFFFFF));
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#loadFont() 
+     */
     public PFont loadFont() {
         return new PFont ( Font.getDefaultFont() );
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#loadFont(int, int, int) 
+     */
     public PFont loadFont(int face, int style, int size) {
         return new PFont(Font.getFont(face, style, size));
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#textFont(de.enough.polish.processing.PFont) 
+     */
     public void textFont (PFont font)
     {
         _defaultFont = font ;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#textWrap(java.lang.String, int) 
+     */
     public String[] textWrap(String data, int width) {
         return textWrap(data, width, Integer.MAX_VALUE);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#textWrap(java.lang.String, int, int) 
+     */
     public String[] textWrap(String data, int width, int height) {
 
         //// calculate max number of lines that will fit in height
@@ -2670,19 +3309,31 @@ public class ProcessingContext implements ProcessingInterface {
         return array;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#textWidth(java.lang.String) 
+     */
     public int textWidth(String data) {
         return _defaultFont.stringWidth(data);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#textAlign(int) 
+     */
     public void textAlign (int mode)
     {
         _textAlignMode = mode ;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#text(java.lang.String, int, int) 
+     */
     public void text(String text, int x, int y) {
         text(text, x, y, Integer.MAX_VALUE, Integer.MAX_VALUE);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#text(java.lang.String, int, int, int, int) 
+     */
     public void text(String text, int x, int y, int width, int height) {
         String[] data = textWrap(text, width, height);
 
@@ -2730,22 +3381,37 @@ public class ProcessingContext implements ProcessingInterface {
     public static final int HALF_PI         = PI / 2;
 
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#abs(int)
+     */
     public final int abs(int value) {
         return Math.abs(value);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#max(int, int) 
+     */
     public final int max(int value1, int value2) {
         return Math.max(value1, value2);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#min(int, int) 
+     */
     public final int min(int value1, int value2) {
         return Math.min(value1, value2);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#sq(int) 
+     */
     public final int sq(int value) {
         return value * value;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#pow(int, int) 
+     */
     public final int pow(int base, int exponent) {
         int value = 1;
         for (int i = 0; i < exponent; i++) {
@@ -2755,26 +3421,37 @@ public class ProcessingContext implements ProcessingInterface {
         return value;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#constrain(int, int, int) 
+     */
     public final int constrain(int value, int min, int max) {
         return Math.min(Math.max(value, min), max);
     }
 
-    /** Multiplies two fixed point values and returns a fixed point value. */
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#mul(int, int) 
+     */
     public final int mul(int value1, int value2) {
         return (value1 * value2) >> FP_PRECISION;
     }
 
-    /** Returns the fixed point quotient from dividing the fixed point dividend by the fixed point divisor. */
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#div(int, int) 
+     */
     public final int div(int dividend, int divisor) {
         return (dividend << FP_PRECISION) / divisor;
     }
 
-    /** Returns the fixed point representation of the specified integer value. */
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#itofp(int)
+     */
     public final int itofp(int value1) {
         return value1 << FP_PRECISION;
     }
 
-    /** Returns the integer less than or equal to the fixed point value. */
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#fptoi(int)
+     */
     public final int fptoi(int value1) {
         if (value1 < 0) {
             value1 += ONE - 1;
@@ -2782,7 +3459,9 @@ public class ProcessingContext implements ProcessingInterface {
         return value1 >> FP_PRECISION;
     }
 
-    /** Returns the fixed-point square root of a fixed-point value, approximated using Newton's method. */
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#sqrt(int) 
+     */
     public final int sqrt(int value_fp) {
         int prev_fp, next_fp, error_fp, prev;
         //// initialize previous result
@@ -2806,40 +3485,56 @@ public class ProcessingContext implements ProcessingInterface {
         return next_fp;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#dist(int, int, int, int) 
+     */
     public final int dist(int x1, int y1, int x2, int y2) {
         int dx = x2 - x1;
         int dy = y2 - y1;
         return sqrt((dx * dx + dy * dy) << FP_PRECISION);
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#dist_fp(int, int, int, int) 
+     */
     public final int dist_fp(int x1, int y1, int x2, int y2) {
         int dx = x2 - x1;
         int dy = y2 - y1;
         return sqrt(((dx * dx) >> FP_PRECISION) + ((dy * dy) >> FP_PRECISION));
     }
 
-    /** Returns the closest integer fixed-point value less than or equal to the specified fixed point value. */
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#floor(int)
+     */
     public final int floor(int value1) {
         return (value1 >> FP_PRECISION) << FP_PRECISION;
     }
 
-    /** Returns the closest integer fixed-point value greater than or equal to the specified fixed point value. */
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#ceil(int) 
+     */
     public final int ceil(int value1) {
         return ((value1 + ONE - 1) >> FP_PRECISION) << FP_PRECISION;
     }
 
-    /** Returns the nearest integer fixed-point value to the specified fixed point value. */
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#round(int)
+     */
     public final int round(int value1) {
         //// return result
         return ((value1 + (ONE >> 1)) >> FP_PRECISION) << FP_PRECISION;
     }
 
-    /** Returns the fixed point radian equivalent to the specified fixed point degree value. */
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#radians(int) 
+     */
     public final int radians(int angle) {
         return angle * PI / (180 << FP_PRECISION);
     }
 
-    /** Returns the sin of the specified fixed-point radian angle as a fixed point value. */
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#sin(int) 
+     */
     public final int sin(int rad) {
         //// convert to degrees
         int index = rad * 180 / PI % 360;
@@ -2849,7 +3544,9 @@ public class ProcessingContext implements ProcessingInterface {
         return sin[index];
     }
 
-    /** Returns the cos of the specified fixed-point radian angle as a fixed point value. */
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#cos(int) 
+     */
     public final int cos(int rad) {
         //// convert to degrees
         int index = (rad * 180 / PI + 90) % 360;
@@ -2859,6 +3556,9 @@ public class ProcessingContext implements ProcessingInterface {
         return sin[index];
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#atan(int) 
+     */
     public final int atan(int value1) {
         int result;
         int sign = 1;
@@ -2874,6 +3574,9 @@ public class ProcessingContext implements ProcessingInterface {
         return sign * result;
     }
 
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#atan2(int, int) 
+     */
     public final int atan2(int y, int x) {
         int result;
         if ((y == 0) && (x == 0)) {

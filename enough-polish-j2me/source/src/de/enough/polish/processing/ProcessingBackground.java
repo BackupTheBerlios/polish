@@ -1,5 +1,26 @@
-
-
+/*
+ * Copyright (c) 2009 Robert Virkus / Enough Software
+ *
+ * This file is part of J2ME Polish.
+ *
+ * J2ME Polish is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * J2ME Polish is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with J2ME Polish; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * Commercial licenses are also available, please
+ * refer to the accompanying LICENSE.txt or visit
+ * http://www.j2mepolish.org for details.
+ */
 package de.enough.polish.processing;
 
 import de.enough.polish.ui.Background;
@@ -8,7 +29,7 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
 
 /**
- * Implements a Processing Background
+ * Implements a Mobile Processing Background.
  *
  * @author Ovidiu Iliescu
  */
@@ -19,6 +40,10 @@ public class ProcessingBackground extends Background implements ProcessingContex
     public boolean lastFocusedState = false;
     public boolean focusHasBeenInitialized = false;
 
+    /**
+     * Creates a new ProcessingBackground based on the provided context
+     * @param context
+     */
     public ProcessingBackground ( ProcessingInterface context)
     {
         this.context = context ;
@@ -27,6 +52,9 @@ public class ProcessingBackground extends Background implements ProcessingContex
         context.signalInitialization();
     }
 
+    /**
+     * @see de.enough.polish.ui.Background#setParentItem(de.enough.polish.ui.Item) 
+     */
     public void setParentItem(Item parent)
     {
         super.setParentItem(parent);
@@ -38,6 +66,9 @@ public class ProcessingBackground extends Background implements ProcessingContex
         //#endif
     }
 
+    /**
+     * @see de.enough.polish.ui.Background#paint(int, int, int, int, javax.microedition.lcdui.Graphics) 
+     */
     public void paint(int x, int y, int width, int height, Graphics g) {
 
         // This part of the code deals with focus/lostfocus events.
@@ -88,6 +119,9 @@ public class ProcessingBackground extends Background implements ProcessingContex
        }
     }
 
+    /**
+     * @see de.enough.polish.processing.ProcessingContextContainerInterface#processingRequestRepaint() 
+     */
     public void processingRequestRepaint() {
 
         if ( parent != null )
@@ -101,10 +135,15 @@ public class ProcessingBackground extends Background implements ProcessingContex
         }
     } 
 
+    /**
+     * @see de.enough.polish.ui.Background#releaseResources() 
+     */
     public void releaseResources() {
 		context.signalDestroy();
 	}
-
+    /**
+     * @see de.enough.polish.processing.ProcessingContextContainerInterface#setSoftkey(java.lang.String) 
+     */
     public void setSoftkey(String text)
     {
         // Do nothing

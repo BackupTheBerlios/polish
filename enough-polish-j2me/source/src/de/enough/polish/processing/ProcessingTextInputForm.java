@@ -31,6 +31,7 @@ import de.enough.polish.ui.TextBox;
 import de.enough.polish.ui.TextField;
 
 /**
+ * Implements a text input form to be used with Processing's textInput() method.
  *
  * @author Ovidiu
  */
@@ -46,17 +47,30 @@ public class ProcessingTextInputForm  implements CommandListener, Runnable {
     protected String text = "";
     protected int maxSize = Integer.MAX_VALUE;
 
+    /**
+     * Create a new text input form.
+     * @param title
+     * @param text
+     * @param maxSize
+     */
     public ProcessingTextInputForm(String title, String text, int maxSize) {
         this.title = title;
         this.text = text;
         this.maxSize = maxSize;
     }
 
+    /**
+     * Get the lock object for this form
+     * @return
+     */
     public Object getExternalLockObject()
     {
         return externalInputLock;
     }
 
+    /**
+     * Run the text input form in a separate thread.
+     */
     public synchronized void run() {
 
         synchronized ( externalInputLock )
@@ -71,11 +85,20 @@ public class ProcessingTextInputForm  implements CommandListener, Runnable {
 
     }
 
+    /**
+     * Get the text inside the form
+     * @return
+     */
     public String getText()
     {
         return result;
     }
 
+    /**
+     * Process any commands the form has received
+     * @param cmd
+     * @param dis
+     */
     public void commandAction(Command cmd, Displayable dis) {
         if (cmd == this.cmdOk)
         {

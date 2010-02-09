@@ -1,4 +1,3 @@
-//#condition polish.usePolishGui
 /*
  * Copyright (c) 2009 Robert Virkus / Enough Software
  *
@@ -27,7 +26,7 @@ package de.enough.polish.processing;
 
 /**
  *
- * Defines the "color" data type, for compatibility with the Mobile Processing specs
+ * Defines the "color" data type as a class, for compatibility with the Mobile Processing specs.
  *
  * @author Ovidiu Iliescu
  */

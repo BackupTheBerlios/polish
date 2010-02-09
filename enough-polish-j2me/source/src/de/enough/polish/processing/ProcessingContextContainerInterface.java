@@ -1,4 +1,3 @@
-//#condition polish.usePolishGui
 /*
  * Copyright (c) 2009 Robert Virkus / Enough Software
  *
@@ -26,7 +25,7 @@
 package de.enough.polish.processing;
 
 /**
- * This interface should be implemented by all objects that contain a ProcessingContext as their child
+ * This interface should be implemented by all objects that contain a ProcessingContext as their child.
  * @author Ovidiu
  */
 public interface ProcessingContextContainerInterface

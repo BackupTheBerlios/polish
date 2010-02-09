@@ -25,6 +25,20 @@
 package de.enough.polish.processing;
 
 /**
+ * Implements Mobile Processing events. Each event has a specific code and a specific set of parameteres, as follows :
+ * <p>
+ * <ul>
+ * <li>EVENT_DRAW : no parameters
+ * <li>EVENT_SETUP: no parameters
+ * <li>EVENT_HAS_FOCUS and EVENT_LOST_FOCUS : no parameters
+ * <li>EVENT_POINTER_PRESSED + EVENT_POINTER_DRAGGED + EVENT_POINTER RELEASED : x and y position of the pointer
+ * <li>EVENT_KEY_PRESSED and EVENT_KEY_RELEASED : key (as char) and keycode of the key in question
+ * <li>EVENT_SOFTKEY_PRESSED : the label (as String) of the softkey that has been pressed
+ * <li>EVENT_APP_SUSPEND : no parameters
+ * <li>EVENT_APP_RESUME : no parameters
+ * <li>EVENT_APP_DESTROY: no parameters
+ * <li>EVENT_INIT : no parameters
+ * </ul>
  *
  * @author Ovidiu Iliescu
  */
@@ -43,6 +57,7 @@ public class ProcessingEvent {
     public static final int EVENT_APP_SUSPEND = 10 ;
     public static final int EVENT_APP_RESUME = 11 ;
     public static final int EVENT_APP_DESTROY = 12 ;
+    public static final int EVENT_INIT = 13 ;
 
 
 
@@ -53,17 +68,35 @@ public class ProcessingEvent {
     public String strParam1 = null;
 
 
+    /**
+     * Create a new ProcessingEvent of the specified type with the specified parameter.
+     * @param object
+     * @param eventType
+     */
     public ProcessingEvent(ProcessingInterface object, int eventType)
     {
         this ( object, eventType,0,0);
     }
 
+    /**
+     * Create a new ProcessingEvent of the specified type with the specified parameter.
+     * @param object
+     * @param eventType
+     * @param param1
+     */
     public ProcessingEvent(ProcessingInterface object, int eventType, String param1)
     {
         this ( object, eventType,0,0);
         this.strParam1 = param1;
     }
 
+    /**
+     * Create a new ProcessingEvent of the specified type with the specified parameters.
+     * @param object
+     * @param eventType
+     * @param param1
+     * @param param2
+     */
     public ProcessingEvent(ProcessingInterface object, int eventType, int param1, int param2)
     {
         this.object = object;
