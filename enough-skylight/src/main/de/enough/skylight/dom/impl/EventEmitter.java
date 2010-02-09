@@ -35,4 +35,11 @@ public class EventEmitter {
 		event.initMutationEvent("DOMAttrModified", true, false, relatedNode, previousValue, newValue, attrName, attrChange);
 		this.eventProcessorInstance.processEvent(event);
 	}
+	
+	public void emitDomCharacterDataModifiedEvent(EventTarget target, String previousValue, String newValue) {
+		MutationEventImpl event = new MutationEventImpl();
+		event.init(target);
+		event.initMutationEvent("DOMCharacterDataModified", true, false, null, previousValue, newValue, "", (short)0);
+		this.eventProcessorInstance.processEvent(event);
+	}
 }

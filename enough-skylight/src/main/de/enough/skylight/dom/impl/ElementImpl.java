@@ -114,7 +114,9 @@ public class ElementImpl extends DomNodeImpl implements Element{
 	}
 
 	public void setNodeValue(String nodeValue) throws DOMException {
+		String oldValue = this.value;
 		this.value = nodeValue;
+		Services.getInstance().getEventEmitter().emitDomCharacterDataModifiedEvent(this, oldValue, nodeValue);
 	}
 	
 	@Override
