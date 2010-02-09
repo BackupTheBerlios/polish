@@ -104,7 +104,7 @@ public class CssElement implements HtmlCssElement{
 	public void setContainingBlock(ContainingBlock containingBlock) {
 		if(containingBlock != null) {
 			Container container = containingBlock.getContainer();
-			container.setStyle(this.style);
+			CssStyle.apply(this.style, container);
 			
 			if(this.interactive) {
 				//#debug sl.debug.event

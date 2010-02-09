@@ -98,4 +98,15 @@ public class CssStyle {
 		
 		return style;
 	}
+	
+	public static void apply(Style style, Item item) {
+		item.setStyle(style);
+		
+		if(item.isFocused) {
+			Style focusedStyle = item.getFocusedStyle();
+			if(focusedStyle != null) {
+				item.setStyle(focusedStyle);
+			}
+		} 
+	}
 }

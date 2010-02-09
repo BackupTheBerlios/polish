@@ -49,14 +49,18 @@ public class ImgHandler extends BodyNodeHandler{
 	}
 	
 	public void setContent(CssElement element, Item item) {
+		super.setContent(element, item);
+		
 		ImgElement imgElement = (ImgElement)element;
 		ImageItem imgItem = (ImageItem)item; 
 		
-		Style style = element.getStyle();
 		Image image = imgElement.getImage();
 		
 		imgItem.setImage(image);
-		imgItem.setStyle(style);
-		imgItem.setAppearanceMode(Item.PLAIN);
+		if(element.isInteractive()) {
+			imgItem.setAppearanceMode(Item.INTERACTIVE);
+		} else {
+			imgItem.setAppearanceMode(Item.PLAIN);
+		}
 	}
 }

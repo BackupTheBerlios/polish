@@ -18,7 +18,4 @@ public class BrHandler extends BodyNodeHandler {
 	public Item createContent(CssElement element) {
 		return new Break();
 	}
-	
-	public void setContent(CssElement element, Item item) {
-	}
 }

@@ -24,7 +24,5 @@ public class DivHandler extends BodyNodeHandler{
 
 	public Item createContent(CssElement element) {
 		return null;
-	}
-	
-	public void setContent(CssElement element, Item item) {}	
+	}	
 }
