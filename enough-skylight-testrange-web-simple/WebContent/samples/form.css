@@ -8,13 +8,24 @@
 }
 
 .frame:hover {
-	background-color: #FF9900;
+	background-color: #FF6600;
 }
 
 .field {
 	display: block;
 	padding: 0px;
 	margin: 5px;	
+}
+
+.field:hover {
+	font-color: #FF6600;
+}
+
+.frameTitle {
+	display: block;
+	padding: 0px;
+	margin: 5px;
+	font-color: white;
 }
 
 .content {
