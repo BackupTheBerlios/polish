@@ -71,8 +71,8 @@ public class Browser extends Form implements CommandListener, RendererListener, 
 		this.viewport = new Viewport();
 		this.viewport.addUserEventListener(this);
 		
-		UpdateUIEventProcessorListener listener = new UpdateUIEventProcessorListener();
-		Services.getInstance().getEventProcessor().addEventProcessorListener(listener);
+		/*UpdateUIEventProcessorListener listener = new UpdateUIEventProcessorListener();
+		Services.getInstance().getEventProcessor().addEventProcessorListener(listener);*/
 		
 		this.documentBuilder = new DocumentBuilder(url);
 		this.viewportBuilder = new ViewportBuilder(this.viewport);

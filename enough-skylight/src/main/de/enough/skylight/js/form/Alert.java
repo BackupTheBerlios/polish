@@ -10,7 +10,7 @@ import de.enough.polish.ui.StringItem;
 
 public class Alert implements CommandListener{
 
-	static Command cmdOk = new Command("ok", Command.ITEM, 0);
+	static Command cmdOk = new Command("OK", Command.ITEM, 0);
 	
 	StringItem messageItem;
 	
