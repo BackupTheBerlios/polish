@@ -10,7 +10,7 @@ public class Refresh extends Form implements RendererListener{
 	Gauge progress;
 	
 	public Refresh() {
-		//#style refresh
+		//#style popup
 		super(null);
 		
 		//#style refresh_progress

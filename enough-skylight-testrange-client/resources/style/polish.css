@@ -36,7 +36,11 @@ rightcommand extends leftcommand{
 	layout: right;
 }
 
-refresh {
+middlecommand extends leftcommand{
+	layout: center;
+}
+
+popup {
 	repaint-previous-screen: true;
 	layout: expand | vexpand | center | vcenter;
 	title-style: browser_title;
@@ -53,3 +57,16 @@ refresh_progress {
 	background-color: white;
 	border-color: #666666;
 }
+
+alert extends popup{
+}
+
+alertMessage {
+	layout: center;
+	font-color: #666666;
+	font-style: bold;
+	background-color: white;
+	border-color: #666666;
+	padding: 10%;
+}
+
