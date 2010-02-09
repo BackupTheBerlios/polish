@@ -179,6 +179,8 @@ public final class Locale {
 		// no instantiation allowed
 	}
 	//#endif
+	
+	private static String DATE_FORMAT_PATTERN;
 
 	
 	//#if polish.i18n.useDynamicTranslations || polish.LibraryBuild
@@ -383,6 +385,95 @@ public final class Locale {
 		// return result:
 		return result.toString();
 	}
+	
+	/**
+	 * Retrieves the default date format pattern.
+	 * The pattern can consist of arbitrary characters but following characters have a meaning:
+	 * <ul>
+	 *  <li><b>yyyy</b>: The year in 4 digits, e.g. 2010.</li>
+	 *  <li><b>MM</b>: the month as a numerical value between 1 (January) and 12 (December).</li>
+	 *  <li><b>dd</b>: the day of the month as a numerical value between 1 and 31.</li>
+	 *  <li><b>HH</b>: the hour of the day between 0 and 23.</li>
+	 *  <li><b>mm</b>: the minute of the hour between 0 and 59.</li>
+	 * </ul>
+	 * @return the pattern, e.g. "yyyy-MM-dd"
+	 * @see #setDefaultDateFormatPattern(String)
+	 */
+	public static String getDefaultDateFormatPattern() {
+		if (DATE_FORMAT_PATTERN == null) {
+			StringBuffer buffer = new StringBuffer();
+			//#if polish.DateFormat == us
+				buffer.append( "MM/dd/yyyy" );
+			//#elif polish.DateFormat == de
+				buffer.append( "dd.MM.yyyy" );
+			//#elif polish.DateFormat == fr
+				buffer.append( "dd/MM/yyyy" );
+			//#elif polish.DateFormat == mdy
+				buffer.append( "MM" )
+				//#if polish.DateFormatSeparator:defined
+					//#= .append("${polish.DateFormatSeparator}")
+				//#else
+				        .append("-")
+				//#endif
+				.append("dd")
+				//#if polish.DateFormatSeparator:defined
+					//#= .append("${polish.DateFormatSeparator}")
+				//#else
+				        .append("-")
+				//#endif
+				.append("yyyy");
+			//#elif polish.DateFormat == dmy
+				buffer.append( "dd" )
+				//#if polish.DateFormatSeparator:defined
+					//#= .append("${polish.DateFormatSeparator}")
+				//#else
+				        .append("-")
+				//#endif
+				.append("MM")
+				//#if polish.DateFormatSeparator:defined
+					//#= .append("${polish.DateFormatSeparator}")
+				//#else
+				        .append("-")
+				//#endif
+				.append("yyyy");
+			//#else
+				// default to YMD
+				buffer.append( "yyyy" )
+				//#if polish.DateFormatSeparator:defined
+					//#= .append("${polish.DateFormatSeparator}")
+				//#else
+				        .append("-")
+				//#endif
+				.append("MM")
+				//#if polish.DateFormatSeparator:defined
+					//#= .append("${polish.DateFormatSeparator}")
+				//#else
+				        .append("-")
+				//#endif
+				.append("dd");
+			//#endif
+			DATE_FORMAT_PATTERN = buffer.toString();
+		}
+		return DATE_FORMAT_PATTERN;
+	}
+	
+	/**
+	 * Sets the default date format pattern.
+	 * The pattern can consist of arbitrary characters but following characters have a meaning:
+	 * <ul>
+	 *  <li><b>yyyy</b>: The year in 4 digits, e.g. 2010.</li>
+	 *  <li><b>MM</b>: the month as a numerical value between 1 (January) and 12 (December).</li>
+	 *  <li><b>dd</b>: the day of the month as a numerical value between 1 and 31.</li>
+	 *  <li><b>HH</b>: the hour of the day between 0 and 23.</li>
+	 *  <li><b>mm</b>: the minute of the hour between 0 and 59.</li>
+	 * </ul>
+	 * @param pattern the pattern, e.g. "yyyy-MM-dd"
+	 * @see #getDefaultDateFormatPattern()
+	 * @see #formatDate(Calendar)
+	 */
+	public static void setDefaultDateFormatPattern( String pattern ) {
+		DATE_FORMAT_PATTERN = pattern;
+	}
 		
 	/**
 	 * Formats the given date to the current locale's format.
@@ -395,6 +486,20 @@ public final class Locale {
 	 */
 	public static String formatDate( long time ) {		
 		return formatDate( new Date( time ) );
+	}
+	
+	/**
+	 * Formats the given date to the current locale's format.
+	 * This method just calls the formatDate-method with a new Date instance.
+	 * 
+	 * @param time the time in milliseconds after 1.1.1970 GMT.
+	 * @param dateFormat the date format that may include yyyy (year), MM (month), dd (day of month), HH (hour of day) and mm (minute of hour)
+	 * @return the locale specific date representation.
+	 * @throws NullPointerException when the date is null
+	 * @see #formatDate(Date)
+	 */
+	public static String formatDate( long time, String dateFormat ) {		
+		return formatDate( new Date( time ), dateFormat );
 	}
 	
 	/**
@@ -413,6 +518,22 @@ public final class Locale {
 	}
 	
 	/**
+	 * Formats the given date to the current locale's format.
+	 * This method just calls the formatDate-method with a new Calendar instance.
+	 * 
+	 * @param date the date
+	 * @param dateFormat the date format that may include yyyy (year), MM (month), dd (day of month), HH (hour of day) and mm (minute of hour)
+	 * @return the locale specific date representation.
+	 * @throws NullPointerException when the date is null
+	 * @see #formatDate(Calendar)
+	 */
+	public static String formatDate( Date date, String dateFormat ) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		return formatDate( calendar, dateFormat );
+	}
+	
+	/**
 	 * Formats the given calendar to the current locale's format.
 	 * 
 	 * @param calendar the calendar which holds the date
@@ -424,6 +545,21 @@ public final class Locale {
 		formatDate( calendar, buffer );
 		return buffer.toString();
 	}
+	
+	/**
+	 * Formats the given calendar to the current locale's format.
+	 * 
+	 * @param calendar the calendar which holds the date
+	 * @param dateFormat the date format that may include yyyy (year), MM (month), dd (day of month), HH (hour of day) and mm (minute of hour)
+	 * @return the locale specific date representation.
+	 * @throws NullPointerException when the calendar is null
+	 */
+	public static String formatDate( Calendar calendar, String dateFormat ) {
+		StringBuffer buffer = new StringBuffer(10);
+		formatDate( calendar, buffer, dateFormat );
+		return buffer.toString();
+	}
+
 
 	/**
 	 * Formats the given calendar to the current locale's format.
@@ -434,71 +570,63 @@ public final class Locale {
 	 * @throws NullPointerException when the calendar is null
 	 */
 	public static void formatDate( Calendar calendar, StringBuffer buffer  ) {
+		formatDate( calendar, buffer, getDefaultDateFormatPattern() );
+	}
+	
+	/**
+	 * Formats the given calendar to the current locale's format.
+	 * Use this method for best efficiency.
+	 * 
+	 * @param calendar the calendar which holds the date
+	 * @param buffer a StringBuffer, should be at least 10 characters big
+	 * @param dateFormat the date format that may include yyyy (year), MM (month), dd (day of month), HH (hour of day) and mm (minute of hour)
+	 * @throws NullPointerException when the calendar is null
+	 */
+	public static void formatDate( Calendar calendar, StringBuffer buffer, String dateFormat  ) {
 		int year = calendar.get(Calendar.YEAR);
-		int month = calendar.get( Calendar.MONTH );
+		int month = calendar.get( Calendar.MONTH ) + 1;
 		int day = calendar.get( Calendar.DAY_OF_MONTH );
-		//#if polish.DateFormat == mdy
-			if (month < 9) {
-				buffer.append('0');
+		int hour = calendar.get( Calendar.HOUR_OF_DAY );
+		int minute = calendar.get( Calendar.MINUTE );
+		int length = dateFormat.length();
+		for (int i=0; i<length-1; i++) {
+			char c = dateFormat.charAt(i);
+			char nextC = dateFormat.charAt(i+1);
+			if (c == 'y' && i <length-3 && nextC=='y' && dateFormat.charAt(i+2)=='y' && dateFormat.charAt(i+3)=='y') {
+				if (year < 10) {
+					buffer.append( "000");
+				} else if (year < 100) {
+					buffer.append( "00");
+				} else if (year < 1000) {
+					buffer.append( "0");
+				}
+				buffer.append(year);
+				i += 3;
+			} else if ( c == 'M' && nextC == 'M') {
+				if (month < 10) {
+					buffer.append('0');
+				}
+				buffer.append(month);
+				i++;
+			} else if ( c == 'd' && nextC == 'd') {
+				if (day < 10) {
+					buffer.append( '0' );
+				}
+				buffer.append( day );
+				i++;
+			} else if ( c == 'H' && nextC == 'H') {
+				buffer.append(hour);
+				i++;
+			} else if (c == 'm' && nextC == 'm') {
+				if (minute < 10) {
+					buffer.append('0');
+				}
+				buffer.append( minute );
+				i++;
+			} else {
+				buffer.append(c);
 			}
-			buffer.append( ++month )
-			//#if polish.DateFormatSeparator:defined
-				//#= .append("${polish.DateFormatSeparator}");
-			//#else
-			        .append("-");
-			//#endif
-			if (day < 10) {
-				buffer.append( '0' );
-			}
-			buffer.append( day )
-			//#if polish.DateFormatSeparator:defined
-				//#= .append("${polish.DateFormatSeparator}");
-			//#else
-			        .append("-");
-			//#endif
-			buffer.append( year );
-		//#elif polish.DateFormat == dmy
-			if (day < 10) {
-				buffer.append( '0' );
-			}
-			buffer.append( day )
-			//#if polish.DateFormatSeparator:defined
-				//#= .append("${polish.DateFormatSeparator}");
-			//#else
-			        .append("-");
-			//#endif
-			if (month < 9) {
-				buffer.append('0');
-			}
-			buffer.append( ++month )
-			//#if polish.DateFormatSeparator:defined
-				//#= .append("${polish.DateFormatSeparator}");
-			//#else
-			        .append("-");
-			//#endif
-			buffer.append( year );
-		//#else
-			// default to YMD
-			buffer.append( year )
-			//#if polish.DateFormatSeparator:defined
-				//#= .append("${polish.DateFormatSeparator}");
-			//#else
-			        .append("-");
-			//#endif
-			if (month < 9) {
-				buffer.append('0');
-			}
-			buffer.append( ++month )
-			//#if polish.DateFormatSeparator:defined
-				//#= .append("${polish.DateFormatSeparator}");
-			//#else
-			        .append("-");
-			//#endif
-			if (day < 10) {
-				buffer.append( '0' );
-			}
-			buffer.append( day );
-		//#endif	
+		}
 	}
 	
 	/**
