@@ -38,9 +38,9 @@ public class ElementScriptableObject extends DomNodeScriptableObject{
 				return value;
 			}
 		}, ScriptableObject.PERMANENT);
-		defineProperty("nodeValue", null, PERMANENT);
+		defineProperty("nodeValue", "", PERMANENT);
 		// TODO: This is not according to the standard but it is nice.
-		defineProperty("value", null, PERMANENT);
+		defineProperty("value", "", PERMANENT);
 	}
 
 	protected String doGetNodeValue() {
@@ -66,6 +66,21 @@ public class ElementScriptableObject extends DomNodeScriptableObject{
 		return super.get(name, start);
 	}
 	
+	
+	
+	@Override
+	public void put(String name, Scriptable start, Object value) {
+		if("value".equals(name)) {
+			if(value instanceof String) {
+				this.elementImpl.setNodeValue((String)value);
+				return;
+			} else {
+				throw new RuntimeException("The parameter must be a string.");
+			}
+		}
+		super.put(name, start, value);
+	}
+
 	@Override
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
