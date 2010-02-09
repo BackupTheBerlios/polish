@@ -18,6 +18,7 @@ public class ElementImpl extends DomNodeImpl implements Element{
 	private ElementScriptableObject scriptableObject;
 	private String tagName;
 	private NamedNodeMapImpl attributes;
+	private String value;
 
 	@Override
 	public Scriptable getScriptable() {
@@ -109,11 +110,11 @@ public class ElementImpl extends DomNodeImpl implements Element{
 	}
 
 	public String getNodeValue() throws DOMException {
-		return null;
+		return this.value;
 	}
 
 	public void setNodeValue(String nodeValue) throws DOMException {
-		// Has no effect.
+		this.value = nodeValue;
 	}
 	
 	@Override
