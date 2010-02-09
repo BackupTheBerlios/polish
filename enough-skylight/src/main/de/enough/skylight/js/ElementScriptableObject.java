@@ -38,6 +38,13 @@ public class ElementScriptableObject extends DomNodeScriptableObject{
 				return value;
 			}
 		}, ScriptableObject.PERMANENT);
+		defineProperty("nodeValue", null, PERMANENT);
+		// TODO: This is not according to the standard but it is nice.
+		defineProperty("value", null, PERMANENT);
+	}
+
+	protected String doGetNodeValue() {
+		return this.elementImpl.getNodeValue();
 	}
 
 	protected String doGetAttribute(String key) {
@@ -52,6 +59,9 @@ public class ElementScriptableObject extends DomNodeScriptableObject{
 	public Object get(String name, Scriptable start) {
 		if("tagName".equals(name)) {
 			return this.elementImpl.getTagName();
+		}
+		if("value".equals(name) || "nodeValue".equals(name)) {
+			return this.elementImpl.getNodeValue();
 		}
 		return super.get(name, start);
 	}

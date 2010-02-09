@@ -57,11 +57,13 @@ public class CssStyle {
 		
 		short[] keys = extendStyle.getRawAttributeKeys();
 		
-		for (int i = 0; i < keys.length; i++) {
-			short key = keys[i];
-			Object value = extendStyle.getObjectProperty(key);
-			if(value != null) {
-				result.addAttribute(key, value);
+		if(keys != null) {
+			for (int i = 0; i < keys.length; i++) {
+				short key = keys[i];
+				Object value = extendStyle.getObjectProperty(key);
+				if(value != null) {
+					result.addAttribute(key, value);
+				}
 			}
 		}
 		
