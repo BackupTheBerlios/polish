@@ -9,6 +9,7 @@ import de.enough.polish.ui.StyleSheet;
 import de.enough.skylight.Services;
 import de.enough.skylight.dom.Document;
 import de.enough.skylight.dom.DomNode;
+import de.enough.skylight.dom.MutationEvent;
 import de.enough.skylight.dom.impl.EventImpl;
 import de.enough.skylight.dom.impl.EventProcessorListener;
 import de.enough.skylight.dom.impl.NodeListImpl;
@@ -40,8 +41,10 @@ public class Browser extends Form implements CommandListener, RendererListener, 
 		}
 		public void handleEventProcessingStopped(EventImpl event) {
 			// TODO: Check if the event is a MutationEvent or an event like Focus. Only then update the UI.
-			DomNode node = (DomNode)event.getTarget();
-			domModified(node);
+			if(event instanceof MutationEvent) {
+				DomNode node = (DomNode)event.getTarget();
+				domModified(node);
+			}
 		}
 	}
 	
