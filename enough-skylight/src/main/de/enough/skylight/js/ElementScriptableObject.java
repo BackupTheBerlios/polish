@@ -38,9 +38,9 @@ public class ElementScriptableObject extends DomNodeScriptableObject{
 				return value;
 			}
 		}, ScriptableObject.PERMANENT);
-		defineProperty("nodeValue", "", PERMANENT);
+		defineProperty("nodeValue", elementImpl.getNodeValue(), PERMANENT);
 		// TODO: This is not according to the standard but it is nice.
-		defineProperty("value", "", PERMANENT);
+		defineProperty("value", elementImpl.getNodeValue(), PERMANENT);
 	}
 
 	protected String doGetNodeValue() {
