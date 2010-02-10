@@ -5,6 +5,8 @@ import org.mozilla.javascript.BaseFunction;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
+import org.mozilla.javascript.Undefined;
+
 import de.enough.skylight.dom.impl.ElementImpl;
 
 public class ElementScriptableObject extends DomNodeScriptableObject{
@@ -61,7 +63,11 @@ public class ElementScriptableObject extends DomNodeScriptableObject{
 			return this.elementImpl.getTagName();
 		}
 		if("value".equals(name) || "nodeValue".equals(name)) {
-			return this.elementImpl.getNodeValue();
+			String nodeValue = this.elementImpl.getNodeValue();
+			if(nodeValue == null) {
+				return Undefined.instance;
+			}
+			return nodeValue;
 		}
 		return super.get(name, start);
 	}
