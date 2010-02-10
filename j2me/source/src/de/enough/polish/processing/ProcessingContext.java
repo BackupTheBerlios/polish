@@ -119,6 +119,7 @@ public class ProcessingContext implements ProcessingInterface {
 
     public boolean _areKeypressesCaptured = false ;
     public boolean _arePointerEventsCaptured = false ;
+    public boolean _areSoftkeysCaptured = false ;
 
     public Calendar _calendar = null ;
     public Runtime _runtime ;
@@ -358,7 +359,6 @@ public class ProcessingContext implements ProcessingInterface {
             this.width = width;
             this.height = height;
             ProcessingThread.queueEvent(new ProcessingEvent(this,ProcessingEvent.EVENT_SETUP));
-            redraw();
     }
 
     /**
@@ -417,6 +417,22 @@ public class ProcessingContext implements ProcessingInterface {
     public void setTransparentColor(color color)
     {
         _transparentColor = color.color ;
+    }
+
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#setTransparentColor(int, int, int) 
+     */
+    public void setTransparentColor(int value1, int value2, int value3)
+    {
+        _transparentColor = color(value1,value2,value3,255).color;
+    }
+
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#setTransparentColor(int)
+     */
+    public void setTransparentColor(int gray)
+    {
+        _transparentColor = color(gray).color;
     }
 
     /** (non-Javadoc)
@@ -641,6 +657,30 @@ public class ProcessingContext implements ProcessingInterface {
     public boolean areKeypressesCaptured()
     {
         return _areKeypressesCaptured;
+    }
+    
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#captureSoftkeys()
+     */
+    public void captureSoftkeys()
+    {
+        _areSoftkeysCaptured = true ;
+    }
+
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#releaseSoftkeys()
+     */
+    public void releaseSoftkeys()
+    {
+        _areSoftkeysCaptured = false ;
+    }
+
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#areSoftkeysCaptured()
+     */
+    public boolean areSoftkeysCaptured()
+    {
+        return _areSoftkeysCaptured;
     }
 
     /** (non-Javadoc)

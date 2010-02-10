@@ -28,7 +28,7 @@ public class ProcessingContextExample extends ProcessingContext {
         textFont(test);
         textAlign(CENTER);
         transparentDrawing();
-        background(255,255,255);
+        background(255,255,255); // Make the background white, which is also the default transparent color
     };
 
     public void draw()
@@ -43,7 +43,7 @@ public class ProcessingContextExample extends ProcessingContext {
 
     public void softkeyPressed(String label)
     {
-        System.out.println("Softkey command pressed : " + label);
+        println("Softkey command pressed : " + label);
     }
 
     public void focus()
@@ -63,7 +63,7 @@ public class ProcessingContextExample extends ProcessingContext {
 
     public void keyPressed()
     {
-        System.out.println("Pressed key: " + key );
+        println("Pressed key: " + key );
     }
 
     public void keyReleased()
@@ -73,22 +73,22 @@ public class ProcessingContextExample extends ProcessingContext {
             text = textInput("Please enter new text", "Lorem ipsum lorem.",999);
         }
         
-        System.out.println("Released key: " + key );
+        println("Released key: " + key );
     }
 
     public void pointerPressed()
     {
-        System.out.println("Pointer pressed position : X-" + pointerX + " Y-" + pointerY );
+        println("Pointer pressed position : X-" + pointerX + " Y-" + pointerY );
     }
 
     public void pointerReleased()
     {
-        System.out.println("Pointer released position : X-" + pointerX + " Y-" + pointerY );
+        println("Pointer released position : X-" + pointerX + " Y-" + pointerY );
     }
 
     public void pointerDragged()
     {
-        System.out.println("Pointer dragged position : X-" + pointerX + " Y-" + pointerY );
+        println("Pointer dragged position : X-" + pointerX + " Y-" + pointerY );
     }
 
 }

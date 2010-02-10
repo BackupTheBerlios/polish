@@ -40,6 +40,7 @@ public class ProcessingItem extends Item implements ProcessingContextContainerIn
     protected Command cmd = new Command ( "" , Command.ITEM, 0);
     protected String softkeyCommandText = null ;
 
+
     /**
      * Create a ProcessingItem based on the specified context.
      * @param context
@@ -145,7 +146,7 @@ public class ProcessingItem extends Item implements ProcessingContextContainerIn
     protected boolean handleCommand(Command cmd)
     {
         context.signalSoftkeyPressed(cmd.getLabel());
-        return super.handleCommand(cmd);
+        return context.areSoftkeysCaptured();
     }
 
      /**

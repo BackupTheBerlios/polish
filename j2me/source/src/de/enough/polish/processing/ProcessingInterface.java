@@ -199,6 +199,12 @@ public interface ProcessingInterface {
     public boolean areKeypressesCaptured();
 
     /**
+     * Checks if softkey presses should be captured and handled solely by the Mobile Processing implementation, or if they should also be bubbled up to the parent container and above.
+     * @return true if softkey presses should be captured, false otherwise
+     */
+    public boolean areSoftkeysCaptured();
+
+    /**
      * Checks if pointer events should be captured and handled solely by the Mobile Processing implementation, or if they should also be bubbled up to the parent container and above.
      * @return true if pointer events should be captured, false otherwise
      */
@@ -251,6 +257,16 @@ public interface ProcessingInterface {
     public void releaseKeyPresses();
 
     /**
+     * Signals that softkey presses should be captured (such events should not be bubbled to the parent container and above anymore).
+     */
+    public void captureSoftkeys();
+
+    /**
+     * Releases softkey events (resumes bubbling of such events to the parent container and above).
+     */
+    public void releaseSoftkeys();
+
+    /**
      * Signals that pointer events should be captured (such events should not be bubbled to the parent container and above anymore).
      */
     public void capturePointerEvents();
@@ -287,6 +303,20 @@ public interface ProcessingInterface {
      */
     public void setTransparentColor ( color color );
 
+    /**
+     * Sets the transparent color to be used with getTransparentRgbImage().
+     * @param the level of gray to use as a transparent color
+     * @see #getTransparentRgbImage()
+     */
+    public void setTransparentColor ( int gray );
+
+    /**
+     * Sets the transparent color to be used with getTransparentRgbImage().
+     * @param red or hue values relative to the current color range
+     * @param green or saturation values relative to the current color range
+     * @param blue or brightness values relative to the current color range
+     */
+    public void setTransparentColor (int value1, int value2, int value3);
     
     /*
      * Non-static variables that need defining :

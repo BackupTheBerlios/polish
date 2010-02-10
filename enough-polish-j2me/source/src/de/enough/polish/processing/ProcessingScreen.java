@@ -107,6 +107,16 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
           context.getTransparentRgbImage().paint(contentX, contentY, g);
        }
     }
+
+    /**
+     * @see de.enough.polish.ui.Screen#handleCommand(de.enough.polish.ui.Command)
+     */
+    protected boolean handleCommand(Command cmd)
+    {
+        context.signalSoftkeyPressed(cmd.getLabel());
+        return context.areSoftkeysCaptured();
+    }
+
     /**
      * @see de.enough.polish.ui.Screen#handleKeyPressed(int, int) 
      */
@@ -204,14 +214,6 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
         y -= contentY;
         context.signalPointerReleased(x, y);
         return context.arePointerEventsCaptured();
-    }
-
-    /**
-     * @see de.enough.polish.ui.Screen#handleCommand(de.enough.polish.ui.Command) 
-     */
-    protected boolean handleCommand(Command cmd) {
-        context.signalSoftkeyPressed(cmd.getLabel());
-        return super.handleCommand(cmd);
     }
 
     /**

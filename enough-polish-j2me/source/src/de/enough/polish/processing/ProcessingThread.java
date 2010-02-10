@@ -112,31 +112,8 @@ public class ProcessingThread extends Thread implements Runnable {
             if ( objects.size() == 0 )
             {
                 break;
-            }
-
-            // Check if draw events have to be triggered.
-            objList = objects.elements();
-            while ( objList.hasMoreElements() )
-            {
-                temp = (ProcessingInterface) objList.nextElement();
-
-                if ( temp.checkForRefresh() )
-                {
-                    // Only execute a refresh if we're in a loop.
-                    // The reason for this is that if checkForRefresh() does
-                    // return true and we're not in a loop, then the
-                    // refresh mush have been triggered by an event handler
-                    // which in turn called redraw() (thus the refresh flag was set to true ).
-                    // Since redraw was already called, we should not call it again
-                    // by asking for a hard refresh.
-                    if ( temp.isLooping() )
-                    {
-                        queueEvent( new ProcessingEvent(temp,ProcessingEvent.EVENT_DRAW));
-                    }
-                }
-            }
+            }          
             
-
             // Process any events that might be queued
             objList = events.elements();
             while ( objList.hasMoreElements() )
@@ -193,8 +170,32 @@ public class ProcessingThread extends Thread implements Runnable {
                         break;
                 }
             }
-            
+
+
             events.setSize(0);
+
+            // Check if draw events have to be triggered.
+            objList = objects.elements();
+            while ( objList.hasMoreElements() )
+            {
+                temp = (ProcessingInterface) objList.nextElement();
+
+                if ( temp.checkForRefresh() )
+                {
+                    // Only execute a refresh if we're in a loop.
+                    // The reason for this is that if checkForRefresh() does
+                    // return true and we're not in a loop, then the
+                    // refresh mush have been triggered by an event handler
+                    // which in turn called redraw() (thus the refresh flag was set to true ).
+                    // Since redraw was already called, we should not call it again
+                    // by asking for a hard refresh.
+                    if ( temp.isLooping() )
+                    {
+                        queueEvent( new ProcessingEvent(temp,ProcessingEvent.EVENT_DRAW));
+                    }
+                }
+            }
+            
 
             try
             {
