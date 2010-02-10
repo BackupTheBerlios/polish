@@ -71,11 +71,9 @@ public class ElementScriptableObject extends DomNodeScriptableObject{
 	@Override
 	public void put(String name, Scriptable start, Object value) {
 		if("value".equals(name)) {
-			if(value instanceof String) {
+			if(value != null && value instanceof String) {
 				this.elementImpl.setNodeValue((String)value);
 				return;
-			} else {
-				throw new RuntimeException("The parameter must be a string.");
 			}
 		}
 		super.put(name, start, value);
