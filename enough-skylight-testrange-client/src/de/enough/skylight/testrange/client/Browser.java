@@ -42,8 +42,11 @@ public class Browser extends Form implements CommandListener, RendererListener, 
 		public void handleEventProcessingStopped(EventImpl event) {
 			// TODO: Check if the event is a MutationEvent or an event like Focus. Only then update the UI.
 			if(event instanceof MutationEvent) {
-				DomNode node = (DomNode)event.getTarget();
-				domModified(node);
+				MutationEvent mutationEvent = (MutationEvent)event;
+				if(mutationEvent.getPrevValue() != null &&  ! mutationEvent.getPrevValue().equals(mutationEvent.getNewValue())) {
+					DomNode node = (DomNode)event.getTarget();
+					domModified(node);
+				}
 			}
 		}
 	}
