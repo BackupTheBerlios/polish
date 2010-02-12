@@ -687,7 +687,7 @@ public class ProcessingContext implements ProcessingInterface {
     }
 
     /** (non-Javadoc)
-     * @see de.enough.polish.processing.ProcessingInterface#enableFastLines() 
+     * @see de.enough.polish.processing.ProcessingInterface#enableFastDrawing()
      */
     public void enableFastDrawing()
     {
@@ -695,7 +695,7 @@ public class ProcessingContext implements ProcessingInterface {
     }
 
     /** (non-Javadoc)
-     * @see de.enough.polish.processing.ProcessingInterface#disableFastLines()
+     * @see de.enough.polish.processing.ProcessingInterface#disableFastDrawing()
      */
     public void disableFastDrawing()
     {
