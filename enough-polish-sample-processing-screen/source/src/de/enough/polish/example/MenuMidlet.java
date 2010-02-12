@@ -25,26 +25,17 @@
  */
 package de.enough.polish.example;
 
-import de.enough.polish.processing.ProcessingBackground;
 import de.enough.polish.processing.ProcessingContext;
-import de.enough.polish.processing.ProcessingItem;
 import de.enough.polish.processing.ProcessingScreen;
-import de.enough.polish.ui.IconItem;
-import javax.microedition.lcdui.Alert;
-import javax.microedition.lcdui.AlertType;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
-import javax.microedition.lcdui.List;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
-import de.enough.polish.ui.Form;
 import de.enough.polish.util.DeviceControl;
-import de.enough.polish.util.Locale;
 
 //#ifdef polish.debugEnabled
-import de.enough.polish.util.Debug;
 //#endif
 
 /**

@@ -24,12 +24,10 @@
 
 package de.enough.polish.processing;
 
-import de.enough.polish.ui.Animatable;
-import de.enough.polish.ui.AnimationThread;
-import de.enough.polish.ui.ClippingRegion;
+import de.enough.polish.geometry2d.Point2D;
+import de.enough.polish.geometry2d.Polygon2D;
 import de.enough.polish.ui.Display;
 import de.enough.polish.ui.Displayable;
-import de.enough.polish.ui.TextField;
 import de.enough.polish.util.DrawUtil;
 import de.enough.polish.util.RgbImage;
 import java.io.ByteArrayOutputStream;
@@ -92,6 +90,7 @@ public class ProcessingContext implements ProcessingInterface {
     public boolean _bgImageMode = false ;
     public volatile boolean _repaintBackground = false ;
     public boolean _transparentDrawing = false;
+    public boolean _fastDrawingEnabled = true ;
     public int _transparentColor = 0x00FFFFFF;
     public int _colorMode = RGB;
     public int _colorRange1 = 255;
@@ -135,6 +134,10 @@ public class ProcessingContext implements ProcessingInterface {
 
     public Random _random = null ;
 
+    // Coordinates array used within line()
+    int __arrX[] = new int[4];
+    int __arrY[] = new int[4];
+    
     // Due to the order Java initializes class members when inheritance is
     // involved, we need to call setup() in a lazy manner, to ensure that
     // all offspring class members that are initialized directly in their
@@ -681,6 +684,22 @@ public class ProcessingContext implements ProcessingInterface {
     public boolean areSoftkeysCaptured()
     {
         return _areSoftkeysCaptured;
+    }
+
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#enableFastLines() 
+     */
+    public void enableFastDrawing()
+    {
+        _fastDrawingEnabled = true;
+    }
+
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#disableFastLines()
+     */
+    public void disableFastDrawing()
+    {
+        _fastDrawingEnabled = false;
     }
 
     /** (non-Javadoc)
@@ -1394,7 +1413,52 @@ public class ProcessingContext implements ProcessingInterface {
      * @see de.enough.polish.processing.ProcessingInterface#line(int, int, int, int) 
      */
     public void line(int x1, int y1, int x2, int y2) {
-        if (_hasStroke) {
+
+
+        if (_hasStroke == false )
+        {
+            return;
+        }
+        
+        _bufferg.setColor(_strokeColor);
+
+        if ( _strokeWidth == 1)
+        {
+            _bufferg.drawLine(x1, y1, x2, y2);
+            return;
+        }
+
+        if ( _fastDrawingEnabled == true )
+        {
+            // Calculate line width and other stuff
+            int strokeWidthDiv2 = _strokeWidth / 2 ;
+            double pointDistance = Math.sqrt ( (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2) ) ;
+            double startWidth = ( _strokeWidth ) / 2.0  ;
+            double lineCos = (x1-x2) / pointDistance;
+            double lineSin = ( y1-y2 ) / pointDistance ;
+            double cosPerpendicularLine = - lineSin ;
+            double sinPerpendicularLine = - lineCos ;
+
+            // Calculate the polygon defining the line
+            __arrX[0] = (int)( x1 + cosPerpendicularLine * startWidth );
+            __arrX[1] = (int)( __arrX[0] - cosPerpendicularLine * _strokeWidth );
+            __arrX[2] = (int)( x2 - cosPerpendicularLine * startWidth );
+            __arrX[3] = (int)( __arrX[2] + cosPerpendicularLine * _strokeWidth );
+            __arrY[0] = (int)( y1 + sinPerpendicularLine * startWidth );
+            __arrY[1] = (int)( __arrY[0] - sinPerpendicularLine * _strokeWidth );
+            __arrY[2] = (int)( y2 - sinPerpendicularLine * startWidth );
+            __arrY[3] = (int)( __arrY[2] + sinPerpendicularLine * _strokeWidth );
+
+            // Draw the polygon 
+            DrawUtil.fillPolygon(__arrX, __arrY, _strokeColor, _bufferg);
+
+           // Draw the rounded entpoints of the line
+            _bufferg.fillArc(x1 - strokeWidthDiv2, y1-strokeWidthDiv2 , _strokeWidth, _strokeWidth, 0, 360);
+            _bufferg.fillArc(x2 - strokeWidthDiv2, y2-strokeWidthDiv2 , _strokeWidth, _strokeWidth, 0, 360);
+
+        }
+        else
+        {
             _bufferg.setColor(_strokeColor);
             _bufferg.drawLine(x1, y1, x2, y2);
             if (_strokeWidth > 1) {
@@ -1438,8 +1502,9 @@ public class ProcessingContext implements ProcessingInterface {
                         error -= dx;
                     }
                 }
+                }
             }
-        }
+        
     }
 
     /** (non-Javadoc)

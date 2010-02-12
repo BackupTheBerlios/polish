@@ -34,7 +34,7 @@ public class ProcessingBackgroundExample extends ProcessingContext {
 
     boolean isFocused = false ;
 
-    int ceva = 22;
+    int count = 0;
 
     public void setup()
     {
@@ -47,6 +47,8 @@ public class ProcessingBackgroundExample extends ProcessingContext {
 
     public void draw()
     {
+        count++;
+
         // If the item is focused, randomly change it's background color.
         // NOTE: Due to the way background() works ("the background
         // color is used to refresh the display window _between_ frames")
@@ -61,15 +63,33 @@ public class ProcessingBackgroundExample extends ProcessingContext {
             background(255,255,255);
         }
 
+        // Toggle betweeen fast line drawing and regular line drawing
+        if ( count % 2 == 0 )
+        {
+            enableFastDrawing();
+        }
+        else
+        {
+            disableFastDrawing();
+        }
+
         // Set the stroke color to white, which will make all strokes transparent.
         stroke(255,255,255);
 
         // Increase the stroke thickness
-        strokeWeight(10);
+        strokeWeight(14);
 
-        // Draw a transparent "X" as big as the context itself
-        line(0,0,width,height);
-        line(width,0,0,height);        
+        // Draw two lines on the background
+        line(10,10,width-15, height/3);
+        line(width-15, height/3+15,10,height-10);
+
+        // Draw some guidelines to better see the difference in quality between fast and normal lines
+        stroke(255,255,0);
+        strokeWeight(1);
+        line(10,10,width-15, height/3);
+        line(width-15, height/3+15,10,height-10);;
+
+        
     }
 
     public void focus()

@@ -317,6 +317,18 @@ public interface ProcessingInterface {
      * @param blue or brightness values relative to the current color range
      */
     public void setTransparentColor (int value1, int value2, int value3);
+
+    /**
+     * Enables fast drawing.
+     */
+    public void enableFastDrawing();
+
+    /**
+     * Disable fast drawing.
+     */
+    public void disableFastDrawing();
+
+
     
     /*
      * Non-static variables that need defining :
