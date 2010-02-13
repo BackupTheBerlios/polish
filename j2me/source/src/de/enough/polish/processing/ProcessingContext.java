@@ -24,8 +24,6 @@
 
 package de.enough.polish.processing;
 
-import de.enough.polish.geometry2d.Point2D;
-import de.enough.polish.geometry2d.Polygon2D;
 import de.enough.polish.ui.Display;
 import de.enough.polish.ui.Displayable;
 import de.enough.polish.util.DrawUtil;
