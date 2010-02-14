@@ -25,6 +25,8 @@ import de.enough.skylight.renderer.node.CssElement;
 
 public class Browser extends Form implements CommandListener, RendererListener, UserEventListener{
 
+	Command cmdOpen = new Command("Open",Command.SCREEN,0);
+
 	class UpdateUIEventProcessorListener implements EventProcessorListener{
 
 		public void handleAboutToDeliverEvent(EventImpl event) {
@@ -55,21 +57,30 @@ public class Browser extends Form implements CommandListener, RendererListener, 
 	
 	Command cmdExit = new Command("Exit",Command.EXIT,Integer.MAX_VALUE);
 	
-	Viewport viewport;
-	
 	DocumentBuilder documentBuilder;
 	
 	ViewportBuilder viewportBuilder;
+	
+	UrlField urlField;
+	
+	Viewport viewport;
 	
 	Renderer renderer;
 	
 	Refresh refresh;
 	
 	Display display;
+	
+	String url;
 
 	public Browser(String url, Display display) {
 		//#style browser
-		super(url);
+		super(null);
+		
+		this.url = url;
+		
+		this.urlField = new UrlField(this);
+		this.urlField.setUrl(url);
 		
 		this.viewport = new Viewport();
 		this.viewport.addUserEventListener(this);
@@ -77,7 +88,9 @@ public class Browser extends Form implements CommandListener, RendererListener, 
 		/*UpdateUIEventProcessorListener listener = new UpdateUIEventProcessorListener();
 		Services.getInstance().getEventProcessor().addEventProcessorListener(listener);*/
 		
-		this.documentBuilder = new DocumentBuilder(url);
+		this.documentBuilder = new DocumentBuilder();
+		documentBuilder.setUrl(url);
+		
 		this.viewportBuilder = new ViewportBuilder(this.viewport);
 		
 		this.renderer = new Renderer(this.documentBuilder, this.viewportBuilder);
@@ -92,7 +105,7 @@ public class Browser extends Form implements CommandListener, RendererListener, 
 		this.display = display;
 		
 		addCommand(cmdExit);
-		addCommand(cmdRefresh);
+		addCommand(cmdOpen);
 	}
 	
 	public void domModified(DomNode node) {
@@ -104,6 +117,16 @@ public class Browser extends Form implements CommandListener, RendererListener, 
 		if(this.renderer.getState() == Renderer.STATE_VOID) {
 			this.renderer.render();
 		}
+	}
+	
+	protected void open(String url) {
+		this.url = url;
+		
+		this.documentBuilder.setUrl(url);
+		
+		this.renderer.setState(Renderer.STATE_VOID);
+		
+		this.renderer.render();
 	}
 	
 	public void onState(Renderer renderer, int state) {
@@ -124,8 +147,9 @@ public class Browser extends Form implements CommandListener, RendererListener, 
 	}
 	
 	public void commandAction(Command command, Displayable screen) {
-		if(command == cmdRefresh) {
-			this.renderer.render();
+		if(command == cmdOpen) {
+			this.urlField.setUrl(this.url);
+			Display.getInstance().setCurrent(this.urlField);
 		}
 		
 		if(command == cmdExit) {

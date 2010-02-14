@@ -21,6 +21,8 @@ browser_title {
 }
 
 browser_menubar {
+	border-type: top;
+	border-color: #B8B8B8;
 	padding: 2%;
 	background-color: #666666;
 	layout: expand;
@@ -46,6 +48,12 @@ popup {
 	menubar-style: browser_menubar;
 }
 
+url extends popup  {
+	layout: expand | center | bottom | vshrink;
+	background-color: #666666;
+	repaint-previous-screen: true;
+}
+
 refresh extends popup {
 	repaint-previous-screen: true;
 }
@@ -61,6 +69,17 @@ refresh_progress {
 	border-color: #666666;
 }
 
+urlField {
+	margin: 2%;
+	background-color: white;
+	font-size: small;
+	font-color: #666666;
+	layout: expand;
+	border-color: #B8B8B8;
+}
+
+urlField:hover {}
+
 alert extends popup {
 	repaint-previous-screen: true;
 }
@@ -74,4 +93,3 @@ alertMessage {
 	padding-vertical: 0px;
 	background-color: #A0000000;
 }
-
