@@ -7,6 +7,7 @@ scrollbar
 }
 
 browser {
+	padding: 0;
 	background-color: white;
 	title-style: browser_title;
 	menubar-style: browser_menubar;
