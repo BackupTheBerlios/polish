@@ -6,6 +6,7 @@ import de.enough.polish.ui.Display;
 import de.enough.polish.ui.Displayable;
 import de.enough.polish.ui.Form;
 import de.enough.polish.ui.StyleSheet;
+import de.enough.polish.util.UrlUtil;
 import de.enough.skylight.Services;
 import de.enough.skylight.dom.Document;
 import de.enough.skylight.dom.DomNode;
@@ -19,11 +20,12 @@ import de.enough.skylight.js.JsEngine;
 import de.enough.skylight.renderer.Renderer;
 import de.enough.skylight.renderer.RendererListener;
 import de.enough.skylight.renderer.Viewport;
+import de.enough.skylight.renderer.ViewportContext;
 import de.enough.skylight.renderer.builder.DocumentBuilder;
 import de.enough.skylight.renderer.builder.ViewportBuilder;
 import de.enough.skylight.renderer.node.CssElement;
 
-public class Browser extends Form implements CommandListener, RendererListener, UserEventListener{
+public class Browser extends Form implements CommandListener, RendererListener, UserEventListener, ViewportContext {
 
 	Command cmdOpen = new Command("Open",Command.SCREEN,0);
 
@@ -72,17 +74,20 @@ public class Browser extends Form implements CommandListener, RendererListener, 
 	Display display;
 	
 	String url;
+	
+	String host;
 
 	public Browser(String url, Display display) {
 		//#style browser
 		super(null);
 		
 		this.url = url;
+		this.host = UrlUtil.getHost(url);
 		
 		this.urlField = new UrlField(this);
 		this.urlField.setUrl(url);
 		
-		this.viewport = new Viewport();
+		this.viewport = new Viewport(this);
 		this.viewport.addUserEventListener(this);
 		
 		/*UpdateUIEventProcessorListener listener = new UpdateUIEventProcessorListener();
@@ -119,8 +124,9 @@ public class Browser extends Form implements CommandListener, RendererListener, 
 		}
 	}
 	
-	protected void open(String url) {
+	protected void relocate(String url) {
 		this.url = url;
+		this.host = UrlUtil.getHost(url);
 		
 		this.documentBuilder.setUrl(url);
 		
@@ -160,6 +166,14 @@ public class Browser extends Form implements CommandListener, RendererListener, 
 	public void onUserEvent(CssElement element, UserEvent event) {
 		DomNode node = element.getNode();
 		Services.getInstance().getEventEmitter().emitClickEvent(node, 0, 0);
+	}
+
+	public String getHost() {
+		return this.host;
+	}
+
+	public String getUrl() {
+		return this.url;
 	}
 	
 }

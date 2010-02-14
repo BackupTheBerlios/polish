@@ -2,18 +2,16 @@
 	display: block;
 	margin: 37px;
 	padding: 1px;
-	background-color: #A0A0A0;
-}
-
-.frame:hover {
 	background-color: #FF6600;
 }
+
+.frame:hover {}
 
 .frameTitle {
 	display: block;
 	padding: 0px;
 	margin: 6px;
-	font-color: white;
+	font-color: #FFFFFF;
 }
 
 .icon {

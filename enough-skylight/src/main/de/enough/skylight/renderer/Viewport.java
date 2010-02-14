@@ -23,11 +23,15 @@ public class Viewport extends BlockContainingBlock {
 	
 	ArrayList userEventListeners;
 	
-	public Viewport() {
+	ViewportContext context;
+	
+	public Viewport(ViewportContext context) {
 		//#style viewport
 		super(null);
 		
 		this.userEventListeners = new ArrayList();
+		
+		this.context = context;
 	}
 	
 	public void addUserEventListener(UserEventListener listener) {
@@ -52,8 +56,6 @@ public class Viewport extends BlockContainingBlock {
 	public void reset() {
 		this.ready = false;
 		
-		setTitle(null);
-		
 		this.body.clear();
 		
 		if(this.floatLeft != null) {
@@ -73,10 +75,6 @@ public class Viewport extends BlockContainingBlock {
 		this.rootElement = rootElement;
 	}
 	
-	public String toString() {
-		return "Viewport";
-	}
-
 	public boolean isReady() {
 		return this.ready;
 	}
@@ -94,5 +92,13 @@ public class Viewport extends BlockContainingBlock {
 	public void nodeUpdated(DomNode node) {
 		CssElement element = CssElement.getElementWithNode(this.rootElement, node);
 		element.update();
+	}
+	
+	public ViewportContext getContext() {
+		return this.context;
+	}
+
+	public String toString() {
+		return "Viewport";
 	}
 }

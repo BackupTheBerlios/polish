@@ -15,11 +15,13 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.StyleSheet;
 import de.enough.skylight.dom.DomNode;
+import de.enough.skylight.renderer.ViewportContext;
 import de.enough.skylight.renderer.css.HtmlCssElement;
 import de.enough.skylight.renderer.css.HtmlCssInterpreter;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.node.NodeHandler;
 import de.enough.skylight.renderer.node.NodeUtils;
+import de.enough.skylight.resources.ResourceLoader;
 
 public class LinkHandler extends HeadNodeHandler {
 	final static String PREFIX_HTTP = "http://";
@@ -37,22 +39,13 @@ public class LinkHandler extends HeadNodeHandler {
 		String rel = NodeUtils.getAttributeValue(node, "rel");
 		String type = NodeUtils.getAttributeValue(node, "type");
 		String href = NodeUtils.getAttributeValue(node, "href");
+		ViewportContext context = element.getViewport().getContext();
 
 		if (rel != null && rel.equals(REL_STYLESHEET) && type != null
 				&& type.equals(TYPE_TEXT_CSS) && href != null) {
 
 			try {
-				InputStream stream = null;
-				
-				if(href.startsWith("file://")) {
-					String filename = href.substring(PREFIX_FILE.length());
-					stream = getClass().getResourceAsStream(filename);
-				}
-				else if(href.startsWith("http://")) {
-					HttpConnection connection = (HttpConnection) Connector
-							.open(href);
-					stream = connection.openInputStream();
-				}
+				InputStream stream = ResourceLoader.getInstance().getResourcesAsStream(href, context);
 				
 				InputStreamReader reader = new InputStreamReader(stream);
 

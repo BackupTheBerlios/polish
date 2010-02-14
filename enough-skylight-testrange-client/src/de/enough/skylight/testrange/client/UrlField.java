@@ -46,7 +46,7 @@ public class UrlField extends Form implements CommandListener {
 		if(command == cmdGo) {
 			Display.getInstance().setCurrent(this.browser);
 			String url = getUrl();
-			this.browser.open(url);
+			this.browser.relocate(url);
 		}
 		
 		if(command == cmdBack) {
