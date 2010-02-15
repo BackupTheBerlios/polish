@@ -257,7 +257,7 @@ public class CssConverter extends Converter {
 				for (int j = 0; j < styles.length; j++) {
 					Style style = styles[j];
 					String selector = style.getSelector();
-					codeList.add("\tstylesByName.put( \"" + selector + "\", " + style.getStyleName() + "Style );");
+					codeList.add("\tstylesByName.put( " + selector + "Style.name, " + style.getStyleName() + "Style );");
 				}
 				styles = (Style[]) this.referencedStyles.toArray( new Style[ this.referencedStyles.size() ] );
 				for (int j = 0; j < styles.length; j++) {
@@ -268,7 +268,7 @@ public class CssConverter extends Converter {
 						// only when there is no abbreviation, this style is a truly dynamic
 						// one... Or so we hope.
 						name = style.getSelector();
-						codeList.add("\tstylesByName.put( \"" + name + "\", " + style.getStyleName() + "Style );");
+						codeList.add("\tstylesByName.put( " + name + "Style.name, " + style.getStyleName() + "Style );");
 					}
 				}
 				for (Iterator iter = staticCodeList.iterator(); iter.hasNext();) {
