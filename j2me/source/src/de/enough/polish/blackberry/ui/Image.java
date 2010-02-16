@@ -457,6 +457,7 @@ public class Image extends Object
 		if (this.graphics == null) {
 			this.graphics = new Graphics();
 			this.graphics.g = new net.rim.device.api.ui.Graphics( this.bitmap );
+			this.graphics.setClip(0, 0, this.bitmap.getWidth(), this.bitmap.getHeight());
 		}
 		return this.graphics;
 	}
@@ -466,6 +467,7 @@ public class Image extends Object
 		if (this.graphics == null) {
 			this.graphics = new Graphics();
 			this.graphics.g = new net.rim.device.api.ui.Graphics( this.bitmap );
+			this.graphics.setClip(0, 0, this.bitmap.getWidth(), this.bitmap.getHeight());
 		}
 		return this.graphics;
 	}
