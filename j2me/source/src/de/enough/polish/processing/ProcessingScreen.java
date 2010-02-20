@@ -1,3 +1,4 @@
+//#condition polish.usePolishGui
 /*
  * Copyright (c) 2010 Robert Virkus / Enough Software
  *
