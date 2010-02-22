@@ -55,7 +55,7 @@ public class JavaSourceClass {
 	protected static final Pattern EXTENDS_PATTERN = Pattern.compile( EXTENDS_STR );
 	protected static final String IMPLEMENTS_STR = "implements\\s+" + JAVA_VAR_STR + "(\\s*\\,\\s*" + JAVA_VAR_STR + ")*";
 	protected static final Pattern IMPLEMENTS_PATTERN = Pattern.compile( IMPLEMENTS_STR );
-	protected static final String METHOD_STR = "((public|private|protected|abstract|static|final|synchronized)\\s*)+\\s*" // modifier
+	protected static final String METHOD_STR = "((public|private|protected|abstract|static|final|synchronized)\\s*)*\\s*" // modifier
 												+ JAVA_VAR_STR + "\\s*" // return type
 												+ "\\w+[_|\\w]*\\s*\\(\\s*" // name and opening parentheses
 												+ "(" + JAVA_VAR_STR + "\\s+\\w+[_|\\w]*\\s*\\,?\\s*)*" // optional parameters

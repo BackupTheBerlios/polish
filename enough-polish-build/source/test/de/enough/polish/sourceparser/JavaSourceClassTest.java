@@ -346,12 +346,13 @@ public class JavaSourceClassTest extends TestCase {
 				"public interface MyClass extends Remote {",
 				"	public void hello();",
 				"	public final com.server.User hello( String first, Integer second, com.server.User third );",
+				"	void testNoModifiers();",
 				"}"
 		};
 		file = new JavaSourceClass(lines);
 		methods = file.getMethods();
 		assertNotNull( methods );
-		assertEquals( 2, methods.length );
+		assertEquals( 3, methods.length );
 		assertEquals("public", methods[0].getModifier() );
 		assertEquals("void", methods[0].getReturnType() );
 		assertEquals("hello", methods[0].getName() );
@@ -367,7 +368,11 @@ public class JavaSourceClassTest extends TestCase {
 		assertEquals("second", methods[1].getParameterNames()[1] );
 		assertEquals("com.server.User", methods[1].getParameterTypes()[2] );
 		assertEquals("third", methods[1].getParameterNames()[2] );
-		assertEquals(null, methods[1].getThrownExceptions() );
+		assertEquals("", methods[2].getModifier() );
+		assertEquals("void", methods[2].getReturnType() );
+		assertEquals("testNoModifiers", methods[2].getName());
+		assertEquals(null, methods[2].getParameterNames() );
+		assertEquals(null, methods[2].getThrownExceptions() );
 		
 		lines = new String[] {
 				"package de.enough.polish.util;	 ",
@@ -406,6 +411,29 @@ public class JavaSourceClassTest extends TestCase {
 		assertEquals("IOException", methods[1].getThrownExceptions()[0] );
 		assertEquals("EOFException", methods[1].getThrownExceptions()[1] );
 
+
+		lines = new String[] {
+				"package de.enough.polish.util;	 ",
+				"  ",
+				"	/* some explanation",
+				"	   over several ",
+				"	lines */import de.enough.io;",
+				"",
+				"public interface MyInterface extends PushListener {",
+				"	void hello(String message);",
+				"}"
+		};
+		file = new JavaSourceClass(lines);
+		methods = file.getMethods();
+		assertNotNull( methods );
+		assertEquals(1, methods.length);
+		assertEquals("", methods[0].getModifier());
+		assertEquals("void", methods[0].getReturnType());
+		assertEquals("hello", methods[0].getName());
+		assertEquals(1, methods[0].getParameterNames().length );
+		assertEquals("String", methods[0].getParameterTypes()[0]);
+		assertEquals("message", methods[0].getParameterNames()[0]);
+		assertEquals(null, methods[0].getThrownExceptions());
 	}
 
 	public void testGenerics()
