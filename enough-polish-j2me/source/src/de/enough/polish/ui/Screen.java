@@ -386,6 +386,11 @@ implements UiElement, Animatable
 	//#endif
 	private UiEventListener uiEventListener;
 	
+	//#if polish.css.portrait-style || polish.css.landscape-style
+	protected Style landscapeStyle;
+	protected Style portraitStyle;
+	//#endif
+	
 	/**
 	 * Creates a new screen, this constructor can be used together with the //#style directive.
 	 * 
@@ -1879,6 +1884,24 @@ implements UiElement, Animatable
 			if (moveBool != null) {
 				this.isMoveScrollBackgrounds = moveBool.booleanValue();
 			}
+		//#endif
+		//#if polish.css.portrait-style || polish.css.landscape-style
+			//#if polish.css.landscape-style
+				Style lsStyle = (Style) style.getObjectProperty("landscape-style");
+				if (lsStyle != null) {
+					this.landscapeStyle = lsStyle;
+					this.portraitStyle = style;
+				}
+			//#endif
+			//#if polish.css.portrait-style
+				Style ptStyle = (Style) style.getObjectProperty("portrait-style");
+				if (ptStyle != null) {
+					if (this.landscapeStyle == null) {
+						this.landscapeStyle = style;
+					}
+					this.portraitStyle = ptStyle;
+				}
+			//#endif
 		//#endif
 		
 			
@@ -5206,6 +5229,20 @@ implements UiElement, Animatable
 		if(this.paintLock == null) {
 			return;
 		}
+		//#if polish.css.portrait-style || polish.css.landscape-style
+		Style newStyle = null;
+		if (width > height) {
+			if (this.landscapeStyle != null && this.style != this.landscapeStyle) {
+				newStyle = this.landscapeStyle;
+			}
+		} else if (this.portraitStyle != null && this.style != this.portraitStyle){
+			newStyle = this.portraitStyle;
+		}
+		if (newStyle != null) {
+			setStyle( newStyle );
+		}
+		//#endif
+		
 		//#if !polish.Bugs.sizeChangedReportsWrongHeight 
 			//#debug
 			System.out.println("Screen: sizeChanged to width=" + width + ", height=" + height );
