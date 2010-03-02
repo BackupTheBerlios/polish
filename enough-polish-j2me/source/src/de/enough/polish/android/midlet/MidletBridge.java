@@ -28,6 +28,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import de.enough.polish.android.helper.ResourcesHelper;
 import de.enough.polish.android.io.ConnectionNotFoundException;
@@ -143,6 +144,10 @@ public class MidletBridge extends Activity {
 	protected void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		//#if polish.android.hideStatusBar
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		//#endif
 		//TODO: Remove this as we do not want to shrink the application on softkeyboard display.
 //		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 		
