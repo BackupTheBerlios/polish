@@ -69,6 +69,31 @@ public class ProcessWait extends ProcessCondition implements OutputFilter{
 	}
 	
 	/**
+	 * Constructs a new Wait instance. Starts
+	 * the process described in <code>arguments</code>
+	 * and wait for <code>proceed()</code> to be called
+	 * in <code>filter()</code> to return.
+	 *  
+	 * @param arguments the arguments for the process to start
+	 * @param regexes the regex conditions for a line to match (first match will abort the wait) 
+	 * @throws IOException if an process error occurs
+	 */
+	public ProcessWait(String[] arguments,String[] regexes) throws IOException
+	{
+		super(arguments,regexes);
+		
+		synchronized(this)
+		{
+			ProcessUtil.exec(arguments,null,false,this,null);
+			try {
+					wait();
+			} catch (InterruptedException e) {
+				// ignore
+			}
+		} 
+	}
+	
+	/**
 	 * Used to resolve <code>wait()</code> in the constructor.
 	 */
 	public synchronized void proceed()
@@ -82,7 +107,8 @@ public class ProcessWait extends ProcessCondition implements OutputFilter{
 	public void filter(String message, PrintStream output) {
 		// if the regex is matched by the message printed
 		// of the process ...
-		if(message.matches(this.regex))
+		//output.println(message);
+		if (matches(message))
 		{
 			// call proceed()
 			proceed();

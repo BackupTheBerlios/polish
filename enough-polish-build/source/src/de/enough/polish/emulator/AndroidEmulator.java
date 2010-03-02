@@ -75,7 +75,9 @@ public class AndroidEmulator extends Emulator{
 		ArrayList emulatorList = new ArrayList();
 		emulatorList.add(ArgumentHelper.emulator(env));
 		emulatorList.add("-skin");
-		emulatorList.add(getSkin(dev));
+		String skin = getSkin(dev);
+		//System.out.println("Using skin " + skin);
+		emulatorList.add(skin);
 		this.emulatorArguments = emulatorList;
 		 
 		ArrayList waitList = new ArrayList();
@@ -170,7 +172,7 @@ public class AndroidEmulator extends Emulator{
 				// the ActivityManager starts running
 				// which indicates that the package manager
 				// is ready
-				new ProcessWait(this.waitArguments,".*Start running!.*");
+				new ProcessWait(this.waitArguments, new String[]{ ".*Start running!.*", ".*Stopping service.*"} );
 			} else {
 				System.out.println(this.device.getIdentifier() + ": Emulator has been launched already.");
 			}

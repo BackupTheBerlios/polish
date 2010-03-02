@@ -68,7 +68,8 @@ public class JDPTask extends Task {
 	public void execute() throws BuildException {
 		String sourceDir = this.sources.trim() + File.separatorChar + "source";
 
-		String resourceDir = this.sources.trim() +File.separatorChar+ "classes";
+		String resourceDir = this.sources.trim() +File.separatorChar+ "resources"; //todo this was 'classes' before
+		//String classesDir = this.sources.trim() +File.separatorChar+ "classes";
 
 		try {
 			System.out.println("jdp: Reading template...");

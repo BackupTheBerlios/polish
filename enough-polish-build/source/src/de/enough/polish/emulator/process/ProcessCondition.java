@@ -45,7 +45,7 @@ import de.enough.polish.util.ProcessUtil;
 public class ProcessCondition implements OutputFilter{
 	
 	String[] arguments;
-	String regex;
+	String[] regexes;
 	boolean result;
 	
 	/**
@@ -55,11 +55,18 @@ public class ProcessCondition implements OutputFilter{
 	 */
 	public ProcessCondition(String[] arguments,String regex)
 	{
+		this( arguments, new String[]{regex});
+	}
+	
+	/**
+	 * Constructs a new Condition instance.
+	 * @param arguments the arguments to start the process
+	 * @param regex the regex to match
+	 */
+	public ProcessCondition(String[] arguments,String[] regexes)
+	{
 		this.arguments = arguments;
-		this.regex = regex;
-		
-		// set the result initally to false
-		this.result = false;
+		this.regexes = regexes;
 	}
 
 	/* (non-Javadoc)
@@ -68,13 +75,23 @@ public class ProcessCondition implements OutputFilter{
 	public void filter(String message, PrintStream output) {
 		// if a line printed by the process 
 		// matches the regex ...
-		if(message.matches(this.regex))
+		if (matches(message))
 		{
 			// set <code>result</code> to true 
 			this.result = true;
 		}
 	}
 	
+	protected boolean matches(String message) {
+		for (int i=0; i<this.regexes.length; i++) {
+			String regex = this.regexes[i];
+			if(message.matches(regex)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * Calls the process, waits until it is finished and
 	 * returns <code>result</code>. 

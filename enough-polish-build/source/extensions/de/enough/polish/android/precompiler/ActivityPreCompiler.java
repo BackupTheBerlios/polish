@@ -143,6 +143,7 @@ public class ActivityPreCompiler extends PreCompiler{
 		arguments.add("create");
 		arguments.add("project");
 		arguments.add("--target");
+		//System.out.println("using targetId " + ArgumentHelper.getTargetId(env) );
 		arguments.add(ArgumentHelper.getTargetId(env));
 		arguments.add("--path");
 		arguments.add(base);
