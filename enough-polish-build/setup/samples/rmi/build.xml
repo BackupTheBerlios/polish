@@ -234,7 +234,7 @@
 		<copy file="${polish.home}/lib/enough-j2mepolish-rmi.jar" todir="dist" />
 		<delete dir="bin/server" />
 		<mkdir dir="bin/server" />
-		<javac srcdir="source/server" destdir="bin/server" classpath="dist/client-rmi-classes.jar:dist/enough-j2mepolish-rmi.jar" />
+		<javac srcdir="source/server" destdir="bin/server" classpath="dist/client-rmi-classes.jar:dist/enough-j2mepolish-rmi.jar:${polish.home}/lib/javax.servlet.jar" />
 		<jar destfile="dist/gameserver.jar" basedir="bin/server" excludes="**/CVS" />
 	 	<war 
 			destfile="dist/gameserver.war"
