@@ -72,17 +72,17 @@ public final class MathUtil {
      * @return the rounded value, x.5 and higher is rounded to x + 1.
      * @since CLDC 1.1
      */
-    public static int round(double value) {
-        if (value < 0)
-        {
-            return (int) (value - 0.5);
-        }
-        else
-        {
-            return (int) (value + 0.5);
-        }
-    }
-    final static public double SQRT3 = 1.732050807568877294;
+    //# public static int round(double value) {
+    //# 	if (value < 0)
+    //# 	{
+    //#			return (int) (value - 0.5);
+    //# 	}
+    //# 	else
+    //# 	{
+    //# 		return (int) (value + 0.5);
+    //# 	}
+    //# }
+    //# final static public double SQRT3 = 1.732050807568877294;
 
     //#endif
     /**
