@@ -24,8 +24,13 @@ public class ResourcesHelper {
 	 */
 	private static final String resourcePath = "/res/raw"; 
 	
-	private static final int start = 0x7f030000;
-	private static final int end = 0x7f040000;
+	//#if polish.android2.1
+	private static final int start = 0x7f040000;
+	private static final int end = 0x7f050000;
+	//#else 
+	//# private static final int start = 0x7f030000;
+	//# private static final int end = 0x7f040000;
+	//#endif
 	
 	/**
 	 * Replaces any illegal characters from the name with an underscore.
