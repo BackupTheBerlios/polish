@@ -246,6 +246,10 @@
 	</vendor>	
 
 	<vendor>
+		<name>ChinaMobile</name>
+	</vendor>	
+
+	<vendor>
 		<name>NTT-DoCoMo</name>
 		<capability name="vendor.alias" value="NTT DoCoMo" />
 	</vendor>

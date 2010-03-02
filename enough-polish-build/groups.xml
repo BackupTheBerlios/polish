@@ -505,8 +505,6 @@
 	<group>
 		<name>android</name>
 		<capability name="OS" value="android" />
-		<capability name="JavaPlatform" value="android" />
-		<capability name="JavaConfiguration" value="android" />
 	</group>
 
 </groups>

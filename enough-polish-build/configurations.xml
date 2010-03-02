@@ -77,4 +77,20 @@
 		<capability name="SupportFloatingPoint" value="true" />
 	</configuration>
 	
+	<configuration>
+		<identifier>Android/2.0</identifier>
+		<features>android, cldc, cldc11, cldc1.1, hasFloatingPoint</features>
+		<description>android</description>
+		<capability name="build.BootClassPath" value="android-2.0.jar" />
+		<capability name="SupportFloatingPoint" value="true" />
+	</configuration>
+	
+	<configuration>
+		<identifier>Android/2.1</identifier>
+		<features>android, cldc, cldc11, cldc1.1, hasFloatingPoint</features>
+		<description>android</description>
+		<capability name="build.BootClassPath" value="android-2.1.jar" />
+		<capability name="SupportFloatingPoint" value="true" />
+	</configuration>
+	
 </configurations>

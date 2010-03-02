@@ -203,6 +203,7 @@
 			<mapping from="javax.microedition.media.TimeBase" to="de.enough.polish.android.media.TimeBase" />
 			<mapping from="javax.microedition.media.control.*" to="de.enough.polish.android.media.control.*" />
 			<mapping from="javax.microedition.media.control.GUIControl" to="de.enough.polish.android.media.control.GUIControl" />
+			<mapping from="javax.microedition.media.control.FramePositioningControl" to="de.enough.polish.android.media.control.FramePositioningControl" />
 			<mapping from="javax.microedition.media.control.MetaDataControl" to="de.enough.polish.android.media.control.MetaDataControl" />
 			<mapping from="javax.microedition.media.control.MIDIControl" to="de.enough.polish.android.media.control.MIDIControl" />
 			<mapping from="javax.microedition.media.control.PitchControl" to="de.enough.polish.android.media.control.PitchControl" />
