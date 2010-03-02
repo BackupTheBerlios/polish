@@ -892,6 +892,17 @@ public class Style implements Externalizable
 	}
 	
 	/**
+	 * Sets the layout of this style.
+	 * @param layout the layout
+	 * @see #getLayout()
+	 */
+	public void setLayout(int layout) {
+		this.layout = layout;
+	}
+
+
+	
+	/**
 	 * Translates the layout into a Graphics form.
 	 * Item.LAYOUT_LEFT is translated to Graphics.LEFT, for example.
 	 * This method translates Item.LAYOUT_VCENTER into Graphics.VCENTER, so the resulting anchor CANNOT be used for text.
@@ -1024,9 +1035,6 @@ public class Style implements Externalizable
 	public Object[] getRawAttributeValues() {
 		return this.attributeValues;
 	}
-
-
-
 
 	
 //#ifdef polish.Style.additionalMethods:defined
