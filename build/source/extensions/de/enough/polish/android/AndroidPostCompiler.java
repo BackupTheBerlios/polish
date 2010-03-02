@@ -53,6 +53,8 @@ public class AndroidPostCompiler extends PostCompiler{
 		
 		new ResourceStreamPostCompiler().postCompile(classesDir, device);
 		
+		// TODO: Do ProGuard obfuscation here and give dex the obfuscated jar file instead of the class files.
+		
 		new DexPostCompiler().postCompile(classesDir, device);
 	}
 	
