@@ -24064,5 +24064,14 @@ These namespaces/schemas will be used soon.
     <capability name="totalmemory" value="3145720" />
     <capability name="wap.useragent" value="Mozilla/5.0 (Windows; U; Windows NT 5.1; it; rv:1.8.1.12) Gecko/20080201 Firefox/2.0.0.12" />
   </device>
+  
+  <device supportsPolishGui="true">
+    <identifier>HTC/NexusOne</identifier>
+    <groups>android</groups>
+    <capability name="Emulator.Skin" value="WVGA800" />
+    <capability name="ScreenSize" value="800x480" />
+    <capability name="JavaPlatform" value="Android/2.1" />
+    <capability name="JavaConfiguration" value="Android/2.1" />
+  </device>
+  
 </devices>
-
