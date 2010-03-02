@@ -60,8 +60,6 @@ public class ClockInstrumentGaugeView extends ItemView {
         gauge = (Gauge) parent;
         contentWidth = this.backgroundImage.getWidth();
         contentHeight = this.backgroundImage.getHeight();
-
-        System.out.println( contentWidth + " " + contentHeight );
             
     }
 
@@ -173,9 +171,6 @@ public class ClockInstrumentGaugeView extends ItemView {
 
         graphics.drawImage(backgroundImage,bgLeft,bgTop, de.enough.polish.ui.Graphics.TOP | de.enough.polish.ui.Graphics.LEFT);
         graphics.drawRotatedImage( needleImage,  needleCenterX, needleCenterY, bgLeft + needleX , bgTop + needleY, currentAngle );
-
-        g.setColor(255,255,0);
-        g.fillArc(x, y, 80, 80, 10, 30);
 
     }
 

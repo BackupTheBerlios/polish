@@ -32,10 +32,6 @@ import de.enough.polish.ui.Displayable;
 import de.enough.polish.event.EventListener;
 import de.enough.polish.event.EventManager;
 
-//#debug ovidiu
-import de.enough.polish.benchmark.Benchmark;
-
-import de.enough.polish.processing.ProcessingInterface;
 import de.enough.polish.util.ArrayList;
 import java.util.Enumeration;
 
@@ -221,10 +217,7 @@ public class AnimationThread extends Thread
 					}
 
 					if(sleeptime == ANIMATION_YIELD_INTERVAL) {
-						//#mdebug ovidiu
-						Benchmark.pauseSmartTimer("6");
-						Benchmark.check();
-						//#enddebug
+
 						//#if polish.vendor.sony-ericsson
 							Thread.yield();
 						//#else
