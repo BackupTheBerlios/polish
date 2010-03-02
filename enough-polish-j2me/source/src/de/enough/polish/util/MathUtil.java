@@ -37,92 +37,192 @@ package de.enough.polish.util;
  */
 public final class MathUtil {
 
-	/**
-	 * Disallows instantiation 
-	 */
-	private MathUtil() {
-		super();
-	}
-	
-	//#if polish.hasFloatingPoint
-	/**
-	 * Rounds the given double value
-	 * 
-	 * @param value the value
-	 * @return the rounded value, x.5 and higher is rounded to x + 1.
-	 * @since CLDC 1.1
-	 */
-	public static long round( double value ) {
-		if (value < 0) {
-			return (long) (value - 0.5);
-		} else {
-			return (long) (value + 0.5);			
-		}
-	}
-	//#endif
+    /**
+     * Disallows instantiation
+     */
+    private MathUtil() {
+        super();
+    }
 
-	//#if polish.hasFloatingPoint
-	/**
-	 * Rounds the given float value
-	 * 
-	 * @param value the value
-	 * @return the rounded value, x.5 and higher is rounded to x + 1.
-	 * @since CLDC 1.1
-	 */
-	public static int round( float value ) {
-		if (value < 0) {
-			return (int) (value - 0.5);
-		} else {
-			return (int) (value + 0.5);
-		}
-	}
-	//#endif
-	
-	/**
-	 * This function returns an approximated value of sin using the taylor
-	 * 	approximation of power 5. Please keep in mind that the input angle
-	 * 	is NOT measured in degree or radian. It is measured in 1000, which
-	 *  equals 2 * PI. Therefore you have to convert degree via 'd*1000/360'
-	 *  and radian via 'r*1000/2/PI'.  	
-	 *  On top of that the resulting value equals sin()*1000 to avoid floating
-	 *  point errors.
-	 *  Keep also in mind that this aproximation is not necessary 
-	 *  monotonically increasing (especially arround apxSin=1000).
-	 *  
-	 * @param x1k this is the angle 360 degree correspond to 1000.
-	 * @return sin()*1000
-	 */
-	public static int apxSin(int x1k){
-		int p=1;
-		
-		x1k = x1k % 1000;
-		if (x1k < 0) {
-			x1k += 1000;
-		}
-		
-		if (x1k>250){
-			if(x1k<500){
-				x1k=500-x1k;
-			}else if(x1k<750){
-				p=-1;
-				x1k=x1k-500;
-			} else {
-				p=-1;
-				x1k=1000-x1k;
-			}
-		}
-		
-		x1k=(x1k*3141*2)/1000;
-		
-		int sq = x1k*x1k/1000;
-		long ret = x1k*1000000 + x1k*(-sq/6*1000 + sq*sq/120);
-		
-		return (int)(ret/1005000)*p;
-	}
-	/**
-	 * see apxSin()
-	 */
-	public static int apxCos(int x1k){
-		return apxSin(x1k+250);
-	}
+    //#if polish.hasdoubleingPoint
+    /**
+     * Rounds the given double value
+     *
+     * @param value the value
+     * @return the rounded value, x.5 and higher is rounded to x + 1.
+     * @since CLDC 1.1
+     */
+    public static long round(double value) {
+        if (value < 0)
+        {
+            return (long) (value - 0.5);
+        }
+        else
+        {
+            return (long) (value + 0.5);
+        }
+    }
+    //#endif
+
+    //#if ! polish.hasdoubleingPoint
+    /**
+     * Rounds the given double value
+     *
+     * @param value the value
+     * @return the rounded value, x.5 and higher is rounded to x + 1.
+     * @since CLDC 1.1
+     */
+    public static int round(double value) {
+        if (value < 0)
+        {
+            return (int) (value - 0.5);
+        }
+        else
+        {
+            return (int) (value + 0.5);
+        }
+    }
+    final static public double SQRT3 = 1.732050807568877294;
+
+    //#endif
+    /**
+     * This function returns an approximated value of sin using the taylor
+     * 	approximation of power 5. Please keep in mind that the input angle
+     * 	is NOT measured in degree or radian. It is measured in 1000, which
+     *  equals 2 * PI. Therefore you have to convert degree via 'd*1000/360'
+     *  and radian via 'r*1000/2/PI'.
+     *  On top of that the resulting value equals sin()*1000 to avoid doubleing
+     *  point errors.
+     *  Keep also in mind that this aproximation is not necessary
+     *  monotonically increasing (especially arround apxSin=1000).
+     *
+     * @param x1k this is the angle 360 degree correspond to 1000.
+     * @return sin()*1000
+     */
+    public static int apxSin(int x1k) {
+        int p = 1;
+
+        x1k = x1k % 1000;
+        if (x1k < 0)
+        {
+            x1k += 1000;
+        }
+
+        if (x1k > 250)
+        {
+            if (x1k < 500)
+            {
+                x1k = 500 - x1k;
+            }
+            else
+            {
+                if (x1k < 750)
+                {
+                    p = -1;
+                    x1k = x1k - 500;
+                }
+                else
+                {
+                    p = -1;
+                    x1k = 1000 - x1k;
+                }
+            }
+        }
+
+        x1k = (x1k * 3141 * 2) / 1000;
+
+        int sq = x1k * x1k / 1000;
+        long ret = x1k * 1000000 + x1k * (-sq / 6 * 1000 + sq * sq / 120);
+
+        return (int) (ret / 1005000) * p;
+    }
+
+    /**
+     * see apxSin()
+     */
+    public static int apxCos(int x1k) {
+        return apxSin(x1k + 250);
+    }
+
+    /**
+     * Approximates the atan function. Uses a polynomial approximation that should
+     * be accurate enough for most practical purposes.
+     * @param x
+     * @return
+     */
+    static public double atan(double x) {
+
+        double res ;
+        if ( Math.abs(x) < 1)
+        {
+             res= x/(1 + 0.28 * x*x);
+        }
+        else
+        {
+            // NOTE : Due to some weird JVM behavior,
+            // if x is negative it's more accurate to calculate
+            // atan for -x and then negate it, rather than calculate atan
+            // for x directly.
+            if ( x < 0.0)
+            {
+                x = -x;
+                res = ( Math.PI/2 - x/(x*x + 0.28) );
+                res = -res ;
+            }
+            else
+            {
+                res = ( Math.PI/2 - x/(x*x + 0.28) );
+            }            
+        }
+        return res;
+    }
+
+    /**
+     * Approximates the atan2 function. Results are in the [0,2*PI) range.
+     * @param x
+     * @param y
+     * @return
+     */
+    static public double atan2(double x, double y) {
+
+        // Origin - return zero
+        if ( ( y == 0.0) && ( x == 0.0) )
+        {
+            return 0.0;
+        }
+        else
+        if (x > 0.0)
+        {
+            if (y > 0.0) // Point is in first quadrant
+            {
+                return atan(y / x);
+            }
+            else // Point is in fourth quadrant
+            {
+                return 2*Math.PI - atan(-y / x);
+            }
+        }
+        else
+        if (x < 0.0)
+        {
+            if (y < 0.0) // Point is in third quadrant
+            {
+                return Math.PI + atan(y / x);
+            }
+            else // Point is in second quadrant
+            {
+                return Math.PI - atan(-y / x);
+            }
+        }
+        else
+        if (y < 0.0) // Special cases for when the point is directly on the Y axis.
+        {
+            return 2* Math.PI - Math.PI / 2.;
+        }
+        else
+        {
+            return Math.PI / 2.;
+        }
+    }
+    
 }

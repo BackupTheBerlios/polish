@@ -1290,6 +1290,8 @@
 		<mapping from="gauge-horizontal-icons" to="new de.enough.polish.ui.gaugeviews.HorizontalIconsGaugeView()" appliesTo="Gauge" />		
     	<mapping from="gauge-rotating-circles" to="new de.enough.polish.ui.gaugeviews.RotatingCirclesGaugeView()" appliesTo="Gauge" />
     	<mapping from="gauge-images" to="new de.enough.polish.ui.gaugeviews.ImagesGaugeView()" appliesTo="Gauge" />
+		<mapping from="gauge-clock-instrument" to="new de.enough.polish.ui.gaugeviews.ClockInstrumentGaugeView()" appliesTo="Gauge" />
+
 
 		<!-- 
 		<mapping from="gauge-tachometer" to="new de.enough.polish.ui.gaugeviews.TachometerGaugeView()" appliesTo="Gauge" />
@@ -4932,6 +4934,88 @@
 		shell="new Integer()"
 		since="J2ME Polish 2.1.4"
 	/>
+	
+	<attribute
+		name="gauge-clock-instrument-needle-image"
+		type="imageurl"
+		appliesTo="ClockInstrumentGaugeView"
+		description="The image for the needle"
+		default="white"
+		id="424"
+		since="2.1.5"
+	/>
+	
+	<attribute
+		name="gauge-clock-instrument-background-image"
+		type="imageurl"
+		appliesTo="ClockInstrumentGaugeView"
+		description="The image for the background of the instrument"
+		default="white"
+		id="425"
+		since="2.1.5"
+	/>
+	
+	<attribute
+		name="gauge-clock-instrument-needle-x"
+		type="integer"
+		appliesTo="ClockInstrumentGaugeView"
+		description="The X coordinate of the needle center (with respect to the background)."
+		default="-1"
+		id="426"
+		since="2.1.5"
+	/>
+	
+	<attribute
+		name="gauge-clock-instrument-needle-y"
+		type="integer"
+		appliesTo="ClockInstrumentGaugeView"
+		description="The Y coordinate of the needle center (with respect to the background)"
+		default="-1"
+		id="427"
+		since="2.1.5"
+	/>
+	
+	<attribute
+		name="gauge-clock-instrument-needle-center-x"
+		type="integer"
+		appliesTo="ClockInstrumentGaugeView"
+		description="The X coordinate of the needle rotation center (with respect to the upper-left corner of the needle)"
+		default="1"
+		id="428"
+		since="2.1.5"
+	/>
+	
+	<attribute
+		name="gauge-clock-instrument-needle-center-y"
+		type="integer"
+		appliesTo="ClockInstrumentGaugeView"
+		description="The Y coordinate of the needle rotation center (with respect to the upper-left corner of the needle)"
+		default="-1"
+		id="429"
+		since="2.1.5"
+	/>
+	
+	<attribute
+		name="gauge-clock-instrument-start-angle"
+		type="integer"
+		appliesTo="ClockInstrumentGaugeView"
+		description="The angle corresponding to the lowest value of the gauge."
+		default="180"
+		id="430"
+		since="2.1.5"
+	/>
+	
+	<attribute
+		name="gauge-clock-instrument-end-angle"
+		type="integer"
+		appliesTo="ClockInstrumentGaugeView"
+		description="The angle corresponding to the highest value of the gauge."
+		default="0"
+		id="431"
+		since="2.1.5"
+	/>
+	
+	
 	
 <!--
 	<attribute
