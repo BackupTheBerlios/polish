@@ -56,6 +56,7 @@ public class AndroidEmulator extends Emulator{
 	public static final String HVGA = "HVGA";
 	public static final String HVGA_P = "HVGA-P";
 	public static final String HVGA_L = "HVGA-L";
+	public static final String WVGA800 = "WVGA800";
 		
 	String[] stateArguments;
 	ArrayList emulatorArguments;
@@ -128,10 +129,12 @@ public class AndroidEmulator extends Emulator{
 							ArgumentHelper.android(env),
 							"create",
 							"avd",
-							"--name",
+							"-n",
 							avd,
-							"--target",
-							ArgumentHelper.getTargetId(env)
+							"-t",
+							ArgumentHelper.getTargetId(env),
+							"-s",
+							getSkin(this.device)
 					};
 					Runtime runtime = Runtime.getRuntime();
 					Process process = runtime.exec( args, null, null );
@@ -240,6 +243,9 @@ public class AndroidEmulator extends Emulator{
 		}
 		if("480x320".equals(screenSize)) {
 			return HVGA_L;
+		}
+		if("800x480".equals(screenSize)) {
+			return WVGA800;
 		}
 		return HVGA;
 	}
