@@ -1,4 +1,4 @@
-//#condition polish.usePolishGui
+//#condition polish.usePolishGui && polish.hasFloatingPoint
 /*
  * Copyright (c) 2009 Robert Virkus / Enough Software
  *
