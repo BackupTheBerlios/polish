@@ -95,6 +95,9 @@ public class WtkEmulator extends Emulator {
 	 * @return true by default, subclasses can change this behavior.
 	 */
 	protected boolean supportsPreferencesFile() {
+		//Not supported in the new WTK version
+		if(this.wtkNewVersion)
+			return false;
 		return true;
 	}
 
