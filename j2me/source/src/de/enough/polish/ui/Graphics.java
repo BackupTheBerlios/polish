@@ -1124,25 +1124,7 @@ public class Graphics {
     {
         graphics.fillRoundRect(x, y, width, height, arcWidth, arcHeight) ;
     }
-
-    /**
-     * Fills the specified triangle will the current color.  The lines
-     * connecting each pair of points are included in the filled
-     * triangle.
-     *
-     * @param x1 the x coordinate of the first vertex of the triangle
-     * @param y1 the y coordinate of the first vertex of the triangle
-     * @param x2 the x coordinate of the second vertex of the triangle
-     * @param y2 the y coordinate of the second vertex of the triangle
-     * @param x3 the x coordinate of the third vertex of the triangle
-     * @param y3 the y coordinate of the third vertex of the triangle
-     *
-     */
-    public void fillTriangle(int x1, int y1, int x2, int y2, int x3, int y3)
-    {
-        graphics.fillTriangle(x1, y1, x2, y2, x3, y3);
-    }
-
+    
     /**
      * Gets the blue component of the current color.
      * @return integer value in range <code>0-255</code>
@@ -1442,7 +1424,7 @@ public class Graphics {
 
     
 
-    // METHODS FROM DRAW UTIL
+    // METHODS FROM DrawUtil.java
 
     /*
 	public void drawLine( int color, int x1, int y1, int x2, int y2) {
@@ -1834,7 +1816,7 @@ public class Graphics {
 	}
 
 	/**
-	 * Fills the specified triangle.
+	 * Fills the specified triangle with the current color.
 	 *
 	 * @param x1 the x coordinate of the first vertex of the triangle
 	 * @param y1 the y coordinate of the first vertex of the triangle
