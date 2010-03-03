@@ -6861,6 +6861,7 @@ These namespaces/schemas will be used soon.
 		<capability name="ScreenSize" value="320x240"/>
 		<capability name="FullCanvasSize" value="320x240"/>
 		<capability name="CanvasSize" value="320x198"/>
+                <capability name="IconSize" value="54x54"/>
 		<capability name="property.supports.audio.capture" value="true"/>
 		<capability name="property.audio3d.simultaneouslocations" value="4"/>
 		<capability name="timezones" value="GMT, UTC"/>
