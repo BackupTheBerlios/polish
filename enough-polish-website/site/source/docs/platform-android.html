@@ -99,27 +99,31 @@ You can customize the generated Manifest.xml file by defining variables in the b
 </tr>
 	<tr>
 		<td>android.minSdkVersion</td>
-		<td>See http://developer.android.com/guide/topics/manifest/uses-sdk-element.html#min for details.</td>
+		<td>See <a href="http://developer.android.com/guide/topics/manifest/uses-sdk-element.html#min">http://developer.android.com/guide/topics/manifest/uses-sdk-element.html#min</a> for details.</td>
 	</tr>
 	<tr>
 		<td>android.targetSdkVersion</td>
-		<td>See http://developer.android.com/guide/topics/manifest/uses-sdk-element.html#target for details.</td>
+		<td>See <a href="http://developer.android.com/guide/topics/manifest/uses-sdk-element.html#target">http://developer.android.com/guide/topics/manifest/uses-sdk-element.html#target</a> for details.</td>
 	</tr>
 	<tr>
 		<td>android.maxSdkVersion</td>
-		<td>See http://developer.android.com/guide/topics/manifest/uses-sdk-element.html#max for details.</td>
+		<td>See <a href="http://developer.android.com/guide/topics/manifest/uses-sdk-element.html#max">http://developer.android.com/guide/topics/manifest/uses-sdk-element.html#max</a> for details.</td>
 	</tr>
 	<tr>
 		<td>android.versionCode</td>
-		<td>See http://developer.android.com/guide/topics/manifest/manifest-element.html#vcode for details.</td>
+		<td>See <a href="http://developer.android.com/guide/topics/manifest/manifest-element.html#vcode">http://developer.android.com/guide/topics/manifest/manifest-element.html#vcode</a> for details.</td>
 	</tr>
 	<tr>
 		<td>android.versionName</td>
-		<td>See http://developer.android.com/guide/topics/manifest/manifest-element.html#vname for details. </td>
+		<td>See <a href="http://developer.android.com/guide/topics/manifest/manifest-element.html#vname">http://developer.android.com/guide/topics/manifest/manifest-element.html#vname</a> for details. </td>
 	</tr>
 	<tr>
 		<td>MIDlet-Icon</td>
 		<td>This variable is the path to an icon.</td>
+	</tr>
+	<tr>
+		<td>android.hideStatusBar</td>
+		<td>Set this variable to the value <em>true</em> to hide the status bar at the top of the screen.</td>
 	</tr>
 	<tr></tr>
 </table>
@@ -131,11 +135,11 @@ your application with your own signature you can use the signing mechanism provi
 the system will assume fraud and will not allow the operation. So in order to change the development signature to a real one you need to deinstall the old application first. This also implies
 that you should not deploy an application with a development signature to your customers. The customer would be forced to deinstall the application by hand in case you want to update the application.</p>
 
-<h2 id="android-market">Publishing your Application on Android Market</h2>
+<h2 id="android-market">Publish your Application on Android Market</h2>
 <p>The Android Market is the One-Stop-Shop for applications on any Android handset. A published application can be downloaded by every Android user and you need not provide hosting and delivery methods.</p>
 <p>To publish your application you need an Android Market account. Please see <a href="http://www.android.com/market">the offical Android Market site</a> for details.</p>
 
-<h2 id="android-configuring">Configuring Commands</h2>
+<h2 id="android-configuring">Configure Commands</h2>
 <p>
 The rendering of commands can be done by J2ME Polish or by the Android system. A command rendered by J2ME Polish will be stylable by you where a system rendered command will look nativly.</p>
 <p>This is being configured with the fullscreen mode of J2ME Polish
@@ -182,7 +186,7 @@ Command cmdNext = new Command( "Next", Command.SCREEN, 2 );
 
 <h2 id="android-APIs">Supported APIs</h2>
 <p>
-The following common J2ME APIs are supported by J2ME Polish:
+The following J2ME APIs are supported by J2ME Polish:
 </p>
 <ul>
 	<li><b>JSR 139 CLDC 1.1</b>: The basic Java technologies are provided by the Android stack itself</li>
@@ -274,6 +278,14 @@ The problem: When you build for the Android platform, you get the error <code>me
 </p>
 <p>
 The solution: Your <code>android.home</code> points to an old Android SDK version. Please upgrade your Android installation and point the build property <code>android.home</code> to this upgraded installation.
+</p>
+
+<h3 id="android-troubleshooting-screenresolution">Screen Resolution is too low</h3>
+<p>
+The problem: Your application is running on a device with a WVGA screen but the application is not using all available space.
+</p>
+<p>
+The solution: Make sure you address the right target API. Different screen resolutions support from API version 4 upwards. Use the variables <em>android.targetSdkVersion</em>, <em>android.minSdkVersion</em> and <em>android.maxSdkVersion</em> to adjust the API versions.
 </p>
 
 <%include end.txt %>
