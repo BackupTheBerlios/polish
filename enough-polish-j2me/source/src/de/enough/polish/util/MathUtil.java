@@ -144,6 +144,7 @@ public final class MathUtil {
         return apxSin(x1k + 250);
     }
 
+    //#if polish.cldc1.1
     /**
      * Approximates the atan function. Uses a polynomial approximation that should
      * be accurate enough for most practical purposes.
@@ -176,7 +177,9 @@ public final class MathUtil {
         }
         return res;
     }
+    //#endif
 
+    //#if polish.cldc1.1
     /**
      * Approximates the atan2 function. Results are in the [0,2*PI) range.
      * @param x
@@ -224,5 +227,6 @@ public final class MathUtil {
             return Math.PI / 2.;
         }
     }
+    //#endif
     
 }
