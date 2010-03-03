@@ -21,8 +21,13 @@ import de.enough.polish.util.Properties;
  * A class to display a Keyboard instance and a header to show the
  * current text that was written. This form is shown in 
  * TextField.handlePointerReleased() and set the text of the specified
- * TextField with the written result of the KeyboardView 
+ * TextField with the written result of the KeyboardView
+ * <pre>
+ * history
+ *        02-March-2010 - David Added support for password fields.
+ * </pre>
  * @author Andre
+ * @author David
  *
  */
 public class KeyboardView extends FramedForm implements ItemCommandListener 
@@ -181,7 +186,6 @@ public class KeyboardView extends FramedForm implements ItemCommandListener
 		//#endif
 		
 		// add the modes if the conditions are met
-		
 		addMode(Keyboard.MODE_ANY_ALPHA, 
 				Keyboard.KEYS_ANY_ALPHA, 
 				modeAnyAlphaUrl, 
@@ -249,12 +253,21 @@ public class KeyboardView extends FramedForm implements ItemCommandListener
 	}
 	
 	/**
-	 * Sets the text in the display item
+	 * Sets the text in the display item.
+         * This method also takes into account the type of the textfield
 	 * @param text the text
 	 */
 	public void setText(String text) {
 		this.text = text;
-		this.displayItem.setText(text);
+                if ((this.field.getConstraints() & TextField.PASSWORD) == TextField.PASSWORD){
+                    StringBuffer buff= new StringBuffer(text.length());
+                    for (int i=0;i<text.length();i++){
+                        buff.append("*");
+                    }
+                    this.displayItem.setText(buff.toString());
+                }else{
+                    this.displayItem.setText(text);
+                }
 	}
 
 	/* (non-Javadoc)
