@@ -2,8 +2,6 @@
 package de.enough.polish.android.midlet;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -26,7 +24,6 @@ import android.telephony.gsm.GsmCellLocation;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -41,7 +38,6 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.IdentityArrayList;
-import de.enough.polish.util.TextUtil;
 
 
 /**
@@ -208,8 +204,14 @@ public class MidletBridge extends Activity {
 		String appDirectory = getApplicationContext().getFilesDir().getAbsolutePath();
 		setSystemProperty("fileconn.dir.private", appDirectory);
 		
-		// rickyn: This fixes the bootstrap problem for GameCanvas.
+//		IntentFilter intentFilter = new IntentFilter();
+//		intentFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+//		intentFilter.addAction(BluetoothDevice.ACTION_FOUND);
+//		registerReceiver(BluetoothEventReceiver.getInstance(), intentFilter);
+		
+		// rickyn: This initialization fixes the bootstrap problem for GameCanvas.
 		new AndroidDisplay(this);
+		// This variable is needed to set the midlet to the display. Do not remove!
 		Display display = Display.getDisplay(null);
 		
 		// now create MIDlet:
@@ -267,6 +269,16 @@ public class MidletBridge extends Activity {
 		Locale locale = newConfig.locale;
 		String language = locale.getLanguage();
 		setSystemProperty("microedition.locale", language);
+	}
+
+	
+	
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent keyEvent) {
+		if((keyEvent.getFlags() & KeyEvent.FLAG_VIRTUAL_HARD_KEY) == KeyEvent.FLAG_VIRTUAL_HARD_KEY) {
+			System.out.println("Found virtual hard key:"+keyEvent.getKeyCode());
+		}
+		return super.dispatchKeyEvent(keyEvent);
 	}
 
 	/* (non-Javadoc)
