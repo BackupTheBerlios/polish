@@ -480,7 +480,7 @@ implements ItemStateListener //, CommandListener
 				}
 			//#endif
 		} else {
-			if (isSelected == false) {
+			if (!isSelected) {
 				return; // ignore this call
 			}
 			int oldIndex = getSelectedIndex(); 
