@@ -80,7 +80,7 @@ public class ScaleRgbFilter extends RgbFilter
 		int[] rgbOutput;
 		int[] rgbInput = input.getRgbData();
 
-		if ( this.keepOriginalImageDimensions == true )
+		if ( this.keepOriginalImageDimensions )
 		{
 			if (this.output == null || this.output.getWidth() != width || this.output.getHeight() != height ) {
 				this.output = new RgbImage( width, height );
