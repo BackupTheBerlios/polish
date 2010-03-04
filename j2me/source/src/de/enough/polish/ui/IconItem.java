@@ -311,7 +311,7 @@ implements ImageConsumer
 	 * @see de.enough.polish.ui.Item#setContentWidth(int)
 	 */
 	protected void setContentWidth( int width ) {
-		if (this.imageAlign == Graphics.TOP || this.imageAlign == Graphics.BOTTOM) {
+		if (this.imageAlign == Graphics.TOP || this.imageAlign == Graphics.BOTTOM || this.text == null) {
 			int diff = width - this.contentWidth;
 			this.relativeIconX += diff/2;
 		} else if (this.imageAlign == Graphics.RIGHT) {
