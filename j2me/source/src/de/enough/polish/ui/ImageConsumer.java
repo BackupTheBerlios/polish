@@ -46,7 +46,7 @@ public interface ImageConsumer {
 	 * 			This allows the image-consumer to differentiate between several images.
 	 * @param image the image which was loaded in the background thread.
 	 */
-	public void setImage( String name, Image image );
+	void setImage( String name, Image image );
 	
 
 }

@@ -37,6 +37,6 @@ public interface CommandListener
 	 * @param c - a Command object identifying the command. This is either one of the applications have been added to Displayable with addCommand(Command) or is the implicit SELECT_COMMAND of List.
 	 * @param d - the Displayable on which this event has occurred
 	 */
-	public void commandAction( Command c, Displayable d);
+	void commandAction( Command c, Displayable d);
 
 }

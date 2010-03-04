@@ -40,7 +40,7 @@ public interface RemoteScreen
 	 * @param height the height of the physical display
 	 * @param degrees the degrees by which the screen is rotated - 0, 90, 180 or 270.
 	 */
-	public void init( int width, int height, int degrees );
+	void init( int width, int height, int degrees );
 	
 	/**
 	 * Refreshes parts of the screen.
@@ -53,5 +53,5 @@ public interface RemoteScreen
 	 * @param height the height of the refreshed part
 	 * @param rgb the RGB data
 	 */
-	public void updateScreen( int x, int y, int width, int height, int[] rgb );
+	void updateScreen( int x, int y, int width, int height, int[] rgb );
 }

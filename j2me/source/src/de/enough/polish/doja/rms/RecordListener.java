@@ -19,7 +19,7 @@ public interface RecordListener
 	 * @param recordStore - the RecordStore in which the record is stored
 	 * @param recordId - the recordId of the record that has been added
 	 */
-	public void recordAdded( RecordStore recordStore, int recordId);
+	void recordAdded( RecordStore recordStore, int recordId);
 
 	/**
 	 * Called after a record in a record store has been changed. If the
@@ -29,7 +29,7 @@ public interface RecordListener
 	 * @param recordStore - the RecordStore in which the record is stored
 	 * @param recordId - the recordId of the record that has been changed
 	 */
-	public void recordChanged( RecordStore recordStore, int recordId);
+	void recordChanged( RecordStore recordStore, int recordId);
 
 	/**
 	 * Called after a record has been deleted from a record store. If the
@@ -39,6 +39,6 @@ public interface RecordListener
 	 * @param recordStore - the RecordStore in which the record was stored
 	 * @param recordId - the recordId of the record that has been deleted
 	 */
-	public void recordDeleted( RecordStore recordStore, int recordId);
+	void recordDeleted( RecordStore recordStore, int recordId);
 
 }

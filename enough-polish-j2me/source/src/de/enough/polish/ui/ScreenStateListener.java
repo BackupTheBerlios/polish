@@ -52,6 +52,6 @@ public interface ScreenStateListener {
 	 *        to import specfically the de.enough.polish.ui.Screen class and not the javax.microedition.lcdui.Screen class
 	 *        when you want to implement this listener.
 	 */
-	public void screenStateChanged( Screen screen );
+	void screenStateChanged( Screen screen );
 
 }
