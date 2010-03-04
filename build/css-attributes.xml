@@ -4677,7 +4677,7 @@
 	<attribute
 		name="landscape-style"
 		type="style"
-		appliesTo="Item"
+		appliesTo="Item,Screen"
 		description="The name of the style for an item in landscape mode (when the screen is more wide than high)."
 		default="null"
 		id="397"
