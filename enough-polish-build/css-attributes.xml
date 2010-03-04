@@ -5015,6 +5015,16 @@
 		since="2.1.5"
 	/>
 	
+	<attribute
+		name="needle-filter"
+		type="filter"
+		appliesTo="ClockInstrumentGaugeView"
+		description="Specifies an RGB filter for the image of the needle"
+		default="none"
+		id="432"
+		since="2.1.5"
+	/>
+	
 	
 	
 <!--

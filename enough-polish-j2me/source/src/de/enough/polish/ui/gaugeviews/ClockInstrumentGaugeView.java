@@ -25,25 +25,27 @@
 
 package de.enough.polish.ui.gaugeviews;
 
-import de.enough.polish.ui.ClippingRegion;
 import de.enough.polish.ui.Gauge;
 import de.enough.polish.ui.Image;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.ItemView;
 import de.enough.polish.ui.Point;
+import de.enough.polish.ui.RgbFilter;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.MathUtil;
+import de.enough.polish.util.RgbImage;
 import java.io.IOException;
 import javax.microedition.lcdui.Graphics;
 
 /**
+ * This class implements a Clock-like view for gauges.
  *
- * @author Ovidiu
+ * @author Ovidiu Iliescu
  */
 public class ClockInstrumentGaugeView extends ItemView {
 
-    Image backgroundImage = null ;
-    Image needleImage = null;
+    transient Image backgroundImage = null ;
+    transient Image needleImage = null;
     int needleX = -1;
     int needleY = -1;
     int needleCenterX = -1;
@@ -53,7 +55,11 @@ public class ClockInstrumentGaugeView extends ItemView {
     int endAngle = 0;
 
     long lastAnimationTime = 0;
-    Gauge gauge = null;
+    transient Gauge gauge = null;
+
+    //#if polish.css.needle-filter
+    private RgbFilter[] needleFilters = null ;
+    //#endif
 
 
     protected void initContent(Item parent, int firstLineWidth, int availWidth, int availHeight) {
@@ -64,8 +70,13 @@ public class ClockInstrumentGaugeView extends ItemView {
             
     }
 
-    protected void setStyle(Style style) {
+    protected void setStyle(Style style)
+    {
         super.setStyle(style);
+    }
+
+    protected void setStyle(Style style, boolean resetStyle) {
+        super.setStyle(style,resetStyle);
 
         removeParentBackground();
         removeParentBorder();
@@ -156,13 +167,34 @@ public class ClockInstrumentGaugeView extends ItemView {
         }
         //#endif
 
+        //#if polish.css.needle-filter
+        RgbFilter [] currentFilters = (RgbFilter[]) style.getObjectProperty("needle-filter");
+        if (currentFilters != null) {
+            if (currentFilters!= needleFilters)
+            {
+                needleFilters = new RgbFilter[ currentFilters.length ];
+                for (int i = 0; i < currentFilters.length; i++)
+                {
+                        RgbFilter rgbFilter = currentFilters[i];
+                        try
+                        {
+                                needleFilters[i] = (RgbFilter) rgbFilter.getClass().newInstance();
+                                needleFilters[i].setStyle(style, resetStyle);
+                        } catch (Exception e)
+                        {
+                                //#debug warn
+                                System.out.println("Unable to initialize filter class " + rgbFilter.getClass().getName() + e );
+                        }
+                }
+            }
+        }
+        //#endif
+
     }
 
-
-
-
     protected void paintContent(Item parent, int x, int y, int leftBorder, int rightBorder, Graphics g) {
-
+      
+        
         de.enough.polish.ui.Graphics graphics = new de.enough.polish.ui.Graphics(g);
 
         double degreesPerTick = ( 1.0 * ( endAngle - startAngle) ) / gauge.getMaxValue();
@@ -170,9 +202,27 @@ public class ClockInstrumentGaugeView extends ItemView {
         int bgLeft = x + (contentWidth - backgroundImage.getWidth()) / 2;
         int bgTop = y + (contentHeight - backgroundImage.getHeight()) / 2;
 
+        // Draw background 
         graphics.drawImage(backgroundImage,bgLeft,bgTop, de.enough.polish.ui.Graphics.TOP | de.enough.polish.ui.Graphics.LEFT);
-        graphics.drawRotatedImage( needleImage,  needleCenterX, needleCenterY, bgLeft + needleX , bgTop + needleY, currentAngle );
 
+        // Draw the needle
+        //#if polish.css.needle-filter
+            RgbImage rgbImage = new RgbImage(needleImage.getRgbData(),needleImage.getWidth());
+            if ( needleFilters != null )
+            {
+                if ( needleFilters.length > 0 )
+                {
+                    for (int i=0; i<needleFilters.length; i++)
+                    {
+                            RgbFilter filter = needleFilters[i];
+                            rgbImage = filter.process(rgbImage);
+                    }
+                }
+            }
+            graphics.drawRotatedImage( rgbImage,  needleCenterX, needleCenterY, bgLeft + needleX , bgTop + needleY, currentAngle );
+        //#else
+            graphics.drawRotatedImage( needleImage,  needleCenterX, needleCenterY, bgLeft + needleX , bgTop + needleY, currentAngle );
+        //#endif
     }
 
     protected void valueBasedOnPointerPosition(int x, int y)
@@ -307,7 +357,7 @@ public class ClockInstrumentGaugeView extends ItemView {
                 }
                 newGaugeValue = ( gauge.getMaxValue() * semiArcLength ) / totalArcLength ;
             }
-
+            
             gauge.setValue(newGaugeValue);
         }
 
