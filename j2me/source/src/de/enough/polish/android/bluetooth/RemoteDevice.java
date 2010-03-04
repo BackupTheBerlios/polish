@@ -623,7 +623,9 @@ public class RemoteDevice extends java.lang.Object
 	public final java.lang.String getBluetoothAddress()
 	{
 		String address = this.androidBluetoothDevice.getAddress();
-		return address.replaceAll("\\:", "");
+		String result = null; 
+		//#= result = address.replaceAll("\\:", ""); 
+		return result; 
 	}
 
 	/**
