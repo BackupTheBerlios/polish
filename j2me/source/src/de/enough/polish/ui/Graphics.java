@@ -2520,17 +2520,17 @@ public class Graphics {
 
         // NEW METHODS
 
-        /**
-         * Draws a line of the specified width
-         * @param line width
-         * @param x coordinate of the starting point
-         * @param y coordinate of the starting point
-         * @param x coordinate of the end point
-         * @param y coordinate of the end point
-         */
+    //#if polish.hasFloatingPoint
+    /**
+     * Draws a line of the specified width
+     * @param line width
+     * @param x coordinate of the starting point
+     * @param y coordinate of the starting point
+     * @param x coordinate of the end point
+     * @param y coordinate of the end point
+     */
     public void drawLine( int width, int x1, int y1, int x2, int y2 )
     {
-
         int __arrX[] = new int[4];
         int __arrY[] = new int[4];
 
@@ -2565,9 +2565,10 @@ public class Graphics {
         // Draw the polygon
         fillPolygon(__arrX, __arrY, graphics.getColor() );
         //DrawUtil.fillPolygon(__arrX, __arrY, graphics.getColor(), graphics);
-
     }
+    //#endif
 
+    //#if polish.hasFloatingPoint
     /**
      * Draws a circular or elliptical arc covering the specified rectangle, with the specified thickness. The drawing is done by approximating the arc with a polygon having enough vertices so that the arc appears relatively smooth.
      * The resulting arc begins at startAngle and extends for arcAngle degrees. Angles are interpreted such that 0 degrees is at the 3 o'clock position. A positive value indicates a counter-clockwise rotation while a negative value indicates a clockwise rotation.
@@ -2590,8 +2591,9 @@ public class Graphics {
         System.out.println("PTS: " + noOfPoints);
         drawArc ( thickness, x, y, width, height, startAngle, arcAngle, noOfPoints);
     }
+    //#endif
     
-
+    //#if polish.hasFloatingPoint
     /**
      * Draws a circular or elliptical arc covering the specified rectangle, with the specified thickness. The drawing is done by approximating the arc with a polygon having the specified number of vertices.
      * The resulting arc begins at startAngle and extends for arcAngle degrees. Angles are interpreted such that 0 degrees is at the 3 o'clock position. A positive value indicates a counter-clockwise rotation while a negative value indicates a clockwise rotation.
@@ -2667,10 +2669,11 @@ public class Graphics {
         }
         while ( theta <= endAngleRadians) ;
     }
+    //#endif
 
+    //#if polish.hasFloatingPoint
     public void drawRotatedImage( Image image, int imageCenterX, int imageCenterY, int targetCenterX, int targetCenterY, int degrees )
     {
-
         // Rotate the image around its center
         RgbImage img = new RgbImage(image.getRgbData(), image.getWidth());
         degrees = - ( degrees - 90 ); // We use the correct trigonometric sense, and we consider 0 degrees to be at 3 o'clock.
@@ -2698,5 +2701,5 @@ public class Graphics {
         img.paint (posX - newCenterX, posY - newCenterY, graphics);
 
     }
-
+    //#endif
 }
