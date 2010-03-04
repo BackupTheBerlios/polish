@@ -271,16 +271,6 @@ public class MidletBridge extends Activity {
 		setSystemProperty("microedition.locale", language);
 	}
 
-	
-	
-	@Override
-	public boolean dispatchKeyEvent(KeyEvent keyEvent) {
-		if((keyEvent.getFlags() & KeyEvent.FLAG_VIRTUAL_HARD_KEY) == KeyEvent.FLAG_VIRTUAL_HARD_KEY) {
-			System.out.println("Found virtual hard key:"+keyEvent.getKeyCode());
-		}
-		return super.dispatchKeyEvent(keyEvent);
-	}
-
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onKeyDown(int, android.view.KeyEvent)
 	 */
