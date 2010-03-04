@@ -44,26 +44,26 @@ import net.rim.device.api.ui.XYRect;
  */
 public interface PolishTextField {
 	
-	public String getText();
+	String getText();
 	
-	public void setText(String text);
+	void setText(String text);
 	
-	public void focusRemove();
+	void focusRemove();
 	
-	public void setStyle( Style style );
+	void setStyle( Style style );
 	
-	public XYRect getExtent();
+	XYRect getExtent();
 	
-	public void layout( int width, int height );
+	void layout( int width, int height );
 	
-	public void setPaintPosition( int x, int y );
+	void setPaintPosition( int x, int y );
 	
-	public void setCursorPosition( int pos );
+	void setCursorPosition( int pos );
 	
-	public int getInsertPositionOffset();
+	int getInsertPositionOffset();
 	
-	public void setChangeListener( FieldChangeListener listener );
+	void setChangeListener( FieldChangeListener listener );
 
-	public int getCursorPosition();
+	int getCursorPosition();
 
 }

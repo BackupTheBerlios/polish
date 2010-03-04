@@ -31,6 +31,6 @@ package de.enough.polish.blackberry.ui;
  */
 public interface AccessibleField {
 	
-	public boolean navigationMovement(int dx, int dy, int status, int time);
+	boolean navigationMovement(int dx, int dy, int status, int time);
 
 }

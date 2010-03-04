@@ -153,6 +153,6 @@ public interface MessageListener
 	 * 
 	 * @param conn - the MessageConnection where the incoming message has arrived
 	 */
-	public void notifyIncomingMessage( MessageConnection conn);
+	void notifyIncomingMessage( MessageConnection conn);
 
 }
