@@ -1427,33 +1427,43 @@ public class Graphics {
 
     // METHODS FROM DrawUtil.java
 
-    /*
-	public void drawLine( int color, int x1, int y1, int x2, int y2) {
-		//#if polish.blackberry && polish.usePolishGui
-			net.rim.device.api.ui.Graphics bbGraphics = null;
-			//# bbGraphics = g.g;
-			int alpha = color >>> 24;
-			bbGraphics.setGlobalAlpha( alpha );
-			bbGraphics.setColor( color );
-			bbGraphics.drawLine(x1, y1, x2, y2);
-			bbGraphics.setGlobalAlpha( 0xff ); // reset to fully opaque
-		//#elif polish.api.nokia-ui && !polish.Bugs.TransparencyNotWorkingInNokiaUiApi && !polish.Bugs.TransparencyNotWorkingInDrawPolygon
-			int[] xPoints = new int[] { x1, x2 };
-			int[] yPoints = new int[] { y1, y2 };
-			DirectGraphics dg = DirectUtils.getDirectGraphics(graphics);
-			dg.drawPolygon(xPoints, 0, yPoints, 0, 2, color );
-		//#elifdef polish.midp2
-			if (y2 < y1 ) {
-				int top = y2;
-				y2 = y1;
-				y1 = top;
-			}
-			if (x2 < x1) {
-				int left = x2;
-				x1 = x2;
-				x2 = x1;
-				x1 = left;
-			}
+    /**
+     * Draws a translucent line on MIDP 2.0+ and Nokia-UI-API devices.
+     * Note that on pure MIDP 1.0 devices without support for the Nokia-UI-API the translucency is ignored.
+     *
+     * @param color the ARGB color
+     * @param x1 horizontal start position
+     * @param y1 vertical start position
+     * @param x2 horizontal end position
+     * @param y2 vertical end position
+     * @param g the graphics context
+     */
+    public void drawTranslucentLine( int color, int x1, int y1, int x2, int y2) {
+            //#if polish.blackberry && polish.usePolishGui
+                    net.rim.device.api.ui.Graphics bbGraphics = null;
+                    //# bbGraphics = g.g;
+                    int alpha = color >>> 24;
+                    bbGraphics.setGlobalAlpha( alpha );
+                    bbGraphics.setColor( color );
+                    bbGraphics.drawLine(x1, y1, x2, y2);
+                    bbGraphics.setGlobalAlpha( 0xff ); // reset to fully opaque
+            //#elif polish.api.nokia-ui && !polish.Bugs.TransparencyNotWorkingInNokiaUiApi && !polish.Bugs.TransparencyNotWorkingInDrawPolygon
+                    int[] xPoints = new int[] { x1, x2 };
+                    int[] yPoints = new int[] { y1, y2 };
+                    DirectGraphics dg = DirectUtils.getDirectGraphics(graphics);
+                    dg.drawPolygon(xPoints, 0, yPoints, 0, 2, color );
+            //#elifdef polish.midp2
+                    if (y2 < y1 ) {
+                            int top = y2;
+                            y2 = y1;
+                            y1 = top;
+                    }
+                    if (x2 < x1) {
+                            int left = x2;
+                            x1 = x2;
+                            x2 = x1;
+                            x1 = left;
+                    }
 //			int[] rgb = new int[]{ color };
 //			if (y1 == y2) {
 //				int start = Math.max( x1, 0);
@@ -1467,43 +1477,42 @@ public class Graphics {
 //				}
 //			}
 
-			if (x1 == x2 || y1 == y2) {
+                    if (x1 == x2 || y1 == y2) {
 //				int[] rgb = new int[]{ color };
 //				g.drawRGB( rgb, 0, 0, x1, y1, x2 - x1, y2 - y1, true );
-				int width = x2 - x1;
-				if (width == 0) {
-					width = 1;
-				}
-				int height = y2 - y1;
-				if (height == 0) {
-					height = 1;
-				}
-				int[] rgb = new int[ Math.max( width, height )];
-				for (int i = 0; i < rgb.length; i++) {
-					rgb[i] = color;
-				}
-				// the scanlength should really be 0, but we use width so that
-				// this works on Nokia Series 40 devices as well:
-				// drawRGB(		  int[] rgbData,
-				//                int offset,
-				//                int scanlength, <<< this _should_ allow any value, even 0 or negative ones
-				//                int x,
-				//                int y,
-				//                int width,
-				//                int height,
-				//                boolean processAlpha)
-				graphics.drawRGB( rgb, 0, width, x1, y1, width, height, true );
-			} else {
-				// TODO use alpha channel
-				graphics.setColor( color );
-				graphics.drawLine(x1, y1, x2, y2);
-			}
-		//#else
-			graphics.setColor( color );
-			graphics.drawLine(x1, y1, x2, y2);
-		//#endif
-	}
-        */
+                            int width = x2 - x1;
+                            if (width == 0) {
+                                    width = 1;
+                            }
+                            int height = y2 - y1;
+                            if (height == 0) {
+                                    height = 1;
+                            }
+                            int[] rgb = new int[ Math.max( width, height )];
+                            for (int i = 0; i < rgb.length; i++) {
+                                    rgb[i] = color;
+                            }
+                            // the scanlength should really be 0, but we use width so that
+                            // this works on Nokia Series 40 devices as well:
+                            // drawRGB(		  int[] rgbData,
+                            //                int offset,
+                            //                int scanlength, <<< this _should_ allow any value, even 0 or negative ones
+                            //                int x,
+                            //                int y,
+                            //                int width,
+                            //                int height,
+                            //                boolean processAlpha)
+                            graphics.drawRGB( rgb, 0, width, x1, y1, width, height, true );
+                    } else {
+                            // TODO use alpha channel
+                            graphics.setColor( color );
+                            graphics.drawLine(x1, y1, x2, y2);
+                    }
+            //#else
+                    graphics.setColor( color );
+                    graphics.drawLine(x1, y1, x2, y2);
+            //#endif
+    }
 
 	/**
 	 * Draws an (A)RGB array and fits it into the clipping area.
@@ -2521,6 +2530,47 @@ public class Graphics {
 
         // NEW METHODS
 
+
+    //#if polish.hasFloatingPoint
+    /**
+     * Draws a thick line of the specified width, at the specified coordinates, having the specified angle.* @param width the width (or thickness) of the line
+     * @param length the length of the line
+
+     * @param targetX the X target coordinate
+     * @param targetY the Y target coordinate
+     * @param degrees the line angle (in degrees)
+     */
+    public void drawAngledLine( int width, int length, int startX, int startY, int degrees )
+    {
+        drawAngledLine ( width, length, 0, startX, startY, degrees );
+    }
+    //#endif
+
+    //#if polish.hasFloatingPoint
+    /**
+     * Draws a thick line of the specified width, at the specified coordinates, having the specified angle and the specified overlap length. The point defined by the target coordinates, along with the line angle, define a vector. The overlapLength parameter can be used to "slide" the line on this vector. For example, an overlap length of zero means the left endpoint of the line will coincide with the target coordinates. Increasing the overlap length will "slide" the line in the opposite direction of that defined by vector. 
+     * @param width the width (or thickness) of the line
+     * @param length the length of the line
+     * @param overlapLength the amount (in pixels) by which to slide the line along the vector defined by the target coordinates and the line angle
+     * @param targetX the X target coordinate
+     * @param targetY the Y target coordinate
+     * @param degrees the line angle (in degrees)
+     */
+    public void drawAngledLine( int width, int length, int overlapLength, int targetX, int targetY, int degrees )
+    {
+        double lineCos = Math.cos ( (Math.PI * degrees) / 180 );
+        double lineSin = Math.sin ( (Math.PI * degrees) / 180 );
+
+        int mainLength = length - overlapLength ;
+
+        int x1 = (int) ( targetX + mainLength * lineCos );
+        int y1 = (int) ( targetY - mainLength * lineSin );
+        int x2 = (int) ( targetX - overlapLength * lineCos );
+        int y2 = (int) ( targetY + overlapLength * lineSin );
+        drawLine ( width, x1,y1,x2,y2);
+    }
+    //#endif
+
     //#if polish.hasFloatingPoint
     /**
      * Draws a line of the specified width
@@ -2532,9 +2582,6 @@ public class Graphics {
      */
     public void drawLine( int width, int x1, int y1, int x2, int y2 )
     {
-        int __arrX[] = new int[4];
-        int __arrY[] = new int[4];
-
         if ( width == 1)
         {
             graphics.drawLine(x1, y1, x2, y2);
@@ -2554,18 +2601,19 @@ public class Graphics {
         double sinPerpendicularLine = lineCos ;
 
         // Calculate the polygon defining the line
-        __arrX[0] = (int)( x1 + cosPerpendicularLine * startWidth );
-        __arrX[1] = (int)( x1 - cosPerpendicularLine * remainingWidth );
-        __arrX[2] = (int)( x2 - cosPerpendicularLine * remainingWidth );
-        __arrX[3] = (int)( x2 + cosPerpendicularLine * startWidth );
-        __arrY[0] = (int)( y1 + sinPerpendicularLine * startWidth );
-        __arrY[1] = (int)( y1 - sinPerpendicularLine * remainingWidth );
-        __arrY[2] = (int)( y2 - sinPerpendicularLine * remainingWidth );
-        __arrY[3] = (int)( y2 + sinPerpendicularLine * startWidth );
+        int tx1 = (int)( x1 + cosPerpendicularLine * startWidth );
+        int tx2 = (int)( x1 - cosPerpendicularLine * remainingWidth );
+        int tx3 = (int)( x2 - cosPerpendicularLine * remainingWidth );
+        int tx4 = (int)( x2 + cosPerpendicularLine * startWidth );
+        int ty1 = (int)( y1 + sinPerpendicularLine * startWidth );
+        int ty2 = (int)( y1 - sinPerpendicularLine * remainingWidth );
+        int ty3 = (int)( y2 - sinPerpendicularLine * remainingWidth );
+        int ty4 = (int)( y2 + sinPerpendicularLine * startWidth );
 
         // Draw the polygon
-        fillPolygon(__arrX, __arrY, graphics.getColor() );
-        //DrawUtil.fillPolygon(__arrX, __arrY, graphics.getColor(), graphics);
+        fillTriangle(tx1, ty1, tx2, ty2, tx3, ty3);
+        fillTriangle(tx1, ty1, tx4, ty4, tx3, ty3);
+
     }
     //#endif
 
@@ -2673,10 +2721,38 @@ public class Graphics {
     //#endif
 
     //#if polish.hasFloatingPoint
+    /**
+     * Draws a rotated Image at the specified coordinates.
+     * @param image the image to draw
+     * @param imageCenterX the image rotation center X coordinate
+     * @param imageCenterY the image rotation center Y coordinate
+     * @param targetCenterX the X coordinate of the rotation center on the Graphics object
+     * @param targetCenterY the Y coordinate of the rotation center on the Graphics object
+     * @param degrees the rotation angle (in degrees).
+     */
     public void drawRotatedImage( Image image, int imageCenterX, int imageCenterY, int targetCenterX, int targetCenterY, int degrees )
     {
-        // Rotate the image around its center
         RgbImage img = new RgbImage(image.getRgbData(), image.getWidth());
+        drawRotatedImage(img, imageCenterX, imageCenterY, targetCenterX, targetCenterY, degrees);
+    }
+    //#endif
+
+    //#if polish.hasFloatingPoint
+    /**
+     * Draws a rotated RgbImage at the specified coordinates.
+     * @param image the image to draw
+     * @param imageCenterX the image rotation center X coordinate
+     * @param imageCenterY the image rotation center Y coordinate
+     * @param targetCenterX the X coordinate of the rotation center on the Graphics object
+     * @param targetCenterY the Y coordinate of the rotation center on the Graphics object
+     * @param degrees the rotation angle (in degrees).
+     */
+    public void drawRotatedImage( RgbImage img, int imageCenterX, int imageCenterY, int targetCenterX, int targetCenterY, int degrees )
+    {
+
+        int originalWidth = img.getWidth();
+        int originalHeight = img.getHeight() ;
+        // Rotate the image around its center
         degrees = - ( degrees - 90 ); // We use the correct trigonometric sense, and we consider 0 degrees to be at 3 o'clock.
         ImageUtil.rotate(img, degrees);
 
@@ -2685,8 +2761,8 @@ public class Graphics {
         double degreeSin = Math.sin(Math.PI * degrees / 180);
 
         // Calculate the delta between the image center and the image rotation point
-        int centerXDelta = imageCenterX - image.getWidth()/2;
-        int centerYDelta = imageCenterY - image.getHeight()/2;
+        int centerXDelta = imageCenterX - originalWidth/2;
+        int centerYDelta = imageCenterY - originalHeight/2;
 
         // Calculate the coordinates of the rotation point after the image has been rotated,
         // with respect to the image's center
