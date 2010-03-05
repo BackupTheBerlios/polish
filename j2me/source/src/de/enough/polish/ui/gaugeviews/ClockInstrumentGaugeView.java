@@ -61,6 +61,10 @@ public class ClockInstrumentGaugeView extends ItemView {
     private RgbFilter[] needleFilters = null ;
     //#endif
 
+    //#if polish.css.face-filter
+    private RgbFilter[] faceFilters = null ;
+    //#endif
+
 
     protected void initContent(Item parent, int firstLineWidth, int availWidth, int availHeight) {
 
@@ -167,8 +171,10 @@ public class ClockInstrumentGaugeView extends ItemView {
         }
         //#endif
 
+        RgbFilter [] currentFilters = null ;
+
         //#if polish.css.needle-filter
-        RgbFilter [] currentFilters = (RgbFilter[]) style.getObjectProperty("needle-filter");
+        currentFilters = (RgbFilter[]) style.getObjectProperty("needle-filter");
         if (currentFilters != null) {
             if (currentFilters!= needleFilters)
             {
@@ -180,6 +186,29 @@ public class ClockInstrumentGaugeView extends ItemView {
                         {
                                 needleFilters[i] = (RgbFilter) rgbFilter.getClass().newInstance();
                                 needleFilters[i].setStyle(style, resetStyle);
+                        } catch (Exception e)
+                        {
+                                //#debug warn
+                                System.out.println("Unable to initialize filter class " + rgbFilter.getClass().getName() + e );
+                        }
+                }
+            }
+        }
+        //#endif
+
+        //#if polish.css.face-filter
+        currentFilters = (RgbFilter[]) style.getObjectProperty("face-filter");
+        if (currentFilters != null) {
+            if (currentFilters!= faceFilters)
+            {
+                faceFilters = new RgbFilter[ currentFilters.length ];
+                for (int i = 0; i < currentFilters.length; i++)
+                {
+                        RgbFilter rgbFilter = currentFilters[i];
+                        try
+                        {
+                                faceFilters[i] = (RgbFilter) rgbFilter.getClass().newInstance();
+                                faceFilters[i].setStyle(style, resetStyle);
                         } catch (Exception e)
                         {
                                 //#debug warn
@@ -202,12 +231,31 @@ public class ClockInstrumentGaugeView extends ItemView {
         int bgLeft = x + (contentWidth - backgroundImage.getWidth()) / 2;
         int bgTop = y + (contentHeight - backgroundImage.getHeight()) / 2;
 
-        // Draw background 
-        graphics.drawImage(backgroundImage,bgLeft,bgTop, de.enough.polish.ui.Graphics.TOP | de.enough.polish.ui.Graphics.LEFT);
+
+        RgbImage rgbImage = null ;
+
+        // Draw background
+        //#if polish.css.face-filter
+            rgbImage = new RgbImage(backgroundImage.getRgbData(),backgroundImage.getWidth());
+            if ( faceFilters != null )
+            {
+                if ( faceFilters.length > 0 )
+                {
+                    for (int i=0; i<faceFilters.length; i++)
+                    {
+                            RgbFilter filter = faceFilters[i];
+                            rgbImage = filter.process(rgbImage);
+                    }
+                }
+            }
+            graphics.drawRgb(rgbImage, bgLeft, bgTop);
+        //#else
+            graphics.drawImage(backgroundImage,bgLeft,bgTop, Graphics.TOP | Graphics.LEFT);
+        //#endif
 
         // Draw the needle
         //#if polish.css.needle-filter
-            RgbImage rgbImage = new RgbImage(needleImage.getRgbData(),needleImage.getWidth());
+            rgbImage = new RgbImage(needleImage.getRgbData(),needleImage.getWidth());
             if ( needleFilters != null )
             {
                 if ( needleFilters.length > 0 )
