@@ -35,13 +35,13 @@ package de.enough.polish.util;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public final class MathUtil {
-
+public final class MathUtil
+{
     /**
      * Disallows instantiation
      */
-    private MathUtil() {
-        super();
+    private MathUtil()
+    {
     }
 
     //#if polish.hasdoubleingPoint
@@ -52,13 +52,12 @@ public final class MathUtil {
      * @return the rounded value, x.5 and higher is rounded to x + 1.
      * @since CLDC 1.1
      */
-    public static long round(double value) {
-        if (value < 0)
-        {
+    public static long round(double value)
+    {
+        if (value < 0) {
             return (long) (value - 0.5);
         }
-        else
-        {
+        else {
             return (long) (value + 0.5);
         }
     }
@@ -82,7 +81,7 @@ public final class MathUtil {
     //# 		return (int) (value + 0.5);
     //# 	}
     //# }
-    //# final static public double SQRT3 = 1.732050807568877294;
+    //# final public static double SQRT3 = 1.732050807568877294;
 
     //#endif
     /**
@@ -99,30 +98,25 @@ public final class MathUtil {
      * @param x1k this is the angle 360 degree correspond to 1000.
      * @return sin()*1000
      */
-    public static int apxSin(int x1k) {
+    public static int apxSin(int x1k)
+    {
         int p = 1;
-
         x1k = x1k % 1000;
-        if (x1k < 0)
-        {
+
+        if (x1k < 0) {
             x1k += 1000;
         }
 
-        if (x1k > 250)
-        {
-            if (x1k < 500)
-            {
+        if (x1k > 250) {
+            if (x1k < 500) {
                 x1k = 500 - x1k;
             }
-            else
-            {
-                if (x1k < 750)
-                {
+            else {
+                if (x1k < 750) {
                     p = -1;
                     x1k = x1k - 500;
                 }
-                else
-                {
+                else {
                     p = -1;
                     x1k = 1000 - x1k;
                 }
@@ -140,7 +134,8 @@ public final class MathUtil {
     /**
      * see apxSin()
      */
-    public static int apxCos(int x1k) {
+    public static int apxCos(int x1k)
+    {
         return apxSin(x1k + 250);
     }
 
@@ -148,33 +143,32 @@ public final class MathUtil {
     /**
      * Approximates the atan function. Uses a polynomial approximation that should
      * be accurate enough for most practical purposes.
+     * 
      * @param x
-     * @return
+     * @return the calculated value
      */
-    static public double atan(double x) {
+    public static double atan(double x)
+    {
+        double res;
 
-        double res ;
-        if ( Math.abs(x) < 1)
-        {
-             res= x/(1 + 0.28 * x*x);
+        if (Math.abs(x) < 1) {
+            res= x/(1 + 0.28 * x*x);
         }
-        else
-        {
+        else {
             // NOTE : Due to some weird JVM behavior,
             // if x is negative it's more accurate to calculate
             // atan for -x and then negate it, rather than calculate atan
             // for x directly.
-            if ( x < 0.0)
-            {
+            if ( x < 0.0) {
                 x = -x;
                 res = ( Math.PI/2 - x/(x*x + 0.28) );
                 res = -res ;
             }
-            else
-            {
+            else {
                 res = ( Math.PI/2 - x/(x*x + 0.28) );
             }            
         }
+
         return res;
     }
     //#endif
@@ -182,51 +176,39 @@ public final class MathUtil {
     //#if polish.hasFloatingPoint
     /**
      * Approximates the atan2 function. Results are in the [0,2*PI) range.
+     * 
      * @param x
      * @param y
-     * @return
+     * @return the calculated value
      */
-    static public double atan2(double x, double y) {
-
+    public static double atan2(double x, double y)
+    {
         // Origin - return zero
-        if ( ( y == 0.0) && ( x == 0.0) )
-        {
+        if (y == 0.0 && x == 0.0) {
             return 0.0;
         }
-        else
-        if (x > 0.0)
-        {
-            if (y > 0.0) // Point is in first quadrant
-            {
+        else if (x > 0.0) {
+            if (y > 0.0) { // Point is in first quadrant
                 return atan(y / x);
             }
-            else // Point is in fourth quadrant
-            {
+            else { // Point is in fourth quadrant
                 return 2*Math.PI - atan(-y / x);
             }
         }
-        else
-        if (x < 0.0)
-        {
-            if (y < 0.0) // Point is in third quadrant
-            {
+        else if (x < 0.0) {
+            if (y < 0.0) { // Point is in third quadrant
                 return Math.PI + atan(y / x);
             }
-            else // Point is in second quadrant
-            {
+            else { // Point is in second quadrant
                 return Math.PI - atan(-y / x);
             }
         }
-        else
-        if (y < 0.0) // Special cases for when the point is directly on the Y axis.
-        {
-            return 2* Math.PI - Math.PI / 2.;
+        else if (y < 0.0) { // Special cases for when the point is directly on the Y axis.
+            return 2 * Math.PI - Math.PI / 2.;
         }
-        else
-        {
+        else {
             return Math.PI / 2.;
         }
     }
     //#endif
-    
 }
