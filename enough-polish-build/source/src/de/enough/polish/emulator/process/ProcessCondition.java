@@ -61,9 +61,9 @@ public class ProcessCondition implements OutputFilter{
 	/**
 	 * Constructs a new Condition instance.
 	 * @param arguments the arguments to start the process
-	 * @param regex the regex to match
+	 * @param regexes the regexes to match
 	 */
-	public ProcessCondition(String[] arguments,String[] regexes)
+	public ProcessCondition(String[] arguments, String[] regexes)
 	{
 		this.arguments = arguments;
 		this.regexes = regexes;
