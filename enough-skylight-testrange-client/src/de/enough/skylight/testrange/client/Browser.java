@@ -82,7 +82,7 @@ public class Browser extends Form implements CommandListener, RendererListener, 
 		super(null);
 		
 		this.url = url;
-		this.host = UrlUtil.getHost(url);
+		this.host = UrlUtil.getPath(url);
 		
 		this.urlField = new UrlField(this);
 		this.urlField.setUrl(url);
@@ -126,7 +126,7 @@ public class Browser extends Form implements CommandListener, RendererListener, 
 	
 	protected void relocate(String url) {
 		this.url = url;
-		this.host = UrlUtil.getHost(url);
+		this.host = UrlUtil.getPath(url);
 		
 		this.documentBuilder.setUrl(url);
 		
