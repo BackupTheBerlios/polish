@@ -83,7 +83,7 @@
 				<pathelement path="import/cldc-1.1.jar" />
 				<pathelement path="import/midp-2.1.jar" />
 				<pathelement path="import/advancedmultimedia-1.0.jar" />
-				<pathelement path="import/android.jar" />
+				<pathelement path="import/android-2.1.jar" />
 				<pathelement path="import/btapi.jar" />
 				<pathelement path="import/blackberry-4.7.0.jar" />
 				<pathelement path="import/doja-2.5.jar" />
