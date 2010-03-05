@@ -1,10 +1,11 @@
 package de.enough.skylight.dom.impl;
 
-import de.enough.polish.util.HashMap;
 import org.mozilla.javascript.Scriptable;
+
+import de.enough.polish.util.HashMap;
 import de.enough.skylight.dom.Attr;
-import de.enough.skylight.dom.Document;
 import de.enough.skylight.dom.DOMException;
+import de.enough.skylight.dom.Document;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.Element;
 import de.enough.skylight.dom.Event;

@@ -1,7 +1,5 @@
 package de.enough.skylight.renderer.linebox;
 
-import javax.microedition.lcdui.Graphics;
-
 import de.enough.skylight.renderer.element.InlineContainingBlock;
 import de.enough.skylight.renderer.partition.Partition;
 import de.enough.skylight.renderer.partition.PartitionList;

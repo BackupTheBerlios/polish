@@ -1,6 +1,7 @@
 package de.enough.skylight.dom.impl;
 
 import org.mozilla.javascript.Scriptable;
+
 import de.enough.skylight.dom.Attr;
 import de.enough.skylight.dom.DOMException;
 import de.enough.skylight.dom.Element;

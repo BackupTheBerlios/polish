@@ -8,13 +8,11 @@ import javax.microedition.lcdui.Image;
 
 import de.enough.polish.ui.ImageItem;
 import de.enough.polish.ui.Item;
-import de.enough.polish.ui.Style;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.Viewport;
 import de.enough.skylight.renderer.ViewportContext;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.node.ImgElement;
-import de.enough.skylight.renderer.node.NodeHandler;
 import de.enough.skylight.renderer.node.NodeUtils;
 import de.enough.skylight.resources.ResourceLoader;
 

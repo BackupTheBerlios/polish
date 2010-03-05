@@ -2,10 +2,8 @@ package de.enough.skylight.renderer.node;
 
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
-import de.enough.polish.ui.StyleSheet;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.Viewport;
-import de.enough.skylight.renderer.element.BlockContainingBlock;
 
 public abstract class NodeHandler {
 	public abstract String getTag();

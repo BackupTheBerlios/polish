@@ -2,13 +2,9 @@ package de.enough.skylight.renderer.node.handler.html;
 
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
-import de.enough.polish.ui.TextField;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.element.InputPasswordField;
-import de.enough.skylight.renderer.element.InputTextField;
 import de.enough.skylight.renderer.node.CssElement;
-import de.enough.skylight.renderer.node.CssStyle;
-import de.enough.skylight.renderer.node.NodeHandler;
 import de.enough.skylight.renderer.node.NodeUtils;
 
 public class InputPasswordHandler extends BodyNodeHandler {

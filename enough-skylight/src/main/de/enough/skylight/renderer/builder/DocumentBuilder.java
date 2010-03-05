@@ -6,7 +6,6 @@ import java.io.InputStream;
 import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
 
-import de.enough.polish.util.StreamUtil;
 import de.enough.skylight.dom.Document;
 import de.enough.skylight.dom.impl.DomParser;
 

@@ -1,7 +1,6 @@
 package de.enough.skylight.renderer.element;
 
 import de.enough.polish.ui.Container;
-import de.enough.polish.ui.DebugHelper;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.skylight.renderer.element.view.BlockContainingBlockView;

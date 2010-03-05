@@ -1,7 +1,8 @@
 package de.enough.skylight.dom.impl;
 
-import de.enough.polish.util.ArrayList;
 import org.mozilla.javascript.Scriptable;
+
+import de.enough.polish.util.ArrayList;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.NodeList;
 import de.enough.skylight.js.NodeListScriptableObject;

@@ -3,6 +3,7 @@ package de.enough.skylight.js;
 
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
+
 import de.enough.skylight.dom.impl.AttrImpl;
 
 public class AttrScriptableObject extends ScriptableObject{

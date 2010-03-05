@@ -9,7 +9,6 @@ import de.enough.skylight.event.UserEvent;
 import de.enough.skylight.event.UserEventListener;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.node.CssElement;
-import de.enough.skylight.renderer.node.NodeUtils;
 
 /**
  * A viewport to render to

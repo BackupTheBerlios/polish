@@ -3,8 +3,6 @@ package de.enough.skylight.renderer.element;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 
-import de.enough.polish.benchmark.Benchmark;
-import de.enough.polish.ui.Item;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.StringTokenizer;

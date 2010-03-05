@@ -1,10 +1,6 @@
 package de.enough.skylight.renderer;
 
-import de.enough.polish.benchmark.Benchmark;
-import de.enough.polish.ui.Container;
 import de.enough.polish.util.ArrayList;
-import de.enough.polish.util.ItemPreinit;
-import de.enough.polish.util.Preinit;
 import de.enough.skylight.dom.Document;
 import de.enough.skylight.renderer.builder.DocumentBuilder;
 import de.enough.skylight.renderer.builder.ViewportBuilder;

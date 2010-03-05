@@ -1,7 +1,6 @@
 package de.enough.skylight.renderer.builder;
 
 import de.enough.polish.benchmark.Benchmark;
-import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.util.ItemPreinit;
 import de.enough.skylight.dom.Document;
@@ -12,8 +11,6 @@ import de.enough.skylight.renderer.css.HtmlCssElement;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.element.ContainingBlock;
 import de.enough.skylight.renderer.element.ElementAttributes;
-import de.enough.skylight.renderer.element.InlineContainingBlock;
-import de.enough.skylight.renderer.element.TextBlock;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.node.NodeHandler;
 import de.enough.skylight.renderer.node.NodeHandlerDirectory;

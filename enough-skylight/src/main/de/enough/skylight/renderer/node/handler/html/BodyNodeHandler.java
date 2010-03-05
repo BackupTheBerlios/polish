@@ -5,7 +5,6 @@ import de.enough.polish.ui.Style;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.node.CssStyle;
-import de.enough.skylight.renderer.node.NodeHandler;
 import de.enough.skylight.renderer.node.NodeUtils;
 
 public abstract class BodyNodeHandler extends HtmlNodeHandler {

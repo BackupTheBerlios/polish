@@ -6,20 +6,13 @@ import java.io.InputStreamReader;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import javax.microedition.io.Connector;
-import javax.microedition.io.HttpConnection;
-
-import de.enough.polish.browser.css.CssInterpreter;
-import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.StyleSheet;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.ViewportContext;
-import de.enough.skylight.renderer.css.HtmlCssElement;
 import de.enough.skylight.renderer.css.HtmlCssInterpreter;
 import de.enough.skylight.renderer.node.CssElement;
-import de.enough.skylight.renderer.node.NodeHandler;
 import de.enough.skylight.renderer.node.NodeUtils;
 import de.enough.skylight.resources.ResourceLoader;
 
