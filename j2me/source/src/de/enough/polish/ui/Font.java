@@ -82,9 +82,316 @@ public class Font {
 
     protected javax.microedition.lcdui.Font font = null ;
 
-    public Font ( javax.microedition.lcdui.Font font)
+    /**
+     * The plain style constant. This may be combined with the
+     * other style constants for mixed styles.
+     */
+    public static final int STYLE_PLAIN = javax.microedition.lcdui.Font.STYLE_PLAIN;
+
+    /**
+     * The bold style constant. This may be combined with the
+     * other style constants for mixed styles.
+     */
+    public static final int STYLE_BOLD = javax.microedition.lcdui.Font.STYLE_BOLD;
+
+    /**
+     * The italicized style constant. This may be combined with
+     * the other style constants for mixed styles.
+
+     */
+    public static final int STYLE_ITALIC = javax.microedition.lcdui.Font.STYLE_ITALIC;
+
+    /**
+     * The underlined style constant. This may be combined with
+     * the other style constants for mixed styles.
+     *
+     */
+    public static final int STYLE_UNDERLINED = javax.microedition.lcdui.Font.STYLE_UNDERLINED;
+
+    /**
+     * The &quot;small&quot; system-dependent font size.
+     */
+    public static final int SIZE_SMALL = javax.microedition.lcdui.Font.SIZE_SMALL;
+
+    /**
+     * The &quot;medium&quot; system-dependent font size.
+     */
+    public static final int SIZE_MEDIUM = javax.microedition.lcdui.Font.SIZE_MEDIUM;
+
+    /**
+     * The &quot;large&quot; system-dependent font size.
+     */
+    public static final int SIZE_LARGE = javax.microedition.lcdui.Font.SIZE_LARGE;
+
+    /**
+     * The &quot;system&quot; font face.
+     */
+    public static final int FACE_SYSTEM = javax.microedition.lcdui.Font.FACE_SYSTEM;
+
+    /**
+     * The &quot;monospace&quot; font face.
+     */
+    public static final int FACE_MONOSPACE = javax.microedition.lcdui.Font.FACE_MONOSPACE;
+
+    /**
+     * The &quot;proportional&quot; font face.
+     */
+    public static final int FACE_PROPORTIONAL = javax.microedition.lcdui.Font.FACE_PROPORTIONAL;
+
+    /**
+     * Default font specifier used to draw Item and Screen contents.
+     * @see #getFont(int fontSpecifier)
+     */
+    public static final int FONT_STATIC_TEXT = javax.microedition.lcdui.Font.FONT_STATIC_TEXT;
+
+    /**
+     * Font specifier used by the implementation to draw text input by
+     * a user.
+     *
+     * @see #getFont(int fontSpecifier)
+     */
+    public static final int FONT_INPUT_TEXT = javax.microedition.lcdui.Font.FONT_INPUT_TEXT;
+
+    protected Font ( javax.microedition.lcdui.Font font)
     {
         this.font = font ;
     }
+
+    /**
+     * Gets the <code>Font</code> used by the high level user interface
+     * for the <code>fontSpecifier</code> passed in. It should be used
+     * by subclasses of
+     * <code>CustomItem</code> and <code>Canvas</code> to match user
+     * interface on the device.
+     *
+     * @param fontSpecifier one of <code>FONT_INPUT_TEXT</code>, or
+     * <code>FONT_STATIC_TEXT</code>
+     * @return font that corresponds to the passed in font specifier
+     * @throws IllegalArgumentException if <code>fontSpecifier</code> is not
+     * a valid fontSpecifier
+     */
+    public static Font getFont(int fontSpecifier) {
+        return new Font ( javax.microedition.lcdui.Font.getFont(fontSpecifier) );
+    }
+
+    /**
+     * Gets the default font of the system.
+     * @return the default font
+     */
+    public static Font getDefaultFont() {
+        return new Font ( javax.microedition.lcdui.Font.getDefaultFont() );
+    }
+
+    /**
+     * Obtains an object representing a font having the specified face, style,
+     * and size. If a matching font does not exist, the system will
+     * attempt to provide the closest match. This method <em>always</em>
+     * returns
+     * a valid font object, even if it is not a close match to the request.
+     *
+     * @param inp_face one of <code>FACE_SYSTEM</code>,
+     * <code>FACE_MONOSPACE</code>, or <code>FACE_PROPORTIONAL</code>
+     * @param inp_style <code>STYLE_PLAIN</code>, or a combination of
+     * <code>STYLE_BOLD</code>,
+     * <code>STYLE_ITALIC</code>, and <code>STYLE_UNDERLINED</code>
+     * @param inp_size one of <code>SIZE_SMALL</code>, <code>SIZE_MEDIUM</code>,
+     * or <code>SIZE_LARGE</code>
+     * @return instance the nearest font found
+     * @throws IllegalArgumentException if <code>face</code>,
+     * <code>style</code>, or <code>size</code> are not
+     * legal values
+     */
+    public static Font getFont(int inp_face, int inp_style, int inp_size) {
+        return new Font ( javax.microedition.lcdui.Font.getFont(inp_face, inp_style, inp_size));
+    }
+
+    /**
+     * Gets the style of the font. The value is an <code>OR'ed</code>
+     * combination of
+     * <code>STYLE_BOLD</code>, <code>STYLE_ITALIC</code>, and
+     * <code>STYLE_UNDERLINED</code>; or the value is
+     * zero (<code>STYLE_PLAIN</code>).
+     * @return style of the current font
+     *
+     * @see #isPlain()
+     * @see #isBold()
+     * @see #isItalic()
+     */
+    public int getStyle() {
+        return font.getStyle();
+    };
+
+    /**
+     * Gets the size of the font.
+     *
+     * @return one of <code>SIZE_SMALL</code>, <code>SIZE_MEDIUM</code>,
+     * <code>SIZE_LARGE</code>
+     */
+    public int getSize() {
+        return font.getSize();
+    }
+
+    /**
+     * Gets the face of the font.
+     *
+     * @return one of <code>FACE_SYSTEM</code>,
+     * <code>FACE_PROPORTIONAL</code>, <code>FACE_MONOSPACE</code>
+     */
+    public int getFace() {
+        return font.getFace();
+    }
+
+    /**
+     * Returns <code>true</code> if the font is plain.
+     * @see #getStyle()
+     * @return <code>true</code> if font is plain
+     */
+    public boolean isPlain() {
+        return font.isPlain();
+    }
+
+    /**
+     * Returns <code>true</code> if the font is bold.
+     * @see #getStyle()
+     * @return <code>true</code> if font is bold
+     */
+    public boolean isBold() {
+        return font.isBold() ;
+    }
+
+    /**
+     * Returns <code>true</code> if the font is italic.
+     * @see #getStyle()
+     * @return <code>true</code> if font is italic
+     */
+    public boolean isItalic() {
+        return font.isItalic();
+    }
+
+    /**
+     * Returns <code>true</code> if the font is underlined.
+     * @see #getStyle()
+     * @return <code>true</code> if font is underlined
+     */
+    public boolean isUnderlined() {
+        return font.isUnderlined();
+    }
+
+    /**
+     * Gets the standard height of a line of text in this font. This value
+     * includes sufficient spacing to ensure that lines of text painted this
+     * distance from anchor point to anchor point are spaced as intended by the
+     * font designer and the device. This extra space (leading) occurs below
+     * the text.
+     * @return standard height of a line of text in this font (a
+     * non-negative value)
+     */
+    public int getHeight() {
+        return font.getHeight();
+    }
+
+    /**
+     * Gets the distance in pixels from the top of the text to the text's
+     * baseline.
+     * @return the distance in pixels from the top of the text to the text's
+     * baseline
+     */
+    public int getBaselinePosition() {
+        return font.getBaselinePosition();
+    }
+
+    /**
+     * Gets the advance width of the specified character in this Font.
+     * The advance width is the horizontal distance that would be occupied if
+     * <code>ch</code> were to be drawn using this <code>Font</code>,
+     * including inter-character spacing following
+     * <code>ch</code> necessary for proper positioning of subsequent text.
+     *
+     * @param ch the character to be measured
+     * @return the total advance width (a non-negative value)
+     */
+    public int charWidth(char ch) {
+        return font.charWidth(ch);
+    }
+
+    /**
+     * Returns the advance width of the characters in <code>ch</code>,
+     * starting at the specified offset and for the specified number of
+     * characters (length).
+     * The advance width is the horizontal distance that would be occupied if
+     * the characters were to be drawn using this <code>Font</code>,
+     * including inter-character spacing following
+     * the characters necessary for proper positioning of subsequent text.
+     *
+     * <p>The <code>offset</code> and <code>length</code> parameters must
+     * specify a valid range of characters
+     * within the character array <code>ch</code>. The <code>offset</code>
+     * parameter must be within the
+     * range <code>[0..(ch.length)]</code>, inclusive.
+     * The <code>length</code> parameter must be a non-negative
+     * integer such that <code>(offset + length) &lt;= ch.length</code>.</p>
+     *
+     * @param ch the array of characters
+     * @param offset the index of the first character to measure
+     * @param length the number of characters to measure
+     * @return the width of the character range
+     * @throws ArrayIndexOutOfBoundsException if <code>offset</code> and
+     * <code>length</code> specify an
+     * invalid range
+     * @throws NullPointerException if <code>ch</code> is <code>null</code>
+     */
+    public int charsWidth(char[] ch, int offset, int length) {
+        return font.charsWidth(ch, offset, length);
+    }
+    
+    /**
+     * Gets the total advance width for showing the specified
+     * <code>String</code>
+     * in this <code>Font</code>.
+     * The advance width is the horizontal distance that would be occupied if
+     * <code>str</code> were to be drawn using this <code>Font</code>, 
+     * including inter-character spacing following
+     * <code>str</code> necessary for proper positioning of subsequent text.
+     * 
+     * @param str the <code>String</code> to be measured
+     * @return the total advance width
+     * @throws NullPointerException if <code>str</code> is <code>null</code>
+     */
+    public int stringWidth(String str) {
+        return font.stringWidth(str);
+    }
+
+    /**
+     * Gets the total advance width for showing the specified substring in this
+     * <code>Font</code>.
+     * The advance width is the horizontal distance that would be occupied if
+     * the substring were to be drawn using this <code>Font</code>,
+     * including inter-character spacing following
+     * the substring necessary for proper positioning of subsequent text.
+     *
+     * <p>
+     * The <code>offset</code> and <code>len</code> parameters must
+     * specify a valid range of characters
+     * within <code>str</code>. The <code>offset</code> parameter must
+     * be within the
+     * range <code>[0..(str.length())]</code>, inclusive.
+     * The <code>len</code> parameter must be a non-negative
+     * integer such that <code>(offset + len) &lt;= str.length()</code>.
+     * </p>
+     *
+     * @param str the <code>String</code> to be measured
+     * @param offset zero-based index of first character in the substring
+     * @param len length of the substring
+     * @return the total advance width
+     * @throws StringIndexOutOfBoundsException if <code>offset</code> and
+     * <code>length</code> specify an
+     * invalid range
+     * @throws NullPointerException if <code>str</code> is <code>null</code>
+     */
+    public int substringWidth(String str, int offset, int len) {
+        return font.substringWidth(str, offset, len);
+    } 
+
+
 
 }

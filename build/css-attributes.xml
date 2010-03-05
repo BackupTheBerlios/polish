@@ -4131,6 +4131,7 @@
 		<mapping from="plain" to="null" />
 		<mapping from="opacity" to="new de.enough.polish.ui.rgbfilters.OpacityRgbFilter()" />
 		<mapping from="grayscale" to="new de.enough.polish.ui.rgbfilters.GrayscaleRgbFilter()" />
+		<mapping from="drop-shadow" to="new de.enough.polish.ui.rgbfilters.DropShadowRgbFilter()" />
 		<mapping from="rotate" to="new de.enough.polish.ui.rgbfilters.RotateRgbFilter()" />
 		<mapping from="blur" to="new de.enough.polish.ui.rgbfilters.GaussianBlurRgbFilter()" />
 		<mapping from="scale" to="new de.enough.polish.ui.rgbfilters.ScaleRgbFilter()" />
@@ -5023,6 +5024,60 @@
 		default="none"
 		id="432"
 		since="2.1.5"
+	/>
+	
+	<attribute
+		name="face-filter"
+		type="filter"
+		appliesTo="ClockInstrumentGaugeView"
+		description="Specifies an RGB filter for the image of the clock face"
+		default="none"
+		id="433"
+		since="2.1.5"
+	/>
+	
+	<attribute
+		name="drop-shadow-size"
+		type="integer"
+		appliesTo="DropShadowRgbFilter"
+		description="The size of the shadow for every direction."
+		default="6"
+		id="434"
+	/>
+	<attribute
+		name="drop-shadow-offsetx"
+		type="integer"
+		appliesTo="DropShadowRgbFilter"
+		description="The x offset of the shadow. Negative values move the shadow to the left."
+		default="1"
+		id="435"
+	/>
+	<attribute
+		name="drop-shadow-offsety"
+		type="integer"
+		appliesTo="DropShadowRgbFilter"
+		description="The y offset of the shadow. Negative values move the shadow to the top."
+		default="2"
+		id="436"
+	/>
+	<attribute
+		name="drop-shadow-inner-color"
+		type="color"
+		translucent="true"
+		appliesTo="DropShadowRgbFilter"
+		description="The color of the inner shadow. The color must not be fully opaque!"
+		default="#A0909090"
+		id="437"
+	/>
+	
+	<attribute
+		name="drop-shadow-outer-color"
+		type="color"
+		translucent="true"
+		appliesTo="DropShadowRgbFilter"
+		description="The color of the outer shadow, which must be less opaque than the start-color and the difference between them should be at least size."
+		default="#20909090"
+		id="438"
 	/>
 	
 	
