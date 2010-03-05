@@ -76,6 +76,8 @@ public class DeviceInfo
 	public static final int VENDOR_ = ;
 	*/
 	
+	private static final int VENDOR_UNRESOLVED = -2;
+	private static int resolvedVendor = VENDOR_UNRESOLVED;
 
 	private DeviceInfo()
 	{
@@ -88,6 +90,13 @@ public class DeviceInfo
 	 * @return the vendor, e.g. VENDOR_NOKIA or VENDOR_UNKNOWN
 	 */
 	public static int getVendor() {
+		if (resolvedVendor == VENDOR_UNRESOLVED) {
+			resolvedVendor = resolveVendor();
+		}
+		return resolvedVendor;
+	}
+	
+	private static int resolveVendor() {
 		String platform = System.getProperty( "microedition.platform" );
 		if (platform == null) {
 			platform = "";
