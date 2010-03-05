@@ -13,11 +13,12 @@ import javax.microedition.midlet.MIDlet;
 
 import de.enough.polish.event.EventManager;
 import de.enough.polish.util.ArrayList;
+import de.enough.polish.util.DeviceInfo;
 import de.enough.polish.util.ImageUtil;
 //#if polish.api.sensor && polish.Screen.AutomaticOrientationChange && polish.midp2
 	//#define tmp.automaticScreenOrientation
 	import de.enough.polish.util.sensor.AccelerationListener;
-import de.enough.polish.util.sensor.AccelerationUtil;
+	import de.enough.polish.util.sensor.AccelerationUtil;
 //#endif
 
 
@@ -1634,6 +1635,15 @@ public class Display
 	public int getGameAction(int keyCode)
 	{
 		int gameAction = super.getGameAction(keyCode);
+		//#if polish.vendor == Nokia || polish.vendor == Generic
+			if (gameAction == 0 && keyCode == -5
+					//#if polish.vendor == Generic
+						&& DeviceInfo.getVendor() == DeviceInfo.VENDOR_NOKIA
+					//#endif
+			) {
+				gameAction = Canvas.FIRE;
+			}
+		//#endif
 		//#if polish.Bugs.SoftKeyMappedToFire
 			if (gameAction == FIRE && ( isSoftKeyLeft( keyCode, gameAction) || isSoftKeyRight(keyCode, gameAction))) {
 				gameAction = 0;
