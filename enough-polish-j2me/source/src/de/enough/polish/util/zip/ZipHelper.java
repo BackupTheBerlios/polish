@@ -105,7 +105,7 @@ public final class ZipHelper {
 	13	,	16385	,
 	13	,	24577	};
 	
-	public static final int encodeCode(int[] Code , int distance){
+	public static int encodeCode(int[] Code , int distance){
 		int i=0;
 		//while(i<Code.length/2 && distance>=Code[i*2+1]){i++;}
 		while( i < (Code.length>>1) && distance >= Code[(i<<1)+1]){
@@ -123,7 +123,7 @@ public final class ZipHelper {
      * @param huffmanCode			will be the resulting code pattern
      * @param huffmanCodeLength		has to be the bitlegth for each code
      */
-    public static final void genHuffTree(int[] huffmanCode, byte[] huffmanCodeLength){
+    public static void genHuffTree(int[] huffmanCode, byte[] huffmanCodeLength){
     	int maxbits=0;
     	
     	// generate bitlen_count
@@ -159,7 +159,7 @@ public final class ZipHelper {
     	
     }
     
-    public final static void revHuffTree(int[] huffmanCode, byte[] huffmanCodeLength){
+    public static void revHuffTree(int[] huffmanCode, byte[] huffmanCodeLength){
     	// reverse all:
     	int tmp;
     	int reversed;
@@ -183,7 +183,7 @@ public final class ZipHelper {
      * @param distHuffCode
      * @param distHuffCodeLength
      */
-    public final static void genFixedTree(int[] huffmanCode, byte[] huffmanCodeLength,
+    public static void genFixedTree(int[] huffmanCode, byte[] huffmanCodeLength,
     		int[] distHuffCode, byte[] distHuffCodeLength){
     	
     	int i;
@@ -225,7 +225,7 @@ public final class ZipHelper {
      * @param huffmanCodeLength
      * @param max_len 
      */
-    public static final void genTreeLength(int[] count, byte[] huffmanCodeLength, int max_len){
+    public static void genTreeLength(int[] count, byte[] huffmanCodeLength, int max_len){
     	int[] knotCount = new int[count.length];
     	int[] knotPointer = new int[count.length];
     	
@@ -295,7 +295,7 @@ public final class ZipHelper {
     		//System.out.println(" fixing " + overflowCount + " overflows  because of max=" + max_len);
 	    	
     		// list the overflows
-    		short overflows[]= new short[overflowCount];
+    		short[] overflows = new short[overflowCount];
 	    	overflowCount=0;
 	    	for (short i = 0; i < huffmanCodeLength.length; i++) {
 	    		if (huffmanCodeLength[i]>max_len) {
@@ -361,7 +361,7 @@ public final class ZipHelper {
      * @param huffmanData	input
      * @param huffmanTree   resulting tree
      */
-    public static final void convertTable2Tree(int[] huffmanCode, byte[] huffmanCodeLength, int[] huffmanData, short[] huffmanTree){
+    public static void convertTable2Tree(int[] huffmanCode, byte[] huffmanCodeLength, int[] huffmanData, short[] huffmanTree){
     	
     	for (int i = 0; i < huffmanTree.length; i++) {
     		huffmanTree[i]=0;
@@ -406,7 +406,7 @@ public final class ZipHelper {
 	 * @return the data represented by the parsed huffman code
 	 * @throws IOException
 	 */
-    public static final int deHuffNext(long[] smallCodeBuffer, short[] huffmanTree) throws IOException{
+    public static int deHuffNext(long[] smallCodeBuffer, short[] huffmanTree) throws IOException{
 //    	//#debug
 //    	System.out.println("deHuffNext(long[], short[])");
     	//#if polish.debug.error
@@ -441,7 +441,7 @@ public final class ZipHelper {
      * @param in the stream
      * @throws IOException ocurrs if the stream is not readable
      */
-	public static final void skipheader(InputStream in) throws IOException{
+	public static void skipheader(InputStream in) throws IOException{
 		// check magic number and compression algorithm
 		if (in.read()!=31 || in.read()!=139 ||  in.read()!=8){
 			// wrong gzip header
@@ -480,7 +480,7 @@ public final class ZipHelper {
 	 * 
 	 * @param table store the table here
 	 */
-	private static final void initCrc32Table(int[] table){
+	private static void initCrc32Table(int[] table){
 		int c;
 		
 		int n,k;
@@ -509,7 +509,7 @@ public final class ZipHelper {
 	 * @param len the amount of bytes to process
 	 * @return the new/refreshed crc checksum
 	 */
-	public static final int crc32(int[] table, int crc, byte[] buffer, int off, int len){
+	public static int crc32(int[] table, int crc, byte[] buffer, int off, int len){
 		if (table[2]==0){
 			initCrc32Table(table);
 		}
