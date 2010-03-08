@@ -40,8 +40,6 @@ import de.enough.polish.ui.containerviews.Midp2ContainerView;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.TextUtil;
 import de.enough.polish.xml.SimplePullParser;
-import de.enough.polish.xml.XmlDomNode;
-import de.enough.polish.xml.XmlDomParser;
 import de.enough.polish.xml.XmlPullParser;
 
 /**
