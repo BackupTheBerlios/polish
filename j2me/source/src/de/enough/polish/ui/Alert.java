@@ -28,13 +28,9 @@
  */
 package de.enough.polish.ui;
 
-import javax.microedition.lcdui.AlertType;
-
-
 import javax.microedition.lcdui.Image;
 
 import de.enough.polish.util.Locale;
-
 
 /**
  * An alert is a screen that shows data to the user and waits for a certain
@@ -279,7 +275,7 @@ implements CommandListener
 	public Alert( String title)
 	{
 		//#style alert, default
-		this( title, null, null, null );
+		this( title, null, null, (AlertType) null );
 	}
 
 	/**
@@ -299,8 +295,40 @@ implements CommandListener
 	 */
 	public Alert( String title, Style style )
 	{
-		this( title, null, null, null, style );
+		this( title, null, null, (AlertType) null, style );
 	}
+
+	//#if polish.LibraryBuild
+	/**
+	 * Constructs a new <code>Alert</code> object with the given title, content string and image, and alert type.
+	 * 
+	 * The layout of the contents is implementation dependent.
+	 * The timeout value of this new alert is the same value that is
+	 * returned by <code>getDefaultTimeout()</code>.
+	 * The <code>Image</code> provided may either be mutable or immutable.
+	 * The handling and behavior of specific <code>AlertTypes</code>
+	 * is described in
+	 * <A HREF="../../../javax/microedition/lcdui/AlertType.html"><CODE>AlertType</CODE></A>.  <code>null</code> is allowed as the value
+	 * of the <code>alertType</code>
+	 * parameter and indicates that the <code>Alert</code> is not to
+	 * have a specific alert
+	 * type.  <code>DISMISS_COMMAND</code> is the only
+	 * <code>Command</code> present on the new
+	 * <code>Alert</code>.  The <code>CommandListener</code>
+	 * associated with the new <code>Alert</code> is the
+	 * <em>default listener</em>.  Its behavior is described in more detail in
+	 * the section <a href="#commands">Commands and Listeners</a>.
+	 * 
+	 * @param title the title string, or null if there is no title
+	 * @param alertText the string contents, or null if there  is no string
+	 * @param alertImage the image contents, or null if there is no image
+	 * @param alertType the type of the Alert, or null if the Alert has no specific type
+	 */
+	public Alert( String title, String alertText, Image alertImage, javax.microedition.lcdui.AlertType alertType)
+	{
+		this(null);
+	}
+	//#endif
 
 	/**
 	 * Constructs a new <code>Alert</code> object with the given title, content string and image, and alert type.
@@ -336,7 +364,40 @@ implements CommandListener
 			this( title, alertText, alertImage, alertType, null );
 		//#endif
 	}
-	
+
+	//#if polish.LibraryBuild
+	/**
+	 * Constructs a new <code>Alert</code> object with the given title, content string and image, and alert type.
+	 * 
+	 * The layout of the contents is implementation dependent.
+	 * The timeout value of this new alert is the same value that is
+	 * returned by <code>getDefaultTimeout()</code>.
+	 * The <code>Image</code> provided may either be mutable or immutable.
+	 * The handling and behavior of specific <code>AlertTypes</code>
+	 * is described in
+	 * <A HREF="../../../javax/microedition/lcdui/AlertType.html"><CODE>AlertType</CODE></A>.  <code>null</code> is allowed as the value
+	 * of the <code>alertType</code>
+	 * parameter and indicates that the <code>Alert</code> is not to
+	 * have a specific alert
+	 * type.  <code>DISMISS_COMMAND</code> is the only
+	 * <code>Command</code> present on the new
+	 * <code>Alert</code>.  The <code>CommandListener</code>
+	 * associated with the new <code>Alert</code> is the
+	 * <em>default listener</em>.  Its behavior is described in more detail in
+	 * the section <a href="#commands">Commands and Listeners</a>.
+	 * 
+	 * @param title the title string, or null if there is no title
+	 * @param alertText the string contents, or null if there  is no string
+	 * @param alertImage the image contents, or null if there is no image
+	 * @param alertType the type of the Alert, or null if the Alert has no specific type
+	 * @param style the style of this Alert
+	 */
+	public Alert( String title, String alertText, Image alertImage, javax.microedition.lcdui.AlertType alertType, Style style )
+	{
+		this(null);
+	}
+	//#endif
+
 	/**
 	 * Constructs a new <code>Alert</code> object with the given title, content string and image, and alert type.
 	 * 
