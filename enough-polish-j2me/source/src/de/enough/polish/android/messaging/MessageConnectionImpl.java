@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.util.Date;
 
-import de.enough.polish.android.midlet.MIDlet;
 import de.enough.polish.android.midlet.MidletBridge;
 import de.enough.polish.util.ArrayList;
 
@@ -181,7 +180,7 @@ implements MessageConnection
 		//#debug
 		System.out.println("SMS:onReceive.");
 		Bundle bundle = intent.getExtras();
-		Object messages[] = (Object[]) bundle.get("pdus");
+		Object[] messages = (Object[]) bundle.get("pdus");
 		for (int n = 0; n < messages.length; n++) {
 			SmsMessage msg = SmsMessage.createFromPdu((byte[]) messages[n]);
 			//TODO: how to create binary messages?
