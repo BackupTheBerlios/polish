@@ -1,8 +1,6 @@
 //#condition polish.usePolishGui
 package de.enough.polish.util;
 
-import de.enough.polish.benchmark.Benchmark;
-import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.UiAccess;
 
