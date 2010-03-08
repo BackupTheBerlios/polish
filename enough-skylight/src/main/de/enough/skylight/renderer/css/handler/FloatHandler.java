@@ -5,14 +5,14 @@ import de.enough.skylight.renderer.css.HtmlCssElement;
 
 
 
-public class FloatHandler extends AttributeHandler {
+public class FloatHandler extends CssAttributeHandler {
 	
 	protected String getName() {
 		return "float";
 	}
 	
 	protected int getType() {
-		return AttributeHandler.TYPE_RANGE;
+		return CssAttributeHandler.TYPE_RANGE;
 	}
 
 	protected Object[] getRange() {

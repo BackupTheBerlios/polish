@@ -4,7 +4,7 @@ import de.enough.polish.ui.Dimension;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.TextUtil;
 
-public class PaddingHandler extends AttributeHandler {
+public class PaddingHandler extends CssAttributeHandler {
 
 	protected String getName() {
 		return "padding";

@@ -2,7 +2,7 @@ package de.enough.skylight.renderer.css.handler;
 
 import de.enough.polish.ui.Style;
 
-public class BorderWidthHandler extends AttributeHandler {
+public class BorderWidthHandler extends CssAttributeHandler {
 
 	protected String getName() {
 		return "border-width";

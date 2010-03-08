@@ -2,7 +2,7 @@ package de.enough.skylight.renderer.css.handler;
 
 import de.enough.polish.ui.Style;
 
-public class BorderColorHandler extends AttributeHandler {
+public class BorderColorHandler extends CssAttributeHandler {
 
 	protected String getName() {
 		return "border-color";

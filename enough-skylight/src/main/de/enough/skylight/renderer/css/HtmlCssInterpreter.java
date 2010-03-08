@@ -5,7 +5,7 @@ import java.io.Reader;
 import de.enough.polish.browser.css.CssInterpreter;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.ArrayList;
-import de.enough.skylight.renderer.css.handler.AttributeHandler;
+import de.enough.skylight.renderer.css.handler.CssAttributeHandler;
 import de.enough.skylight.renderer.css.handler.DisplayHandler;
 import de.enough.skylight.renderer.css.handler.FloatHandler;
 import de.enough.skylight.renderer.css.handler.MaxHeightHandler;
@@ -38,14 +38,14 @@ public class HtmlCssInterpreter extends CssInterpreter{
 		addAttributeHandler(new VisibleHandler());
 	}
 	
-	void addAttributeHandler(AttributeHandler handler) {
+	void addAttributeHandler(CssAttributeHandler handler) {
 		this.attributeHandler.add(handler);
 	}
 	
-	AttributeHandler getAttributeHandler(String name) {
+	CssAttributeHandler getAttributeHandler(String name) {
 		int hashCode = name.hashCode();
 		for (int i = 0; i < this.attributeHandler.size(); i++) {
-			AttributeHandler handler = (AttributeHandler)this.attributeHandler.get(i);
+			CssAttributeHandler handler = (CssAttributeHandler)this.attributeHandler.get(i);
 			if(hashCode == handler.getHash()) {
 				return handler;
 			}
@@ -57,7 +57,7 @@ public class HtmlCssInterpreter extends CssInterpreter{
 	protected void addAttribute(String name, String value, Style style) {
 		super.addAttribute(name, value, style);
 	
-		AttributeHandler handler = getAttributeHandler(name);
+		CssAttributeHandler handler = getAttributeHandler(name);
 		
 		if(handler != null) {
 			handler.addToStyle(style, value);

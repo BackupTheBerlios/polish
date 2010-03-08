@@ -2,7 +2,7 @@ package de.enough.skylight.renderer.css.handler;
 
 import de.enough.polish.ui.Style;
 
-public class MaxWidthHandler extends AttributeHandler {
+public class MaxWidthHandler extends CssAttributeHandler {
 
 	protected String getName() {
 		return "max-width";

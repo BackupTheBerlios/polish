@@ -2,7 +2,7 @@ package de.enough.skylight.renderer.css.handler;
 
 import de.enough.polish.ui.Style;
 
-public class MinHeightHandler extends AttributeHandler {
+public class MinHeightHandler extends CssAttributeHandler {
 
 	protected String getName() {
 		return "min-height";

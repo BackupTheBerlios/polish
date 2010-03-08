@@ -2,7 +2,7 @@ package de.enough.skylight.renderer.css.handler;
 
 import de.enough.polish.ui.Style;
 
-public class MinWidthHandler extends AttributeHandler {
+public class MinWidthHandler extends CssAttributeHandler {
 
 	protected String getName() {
 		return "min-width";

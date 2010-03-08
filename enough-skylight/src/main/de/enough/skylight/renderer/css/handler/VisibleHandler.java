@@ -4,14 +4,14 @@ import de.enough.polish.ui.Style;
 
 
 
-public class VisibleHandler extends AttributeHandler {
+public class VisibleHandler extends CssAttributeHandler {
 	
 	public String getName() {
 		return "visible";
 	}
 	
 	protected int getType() {
-		return AttributeHandler.TYPE_BOOLEAN;
+		return CssAttributeHandler.TYPE_BOOLEAN;
 	}
 	
 	protected void addAttribute(Style style, Object value) {

@@ -5,14 +5,14 @@ import de.enough.skylight.renderer.css.HtmlCssElement;
 
 
 
-public class DisplayHandler extends AttributeHandler {
+public class DisplayHandler extends CssAttributeHandler {
 	
 	protected String getName() {
 		return "display";
 	}
 	
 	protected int getType() {
-		return AttributeHandler.TYPE_RANGE;
+		return CssAttributeHandler.TYPE_RANGE;
 	}
 
 	protected Object[] getRange() {

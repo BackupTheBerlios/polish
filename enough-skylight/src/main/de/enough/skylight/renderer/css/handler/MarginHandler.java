@@ -4,7 +4,7 @@ import de.enough.polish.ui.Dimension;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.TextUtil;
 
-public class MarginHandler extends AttributeHandler {
+public class MarginHandler extends CssAttributeHandler {
 
 	protected String getName() {
 		return "margin";

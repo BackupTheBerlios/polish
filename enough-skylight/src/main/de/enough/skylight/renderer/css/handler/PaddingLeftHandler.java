@@ -2,7 +2,7 @@ package de.enough.skylight.renderer.css.handler;
 
 import de.enough.polish.ui.Style;
 
-public class PaddingLeftHandler extends AttributeHandler {
+public class PaddingLeftHandler extends CssAttributeHandler {
 
 	protected String getName() {
 		return "padding-left";

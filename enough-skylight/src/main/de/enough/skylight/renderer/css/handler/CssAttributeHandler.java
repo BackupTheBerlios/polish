@@ -5,7 +5,7 @@ import de.enough.polish.ui.Dimension;
 import de.enough.polish.ui.Style;
 
 
-public abstract class AttributeHandler {
+public abstract class CssAttributeHandler {
 	public static Object VALUE_INVALID = new Object();
 	
 	public static int TYPE_DIMENSION = 0x00;
@@ -25,7 +25,7 @@ public abstract class AttributeHandler {
 	Object[] range;
 	
 
-	public AttributeHandler() {
+	public CssAttributeHandler() {
 		this.name = getName();
 		this.hash = this.name.hashCode();
 		this.type = getType();
@@ -101,7 +101,7 @@ public abstract class AttributeHandler {
 		Object result = getValue(text);
 		
 		if(result != null) { 
-			if(result != AttributeHandler.VALUE_INVALID) {
+			if(result != CssAttributeHandler.VALUE_INVALID) {
 				addAttribute(style, result);
 			} else {
 				//#debug error
