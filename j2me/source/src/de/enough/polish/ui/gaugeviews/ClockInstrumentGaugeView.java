@@ -32,6 +32,8 @@ import de.enough.polish.ui.ItemView;
 import de.enough.polish.ui.Point;
 import de.enough.polish.ui.RgbFilter;
 import de.enough.polish.ui.Style;
+import de.enough.polish.ui.rgbfilters.DropShadowRgbFilter;
+import de.enough.polish.util.ImageUtil;
 import de.enough.polish.util.MathUtil;
 import de.enough.polish.util.RgbImage;
 import java.io.IOException;
@@ -255,6 +257,7 @@ public class ClockInstrumentGaugeView extends ItemView {
 
         // Draw the needle
         //#if polish.css.needle-filter
+            DropShadowRgbFilter dropShadowFilter = null ;
             rgbImage = new RgbImage(needleImage.getRgbData(),needleImage.getWidth());
             if ( needleFilters != null )
             {
@@ -263,14 +266,85 @@ public class ClockInstrumentGaugeView extends ItemView {
                     for (int i=0; i<needleFilters.length; i++)
                     {
                             RgbFilter filter = needleFilters[i];
+
+                            // Treat the drop shadow filter specially.
+                            if ( filter instanceof DropShadowRgbFilter )
+                            {
+                                dropShadowFilter = (DropShadowRgbFilter) filter;
+                                continue;
+                            }
                             rgbImage = filter.process(rgbImage);
+                            
                     }
                 }
             }
-            graphics.drawRotatedImage( rgbImage,  needleCenterX, needleCenterY, bgLeft + needleX , bgTop + needleY, currentAngle );
+
+            // If there's no drop shadow filter used, draw the rotated image directly
+            if ( dropShadowFilter == null )
+            {
+                graphics.drawRotatedImage( rgbImage,  needleCenterX, needleCenterY, bgLeft + needleX , bgTop + needleY, currentAngle );
+            }
+            else // If there is a drop shadow filter in use, we need to treat this as a special case
+            {
+                // Calculate the additional margin for the image because of the shadow
+                int size = dropShadowFilter.getSize();
+                int xOffset = dropShadowFilter.getXOffset();
+                int yOffset = dropShadowFilter.getYOffset();
+                int iLeft = size-xOffset<0 ? 0 : size-xOffset;
+                int iTop = size-yOffset<0 ? 0 : size-yOffset;
+
+                // Save the original image size
+                int originalWidth = rgbImage.getWidth();
+                int originalHeight = rgbImage.getHeight() ;
+
+                // Rotate the image around its center
+                int degrees = - ( currentAngle - 90 ); // We use the correct trigonometric sense, and we consider 0 degrees to be at 3 o'clock.
+                ImageUtil.rotate(rgbImage, degrees);
+
+                // Keep the rotated RGB image's size
+                int rgbW = rgbImage.getWidth() ;
+                int rgbH = rgbImage.getHeight();
+
+                // Apply the drop shadow filter
+                rgbImage = dropShadowFilter.process(rgbImage);
+
+                /*for (int xx=0;xx<rgbImage.getWidth();xx++)
+                for (int yy=0;yy<rgbImage.getHeight();yy++)
+                {
+                    if ( (xx==0) || ( yy==0) )
+                    {
+                        rgbImage.getRgbData()[yy*rgbImage.getWidth()+xx] = 0xAAFF00FF;
+                    }
+                }*/
+
+
+                // Calculate the cos and sin of the rotation angle
+                double degreeCos = Math.cos(Math.PI * degrees / 180);
+                double degreeSin = Math.sin(Math.PI * degrees / 180);
+
+                // Calculate the delta between the image center and the image rotation point
+                int centerXDelta = needleCenterX - originalWidth/2;
+                int centerYDelta = needleCenterY - originalHeight/2;
+
+                // Calculate the coordinates of the rotation point after the image has been rotated,
+                // with respect to the image's center
+                int newCenterX =  + (int) (centerXDelta * degreeCos - centerYDelta * degreeSin );
+                int newCenterY =  + (int) (centerXDelta * degreeSin + centerYDelta * degreeCos );
+
+                // Calculate the coordinates of the top-left corner of the rotated image
+                int posX = bgLeft + needleX - rgbW /2 ;
+                int posY = bgTop + needleY - rgbH /2 ;
+
+                // Apply the necessary offset so that the rotated image's rotation point
+                // falls at the specfied point on the Graphics object and draw the rotated image
+                // We need to also take into account the extra pixels added by the dropShadow filter,
+                // hence the use of iLeft and iTop
+                graphics.drawRgb(rgbImage, -iLeft + posX - newCenterX, -iTop + posY - newCenterY);
+            }
         //#else
             graphics.drawRotatedImage( needleImage,  needleCenterX, needleCenterY, bgLeft + needleX , bgTop + needleY, currentAngle );
         //#endif
+            
     }
 
     protected void valueBasedOnPointerPosition(int x, int y)

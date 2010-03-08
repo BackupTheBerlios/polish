@@ -47,6 +47,21 @@ public class DropShadowRgbFilter extends RgbFilter
     private int size=6;
     private int xOffset=1, yOffset=2;
 
+    public int getSize()
+    {
+        return size;
+    };
+
+    public int getXOffset()
+    {
+        return xOffset;
+    }
+
+    public int getYOffset()
+    {
+        return yOffset;
+    }
+
     public RgbImage process(RgbImage input) {
 
         // calculate imagesize
