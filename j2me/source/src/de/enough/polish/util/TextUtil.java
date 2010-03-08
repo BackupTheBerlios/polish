@@ -1,4 +1,3 @@
-
 /*
  * Created on 20-Apr-2004 at 01:30:49.
  *
@@ -26,12 +25,11 @@
  */
 package de.enough.polish.util;
 
-//#if polish.midp || polish.usePolishGui
 import java.io.UnsupportedEncodingException;
 
+//#if polish.midp || polish.usePolishGui
 import javax.microedition.lcdui.Font;
 //#endif
-
 
 /**
  * <p>Provides some usefull String methods.</p>
