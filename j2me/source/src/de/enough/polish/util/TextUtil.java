@@ -843,10 +843,10 @@ public final class TextUtil {
 		/**
 		 * This method encodes a string to a quoted-printable string according to <a href="http://tools.ietf.org/html/rfc2045#section-6.7">RFC 2045</a>.
 		 * All five rules are implemented.
-		 * @param clearText
+		 * @param clearText the string to encode
 		 * @param enc The encoding which sould be used to interpret the cleartext.
-		 * @return
-		 * @throws UnsupportedEncodingException 
+		 * @return the encoded string
+		 * @throws UnsupportedEncodingException if the given encoding is not supported
 		 */
 		public static String encodeAsQuotedPrintable(String clearText, String enc) throws UnsupportedEncodingException {
 			StringBuffer buffer = new StringBuffer();

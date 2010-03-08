@@ -4,9 +4,11 @@ package de.enough.polish.ui.keyboard.keys;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.keyboard.KeyItem;
 import de.enough.polish.ui.keyboard.Keyboard;
+
 //#ifdef polish.i18n.useDynamicTranslations
-import de.enough.polish.util.Locale;
+	import de.enough.polish.util.Locale;
 //#endif
+
 /**
  * A special key item implementation to shift the keys of a keyboard
  * <pre>
@@ -25,11 +27,11 @@ public class ShiftKeyItem extends KeyItem {
         //#else
            "S";
         //#endif
+
 	/**
 	 * Creates a new DeleteKeyItem instance
 	 * @param keyboard the keyboard
 	 * @param position the position
-	 * @param style the style
 	 */
 	public ShiftKeyItem(Keyboard keyboard, String position) {
 		this(keyboard, position, null);
