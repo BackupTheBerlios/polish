@@ -68,7 +68,7 @@ public class HorizontalGrayOutContainerView extends ContainerView {
 				this.inactivateIconHeights[i] = 0;
 				continue;
 			}
-			int rgbData[] = UiAccess.getRgbData(item);
+			int[] rgbData = UiAccess.getRgbData(item);
 			convertToGrayScale(rgbData);
 			this.inactiveIcons[i] = rgbData;
 			this.inactivateIconWidhts[i] = itemWidth;

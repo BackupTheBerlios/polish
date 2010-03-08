@@ -242,7 +242,7 @@ public final class ImageUtil {
      * @throws ArithmeticException when width of scaleFactor is 0
      */
     public static int[] scale(int scaledWidth, int scaledHeight, int scanlength, int sourceWidth, int sourceHeight, int[] rgbData) {
-        int scaledRgbData[] = new int[scaledWidth * scaledHeight];
+        int[] scaledRgbData = new int[scaledWidth * scaledHeight];
         for (int y = 0; y < scaledHeight; y++) {
             int c1 = y * scaledWidth;
             int c2 = (y * sourceHeight / scaledHeight) * scanlength;
@@ -618,7 +618,7 @@ public final class ImageUtil {
         int yIntensityStart, yIntensityEnd;
 
         int destPointer;
-        int tmp[] = new int[5];
+        int[] tmp = new int[5];
 
         // partial vertical scaling
         int smallY;
@@ -880,8 +880,8 @@ public final class ImageUtil {
         // Initialize and precalculate trigonometry data
         // Thse calculations are used many times throughout the rotation
         // and as such it is worth it to precalculate them
-        final int yMinusRefYTimesDegSin[] = new int[rotatedHeight];
-        final int yMinusRefYTimesDegCos[] = new int[rotatedHeight];
+        final int[] yMinusRefYTimesDegSin = new int[rotatedHeight];
+        final int[] yMinusRefYTimesDegCos = new int[rotatedHeight];
 
         for (y = 0; y < rotatedHeight; y++) {
             yMinusRefYTimesDegSin[y] = ( halfOfWidth ) + (((y - halfOfRotatedHeight) * degSin) >> 10);

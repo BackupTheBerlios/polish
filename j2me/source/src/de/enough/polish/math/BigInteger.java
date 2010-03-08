@@ -950,7 +950,7 @@ public class BigInteger
                 if (shift % 32 == 0)
                 {
                     // Special case where the shift is the size of an int.
-                    int countSpecial[] = new int[shift / 32 + 1];
+                    int[] countSpecial = new int[shift / 32 + 1];
                     System.arraycopy(count, 0, countSpecial, 1, countSpecial.length - 1);
                     countSpecial[0] = 0;
                     count = countSpecial;
@@ -1078,7 +1078,7 @@ public class BigInteger
             throw new ArithmeticException("Divide by zero");
         }
 
-        BigInteger biggies[] = new BigInteger[2];
+        BigInteger[] biggies = new BigInteger[2];
 
         if (this.sign == 0)
         {
@@ -2106,7 +2106,7 @@ public class BigInteger
         int nInts = n >>> 5;
         int nBits = n & 0x1f;
         int magLen = mag.length;
-        int newMag[] = null;
+        int[] newMag = null;
 
         if (nBits == 0)
         {
@@ -2295,9 +2295,7 @@ public class BigInteger
 
         if (borrow != 0)
         {
-            while (--x[--iT] == -1)
-            {
-            }
+            while (--x[--iT] == -1);
         }
 
         return x;
@@ -2336,7 +2334,7 @@ public class BigInteger
             littlun = val;
         }
 
-        int res[] = new int[bigun.magnitude.length];
+        int[] res = new int[bigun.magnitude.length];
 
         System.arraycopy(bigun.magnitude, 0, res, 0, res.length);
 

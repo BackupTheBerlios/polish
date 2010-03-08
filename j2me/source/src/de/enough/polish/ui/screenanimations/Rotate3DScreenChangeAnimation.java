@@ -98,7 +98,7 @@ public class Rotate3DScreenChangeAnimation extends ScreenChangeAnimation {
 	    this.light.setMode(Light.AMBIENT);
 
 	    // Eck-Koordinaten des Wuerfels
-	    byte verticies[] = {
+	    byte[] verticies = {
 	      1, 1, 1, -1, 1, 1, 1, -1, 1, -1, -1, 1, // vorne
 	      -1, 1, -1, 1, 1, -1, -1, -1, -1, 1, -1, -1, // hinten
 	      -1, 1, 1, -1, 1, -1, -1, -1, 1, -1, -1, -1, // links
@@ -112,7 +112,7 @@ public class Rotate3DScreenChangeAnimation extends ScreenChangeAnimation {
 	    vertArray.set(0, verticies.length / 3, verticies);
 
 	    // Textur-Koordinaten
-	     byte tex[] = {
+	     byte[] tex = {
 	       1, 0, 0, 0, 1, 1, 0, 1, // vorne
 	       1, 0, 0, 0, 1, 1, 0, 1, // hinten
 	       1, 0, 0, 0, 1, 1, 0, 1, // links
@@ -131,7 +131,7 @@ public class Rotate3DScreenChangeAnimation extends ScreenChangeAnimation {
 	    this.vertexBuffer.setTexCoords(0, texArray, 1.0F, null);
 
 	    // Laenge jeder Wuerfel-Seite
-	    int stripLen[] = {4, 4, 4, 4, 4, 4};
+	    int[] stripLen = {4, 4, 4, 4, 4, 4};
 	    this.triangleStripArray = new TriangleStripArray(0, stripLen);
 
 	    Texture2D texture2D = null;

@@ -104,7 +104,7 @@ public class CenterNavigationContainerView extends ContainerView {
 				item.setStyle(this.originalStyle);
 			}
 
-			int rgbData[] = UiAccess.getRgbData(item);
+			int[] rgbData = UiAccess.getRgbData(item);
 
 			if(item.isFocused)
 			{
