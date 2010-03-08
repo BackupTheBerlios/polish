@@ -64,10 +64,22 @@ public class FP
 	/**
 	 * Degree constants
 	 */
-	public final static int FIX_90 = 	intToFix(90);
-	public final static int FIX_180 = 	intToFix(180);
-	public final static int FIX_270=	intToFix(270);
-	public final static int FIX_360 = 	intToFix(360);
+	public final static int FIX_90 = 90 << FIX_PRECISION;
+
+	/**
+	 * Degree constants
+	 */
+	public final static int FIX_180 = 180 << FIX_PRECISION;
+
+	/**
+	 * Degree constants
+	 */
+	public final static int FIX_270 = 270 << FIX_PRECISION;
+
+	/**
+	 * Degree constants
+	 */
+	public final static int FIX_360 = 360 << FIX_PRECISION;
 
 	/**
 	 * Converts a integer number to fixed point number.
@@ -279,7 +291,7 @@ public class FP
 	 * @param x the number to find sqrt of
 	 * @return rounded square root of input number
 	 */
-	private final static int fastSqrt(int x) 
+	private static int fastSqrt(int x) 
 	{
 		if (x >= 0x10000) {
 			if (x >= 0x1000000) {
@@ -385,7 +397,7 @@ public class FP
 	 * Constants for sine funciton
 	 */
 	private final static int sk_precision = 31;
-	private final static int SK[] =
+	private final static int[] SK =
 	{
 			16342350 >> (sk_precision-FIX_PRECISION),       //7.61e-03 * 2^31
 			356589659 >> (sk_precision-FIX_PRECISION)      //1.6605e-01
@@ -453,7 +465,7 @@ public class FP
 	 * Constants for sine function
 	 */
 	private final static int as_precision = 30;
-	private final static int AS[] = {
+	private final static int[] AS = {
 			-20110432 >> (as_precision-FIX_PRECISION),      //-0.0187293 * 2^30
 			79737141 >> (as_precision-FIX_PRECISION),       //0.0742610
 			227756102 >> (as_precision-FIX_PRECISION),      //0.2121144
