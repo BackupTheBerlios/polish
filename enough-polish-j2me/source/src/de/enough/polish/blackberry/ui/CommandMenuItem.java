@@ -29,11 +29,11 @@ package de.enough.polish.blackberry.ui;
 
 import de.enough.polish.ui.Command;
 import de.enough.polish.ui.CommandListener;
-import de.enough.polish.ui.Display;
 import de.enough.polish.ui.Displayable;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.UiAccess;
+
 import net.rim.device.api.ui.MenuItem;
 
 /**

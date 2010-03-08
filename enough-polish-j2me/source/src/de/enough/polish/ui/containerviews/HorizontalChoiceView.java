@@ -35,7 +35,6 @@ import javax.microedition.lcdui.Image;
 import de.enough.polish.ui.Background;
 import de.enough.polish.ui.ChoiceGroup;
 import de.enough.polish.ui.ChoiceItem;
-import de.enough.polish.ui.ClippingRegion;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.ContainerView;
 import de.enough.polish.ui.Form;
