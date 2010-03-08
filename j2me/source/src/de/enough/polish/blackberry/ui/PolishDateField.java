@@ -124,7 +124,7 @@ implements AccessibleField
 		return style;
 	}
 
-	private static final long getTime( Date date ) {
+	private static long getTime( Date date ) {
 		if (date == null) {
 			return System.currentTimeMillis();
 		} else {
