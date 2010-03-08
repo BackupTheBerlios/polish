@@ -3,7 +3,8 @@
  */
 package de.enough.polish.calendar;
 
-import de.enough.polish.io.*;
+import de.enough.polish.io.Serializable;
+
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.TimeZone;
