@@ -1,3 +1,4 @@
+//#condition polish.midp
 /*
  * Copyright (c) 2009 Robert Virkus / Enough Software
  *

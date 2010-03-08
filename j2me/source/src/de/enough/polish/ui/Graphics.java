@@ -1,4 +1,4 @@
-//#condition !polish.android && !polish.blackberry
+//#condition polish.midp2 && !polish.android && !polish.blackberry
 /*
  * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
