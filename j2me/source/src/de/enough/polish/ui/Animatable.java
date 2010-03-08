@@ -43,5 +43,5 @@ public interface Animatable
 	 * @param repaintRegion the repaint area that needs to be updated when this item is animated
 	 * @see Item#addRelativeToContentRegion(ClippingRegion, int, int, int, int)
 	 */
-	public void animate( long currentTime, ClippingRegion repaintRegion);
+	void animate( long currentTime, ClippingRegion repaintRegion);
 }

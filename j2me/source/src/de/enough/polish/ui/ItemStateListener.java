@@ -75,6 +75,6 @@ public interface ItemStateListener
 	 * 
 	 * @param item the item that was changed
 	 */
-	public void itemStateChanged( Item item);
+	void itemStateChanged( Item item);
 
 }

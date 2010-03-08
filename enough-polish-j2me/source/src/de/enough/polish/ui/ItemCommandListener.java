@@ -50,6 +50,6 @@ public interface ItemCommandListener
 	 * @param c the Command that was invoked
 	 * @param item the Item on which the command was invoked
 	 */
-	public void commandAction( Command c, Item item);
+	void commandAction( Command c, Item item);
 
 }
