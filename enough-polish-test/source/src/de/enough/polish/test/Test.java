@@ -25,17 +25,10 @@
  */
 package de.enough.polish.test;
 
-import java.util.Random;
-
 import javax.microedition.midlet.MIDlet;
 
-import de.enough.polish.ui.Container;
-import de.enough.polish.ui.DebugHelper;
 import de.enough.polish.ui.Display;
 import de.enough.polish.ui.Form;
-import de.enough.polish.ui.Item;
-import de.enough.polish.ui.StringItem;
-import de.enough.polish.ui.UiAccess;
 
 /**
  * 
@@ -46,7 +39,7 @@ import de.enough.polish.ui.UiAccess;
  * </pre>
  * @author Richard Nkrumah
  */
-public class Test extends MIDlet implements Runnable{
+public class Test extends MIDlet {
 
     protected void destroyApp(boolean arg0) {
         System.out.println("Destroying MIDlet.");
@@ -55,55 +48,12 @@ public class Test extends MIDlet implements Runnable{
     protected void pauseApp() {
         System.out.println("Stopping MIDlet.");
     }
-    
-    TestProvider provider;
-    
-    String[] data;
 
     protected void startApp(){
+    	Form form = new Form("Test");
     	
-    	Form form = new Form("ListTest");
-    	
-    	this.provider = new TestProvider(UiAccess.getScreenContainer(form), form, null, 20);
+    	// add testing here
     	
     	Display.getDisplay(this).setCurrent(form);
-    	
-    	data = this.provider.getData();
-    	
-    	new Thread(this).start();
     }
-
-	
-	boolean begin;
-	public void run() {
-		//while(true) 
-		{
-			this.provider.search("entry 40");
-			
-			try {
-			if(begin) {
-				this.data[20] = "the entry";
-				this.data[50] = "entry 50";
-				
-				begin = false;
-			} else {
-				this.data[20] = "entry 20";
-				this.data[50] = "the entry";
-				
-				begin = true;
-			}
-			
-				Thread.sleep(5000);
-				
-				this.provider.search("entry 80");
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-		}
-		
-	}
-    
-    
 }
