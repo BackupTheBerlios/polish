@@ -814,7 +814,7 @@ public final class ImageUtil {
      * @param backgroundColor the ARGB color used for the background
      * @return the rotated rgb data.
      */
-    public static final int[] rotate(int[] argbArray, int width, int height, int degree, int backgroundColor) {
+    public static int[] rotate(int[] argbArray, int width, int height, int degree, int backgroundColor) {
         return rotate(argbArray, width, height, degree, width / 2, height / 2, backgroundColor);
     }
     //#endif
@@ -832,7 +832,7 @@ public final class ImageUtil {
      * @param backgroundColor the ARGB color used for the background
      * @return the rotated rgb data.
      */
-    public static final int[] rotate(int[] sourceRgbData, int width, int height, int degree, int referenceX, int referenceY, int backgroundColor) {
+    public static int[] rotate(int[] sourceRgbData, int width, int height, int degree, int referenceX, int referenceY, int backgroundColor) {
         double degreeCos = Math.cos(Math.PI * degree / 180);
         double degreeSin = Math.sin(Math.PI * degree / 180);
         int rotatedWidth = getRotatedWidth(degree, width, height, degreeCos, degreeSin);
@@ -931,7 +931,7 @@ public final class ImageUtil {
      * @param degreeSin the sine of the degree value: Math.sin(Math.PI*degree/180)
      * @return the new height of the rgb data.
      */
-    public static final int getRotatedHeight(int degree, int width, int heigth, double degreeCos, double degreeSin) {
+    public static int getRotatedHeight(int degree, int width, int heigth, double degreeCos, double degreeSin) {
         if (degree == -90 || degree == 90 || degree == 270 || degree == -270) {
             return width;
         } else if (degree == 360 || degree == 180 || degree == 0) {
@@ -976,7 +976,7 @@ public final class ImageUtil {
      * @param degreeSin the sine of the degree value: Math.sin(Math.PI*degree/180)
      * @return the new width of the rgb data.
      */
-    public static final int getRotatedWidth(int degree, int width, int heigth, double degreeCos, double degreeSin) {
+    public static int getRotatedWidth(int degree, int width, int heigth, double degreeCos, double degreeSin) {
         if (degree == -90 || degree == 90 || degree == 270 || degree == -270) {
             return heigth;
         } else if (degree == 360 || degree == 180 || degree == 0) {
@@ -1054,7 +1054,7 @@ public final class ImageUtil {
      * @param oldHeight the height from the oiginal rgbdata
      * @return the scaled rgb data.
      */
-    public static final int[] scale(int opacity, int[] rgbData, int newWidth, int newHeight, int oldWidth, int oldHeight) {
+    public static int[] scale(int opacity, int[] rgbData, int newWidth, int newHeight, int oldWidth, int oldHeight) {
         int[] newrgbData = new int[newWidth * newHeight];
         scale(opacity, rgbData, newWidth, newHeight, oldWidth, oldHeight, newrgbData);
         return newrgbData;
@@ -1070,7 +1070,7 @@ public final class ImageUtil {
      * @param oldHeight the height from the oiginal rgbdata
      * @return the scaled rgb data.
      */
-    public static final int[] scale(int[] rgbData, int newWidth, int newHeight, int oldWidth, int oldHeight) {
+    public static int[] scale(int[] rgbData, int newWidth, int newHeight, int oldWidth, int oldHeight) {
         int[] newRgbData = new int[newWidth * newHeight];
         scale(rgbData, newWidth, newHeight, oldWidth, oldHeight, newRgbData);
         return newRgbData;
@@ -1088,7 +1088,7 @@ public final class ImageUtil {
      *        Keeping the aspect ratio may result in transparent areas on the sides of the scaled image.
      * @return the scaled rgb data.
      */
-    public static final int[] scale(int[] rgbData, int newWidth, int newHeight, int oldWidth, int oldHeight, boolean keepAspectRatio) {
+    public static int[] scale(int[] rgbData, int newWidth, int newHeight, int oldWidth, int oldHeight, boolean keepAspectRatio) {
         int[] newRgbData = new int[newWidth * newHeight];
         int[] tmpRgbData = newRgbData;
         int tmpWidth = newWidth;
@@ -1137,7 +1137,7 @@ public final class ImageUtil {
      * @param heigth the source heigth of the rgb data.
      * @return stretched rgb data array.
      */
-    public static final int[] stretchVertical(int[] argbArray, int topStrechFactor, int bottomStrechFactor, int width, int heigth) {
+    public static int[] stretchVertical(int[] argbArray, int topStrechFactor, int bottomStrechFactor, int width, int heigth) {
         int newWidthTop = (width * topStrechFactor) / 100;
         int newWidthBottom = (width * bottomStrechFactor) / 100;
         int procentualScalingHeight;
@@ -1167,7 +1167,7 @@ public final class ImageUtil {
      * @param newArgbArray the new rgb data where the changes getting in.
      * @return return filled the newArgbArray with stretched changes.
      */
-    public static final int[] stretchVertical(int[] argbArray, int newWidthTop, int newWidthBottom, int biggerWidth, int width, int heigth, int procentualScalingHeight, int[] newArgbArray) {
+    public static int[] stretchVertical(int[] argbArray, int newWidthTop, int newWidthBottom, int biggerWidth, int width, int heigth, int procentualScalingHeight, int[] newArgbArray) {
         if (procentualScalingHeight == 0) {
             procentualScalingHeight++;
         }
@@ -1215,7 +1215,7 @@ public final class ImageUtil {
      * @param currentY the y position of the pixel to be scaled.
      * @return position of the scaled pixel in the old rgb data array.
      */
-    public static final int scaledPixel(int oldLength, int oldWidth, int oldHeigth, int newWidth, int newHeigth, int currentX, int currentY) {
+    public static int scaledPixel(int oldLength, int oldWidth, int oldHeigth, int newWidth, int newHeigth, int currentX, int currentY) {
         int targetArrayIndex;
         int verticalShrinkFactorPercent = ((newHeigth * 100) / oldHeigth);
         int horizontalScaleFactorPercent = ((newWidth * 100) / oldWidth);
@@ -1239,7 +1239,7 @@ public final class ImageUtil {
      * @param heigth the source heigth of the rgb data.
      * @return stretched rgb data array.
      */
-    public static final int[] stretchHorizontal(int[] argbArray, int leftStrechFactor, int rightStrechFactor, int width, int heigth) {
+    public static int[] stretchHorizontal(int[] argbArray, int leftStrechFactor, int rightStrechFactor, int width, int heigth) {
         int newHeigthLeft = (heigth * leftStrechFactor) / 100;
         int newHeigthRight = (heigth * rightStrechFactor) / 100;
         int procentualScalingWidth;
@@ -1269,7 +1269,7 @@ public final class ImageUtil {
      * @param newArgbArray the new rgb data where the changes getting in.
      * @return return the filled newArgbArray with stretched changes.
      */
-    public static final int[] stretchHorizontal(int[] argbArray, int newLeftHeigth, int newRigthHeigth, int biggerHeigth, int width, int heigth, int procentualScalingHeight, int[] newArgbArray) {
+    public static int[] stretchHorizontal(int[] argbArray, int newLeftHeigth, int newRigthHeigth, int biggerHeigth, int width, int heigth, int procentualScalingHeight, int[] newArgbArray) {
         if (procentualScalingHeight == 0) {
             procentualScalingHeight++;
         }
@@ -1323,7 +1323,7 @@ public final class ImageUtil {
      * @param oldHeight the height from the oiginal rgbdata
      * @param newRgbData the new rgbdata has to be initialised
      */
-    public static final void scale(int[] rgbData, int newWidth, int newHeight, int oldWidth, int oldHeight, int[] newRgbData) {
+    public static void scale(int[] rgbData, int newWidth, int newHeight, int oldWidth, int oldHeight, int[] newRgbData) {
 
         int x, y, dy;
         int srcOffset;
@@ -1362,7 +1362,7 @@ public final class ImageUtil {
      * @param oldHeight the height from the oiginal rgbdata
      * @param newRgbData the new rgbdata has to be initialised
      */
-    public static final void scale(int opacity, int[] rgbData, int newWidth, int newHeight, int oldWidth, int oldHeight, int[] newRgbData) {
+    public static void scale(int opacity, int[] rgbData, int newWidth, int newHeight, int oldWidth, int oldHeight, int[] newRgbData) {
         int currentX = 0, currentY = 0;
         int oldLenght = rgbData.length;
         int newLength = newRgbData.length;
@@ -1751,7 +1751,7 @@ public final class ImageUtil {
      * @param H_fix value of hue
      * @param rgb single colorchannel value
      *******************************************************************************/
-    private final static int HuetoRGB(int v1_fix, int v2_fix, int H_fix) {
+    private static int HuetoRGB(int v1_fix, int v2_fix, int H_fix) {
         if (H_fix < 0) {
             H_fix += FP.FIX_ONE;
         }
@@ -1963,7 +1963,7 @@ public final class ImageUtil {
      * @param x horizontal target coordinate of other picture. Anchor top|left.
      * @param y vertical target coordinate of other picture. Anchor top|left.
      *******************************************************************************/
-    public static final void drawRgbImageOntoOther(RgbImage target, RgbImage other, int x, int y) {
+    public static void drawRgbImageOntoOther(RgbImage target, RgbImage other, int x, int y) {
         drawRgbImageOntoOther(target, other, x, y, 0, 0, target.getWidth(), target.getHeight());
     }
 
@@ -1984,7 +1984,7 @@ public final class ImageUtil {
      * @param clipW width of clipping rectangle
      * @param clipH height of clipping rectangle
      *******************************************************************************/
-    public static final void drawRgbImageOntoOther(RgbImage target, RgbImage other, int x, int y, int clipX, int clipY, int clipW, int clipH) {
+    public static void drawRgbImageOntoOther(RgbImage target, RgbImage other, int x, int y, int clipX, int clipY, int clipW, int clipH) {
 
         int localClipX, localClipY, localClipW, localClipH;
 
@@ -2057,7 +2057,7 @@ public final class ImageUtil {
      * @param overlayIndex index in target array
      * @return combined color
      *******************************************************************************/
-    private static final int combineColors(int[] argbSource, int sourceIndex, int[] argbOverlay, int overlayIndex) {
+    private static int combineColors(int[] argbSource, int sourceIndex, int[] argbOverlay, int overlayIndex) {
 
         int source = argbSource[sourceIndex];
         int over = argbOverlay[overlayIndex];
@@ -2105,7 +2105,7 @@ public final class ImageUtil {
      * @param alpha_fix alpha value in fix point precision, clamped to [0.0..1.0]
      * @return resulting channel value [0..255]
      *******************************************************************************/
-    private static final int overOperator(int channelSource, int channelOver, int alpha_fix) {
+    private static int overOperator(int channelSource, int channelOver, int alpha_fix) {
         return FP.fixToInt(FP.mul(FP.intToFix(channelSource), FP.FIX_ONE - alpha_fix) + FP.mul(FP.intToFix(channelOver), alpha_fix));
     }
 
@@ -2121,7 +2121,7 @@ public final class ImageUtil {
      * @param height
      * @return
      *******************************************************************************/
-    private final static int[] cropImage(RgbImage rgbImg, int x, int y, int width, int height) {
+    private static int[] cropImage(RgbImage rgbImg, int x, int y, int width, int height) {
 
         if (x == 0 && y == 0 && rgbImg.getWidth() == width && rgbImg.getHeight() == height) {
             return rgbImg.getRgbData();
@@ -2151,7 +2151,7 @@ public final class ImageUtil {
      * @param circHeight height of circle in pixels
      * @param invert true if mask should invert
      */
-    public final static void clipRgbImageCirkular(RgbImage rgbImg, int circX, int circY, int circWidth, int circHeight, boolean invert) {
+    public static void clipRgbImageCirkular(RgbImage rgbImg, int circX, int circY, int circWidth, int circHeight, boolean invert) {
         //produce circular mask
         Image img = Image.createImage(rgbImg.getWidth(), rgbImg.getHeight());
         Graphics g = img.getGraphics();
@@ -2178,7 +2178,7 @@ public final class ImageUtil {
      * @param mask the RgbImage mask, must be grey scale or B/W
      * @param invert true if black mask colors should be masked, false if white mask colors should be masked
      */
-    public final static void applyMaskOntoRgbImage(RgbImage source, RgbImage mask, boolean invert) {
+    public static void applyMaskOntoRgbImage(RgbImage source, RgbImage mask, boolean invert) {
         int[] maskRgb = mask.getRgbData();
         int[] sourceRgb = source.getRgbData();
 
@@ -2201,7 +2201,7 @@ public final class ImageUtil {
      * @param availableHeight the new height for the new rgbdata
      * @return the resulting image
      */
-    public static final Image scaleToFit(Image source, int availableWidth, int availableHeight) {
+    public static Image scaleToFit(Image source, int availableWidth, int availableHeight) {
         int sourceWidth = source.getWidth();
         int sourceHeight = source.getHeight();
 

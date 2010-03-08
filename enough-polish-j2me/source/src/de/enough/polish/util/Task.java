@@ -36,6 +36,6 @@ public interface Task {
 	/**
 	 * Executes this task in a background thread.
 	 */
-	public void execute() throws Exception;
+	void execute() throws Exception;
 
 }

@@ -269,10 +269,10 @@ public final class Locale {
 	 * @return the translation, e.g. "Start Game" or "Spiel starten", null when the key was not found
 	 */
 	//#if polish.LibraryBuild
-	public static final String get( String key ) {
+	public static String get( String key ) {
 		int keyId = 0;
 	//#else
-		//# public static final String get( int keyId ) {
+		//# public static String get( int keyId ) {
 	//#endif
 		if ( !isLoaded ) {
 			initialize();
@@ -306,10 +306,10 @@ public final class Locale {
 	 * @throws NullPointerException when the given parameter is null.
 	 */
 	//#if polish.LibraryBuild
-	public static final String get( String key, String parameter ) {
+	public static String get( String key, String parameter ) {
 		int keyId = 0;
 	//#else
-		//# public static final String get( int keyId, String parameter ) {
+		//# public static String get( int keyId, String parameter ) {
 	//#endif
 		if ( !isLoaded ) {
 			initialize();
@@ -338,9 +338,9 @@ public final class Locale {
 	 * @throws NullPointerException when the given parameters are null or if one of the given parameters is null.
 	 */
 	//#ifdef polish.LibraryBuild
-	public static final String get( String key, String[] parameters ) {
+	public static String get( String key, String[] parameters ) {
 	//#else
-		//# public static final String get( int keyId, String[] parameters ) {
+		//# public static String get( int keyId, String[] parameters ) {
 	//#endif
 		//#ifdef polish.LibraryBuild
 			short keyId = 0;

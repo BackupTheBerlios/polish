@@ -58,9 +58,9 @@ public interface Map
 	 * @return the value that has been stored previously for the given key, or null.
 	 */
 	//#if polish.java5
-	public Object put(K key, V value);
+	Object put(K key, V value);
 	//#else
-		//# public Object put(Object key, Object value);
+		//# Object put(Object key, Object value);
 	//#endif
 	
 
@@ -71,9 +71,9 @@ public interface Map
 	 * @return the value or null, when for the given key no value has been stored.
 	 */
 	//#if polish.java5
-		public V get(K key);
+		V get(K key);
 	//#else
-		//# public Object get(Object key);
+		//# Object get(Object key);
 	//#endif
 	
 
@@ -84,9 +84,9 @@ public interface Map
 	 * @return the value or null, when for the given key no value has been stored.
 	 */
 	//#if polish.java5
-		public V remove(K key);
+		V remove(K key);
 	//#else
-		//# public Object remove(Object key);
+		//# Object remove(Object key);
 	//#endif
 	
 
@@ -96,14 +96,14 @@ public interface Map
 	 * 
 	 * @return true when this map is empty.
 	 */
-	public boolean isEmpty();
+	boolean isEmpty();
 
 	/**
 	 * The size of this map.
 	 * 
 	 * @return the size of this map, 0 when no entries have been added yet.
 	 */
-	public int size();
+	int size();
 
 	/**
 	 * Checks if a value has been stored in this map.
@@ -113,9 +113,9 @@ public interface Map
 	 * @return true when a value has been stored in this map to the specified key.
 	 */
 	//#if polish.java5
-		public boolean containsKey(K key);
+		boolean containsKey(K key);
 	//#else
-		//# public boolean containsKey(Object key);
+		//# boolean containsKey(Object key);
 	//#endif
 	
 
@@ -127,23 +127,23 @@ public interface Map
 	 * @return true when the value has been stored in this map.
 	 */
 	//#if polish.java5
-		public boolean containsValue(V value);
+		boolean containsValue(V value);
 	//#else
-		//# public boolean containsValue(Object value);
+		//# boolean containsValue(Object value);
 	//#endif
 	
 
 	/**
 	 * Removes all elements from this map.
 	 */
-	public void clear();
+	void clear();
 
 	/**
 	 * Retrieves all values that have been stored in this map.
 	 * 
 	 * @return an object array with all values.
 	 */
-	public Object[] values();
+	Object[] values();
 
 	/**
 	 * Retrieves all values that have been stored in this map.
@@ -152,9 +152,9 @@ public interface Map
 	 * @return an object array with all values.
 	 */
 	//#if polish.java5
-		public V[] values(V[] objects);
+		V[] values(V[] objects);
 	//#else
-		//# public Object[] values(Object[] objects);
+		//# Object[] values(Object[] objects);
 	//#endif
 	
 
@@ -163,7 +163,7 @@ public interface Map
 	 * 
 	 * @return an object array with all keys.
 	 */
-	public Object[] keys();
+	Object[] keys();
 
 	/**
 	 * Retrieves all keys that have been stored in this map.
@@ -172,9 +172,9 @@ public interface Map
 	 * @return an object array with all keys.
 	 */
 	//#if polish.java5
-		public K[] keys(K[] objects);
+		K[] keys(K[] objects);
 	//#else
-		//# public Object[] keys(Object[] objects);
+		//# Object[] keys(Object[] objects);
 	//#endif
 	
 	
@@ -186,6 +186,6 @@ public interface Map
 	 * 
 	 * @return an iterator that contains all keys.
 	 */
-	public Iterator keysIterator();
+	Iterator keysIterator();
 
 }

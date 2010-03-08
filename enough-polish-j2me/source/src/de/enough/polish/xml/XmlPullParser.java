@@ -87,7 +87,7 @@ public class XmlPullParser implements SimplePullParser {
 
 	private boolean doNewline;
 
-    private final int read() throws IOException {
+    private int read() throws IOException {
 
         int r = this.peek0;
         this.peek0 = this.peek1;
@@ -123,13 +123,13 @@ public class XmlPullParser implements SimplePullParser {
         return r;
     }
 
-    private final void exception(String desc)
+    private void exception(String desc)
         throws IOException {
         throw new IOException(
             desc + " pos: " + getPositionDescription());
     }
 
-    private final void push(int c) {
+    private void push(int c) {
         if (c == 0)
             return;
 
@@ -142,7 +142,7 @@ public class XmlPullParser implements SimplePullParser {
         this.txtBuf[this.txtPos++] = (char) c;
     }
 
-    private final void read(char c) throws IOException {
+    private void read(char c) throws IOException {
         if (read() != c) {
             if (this.relaxed) {
                 if (c <= 32) {
@@ -156,19 +156,19 @@ public class XmlPullParser implements SimplePullParser {
         }
     }
 
-    private final void skip() throws IOException {
+    private void skip() throws IOException {
 
         while (!this.eof && this.peek0 <= ' ')
             read();
     }
 
-    private final String pop(int pos) {
+    private String pop(int pos) {
         String result = new String(this.txtBuf, pos, this.txtPos - pos);
         this.txtPos = pos;
         return result;
     }
 
-    private final String readName() throws IOException {
+    private String readName() throws IOException {
 
         int pos = this.txtPos;
         int c = this.peek0;
@@ -194,7 +194,7 @@ public class XmlPullParser implements SimplePullParser {
         return pop(pos);
     }
 
-    private final void parseLegacy(boolean push)
+    private void parseLegacy(boolean push)
         throws IOException {
 
         String req = "";
@@ -260,7 +260,7 @@ public class XmlPullParser implements SimplePullParser {
 
     /** precondition: &lt! consumed */
 
-    private final void parseDoctype() throws IOException {
+    private void parseDoctype() throws IOException {
 
         int nesting = 1;
 
@@ -286,7 +286,7 @@ public class XmlPullParser implements SimplePullParser {
 
     /* precondition: &lt;/ consumed */
 
-    private final void parseEndTag() throws IOException {
+    private void parseEndTag() throws IOException {
 
         read(); // '<'
         read(); // '/'
@@ -302,7 +302,7 @@ public class XmlPullParser implements SimplePullParser {
         read('>');
     }
 
-    private final int peekType() {
+    private int peekType() {
         switch (this.peek0) {
             case -1 :
                 return SimplePullParser.END_DOCUMENT;
@@ -325,7 +325,7 @@ public class XmlPullParser implements SimplePullParser {
         }
     }
 
-    private static final String[] ensureCapacity(
+    private static String[] ensureCapacity(
         String[] arr,
         int required) {
         if (arr.length >= required)
@@ -337,7 +337,7 @@ public class XmlPullParser implements SimplePullParser {
 
     /** Sets name and attributes */
 
-    private final void parseStartTag() throws IOException {
+    private void parseStartTag() throws IOException {
 
         read(); // <
         this.name = readName();
@@ -460,7 +460,7 @@ public class XmlPullParser implements SimplePullParser {
     ' ': parse to whitespace or '>'
     */
 
-    private final boolean pushText(int delimiter)
+    private boolean pushText(int delimiter)
         throws IOException {
 
         boolean whitespace = true;
@@ -491,7 +491,7 @@ public class XmlPullParser implements SimplePullParser {
         return whitespace;
     }
 
-    private final boolean pushTextAttribute(int delimiter)
+    private boolean pushTextAttribute(int delimiter)
     	throws IOException
     {
     	boolean whitespace = true;

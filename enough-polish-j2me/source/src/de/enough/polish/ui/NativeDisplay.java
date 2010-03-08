@@ -43,7 +43,7 @@ public interface NativeDisplay
 	 * 
 	 * @since MIDP 2.0
 	 */
-	public static final int LIST_ELEMENT = 1;
+	int LIST_ELEMENT = 1;
 
 	/**
 	 * Image type for <code>ChoiceGroup</code> element image.
@@ -54,7 +54,7 @@ public interface NativeDisplay
 	 * 
 	 * @since MIDP 2.0
 	 */
-	public static final int CHOICE_GROUP_ELEMENT = 2;
+	int CHOICE_GROUP_ELEMENT = 2;
 
 	/**
 	 * Image type for <code>Alert</code> image.
@@ -65,7 +65,7 @@ public interface NativeDisplay
 	 * 
 	 * @since MIDP 2.0
 	 */
-	public static final int ALERT = 3;
+	int ALERT = 3;
 
 	/**
 	 * A color specifier for use with <code>getColor</code>.
@@ -79,7 +79,7 @@ public interface NativeDisplay
 	 * 
 	 * @since MIDP 2.0
 	 */
-	public static final int COLOR_BACKGROUND = 0;
+	int COLOR_BACKGROUND = 0;
 
 	/**
 	 * A color specifier for use with <code>getColor</code>.
@@ -94,7 +94,7 @@ public interface NativeDisplay
 	 * 
 	 * @since MIDP 2.0
 	 */
-	public static final int COLOR_FOREGROUND = 1;
+	int COLOR_FOREGROUND = 1;
 
 	/**
 	 * A color specifier for use with <code>getColor</code>.
@@ -109,7 +109,7 @@ public interface NativeDisplay
 	 * 
 	 * @since MIDP 2.0
 	 */
-	public static final int COLOR_HIGHLIGHTED_BACKGROUND = 2;
+	int COLOR_HIGHLIGHTED_BACKGROUND = 2;
 
 	/**
 	 * A color specifier for use with <code>getColor</code>.
@@ -127,7 +127,7 @@ public interface NativeDisplay
 	 * 
 	 * @since MIDP 2.0
 	 */
-	public static final int COLOR_HIGHLIGHTED_FOREGROUND = 3;
+	int COLOR_HIGHLIGHTED_FOREGROUND = 3;
 
 	/**
 	 * A color specifier for use with <code>getColor</code>.
@@ -143,7 +143,7 @@ public interface NativeDisplay
 	 * 
 	 * @since MIDP 2.0
 	 */
-	public static final int COLOR_BORDER = 4;
+	int COLOR_BORDER = 4;
 
 	/**
 	 * A color specifier for use with <code>getColor</code>.
@@ -160,7 +160,7 @@ public interface NativeDisplay
 	 * 
 	 * @since MIDP 2.0
 	 */
-	public static final int COLOR_HIGHLIGHTED_BORDER = 5;
+	int COLOR_HIGHLIGHTED_BORDER = 5;
 
 	/**
 	 * Returns one of the colors from the high level user interface
@@ -172,7 +172,7 @@ public interface NativeDisplay
 	 * @throws IllegalArgumentException - if colorSpecifier is not a valid color specifier
 	 * @since  MIDP 2.0
 	 */
-	public int getColor(int colorSpecifier);
+	int getColor(int colorSpecifier);
 
 	/**
 	 * Returns the stroke style used for border drawing
@@ -186,14 +186,14 @@ public interface NativeDisplay
 	 * @return Graphics.DOTTED or Graphics.SOLID
 	 * @since  MIDP 2.0
 	 */
-	public int getBorderStyle(boolean highlighted);
+	int getBorderStyle(boolean highlighted);
 
 	/**
 	 * Gets information about color support of the device.
 	 * 
 	 * @return true if the display supports color,  false otherwise
 	 */
-	public boolean isColor();
+	boolean isColor();
 
 	/**
 	 * Gets the number of colors (if <code>isColor()</code> is
@@ -206,7 +206,7 @@ public interface NativeDisplay
 	 * 
 	 * @return number of colors
 	 */
-	public int numColors();
+	int numColors();
 
 	/**
 	 * Gets the number of alpha transparency levels supported by this
@@ -221,7 +221,7 @@ public interface NativeDisplay
 	 * @return number of alpha levels supported
 	 * @since  MIDP 2.0
 	 */
-	public int numAlphaLevels();
+	int numAlphaLevels();
 
 	/**
 	 * Requests that a different <code>Displayable</code> object be
@@ -336,13 +336,13 @@ public interface NativeDisplay
 	 * 
 	 * @param nextDisplayable the Display requested to be made current; null is allowed
 	 */
-	public void setCurrent( Display nextDisplayable);
+	void setCurrent( Display nextDisplayable);
 	
 	/**
 	 * Sets the next native displayable
 	 * @param nextDisplayable the next displayable which is not a Canvas
 	 */
-	public void setCurrent( Displayable nextDisplayable);
+	void setCurrent( Displayable nextDisplayable);
 	
 	/**
 	 * Causes the <code>Runnable</code> object <code>r</code> to have
@@ -442,7 +442,7 @@ public interface NativeDisplay
 	 * 
 	 * @param r - instance of interface Runnable to be called
 	 */
-	public void callSerially( Runnable r);
+	void callSerially( Runnable r);
 
 	/**
 	 * Requests a flashing effect for the device's backlight.  The flashing
@@ -472,7 +472,7 @@ public interface NativeDisplay
 	 * @throws IllegalArgumentException - if duration is negative
 	 * @since  MIDP 2.0
 	 */
-	public boolean flashBacklight(int duration);
+	boolean flashBacklight(int duration);
 
 	/**
 	 * Requests operation of the device's vibrator.  The vibrator is
@@ -503,7 +503,7 @@ public interface NativeDisplay
 	 * @throws IllegalArgumentException - if duration is negative
 	 * @since  MIDP 2.0
 	 */
-	public boolean vibrate(int duration);
+	boolean vibrate(int duration);
 
 	/**
 	 * Returns the best image width for a given image type.
@@ -517,7 +517,7 @@ public interface NativeDisplay
 	 * @throws IllegalArgumentException - if imageType is illegal
 	 * @since  MIDP 2.0
 	 */
-	public int getBestImageWidth(int imageType);
+	int getBestImageWidth(int imageType);
 
 	/**
 	 * Returns the best image height for a given image type.
@@ -531,7 +531,7 @@ public interface NativeDisplay
 	 * @throws IllegalArgumentException - if imageType is illegal
 	 * @since  MIDP 2.0
 	 */
-	public int getBestImageHeight(int imageType);
+	int getBestImageHeight(int imageType);
 
 	/**
 	 * Informs the native implementation about a change of displays
@@ -539,6 +539,6 @@ public interface NativeDisplay
 	 * @param nextDisplayable the next displayed screen
 	 * @return true when processing should be stopped
 	 */
-	public boolean notifyDisplayableChange(Displayable currentDisplayable, Displayable nextDisplayable);
+	boolean notifyDisplayableChange(Displayable currentDisplayable, Displayable nextDisplayable);
 
 }

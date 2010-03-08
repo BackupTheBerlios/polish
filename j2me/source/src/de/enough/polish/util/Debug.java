@@ -97,7 +97,7 @@ implements CommandListener
 	 * @param message the message.
 	 * @param exception the exception or just an ordinary object
 	 */
-	public static final void debug( String level, String className, int lineNumber, Object message, Object exception ) {
+	public static void debug( String level, String className, int lineNumber, Object message, Object exception ) {
 		if (exception instanceof Throwable) {
 			debug( level, className, lineNumber, message, (Throwable) exception );
 		} else {
@@ -115,7 +115,7 @@ implements CommandListener
 	 * @param message the message.
 	 * @param value the char value
 	 */
-	public static final void debug( String level, String className, int lineNumber, Object message, char value ) {
+	public static void debug( String level, String className, int lineNumber, Object message, char value ) {
 		debug( level, className, lineNumber, message.toString() + value );
 	}
 
@@ -129,7 +129,7 @@ implements CommandListener
 	 * @param message the message.
 	 * @param value the int value
 	 */
-	public static final void debug( String level, String className, int lineNumber, Object message, int value ) {
+	public static void debug( String level, String className, int lineNumber, Object message, int value ) {
 		debug( level, className, lineNumber, message.toString() + value );
 	}
 	
@@ -143,7 +143,7 @@ implements CommandListener
 	 * @param message the message.
 	 * @param value the long value
 	 */
-	public static final void debug( String level, String className, int lineNumber, Object message, long value ) {
+	public static void debug( String level, String className, int lineNumber, Object message, long value ) {
 		debug( level, className, lineNumber, message.toString() + value );
 	}
 
@@ -157,7 +157,7 @@ implements CommandListener
 	 * @param message the message.
 	 * @param value the short value
 	 */
-	public static final void debug( String level, String className, int lineNumber, Object message, short value ) {
+	public static void debug( String level, String className, int lineNumber, Object message, short value ) {
 		debug( level, className, lineNumber, message.toString() + value );
 	}
 	
@@ -171,7 +171,7 @@ implements CommandListener
 	 * @param message the message.
 	 * @param value the byte value
 	 */
-	public static final void debug( String level, String className, int lineNumber, Object message, byte value ) {
+	public static void debug( String level, String className, int lineNumber, Object message, byte value ) {
 		debug( level, className, lineNumber, message.toString() + value );
 	}
 	
@@ -186,7 +186,7 @@ implements CommandListener
 	 * @param message the message.
 	 * @param value the float value
 	 */
-	//# public static final void debug( String level, String className, int lineNumber, Object message, float value ) {
+	//# public static void debug( String level, String className, int lineNumber, Object message, float value ) {
 	//# 	debug( level, className, lineNumber, message.toString() + value );
 	//# }
 	//#endif
@@ -202,7 +202,7 @@ implements CommandListener
 	 * @param message the message.
 	 * @param value the double value
 	 */
-	//# public static final void debug( String level, String className, int lineNumber, Object message, double value ) {
+	//# public static void debug( String level, String className, int lineNumber, Object message, double value ) {
 	//# 	debug( level, className, lineNumber, message.toString() + value );
 	//# }
 	//#endif
@@ -217,7 +217,7 @@ implements CommandListener
 	 * @param message the message.
 	 * @param value the boolean value
 	 */
-	public static final void debug( String level, String className, int lineNumber, Object message, boolean value ) {
+	public static void debug( String level, String className, int lineNumber, Object message, boolean value ) {
 		debug( level, className, lineNumber, message.toString() + value );
 	}
 	
@@ -229,7 +229,7 @@ implements CommandListener
 	 * @param lineNumber the line numer of the log statement
 	 * @param message the message.
 	 */
-	public static final void debug( String level, String className, int lineNumber, Object message ) {
+	public static void debug( String level, String className, int lineNumber, Object message ) {
 		debug( level, className, lineNumber, message, null );
 	}
 	
@@ -241,7 +241,7 @@ implements CommandListener
 	 * @param lineNumber the line numer of the log statement
 	 * @param exception the exception which was catched.
 	 */
-	public static final void debug( String level, String className, int lineNumber, Throwable exception ) {
+	public static void debug( String level, String className, int lineNumber, Throwable exception ) {
 		debug( level, className, lineNumber, "Error", exception );
 	}
 	
@@ -254,7 +254,7 @@ implements CommandListener
 	 * @param message the message.
 	 * @param exception the exception
 	 */
-	public static final void debug( String level, String className, int lineNumber, Object message, Throwable exception ) {
+	public static void debug( String level, String className, int lineNumber, Object message, Throwable exception ) {
 		if (suppressMessages) {
 			return;
 		}
@@ -319,7 +319,7 @@ implements CommandListener
 	 * @deprecated use showLogForm instead
 	 * @see #showLog(Display)
 	 */
-	public static final Form getLogForm( boolean reverseSort, CommandListener listener ) {
+	public static Form getLogForm( boolean reverseSort, CommandListener listener ) {
 		LogEntry[] entries = (LogEntry[]) MESSAGES.toArray( new LogEntry[ MESSAGES.size() ] );
 		StringItem[] items = new StringItem[ entries.length ];
 		int index = entries.length - 1;
@@ -400,7 +400,7 @@ implements CommandListener
 	 * Adds all messages to the internal TextBox-Log.
 	 *
 	 */
-	private static final void addMessages() {
+	private static void addMessages() {
 		StringBuffer buffer = new StringBuffer();
 		int maxSize = Debug.textBox.getMaxSize();
 		if (maxSize <= 0) {

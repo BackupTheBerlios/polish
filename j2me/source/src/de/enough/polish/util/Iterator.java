@@ -49,7 +49,7 @@ public interface Iterator
 	 * 
 	 * @return true if the iteration has more elements. (In other words, returns true if next would return an element rather than throwing an exception.)
 	 */
-	public boolean hasNext();
+	boolean hasNext();
 	
 	/**
 	 * Returns the next element in the iteration.
@@ -58,9 +58,9 @@ public interface Iterator
 	 * @throws IllegalStateException when all elements have been iterated through (on Non-MIDP platforms just a RuntimeException is raised).
 	 */
 	//#if polish.java5
-	public K next();
+	K next();
   //#else
-  //# public Object next();
+  //# Object next();
 	//#endif
 	
 	/**
@@ -68,6 +68,6 @@ public interface Iterator
 	 * 
 	 * @throws IllegalStateException when the map/list does not support this operation (on Non-MIDP platforms just a RuntimeException is raised).
 	 */
-	public void remove();
+	void remove();
 
 }

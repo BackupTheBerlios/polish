@@ -67,7 +67,7 @@ public final class DrawUtil {
 	 * @param g the graphics context
 	 * @see de.enough.polish.ui.backgrounds.TranslucentSimpleBackground
 	 */
-	public final static void fillRect( int x, int y, int width, int height, int color, Graphics g ) {
+	public static void fillRect( int x, int y, int width, int height, int color, Graphics g ) {
 		if ((color & 0xff000000) == 0) {
 			g.setColor(color);
 			g.fillRect(x, y, width, height);
@@ -204,7 +204,7 @@ public final class DrawUtil {
 	 * @param color the color of the polygon
 	 * @param g the graphics context
 	 */
-	public final static void fillPolygon( int[] xPoints, int[] yPoints, int color, Graphics g ) {
+	public static void fillPolygon( int[] xPoints, int[] yPoints, int color, Graphics g ) {
 		//#if polish.blackberry && polish.usePolishGui
 			net.rim.device.api.ui.Graphics bbGraphics = null;
 			//# bbGraphics = g.g;
@@ -580,7 +580,7 @@ public final class DrawUtil {
 	 * @see #getGradient(int, int, int[])
 	 * @see #getGradientColor(int, int, int)
 	 */
-	public static final int[] getGradient( int startColor, int endColor, int steps ) {
+	public static int[] getGradient( int startColor, int endColor, int steps ) {
 		if (steps <= 0) {
 			return new int[0];
 		}
@@ -599,7 +599,7 @@ public final class DrawUtil {
 	 * @param gradient the array in which the gradient colors are stored.  
 	 * @see #getGradientColor(int, int, int, int)
 	 */
-	public static final void getGradient(int startColor, int endColor, int[] gradient) {
+	public static void getGradient(int startColor, int endColor, int[] gradient) {
 		int steps = gradient.length;
 		if (steps == 0) {
 			return;
@@ -654,7 +654,7 @@ public final class DrawUtil {
 	 * 			500 a gradient color directly in the middlet between start and endcolor.
 	 * @return the gradient color
 	 */
-	public static final int getGradientColor( int startColor, int endColor, int permille ) {
+	public static int getGradientColor( int startColor, int endColor, int permille ) {
 		int alpha = startColor >>> 24;
 		int red = (startColor >>> 16) & 0x00FF;
 		int green = (startColor >>> 8) & 0x0000FF;
@@ -693,7 +693,7 @@ public final class DrawUtil {
 	 * @return the gradient color
 	 * @see #getGradientColor(int, int, int)
 	 */
-	public static final int getGradientColor( int startColor, int endColor, int step, int numberOfSteps ) {
+	public static int getGradientColor( int startColor, int endColor, int step, int numberOfSteps ) {
 		int permille = (step * 1000) / numberOfSteps;
 		return getGradientColor(startColor, endColor, permille);
 	}
@@ -731,7 +731,7 @@ public final class DrawUtil {
 	 * @param outerColor the outer color of the shadow, which should be less than opaque the inner color.
 	 * 
 	 */
-	public final static void dropShadow(int[] argbData, int width, int height,int xOffset, int yOffset, int size, int innerColor, int outerColor){
+	public static void dropShadow(int[] argbData, int width, int height,int xOffset, int yOffset, int size, int innerColor, int outerColor){
 		
 		// additional Margin for the image because of the shadow
 		int iLeft = size-xOffset<0 ? 0 : size-xOffset;
@@ -795,7 +795,7 @@ public final class DrawUtil {
 	 * @param height of the given Image
 	 * Be aware that the computation time depends on the size of the matrix.
 	 */
-	public final static void applyFilter(byte[][] filterMatrix, int brightness, int[] argbData, int width, int height) {
+	public static void applyFilter(byte[][] filterMatrix, int brightness, int[] argbData, int width, int height) {
 		
 		// check whether the matrix is ok
 		if (filterMatrix.length % 2 !=1 || filterMatrix[0].length % 2 !=1 ){

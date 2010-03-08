@@ -242,7 +242,7 @@ public interface Choice
 	 * 
 	 * <P>Value <code>1</code> is assigned to <code>EXCLUSIVE</code>.</P>
 	 */
-	public static final int EXCLUSIVE = 1;
+	int EXCLUSIVE = 1;
 
 	/**
 	 * <code>MULTIPLE</code> is a choice that can have arbitrary number of
@@ -250,7 +250,7 @@ public interface Choice
 	 * 
 	 * <P>Value <code>2</code> is assigned to <code>MULTIPLE</code>.</P>
 	 */
-	public static final int MULTIPLE = 2;
+	int MULTIPLE = 2;
 
 	/**
 	 * <code>IMPLICIT</code> is a choice in which the currently focused
@@ -260,7 +260,7 @@ public interface Choice
 	 * 
 	 * <P>Value <code>3</code> is assigned to <code>IMPLICIT</code>.</P>
 	 */
-	public static final int IMPLICIT = 3;
+	int IMPLICIT = 3;
 
 	/**
 	 * <code>POPUP</code> is a choice having exactly one element
@@ -277,7 +277,7 @@ public interface Choice
 	 * 
 	 * @since MIDP 2.0
 	 */
-	public static final int POPUP = 4;
+	int POPUP = 4;
 
 	/**
 	 * Constant for indicating that the application has no preference as to
@@ -290,7 +290,7 @@ public interface Choice
 	 * 
 	 * @since MIDP 2.0
 	 */
-	public static final int TEXT_WRAP_DEFAULT = 0;
+	int TEXT_WRAP_DEFAULT = 0;
 
 	/**
 	 * Constant for hinting that text element contents should be wrapped to to
@@ -304,7 +304,7 @@ public interface Choice
 	 * 
 	 * @since MIDP 2.0
 	 */
-	public static final int TEXT_WRAP_ON = 1;
+	int TEXT_WRAP_ON = 1;
 
 	/**
 	 * Constant for hinting that text element contents should be limited to a
@@ -325,14 +325,14 @@ public interface Choice
 	 * 
 	 * @since MIDP 2.0
 	 */
-	public static final int TEXT_WRAP_OFF = 2;
+	int TEXT_WRAP_OFF = 2;
 
 	/**
 	 * Gets the number of elements present.
 	 * 
 	 * @return the number of elements in the Choice
 	 */
-	public int size();
+	int size();
 
 	/**
 	 * Gets the <code>String</code> part of the element referenced by
@@ -345,7 +345,7 @@ public interface Choice
 	 * @throws IndexOutOfBoundsException - if elementNum is invalid
 	 * @see #getImage(int)
 	 */
-	public String getString(int elementNum);
+	String getString(int elementNum);
 
 	/**
 	 * Gets the <code>Image</code> part of the element referenced by
@@ -358,7 +358,7 @@ public interface Choice
 	 * @throws IndexOutOfBoundsException - if elementNum is invalid
 	 * @see #getString(int)
 	 */
-	public Image getImage(int elementNum);
+	Image getImage(int elementNum);
 
 	/**
 	 * Appends an element to the <code>Choice</code>. The added
@@ -371,7 +371,7 @@ public interface Choice
 	 * @return the assigned index of the element
 	 * @throws NullPointerException - if stringPart is null
 	 */
-	public int append( String stringPart, Image imagePart);
+	int append( String stringPart, Image imagePart);
 
 	/**
 	 * Inserts an element into the <code>Choice</code> just prior to
@@ -393,7 +393,7 @@ public interface Choice
 	 * @throws IndexOutOfBoundsException - if elementNum is invalid
 	 * @throws NullPointerException - if stringPart is null
 	 */
-	public void insert(int elementNum, String stringPart, Image imagePart);
+	void insert(int elementNum, String stringPart, Image imagePart);
 
 	/**
 	 * Deletes the element referenced by <code>elementNum</code>.
@@ -405,7 +405,7 @@ public interface Choice
 	 * @param elementNum - the index of the element to be deleted
 	 * @throws IndexOutOfBoundsException - if elementNum is invalid
 	 */
-	public void delete(int elementNum);
+	void delete(int elementNum);
 
 	/**
 	 * Deletes all elements from this <code>Choice</code>, leaving it
@@ -414,7 +414,7 @@ public interface Choice
 	 * 
 	 * @since  MIDP 2.0
 	 */
-	public void deleteAll();
+	void deleteAll();
 
 	/**
 	 * Sets the <code>String</code> and <code>Image</code> parts of the
@@ -430,7 +430,7 @@ public interface Choice
 	 * @throws IndexOutOfBoundsException if elementNum is invalid
 	 * @throws NullPointerException if stringPart is null
 	 */
-	public void set(int elementNum, String stringPart, Image imagePart);
+	void set(int elementNum, String stringPart, Image imagePart);
 
 	/**
 	 * Gets a boolean value indicating whether this element is selected.
@@ -441,7 +441,7 @@ public interface Choice
 	 * @return selection state of the element
 	 * @throws IndexOutOfBoundsException if elementNum is invalid
 	 */
-	public boolean isSelected(int elementNum);
+	boolean isSelected(int elementNum);
 
 	/**
 	 * Returns the index number of an element in the <code>Choice</code> that is
@@ -463,7 +463,7 @@ public interface Choice
 	 * @return index of selected element, or -1 if none
 	 * @see #setSelectedIndex(int, boolean)
 	 */
-	public int getSelectedIndex();
+	int getSelectedIndex();
 
 	/**
 	 * Queries the state of a <code>Choice</code> and returns the
@@ -492,7 +492,7 @@ public interface Choice
 	 * @throws NullPointerException - if selectedArray_return is null
 	 * @see #setSelectedFlags(boolean[])
 	 */
-	public int getSelectedFlags(boolean[] selectedArray_return);
+	int getSelectedFlags(boolean[] selectedArray_return);
 
 	/**
 	 * For <code>MULTIPLE</code>, this simply sets an individual
@@ -531,7 +531,7 @@ public interface Choice
 	 * @throws IndexOutOfBoundsException - if elementNum is invalid
 	 * @see #getSelectedIndex()
 	 */
-	public void setSelectedIndex(int elementNum, boolean selected);
+	void setSelectedIndex(int elementNum, boolean selected);
 
 	/**
 	 * Attempts to set the selected state of every element in the
@@ -564,7 +564,7 @@ public interface Choice
 	 * @throws NullPointerException - if selectedArray is null
 	 * @see #getSelectedFlags(boolean[])
 	 */
-	public void setSelectedFlags(boolean[] selectedArray);
+	void setSelectedFlags(boolean[] selectedArray);
 
 	/**
 	 * Sets the application's preferred policy for fitting
@@ -580,7 +580,7 @@ public interface Choice
 	 * @see #getFitPolicy()
 	 * @since  MIDP 2.0
 	 */
-	public void setFitPolicy(int fitPolicy);
+	void setFitPolicy(int fitPolicy);
 
 	/**
 	 * Gets the application's preferred policy for fitting
@@ -593,7 +593,7 @@ public interface Choice
 	 * @see #setFitPolicy(int)
 	 * @since  MIDP 2.0
 	 */
-	public int getFitPolicy();
+	int getFitPolicy();
 
 	/**
 	 * Sets the application's preferred font for
@@ -615,7 +615,7 @@ public interface Choice
 	 * @see #getFont(int)
 	 * @since  MIDP 2.0
 	 */
-	public void setFont(int elementNum, Font font);
+	void setFont(int elementNum, Font font);
 
 	/**
 	 * Gets the application's preferred font for
@@ -635,6 +635,6 @@ public interface Choice
 	 * @see #setFont(int, javax.microedition.lcdui.Font)
 	 * @since  MIDP 2.0
 	 */
-	public Font getFont(int elementNum);
+	Font getFont(int elementNum);
 
 }
