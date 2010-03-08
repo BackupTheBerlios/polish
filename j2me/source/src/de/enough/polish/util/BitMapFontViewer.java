@@ -465,7 +465,7 @@ public class BitMapFontViewer {
 	 */
 	private short[] increaseShortArraySize(short[] src, int growFactor)
 	{
-		short dest[] = new short[src.length + growFactor];
+		short[] dest = new short[src.length + growFactor];
 		System.arraycopy(src, 0, dest, 0, src.length);
 		return dest;
 	}
@@ -478,7 +478,7 @@ public class BitMapFontViewer {
 	 */
 	public byte[] getUsedCharactersWidths()
 	{
-		byte ret[] = new byte[this.usedCharactersWidths.length];
+		byte[] ret = new byte[this.usedCharactersWidths.length];
 		System.arraycopy(this.usedCharactersWidths, 0, ret, 0, ret.length);
 		return ret;
 	}

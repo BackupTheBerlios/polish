@@ -138,8 +138,8 @@ public final class Arrays implements Comparator {
     {
             int left=0, right=elements-1, top=0;
             int sSize = elements/2;
-            int lStack[] = new int[sSize];
-            int rStack[] = new int[sSize];
+            int[] lStack = new int[sSize];
+            int[] rStack = new int[sSize];
             int tmp;
             int i, j, x;
 
@@ -198,7 +198,7 @@ public final class Arrays implements Comparator {
             }
     }
     
-    public static void quicksort(Object obj[], int elements, Comparator comparator)
+    public static void quicksort(Object[] obj, int elements, Comparator comparator)
     {
     	if(elements <= 1) {
     		return;
@@ -206,8 +206,8 @@ public final class Arrays implements Comparator {
     	
         int left=0, right=elements-1, top=0;
         int sSize = elements/2;
-        int lStack[] = new int[sSize];
-        int rStack[] = new int[sSize];
+        int[] lStack = new int[sSize];
+        int[] rStack = new int[sSize];
         Object tmp;
         int i, j;
         Object pivot;
