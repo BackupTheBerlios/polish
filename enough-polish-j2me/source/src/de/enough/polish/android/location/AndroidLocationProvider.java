@@ -6,7 +6,7 @@ import java.util.List;
 import android.content.Context;
 import android.location.LocationManager;
 import android.os.Looper;
-import de.enough.polish.android.midlet.MIDlet;
+
 import de.enough.polish.android.midlet.MidletBridge;
 
 public class AndroidLocationProvider extends LocationProvider {
