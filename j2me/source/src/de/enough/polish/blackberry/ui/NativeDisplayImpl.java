@@ -26,13 +26,12 @@
  */
 package de.enough.polish.blackberry.ui;
 
-import javax.microedition.lcdui.AlertType;
-
 import de.enough.polish.blackberry.midlet.MIDlet;
 //#if polish.useNativeGui
 import de.enough.polish.blackberry.nativeui.FormScreen;
 //#endif
 import de.enough.polish.ui.Alert;
+import de.enough.polish.ui.AlertType;
 import de.enough.polish.ui.AnimationThread;
 import de.enough.polish.ui.Display;
 import de.enough.polish.ui.Displayable;
