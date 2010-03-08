@@ -47,7 +47,7 @@ public class TextBlock extends StringItem implements Partable {
 		String text = getText();
 		Font font = getFont();
 		
-		int left = Partition.getBlockRelativeX(this);
+		int left = Partition.getInlineRelativeX(this);
 		int right;
 		int height = font.getHeight();
 		int tokenWidth;
@@ -75,7 +75,7 @@ public class TextBlock extends StringItem implements Partable {
 			if(st.hasMoreTokens()) {
 				right = left + spaceWidth;
 				Partition partition = new TextPartition(index, 1, left, right, height,this);
-				partition.setWhitespace(true);
+				partition.setAttribute(Partition.ATTRIBUTE_WHITESPACE);
 				this.textPartitions.add(partition);
 				left += spaceWidth;
 				index++;
@@ -92,7 +92,7 @@ public class TextBlock extends StringItem implements Partable {
 		TextPartition firstPartition = (TextPartition)this.textPartitions.get(0);
 		for (int i = 0; i < this.textPartitions.size(); i++) {
 			TextPartition textPartition = (TextPartition)this.textPartitions.get(i);
-			if(lineboxPartitions.contains(textPartition) && !textPartition.isWhitespace()) {
+			if(lineboxPartitions.contains(textPartition) && !textPartition.hasAttribute(Partition.ATTRIBUTE_WHITESPACE)) {
 				drawTextPartition(textPartition, firstPartition, linebox, this.text, x, y, anchor, g);
 			}
 		}
@@ -102,7 +102,7 @@ public class TextBlock extends StringItem implements Partable {
 		int index = partition.getIndex();
 		int length = partition.getLength();
 		
-		int textXOffset = partition.getLeft() - first.getLeft();
+		int textXOffset = partition.getInlineRelativeLeft() - first.getInlineRelativeLeft();
 		
 		g.drawSubstring(text, index, length, x + textXOffset, y, anchor);
 	}	

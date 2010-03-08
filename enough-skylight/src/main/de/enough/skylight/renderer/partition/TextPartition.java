@@ -1,6 +1,7 @@
 package de.enough.skylight.renderer.partition;
 
 import de.enough.polish.ui.Item;
+import de.enough.polish.util.ToStringHelper;
 
 public class TextPartition extends Partition{
 
@@ -23,6 +24,18 @@ public class TextPartition extends Partition{
 	}
 	
 	public String toString() {
-		return "Partition [" + this.index + "," + this.length + "," + this.left + "," + this.right + "," + this.height + "," + this.newline + "," + this.whitespace + "," + this.parent + "]";
+		return new ToStringHelper("TextPartition").
+		add("inline relative X", this.inlineRelativeLeft).
+		add("relative X", this.lineboxRelativeX).
+		add("relative Y", this.lineboxRelativeY).
+		add("width", this.width).
+		add("height", this.height).
+		add("is newline", hasAttribute(ATTRIBUTE_NEWLINE)).
+		add("is whitespace", hasAttribute(ATTRIBUTE_WHITESPACE)).
+		add("parent item", this.parentItem).
+		add("linebox", this.linebox).
+		add("index", this.index).
+		add("length", this.length).
+		toString();
 	}
 }

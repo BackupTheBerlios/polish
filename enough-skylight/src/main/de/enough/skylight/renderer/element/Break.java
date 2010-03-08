@@ -21,8 +21,8 @@ public class Break extends Item implements Partable {
 			Graphics g) {}
 
 	public void partition(PartitionList partitions) {
-		Partition partition = new Partition(Partition.getBlockRelativeX(this),Partition.getBlockRelativeX(this),0,this);
-		partition.setNewline(true);
+		Partition partition = new Partition(Partition.getInlineRelativeX(this),Partition.getInlineRelativeX(this),0,this);
+		partition.setAttribute(Partition.ATTRIBUTE_NEWLINE);
 		partitions.add(partition);
 	}
 }

@@ -1,5 +1,6 @@
 package de.enough.skylight.renderer.partition;
 
+import de.enough.polish.ui.Item;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.Arrays;
 
@@ -10,13 +11,19 @@ public class PartitionList {
 		this.partitionList = new ArrayList();
 	}
 	
+	public void add(int inlineRelativeLeft, int inlineRelativeRight, int height, Item parentItem) {
+		if((inlineRelativeRight - inlineRelativeLeft) > 0) {
+			add(new Partition(inlineRelativeLeft,inlineRelativeRight,height,parentItem));
+		} 
+	}
+	
 	public void add(Partition partition) {
 		if(!this.partitionList.contains(partition)) {
 			this.partitionList.add(partition);
 		} else {
 			int index = this.partitionList.indexOf(partition);
 			Partition stored = (Partition)this.partitionList.get(index);
-			stored.setPartition(partition);
+			stored.set(partition);
 		}
 	}
 	

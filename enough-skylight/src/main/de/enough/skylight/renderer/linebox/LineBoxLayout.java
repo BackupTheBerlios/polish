@@ -12,7 +12,7 @@ public class LineBoxLayout {
 	
 	LineBoxList rightLines;
 	
-	int availableWidth;
+	int blockAvailableWidth;
 	
 	int width;
 	
@@ -22,8 +22,8 @@ public class LineBoxLayout {
 		this(availableWidth,null,null);
 	}
 	
-	public LineBoxLayout(int availableWidth, LineBoxList leftLineBoxes, LineBoxList rightLineBoxes) {
-		this.availableWidth = availableWidth;
+	public LineBoxLayout(int blockAvailableWidth, LineBoxList leftLineBoxes, LineBoxList rightLineBoxes) {
+		this.blockAvailableWidth = blockAvailableWidth;
 		this.leftLines = leftLineBoxes;
 		this.rightLines = rightLineBoxes;
 	}
@@ -43,11 +43,11 @@ public class LineBoxLayout {
 				Partition partition = partitions.get(index);
 				
 				if(partition.getWidth() > 0) {
-					if(linebox != null && !linebox.overflows() && linebox.fits(partition) && !partition.isNewline()) {
+					if(linebox != null && !linebox.overflows() && linebox.fits(partition) && !partition.hasAttribute(Partition.ATTRIBUTE_NEWLINE)) {
 						linebox.addPartition(partition);
 					} else {
 						if(linebox != null) {
-							top += linebox.getHeight();
+							top += linebox.getLineHeight();
 							int lineWidth = linebox.getWidth();
 							if(lineWidth > this.width) {
 								this.width = lineWidth;
@@ -57,7 +57,7 @@ public class LineBoxLayout {
 						int offset = getLineOffset(top);
 						int width = getLineWidth(top);
 						linebox = null;
-						if(!partition.isWhitespace()) {
+						if(!partition.hasAttribute(Partition.ATTRIBUTE_WHITESPACE)) {
 							linebox = new LineBox(partition, block, offset, top, width);
 							lineboxes.add(linebox);
 						} else {
@@ -69,7 +69,7 @@ public class LineBoxLayout {
 		}
 		
 		if(linebox != null) {
-			top += linebox.getHeight();
+			top += linebox.getLineHeight();
 			int lineWidth = linebox.getWidth();
 			if(lineWidth > this.width) {
 				this.width = lineWidth;
@@ -87,7 +87,7 @@ public class LineBoxLayout {
 		if(this.leftLines != null) {
 			for (int i = 0; i < this.leftLines.size(); i++) {
 				LineBox linebox = this.leftLines.get(i);
-				if(linebox.isInLine(top)) {
+				if(linebox.matchesArea(top)) {
 					return linebox.getTrimmedWidth();
 				}
 			}
@@ -97,12 +97,12 @@ public class LineBoxLayout {
 	}
 	
 	public int getLineWidth(int top) {
-		int result = this.availableWidth;
+		int result = this.blockAvailableWidth;
 		
 		if(this.leftLines != null) {
 			for (int i = 0; i < this.leftLines.size(); i++) {
 				LineBox linebox = this.leftLines.get(i);
-				if(linebox.isInLine(top)) {
+				if(linebox.matchesArea(top)) {
 					result -= linebox.getTrimmedWidth();
 				}
 			}
@@ -111,7 +111,7 @@ public class LineBoxLayout {
 		if(this.rightLines != null) {
 			for (int i = 0; i < this.rightLines.size(); i++) {
 				LineBox linebox = this.rightLines.get(i);
-				if(linebox.isInLine(top)) {
+				if(linebox.matchesArea(top)) {
 					result -= linebox.getTrimmedWidth();
 				}
 			}
@@ -124,11 +124,11 @@ public class LineBoxLayout {
 		return this.lineboxes;
 	}
 	
-	public int getWidth() {
+	public int getLayoutWidth() {
 		return this.width;
 	}
 	
-	public int getHeight() {
+	public int getLayoutHeight() {
 		return this.height;
 	}
 }

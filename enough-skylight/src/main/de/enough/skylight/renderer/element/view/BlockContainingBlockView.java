@@ -200,7 +200,7 @@ public class BlockContainingBlockView extends ContainerView {
 	
 	public int getContentWidth(CssElement element, LineBoxLayout bodyLayout, int availWidth) {
 		if(element != null && (element.isFloat() || element.isParentFloat())) {
-			return bodyLayout.getWidth();
+			return bodyLayout.getLayoutWidth();
 		} else {
 			if(this.parentContainer.getMinimumWidth() != 0) {
 				return availWidth;
@@ -211,14 +211,14 @@ public class BlockContainingBlockView extends ContainerView {
 	}
 	
 	public int getContentHeight(LineBoxLayout body, LineBoxLayout floatLeft, LineBoxLayout floatRight) {
-		int height = body.getHeight();
+		int height = body.getLayoutHeight();
 		
-		if(floatLeft != null && floatLeft.getHeight() > height) {
-			height = floatLeft.getHeight();
+		if(floatLeft != null && floatLeft.getLayoutHeight() > height) {
+			height = floatLeft.getLayoutHeight();
 		}
 		
-		if(floatRight != null && floatRight.getHeight() > height) {
-			height = floatRight.getHeight();
+		if(floatRight != null && floatRight.getLayoutHeight() > height) {
+			height = floatRight.getLayoutHeight();
 		}
 
 		return height;
@@ -243,17 +243,17 @@ public class BlockContainingBlockView extends ContainerView {
 	}
 	
 	public void paintLineBox(LineBox linebox, InlineContainingBlock block, int x, int y, Graphics g) {
-		x = x + linebox.getOffset();
-		y = y + linebox.getTop();
+		x = x + linebox.getBlockRelativeLeft();
+		y = y + linebox.getBlockRelativeTop();
 		
 		int clipX = g.getClipX();
 		int clipY = g.getClipY();
 		int clipWidth = g.getClipWidth();
 		int clipHeight = g.getClipHeight();
 		
-		int left = linebox.getTrimmedLeft();
+		int left = linebox.getTrimmedInlineRelativeLeft();
 		int width = linebox.getTrimmedWidth();
-		int height = linebox.getHeight();
+		int height = linebox.getLineHeight();
 		
 		g.clipRect(x, y, width, height);
 		

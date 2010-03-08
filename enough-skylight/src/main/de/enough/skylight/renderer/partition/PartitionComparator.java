@@ -18,9 +18,9 @@ public class PartitionComparator implements Comparator {
 		Partition first = (Partition)o1;
 		Partition second = (Partition)o2;
 		
-		if(first.getLeft() < second.getLeft()) {
+		if(first.getInlineRelativeLeft() < second.getInlineRelativeLeft()) {
 			return -1;
-		} else if (first.getLeft() > second.getLeft()) {
+		} else if (first.getInlineRelativeLeft() > second.getInlineRelativeLeft()) {
 			return 1;
 		} 
 		

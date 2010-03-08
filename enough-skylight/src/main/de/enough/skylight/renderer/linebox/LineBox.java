@@ -1,5 +1,6 @@
 package de.enough.skylight.renderer.linebox;
 
+import de.enough.polish.util.ToStringHelper;
 import de.enough.skylight.renderer.element.InlineContainingBlock;
 import de.enough.skylight.renderer.partition.Partition;
 import de.enough.skylight.renderer.partition.PartitionList;
@@ -7,133 +8,132 @@ import de.enough.skylight.renderer.partition.PartitionList;
 
 public class LineBox {
 	
-	PartitionList partitions;
+	public static int UNDEFINED = Integer.MAX_VALUE;
 	
-	InlineContainingBlock block;
+	final PartitionList partitions;
 	
-	int availableWidth;
+	final InlineContainingBlock block;
 	
-	int left = Integer.MAX_VALUE;
+	final int availableWidth;
+	
+	int inlineRelativeLeft = UNDEFINED;
 
-	int right = Integer.MIN_VALUE;
+	int inlineRelativeRight = UNDEFINED;
 	
-	int top;
+	final int blockRelativeLeft;
 	
-	int height = Integer.MIN_VALUE;
+	final int blockRelativeTop;
 	
-	int offset = 0;
+	int blockRelativeBottom;
 	
-	public LineBox(Partition partition, InlineContainingBlock block, int offset, int top, int availableWidth) {
+	int lineHeight = UNDEFINED;
+	
+	public LineBox(Partition partition, InlineContainingBlock block, int blockRelativeLeft, int blockRelativeTop, int availableWidth) {
 		this.availableWidth = availableWidth;
 		this.partitions = new PartitionList();
 		this.block = block;
-		this.offset = offset;
-		this.top = top;
+		this.blockRelativeLeft = blockRelativeLeft;
+		this.blockRelativeTop = blockRelativeTop;
 		
 		addPartition(partition);
 	}
 	
 	public void addPartition(Partition partition) {
-		if(this.left > partition.getLeft()) {
-			this.left = partition.getLeft();
+		if(this.inlineRelativeLeft == UNDEFINED || this.inlineRelativeLeft > partition.getInlineRelativeLeft()) {
+			this.inlineRelativeLeft = partition.getInlineRelativeLeft();
 		}
 		
-		if(this.right < partition.getRight()) {
-			this.right = partition.getRight();
+		if(this.inlineRelativeRight == UNDEFINED || this.inlineRelativeRight < partition.getInlineRelativeRight()) {
+			this.inlineRelativeRight = partition.getInlineRelativeRight();
 		}
 		
-		if(this.height < partition.getHeight()) {
-			this.height = partition.getHeight();
+		if(this.lineHeight == UNDEFINED || this.lineHeight < partition.getHeight()) {
+			this.lineHeight = partition.getHeight();
 		}
 		
 		this.partitions.add(partition);
 	}
 	
-	public int getLeft() {
-		return this.left;
+	public int getInlineRelativeLeft() {
+		return this.inlineRelativeLeft;
 	}
 	
-	public void setLeft(int left) {
-		this.left = left;
+	public int getInlineRelativeRight() {
+		return this.inlineRelativeRight;
 	}
 	
-	public int getRight() {
-		return this.right;
+	public int getBlockRelativeLeft() {
+		return this.blockRelativeLeft;
 	}
 	
-	public void setRight(int right) {
-		this.right = right;
+	public int getBlockRelativeRight() {
+		return this.blockRelativeLeft + getTrimmedWidth();
 	}
 	
-	public void setTop(int top) {
-		this.top = top;
+	public int getBlockRelativeTop() {
+		return this.blockRelativeTop;
 	}
 	
-	public int getTop() {
-		return this.top;
+	public int getBlockRelativeBottom() {
+		return this.blockRelativeTop + this.lineHeight;
 	}
 	
-	public int getBottom() {
-		return this.top + this.height;
-	}
-
-	public void setHeight(int height) {
-		this.height = height;
-	}
-	
-	public int getHeight() {
-		return this.height;
+	public int getLineHeight() {
+		return this.lineHeight;
 	}
 	
 	public int getWidth() {
-		return this.right - this.left;
+		return this.inlineRelativeRight - this.inlineRelativeLeft;
 	}
 	
 	public boolean fits(Partition partition) {
-		int maxRight = (this.left + this.availableWidth);
-		return partition.getRight() <= maxRight;
+		int maxRight = (this.inlineRelativeLeft + this.availableWidth);
+		return partition.getInlineRelativeRight() <= maxRight;
 	}
 	
 	public boolean overflows() {
-		int width = this.right - this.left;
+		int width = this.inlineRelativeRight - this.inlineRelativeLeft;
 		return width > this.availableWidth;
 	}
 	
-	public int getTrimmedLeft() {
+	public int getTrimmedInlineRelativeLeft() {
 		Partition first = this.partitions.get(0);
-		if(first.isWhitespace()) {
-			return this.left + first.getWidth();
+		if(first.hasAttribute(Partition.ATTRIBUTE_WHITESPACE)) {
+			return this.inlineRelativeLeft + first.getWidth();
 		} else {
-			return this.left;
+			return this.inlineRelativeLeft;
 		}
 	}
 	
-	public int getTrimmedRight() {
+	public int getTrimmedInlineRelativeRight() {
 		Partition last = this.partitions.get(this.partitions.size() - 1);
-		if(last.isWhitespace()) {
-			return this.right - last.getWidth();
+		if(last.hasAttribute(Partition.ATTRIBUTE_WHITESPACE)) {
+			return this.inlineRelativeRight - last.getWidth();
 		} else {
-			return this.right;
+			return this.inlineRelativeRight;
 		}
 	}
 	
 	public int getTrimmedWidth() {
-		return getTrimmedRight() - getTrimmedLeft();
+		return getTrimmedInlineRelativeRight() - getTrimmedInlineRelativeLeft();
 	}
 	
-	public boolean isInLine(int top) {
-		return (top >= getTop()) && (top <= getBottom() - 1); 
-	}
-	
-	public String toString() {
-		return "LineBox [" + this.left + "," + this.right + "," + this.top + "," + this.height + "," + this.offset + "," + this.availableWidth + "," + this.partitions.size() + "]";
-	}
-	
-	public int getOffset() {
-		return this.offset;
+	public boolean matchesArea(int top) {
+		return (top >= getBlockRelativeTop()) && (top <= getBlockRelativeBottom() - 1); 
 	}
 	
 	public PartitionList getPartitions() {
 		return this.partitions;
+	}
+	
+	public String toString() {
+		return new ToStringHelper("LineBox").
+		add("inline relative left", this.inlineRelativeLeft).
+		add("inline relative right", this.inlineRelativeRight).
+		add("block relative y", this.blockRelativeTop).
+		add("height", this.lineHeight).
+		add("available width", this.availableWidth).
+		add("size", this.partitions.size()).
+		toString();
 	}
 }

@@ -2,21 +2,23 @@ package de.enough.skylight.renderer.partition;
 
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.UiAccess;
+import de.enough.polish.util.ToStringHelper;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.element.ContainingBlock;
 import de.enough.skylight.renderer.element.ElementAttributes;
+import de.enough.skylight.renderer.linebox.LineBox;
 
 
 public class Partition {
 	
-	public static int getBlockRelativeX(Item item) {
+	public static int getInlineRelativeX(Item item) {
 		BlockContainingBlock block = ElementAttributes.getBlock(item);
 		int blockContentX = block.getAbsoluteX() + block.getContentX();
 		return item.getAbsoluteX() - blockContentX;
 	}
 	
 	public static void partitionInline(Item item, PartitionList partitions) {
-		int x = getBlockRelativeX(item);
+		int x = getInlineRelativeX(item);
 		
 		if(item.isVisible()) {
 			int height;
@@ -38,16 +40,16 @@ public class Partition {
 			int paddingRight = contentRight + UiAccess.getPaddingRight(item);
 			int marginRight = paddingRight + UiAccess.getMarginRight(item);
 			
-			partitions.add(new Partition(marginLeft, paddingLeft, height, item));
-			partitions.add(new Partition(paddingLeft, contentLeft, height, item));
-			partitions.add(new Partition(contentLeft, contentRight, height, item));
-			partitions.add(new Partition(contentRight, paddingRight, height, item));
-			partitions.add(new Partition(paddingRight, marginRight, height, item));
+			partitions.add(marginLeft, paddingLeft, height, item);
+			partitions.add(paddingLeft, contentLeft, height, item);
+			partitions.add(contentLeft, contentRight, height, item);
+			partitions.add(contentRight, paddingRight, height, item);
+			partitions.add(paddingRight, marginRight, height, item);
 		}
 	}
 	
 	public static Partition partitionBlock(Item item) {
-		int x = getBlockRelativeX(item);
+		int x = getInlineRelativeX(item);
 		
 		if(item.isVisible()) {
 			int width = item.itemWidth;
@@ -61,82 +63,131 @@ public class Partition {
 		}	
 	}
 	
-	int left;
+	/**
+	 * the attribute for newline
+	 */
+	public static int ATTRIBUTE_NEWLINE = 1;
 	
-	int right;
+	/**
+	 * the attribute for whitespace
+	 */
+	public static int ATTRIBUTE_WHITESPACE = 2;
 	
-	int height = 0;
+	/**
+	 * the x position relative to the linebox x position 
+	 */
+	int lineboxRelativeX = 0;
 	
-	boolean newline = false;
+	/**
+	 * the y position relative to the linebox y posiion
+	 */
+	int lineboxRelativeY = 0;
 	
-	boolean whitespace = false;
+	/**
+	 * the parenting linebox
+	 */
+	LineBox linebox = null;
 	
-	Item parent;
+	/**
+	 * the left position relative to the inline context 
+	 */
+	int inlineRelativeLeft;
 	
-	public Partition(int left, int right, int height, Item parent) {
-		this.left = left;
-		this.right = right;
+	/**
+	 * the right position relative to the inline context 
+	 */
+	int inlineRelativeRight;
+
+	/**
+	 * the width
+	 */
+	int width;
+
+	/**
+	 * the height
+	 */
+	int height;
+	
+	/**
+	 * the parent item of this partition
+	 */
+	Item parentItem;
+	
+	/**
+	 * the attributes of this partition
+	 */
+	int attributes = 0;
+	
+	public Partition(int inlineRelativeLeft, int inlineRelativeRight, int height, Item parentItem) {
+		this.inlineRelativeLeft = inlineRelativeLeft;
+		this.inlineRelativeRight = inlineRelativeRight;
+		this.width = inlineRelativeRight - inlineRelativeLeft;
 		this.height = height;
-		this.parent = parent;
+		this.parentItem = parentItem;
 	}
 	
-	public void setPartition(Partition partition) {
-		this.left = partition.getLeft();
-		this.right = partition.getRight();
+	public void set(Partition partition) {
+		this.inlineRelativeLeft = partition.getInlineRelativeLeft();
+		this.inlineRelativeRight = partition.getInlineRelativeRight();
+		this.width = this.inlineRelativeRight - this.inlineRelativeLeft;
 		this.height = partition.getHeight();
-		this.parent = partition.getParent();
+		this.parentItem = partition.getParentItem();
 			
-		if(partition.isNewline()) {
-			this.newline = true;
+		if(partition.hasAttribute(ATTRIBUTE_NEWLINE)) {
+			System.out.println("is newline");
+			setAttribute(ATTRIBUTE_NEWLINE);
 		}
 	}
 	
-	public int getLeft() {
-		return this.left;
-	}
-
-	public void setLeft(int left) {
-		this.left = left;
+	public int getInlineRelativeLeft() {
+		return this.inlineRelativeLeft;
 	}
 	
-	public int getRight() {
-		return this.right;
+	public int getInlineRelativeRight() {
+		return this.inlineRelativeRight;
 	}
-
-	public void setRight(int right) {
-		this.right = right;
+	
+	public int getWidth() {
+		return this.width;
 	}
 
 	public int getHeight() {
 		return this.height;
 	}
+	
+	public LineBox getLinebox() {
+		return this.linebox;
+	}
 
-	public void setHeight(int height) {
-		this.height = height;
+	public void setLinebox(LineBox linebox) {
+		this.linebox = linebox;
+	}
+	public int getRelativeX() {
+		return this.lineboxRelativeX;
+	}
+
+	public void setRelativeX(int relativeX) {
+		this.lineboxRelativeX = relativeX;
+	}
+
+	public int getRelativeY() {
+		return this.lineboxRelativeY;
+	}
+
+	public void setRelativeY(int relativeY) {
+		this.lineboxRelativeY = relativeY;
 	}
 	
-	public int getWidth() {
-		return this.right - this.left;
+	public void setAttribute(int attribute) {
+		this.attributes |= attribute;
 	}
 	
-	public void setNewline(boolean newline) {
-		this.newline = newline;
+	public boolean hasAttribute(int attribute) {
+		return ( this.attributes & attribute ) == attribute;
 	}
 	
-	public boolean isNewline() {
-		return this.newline;
-	}
-	
-	public void setWhitespace(boolean whitespace) {
-		this.whitespace = whitespace;
-	}
-	
-	public boolean isWhitespace() {
-		return this.whitespace;
-	}
-	
-	public Item getParent() {
-		return this.parent;
+	public Item getParentItem() {
+		return this.parentItem;
 	}
 	
 	/* (non-Javadoc)
@@ -144,20 +195,23 @@ public class Partition {
 	 */
 	public boolean equals(Object object) {
 		Partition partition = (Partition)object;
-		return getLeft() == partition.getLeft(); 
+		return getInlineRelativeLeft() == partition.getInlineRelativeLeft(); 
 	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return "Partition [" + 
-		"left:" + this.left + "," + 
-		"right:"+ this.right + "," + 
-		"height:" + this.height + "," + 
-		"newline:" + this.newline + "," + 
-		"whitespace:" + this.whitespace + "," + 
-		"parent:" + this.parent + "]";
+		return new ToStringHelper("Partition").
+		add("inline relative X", this.inlineRelativeLeft).
+		add("relative X", this.lineboxRelativeX).
+		add("relative Y", this.lineboxRelativeY).
+		add("width", this.width).
+		add("height", this.height).
+		add("is newline", hasAttribute(ATTRIBUTE_NEWLINE)).
+		add("is whitespace", hasAttribute(ATTRIBUTE_WHITESPACE)).
+		add("parent item", this.parentItem).
+		add("linebox", this.linebox).
+		toString();
 	}
-	
 }
