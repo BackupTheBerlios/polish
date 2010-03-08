@@ -1,4 +1,4 @@
-//#condition polish.usePolishGui && !polish.android && !polish.blackberry
+//#condition polish.midp2 && polish.usePolishGui && !polish.android && !polish.blackberry
 /*
  * Created on Jul 8, 2008 at 5:10:39 PM.
  *
