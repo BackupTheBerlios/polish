@@ -133,7 +133,7 @@ public class Base64OutputStream extends OutputStream
     
     
     /**
-     * Calls {@link #write(int)} repeatedly until <var>len</var> 
+     * Calls {@link #write(int)} repeatedly until <pre>len</pre> 
      * bytes are written.
      *
      * @param theBytes array from which to read bytes

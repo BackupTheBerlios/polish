@@ -328,13 +328,13 @@ public class Base64
     
     
     /**
-     * Encodes up to the first three bytes of array <var>threeBytes</var>
+     * Encodes up to the first three bytes of array <pre>threeBytes</pre>
      * and returns a four-byte array in Base64 notation.
      * The actual number of significant bytes in your array is
-     * given by <var>numSigBytes</var>.
-     * The array <var>threeBytes</var> needs only be as big as
-     * <var>numSigBytes</var>.
-     * Code can reuse a byte array by passing a four-byte array as <var>b4</var>.
+     * given by <pre>numSigBytes</pre>.
+     * The array <pre>threeBytes</pre> needs only be as big as
+     * <pre>numSigBytes</pre>.
+     * Code can reuse a byte array by passing a four-byte array as <pre>b4</pre>.
      *
      * @param b4 A reusable byte array to reduce array instantiation
      * @param threeBytes the array to convert
@@ -348,13 +348,13 @@ public class Base64
     }   // end encode3to4
     
     /**
-     * Encodes up to the first three bytes of array <var>threeBytes</var>
+     * Encodes up to the first three bytes of array <pre>threeBytes</pre>
      * and returns a four-byte array in Base64 notation.
      * The actual number of significant bytes in your array is
-     * given by <var>numSigBytes</var>.
-     * The array <var>threeBytes</var> needs only be as big as
-     * <var>numSigBytes</var>.
-     * Code can reuse a byte array by passing a four-byte array as <var>b4</var>.
+     * given by <pre>numSigBytes</pre>.
+     * The array <pre>threeBytes</pre> needs only be as big as
+     * <pre>numSigBytes</pre>.
+     * Code can reuse a byte array by passing a four-byte array as <pre>b4</pre>.
      *
      * @param b4 A reusable byte array to reduce array instantiation
      * @param threeBytes the array to convert
@@ -370,17 +370,17 @@ public class Base64
 
     
     /**
-     * <p>Encodes up to three bytes of the array <var>source</var>
-     * and writes the resulting four Base64 bytes to <var>destination</var>.
+     * <p>Encodes up to three bytes of the array <pre>source</pre>
+     * and writes the resulting four Base64 bytes to <pre>destination</pre>.
      * The source and destination arrays can be manipulated
      * anywhere along their length by specifying 
-     * <var>srcOffset</var> and <var>destOffset</var>.
+     * <pre>srcOffset</pre> and <pre>destOffset</pre>.
      * This method does not check to make sure your arrays
-     * are large enough to accomodate <var>srcOffset</var> + 3 for
-     * the <var>source</var> array or <var>destOffset</var> + 4 for
-     * the <var>destination</var> array.
+     * are large enough to accomodate <pre>srcOffset</pre> + 3 for
+     * the <pre>source</pre> array or <pre>destOffset</pre> + 4 for
+     * the <pre>destination</pre> array.
      * The actual number of significant bytes in your array is
-     * given by <var>numSigBytes</var>.</p>
+     * given by <pre>numSigBytes</pre>.</p>
 	 * <p>This is the lowest level of the encoding methods with
 	 * all possible parameters.</p>
      *
@@ -389,7 +389,7 @@ public class Base64
      * @param numSigBytes the number of significant bytes in your array
      * @param destination the array to hold the conversion
      * @param destOffset the index where output will be put
-     * @return the <var>destination</var> array
+     * @return the <pre>destination</pre> array
      */
     protected static byte[] encode3to4( 
      byte[] source, int srcOffset, int numSigBytes,
@@ -400,17 +400,17 @@ public class Base64
     }
     
 	 /**
-     * <p>Encodes up to three bytes of the array <var>source</var>
-     * and writes the resulting four Base64 bytes to <var>destination</var>.
+     * <p>Encodes up to three bytes of the array <pre>source</pre>
+     * and writes the resulting four Base64 bytes to <pre>destination</pre>.
      * The source and destination arrays can be manipulated
      * anywhere along their length by specifying 
-     * <var>srcOffset</var> and <var>destOffset</var>.
+     * <pre>srcOffset</pre> and <pre>destOffset</pre>.
      * This method does not check to make sure your arrays
-     * are large enough to accomodate <var>srcOffset</var> + 3 for
-     * the <var>source</var> array or <var>destOffset</var> + 4 for
-     * the <var>destination</var> array.
+     * are large enough to accomodate <pre>srcOffset</pre> + 3 for
+     * the <pre>source</pre> array or <pre>destOffset</pre> + 4 for
+     * the <pre>destination</pre> array.
      * The actual number of significant bytes in your array is
-     * given by <var>numSigBytes</var>.</p>
+     * given by <pre>numSigBytes</pre>.</p>
 	 * <p>This is the lowest level of the encoding methods with
 	 * all possible parameters.</p>
      *
@@ -419,7 +419,7 @@ public class Base64
      * @param numSigBytes the number of significant bytes in your array
      * @param destination the array to hold the conversion
      * @param destOffset the index where output will be put
-     * @return the <var>destination</var> array
+     * @return the <pre>destination</pre> array
      */
     protected static byte[] encode3to4( 
      byte[] source, int srcOffset, int numSigBytes,
@@ -601,16 +601,16 @@ public class Base64
     
     
     /**
-     * Decodes four bytes from array <var>source</var>
+     * Decodes four bytes from array <pre>source</pre>
      * and writes the resulting bytes (up to three of them)
-     * to <var>destination</var>.
+     * to <pre>destination</pre>.
      * The source and destination arrays can be manipulated
      * anywhere along their length by specifying 
-     * <var>srcOffset</var> and <var>destOffset</var>.
+     * <pre>srcOffset</pre> and <pre>destOffset</pre>.
      * This method does not check to make sure your arrays
-     * are large enough to accomodate <var>srcOffset</var> + 4 for
-     * the <var>source</var> array or <var>destOffset</var> + 3 for
-     * the <var>destination</var> array.
+     * are large enough to accomodate <pre>srcOffset</pre> + 4 for
+     * the <pre>source</pre> array or <pre>destOffset</pre> + 3 for
+     * the <pre>destination</pre> array.
      * This method returns the actual number of bytes that 
      * were converted from the Base64 encoding.
 	 * <p>This is the lowest level of the decoding methods with

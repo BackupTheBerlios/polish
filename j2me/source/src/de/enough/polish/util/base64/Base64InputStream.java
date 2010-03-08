@@ -161,7 +161,7 @@ public class Base64InputStream extends InputStream
        
        /**
         * Calls {@link #read()} repeatedly until the end of stream
-        * is reached or <var>len</var> bytes are read.
+        * is reached or <pre>len</pre> bytes are read.
         * Returns number of bytes read into array or -1 if
         * end of stream is encountered.
         *
