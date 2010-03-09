@@ -3042,16 +3042,23 @@ public abstract class Item implements UiElement, Animatable
 		
 		Style myStyle = this.style;
 		if (myStyle != null) {
-			this.paddingLeft = myStyle.getPaddingLeft(availWidth);
-			this.paddingRight = myStyle.getPaddingRight(availWidth);
-			this.paddingTop = myStyle.getPaddingTop(availWidth);
-			this.paddingBottom = myStyle.getPaddingBottom(availWidth);
-			this.paddingVertical = myStyle.getPaddingVertical(availWidth);
-			this.paddingHorizontal = myStyle.getPaddingHorizontal(availWidth);
-			this.marginLeft = getMarginLeft(availWidth);
-			this.marginRight = getMarginRight(availWidth);
-			this.marginTop = getMarginTop(availWidth);
-			this.marginBottom = getMarginBottom(availWidth);
+			//#ifdef polish.css.view-type
+			if (this.view != null) {
+				this.view.initPadding(myStyle, availWidth);
+			} else
+			//#endif
+			{
+				initPadding(myStyle, availWidth);
+			}
+			
+			//#ifdef polish.css.view-type
+			if (this.view != null) {
+				this.view.initMargin(myStyle, availWidth);
+			} else
+			//#endif
+			{
+				initMargin(myStyle, availWidth);
+			}
 		}
 		
 		int labelWidth = 0;
@@ -3311,64 +3318,33 @@ public abstract class Item implements UiElement, Animatable
 		System.out.println("Item.init(): contentWidth=" + this.contentWidth + ", itemWidth=" + this.itemWidth + ", backgroundWidth=" + this.backgroundWidth);
 	}
 	
-	
 	/**
-	 * Retrieves the margin in pixels for at the right.
-	 * Subclasses may override this (required for containers embedded in Screens)
+	 * Initializes the margin of this item
+	 * Subclasses can override this (e.g. the container embedded in a screen)
+	 * @param style the style
 	 * @param availWidth the available width
-	 * @return the margin at the right in pixels
 	 */
-	protected int getMarginRight(int availWidth)
-	{
-		if (this.style != null) {
-			return this.style.getMarginRight( availWidth );
-		}
-		return 0;
+	protected void initMargin(Style style, int availWidth) {
+		this.marginLeft = style.getMarginLeft(availWidth);
+		this.marginRight = style.getMarginRight(availWidth);
+		this.marginTop = style.getMarginTop(availWidth);
+		this.marginBottom = style.getMarginBottom(availWidth);
 	}
 	
 	/**
-	 * Retrieves the margin in pixels for at the left.
-	 * Subclasses may override this (required for containers embedded in Screens)
+	 * Initializes the padding of this item
+	 * Subclasses can override this (e.g. the container embedded in a screen)
+	 * @param style the style
 	 * @param availWidth the available width
-	 * @return the margin at the left in pixels
 	 */
-	protected int getMarginLeft(int availWidth)
-	{
-		if (this.style != null) {
-			return this.style.getMarginLeft( availWidth );
-		}
-		return 0;
+	protected void initPadding(Style style, int availWidth) {
+		this.paddingLeft = style.getPaddingLeft(availWidth);
+		this.paddingRight = style.getPaddingRight(availWidth);
+		this.paddingTop = style.getPaddingTop(availWidth);
+		this.paddingBottom = style.getPaddingBottom(availWidth);
+		this.paddingVertical = style.getPaddingVertical(availWidth);
+		this.paddingHorizontal = style.getPaddingHorizontal(availWidth);
 	}
-
-	/**
-	 * Retrieves the margin in pixels for at the top.
-	 * Subclasses may override this (required for containers embedded in Screens)
-	 * @param availWidth the available width
-	 * @return the margin at the top in pixels
-	 */
-	protected int getMarginTop(int availWidth)
-	{
-		if (this.style != null) {
-			return this.style.getMarginTop( availWidth );
-		}
-		return 0;
-	}
-
-	/**
-	 * Retrieves the margin in pixels for at the bottom.
-	 * Subclasses may override this (required for containers embedded in Screens)
-	 * @param availWidth the available width
-	 * @return the margin at the bottom in pixels
-	 */
-	protected int getMarginBottom(int availWidth)
-	{
-		if (this.style != null) {
-			return this.style.getMarginBottom( availWidth );
-		}
-		return 0;
-	}
-
-	
 
 	/**
 	 * Sets the content width of this item.

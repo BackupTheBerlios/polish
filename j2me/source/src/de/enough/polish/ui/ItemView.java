@@ -56,6 +56,26 @@ public abstract class ItemView implements Serializable{
 	protected boolean isFocused;
 	
 	/**
+	 * Initializes the margin of the parent item
+	 * Subclasses can override this (e.g. the container embedded in a screen)
+	 * @param style the style
+	 * @param availWidth the available width
+	 */
+	protected void initMargin(Style style, int availWidth) {
+		this.parentItem.initMargin(style, availWidth);
+	}
+	
+	/**
+	 * Initializes the padding of the parent item
+	 * Subclasses can override this (e.g. the container embedded in a screen)
+	 * @param style the style
+	 * @param availWidth the available width
+	 */
+	protected void initPadding(Style style, int availWidth) {
+		this.parentItem.initPadding(style, availWidth);
+	}
+	
+	/**
 	 * Initialises this item view. 
 	 * This method saves the available width and height and then calls initContent(int, int, int).
 	 * Please always call the super.init(..) method when overriding this method.

@@ -3976,49 +3976,22 @@ public class Container extends Item {
 	//#endif
 
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Item#getMarginBottom(int)
+	 * @see de.enough.polish.ui.Item#initMargin(de.enough.polish.ui.Style, int)
 	 */
-	protected int getMarginBottom(int availWidth)
-	{
-		if (this.isIgnoreMargins) {
-			return 0;
+	protected void initMargin(Style style, int availWidth) {
+		if(this.isIgnoreMargins) {
+			this.marginLeft = 0;
+			this.marginRight = 0;
+			this.marginTop = 0;
+			this.marginBottom = 0;
+		} else {
+			this.marginLeft = style.getMarginLeft( availWidth );
+			this.marginRight = style.getMarginRight( availWidth );
+			this.marginTop = style.getMarginTop( availWidth );
+			this.marginBottom = style.getMarginBottom(availWidth);
 		}
-		return super.getMarginBottom(availWidth);
 	}
-
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Item#getMarginLeft(int)
-	 */
-	protected int getMarginLeft(int availWidth)
-	{
-		if (this.isIgnoreMargins) {
-			return 0;
-		}
-		return super.getMarginLeft(availWidth);
-	}
-
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Item#getMarginRight(int)
-	 */
-	protected int getMarginRight(int availWidth)
-	{
-		if (this.isIgnoreMargins) {
-			return 0;
-		}
-		return super.getMarginRight(availWidth);
-	}
-
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Item#getMarginTop(int)
-	 */
-	protected int getMarginTop(int availWidth)
-	{
-		if (this.isIgnoreMargins) {
-			return 0;
-		}
-		return super.getMarginTop(availWidth);
-	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#onScreenSizeChanged(int, int)
