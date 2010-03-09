@@ -1432,21 +1432,22 @@ public class ProcessingContext implements ProcessingInterface {
             // Calculate line width and other stuff
             int strokeWidthDiv2 = _strokeWidth / 2 ;
             double pointDistance = Math.sqrt ( (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2) ) ;
-            double startWidth = ( _strokeWidth ) / 2.0  ;
-            double lineCos = (x1-x2) / pointDistance;
-            double lineSin = ( y1-y2 ) / pointDistance ;
-            double cosPerpendicularLine = - lineSin ;
-            double sinPerpendicularLine = - lineCos ;
+            int startWidth = width / 2;
+            int remainingWidth = width - startWidth ;
+            double lineCos = -(x1-x2) / pointDistance;
+            double lineSin = - ( y1-y2 ) / pointDistance ;
+            double cosPerpendicularLine =  - lineSin ;
+            double sinPerpendicularLine = lineCos ;
 
             // Calculate the polygon defining the line
             __arrX[0] = (int)( x1 + cosPerpendicularLine * startWidth );
-            __arrX[1] = (int)( __arrX[0] - cosPerpendicularLine * _strokeWidth );
-            __arrX[2] = (int)( x2 - cosPerpendicularLine * startWidth );
-            __arrX[3] = (int)( __arrX[2] + cosPerpendicularLine * _strokeWidth );
+            __arrX[1] = (int)( x1 - cosPerpendicularLine * remainingWidth );
+            __arrX[2] = (int)( x2 - cosPerpendicularLine * remainingWidth );
+            __arrX[3] = (int)( x2 + cosPerpendicularLine * startWidth );
             __arrY[0] = (int)( y1 + sinPerpendicularLine * startWidth );
-            __arrY[1] = (int)( __arrY[0] - sinPerpendicularLine * _strokeWidth );
-            __arrY[2] = (int)( y2 - sinPerpendicularLine * startWidth );
-            __arrY[3] = (int)( __arrY[2] + sinPerpendicularLine * _strokeWidth );
+            __arrY[1] = (int)( y1 - sinPerpendicularLine * remainingWidth );
+            __arrY[2] = (int)( y2 - sinPerpendicularLine * remainingWidth );
+            __arrY[3] = (int)( y2 + sinPerpendicularLine * startWidth );
 
             // Draw the polygon 
             DrawUtil.fillPolygon(__arrX, __arrY, _strokeColor, _bufferg);

@@ -5079,6 +5079,58 @@
 		default="#20909090"
 		id="438"
 	/>
+        
+        <attribute
+		name="gauge-clock-instrument-needle-shadow-image"
+		type="imageurl"
+		appliesTo="ClockInstrumentGaugeView"
+		description="The image for the shadow of the needle"
+		default="white"
+		id="439"
+		since="2.1.5"
+	/>
+
+
+        <attribute
+		name="gauge-clock-instrument-needle-shadow-center-x"
+		type="integer"
+		appliesTo="ClockInstrumentGaugeView"
+		description="The X coordinate of the needle shadow rotation center."
+		default="0"
+		id="440"
+		since="2.1.5"
+	/>
+
+        <attribute
+		name="gauge-clock-instrument-needle-shadow-center-y"
+		type="integer"
+		appliesTo="ClockInstrumentGaugeView"
+		description="The Y coordinate of the needle shadow rotation center."
+		default="0"
+		id="441"
+		since="2.1.5"
+	/>
+
+        <attribute
+		name="gauge-clock-instrument-needle-shadow-offset-x"
+		type="integer"
+		appliesTo="ClockInstrumentGaugeView"
+		description="The horizontal offset of the shadow, in relation to the needle image."
+		default="0"
+		id="442"
+		since="2.1.5"
+	/>
+
+        <attribute
+		name="gauge-clock-instrument-needle-shadow-offset-y"
+		type="integer"
+		appliesTo="ClockInstrumentGaugeView"
+		description="The vertical offset of the shadow, in relation to the needle image."
+		default="0"
+		id="443"
+		since="2.1.5"
+	/>
+
 	
 	
 	

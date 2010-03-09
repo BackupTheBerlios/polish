@@ -48,10 +48,16 @@ public class ClockInstrumentGaugeView extends ItemView {
 
     transient Image backgroundImage = null ;
     transient Image needleImage = null;
+    transient Image needleShadowImage = null;
     int needleX = -1;
     int needleY = -1;
     int needleCenterX = -1;
     int needleCenterY = -1;
+
+    int shadowCenterX = -1;
+    int shadowCenterY = -1;
+    int shadowOffsetX = 0;
+    int shadowOffsetY = 0;
 
     int startAngle = 180;
     int endAngle = 0;
@@ -68,6 +74,10 @@ public class ClockInstrumentGaugeView extends ItemView {
     //#endif
 
 
+    /**
+     * (non-javadoc)
+     * @see de.enough.polish.ui.ItemView#initContent(de.enough.polish.ui.Item, int, int, int)
+     */
     protected void initContent(Item parent, int firstLineWidth, int availWidth, int availHeight) {
 
         gauge = (Gauge) parent;
@@ -76,11 +86,19 @@ public class ClockInstrumentGaugeView extends ItemView {
             
     }
 
+    /**
+     * (non-javadoc)
+     * @see de.enough.polish.ui.ItemView#setStyle(de.enough.polish.ui.Style) 
+     */
     protected void setStyle(Style style)
     {
         super.setStyle(style);
     }
 
+    /**
+     * (non-javadoc)
+     * @see de.enough.polish.ui.ItemView#setStyle(de.enough.polish.ui.Style, boolean) 
+     */
     protected void setStyle(Style style, boolean resetStyle) {
         super.setStyle(style,resetStyle);
 
@@ -103,6 +121,25 @@ public class ClockInstrumentGaugeView extends ItemView {
 
             needleCenterX = needleImage.getWidth() / 2;
             needleCenterY = needleImage.getHeight() / 2;
+        }
+        //#endif
+
+        //#if polish.css.gauge-clock-instrument-needle-shadow-image
+        imageUrl = style.getProperty("gauge-clock-instrument-needle-shadow-image");
+        if (imageUrl != null)
+        {
+            try
+            {
+                    this.needleShadowImage = Image.createImage(imageUrl);
+            }
+            catch(IOException e)
+            {
+                    //#debug error
+                    System.out.println("unable to load image " + e);
+            }
+
+            shadowCenterX = needleShadowImage.getWidth() / 2;
+            shadowCenterY = needleShadowImage.getHeight() / 2;
         }
         //#endif
 
@@ -138,6 +175,38 @@ public class ClockInstrumentGaugeView extends ItemView {
         if ( temp != null )
         {
             needleCenterX = temp.intValue();
+        }
+        //#endif
+
+        //#if polish.css.gauge-clock-instrument-needle-shadow-center-y
+        temp = style.getIntProperty("gauge-clock-instrument-needle-shadow-center-y");
+        if ( temp != null )
+        {
+            shadowCenterY = temp.intValue();
+        }
+        //#endif
+
+        //#if polish.css.gauge-clock-instrument-needle-shadow-center-x
+        temp = style.getIntProperty("gauge-clock-instrument-needle-shadow-center-x");
+        if ( temp != null )
+        {
+            shadowCenterX = temp.intValue();
+        }
+        //#endif
+
+        //#if polish.css.gauge-clock-instrument-needle-shadow-offset-y
+        temp = style.getIntProperty("gauge-clock-instrument-needle-shadow-offset-y");
+        if ( temp != null )
+        {
+            shadowOffsetY = temp.intValue();
+        }
+        //#endif
+
+        //#if polish.css.gauge-clock-instrument-needle-shadow-offset-x
+        temp = style.getIntProperty("gauge-clock-instrument-needle-shadow-offset-x");
+        if ( temp != null )
+        {
+            shadowOffsetX = temp.intValue();
         }
         //#endif
 
@@ -223,6 +292,10 @@ public class ClockInstrumentGaugeView extends ItemView {
 
     }
 
+    /**
+     * (non-javadoc)
+     * @see de.enough.polish.ui.ItemView#paintContent(de.enough.polish.ui.Item, int, int, int, int, javax.microedition.lcdui.Graphics) 
+     */
     protected void paintContent(Item parent, int x, int y, int leftBorder, int rightBorder, Graphics g) {
       
         
@@ -254,6 +327,13 @@ public class ClockInstrumentGaugeView extends ItemView {
         //#else
             graphics.drawImage(backgroundImage,bgLeft,bgTop, Graphics.TOP | Graphics.LEFT);
         //#endif
+
+
+        // Draw the needle shadow
+        if ( needleShadowImage != null )
+        {
+            graphics.drawRotatedImage( needleShadowImage,  shadowCenterX, shadowCenterY, bgLeft + needleX + shadowOffsetX, bgTop + needleY + shadowOffsetY , currentAngle );
+        }
 
         // Draw the needle
         //#if polish.css.needle-filter
@@ -347,6 +427,11 @@ public class ClockInstrumentGaugeView extends ItemView {
             
     }
 
+    /**
+     * Calculates the gauge value based on the pointer position
+     * @param x
+     * @param y
+     */
     protected void valueBasedOnPointerPosition(int x, int y)
     {
 
@@ -486,6 +571,10 @@ public class ClockInstrumentGaugeView extends ItemView {
         
     }
 
+    /**
+     * (non-javadoc)
+     * @see de.enough.polish.ui.ItemView#handlePointerDragged(int, int) 
+     */
     public boolean handlePointerDragged(int x, int y)
     {
         if ( gauge.isInteractive())
@@ -496,6 +585,10 @@ public class ClockInstrumentGaugeView extends ItemView {
         return false;
     }
 
+    /**
+     * (non-javadoc)
+     * @see de.enough.polish.ui.ItemView#handlePointerPressed(int, int) 
+     */
     public boolean handlePointerPressed(int x, int y)
     {
         if ( gauge.isInteractive())
@@ -507,6 +600,10 @@ public class ClockInstrumentGaugeView extends ItemView {
         return false;
     }
 
+    /**
+     * (non-javadoc)
+     * @see de.enough.polish.ui.ItemView#handlePointerReleased(int, int) 
+     */
     public boolean handlePointerReleased(int x, int y)
     {
         if ( gauge.isInteractive())
