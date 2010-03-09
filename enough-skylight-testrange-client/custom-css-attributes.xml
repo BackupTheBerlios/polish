@@ -24,4 +24,32 @@
 		default="block"
 		since="J2ME Polish 2.1.3"
 	/>
+	<attribute
+		name="float"
+		type="string"
+		appliesTo="ContainerView"
+		default="none"
+		since="J2ME Polish 2.1.3"
+	/>
+	<attribute
+		name="position"
+		type="string"
+		appliesTo="ContainerView"
+		default="static"
+		since="J2ME Polish 2.1.3"
+	/>
+	<attribute
+		name="vertical-align"
+		type="string"
+		appliesTo="ContainerView"
+		default="top"
+		since="J2ME Polish 2.1.3"
+	/>
+	<attribute
+		name="text-align"
+		type="string"
+		appliesTo="ContainerView"
+		default="left"
+		since="J2ME Polish 2.1.3"
+	/>
 </attributes>
