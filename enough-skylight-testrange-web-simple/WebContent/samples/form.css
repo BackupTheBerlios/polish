@@ -1,7 +1,7 @@
 .frame {
 	display: block;
 	margin: 37px;
-	padding: 1px;
+	padding: 0px;
 	background-color: #FF6600;
 }
 
@@ -15,14 +15,15 @@
 }
 
 .icon {
-	margin-top: 3px;
 	margin-right: 5px; 	
+	vertical-align: middle;
 }
 
 .field {
 	display: block;
 	padding: 0px;
 	margin: 5px;	
+	vertical-align: top;
 }
 
 .field:hover {
