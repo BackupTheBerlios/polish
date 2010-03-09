@@ -24,7 +24,6 @@ public abstract class CssAttributeHandler {
 	
 	Object[] range;
 	
-
 	public CssAttributeHandler() {
 		this.name = getName();
 		this.hash = this.name.hashCode();

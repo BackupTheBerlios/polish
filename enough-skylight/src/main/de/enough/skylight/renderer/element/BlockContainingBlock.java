@@ -3,6 +3,7 @@ package de.enough.skylight.renderer.element;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
+import de.enough.polish.util.ToStringHelper;
 import de.enough.skylight.renderer.element.view.BlockContainingBlockView;
 import de.enough.skylight.renderer.linebox.LineBox;
 import de.enough.skylight.renderer.node.CssElement;
@@ -101,10 +102,6 @@ public class BlockContainingBlock extends Container implements ContainingBlock, 
 		return this.blockView.getPaintLineBox();
 	}
 	
-	public String toString() {
-		return ElementAttributes.toString(this);
-	}
-
 	protected Style focus(Style focusStyle, int direction) {
 		requestInit();
 		Style style = super.focus(focusStyle, direction);
@@ -116,5 +113,9 @@ public class BlockContainingBlock extends Container implements ContainingBlock, 
 		super.defocus(originalStyle);
 	}
 	
-	
+	public String toString() {
+		return new ToStringHelper("BlockContainingBlock").
+					add("element", ElementAttributes.getCssElement(this)).
+					toString();
+	}
 }

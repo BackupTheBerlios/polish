@@ -3,10 +3,10 @@ package de.enough.skylight.renderer.css.handler;
 import de.enough.polish.ui.Style;
 import de.enough.skylight.renderer.css.HtmlCssElement;
 
-public class VerticalAlignHandler extends CssAttributeHandler {
+public class TextAlignHandler extends CssAttributeHandler {
 	
 	protected String getName() {
-		return "vertical-align";
+		return "text-align";
 	}
 	
 	protected int getType() {
@@ -14,13 +14,13 @@ public class VerticalAlignHandler extends CssAttributeHandler {
 	}
 
 	protected Object[] getRange() {
-		return new Object[]{HtmlCssElement.VerticalAlign.TOP,
-							HtmlCssElement.VerticalAlign.MIDDLE,
-							HtmlCssElement.VerticalAlign.BOTTOM};
+		return new Object[]{HtmlCssElement.TextAlign.LEFT,
+							HtmlCssElement.TextAlign.CENTER,
+							HtmlCssElement.TextAlign.RIGHT};
 	}
 	
 	protected void addAttribute(Style style, Object value) {
-		style.addAttribute("vertical-align", value);
+		style.addAttribute("text-align", value);
 	}
 
 }

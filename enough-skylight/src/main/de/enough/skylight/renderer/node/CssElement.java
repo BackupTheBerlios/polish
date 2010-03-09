@@ -4,6 +4,7 @@ import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.ArrayList;
+import de.enough.polish.util.ToStringHelper;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.Viewport;
 import de.enough.skylight.renderer.css.HtmlCssElement;
@@ -17,6 +18,10 @@ public class CssElement implements HtmlCssElement{
 	String position = HtmlCssElement.Position.STATIC;
 	
 	String floating = HtmlCssElement.Float.NONE;
+	
+	String textAlign = HtmlCssElement.TextAlign.LEFT;
+	
+	String verticalAlign = HtmlCssElement.VerticalAlign.TOP;
 	
 	Viewport viewport;
 	
@@ -204,6 +209,16 @@ public class CssElement implements HtmlCssElement{
 		if(floatStr != null) {
 			this.floating = floatStr;
 		}
+		
+		String textAlignStr = style.getProperty("text-align");
+		if(textAlignStr != null) {
+			this.textAlign = textAlignStr;
+		}
+		
+		String verticalAlignStr = style.getProperty("vertical-align");
+		if(verticalAlignStr != null) {
+			this.verticalAlign = verticalAlignStr;
+		}
 	}
 	
 	public boolean isDisplay(String display) {
@@ -216,6 +231,14 @@ public class CssElement implements HtmlCssElement{
 	
 	public boolean isFloat(String floating) {
 		return this.floating == floating;
+	}
+
+	public boolean isTextAlign(String textAlign) {
+		return this.textAlign == textAlign;
+	}
+	
+	public boolean isVerticalAlign(String verticalAlign) {
+		return this.verticalAlign == verticalAlign;
 	}
 	
 	public boolean isFloat() {
@@ -241,10 +264,6 @@ public class CssElement implements HtmlCssElement{
 	public Viewport getViewport() {
 		return this.viewport;
 	}
-	
-	public String toString() {
-		return "CssElement [" + this.node + "]";
-	}
 
 	public boolean isInteractive() {
 		return this.interactive;
@@ -260,5 +279,22 @@ public class CssElement implements HtmlCssElement{
 		} else {
 			return node.equals(this.node);
 		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return new ToStringHelper("CssElement").
+		add("handler", this.handler).
+		add("node", this.node).
+		add("interactive", this.interactive).
+		add("children.size", this.children.size()).
+		add("float", this.floating).
+		add("position", this.position).
+		add("display", this.display).
+		add("text-align", this.textAlign).
+		add("vertical-align", this.verticalAlign).
+		toString();
 	}
 }

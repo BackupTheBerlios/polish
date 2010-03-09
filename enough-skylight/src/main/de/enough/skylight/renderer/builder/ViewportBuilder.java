@@ -8,6 +8,7 @@ import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.NodeList;
 import de.enough.skylight.renderer.Viewport;
 import de.enough.skylight.renderer.css.HtmlCssElement;
+import de.enough.skylight.renderer.debug.BuilderDebug;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.element.ContainingBlock;
 import de.enough.skylight.renderer.element.ElementAttributes;
@@ -20,9 +21,6 @@ public class ViewportBuilder {
 	Document document;
 	
 	Viewport viewport;
-	
-	public ViewportBuilder() {
-	}
 	
 	public ViewportBuilder(Viewport viewport) {
 		this.viewport = viewport;
@@ -59,6 +57,9 @@ public class ViewportBuilder {
 			
 			CssElement rootElement = buildDescription(this.document, null);
 			
+			//#debug sl.debug.build
+			BuilderDebug.printCssElement(rootElement);
+			
 			//#debug sl.profile.build
 			Benchmark.stop("description","done");
 			
@@ -72,6 +73,9 @@ public class ViewportBuilder {
 			Benchmark.start("layout");
 			
 			buildLayout(this.viewport, this.viewport, rootElement);
+			
+			//#debug sl.debug.build
+			BuilderDebug.printBlock(this.viewport);
 			
 			//#debug sl.profile.build
 			Benchmark.stop("layout","done");

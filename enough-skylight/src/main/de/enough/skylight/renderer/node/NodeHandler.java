@@ -2,6 +2,7 @@ package de.enough.skylight.renderer.node;
 
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
+import de.enough.polish.util.ToStringHelper;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.Viewport;
 
@@ -49,5 +50,14 @@ public abstract class NodeHandler {
 	public Style getDefaultStyle(CssElement element) {
 		//#style element
 		return new Style();
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return new ToStringHelper("NodeHandler").
+		add("tag", getTag()).
+		toString();
 	}
 }

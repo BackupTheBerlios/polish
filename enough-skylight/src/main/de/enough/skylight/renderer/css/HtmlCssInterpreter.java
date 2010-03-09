@@ -13,6 +13,8 @@ import de.enough.skylight.renderer.css.handler.MaxWidthHandler;
 import de.enough.skylight.renderer.css.handler.MinHeightHandler;
 import de.enough.skylight.renderer.css.handler.MinWidthHandler;
 import de.enough.skylight.renderer.css.handler.PositionHandler;
+import de.enough.skylight.renderer.css.handler.TextAlignHandler;
+import de.enough.skylight.renderer.css.handler.VerticalAlignHandler;
 import de.enough.skylight.renderer.css.handler.VisibleHandler;
 
 public class HtmlCssInterpreter extends CssInterpreter{
@@ -36,6 +38,8 @@ public class HtmlCssInterpreter extends CssInterpreter{
 		addAttributeHandler(new MinWidthHandler());
 		addAttributeHandler(new MaxWidthHandler());
 		addAttributeHandler(new VisibleHandler());
+		addAttributeHandler(new VerticalAlignHandler());
+		addAttributeHandler(new TextAlignHandler());
 	}
 	
 	void addAttributeHandler(CssAttributeHandler handler) {
@@ -62,7 +66,7 @@ public class HtmlCssInterpreter extends CssInterpreter{
 		if(handler != null) {
 			handler.addToStyle(style, value);
 		} else {
-			//#debug error
+			//#debug warn
 			System.out.println("unable to find css handler for " + name);
 		}
 	}	

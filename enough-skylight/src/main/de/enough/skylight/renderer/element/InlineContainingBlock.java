@@ -3,6 +3,7 @@ package de.enough.skylight.renderer.element;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
+import de.enough.polish.util.ToStringHelper;
 import de.enough.skylight.renderer.element.view.InlineContainingBlockView;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.partition.Partable;
@@ -77,6 +78,8 @@ public class InlineContainingBlock extends Container implements ContainingBlock 
 	}
 	
 	public String toString() {
-		return ElementAttributes.toString(this);
+		return new ToStringHelper("InlineContainingBlock").
+		add("element", ElementAttributes.getCssElement(this)).
+		toString();
 	}
 }
