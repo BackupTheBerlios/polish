@@ -4,7 +4,24 @@
 	</head>
 	<body>
 		<div class="frame">
-			<img class="icon" src="http://a1.twimg.com/profile_images/444909086/kr_teAvatar_normal.jpg"/>test
+			<h1 class="frameTitle">
+			welcome
+			</h1>
+			<div class="content">
+				<form>
+					<div class="field">
+						<img class="icon" src="resources/icon_user.png"/>
+						<input type="text" id="usernameField" value=""/><br/>
+					</div>
+					<div class="field">
+						<img class="icon" src="resources/icon_key.png"/>
+						<input type="password" id="passwordField" value=""/><br/>
+					</div>
+					<div class="field"><!-- if(document.getElementById('passwordField').value === ''){alert('A password is needed')} else {alert('Welcome To Skylight, '+document.getElementById('usernameField').value+'!')} -->
+						<input type="submit" value="login" onclick="username = document.getElementById('usernameField').value; if(username === '' || username === undefined){alert('A username is needed')} else{password = document.getElementById('passwordField').value; if(password === '' || password === undefined){alert('A password is needed')} else {alert('Welcome To Skylight, '+username)}}"/>
+					</div>
+				</form>
+			</div>
 		</div>
 	</body>
 </html>
