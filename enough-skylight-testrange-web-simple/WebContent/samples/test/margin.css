@@ -12,12 +12,14 @@
 
 .marginInlinePixel {
 	background-color: purple;
-	margin: 20px;
+	margin-left: 20px;
+	margin-right: 20px;
 	color: white;
 }
 
 .marginInlinePercent {
 	background-color: green;
-	margin: 20%;
+	margin-left: 20%;
+	margin-right: 20%;
 	color: white;
 }
