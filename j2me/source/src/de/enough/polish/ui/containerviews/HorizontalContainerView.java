@@ -167,6 +167,10 @@ public class HorizontalContainerView extends ContainerView {
 			} else if (item.isLayoutBottom()) {
 				item.relativeY += (maxHeight - item.itemHeight);
 			}
+			if (i == items.length - 1 && item.isLayoutRight() && completeWidth < availWidth) {
+				item.relativeX = availWidth - item.itemWidth;
+				completeWidth = availWidth;
+			}
 		}
 		this.contentHeight = maxHeight;
 		if (completeWidth > availWidth) {
