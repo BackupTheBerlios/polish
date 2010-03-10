@@ -46,8 +46,10 @@ import de.enough.polish.util.ArrayList;
  * them. An application can be notified of tab navigation events on a given
  * TabbedPane using the <A HREF="TabListener.html" title="interface in javax.microedition.lcdui"><CODE>TabListener</CODE></A> interface.
  * </P>
+ * <p>
  * <img src="doc-files/arrows_in_tab.gif">
  * </P>
+ * <p>
  * The TabbedPane's title is shown if one has been provided; otherwise, the
  * title of the selected tab's content is shown instead.
  * </p>

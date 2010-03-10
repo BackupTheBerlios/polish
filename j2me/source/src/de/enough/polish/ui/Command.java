@@ -141,7 +141,7 @@ import de.enough.polish.event.AsynchronousMultipleCommandListener;
  * <IMG SRC="doc-files/command2.gif" width=189 height=260><BR>
  * If the application had three soft buttons, all commands can be mapped
  * to soft buttons:
- * <BR><IMG SRC="doc-files/command3.gif" width=189 height=261></P>
+ * <BR><IMG SRC="doc-files/command3.gif" width=189 height=261>
  * 
  * <p>The application is always responsible for providing the means for the
  * user to progress through different screens. An application may set up a
@@ -150,8 +150,6 @@ import de.enough.polish.event.AsynchronousMultipleCommandListener;
  * screen. Such program would simply considered to be in error. A typical
  * device should provide a means for the user to direct the application manager
  * to kill the erroneous application.
- * <HR>
- * 
  * 
  * @since MIDP 1.0
  */
@@ -162,8 +160,6 @@ extends javax.microedition.lcdui.Command
 //# extends de.enough.polish.android.lcdui.Command
 //#endif
 {
-	
-	
 	/**
 	 * Specifies an application-defined command that pertains to the current
 	 * screen. Examples could be &quot;Load&quot; and
@@ -173,8 +169,7 @@ extends javax.microedition.lcdui.Command
 	 * which applies to the currently activated or focused item or element
 	 * contained within this screen.
 	 * 
-	 * <P>Value <code>1</code> is assigned to <code>SCREEN</code>.</P></DL>
-	 * 
+	 * <P>Value <code>1</code> is assigned to <code>SCREEN</code>.</P>
 	 */
 	public static final int SCREEN = 1;
 
@@ -191,8 +186,7 @@ extends javax.microedition.lcdui.Command
 	 * 
 	 * <P>Value <code>2</code> is assigned to <code>BACK</code>.</P>
 	 * <DT><B>See Also: </B>
-	 * <A HREF="Command.html#STOP"><CODE>STOP</CODE></A></DL>
-	 * 
+	 * <A HREF="Command.html#STOP"><CODE>STOP</CODE></A>
 	 */
 	public static final int BACK = 2;
 
@@ -217,8 +211,7 @@ extends javax.microedition.lcdui.Command
 	 * 
 	 * <P>Value <code>3</code> is assigned to <code>CANCEL</code>.</P>
 	 * <DT><B>See Also: </B>
-	 * <A HREF="Command.html#STOP"><CODE>STOP</CODE></A></DL>
-	 * 
+	 * <A HREF="Command.html#STOP"><CODE>STOP</CODE></A>
 	 */
 	public static final int CANCEL = 3;
 
@@ -240,8 +233,6 @@ extends javax.microedition.lcdui.Command
 	 * <P><code>CANCEL</code> is often used together with <code>OK</code>.</P>
 	 * 
 	 * <P>Value <code>4</code> is assigned to <code>OK</code>.</P>
-	 * <DT><B>See Also: </B>
-	 * 
 	 */
 	public static final int OK = 4;
 
@@ -252,8 +243,7 @@ extends javax.microedition.lcdui.Command
 	 * <A HREF="CommandListener.html#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)"><CODE>commandAction</CODE></A> provided by the
 	 * application is responsible for showing the help information.
 	 * 
-	 * <P>Value <code>5</code> is assigned to <code>HELP</code>.</P></DL>
-	 * 
+	 * <P>Value <code>5</code> is assigned to <code>HELP</code>.</P>
 	 */
 	public static final int HELP = 5;
 
@@ -277,8 +267,7 @@ extends javax.microedition.lcdui.Command
 	 * 
 	 * <P>Value <code>6</code> is assigned to <code>STOP</code>.</P>
 	 * <DT><B>See Also: </B>
-	 * <A HREF="Command.html#CANCEL"><CODE>CANCEL</CODE></A></DL>
-	 * 
+	 * <A HREF="Command.html#CANCEL"><CODE>CANCEL</CODE></A>
 	 */
 	public static final int STOP = 6;
 
@@ -290,8 +279,7 @@ extends javax.microedition.lcdui.Command
 	 * will be called, and it should exit the application if it
 	 * is appropriate to do so.
 	 * 
-	 * <P>Value <code>7</code> is assigned to <code>EXIT</code>.</P></DL>
-	 * 
+	 * <P>Value <code>7</code> is assigned to <code>EXIT</code>.</P>
 	 */
 	public static final int EXIT = 7;
 
@@ -305,9 +293,7 @@ extends javax.microedition.lcdui.Command
 	 * this information for
 	 * creating context sensitive menus.
 	 * 
-	 * <P>Value <code>8</code> is assigned to <code>ITEM</code>.</P></DL>
-	 * 
-	 * 
+	 * <P>Value <code>8</code> is assigned to <code>ITEM</code>.</P>
 	 */
 	public static final int ITEM = 8;
 
