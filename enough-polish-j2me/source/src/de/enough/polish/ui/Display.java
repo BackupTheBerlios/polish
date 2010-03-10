@@ -2560,7 +2560,10 @@ public class Display
 			{
 				try {
 					Thread.sleep(1000);
-				} catch (InterruptedException e) {}
+				}
+				catch (InterruptedException e) {
+					// Ignored.
+				}
 				
 				long current = System.currentTimeMillis();
 				
@@ -2704,13 +2707,12 @@ public class Display
 	 *
 	 */
 	public interface UserInputValidator {
-		public boolean isKeyPressValid(int keyCode);
-		public boolean isKeyReleaseValid(int keyCode);
-		public boolean isKeyRepeatedValid(int keyCode);
-		public boolean isPointerPressValid(int x, int y);
-		public boolean isPointerReleaseValid(int x, int y);
-		public boolean isPointerDragValid(int x, int y);
-		
+		boolean isKeyPressValid(int keyCode);
+		boolean isKeyReleaseValid(int keyCode);
+		boolean isKeyRepeatedValid(int keyCode);
+		boolean isPointerPressValid(int x, int y);
+		boolean isPointerReleaseValid(int x, int y);
+		boolean isPointerDragValid(int x, int y);
 	}
 	//#endif
 	

@@ -45,7 +45,7 @@ public interface Displayable
 	 * @see #setTitle(java.lang.String)
 	 * @since  MIDP 2.0
 	 */
-	public String getTitle();
+	String getTitle();
 
 	/**
 	 * Sets the title of the <code>Displayable</code>. If
@@ -70,7 +70,7 @@ public interface Displayable
 	 * @see #getTitle()
 	 * @since  MIDP 2.0
 	 */
-	public void setTitle( String s);
+	void setTitle( String s);
 
 	/**
 	 * Gets the ticker used by this <code>Displayable</code>.
@@ -79,7 +79,7 @@ public interface Displayable
 	 * @see #setTicker(Ticker)
 	 * @since  MIDP 2.0
 	 */
-	public Ticker getPolishTicker();
+	Ticker getPolishTicker();
 
 	/**
 	 * Sets a ticker for use with this <code>Displayable</code>,
@@ -109,7 +109,7 @@ public interface Displayable
 	 * @see #getPolishTicker()
 	 * @since  MIDP 2.0
 	 */
-	public void setTicker( Ticker ticker);
+	void setTicker( Ticker ticker);
 
 	/**
 	 * Checks if the <code>Displayable</code> is actually visible
@@ -125,7 +125,7 @@ public interface Displayable
 	 * 
 	 * @return true if the Displayable is currently visible
 	 */
-	public boolean isShown();
+	boolean isShown();
 
 	/**
 	 * Adds a command to the <code>Displayable</code>. The
@@ -143,7 +143,7 @@ public interface Displayable
 	 * @param cmd the command to be added
 	 * @throws NullPointerException - if cmd is null
 	 */
-	public void addCommand( Command cmd);
+	void addCommand( Command cmd);
 
 	/**
 	 * Removes a command from the <code>Displayable</code>.
@@ -159,7 +159,7 @@ public interface Displayable
 	 * 
 	 * @param cmd the command to be removed
 	 */
-	public void removeCommand( Command cmd);
+	void removeCommand( Command cmd);
 
 	/**
 	 * Sets a listener for <A HREF="../../../javax/microedition/lcdui/Command.html"><CODE>Commands</CODE></A> to this
@@ -170,7 +170,7 @@ public interface Displayable
 	 * 
 	 * @param l the new listener, or null.
 	 */
-	public void setCommandListener( CommandListener l);
+	void setCommandListener( CommandListener l);
 
 	/**
 	 * Gets the width in pixels of the displayable area available to the
@@ -185,7 +185,7 @@ public interface Displayable
 	 * @return width of the area available to the application
 	 * @since  MIDP 2.0
 	 */
-	public int getWidth();
+	int getWidth();
 
 	/**
 	 * Gets the height in pixels of the displayable area available to the
@@ -200,7 +200,7 @@ public interface Displayable
 	 * @return height of the area available to the application
 	 * @since  MIDP 2.0
 	 */
-	public int getHeight();
+	int getHeight();
 
 	/**
 	 * The implementation calls this method when the available area of the
@@ -248,6 +248,6 @@ public interface Displayable
 	 * @param h - the new height in pixels of the available area
 	 * @since  MIDP 2.0
 	 */
-	public void sizeChanged(int w, int h);
+	void sizeChanged(int w, int h);
 
 }
