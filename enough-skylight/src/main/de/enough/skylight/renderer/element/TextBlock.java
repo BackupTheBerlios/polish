@@ -104,7 +104,11 @@ public class TextBlock extends StringItem implements Partable {
 		
 		int textXOffset = partition.getInlineRelativeLeft() - first.getInlineRelativeLeft();
 		
-		g.drawSubstring(text, index, length, x + textXOffset, y, anchor);
+		//#debug sl.debug.render
+		System.out.println("drawing substring : \"" + text.substring(index, index + length) + "\" at " + (x + textXOffset) + "/" + y);
+		
+		//TODO solve +1 offset
+		g.drawSubstring(text, index, length, x + textXOffset + 1, y, anchor);
 	}	
 	
 	public String toString() {
