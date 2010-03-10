@@ -1280,7 +1280,7 @@ public class Container extends Item {
 			this.appearanceModeSet = true;
 		}
 	}
-	
+
 	protected void initLayout(Style style, int availWidth) {
 		//#ifdef polish.css.view-type
 		if (this.containerView != null) {
@@ -1579,6 +1579,11 @@ public class Container extends Item {
 						}
 						if (doExpand) {
 							item.init(myContentWidth, myContentWidth, availHeight);
+							if (item.isLayoutCenter) {
+								item.relativeX = (myContentWidth - width) / 2;
+							} else if (item.isLayoutRight) {
+								item.relativeX = (myContentWidth - width);
+							}
 						}
 						//myContentHeight += item.getItemHeight( lineWidth, lineWidth );
 					}
@@ -3999,7 +4004,7 @@ public class Container extends Item {
 	 * @see de.enough.polish.ui.Item#initMargin(de.enough.polish.ui.Style, int)
 	 */
 	protected void initMargin(Style style, int availWidth) {
-		if(this.isIgnoreMargins) {
+		if (this.isIgnoreMargins) {
 			this.marginLeft = 0;
 			this.marginRight = 0;
 			this.marginTop = 0;
@@ -4011,7 +4016,7 @@ public class Container extends Item {
 			this.marginBottom = style.getMarginBottom(availWidth);
 		}
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#onScreenSizeChanged(int, int)
