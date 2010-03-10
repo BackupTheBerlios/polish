@@ -2272,8 +2272,6 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		if (scr == null) {
 			scr = getScreen();
 		}
-		if (scr != null) {
-		}
 	}
 	
 	void setAvailableDimensions(int leftBorder, int rightBorder)
@@ -2607,6 +2605,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 			// paint content:
 			//#ifdef polish.css.view-type
 				if (this.view != null) {
+					// Nothing to do here.
 				} else {
 			//#endif
 					paintContent( x, y, leftBorder, rightBorder, g );
@@ -3250,8 +3249,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 				}
 			}
 			if (deleteCommand != null) {
-				if (this.itemCommandListener != null) {
-				} else {			
+				if (this.itemCommandListener == null) {
 					Screen scr = getScreen();
 					if (scr != null ) {
 						scr.callCommandListener(deleteCommand);
@@ -3689,6 +3687,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		addCommands( COMMANDS );
 		Screen scr = getScreen();
 		if (scr != null) {
+			// Nothing to do here.
 		}			
 	}
 	
@@ -3785,6 +3784,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		if (this.commands != null) {
 			Screen scr = getScreen();
 			if (scr != null) {
+				// Nothing to do here.
 			}
 		}
 		//#if tmp.handleEvents
@@ -3832,6 +3832,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		//#endif
 		//#if polish.blackberry
 			if (this.isFocused  && this._bbField != null) {
+				// Nothing to do here.
 			}
 		//#endif
 		//#if tmp.handleEvents
@@ -4214,6 +4215,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 				// remove any item commands:
 				Screen scr = getScreen();
 				if (scr != null) {
+					// Nothing to do here.
 				}
 				int itemIndex = -1;
 				boolean isFocusSet = parentContainer.focusClosestItemAbove( itemIndex );

@@ -795,6 +795,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 				fItem.defocus( StyleSheet.defaultStyle );
 			}
 			if (this.isInitialized) {
+				// Nothing to do here.
 			}
 		}
 		int wBefore = item.itemWidth;
@@ -1037,6 +1038,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 			if (this.focusedStyle != null) {
 				this.focusedTopMargin = this.focusedStyle.getMarginTop(availWidth) + this.focusedStyle.getPaddingTop(availWidth);
 				if (this.focusedStyle.border != null) {
+					// Nothing to do here.
 				}
 				if (this.focusedStyle.background != null) {
 					this.focusedTopMargin += this.focusedStyle.background.borderWidth;
@@ -2173,6 +2175,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 			if (item.commands == null && this.commands != null) {
 				Screen scr = getScreen();
 				if (scr != null) {
+					// Nothing to do here.
 				}
 			}
 			// change the label-style of this container:

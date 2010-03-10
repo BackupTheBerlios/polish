@@ -251,6 +251,7 @@ public class FakeStringCustomItem extends FakeCustomItem
 		//#endif
 		//#if polish.css.text-effect
 			if (this.textEffect != null) {
+				// Nothing to do here.
 			}
 		//#endif
 	}

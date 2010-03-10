@@ -34,9 +34,6 @@
 package de.enough.polish.ui;
 
 import javax.microedition.lcdui.Canvas;
-
-
-import de.enough.polish.ui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 //#if polish.TextField.useDirectInput && polish.TextField.usePredictiveInput && !polish.blackberry
@@ -1678,6 +1675,7 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 		if(!this.suppressCommands)
 		{
 			if (this.isFocused) {
+				// Nothing to do here.
 			}
 			
 			// add default text field item-commands:
@@ -1757,6 +1755,7 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 					setConstraints(this.constraints);
 				}
 				if (this.isFocused) {
+					// Nothing to do here.
 				}
 			}
 			else
