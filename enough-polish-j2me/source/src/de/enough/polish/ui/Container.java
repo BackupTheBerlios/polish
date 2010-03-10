@@ -1579,6 +1579,7 @@ public class Container extends Item {
 						}
 						if (doExpand) {
 							item.init(myContentWidth, myContentWidth, availHeight);
+							width = item.itemWidth;
 							if (item.isLayoutCenter) {
 								item.relativeX = (myContentWidth - width) / 2;
 							} else if (item.isLayoutRight) {
