@@ -28,7 +28,6 @@
 package de.enough.polish.ui;
 
 import javax.microedition.lcdui.Canvas;
-import de.enough.polish.ui.Displayable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
