@@ -122,15 +122,6 @@ public class Ticker extends IconItem
 	}
 	
 	/**
-	 * Retrieves the shown text of this ticker.
-	 * 
-	 * @return the ticker text
-	 */
-	public String getString() {
-		return this.text;
-	}
-	
-	/**
 	 * Sets the ticker text
 	 * 
 	 * @param text the text that is being scrolled
