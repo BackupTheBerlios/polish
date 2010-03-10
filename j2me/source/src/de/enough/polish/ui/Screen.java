@@ -2698,7 +2698,14 @@ implements UiElement, Animatable
 		}
 		Border bord = this.border;
 		if (bord != null) {
-			bord.paint( this.backgroundX - bord.borderWidthLeft, this.backgroundY - bord.borderWidthTop, this.backgroundWidth + bord.borderWidthLeft + bord.borderWidthRight, this.backgroundHeight + bord.borderWidthTop + bord.borderWidthBottom, g );
+			int x = this.backgroundX - bord.borderWidthLeft;
+			int y = this.backgroundY - bord.borderWidthTop;
+			int width = this.backgroundWidth + bord.borderWidthLeft + bord.borderWidthRight;
+			if (this.marginRight != 0 || this.isLayoutHorizontalShrink) {
+				width++;
+			}
+			int height = this.backgroundHeight + bord.borderWidthTop + bord.borderWidthBottom;
+			bord.paint( x, y, width, height, g );
 		}
 	}
 
