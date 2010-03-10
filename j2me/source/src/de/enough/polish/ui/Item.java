@@ -3042,23 +3042,7 @@ public abstract class Item implements UiElement, Animatable
 		
 		Style myStyle = this.style;
 		if (myStyle != null) {
-			//#ifdef polish.css.view-type
-			if (this.view != null) {
-				this.view.initPadding(myStyle, availWidth);
-			} else
-			//#endif
-			{
-				initPadding(myStyle, availWidth);
-			}
-			
-			//#ifdef polish.css.view-type
-			if (this.view != null) {
-				this.view.initMargin(myStyle, availWidth);
-			} else
-			//#endif
-			{
-				initMargin(myStyle, availWidth);
-			}
+			initLayout(myStyle, availWidth);
 		}
 		
 		int labelWidth = 0;
@@ -3316,6 +3300,26 @@ public abstract class Item implements UiElement, Animatable
 		setInitialized(true);
 		//#debug
 		System.out.println("Item.init(): contentWidth=" + this.contentWidth + ", itemWidth=" + this.itemWidth + ", backgroundWidth=" + this.backgroundWidth);
+	}
+	
+	protected void initLayout(Style style, int availWidth) {
+		//#ifdef polish.css.view-type
+		if (this.view != null) {
+			this.view.initPadding(style, availWidth);
+		} else
+		//#endif
+		{
+			initPadding(style, availWidth);
+		}
+		
+		//#ifdef polish.css.view-type
+		if (this.view != null) {
+			this.view.initMargin(style, availWidth);
+		} else
+		//#endif
+		{
+			initMargin(style, availWidth);
+		}
 	}
 	
 	/**

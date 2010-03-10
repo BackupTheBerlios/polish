@@ -285,6 +285,19 @@ extends ItemView
 		);
 	}
 	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.ItemView#initMargin(de.enough.polish.ui.Style, int)
+	 */
+	protected void initMargin(Style style, int availWidth) {
+		this.parentContainer.initMargin(style, availWidth);
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.ItemView#initPadding(de.enough.polish.ui.Style, int)
+	 */
+	protected void initPadding(Style style, int availWidth) {
+		this.parentContainer.initPadding(style, availWidth);
+	}
 
 	/**
 	 * Initializes this container view. 
