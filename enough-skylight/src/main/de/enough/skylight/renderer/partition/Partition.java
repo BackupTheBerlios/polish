@@ -5,14 +5,14 @@ import de.enough.polish.ui.UiAccess;
 import de.enough.polish.util.ToStringHelper;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.element.ContainingBlock;
-import de.enough.skylight.renderer.element.ElementAttributes;
+import de.enough.skylight.renderer.element.view.LayoutAttributes;
 import de.enough.skylight.renderer.linebox.LineBox;
 
 
 public class Partition {
 	
 	public static int getInlineRelativeX(Item item) {
-		BlockContainingBlock block = ElementAttributes.getBlock(item);
+		BlockContainingBlock block = LayoutAttributes.getBlock(item);
 		int blockContentX = block.getAbsoluteX() + block.getContentX();
 		return item.getAbsoluteX() - blockContentX;
 	}

@@ -8,10 +8,11 @@ import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.NodeList;
 import de.enough.skylight.renderer.Viewport;
 import de.enough.skylight.renderer.css.HtmlCssElement;
-import de.enough.skylight.renderer.debug.BuilderDebug;
+import de.enough.skylight.renderer.debug.BuildDebug;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.element.ContainingBlock;
-import de.enough.skylight.renderer.element.ElementAttributes;
+import de.enough.skylight.renderer.element.view.ElementView;
+import de.enough.skylight.renderer.element.view.LayoutAttributes;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.node.NodeHandler;
 import de.enough.skylight.renderer.node.NodeHandlerDirectory;
@@ -58,7 +59,7 @@ public class ViewportBuilder {
 			CssElement rootElement = buildDescription(this.document, null);
 			
 			//#debug sl.debug.build
-			BuilderDebug.printCssElement(rootElement);
+			BuildDebug.printCssElement(rootElement);
 			
 			//#debug sl.profile.build
 			Benchmark.stop("description","done");
@@ -75,7 +76,7 @@ public class ViewportBuilder {
 			buildLayout(this.viewport, this.viewport, rootElement);
 			
 			//#debug sl.debug.build
-			BuilderDebug.printBlock(this.viewport);
+			BuildDebug.printBlock(this.viewport);
 			
 			//#debug sl.profile.build
 			Benchmark.stop("layout","done");
@@ -147,7 +148,7 @@ public class ViewportBuilder {
 		if(element.hasElements())
 		{
 			ContainingBlock block = element.getContainingBlock();
-			ElementAttributes.set(block.getContainer(), element, parent, parentBlock);
+			LayoutAttributes.set(block.getContainer(), element, parent, parentBlock);
 			
 			if(element.isFloat()) {
 				if(element.isFloat(HtmlCssElement.Float.LEFT)) {
@@ -184,7 +185,8 @@ public class ViewportBuilder {
 			Item item = element.getContent();
 			
 			if(item != null) {
-				ElementAttributes.set(item, element, parent, parentBlock);
+				item.setView(new ElementView());
+				LayoutAttributes.set(item, element, parent, parentBlock);
 				if(element.isFloat()) {
 					if(element.isFloat(HtmlCssElement.Float.LEFT)) {
 						parent.addToLeftFloat(item);

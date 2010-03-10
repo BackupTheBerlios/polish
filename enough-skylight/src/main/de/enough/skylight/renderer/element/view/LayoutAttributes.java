@@ -1,10 +1,12 @@
-package de.enough.skylight.renderer.element;
+package de.enough.skylight.renderer.element.view;
 
 import de.enough.polish.ui.Item;
+import de.enough.skylight.renderer.element.BlockContainingBlock;
+import de.enough.skylight.renderer.element.ContainingBlock;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.partition.Partition;
 
-public class ElementAttributes {
+public class LayoutAttributes {
 	static Integer SL_KEY_CONTAINING = new Integer(0x00);
 	
 	static Integer SL_KEY_BLOCK = new Integer(0x01);
@@ -69,6 +71,6 @@ public class ElementAttributes {
 	}
 	
 	public static String toString(Item item) {
-		return item.getClass().getName() + ElementAttributes.getCssElement(item);
+		return item.getClass().getName() + LayoutAttributes.getCssElement(item);
 	}
 }

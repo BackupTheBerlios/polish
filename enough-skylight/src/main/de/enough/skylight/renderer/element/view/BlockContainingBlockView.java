@@ -3,14 +3,10 @@ package de.enough.skylight.renderer.element.view;
 import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.benchmark.Benchmark;
-import de.enough.polish.ui.Canvas;
 import de.enough.polish.ui.Container;
-import de.enough.polish.ui.ContainerView;
 import de.enough.polish.ui.Item;
-import de.enough.skylight.event.UserEvent;
 import de.enough.skylight.renderer.Viewport;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
-import de.enough.skylight.renderer.element.ElementAttributes;
 import de.enough.skylight.renderer.element.InlineContainingBlock;
 import de.enough.skylight.renderer.linebox.LineBox;
 import de.enough.skylight.renderer.linebox.LineBoxLayout;
@@ -19,7 +15,7 @@ import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.partition.Partition;
 import de.enough.skylight.renderer.partition.PartitionList;
 
-public class BlockContainingBlockView extends ContainerView {
+public class BlockContainingBlockView extends ContainingBlockView {
 	
 	transient BlockContainingBlock block;
 	
@@ -45,7 +41,7 @@ public class BlockContainingBlockView extends ContainerView {
 		//#debug sl.profile.layout
 		Benchmark.stop("initContent for block " + this.block,"done");
 		
-		CssElement element = ElementAttributes.getCssElement(parentContainerItem);
+		CssElement element = LayoutAttributes.getCssElement(parentContainerItem);
 		
 		if(element != null && element.isInteractive()) {
 			this.parentContainer.setAppearanceMode(Item.INTERACTIVE);
@@ -230,8 +226,8 @@ public class BlockContainingBlockView extends ContainerView {
 		if(container instanceof Viewport) {
 			paintLayout(x, y, leftBorder, rightBorder, g);
 		} else {
-			BlockContainingBlock block = ElementAttributes.getBlock(container);
-			Partition partition = ElementAttributes.getPartition(container);
+			BlockContainingBlock block = LayoutAttributes.getBlock(container);
+			Partition partition = LayoutAttributes.getPartition(container);
 			LineBox linebox = block.getPaintLineBox();
 			
 			//TODO add culling
@@ -302,21 +298,4 @@ public class BlockContainingBlockView extends ContainerView {
 	public LineBox getPaintLineBox() {
 		return this.paintLineBox;
 	}
-
-	public boolean handleKeyReleased(int keyCode, int gameAction) {
-		boolean handled = super.handleKeyReleased(keyCode, gameAction);
-		
-		if(gameAction == Canvas.FIRE) {
-			CssElement element = ElementAttributes.getCssElement(this.parentItem);
-			if(element != null && element.isInteractive()) {
-				Viewport viewport = element.getViewport();
-				UserEvent event = new UserEvent();
-				viewport.notifyUserEvent(element, event);
-			}
-		}
-		
-		return handled;
-	}
-	
-	
 }

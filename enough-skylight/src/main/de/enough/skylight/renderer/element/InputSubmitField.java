@@ -4,6 +4,7 @@ import de.enough.polish.ui.Canvas;
 import de.enough.polish.ui.StringItem;
 import de.enough.skylight.event.UserEvent;
 import de.enough.skylight.renderer.Viewport;
+import de.enough.skylight.renderer.element.view.LayoutAttributes;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.partition.Partable;
 import de.enough.skylight.renderer.partition.Partition;
@@ -28,7 +29,7 @@ public class InputSubmitField extends StringItem implements Partable {
 		boolean handled = super.handleKeyReleased(keyCode, gameAction);
 		
 		if(gameAction == Canvas.FIRE) {
-			CssElement element = ElementAttributes.getCssElement(this);
+			CssElement element = LayoutAttributes.getCssElement(this);
 			if(element != null && element.isInteractive()) {
 				Viewport viewport = element.getViewport();
 				UserEvent event = new UserEvent();

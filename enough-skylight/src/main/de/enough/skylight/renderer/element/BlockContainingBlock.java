@@ -5,6 +5,7 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.ToStringHelper;
 import de.enough.skylight.renderer.element.view.BlockContainingBlockView;
+import de.enough.skylight.renderer.element.view.LayoutAttributes;
 import de.enough.skylight.renderer.linebox.LineBox;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.partition.Partable;
@@ -43,38 +44,38 @@ public class BlockContainingBlock extends Container implements ContainingBlock, 
 		
 		//#style element
 		this.body = new InlineContainingBlock();
-		ElementAttributes.set(this.body,null,this,this);
+		LayoutAttributes.set(this.body,null,this,this);
 		
 		add(this.body);
 	}
 	
 	public void addToBody(Item item) {
 		this.body.add(item);
-		ElementAttributes.setContainingBlock(item, this.body);
+		LayoutAttributes.setContainingBlock(item, this.body);
 	}
 	
 	public void addToLeftFloat(Item item) {
 		if(this.floatLeft == null) {
 			//#style element
 			this.floatLeft = new InlineContainingBlock();
-			ElementAttributes.set(this.floatLeft,null,this,this);
+			LayoutAttributes.set(this.floatLeft,null,this,this);
 			add(this.floatLeft);
 		}
 		
 		this.floatLeft.add(item);
-		ElementAttributes.setContainingBlock(item, this.floatLeft);
+		LayoutAttributes.setContainingBlock(item, this.floatLeft);
 	}
 	
 	public void addToRightFloat(Item item) {
 		if(this.floatRight == null) {
 			//#style element
 			this.floatRight = new InlineContainingBlock();
-			ElementAttributes.set(this.floatRight,null,this,this);
+			LayoutAttributes.set(this.floatRight,null,this,this);
 			add(this.floatRight);
 		}
 		
 		this.floatRight.add(item);
-		ElementAttributes.setContainingBlock(item, this.floatRight);
+		LayoutAttributes.setContainingBlock(item, this.floatRight);
 	}
 	
 	public InlineContainingBlock getBody() {
@@ -115,7 +116,7 @@ public class BlockContainingBlock extends Container implements ContainingBlock, 
 	
 	public String toString() {
 		return new ToStringHelper("BlockContainingBlock").
-					add("element", ElementAttributes.getCssElement(this)).
+					add("element", LayoutAttributes.getCssElement(this)).
 					toString();
 	}
 }

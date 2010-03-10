@@ -5,6 +5,7 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.ToStringHelper;
 import de.enough.skylight.renderer.element.view.InlineContainingBlockView;
+import de.enough.skylight.renderer.element.view.LayoutAttributes;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.partition.Partable;
 import de.enough.skylight.renderer.partition.Partition;
@@ -35,16 +36,16 @@ public class InlineContainingBlock extends Container implements ContainingBlock 
 
 	public void addToBody(Item item) {
 		add(item);
-		ElementAttributes.setContainingBlock(item, this);
+		LayoutAttributes.setContainingBlock(item, this);
 	}
 
 	public void addToLeftFloat(Item item) {
-		BlockContainingBlock block = ElementAttributes.getBlock(this);
+		BlockContainingBlock block = LayoutAttributes.getBlock(this);
 		block.addToLeftFloat(item);
 	}
 	
 	public void addToRightFloat(Item item) {
-		BlockContainingBlock block = ElementAttributes.getBlock(this);
+		BlockContainingBlock block = LayoutAttributes.getBlock(this);
 		block.addToRightFloat(item);
 	}
 	
@@ -79,7 +80,7 @@ public class InlineContainingBlock extends Container implements ContainingBlock 
 	
 	public String toString() {
 		return new ToStringHelper("InlineContainingBlock").
-		add("element", ElementAttributes.getCssElement(this)).
+		add("element", LayoutAttributes.getCssElement(this)).
 		toString();
 	}
 }

@@ -2,25 +2,23 @@ package de.enough.skylight.renderer.element.view;
 
 import javax.microedition.lcdui.Graphics;
 
-import de.enough.polish.ui.Canvas;
 import de.enough.polish.ui.Container;
-import de.enough.polish.ui.ContainerView;
+import de.enough.polish.ui.Dimension;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.ItemPreinit;
-import de.enough.skylight.event.UserEvent;
-import de.enough.skylight.renderer.Viewport;
 import de.enough.skylight.renderer.css.HtmlCssElement;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
-import de.enough.skylight.renderer.element.ElementAttributes;
 import de.enough.skylight.renderer.element.InlineContainingBlock;
 import de.enough.skylight.renderer.linebox.LayoutUtils;
 import de.enough.skylight.renderer.linebox.LineBox;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.partition.Partition;
 
-public class InlineContainingBlockView extends ContainerView {
+public class InlineContainingBlockView extends ContainingBlockView {
 
+	public static Dimension DIMENSION_ZERO = new Dimension(0);
+	
 	transient InlineContainingBlock inlineBlock;
 	
 	transient int[] itemXOffsets;
@@ -32,12 +30,16 @@ public class InlineContainingBlockView extends ContainerView {
 	}
 	
 	protected void initMargin(Style style, int availWidth) {
-		BlockContainingBlock block = ElementAttributes.getBlock(this.parentContainer);
+		BlockContainingBlock block = LayoutAttributes.getBlock(this.parentContainer);
+		style.addAttribute("margin-top", DIMENSION_ZERO);
+		style.addAttribute("margin-bottom", DIMENSION_ZERO);
 		super.initMargin(style, block.getAvailableContentWidth());
 	}
 
 	protected void initPadding(Style style, int availWidth) {
-		BlockContainingBlock block = ElementAttributes.getBlock(this.parentContainer);
+		BlockContainingBlock block = LayoutAttributes.getBlock(this.parentContainer);
+		style.addAttribute("padding-top", DIMENSION_ZERO);
+		style.addAttribute("padding-bottom", DIMENSION_ZERO);
 		super.initPadding(style, block.getAvailableContentWidth());
 	}
 
@@ -57,8 +59,8 @@ public class InlineContainingBlockView extends ContainerView {
 		int completeWidth = 0;
 		
 		Container container = (Container)parentContainerItem;
-		BlockContainingBlock block = ElementAttributes.getBlock(container);
-		CssElement element = ElementAttributes.getCssElement(block);
+		BlockContainingBlock block = LayoutAttributes.getBlock(container);
+		CssElement element = LayoutAttributes.getCssElement(block);
 		
 		boolean interactive = false;
 		
@@ -81,7 +83,7 @@ public class InlineContainingBlockView extends ContainerView {
 			Item item = items[index];
 			
 			initItem(item, block);
-			ElementAttributes.setPartition(item);
+			LayoutAttributes.setPartition(item);
 			
 			if (item.isInteractive()) {
 				interactive = true;
@@ -133,8 +135,8 @@ public class InlineContainingBlockView extends ContainerView {
 	protected void paintContent(Container container, Item[] myItems, int x,
 			int y, int leftBorder, int rightBorder, int clipX, int clipY,
 			int clipWidth, int clipHeight, Graphics g) {
-		Partition partition = ElementAttributes.getPartition(container);
-		LineBox linebox = ElementAttributes.getBlock(container).getPaintLineBox();
+		Partition partition = LayoutAttributes.getPartition(container);
+		LineBox linebox = LayoutAttributes.getBlock(container).getPaintLineBox();
 		
 		//TODO add culling
 		
@@ -165,20 +167,5 @@ public class InlineContainingBlockView extends ContainerView {
 			int focItemY = y + this.itemYOffsets[this.focusedIndex];
 			paintItem(focItem, this.focusedIndex, focItemX, focItemY, focItemX, focItemX + focItem.itemWidth, clipX, clipY, clipWidth, clipHeight, g);
 		}
-	}
-	
-	public boolean handleKeyReleased(int keyCode, int gameAction) {
-		boolean handled = super.handleKeyReleased(keyCode, gameAction);
-		
-		if(gameAction == Canvas.FIRE) {
-			CssElement element = ElementAttributes.getCssElement(this.parentItem);
-			if(element != null && element.isInteractive()) {
-				Viewport viewport = element.getViewport();
-				UserEvent event = new UserEvent();
-				viewport.notifyUserEvent(element, event);
-			}
-		}
-		
-		return handled;
 	}
 }

@@ -7,6 +7,7 @@ import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.StringTokenizer;
 import de.enough.polish.util.TextUtil;
+import de.enough.skylight.renderer.element.view.LayoutAttributes;
 import de.enough.skylight.renderer.linebox.LineBox;
 import de.enough.skylight.renderer.partition.Partable;
 import de.enough.skylight.renderer.partition.Partition;
@@ -86,7 +87,7 @@ public class TextBlock extends StringItem implements Partable {
 	}
 	
 	public void drawString(String line, int x, int y, int anchor, Graphics g) {
-		LineBox linebox = ElementAttributes.getBlock(this).getPaintLineBox();
+		LineBox linebox = LayoutAttributes.getBlock(this).getPaintLineBox();
 		PartitionList lineboxPartitions = linebox.getPartitions();
 		
 		TextPartition firstPartition = (TextPartition)this.textPartitions.get(0);

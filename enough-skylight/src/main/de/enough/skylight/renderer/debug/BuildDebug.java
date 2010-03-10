@@ -9,7 +9,7 @@ import de.enough.skylight.renderer.node.CssElement;
  * @author Andre
  *
  */
-public class BuilderDebug {
+public class BuildDebug {
 	static String INDENT = "    ";
 	
 	public static void printCssElement(CssElement element) {
