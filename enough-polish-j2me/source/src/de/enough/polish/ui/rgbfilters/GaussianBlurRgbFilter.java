@@ -69,7 +69,7 @@ public class GaussianBlurRgbFilter extends RgbFilter {
         return (this.blur.getValue(255) != 0);
     }
 
-    private final RgbImage horizontalPass(RgbImage input) {
+    private RgbImage horizontalPass(RgbImage input) {
         if (!isActive()) {
             return input;
         }
@@ -92,10 +92,10 @@ public class GaussianBlurRgbFilter extends RgbFilter {
         int imgHeight = this.height;
 
         int arraySize = imgHeight + 1;
-        int redArray[] = new int[arraySize];
-        int greenArray[] = new int[arraySize];
-        int blueArray[] = new int[arraySize];
-        int alphaArray[] = new int[arraySize];
+        int[] redArray = new int[arraySize];
+        int[] greenArray = new int[arraySize];
+        int[] blueArray = new int[arraySize];
+        int[] alphaArray = new int[arraySize];
 
         int dimension = this.blur.getValue(100);
         dimension = Math.max(2, (imgHeight * dimension) / 100);
@@ -193,7 +193,7 @@ public class GaussianBlurRgbFilter extends RgbFilter {
         return this.output;
     }
 
-    private final RgbImage verticalPass(RgbImage input) {
+    private RgbImage verticalPass(RgbImage input) {
         if (!isActive()) {
             return input;
         }
@@ -214,10 +214,10 @@ public class GaussianBlurRgbFilter extends RgbFilter {
         int imgHeight = this.height;
 
         int arraySize = imgWidth + 1;
-        int redArray[] = new int[arraySize];
-        int greenArray[] = new int[arraySize];
-        int blueArray[] = new int[arraySize];
-        int alphaArray[] = new int[arraySize];
+        int[] redArray = new int[arraySize];
+        int[] greenArray = new int[arraySize];
+        int[] blueArray = new int[arraySize];
+        int[] alphaArray = new int[arraySize];
 
         int dimension = this.blur.getValue(100);
         dimension = Math.max(2, imgWidth * dimension / 100);
