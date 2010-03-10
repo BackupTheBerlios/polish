@@ -41,7 +41,7 @@ public interface UiElement
 	 * @param style the new style for this element.
 	 * @throws NullPointerException when style is null
 	 */
-	public void setStyle( Style style );
+	void setStyle( Style style );
 	
 	/**
 	 * Sets the style with animatable CSS attributes of this user interface element.
@@ -51,20 +51,20 @@ public interface UiElement
 	 * 			when styles are animated, for example.
 	 * @throws NullPointerException when style is null
 	 */
-	public void setStyle( Style style, boolean resetStyle );
+	void setStyle( Style style, boolean resetStyle );
 	
 	
 	/**
 	 * Retrieves the currently used style
 	 * @return the style of this UI element
 	 */
-	public Style getStyle();
+	Style getStyle();
 	
 	/**
 	 * Adds a repaint request for this user interface component's space.
 	 * @param repaintArea the clipping rectangle to which the repaint area should be added
 	 */
-	public void addRepaintArea( ClippingRegion repaintArea );
+	void addRepaintArea( ClippingRegion repaintArea );
 	
 	/**
 	 * Adds a region relative to this item's content x/y start position.
@@ -74,7 +74,7 @@ public interface UiElement
 	 * @param width width
 	 * @param height height
 	 */
-	public void addRelativeToContentRegion(ClippingRegion repaintRegion, int x, int y, int width, int height);
+	void addRelativeToContentRegion(ClippingRegion repaintRegion, int x, int y, int width, int height);
 	
 
 }

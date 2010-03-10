@@ -39,6 +39,6 @@ public interface TabListener
 	 *  
 	 * @param tab the tab that is receiving the focus.
 	 */
-	public void tabChangeEvent(Screen tab); 
+	void tabChangeEvent(Screen tab); 
 
 }

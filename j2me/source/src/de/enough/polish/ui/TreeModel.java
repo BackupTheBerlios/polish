@@ -42,7 +42,7 @@ public interface TreeModel {
 	 * Note: The root element itself is not shown by a TreeItem.
 	 * @return the root of the tree
 	 */
-	public Object getRoot();
+	Object getRoot();
 	
 	/**
 	 * Returns the number of children of parent. 
@@ -51,7 +51,7 @@ public interface TreeModel {
 	 * @param parent a node in the tree, obtained from this TreeModel
 	 * @param childrenList the ArrayList into which the children should be added
 	 */
-	public void addChildren( Object parent, ArrayList childrenList );
+	void addChildren( Object parent, ArrayList childrenList );
 	
 	
 	/**
@@ -60,6 +60,6 @@ public interface TreeModel {
 	 * @param node a node in the tree, obtained from this TreeModel
 	 * @return true if the node is a leaf
 	 */
-	public boolean isLeaf( Object node );
+	boolean isLeaf( Object node );
 
 }

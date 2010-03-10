@@ -47,7 +47,7 @@ public interface TabbedFormListener {
 	 * @param newTabIndex the index of the requested tab
 	 * @return <code>true</code> if a tab change is okay, <code>false</code> otherwise
 	 */
-	public boolean notifyTabChangeRequested( int oldTabIndex, int newTabIndex );
+	boolean notifyTabChangeRequested( int oldTabIndex, int newTabIndex );
 
 	/**
 	 * Called when a tab change in a TabbedForm is completed.
@@ -55,5 +55,5 @@ public interface TabbedFormListener {
 	 * @param oldTabIndex the index of the previous tab
 	 * @param newTabIndex the index of the current tab
 	 */
-	public void notifyTabChangeCompleted( int oldTabIndex, int newTabIndex );
+	void notifyTabChangeCompleted( int oldTabIndex, int newTabIndex );
 }
