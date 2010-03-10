@@ -3040,6 +3040,12 @@ public abstract class Item implements UiElement, Animatable
 			}
 		//#endif
 		
+		//#ifdef polish.css.view-type
+		if (this.view != null) {
+			this.view.parentItem = this;
+		}
+		//#endif
+		
 		Style myStyle = this.style;
 		if (myStyle != null) {
 			initLayout(myStyle, availWidth);
@@ -3110,7 +3116,6 @@ public abstract class Item implements UiElement, Animatable
 			//#endif
 			//#ifdef polish.css.view-type
 				if (this.view != null) {
-					this.view.parentItem = this;
 					this.view.init(this, firstLineContentWidth, availableContentWidth, availHeight);
 					this.contentWidth = this.view.contentWidth;
 					this.contentHeight = this.view.contentHeight;
@@ -3349,7 +3354,7 @@ public abstract class Item implements UiElement, Animatable
 		this.paddingVertical = style.getPaddingVertical(availWidth);
 		this.paddingHorizontal = style.getPaddingHorizontal(availWidth);
 	}
-
+	
 	/**
 	 * Sets the content width of this item.
 	 * Subclasses can override this to react to content width changes

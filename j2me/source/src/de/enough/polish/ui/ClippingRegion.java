@@ -25,6 +25,8 @@
  */
 package de.enough.polish.ui;
 
+import de.enough.polish.util.ToStringHelper;
+
 /**
  * <p>Manages a region that is increased when further regions are added.</p>
  *
@@ -133,12 +135,13 @@ public class ClippingRegion {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return 	"ClippingRegion [" +
-				"leftX : " + this.leftX + "," +
-				"topY : " + this.topY + "," +
-				"rightX : " + this.rightX + "," +
-				"bottomY : " + this.bottomY + 
-				"containsRegion : " + this.containsRegion + "]";
+		return new ToStringHelper("ClippingRegion").
+		add("leftX",this.leftX).
+		add("topY",this.topY).
+		add("rightX",this.rightX).
+		add("bottomY",this.bottomY).
+		add("containsRegion",this.containsRegion).
+		toString();
 	}
 
 }
