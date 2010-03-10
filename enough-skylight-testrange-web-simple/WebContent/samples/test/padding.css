@@ -12,14 +12,12 @@
 
 .paddingInlinePixel {
 	background-color: purple;
-	padding-left: 20px;
-	padding-right: 20px;
+	padding: 20px;
 	color: white;
 }
 
 .paddingInlinePercent {
 	background-color: green;
-	padding-left: 20%;
-	padding-right: 20%;
+	padding: 20%;
 	color: white;
 }
