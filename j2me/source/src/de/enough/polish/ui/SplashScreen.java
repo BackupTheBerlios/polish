@@ -198,6 +198,7 @@ public class SplashScreen extends Screen {
             try {
                 Thread.sleep(this.wdTimeout);
             } catch (InterruptedException ie) {
+            	// Ignored.
             }
             // doDismiss (only if current display timout matches) - this means this
             // splash screen is still being shown on the display
