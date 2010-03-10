@@ -962,7 +962,7 @@ public void setSelectedIndex(int elementNum, boolean selected)
 		ChoiceItem item = (ChoiceItem) this.itemsList.get( elementNum );
 		selectChoiceItem(item, selected);
 	} else {
-		if (selected == false) {
+		if (!selected) {
 			return; // ignore this call
 		}
 		if (this.selectedIndex != -1) {
@@ -1269,7 +1269,7 @@ private void closePopup() {
 
 //#ifdef polish.usePopupItem
 private void openPopup() {
-	if (this.isPopupClosed == false) {
+	if (!this.isPopupClosed) {
 		return;
 	}
 	//this.popupOpenY = this.yTopPos; 
@@ -1426,7 +1426,7 @@ protected boolean handleKeyPressed(int keyCode, int gameAction) {
 				}
 			//#endif
 			//#ifdef polish.usePopupItem
-				if (this.isPopup && (this.isPopupClosed == false)) {
+				if (this.isPopup && !this.isPopupClosed) {
 					this.closePopupOnKeyRelease = true;
 					return true;
 				}
@@ -1752,6 +1752,7 @@ public void defocus(Style originalStyle) {
 		// now remove any commands which are associated with this item:
 		Screen scr = getScreen();
 		if (scr != null) {
+			// Nothing to do here.
 		}
 		// change the label-style of this container:
 		//#ifdef polish.css.label-style
