@@ -133,7 +133,7 @@ public class LineBox {
 		add("block relative y", this.blockRelativeTop).
 		add("height", this.lineHeight).
 		add("available width", this.availableWidth).
-		add("size", this.partitions.size()).
+		add("partitions", this.partitions.size()).
 		toString();
 	}
 }
