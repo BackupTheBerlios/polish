@@ -6,12 +6,12 @@ import de.enough.polish.ui.Canvas;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.ContainerView;
 import de.enough.polish.ui.Item;
+import de.enough.polish.ui.Style;
 import de.enough.polish.util.ItemPreinit;
 import de.enough.skylight.event.UserEvent;
 import de.enough.skylight.renderer.Viewport;
 import de.enough.skylight.renderer.css.HtmlCssElement;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
-import de.enough.skylight.renderer.element.ContainingBlock;
 import de.enough.skylight.renderer.element.ElementAttributes;
 import de.enough.skylight.renderer.element.InlineContainingBlock;
 import de.enough.skylight.renderer.linebox.LayoutUtils;
@@ -31,6 +31,16 @@ public class InlineContainingBlockView extends ContainerView {
 		this.inlineBlock = inlineBlock;
 	}
 	
+	protected void initMargin(Style style, int availWidth) {
+		BlockContainingBlock block = ElementAttributes.getBlock(this.parentContainer);
+		super.initMargin(style, block.getAvailableContentWidth());
+	}
+
+	protected void initPadding(Style style, int availWidth) {
+		BlockContainingBlock block = ElementAttributes.getBlock(this.parentContainer);
+		super.initPadding(style, block.getAvailableContentWidth());
+	}
+
 	protected void initItem(Item item, BlockContainingBlock block) {
 		if(item instanceof BlockContainingBlock) {
 			ItemPreinit.preinit(item,	block.getAvailableContentWidth(),
@@ -129,6 +139,7 @@ public class InlineContainingBlockView extends ContainerView {
 		//TODO add culling
 		
 		paintLine(myItems,x,y,leftBorder,rightBorder,clipX,clipY,clipWidth,clipHeight,g);
+		
 		//#debug sl.debug.render
 		System.out.println("rendered " + this.inlineBlock + " : linebox : " + linebox + " : partition : " + partition );
 	}
