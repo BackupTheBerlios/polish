@@ -134,7 +134,6 @@ public class Partition {
 		this.parentItem = partition.getParentItem();
 			
 		if(partition.hasAttribute(ATTRIBUTE_NEWLINE)) {
-			System.out.println("is newline");
 			setAttribute(ATTRIBUTE_NEWLINE);
 		}
 	}
