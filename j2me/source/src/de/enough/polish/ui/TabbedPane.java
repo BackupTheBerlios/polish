@@ -1238,12 +1238,13 @@ implements ScreenInitializerListener
 	 */
 	public void pointerDragged(int x, int y) {
 		Container tabs = this.tabIconsContainer;
-		if (tabs.isInItemArea(x - tabs.relativeX, y - tabs.relativeY)) {
+		Screen scr = this.currentScreen;
+		if ((scr == null ||!scr.isMenuOpened()) && tabs.isInItemArea(x - tabs.relativeX, y - tabs.relativeY)) {
 			tabs.handlePointerDragged(x - tabs.relativeX, y - tabs.relativeY);
 			return;
 		}
-		if (this.currentScreen != null) {
-			this.currentScreen.pointerDragged(x, y);
+		if (scr != null) {
+			scr.pointerDragged(x, y);
 		} else {
 			super.pointerDragged(x, y);
 		}
@@ -1256,15 +1257,16 @@ implements ScreenInitializerListener
 	 */
 	public void pointerPressed(int x, int y) {
 		Container tabs = this.tabIconsContainer;
-		if (tabs.isInItemArea(x - tabs.relativeX, y - tabs.relativeY)) {
+		Screen scr = this.currentScreen;
+		if ((scr == null ||!scr.isMenuOpened()) && tabs.isInItemArea(x - tabs.relativeX, y - tabs.relativeY)) {
 			if (tabs.handlePointerPressed(x - tabs.relativeX, y - tabs.relativeY)) {
 				repaint();
 			}
 			return;
 		}
-		if (this.currentScreen != null) {
+		if (scr != null) {
 			this.lastInteractionTime = System.currentTimeMillis();
-			this.currentScreen.pointerPressed(x, y);
+			scr.pointerPressed(x, y);
 		} else {
 			super.pointerReleased(x, y);
 		}
@@ -1277,17 +1279,20 @@ implements ScreenInitializerListener
 	 */
 	public void pointerReleased(int x, int y) {
 		Container tabs = this.tabIconsContainer;
-		if (tabs.isInItemArea(x - tabs.relativeX, y - tabs.relativeY)) {
-			tabs.handlePointerReleased(x - tabs.relativeX, y - tabs.relativeY);
-			int index = tabs.getFocusedIndex();
-			if (index != -1) {
-				setFocus( index );
+		Screen scr = this.currentScreen;
+		if ((scr == null ||!scr.isMenuOpened()) && tabs.isInItemArea(x - tabs.relativeX, y - tabs.relativeY)) {
+			if (scr == null || scr.getRootContainer() == null || !scr.getRootContainer().isPresed()) {
+				tabs.handlePointerReleased(x - tabs.relativeX, y - tabs.relativeY);
+				int index = tabs.getFocusedIndex();
+				if (index != -1) {
+					setFocus( index );
+				}
+				return;
 			}
-			return;
 		}
-		if (this.currentScreen != null) {
+		if (scr != null) {
 			this.lastInteractionTime = System.currentTimeMillis();
-			this.currentScreen.pointerReleased(x, y);
+			scr.pointerReleased(x, y);
 		} else {
 			super.pointerReleased(x, y);
 		}
