@@ -245,7 +245,7 @@ extends ItemView
 	public void setScrollXOffset( int offset, boolean smooth) {
 		//#debug
 		System.out.println("Setting scrollXOffset to " + offset + " for " + this);
-		//try { throw new RuntimeException(); } catch (Exception e) { e.printStackTrace(); }
+		//try { throw new RuntimeException("for xOffset=" + offset); } catch (Exception e) { e.printStackTrace(); }
 		if (!smooth  
 		//#ifdef polish.css.scroll-mode
 			|| !this.parentContainer.scrollSmooth
@@ -1663,20 +1663,21 @@ extends ItemView
 	
 	//#if polish.hasPointerEvents
 	private boolean startHorizontalScroll(int x, int y) {
-		int scrollDiff = Math.abs(this.xOffset - this.lastPointerPressXOffset);
-		if ( scrollDiff > 20 ) {
+		int offset = this.xOffset;
+		int scrollDiff = Math.abs(offset - this.lastPointerPressXOffset);
+		if ( scrollDiff > 20 || offset > 0 || offset + this.contentWidth < this.availableWidth) {
 			// we have scrolling in the meantime
 			// check if we should continue the scrolling:
 			long dragTime = System.currentTimeMillis() - this.lastPointerPressTime;
 			if (dragTime < 1000 && dragTime > 1) {
 				int direction = Canvas.RIGHT;
-				if (this.xOffset > this.lastPointerPressXOffset) {
+				if (offset > this.lastPointerPressXOffset) {
 					direction = Canvas.LEFT;
 				}
 				startScroll( direction,  (int) ((scrollDiff * 1000 ) / dragTime), 20 );
-			} else if (this.xOffset > 0) {
+			} else if (offset > 0) {
 				setScrollXOffset(0, true);
-			} else if (this.xOffset + this.contentWidth < this.availableWidth) {
+			} else if (offset + this.contentWidth < this.availableWidth) {
 				setScrollXOffset( this.availableWidth - this.contentWidth, true );
 			}
 			return true;
