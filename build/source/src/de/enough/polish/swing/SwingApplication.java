@@ -102,7 +102,7 @@ implements Application
 	public void setIcon( String url ) {
 		Image icon = SwingUtil.loadIcon( url );
 		if ( icon != null ) {
-			this.setIconImage( icon );
+			setIconImage( icon );
 		}
 	}
 	
