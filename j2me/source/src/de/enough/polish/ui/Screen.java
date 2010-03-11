@@ -390,6 +390,7 @@ implements UiElement, Animatable
 	protected Style landscapeStyle;
 	protected Style portraitStyle;
 	//#endif
+	private ScreenInitializerListener screenInitializerListener;
 	
 	/**
 	 * Creates a new screen, this constructor can be used together with the //#style directive.
@@ -1033,6 +1034,7 @@ implements UiElement, Animatable
 		this.contentHeight = height;
 			
 		adjustContentArea( x, y, originalWidth, height, cont );
+
 		height = this.contentHeight;
 		originalWidth = this.contentWidth;
 		
@@ -1127,20 +1129,26 @@ implements UiElement, Animatable
 		//#debug
 		System.out.println("calculateContentArea: x=" + this.contentX + ", y=" + this.contentY + ", width=" + this.contentWidth + ", height=" + this.contentHeight);
 		initContent(cont);
+		if (this.screenInitializerListener != null) {
+			this.screenInitializerListener.notifyScreenInitialized(this);
+		}
 	}
 	
 	/**
 	 * Subclasses may override this to adjust the content area of a screen.
-	 * The default implementation does nothing.
+	 * The default implementation informs a ScreenInitializerListener
 	 * 
 	 * @param x the contentX field
 	 * @param y the contentY field
 	 * @param width the contentWidth field
 	 * @param height the contentHeight field
 	 * @param cont the container, may be null
+	 * @see #setScreenInitializerListener(ScreenInitializerListener)
 	 */
 	protected void adjustContentArea(int x, int y, int width, int height, Container cont) {
-		// let subclasses do their magic here
+		if (this.screenInitializerListener != null) {
+			this.screenInitializerListener.adjustContentArea(this);
+		}
 	}
 
 	/**
@@ -5437,6 +5445,7 @@ implements UiElement, Animatable
 	 * is any) and is always shown (unless it is null).
 	 * 
 	 * @param subTitle the new subtitle element.
+	 * @see #getSubTitleItem()
 	 */
 	protected void setSubTitle( Item subTitle ) {
 		this.subTitle = subTitle;
@@ -6317,6 +6326,35 @@ implements UiElement, Animatable
 		return this.uiEventListener;
 	}
 	
+	/**
+	 * Retrieves the subtitle of this screen.
+	 * @return the subtitle, may be null
+	 * @see #setSubTitle(Item)
+	 */
+	public Item getSubTitleItem() {
+		return this.subTitle;
+	}
+	
+	/**
+	 * Sets a new screen initializer listener.
+	 * 
+	 * @param listener the screen initialization listener
+	 * @see #getScreenInitializerListener()
+	 */
+	public void setScreenInitializerListener(ScreenInitializerListener listener) {
+		this.screenInitializerListener = listener;
+	}
+
+	/**
+	 * Sets a new screen initializer listener.
+	 * 
+	 * @return listener the screen initialization listener
+	 * @see #setScreenInitializerListener(ScreenInitializerListener)
+	 */
+	public ScreenInitializerListener getScreenInitializerListener() {
+		return this.screenInitializerListener;
+	}
+	
 	//#if polish.useNativeGui
 		/**
 		 * Species a native implementation for this screen.
@@ -6338,6 +6376,7 @@ implements UiElement, Animatable
 			return this.nativeScreen;
 		}
 	//#endif
+
 
 
 //#ifdef polish.Screen.additionalMethods:defined
