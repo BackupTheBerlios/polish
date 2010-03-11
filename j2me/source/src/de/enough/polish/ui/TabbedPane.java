@@ -105,7 +105,9 @@ import de.enough.polish.util.ArrayList;
  * 
  * @since J2ME Polish 2.1 
  */
-public class TabbedPane extends Screen
+public class TabbedPane 
+extends Screen
+implements ScreenInitializerListener
 {
 	//#if polish.Bugs.needsNokiaUiForSystemAlerts && !polish.SystemAlertNotUsed
 		//#define tmp.needsNokiaUiForSystemAlerts
@@ -133,6 +135,10 @@ public class TabbedPane extends Screen
 			//#define tmp.useExternalMenuBar
 		//#endif
 	//#endif
+	
+	private final static int TAB_POSITION_TOP = 0;
+	private final static int TAB_POSITION_BOTTOM = 1;
+
 	private final ArrayList tabDisplayables;
 	private final Container tabIconsContainer;
 
@@ -780,6 +786,7 @@ public class TabbedPane extends Screen
 				this.tabListener.tabChangeEvent(screen);
 			}
 			this.currentScreen = screen;
+			screen.setScreenInitializerListener(this);
 			int screenFullWidth = getScreenFullWidth();
 			int screenFullHeight = getScreenFullHeight();
 			if (screenFullWidth != 0 && screenFullHeight != 0) {
@@ -994,15 +1001,17 @@ public class TabbedPane extends Screen
 	 * @see de.enough.polish.ui.Screen#paintBackgroundAndBorder(Graphics)
 	 */
 	protected void paintBackgroundAndBorder(Graphics g) {
-		Screen screen = this.currentScreen;
-		if (screen != null) {
-			if (!screen.isInitialized) {
+		Screen scr = this.currentScreen;
+		if (scr != null) {
+			if (!scr.isInitialized) {
+				System.out.println("XXXXXXXXXXXX*** Re-Intialzing the screen " + scr);
 				int w = getScreenFullWidth();
 				int h = Display.getScreenHeight();
-				h -= this.tabIconsContainer.itemHeight;
-				screen.init( w, h );
+				int tabHeight = this.tabIconsContainer.itemHeight;
+				h -= tabHeight;
+				scr.init( w, h );
 			}
-			screen.paintBackgroundAndBorder(g);
+			scr.paintBackgroundAndBorder(g);
 		} else {
 			super.paintBackgroundAndBorder(g);
 		}
@@ -1071,11 +1080,12 @@ public class TabbedPane extends Screen
 		super.init(width, height);
 		int tabHeight = this.tabIconsContainer.itemHeight;
 		height -= tabHeight;
-		if (this.currentScreen != null) {
-			this.currentScreen.init(width, height);
+		Screen scr = this.currentScreen;
+		if (scr != null) {
+			scr.init(width, height);
 			boolean alignWithMenuBar = false;
 			//#if tmp.useExternalMenuBar
-				MenuBar currentMenuBar = this.currentScreen.getMenuBar();
+				MenuBar currentMenuBar = scr.getMenuBar();
 				if (currentMenuBar.relativeY > height / 2) {
 					// menubar is located at bottom:
 					alignWithMenuBar = true;
@@ -1085,9 +1095,9 @@ public class TabbedPane extends Screen
 			//#elif tmp.menuFullScreen
 				
 			//#endif
-			if (this.isTabPositionTop) {
-				//todo align tabs to the top
-			} else {
+			// when the tab should be positioned at the top, the screen needs to be continuously re-initialized after calculateContentArea,
+			// see notifyScreenInitialized(Screen)
+			if (!this.isTabPositionTop) {
 				//#if tmp.menuFullScreen
 					//#if tmp.useExternalMenuBar
 						if (alignWithMenuBar) {
@@ -1121,6 +1131,19 @@ public class TabbedPane extends Screen
 	}
 	
 	
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#setStyle(de.enough.polish.ui.Style)
+	 */
+	public void setStyle(Style style) {
+		//#if polish.css.tabbedpane-tabbar-position
+			Integer tabsPositionInt = style.getIntProperty("tabbedpane-tabbar-position");
+			if (tabsPositionInt != null) {
+				this.isTabPositionTop = (tabsPositionInt.intValue() == TAB_POSITION_TOP);
+			}
+		//#endif
+		super.setStyle(style);
+	}
 
 	public void animate(long currentTime, ClippingRegion repaintRegion) {
 		super.animate(currentTime, repaintRegion);
@@ -1447,6 +1470,34 @@ public class TabbedPane extends Screen
 			return this.currentScreen.getRootContainer();
 		}		
 		return super.getRootContainer();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.ScreenInitializerListener#notifyScreenInitialized(de.enough.polish.ui.Screen)
+	 */
+	public void notifyScreenInitialized(Screen scr) {
+		if (this.isTabPositionTop) {
+			int tabHeight = this.tabIconsContainer.itemHeight;
+			int th = scr.getTitleHeight();
+			this.tabIconsContainer.relativeY = th;
+			Item subtitle = scr.getSubTitleItem();
+			if (subtitle != null) {
+				subtitle.relativeY += tabHeight;
+			}
+			scr.backgroundHeight += tabHeight;
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.ScreenInitializerListener#adjustContentArea(de.enough.polish.ui.Screen)
+	 */
+	public void adjustContentArea(Screen scr) {
+		if (this.isTabPositionTop) {
+			int tabHeight = this.tabIconsContainer.itemHeight;
+			scr.contentY += tabHeight;
+		}
 	}
 	
 	
