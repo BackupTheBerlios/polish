@@ -3188,7 +3188,12 @@ public abstract class Item implements UiElement, Animatable
 		//#endif
 		if ( this.isLayoutExpand ) {
 			if (cWidth < availableContentWidth) {
-				if (this.itemWidth + labelWidth <= availWidth && (this.label == null || !this.label.isLayoutNewlineAfter())) {
+				if (
+					//#if polish.css.max-width
+						this.maximumWidth == null && 
+					//#endif
+					this.itemWidth + labelWidth <= availWidth && (this.label == null || !this.label.isLayoutNewlineAfter())) 
+				{
 					this.itemWidth += availableContentWidth - cWidth - labelWidth;
 				} else {
 					this.itemWidth += availableContentWidth - cWidth;
@@ -3313,20 +3318,20 @@ public abstract class Item implements UiElement, Animatable
 			this.view.initPadding(style, availWidth);
 		} else
 		//#endif
-		{
+	{
 			initPadding(style, availWidth);
 		}
-		
+	
 		//#ifdef polish.css.view-type
 		if (this.view != null) {
 			this.view.initMargin(style, availWidth);
 		} else
 		//#endif
-		{
+	{
 			initMargin(style, availWidth);
 		}
 	}
-	
+
 	/**
 	 * Initializes the margin of this item
 	 * Subclasses can override this (e.g. the container embedded in a screen)
@@ -3339,7 +3344,7 @@ public abstract class Item implements UiElement, Animatable
 		this.marginTop = style.getMarginTop(availWidth);
 		this.marginBottom = style.getMarginBottom(availWidth);
 	}
-	
+
 	/**
 	 * Initializes the padding of this item
 	 * Subclasses can override this (e.g. the container embedded in a screen)
@@ -3353,8 +3358,8 @@ public abstract class Item implements UiElement, Animatable
 		this.paddingBottom = style.getPaddingBottom(availWidth);
 		this.paddingVertical = style.getPaddingVertical(availWidth);
 		this.paddingHorizontal = style.getPaddingHorizontal(availWidth);
-	}
-	
+		}
+
 	/**
 	 * Sets the content width of this item.
 	 * Subclasses can override this to react to content width changes
