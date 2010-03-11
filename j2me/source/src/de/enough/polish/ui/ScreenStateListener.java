@@ -49,7 +49,7 @@ public interface ScreenStateListener {
 	 *    <li>There could be further events later onwards</li>
 	 * </ul> 
 	 * @param screen the de.enough.polish.ui.Screen that has been changed, please note that you need
-	 *        to import specfically the de.enough.polish.ui.Screen class and not the javax.microedition.lcdui.Screen class
+	 *        to import specifically the de.enough.polish.ui.Screen class and not the javax.microedition.lcdui.Screen class
 	 *        when you want to implement this listener.
 	 */
 	void screenStateChanged( Screen screen );
