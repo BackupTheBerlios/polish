@@ -3281,6 +3281,9 @@ public class Container extends Item {
 				} else if (this.yOffset > 0) {
 					setScrollYOffset(0, true);
 				}
+				if (this.isPressed) {
+					notifyItemPressedEnd();
+				}
 				return true;
 			}
 		}
@@ -3311,6 +3314,9 @@ public class Container extends Item {
 			if (processed) {
 				//#debug
 				System.out.println("pointerReleased at " + relX + "," + relY + " consumed by focusedItem " + item);
+				if (this.isPressed) {
+					notifyItemPressedEnd();
+				}
 				// layout could have been changed:
 				if (item.layout != itemLayout && isInitialized()) {
 					if (item.availableWidth != 0) {
