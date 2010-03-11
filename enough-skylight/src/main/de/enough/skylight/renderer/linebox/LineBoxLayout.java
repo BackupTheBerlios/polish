@@ -1,6 +1,8 @@
 package de.enough.skylight.renderer.linebox;
 
+import de.enough.polish.ui.Item;
 import de.enough.skylight.renderer.element.InlineContainingBlock;
+import de.enough.skylight.renderer.element.view.LayoutAttributes;
 import de.enough.skylight.renderer.partition.Partition;
 import de.enough.skylight.renderer.partition.PartitionList;
 
@@ -38,13 +40,21 @@ public class LineBoxLayout {
 		
 		int top = 0;
 		
+		Item currentPartitionItem = null;
+		
 		if(partitions.size() > 0) { 
 			for (int index = 0; index < partitions.size(); index++) {
 				Partition partition = partitions.get(index);
 				
+				Item partitionItem = partition.getParentItem();
+				if(currentPartitionItem != partitionItem ) {
+					currentPartitionItem = partitionItem;
+				}
+				
 				if(partition.getWidth() > 0) {
 					if(linebox != null && !linebox.overflows() && linebox.fits(partition) && !partition.hasAttribute(Partition.ATTRIBUTE_NEWLINE)) {
 						linebox.addPartition(partition);
+						LayoutAttributes.setLinebox(currentPartitionItem, linebox);
 					} else {
 						if(linebox != null) {
 							top += linebox.getLineHeight();
@@ -57,8 +67,10 @@ public class LineBoxLayout {
 						int offset = getLineOffset(top);
 						int width = getLineWidth(top);
 						linebox = null;
+						
 						if(!partition.hasAttribute(Partition.ATTRIBUTE_WHITESPACE)) {
 							linebox = new LineBox(partition, block, offset, top, width);
+							LayoutAttributes.setLinebox(currentPartitionItem, linebox);
 							lineboxes.add(linebox);
 						} else {
 							continue;

@@ -3,6 +3,7 @@ package de.enough.skylight.renderer.element.view;
 import de.enough.polish.ui.Item;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.element.ContainingBlock;
+import de.enough.skylight.renderer.linebox.LineBox;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.partition.Partition;
 
@@ -15,7 +16,7 @@ public class LayoutAttributes {
 	
 	static Integer SL_KEY_PARTITION = new Integer(0x03);
 	
-	static Integer SL_KEY_LINE_OFFSET = new Integer(0x04);
+	static Integer SL_KEY_LINEBOX = new Integer(0x04);
 	
 	public static void set(Item item, CssElement element, ContainingBlock containingBlock, BlockContainingBlock block) {
 		setCssElement(item, element);
@@ -68,6 +69,14 @@ public class LayoutAttributes {
 		} else {
 			return partition;
 		}	
+	}
+	
+	public static void setLinebox(Item item, LineBox linebox) {
+		item.setAttribute(SL_KEY_LINEBOX, linebox);
+	}
+	
+	public static LineBox getLineBox(Item item) {
+		return (LineBox)item.getAttribute(SL_KEY_LINEBOX);
 	}
 	
 	public static String toString(Item item) {

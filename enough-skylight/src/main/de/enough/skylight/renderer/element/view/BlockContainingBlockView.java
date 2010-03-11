@@ -5,6 +5,7 @@ import javax.microedition.lcdui.Graphics;
 import de.enough.polish.benchmark.Benchmark;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
+import de.enough.polish.util.ItemPreinit;
 import de.enough.skylight.renderer.Viewport;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.element.InlineContainingBlock;
@@ -140,7 +141,8 @@ public class BlockContainingBlockView extends ContainingBlockView {
 		
 		body.partition(bodyPartitions);
 		
-		bodyPartitions.sort();
+		//TODO check if really unneeded
+		//bodyPartitions.sort();
 		
 		//#mdebug sl.debug.layout
 		System.out.println("partitions for body " + body + " : ");
@@ -156,28 +158,15 @@ public class BlockContainingBlockView extends ContainingBlockView {
 		
 		this.bodyLines = bodyLayout.getLineBoxes();
 		
-		//TODO set relative y for scrolling
-		/*Item item = null;
-		for (int i = 0; i < this.bodyLines.size(); i++) {
-			LineBox linebox = this.bodyLines.get(i);
-			
-			int top = linebox.getTop();
-			
-			PartitionList partitions = linebox.getPartitions();
-			for (int j = 0; j < partitions.size(); j++) {
-				Partition partition = partitions.get(j);
-				int x = partition.getLeft();
-		
-				Item parent = partition.getParent();
-				if(parent instanceof TextBlock) {
-					item = parent;
-				}
-				
-				if(parent != null) {
-					parent.relativeY = top;
-				}
+		for (int i = 0; i < body.size(); i++) {
+			Item item = body.get(i);
+			LineBox linebox = LayoutAttributes.getLineBox(item);
+			if(linebox != null) {
+				//System.out.println(item + " : " + linebox);
+				item.relativeY = linebox.getBlockRelativeTop();
+				//System.out.println(item + " : relativeY : " + item.relativeY);
 			}
-		}	*/
+		}
 		
 		//#mdebug sl.debug.layout
 		System.out.println("lineboxes for body " + body + " : ");
@@ -189,6 +178,12 @@ public class BlockContainingBlockView extends ContainingBlockView {
 
 		this.contentWidth = getContentWidth(element, bodyLayout, availWidth);
 		this.contentHeight = getContentHeight(bodyLayout,floatLeftLayout,floatRightLayout);
+		
+		Item item = body.getFocusedItem();
+		if(item != null) {
+			System.out.println("focussing " + item);
+			scroll( 0, item.relativeX, item.relativeY, item.itemWidth, item.itemHeight, true );
+		}
 		
 		//#debug sl.debug.layout
 		System.out.println(this.block + " has dimension : " + this.contentWidth + "/" + this.contentHeight);

@@ -23,6 +23,9 @@ public class TextPartition extends Partition{
 		return this.length;
 	}
 	
+	/* (non-Javadoc)
+	 * @see de.enough.skylight.renderer.partition.Partition#toString()
+	 */
 	public String toString() {
 		return new ToStringHelper("TextPartition").
 		add("inline relative X", this.inlineRelativeLeft).

@@ -48,7 +48,7 @@ public class TextBlock extends StringItem implements Partable {
 		String text = getText();
 		Font font = getFont();
 		
-		int left = Partition.getInlineRelativeX(this);
+		int left = Partition.getRelativeX(this);
 		int right;
 		int height = font.getHeight();
 		int tokenWidth;

@@ -11,15 +11,23 @@ import de.enough.skylight.renderer.linebox.LineBox;
 
 public class Partition {
 	
-	public static int getInlineRelativeX(Item item) {
+	public static int getRelativeX(Item item) {
 		BlockContainingBlock block = LayoutAttributes.getBlock(item);
 		int blockContentX = block.getAbsoluteX() + block.getContentX();
-		return item.getAbsoluteX() - blockContentX;
+		int result = item.getAbsoluteX() - blockContentX;
+		//System.out.println("relative X for " + item + " : " + result );
+		return result;
+	}
+	
+	public static int getRelativeY(Item item) {
+		BlockContainingBlock block = LayoutAttributes.getBlock(item);
+		int blockContentY = block.getAbsoluteY() + block.getContentY();
+		int result = item.getAbsoluteY() - blockContentY;
+		//System.out.println("relative Y for " + item + " : " + result );
+		return result;
 	}
 	
 	public static void partitionInline(Item item, PartitionList partitions) {
-		int x = getInlineRelativeX(item);
-		
 		if(item.isVisible()) {
 			int height;
 			if(item instanceof ContainingBlock) {
@@ -32,6 +40,7 @@ public class Partition {
 				height = item.getContentHeight();
 			}
 			
+			int x = getRelativeX(item);
 		
 			int marginLeft = x;
 			int paddingLeft = x + UiAccess.getMarginLeft(item);
@@ -49,7 +58,7 @@ public class Partition {
 	}
 	
 	public static Partition partitionBlock(Item item) {
-		int x = getInlineRelativeX(item);
+		int x = getRelativeX(item);
 		
 		if(item.isVisible()) {
 			int width = item.itemWidth;
