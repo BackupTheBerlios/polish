@@ -656,12 +656,13 @@ public class HorizontalChoiceView extends ContainerView {
 						break;
 					}
 				}
-
+				x += getScrollXOffset();
 			}
 			if (index != this.currentItemIndex || !isMultiple) {
 				this.pointerReleasedIndex = index;
 				Item item = this.parentContainer.get(index);
 				notifyItemPressedStart(item);
+				super.handlePointerPressed(x, y);
 				return true;
 			} else {
 				this.pointerReleasedIndex = -1;
@@ -725,7 +726,7 @@ public class HorizontalChoiceView extends ContainerView {
 					setScrollXOffset( offset, true );
 					return true;
 				} else {
-					// handle anyhow, we don't anything funny happening in the original choicegroup:
+					// handle anyhow, we don't want anything funny happening in the original choicegroup:
 					return true;
 				}
 			}
@@ -774,6 +775,10 @@ public class HorizontalChoiceView extends ContainerView {
 			choiceGroup.setSelectedIndex( index, !item.isSelected );
 		}
 		this.parentContainer.notifyStateChanged();
+		int offset = getScrollXOffset();
+		if (offset + this.contentWidth < this.availableWidth) {
+			setScrollXOffset( this.availableWidth - this.contentWidth, true );
+		}
 		return true;
 	}
 	//#endif
