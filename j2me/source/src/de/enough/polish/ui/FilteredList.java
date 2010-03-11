@@ -220,7 +220,8 @@ implements ItemStateListener //, CommandListener
 			this.contentY += this.filterHeight;
 		} else {
 			this.filterTextField.relativeY = this.contentY + this.contentHeight;
-		}		
+		}
+		super.adjustContentArea(x, y, width, height, cont);
 	}
 
 	/* (non-Javadoc)

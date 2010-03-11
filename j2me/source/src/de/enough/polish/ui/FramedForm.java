@@ -576,6 +576,7 @@ public class FramedForm extends Form {
 		{
 			cont.setScrollYOffset( -(cont.getItemAreaHeight() - height));
 		}
+		super.adjustContentArea(x, yOffset, width, height, cont);
 	}	
 	
 	
