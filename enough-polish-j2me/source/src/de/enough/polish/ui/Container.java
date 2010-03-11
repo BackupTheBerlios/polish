@@ -1218,7 +1218,7 @@ public class Container extends Item {
 		if ( y + height + currentYOffset + yTopAdjust > verticalSpace ) {
 			// the area is too low, so scroll down (= increase the negative yOffset):
 			//#debug
-			System.out.println("scroll: item too low: verticalSpace=" + verticalSpace + "  y=" + y + ", height=" + height + ", yOffset=" + currentYOffset);
+			System.out.println("scroll: item too low: verticalSpace=" + verticalSpace + "  y=" + y + ", height=" + height + ", yOffset=" + currentYOffset + ", yTopAdjust=" + yTopAdjust + ", relativeY=" + this.relativeY + ", screen.contentY=" +  scr.contentY + ", scr=" + scr);
 			//currentYOffset += verticalSpace - (y + height + currentYOffset + yTopAdjust);
 			int newYOffset = verticalSpace - (y + height + yTopAdjust);
 			if ( isDownwards) {
@@ -1853,11 +1853,11 @@ public class Container extends Item {
 					}
 					else{
 						if(gameAction == Canvas.DOWN || gameAction == Canvas.UP ){
-							boolean scrollSmooth = true;
+							boolean smooth = true;
 							//#ifdef polish.css.scroll-mode
-								scrollSmooth = this.scrollSmooth;
+								smooth = this.scrollSmooth;
 							//#endif			
-							setScrollYOffset(offset, scrollSmooth);
+							setScrollYOffset(offset, smooth);
 						}
 						return true;
 					}
