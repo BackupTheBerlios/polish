@@ -122,13 +122,10 @@ public class HttpServer extends Thread
 	}
 }
 
-
- 
 class HttpRequestHandler implements Runnable
 {
     final static String CRLF = "\r\n";
     Socket socket;
-    InputStream input;
     OutputStream output;
     BufferedReader bufferedReader;
 	private final File baseDir;
@@ -143,7 +140,6 @@ class HttpRequestHandler implements Runnable
     {
 		this.socket = socket;
 		this.baseDir = baseDir;
-		this.input = socket.getInputStream();
 		this.output = socket.getOutputStream();
 		this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
     }
