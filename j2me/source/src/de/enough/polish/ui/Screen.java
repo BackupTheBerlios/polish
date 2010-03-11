@@ -4997,14 +4997,9 @@ implements UiElement, Animatable
 				if (!handled && this.repaintPreviousScreen) {
 					if (this.container != null) {
 						int left = this.container.relativeX;
-						int top = this.container.relativeY;
+						int top = this.container.relativeY - this.titleHeight;
 						int right = left + this.container.itemWidth;
 						int bottom = top + Math.min( this.contentHeight, this.container.itemHeight );
-						 //#if tmp.usingTitle
-							if (this.title != null) {
-								top -= this.title.itemHeight;
-							}
-						//#endif
 						if (x <= left || y <= top
 							 || x >= right || y >= bottom)
 						{
