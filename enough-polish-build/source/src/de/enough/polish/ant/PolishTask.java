@@ -417,7 +417,7 @@ public class PolishTask extends ConditionalTask {
 				System.out.println("Processing [" + numberOfDevices + "] devices...");
 			} 
 			this.extensionManager.notifyBuildStart(this.environment);
-			boolean hasExtensions = (this.javaExtensions.length > 0);
+			boolean hasExtensions = this.javaExtensions.length > 0;
 
 			int successCount = 0;
 			ArrayList failures = new ArrayList();
@@ -1152,7 +1152,7 @@ public class PolishTask extends ConditionalTask {
 						obfuscatorSetting.hasKeepDefinitions()) {
 					this.keepClasses = obfuscatorSetting.getPreserveClassNames();
 				}
-				if ((obfuscatorSetting.isEnabled())) {
+				if (obfuscatorSetting.isEnabled()) {
 					try {
 						Obfuscator obfuscator = Obfuscator.getInstance( obfuscatorSetting, getProject(), this.extensionManager, this.environment );
 						obfuscatorsList.add( obfuscator );
@@ -1165,7 +1165,7 @@ public class PolishTask extends ConditionalTask {
 				}
 
 			}
-			this.doObfuscate = (obfuscatorsList.size() > 0);
+			this.doObfuscate = obfuscatorsList.size() > 0;
 			if (this.doObfuscate) {
 				this.obfuscators = (Obfuscator[]) obfuscatorsList.toArray( new Obfuscator[ obfuscatorsList.size() ] );
 				//this.useDefaultPackage = this.buildSetting.useDefaultPackage();
@@ -1998,14 +1998,14 @@ public class PolishTask extends ConditionalTask {
 			// 3. The build.xml has been modified since the last run
 			// 4. One of the polish.css files has been modified since the last run 
 			// when only the CSS files have changed
-			boolean saveInAnyCase =  ( !targetFile.exists() )
-			|| ( sourceLastModified > targetLastModified )
-			|| ( buildXmlLastModified > targetLastModified )
-			|| ( this.preprocessor.isInPreprocessQueue( file.getFilePath() ) ); 
-			boolean preprocess = ( saveInAnyCase )
-			|| ( lastCssModification > targetLastModified)
-			|| ( this.lastRunFailed );
-			if (   preprocess ) {
+			boolean saveInAnyCase =  !targetFile.exists()
+				|| ( sourceLastModified > targetLastModified )
+				|| ( buildXmlLastModified > targetLastModified )
+				|| ( this.preprocessor.isInPreprocessQueue( file.getFilePath() ) ); 
+			boolean preprocess = saveInAnyCase
+				|| ( lastCssModification > targetLastModified)
+				|| this.lastRunFailed;
+			if ( preprocess ) {
 				// preprocess this file:
 				StringList sourceCode = new StringList( file.getContent() );
 				// generate the class-name from the file-name:
@@ -2020,7 +2020,7 @@ public class PolishTask extends ConditionalTask {
 				if (usePolishGui && result != Preprocessor.SKIP_FILE) {
 					// set the StyleSheet.display variable in all MIDlets:
 					String adjustedClassName = className;
-					if ( (this.midletClassesByName.get( adjustedClassName ) != null) ) {
+					if ( this.midletClassesByName.get( adjustedClassName ) != null ) {
 						sourceCode.reset();
 						//insertDisplaySetting( className, sourceCode );
 						sourceCode.reset();
@@ -2052,8 +2052,7 @@ public class PolishTask extends ConditionalTask {
 					// }
 					//}
 					// save modified file:
-					if ( ( saveInAnyCase ) 
-							|| (result == Preprocessor.CHANGED) ) 
+					if ( saveInAnyCase || result == Preprocessor.CHANGED ) 
 					{
 						//System.out.println( "preprocessed [" + className + "]." );
 						//file.saveToDir(targetDir, sourceCode.getArray(), false );
@@ -2204,7 +2203,7 @@ public class PolishTask extends ConditionalTask {
 				System.out.println("copying binary libraries to [" + targetDirName + "]...");
 				LibrarySetting[] settings = this.binaryLibraries.getLibraries();
 				LibraryProcessor[] processors = getLibraryProcessors( device, locale, this.environment );
-				boolean processLibraries = (processors != null && processors.length > 0);
+				boolean processLibraries = processors != null && processors.length > 0;
 				String[] fileNames = null;
 				for (int i = 0; i < settings.length; i++) {
 					LibrarySetting setting = settings[i];
@@ -3199,7 +3198,7 @@ public class PolishTask extends ConditionalTask {
 	}
 
 	private EmulatorSetting[] getEmulatorSettings() {
-		boolean useBuildControl = (getProject().getProperty("polish.buildcontrol.emulator.enabled") != null);
+		boolean useBuildControl = getProject().getProperty("polish.buildcontrol.emulator.enabled") != null;
 		if (useBuildControl) {
 			boolean enableEmulator = "true".equals(getProject().getProperty("polish.buildcontrol.emulator.enabled"));
 			if (!enableEmulator) {
