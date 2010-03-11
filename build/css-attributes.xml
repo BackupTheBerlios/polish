@@ -4943,7 +4943,7 @@
 		description="The image for the needle"
 		default="white"
 		id="424"
-		since="2.1.5"
+		since="2.2"
 	/>
 	
 	<attribute
@@ -4953,7 +4953,7 @@
 		description="The image for the background of the instrument"
 		default="white"
 		id="425"
-		since="2.1.5"
+		since="2.2"
 	/>
 	
 	<attribute
@@ -4963,7 +4963,7 @@
 		description="The X coordinate of the needle center (with respect to the background)."
 		default="-1"
 		id="426"
-		since="2.1.5"
+		since="2.2"
 	/>
 	
 	<attribute
@@ -4973,7 +4973,7 @@
 		description="The Y coordinate of the needle center (with respect to the background)"
 		default="-1"
 		id="427"
-		since="2.1.5"
+		since="2.2"
 	/>
 	
 	<attribute
@@ -4983,7 +4983,7 @@
 		description="The X coordinate of the needle rotation center (with respect to the upper-left corner of the needle)"
 		default="1"
 		id="428"
-		since="2.1.5"
+		since="2.2"
 	/>
 	
 	<attribute
@@ -4993,7 +4993,7 @@
 		description="The Y coordinate of the needle rotation center (with respect to the upper-left corner of the needle)"
 		default="-1"
 		id="429"
-		since="2.1.5"
+		since="2.2"
 	/>
 	
 	<attribute
@@ -5003,7 +5003,7 @@
 		description="The angle corresponding to the lowest value of the gauge."
 		default="180"
 		id="430"
-		since="2.1.5"
+		since="2.2"
 	/>
 	
 	<attribute
@@ -5013,7 +5013,7 @@
 		description="The angle corresponding to the highest value of the gauge."
 		default="0"
 		id="431"
-		since="2.1.5"
+		since="2.2"
 	/>
 	
 	<attribute
@@ -5023,7 +5023,7 @@
 		description="Specifies an RGB filter for the image of the needle"
 		default="none"
 		id="432"
-		since="2.1.5"
+		since="2.2"
 	/>
 	
 	<attribute
@@ -5033,7 +5033,7 @@
 		description="Specifies an RGB filter for the image of the clock face"
 		default="none"
 		id="433"
-		since="2.1.5"
+		since="2.2"
 	/>
 	
 	<attribute
@@ -5043,6 +5043,7 @@
 		description="The size of the shadow for every direction."
 		default="6"
 		id="434"
+		since="2.2"
 	/>
 	<attribute
 		name="drop-shadow-offsetx"
@@ -5051,6 +5052,7 @@
 		description="The x offset of the shadow. Negative values move the shadow to the left."
 		default="1"
 		id="435"
+		since="2.2"
 	/>
 	<attribute
 		name="drop-shadow-offsety"
@@ -5059,6 +5061,7 @@
 		description="The y offset of the shadow. Negative values move the shadow to the top."
 		default="2"
 		id="436"
+		since="2.2"
 	/>
 	<attribute
 		name="drop-shadow-inner-color"
@@ -5068,6 +5071,7 @@
 		description="The color of the inner shadow. The color must not be fully opaque!"
 		default="#A0909090"
 		id="437"
+		since="2.2"
 	/>
 	
 	<attribute
@@ -5078,60 +5082,70 @@
 		description="The color of the outer shadow, which must be less opaque than the start-color and the difference between them should be at least size."
 		default="#20909090"
 		id="438"
+		since="2.2"
 	/>
         
-        <attribute
+    <attribute
 		name="gauge-clock-instrument-needle-shadow-image"
 		type="imageurl"
 		appliesTo="ClockInstrumentGaugeView"
 		description="The image for the shadow of the needle"
 		default="white"
 		id="439"
-		since="2.1.5"
+		since="2.2"
 	/>
 
 
-        <attribute
+    <attribute
 		name="gauge-clock-instrument-needle-shadow-center-x"
 		type="integer"
 		appliesTo="ClockInstrumentGaugeView"
 		description="The X coordinate of the needle shadow rotation center."
 		default="0"
 		id="440"
-		since="2.1.5"
+		since="2.2"
 	/>
 
-        <attribute
+    <attribute
 		name="gauge-clock-instrument-needle-shadow-center-y"
 		type="integer"
 		appliesTo="ClockInstrumentGaugeView"
 		description="The Y coordinate of the needle shadow rotation center."
 		default="0"
 		id="441"
-		since="2.1.5"
+		since="2.2"
 	/>
 
-        <attribute
+    <attribute
 		name="gauge-clock-instrument-needle-shadow-offset-x"
 		type="integer"
 		appliesTo="ClockInstrumentGaugeView"
 		description="The horizontal offset of the shadow, in relation to the needle image."
 		default="0"
 		id="442"
-		since="2.1.5"
+		since="2.2"
 	/>
 
-        <attribute
+    <attribute
 		name="gauge-clock-instrument-needle-shadow-offset-y"
 		type="integer"
 		appliesTo="ClockInstrumentGaugeView"
 		description="The vertical offset of the shadow, in relation to the needle image."
 		default="0"
 		id="443"
-		since="2.1.5"
+		since="2.2"
 	/>
 
-	
+	<attribute
+		name="tabbedpane-tabbar-position"
+		type="integer"
+		appliesTo="TabbedPane"
+		description="Position of the tabs within a TabbedPane."
+		default="bottom"
+		values="top,bottom"
+		id="444"
+		since="J2ME Polish 2.2"
+	/>
 	
 	
 <!--
