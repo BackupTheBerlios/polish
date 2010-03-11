@@ -226,6 +226,10 @@ public class HorizontalChoiceView extends ContainerView {
 			if (itemHeight > height ) {
 				height = itemHeight;
 			}
+			boolean isLast = (i == items.length - 1);
+			if ( isLast && item.isLayoutRight() && (completeWidth  + item.itemWidth < availWidth) ) {
+				completeWidth = availWidth - item.itemWidth;
+			}
 			item.relativeX = completeWidth + contentStartX;
 			item.relativeY = 0;
 			int startX = completeWidth;
