@@ -32,7 +32,6 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 //#if polish.android1.5
-	import de.enough.polish.android.midlet.MIDlet;
 import de.enough.polish.android.midlet.MidletBridge;
 //#endif
 import de.enough.polish.util.ArrayList;
