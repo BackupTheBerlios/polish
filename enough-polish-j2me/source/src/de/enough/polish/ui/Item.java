@@ -3693,7 +3693,7 @@ public abstract class Item implements UiElement, Animatable
 			return;
 		}
 		//#debug
-		System.out.println("notifyItemPressedEnd for " + this);
+		System.out.println("notifyItemPressedEnd for " + this + ", normalStyle=" + (this.normalStyle == null ? "<none>" : this.normalStyle.name ) + ", current=" + (this.style == null ? "<none>" : this.style.name) );
 		this.isPressed = false;
 		//#if polish.css.pressed-style
 			Style previousStyle = this.normalStyle;
@@ -3713,11 +3713,14 @@ public abstract class Item implements UiElement, Animatable
 		//#if tmp.handleEvents
 			EventManager.fireEvent( EventManager.EVENT_UNPRESS, this, null); 
 		//#endif
+		if (this.parent != null) {
+			this.parent.notifyItemPressedEnd();
+		}
 	}
 
 
 	/**
-	 * Determines whether the given relative x/y position is inside of this item's content area.
+	 * Determines whether the given relative x/y position is inside of this item's (visible) content area.
 	 * Subclasses which extend their area over the declared/official content area, which is determined
 	 * in the initContent() method (like popup items), might want to override this method or possibly the getContentX(), getContentY() methods.
 	 * It is assumed that the item has been initialized before.
@@ -3730,15 +3733,19 @@ public abstract class Item implements UiElement, Animatable
 	public boolean isInContentArea( int relX, int relY ) {
 		int contTop = this.contentY;
 		int contLeft = this.contentX;
-		if ( relY < contTop || relX < contLeft || relY > contTop + this.contentHeight || relX > contLeft + this.contentWidth) {
+		int contW = this.contentWidth;
+		if (contW > this.availContentWidth) {
+			contW = this.availContentWidth;
+		}
+		if ( relY < contTop || relX < contLeft || relY > contTop + this.contentHeight || relX > contLeft + contW) {
 			//#debug
 			System.out.println("isInContentArea(" + relX + "," + relY + ") = false: contentY=" + this.contentY + ", contentY + contentHeight=" + (contTop + this.contentHeight) + " (" + this +")");
 			//#debug
-			System.out.println("isInContentArea(" + relX + "," + relY + ") = false: contentX=" + this.contentX + ", contentX + contentWidth=" + (contLeft + this.contentWidth) + " (" + this +")");
+			System.out.println("isInContentArea(" + relX + "," + relY + ") = false: contentX=" + this.contentX + ", contentX + contentWidth=" + (contLeft + contW) + " (" + this +")");
 			return false;
 		}
 		//#debug
-		System.out.println("isInContentArea(" + relX + "," + relY + ") = true: contentX=" + this.contentX + ", contentX + contentWidth=" + (contLeft + this.contentWidth) + ", contentY=" + this.contentY + ", contentY + contentHeight=" + (contTop + this.contentHeight) + " (" + this +")");
+		System.out.println("isInContentArea(" + relX + "," + relY + ") = true: contentX=" + this.contentX + ", contentX + contentWidth=" + (contLeft + contW) + ", contentY=" + this.contentY + ", contentY + contentHeight=" + (contTop + this.contentHeight) + " (" + this +")");
 		return true;
 	}
 	
