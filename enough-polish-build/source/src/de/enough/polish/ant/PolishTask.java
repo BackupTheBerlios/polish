@@ -26,7 +26,6 @@
 package de.enough.polish.ant;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -473,8 +472,6 @@ public class PolishTask extends ConditionalTask {
 					System.out.println();
 				}
 			}
-			test();
-			deploy();
 			finishProject();
 
 			if (abortOnError || failures.size() == 0 ) {
@@ -3230,63 +3227,12 @@ public class PolishTask extends ConditionalTask {
 		}
 	}
 
-	/**
-	 * 
-	 */
-	private void test() {
-		// TODO enough implement test
-
-	}
-
-	/**
-	 * 
-	 */
-	private void deploy() {
-		// TODO enough implement deploy
-
-	}
-
-
 	public Device[] getDevices() {
 		return this.devices;
 	}
 
 	public Environment getEnvironment() {
 		return this.environment;
-	}
-
-	/**
-	 * <p>Accepts only non CSS-files.</p>
-	 *
-	 * <p>Copyright Enough Software 2004, 2005</p>
-
-	 * <pre>
-	 * history
-	 *        19-Feb-2004 - rob creation
-	 * </pre>
-	 * @author Robert Virkus, robert@enough.de
-	 */
-	private static class CssFileFilter implements FileFilter {
-
-		/* (non-Javadoc)
-		 * @see java.io.FileFilter#accept(java.io.File)
-		 */
-		public boolean accept(File file) {
-			if (file.isDirectory()) {
-				return false;
-			}
-			String extension = file.getName();
-			int extPos = extension.lastIndexOf('.'); 
-			if ( extPos != -1) {
-				extension = extension.substring( extPos + 1 ); 
-			}
-			//TODO enough also filter settings.xml
-			if ( ("css".equals( extension )) || ("CSS".equals(extension)) ) {
-				return false;
-			} else {
-				return true;
-			}
-		}
 	}
 
 	private static class FailureInfo {
