@@ -4,7 +4,6 @@ package de.enough.polish.ui;
 
 import javax.microedition.lcdui.Canvas;
 
-import de.enough.polish.ui.Displayable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.rms.RecordStoreException;
 
@@ -881,7 +880,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 	{
 		
 		if (this.numberOfMatches > 0 && this.isOpen) {
-			System.out.println("painting choices");
+//			System.out.println("painting choices");
 			if (this.refreshChoices) {
 				this.elementX = getChoicesX(leftBorder, rightBorder,
 						this.choicesContainer.getItemWidth(
