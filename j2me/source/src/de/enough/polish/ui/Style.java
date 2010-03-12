@@ -35,9 +35,7 @@ import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.io.Externalizable;
 import de.enough.polish.io.Serializer;
-import de.enough.polish.util.HashMap;
 import de.enough.polish.util.IntHashMap;
-
 
 /**
  * <p>Style defines the design of any widget.</p>

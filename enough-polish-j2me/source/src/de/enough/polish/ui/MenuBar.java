@@ -42,7 +42,6 @@ import de.enough.polish.util.IdentityArrayList;
 import de.enough.polish.util.Locale;
 
 //#if polish.android
-import de.enough.polish.android.midlet.MIDlet;
 import de.enough.polish.android.midlet.MidletBridge;
 //#endif
 
