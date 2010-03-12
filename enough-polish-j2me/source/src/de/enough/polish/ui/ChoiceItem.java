@@ -542,7 +542,7 @@ public class ChoiceItem extends IconItem
 			this.boxImage = this.plain;
 		}
 		//#if polish.css.checked-style
-			//System.out.println("select occurrend, all styles defined=" + (this.styleNormal != null) + ( this.styleNormalFocused != null) + ( this.styleChecked != null) + ( this.styleCheckedFocused != null) + ", isFocused=" + this.isFocused);
+			//System.out.println("select occurred, all styles defined=" + (this.styleNormal != null) + ( this.styleNormalFocused != null) + ( this.styleChecked != null) + ( this.styleCheckedFocused != null) + ", isFocused=" + this.isFocused);
 			if (select) {
 				if (this.isFocused && this.styleCheckedFocused != null) {
 					setStyle( this.styleCheckedFocused);
@@ -669,5 +669,27 @@ public class ChoiceItem extends IconItem
 		return this.isSelected;
 	}
 
+	//#if polish.css.portrait-style || polish.css.landscape-style
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#onScreenSizeChanged(int, int)
+	 */
+	public void onScreenSizeChanged( int screenWidth, int screenHeight ) {
+		super.onScreenSizeChanged(screenWidth, screenHeight);
+		if (this.isSelected) {
+			if (this.isFocused && this.styleCheckedFocused != null) {
+				setStyle( this.styleCheckedFocused);
+			} else if (!this.isFocused && this.styleChecked != null) {
+				setStyle( this.styleChecked);
+			}
+		} else {
+			if (this.isFocused && this.styleNormalFocused != null) {
+				setStyle(this.styleNormalFocused);
+			} else if (!this.isFocused && this.styleNormal != null) {
+				setStyle(this.styleNormal);
+			}
+		}
 
+	}
+	//#endif
 }
