@@ -4983,6 +4983,20 @@ public final class UiAccess {
 		screen.init(Display.getScreenWidth(),Display.getScreenHeight());
 	}
 	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Intializes the specified screen
+	 * @param screen the screen
+	 */
+	public static void initView(ContainerView view, Container container, int firstLineWidth, int availWidth,
+			int availHeight)
+	{
+		view.parentItem = container;
+		view.parentContainer = container;
+		view.init(container, firstLineWidth,availWidth,availHeight);
+	}
+	//#endif
 
 	//#if polish.usePolishGui
 	/**
