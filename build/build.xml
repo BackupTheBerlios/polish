@@ -1388,6 +1388,7 @@
 	</target>
 
 	<target name="checkstyle">
+		<mkdir dir="build" />
 		<checkstyle config="checkstyle-config.xml" failOnViolation="false">
 			<fileset dir="source/src" includes="**/*.java"/>
 			<fileset dir="source/extensions" includes="**/*.java"/>
