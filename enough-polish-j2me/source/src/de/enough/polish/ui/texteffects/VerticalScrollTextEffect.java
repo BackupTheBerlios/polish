@@ -31,11 +31,7 @@ import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.ui.AnimationThread;
 import de.enough.polish.ui.ClippingRegion;
-import de.enough.polish.ui.Container;
-import de.enough.polish.ui.DebugHelper;
-import de.enough.polish.ui.FramedForm;
 import de.enough.polish.ui.Item;
-import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.TextEffect;
