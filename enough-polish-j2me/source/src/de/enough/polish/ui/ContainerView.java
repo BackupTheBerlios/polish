@@ -876,6 +876,22 @@ extends ItemView
 			
 		//#endif
 	}
+	
+	/**
+	 * Returns the content width
+	 * @return the content width
+	 */
+	public int getContentWidth() {
+		return this.contentWidth;
+	}
+	
+	/**
+	 * Returns the content height
+	 * @return the content height
+	 */
+	public int getContentHeight() {
+		return this.contentHeight;
+	}
 		
 	/**
 	 * Determines whether this view should be expanded horizontally
@@ -1805,5 +1821,13 @@ extends ItemView
 	 */
 	public void setAppearanceMode(int appearanceMode) {
 		this.appearanceMode = appearanceMode;
+	}
+	
+	/**
+	 * Returns the appearance mode for this view
+	 * @return the appearance mode for this view
+	 */
+	public int getAppearanceMode() {
+		return this.appearanceMode;
 	}
 }
