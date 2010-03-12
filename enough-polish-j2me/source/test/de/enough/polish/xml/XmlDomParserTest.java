@@ -58,11 +58,11 @@ public class XmlDomParserTest extends TestCase
 	
 	public void testPerformance() throws IOException {
 		long startTime = System.currentTimeMillis();
-		XmlDomNode root = XmlDomParser.parseTree( new FileInputStream( new File( "source/test/de/enough/polish/xml/test.html")));
+		XmlDomParser.parseTree(getClass().getResourceAsStream("/source/test/de/enough/polish/xml/test.html"));
 		System.out.println("XmlDomNode parsing took " + (System.currentTimeMillis() - startTime) + " ms");
 		
 		startTime = System.currentTimeMillis();
-		SimplePullParser parser = new XmlPullParser( new InputStreamReader(new FileInputStream( new File( "source/test/de/enough/polish/xml/test.html"))) );
+		SimplePullParser parser = new XmlPullParser(new InputStreamReader(getClass().getResourceAsStream("/source/test/de/enough/polish/xml/test.html")));
 		while (parser.next() != SimplePullParser.END_DOCUMENT)
 	    {
 	      if (parser.getType() == SimplePullParser.START_TAG
