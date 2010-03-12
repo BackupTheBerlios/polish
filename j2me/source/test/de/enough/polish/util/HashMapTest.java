@@ -329,7 +329,7 @@ public class HashMapTest extends TestCase {
 	
 	public void testContainsKey() {
 		System.out.println(">>> containsKey()");
-		HashMap<Integer, String> map = new HashMap<Integer, String>();
+		HashMap map = new HashMap();
 		for (int i = 0; i < TEST_RUNS; i++) {
 			Integer key = this.integerKeys[i];
 			String value = this.stringKeys[i];
@@ -377,7 +377,7 @@ public class HashMapTest extends TestCase {
 	
 	public void testContainsValue() {
 		System.out.println(">>> containsValue()");
-		HashMap<Integer, String> map = new HashMap<Integer, String>();
+		HashMap map = new HashMap();
 		for (int i = 0; i < TEST_RUNS; i++) {
 			Integer key = this.integerKeys[i];
 			String value = this.stringKeys[i];
@@ -425,7 +425,7 @@ public class HashMapTest extends TestCase {
 
 	public void testValues() {
 		System.out.println(">>> values()");
-		HashMap<Integer, String> map = new HashMap<Integer, String>();
+		HashMap map = new HashMap();
 		Object[] values = map.values();
 		assertEquals( 0, values.length );
 		for (int i = 0; i < TEST_RUNS; i++) {
