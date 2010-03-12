@@ -100,23 +100,21 @@ public class CssElement implements HtmlCssElement{
 		
 		if(this.block != null) {
 			setContainingBlock(this.block);
-			Container container = this.block.getContainer();
-			container.requestInit();
-			container.getScreen().repaint();
+			this.block.requestInit();
+			this.block.getScreen().repaint();
 		}
 	}
 	
 	public void setContainingBlock(ContainingBlock containingBlock) {
 		if(containingBlock != null) {
-			Container container = containingBlock.getContainer();
-			CssStyle.apply(this.style, container);
+			CssStyle.apply(this.style, containingBlock);
 			
 			if(this.interactive) {
 				//#debug sl.debug.event
 				System.out.println("element " + this + " is interactive");
-				container.setAppearanceMode(Item.INTERACTIVE);
+				containingBlock.setAppearanceMode(Item.INTERACTIVE);
 			} else {
-				container.setAppearanceMode(Item.PLAIN);
+				containingBlock.setAppearanceMode(Item.PLAIN);
 			}
 		}
 	}
@@ -176,7 +174,7 @@ public class CssElement implements HtmlCssElement{
 			if(this.interactive) {
 				//#debug sl.debug.event
 				System.out.println("element " + this + " is interactive");
-				block.getContainer().setAppearanceMode(Item.INTERACTIVE);
+				block.setAppearanceMode(Item.INTERACTIVE);
 			} 
 			return block;
 		} else {
@@ -184,7 +182,7 @@ public class CssElement implements HtmlCssElement{
 			if(this.interactive) {
 				//#debug sl.debug.event
 				System.out.println("element " + this + " is interactive");
-				block.getContainer().setAppearanceMode(Item.INTERACTIVE);
+				block.setAppearanceMode(Item.INTERACTIVE);
 			} 
 			return block;
 		} 

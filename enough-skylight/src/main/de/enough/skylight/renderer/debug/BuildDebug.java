@@ -37,7 +37,7 @@ public class BuildDebug {
 	
 	static void printBlock(ContainingBlock block, int depth) {
 		String indent = getIndent(depth);
-		Container blockContainer = block.getContainer();
+		Container blockContainer = block;
 		
 		//#debug sl.debug.build
 		System.out.println(indent + block);

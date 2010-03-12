@@ -1,6 +1,5 @@
 package de.enough.skylight.renderer.element;
 
-import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.ToStringHelper;
@@ -11,7 +10,7 @@ import de.enough.skylight.renderer.partition.Partable;
 import de.enough.skylight.renderer.partition.Partition;
 import de.enough.skylight.renderer.partition.PartitionList;
 
-public class InlineContainingBlock extends Container implements ContainingBlock {
+public class InlineContainingBlock extends ContainingBlock {
 	
 	InlineContainingBlockView inlineView;
 	
@@ -49,6 +48,21 @@ public class InlineContainingBlock extends Container implements ContainingBlock 
 		block.addToRightFloat(item);
 	}
 	
+	public InlineContainingBlock getBody() {
+		BlockContainingBlock block = LayoutAttributes.getBlock(this);
+		return block.getBody();
+	}
+	
+	public InlineContainingBlock getLeftFloat() {
+		BlockContainingBlock block = LayoutAttributes.getBlock(this);
+		return block.getLeftFloat();
+	}
+	
+	public InlineContainingBlock getRightFloat() {
+		BlockContainingBlock block = LayoutAttributes.getBlock(this);
+		return block.getRightFloat();
+	}
+	
 	public void partition(PartitionList partitions) {
 		Partition.partitionInline(this, partitions);
 		
@@ -63,23 +77,9 @@ public class InlineContainingBlock extends Container implements ContainingBlock 
 		}
 	}
 	
-	public Container getContainer() {
-		return this;
-	}
-	
-	protected Style focus(Style focusStyle, int direction) {
-		requestInit();
-		Style style = super.focus(focusStyle, direction);
-		return style;
-	}
-
-	public void defocus(Style originalStyle) {
-		requestInit();
-		super.defocus(originalStyle);
-	}
-	
 	public String toString() {
 		return new ToStringHelper("InlineContainingBlock").
+		add("focused", this.isFocused).
 		add("element", LayoutAttributes.getCssElement(this)).
 		toString();
 	}

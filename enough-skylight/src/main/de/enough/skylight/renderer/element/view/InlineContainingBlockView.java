@@ -19,14 +19,12 @@ public class InlineContainingBlockView extends ContainingBlockView {
 
 	public static Dimension DIMENSION_ZERO = new Dimension(0);
 	
-	transient InlineContainingBlock inlineBlock;
-	
 	transient int[] itemXOffsets;
 	
 	transient int[] itemYOffsets;
 	
 	public InlineContainingBlockView(InlineContainingBlock inlineBlock) {
-		this.inlineBlock = inlineBlock;
+		super(inlineBlock);
 	}
 	
 	protected void initMargin(Style style, int availWidth) {
@@ -119,7 +117,7 @@ public class InlineContainingBlockView extends ContainingBlockView {
 		
 		if(interactive) {
 			//#debug sl.debug.event
-			System.out.println(this.inlineBlock + " has interactive children, setting to interactive");
+			System.out.println(this.containingBlock + " has interactive children, setting to interactive");
 			
 			this.parentContainer.setAppearanceMode(Item.INTERACTIVE);
 			setAppearanceMode(Item.INTERACTIVE);
@@ -128,8 +126,15 @@ public class InlineContainingBlockView extends ContainingBlockView {
 		this.contentHeight = maxHeight;
 		this.contentWidth = completeWidth;
 		
+		Item item = this.parentContainer.getFocusedItem();
+		Container parent = this.parentContainer;
+		if(item != null && parent.isFocused && !(item instanceof InlineContainingBlock) && !(item instanceof BlockContainingBlock)) {
+			System.out.println("scrolling to item " + item + " : relative y " + item.relativeY + " for " + this.parentContainer);
+			scroll( 0, item.relativeX, item.relativeY, item.itemWidth, item.itemHeight, true );
+		}
+		
 		//#debug sl.debug.layout
-		System.out.println(this.inlineBlock + " has dimension : " + this.contentWidth + "/" + this.contentHeight);
+		System.out.println(this.containingBlock + " has dimension : " + this.contentWidth + "/" + this.contentHeight);
 	}
 	
 	protected void paintContent(Container container, Item[] myItems, int x,
@@ -143,7 +148,7 @@ public class InlineContainingBlockView extends ContainingBlockView {
 		paintLine(myItems,x,y,leftBorder,rightBorder,clipX,clipY,clipWidth,clipHeight,g);
 		
 		//#debug sl.debug.render
-		System.out.println("rendered " + this.inlineBlock + " : linebox : " + linebox + " : partition : " + partition );
+		System.out.println("rendered " + this.containingBlock + " : linebox : " + linebox + " : partition : " + partition );
 	}
 	
 	protected void paintLine(Item[] myItems, int x,

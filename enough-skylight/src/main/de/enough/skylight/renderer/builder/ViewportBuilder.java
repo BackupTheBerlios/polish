@@ -148,7 +148,7 @@ public class ViewportBuilder {
 		if(element.hasElements())
 		{
 			ContainingBlock block = element.getContainingBlock();
-			LayoutAttributes.set(block.getContainer(), element, parent, parentBlock);
+			LayoutAttributes.set(block, element, parent, parentBlock);
 			
 			if(element.isFloat()) {
 				if(element.isFloat(HtmlCssElement.Float.LEFT)) {

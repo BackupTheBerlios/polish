@@ -18,8 +18,6 @@ import de.enough.skylight.renderer.partition.PartitionList;
 
 public class BlockContainingBlockView extends ContainingBlockView {
 	
-	transient BlockContainingBlock block;
-	
 	transient LineBoxList bodyLines;
 	
 	transient LineBoxList floatLeftLines;
@@ -29,18 +27,18 @@ public class BlockContainingBlockView extends ContainingBlockView {
 	transient LineBox paintLineBox;
 	
 	public BlockContainingBlockView(BlockContainingBlock block) {
-		this.block = block;
+		super(block);
 	}
 
 	protected void initContent(Item parentContainerItem, int firstLineWidth,
 			int availWidth, int availHeight) {
 		//#debug sl.profile.layout
-		Benchmark.start("initContent for block " + this.block);
+		Benchmark.start("initContent for block " + this.containingBlock);
 		
 		super.initContent(parentContainerItem, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
 		
 		//#debug sl.profile.layout
-		Benchmark.stop("initContent for block " + this.block,"done");
+		Benchmark.stop("initContent for block " + this.containingBlock,"done");
 		
 		CssElement element = LayoutAttributes.getCssElement(parentContainerItem);
 		
@@ -49,7 +47,7 @@ public class BlockContainingBlockView extends ContainingBlockView {
 			setAppearanceMode(Item.INTERACTIVE);
 		}
 		
-		InlineContainingBlock floatLeft = this.block.getLeftFloat();
+		InlineContainingBlock floatLeft = this.containingBlock.getLeftFloat();
 		
 		LineBoxLayout floatLeftLayout = null;
 		if(floatLeft != null) {
@@ -90,7 +88,7 @@ public class BlockContainingBlockView extends ContainingBlockView {
 			//#enddebug
 		}
 		
-		InlineContainingBlock floatRight = this.block.getRightFloat();
+		InlineContainingBlock floatRight = this.containingBlock.getRightFloat();
 		
 		LineBoxLayout floatRightLayout = null;
 		if(floatRight != null) {
@@ -132,7 +130,7 @@ public class BlockContainingBlockView extends ContainingBlockView {
 			//#enddebug
 		}
 		
-		InlineContainingBlock body = this.block.getBody();
+		InlineContainingBlock body = this.containingBlock.getBody();
 		
 		PartitionList bodyPartitions = new PartitionList();
 		
@@ -161,9 +159,7 @@ public class BlockContainingBlockView extends ContainingBlockView {
 			Item item = body.get(i);
 			LineBox linebox = LayoutAttributes.getLineBox(item);
 			if(linebox != null) {
-				//System.out.println(item + " : " + linebox);
 				item.relativeY = linebox.getBlockRelativeTop();
-				//System.out.println(item + " : relativeY : " + item.relativeY);
 			}
 		}
 		
@@ -179,13 +175,13 @@ public class BlockContainingBlockView extends ContainingBlockView {
 		this.contentHeight = getContentHeight(bodyLayout,floatLeftLayout,floatRightLayout);
 		
 		Item item = body.getFocusedItem();
-		if(item != null) {
-			System.out.println("focussing " + item);
+		Container parent = this.parentContainer;
+		if(item != null && parent.isFocused && !(item instanceof InlineContainingBlock) && !(item instanceof BlockContainingBlock)) {
 			scroll( 0, item.relativeX, item.relativeY, item.itemWidth, item.itemHeight, true );
 		}
 		
 		//#debug sl.debug.layout
-		System.out.println(this.block + " has dimension : " + this.contentWidth + "/" + this.contentHeight);
+		System.out.println(this.containingBlock + " has dimension : " + this.contentWidth + "/" + this.contentHeight);
 	}
 	
 	public int getContentWidth(CssElement element, LineBoxLayout bodyLayout, int availWidth) {
@@ -227,7 +223,7 @@ public class BlockContainingBlockView extends ContainingBlockView {
 			//TODO add culling
 			
 			//#debug sl.debug.render
-			System.out.println("rendered " + this.block + " : linebox : " + linebox + " : partition : " + partition );
+			System.out.println("rendered " + this.containingBlock + " : linebox : " + linebox + " : partition : " + partition );
 			paintLayout(x, y, leftBorder, rightBorder, g);
 		}
 	}
@@ -262,7 +258,7 @@ public class BlockContainingBlockView extends ContainingBlockView {
 		LineBox linebox;
 		
 		if(this.floatLeftLines != null) {
-			InlineContainingBlock floatLeft = this.block.getLeftFloat();
+			InlineContainingBlock floatLeft = this.containingBlock.getLeftFloat();
 			for (int index = 0; index < this.floatLeftLines.size(); index++) {
 				linebox = this.floatLeftLines.get(index);
 				this.paintLineBox = linebox;
@@ -271,7 +267,7 @@ public class BlockContainingBlockView extends ContainingBlockView {
 		}
 		
 		if(this.floatRightLines != null) {
-			InlineContainingBlock floatRight = this.block.getRightFloat();
+			InlineContainingBlock floatRight = this.containingBlock.getRightFloat();
 			for (int index = 0; index < this.floatRightLines.size(); index++) {
 				linebox = this.floatRightLines.get(index);
 				this.paintLineBox = linebox;
@@ -280,7 +276,7 @@ public class BlockContainingBlockView extends ContainingBlockView {
 		}
 		
 		if(this.bodyLines != null) {
-			InlineContainingBlock body = this.block.getBody();
+			InlineContainingBlock body = this.containingBlock.getBody();
 			for (int index = 0; index < this.bodyLines.size(); index++) {
 				linebox = this.bodyLines.get(index);
 				this.paintLineBox = linebox;
