@@ -26,14 +26,9 @@
  */
 package de.enough.polish.ui;
 
-
-import de.enough.polish.ui.Displayable;
-
 import de.enough.polish.event.EventListener;
 import de.enough.polish.event.EventManager;
-
 import de.enough.polish.util.ArrayList;
-import java.util.Enumeration;
 
 /**
  * <p>Is used to animate Screens, Backgrounds and Items.</p>
