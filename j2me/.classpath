@@ -13,6 +13,7 @@
 	<classpathentry kind="lib" path="/enough-polish-build/import/doja-2.5.jar"/>
 	<classpathentry kind="lib" path="/enough-polish-build/import/samsung-api.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
 	<classpathentry kind="lib" path="/enough-polish-build/import/sensor.jar"/>
 	<classpathentry kind="lib" path="/enough-polish-build/import/windows.jar"/>
 	<classpathentry kind="lib" path="/enough-polish-build/import/advancedmultimedia-1.0.jar"/>
