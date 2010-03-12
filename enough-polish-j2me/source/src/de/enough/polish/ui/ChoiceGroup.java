@@ -978,7 +978,7 @@ implements Choice
 			ChoiceItem item = (ChoiceItem) this.itemsList.get( elementNum );
 			selectChoiceItem(item, selected);
 		} else {
-			if (selected == false) {
+			if (!selected) {
 				return; // ignore this call
 			}
 			if (this.selectedIndex != -1) {
@@ -1304,7 +1304,7 @@ implements Choice
 
 	//#ifdef polish.usePopupItem
 	private void openPopup() {
-		if (this.isPopupClosed == false) {
+		if (!this.isPopupClosed) {
 			return;
 		}
 		//#if polish.android1.5
