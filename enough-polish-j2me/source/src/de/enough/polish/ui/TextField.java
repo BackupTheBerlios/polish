@@ -31,19 +31,18 @@ import java.util.TimerTask;
 
 import javax.microedition.lcdui.Canvas;
 
-
-import de.enough.polish.ui.Displayable;
-
 //#if polish.TextField.useVirtualKeyboard
-import de.enough.polish.ui.keyboard.view.KeyboardView;
+	import de.enough.polish.ui.keyboard.view.KeyboardView;
 //#endif
 
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
+
 //#if polish.TextField.useDirectInput && polish.TextField.usePredictiveInput && !(polish.blackberry || polish.android)
 	import de.enough.polish.predictive.TextBuilder;
 	import de.enough.polish.predictive.trie.TrieProvider;
 //#endif
+
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.DeviceControl;
 import de.enough.polish.util.DeviceInfo;
@@ -1028,7 +1027,7 @@ public class TextField extends StringItem
 		private long androidLastInvalidCharacterTime;
 	//#endif
 	private int numberOfDecimalFractions = 2;
-	
+
 	//#if polish.TextField.useVirtualKeyboard
 	static IntHashMap keyboardViews = new IntHashMap();
 	//#endif
@@ -4720,7 +4719,7 @@ public class TextField extends StringItem
 	 * Note that you need to enable the predictive input mode using the preprocessing variable
 	 * <code>polish.TextField.usePredictiveInputMode</code>.
 	 * 
-	 * @return ArrayList<String> of allowed words - null when no predictive mode is used
+	 * @return ArrayList&lt;String&gt; of allowed words - null when no predictive mode is used
 	 */
 	public ArrayList getPredictiveMatchingWords() {
 		//#if tmp.usePredictiveInput
