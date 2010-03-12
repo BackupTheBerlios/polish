@@ -3554,7 +3554,7 @@ public final class UiAccess {
 	 * <code>polish.TextField.usePredictiveInputMode</code>.
 	 * 
 	 * @param field the textfield
-	 * @return ArrayList<String> of allowed words - null when no preditive mode is used
+	 * @return ArrayList&lt;String&gt; of allowed words - null when no preditive mode is used
 	 */
 	public static ArrayList getPredictiveMatchingWords(javax.microedition.lcdui.TextField field)
 	{
@@ -3569,7 +3569,7 @@ public final class UiAccess {
 	 * <code>polish.TextField.usePredictiveInputMode</code>.
 	 * 
 	 * @param field the textfield
-	 * @return ArrayList<String> of allowed words - null when no predictive mode is used
+	 * @return ArrayList&lt;String&gt; of allowed words - null when no predictive mode is used
 	 */
 	public static ArrayList getPredictiveMatchingWords(TextField field)
 	{
