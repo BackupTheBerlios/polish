@@ -141,8 +141,7 @@ public class BlockContainingBlockView extends ContainingBlockView {
 		
 		body.partition(bodyPartitions);
 		
-		//TODO check if really unneeded
-		//bodyPartitions.sort();
+		bodyPartitions.sort();
 		
 		//#mdebug sl.debug.layout
 		System.out.println("partitions for body " + body + " : ");
