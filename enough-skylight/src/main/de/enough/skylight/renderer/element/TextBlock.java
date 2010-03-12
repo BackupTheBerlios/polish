@@ -7,8 +7,8 @@ import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.StringTokenizer;
 import de.enough.polish.util.TextUtil;
-import de.enough.skylight.renderer.element.view.LayoutAttributes;
-import de.enough.skylight.renderer.linebox.LineBox;
+import de.enough.skylight.renderer.layout.LayoutAttributes;
+import de.enough.skylight.renderer.linebox.Linebox;
 import de.enough.skylight.renderer.partition.Partable;
 import de.enough.skylight.renderer.partition.Partition;
 import de.enough.skylight.renderer.partition.PartitionList;
@@ -87,7 +87,8 @@ public class TextBlock extends StringItem implements Partable {
 	}
 	
 	public void drawString(String line, int x, int y, int anchor, Graphics g) {
-		LineBox linebox = LayoutAttributes.getBlock(this).getPaintLineBox();
+		BlockContainingBlock block = LayoutAttributes.get(this).getBlock();
+		Linebox linebox = block.getPaintLineBox();
 		PartitionList lineboxPartitions = linebox.getPartitions();
 		
 		TextPartition firstPartition = (TextPartition)this.textPartitions.get(0);
@@ -99,7 +100,7 @@ public class TextBlock extends StringItem implements Partable {
 		}
 	}
 	
-	public void drawTextPartition(TextPartition partition, TextPartition first, LineBox linebox, String text, int x, int y, int anchor, Graphics g) {
+	public void drawTextPartition(TextPartition partition, TextPartition first, Linebox linebox, String text, int x, int y, int anchor, Graphics g) {
 		int index = partition.getIndex();
 		int length = partition.getLength();
 		

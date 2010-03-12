@@ -1,18 +1,19 @@
-package de.enough.skylight.renderer.linebox;
+package de.enough.skylight.renderer.layout;
 
 import de.enough.polish.ui.Item;
 import de.enough.skylight.renderer.element.InlineContainingBlock;
-import de.enough.skylight.renderer.element.view.LayoutAttributes;
+import de.enough.skylight.renderer.linebox.Linebox;
+import de.enough.skylight.renderer.linebox.LineboxList;
 import de.enough.skylight.renderer.partition.Partition;
 import de.enough.skylight.renderer.partition.PartitionList;
 
-public class LineBoxLayout {
+public class BlockLayout {
 	
-	LineBoxList lineboxes;
+	LineboxList lineboxes;
 	
-	LineBoxList leftLines;
+	LineboxList leftLines;
 	
-	LineBoxList rightLines;
+	LineboxList rightLines;
 	
 	int blockAvailableWidth;
 	
@@ -20,11 +21,11 @@ public class LineBoxLayout {
 	
 	int height;
 	
-	public LineBoxLayout(int availableWidth) {
+	public BlockLayout(int availableWidth) {
 		this(availableWidth,null,null);
 	}
 	
-	public LineBoxLayout(int blockAvailableWidth, LineBoxList leftLineBoxes, LineBoxList rightLineBoxes) {
+	public BlockLayout(int blockAvailableWidth, LineboxList leftLineBoxes, LineboxList rightLineBoxes) {
 		this.blockAvailableWidth = blockAvailableWidth;
 		this.leftLines = leftLineBoxes;
 		this.rightLines = rightLineBoxes;
@@ -34,9 +35,9 @@ public class LineBoxLayout {
 		this.lineboxes = getLineboxes(partitions,block);
 	}
 	
-	 LineBoxList getLineboxes(PartitionList partitions,InlineContainingBlock block) {
-		LineBoxList lineboxes = new LineBoxList();
-		LineBox linebox = null;
+	 LineboxList getLineboxes(PartitionList partitions,InlineContainingBlock block) {
+		LineboxList lineboxes = new LineboxList();
+		Linebox linebox = null;
 		
 		int top = 0;
 		
@@ -54,7 +55,7 @@ public class LineBoxLayout {
 				if(partition.getWidth() > 0) {
 					if(linebox != null && !linebox.overflows() && linebox.fits(partition) && !partition.hasAttribute(Partition.ATTRIBUTE_NEWLINE)) {
 						linebox.addPartition(partition);
-						LayoutAttributes.setLinebox(currentPartitionItem, linebox);
+						LayoutAttributes.get(currentPartitionItem).getLineboxes().add(linebox);
 					} else {
 						if(linebox != null) {
 							top += linebox.getLineHeight();
@@ -69,8 +70,8 @@ public class LineBoxLayout {
 						linebox = null;
 						
 						if(!partition.hasAttribute(Partition.ATTRIBUTE_WHITESPACE)) {
-							linebox = new LineBox(partition, block, offset, top, width);
-							LayoutAttributes.setLinebox(currentPartitionItem, linebox);
+							linebox = new Linebox(partition, block, offset, top, width);
+							LayoutAttributes.get(currentPartitionItem).getLineboxes().add(linebox);
 							lineboxes.add(linebox);
 						} else {
 							continue;
@@ -98,7 +99,7 @@ public class LineBoxLayout {
 	public int getLineOffset(int top) {
 		if(this.leftLines != null) {
 			for (int i = 0; i < this.leftLines.size(); i++) {
-				LineBox linebox = this.leftLines.get(i);
+				Linebox linebox = this.leftLines.get(i);
 				if(linebox.matchesArea(top)) {
 					return linebox.getTrimmedWidth();
 				}
@@ -113,7 +114,7 @@ public class LineBoxLayout {
 		
 		if(this.leftLines != null) {
 			for (int i = 0; i < this.leftLines.size(); i++) {
-				LineBox linebox = this.leftLines.get(i);
+				Linebox linebox = this.leftLines.get(i);
 				if(linebox.matchesArea(top)) {
 					result -= linebox.getTrimmedWidth();
 				}
@@ -122,7 +123,7 @@ public class LineBoxLayout {
 		
 		if(this.rightLines != null) {
 			for (int i = 0; i < this.rightLines.size(); i++) {
-				LineBox linebox = this.rightLines.get(i);
+				Linebox linebox = this.rightLines.get(i);
 				if(linebox.matchesArea(top)) {
 					result -= linebox.getTrimmedWidth();
 				}
@@ -132,7 +133,7 @@ public class LineBoxLayout {
 		return result;
 	}
 	
-	public LineBoxList getLineBoxes() {
+	public LineboxList getLineBoxes() {
 		return this.lineboxes;
 	}
 	

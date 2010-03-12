@@ -5,6 +5,7 @@ import de.enough.polish.ui.ContainerView;
 import de.enough.skylight.event.UserEvent;
 import de.enough.skylight.renderer.Viewport;
 import de.enough.skylight.renderer.element.ContainingBlock;
+import de.enough.skylight.renderer.layout.LayoutAttributes;
 import de.enough.skylight.renderer.node.CssElement;
 
 public class ContainingBlockView extends ContainerView {
@@ -21,7 +22,7 @@ public class ContainingBlockView extends ContainerView {
 		boolean handled = super.handleKeyReleased(keyCode, gameAction);
 		
 		if(gameAction == Canvas.FIRE) {
-			CssElement element = LayoutAttributes.getCssElement(this.parentItem);
+			CssElement element = LayoutAttributes.get(this.parentItem).getElement();
 			if(element != null && element.isInteractive()) {
 				Viewport viewport = element.getViewport();
 				UserEvent event = new UserEvent();

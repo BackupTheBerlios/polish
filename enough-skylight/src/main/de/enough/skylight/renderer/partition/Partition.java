@@ -5,14 +5,14 @@ import de.enough.polish.ui.UiAccess;
 import de.enough.polish.util.ToStringHelper;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.element.ContainingBlock;
-import de.enough.skylight.renderer.element.view.LayoutAttributes;
-import de.enough.skylight.renderer.linebox.LineBox;
+import de.enough.skylight.renderer.layout.LayoutAttributes;
+import de.enough.skylight.renderer.linebox.Linebox;
 
 
 public class Partition {
 	
 	public static int getRelativeX(Item item) {
-		BlockContainingBlock block = LayoutAttributes.getBlock(item);
+		BlockContainingBlock block = LayoutAttributes.get(item).getBlock();
 		int blockContentX = block.getAbsoluteX() + block.getContentX();
 		int result = item.getAbsoluteX() - blockContentX;
 		//System.out.println("relative X for " + item + " : " + result );
@@ -20,7 +20,7 @@ public class Partition {
 	}
 	
 	public static int getRelativeY(Item item) {
-		BlockContainingBlock block = LayoutAttributes.getBlock(item);
+		BlockContainingBlock block = LayoutAttributes.get(item).getBlock();
 		int blockContentY = block.getAbsoluteY() + block.getContentY();
 		int result = item.getAbsoluteY() - blockContentY;
 		//System.out.println("relative Y for " + item + " : " + result );
@@ -95,7 +95,7 @@ public class Partition {
 	/**
 	 * the parenting linebox
 	 */
-	LineBox linebox = null;
+	Linebox linebox = null;
 	
 	/**
 	 * the left position relative to the inline context 
@@ -163,11 +163,11 @@ public class Partition {
 		return this.height;
 	}
 	
-	public LineBox getLinebox() {
+	public Linebox getLinebox() {
 		return this.linebox;
 	}
 
-	public void setLinebox(LineBox linebox) {
+	public void setLinebox(Linebox linebox) {
 		this.linebox = linebox;
 	}
 	public int getRelativeX() {

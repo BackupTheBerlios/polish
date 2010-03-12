@@ -4,7 +4,7 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.ItemStateListener;
 import de.enough.polish.ui.TextField;
 import de.enough.skylight.dom.DomNode;
-import de.enough.skylight.renderer.element.view.LayoutAttributes;
+import de.enough.skylight.renderer.layout.LayoutAttributes;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.partition.Partable;
 import de.enough.skylight.renderer.partition.Partition;
@@ -28,7 +28,7 @@ public class InputTextField extends TextField implements Partable, ItemStateList
 	}
 
 	public void itemStateChanged(Item item) {
-		CssElement element = LayoutAttributes.getCssElement(this);
+		CssElement element = LayoutAttributes.get(this).getElement();
 		DomNode node = element.getNode();
 		String newText = getText();
 		//#debug

@@ -10,8 +10,9 @@ import de.enough.polish.util.ItemPreinit;
 import de.enough.skylight.renderer.css.HtmlCssElement;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.element.InlineContainingBlock;
-import de.enough.skylight.renderer.linebox.LayoutUtils;
-import de.enough.skylight.renderer.linebox.LineBox;
+import de.enough.skylight.renderer.layout.LayoutUtils;
+import de.enough.skylight.renderer.layout.LayoutAttributes;
+import de.enough.skylight.renderer.linebox.Linebox;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.partition.Partition;
 
@@ -28,14 +29,14 @@ public class InlineContainingBlockView extends ContainingBlockView {
 	}
 	
 	protected void initMargin(Style style, int availWidth) {
-		BlockContainingBlock block = LayoutAttributes.getBlock(this.parentContainer);
+		BlockContainingBlock block = LayoutAttributes.get(this.parentContainer).getBlock();
 		style.addAttribute("margin-top", DIMENSION_ZERO);
 		style.addAttribute("margin-bottom", DIMENSION_ZERO);
 		super.initMargin(style, block.getAvailableContentWidth());
 	}
 
 	protected void initPadding(Style style, int availWidth) {
-		BlockContainingBlock block = LayoutAttributes.getBlock(this.parentContainer);
+		BlockContainingBlock block = LayoutAttributes.get(this.parentContainer).getBlock();
 		style.addAttribute("padding-top", DIMENSION_ZERO);
 		style.addAttribute("padding-bottom", DIMENSION_ZERO);
 		super.initPadding(style, block.getAvailableContentWidth());
@@ -57,8 +58,8 @@ public class InlineContainingBlockView extends ContainingBlockView {
 		int completeWidth = 0;
 		
 		Container container = (Container)parentContainerItem;
-		BlockContainingBlock block = LayoutAttributes.getBlock(container);
-		CssElement element = LayoutAttributes.getCssElement(block);
+		BlockContainingBlock block = LayoutAttributes.get(container).getBlock();
+		CssElement element = LayoutAttributes.get(block).getElement();
 		
 		boolean interactive = false;
 		
@@ -81,7 +82,6 @@ public class InlineContainingBlockView extends ContainingBlockView {
 			Item item = items[index];
 			
 			initItem(item, block);
-			LayoutAttributes.setPartition(item);
 			
 			if (item.isInteractive()) {
 				interactive = true;
@@ -140,15 +140,8 @@ public class InlineContainingBlockView extends ContainingBlockView {
 	protected void paintContent(Container container, Item[] myItems, int x,
 			int y, int leftBorder, int rightBorder, int clipX, int clipY,
 			int clipWidth, int clipHeight, Graphics g) {
-		Partition partition = LayoutAttributes.getPartition(container);
-		LineBox linebox = LayoutAttributes.getBlock(container).getPaintLineBox();
-		
 		//TODO add culling
-		
 		paintLine(myItems,x,y,leftBorder,rightBorder,clipX,clipY,clipWidth,clipHeight,g);
-		
-		//#debug sl.debug.render
-		System.out.println("rendered " + this.containingBlock + " : linebox : " + linebox + " : partition : " + partition );
 	}
 	
 	protected void paintLine(Item[] myItems, int x,

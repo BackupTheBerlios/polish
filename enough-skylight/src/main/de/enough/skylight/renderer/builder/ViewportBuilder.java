@@ -12,7 +12,7 @@ import de.enough.skylight.renderer.debug.BuildDebug;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.element.ContainingBlock;
 import de.enough.skylight.renderer.element.view.ElementView;
-import de.enough.skylight.renderer.element.view.LayoutAttributes;
+import de.enough.skylight.renderer.layout.LayoutAttributes;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.node.NodeHandler;
 import de.enough.skylight.renderer.node.NodeHandlerDirectory;
@@ -148,7 +148,12 @@ public class ViewportBuilder {
 		if(element.hasElements())
 		{
 			ContainingBlock block = element.getContainingBlock();
-			LayoutAttributes.set(block, element, parent, parentBlock);
+			
+			LayoutAttributes attributes = LayoutAttributes.get(block);
+			attributes.setElement(element);
+			attributes.setContainingBlock(parent);
+			attributes.setBlock(parentBlock);
+			//LayoutAttributes.set(block, element, parent, parentBlock);
 			
 			if(element.isFloat()) {
 				if(element.isFloat(HtmlCssElement.Float.LEFT)) {
@@ -186,7 +191,11 @@ public class ViewportBuilder {
 			
 			if(item != null) {
 				item.setView(new ElementView());
-				LayoutAttributes.set(item, element, parent, parentBlock);
+				LayoutAttributes attributes = LayoutAttributes.get(item);
+				attributes.setElement(element);
+				attributes.setContainingBlock(parent);
+				attributes.setBlock(parentBlock);
+				//LayoutAttributes.set(item, element, parent, parentBlock);
 				if(element.isFloat()) {
 					if(element.isFloat(HtmlCssElement.Float.LEFT)) {
 						parent.addToLeftFloat(item);

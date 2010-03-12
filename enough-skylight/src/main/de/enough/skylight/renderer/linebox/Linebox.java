@@ -6,7 +6,7 @@ import de.enough.skylight.renderer.partition.Partition;
 import de.enough.skylight.renderer.partition.PartitionList;
 
 
-public class LineBox {
+public class Linebox {
 	
 	public static int UNDEFINED = Integer.MAX_VALUE;
 	
@@ -28,7 +28,7 @@ public class LineBox {
 	
 	int lineHeight = UNDEFINED;
 	
-	public LineBox(Partition partition, InlineContainingBlock block, int blockRelativeLeft, int blockRelativeTop, int availableWidth) {
+	public Linebox(Partition partition, InlineContainingBlock block, int blockRelativeLeft, int blockRelativeTop, int availableWidth) {
 		this.availableWidth = availableWidth;
 		this.partitions = new PartitionList();
 		this.block = block;

@@ -4,7 +4,7 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.ToStringHelper;
 import de.enough.skylight.renderer.element.view.InlineContainingBlockView;
-import de.enough.skylight.renderer.element.view.LayoutAttributes;
+import de.enough.skylight.renderer.layout.LayoutAttributes;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.partition.Partable;
 import de.enough.skylight.renderer.partition.Partition;
@@ -35,31 +35,31 @@ public class InlineContainingBlock extends ContainingBlock {
 
 	public void addToBody(Item item) {
 		add(item);
-		LayoutAttributes.setContainingBlock(item, this);
+		LayoutAttributes.get(item).setContainingBlock(this);
 	}
 
 	public void addToLeftFloat(Item item) {
-		BlockContainingBlock block = LayoutAttributes.getBlock(this);
+		BlockContainingBlock block = LayoutAttributes.get(this).getBlock();
 		block.addToLeftFloat(item);
 	}
 	
 	public void addToRightFloat(Item item) {
-		BlockContainingBlock block = LayoutAttributes.getBlock(this);
+		BlockContainingBlock block = LayoutAttributes.get(this).getBlock();
 		block.addToRightFloat(item);
 	}
 	
 	public InlineContainingBlock getBody() {
-		BlockContainingBlock block = LayoutAttributes.getBlock(this);
+		BlockContainingBlock block = LayoutAttributes.get(this).getBlock();
 		return block.getBody();
 	}
 	
 	public InlineContainingBlock getLeftFloat() {
-		BlockContainingBlock block = LayoutAttributes.getBlock(this);
+		BlockContainingBlock block = LayoutAttributes.get(this).getBlock();
 		return block.getLeftFloat();
 	}
 	
 	public InlineContainingBlock getRightFloat() {
-		BlockContainingBlock block = LayoutAttributes.getBlock(this);
+		BlockContainingBlock block = LayoutAttributes.get(this).getBlock();
 		return block.getRightFloat();
 	}
 	
@@ -80,7 +80,7 @@ public class InlineContainingBlock extends ContainingBlock {
 	public String toString() {
 		return new ToStringHelper("InlineContainingBlock").
 		add("focused", this.isFocused).
-		add("element", LayoutAttributes.getCssElement(this)).
+		add("element", LayoutAttributes.get(this).getElement()).
 		toString();
 	}
 }

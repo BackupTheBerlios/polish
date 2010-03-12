@@ -4,8 +4,8 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.ToStringHelper;
 import de.enough.skylight.renderer.element.view.BlockContainingBlockView;
-import de.enough.skylight.renderer.element.view.LayoutAttributes;
-import de.enough.skylight.renderer.linebox.LineBox;
+import de.enough.skylight.renderer.layout.LayoutAttributes;
+import de.enough.skylight.renderer.linebox.Linebox;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.partition.Partition;
 import de.enough.skylight.renderer.partition.PartitionList;
@@ -42,38 +42,51 @@ public class BlockContainingBlock extends ContainingBlock {
 		
 		//#style element
 		this.body = new InlineContainingBlock();
-		LayoutAttributes.set(this.body,null,this,this);
+		LayoutAttributes attributes = LayoutAttributes.get(this.body);
+		attributes.setElement(null);
+		attributes.setContainingBlock(this);
+		attributes.setBlock(this);
 		
 		add(this.body);
 	}
 	
 	public void addToBody(Item item) {
 		this.body.add(item);
-		LayoutAttributes.setContainingBlock(item, this.body);
+		LayoutAttributes.get(item).setContainingBlock(this.body);
 	}
 	
 	public void addToLeftFloat(Item item) {
 		if(this.floatLeft == null) {
 			//#style element
 			this.floatLeft = new InlineContainingBlock();
-			LayoutAttributes.set(this.floatLeft,null,this,this);
+			
+			LayoutAttributes attributes = LayoutAttributes.get(this.floatLeft);
+			attributes.setElement(null);
+			attributes.setContainingBlock(this);
+			attributes.setBlock(this);
+			
 			add(this.floatLeft);
 		}
 		
 		this.floatLeft.add(item);
-		LayoutAttributes.setContainingBlock(item, this.floatLeft);
+		LayoutAttributes.get(item).setContainingBlock(this.floatLeft);
 	}
 	
 	public void addToRightFloat(Item item) {
 		if(this.floatRight == null) {
 			//#style element
 			this.floatRight = new InlineContainingBlock();
-			LayoutAttributes.set(this.floatRight,null,this,this);
+			
+			LayoutAttributes attributes = LayoutAttributes.get(this.floatRight);
+			attributes.setElement(null);
+			attributes.setContainingBlock(this);
+			attributes.setBlock(this);
+			
 			add(this.floatRight);
 		}
 		
 		this.floatRight.add(item);
-		LayoutAttributes.setContainingBlock(item, this.floatRight);
+		LayoutAttributes.get(item).setContainingBlock(this.floatRight);
 	}
 	
 	public InlineContainingBlock getBody() {
@@ -93,14 +106,14 @@ public class BlockContainingBlock extends ContainingBlock {
 		partitions.add(partition);
 	}
 	
-	public LineBox getPaintLineBox() {
+	public Linebox getPaintLineBox() {
 		return this.blockView.getPaintLineBox();
 	}
 //	
 	public String toString() {
 		return new ToStringHelper("BlockContainingBlock").
 		add("focused", this.isFocused).
-		add("element", LayoutAttributes.getCssElement(this)).
+		add("element", LayoutAttributes.get(this).getElement()).
 		toString();
 	}
 }
