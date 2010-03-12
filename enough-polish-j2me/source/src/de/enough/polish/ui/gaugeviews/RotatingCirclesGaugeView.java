@@ -26,8 +26,6 @@
  */
 package de.enough.polish.ui.gaugeviews;
 
-
-
 import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.ui.Color;
@@ -38,9 +36,6 @@ import de.enough.polish.ui.Dimension;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.DrawUtil;
 
-
-
-
 /**
  * <p>Rotates circles</p>
  *
@@ -50,8 +45,8 @@ import de.enough.polish.util.DrawUtil;
  */
 public class RotatingCirclesGaugeView extends ItemView {
 
-	private final int xCord[];	// Array to hold X coordinates of the circle
-	private final int yCord[];	// Array to hold Y coordinates of the circle
+	private final int[] xCord;	// Array to hold X coordinates of the circle
+	private final int[] yCord;	// Array to hold Y coordinates of the circle
 	int arrayIndex = 0;		// Counter for the values stored in the xCord and yCord arrays
 
 		
