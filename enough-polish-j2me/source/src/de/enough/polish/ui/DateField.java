@@ -31,7 +31,6 @@ import java.util.TimeZone;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 
-import de.enough.polish.ui.Displayable;
 import de.enough.polish.util.DrawUtil;
 import de.enough.polish.util.Locale;
 
