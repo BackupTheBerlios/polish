@@ -742,7 +742,7 @@ implements DataEditorUI, ActionListener
 		 * @see javax.swing.filechooser.FileFilter#accept(java.io.File)
 		 */
 		public boolean accept(File f) {
-			return (f.isDirectory() || f.getName().endsWith( this.type ));
+			return f.isDirectory() || f.getName().endsWith( this.type );
 		}
 		/* (non-Javadoc)
 		 * @see javax.swing.filechooser.FileFilter#getDescription()

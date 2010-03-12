@@ -1022,7 +1022,7 @@ public class HtmlExporterTask extends Task {
 		public abstract void update( Device device, ArrayList list);
 		
 		protected void addIndex( String index, ArrayList list ) {
-			boolean firstEntry = (this.indeces.size() == 0);
+			boolean firstEntry = this.indeces.size() == 0;
 			this.indeces.add( index );
 			if (!firstEntry) {
 				endTable( list );

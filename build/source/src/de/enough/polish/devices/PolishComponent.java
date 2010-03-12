@@ -215,7 +215,7 @@ implements Comparable
 		for (Iterator iter = caps.keySet().iterator(); iter.hasNext();) {
 			String name = (String) iter.next();
 			String componentValue = (String) caps.get( name );
-			boolean add = (this.capabilities.get(name) == null);
+			boolean add = this.capabilities.get(name) == null;
 			if (!add) {
 				Capability capability = this.capabilityManager.getCapability(name);
 				if (capability != null && !capability.overwrite()) {
