@@ -145,7 +145,7 @@ implements Externalizable
 		boolean newLineFound;
 		while ( (read = in.read(buffer, start, bufferLength - start )) != -1) {
 			//add \r to last line if its missing
-			if(	buffer.length != read && 
+			if(	buffer.length != start + read && 
 				buffer[read-1] != '\n' && buffer[read-1] != '\r')
 			{
 				buffer[read] = '\r';
