@@ -480,7 +480,13 @@ extends javax.microedition.lcdui.Command
 			return false;
 		}
 		Command co = (Command) o;
-		return co.priority == this.priority && co.commandType == this.commandType && co.label.equals(this.label);
+		boolean result = co.priority == this.priority && co.commandType == this.commandType;
+		if (co.label != null) {
+			result &= co.label.equals(this.label);
+		} else {
+			result &= (this.label == null);
+		}
+		return result;
 	}
 
 	/* (non-Javadoc)
@@ -488,7 +494,11 @@ extends javax.microedition.lcdui.Command
 	 */
 	public int hashCode()
 	{
-		return this.label.hashCode() | this.priority | (this.commandType << 3);
+		int code = 0;
+		if (this.label != null) {
+			code = this.label.hashCode();
+		}
+		return code | this.priority | (this.commandType << 3);
 	}
 	
 	//#if polish.LibraryBuild
