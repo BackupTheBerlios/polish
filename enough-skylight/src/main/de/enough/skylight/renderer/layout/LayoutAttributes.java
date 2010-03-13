@@ -6,11 +6,23 @@ import de.enough.skylight.renderer.element.ContainingBlock;
 import de.enough.skylight.renderer.linebox.Linebox;
 import de.enough.skylight.renderer.linebox.LineboxList;
 import de.enough.skylight.renderer.node.CssElement;
+import de.enough.skylight.renderer.partition.Partition;
 
 public class LayoutAttributes {
 	static final Integer KEY = new Integer(Integer.MAX_VALUE);
 	
 	public static int getRelativeY(Item item) {
+		LayoutAttributes attributes = get(item);
+		LineboxList lineboxes = attributes.getLineboxes();
+		if(lineboxes.size() > 0) {
+			Linebox linebox = lineboxes.get(0);
+			return linebox.getBlockRelativeTop(); 
+		} else {
+			return 0;
+		}
+	}
+	
+	public static int getRelativeX(Item item) {
 		LayoutAttributes attributes = get(item);
 		LineboxList lineboxes = attributes.getLineboxes();
 		if(lineboxes.size() > 0) {
@@ -39,6 +51,8 @@ public class LayoutAttributes {
 	BlockContainingBlock block;
 	
 	LineboxList lineboxes;
+	
+	Partition partition;
 	
 	public LayoutAttributes() {
 		this.lineboxes = new LineboxList();
@@ -70,5 +84,13 @@ public class LayoutAttributes {
 
 	public LineboxList getLineboxes() {
 		return this.lineboxes;
+	}
+
+	public Partition getPartition() {
+		return this.partition;
+	}
+
+	public void setPartition(Partition partition) {
+		this.partition = partition;
 	}
 }

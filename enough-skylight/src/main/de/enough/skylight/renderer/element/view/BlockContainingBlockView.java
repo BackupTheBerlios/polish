@@ -174,7 +174,7 @@ public class BlockContainingBlockView extends ContainingBlockView {
 		
 		Item item = body.getFocusedItem();
 		Container parent = this.parentContainer;
-		if(item != null && parent.isFocused && !(item instanceof InlineContainingBlock) && !(item instanceof BlockContainingBlock)) {
+		if(item != null && parent.isFocused && !(item instanceof InlineContainingBlock)) {
 			scroll( 0, item.relativeX, item.relativeY, item.itemWidth, item.itemHeight, true );
 		}
 		

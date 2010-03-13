@@ -83,6 +83,9 @@ public class InlineContainingBlockView extends ContainingBlockView {
 			
 			initItem(item, block);
 			
+			Partition itemPartition = Partition.partitionBlock(item);
+			LayoutAttributes.get(item).setPartition(itemPartition);
+			
 			if (item.isInteractive()) {
 				interactive = true;
 			}
@@ -125,13 +128,6 @@ public class InlineContainingBlockView extends ContainingBlockView {
 		
 		this.contentHeight = maxHeight;
 		this.contentWidth = completeWidth;
-		
-		Item item = this.parentContainer.getFocusedItem();
-		Container parent = this.parentContainer;
-		if(item != null && parent.isFocused && !(item instanceof InlineContainingBlock) && !(item instanceof BlockContainingBlock)) {
-			System.out.println("scrolling to item " + item + " : relative y " + item.relativeY + " for " + this.parentContainer);
-			scroll( 0, item.relativeX, item.relativeY, item.itemWidth, item.itemHeight, true );
-		}
 		
 		//#debug sl.debug.layout
 		System.out.println(this.containingBlock + " has dimension : " + this.contentWidth + "/" + this.contentHeight);
