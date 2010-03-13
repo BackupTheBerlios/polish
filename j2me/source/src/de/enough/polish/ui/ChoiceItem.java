@@ -356,6 +356,9 @@ public class ChoiceItem extends IconItem
 	 * @see de.enough.polish.ui.Item#setStyle(de.enough.polish.ui.Style)
 	 */
 	public void setStyle(Style style) {
+//		if (this.text != null) {
+//			System.out.println("ChoiceItem: setStyle(" + style.name + ") for " + this.text);
+//		}
 		super.setStyle(style);
 		if (this.drawBox) {
 			Style parentStyle = null;
@@ -438,8 +441,10 @@ public class ChoiceItem extends IconItem
 					this.styleNormal = style; 
 				}
 				if (this.isFocused) {
+					//System.out.println("Setting styleCheckedFocused=" + st.name);
 					this.styleCheckedFocused = st; 
 				} else {
+					//System.out.println("Setting styleChecked=" + st.name);
 					this.styleChecked = st;
 					if (this.styleCheckedFocused == null) {
 						Style focStyle = getFocusedStyle();
@@ -447,6 +452,7 @@ public class ChoiceItem extends IconItem
 						if (st == null) {
 							st = this.styleChecked;
 						}
+						//System.out.println("Setting styleCheckedFocused=" + st.name);
 						this.styleCheckedFocused = st;
 					}
 				}
@@ -542,17 +548,21 @@ public class ChoiceItem extends IconItem
 			this.boxImage = this.plain;
 		}
 		//#if polish.css.checked-style
-			//System.out.println("select occurred, all styles defined=" + (this.styleNormal != null) + ( this.styleNormalFocused != null) + ( this.styleChecked != null) + ( this.styleCheckedFocused != null) + ", isFocused=" + this.isFocused);
+//			System.out.println("select occurred, all styles defined=" + (this.styleNormal != null) + ( this.styleNormalFocused != null) + ( this.styleChecked != null) + ( this.styleCheckedFocused != null) + ", isFocused=" + this.isFocused);
 			if (select) {
 				if (this.isFocused && this.styleCheckedFocused != null) {
+//					System.out.println("x 1a checked & focused & styleCheckedFocused");
 					setStyle( this.styleCheckedFocused);
 				} else if (!this.isFocused && this.styleChecked != null) {
+//					System.out.println("x 1b checked & !focused & styleChecked");
 					setStyle( this.styleChecked);
 				}
 			} else {
 				if (this.isFocused && this.styleNormalFocused != null) {
+//					System.out.println("x 2a !checked & focused & styleNormalFocused");
 					setStyle(this.styleNormalFocused);
 				} else if (!this.isFocused && this.styleNormal != null) {
+//					System.out.println("x 2b !checked & !focused & styleNormal");
 					setStyle(this.styleNormal);
 				}
 			}
@@ -669,23 +679,61 @@ public class ChoiceItem extends IconItem
 		return this.isSelected;
 	}
 
-	//#if polish.css.portrait-style || polish.css.landscape-style
+	//#if (polish.css.portrait-style || polish.css.landscape-style) && polish.css.checked-style
 	/*
 	 * (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#onScreenSizeChanged(int, int)
 	 */
 	public void onScreenSizeChanged( int screenWidth, int screenHeight ) {
+//		if (this.text != null) {
+//			System.out.println("ON SCREEN SIZE CHANGED FOR " + this.text + ", width=" + screenWidth + ", height=" + screenHeight);
+//		}
 		super.onScreenSizeChanged(screenWidth, screenHeight);
+		Style newStyle = null;
+		if (screenWidth > screenHeight) {
+			if (this.landscapeStyle != null && this.styleNormal != this.landscapeStyle) {
+				newStyle = this.landscapeStyle;
+			}
+		} else if (this.portraitStyle != null && this.styleNormal != this.portraitStyle){
+			newStyle = this.portraitStyle;
+		}
+		if (newStyle != null) {
+//			System.out.println("ChoiceItem.onScreenSizeChanged: normalStyle=" + newStyle.name);
+			this.styleNormal = newStyle;
+			//#if polish.css.focused-style
+				Style focStyle = (Style) newStyle.getObjectProperty("focused-style");
+				if (focStyle != null) {
+//					System.out.println("ChoiceItem.onScreenSizeChanged: styleNormalFocused=" + focStyle.name);
+					this.styleNormalFocused = focStyle;
+				}
+			//#endif
+			newStyle = (Style) newStyle.getObjectProperty("checked-style");
+			if (newStyle != null) {
+				this.styleChecked = newStyle;
+//				System.out.println("ChoiceItem.onScreenSizeChanged: styleChecked=" + newStyle.name);
+				//#if polish.css.focused-style
+					focStyle = (Style) newStyle.getObjectProperty("focused-style");
+					if (focStyle != null) {
+						this.styleCheckedFocused = focStyle;
+//						System.out.println("ChoiceItem.onScreenSizeChanged: styleCheckedFocused=" + focStyle.name);
+					}
+				//#endif
+			}
+		}
 		if (this.isSelected) {
 			if (this.isFocused && this.styleCheckedFocused != null) {
+//				System.out.println("(1a) selected & focused & styleCheckedFocused");
 				setStyle( this.styleCheckedFocused);
 			} else if (!this.isFocused && this.styleChecked != null) {
+//				System.out.println("(1b) selected & !focused & styleChecked");
 				setStyle( this.styleChecked);
 			}
 		} else {
 			if (this.isFocused && this.styleNormalFocused != null) {
+//				System.out.println("(2a) !selected & focused & styleNormalFocused");
 				setStyle(this.styleNormalFocused);
 			} else if (!this.isFocused && this.styleNormal != null) {
+//				System.out.println("(2b) !selected & !focused & styleNormal");
 				setStyle(this.styleNormal);
 			}
 		}
