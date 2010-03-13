@@ -1430,7 +1430,6 @@ public class FramedForm extends Form {
 	 * @see de.enough.polish.ui.Screen#sizeChanged(int, int)
 	 */
 	public void sizeChanged(int width, int height) {
-		super.sizeChanged(width, height);
 		if (this.leftFrame != null) {
 			this.leftFrame.onScreenSizeChanged(width, height);
 		}
@@ -1440,10 +1439,10 @@ public class FramedForm extends Form {
 		if (this.topFrame != null) {
 			this.topFrame.onScreenSizeChanged(width, height);
 		}
-
 		if (this.bottomFrame != null) {
 			this.bottomFrame.onScreenSizeChanged(width, height);
 		}
+		super.sizeChanged(width, height);
 	}
 	
 	/* (non-Javadoc)
