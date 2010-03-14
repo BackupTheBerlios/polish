@@ -356,9 +356,6 @@ public class ChoiceItem extends IconItem
 	 * @see de.enough.polish.ui.Item#setStyle(de.enough.polish.ui.Style)
 	 */
 	public void setStyle(Style style) {
-//		if (this.text != null) {
-//			System.out.println("ChoiceItem: setStyle(" + style.name + ") for " + this.text);
-//		}
 		super.setStyle(style);
 		if (this.drawBox) {
 			Style parentStyle = null;
@@ -548,6 +545,22 @@ public class ChoiceItem extends IconItem
 			this.boxImage = this.plain;
 		}
 		//#if polish.css.checked-style
+			setCheckedStyle(select);
+		//#endif
+		/*
+		 * if this is enabled, the navigation in Lists does not work anymore...
+		if (this.isInitialised) {
+			this.isInitialised = false;
+			repaint();
+		}*/
+	}
+
+	//#if polish.css.checked-style
+	/**
+	 * Sets the correct style for this ChoiceItem when a checked-style is being used.
+	 * @param select
+	 */
+	private void setCheckedStyle(boolean select) {
 //			System.out.println("select occurred, all styles defined=" + (this.styleNormal != null) + ( this.styleNormalFocused != null) + ( this.styleChecked != null) + ( this.styleCheckedFocused != null) + ", isFocused=" + this.isFocused);
 			if (select) {
 				if (this.isFocused && this.styleCheckedFocused != null) {
@@ -566,14 +579,8 @@ public class ChoiceItem extends IconItem
 					setStyle(this.styleNormal);
 				}
 			}
-		//#endif
-		/*
-		 * if this is enabled, the navigation in Lists does not work anymore...
-		if (this.isInitialised) {
-			this.isInitialised = false;
-			repaint();
-		}*/
 	}
+	//#endif
 	
 	/**
 	 * Changes the selected-state to the opposite state.
@@ -688,6 +695,9 @@ public class ChoiceItem extends IconItem
 //		if (this.text != null) {
 //			System.out.println("ON SCREEN SIZE CHANGED FOR " + this.text + ", width=" + screenWidth + ", height=" + screenHeight);
 //		}
+//		if ("Right".equals(this.text)) {
+//			try { throw new RuntimeException("for size " + screenWidth + ", " + screenHeight); } catch (Exception e) { e.printStackTrace(); }
+//		}
 		super.onScreenSizeChanged(screenWidth, screenHeight);
 		Style newStyle = null;
 		if (screenWidth > screenHeight) {
@@ -720,24 +730,22 @@ public class ChoiceItem extends IconItem
 				//#endif
 			}
 		}
-		if (this.isSelected) {
-			if (this.isFocused && this.styleCheckedFocused != null) {
-//				System.out.println("(1a) selected & focused & styleCheckedFocused");
-				setStyle( this.styleCheckedFocused);
-			} else if (!this.isFocused && this.styleChecked != null) {
-//				System.out.println("(1b) selected & !focused & styleChecked");
-				setStyle( this.styleChecked);
-			}
-		} else {
-			if (this.isFocused && this.styleNormalFocused != null) {
-//				System.out.println("(2a) !selected & focused & styleNormalFocused");
-				setStyle(this.styleNormalFocused);
-			} else if (!this.isFocused && this.styleNormal != null) {
-//				System.out.println("(2b) !selected & !focused & styleNormal");
-				setStyle(this.styleNormal);
-			}
-		}
-
+		setCheckedStyle(this.isSelected);
 	}
 	//#endif
+
+	//#if polish.css.checked-style
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#notifyItemPressedEnd()
+	 */
+	public void notifyItemPressedEnd() {
+		Style previous = this.style;
+		super.notifyItemPressedEnd();
+		if (this.style != previous) {
+			setCheckedStyle(this.isSelected);
+		}
+	}
+	//#endif
+	
+	
 }
