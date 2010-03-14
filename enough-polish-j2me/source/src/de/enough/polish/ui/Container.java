@@ -184,6 +184,8 @@ public class Container extends Item {
 	 * @param height available height for this item including label, padding, margin and border, -1 when scrolling should not be done.
 	 */
 	public void setScrollHeight( int height ) {
+		//#debug
+		System.out.println("Setting scroll height to " + height + " for " + this);
 		boolean scrollAutomatic = (this.scrollHeight != -1) && (height != -1) && (height != this.scrollHeight) && isInitialized();
 		this.scrollHeight = height;
 		this.enableScrolling = (height != -1);
@@ -1438,6 +1440,9 @@ public class Container extends Item {
 						if (scrolled) {
 							this.scrollItem = null;
 						}
+					} 
+					if (this.focusedItem != null) {
+						updateInternalPosition(this.focusedItem);
 					}
 					return;
 				}
@@ -1549,7 +1554,9 @@ public class Container extends Item {
 			} else {
 				this.appearanceMode = INTERACTIVE;
 				Item item = this.focusedItem;
-				if (item != null) {
+				if (item == null) {
+					this.internalX = NO_POSITION_SET;
+				} else {
 					updateInternalPosition(item);
 					if (isLayoutShrink) {
 						//System.out.println("container has shrinking layout and contains focused item " + item);
