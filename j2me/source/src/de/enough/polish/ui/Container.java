@@ -4036,7 +4036,21 @@ public class Container extends Item {
 	 * @see de.enough.polish.ui.Item#onScreenSizeChanged(int, int)
 	 */
 	public void onScreenSizeChanged(int screenWidth, int screenHeight) {
+		Style lastStyle = this.style;
 		super.onScreenSizeChanged(screenWidth, screenHeight);
+		//#if polish.css.landscape-style || polish.css.portrait-style
+			if (this.plainStyle != null && this.style != lastStyle) {
+				Style newStyle = null;
+				if (screenWidth > screenHeight) {
+					if (this.landscapeStyle != null && this.style != this.landscapeStyle) {
+						newStyle = this.landscapeStyle;
+					}
+				} else if (this.portraitStyle != null && this.style != this.portraitStyle){
+					newStyle = this.portraitStyle;
+				}
+				this.plainStyle = newStyle;
+			}
+		//#endif
 		Object[] items = this.itemsList.getInternalArray();
 		for (int i = 0; i < items.length; i++) {
 			Item item = (Item) items[i];
