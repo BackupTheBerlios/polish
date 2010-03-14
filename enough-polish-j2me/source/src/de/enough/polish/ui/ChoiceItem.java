@@ -734,7 +734,7 @@ public class ChoiceItem extends IconItem
 	}
 	//#endif
 
-	//#if polish.css.checked-style
+	//#if polish.css.checked-style && polish.css.pressed-style
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#notifyItemPressedEnd()
 	 */
