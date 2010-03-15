@@ -37,11 +37,11 @@ public class Partition {
 			PartitionList itemPartitions = attributes.getPartitions();
 			itemPartitions.clear();
 			
-			itemPartitions.add(marginLeft, paddingLeft, height, item);
-			itemPartitions.add(paddingLeft, contentLeft, height, item);
-			itemPartitions.add(contentLeft, contentRight, height, item);
-			itemPartitions.add(contentRight, paddingRight, height, item);
-			itemPartitions.add(paddingRight, marginRight, height, item);
+			itemPartitions.add(TYPE_MARGIN_LEFT, marginLeft, paddingLeft, height, item);
+			itemPartitions.add(TYPE_PADDING_LEFT, paddingLeft, contentLeft, height, item);
+			itemPartitions.add(TYPE_CONTENT, contentLeft, contentRight, height, item);
+			itemPartitions.add(TYPE_PADDING_RIGHT, contentRight, paddingRight, height, item);
+			itemPartitions.add(TYPE_MARGIN_RIGHT, paddingRight, marginRight, height, item);
 			
 			partitions.addAll(itemPartitions);
 		}
@@ -59,9 +59,9 @@ public class Partition {
 			
 			int left = x;
 			int right = x + width;
-			itemPartitions.add(left, right, height, item);
+			itemPartitions.add(TYPE_BLOCK, left, right, height, item);
 		} else {
-			itemPartitions.add(x, x, 0, item);
+			itemPartitions.add(TYPE_BLOCK, x, x, 0, item);
 		}	
 		
 		partitions.addAll(itemPartitions);
@@ -70,12 +70,28 @@ public class Partition {
 	/**
 	 * the attribute for newline
 	 */
-	public static int ATTRIBUTE_NEWLINE = 1;
+	public final static int ATTRIBUTE_NEWLINE = 1;
 	
 	/**
 	 * the attribute for whitespace
 	 */
-	public static int ATTRIBUTE_WHITESPACE = 2;
+	public final static int ATTRIBUTE_WHITESPACE = 2;
+	
+	public final static byte TYPE_MARGIN_LEFT = 0x00;
+	
+	public final static byte TYPE_PADDING_LEFT = 0x01;
+	
+	public final static byte TYPE_CONTENT = 0x02;
+	
+	public final static byte TYPE_PADDING_RIGHT = 0x03;
+	
+	public final static byte TYPE_MARGIN_RIGHT = 0x04;
+	
+	public final static byte TYPE_BLOCK = 0x05;
+	
+	public final static byte TYPE_TEXT = 0x06;
+	
+	byte type;
 	
 	/**
 	 * the x position relative to the linebox x position 
@@ -122,7 +138,8 @@ public class Partition {
 	 */
 	int attributes = 0;
 	
-	public Partition(int inlineRelativeLeft, int inlineRelativeRight, int height, Item parentItem) {
+	public Partition(byte type, int inlineRelativeLeft, int inlineRelativeRight, int height, Item parentItem) {
+		this.type = type;
 		this.inlineRelativeLeft = inlineRelativeLeft;
 		this.inlineRelativeRight = inlineRelativeRight;
 		this.width = inlineRelativeRight - inlineRelativeLeft;
@@ -131,6 +148,7 @@ public class Partition {
 	}
 	
 	public void set(Partition partition) {
+		this.type = partition.getType();
 		this.inlineRelativeLeft = partition.getInlineRelativeLeft();
 		this.inlineRelativeRight = partition.getInlineRelativeRight();
 		this.width = this.inlineRelativeRight - this.inlineRelativeLeft;
@@ -140,6 +158,10 @@ public class Partition {
 		if(partition.hasAttribute(ATTRIBUTE_NEWLINE)) {
 			setAttribute(ATTRIBUTE_NEWLINE);
 		}
+	}
+	
+	public byte getType() {
+		return this.type;
 	}
 	
 	public int getInlineRelativeLeft() {
@@ -206,6 +228,7 @@ public class Partition {
 	 */
 	public String toString() {
 		return new ToStringHelper("Partition").
+		add("type", toString(this.type)).
 		add("inline relative X", this.inlineRelativeLeft).
 		add("linebox relative X", this.lineboxRelativeX).
 		add("linebox relative Y", this.lineboxRelativeY).
@@ -216,5 +239,19 @@ public class Partition {
 		add("parent item", this.parentItem).
 		add("linebox", this.linebox).
 		toString();
+	}
+	
+	String toString(byte type) {
+		switch(type) {
+			case TYPE_TEXT: return "TEXT";	
+			case TYPE_BLOCK : return "BLOCK";
+			case TYPE_MARGIN_LEFT : return "MARGIN_LEFT";
+			case TYPE_PADDING_LEFT : return "PADDING_LEFT";
+			case TYPE_CONTENT : return "CONTENT";
+			case TYPE_PADDING_RIGHT: return "PADDING_RIGHT";
+			case TYPE_MARGIN_RIGHT: return "MARGIN_RIGHT";
+		}
+		
+		return "UNKNOWN";
 	}
 }

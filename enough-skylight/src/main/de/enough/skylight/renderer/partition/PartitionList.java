@@ -11,9 +11,9 @@ public class PartitionList {
 		this.partitionList = new ArrayList();
 	}
 	
-	public void add(int inlineRelativeLeft, int inlineRelativeRight, int height, Item parentItem) {
+	public void add(byte type, int inlineRelativeLeft, int inlineRelativeRight, int height, Item parentItem) {
 		if((inlineRelativeRight - inlineRelativeLeft) > 0) {
-			add(new Partition(inlineRelativeLeft,inlineRelativeRight,height,parentItem));
+			add(new Partition(type, inlineRelativeLeft,inlineRelativeRight,height,parentItem));
 		} 
 	}
 	

@@ -72,14 +72,14 @@ public class TextBlock extends StringItem implements Partable {
 			tokenLength = token.length();
 			right = left + tokenWidth;
 			
-			this.textPartitions.add(new TextPartition(index, tokenLength, left,right, height,this));
+			this.textPartitions.add(new TextPartition(Partition.TYPE_TEXT, index, tokenLength, left,right, height,this));
 			
 			left += tokenWidth;
 			index += token.length();
 			
 			if(st.hasMoreTokens()) {
 				right = left + spaceWidth;
-				Partition partition = new TextPartition(index, 1, left, right, height,this);
+				Partition partition = new TextPartition(Partition.TYPE_TEXT, index, 1, left, right, height,this);
 				partition.setAttribute(Partition.ATTRIBUTE_WHITESPACE);
 				this.textPartitions.add(partition);
 				left += spaceWidth;
