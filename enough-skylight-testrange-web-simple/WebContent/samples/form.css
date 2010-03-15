@@ -1,7 +1,7 @@
 .frame {
 	display: block;
-	margin: 37px;
-	padding: 1px;
+	margin: 15%;
+	padding: 1%;
 	background-color: #FF6600;
 }
 
@@ -9,20 +9,20 @@
 
 .frameTitle {
 	display: block;
-	padding: 0px;
-	margin: 6px;
+	padding: 0;
+	margin: 3%;
 	color: #FFFFFF;
 }
 
 .icon {
-	margin-right: 5px; 	
+	margin-right: 2%; 	
 	vertical-align: middle;
 }
 
 .field {
 	display: block;
 	padding: 0px;
-	margin: 5px;	
+	margin: 2%;	
 	vertical-align: top;
 }
 
@@ -32,7 +32,7 @@
 
 .content {
 	display: block;
-	padding: 1px;
+	padding: 1%;
 	background-color: white;
 }
 

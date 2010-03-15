@@ -61,14 +61,14 @@ public abstract class ContainingBlock extends Container implements Partable {
 	
 	public abstract InlineContainingBlock getRightFloat();
 		
-	protected Style focus(Style focusStyle, int direction) {
-		requestInit();
-		Style style = super.focus(focusStyle, direction);
-		return style;
-	}
-
-	public void defocus(Style originalStyle) {
-		requestInit();
-		super.defocus(originalStyle);
-	}
+//	protected Style focus(Style focusStyle, int direction) {
+//		requestInit();
+//		Style style = super.focus(focusStyle, direction);
+//		return style;
+//	}
+//
+//	public void defocus(Style originalStyle) {
+//		requestInit();
+//		super.defocus(originalStyle);
+//	}
 }
