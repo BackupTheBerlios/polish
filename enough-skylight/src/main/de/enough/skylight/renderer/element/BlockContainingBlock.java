@@ -102,8 +102,7 @@ public class BlockContainingBlock extends ContainingBlock {
 	}
 	
 	public void partition(PartitionList partitions) {
-		Partition partition = Partition.partitionBlock(this);
-		partitions.add(partition);
+		Partition.partitionBlock(this,partitions);
 	}
 	
 	public Linebox getPaintLineBox() {

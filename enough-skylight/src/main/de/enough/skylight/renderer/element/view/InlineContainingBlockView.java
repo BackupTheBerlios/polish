@@ -7,14 +7,10 @@ import de.enough.polish.ui.Dimension;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.ItemPreinit;
-import de.enough.skylight.renderer.css.HtmlCssElement;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.element.InlineContainingBlock;
-import de.enough.skylight.renderer.layout.LayoutUtils;
 import de.enough.skylight.renderer.layout.LayoutAttributes;
-import de.enough.skylight.renderer.linebox.Linebox;
 import de.enough.skylight.renderer.node.CssElement;
-import de.enough.skylight.renderer.partition.Partition;
 
 public class InlineContainingBlockView extends ContainingBlockView {
 
@@ -76,22 +72,17 @@ public class InlineContainingBlockView extends ContainingBlockView {
 			this.itemYOffsets = new int[length];
 		}
 
-		// item initialisation and x offset calculation
-		
 		for (int index = 0; index < length; index++) {
 			Item item = items[index];
+			LayoutAttributes attributes = LayoutAttributes.get(item);
 			
 			initItem(item, block);
-			
-			Partition itemPartition = Partition.partitionBlock(item);
-			LayoutAttributes.get(item).setPartition(itemPartition);
+
+			attributes.setInlineOffset(completeWidth);
 			
 			if (item.isInteractive()) {
 				interactive = true;
 			}
-			
-			item.relativeX = completeWidth;
-			item.relativeY = 0;
 			
 			int itemHeight = item.itemHeight;
 			int itemWidth = item.itemWidth;
@@ -105,9 +96,7 @@ public class InlineContainingBlockView extends ContainingBlockView {
 			completeWidth += itemWidth;
 		}
 		
-		// item initialisation and y offset calculation 
-		
-		if(element != null) {
+		/*if(element != null) {
 			for (int index = 0; index < length; index++) {
 				Item item = items[index];
 				if(element.isVerticalAlign(HtmlCssElement.VerticalAlign.BOTTOM)) {
@@ -116,7 +105,7 @@ public class InlineContainingBlockView extends ContainingBlockView {
 					this.itemYOffsets[index] = LayoutUtils.getMiddle(0, maxHeight, item.itemHeight);
 				}
 			}
-		}
+		}*/
 		
 		if(interactive) {
 			//#debug sl.debug.event

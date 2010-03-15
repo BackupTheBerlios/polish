@@ -28,14 +28,12 @@ public class Linebox {
 	
 	int lineHeight = UNDEFINED;
 	
-	public Linebox(Partition partition, InlineContainingBlock block, int blockRelativeLeft, int blockRelativeTop, int availableWidth) {
+	public Linebox(InlineContainingBlock block, int blockRelativeLeft, int blockRelativeTop, int availableWidth) {
 		this.availableWidth = availableWidth;
 		this.partitions = new PartitionList();
 		this.block = block;
 		this.blockRelativeLeft = blockRelativeLeft;
 		this.blockRelativeTop = blockRelativeTop;
-		
-		addPartition(partition);
 	}
 	
 	public void addPartition(Partition partition) {

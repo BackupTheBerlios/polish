@@ -7,22 +7,19 @@ import de.enough.skylight.renderer.linebox.Linebox;
 import de.enough.skylight.renderer.linebox.LineboxList;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.partition.Partition;
+import de.enough.skylight.renderer.partition.PartitionList;
 
 public class LayoutAttributes {
 	static final Integer KEY = new Integer(Integer.MAX_VALUE);
-	
-	public static int getRelativeY(Item item) {
+
+	public static int getRelativeX(Item item) {
 		LayoutAttributes attributes = get(item);
-		LineboxList lineboxes = attributes.getLineboxes();
-		if(lineboxes.size() > 0) {
-			Linebox linebox = lineboxes.get(0);
-			return linebox.getBlockRelativeTop(); 
-		} else {
-			return 0;
-		}
+		PartitionList partitions = attributes.getPartitions();
+		Partition firstPartition = partitions.get(0);
+		return firstPartition.getLineboxRelativeX();
 	}
 	
-	public static int getRelativeX(Item item) {
+	public static int getRelativeY(Item item) {
 		LayoutAttributes attributes = get(item);
 		LineboxList lineboxes = attributes.getLineboxes();
 		if(lineboxes.size() > 0) {
@@ -52,10 +49,13 @@ public class LayoutAttributes {
 	
 	LineboxList lineboxes;
 	
-	Partition partition;
+	PartitionList partitions;
+	
+	int inlineOffset = 0;
 	
 	public LayoutAttributes() {
 		this.lineboxes = new LineboxList();
+		this.partitions = new PartitionList();
 	}
 
 	public CssElement getElement() {
@@ -81,16 +81,21 @@ public class LayoutAttributes {
 	public void setBlock(BlockContainingBlock block) {
 		this.block = block;
 	}
+	
+	public PartitionList getPartitions() {
+		return this.partitions;
+	}
 
 	public LineboxList getLineboxes() {
 		return this.lineboxes;
 	}
-
-	public Partition getPartition() {
-		return this.partition;
+	
+	public int getInlineOffset() {
+		return this.inlineOffset;
 	}
 
-	public void setPartition(Partition partition) {
-		this.partition = partition;
+	public void setInlineOffset(int inlineOffset) {
+		this.inlineOffset = inlineOffset;
 	}
+
 }

@@ -21,8 +21,7 @@ public class InputSubmitField extends StringItem implements Partable {
 	}
 
 	public void partition(PartitionList partitions) {
-		Partition partition = Partition.partitionBlock(this);
-		partitions.add(partition);
+		Partition.partitionBlock(this,partitions);
 	}
 	
 	public boolean handleKeyReleased(int keyCode, int gameAction) {

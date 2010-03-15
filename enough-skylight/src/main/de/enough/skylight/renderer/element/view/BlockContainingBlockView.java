@@ -135,9 +135,6 @@ public class BlockContainingBlockView extends ContainingBlockView {
 		
 		PartitionList bodyPartitions = new PartitionList();
 		
-		body.relativeX = 0;
-		body.relativeY = 0;
-		
 		body.partition(bodyPartitions);
 		
 		bodyPartitions.sort();
@@ -158,6 +155,7 @@ public class BlockContainingBlockView extends ContainingBlockView {
 		
 		for (int i = 0; i < body.size(); i++) {
 			Item item = body.get(i);
+			item.relativeX = LayoutAttributes.getRelativeX(item);
 			item.relativeY = LayoutAttributes.getRelativeY(item);
 		}
 		

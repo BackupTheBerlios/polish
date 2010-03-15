@@ -3,6 +3,7 @@ package de.enough.skylight.renderer.element;
 import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.ui.Item;
+import de.enough.skylight.renderer.layout.LayoutAttributes;
 import de.enough.skylight.renderer.partition.Partable;
 import de.enough.skylight.renderer.partition.Partition;
 import de.enough.skylight.renderer.partition.PartitionList;
@@ -21,8 +22,13 @@ public class Break extends Item implements Partable {
 			Graphics g) {}
 
 	public void partition(PartitionList partitions) {
-		Partition partition = new Partition(Partition.getRelativeX(this),Partition.getRelativeX(this),0,this);
+		LayoutAttributes attributes = LayoutAttributes.get(this);
+		PartitionList itemPartitions = attributes.getPartitions();
+		
+		Partition partition = new Partition(attributes.getInlineOffset(),attributes.getInlineOffset(),0,this);
 		partition.setAttribute(Partition.ATTRIBUTE_NEWLINE);
+		
+		itemPartitions.add(partition);
 		partitions.add(partition);
 	}
 }

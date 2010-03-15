@@ -23,8 +23,7 @@ public class InputTextField extends TextField implements Partable, ItemStateList
 	}
 
 	public void partition(PartitionList partitions) {
-		Partition partition = Partition.partitionBlock(this);
-		partitions.add(partition);
+		Partition.partitionBlock(this,partitions);
 	}
 
 	public void itemStateChanged(Item item) {

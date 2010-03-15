@@ -44,11 +44,15 @@ public class TextBlock extends StringItem implements Partable {
 	
 	public void partition(PartitionList partitions) {
 		this.textPartitions.clear();
+		LayoutAttributes attributes = LayoutAttributes.get(this);
+		
+		PartitionList itemPartitions = attributes.getPartitions();
+		itemPartitions.clear();
 		
 		String text = getText();
 		Font font = getFont();
 		
-		int left = Partition.getRelativeX(this);
+		int left = attributes.getInlineOffset();
 		int right;
 		int height = font.getHeight();
 		int tokenWidth;
@@ -83,6 +87,7 @@ public class TextBlock extends StringItem implements Partable {
 			}
 		}
 		
+		itemPartitions.addAll(this.textPartitions);
 		partitions.addAll(this.textPartitions);
 	}
 	
@@ -109,8 +114,7 @@ public class TextBlock extends StringItem implements Partable {
 		//#debug sl.debug.render
 		System.out.println("drawing substring : \"" + text.substring(index, index + length) + "\" at " + (x + textXOffset) + "/" + y);
 		
-		//TODO solve +1 offset
-		g.drawSubstring(text, index, length, x + textXOffset + 1, y, anchor);
+		g.drawSubstring(text, index, length, x + textXOffset, y, anchor);
 	}	
 	
 	public String toString() {

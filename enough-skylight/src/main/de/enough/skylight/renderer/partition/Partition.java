@@ -10,23 +10,6 @@ import de.enough.skylight.renderer.linebox.Linebox;
 
 
 public class Partition {
-	
-	public static int getRelativeX(Item item) {
-		BlockContainingBlock block = LayoutAttributes.get(item).getBlock();
-		int blockContentX = block.getAbsoluteX() + block.getContentX();
-		int result = item.getAbsoluteX() - blockContentX;
-		//System.out.println("relative X for " + item + " : " + result );
-		return result;
-	}
-	
-	public static int getRelativeY(Item item) {
-		BlockContainingBlock block = LayoutAttributes.get(item).getBlock();
-		int blockContentY = block.getAbsoluteY() + block.getContentY();
-		int result = item.getAbsoluteY() - blockContentY;
-		//System.out.println("relative Y for " + item + " : " + result );
-		return result;
-	}
-	
 	public static void partitionInline(Item item, PartitionList partitions) {
 		if(item.isVisible()) {
 			int height;
@@ -40,7 +23,9 @@ public class Partition {
 				height = item.getContentHeight();
 			}
 			
-			int x = getRelativeX(item);
+			LayoutAttributes attributes = LayoutAttributes.get(item);
+			
+			int x = attributes.getInlineOffset();
 		
 			int marginLeft = x;
 			int paddingLeft = x + UiAccess.getMarginLeft(item);
@@ -49,16 +34,24 @@ public class Partition {
 			int paddingRight = contentRight + UiAccess.getPaddingRight(item);
 			int marginRight = paddingRight + UiAccess.getMarginRight(item);
 			
-			partitions.add(marginLeft, paddingLeft, height, item);
-			partitions.add(paddingLeft, contentLeft, height, item);
-			partitions.add(contentLeft, contentRight, height, item);
-			partitions.add(contentRight, paddingRight, height, item);
-			partitions.add(paddingRight, marginRight, height, item);
+			PartitionList itemPartitions = attributes.getPartitions();
+			itemPartitions.clear();
+			
+			itemPartitions.add(marginLeft, paddingLeft, height, item);
+			itemPartitions.add(paddingLeft, contentLeft, height, item);
+			itemPartitions.add(contentLeft, contentRight, height, item);
+			itemPartitions.add(contentRight, paddingRight, height, item);
+			itemPartitions.add(paddingRight, marginRight, height, item);
+			
+			partitions.addAll(itemPartitions);
 		}
 	}
 	
-	public static Partition partitionBlock(Item item) {
-		int x = getRelativeX(item);
+	public static void partitionBlock(Item item, PartitionList partitions) {
+		LayoutAttributes attributes = LayoutAttributes.get(item);
+		int x = attributes.getInlineOffset();
+		PartitionList itemPartitions = attributes.getPartitions();
+		itemPartitions.clear();
 		
 		if(item.isVisible()) {
 			int width = item.itemWidth;
@@ -66,10 +59,12 @@ public class Partition {
 			
 			int left = x;
 			int right = x + width;
-			return new Partition(left,right, height, item);
+			itemPartitions.add(left, right, height, item);
 		} else {
-			return new Partition(x,x, 0, item);
+			itemPartitions.add(x, x, 0, item);
 		}	
+		
+		partitions.addAll(itemPartitions);
 	}
 	
 	/**
@@ -170,19 +165,19 @@ public class Partition {
 	public void setLinebox(Linebox linebox) {
 		this.linebox = linebox;
 	}
-	public int getRelativeX() {
+	public int getLineboxRelativeX() {
 		return this.lineboxRelativeX;
 	}
 
-	public void setRelativeX(int relativeX) {
+	public void setLineboxRelativeX(int relativeX) {
 		this.lineboxRelativeX = relativeX;
 	}
 
-	public int getRelativeY() {
+	public int getLineboxRelativeY() {
 		return this.lineboxRelativeY;
 	}
 
-	public void setRelativeY(int relativeY) {
+	public void setLineboxRelativeY(int relativeY) {
 		this.lineboxRelativeY = relativeY;
 	}
 	
@@ -212,8 +207,8 @@ public class Partition {
 	public String toString() {
 		return new ToStringHelper("Partition").
 		add("inline relative X", this.inlineRelativeLeft).
-		add("relative X", this.lineboxRelativeX).
-		add("relative Y", this.lineboxRelativeY).
+		add("linebox relative X", this.lineboxRelativeX).
+		add("linebox relative Y", this.lineboxRelativeY).
 		add("width", this.width).
 		add("height", this.height).
 		add("is newline", hasAttribute(ATTRIBUTE_NEWLINE)).

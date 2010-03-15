@@ -41,21 +41,13 @@ public class BlockLayout {
 		
 		int top = 0;
 		
-		Item currentPartitionItem = null;
-		
 		if(partitions.size() > 0) { 
 			for (int index = 0; index < partitions.size(); index++) {
 				Partition partition = partitions.get(index);
 				
-				Item partitionItem = partition.getParentItem();
-				if(currentPartitionItem != partitionItem ) {
-					currentPartitionItem = partitionItem;
-				}
-				
 				if(partition.getWidth() > 0) {
 					if(linebox != null && !linebox.overflows() && linebox.fits(partition) && !partition.hasAttribute(Partition.ATTRIBUTE_NEWLINE)) {
-						linebox.addPartition(partition);
-						LayoutAttributes.get(currentPartitionItem).getLineboxes().add(linebox);
+						addToLinebox(linebox, partition);
 					} else {
 						if(linebox != null) {
 							top += linebox.getLineHeight();
@@ -70,8 +62,8 @@ public class BlockLayout {
 						linebox = null;
 						
 						if(!partition.hasAttribute(Partition.ATTRIBUTE_WHITESPACE)) {
-							linebox = new Linebox(partition, block, offset, top, width);
-							LayoutAttributes.get(currentPartitionItem).getLineboxes().add(linebox);
+							linebox = new Linebox(block, offset, top, width);
+							addToLinebox(linebox, partition);
 							lineboxes.add(linebox);
 						} else {
 							continue;
@@ -94,6 +86,15 @@ public class BlockLayout {
 		}
 		
 		return lineboxes;
+	}
+	 
+	public void addToLinebox(Linebox linebox, Partition partition) {
+		Item partitionItem = partition.getParentItem();
+		LayoutAttributes attributes = LayoutAttributes.get(partitionItem);
+		attributes.getLineboxes().add(linebox);						
+		
+		partition.setLineboxRelativeX(linebox.getWidth());
+		linebox.addPartition(partition);
 	}
 	
 	public int getLineOffset(int top) {
