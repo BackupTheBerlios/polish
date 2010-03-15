@@ -2,7 +2,8 @@ colors {
 	text: black;
 	
 	input: #E8E8E8;
-	input_focus: #FF6600;
+	input_focus: #666666;
+	input_info: white;
 	
 	input_submit: white;
 	input_submit_2: #E8E8E8;
@@ -12,6 +13,7 @@ colors {
 }
 
 fonts {
+	
 	fnt_text {
 		size: small;
 		color: text;
@@ -27,6 +29,12 @@ fonts {
 	fnt_input_text {
 		size: small;
 		color: text;
+		style: normal;
+	}
+	
+	fnt_input_info {
+		size: small;
+		color: input_info;
 		style: normal;
 	}
 	

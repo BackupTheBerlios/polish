@@ -1,3 +1,10 @@
+info {
+	padding: 0;
+	font: fnt_input_info;
+	background-color: #666666;
+	layout: right;	
+}
+
 element {
 	display: inline;
 	padding: 0;
