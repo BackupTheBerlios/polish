@@ -5408,6 +5408,8 @@ public abstract class Item implements UiElement, Animatable
 	 * @param screenHeight the screen height
 	 */
 	public void onScreenSizeChanged( int screenWidth, int screenHeight ) {
+		//#debug
+		System.out.println("onScreenSizeChanged to " + screenWidth + ", " + screenHeight + " for " + this);
 		//#if polish.css.portrait-style || polish.css.landscape-style
 			if (!this.isStyleInitialised && this.style != null) {
 				setStyle( this.style );
@@ -5420,15 +5422,25 @@ public abstract class Item implements UiElement, Animatable
 			} else if (this.portraitStyle != null && this.style != this.portraitStyle){
 				newStyle = this.portraitStyle;
 			}
+			Style oldStyle = null;
 			if (newStyle != null) {
+				//#debug
+				System.out.println("onScreenSizeChanged(): setting new style " + newStyle.name + " for " + this);
+				oldStyle = this.style; 
 				setStyle( newStyle );
+				//#if polish.css.pressed-style
+					this.normalStyle = newStyle;
+				//#endif
 				if (this.isFocused) {
-					Screen scr = getScreen();
-					if (scr == null || scr.container != this) {
-						if (this.parent instanceof Container) {
-							((Container)this.parent).itemStyle = newStyle;
-						}
+					if (this.parent instanceof Container) {
+						Container cont = (Container)this.parent;
+						cont.itemStyle = newStyle;
 						setStyle( getFocusedStyle() );
+					}
+				} else if (oldStyle != null && this.parent instanceof Container) {
+					Container cont = (Container)this.parent;
+					if (cont.itemStyle == oldStyle) {
+						cont.itemStyle = newStyle;
 					}
 				}
 			}
