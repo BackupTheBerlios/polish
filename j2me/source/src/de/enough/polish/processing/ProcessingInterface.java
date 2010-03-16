@@ -1,4 +1,4 @@
-//#condition polish.midp
+//#condition polish.usePolishGui || polish.midp
 /*
  * Copyright (c) 2009 Robert Virkus / Enough Software
  *
