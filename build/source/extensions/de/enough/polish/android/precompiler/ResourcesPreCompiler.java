@@ -135,6 +135,8 @@ public class ResourcesPreCompiler extends PreCompiler {
 				,"android.permission.READ_PHONE_STATE"
 				,"android.permission.WAKE_LOCK"
 				,"android.permission.STATUS_BAR"
+				,"android.permission.BLUETOOTH"
+				,"android.permission.BLUETOOTH_ADMIN"
 		};
 		
 		for (int i = 0; i < permissions.length; i++) {
@@ -147,7 +149,7 @@ public class ResourcesPreCompiler extends PreCompiler {
 		Element usesSdkElement = new Element("uses-sdk");
 		String minSdkVersion = env.getVariable("android.minSdkVersion");
 		if(minSdkVersion == null || minSdkVersion.length() == 0) {
-			minSdkVersion = "3";
+			minSdkVersion = "4";
 		}
 		usesSdkElement.setAttribute("minSdkVersion", minSdkVersion,namespace);
 		
