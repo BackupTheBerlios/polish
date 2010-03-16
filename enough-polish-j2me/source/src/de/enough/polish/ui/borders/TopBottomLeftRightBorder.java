@@ -78,7 +78,7 @@ public class TopBottomLeftRightBorder extends Border {
 	 */
 	public void paint(int x, int y, int width, int height, Graphics g) {
 		g.setColor( this.color );
-		int rightX = x + width;
+		int rightX = x + width - 1;
 		int bottomY = y + height - 1;
 		// paint top border:
 		int border = this.borderWidthTop - 1;
