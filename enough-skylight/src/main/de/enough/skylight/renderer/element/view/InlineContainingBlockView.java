@@ -8,6 +8,7 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.ItemPreinit;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
+import de.enough.skylight.renderer.element.ContainingBlock;
 import de.enough.skylight.renderer.element.InlineContainingBlock;
 import de.enough.skylight.renderer.layout.LayoutAttributes;
 import de.enough.skylight.renderer.node.CssElement;
@@ -53,9 +54,10 @@ public class InlineContainingBlockView extends ContainingBlockView {
 		int maxHeight = 0;
 		int completeWidth = 0;
 		
-		Container container = (Container)parentContainerItem;
-		BlockContainingBlock block = LayoutAttributes.get(container).getBlock();
-		CssElement element = LayoutAttributes.get(block).getElement();
+		ContainingBlock containingBlock = (ContainingBlock)parentContainerItem;
+		LayoutAttributes attributes = containingBlock.getLayoutAttributes();
+		BlockContainingBlock block = attributes.getBlock();
+		CssElement element = attributes.getElement();
 		
 		boolean interactive = false;
 		
@@ -63,7 +65,7 @@ public class InlineContainingBlockView extends ContainingBlockView {
 			interactive = true;
 		}
 		
-		Item[] items = container.getItems();
+		Item[] items = containingBlock.getItems();
 		
 		int length = items.length;
 		
@@ -71,14 +73,16 @@ public class InlineContainingBlockView extends ContainingBlockView {
 			this.itemXOffsets = new int[length];
 			this.itemYOffsets = new int[length];
 		}
-
+		
+		int inlineBlockOffset = attributes.getInlineOffset();
+		
 		for (int index = 0; index < length; index++) {
 			Item item = items[index];
-			LayoutAttributes attributes = LayoutAttributes.get(item);
+			
+			LayoutAttributes itemAttributes = LayoutAttributes.get(item);
+			itemAttributes.setInlineOffset(inlineBlockOffset + this.parentContainer.getContentX() + completeWidth);
 			
 			initItem(item, block);
-
-			attributes.setInlineOffset(completeWidth);
 			
 			if (item.isInteractive()) {
 				interactive = true;

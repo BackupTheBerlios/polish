@@ -153,7 +153,6 @@ public class ViewportBuilder {
 			attributes.setElement(element);
 			attributes.setContainingBlock(parent);
 			attributes.setBlock(parentBlock);
-			//LayoutAttributes.set(block, element, parent, parentBlock);
 			
 			if(element.isFloat()) {
 				if(element.isFloat(HtmlCssElement.Float.LEFT)) {
@@ -191,11 +190,12 @@ public class ViewportBuilder {
 			
 			if(item != null) {
 				item.setView(new ElementView());
+				
 				LayoutAttributes attributes = LayoutAttributes.get(item);
 				attributes.setElement(element);
 				attributes.setContainingBlock(parent);
 				attributes.setBlock(parentBlock);
-				//LayoutAttributes.set(item, element, parent, parentBlock);
+				
 				if(element.isFloat()) {
 					if(element.isFloat(HtmlCssElement.Float.LEFT)) {
 						parent.addToLeftFloat(item);

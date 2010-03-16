@@ -8,6 +8,7 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.util.ItemPreinit;
 import de.enough.skylight.renderer.Viewport;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
+import de.enough.skylight.renderer.element.ContainingBlock;
 import de.enough.skylight.renderer.element.InlineContainingBlock;
 import de.enough.skylight.renderer.layout.BlockLayout;
 import de.enough.skylight.renderer.layout.LayoutAttributes;
@@ -33,6 +34,10 @@ public class BlockContainingBlockView extends ContainingBlockView {
 
 	protected void initContent(Item parentContainerItem, int firstLineWidth,
 			int availWidth, int availHeight) {
+		ContainingBlock containingBlock = (ContainingBlock)parentContainerItem;
+		LayoutAttributes attributes = containingBlock.getLayoutAttributes();
+		CssElement element = attributes.getElement(); 
+		
 		//#debug sl.profile.layout
 		Benchmark.start("initContent for block " + this.containingBlock);
 		
@@ -40,8 +45,6 @@ public class BlockContainingBlockView extends ContainingBlockView {
 		
 		//#debug sl.profile.layout
 		Benchmark.stop("initContent for block " + this.containingBlock,"done");
-		
-		CssElement element = LayoutAttributes.get(parentContainerItem).getElement();
 		
 		if(element != null && element.isInteractive()) {
 			this.parentContainer.setAppearanceMode(Item.INTERACTIVE);

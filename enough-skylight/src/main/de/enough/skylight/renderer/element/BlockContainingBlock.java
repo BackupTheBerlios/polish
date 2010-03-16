@@ -42,7 +42,7 @@ public class BlockContainingBlock extends ContainingBlock {
 		
 		//#style element
 		this.body = new InlineContainingBlock();
-		LayoutAttributes attributes = LayoutAttributes.get(this.body);
+		LayoutAttributes attributes = this.body.getLayoutAttributes();
 		attributes.setElement(null);
 		attributes.setContainingBlock(this);
 		attributes.setBlock(this);
@@ -52,7 +52,8 @@ public class BlockContainingBlock extends ContainingBlock {
 	
 	public void addToBody(Item item) {
 		this.body.add(item);
-		LayoutAttributes.get(item).setContainingBlock(this.body);
+		LayoutAttributes attributes = this.body.getLayoutAttributes();
+		attributes.setContainingBlock(this.body);
 	}
 	
 	public void addToLeftFloat(Item item) {
@@ -60,7 +61,7 @@ public class BlockContainingBlock extends ContainingBlock {
 			//#style element
 			this.floatLeft = new InlineContainingBlock();
 			
-			LayoutAttributes attributes = LayoutAttributes.get(this.floatLeft);
+			LayoutAttributes attributes = this.floatLeft.getLayoutAttributes();
 			attributes.setElement(null);
 			attributes.setContainingBlock(this);
 			attributes.setBlock(this);
@@ -77,7 +78,7 @@ public class BlockContainingBlock extends ContainingBlock {
 			//#style element
 			this.floatRight = new InlineContainingBlock();
 			
-			LayoutAttributes attributes = LayoutAttributes.get(this.floatRight);
+			LayoutAttributes attributes = this.floatRight.getLayoutAttributes();
 			attributes.setElement(null);
 			attributes.setContainingBlock(this);
 			attributes.setBlock(this);

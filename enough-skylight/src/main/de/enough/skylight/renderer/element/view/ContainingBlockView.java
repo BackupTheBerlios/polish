@@ -10,12 +10,12 @@ import de.enough.skylight.renderer.node.CssElement;
 
 public class ContainingBlockView extends ContainerView {
 	
-	protected ContainingBlock containingBlock;
+	ContainingBlock containingBlock;
 	
 	public ContainingBlockView(ContainingBlock containingBlock) {
-		this.containingBlock = containingBlock;
 		this.parentContainer = containingBlock;
 		this.parentItem = containingBlock;
+		this.containingBlock = containingBlock;
 	}
 	
 	public boolean handleKeyReleased(int keyCode, int gameAction) {

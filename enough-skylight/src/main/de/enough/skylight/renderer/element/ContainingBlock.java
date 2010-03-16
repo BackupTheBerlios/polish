@@ -4,15 +4,21 @@ import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.UiAccess;
+import de.enough.skylight.renderer.layout.LayoutAttributes;
 import de.enough.skylight.renderer.partition.Partable;
 
 public abstract class ContainingBlock extends Container implements Partable {
+	
+	LayoutAttributes layoutAttributes; 
+	
 	public ContainingBlock(boolean focusFirstElement) {
-		super(focusFirstElement);
+		this(focusFirstElement,null);
 	}
 	
 	public ContainingBlock(boolean focusFirstElement, Style style) {
 		super(focusFirstElement, style);
+		
+		this.layoutAttributes = LayoutAttributes.get(this);
 	}
 	
 	protected void initContent(int firstLineWidth, int availWidth,
@@ -60,7 +66,11 @@ public abstract class ContainingBlock extends Container implements Partable {
 	public abstract InlineContainingBlock getLeftFloat();
 	
 	public abstract InlineContainingBlock getRightFloat();
-		
+	
+	public LayoutAttributes getLayoutAttributes() {
+		return this.layoutAttributes;
+	}
+	
 //	protected Style focus(Style focusStyle, int direction) {
 //		requestInit();
 //		Style style = super.focus(focusStyle, direction);

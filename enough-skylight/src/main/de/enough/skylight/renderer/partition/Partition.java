@@ -49,7 +49,9 @@ public class Partition {
 	
 	public static void partitionBlock(Item item, PartitionList partitions) {
 		LayoutAttributes attributes = LayoutAttributes.get(item);
+		
 		int x = attributes.getInlineOffset();
+		
 		PartitionList itemPartitions = attributes.getPartitions();
 		itemPartitions.clear();
 		

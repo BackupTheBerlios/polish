@@ -8,8 +8,8 @@ colors {
 	input_submit: white;
 	input_submit_2: #E8E8E8;
 	
-	input_submit_focus: #FF6600;
-	input_submit_focus_2: #EE6600;
+	input_submit_focus: #666666;
+	input_submit_focus_2: black;
 }
 
 fonts {
