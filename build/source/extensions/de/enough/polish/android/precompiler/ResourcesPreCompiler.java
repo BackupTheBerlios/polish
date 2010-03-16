@@ -135,8 +135,10 @@ public class ResourcesPreCompiler extends PreCompiler {
 				,"android.permission.READ_PHONE_STATE"
 				,"android.permission.WAKE_LOCK"
 				,"android.permission.STATUS_BAR"
-				,"android.permission.BLUETOOTH"
-				,"android.permission.BLUETOOTH_ADMIN"
+				//TODO: Read all permissions from the variable polish.build.permissions.
+				//TODO: Add default permissions for every platform.
+//				,"android.permission.BLUETOOTH"
+//				,"android.permission.BLUETOOTH_ADMIN"
 		};
 		
 		for (int i = 0; i < permissions.length; i++) {
