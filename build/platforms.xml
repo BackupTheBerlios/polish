@@ -294,6 +294,7 @@
 		<capability name="build.Android.Platform.Target" value="1" />
 		<capability name="build.Android.Platform.Api" value="2" />
 	    <capability name="IconSize" value="48x48" />
+	    <capability name="build.android.permissions" value="ACCESS_FINE_LOCATION,ACCESS_MOCK_LOCATION,ACCESS_LOCATION_EXTRA_COMMANDS,ACCESS_COARSE_LOCATION,RECEIVE_SMS,SEND_SMS,READ_CONTACTS,WRITE_CONTACTS,READ_PHONE_STATE,WAKE_LOCK,STATUS_BAR" />
 	</platform>
 	
 	<platform>
@@ -327,6 +328,7 @@
         <capability name="build.Android.Platform.Target" value="4" />
         <capability name="build.Android.Platform.Api" value="5" />
         <capability name="android1.1" value="" />
+        <capability name="build.android.permissions" value="BLUETOOTH,BLUETOOTH_ADMIN" />
     </platform>
 
     <platform>
@@ -338,6 +340,7 @@
         <capability name="build.Android.Platform.Target" value="6" />
         <capability name="build.Android.Platform.Api" value="7" />
         <capability name="android1.1" value="" />
+        <capability name="build.android.permissions" value="BLUETOOTH,BLUETOOTH_ADMIN" />
     </platform>
 	
 </platforms>

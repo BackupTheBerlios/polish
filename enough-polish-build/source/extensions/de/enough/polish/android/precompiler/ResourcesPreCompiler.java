@@ -123,28 +123,17 @@ public class ResourcesPreCompiler extends PreCompiler {
 		permissionElement.setAttribute("name","android.permission.INTERNET",namespace);
 		rootElement.addContent(permissionElement);
 		//TODO: use actual permissions:
-		String[] permissions = new String[] {
-				"android.permission.ACCESS_FINE_LOCATION"
-				,"android.permission.ACCESS_MOCK_LOCATION"
-				,"android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"
-				,"android.permission.ACCESS_COARSE_LOCATION"
-				,"android.permission.RECEIVE_SMS"
-				,"android.permission.SEND_SMS"
-				,"android.permission.READ_CONTACTS"
-				,"android.permission.WRITE_CONTACTS"
-				,"android.permission.READ_PHONE_STATE"
-				,"android.permission.WAKE_LOCK"
-				,"android.permission.STATUS_BAR"
-				//TODO: Read all permissions from the variable polish.build.permissions.
-				//TODO: Add default permissions for every platform.
-//				,"android.permission.BLUETOOTH"
-//				,"android.permission.BLUETOOTH_ADMIN"
-		};
+		String permissionsString = env.getVariable("polish.build.android.permissions");
+		if(permissionsString == null || permissionsString.length() == 0){
+			throw new BuildException("The variable 'polish.build.android.permissions' must be defined. Normally it is definied in the platforms.xml file for the Android platforms.");
+		}
+		
+		String[] permissions = permissionsString.split(",");
 		
 		for (int i = 0; i < permissions.length; i++) {
 			permissionElement = new Element("uses-permission");
 			String permission = permissions[i];
-			permissionElement.setAttribute("name",permission,namespace);
+			permissionElement.setAttribute("name","android.permission."+permission,namespace);
 			rootElement.addContent(permissionElement);
 		}
 		
