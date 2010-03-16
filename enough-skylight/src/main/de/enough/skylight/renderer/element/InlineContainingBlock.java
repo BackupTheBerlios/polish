@@ -77,6 +77,19 @@ public class InlineContainingBlock extends ContainingBlock {
 		}
 	}
 	
+	public boolean isInItemArea(int relX, int relY) {
+		LayoutAttributes attributes = getLayoutAttributes();
+		BlockContainingBlock block = attributes.getBlock();
+		int blockWidth = block.itemWidth;
+		int blockHeight = block.itemHeight;
+		
+		if (relY < 0 || relY > blockHeight || relX < 0 || relX > blockWidth) { //Math.max(this.itemWidth, this.contentX + this.contentWidth)) {
+			return false;
+		}
+		
+		return true;
+	}
+
 	public String toString() {
 		return new ToStringHelper("InlineContainingBlock").
 		add("focused", this.isFocused).
