@@ -1,8 +1,8 @@
 package org.mozilla.javascript;
 
 //#if polish.JavaSE
-//import java.text.MessageFormat;
-//import java.util.ResourceBundle;
+//# import java.text.MessageFormat;
+//# import java.util.ResourceBundle;
 //#endif
 import org.mozilla.javascript.continuations.Continuation;
 import org.mozilla.javascript.regexp.NativeRegExp;
@@ -132,15 +132,19 @@ public class ScriptRuntime {
         NativeRegExp.init(cx, scope, sealed);
 //        NativeForm.init(scope, sealed);
 //        NativeList.init(scope, sealed);
-        NativeAlert.init(scope, sealed);
         NativeStringItem.init(scope, sealed);
+
+        //#if !polish.JavaSE
+        NativeAlert.init(scope, sealed);
         NativeImage.init(scope, sealed);
         NativeImageItem.init(scope, sealed);
+        NativeRecordstore.init(scope, sealed);
+        NativeRecordEnumeration.init(scope, sealed);
+        //#endif
+        
 //        NativeTextField.init(scope, sealed);
 //        NativeDateField.init(scope, sealed);
 //        NativeChoiceGroup.init(scope, sealed);
-        NativeRecordstore.init(scope, sealed);
-        NativeRecordEnumeration.init(scope, sealed);
 //        NativeCommunication.init(scope, sealed);
 //        NativeTabbedForm.init(scope, sealed);
 //        NativeTabbedList.init(scope, sealed);
@@ -2871,32 +2875,32 @@ public class ScriptRuntime {
     public static String getMessage(String messageId, Object[] arguments)
     {
     	//#if polish.JavaSE
-//        final String defaultResource
-//            = "org.mozilla.javascript.resources.Messages";
+//#        final String defaultResource
+//#            = "org.mozilla.javascript.resources.Messages";
+//#
+//#        Context cx = Context.getCurrentContext();
+//#        //Locale locale = cx != null ? cx.getLocale() : Locale.getDefault();
+//#
+//#        // ResourceBundle does cacheing.
+//#        //ResourceBundle rb = ResourceBundle.getBundle(defaultResource, locale);
+//#        ResourceBundle rb = ResourceBundle.getBundle(defaultResource);
+//#
+//#        String formatString;
+//#        try {
+//#            formatString = rb.getString(messageId);
+//#        } catch (java.util.MissingResourceException mre) {
+//#            throw new RuntimeException
+//#                ("no message resource found for message property "+ messageId);
+//#        }
 //
-//        Context cx = Context.getCurrentContext();
-//        //Locale locale = cx != null ? cx.getLocale() : Locale.getDefault();
-//
-//        // ResourceBundle does cacheing.
-//        //ResourceBundle rb = ResourceBundle.getBundle(defaultResource, locale);
-//        ResourceBundle rb = ResourceBundle.getBundle(defaultResource);
-//
-//        String formatString;
-//        try {
-//            formatString = rb.getString(messageId);
-//        } catch (java.util.MissingResourceException mre) {
-//            throw new RuntimeException
-//                ("no message resource found for message property "+ messageId);
-//        }
-//
-//        /*
-//         * It's OK to format the string, even if 'arguments' is null;
-//         * we need to format it anyway, to make double ''s collapse to
-//         * single 's.
-//         */
-//        // TODO: MessageFormat is not available on pJava
-//        MessageFormat formatter = new MessageFormat(formatString);
-//        return formatter.format(arguments);
+//#        /*
+//#         * It's OK to format the string, even if 'arguments' is null;
+//#         * we need to format it anyway, to make double ''s collapse to
+//#         * single 's.
+//#         */
+//#        // TODO: MessageFormat is not available on pJava
+//#        MessageFormat formatter = new MessageFormat(formatString);
+//#        return formatter.format(arguments);
         //#else
         StringBuffer message = new StringBuffer(messageId);
         if (arguments != null) {
