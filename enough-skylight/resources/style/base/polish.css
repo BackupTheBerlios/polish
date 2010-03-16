@@ -38,21 +38,9 @@ fonts {
 		style: normal;
 	}
 	
-	fnt_input_text_focus {
-		size: small;
-		color: input_focus;
-		style: normal;
-	}
-	
 	fnt_input_submit {
 		size: small;
 		color: text;
-		style: normal;
-	}
-	
-	fnt_input_submit_focus {
-		size: small;
-		color: input_focus;
 		style: normal;
 	}
 	

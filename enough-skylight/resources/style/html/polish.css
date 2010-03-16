@@ -56,7 +56,6 @@ input_text extends element {
 
 input_text:hover {
 	border: bdr_input_focus;
-	font: fnt_input_text_focus;
 }
 
 input_submit extends element {
@@ -69,7 +68,6 @@ input_submit extends element {
 
 input_submit:hover {
 	border: bdr_input_focus;
-	font: fnt_input_submit_focus;
 }
 
 input_submit:pressed {
