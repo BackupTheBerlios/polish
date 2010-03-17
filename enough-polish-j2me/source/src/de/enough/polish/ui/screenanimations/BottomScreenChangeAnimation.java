@@ -54,7 +54,7 @@ import de.enough.polish.ui.Style;
  */
 public class BottomScreenChangeAnimation extends ScreenChangeAnimation {
 	
-	private int currentY;
+	protected int currentY;
 	//#if polish.css.bottom-screen-change-animation-speed
 		private int speed = -1;
 	//#endif
