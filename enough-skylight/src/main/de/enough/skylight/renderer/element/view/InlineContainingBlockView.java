@@ -126,19 +126,18 @@ public class InlineContainingBlockView extends ContainingBlockView {
 		System.out.println(this.containingBlock + " has dimension : " + this.contentWidth + "/" + this.contentHeight);
 	}
 	
-	protected void paintContent(Container container, Item[] myItems, int x,
-			int y, int leftBorder, int rightBorder, int clipX, int clipY,
-			int clipWidth, int clipHeight, Graphics g) {
-		//TODO add culling
-		paintLine(myItems,x,y,leftBorder,rightBorder,clipX,clipY,clipWidth,clipHeight,g);
-	}
-	
-	protected void paintLine(Item[] myItems, int x,
-			int y, int leftBorder, int rightBorder, int clipX, int clipY,
-			int clipWidth, int clipHeight, Graphics g) {
-		for (int i = 0; i < myItems.length; i++) {
+	protected void paintContent(Item parent, int x, int y, int leftBorder,
+			int rightBorder, Graphics g) {
+		Item[] items = this.parentContainer.getItems();
+		
+		int clipX = g.getClipX();
+		int clipY = g.getClipY();
+		int clipWidth = g.getClipWidth();
+		int clipHeight = g.getClipHeight();
+		
+		for (int i = 0; i < items.length; i++) {
 			if (i != this.focusedIndex) {
-				Item item = myItems[i];
+				Item item = items[i];
 				int itemX = x + this.itemXOffsets[i];
 				int itemY = y + this.itemYOffsets[i];
 				//System.out.println(this.itemYOffsets[i]);

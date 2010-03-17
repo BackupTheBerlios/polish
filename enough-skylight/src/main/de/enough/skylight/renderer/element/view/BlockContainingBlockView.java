@@ -208,41 +208,9 @@ public class BlockContainingBlockView extends ContainingBlockView {
 
 		return height;
 	}
-
-	protected void paintContent(Container container, Item[] myItems, int x,
-			int y, int leftBorder, int rightBorder, int clipX, int clipY,
-			int clipWidth, int clipHeight, Graphics g) {
-		//TODO add culling
-		paintLayout(x, y, leftBorder, rightBorder, g);
-	}
 	
-	public void paintLineBox(Linebox linebox, InlineContainingBlock block, int x, int y, Graphics g) {
-		x = x + linebox.getBlockRelativeLeft();
-		y = y + linebox.getBlockRelativeTop();
-		
-		int clipX = g.getClipX();
-		int clipY = g.getClipY();
-		int clipWidth = g.getClipWidth();
-		int clipHeight = g.getClipHeight();
-		
-		int left = linebox.getTrimmedInlineRelativeLeft();
-		int width = linebox.getTrimmedWidth();
-		int height = linebox.getLineHeight();
-		
-		g.clipRect(x, y, width, height);
-		
-		//#debug sl.debug.render
-		System.out.println("set clipping for " + block + " : x : " + x + " : y :" + y + " : width : "+ width + " : height : " + height);
-
-		int leftBorder = x - left;
-		int rightBorder = (x - left) +  width;
-		block.paint(x - left, y, leftBorder, rightBorder, g);
-
-		g.setClip(clipX, clipY, clipWidth, clipHeight);
-	}
-	
-	public void paintLayout(int x, int y, int leftBorder, int rightBorder,
-			Graphics g) {
+	protected void paintContent(Item parent, int x, int y, int leftBorder,
+			int rightBorder, Graphics g) {
 		Linebox linebox;
 		
 		if(this.floatLeftLines != null) {
@@ -271,6 +239,31 @@ public class BlockContainingBlockView extends ContainingBlockView {
 				paintLineBox(linebox,body,x,y,g);
 			}
 		}
+	}
+	
+	public void paintLineBox(Linebox linebox, InlineContainingBlock block, int x, int y, Graphics g) {
+		x = x + linebox.getBlockRelativeLeft();
+		y = y + linebox.getBlockRelativeTop();
+		
+		int clipX = g.getClipX();
+		int clipY = g.getClipY();
+		int clipWidth = g.getClipWidth();
+		int clipHeight = g.getClipHeight();
+		
+		int left = linebox.getTrimmedInlineRelativeLeft();
+		int width = linebox.getTrimmedWidth();
+		int height = linebox.getLineHeight();
+		
+		g.clipRect(x, y, width, height);
+		
+		//#debug sl.debug.render
+		System.out.println("set clipping for " + block + " : x : " + x + " : y :" + y + " : width : "+ width + " : height : " + height);
+
+		int leftBorder = x - left;
+		int rightBorder = (x - left) +  width;
+		block.paint(x - left, y, leftBorder, rightBorder, g);
+
+		g.setClip(clipX, clipY, clipWidth, clipHeight);
 	}
 	
 	public Linebox getPaintLineBox() {
