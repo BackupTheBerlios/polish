@@ -1,4 +1,4 @@
-//#condition polish.usePolishGui || polish.midp
+//#condition polish.midp || polish.usePolishGui
 /*
  * Copyright (c) 2009 Robert Virkus / Enough Software
  *
@@ -45,7 +45,7 @@ public interface ProcessingInterface {
     public static Vector processingContextObjects = new Vector();
 
     /*
-     * Non-Processing methods that are used by the system. These methods are used to create a brigde between J2ME Polish and
+     * Non-Processing methods that are used by the system. These methods are used to create a bridge between J2ME Polish and
      * Mobile Processing. They are not meant to be used by the end-programmer.
      *
      */
