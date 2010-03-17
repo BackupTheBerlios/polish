@@ -73,13 +73,20 @@ public class AnimationThread extends Thread
 	//#ifdef polish.animationInterval:defined
 		//#= public final static long ANIMATION_INTERVAL = ${time(polish.animationInterval)};
 	//#else
+		/**
+		 * The interval that the animation thread is sleeping between each animation phase.
+		 * You can specify the polish.animationInterval preprocessing variable for changing the default value of 50ms, e.g.
+		 * <pre>
+		 * &lt;variable name=&quot;polish.animationInterval&quot; value=&quot;30ms&quot; /&gt;
+		 * </pre>
+		 */
 		public final static long ANIMATION_INTERVAL = 50L;
 	//#endif
 	private static final int ANIMATION_YIELD_INTERVAL = Integer.MIN_VALUE;
 	//#ifdef polish.sleepInterval:defined
 		//#= private final static long SLEEP_INTERVAL = ${time(polish.sleepInterval)};
 	//#else
-		private final static long SLEEP_INTERVAL = 300L;
+		private final static long SLEEP_INTERVAL = 1000L;
 	//#endif
 	//#ifdef polish.minAnimationInterval:defined
 		//#= private final static long ANIMATION_MIN_INTERVAL = ${time(polish.minAnimationInterval)};
@@ -88,6 +95,10 @@ public class AnimationThread extends Thread
 	//#endif
 	protected static boolean releaseResourcesOnScreenChange;
 	private static ArrayList animationList;
+	//#if polish.Animation.fireIdleEvents
+		private static String[] idleEvents;
+		private static long[] idleTimeouts;
+	//#endif
 	//#if polish.Animation.MaxIdleTime:defined
 		//#= private final static long ANIMATION_TIMEOUT = ${ time(polish.Animation.MaxIdleTime)};
 	//#else
@@ -128,6 +139,7 @@ public class AnimationThread extends Thread
 
 		ClippingRegion repaintRegion = new ClippingRegion();
 //		int animationCounter = 0;
+		long lastIdleTime = 0;
 
 		while ( true ) {
                         
@@ -140,7 +152,8 @@ public class AnimationThread extends Thread
 						//#endif
 				) {
 					currentTime = System.currentTimeMillis();
-					if ( (currentTime - screen.lastInteractionTime) < ANIMATION_TIMEOUT ) {
+					long idleTime = currentTime - screen.lastInteractionTime;
+					if ( idleTime < ANIMATION_TIMEOUT ) {
 
 						
 						screen.animate( currentTime, repaintRegion );
@@ -186,6 +199,7 @@ public class AnimationThread extends Thread
 						//#if polish.Animation.fireIdleEvents
 							if (sleeptime == SLEEP_INTERVAL) {
 								EventManager.fireEvent( EVENT_IDLE_MODE_OFF, this, null);
+								lastIdleTime = 0;
 							}
 						//#endif
 						usedTime = System.currentTimeMillis() - currentTime;
@@ -199,10 +213,22 @@ public class AnimationThread extends Thread
 						//#if polish.Animation.fireIdleEvents
 							EventManager.fireEvent( EVENT_IDLE_MODE_ON, this, null);
 						//#endif
-
-
-						continue;
 					}
+					//#if polish.Animation.fireIdleEvents
+						if (idleTime > 1000) {
+							long[] timeouts = idleTimeouts;
+							if (timeouts != null) {
+								String[] events = idleEvents;
+								for (int j = 0; j < timeouts.length; j++) {
+									long timeout = timeouts[j];
+									if (timeout <= idleTime && timeout > lastIdleTime) {
+										EventManager.fireEvent( events[j], this, new Long(idleTime) );
+									}
+								}
+								lastIdleTime = idleTime;
+							}
+						}
+					//#endif
 
 					if (releaseResourcesOnScreenChange) {
 						d = StyleSheet.display.getCurrent();
@@ -212,7 +238,6 @@ public class AnimationThread extends Thread
 					}
 
 					if(sleeptime == ANIMATION_YIELD_INTERVAL) {
-
 						//#if polish.vendor.sony-ericsson
 							Thread.yield();
 						//#else
@@ -311,6 +336,117 @@ public class AnimationThread extends Thread
 		// ignore
 	}
 	//#endif
+	
+	/**
+	 * Requests that the specified event is fired using the EventManager after the user is idle for given timeout.
+	 * Note that this feature needs to be activated using the polish.Animation.fireIdleEvents preprocessing variable:
+	 * <pre>
+	 * &lt;variable name=&quot;polish.Animation.fireIdleEvents&quot; value=&quot;true&quot; /&gt;
+	 * </pre>
+	 * 
+	 * @param eventName the name of the event
+	 * @param timeout the timeout in milliseconds with a minum of 1 second (that is 1000)
+	 * @see de.enough.polish.event.EventListener
+	 * @see #removeIdleEvent(String)
+	 * @throws IllegalArgumentException when eventName is null or timeout is less than 1000.
+	 */
+	public static void addIdleEvent( String eventName, long timeout) {
+		//#if polish.Animation.fireIdleEvents
+			if (eventName == null || timeout < 1000) {
+				throw new IllegalArgumentException();
+			}
+			if (idleEvents == null) {
+				idleEvents = new String[] { eventName };
+				idleTimeouts = new long[]{ timeout };
+			} else {
+				int size = idleEvents.length;
+				String[] events = new String[ size + 1];
+				System.arraycopy( idleEvents, 0, events, 0, size );
+				events[size] = eventName;
+				long[] timeouts = new long[ size + 1 ];
+				System.arraycopy( idleTimeouts, 0, timeouts, 0, size );
+				timeouts[size] = timeout;
+				idleTimeouts = timeouts;
+				idleEvents = events;
+			}
+		//#else
+			//# throw new IllegalStateException();
+		//#endif
+	}
+	
+	/**
+	 * Removes an idle event 
+	 * 
+	 * @param eventName the name of the event (should be unique, otherwise all events with that name are removed)
+	 * @see #addIdleEvent(String, long)
+	 */
+	public static void removeIdleEvent( String eventName) {
+		//#if polish.Animation.fireIdleEvents
+			if (idleEvents != null) {
+				int size = idleEvents.length;
+				if (size == 1) {
+					if (eventName.equals(idleEvents[0])) {
+						idleEvents = null;
+						idleTimeouts = null;
+					}
+				} else {
+					String[] events = new String[size-1];
+					long[] timeouts = new long[size -1];
+					int counter = 0;
+					for (int i=0; i<size; i++) {
+						String existing = idleEvents[i];
+						if (eventName.equals(existing)) {
+							continue;
+						}
+						if (counter < size -1) {
+							events[counter] = existing;
+							timeouts[counter] = idleTimeouts[i];
+						}
+						counter++;
+					}
+					if (counter < size - 1) {
+						// more than one event have been removed:
+						String[] events2 = new String[counter];
+						long[] timeouts2 = new long[counter];
+						System.arraycopy( events, 0, events2, 0, counter );
+						System.arraycopy( timeouts, 0, timeouts2, 0, counter );
+						events = events2;
+						timeouts = timeouts2;
+					}
+					idleTimeouts = timeouts;
+					idleEvents = events;
+				}
+			}
+		//#else
+			//# throw new IllegalStateException();
+		//#endif
+	}
+	
+	/**
+	 * Retrieves the registered idle event names
+	 * @return the registered idle event names, null if none have been registered or when the polish.Animation.fireIdleEvents preprocessing variable is not set to true.
+	 * @see #addIdleEvent(String, long)
+	 */
+	public static String[] getIdleEventNames() {
+		String[] events = null;
+		//#if polish.Animation.fireIdleEvents
+			events = idleEvents;
+		//#endif
+		return events;
+	}
+	
+	/**
+	 * Retrieves the registered idle event timeouts
+	 * @return the registered idle event timeouts in milliseconds, null if none have been registered or when the polish.Animation.fireIdleEvents preprocessing variable is not set to true.
+	 * @see #addIdleEvent(String, long)
+	 */
+	public static long[] getIdleEventTimeouts() {
+		long[] timeouts = null;
+		//#if polish.Animation.fireIdleEvents
+			timeouts = idleTimeouts;
+		//#endif
+		return timeouts;
+	}
 
 	//#if polish.css.animations
 	/**
