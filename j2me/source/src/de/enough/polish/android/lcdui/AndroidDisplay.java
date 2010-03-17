@@ -273,8 +273,9 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 				}
 			}
 		};
-		Thread painterThread = new Thread(new ThreadGroup("EnoughThreadGroup"),runnable,"EnoughDrawThread",32*1024);
-		painterThread.start();
+		// The Android Thread API is different from everything else so we hide it.
+		//# Thread painterThread = new Thread(new ThreadGroup("EnoughThreadGroup"),runnable,"EnoughDrawThread",32*1024);
+		//# painterThread.start();
 		//#endif
 	}
 	
