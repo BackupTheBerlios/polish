@@ -51,8 +51,10 @@ public class LayoutAttributes {
 	
 	PartitionList partitions;
 	
-	int inlineOffset = 0;
+	int inlineRelativeLeft = 0;
 	
+	int inlineRelativeRight = 0;
+
 	public LayoutAttributes() {
 		this.lineboxes = new LineboxList();
 		this.partitions = new PartitionList();
@@ -90,12 +92,12 @@ public class LayoutAttributes {
 		return this.lineboxes;
 	}
 	
-	public int getInlineOffset() {
-		return this.inlineOffset;
+	public int getInlineRelativeLeft() {
+		return this.inlineRelativeLeft;
 	}
 
-	public void setInlineOffset(int inlineOffset) {
-		this.inlineOffset = inlineOffset;
+	public void setInlineRelativeLeft(int inlineOffset) {
+		this.inlineRelativeLeft = inlineOffset;
 	}
 
 }

@@ -2,7 +2,6 @@ package de.enough.skylight.renderer.element.view;
 
 import javax.microedition.lcdui.Graphics;
 
-import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Dimension;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
@@ -11,15 +10,18 @@ import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.element.ContainingBlock;
 import de.enough.skylight.renderer.element.InlineContainingBlock;
 import de.enough.skylight.renderer.layout.LayoutAttributes;
+import de.enough.skylight.renderer.linebox.Linebox;
 import de.enough.skylight.renderer.node.CssElement;
 
 public class InlineContainingBlockView extends ContainingBlockView {
 
 	public static Dimension DIMENSION_ZERO = new Dimension(0);
 	
-	transient int[] itemXOffsets;
+	int[] itemXOffsets;
 	
-	transient int[] itemYOffsets;
+	int[] itemYOffsets;
+	
+	int inlineOffset;
 	
 	public InlineContainingBlockView(InlineContainingBlock inlineBlock) {
 		super(inlineBlock);
@@ -65,6 +67,8 @@ public class InlineContainingBlockView extends ContainingBlockView {
 			interactive = true;
 		}
 		
+		this.inlineOffset = attributes.getInlineRelativeLeft() + containingBlock.getContentX();
+		
 		Item[] items = containingBlock.getItems();
 		
 		int length = items.length;
@@ -74,13 +78,12 @@ public class InlineContainingBlockView extends ContainingBlockView {
 			this.itemYOffsets = new int[length];
 		}
 		
-		int inlineBlockOffset = attributes.getInlineOffset();
-		
 		for (int index = 0; index < length; index++) {
 			Item item = items[index];
 			
 			LayoutAttributes itemAttributes = LayoutAttributes.get(item);
-			itemAttributes.setInlineOffset(inlineBlockOffset + this.parentContainer.getContentX() + completeWidth);
+			
+			itemAttributes.setInlineRelativeLeft(this.inlineOffset + completeWidth);
 			
 			initItem(item, block);
 			
@@ -88,8 +91,9 @@ public class InlineContainingBlockView extends ContainingBlockView {
 				interactive = true;
 			}
 			
-			int itemHeight = item.itemHeight;
 			int itemWidth = item.itemWidth;
+			int itemHeight = item.itemHeight;
+			
 			if (itemHeight > maxHeight ) {
 				maxHeight = itemHeight;
 			}
@@ -128,6 +132,13 @@ public class InlineContainingBlockView extends ContainingBlockView {
 	
 	protected void paintContent(Item parent, int x, int y, int leftBorder,
 			int rightBorder, Graphics g) {
+		LayoutAttributes blockAttributes = this.containingBlock.getLayoutAttributes();
+		BlockContainingBlock block = blockAttributes.getBlock();
+		Linebox linebox = block.getPaintLineBox();
+		
+		int lineboxInlineRelativeLeft = linebox.getInlineRelativeLeft();
+		int lineboxInlineRelativeRight = linebox.getInlineRelativeRight();
+		
 		Item[] items = this.parentContainer.getItems();
 		
 		int clipX = g.getClipX();
@@ -135,23 +146,42 @@ public class InlineContainingBlockView extends ContainingBlockView {
 		int clipWidth = g.getClipWidth();
 		int clipHeight = g.getClipHeight();
 		
+		int itemInlineRelativeLeft;
+		int itemInlineRelativeRight;
+		
 		for (int i = 0; i < items.length; i++) {
 			if (i != this.focusedIndex) {
 				Item item = items[i];
+
 				int itemX = x + this.itemXOffsets[i];
 				int itemY = y + this.itemYOffsets[i];
-				//System.out.println(this.itemYOffsets[i]);
-				leftBorder = itemX;
-				rightBorder = itemX + item.itemWidth;
-				paintItem(item, i, itemX, itemY, leftBorder, rightBorder, clipX, clipY, clipWidth, clipHeight, g);
+				
+				itemInlineRelativeLeft = this.inlineOffset + this.itemXOffsets[i];
+				itemInlineRelativeRight = itemInlineRelativeLeft + item.itemWidth;
+				
+				if(!(lineboxInlineRelativeRight <= itemInlineRelativeLeft ||
+					 lineboxInlineRelativeLeft >= itemInlineRelativeRight)) {
+					leftBorder = itemX;
+					rightBorder = itemX + item.itemWidth;
+					
+					paintItem(item, i, itemX, itemY, leftBorder, rightBorder, clipX, clipY, clipWidth, clipHeight, g);
+				}
 			}
 		}
 		
 		Item focItem = this.focusedItem;
+		
 		if (focItem != null) {
 			int focItemX = x + this.itemXOffsets[this.focusedIndex];
 			int focItemY = y + this.itemYOffsets[this.focusedIndex];
-			paintItem(focItem, this.focusedIndex, focItemX, focItemY, focItemX, focItemX + focItem.itemWidth, clipX, clipY, clipWidth, clipHeight, g);
+			
+			itemInlineRelativeLeft = this.inlineOffset + this.itemXOffsets[this.focusedIndex];
+			itemInlineRelativeRight = itemInlineRelativeLeft + focItem.itemWidth;
+			
+			if(!(lineboxInlineRelativeRight <= itemInlineRelativeLeft ||
+				lineboxInlineRelativeLeft >= itemInlineRelativeRight)) {
+				paintItem(focItem, this.focusedIndex, focItemX, focItemY, focItemX, focItemX + focItem.itemWidth, clipX, clipY, clipWidth, clipHeight, g);
+			}
 		}
 	}
 }

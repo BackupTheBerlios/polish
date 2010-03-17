@@ -25,7 +25,7 @@ public class Partition {
 			
 			LayoutAttributes attributes = LayoutAttributes.get(item);
 			
-			int x = attributes.getInlineOffset();
+			int x = attributes.getInlineRelativeLeft();
 		
 			int marginLeft = x;
 			int paddingLeft = x + UiAccess.getMarginLeft(item);
@@ -50,7 +50,7 @@ public class Partition {
 	public static void partitionBlock(Item item, PartitionList partitions) {
 		LayoutAttributes attributes = LayoutAttributes.get(item);
 		
-		int x = attributes.getInlineOffset();
+		int x = attributes.getInlineRelativeLeft();
 		
 		PartitionList itemPartitions = attributes.getPartitions();
 		itemPartitions.clear();

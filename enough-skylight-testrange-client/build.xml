@@ -52,6 +52,7 @@
 					<variable name="polish.TextField.suppressCommands" value="true" />
 					<variable name="polish.TextField.useDirectInput" value="true" />
 					<variable name="polish.TextField.includeInputInfo" value="true" />
+					<variable name="polish.FullScreen" value="false" if="polish.android" />
 				</variables>	
 				<resources
 					dir="resources"

@@ -130,6 +130,7 @@ public class Linebox {
 		add("inline relative right", this.inlineRelativeRight).
 		add("block relative y", this.blockRelativeTop).
 		add("height", this.lineHeight).
+		add("width", getWidth()).
 		add("available width", this.availableWidth).
 		add("partitions", this.partitions.size()).
 		toString();

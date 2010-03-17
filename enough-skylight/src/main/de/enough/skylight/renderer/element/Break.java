@@ -25,7 +25,7 @@ public class Break extends Item implements Partable {
 		LayoutAttributes attributes = LayoutAttributes.get(this);
 		PartitionList itemPartitions = attributes.getPartitions();
 		
-		Partition partition = new Partition(Partition.TYPE_BLOCK,attributes.getInlineOffset(),attributes.getInlineOffset(),0,this);
+		Partition partition = new Partition(Partition.TYPE_BLOCK,attributes.getInlineRelativeLeft(),attributes.getInlineRelativeLeft(),0,this);
 		partition.setAttribute(Partition.ATTRIBUTE_NEWLINE);
 		
 		itemPartitions.add(partition);
