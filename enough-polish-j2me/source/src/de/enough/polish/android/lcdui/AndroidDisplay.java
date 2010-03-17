@@ -19,11 +19,11 @@ import de.enough.polish.ui.NativeDisplay;
 import de.enough.polish.ui.Screen;
 import de.enough.polish.util.ArrayList;
 
-//#if polish.android1.5
+//#if java.platform >= Android/1.5
 	import android.view.inputmethod.BaseInputConnection;
 	import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputConnection;
-import android.widget.PopupWindow;
+	import android.view.inputmethod.InputConnection;
+	import android.widget.PopupWindow;
 //#endif
 
 /**
@@ -217,6 +217,12 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 	private ArrayList<Runnable> seriallyRunnables = new ArrayList<Runnable>();
 	DisplayUtil util;
 
+	
+	//#if polish.skylight
+	private static final Object uiLock = new Object();
+	private static final Object paintLock = new Object();
+	//#endif
+	
 	@Override
 	protected void onRestoreInstanceState(Parcelable state) {
 		//#debug
@@ -243,6 +249,33 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 		if(instance == null) {
 			instance = this;
 		}
+		
+		//#if polish.skylight
+		Runnable runnable = new Runnable() {
+			public void run() {
+				while(true) {
+					paintInThread();
+					
+					// Wake up the UI thread.
+					synchronized (uiLock) {
+						uiLock.notify();
+					}
+					
+					// Put the Paint thread to sleep.
+					synchronized (paintLock) {
+						try {
+							paintLock.wait();
+						} catch (InterruptedException e) {
+							System.out.println("XXX The EnoughDrawThread was interrupted:"+e);
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+		};
+		Thread painterThread = new Thread(new ThreadGroup("EnoughThreadGroup"),runnable,"EnoughDrawThread",32*1024);
+		painterThread.start();
+		//#endif
 	}
 	
 	/* (non-Javadoc)
@@ -255,7 +288,27 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 			{
 				this.currentPolishCanvas.graphics = new Graphics(canvas);
 			}
+			//#if polish.skylight
+			synchronized (paintLock) {
+				paintLock.notify();
+			}
 			
+			synchronized (uiLock) {
+				try {
+					uiLock.wait();
+				} catch (InterruptedException e) {
+					System.out.println("XXX The EnoughDrawThread was interrupted:"+e);
+					e.printStackTrace();
+				}
+			}
+			//#else
+			//# paintInThread();
+			//#endif
+		}
+	}
+
+	protected void paintInThread() {
+		if(this.currentPolishCanvas != null) {
 			try {
 				this.currentPolishCanvas.paint(this.currentPolishCanvas.graphics);
 			} catch (Exception e) {
