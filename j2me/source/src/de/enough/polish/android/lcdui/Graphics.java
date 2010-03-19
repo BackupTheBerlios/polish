@@ -944,7 +944,94 @@ public class Graphics
 		this.canvas.drawRect(x, y, x + width, y + height, this.paint);
 		this.paint.setStyle(style);
 	}
-
+	
+	/**
+	 * Copies a region of the specified source image to a location within
+	 * the destination, possibly transforming (rotating and reflecting)
+	 * the image data using the chosen transform function.
+	 * 
+	 * <p>The destination, if it is an image, must not be the same image as
+	 * the source image.  If it is, an exception is thrown.  This restriction
+	 * is present in order to avoid ill-defined behaviors that might occur if
+	 * overlapped, transformed copies were permitted.</p>
+	 * 
+	 * <p>The transform function used must be one of the following, as defined
+	 * in the <A HREF="../../../javax/microedition/lcdui/game/Sprite.html"><CODE>Sprite</CODE></A> class:<br>
+	 * 
+	 * <code>Sprite.TRANS_NONE</code> - causes the specified image
+	 * region to be copied unchanged<br>
+	 * <code>Sprite.TRANS_ROT90</code> - causes the specified image
+	 * region to be rotated clockwise by 90 degrees.<br>
+	 * <code>Sprite.TRANS_ROT180</code> - causes the specified image
+	 * region to be rotated clockwise by 180 degrees.<br>
+	 * <code>Sprite.TRANS_ROT270</code> - causes the specified image
+	 * region to be rotated clockwise by 270 degrees.<br>
+	 * <code>Sprite.TRANS_MIRROR</code> - causes the specified image
+	 * region to be reflected about its vertical center.<br>
+	 * <code>Sprite.TRANS_MIRROR_ROT90</code> - causes the specified image
+	 * region to be reflected about its vertical center and then rotated
+	 * clockwise by 90 degrees.<br>
+	 * <code>Sprite.TRANS_MIRROR_ROT180</code> - causes the specified image
+	 * region to be reflected about its vertical center and then rotated
+	 * clockwise by 180 degrees.<br>
+	 * <code>Sprite.TRANS_MIRROR_ROT270</code> - causes the specified image
+	 * region to be reflected about its vertical center and then rotated
+	 * clockwise by 270 degrees.<br></p>
+	 * 
+	 * <p>If the source region contains transparent pixels, the corresponding
+	 * pixels in the destination region must be left untouched.  If the source
+	 * region contains partially transparent pixels, a compositing operation
+	 * must be performed with the destination pixels, leaving all pixels of
+	 * the destination region fully opaque.</p>
+	 * 
+	 * <p> The <code>(x_src, y_src)</code> coordinates are relative to
+	 * the upper left
+	 * corner of the source image.  The <code>x_src</code>,
+	 * <code>y_src</code>, <code>width</code>, and <code>height</code>
+	 * parameters specify a rectangular region of the source image.  It is
+	 * illegal for this region to extend beyond the bounds of the source
+	 * image.  This requires that: </P>
+	 * <TABLE BORDER="2">
+	 * <TR>
+	 * <TD ROWSPAN="1" COLSPAN="1">
+	 * <pre><code>
+	 * x_src &gt;= 0
+	 * y_src &gt;= 0
+	 * x_src + width &lt;= source width
+	 * y_src + height &lt;= source height    </code></pre>
+	 * </TD>
+	 * </TR>
+	 * </TABLE>
+	 * <P>
+	 * The <code>(x_dest, y_dest)</code> coordinates are relative to
+	 * the coordinate
+	 * system of this Graphics object.  It is legal for the destination
+	 * area to extend beyond the bounds of the <code>Graphics</code>
+	 * object.  Pixels
+	 * outside of the bounds of the <code>Graphics</code> object will
+	 * not be drawn.</p>
+	 * 
+	 * <p>The transform is applied to the image data from the region of the
+	 * source image, and the result is rendered with its anchor point
+	 * positioned at location <code>(x_dest, y_dest)</code> in the
+	 * destination.</p>
+	 * 
+	 * @param src - the source image to copy from
+	 * @param x_src - the x coordinate of the upper left corner of the region within the source image to copy
+	 * @param y_src - the y coordinate of the upper left corner of the region within the source image to copy
+	 * @param width - the width of the region to copy
+	 * @param height - the height of the region to copy
+	 * @param transform - the desired transformation for the selected region being copied
+	 * @param x_dest - the x coordinate of the anchor point in the destination drawing area
+	 * @param y_dest - the y coordinate of the anchor point in the destination drawing area
+	 * @param anchor - the anchor point for positioning the region within the destination image
+	 * @throws IllegalArgumentException - if src is the same image as the destination of this Graphics object
+	 * @throws NullPointerException - if src is null
+	 * @throws IllegalArgumentException - if transform is invalid
+	 * @throws IllegalArgumentException - if anchor is invalid
+	 * @throws IllegalArgumentException - if the region to be copied exceeds the bounds of the source image
+	 * @since  MIDP 2.0
+	 */
 	public void drawRegion(Image src, int x_src, int y_src, int width, int height, int transform, int x_dest, int y_dest, int anchor) {
 		if (width < 0 || height < 0 || x_src < 0 || y_src < 0 || x_src + width > src.getWidth() || y_src + height > src.getHeight()) {
 			throw new IllegalArgumentException();
