@@ -1,4 +1,4 @@
-//#condition polish.usePolishGui && polish.hasFloatingPoint && !polish.android && !polish.blackberry
+//#condition polish.usePolishGui && polish.hasFloatingPoint && !polish.blackberry
 /*
  * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
