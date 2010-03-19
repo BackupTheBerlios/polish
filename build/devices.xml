@@ -8319,6 +8319,7 @@ These namespaces/schemas will be used soon.
   <device>
     <identifier>Nokia/N97</identifier>
     <groups>Series60E5</groups>
+    <capability name="ScreenSize" value="360x640" />
     <capability name="alphalevels" value="256" />
     <capability name="bugs" value="FillPolygonRequiresPositiveXYInNokiaUiApi,NormalKeyMappedToFire" />
     <capability name="build.bootclasspath" value="cldc-1.1.jar,midp-2.0.jar,midp-2.1.jar" />
@@ -8326,14 +8327,14 @@ These namespaces/schemas will be used soon.
     <!-- <capability name="Emulator.Class" value="NokiaEmulator" /> -->
     <capability name="build.Emulator.Skin" value="\devices\Nokia_N97_SDK_v1.0" />
     <capability name="canvas.isdoublebuffered" value="true" />
-    <capability name="canvassize" value="502x288" />
+    <capability name="canvassize" value="360x640" />
     <capability name="classes.fullscreen" value="com.nokia.mid.ui.FullCanvas" />
     <capability name="colors" value="16777216" />
     <capability name="font.default" value="27" />
     <capability name="font.large" value="30" />
     <capability name="font.medium" value="27" />
     <capability name="font.small" value="24" />
-    <capability name="fullcanvassize" value="580x360" />
+    <capability name="fullcanvassize" value="360x640" />
     <capability name="haspointerevents" value="true" />
     <capability name="hasrepeatevents" value="true" />
     <capability name="imagecreateformat" value="jpeg, gif, bmp, wbmp" />
