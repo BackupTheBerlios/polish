@@ -55,7 +55,7 @@ import javax.microedition.lcdui.Image;
  * </pre>
  * </p>
  *
- * <p>Copyright (c) Enough Software 2005 - 2009</p>
+ * <p>Copyright (c) Enough Software 2005 - 2010</p>
  * <pre>
  * history
  *        07-Jun-2005 - rob creation
@@ -107,12 +107,10 @@ public class ScreenInfo {
 	}
 	
 	private static void repaint() {
-		if (StyleSheet.display != null) {
-			Displayable displayable = StyleSheet.display.getCurrent();
-			if (displayable != null && displayable instanceof Canvas) {
-				((Canvas) displayable).repaint();
-			}
-		}		
+		Display display = Display.getInstance();
+		if (display != null) {
+			display.repaint();
+		}
 	}
 	
 	/**
