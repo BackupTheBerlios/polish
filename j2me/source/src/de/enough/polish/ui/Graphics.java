@@ -1,4 +1,4 @@
-//#condition polish.midp2 && !polish.android && !polish.blackberry
+//#condition polish.midp2 && polish.usePolishGui
 /*
  * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
@@ -454,64 +454,108 @@ import de.enough.polish.util.DeviceInfo;
  */
 public class Graphics {
 
-    protected javax.microedition.lcdui.Graphics graphics = null;
+	//#if polish.build.classes.NativeGraphics:defined
+		//#= private ${polish.build.classes.NativeGraphics} graphics;
+	//#else
+		private NativeGraphics nativeGraphics;
+	//#endif
+		
+    protected
+    //#if polish.android
+    	//# de.enough.polish.android.lcdui.Graphics
+    //#else
+    	javax.microedition.lcdui.Graphics
+    //#endif
+    	graphics = null;
 
     protected RgbImage bufferedImage = null ;
 
-    /**
-     * Constant for positioning the anchor point at the baseline of text.
-     *
-     */
-    public static int BASELINE = javax.microedition.lcdui.Graphics.BASELINE;
+	/**
+	 * Constant for centering text and images horizontally
+	 * around the anchor point
+	 * 
+	 * <P>Value <code>1</code> is assigned to <code>HCENTER</code>.</P></DL>
+	 * 
+	 */
+	public static final int HCENTER = 1;
 
-    /**
-     * Constant for positioning the anchor point of text and images
-     * below the text or image.
-     */
-    public static int BOTTOM = javax.microedition.lcdui.Graphics.BOTTOM;
+	/**
+	 * Constant for centering images vertically
+	 * around the anchor point.
+	 * 
+	 * <P>Value <code>2</code> is assigned to <code>VCENTER</code>.</P></DL>
+	 * 
+	 */
+	public static final int VCENTER = 2;
 
+	/**
+	 * Constant for positioning the anchor point of text and images
+	 * to the left of the text or image.
+	 * 
+	 * <P>Value <code>4</code> is assigned to <code>LEFT</code>.</P></DL>
+	 * 
+	 */
+	public static final int LEFT = 4;
 
-    /**
-     * Constant for positioning the anchor point of text and images
-     * above the text or image.
-     */
-    public static int TOP = javax.microedition.lcdui.Graphics.TOP;
+	/**
+	 * Constant for positioning the anchor point of text and images
+	 * to the right of the text or image.
+	 * 
+	 * <P>Value <code>8</code> is assigned to <code>RIGHT</code>.</P></DL>
+	 * 
+	 */
+	public static final int RIGHT = 8;
 
-    /**
-     * Constant for positioning the anchor point of text and images
-     * to the left of the text or image.
-     */
-    public static int LEFT = javax.microedition.lcdui.Graphics.LEFT;
+	/**
+	 * Constant for positioning the anchor point of text and images
+	 * above the text or image.
+	 * 
+	 * <P>Value <code>16</code> is assigned to <code>TOP</code>.</P></DL>
+	 * 
+	 */
+	public static final int TOP = 16;
 
-    /**
-     * Constant for positioning the anchor point of text and images
-     * to the right of the text or image.
-     */
-    public static int RIGHT = javax.microedition.lcdui.Graphics.RIGHT;
+	/**
+	 * Constant for positioning the anchor point of text and images
+	 * below the text or image.
+	 * 
+	 * <P>Value <code>32</code> is assigned to <code>BOTTOM</code>.</P></DL>
+	 * 
+	 */
+	public static final int BOTTOM = 32;
 
-    /**
-     * Constant for the <code>DOTTED</code> stroke style.
-     */
-    public static int DOTTED = javax.microedition.lcdui.Graphics.DOTTED;
+	/**
+	 * Constant for positioning the anchor point at the baseline of text.
+	 * 
+	 * <P>Value <code>64</code> is assigned to <code>BASELINE</code>.</P></DL>
+	 * 
+	 */
+	public static final int BASELINE = 64;
 
-    /**
-     * Constant for centering text and images horizontally
-     * around the anchor point
-     */
-    public static int HCENTER = javax.microedition.lcdui.Graphics.HCENTER ;
+	/**
+	 * Constant for the <code>SOLID</code> stroke style.
+	 * 
+	 * <P>Value <code>0</code> is assigned to <code>SOLID</code>.</P></DL>
+	 * 
+	 */
+	public static final int SOLID = 0;
 
-    /**
-     * Constant for centering images vertically
-     * around the anchor point.
-     */
-    public static int VCENTER = javax.microedition.lcdui.Graphics.VCENTER ;
+	/**
+	 * Constant for the <code>DOTTED</code> stroke style.
+	 * 
+	 * <P>Value <code>1</code> is assigned to <code>DOTTED</code>.</P></DL>
+	 * 
+	 * 
+	 */
+	public static final int DOTTED = 1;
 
-    /**
-     * Constant for the <code>SOLID</code> stroke style.
-     */
-    public static int SOLID = javax.microedition.lcdui.Graphics.SOLID ;
-
-    public Graphics( javax.microedition.lcdui.Graphics g)
+    public Graphics( 
+    	    //#if polish.android
+	        	//# de.enough.polish.android.lcdui.Graphics
+	        //#else
+	        	javax.microedition.lcdui.Graphics
+	        //#endif
+    		g)
     {
         graphics = g;
     }
@@ -1216,7 +1260,7 @@ public class Graphics {
      */
     public int getDisplayColor(int color)
     {
-        return graphics.getDisplayColor(color);
+        return this.graphics.getDisplayColor(color);
     }
 
     /**
@@ -1227,7 +1271,7 @@ public class Graphics {
      */
     public Font getFont()
     {
-        return new Font ( graphics.getFont() );
+        return new Font ( this.graphics.getFont() );
     }
 
     /**

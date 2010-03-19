@@ -1,4 +1,4 @@
-//#condition polish.midp2 && !polish.android && !polish.blackberry
+//#condition polish.midp2 && !polish.blackberry
 /*
  * Copyright (c) 2010 Robert Virkus / Enough Software
  *
@@ -24,6 +24,8 @@
  */
 
 package de.enough.polish.ui;
+
+
 
 /**
  *
@@ -80,79 +82,123 @@ package de.enough.polish.ui;
 
 public class Font {
 
-    protected javax.microedition.lcdui.Font font = null ;
+    protected
+    	//#if polish.android
+    		//# de.enough.polish.android.lcdui.Font
+    	//#else
+    		javax.microedition.lcdui.Font
+    	//#endif
+    	font = null ;
 
-    /**
-     * The plain style constant. This may be combined with the
-     * other style constants for mixed styles.
-     */
-    public static final int STYLE_PLAIN = javax.microedition.lcdui.Font.STYLE_PLAIN;
+	private NativeFont nativeFont;
 
-    /**
-     * The bold style constant. This may be combined with the
-     * other style constants for mixed styles.
-     */
-    public static final int STYLE_BOLD = javax.microedition.lcdui.Font.STYLE_BOLD;
+	/**
+	 * The plain style constant. This may be combined with the
+	 * other style constants for mixed styles.
+	 * 
+	 * <P>Value <code>0</code> is assigned to <code>STYLE_PLAIN</code>.</P>
+	 * 
+	 */
+	public static final int STYLE_PLAIN = 0;
 
-    /**
-     * The italicized style constant. This may be combined with
-     * the other style constants for mixed styles.
+	/**
+	 * The bold style constant. This may be combined with the
+	 * other style constants for mixed styles.
+	 * 
+	 * <P>Value <code>1</code> is assigned to <code>STYLE_BOLD</code>.</P>
+	 * 
+	 */
+	public static final int STYLE_BOLD = 1;
 
-     */
-    public static final int STYLE_ITALIC = javax.microedition.lcdui.Font.STYLE_ITALIC;
+	/**
+	 * The italicized style constant. This may be combined with
+	 * the other style constants for mixed styles.
+	 * 
+	 * <P>Value <code>2</code> is assigned to <code>STYLE_ITALIC</code>.</P>
+	 * 
+	 */
+	public static final int STYLE_ITALIC = 2;
 
-    /**
-     * The underlined style constant. This may be combined with
-     * the other style constants for mixed styles.
-     *
-     */
-    public static final int STYLE_UNDERLINED = javax.microedition.lcdui.Font.STYLE_UNDERLINED;
+	/**
+	 * The underlined style constant. This may be combined with
+	 * the other style constants for mixed styles.
+	 * 
+	 * <P>Value <code>4</code> is assigned to <code>STYLE_UNDERLINED</code>.</P>
+	 * 
+	 */
+	public static final int STYLE_UNDERLINED = 4;
 
-    /**
-     * The &quot;small&quot; system-dependent font size.
-     */
-    public static final int SIZE_SMALL = javax.microedition.lcdui.Font.SIZE_SMALL;
+	/**
+	 * The &quot;small&quot; system-dependent font size.
+	 * 
+	 * <P>Value <code>8</code> is assigned to <code>STYLE_SMALL</code>.</P>
+	 * 
+	 */
+	public static final int SIZE_SMALL = 8;
 
-    /**
-     * The &quot;medium&quot; system-dependent font size.
-     */
-    public static final int SIZE_MEDIUM = javax.microedition.lcdui.Font.SIZE_MEDIUM;
+	/**
+	 * The &quot;medium&quot; system-dependent font size.
+	 * 
+	 * <P>Value <code>0</code> is assigned to <code>STYLE_MEDIUM</code>.</P>
+	 */
+	public static final int SIZE_MEDIUM = 0;
 
-    /**
-     * The &quot;large&quot; system-dependent font size.
-     */
-    public static final int SIZE_LARGE = javax.microedition.lcdui.Font.SIZE_LARGE;
+	/**
+	 * The &quot;large&quot; system-dependent font size.
+	 * 
+	 * <P>Value <code>16</code> is assigned to <code>SIZE_LARGE</code>.</P>
+	 */
+	public static final int SIZE_LARGE = 16;
 
-    /**
-     * The &quot;system&quot; font face.
-     */
-    public static final int FACE_SYSTEM = javax.microedition.lcdui.Font.FACE_SYSTEM;
+	/**
+	 * The &quot;system&quot; font face.
+	 * 
+	 * <P>Value <code>0</code> is assigned to <code>FACE_SYSTEM</code>.</P>
+	 * 
+	 */
+	public static final int FACE_SYSTEM = 0;
 
-    /**
-     * The &quot;monospace&quot; font face.
-     */
-    public static final int FACE_MONOSPACE = javax.microedition.lcdui.Font.FACE_MONOSPACE;
+	/**
+	 * The &quot;monospace&quot; font face.
+	 * 
+	 * <P>Value <code>32</code> is assigned to <code>FACE_MONOSPACE</code>.</P>
+	 */
+	public static final int FACE_MONOSPACE = 32;
 
-    /**
-     * The &quot;proportional&quot; font face.
-     */
-    public static final int FACE_PROPORTIONAL = javax.microedition.lcdui.Font.FACE_PROPORTIONAL;
+	/**
+	 * The &quot;proportional&quot; font face.
+	 * 
+	 * <P>Value <code>64</code> is assigned to
+	 * <code>FACE_PROPORTIONAL</code>.</P>
+	 */
+	public static final int FACE_PROPORTIONAL = 64;
 
-    /**
-     * Default font specifier used to draw Item and Screen contents.
-     * @see #getFont(int fontSpecifier)
-     */
-    public static final int FONT_STATIC_TEXT = javax.microedition.lcdui.Font.FONT_STATIC_TEXT;
+	/**
+	 * Default font specifier used to draw Item and Screen contents.
+	 * 
+	 * <code>FONT_STATIC_TEXT</code> has the value <code>0</code>.
+	 * 
+	 * @since MIDP 2.0
+	 */
+	public static final int FONT_STATIC_TEXT = 0;
 
-    /**
-     * Font specifier used by the implementation to draw text input by
-     * a user.
-     *
-     * @see #getFont(int fontSpecifier)
-     */
-    public static final int FONT_INPUT_TEXT = javax.microedition.lcdui.Font.FONT_INPUT_TEXT;
+	/**
+	 * Font specifier used by the implementation to draw text input by
+	 * a user.
+	 * 
+	 * <code>FONT_INPUT_TEXT</code> has the value <code>1</code>.
+	 * 
+	 * @since MIDP 2.0
+	 */
+	public static final int FONT_INPUT_TEXT = 1;
 
-    protected Font ( javax.microedition.lcdui.Font font)
+    protected Font ( 
+        	//#if polish.android
+	    		//# de.enough.polish.android.lcdui.Font
+	    	//#else
+	    		javax.microedition.lcdui.Font
+	    	//#endif
+    		font)
     {
         this.font = font ;
     }
@@ -171,7 +217,13 @@ public class Font {
      * a valid fontSpecifier
      */
     public static Font getFont(int fontSpecifier) {
-        return new Font ( javax.microedition.lcdui.Font.getFont(fontSpecifier) );
+        return new Font ( 
+            	//#if polish.android
+	        		//# de.enough.polish.android.lcdui.Font
+	        	//#else
+	        		javax.microedition.lcdui.Font
+	        	//#endif
+        		.getFont(fontSpecifier) );
     }
 
     /**
@@ -179,7 +231,13 @@ public class Font {
      * @return the default font
      */
     public static Font getDefaultFont() {
-        return new Font ( javax.microedition.lcdui.Font.getDefaultFont() );
+        return new Font ( 
+            	//#if polish.android
+	        		//# de.enough.polish.android.lcdui.Font
+	        	//#else
+	        		javax.microedition.lcdui.Font
+	        	//#endif
+        		.getDefaultFont() );
     }
 
     /**
@@ -202,7 +260,13 @@ public class Font {
      * legal values
      */
     public static Font getFont(int inp_face, int inp_style, int inp_size) {
-        return new Font ( javax.microedition.lcdui.Font.getFont(inp_face, inp_style, inp_size));
+        return new Font ( 
+            	//#if polish.android
+	        		//# de.enough.polish.android.lcdui.Font
+	        	//#else
+	        		javax.microedition.lcdui.Font
+	        	//#endif
+        		.getFont(inp_face, inp_style, inp_size));
     }
 
     /**
@@ -390,7 +454,21 @@ public class Font {
      */
     public int substringWidth(String str, int offset, int len) {
         return font.substringWidth(str, offset, len);
-    } 
+    }
+
+    /**
+     * Retrieves access to the native font implementation.
+     * @return the native font
+     */
+	public 
+	//#if polish.android
+		//# de.enough.polish.android.lcdui.Font
+	//#else
+		javax.microedition.lcdui.Font
+	//#endif
+	getNativeFont() {
+		return this.font;
+	} 
 
 
 
