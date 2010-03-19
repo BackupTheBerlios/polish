@@ -43,7 +43,7 @@ import de.enough.polish.util.TextUtil;
  * <p>Takes a list of images and an interval as arguments.
  * </p>
  *
- * <p>Copyright (c) Enough Software 2005 - 2009</p>
+ * <p>Copyright (c) Enough Software 2005 - 2010</p>
  * <pre>
  * history
  *        22-Oct-2008 - asc creation
@@ -85,11 +85,16 @@ public class ImagesGaugeView extends ItemView{
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ItemView#initContent(de.enough.polish.ui.Item, int, int, int)
 	 */
-	protected void initContent(Item parent, int firstLineWidth, int availWidth,
-			int availHeight) {
+	protected void initContent(Item parent, int firstLineWidth, int availWidth, int availHeight) 
+	{
 		this.gauge = (Gauge)parent;
 		this.isContinuousRunning = this.gauge.getMaxValue() == Gauge.INDEFINITE && this.gauge.getValue() == Gauge.CONTINUOUS_RUNNING;
 		
+		if (this.images == null) {
+			//#debug error
+			System.out.println("Unable to initialize ImageGaugeView with style " + (parent.getStyle() == null ? "<null>" : parent.getStyle().name ) + ": no gauge-images-sources defined.");
+			return;
+		}
 		int maxHeight = 0;
 		int maxWidth = 0;
 		int width;
@@ -128,10 +133,9 @@ public class ImagesGaugeView extends ItemView{
 				this.lastAnimationTime = currentTime;
 			}
 				
-			if((currentTime - this.lastAnimationTime) > this.interval)
+			if( ((currentTime - this.lastAnimationTime) > this.interval) && this.images != null)
 			{
-				this.current++;
-				this.current = this.current % this.images.length;
+				this.current = (this.current + 1) % this.images.length;
 				this.lastAnimationTime = currentTime;
 				addFullRepaintRegion( this.parentItem, repaintRegion );
 			}
@@ -141,8 +145,8 @@ public class ImagesGaugeView extends ItemView{
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ItemView#paintContent(de.enough.polish.ui.Item, int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
-	protected void paintContent(Item parent, int x, int y, int leftBorder,
-			int rightBorder, Graphics g) {
+	protected void paintContent(Item parent, int x, int y, int leftBorder, int rightBorder, Graphics g) 
+	{
 		g.drawImage(this.images[this.current], x, y, Graphics.TOP | Graphics.LEFT );
 	}
 
@@ -153,15 +157,17 @@ public class ImagesGaugeView extends ItemView{
 		super.setStyle(style, resetStyle);
 		
 		//#if polish.css.gauge-images-sources
-		String sources = style.getProperty("gauge-images-sources");
-		setImages(sources);
+			String sources = style.getProperty("gauge-images-sources");
+			if (sources != null) {
+				setImages(sources);
+			}
 		//#endif
 		
 		//#if polish.css.gauge-images-interval
-		Integer intervalObj = style.getIntProperty("gauge-images-interval");
-		if (intervalObj != null) {
-			this.interval = intervalObj.intValue();
-		}
+			Integer intervalObj = style.getIntProperty("gauge-images-interval");
+			if (intervalObj != null) {
+				this.interval = intervalObj.intValue();
+			}
 		//#endif
 		
 		if(this.images == null)
@@ -178,12 +184,12 @@ public class ImagesGaugeView extends ItemView{
 	 */
 	void setImages(String sources)
 	{
-		String[] files = TextUtil.split(sources, ',');
-		this.images = new Image[files.length];
+		String[] urls = TextUtil.split(sources, ',');
+		this.images = new Image[urls.length];
 		String image = null;
 		try {
-			for (int i = 0; i < files.length; i++) {
-				image = files[i].trim();
+			for (int i = 0; i < urls.length; i++) {
+				image = urls[i].trim();
 				
 				if(image.charAt(0) != '/')
 				{
