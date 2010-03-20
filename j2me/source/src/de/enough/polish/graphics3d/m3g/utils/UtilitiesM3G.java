@@ -299,4 +299,36 @@ public class UtilitiesM3G
 		
 		return clone;
 	}
+	
+//#mdebug debug	
+	
+	public static String propertiesM3GToString()
+	{
+		String newline = "\n";
+		
+		String properties = 
+			
+			"M3G Version: "+M3G_VERSION_NUM+newline+
+			
+			"supportAntialiasing: "+M3G_SUPPORTS_ANTIALIASING+newline+
+			"supportTrueColor: "+M3G_SUPPORTS_TRUE_COLOR+newline+
+			"supportDithering: "+M3G_SUPPORTS_DITHERING+newline+
+			"supportMipmapping: "+M3G_SUPPORTS_MIPMAPPING+newline+
+			"supportPerspectiveCorrection: "+M3G_SUPPORTS_PERSPECTIVE_CORRECTION+newline+
+			"supportLocalCameraLighting: "+M3G_SUPPORTS_LOCAL_CAMERA_LIGHTING+newline+
+			
+			"maxLights: "+M3G_MAX_LIGHTS+newline+
+			"maxViewportWidth: "+M3G_MAX_VIEWPORT_WIDTH+newline+
+			"maxViewportHeight: "+M3G_MAX_VIEWPORT_HEIGHT+newline+
+			"maxViewportDimension: "+M3G_MAX_VIEWPORT_DIMENSION+newline+
+			"maxTextureDimension: "+M3G_MAX_TEXTURE_DIMENSION+newline+
+			"maxSpriteCropDimension: "+M3G_MAX_SPRITE_CROP_DIMENSION+newline+
+			"maxTransformsPerVertex: "+M3G_MAX_TRANSFORMS_PER_VERTEX+newline+
+			
+			"numTextureUnits: "+M3G_NUM_TEXTURE_UNITS;
+		
+		return properties;
+	}
+	
+//#enddebug
 }

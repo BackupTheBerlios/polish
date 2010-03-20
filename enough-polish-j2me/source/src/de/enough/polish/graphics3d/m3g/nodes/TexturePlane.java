@@ -78,6 +78,16 @@ public class TexturePlane extends Group
 		}
 			
 		generateSubQuads(sourceImg, baseAppearance, false);
+		
+		//#mdebug
+		
+		System.out.println("textureDimension: "+this.textureDimension);
+		System.out.println("textureDimensionEmployed: "+this.textureDimensionEmployed);
+		System.out.println("texPerRow: "+this.texPerRow);
+		System.out.println("texPerColumn: "+this.texPerColumn);
+		System.out.println("isExplicitTextureDimension: "+this.isExplicitTextureDimension);
+		
+		//#enddebug
 	}
 	
 	/**
@@ -146,16 +156,11 @@ public class TexturePlane extends Group
 	{
 		if(null != sourceImg)
 		{
+			this.textureDimensionEmployed = this.textureDimension;
+			
 			//if texture dimension has not been set explicitly, use smallest possible texture size
 			if(!isUpdate && !this.isExplicitTextureDimension)
-			{
-				final int max = Math.max(this.sourceImgWidth, this.sourceImgHeight);
-				
-				this.textureDimensionEmployed = this.textureDimension;
-				
-				while( max < (this.textureDimensionEmployed >> 1) )
-					this.textureDimensionEmployed >>= 1;
-			}
+				this.textureDimensionEmployed = Utilities3d.calculateOptimalTextureResolution(sourceImg, this.textureDimension, 50);
 
 			this.textureMatrix = Utilities3d.imageToTextureMatrix(sourceImg, this.textureDimensionEmployed, this.textureMatrix);
 			
@@ -351,7 +356,7 @@ public class TexturePlane extends Group
 	}
 	
 	/**
-	 * Returns a subQuad according to agument row and column number
+	 * Returns a subQuad according to argument row and column number
 	 * @param rowNum 
 	 * @param colNum
 	 * @return Mesh the subQuad if found otherwise null

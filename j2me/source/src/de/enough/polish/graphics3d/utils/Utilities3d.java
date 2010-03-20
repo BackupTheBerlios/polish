@@ -1,4 +1,3 @@
-//#condition polish.midp || polish.usePolishGui
 package de.enough.polish.graphics3d.utils;
 
 import javax.microedition.lcdui.Graphics;
@@ -173,4 +172,95 @@ public class Utilities3d
 		
 		return -1;
 	}
+	
+	/**
+	 * Checks if the dimension of an image is power of 2 and hence a
+	 * valid texture.
+	 * 
+	 * @param img image to evaluate
+	 * @param maxTexture max texture size allowed by platform
+	 * @return true if image dimension is power of 2, false otherwise
+	 */
+	public static boolean validateTexture(Image img, int maxTexture)
+	{
+		if(null == img)
+			return false;
+		
+		int imgWidth = img.getWidth();
+		
+		while(maxTexture > 0)
+		{
+			if(maxTexture == imgWidth)
+				return true;
+			maxTexture >>= 1;
+		}
+		
+		return false;
+	}
+	
+	
+	
+	/**
+	 * 
+	 * @param sourceImg
+	 * @param maxTexDim
+	 * @param thresholdPercent
+	 * @return
+	 */
+	public static int calculateOptimalTextureResolution(Image sourceImg, int maxTexDim, int thresholdPercent )
+	{
+		if(null != sourceImg)
+		{
+			int imgWidth = sourceImg.getWidth();
+			int imgHeight = sourceImg.getHeight();
+			
+			final int max = Math.max(imgWidth, imgHeight);
+			
+			//first, shrink to fit
+			while( max < (maxTexDim >> 1) )
+				maxTexDim >>= 1;
+				
+			long pixelRealestate = Utilities3d.getNumTextureMatrixPerRow(sourceImg, maxTexDim) * Utilities3d.getNumTextureMatrixPerColumn(sourceImg, maxTexDim) * (maxTexDim*maxTexDim);
+			
+			int maxTexDimCandidate = maxTexDim >> 1;
+			long pixelRealestateCandidate = Utilities3d.getNumTextureMatrixPerRow(sourceImg, maxTexDimCandidate) * Utilities3d.getNumTextureMatrixPerColumn(sourceImg, maxTexDimCandidate) * (maxTexDimCandidate*maxTexDimCandidate);
+			
+			while( (int)( ((pixelRealestateCandidate * 1000000l) / pixelRealestate) / 10000l ) <= thresholdPercent)
+			{
+				pixelRealestate = pixelRealestateCandidate;
+				maxTexDim = maxTexDimCandidate;
+				
+				maxTexDimCandidate = maxTexDim >> 1;
+				pixelRealestateCandidate = Utilities3d.getNumTextureMatrixPerRow(sourceImg, maxTexDimCandidate) * Utilities3d.getNumTextureMatrixPerColumn(sourceImg, maxTexDimCandidate) * (maxTexDimCandidate*maxTexDimCandidate);
+			}
+			
+			return maxTexDim;
+		}
+		
+		return -1;
+	}
+	
+//#mdebug debug
+	
+	public static String systemToString()
+	{
+		String newline = "\n";
+		
+		String properties = 
+			
+			"MIDP Version: "+System.getProperty("microedition.profiles")+newline+
+			"CLDC Version: "+System.getProperty("microedition.configuration")+newline+
+			
+			"Platform: "+System.getProperty("microedition.platform")+newline+
+			"Locale: "+System.getProperty("microedition.locale")+newline+
+			"Encoding: "+System.getProperty("microedition.encoding")+newline+
+			
+			"Total memory: "+Runtime.getRuntime().totalMemory()+newline+
+			"Free memory: "+Runtime.getRuntime().freeMemory()+newline+
+			"Used memory: "+(Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());
+		
+		return properties;
+	}
+	
+//#enddebug
 }
