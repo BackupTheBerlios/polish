@@ -1,4 +1,4 @@
-//#condition polish.midp2 && !polish.blackberry
+//#condition polish.usePolishGui && polish.midp2 && !polish.blackberry
 /*
  * Copyright (c) 2010 Robert Virkus / Enough Software
  *
