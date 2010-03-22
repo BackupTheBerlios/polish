@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="j2mepolish" name="enough-polish-example">
+
+	<property file="${user.name}.properties" />
+	
+	<!-- task definitions -->
+	<taskdef 
+		name="j2mepolish"
+		classname="de.enough.polish.ant.PolishTask" 
+		classpath="${polish.home}/bin/classes:${polish.home}/lib/jdom.jar" 
+	/>
+	
+	<target name="test">
+		<property name="test" value="true"/>
+	</target>
+		
+	<target name="deploy">
+		<property name="deploy-url" value="http://193.22.164.185:8080/"/>
+	</target>
+			
+	<target name="init">
+	  	<property name="test" value="false"/>
+		<property name="deploy-url" value=""/>
+	</target>
+	    
+	<target depends="init" name="j2mepolish">
+		<j2mepolish>
+		    <!-- general settings -->
+			<info copyright="Copyright 2006 Enough Software. All rights reserved." 
+				description="Test" 
+				infoUrl="http://www.enough.de" 
+				jarName="${polish.vendor}-${polish.name}-${polish.locale}-test.jar" 
+				jarUrl="${deploy-url}${polish.jarName}" 
+				license="GPL" 
+				name="Test" 
+				vendorName="Enough Software" 
+				version="1.0.4"
+		    />
+			<!-- selection of supported devices -->
+			<deviceRequirements>
+				<requirement name="Identifier" value="${device}"/>
+			</deviceRequirements>
+		    <!-- build settings -->
+			<build fullscreen="menu" 
+	                polishDir="../enough-polish-j2me/source/src" 
+	                symbols="polish.skipArgumentCheck" 
+	                usePolishGui="true"
+				>
+				<!-- midlets definition -->
+				<midlet class="de.enough.polish.api.sample.ApiSample" name="ApiSample" />
+				<!-- project-wide variables - used for preprocessing  -->
+				<variables>
+					<variable name="polish.TextField.useDirectInput" value="true" />
+					<variable name="polish.TextField.supportSymbolsEntry" value="true" />
+					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
+					<variable name="polish.useScrollBar" value="true" />
+				</variables>
+				<!-- obfuscator settings: do not obfuscate when the test-property is true -->
+				<obfuscator useDefaultPackage="false" name="ProGuard" unless="test">
+					<keep class="de.enough.polish.example.Dummy" />
+				</obfuscator>
+				<!-- debug settings: only include debug setting when the test-property is true -->
+				<debug if="test" level="error" showLogOnError="true" verbose="false"/>
+				<resources
+					dir="resources"
+					defaultexcludes="yes"
+					excludes="readme.txt"
+				/>
+			</build>
+			<emulator wait="true" securityDomain="trusted" enableProfiler="false" enableMemoryMonitor="false" enableNetworkMonitor="false" if="test and not debug">
+				<parameter name="-Xheapsize" value="5M" />
+			</emulator>
+	
+			<emulator wait="true" securityDomain="trusted" enableProfiler="false" enableMemoryMonitor="false" enableNetworkMonitor="false" if="debug">
+				<debugger port="8000" />
+				<parameter name="-Xheapsize" value="5M" />
+			</emulator>
+		</j2mepolish>
+	</target>
+	
+	
+	<target description="allows a clean build. You should call [ant clean] whenever you made changes to devices.xml, vendors.xml or groups.xml" name="clean">
+		<delete dir="build"/>
+		<delete dir="dist"/>
+	</target>
+	
+	<target name="emulator" depends="test,j2mepolish" />
+
+	<target name="cleanbuild" depends="clean,j2mepolish" />
+
+</project>
