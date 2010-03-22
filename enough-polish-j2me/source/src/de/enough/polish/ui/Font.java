@@ -1,4 +1,4 @@
-//#condition polish.usePolishGui && polish.midp2 && !polish.blackberry
+//#condition polish.usePolishGui && polish.midp && !polish.blackberry
 /*
  * Copyright (c) 2010 Robert Virkus / Enough Software
  *
@@ -31,7 +31,6 @@ package de.enough.polish.ui;
  *
  * This class provides an abstraction for platform-independent Font objects.
  * 
- /**
  * The <code>Font</code> class represents fonts and font
  * metrics. <code>Fonts</code> cannot be
  * created by applications. Instead, applications query for fonts
