@@ -1,5 +1,13 @@
 package de.enough.skylight.testrange.client;
 
+import de.enough.polish.content.ContentLoader;
+import de.enough.polish.content.filter.impl.HttpContentFilter;
+import de.enough.polish.content.filter.impl.ResourceContentFilter;
+import de.enough.polish.content.source.impl.HttpContentSource;
+import de.enough.polish.content.source.impl.RMSContentStorage;
+import de.enough.polish.content.source.impl.RMSStorageIndex;
+import de.enough.polish.content.source.impl.ResourceContentSource;
+import de.enough.polish.content.transform.impl.ImageContentTransform;
 import de.enough.polish.ui.Command;
 import de.enough.polish.ui.CommandListener;
 import de.enough.polish.ui.Display;
@@ -63,6 +71,8 @@ public class Browser extends Form implements CommandListener, RendererListener, 
 	
 	ViewportBuilder viewportBuilder;
 	
+	ContentLoader contentLoader;
+	
 	UrlField urlField;
 	
 	Viewport viewport;
@@ -98,6 +108,8 @@ public class Browser extends Form implements CommandListener, RendererListener, 
 		
 		this.viewportBuilder = new ViewportBuilder(this.viewport);
 		
+		this.contentLoader = buildContentLoader();
+		
 		this.renderer = new Renderer(this.documentBuilder, this.viewportBuilder);
 		this.renderer.addListener(this);
 		
@@ -111,6 +123,28 @@ public class Browser extends Form implements CommandListener, RendererListener, 
 		
 		addCommand(cmdExit);
 		addCommand(cmdOpen);
+	}
+	
+	protected ContentLoader buildContentLoader() {
+		// build sources
+		ResourceContentSource resourceSource = new ResourceContentSource("resources");
+		resourceSource.setContentFilter(new ResourceContentFilter());
+		
+		HttpContentSource httpSource = new HttpContentSource("http");
+		
+		RMSContentStorage rmsStorage = new RMSContentStorage("rms", new RMSStorageIndex(1000000));
+		rmsStorage.setContentFilter(new HttpContentFilter());
+		
+		ContentLoader contentLoader = new ContentLoader();
+		contentLoader.addContentTransform(new ImageContentTransform());
+		
+		// create hierachy
+		rmsStorage.attachSource(httpSource);
+		contentLoader.attachSource(rmsStorage);
+		
+		contentLoader.attachSource(resourceSource);
+		
+		return contentLoader;
 	}
 	
 	public void domModified(DomNode node) {
@@ -175,5 +209,8 @@ public class Browser extends Form implements CommandListener, RendererListener, 
 	public String getUrl() {
 		return this.url;
 	}
-	
+
+	public ContentLoader getContentLoader() {
+		return this.contentLoader;
+	}
 }
