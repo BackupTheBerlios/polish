@@ -9,16 +9,16 @@ import java.util.Hashtable;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.StyleSheet;
+import de.enough.skylight.content.ContentUtil;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.ViewportContext;
 import de.enough.skylight.renderer.css.HtmlCssInterpreter;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.node.NodeUtils;
-import de.enough.skylight.resources.ResourceLoader;
 
 public class LinkHandler extends HeadNodeHandler {
 	final static String PREFIX_HTTP = "http://";
-	final static String PREFIX_FILE = "file://";
+	final static String PREFIX_RESOURCES = "resources://";
 	
 	static String REL_STYLESHEET = "stylesheet";
 	static String TYPE_TEXT_CSS = "text/css";
@@ -38,7 +38,8 @@ public class LinkHandler extends HeadNodeHandler {
 				&& type.equals(TYPE_TEXT_CSS) && href != null) {
 
 			try {
-				InputStream stream = ResourceLoader.getInstance().getResourcesAsStream(href, context);
+				String url = ContentUtil.completeUrl(href, context);
+				InputStream stream = ContentUtil.getStream(url);
 				
 				InputStreamReader reader = new InputStreamReader(stream);
 

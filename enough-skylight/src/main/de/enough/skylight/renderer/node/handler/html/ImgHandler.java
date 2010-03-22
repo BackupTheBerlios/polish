@@ -6,15 +6,18 @@ import java.io.InputStream;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
+import de.enough.polish.content.ContentDescriptor;
+import de.enough.polish.content.ContentException;
+import de.enough.polish.content.transform.impl.ImageContentTransform;
 import de.enough.polish.ui.ImageItem;
 import de.enough.polish.ui.Item;
+import de.enough.skylight.content.ContentUtil;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.Viewport;
 import de.enough.skylight.renderer.ViewportContext;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.node.ImgElement;
 import de.enough.skylight.renderer.node.NodeUtils;
-import de.enough.skylight.resources.ResourceLoader;
 
 public class ImgHandler extends BodyNodeHandler{
 	
@@ -32,14 +35,16 @@ public class ImgHandler extends BodyNodeHandler{
 		
 		String src = NodeUtils.getAttributeValue(element.getNode(), "src");
 		
-		Image image;
 		try {
-			InputStream stream = ResourceLoader.getInstance().getResourcesAsStream(src, context);
-			image = Image.createImage(stream);
+			String url = ContentUtil.completeUrl(src, context);
+			
+			ContentDescriptor descriptor = new ContentDescriptor(url,ImageContentTransform.ID);
+			Image image = (Image) context.getContentLoader().loadContent(descriptor);
+			
 			imgElement.setImage(image);
-		} catch (IOException e) {
+		} catch (ContentException e) {
 			//#debug error
-			System.out.println("unable to open image " + src);
+			System.out.println("unable to load image " + src);
 		} 
 	}
 
