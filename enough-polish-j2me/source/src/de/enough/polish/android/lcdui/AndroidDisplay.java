@@ -23,7 +23,6 @@ import de.enough.polish.util.ArrayList;
 	import android.view.inputmethod.BaseInputConnection;
 	import android.view.inputmethod.EditorInfo;
 	import android.view.inputmethod.InputConnection;
-	import android.widget.PopupWindow;
 //#endif
 
 /**
@@ -913,10 +912,6 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 			window.show();
 			return;
 		}
-		if (nextDisplayable instanceof View) {
-			
-		}
-		
 	}
 
 	/**
