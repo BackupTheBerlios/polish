@@ -27,6 +27,7 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+
 import de.enough.polish.android.helper.ResourcesHelper;
 import de.enough.polish.android.io.ConnectionNotFoundException;
 import de.enough.polish.android.lcdui.AndroidDisplay;
@@ -38,7 +39,6 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.IdentityArrayList;
-
 
 /**
  * A MIDlet is a MID Profile application.
@@ -911,7 +911,8 @@ public class MidletBridge extends Activity {
 				this.addedCommandMenuItemBridges.add(bridge);
 			}
 		}
-		return super.onPrepareOptionsMenu(menu) || true;
+		super.onPrepareOptionsMenu(menu);
+		return true;
 	}
 	//#endif
 
