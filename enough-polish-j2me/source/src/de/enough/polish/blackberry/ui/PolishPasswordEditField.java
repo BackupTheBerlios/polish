@@ -25,9 +25,9 @@
  */
 package de.enough.polish.blackberry.ui;
 
-import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.StyleSheet;
+
 import net.rim.device.api.ui.component.PasswordEditField;
 
 public class PolishPasswordEditField extends PasswordEditField implements PolishTextField {

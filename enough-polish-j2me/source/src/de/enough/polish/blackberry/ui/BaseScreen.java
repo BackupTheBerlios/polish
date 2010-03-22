@@ -11,14 +11,11 @@ import net.rim.device.api.ui.Field;
 import net.rim.device.api.ui.Manager;
 //#if polish.hasPointerEvents
 	import net.rim.device.api.ui.TouchEvent; 
-	import net.rim.device.api.ui.VirtualKeyboard;
 //#endif
 import de.enough.polish.blackberry.midlet.MIDlet;
-import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.Canvas;
-import de.enough.polish.ui.CommandItem;
 import de.enough.polish.ui.Display;
 import de.enough.polish.ui.Displayable;
 import de.enough.polish.util.ArrayList;

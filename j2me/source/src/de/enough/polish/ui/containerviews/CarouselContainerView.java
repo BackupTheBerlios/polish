@@ -27,12 +27,8 @@
  */
 package de.enough.polish.ui.containerviews;
 
-import javax.microedition.lcdui.Graphics;
-
-import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Dimension;
 import de.enough.polish.ui.Item;
-import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.UiAccess;

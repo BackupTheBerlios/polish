@@ -27,8 +27,7 @@ package de.enough.polish.blackberry.ui;
 
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.StyleSheet;
-import net.rim.device.api.ui.FieldChangeListener;
-import net.rim.device.api.ui.XYRect;
+
 import net.rim.device.api.ui.component.EmailAddressEditField;
 
 public class PolishEmailAddressEditField extends EmailAddressEditField implements PolishTextField{
