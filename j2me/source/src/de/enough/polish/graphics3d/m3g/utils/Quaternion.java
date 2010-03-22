@@ -1,3 +1,4 @@
+//#condition polish.hasdoubleingPoint
 package de.enough.polish.graphics3d.m3g.utils;
 
 /**

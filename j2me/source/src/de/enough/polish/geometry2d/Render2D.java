@@ -1,3 +1,4 @@
+//#condition polish.hasdoubleingPoint
 /*
  * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
