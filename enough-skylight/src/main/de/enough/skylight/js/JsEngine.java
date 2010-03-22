@@ -32,6 +32,11 @@ public class JsEngine {
 		scriptable.setParentScope(this.scope);
 		script.exec(this.context, scriptable);
 	}
+	
+	public void runScript(String scriptText) {
+		Script script = this.context.compileString(scriptText, "test1", 1);
+		script.exec(this.context, this.scope);
+	}
 
 	public void runFunction(Object onClickFunction) {
 		// TODO Auto-generated method stub
