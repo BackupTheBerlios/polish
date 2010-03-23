@@ -8,6 +8,8 @@ import de.enough.skylight.dom.DomNode;
 
 public class CssStyle {
 	
+	public static final short FOCUSED_STYLE_KEY = 1;
+	
 	public static Style getTextStyle(Style baseStyle, Style extendStyle) {
 		//#style text
 		Style resultStyle = new Style();
@@ -80,6 +82,12 @@ public class CssStyle {
 		//#debug sl.debug.style
 		System.out.println("extending style " + baseStyle.name + " with style " + extendStyle.name);
 		
+		String baseName = baseStyle.name;
+		String extendName = extendStyle.name;
+		if(baseName.equals(extendName)) {
+			return baseStyle;
+		}
+		
 		Style result = new Style(baseStyle);
 		
 		result.name = extendStyle.name;
@@ -96,14 +104,21 @@ public class CssStyle {
 			result.background = extendStyle.background;
 		}
 		
+		Style baseFocusedStyle = (Style) baseStyle.getObjectProperty("focused-style");
 		short[] keys = extendStyle.getRawAttributeKeys();
 		
 		if(keys != null) {
 			for (int i = 0; i < keys.length; i++) {
 				short key = keys[i];
 				Object value = extendStyle.getObjectProperty(key);
-				if(value != null) {
-					result.addAttribute(key, value);
+				
+				if(key == FOCUSED_STYLE_KEY && baseFocusedStyle != null && value != null) {
+					Style resultFocusedStyle = extendStyle(baseFocusedStyle, (Style)value);
+					result.addAttribute(key, resultFocusedStyle);
+				} else {
+					if(value != null) {
+						result.addAttribute(key, value);
+					}
 				}
 			}
 		}
