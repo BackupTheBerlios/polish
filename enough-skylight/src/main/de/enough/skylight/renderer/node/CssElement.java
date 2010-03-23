@@ -93,9 +93,9 @@ public class CssElement implements HtmlCssElement{
 			if(this.parent != null) {
 				Style parentTextStyle = this.parent.getTextStyle();
 				
-				this.textStyle = CssStyle.getTextStyle(parentTextStyle, this.style);
+				this.textStyle = CssStyle.createTextStyle(parentTextStyle, this.style);
 			} else {
-				this.textStyle = CssStyle.getTextStyle(null, this.style);
+				this.textStyle = CssStyle.createTextStyle(null, this.style);
 			}
 		}
 	}

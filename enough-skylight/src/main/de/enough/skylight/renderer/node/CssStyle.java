@@ -8,15 +8,25 @@ import de.enough.skylight.dom.DomNode;
 
 public class CssStyle {
 	
-	public static final short FOCUSED_STYLE_KEY = 1;
+	static final short FOCUSED_STYLE_KEY = 1;
 	
-	public static Style getTextStyle(Style baseStyle, Style extendStyle) {
+	public static Style createTextStyle(Style baseStyle, Style extendStyle) {
+		if(baseStyle != null && extendStyle != null) {
+			if(baseStyle.name.equals(extendStyle.name)) {
+				return baseStyle;
+			}
+		}
+		
+		//#mdebug sl.debug.style
+		if(baseStyle != null) {
+			System.out.println("creating text style : " + baseStyle.name + " / " + extendStyle.name);
+		} else {
+			System.out.println("creating text style from " + extendStyle.name);
+		}
+		//#enddebug
+		
 		//#style text
 		Style resultStyle = new Style();
-		
-		// get default size and color from text style
-		Integer defaultFontSize = resultStyle.getIntProperty("font-size");
-		Color defaultFontColor = resultStyle.getColorProperty("font-color");
 		
 		// get the attributes to extend the style 
 		Color extendFontColor = extendStyle.getColorProperty("font-color");
@@ -25,68 +35,76 @@ public class CssStyle {
 		Style extendFocusedStyle = (Style)extendStyle.getObjectProperty("focused-style");
 		
 		// if a base style is given ...
-		if(baseStyle != null) {
+		if(baseStyle == null) {
+			resultStyle.name = extendStyle.name;
+			resultStyle.addAttribute("font-color", extendFontColor);
+			resultStyle.addAttribute("font-style", extendFontStyle);
+			resultStyle.addAttribute("font-size", extendFontSize);	
+			resultStyle.addAttribute("focused-style", extendFocusedStyle);
+		} else {
+			// get default size and color from text style
+			Integer defaultFontSize = resultStyle.getIntProperty("font-size");
+			Color defaultFontColor = resultStyle.getColorProperty("font-color");
+			
 			// get font attributes from the base style
 			Color baseFontColor = baseStyle.getColorProperty("font-color");
 			Integer baseFontStyle = baseStyle.getIntProperty("font-style");
 			Integer baseFontSize = baseStyle.getIntProperty("font-size");
 			
-			Color resultTextColor = defaultFontColor;
-			// if the color to extend is not the default color ...
-			if(!extendFontColor.equals(defaultFontColor)) {
-				// set it as the result color
-				resultTextColor = extendFontColor;
-			} else {
-				// set the base color as the result color
-				resultTextColor = baseFontColor;
-			}
-			
-			// extend the flags
+			Color resultTextColor = (Color) extendValue(baseFontColor, extendFontColor, defaultFontColor);
 			Integer resultTextStyle = extendFlag(baseFontStyle, extendFontStyle);
-			
-			// if the size to extend is not the default size ...
-			Integer resultTextSize = defaultFontSize;
-			if(!extendFontSize.equals(defaultFontSize)) {
-				// set it as the result size
-				resultTextSize = extendFontSize;
-			} else {
-				// set the base size as the result size
-				resultTextSize = baseFontSize;
-			}
+			Integer resultTextSize = (Integer) extendValue(baseFontSize, extendFontSize, defaultFontSize);
 			
 			Style baseFocusedStyle = (Style)baseStyle.getObjectProperty("focused-style");
 			
-			// extend the focused style
-			Style resultFocusedStyle = extendStyle(baseFocusedStyle,extendFocusedStyle);
-			
 			// add the resulting attributes to the text style
+			resultStyle.name = baseStyle.name + "." + extendStyle.name;
 			resultStyle.addAttribute("font-color", resultTextColor);
 			resultStyle.addAttribute("font-style", resultTextStyle);
 			resultStyle.addAttribute("font-size", resultTextSize);
-			resultStyle.addAttribute("focused-style", resultFocusedStyle);
-		} else {
-			resultStyle.addAttribute("font-color", extendFontColor);
-			resultStyle.addAttribute("font-style", extendFontStyle);
-			resultStyle.addAttribute("font-size", extendFontSize);	
-			resultStyle.addAttribute("focused-style", extendFocusedStyle);
+			
+			// extend the focused style
+			if(extendFocusedStyle != null) {
+				Style resultFocusedStyle = createTextStyle(baseFocusedStyle,extendFocusedStyle);
+				resultStyle.addAttribute("focused-style", resultFocusedStyle);
+			} 
 		}
 		
 		return resultStyle;
 	}
 	
 	static Integer extendFlag(Integer baseFlag, Integer extendFlag ) {
-		return new Integer( baseFlag.intValue() | extendFlag.intValue() );
+		if(extendFlag == null) {
+			return baseFlag;
+		} else {
+			// extend the flags
+			return new Integer( baseFlag.intValue() | extendFlag.intValue() );
+		}
 	}
 	
-	static Style extendStyle(Style baseStyle, Style extendStyle) {
+	static Object extendValue(Object baseValue, Object extendValue, Object defaultValue) {
+		// if the value to extend is not the default value ...
+		Object resultValue = defaultValue;
+		if(extendValue != null && !extendValue.equals(defaultValue)) {
+			// set it as the result value
+			resultValue = extendValue;
+		} else {
+			// set the base value as the result value
+			resultValue = baseValue;
+		}
+		
+		return resultValue;
+	}
+	
+	static Style createStyle(Style baseStyle, Style extendStyle) {
+		if(baseStyle != null && extendStyle != null) {
+			if(baseStyle.name.equals(extendStyle.name)) {
+				return baseStyle;
+			}
+		}
+		
 		//#debug sl.debug.style
 		System.out.println("extending style " + baseStyle.name + " with style " + extendStyle.name);
-		
-		String baseName = baseStyle.name;
-		String extendName = extendStyle.name;
-		if(baseName.equals(extendName)) {
-			return baseStyle;
-		}
 		
 		Style result = new Style(baseStyle);
 		
@@ -97,7 +115,7 @@ public class CssStyle {
 		}
 		
 		if(extendStyle.border != null) {
-				result.border = extendStyle.border;
+			result.border = extendStyle.border;
 		}
 				
 		if(extendStyle.background != null) {
@@ -112,10 +130,12 @@ public class CssStyle {
 				short key = keys[i];
 				Object value = extendStyle.getObjectProperty(key);
 				
-				if(key == FOCUSED_STYLE_KEY && baseFocusedStyle != null && value != null) {
-					Style resultFocusedStyle = extendStyle(baseFocusedStyle, (Style)value);
-					result.addAttribute(key, resultFocusedStyle);
-				} else {
+				//TODO unstable
+//				if(key == FOCUSED_STYLE_KEY && baseFocusedStyle != null && value != null) {
+//					Style resultFocusedStyle = createStyle(baseFocusedStyle, (Style)value);
+//					result.addAttribute(key, resultFocusedStyle);
+//				} else 
+				{
 					if(value != null) {
 						result.addAttribute(key, value);
 					}
@@ -142,7 +162,7 @@ public class CssStyle {
 				//#debug sl.debug.style
 				System.out.println("create style for " + handler.getTag() + " : " + clazz);
 				
-				return extendStyle(style, classStyle);
+				return createStyle(style, classStyle);
 			} else {
 				//#debug error
 				System.out.println("style " + clazz + " could not be found");
