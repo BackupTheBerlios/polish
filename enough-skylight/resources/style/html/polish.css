@@ -29,7 +29,8 @@ form extends element {
 
 /** INLINE **/
 
-text extends element {
+text {
+	padding: 0;
 }
 
 span extends element {
