@@ -20,6 +20,7 @@ public class CssStyle {
 		Color extendFontColor = extendStyle.getColorProperty("font-color");
 		Integer extendFontStyle = extendStyle.getIntProperty("font-style");
 		Integer extendFontSize = extendStyle.getIntProperty("font-size"); 
+		Style extendFocusedStyle = (Style)extendStyle.getObjectProperty("focused-style");
 		
 		// if a base style is given ...
 		if(baseStyle != null) {
@@ -51,30 +52,24 @@ public class CssStyle {
 				resultTextSize = baseFontSize;
 			}
 			
+			Style baseFocusedStyle = (Style)baseStyle.getObjectProperty("focused-style");
+			
+			// extend the focused style
+			Style resultFocusedStyle = extendStyle(baseFocusedStyle,extendFocusedStyle);
+			
 			// add the resulting attributes to the text style
 			resultStyle.addAttribute("font-color", resultTextColor);
 			resultStyle.addAttribute("font-style", resultTextStyle);
 			resultStyle.addAttribute("font-size", resultTextSize);
+			resultStyle.addAttribute("focused-style", resultFocusedStyle);
 		} else {
 			resultStyle.addAttribute("font-color", extendFontColor);
 			resultStyle.addAttribute("font-style", extendFontStyle);
 			resultStyle.addAttribute("font-size", extendFontSize);	
+			resultStyle.addAttribute("focused-style", extendFocusedStyle);
 		}
 		
 		return resultStyle;
-		
-		/*Style focusedBaseStyle = (Style)baseStyle.getObjectProperty("focused-style");
-		if(focusedBaseStyle != null) {
-			Font focusedResultFont = focusedBaseStyle.getFont();
-			Color focusedResultColor = focusedBaseStyle.getColorProperty("font-color");
-			
-			//#style element
-			Style focusedTextStyle = new Style();
-			focusedTextStyle.addAttribute("font", focusedResultFont);
-			focusedTextStyle.addAttribute("font-color", focusedResultColor);
-			
-			textStyle.addAttribute("focused-style", focusedBaseStyle);
-		}*/
 	}
 	
 	static Integer extendFlag(Integer baseFlag, Integer extendFlag ) {
