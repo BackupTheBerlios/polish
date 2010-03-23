@@ -240,5 +240,11 @@ public class Color implements Serializable {
 		}
 	}
 
-
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	public boolean equals(Object obj) {
+		Color color = (Color)obj;
+		return getColor() == color.getColor();
+	}
 }
