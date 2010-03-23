@@ -1,3 +1,4 @@
+//#condition false
 package de.enough.skylight;
 
 import java.io.BufferedReader;

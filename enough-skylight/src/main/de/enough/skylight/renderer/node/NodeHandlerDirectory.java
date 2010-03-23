@@ -2,17 +2,20 @@ package de.enough.skylight.renderer.node;
 
 import de.enough.polish.util.HashMap;
 import de.enough.skylight.dom.DomNode;
+import de.enough.skylight.renderer.node.handler.html.BHandler;
 import de.enough.skylight.renderer.node.handler.html.BodyHandler;
 import de.enough.skylight.renderer.node.handler.html.BrHandler;
 import de.enough.skylight.renderer.node.handler.html.DivHandler;
 import de.enough.skylight.renderer.node.handler.html.EmHandler;
 import de.enough.skylight.renderer.node.handler.html.FormHandler;
 import de.enough.skylight.renderer.node.handler.html.H1Handler;
+import de.enough.skylight.renderer.node.handler.html.IHandler;
 import de.enough.skylight.renderer.node.handler.html.ImgHandler;
 import de.enough.skylight.renderer.node.handler.html.InputHandler;
 import de.enough.skylight.renderer.node.handler.html.LinkHandler;
 import de.enough.skylight.renderer.node.handler.html.PHandler;
 import de.enough.skylight.renderer.node.handler.html.SpanHandler;
+import de.enough.skylight.renderer.node.handler.html.StrongHandler;
 import de.enough.skylight.renderer.node.handler.html.TextHandler;
 import de.enough.skylight.renderer.node.handler.html.TitleHandler;
 
@@ -36,17 +39,20 @@ public class NodeHandlerDirectory {
 	}
 	
 	public void addHtmlHandlers() {
+		addHandler(new TitleHandler());
+		addHandler(new LinkHandler());
 		addHandler(new FormHandler());
 		addHandler(new InputHandler());
-		addHandler(new H1Handler());
-		addHandler(new BrHandler());
-		addHandler(new TitleHandler());
-		addHandler(new EmHandler());
 		addHandler(new BodyHandler());
 		addHandler(new DivHandler());
-		addHandler(new SpanHandler());
 		addHandler(new PHandler());
-		addHandler(new LinkHandler());
+		addHandler(new SpanHandler());
+		addHandler(new H1Handler());
+		addHandler(new BrHandler());
+		addHandler(new EmHandler());
+		addHandler(new IHandler());
+		addHandler(new StrongHandler());
+		addHandler(new BHandler());
 		addHandler(new ImgHandler());
 		addHandler(new TextHandler());
 	}

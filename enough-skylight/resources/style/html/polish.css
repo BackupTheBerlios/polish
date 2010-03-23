@@ -7,7 +7,9 @@ body extends element {
 h1 extends element {
 	margin-top: 2%;
 	margin-bottom: 2%;
-	font: fnt_h1;
+	font-size: medium;
+	font-color: text;
+	font-style: normal;
 	display: block;
 }
 
@@ -28,11 +30,9 @@ form extends element {
 /** INLINE **/
 
 text extends element {
-	font: fnt_text;
 }
 
 span extends element {
-	font: fnt_text;
 }
 
 strong extends element {
@@ -43,13 +43,11 @@ em extends element {
 	font-style: cursive;
 }
 
-strong extends element {
-	font-style: bold;	
-}
-
 input_text extends element {
 	padding: 1px;
-	font: fnt_input_text;
+	font-size: small;
+	font-color: text;
+	font-style: normal;
 	border: bdr_input;
 	min-width: 120px;
 }
@@ -59,7 +57,9 @@ input_text:hover {
 }
 
 input_submit extends element {
-	font: fnt_input_submit;
+	font-size: small;
+	font-color: text;
+	font-style: normal;
 	border: bdr_input;
 	background: bg_input_submit;
 	padding: 1px;
@@ -73,7 +73,9 @@ input_submit:hover {
 input_submit:pressed {
 	background: bg_input_submit_focus;
 	border: bdr_input_focus;
-	font: fnt_input_submit_pressed;
+	font-size: small;
+	font-color: white;
+	font-style: normal;
 }
 
 input_radio_group extends element {

@@ -11,6 +11,7 @@ import de.enough.skylight.renderer.css.HtmlCssElement;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.element.ContainingBlock;
 import de.enough.skylight.renderer.element.InlineContainingBlock;
+import de.enough.skylight.renderer.node.handler.html.TextHandler;
 
 public class CssElement implements HtmlCssElement{
 	String display = HtmlCssElement.Display.INLINE;
@@ -34,6 +35,8 @@ public class CssElement implements HtmlCssElement{
 	Item content;
 	
 	Style style;
+	
+	Style textStyle;
 	
 	CssElement parent;
 	
@@ -74,10 +77,30 @@ public class CssElement implements HtmlCssElement{
 	public void build() throws ClassCastException, IllegalArgumentException {
 		this.handler.handle(this);
 		
+		buildStyle();
+		
+		buildItem();
+	}
+	
+	protected void buildStyle() {
 		this.style = CssStyle.getStyle(this);
 		
 		setStyle(this.style);
-		
+
+		if(this.handler instanceof TextHandler) {
+			this.textStyle = this.parent.getTextStyle();
+		} else {
+			if(this.parent != null) {
+				Style parentTextStyle = this.parent.getTextStyle();
+				
+				this.textStyle = CssStyle.getTextStyle(parentTextStyle, this.style);
+			} else {
+				this.textStyle = CssStyle.getTextStyle(null, this.style);
+			}
+		}
+	}
+	
+	protected void buildItem() {
 		this.content = createContent();
 		
 		if(this.node.hasChildNodes()) {
@@ -143,13 +166,14 @@ public class CssElement implements HtmlCssElement{
 		return this.style;
 	}
 	
+	public Style getTextStyle() {
+		return this.textStyle;
+	}
+	
 	Item createContent() {
 		Item item = this.handler.createContent(this);
 		
 		if(item != null) {
-//			ElementView view = new ElementView();
-//			item.setView(view);
-			
 			if(isInteractive()) {
 				//#debug sl.debug.event
 				System.out.println("element " + this + " is interactive");

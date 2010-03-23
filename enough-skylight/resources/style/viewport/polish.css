@@ -1,6 +1,8 @@
 info {
 	padding: 0;
-	font: fnt_input_info;
+	font-size: small;
+	font-color: white;
+	font-size: normal;
 	background-color: #666666;
 	layout: right;	
 }
@@ -9,7 +11,9 @@ element {
 	display: inline;
 	padding: 0;
 	margin: 0;
-	font: fnt_text;
+	font-size: small;
+	font-color: text;
+	font-style: normal;
 }
 
 element:hover{}

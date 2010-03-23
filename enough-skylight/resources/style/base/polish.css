@@ -12,45 +12,6 @@ colors {
 	input_submit_focus_2: black;
 }
 
-fonts {
-	
-	fnt_text {
-		size: small;
-		color: text;
-		style: normal;
-	}
-	
-	fnt_h1 {
-		size: medium;
-		color: text;
-		style: bold;
-	}
-	
-	fnt_input_text {
-		size: small;
-		color: text;
-		style: normal;
-	}
-	
-	fnt_input_info {
-		size: small;
-		color: input_info;
-		style: normal;
-	}
-	
-	fnt_input_submit {
-		size: small;
-		color: text;
-		style: normal;
-	}
-	
-	fnt_input_submit_pressed {
-		size: small;
-		color: white;
-		style: normal;
-	}
-}
-
 borders {
 	bdr_input {
 		color: input;
