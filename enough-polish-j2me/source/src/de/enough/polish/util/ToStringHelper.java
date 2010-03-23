@@ -13,6 +13,10 @@ public class ToStringHelper {
 	
 	static String  FORMAT_DESCRIPTION_SEPARATOR = ":";
 	
+	static String  FORMAT_DESCRIPTION_LIST_SEPARATOR = " , ";
+	
+	static String  FORMAT_DESCRIPTION_KEYVALUE_SEPARATOR = " : ";
+	
 	static String  FORMAT_LIST_SEPARATOR = " / ";
 	
 	/**
@@ -83,6 +87,58 @@ public class ToStringHelper {
 	 */
 	public ToStringHelper add(String id, Object value) {
 		String description = id + FORMAT_DESCRIPTION_SEPARATOR + value;
+		this.attributes.add(description);
+		return this;
+	}
+	
+	/**
+	 * adds a String value
+	 * @param id the id 
+	 * @param value the value
+	 * @return the ToStringHelper instance
+	 */
+	public ToStringHelper add(String id, String value) {
+		String description = id + FORMAT_DESCRIPTION_SEPARATOR + "\"" + value + "\"";
+		this.attributes.add(description);
+		return this;
+	}
+	
+	/**
+	 * adds an ArrayList
+	 * @param id the id 
+	 * @param value the value
+	 * @return the ToStringHelper instance
+	 */
+	public ToStringHelper add(String id, ArrayList value) {
+		String description = id + FORMAT_DESCRIPTION_SEPARATOR;
+		for (int i = 0; i < value.size(); i++) {
+			Object object = value.get(i);
+			description += object.toString();
+			if(i != this.attributes.size() - 1) {
+				description += FORMAT_DESCRIPTION_LIST_SEPARATOR;
+			}
+		}
+		this.attributes.add(description);
+		return this;
+	}
+	
+	/**
+	 * adds a HashMap
+	 * @param id the id 
+	 * @param value the value
+	 * @return the ToStringHelper instance
+	 */
+	public ToStringHelper add(String id, HashMap value) {
+		String description = id + FORMAT_DESCRIPTION_SEPARATOR;
+		Object[] keys = value.keys();
+		for (int i = 0; i < keys.length; i++) {
+			Object key = keys[i];
+			Object object = value.get(key);
+			description += key.toString() + FORMAT_DESCRIPTION_KEYVALUE_SEPARATOR + object.toString();
+			if(i != this.attributes.size() - 1) {
+				description += FORMAT_DESCRIPTION_LIST_SEPARATOR;
+			}
+		}
 		this.attributes.add(description);
 		return this;
 	}
