@@ -1,4 +1,4 @@
-//#condition polish.usePolishGui && polish.midp && !polish.blackberry
+//#condition polish.usePolishGui && polish.midp2 && !polish.blackberry
 /*
  * Copyright (c) 2010 Robert Virkus / Enough Software
  *
@@ -199,7 +199,7 @@ public class Font {
 	    	//#endif
     		font)
     {
-        this.font = font ;
+        this.font = font;
     }
 
     /**
