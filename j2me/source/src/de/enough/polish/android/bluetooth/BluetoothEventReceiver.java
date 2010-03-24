@@ -1,4 +1,4 @@
-//#condition java.platform >= Android/2.0
+//#condition polish.javaplatform >= Android/2.0
 package de.enough.polish.android.bluetooth;
 
 import android.bluetooth.BluetoothAdapter;

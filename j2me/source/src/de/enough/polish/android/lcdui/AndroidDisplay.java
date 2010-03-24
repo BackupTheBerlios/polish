@@ -19,7 +19,7 @@ import de.enough.polish.ui.NativeDisplay;
 import de.enough.polish.ui.Screen;
 import de.enough.polish.util.ArrayList;
 
-//#if java.platform >= Android/1.5
+//#if polish.javaplatform >= Android/1.5
 	import android.view.inputmethod.BaseInputConnection;
 	import android.view.inputmethod.EditorInfo;
 	import android.view.inputmethod.InputConnection;
@@ -360,7 +360,7 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 		if(this.currentPolishCanvas == null) {
 			return false;
 		}
-		//#if polish.android1.5
+		//#if polish.javaplatform >= Android/1.5
 		if(keyCode == KeyEvent.KEYCODE_ENTER && ((event.getFlags() & KeyEvent.FLAG_SOFT_KEYBOARD) == KeyEvent.FLAG_SOFT_KEYBOARD)) {
 			//#debug
 			System.out.println("Hiding Softkeyboard in onKeyUp");
@@ -398,7 +398,7 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 		if(this.currentPolishCanvas == null) {
 			return false;
 		}
-		//#if polish.android1.5
+		//#if polish.javaplatform >= Android/1.5
 		if(keyCode == KeyEvent.KEYCODE_ENTER && ((event.getFlags() & KeyEvent.FLAG_SOFT_KEYBOARD) == KeyEvent.FLAG_SOFT_KEYBOARD)) {
 			//#debug
 			System.out.println("Hiding Softkeyboard");
@@ -1263,7 +1263,7 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 		}
 	}
 
-	//#if polish.android1.5
+	//#if polish.javaplatform >= Android/1.5
 	@Override
 	public InputConnection onCreateInputConnection(EditorInfo editorInfo) {
 		editorInfo.imeOptions |= EditorInfo.IME_FLAG_NO_EXTRACT_UI | EditorInfo.IME_ACTION_NONE;
