@@ -218,5 +218,44 @@ public final class ProcessUtil {
 		String text = new String( byteOut.toByteArray() );
 		return StringUtil.split(text, '\n');
 	}
+	
+	
+	/**
+	 * Provides a debug helper for printing out all arguments of a process for error tracking.
+	 * @param arguments the arguments of the process
+	 * @return a single string with spaces between single arguments and quotation marks around arguments that contain spaces themselves.
+	 */
+	public static String toString( String[] arguments ) {
+		StringBuffer call = new StringBuffer();
+		for (int j = 0; j < arguments.length; j++) {
+			String arg = arguments[j];
+			if (arg.indexOf(' ') != -1) {
+				call.append('"').append(arg).append('"');
+			} else {
+				call.append(arg);
+			}
+			call.append(' ');
+		}
+		return call.toString();
+	}
+	
+	/**
+	 * Provides a debug helper for printing out all arguments of a process for error tracking.
+	 * @param arguments the arguments of the process
+	 * @return a single string with spaces between single arguments and quotation marks around arguments that contain spaces themselves.
+	 */
+	public static String toString( ArrayList arguments ) {
+		StringBuffer call = new StringBuffer();
+		for (int i=0; i<arguments.size(); i++) {
+			String arg = (String) arguments.get(i);
+			if (arg.indexOf(' ') != -1) {
+				call.append('"').append(arg).append('"');
+			} else {
+				call.append(arg);
+			}
+			call.append(' ');
+		}
+		return call.toString();
+	}
 
 }
