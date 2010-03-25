@@ -66,6 +66,8 @@ public class AidlPreCompiler extends PreCompiler{
 			ProcessUtil.exec( arguments, "aidl: ", true, null, directory );
 		} catch (IOException e) {
 			e.printStackTrace();
+			System.out.println("aidl arguments were:");
+			System.out.println(ProcessUtil.toString(arguments));
 		}
 	}
 	

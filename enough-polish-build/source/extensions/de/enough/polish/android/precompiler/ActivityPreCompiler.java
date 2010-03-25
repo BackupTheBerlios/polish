@@ -27,6 +27,7 @@ package de.enough.polish.android.precompiler;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 
 import de.enough.polish.BuildException;
@@ -35,6 +36,7 @@ import de.enough.polish.Environment;
 import de.enough.polish.ant.android.ArgumentHelper;
 import de.enough.polish.precompile.PreCompiler;
 import de.enough.polish.util.FileUtil;
+import de.enough.polish.util.OutputFilter;
 import de.enough.polish.util.ProcessUtil;
 import de.enough.polish.util.StringUtil;
 
@@ -49,13 +51,17 @@ import de.enough.polish.util.StringUtil;
  * </pre>
  * @author Andre Schmidt, j2mepolish@enough.de
  */
-public class ActivityPreCompiler extends PreCompiler{
+public class ActivityPreCompiler extends PreCompiler
+implements OutputFilter
+{
 	
 	public final static String project = ".project";
 	
 	public final static String classpath = ".classpath";
 	
 	public final static String placeholder = "@@NAME@@";
+
+	private String errorMessage;
 
 	/*
 	 * (non-Javadoc)
@@ -90,9 +96,25 @@ public class ActivityPreCompiler extends PreCompiler{
 			createProject(env);
 			
 			// Create the activity
-			int result = ProcessUtil.exec( arguments, name + ": ", true, null, directory );
-			if (result != 0) {
-				throw new BuildException("Unable to create activity / project: " + name + " returned " + result); 
+			this.errorMessage = null;
+			int result = ProcessUtil.exec( arguments, name + ": ", true, this, directory );
+			if (result != 0 || this.errorMessage != null) {
+				String message = "Unable to create activity / project: " + name + " returned " + result;
+				if (this.errorMessage != null) {
+					message += " and error message " + this.errorMessage;
+					if (this.errorMessage.indexOf(" id ") != -1) {
+						message += " Used ID was [" + ArgumentHelper.getTargetId(env) + "].";
+						String[] args = new String[]{ (String)arguments.get(0), "list", "targets" };
+						try {
+							ProcessUtil.exec( args, name + ": ", true, null, directory );
+						} catch (Throwable t) {
+							// ignore
+						}
+					}
+					System.out.println("arguments were:");
+					System.out.println(ProcessUtil.toString(arguments));
+				}
+				throw new BuildException(message ); 
 			}
 			
 			// Copy the preprocessed sources
@@ -140,7 +162,11 @@ public class ActivityPreCompiler extends PreCompiler{
 		String base = ArgumentHelper.getActivity(env);
 		ArrayList arguments = new ArrayList();
 		arguments.add(executable);
-		arguments.add("create");
+		if ("android".equals(executable)) {
+			arguments.add("update");
+		} else {
+			arguments.add("create");
+		}
 		arguments.add("project");
 		arguments.add("--target");
 		//System.out.println("using targetId " + ArgumentHelper.getTargetId(env) );
@@ -181,6 +207,10 @@ public class ActivityPreCompiler extends PreCompiler{
 	 */
 	void createProject(Environment env) throws IOException
 	{
+		String android = ArgumentHelper.android(env);
+		if (android != null) {
+			return;
+		}
 		File activity = new File(ArgumentHelper.getActivity(env));
 		File projectFile = new File(ArgumentHelper.getBuild(env) + File.separator + project);
 		File classpathFile = new File(ArgumentHelper.getBuild(env) + File.separator + classpath);
@@ -207,6 +237,13 @@ public class ActivityPreCompiler extends PreCompiler{
 		}
 		
 		return lines;
+	}
+
+	public void filter(String message, PrintStream output) {
+		if (message.indexOf("Error") != -1) {
+			this.errorMessage = message;
+		}
+		output.println(message);
 	}
 	
 }

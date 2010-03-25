@@ -67,11 +67,15 @@ public class DexPostCompiler extends PostCompiler{
 				result = ProcessUtil.exec( arguments, "dx: ", true, null, directory );
 			} catch (IOException e) {
 				e.printStackTrace();
+				System.out.println("dx arguments were:");
+				System.out.println(ProcessUtil.toString(arguments));
 				throw new BuildException("Unable to create .dex file for device [" + device.getIdentifier() + "]: " + e.getMessage(), e );
 			}
 			if(result != 0) {
 				//TODO: This code is never reached. The OutOfMemoryError is displayed within the process and the build continues.
 				System.out.println("If an OutOfMemoryError occured, please increate the settings in the -Xmx parameter in " + dx);
+				System.out.println("dx arguments were:");
+				System.out.println(ProcessUtil.toString(arguments));
 				throw new BuildException("Unable to create .dex file for device [" + device.getIdentifier() + "]: Result code was:"+result );
 			}
 		}

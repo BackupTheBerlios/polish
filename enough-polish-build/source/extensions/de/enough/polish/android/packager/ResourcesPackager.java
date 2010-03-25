@@ -67,10 +67,14 @@ public class ResourcesPackager extends Packager{
 			try {
 				int result = ProcessUtil.exec( arguments, "aapt: ", true, null, directory );
 				if (result != 0) {
+					System.out.println("aapt arguments were:");
+					System.out.println(ProcessUtil.toString(arguments));
 					throw new BuildException("aapt was unable to create package - got result " + result);
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
+				System.out.println("aapt arguments were:");
+				System.out.println(ProcessUtil.toString(arguments));
 				throw new BuildException("aapt was unable to create package - got error " + e);
 			}
 		} else {

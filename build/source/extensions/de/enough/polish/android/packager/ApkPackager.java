@@ -78,10 +78,14 @@ public class ApkPackager extends Packager{
 			try {
 				int result = ProcessUtil.exec( arguments, "apk: ", true, null, directory );
 				if (result != 0) {
+					System.out.println("apk arguments were:");
+					System.out.println(ProcessUtil.toString(arguments));
 					throw new BuildException("apk was unable to create package - got result " + result);
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
+				System.out.println("apk arguments were:");
+				System.out.println(ProcessUtil.toString(arguments));
 				throw new BuildException("apk was unable to create package - got error " + e);
 			}
 		} else {
