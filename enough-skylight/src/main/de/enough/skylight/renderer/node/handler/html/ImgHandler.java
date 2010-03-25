@@ -11,13 +11,13 @@ import de.enough.polish.content.ContentException;
 import de.enough.polish.content.transform.impl.ImageContentTransform;
 import de.enough.polish.ui.ImageItem;
 import de.enough.polish.ui.Item;
-import de.enough.skylight.content.ContentUtil;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.Viewport;
 import de.enough.skylight.renderer.ViewportContext;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.node.ImgElement;
 import de.enough.skylight.renderer.node.NodeUtils;
+import de.enough.skylight.util.UrlUtil;
 
 public class ImgHandler extends BodyNodeHandler{
 	
@@ -36,9 +36,10 @@ public class ImgHandler extends BodyNodeHandler{
 		String src = NodeUtils.getAttributeValue(element.getNode(), "src");
 		
 		try {
-			String url = ContentUtil.completeUrl(src, context);
+			String url = UrlUtil.completeUrl(src, context);
 			
-			ContentDescriptor descriptor = new ContentDescriptor(url,ImageContentTransform.ID);
+			ContentDescriptor descriptor = new ContentDescriptor(url);
+			descriptor.setTransformID(ImageContentTransform.ID);
 			Image image = (Image) context.getContentLoader().loadContent(descriptor);
 			
 			imgElement.setImage(image);
