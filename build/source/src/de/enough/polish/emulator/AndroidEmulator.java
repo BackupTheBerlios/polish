@@ -27,6 +27,7 @@ package de.enough.polish.emulator;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 
 import de.enough.polish.BuildException;
@@ -36,6 +37,7 @@ import de.enough.polish.ant.android.ArgumentHelper;
 import de.enough.polish.ant.emulator.EmulatorSetting;
 import de.enough.polish.emulator.process.ProcessCondition;
 import de.enough.polish.emulator.process.ProcessWait;
+import de.enough.polish.util.OutputFilter;
 import de.enough.polish.util.ProcessUtil;
 
 /**
@@ -48,7 +50,9 @@ import de.enough.polish.util.ProcessUtil;
  * </pre>
  * @author Andre Schmidt, j2mepolish@enough.de
  */
-public class AndroidEmulator extends Emulator{
+public class AndroidEmulator 
+extends Emulator
+{
 	private static final byte[] NEWLINE = "\n".getBytes();
 
 	public static final String QVGA_P = "QVGA-P";
@@ -62,6 +66,8 @@ public class AndroidEmulator extends Emulator{
 	ArrayList emulatorArguments;
 	String[] waitArguments;
 	String[] installArguments;
+
+	private String errorMessage;
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.emulator.Emulator#init(de.enough.polish.Device, de.enough.polish.ant.emulator.EmulatorSetting, de.enough.polish.Environment)
@@ -169,13 +175,13 @@ public class AndroidEmulator extends Emulator{
 				}
 				ProcessUtil.exec( this.emulatorArguments, this.device.getIdentifier() + ": ", false);
 				
-				System.out.println(this.device.getIdentifier() + ": Initializing...");
+				System.out.println(this.device.getIdentifier() + ": Waiting for emulator to start up...");
 				
 				// Wait for the debug output to flag that
 				// the ActivityManager starts running
 				// which indicates that the package manager
 				// is ready
-				new ProcessWait(this.waitArguments, new String[]{ ".*Start running!.*", ".*Stopping service.*"} );
+				new ProcessWait(this.waitArguments, new String[]{ ".*Start running!.*", ".*Stopping service.*"}, 2 * 60 * 1000 );
 			} else {
 				System.out.println(this.device.getIdentifier() + ": Emulator has been launched already.");
 			}
@@ -183,9 +189,24 @@ public class AndroidEmulator extends Emulator{
 			System.out.println(this.device.getIdentifier() + ": Installing application...");
 			
 			// Install the application
-			int result = ProcessUtil.exec(this.installArguments, this.device.getIdentifier() + ": ", true, null, null);
-			if(result != 0) {
-				throw new BuildException("Could not install application. The process returned '"+result+"'");
+			this.errorMessage = null;
+			int result = ProcessUtil.exec(this.installArguments, this.device.getIdentifier() + ": ", true, 
+			new OutputFilter() {
+				public void filter(String message, PrintStream output) {
+					output.println(message);
+					if (message.indexOf("Error") != -1) {
+						AndroidEmulator.this.errorMessage = message;
+					}
+				}
+			},  null);
+			if(result != 0 || this.errorMessage != null) {
+				System.out.println("Arguments were:");
+				System.out.println( ProcessUtil.toString(this.installArguments) );
+				String message = "Could not install application. The process returned " + result + ". ";
+				if (this.errorMessage != null) {
+					message += this.errorMessage;
+				}
+				throw new BuildException(message);
 			}
 			System.out.println(this.device.getIdentifier() + ": Successfully installed application.");
 		} catch (IOException e) {

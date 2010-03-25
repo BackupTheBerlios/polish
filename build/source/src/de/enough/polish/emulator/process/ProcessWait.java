@@ -41,7 +41,9 @@ import de.enough.polish.util.ProcessUtil;
  * <p>Copyright Enough Software 2008-2009</p>
  * @author Andre Schmidt
  */
-public class ProcessWait extends ProcessCondition implements OutputFilter{
+public class ProcessWait extends ProcessCondition implements OutputFilter, Runnable{
+
+	private long timeout;
 
 	/**
 	 * Constructs a new Wait instance. Starts
@@ -80,8 +82,16 @@ public class ProcessWait extends ProcessCondition implements OutputFilter{
 	 */
 	public ProcessWait(String[] arguments,String[] regexes) throws IOException
 	{
+		this( arguments, regexes, -1);
+	}
+	
+	public ProcessWait(String[] arguments,String[] regexes, long timeout)  throws IOException
+	{
 		super(arguments,regexes);
-		
+		this.timeout = timeout;
+		if (timeout != -1) {
+			new Thread(this).start();
+		}
 		synchronized(this)
 		{
 			ProcessUtil.exec(arguments,null,false,this,null);
@@ -92,12 +102,13 @@ public class ProcessWait extends ProcessCondition implements OutputFilter{
 			}
 		} 
 	}
-	
+
 	/**
 	 * Used to resolve <code>wait()</code> in the constructor.
 	 */
 	public synchronized void proceed()
 	{
+		this.timeout = -1;
 		notify();
 	}
 	
@@ -111,6 +122,18 @@ public class ProcessWait extends ProcessCondition implements OutputFilter{
 		if (matches(message))
 		{
 			// call proceed()
+			proceed();
+		}
+	}
+
+	public void run() {
+		try {
+			Thread.sleep(this.timeout);
+		} catch (InterruptedException e) {
+			// ignore interrupt
+		}
+		if (this.timeout != -1) {
+			System.out.println("Reached timeout...");
 			proceed();
 		}
 	}
