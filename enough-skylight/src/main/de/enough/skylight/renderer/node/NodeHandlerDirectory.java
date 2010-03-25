@@ -16,6 +16,7 @@ import de.enough.skylight.renderer.node.handler.html.LinkHandler;
 import de.enough.skylight.renderer.node.handler.html.PHandler;
 import de.enough.skylight.renderer.node.handler.html.SpanHandler;
 import de.enough.skylight.renderer.node.handler.html.StrongHandler;
+import de.enough.skylight.renderer.node.handler.html.StyleHandler;
 import de.enough.skylight.renderer.node.handler.html.TextHandler;
 import de.enough.skylight.renderer.node.handler.html.TitleHandler;
 
@@ -39,22 +40,27 @@ public class NodeHandlerDirectory {
 	}
 	
 	public void addHtmlHandlers() {
+		// head elements
 		addHandler(new TitleHandler());
+		addHandler(new StyleHandler());
 		addHandler(new LinkHandler());
+		// form elements
 		addHandler(new FormHandler());
 		addHandler(new InputHandler());
+		// block elements
 		addHandler(new BodyHandler());
 		addHandler(new DivHandler());
 		addHandler(new PHandler());
 		addHandler(new SpanHandler());
+		// text elements
 		addHandler(new H1Handler());
 		addHandler(new BrHandler());
 		addHandler(new EmHandler());
 		addHandler(new IHandler());
 		addHandler(new StrongHandler());
 		addHandler(new BHandler());
-		addHandler(new ImgHandler());
 		addHandler(new TextHandler());
+		addHandler(new ImgHandler());
 	}
 	
 	public void setDefaultHandler(NodeHandler handler) {

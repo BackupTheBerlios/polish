@@ -108,7 +108,7 @@ public class CssStyle {
 		
 		Style result = new Style(baseStyle);
 		
-		result.name = extendStyle.name;
+		result.name = baseStyle.name + "." + extendStyle.name;
 		
 		if(extendStyle.layout != Item.LAYOUT_DEFAULT) {
 			result.layout = extendStyle.layout;
