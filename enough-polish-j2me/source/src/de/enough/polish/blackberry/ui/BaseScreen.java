@@ -1580,9 +1580,9 @@ class BaseScreenManager extends Manager {
 			} else {
 				Item item = getItem( field );
 				if (item != null) {
-					int itemW = currentItem.getContentWidth();
+					int itemW = item.getContentWidth();
 					if (itemW == 0) {
-						itemW = currentItem.itemWidth;
+						itemW = item.itemWidth;
 					}
 					itemW += 2;
 					layoutChild( field, itemW, item.itemHeight);
