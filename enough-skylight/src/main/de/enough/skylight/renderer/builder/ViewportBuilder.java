@@ -56,6 +56,12 @@ public class ViewportBuilder {
 			//#debug sl.profile.build
 			Benchmark.start("description");
 			
+			this.viewport.setReady(false);
+			
+			this.viewport.setVisible(false);
+			
+			this.viewport.reset();
+			
 			CssElement rootElement = buildDescription(this.document, null);
 			
 			//#debug sl.debug.build
@@ -63,10 +69,6 @@ public class ViewportBuilder {
 			
 			//#debug sl.profile.build
 			Benchmark.stop("description","done");
-			
-			this.viewport.setVisible(false);
-			
-			this.viewport.reset();
 			
 			this.viewport.setRootElement(rootElement);
 			

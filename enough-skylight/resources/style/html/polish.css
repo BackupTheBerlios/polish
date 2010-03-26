@@ -29,8 +29,17 @@ form extends element {
 
 /** INLINE **/
 
-text {
-	padding: 0;
+a extends element {
+	font-color: #000066;
+	focus-all: true;
+}
+ 
+a:hover {
+	font-color: white;	
+	background-color: #000066;
+}
+
+text extends element {
 }
 
 span extends element {

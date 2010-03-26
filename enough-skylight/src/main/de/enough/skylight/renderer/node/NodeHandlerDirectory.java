@@ -2,6 +2,7 @@ package de.enough.skylight.renderer.node;
 
 import de.enough.polish.util.HashMap;
 import de.enough.skylight.dom.DomNode;
+import de.enough.skylight.renderer.node.handler.html.AHandler;
 import de.enough.skylight.renderer.node.handler.html.BHandler;
 import de.enough.skylight.renderer.node.handler.html.BodyHandler;
 import de.enough.skylight.renderer.node.handler.html.BrHandler;
@@ -52,6 +53,7 @@ public class NodeHandlerDirectory {
 		addHandler(new DivHandler());
 		addHandler(new PHandler());
 		addHandler(new SpanHandler());
+		addHandler(new AHandler());
 		// text elements
 		addHandler(new H1Handler());
 		addHandler(new BrHandler());

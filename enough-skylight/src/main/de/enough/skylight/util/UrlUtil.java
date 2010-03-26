@@ -10,7 +10,7 @@ public class UrlUtil {
 	public static String completeUrl(String url, ViewportContext context) {
 		String result;
 		
-		String host = context.getHost();
+		String host = context.getLocationHost();
 
 		url = url.trim();
 		

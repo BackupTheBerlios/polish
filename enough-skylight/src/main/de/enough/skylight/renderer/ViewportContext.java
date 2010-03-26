@@ -4,9 +4,11 @@ import de.enough.polish.content.ContentLoader;
 
 public interface ViewportContext {
 	
-	public String getHost();
+	public String getLocationHost();
 	
-	public String getUrl();
+	public String getLocationUrl();
 	
 	public ContentLoader getContentLoader();
+	
+	public void setLocation(String url);
 }

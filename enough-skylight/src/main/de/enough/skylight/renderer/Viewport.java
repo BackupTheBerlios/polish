@@ -53,8 +53,6 @@ public class Viewport extends BlockContainingBlock {
 	}
 	
 	public void reset() {
-		this.ready = false;
-		
 		this.body.clear();
 		
 		if(this.floatLeft != null) {

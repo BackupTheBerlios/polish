@@ -10,6 +10,20 @@ public class CssStyle {
 	
 	static final short FOCUSED_STYLE_KEY = 1;
 	
+	static Style defaultStyle;
+	static Style defaultFocusedStyle;
+	static Style defaultTextStyle;
+	
+	static {
+		//#style element
+		defaultStyle = new Style();
+		
+		defaultFocusedStyle = getFocusedStyle(defaultStyle);
+		
+		//#style text
+		defaultTextStyle =  new Style();
+	}
+	
 	public static Style createTextStyle(Style baseStyle, Style extendStyle) {
 		if(baseStyle != null && extendStyle != null) {
 			if(baseStyle.name.equals(extendStyle.name)) {
@@ -25,14 +39,13 @@ public class CssStyle {
 		}
 		//#enddebug
 		
-		//#style text
-		Style resultStyle = new Style();
+		Style resultStyle = new Style(defaultTextStyle);
 		
 		// get the attributes to extend the style 
 		Color extendFontColor = extendStyle.getColorProperty("font-color");
 		Integer extendFontStyle = extendStyle.getIntProperty("font-style");
 		Integer extendFontSize = extendStyle.getIntProperty("font-size"); 
-		Style extendFocusedStyle = (Style)extendStyle.getObjectProperty("focused-style");
+		Style extendFocusedStyle = getFocusedStyle(extendStyle);
 		
 		// if a base style is given ...
 		if(baseStyle == null) {
@@ -55,7 +68,7 @@ public class CssStyle {
 			Integer resultTextStyle = extendFlag(baseFontStyle, extendFontStyle);
 			Integer resultTextSize = (Integer) extendValue(baseFontSize, extendFontSize, defaultFontSize);
 			
-			Style baseFocusedStyle = (Style)baseStyle.getObjectProperty("focused-style");
+			Style baseFocusedStyle = getFocusedStyle(baseStyle);
 			
 			// add the resulting attributes to the text style
 			resultStyle.name = baseStyle.name + "." + extendStyle.name;
@@ -69,7 +82,6 @@ public class CssStyle {
 				resultStyle.addAttribute("focused-style", resultFocusedStyle);
 			} 
 		}
-		
 		return resultStyle;
 	}
 	
@@ -94,6 +106,10 @@ public class CssStyle {
 		}
 		
 		return resultValue;
+	}
+	
+	static Style getFocusedStyle(Style style) {
+		return (Style)style.getObjectProperty("focused-style");
 	}
 	
 	static Style createStyle(Style baseStyle, Style extendStyle) {
@@ -130,11 +146,11 @@ public class CssStyle {
 				short key = keys[i];
 				Object value = extendStyle.getObjectProperty(key);
 				
-				//TODO unstable
-//				if(key == FOCUSED_STYLE_KEY && baseFocusedStyle != null && value != null) {
-//					Style resultFocusedStyle = createStyle(baseFocusedStyle, (Style)value);
-//					result.addAttribute(key, resultFocusedStyle);
-//				} else 
+				if(key == FOCUSED_STYLE_KEY && baseFocusedStyle != null && value != null) {
+					Style extendFocusedStyle = (Style)value;
+					Style resultFocusedStyle = createStyle(baseFocusedStyle, extendFocusedStyle);
+					result.addAttribute(key, resultFocusedStyle);
+				} else
 				{
 					if(value != null) {
 						result.addAttribute(key, value);
@@ -177,12 +193,12 @@ public class CssStyle {
 	
 	public static void apply(Style style, Item item) {
 		item.setStyle(style);
-		
+		/*
 		if(item.isFocused) {
 			Style focusedStyle = item.getFocusedStyle();
 			if(focusedStyle != null) {
 				item.setStyle(focusedStyle);
 			}
-		} 
+		} */
 	}
 }
