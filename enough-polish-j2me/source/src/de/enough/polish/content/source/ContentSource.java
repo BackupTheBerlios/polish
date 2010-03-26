@@ -202,7 +202,12 @@ public abstract class ContentSource {
 						//#debug debug
 						info("transformed content : " + data);
 
-						storeContent(descriptor, data);
+						if(descriptor.getCachingPolicy() == ContentDescriptor.CACHING_READ_WRITE) { 
+							storeContent(descriptor, data);
+						} else {
+							//#debug debug
+							info("no storage due to caching policy");
+						}
 						return data;
 					}
 				}
@@ -222,10 +227,10 @@ public abstract class ContentSource {
 
 	protected Object transformContent(ContentDescriptor descriptor, Object data) {
 		if (this.transformers.size() > 0
-				&& descriptor.getTransform() != ContentDescriptor.TRANSFORM_NONE
+				&& descriptor.getTransformID() != ContentDescriptor.TRANSFORM_NONE
 				&& !(data instanceof ContentException)) {
 			ContentTransform transformer = (ContentTransform) this.transformers
-					.get(descriptor.getTransform());
+					.get(descriptor.getTransformID());
 			if (transformer != null) {
 				try {
 					//#debug debug
@@ -455,7 +460,7 @@ public abstract class ContentSource {
 			throws ContentException {
 		int dataSize = ContentTransform.DATASIZE_UNKNOWN;
 
-		String transformId = descriptor.getTransform();
+		String transformId = descriptor.getTransformID();
 		ContentTransform transform = (ContentTransform) this.transformers
 				.get(transformId);
 

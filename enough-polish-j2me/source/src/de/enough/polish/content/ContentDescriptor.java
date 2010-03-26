@@ -4,8 +4,7 @@ import de.enough.polish.io.Serializable;
 import de.enough.polish.util.ToStringHelper;
 
 /**
- * A class to identify a content with an url,
- * a version and a transform id
+ * A class to identify a content with an url, a version and a transform id
  * 
  * @author Andre
  * 
@@ -15,11 +14,21 @@ public class ContentDescriptor implements Serializable {
 	 * the default version
 	 */
 	public static String TRANSFORM_NONE = "none";
-	
+
 	/**
 	 * the default version
 	 */
 	public static int VERSION_DEFAULT = Integer.MIN_VALUE;
+
+	/**
+	 * the default caching policy for only read
+	 */
+	public static int CACHING_READ = 0x01;
+
+	/**
+	 * the default caching policy for read and writing of content
+	 */
+	public static int CACHING_READ_WRITE = 0x02;
 
 	/**
 	 * the url
@@ -30,52 +39,31 @@ public class ContentDescriptor implements Serializable {
 	 * the hash of the url
 	 */
 	protected final int hash;
-	
+
 	/**
 	 * the transformation
 	 */
-	protected final String transformId;
-	
+	protected String transformId = TRANSFORM_NONE;
+
 	/**
 	 * the version
 	 */
-	protected final int version;
+	protected int version = VERSION_DEFAULT;
 
 	/**
-	 * Convenience method that uses a default version
+	 * the caching policy
+	 */
+	protected int cachingPolicy = CACHING_READ_WRITE;
+
+	/**
+	 * Creates a new ContentDescriptor instance
 	 * 
 	 * @param url
 	 *            the url
 	 */
 	public ContentDescriptor(String url) {
-		this(url, TRANSFORM_NONE, VERSION_DEFAULT);
-	}
-	
-	/**
-	 * Creates a new ContentDescriptor instance
-	 * 
-	 * @param url
-	 *            the url
-	 * @param version
-	 *            the version
-	 */
-	public ContentDescriptor(String url, String transformId) {
-		this(url, transformId, VERSION_DEFAULT);
-	}
-	
-	/**
-	 * Creates a new ContentDescriptor instance
-	 * 
-	 * @param url
-	 *            the url
-	 * @param version
-	 *            the version
-	 */
-	public ContentDescriptor(String url, String transformId, int version) {
 		this.url = url;
 		this.hash = (url == null) ? 0 : url.hashCode();
-		this.transformId = transformId;
-		this.version = version;
 	}
 
 	/**
@@ -88,7 +76,7 @@ public class ContentDescriptor implements Serializable {
 		this.url = descriptor.getUrl();
 		this.hash = descriptor.getHash();
 		this.version = descriptor.getVersion();
-		this.transformId = descriptor.getTransform();
+		this.transformId = descriptor.getTransformID();
 	}
 
 	/**
@@ -99,16 +87,35 @@ public class ContentDescriptor implements Serializable {
 	public String getUrl() {
 		return this.url;
 	}
-	
+
+	/**
+	 * Returns the hash of the url
+	 * 
+	 * @return the hash of the url
+	 */
+	public int getHash() {
+		return this.hash;
+	}
+
 	/**
 	 * Returns the transform id
 	 * 
 	 * @return the transform id
 	 */
-	public String getTransform() {
+	public String getTransformID() {
 		return this.transformId;
 	}
-	
+
+	/**
+	 * Set the transform id
+	 * 
+	 * @param transformId
+	 *            the transform id
+	 */
+	public void setTransformID(String transformId) {
+		this.transformId = transformId;
+	}
+
 	/**
 	 * Returns the version
 	 * 
@@ -119,12 +126,32 @@ public class ContentDescriptor implements Serializable {
 	}
 
 	/**
-	 * Returns the hash of the url
+	 * Set the version
 	 * 
-	 * @return the hash of the url
+	 * @param version
+	 *            the version
 	 */
-	public int getHash() {
-		return this.hash;
+	public void setVersion(int version) {
+		this.version = version;
+	}
+
+	/**
+	 * Returns the caching policy
+	 * 
+	 * @return the caching policy
+	 */
+	public int getCachingPolicy() {
+		return cachingPolicy;
+	}
+
+	/**
+	 * Sets the caching policy
+	 * 
+	 * @param cachingPolicy
+	 *            the caching policy
+	 */
+	public void setCachingPolicy(int cachingPolicy) {
+		this.cachingPolicy = cachingPolicy;
 	}
 
 	/*
@@ -152,11 +179,9 @@ public class ContentDescriptor implements Serializable {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return new ToStringHelper("ContentDescriptor").
-		add("url", this.url).
-		add("version", this.version).
-		add("hash", this.hash).
-		toString();
+		return new ToStringHelper("ContentDescriptor").add("url", this.url)
+				.add("hash", this.hash).add("version", this.version).add(
+						"cachingPolicy", this.cachingPolicy).toString();
 	}
 
 }
