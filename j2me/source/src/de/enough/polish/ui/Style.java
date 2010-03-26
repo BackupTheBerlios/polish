@@ -112,6 +112,11 @@ public class Style implements Externalizable
 			this.attributeValues = new Object[ values.length ];
 			System.arraycopy( values, 0, this.attributeValues, 0, values.length );
 		}
+		
+		Style focusedStyle = (Style)style.getObjectProperty("focused-style");
+		if(focusedStyle != null) {
+			style.addAttribute("focused-style", new Style(focusedStyle));
+		}
 	}
 	
 	public void extendStyle(Style style) {
