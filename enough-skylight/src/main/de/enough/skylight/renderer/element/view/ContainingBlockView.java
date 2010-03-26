@@ -22,14 +22,24 @@ public class ContainingBlockView extends ContainerView {
 		boolean handled = super.handleKeyReleased(keyCode, gameAction);
 		
 		if(gameAction == Canvas.FIRE) {
-			CssElement element = LayoutAttributes.get(this.parentItem).getElement();
-			if(element != null && element.isInteractive()) {
-				Viewport viewport = element.getViewport();
-				UserEvent event = new UserEvent();
-				viewport.notifyUserEvent(element, event);
-			}
+			handleInteraction();
 		}
 		
 		return handled;
+	}
+
+	public boolean handlePointerReleased(int x, int y) {
+		boolean handled = super.handlePointerReleased(x, y);
+		handleInteraction();
+		return handled;
+	}
+	
+	public void handleInteraction() {
+		CssElement element = LayoutAttributes.get(this.parentItem).getElement();
+		if(element != null && element.isInteractive()) {
+			Viewport viewport = element.getViewport();
+			UserEvent event = new UserEvent();
+			viewport.notifyUserEvent(element, event);
+		}
 	}
 }
