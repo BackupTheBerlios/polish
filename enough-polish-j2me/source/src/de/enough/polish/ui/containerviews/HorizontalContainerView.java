@@ -2,7 +2,7 @@
 /*
  * Created on 15-Aug-2007 at 00:41:51.
  * 
- * Copyright (c) 2009 Robert Virkus / Enough Software
+ * Copyright (c) 2010 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -40,7 +40,7 @@ import de.enough.polish.ui.Style;
  * <p>Shows  the available items of a Container in a horizontal list.</p>
  * <p>Apply this view by specifying "view-type: horizontal;" in your polish.css file.</p>
  *
- * <p>Copyright Enough Software 2007 - 2009</p>
+ * <p>Copyright Enough Software 2007 - 2010</p>
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class HorizontalContainerView extends ContainerView {
@@ -81,6 +81,8 @@ public class HorizontalContainerView extends ContainerView {
 		Container parent = (Container) parentItm;
 		//#debug
 		System.out.println("Initalizing HorizontalContainerView with focusedIndex=" + parent.getFocusedIndex() + " for parent " + parent);
+		
+		this.availableWidth = availWidth;
 		
 		int selectedItemIndex = parent.getFocusedIndex();
 		int maxHeight = 0;
@@ -207,7 +209,7 @@ public class HorizontalContainerView extends ContainerView {
 		//#endif
 		
 		if(item != null) {
-			if (this.isClippingRequired && item != null) {
+			if (this.isClippingRequired) {
 				if (getScrollTargetXOffset() + item.relativeX < 0) {
 					setScrollXOffset( -item.relativeX, true );
 				} else if (getScrollTargetXOffset() + item.relativeX + item.itemWidth > this.contentWidth) {
@@ -216,7 +218,7 @@ public class HorizontalContainerView extends ContainerView {
 			}
 			
 			return super.focusItem(focIndex, item, direction, focStyle);
-		} 
+		}
 		
 		return null;
 	}
@@ -249,6 +251,7 @@ public class HorizontalContainerView extends ContainerView {
 				this.isDistributeEquals = (distribution.intValue() == DISTRIBUTE_EQUALS);
 			}
 		//#endif
+
 	}
 
 	/* (non-Javadoc)
@@ -264,13 +267,15 @@ public class HorizontalContainerView extends ContainerView {
     	if (this.isClippingRequired) {
     		g.clipRect( x, y, rightBorder - x + 1, this.contentHeight + 1 );
     	}
-		x += getScrollXOffset();
 		super.paintContent(container, myItems, x, y, leftBorder, rightBorder, clipX,
 				clipY, clipWidth, clipHeight, g);
+		
 		if (this.isClippingRequired) {
 			g.setClip(clipX, clipY, clipWidth, clipHeight);
 		}
 	}
 
+
+	
 	
 }
