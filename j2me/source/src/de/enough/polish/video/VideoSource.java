@@ -1,8 +1,6 @@
 //#condition polish.usePolishGui && polish.api.mmapi
 package de.enough.polish.video;
 
-import de.enough.polish.snapshot.SnapshotUtil;
-
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -27,18 +25,20 @@ import de.enough.polish.io.Serializable;
  * @author Andre Schmidt
  *
  */
-public class VideoSource implements Serializable{
-	public static VideoSource CAPTURE; 
+public class VideoSource implements Serializable {
 	
+	/** a video source for capturing camera snapshots */
+	public static CaptureSource CAPTURE; 
 	static {
 		try {
-			CAPTURE = new VideoSource("capture",SnapshotUtil.getProtocol(),null);
+			CAPTURE = new CaptureSource();
 		} catch (MediaException e) {
 			CAPTURE = null;
 			//#debug error
 			System.out.println("capture is not supported");
 		}
 	}
+
 		
 	/**
 	 * the id of the video
@@ -163,13 +163,9 @@ public class VideoSource implements Serializable{
 			if(this.file != null  && !this.file.startsWith("rtsp://") && this != CAPTURE)
 			{	
 					FileConnection fileConnection;
-					
 					fileConnection = (FileConnection)Connector.open(this.file, Connector.READ_WRITE);
-					
 					this.connection = fileConnection;
-					
 					this.stream = fileConnection.openInputStream();
-				
 			}
 			//#endif
 		
@@ -275,7 +271,7 @@ public class VideoSource implements Serializable{
 	 * Returns the player
 	 * @return the player
 	 */
-	protected Player getPlayer() {
+	public Player getPlayer() {
 		return this.player;
 	}
 	

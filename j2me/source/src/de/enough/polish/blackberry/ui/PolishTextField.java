@@ -3,7 +3,7 @@
 /*
  * Created on Mar 13, 2007 at 12:37:50 PM.
  * 
- * Copyright (c) 2009 Robert Virkus / Enough Software
+ * Copyright (c) 2010 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -35,7 +35,7 @@ import net.rim.device.api.ui.XYRect;
 /**
  * <p>Provides common funcitonality of the PolishEditField and the PolishPasswordEditField.</p>
  *
- * <p>Copyright Enough Software 2007 - 2009</p>
+ * <p>Copyright Enough Software 2007 - 2010</p>
  * <pre>
  * history
  *        Mar 13, 2007 - rob creation

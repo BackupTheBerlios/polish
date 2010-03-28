@@ -37,7 +37,7 @@ import javax.microedition.lcdui.Image;
 /**
  * <p>Paints an border with customizable images for each edge and each side.</p>
  *
- * <p>Copyright Enough Software 2007 - 2009</p>
+ * <p>Copyright Enough Software 2007 - 2010</p>
  * @author Michael Koch, michael.koch@enough.de
  */
 public class MultiImageBorder extends Border

@@ -43,7 +43,7 @@ import de.enough.polish.util.ArrayList;
 /**
  * <p>Layouts and positions items relatively to it's parent items.</p>
  *
- * <p>Copyright Enough Software 2007 - 2009</p>
+ * <p>Copyright Enough Software 2007 - 2010</p>
  * <pre>
  * history
  *        Apr 15, 2007 - rob creation

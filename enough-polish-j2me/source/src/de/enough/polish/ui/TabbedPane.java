@@ -1086,6 +1086,7 @@ implements ScreenInitializerListener
 			boolean alignWithMenuBar = false;
 			//#if tmp.useExternalMenuBar
 				MenuBar currentMenuBar = scr.getMenuBar();
+				currentMenuBar.onScreenSizeChanged(width, height + tabHeight);
 				if (currentMenuBar.relativeY > height / 2) {
 					// menubar is located at bottom:
 					alignWithMenuBar = true;
@@ -1151,6 +1152,7 @@ implements ScreenInitializerListener
 		if (screen != null) {
 			screen.animate(currentTime, repaintRegion);
 		}
+		this.tabIconsContainer.animate(currentTime, repaintRegion);
 	}
 
 	/*

@@ -35,7 +35,7 @@ import de.enough.polish.util.DrawUtil;
 /**
  * <p>Paints a translucent rectangle with round corners as a background.</p>
  *
- * <p>Copyright Enough Software 2007 - 2009</p>
+ * <p>Copyright Enough Software 2007 - 2010</p>
  * @author Robert Virkus, robert@enough.de
  */
 public class RoundRectDoubleGradientVerticalBackground 

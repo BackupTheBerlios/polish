@@ -5418,6 +5418,9 @@ public abstract class Item implements UiElement, Animatable
 	public void onScreenSizeChanged( int screenWidth, int screenHeight ) {
 		//#debug
 		System.out.println("onScreenSizeChanged to " + screenWidth + ", " + screenHeight + " for " + this);
+		if (this.label != null) {
+			this.label.onScreenSizeChanged(screenWidth, screenHeight);
+		}
 		//#if polish.css.portrait-style || polish.css.landscape-style
 			if (!this.isStyleInitialised && this.style != null) {
 				setStyle( this.style );

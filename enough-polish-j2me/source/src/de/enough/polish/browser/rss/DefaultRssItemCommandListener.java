@@ -41,7 +41,7 @@ import de.enough.polish.ui.UiAccess;
 /**
  * <p>Displays an alert showing the description of the currently selected RSS item.</p>
  *
- * <p>Copyright Enough Software 2007 - 2009</p>
+ * <p>Copyright Enough Software 2007 - 2010</p>
  * <pre>
  * history
  *        May 7, 2007 - rob creation

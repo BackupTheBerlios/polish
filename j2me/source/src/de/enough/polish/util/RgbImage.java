@@ -1,7 +1,7 @@
 /*
  * Created on Jun 14, 2006 at 6:37:31 PM.
  * 
- * Copyright (c) 2009 Robert Virkus / Enough Software
+ * Copyright (c) 2010 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -134,6 +134,22 @@ public class RgbImage {
 		//#if polish.midp2
 			image.getRGB(data, 0, w, 0, 0, w, h );
 		//#endif
+		setRgbData(data, w, processTransparency);
+	}
+	//#endif
+	
+	//#if polish.usePolishGui && !polish.android
+	/**
+	 * Creates a new RGB image. WARNING: The extraction of RGB data can only succeed on MIDP 2.0 devices
+	 * 
+	 * @param image the image
+	 * @param processTransparency true when the image contains transparent or translucent pixels
+	 */
+	public RgbImage( de.enough.polish.ui.Image image, boolean processTransparency ) {
+		int w = image.getWidth();
+		int h = image.getHeight();
+		int[] data = new int[ w * h ];
+		image.getRGB(data, 0, w, 0, 0, w, h );
 		setRgbData(data, w, processTransparency);
 	}
 	//#endif

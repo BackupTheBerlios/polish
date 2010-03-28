@@ -2,7 +2,7 @@
 /*
  * Created on May 30, 2007 at 12:09:08 AM.
  * 
- * Copyright (c) 2009 Robert Virkus / Enough Software
+ * Copyright (c) 2010 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -40,7 +40,7 @@ import de.enough.polish.ui.Style;
 /**
  * <p>Visualizes the clock as a binary string, e.g. 101:111 instead of 4:11.</p>
  *
- * <p>Copyright Enough Software 2007 - 2009</p>
+ * <p>Copyright Enough Software 2007 - 2010</p>
  * <pre>
  * history
  *        May 30, 2007 - rob creation

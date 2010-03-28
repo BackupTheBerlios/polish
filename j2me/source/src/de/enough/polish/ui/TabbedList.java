@@ -2,7 +2,7 @@
 /*
  * Created on Jun 27, 2007 at 11:33:57 PM.
  * 
- * Copyright (c) 2009 Robert Virkus / Enough Software
+ * Copyright (c) 2010 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -36,7 +36,7 @@ import de.enough.polish.util.ArrayList;
 /**
  * <p>Provides several lists in tabs.</p>
  *
- * <p>Copyright Enough Software 2007 - 2009</p>
+ * <p>Copyright Enough Software 2007 - 2010</p>
  * <pre>
  * history
  *        Jun 27, 2007 - rob creation

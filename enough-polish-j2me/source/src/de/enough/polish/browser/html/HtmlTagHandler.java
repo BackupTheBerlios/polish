@@ -140,6 +140,8 @@ public class HtmlTagHandler
   public static final String INPUTTYPE_CHECKBOX = "checkbox";
 	/** radio type-value */
   public static final String INPUTTYPE_RADIO = "radio";
+	/** text type-value */
+  public static final String INPUTTYPE_NUMERIC = "numeric";
   
 	/** href attribute */
   public static final String ATTR_HREF = "href";
@@ -665,10 +667,16 @@ public class HtmlTagHandler
 						value = this.formListener.verifyInitialFormValue(this.currentForm.getAction(),  name, value);
 					}
 					//#if polish.Browser.supportTextInput != false
-					if (INPUTTYPE_TEXT.equals(type) || INPUTTYPE_PASSWORD.equals(type))
+					if (INPUTTYPE_TEXT.equals(type) || INPUTTYPE_PASSWORD.equals(type) || INPUTTYPE_NUMERIC.equals(type))
 					{
+						int constraints;
+						if (INPUTTYPE_NUMERIC.equals(type)) {
+							constraints = TextField.NUMERIC;
+						} else {
+							constraints = INPUTTYPE_TEXT.equals(type) ? TextField.ANY : TextField.PASSWORD;
+						}
 						//#style browserInput
-						TextField textField = new TextField((String)attributeMap.get("label"), value, 100, INPUTTYPE_TEXT.equals(type) ? TextField.ANY : TextField.PASSWORD);
+						TextField textField = new TextField((String)attributeMap.get("label"), value, 100, constraints);
 						if (style != null) {
 							textField.setStyle(style);
 						}

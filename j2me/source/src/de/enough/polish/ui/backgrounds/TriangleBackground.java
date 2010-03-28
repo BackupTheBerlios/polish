@@ -2,7 +2,7 @@
 /*
  * Created on 06-Jan-2007 at 22:01:54.
  *
- * Copyright (c) 2009 Robert Virkus / Enough Software
+ * Copyright (c) 2010 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -36,7 +36,7 @@ import de.enough.polish.util.DrawUtil;
 /**
  * <p>Paints a filled rectangle as a background in a specific color.</p>
  *
- * <p>Copyright Enough Software 2007 - 2009</p>
+ * <p>Copyright Enough Software 2007 - 2010</p>
  * @author Robert Virkus, robert@enough.de
  */
 public class TriangleBackground 

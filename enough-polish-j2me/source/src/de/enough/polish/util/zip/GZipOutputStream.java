@@ -1,7 +1,7 @@
 /*
  * Created on Jun 28, 2007 at 8:01:42 AM.
  * 
- * Copyright (c) 2009 Robert Virkus / Enough Software
+ * Copyright (c) 2010 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -31,7 +31,7 @@ import java.io.OutputStream;
 /**
  * <p>Generates GZIP or DEFLATE encoded input streams from an InputStream.</p>
  *
- * <p>Copyright Enough Software 2007 - 2009</p>
+ * <p>Copyright Enough Software 2007 - 2010</p>
  * <pre>
  * history
  *        Jun 28, 2007 - Simon creation

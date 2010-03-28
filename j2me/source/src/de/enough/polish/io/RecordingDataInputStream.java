@@ -1,7 +1,7 @@
 /*
  * Created on Nov 27, 2007 at 5:41:52 PM.
  * 
- * Copyright (c) 2009 Robert Virkus / Enough Software
+ * Copyright (c) 2010 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -44,7 +44,7 @@ import java.io.InputStream;
  *  }
  * </p>
  *
- * <p>Copyright Enough Software 2007 - 2009</p>
+ * <p>Copyright Enough Software 2007 - 2010</p>
  * <pre>
  * history
  *        Nov 27, 2007 - rob creation

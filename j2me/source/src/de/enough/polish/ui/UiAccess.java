@@ -2,7 +2,7 @@
 /*
  * Created on 31-Jan-2006 at 00:04:45.
  * 
- * Copyright (c) 2009 Robert Virkus / Enough Software
+ * Copyright (c) 2010 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -2957,7 +2957,20 @@ public final class UiAccess {
 		ticker.setImage(image);
 	}
 	//#endif
-	
+
+	//#if polish.usePolishGui && polish.midp && !polish.android
+	/**
+	 * Sets an image for the specified ticker.
+	 * This method is ignored when the J2ME Polish UI is not activated.
+	 * 
+	 * @param ticker the ticker item which will the image be set 
+	 * @param image that image that will be set to the ticker
+	 */
+	public static void setTickerImage( Ticker ticker, de.enough.polish.ui.Image image ) {
+		// ticker.setImage(image);
+	}
+	//#endif
+
 	//#if polish.usePolishGui
 	/**
 	 * Attaches data to the specified screen.
@@ -4983,7 +4996,7 @@ public final class UiAccess {
 		screen.init(Display.getScreenWidth(),Display.getScreenHeight());
 	}
 	//#endif
-	
+
 	//#if polish.usePolishGui
 	/**
 	 * Intializes the specified screen
@@ -5316,4 +5329,22 @@ public final class UiAccess {
 	public static int getPaddingRight(Item item) {
 		return item.paddingLeft;
 	}
+
+	/**
+	 * Casts a J2ME Polish image into a MIDP one. 
+	 * @param img the input image
+	 * @return the output MIDP image
+	 */
+	public static Image cast(de.enough.polish.ui.Image img) {
+		return (Image)img.getNativeImage();
+	}
+//
+//	/**
+//	 * Casts a J2ME Polish font into a MIDP font
+//	 * @param font the input font
+//	 * @return the output MIDP font
+//	 */
+//	public static javax.microedition.lcdui.Font cast(de.enough.polish.ui.Font font) {
+//		return (javax.microedition.lcdui.Font) font.getNativeFont();
+//	}
 }

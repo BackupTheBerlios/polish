@@ -30,7 +30,7 @@ package de.enough.polish.util;
  * Some useful URL methods
  * </p>
  * 
- * <p>Copyright Enough Software 2007 - 2009</p>
+ * <p>Copyright Enough Software 2007 - 2010</p>
  * <pre>
  * history
  *        Mar 4, 2010 - asc creation

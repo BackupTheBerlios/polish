@@ -2,7 +2,7 @@
 /*
  * Created on Jun 21, 2007 at 11:28:35 PM.
  * 
- * Copyright (c) 2009 Robert Virkus / Enough Software
+ * Copyright (c) 2010 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -35,7 +35,7 @@ import de.enough.polish.util.ArrayList;
 /**
  * <p>Displays a list of choices that can be limited by the user by entering some input.</p>
  *
- * <p>Copyright Enough Software 2007 - 2009</p>
+ * <p>Copyright Enough Software 2007 - 2010</p>
  * <pre>
  * history
  *        Jun 21, 2007 - michael creation

@@ -1,7 +1,7 @@
 /*
  * Created on Oct 12, 2007 at 9:33:27 PM.
  * 
- * Copyright (c) 2009 Robert Virkus / Enough Software
+ * Copyright (c) 2010 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -30,7 +30,7 @@ import de.enough.polish.io.Serializable;
 /**
  * <p>Represents a point within a scale</p>
  *
- * <p>Copyright Enough Software 2007 - 2009</p>
+ * <p>Copyright Enough Software 2007 - 2010</p>
  * <pre>
  * history
  *        Oct 12, 2007 - rob creation

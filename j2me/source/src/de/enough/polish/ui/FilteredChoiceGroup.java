@@ -2,7 +2,7 @@
 /*
  * Created on Jun 26, 2007 at 3:06:59 PM.
  * 
- * Copyright (c) 2009 Robert Virkus / Enough Software
+ * Copyright (c) 2010 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -32,7 +32,7 @@ import javax.microedition.lcdui.Image;
 /**
  * <p>Displays the currently selected item(s) and opens up a new FilteredList for selecting an element.</p>
  *
- * <p>Copyright Enough Software 2007 - 2009</p>
+ * <p>Copyright Enough Software 2007 - 2010</p>
  * <pre>
  * history
  *        Jun 26, 2007 - rob creation

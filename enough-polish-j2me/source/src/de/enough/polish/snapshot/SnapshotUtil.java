@@ -46,11 +46,13 @@ public class SnapshotUtil {
 				protocol = "capture://devcam0";
 			//#elif polish.group.series40				
 				protocol = "capture://image";
+			//#elif polish.blackberry
+				protocol = "capture://video";
 			//#else
 				protocol = "capture://video";
 				String device = "video";
 				//#debug info
-				System.out.println("Here are the supported contentTypes");
+				System.out.println("Here are the supported contentTypes:");
 				boolean deviceIsSupported = false;
 				for (int i = 0; i < contentTypes.length; i++) {
 					String contentType = contentTypes[i];

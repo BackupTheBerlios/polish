@@ -1,7 +1,7 @@
 /*
  * Created on Dec 13, 2007 at 1:03:17 PM.
  * 
- * Copyright (c) 2009 Robert Virkus / Enough Software
+ * Copyright (c) 2010 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -31,7 +31,7 @@ import java.io.UnsupportedEncodingException;
  * <p>A Base64 Encoder/Decoder based on Robert's Harder Java SE implementation available at <a href="http://iharder.net/base64">http://iharder.net/base64</a>.</p>
  * 
  *
- * <p>Copyright Enough Software 2007 - 2009</p>
+ * <p>Copyright Enough Software 2007 - 2010</p>
  * <pre>
  * history
  *        Dec 13, 2007 - rob creation

@@ -278,7 +278,21 @@ implements AccessibleField
 	}
 	//#endif
 
+	/**
+	 * Sets a new dateformat for this field.
+	 * @param pattern the new pattern, e.g. 'yyyy-MM-dd'.
+	 */
+	public void setDateFormatPattern(String pattern) {
+		setFormat( getDateFormat( pattern) );
+	}
+	
+	/**
+	 * Returns a simple date format
+	 * @param dateFormatPattern the pattern as a String
+	 * @return a SimpleDateFormat
+	 */
 	public static DateFormat getDateFormat(String dateFormatPattern) {
 		return new SimpleDateFormat( dateFormatPattern );
 	}
+
 }

@@ -57,8 +57,8 @@ extends ItemView
 	protected static final int NORMAL_WIDTH_COLUMNS = 2;
 	protected static final int STATIC_WIDTH_COLUMNS = 3;
 
-	private int xOffset;
-	private int targetXOffset;
+	protected int xOffset;
+	protected int targetXOffset;
 	protected int yOffset;
 	protected int focusedIndex = -1;
 	/** this field is set automatically, so that subclasses can use it for referencing the parent-container */
@@ -954,6 +954,7 @@ extends ItemView
 	 * @param g the Graphics on which this item should be painted.
 	 */
 	protected void paintContent(Container container, Item[] myItems, int x, int y, int leftBorder, int rightBorder, int clipX, int clipY, int clipWidth, int clipHeight, Graphics g) {
+		x += this.xOffset;
 		//#ifdef tmp.useTable
 			if (this.columnsSetting == NO_COLUMNS || myItems.length == 1 || this.numberOfColumns <= 1) {
 		//#endif
@@ -1829,5 +1830,17 @@ extends ItemView
 	 */
 	public int getAppearanceMode() {
 		return this.appearanceMode;
+	}
+
+	/**
+	 * Retrieves the child of this container view at the corresponding position.
+	 * The default implementation calls getChildAtImpl(relX, relY) on the parent container.
+	 * 
+	 * @param relX the relative horizontal position
+	 * @param relY the relatiev vertical position
+	 * @return the item at that position, if any
+	 */
+	public Item getChildAt(int relX, int relY) {
+		return this.parentContainer.getChildAtImpl(relX, relY);
 	}
 }

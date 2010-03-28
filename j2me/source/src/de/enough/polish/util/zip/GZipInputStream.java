@@ -1,7 +1,7 @@
 /*
  * Created on Jun 25, 2007 at 11:12:23 AM.
  * 
- * Copyright (c) 2009 Robert Virkus / Enough Software
+ * Copyright (c) 2010 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -32,7 +32,7 @@ import java.io.InputStream;
 /**
  * <p>Reads and uncompresses GZIP or DEFLATE encoded input streams.</p>
  *
- * <p>Copyright Enough Software 2007 - 2009</p>
+ * <p>Copyright Enough Software 2007 - 2010</p>
  * <pre>
  * history
  *        Jun 25, 2007 - Simon creation

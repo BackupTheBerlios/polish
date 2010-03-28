@@ -2,7 +2,7 @@
 /*
  * Created on Jan 30, 2007 at 7:07:55 AM.
  * 
- * Copyright (c) 2009 Robert Virkus / Enough Software
+ * Copyright (c) 2010 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -35,7 +35,7 @@ import de.enough.polish.ui.ItemView;
 /**
  * <p>Visualizes the chart as a pie chart.</p>
  *
- * <p>Copyright Enough Software 2007 - 2009</p>
+ * <p>Copyright Enough Software 2007 - 2010</p>
  * <pre>
  * history
  *        Jul 19, 2007 - asc creation

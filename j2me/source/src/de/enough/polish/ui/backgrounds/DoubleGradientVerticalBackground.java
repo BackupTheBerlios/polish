@@ -3,7 +3,7 @@
 /*
  * Created on 09.06.2006 at 15:41:12.
  * 
- * Copyright (c) 2009 Robert Virkus / Enough Software
+ * Copyright (c) 2010 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -35,7 +35,7 @@ import de.enough.polish.util.DrawUtil;
  * DoubleGradientVerticalBackground generates an nice Backgroundscreen,
  * with two gradients, each taking half of the available height.
  * 
- * <p>Copyright Enough Software 2007 - 2009</p>
+ * <p>Copyright Enough Software 2007 - 2010</p>
  * @author Andre Schmidt
  */
 public class DoubleGradientVerticalBackground  extends Background {

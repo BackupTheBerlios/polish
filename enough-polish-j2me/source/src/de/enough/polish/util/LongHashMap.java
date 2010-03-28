@@ -1,7 +1,7 @@
 /*
  * Created on 12-August-2008 at 23:12:37.
  * 
- * Copyright (c) 2009 Robert Virkus / Enough Software
+ * Copyright (c) 2010 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *

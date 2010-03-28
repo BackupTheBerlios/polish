@@ -1,7 +1,7 @@
 /*
  * Created on Feb 16, 2007 at 9:23:13 AM.
  * 
- * Copyright (c) 2009 Robert Virkus / Enough Software
+ * Copyright (c) 2010 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -28,7 +28,7 @@ package de.enough.polish.util;
 /**
  * <p>A task that can be scheduled asynchronously</p>
  *
- * <p>Copyright Enough Software 2007 - 2009</p>
+ * <p>Copyright Enough Software 2007 - 2010</p>
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public interface Task {

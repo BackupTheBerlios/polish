@@ -33,6 +33,7 @@ import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.util.DrawUtil;
 import de.enough.polish.util.Locale;
+import de.enough.polish.util.TextUtil;
 
 //#if polish.blackberry
 	import net.rim.device.api.ui.Field;
@@ -48,13 +49,9 @@ import de.enough.polish.util.Locale;
 import de.enough.polish.calendar.CalendarItem;
 
 /**
- * A <code>DateField</code> is an editable component for presenting
- * date and time (calendar)
- * information that may be placed into a <code>Form</code>. Value for
- * this field can be
- * initially set or left unset. If value is not set then the UI for the field
- * shows this clearly. The field value for &quot;not initialized
- * state&quot; is not valid
+ * A <code>DateField</code> is an editable component for presenting date and time (calendar) information that may be placed into a <code>Form</code>. 
+ * Value for this field can be initially set or left unset. If value is not set then the UI for the field
+ * shows this clearly. The field value for &quot;not initialized state&quot; is not valid
  * value and <code>getDate()</code> for this state returns <code>null</code>.
  * <p>
  * Instance of a <code>DateField</code> can be configured to accept
@@ -170,6 +167,16 @@ implements
 		private long androidLastInvalidCharacterTime;
 	//#endif
 		
+	private String dateFormatPattern;
+	
+	//#if tmp.directInput
+		private int startIndexYear;
+		private int startIndexMonth;
+		private int startIndexDay;
+		private int startIndexHour;
+		private int startIndexMinute;
+	//#endif
+		
 		
 	/**
 	 * Creates a <code>DateField</code> object with the specified
@@ -268,6 +275,9 @@ implements
 			}
 			this.blackberryDateField.setChangeListener( this );
 			this._bbField = this.blackberryDateField;
+		//#endif
+		//#if tmp.directInput
+			setDateFormatPattern( getDateFormatPattern() );
 		//#endif
 	}
 	
@@ -401,6 +411,8 @@ implements
 				this.calendar.setTimeZone(this.timeZone);
 			}
 			this.calendar.setTime(date);
+			this.text = Locale.formatDate(this.calendar, getDateFormatPattern() );
+			/*
 			StringBuffer buffer = new StringBuffer(10);
 			if ((this.inputMode == DATE) || (this.inputMode == DATE_TIME)) {
 				int year = this.calendar.get(Calendar.YEAR);
@@ -564,6 +576,7 @@ implements
 				buffer.append( minute );
 			}
 			this.text = buffer.toString();
+			*/
 		} // date != null
 		if (isInitialized()) {
 			this.isTextInitializationRequired = true;
@@ -572,67 +585,58 @@ implements
 		repaint();
 	}
 	
+	/**
+	 * Sets the date format pattern.
+	 * The pattern can consist of arbitrary characters but following characters have a meaning:
+	 * <ul>
+	 *  <li><b>yyyy</b>: The year in 4 digits, e.g. 2010.</li>
+	 *  <li><b>MM</b>: the month as a numerical value between 1 (January) and 12 (December).</li>
+	 *  <li><b>dd</b>: the day of the month as a numerical value between 1 and 31.</li>
+	 *  <li><b>HH</b>: the hour of the day between 0 and 23.</li>
+	 *  <li><b>mm</b>: the minute of the hour between 0 and 59.</li>
+	 * </ul>
+	 * @param pattern the pattern, e.g. "yyyy-MM-dd HH:mm"
+	 */
+	public void setDateFormatPattern( String pattern ) {
+		this.dateFormatPattern = pattern;
+		//#if polish.blackberry
+			this.blackberryDateField.setDateFormatPattern( pattern );
+		//#endif
+		//#if tmp.directInput
+			this.startIndexYear = pattern.indexOf("yyyy");
+			this.startIndexMonth = pattern.indexOf("MM");
+			this.startIndexDay = pattern.indexOf("dd");
+			this.startIndexHour = pattern.indexOf("HH");
+			this.startIndexMinute = pattern.indexOf("mm");
+		//#endif
+	}
+	
+	/**
+	 * Retrieves the date format pattern for this date field
+	 * @return the pattern, e.g. "yyyy-MM-dd HH:mm"
+	 * @see #setDateFormatPattern(String)
+	 */
 	public String getDateFormatPattern() {
-		StringBuffer buffer = new StringBuffer(10);
-		if ((this.inputMode == DATE) || (this.inputMode == DATE_TIME)) {
-			//#if polish.DateFormat == us
-				buffer.append( "MM/dd/yyyy" );
-			//#elif polish.DateFormat == de
-				buffer.append( "dd.MM.yyyy" );
-			//#elif polish.DateFormat == fr
-				buffer.append( "dd/MM/yyyy" );
-			//#elif polish.DateFormat == mdy
-				buffer.append( "MM" )
-				//#if polish.DateFormatSeparator:defined
-					//#= .append("${polish.DateFormatSeparator}")
-				//#else
-				        .append("-")
-				//#endif
-				.append("dd")
-				//#if polish.DateFormatSeparator:defined
-					//#= .append("${polish.DateFormatSeparator}")
-				//#else
-				        .append("-")
-				//#endif
-				.append("yyyy");
-			//#elif polish.DateFormat == dmy
-				buffer.append( "dd" )
-				//#if polish.DateFormatSeparator:defined
-					//#= .append("${polish.DateFormatSeparator}")
-				//#else
-				        .append("-")
-				//#endif
-				.append("MM")
-				//#if polish.DateFormatSeparator:defined
-					//#= .append("${polish.DateFormatSeparator}")
-				//#else
-				        .append("-")
-				//#endif
-				.append("yyyy");
-			//#else
-				// default to YMD
-				buffer.append( "yyyy" )
-				//#if polish.DateFormatSeparator:defined
-					//#= .append("${polish.DateFormatSeparator}")
-				//#else
-				        .append("-")
-				//#endif
-				.append("MM")
-				//#if polish.DateFormatSeparator:defined
-					//#= .append("${polish.DateFormatSeparator}")
-				//#else
-				        .append("-")
-				//#endif
-				.append("dd");
-			//#endif
-			if  (this.inputMode == DATE_TIME) {
-				buffer.append(' ');
+		if (this.dateFormatPattern == null) {
+			this.dateFormatPattern = createDefaultDateFormatPattern();
+		}
+		return this.dateFormatPattern;
+	}
+
+	/**
+	 * Creates the default pattern for this datefield.
+	 * @return the default date format pattern that depends on the polish.DateFormat and polish.DateFormatSeparator preprocessing variables.
+	 */
+	protected String createDefaultDateFormatPattern() {
+		if (this.inputMode == TIME) {
+			return "HH:mm";
+		} else  {			
+			String defaultPattern = Locale.getDefaultDateFormatPattern();
+			if (this.inputMode == DATE_TIME &&  defaultPattern.indexOf("HH") == -1) {
+				defaultPattern += " HH:mm";
 			}
+			return defaultPattern;
 		}
-		if ((this.inputMode == TIME) || (this.inputMode == DATE_TIME)) {			
-			buffer.append( "HH:mm" );
-		}
-		return buffer.toString();
 	}
 
 	/**

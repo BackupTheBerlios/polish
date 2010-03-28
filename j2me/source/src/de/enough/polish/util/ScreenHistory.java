@@ -2,7 +2,7 @@
 /*
  * Created on Jan 14, 2007 at 11:54:15 AM.
  * 
- * Copyright (c) 2009 Robert Virkus / Enough Software
+ * Copyright (c) 2010 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -33,7 +33,7 @@ import javax.microedition.lcdui.Displayable;
  * <p>Manages a history of screens in a stack, when a previous screen is shown all following screens are removed from the history.</p>
  * <p>ScreenHistory is thread safe.</p>
  *
- * <p>Copyright Enough Software 2007 - 2009</p>
+ * <p>Copyright Enough Software 2007 - 2010</p>
  * <pre>
  * history
  *        Jan 14, 2007 - rob creation

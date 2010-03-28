@@ -18,7 +18,7 @@ import de.enough.polish.util.DrawUtil;
  * <p>Shows  the available items of a Container in a horizontal list and grays out all but the currently focused item.</p>
  * <p>Apply this view by specifying "view-type: gray-out;" in your polish.css file.</p>
  *
- * <p>Copyright Enough Software 2007 - 2009</p>
+ * <p>Copyright Enough Software 2007 - 2010</p>
  * @author Andre Schmidt
  */
 public class HorizontalGrayOutContainerView extends ContainerView {

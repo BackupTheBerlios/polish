@@ -247,7 +247,7 @@ public class VideoContainer extends Container implements Runnable, PlayerListene
 				//#if !polish.video.forceSetMediaTime
 				if(this.source.getFramePositioningControl() != null)
 				{
-					int frame = VideoUtil.getFrame(this.source.getFramePositioningControl(), position, player.getDuration());
+					int frame = VideoUtil.getFrame(this.source.getFramePositioningControl(), this.position, player.getDuration());
 					this.source.getFramePositioningControl().seek(frame);
 				}
 				else
@@ -369,6 +369,8 @@ public class VideoContainer extends Container implements Runnable, PlayerListene
 
 	private int gameActionEnterFullscreen;
 
+	private boolean startPlayAfterPrepare;
+
 	
 	/**
 	 * Constructs a new VideoContainer instance
@@ -410,7 +412,7 @@ public class VideoContainer extends Container implements Runnable, PlayerListene
 	}
 
 	/**
-	 * Convinience method to set the screen
+	 * Convenience method to set the screen
 	 * if the VideoContainer is not added to
 	 * a Screen or a Container. Should only
 	 * be used if you know what you're doing.
@@ -461,14 +463,14 @@ public class VideoContainer extends Container implements Runnable, PlayerListene
 		}
 	}
 	
-	void close(VideoSource source) {
-		if(source != null) {
+	void close(VideoSource videoSource) {
+		if(videoSource != null) {
 			if(getState() == STATE_PLAYING)
 			{
 				try
 				{
-					source.getVideoControl().setVisible(false);
-					source.getPlayer().stop();
+					videoSource.getVideoControl().setVisible(false);
+					videoSource.getPlayer().stop();
 				}catch(MediaException e)
 				{
 					onVideoError(e);
@@ -477,7 +479,7 @@ public class VideoContainer extends Container implements Runnable, PlayerListene
 			
 			onVideoClose();
 			
-			source.close();
+			videoSource.close();
 		}
 	}
 	
@@ -613,7 +615,11 @@ public class VideoContainer extends Container implements Runnable, PlayerListene
 	 * @throws Exception if an error occurs
 	 */
 	protected void setDisplay(VideoControl control, int x, int y, int width,
-			int height, Ratio ratio) throws Exception {
+			int height, Ratio ratio) 
+	throws Exception 
+	{
+		//#debug
+		System.out.println("setDisplay for control=" + control + ", x=" + x + ", y=" + y + ", width=" + width + ", height=" + height);
 		
 		//TODO implements ratio handling
 		
@@ -665,22 +671,36 @@ public class VideoContainer extends Container implements Runnable, PlayerListene
 	{
 		if(getState() == STATE_NOT_PREPARED)
 		{
+			//#debug 
+			System.out.println("preparing VideoContainer in background thread.");
 			this.currentThread = new Thread(this);
 			this.currentThread.start();
 		}
+		//#if polish.debug.warn
 		else
 		{
-			//#debug
-			System.out.println("state is not zero");
+			//#debug warn
+			System.out.println("prepare() failed: state is not zero");
 		}
+		//#endif
 	}
 	
 	/**
-	 * Plays the video
+	 * Plays the video or shows the snapshot preview window.
+	 * If the video has not been prepared yet, this will be done in a background thread.
 	 */
 	public void play() {
-		if(getState() >= STATE_READY)
+		//#debug
+		System.out.println("play() requested.");
+		if(getState() < STATE_READY)
 		{
+			this.startPlayAfterPrepare = true;
+			prepare();
+		}
+		else	
+		{
+			//#debug 
+			System.out.println("playing VideoContainer");
 			try {
 				getScreen().addPermanentNativeItem(this);
 				this.source.getVideoControl().setVisible(true);
@@ -689,9 +709,9 @@ public class VideoContainer extends Container implements Runnable, PlayerListene
 			} catch (Exception e) {
 				onVideoError(e);
 			}
-			
 			onVideoPlay();
 		}
+		
 	}
 	
 	/**
@@ -716,6 +736,8 @@ public class VideoContainer extends Container implements Runnable, PlayerListene
 	 * Stops the video
 	 */
 	public void stop() {
+		//#debug 
+		System.out.println("stopping VideoContainer");
 		if (this.fullscreen) {
 			this.fullscreen = false;
 			this.restoreFullscreenInPlay = true;
@@ -955,15 +977,23 @@ public class VideoContainer extends Container implements Runnable, PlayerListene
 		
 		try {
 				if (getState() == STATE_NOT_PREPARED) {
-					
-					System.out.println("de.enough.polish.video.VideoContainer.run(): 1 state = " + getState());	
+					//#debug
+					System.out.println("de.enough.polish.video.VideoContainer.run(): preparing video source");	
 					
 					//Wait till the Container is initialized
 					while(!isInitialized())
 					{
-						Thread.sleep(500);
+						try {
+							Thread.sleep(500);
+						} catch (Exception e) {
+							// ignore
+						}
+						//#debug
+						System.out.println("Waiting for initialization...");
 					}
-
+					//#debug
+					System.out.println("starting actual initialization...");
+					
 					close(this.sourceToClear);
 					
 					if(this.source != null)
@@ -979,18 +1009,16 @@ public class VideoContainer extends Container implements Runnable, PlayerListene
 						while(this.multipart != null && this.multipart.hasNext())
 						{
 							VideoSource oldSource = this.source;
-							
 							VideoSource nextSource = this.multipart.next();
-							
 							init(nextSource);
-							
 							wait();
-							
 							this.source = nextSource;
-							
 							play();
-							
 							oldSource.close();
+						}
+						if (this.startPlayAfterPrepare) {
+							this.startPlayAfterPrepare = false;
+							play();
 						}
 					}
 					else {
@@ -1000,15 +1028,11 @@ public class VideoContainer extends Container implements Runnable, PlayerListene
 				}
 			
 			}
-			catch (InterruptedException e)
-			{
-				return;
-			}
 			catch (Exception e) {
 				onVideoError(e);
 			} 
 			//#debug
-			System.out.println("exit thread");
+			System.out.println("exit prepare thread");
 	}
 	
 	public synchronized void next()
@@ -1024,17 +1048,22 @@ public class VideoContainer extends Container implements Runnable, PlayerListene
 	 */
 	private void init(VideoSource src) throws Exception
 	{
+		//#debug
+		System.out.println("init() for VideoSource " + src);
 		initSource(src);
 		initDisplay(src);
 		initVolume(src);
-		this.source.getPlayer().addPlayerListener(this);
+		src.getPlayer().addPlayerListener(this);
 	}
-	
-	
 
-	/* (overriden) */
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Container#initContent(int, int, int)
+	 */
 	protected void initContent(int firstLineWidth, int availWidth, int availHeight) {
 		super.initContent(firstLineWidth, availWidth, availHeight);
+		this.contentWidth = availWidth;
+		this.contentHeight = availHeight;
 		if (this.adjustSizeAutomatically && this.source != null) {
 			VideoControl videoControl = this.source.getVideoControl();
 			if (videoControl != null) {
@@ -1179,6 +1208,8 @@ public class VideoContainer extends Container implements Runnable, PlayerListene
 	
 	boolean changingViewMode;
 
+	private Exception lastException;
+
 	void showVideo()
 	{
 		if(this.resume && !this.changingViewMode)
@@ -1201,18 +1232,30 @@ public class VideoContainer extends Container implements Runnable, PlayerListene
 		
 		showVideo();
 	}
-		
-	public void capture(String encoding) {
-		if(getState() >= STATE_READY && this.source == VideoSource.CAPTURE)
+	
+	/**
+	 * Captures a snapshot when a CaptureSource is used.
+	 * A registered callback listener is notified about the actions as well.
+	 * In case the internal player is not yet playing, it will started automatically.
+	 * 
+	 * @param encoding the encoding of the image
+	 * @return the corresponding byte[] data, null when an error occurs or when a VideoSource is used that is not a CaptureSource.
+	 */
+	public byte[] capture(String encoding) {
+		byte[] data = null;
+		if(this.source instanceof CaptureSource)
 		{
-			byte[] data;
+			if (getState() < STATE_READY) {
+				play();
+			}
 			try {
-				data = this.source.getVideoControl().getSnapshot(encoding);
+				data = ((CaptureSource)this.source).capture(encoding);
 				onSnapshot(data,encoding);
 			} catch (MediaException e) {
 				onVideoError(e);
 			}
 		}
+		return data;
 	}
 	
 	protected void hideNotify() {
@@ -1234,9 +1277,19 @@ public class VideoContainer extends Container implements Runnable, PlayerListene
 	}
 
 	public void onVideoError(Exception e) {
+		//#debug error
+		System.out.println("onVideoError: error=" + e );
+		this.lastException = e;
 		for (int i = 0; i < this.callbacks.size(); i++) {
 			callback(i).onVideoError(e);
 		}
+	}
+	
+	/**
+	 * Retrieves the last exception that occurred, if any
+	 */
+	public Exception getLastException() {
+		return this.lastException;
 	}
 
 	public void onVideoPause() {
