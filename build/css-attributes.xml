@@ -1274,6 +1274,7 @@
 		<mapping from="numbered" to="new de.enough.polish.ui.containerviews.NumberedContainerView()"  appliesTo="Screen,Container, FakeContainerCustomItem"/>
 		<mapping from="verticalfixed" to="new de.enough.polish.ui.containerviews.VerticalFixedContainerView()" appliesTo="Screen,Container, FakeContainerCustomItem" />
 		<mapping from="horizontal" to="new de.enough.polish.ui.containerviews.HorizontalContainerView()"  />
+		<mapping from="horizontal-left" to="new de.enough.polish.ui.containerviews.LeftHorizontalContainerView()"  />
 		<mapping from="removetext" to="new de.enough.polish.ui.containerviews.RemoveTextContainerView()"  />
 		<mapping from="remove-text" to="new de.enough.polish.ui.containerviews.RemoveTextContainerView()"  />
 		<mapping from="alignatcontent" to="new de.enough.polish.ui.containerviews.AlignAtContentContainerView()"  />
@@ -5147,7 +5148,6 @@
 		id="444"
 		since="J2ME Polish 2.2"
 	/>
-	
 	
 <!--
 	<attribute
