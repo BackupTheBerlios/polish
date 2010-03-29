@@ -1,6 +1,7 @@
 package de.enough.skylight.renderer.node;
 
 import de.enough.polish.ui.Container;
+import de.enough.polish.ui.Dimension;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.ArrayList;
@@ -24,6 +25,10 @@ public class CssElement implements HtmlCssElement{
 	
 	String verticalAlign = HtmlCssElement.VerticalAlign.TOP;
 	
+	Dimension height;
+	
+	Dimension width;
+ 	
 	Viewport viewport;
 	
 	NodeHandler handler;
@@ -241,8 +246,12 @@ public class CssElement implements HtmlCssElement{
 		if(verticalAlignStr != null) {
 			this.verticalAlign = verticalAlignStr;
 		}
+		
+		this.width = (Dimension)style.getObjectProperty("width");
+		
+		this.height = (Dimension)style.getObjectProperty("height");
 	}
-	
+
 	public boolean isDisplay(String display) {
 		return this.display == display;
 	}
@@ -265,6 +274,14 @@ public class CssElement implements HtmlCssElement{
 	
 	public boolean isFloat() {
 		return this.floating != HtmlCssElement.Float.NONE;
+	}
+	
+	public Dimension getHeight() {
+		return this.height;
+	}
+
+	public Dimension getWidth() {
+		return this.width;
 	}
 	
 	public boolean isParentFloat() {

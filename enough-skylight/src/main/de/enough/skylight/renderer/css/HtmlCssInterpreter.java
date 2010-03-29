@@ -8,6 +8,7 @@ import de.enough.polish.util.ArrayList;
 import de.enough.skylight.renderer.css.handler.CssAttributeHandler;
 import de.enough.skylight.renderer.css.handler.DisplayHandler;
 import de.enough.skylight.renderer.css.handler.FloatHandler;
+import de.enough.skylight.renderer.css.handler.HeightHandler;
 import de.enough.skylight.renderer.css.handler.MarginHandler;
 import de.enough.skylight.renderer.css.handler.MarginLeftHandler;
 import de.enough.skylight.renderer.css.handler.MarginRightHandler;
@@ -22,6 +23,7 @@ import de.enough.skylight.renderer.css.handler.PositionHandler;
 import de.enough.skylight.renderer.css.handler.TextAlignHandler;
 import de.enough.skylight.renderer.css.handler.VerticalAlignHandler;
 import de.enough.skylight.renderer.css.handler.VisibleHandler;
+import de.enough.skylight.renderer.css.handler.WidthHandler;
 
 public class HtmlCssInterpreter extends CssInterpreter{
 
@@ -39,13 +41,19 @@ public class HtmlCssInterpreter extends CssInterpreter{
 		addAttributeHandler(new DisplayHandler());
 		addAttributeHandler(new FloatHandler());
 		addAttributeHandler(new PositionHandler());
+		
 		addAttributeHandler(new MinHeightHandler());
 		addAttributeHandler(new MaxHeightHandler());
 		addAttributeHandler(new MinWidthHandler());
 		addAttributeHandler(new MaxWidthHandler());
+		addAttributeHandler(new WidthHandler());
+		addAttributeHandler(new HeightHandler());
+		
 		addAttributeHandler(new VisibleHandler());
+		
 		addAttributeHandler(new VerticalAlignHandler());
 		addAttributeHandler(new TextAlignHandler());
+		
 		addAttributeHandler(new MarginHandler());
 		addAttributeHandler(new MarginLeftHandler());
 		addAttributeHandler(new MarginRightHandler());

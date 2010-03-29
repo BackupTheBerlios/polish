@@ -11,24 +11,14 @@ public class BlockLayout {
 	
 	LineboxList lineboxes;
 	
-	LineboxList leftLines;
-	
-	LineboxList rightLines;
-	
 	int blockAvailableWidth;
 	
 	int width;
 	
 	int height;
 	
-	public BlockLayout(int availableWidth) {
-		this(availableWidth,null,null);
-	}
-	
-	public BlockLayout(int blockAvailableWidth, LineboxList leftLineBoxes, LineboxList rightLineBoxes) {
+	public BlockLayout(int blockAvailableWidth) {
 		this.blockAvailableWidth = blockAvailableWidth;
-		this.leftLines = leftLineBoxes;
-		this.rightLines = rightLineBoxes;
 	}
 	
 	public void addPartitions(PartitionList partitions, InlineContainingBlock block) {
@@ -98,38 +88,13 @@ public class BlockLayout {
 	}
 	
 	public int getLineOffset(int top) {
-		if(this.leftLines != null) {
-			for (int i = 0; i < this.leftLines.size(); i++) {
-				Linebox linebox = this.leftLines.get(i);
-				if(linebox.matchesArea(top)) {
-					return linebox.getTrimmedWidth();
-				}
-			}
-		}
+		
 		
 		return 0;
 	}
 	
 	public int getLineWidth(int top) {
 		int result = this.blockAvailableWidth;
-		
-		if(this.leftLines != null) {
-			for (int i = 0; i < this.leftLines.size(); i++) {
-				Linebox linebox = this.leftLines.get(i);
-				if(linebox.matchesArea(top)) {
-					result -= linebox.getTrimmedWidth();
-				}
-			}
-		}
-		
-		if(this.rightLines != null) {
-			for (int i = 0; i < this.rightLines.size(); i++) {
-				Linebox linebox = this.rightLines.get(i);
-				if(linebox.matchesArea(top)) {
-					result -= linebox.getTrimmedWidth();
-				}
-			}
-		}
 		
 		return result;
 	}

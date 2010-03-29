@@ -51,7 +51,7 @@ public class BlockContainingBlockView extends ContainingBlockView {
 			setAppearanceMode(Item.INTERACTIVE);
 		}
 		
-		InlineContainingBlock floatLeft = this.containingBlock.getLeftFloat();
+		/*InlineContainingBlock floatLeft = this.containingBlock.getLeftFloat();
 		
 		BlockLayout floatLeftLayout = null;
 		if(floatLeft != null) {
@@ -132,7 +132,7 @@ public class BlockContainingBlockView extends ContainingBlockView {
 				System.out.println(linebox);
 			}
 			//#enddebug
-		}
+		}*/
 		
 		InlineContainingBlock body = this.containingBlock.getBody();
 		
@@ -150,7 +150,7 @@ public class BlockContainingBlockView extends ContainingBlockView {
 		}
 		//#enddebug
 		
-		BlockLayout bodyLayout = new BlockLayout(availWidth, this.floatLeftLines, this.floatRightLines);
+		BlockLayout bodyLayout = new BlockLayout(availWidth);
 		
 		bodyLayout.addPartitions(bodyPartitions, body);
 		
@@ -170,8 +170,8 @@ public class BlockContainingBlockView extends ContainingBlockView {
 		}
 		//#enddebug
 
-		this.contentWidth = getContentWidth(element, bodyLayout, availWidth);
-		this.contentHeight = getContentHeight(bodyLayout,floatLeftLayout,floatRightLayout);
+		this.contentWidth = ElementView.getContentWidth(this.parentContainer, element, availWidth);
+		this.contentHeight = ElementView.getContentHeight(this.parentContainer, element, availWidth, bodyLayout.getLayoutHeight());
 		
 		Item item = body.getFocusedItem();
 		Container parent = this.parentContainer;
@@ -181,32 +181,6 @@ public class BlockContainingBlockView extends ContainingBlockView {
 		
 		//#debug sl.debug.layout
 		System.out.println(this.containingBlock + " has dimension : " + this.contentWidth + "/" + this.contentHeight);
-	}
-	
-	public int getContentWidth(CssElement element, BlockLayout bodyLayout, int availWidth) {
-		if(element != null && (element.isFloat() || element.isParentFloat())) {
-			return bodyLayout.getLayoutWidth();
-		} else {
-			if(this.parentContainer.getMinimumWidth() != 0) {
-				return availWidth;
-			} else {
-				return availWidth;
-			}
-		}
-	}
-	
-	public int getContentHeight(BlockLayout body, BlockLayout floatLeft, BlockLayout floatRight) {
-		int height = body.getLayoutHeight();
-		
-		if(floatLeft != null && floatLeft.getLayoutHeight() > height) {
-			height = floatLeft.getLayoutHeight();
-		}
-		
-		if(floatRight != null && floatRight.getLayoutHeight() > height) {
-			height = floatRight.getLayoutHeight();
-		}
-
-		return height;
 	}
 	
 	protected void paintContent(Item parent, int x, int y, int leftBorder,
