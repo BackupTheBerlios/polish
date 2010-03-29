@@ -626,6 +626,12 @@ public abstract class Item implements UiElement, Animatable
 	protected Command defaultCommand;
 	protected int preferredWidth;
 	protected int preferredHeight;
+	//#ifdef  polish.css.width
+		protected Dimension width;
+	//#endif
+	//#ifdef  polish.css.height
+		protected Dimension height;
+	//#endif
 	protected Dimension minimumWidth;
 	protected Dimension minimumHeight;
 	//#ifdef polish.css.max-width
@@ -1512,6 +1518,12 @@ public abstract class Item implements UiElement, Animatable
 				this.maximumWidth = maxWidthDim;
 			}
 		//#endif
+		//#ifdef polish.css.width
+			Dimension widthDim  = (Dimension) style.getObjectProperty("width");
+			if (widthDim != null) {
+				this.width = widthDim;
+			}
+		//#endif
 		//#ifdef polish.css.min-height
 			Dimension minHeightDim = (Dimension) style.getObjectProperty("min-height");
 			if (minHeightDim != null) {
@@ -1522,6 +1534,12 @@ public abstract class Item implements UiElement, Animatable
 			Dimension maxHeightDim  = (Dimension) style.getObjectProperty("max-height");
 			if (maxHeightDim != null) {
 				this.maximumHeight = maxHeightDim;
+			}
+		//#endif
+		//#ifdef polish.css.height
+			Dimension heightDim  = (Dimension) style.getObjectProperty("height");
+			if (heightDim != null) {
+				this.height = heightDim;
 			}
 		//#endif
 
@@ -3134,12 +3152,30 @@ public abstract class Item implements UiElement, Animatable
 			firstLineContentWidth = firstLineWidth - noneContentWidth;
 			availableContentWidth = availWidth - noneContentWidth;
 		//#endif
-		
+			
+		//#ifdef polish.css.width
+			int targetWidth = 0;
+			if(this.width != null) {
+				firstLineContentWidth = this.width.getValue(firstLineWidth) - noneContentWidth;
+				availableContentWidth = this.width.getValue(availWidth) - noneContentWidth;
+				targetWidth = availableContentWidth;
+			}
+		//#endif
+			
 		this.contentX = this.marginLeft + getBorderWidthLeft() + this.paddingLeft;
 		int noneContentHeight = this.marginTop + getBorderWidthTop() + this.paddingTop;
 		this.contentY = noneContentHeight; 
 		noneContentHeight += this.paddingBottom + getBorderWidthBottom() + this.marginBottom;
-		
+			
+		//#ifdef polish.css.height
+			int targetHeight = 0;
+			if(this.height != null) {
+				// according to css specs the base for the height calculation is the available width
+				availHeight = this.height.getValue(availWidth) - noneContentHeight;
+				targetHeight = availHeight;
+			}
+		//#endif
+			
 		// initialise content by subclass:
 		//#if polish.css.content-visible
 			if (!this.isContentVisible) {
@@ -3176,7 +3212,6 @@ public abstract class Item implements UiElement, Animatable
 		//#if polish.css.content-visible
 			}
 		//#endif
-
 			
 		int cWidth = this.contentWidth;
 		int cHeight = this.contentHeight;
@@ -3193,6 +3228,16 @@ public abstract class Item implements UiElement, Animatable
 			cWidth = availableContentWidth;
 		}
 		this.itemWidth = noneContentWidth + cWidth;
+		
+		//#ifdef polish.css.width
+			if(this.width != null) {
+				int diff = targetWidth - this.itemWidth;
+				this.itemWidth += diff;
+				setContentWidth( this.contentWidth + diff );
+				cWidth = this.contentWidth;
+			}
+		//#endif
+			
 		//#ifdef polish.css.min-width
 			if (this.minimumWidth != null) {
 				if (this.itemWidth < this.minimumWidth.getValue(availWidth) ) {
@@ -3218,6 +3263,7 @@ public abstract class Item implements UiElement, Animatable
 				}
 			}
 		//#endif
+			
 		//#ifdef polish.css.before
 			if (cHeight < this.beforeHeight) {
 				cHeight = this.beforeHeight;
@@ -3286,6 +3332,17 @@ public abstract class Item implements UiElement, Animatable
 			}
 		}
 		this.itemHeight = cHeight + noneContentHeight;
+		
+		//#ifdef polish.css.height
+			if(this.height != null) {
+				int diff = targetHeight - this.itemHeight;
+				System.out.println("adjusting height with :" + diff);
+				this.itemHeight += diff;
+				setContentHeight( this.contentHeight + diff );
+				cHeight = this.contentHeight;
+			}
+		//#endif
+		
 		if (this.useSingleRow) {
 			this.backgroundWidth = this.itemWidth - this.marginLeft - this.marginRight - labelWidth;
 			this.backgroundHeight = cHeight
