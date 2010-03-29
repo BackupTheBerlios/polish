@@ -32,6 +32,8 @@ import de.enough.skylight.renderer.ViewportContext;
 import de.enough.skylight.renderer.builder.DocumentBuilder;
 import de.enough.skylight.renderer.builder.ViewportBuilder;
 import de.enough.skylight.renderer.node.CssElement;
+import de.enough.skylight.renderer.node.NodeUtils;
+import de.enough.skylight.renderer.node.handler.html.AHandler;
 
 public class Browser extends Form implements CommandListener, RendererListener, UserEventListener, ViewportContext {
 
@@ -100,9 +102,6 @@ public class Browser extends Form implements CommandListener, RendererListener, 
 		this.viewport = new Viewport(this);
 		this.viewport.addUserEventListener(this);
 		
-		/*UpdateUIEventProcessorListener listener = new UpdateUIEventProcessorListener();
-		Services.getInstance().getEventProcessor().addEventProcessorListener(listener);*/
-		
 		this.documentBuilder = new DocumentBuilder();
 		documentBuilder.setUrl(url);
 		
@@ -158,17 +157,6 @@ public class Browser extends Form implements CommandListener, RendererListener, 
 		}
 	}
 	
-	protected void relocate(String url) {
-		this.url = url;
-		this.host = UrlUtil.getPath(url);
-		
-		this.documentBuilder.setUrl(url);
-		
-		this.renderer.setState(Renderer.STATE_VOID);
-		
-		this.renderer.render();
-	}
-	
 	public void onState(Renderer renderer, int state) {
 		if(state == Renderer.STATE_START) {
 			this.display.setCurrent(this.refresh);
@@ -198,19 +186,36 @@ public class Browser extends Form implements CommandListener, RendererListener, 
 	}
 	
 	public void onUserEvent(CssElement element, UserEvent event) {
-		DomNode node = element.getNode();
-		Services.getInstance().getEventEmitter().emitClickEvent(node, 0, 0);
+		if(element.getHandler() instanceof AHandler) {
+			String href = NodeUtils.getAttributeValue(element.getNode(),"href");
+			String url = de.enough.skylight.util.UrlUtil.completeUrl(href, this);
+			setLocation(url);
+		} else {
+			DomNode node = element.getNode();
+			Services.getInstance().getEventEmitter().emitClickEvent(node, 0, 0);
+		}
 	}
 
-	public String getHost() {
+	public String getLocationHost() {
 		return this.host;
 	}
 
-	public String getUrl() {
+	public String getLocationUrl() {
 		return this.url;
 	}
 
 	public ContentLoader getContentLoader() {
 		return this.contentLoader;
+	}
+
+	public void setLocation(String url) {
+		this.url = url;
+		this.host = UrlUtil.getPath(url);
+		
+		this.documentBuilder.setUrl(url);
+		
+		this.renderer.setState(Renderer.STATE_VOID);
+		
+		this.renderer.render();
 	}
 }
