@@ -41,53 +41,10 @@ public class ElementView extends ItemView  {
 		LayoutAttributes attributes = LayoutAttributes.get(parent);
 		CssElement element = attributes.getElement();
 		
-		this.contentWidth = ElementView.getContentWidth(parent, element, contentWidth);
-		this.contentHeight = ElementView.getContentHeight(parent, element, availWidth, contentHeight);
+		this.contentWidth = contentWidth;
+		this.contentHeight = contentHeight;
 	}
 	
-
-	public static int getContentWidth(Item item, CssElement element, int contentWidth) {
-		if(element != null && element.getWidth() != null) {
-			return element.getWidth().getValue(contentWidth);
-		}
-		
-		int minimumWidth = item.getMinimumWidth(contentWidth);
-		int maximumWidth = item.getMaximumWidth(contentWidth);
-		
-		if(minimumWidth != 0 && contentWidth < minimumWidth) {
-			return minimumWidth;
-		}
-			
-		if(maximumWidth != 0 && contentWidth > maximumWidth) {
-			return maximumWidth;
-		}
-		
-		return contentWidth;
-	}
-	
-	public static int getContentHeight(Item item, CssElement element, int contentWidth, int contentHeight) {
-		int height = contentHeight;
-		
-		if(element != null && element.getHeight() != null) {
-			return element.getHeight().getValue(contentWidth);
-		}
-		
-		// according to CSS standard width is used as the base for width calculations
-		int minimumHeight = item.getMinimumHeight(contentWidth);
-		int maximumHeight = item.getMaximumHeight(contentWidth);
-		
-		if(minimumHeight != 0 && height < minimumHeight) {
-			return minimumHeight;
-		}
-			
-		if(maximumHeight != 0 && height > maximumHeight) {
-			return maximumHeight;
-		}
-		
-		return height;
-	}
-	
-
 	protected void paintContent(Item parent, int x, int y, int leftBorder,
 			int rightBorder, Graphics g) {
 		UiAccess.paintContent(parent, x, y, leftBorder, rightBorder, g);

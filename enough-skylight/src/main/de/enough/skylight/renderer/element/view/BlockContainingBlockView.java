@@ -169,9 +169,9 @@ public class BlockContainingBlockView extends ContainingBlockView {
 			System.out.println(linebox);
 		}
 		//#enddebug
-
-		this.contentWidth = ElementView.getContentWidth(this.parentContainer, element, availWidth);
-		this.contentHeight = ElementView.getContentHeight(this.parentContainer, element, availWidth, bodyLayout.getLayoutHeight());
+		
+		this.contentWidth = availWidth;
+		this.contentHeight = bodyLayout.getLayoutHeight();
 		
 		Item item = body.getFocusedItem();
 		Container parent = this.parentContainer;
