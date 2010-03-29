@@ -1,0 +1,14 @@
+.blockMinHeightPercent {
+	min-height: 50%;
+	background-color: blue;
+}
+ 
+.blockMaxHeightPercent {
+	max-height: 90%;
+	background-color: green;
+}
+ 
+.blockHeightPixel {
+	height: 50px;
+	background-color: red;
+}
