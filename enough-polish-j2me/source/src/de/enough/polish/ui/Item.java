@@ -2195,8 +2195,12 @@ public abstract class Item implements UiElement, Animatable
 	 */
 	public int getMinimumWidth()
 	{
+		return getMinimumWidth(100);
+	}
+	
+	public int getMinimumWidth(int availWidth) {
 		if (this.minimumWidth != null) {
-			return this.minimumWidth.getValue(100);
+			return this.minimumWidth.getValue(availWidth);
 		} else {
 			return 0;
 		}
@@ -2213,12 +2217,49 @@ public abstract class Item implements UiElement, Animatable
 	 */
 	public int getMinimumHeight()
 	{
+		return getMinimumHeight(100);
+	}
+	
+	public int getMinimumHeight(int availHeight)
+	{
 		if (this.minimumHeight != null) {
-			return this.minimumHeight.getValue(100);
+			return this.minimumHeight.getValue(availHeight);
 		} else {
 			return 0;
 		}
 	}
+	
+	//#if polish.css.max-height
+	public int getMaximumHeight()
+	{
+		return getMaximumHeight(100);
+	}
+	
+	public int getMaximumHeight(int availHeight)
+	{
+		if (this.maximumHeight != null) {
+			return this.maximumHeight.getValue(availHeight);
+		} else {
+			return 0;
+		}
+	}
+	//#endif
+	
+	//#if polish.css.max-width
+	public int getMaximumWidth()
+	{
+		return getMaximumWidth(100);
+	}
+	
+	public int getMaximumWidth(int availWidth)
+	{
+		if (this.maximumWidth != null) {
+			return this.maximumWidth.getValue(availWidth);
+		} else {
+			return 0;
+		}
+	}
+	//#endif
 
 	/**
 	 * Sets default <code>Command</code> for this <code>Item</code>.
