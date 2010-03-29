@@ -2216,6 +2216,13 @@ public abstract class Item implements UiElement, Animatable
 		return getMinimumWidth(100);
 	}
 	
+	/**
+	 * Gets the minimum width for this <code>Item</code>.  
+	 *
+	 * @param availWidth the available width for percentage calculations
+	 * @return the minimum width of the item
+	 * @since  MIDP 2.0
+	 */
 	public int getMinimumWidth(int availWidth) {
 		if (this.minimumWidth != null) {
 			return this.minimumWidth.getValue(availWidth);
@@ -2238,6 +2245,13 @@ public abstract class Item implements UiElement, Animatable
 		return getMinimumHeight(100);
 	}
 	
+	/**
+	 * Gets the minimum height for this <code>Item</code>.  
+	 * 
+	 * @param availHeight the available height for percentage calculations
+	 * @return the minimum height of the item
+	 * @since  MIDP 2.0
+	 */
 	public int getMinimumHeight(int availHeight)
 	{
 		if (this.minimumHeight != null) {
@@ -2247,32 +2261,67 @@ public abstract class Item implements UiElement, Animatable
 		}
 	}
 	
-	//#if polish.css.max-height
-	public int getMaximumHeight()
+
+	
+	//#if polish.css.max-width
+	/**
+	 * Gets the maximum width for this <code>Item</code>.  This is a height
+	 * at which the item can function and display its contents,
+	 * though perhaps not optimally.
+	 * See <a href="#sizes">Item Sizes</a> for a complete discussion.
+	 * 
+	 * @return the minimum height of the item
+	 * @since  MIDP 2.0
+	 */
+	public int getMaximumWidth()
 	{
-		return getMaximumHeight(100);
+		return getMaximumWidth(100);
 	}
 	
-	public int getMaximumHeight(int availHeight)
+	/**
+	 * Gets the maximum width for this <code>Item</code>.  
+	 * 
+	 * @param availWidth the available height for percentage calculations
+	 * @return the minimum height of the item
+	 * @since  MIDP 2.0
+	 */
+	public int getMaximumWidth(int availWidth)
 	{
-		if (this.maximumHeight != null) {
-			return this.maximumHeight.getValue(availHeight);
+		if (this.maximumWidth != null) {
+			return this.maximumWidth.getValue(availWidth);
 		} else {
 			return 0;
 		}
 	}
 	//#endif
 	
-	//#if polish.css.max-width
-	public int getMaximumWidth()
+	//#if polish.css.max-height
+	/**
+	 * Gets the maximum height for this <code>Item</code>.  This is a height
+	 * at which the item can function and display its contents,
+	 * though perhaps not optimally.
+	 * See <a href="#sizes">Item Sizes</a> for a complete discussion.
+	 * 
+	 * @param availHeight the available height for percentage calculations
+	 * @return the minimum height of the item
+	 * @since  MIDP 2.0
+	 */
+	public int getMaximumHeight()
 	{
-		return getMaximumWidth(100);
+		return getMaximumHeight(100);
 	}
 	
-	public int getMaximumWidth(int availWidth)
+	/**
+	 * Gets the maximum height for this <code>Item</code>.  
+	 * 
+	 * @param availHeight the available height for percentage calculations
+	 * @return the minimum height of the item
+	 * @since  MIDP 2.0
+	 */
+	public int getMaximumHeight(int availHeight)
 	{
-		if (this.maximumWidth != null) {
-			return this.maximumWidth.getValue(availWidth);
+		if (this.maximumHeight != null) {
+			return this.maximumHeight.getValue(availHeight);
 		} else {
 			return 0;
 		}
