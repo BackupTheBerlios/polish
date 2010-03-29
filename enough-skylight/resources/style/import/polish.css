@@ -19,6 +19,8 @@ import {
 	max-height: 0;
 	min-width: 0;
 	max-width: 0;
+	height: 0;
+	width: 0;
 	
 	border-color: red;
 	border-width: 1;
