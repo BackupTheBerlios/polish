@@ -23,6 +23,16 @@ public abstract class DomNodeImpl implements DomNode {
 	private HashMap capturingListeners = new HashMap();
 	private HashMap bubblingListeners = new HashMap();
 
+	public void init(DocumentImpl document, DomNodeImpl parent, int type) {
+		this.ownerDocument = document;
+		this.parent = parent;
+		this.type = type;
+		this.childList = new NodeListImpl();
+		if (this.parent != null) {
+			this.parent.doAppendChild(this);
+		}
+	}
+	
 	public void addEventListener(String type, EventListener listener,
 			boolean useCapture) {
 		if (useCapture) {
@@ -172,16 +182,6 @@ public abstract class DomNodeImpl implements DomNode {
 
 	public boolean hasChildNodes() {
 		return this.childList.getLength() > 0;
-	}
-
-	public void init(DocumentImpl document, DomNodeImpl parent, int type) {
-		this.ownerDocument = document;
-		this.parent = parent;
-		this.type = type;
-		this.childList = new NodeListImpl();
-		if (this.parent != null) {
-			this.parent.doAppendChild(this);
-		}
 	}
 
 	/**

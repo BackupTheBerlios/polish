@@ -37,7 +37,7 @@ public class DocumentScriptableObject extends ScriptableObject {
 			@Override
 			public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
 				if(args.length < 1) {
-					throw new RuntimeException("The function 'getElementById' need exactly one parameter.");
+					throw new RuntimeException("The function 'getElementById' needs one parameter but got '"+args.length+"'.");
 				}
 				ElementImpl element = (ElementImpl)getElementById((String)args[0]);
 				if(element != null) {
@@ -67,7 +67,6 @@ public class DocumentScriptableObject extends ScriptableObject {
 			}
 			return null;
 		}
-		// TODO Auto-generated method stub
 		return super.get(name, start);
 	}
 	
