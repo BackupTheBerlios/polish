@@ -316,6 +316,7 @@ public abstract class ScriptableObject implements Scriptable, Externalizable, Co
      */
     public void put(String name, Scriptable start, Object value)
     {
+    	// Add the value if the slot is already present.
         if (putImpl(name, 0, start, value, EMPTY))
             return;
 
