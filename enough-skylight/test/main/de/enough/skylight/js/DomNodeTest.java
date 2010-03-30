@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import org.mozilla.javascript.Script;
 import de.enough.skylight.dom.DomNode;
+import de.enough.skylight.dom.Element;
 
 public class DomNodeTest extends AbstractJsTest {
 
@@ -43,6 +44,14 @@ public class DomNodeTest extends AbstractJsTest {
 	public void testNodeName() {
 		Script script = this.context.compileString("var element = document.getElementById('id2'); Assert.equals('div',element.nodeName)", "test1", 1);
 		script.exec(this.context, this.scope);
+	}
+	
+	public void testNodeValue() {
+		Script script = this.context.compileString("var element = document.getElementById('id2'); element.nodeValue = 'a'", "test1", 1);
+		script.exec(this.context, this.scope);
+		Element element = this.document1.getElementById("id2");
+		String nodeValue = element.getNodeValue();
+		assertEquals("a",nodeValue);
 	}
 	
 	/*
