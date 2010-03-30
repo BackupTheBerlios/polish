@@ -1,6 +1,7 @@
 package de.enough.skylight.js;
 
 import org.mozilla.javascript.BaseFunction;
+import org.mozilla.javascript.Callable;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
@@ -36,7 +37,7 @@ public class DomNodeScriptableObject extends ScriptableObject {
 		return "Node";
 	}
 	
-	public void init(DomNodeImpl domNodeImpl) {
+	public void init(final DomNodeImpl domNodeImpl) {
 		this.domNodeImpl = domNodeImpl;
 		putConst("ELEMENT_NODE", this, new Integer(1));
 		putConst("ATTRIBUTE_NODE", this, new Integer(2));
@@ -50,8 +51,35 @@ public class DomNodeScriptableObject extends ScriptableObject {
 		putConst("DOCUMENT_TYPE_NODE", this, new Integer(10));
 		putConst("DOCUMENT_FRAGMENT_NODE", this, new Integer(11));
 		putConst("NOTATION_NODE", this, new Integer(12));
+		
 		defineProperty("nodeName", this.domNodeImpl.getNodeName(), READONLY|PERMANENT);
+//		setGetterOrSetter("nodeName", 0, new Callable() {
+//			public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
+//				return domNodeImpl.getNodeName();
+//			}
+//		}, false);
+		
 		defineProperty("nodeValue", null, PERMANENT);
+		setGetterOrSetter("nodeValue",0,new Callable() {
+			public Object call(Context cx, Scriptable scope,
+					Scriptable thisObj, Object[] args) {
+				return domNodeImpl.getNodeValue();
+			}
+		},false);
+		setGetterOrSetter("nodeValue",0,new Callable() {
+			public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
+				String nodeValue;
+				if(args == null || args.length <= 0 || args[0] == null){
+					nodeValue = null;
+				}else {
+					nodeValue = args[0].toString();
+					domNodeImpl.setNodeValue(nodeValue);
+				}
+				return nodeValue;
+			}
+		},true);
+		
+		
 		defineProperty("nodeType", new Integer(this.domNodeImpl.getNodeType()), READONLY|PERMANENT);
 		defineProperty("parentNode", ((DomNodeImpl)this.domNodeImpl.getParentNode()).getScriptable(), READONLY|PERMANENT);
 		defineProperty("childNodes", ((NodeListImpl)this.domNodeImpl.getChildNodes()).getScriptable(), READONLY|PERMANENT);
