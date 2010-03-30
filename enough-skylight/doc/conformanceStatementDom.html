@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Skylight Conformance to the DOM Specification</title>
+</head>
+<body>
+
+<h1 style="text-align:center">Skylight Conformance to the DOM Specification</h1>
+
+<h2>Purpose</h2>
+<p>This document describes the conformance of the Skylight implementation to the <em>Document Object Model (DOM) Level 2 Core Specification</em>.
+The specification can be found here: <a href="http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113">http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113</a>.</p>
+
+
+<h2>Conformance Statement</h2>
+<p>The following is a section by section walkthrough of the first chapter of the specification with comments about the conformance state.</p>
+
+<h3>1.1.1</h3>
+<p>Informative only.</p>
+
+<h3>1.1.2</h3>
+<p>Not considered.</p>
+
+<h3>1.1.5</h3>
+<p>Not implemented directly. It is mapped to the Java type String.</p>
+
+<h3>1.1.6</h3>
+<p>Not implemented.</p>
+
+<h3>1.1.7</h3>
+<p>Not considered.</p>
+
+<h3>1.1.8</h3>
+<p>Not supported.</p>
+
+<h3>1.2</h3>
+<p>See notes about Appendix D and Appendix E for information about the concepts defined in this section.</p> 
+
+<h3>1.3</h3>
+<p>The plan is to support only the DOM HTML specification which renders all concepts in this section as unnecessary for an API client.</p>
+<p>Non of the concepts defined in this section is implemented in its corresponding couterparts in Appendix D and Appendix E.</p>
+
+
+<!-- ############################################################################################## -->
+
+<h3>Appendix D: Java Binding</h3>
+<p>Classes and methods may be either <em>present</em> or <em>not present</em>. It may also either be <em>implemented</em> or <em>not implemented</em>. Beeing <em>implemented</em> implies beeing <em>present</em>. They can be either <em>tested</em> or <em>untested</em>. Both imply <em>implemented</em></p>
+
+<h4>class DOMException</h4>
+<p>Fully implemented.</p>
+
+<h4>public interface DOMImplementation</h4>
+<p>Not implemented</p>
+
+<h4>public interface DocumentFragment</h4>
+<p>Not implemented.</p>
+
+<h4>public interface Document</h4>
+<h5>public DocumentType getDoctype()</h5>
+<p>Not present.</p>
+
+<h5>public DOMImplementation getImplementation()</h5>
+<p>Not present.</p>
+
+<h5>public Element getDocumentElement()</h5>
+<p>Implemented.</p>
+
+<h5>public Element createElement(String tagName)</h5>
+<p>Implemented.</p>
+
+<h5>public DocumentFragment createDocumentFragment()</h5>
+<p>Not present.</p>
+
+<h5>public Text createTextNode(String data)</h5>
+<p>Not present.</p>
+
+<h5>public Comment createComment(String data)</h5>
+<p>Not present.</p>
+
+<h5>public CDATASection createCDATASection(String data)</h5>
+<p>Not present.</p>
+
+<h5>public ProcessingInstruction createProcessingInstruction(String target, String data)</h5>
+<p>Not present.</p>
+
+<h5>public Attr createAttribute(String name)</h5>
+<p>Not implemented.</p>
+
+<h5>public EntityReference createEntityReference(String name)</h5>
+<p>Not present.</p>
+
+<h5>public NodeList getElementsByTagName(String tagname)</h5>
+<p>Not Implemented.</p>
+
+<h5>public Node importNode(Node importedNode, boolean deep)</h5>
+<p>Not present.</p>
+
+<h5>public Element createElementNS(String namespaceURI, String qualifiedName)</h5>
+<p>Not present.</p>
+
+<h5>public Attr createAttributeNS(String namespaceURI, String qualifiedName)</h5>
+<p>Not present.</p>
+
+<h5>public NodeList getElementsByTagNameNS(String namespaceURI, String localName)</h5>
+<p>Not present.</p>
+
+<h5>public Element getElementById(String elementId)</h5>
+<p>Implemented.</p>
+
+<h4>public interface Node</h4>
+<p>All fields are present.</p>
+
+<h5>public String getNodeName()</h5>
+<p></p>
+
+<h5>public String getNodeValue()</h5>
+<p></p>
+
+<h5>public void setNodeValue(String nodeValue)</h5>
+<p></p>
+
+<h5>public short getNodeType()</h5>
+<p></p>
+
+<h5>public Node getParentNode()</h5>
+<p></p>
+
+<h5>public NodeList getChildNodes()</h5>
+<p></p>
+
+<h5>public Node getFirstChild()</h5>
+<p></p>
+
+<h5>public Node getLastChild()</h5>
+<p></p>
+
+<h5>public Node getPreviousSibling()</h5>
+<p></p>
+
+<h5>public Node getNextSibling()</h5>
+<p></p>
+
+<h5>public NamedNodeMap getAttributes()</h5>
+<p></p>
+
+<h5>public Document getOwnerDocument()</h5>
+<p></p>
+
+<h5>public Node insertBefore(Node newChild, Node refChild)</h5>
+<p></p>
+
+<h5>public Node replaceChild(Node newChild, 
+                             Node oldChild)</h5>
+<p></p>
+
+<h5>public Node removeChild(Node oldChild)</h5>
+<p></p>
+
+<h5>public Node appendChild(Node newChild)</h5>
+<p></p>
+
+<h5>public boolean hasChildNodes()</h5>
+<p></p>
+
+<h5>public Node cloneNode(boolean deep)</h5>
+<p></p>
+
+<h5>public void normalize()</h5>
+<p></p>
+
+<h5>public boolean isSupported(String feature, 
+                               String version)</h5>
+<p></p>
+
+<h5>public String getNamespaceURI()</h5>
+<p></p>
+
+<h5>public String getPrefix()</h5>
+<p></p>
+
+<h5>public void setPrefix(String prefix)</h5>
+<p></p>
+
+<h5>public String getLocalName()</h5>
+<p></p>
+
+<h5>public boolean hasAttributes()</h5>
+<p></p>
+
+<h4>public interface NodeList</h4>
+<h5>public Node item(int index)</h5>
+<h5> public int getLength()</h5>
+
+<h4>public interface NamedNodeMap</h4>
+<h5>public Node getNamedItem(String name)</h5>
+<h5>public Node setNamedItem(Node arg)</h5>
+<h5>public Node removeNamedItem(String name)</h5>
+<h5>public Node item(int index)</h5>
+<h5>public int getLength()</h5>
+<h5>public Node getNamedItemNS(String namespaceURI, String localName)</h5>
+<h5>public Node setNamedItemNS(Node arg)</h5>
+<h5>public Node removeNamedItemNS(String namespaceURI, String localName)</h5>
+
+<h4>public interface CharacterData</h4>
+<h5>public String getData()</h5>
+<h5>public void setData(String data)</h5>
+<h5>public int getLength()</h5>
+<h5>public String substringData(int offset, int count)</h5>
+<h5>public void appendData(String arg)</h5>
+<h5>public void insertData(int offset, String arg)</h5>
+<h5>public void deleteData(int offset, int count)</h5>
+<h5>public void replaceData(int offset, int count, String arg)</h5>
+
+<h4>public interface Attr</h4>
+<h5>public String getName()</h5>
+<h5>public boolean getSpecified()</h5>
+<h5>public String getValue()</h5>
+<h5>public void setValue(String value)</h5>
+<h5>public Element getOwnerElement()</h5>
+
+<h4>public interface Element</h4>
+<h5>public String getTagName()</h5>
+<h5>public String getAttribute(String name)</h5>
+<h5>public void setAttribute(String name, String value)</h5>
+<h5>public void removeAttribute(String name)</h5>
+<h5>public Attr getAttributeNode(String name)</h5>
+<h5>public Attr setAttributeNode(Attr newAttr)</h5>
+<h5>public Attr removeAttributeNode(Attr oldAttr)</h5>
+<h5>public NodeList getElementsByTagName(String name)</h5>
+<h5>public String getAttributeNS(String namespaceURI, String localName)</h5>
+<h5>public void setAttributeNS(String namespaceURI, String qualifiedName, String value)</h5>
+<h5>public void removeAttributeNS(String namespaceURI, String localName)</h5>
+<h5>public Attr getAttributeNodeNS(String namespaceURI, String localName)</h5>
+<h5>public Attr setAttributeNodeNS(Attr newAttr)</h5>
+<h5>public NodeList getElementsByTagNameNS(String namespaceURI, String localName)</h5>
+<h5>public boolean hasAttribute(String name)</h5>
+<h5>public boolean hasAttributeNS(String namespaceURI, String localName)</h5>
+
+<h4>public interface Text</h4>
+<h5>public Text splitText(int offset)</h5>
+
+<h4>public interface Comment</h4>
+<p></p>
+
+<h4>public interface CDATASection</h4>
+<p>Defined in section 1.3. See conformance statement for section 1.3.</p>
+
+<h4>public interface DocumentType</h4>
+<p>Defined in section 1.3. See conformance statement for section 1.3.</p>
+
+<h4>public interface Notation</h4>
+<p>Defined in section 1.3. See conformance statement for section 1.3.</p>
+
+<h4>public interface Entity</h4>
+<p>Defined in section 1.3. See conformance statement for section 1.3.</p>
+
+<h4>public interface EntityReference</h4>
+<p>Defined in section 1.3. See conformance statement for section 1.3.</p>
+
+<h4>public interface ProcessingInstruction</h4>
+<p>Defined in section 1.3. See conformance statement for section 1.3.</p>
+
+<!-- ############################################################################################## -->
+
+<h3>Appendix E: JavaScript Binding</h3>
+<p>Classes and methods may be either <em>present</em> or <em>not present</em>. It may also either be <em>implemented</em> or <em>not implemented</em>. Beeing <em>implemented</em> implies beeing <em>present</em>. They can be either <em>tested</em> or <em>untested</em>. Both imply <em>implemented</em></p>
+
+<h4>DOMException</h4>
+<h5>code</h5>
+
+<h4>Object DOMImplementation</h4>
+<h5>hasFeature(feature, version)</h5>
+<h5>createDocumentType(qualifiedName, publicId, systemId)</h5>
+<h5>createDocument(namespaceURI, qualifiedName, doctype)</h5>
+
+<h4>Object DocumentFragment</h4>
+
+<h4>Object Document</h4>
+<h5>doctype</h5>
+<h5>implementation</h5>
+<h5>documentElement</h5>
+<h5>createElement(tagName)</h5>
+<h5>createDocumentFragment()</h5>
+<h5>createTextNode(data)</h5>
+<h5>createComment(data)</h5>
+<h5>createCDATASection(data)</h5>
+<h5>createProcessingInstruction(target, data)</h5>
+<h5>createAttribute(name)</h5>
+<h5>createEntityReference(name)</h5>
+<h5>getElementsByTagName(tagname)</h5>
+<h5>importNode(importedNode, deep)</h5>
+<h5>createElementNS(namespaceURI, qualifiedName)</h5>
+<h5>createAttributeNS(namespaceURI, qualifiedName)</h5>
+<h5>getElementsByTagNameNS(namespaceURI, localName)</h5>
+<h5>getElementById(elementId)</h5>
+
+<h4>Prototype Object Node</h4>
+<p>All constants are defined.</p>
+
+<h4>Object Node</h4>
+<h5>nodeName</h5>
+<h5>nodeValue</h5>
+<h5>nodeValue</h5>
+<h5>childNodes</h5>
+<h5>firstChild</h5>
+<h5>lastChild</h5>
+<h5>previousSibling</h5>
+<h5>nextSibling</h5>
+<h5>attributes</h5>
+<h5>ownerDocument</h5>
+<h5>namespaceURI</h5>
+<h5>prefix</h5>
+<h5>localName</h5>
+<h5>insertBefore(newChild, refChild)</h5>
+<h5>replaceChild(newChild, oldChild)</h5>
+<h5>removeChild(oldChild)</h5>
+<h5>appendChild(newChild)</h5>
+<h5>hasChildNodes()</h5>
+<h5>cloneNode(deep)</h5>
+<h5>normalize()</h5>
+<h5>isSupported(feature, version)</h5>
+<h5>hasAttributes()</h5>
+
+<h4>Object NodeList</h4>
+<h5>length</h5>
+<h5>item(index)</h5>
+
+<h4>Object NamedNodeMap</h4>
+<h5>length</h5>
+<h5>getNamedItem(name)</h5>
+<h5>setNamedItem(arg)</h5>
+<h5>removeNamedItem(name)</h5>
+<h5>item(index)</h5>
+<h5>getNamedItemNS(namespaceURI, localName)</h5>
+<h5>setNamedItemNS(arg)</h5>
+<h5>removeNamedItemNS(namespaceURI, localName)</h5>
+
+<h4>Object CharacterData</h4>
+<h5>data</h5>
+<h5>length</h5>
+<h5>substringData(offset, count)</h5>
+<h5>appendData(arg)</h5>
+<h5>insertData(offset, arg)</h5>
+<h5>deleteData(offset, count)</h5>
+<h5>replaceData(offset, count, arg)</h5>
+
+<h4>Object Attr</h4>
+<h5>name</h5>
+<h5>specified</h5>
+<h5>value</h5>
+<h5>ownerElement</h5>
+
+<h4>Object Element</h4>
+<h5>tagName</h5>
+<h5>setAttribute(name, value)</h5>
+<h5>removeAttribute(name)</h5>
+<h5>getAttributeNode(name)</h5>
+<h5>setAttributeNode(newAttr)</h5>
+<h5>removeAttributeNode(oldAttr)</h5>
+<h5>getElementsByTagName(name)</h5>
+<h5>getAttributeNS(namespaceURI, localName)</h5>
+<h5>setAttributeNS(namespaceURI, qualifiedName, value)</h5>
+<h5>removeAttributeNS(namespaceURI, localName)</h5>
+<h5>getAttributeNodeNS(namespaceURI, localName)</h5>
+<h5>setAttributeNodeNS(newAttr)</h5>
+<h5>getElementsByTagNameNS(namespaceURI, localName)</h5>
+<h5>hasAttribute(name)</h5>
+<h5>hasAttributeNS(namespaceURI, localName)</h5>
+
+<h4>Object Text</h4>
+<h5>splitText(offset)</h5>
+
+<h4>Object Comment</h4>
+
+<h4>Object CDATASection</h4>
+<p>Defined in section 1.3. See conformance statement for section 1.3.</p>
+
+<h4>Object DocumentType</h4>
+<p>Defined in section 1.3. See conformance statement for section 1.3.</p>
+
+<h4>Object Notation</h4>
+<p>Defined in section 1.3. See conformance statement for section 1.3.</p>
+
+<h4>Object Entity</h4>
+<p>Defined in section 1.3. See conformance statement for section 1.3.</p>
+
+<h4>Object EntityReference</h4>
+<p>Defined in section 1.3. See conformance statement for section 1.3.</p>
+
+<h4>Object ProcessingInstruction</h4>
+<p>Defined in section 1.3. See conformance statement for section 1.3.</p>
+
+</body>
+</html>
+
+
