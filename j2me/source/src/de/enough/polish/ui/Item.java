@@ -3847,7 +3847,7 @@ public abstract class Item implements UiElement, Animatable
 		if (!this.isPressed) {
 			return;
 		}
-		//#debug
+		// #debug
 		System.out.println("notifyItemPressedEnd for " + this + ", normalStyle=" + (this.normalStyle == null ? "<none>" : this.normalStyle.name ) + ", current=" + (this.style == null ? "<none>" : this.style.name) );
 		this.isPressed = false;
 		//#if polish.css.pressed-style
@@ -4502,7 +4502,14 @@ public abstract class Item implements UiElement, Animatable
 			//#if polish.css.view-type
 				this.preserveViewType = true;
 			//#endif
+				
 			setStyle( newStyle );
+			
+			//#if polish.css.pressed-style
+				if (this.isPressed) {
+					this.normalStyle = newStyle;
+				}
+			//#endif
 			//#if polish.css.view-type
 				this.preserveViewType = false;
 			//#endif
@@ -5587,7 +5594,9 @@ public abstract class Item implements UiElement, Animatable
 				oldStyle = this.style; 
 				setStyle( newStyle );
 				//#if polish.css.pressed-style
-					this.normalStyle = newStyle;
+					if (this.isPressed) {
+						this.normalStyle = newStyle;
+					}
 				//#endif
 				if (this.isFocused) {
 					if (this.parent instanceof Container) {
