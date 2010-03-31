@@ -1117,7 +1117,7 @@ public abstract class BaseScreen
     	if ( screen != null && forwardEventToNativeField( screen, 0)) {
     		boolean forwardEvent = true;
     		Item item = this.currentItem;
-        	Field field = item != null ? this.currentItem._bbField : null;
+        	Field field = item != null ? item._bbField : null;
         	boolean isTextField = field instanceof PolishTextField; 
         	if (isTextField) {
         		int absX = item.getAbsoluteX();
