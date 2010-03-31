@@ -1,4 +1,4 @@
-//#condition polish.midp2 && polish.usePolishGui
+//#condition polish.midp || polish.usePolishGui
 /*
  * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
@@ -36,8 +36,8 @@ import java.io.InputStream;
 public class Image
 {
     protected
-    	//#if polish.android
-    		//# de.enough.polish.android.lcdui.Image
+		//#if polish.build.classes.NativeImage:defined
+    		//#= ${polish.build.classes.NativeImage}
     	//#else
     		javax.microedition.lcdui.Image
     	//#endif
@@ -56,8 +56,8 @@ public class Image
      * @param image the parent image
      */
     public Image(
-        	//#if polish.android
-	    		//# de.enough.polish.android.lcdui.Image
+    		//#if polish.build.classes.NativeImage:defined
+    			//#= ${polish.build.classes.NativeImage}
 	    	//#else
 	    		javax.microedition.lcdui.Image
 	    	//#endif
@@ -106,17 +106,18 @@ public class Image
      */
     public static Image createImage(byte[] imageData, int imageOffset, int imageLength)
     {
-    	//#if polish.android
-			//# de.enough.polish.android.lcdui.Image
+		//#if polish.build.classes.NativeImage:defined
+    		//#= ${polish.build.classes.NativeImage}
 		//#else
 			javax.microedition.lcdui.Image
 		//#endif
          thisImage = 
-     	//#if polish.android
- 			//# de.enough.polish.android.lcdui.Image.createImage(imageData,imageOffset,imageLength);
+ 		//#if polish.build.classes.NativeImage:defined
+     		//#= ${polish.build.classes.NativeImage}
  		//#else
- 			javax.microedition.lcdui.Image.createImage(imageData,imageOffset,imageLength);
+ 			javax.microedition.lcdui.Image
  		//#endif
+ 				.createImage(imageData,imageOffset,imageLength);
         Image result = new Image(thisImage);
         return result;
     }
@@ -195,17 +196,18 @@ public class Image
      */
     public static Image createImage(Image img, int x, int y, int width, int height, int transform)
     {
-    	//#if polish.android
-			//# de.enough.polish.android.lcdui.Image
+ 		//#if polish.build.classes.NativeImage:defined
+    		//#= ${polish.build.classes.NativeImage}
 		//#else
 			javax.microedition.lcdui.Image
 		//#endif
 	     thisImage = 
-	 	//#if polish.android
-				//# de.enough.polish.android.lcdui.Image.createImage(img.image, x, y, width, height, transform) ;
+	  		//#if polish.build.classes.NativeImage:defined
+	     		//#= ${polish.build.classes.NativeImage}
 			//#else
-				javax.microedition.lcdui.Image.createImage(img.image, x, y, width, height, transform) ;
+				javax.microedition.lcdui.Image
 			//#endif
+					.createImage(img.image, x, y, width, height, transform);
 	    Image result = new Image(thisImage);
         return result;
     }
@@ -237,17 +239,18 @@ public class Image
      */
     public static Image createImage(Image source)
     {
-    	//#if polish.android
-			//# de.enough.polish.android.lcdui.Image
+  		//#if polish.build.classes.NativeImage:defined
+    		//#= ${polish.build.classes.NativeImage}
 		//#else
 			javax.microedition.lcdui.Image
 		//#endif
 	     thisImage = 
-	 	//#if polish.android
-			//# de.enough.polish.android.lcdui.Image.createImage(source.image) ;
+  		//#if polish.build.classes.NativeImage:defined
+     		//#= ${polish.build.classes.NativeImage}
 		//#else
-    	 	javax.microedition.lcdui.Image.createImage(source.image) ;
+    	 	javax.microedition.lcdui.Image
 		//#endif
+    	 			.createImage(source.image) ;
 	    Image result = new Image(thisImage);
         return result;
     }
@@ -270,17 +273,18 @@ public class Image
      */
     public static Image createImage(InputStream stream) throws IOException
     {
-    	//#if polish.android
-			//# de.enough.polish.android.lcdui.Image
+  		//#if polish.build.classes.NativeImage:defined
+    		//#= ${polish.build.classes.NativeImage}
 		//#else
 			javax.microedition.lcdui.Image
 		//#endif
 	     thisImage = 
-	 	//#if polish.android
-			//# de.enough.polish.android.lcdui.Image.createImage(stream) ;
+   		//#if polish.build.classes.NativeImage:defined
+     		//#= ${polish.build.classes.NativeImage}
 		//#else
-		 	javax.microedition.lcdui.Image.createImage(stream) ;
+		 	javax.microedition.lcdui.Image
 		//#endif
+		 		.createImage(stream) ;
 	    Image result = new Image(thisImage);
         return result;
     }
@@ -299,17 +303,18 @@ public class Image
      */
     public static Image createImage(int width, int height)
     {
-    	//#if polish.android
-			//# de.enough.polish.android.lcdui.Image
+   		//#if polish.build.classes.NativeImage:defined
+    		//#= ${polish.build.classes.NativeImage}
 		//#else
 			javax.microedition.lcdui.Image
 		//#endif
 	     thisImage = 
-	 	//#if polish.android
-			//# de.enough.polish.android.lcdui.Image.createImage(width,height) ;
+		//#if polish.build.classes.NativeImage:defined
+     		//#= ${polish.build.classes.NativeImage}
 		//#else
-		 	javax.microedition.lcdui.Image.createImage(width,height) ;
+		 	javax.microedition.lcdui.Image
 		//#endif
+		 		.createImage(width,height) ;
 	    Image result = new Image(thisImage);
         return result;
     }
@@ -334,17 +339,18 @@ public class Image
      */
     public static Image createImage(String url) throws IOException
     {
-    	//#if polish.android
-			//# de.enough.polish.android.lcdui.Image
+		//#if polish.build.classes.NativeImage:defined
+    		//#= ${polish.build.classes.NativeImage}
 		//#else
 			javax.microedition.lcdui.Image
 		//#endif
 	     thisImage = 
-	 	//#if polish.android
-			//# de.enough.polish.android.lcdui.Image.createImage(url) ;
+ 		//#if polish.build.classes.NativeImage:defined
+    		//#= ${polish.build.classes.NativeImage}
 		//#else
-		 	javax.microedition.lcdui.Image.createImage(url) ;
+		 	javax.microedition.lcdui.Image
 		//#endif
+		 		.createImage(url) ;
 	    Image result = new Image(thisImage);
         return result;
     }
@@ -413,17 +419,18 @@ public class Image
      */
     public static Image createRGBImage(int[] rgb, int width, int height, boolean processAlpha)
     {
-    	//#if polish.android
-			//# de.enough.polish.android.lcdui.Image
+ 		//#if polish.build.classes.NativeImage:defined
+    		//#= ${polish.build.classes.NativeImage}
 		//#else
 			javax.microedition.lcdui.Image
 		//#endif
 	     thisImage = 
-	 	//#if polish.android
-			//# de.enough.polish.android.lcdui.Image.createRGBImage(rgb,width,height,processAlpha) ;
+  		//#if polish.build.classes.NativeImage:defined
+    		//#= ${polish.build.classes.NativeImage}
 		//#else
-		 	javax.microedition.lcdui.Image.createRGBImage(rgb,width,height,processAlpha) ;
+		 	javax.microedition.lcdui.Image
 		//#endif
+		 		.createRGBImage(rgb,width,height,processAlpha) ;
 	    Image result = new Image(thisImage);
         return result;
     }
@@ -461,9 +468,9 @@ public class Image
     //#if polish.midp
     public Graphics getGraphics ()
     {
-        if ( image != null )
+        if ( this.image != null )
         {
-            return new Graphics(image.getGraphics());
+            return new Graphics(this.image.getGraphics());
         }
         else
         {

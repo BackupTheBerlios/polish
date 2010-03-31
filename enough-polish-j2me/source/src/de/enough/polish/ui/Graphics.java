@@ -1,4 +1,4 @@
-//#condition polish.midp2 && polish.usePolishGui
+//#condition polish.midp || polish.usePolishGui
 /*
  * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
@@ -455,14 +455,14 @@ import de.enough.polish.util.DeviceInfo;
 public class Graphics {
 
 	//#if polish.build.classes.NativeGraphics:defined
-		//#= private ${polish.build.classes.NativeGraphics} graphics;
+		//#= private ${polish.build.classes.NativeGraphics} nativeGraphics;
 	//#else
 		private NativeGraphics nativeGraphics;
 	//#endif
 		
     protected
-    //#if polish.android
-    	//# de.enough.polish.android.lcdui.Graphics
+	//#if polish.build.classes.NativeGraphics:defined
+    	//#= ${polish.build.classes.NativeGraphics}
     //#else
     	javax.microedition.lcdui.Graphics
     //#endif
@@ -550,8 +550,8 @@ public class Graphics {
 	public static final int DOTTED = 1;
 
     public Graphics( 
-    	    //#if polish.android
-	        	//# de.enough.polish.android.lcdui.Graphics
+    		//#if polish.build.classes.NativeGraphics:defined
+	        	//#= ${polish.build.classes.NativeGraphics}
 	        //#else
 	        	javax.microedition.lcdui.Graphics
 	        //#endif
@@ -1485,7 +1485,7 @@ public class Graphics {
     public void drawTranslucentLine( int color, int x1, int y1, int x2, int y2) {
             //#if polish.blackberry && polish.usePolishGui
                     net.rim.device.api.ui.Graphics bbGraphics = null;
-                    //# bbGraphics = g.g;
+                    //# bbGraphics = this.graphics.g;
                     int alpha = color >>> 24;
                     bbGraphics.setGlobalAlpha( alpha );
                     bbGraphics.setColor( color );
@@ -1653,13 +1653,13 @@ public class Graphics {
 	 */
 	public void fillRect( int x, int y, int width, int height, int color) {
 		if ((color & 0xff000000) == 0) {
-			graphics.setColor(color);
-			graphics.fillRect(x, y, width, height);
+			this.graphics.setColor(color);
+			this.graphics.fillRect(x, y, width, height);
 			return;
 		}
 		//#if polish.blackberry && polish.usePolishGui
 			net.rim.device.api.ui.Graphics bbGraphics = null;
-			//# bbGraphics = g.g;
+			//# bbGraphics = this.graphics.g;
 			int alpha = color >>> 24;
 			bbGraphics.setGlobalAlpha( alpha );
 			bbGraphics.setColor( color );
@@ -1790,20 +1790,20 @@ public class Graphics {
 	public void fillPolygon( int[] xPoints, int[] yPoints, int color ) {
 		//#if polish.blackberry && polish.usePolishGui
 			net.rim.device.api.ui.Graphics bbGraphics = null;
-			//# bbGraphics = g.g;
+			//# bbGraphics = this.graphics.g;
 			if ((color & 0xff000000) == 0) {
 				color = 0xff000000 | color;
 			}
 			bbGraphics.setColor( color );
 			// rest of translation is handled in de.enough.polish.blackberry.ui.Graphics directly, so we have to adjust
 			// this here manually
-            int translateX = graphics.getTranslateX();
-			int translateY = graphics.getTranslateY();
+            int translateX = this.graphics.getTranslateX();
+			int translateY = this.graphics.getTranslateY();
 			bbGraphics.translate( translateX, translateY );
 			bbGraphics.drawFilledPath( xPoints, yPoints, null, null);
 			bbGraphics.translate( -translateX, -translateY );
 		//#elif polish.api.nokia-ui
-			DirectGraphics dg = DirectUtils.getDirectGraphics(graphics);
+			DirectGraphics dg = DirectUtils.getDirectGraphics(this.graphics);
 			if ((color & 0xFF000000) == 0) {
 				color |= 0xFF000000;
 			}

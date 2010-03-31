@@ -110,6 +110,9 @@
 		<capability name="build.classes.screen" value="net.rim.device.api.ui.container.MainScreen" />
 		<capability name="build.classes.fullscreen" value="net.rim.device.api.ui.container.FullScreen" />
 		<capability name="build.classes.NativeDisplay" value="de.enough.polish.blackberry.ui.NativeDisplayImpl" />
+		<capability name="build.classes.NativeFont" value="de.enough.polish.blackberry.ui.Font" />
+		<capability name="build.classes.NativeImage" value="de.enough.polish.blackberry.ui.Image" />
+		<capability name="build.classes.NativeGraphics" value="de.enough.polish.blackberry.ui.Graphics" />
 		<capability name="polish.usePolishTitle" value="true" />
 	</platform>
 	
@@ -279,6 +282,9 @@
 		<capability name="build.classes.screen"     value="de.enough.polish.android.lcdui.Canvas" />
 		<capability name="build.classes.fullscreen" value="de.enough.polish.android.lcdui.Canvas" />
 		<capability name="build.classes.NativeDisplay" value="de.enough.polish.android.lcdui.AndroidDisplay" />
+		<capability name="build.classes.NativeFont" value="de.enough.polish.android.lcdui.Font" />
+		<capability name="build.classes.NativeImage" value="de.enough.polish.android.lcdui.Image" />
+		<capability name="build.classes.NativeGraphics" value="de.enough.polish.android.lcdui.Graphics" />
 		<!-- use a J2ME Polish title even when fullscreen mode is deactivated -->
 		<capability name="usePolishTitle" value="true" />
 		<capability name="javac.source" value="1.5" /> 

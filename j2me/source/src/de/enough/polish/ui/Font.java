@@ -1,4 +1,4 @@
-//#condition polish.usePolishGui && polish.midp2 && !polish.blackberry
+//#condition polish.usePolishGui || polish.midp
 /*
  * Copyright (c) 2010 Robert Virkus / Enough Software
  *
@@ -82,8 +82,8 @@ package de.enough.polish.ui;
 public class Font {
 
     protected
-    	//#if polish.android
-    		//# de.enough.polish.android.lcdui.Font
+    	//#if polish.build.classes.NativeFont:defined
+    		//#= ${polish.build.classes.NativeFont}
     	//#else
     		javax.microedition.lcdui.Font
     	//#endif
@@ -192,8 +192,8 @@ public class Font {
 	public static final int FONT_INPUT_TEXT = 1;
 
     protected Font ( 
-        	//#if polish.android
-	    		//# de.enough.polish.android.lcdui.Font
+        	//#if polish.build.classes.NativeFont:defined
+    			//#= ${polish.build.classes.NativeFont}
 	    	//#else
 	    		javax.microedition.lcdui.Font
 	    	//#endif
@@ -217,8 +217,8 @@ public class Font {
      */
     public static Font getFont(int fontSpecifier) {
         return new Font ( 
-            	//#if polish.android
-	        		//# de.enough.polish.android.lcdui.Font
+            	//#if polish.build.classes.NativeFont:defined
+        			//#= ${polish.build.classes.NativeFont}
 	        	//#else
 	        		javax.microedition.lcdui.Font
 	        	//#endif
@@ -231,8 +231,8 @@ public class Font {
      */
     public static Font getDefaultFont() {
         return new Font ( 
-            	//#if polish.android
-	        		//# de.enough.polish.android.lcdui.Font
+            	//#if polish.build.classes.NativeFont:defined
+        			//#= ${polish.build.classes.NativeFont}
 	        	//#else
 	        		javax.microedition.lcdui.Font
 	        	//#endif
@@ -260,8 +260,8 @@ public class Font {
      */
     public static Font getFont(int inp_face, int inp_style, int inp_size) {
         return new Font ( 
-            	//#if polish.android
-	        		//# de.enough.polish.android.lcdui.Font
+            	//#if polish.build.classes.NativeFont:defined
+        			//#= ${polish.build.classes.NativeFont}
 	        	//#else
 	        		javax.microedition.lcdui.Font
 	        	//#endif
@@ -460,8 +460,8 @@ public class Font {
      * @return the native font
      */
 	public 
-	//#if polish.android
-		//# de.enough.polish.android.lcdui.Font
+	//#if polish.build.classes.NativeFont:defined
+		//#= ${polish.build.classes.NativeFont}
 	//#else
 		javax.microedition.lcdui.Font
 	//#endif
