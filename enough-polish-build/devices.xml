@@ -13665,7 +13665,7 @@ These namespaces/schemas will be used soon.
   </device>
   <device>
     <identifier>BlackBerry/4.7</identifier>
-    <features>hasTrackballEvents, hasPointerEvents, isVirtual</features>
+    <features>hasTrackballEvents, hasPointerEvents, hasTouchEvents, isVirtual</features>
     <capability name="JavaPlatform" value="MIDP/2.0, BlackBerry/4.7" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
     <capability name="JavaPackage" value="wmapi, mmapi, pimapi,javacard,contenthandler,location" />
@@ -13675,7 +13675,7 @@ These namespaces/schemas will be used soon.
   </device>
   <device>
     <identifier>BlackBerry/5.0</identifier>
-    <features>hasTrackballEvents, hasPointerEvents, isVirtual</features>
+    <features>hasTrackballEvents, hasPointerEvents, hasTouchEvents, isVirtual</features>
     <capability name="JavaPlatform" value="MIDP/2.0, BlackBerry/5.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
     <capability name="JavaPackage" value="wmapi, mmapi, pimapi,javacard,contenthandler,location" />
