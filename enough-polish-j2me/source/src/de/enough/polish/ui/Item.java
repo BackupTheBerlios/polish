@@ -3641,6 +3641,11 @@ public abstract class Item implements UiElement, Animatable
 		{
 			return notifyItemPressedStart();
 		}
+		
+		if(this.view != null) {
+			return this.view.handleKeyPressed(keyCode, gameAction);
+		}
+		
 		return false;
 	}
 	
@@ -3657,7 +3662,15 @@ public abstract class Item implements UiElement, Animatable
 	 * @see #handleKeyPressed(int, int)
 	 */
 	protected boolean handleKeyRepeated( int keyCode, int gameAction ) {
-		return handleKeyPressed(keyCode, gameAction);
+		boolean handled = handleKeyPressed(keyCode, gameAction);
+		
+		if(!handled) {
+			if(this.view != null) {
+				return this.view.handleKeyPressed(keyCode, gameAction);
+			}
+		}
+		
+		return false;
 	}
 	
 	/**
@@ -3721,6 +3734,10 @@ public abstract class Item implements UiElement, Animatable
 					scr.callCommandListener(deleteCommand);
 				}				
 			}
+		}
+		
+		if(this.view != null) {
+			return this.view.handleKeyReleased(keyCode, gameAction);
 		}
 
 		return false;
@@ -4025,6 +4042,11 @@ public abstract class Item implements UiElement, Animatable
 				}
 			//#endif			
 		//#endif
+		
+		if(this.view != null) {
+			return this.view.handlePointerPressed(relX, relY);
+		}
+		
 		return false;
 	}
 	
@@ -4091,6 +4113,11 @@ public abstract class Item implements UiElement, Animatable
 				return true;
 			}
 		//#endif
+		
+		if(this.view != null) {
+			return this.view.handlePointerReleased(relX, relY);
+		}
+			
 		return false;
 	}
 	
@@ -4124,6 +4151,11 @@ public abstract class Item implements UiElement, Animatable
 				}
 			//#endif
 		//#endif
+		
+		if(this.view != null) {
+			return this.view.handlePointerDragged(relX, relY);
+		}
+		
 		return false;
 	}
 	
