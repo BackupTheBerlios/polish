@@ -1664,10 +1664,10 @@ public class Container extends Item {
 	{
 		super.setContentWidth(width);
 		
-		//#ifdef polish.css.view-type
-		if(this.containerView != null) {
-			this.containerView.contentWidth = width;
-		}
+		//#ifdef tmp.supportViewType
+			if (this.containerView != null) {
+				this.containerView.setContentWidth( width );
+			}
 		//#endif
 		
 		if (this.focusedItem != null && (this.layout & LAYOUT_SHRINK) == LAYOUT_SHRINK) {
@@ -1675,15 +1675,18 @@ public class Container extends Item {
 		}
 	}
 	
+	//#ifdef tmp.supportViewType
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#setContentHeight(int)
+	 */
 	protected void setContentHeight(int height) {
 		super.setContentHeight(height);
-		
-		//#ifdef polish.css.view-type
 		if(this.containerView != null) {
-			this.containerView.contentHeight = height;
+			this.containerView.setContentHeight( height );
 		}
-		//#endif
 	}
+	//#endif
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#paintContent(int, int, int, int, javax.microedition.lcdui.Graphics)

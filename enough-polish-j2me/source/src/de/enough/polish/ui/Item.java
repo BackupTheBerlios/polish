@@ -3514,9 +3514,9 @@ public abstract class Item implements UiElement, Animatable
 		this.contentWidth = width;
 		
 		//#ifdef polish.css.view-type
-		if (this.view != null) {
-			this.view.contentWidth = width;
-		}
+			if (this.view != null) {
+				this.view.setContentWidth( width );
+			}
 		//#endif
 	}
 	
@@ -3529,9 +3529,9 @@ public abstract class Item implements UiElement, Animatable
 		this.contentHeight = height;
 		
 		//#ifdef polish.css.view-type
-		if (this.view != null) {
-			this.view.contentHeight = height;
-		}
+			if (this.view != null) {
+				this.view.setContentHeight( height );
+			}
 		//#endif
 	}
 	
