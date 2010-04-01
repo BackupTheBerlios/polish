@@ -3642,9 +3642,11 @@ public abstract class Item implements UiElement, Animatable
 			return notifyItemPressedStart();
 		}
 		
-		if(this.view != null) {
-			return this.view.handleKeyPressed(keyCode, gameAction);
-		}
+		//#ifdef polish.css.view-type
+			if(this.view != null) {
+				return this.view.handleKeyPressed(keyCode, gameAction);
+			}
+		//#endif
 		
 		return false;
 	}
@@ -3664,13 +3666,13 @@ public abstract class Item implements UiElement, Animatable
 	protected boolean handleKeyRepeated( int keyCode, int gameAction ) {
 		boolean handled = handleKeyPressed(keyCode, gameAction);
 		
-		if(!handled) {
-			if(this.view != null) {
-				return this.view.handleKeyPressed(keyCode, gameAction);
+		//#ifdef polish.css.view-type
+			if(!handled && this.view != null) {
+				handled = this.view.handleKeyPressed(keyCode, gameAction);
 			}
-		}
+		//#endif
 		
-		return false;
+		return handled;
 	}
 	
 	/**
@@ -3736,9 +3738,11 @@ public abstract class Item implements UiElement, Animatable
 			}
 		}
 		
-		if(this.view != null) {
-			return this.view.handleKeyReleased(keyCode, gameAction);
-		}
+		//#ifdef polish.css.view-type
+			if(this.view != null) {
+				return this.view.handleKeyReleased(keyCode, gameAction);
+			}
+		//#endif
 
 		return false;
 	}
@@ -4043,9 +4047,12 @@ public abstract class Item implements UiElement, Animatable
 			//#endif			
 		//#endif
 		
-		if(this.view != null) {
-			return this.view.handlePointerPressed(relX, relY);
-		}
+			
+		//#ifdef polish.css.view-type
+			if(this.view != null) {
+				return this.view.handlePointerPressed(relX, relY);
+			}
+		//#endif
 		
 		return false;
 	}
@@ -4114,9 +4121,11 @@ public abstract class Item implements UiElement, Animatable
 			}
 		//#endif
 		
-		if(this.view != null) {
-			return this.view.handlePointerReleased(relX, relY);
-		}
+		//#ifdef polish.css.view-type
+			if(this.view != null) {
+				return this.view.handlePointerReleased(relX, relY);
+			}
+		//#endif
 			
 		return false;
 	}
@@ -4152,9 +4161,11 @@ public abstract class Item implements UiElement, Animatable
 			//#endif
 		//#endif
 		
-		if(this.view != null) {
-			return this.view.handlePointerDragged(relX, relY);
-		}
+		//#ifdef polish.css.view-type
+			if(this.view != null) {
+				return this.view.handlePointerDragged(relX, relY);
+			}
+		//#endif
 		
 		return false;
 	}
