@@ -5,13 +5,13 @@ import de.enough.polish.ui.UiAccess;
 import de.enough.polish.util.ToStringHelper;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.element.ContainingBlock;
-import de.enough.skylight.renderer.layout.LayoutAttributes;
+import de.enough.skylight.renderer.element.view.ContentView;
+import de.enough.skylight.renderer.layout.LayoutDescriptor;
 import de.enough.skylight.renderer.linebox.Linebox;
-
 
 public class Partition {
 	public static void partitionInline(Item item, PartitionList partitions) {
-		if(item.isVisible()) {
+		if(item.isVisible()) { 
 			int height;
 			if(item instanceof ContainingBlock) {
 				if(item instanceof BlockContainingBlock) {
@@ -23,9 +23,9 @@ public class Partition {
 				height = item.getContentHeight();
 			}
 			
-			LayoutAttributes attributes = LayoutAttributes.get(item);
+			LayoutDescriptor layoutDescriptor = ContentView.getLayoutDescriptor(item);
 			
-			int x = attributes.getInlineRelativeLeft();
+			int x = layoutDescriptor.getInlineRelativeOffset();
 		
 			int marginLeft = x;
 			int paddingLeft = x + UiAccess.getMarginLeft(item);
@@ -34,7 +34,7 @@ public class Partition {
 			int paddingRight = contentRight + UiAccess.getPaddingRight(item);
 			int marginRight = paddingRight + UiAccess.getMarginRight(item);
 			
-			PartitionList itemPartitions = attributes.getPartitions();
+			PartitionList itemPartitions = layoutDescriptor.getPartitions();
 			itemPartitions.clear();
 			
 			itemPartitions.add(TYPE_MARGIN_LEFT, marginLeft, paddingLeft, height, item);
@@ -48,16 +48,20 @@ public class Partition {
 	}
 	
 	public static void partitionBlock(Item item, PartitionList partitions) {
-		LayoutAttributes attributes = LayoutAttributes.get(item);
+		LayoutDescriptor layoutDescriptor = ContentView.getLayoutDescriptor(item);
 		
-		int x = attributes.getInlineRelativeLeft();
+		int x = layoutDescriptor.getInlineRelativeOffset();
 		
-		PartitionList itemPartitions = attributes.getPartitions();
+		PartitionList itemPartitions = layoutDescriptor.getPartitions();
 		itemPartitions.clear();
 		
 		if(item.isVisible()) {
 			int width = item.itemWidth;
 			int height = item.itemHeight;
+			
+			if(width == 0) {
+				System.out.println("break");
+			}
 			
 			int left = x;
 			int right = x + width;

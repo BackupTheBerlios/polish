@@ -5,10 +5,10 @@ import javax.microedition.lcdui.Image;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.Viewport;
 
-public class ImgElement extends CssElement {
+public class ImgCssElement extends CssElement {
 	Image image;
 	
-	public ImgElement(NodeHandler handler, DomNode node, CssElement parent,
+	public ImgCssElement(NodeHandler handler, DomNode node, CssElement parent,
 			Viewport viewport) {
 		super(handler, node, parent, viewport);
 	}

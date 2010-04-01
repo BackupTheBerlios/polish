@@ -2,16 +2,16 @@ package de.enough.skylight.renderer.element.view;
 
 import javax.microedition.lcdui.Graphics;
 
+import de.enough.polish.ui.DebugHelper;
 import de.enough.polish.ui.Dimension;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.ItemPreinit;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
-import de.enough.skylight.renderer.element.ContainingBlock;
 import de.enough.skylight.renderer.element.InlineContainingBlock;
-import de.enough.skylight.renderer.layout.LayoutAttributes;
+import de.enough.skylight.renderer.element.TextBlock;
+import de.enough.skylight.renderer.layout.LayoutDescriptor;
 import de.enough.skylight.renderer.linebox.Linebox;
-import de.enough.skylight.renderer.node.CssElement;
 
 public class InlineContainingBlockView extends ContainingBlockView {
 
@@ -23,22 +23,20 @@ public class InlineContainingBlockView extends ContainingBlockView {
 	
 	int inlineOffset;
 	
-	public InlineContainingBlockView(InlineContainingBlock inlineBlock) {
-		super(inlineBlock);
+	public InlineContainingBlockView(InlineContainingBlock parent) {
+		super(parent);
 	}
 	
 	protected void initMargin(Style style, int availWidth) {
-		BlockContainingBlock block = LayoutAttributes.get(this.parentContainer).getBlock();
 		style.addAttribute("margin-top", DIMENSION_ZERO);
 		style.addAttribute("margin-bottom", DIMENSION_ZERO);
-		super.initMargin(style, block.getAvailableContentWidth());
+		super.initMargin(style, this.block.getAvailableContentWidth());
 	}
 
 	protected void initPadding(Style style, int availWidth) {
-		BlockContainingBlock block = LayoutAttributes.get(this.parentContainer).getBlock();
 		style.addAttribute("padding-top", DIMENSION_ZERO);
 		style.addAttribute("padding-bottom", DIMENSION_ZERO);
-		super.initPadding(style, block.getAvailableContentWidth());
+		super.initPadding(style, this.block.getAvailableContentWidth());
 	}
 
 	protected void initItem(Item item, BlockContainingBlock block) {
@@ -52,24 +50,22 @@ public class InlineContainingBlockView extends ContainingBlockView {
 	
 	protected void initContent(Item parentContainerItem, int firstLineWidth,
 			int availWidth, int availHeight) {
+		//#debug sl.debug.layout
+		System.out.println("initializing " + this);
 		
 		int maxHeight = 0;
 		int completeWidth = 0;
 		
-		ContainingBlock containingBlock = (ContainingBlock)parentContainerItem;
-		LayoutAttributes attributes = containingBlock.getLayoutAttributes();
-		BlockContainingBlock block = attributes.getBlock();
-		CssElement element = attributes.getElement();
-		
 		boolean interactive = false;
 		
-		if(element != null && element.isInteractive()) {
+		if(this.cssElement != null && this.cssElement.isInteractive()) {
 			interactive = true;
+			System.out.println(this.cssElement + " : interactive");
 		}
 		
-		this.inlineOffset = attributes.getInlineRelativeLeft() + containingBlock.getContentX();
+		this.inlineOffset = this.inlineRelativeOffset + this.parentContainingBlock.getContentX();
 		
-		Item[] items = containingBlock.getItems();
+		Item[] items = this.parentContainingBlock.getItems();
 		
 		int length = items.length;
 		
@@ -81,11 +77,10 @@ public class InlineContainingBlockView extends ContainingBlockView {
 		for (int index = 0; index < length; index++) {
 			Item item = items[index];
 			
-			LayoutAttributes itemAttributes = LayoutAttributes.get(item);
+			LayoutDescriptor descriptor = ContentView.getLayoutDescriptor(item);
+			descriptor.setInlineRelativeOffset(this.inlineOffset + completeWidth);
 			
-			itemAttributes.setInlineRelativeLeft(this.inlineOffset + completeWidth);
-			
-			initItem(item, block);
+			initItem(item, this.block);
 			
 			if (item.isInteractive()) {
 				interactive = true;
@@ -132,9 +127,7 @@ public class InlineContainingBlockView extends ContainingBlockView {
 	
 	protected void paintContent(Item parent, int x, int y, int leftBorder,
 			int rightBorder, Graphics g) {
-		LayoutAttributes blockAttributes = this.containingBlock.getLayoutAttributes();
-		BlockContainingBlock block = blockAttributes.getBlock();
-		Linebox linebox = block.getPaintLineBox();
+		Linebox linebox = this.block.getPaintLineBox();
 		
 		int lineboxInlineRelativeLeft = linebox.getInlineRelativeLeft();
 		int lineboxInlineRelativeRight = linebox.getInlineRelativeRight();

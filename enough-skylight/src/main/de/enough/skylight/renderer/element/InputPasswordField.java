@@ -2,7 +2,7 @@ package de.enough.skylight.renderer.element;
 
 import de.enough.polish.ui.TextField;
 
-public class InputPasswordField extends InputTextField {
+public class InputPasswordField extends InputTextField{
 	
 	public InputPasswordField() {
 		super();

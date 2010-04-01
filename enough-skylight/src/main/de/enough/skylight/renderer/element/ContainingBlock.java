@@ -4,21 +4,26 @@ import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.UiAccess;
-import de.enough.skylight.renderer.layout.LayoutAttributes;
+import de.enough.skylight.renderer.element.view.ContainingBlockView;
+import de.enough.skylight.renderer.layout.LayoutDescriptor;
 import de.enough.skylight.renderer.partition.Partable;
 
 public abstract class ContainingBlock extends Container implements Partable {
 	
-	LayoutAttributes layoutAttributes; 
+	final ContainingBlockView containingBlockView;
 	
-	public ContainingBlock(boolean focusFirstElement) {
-		this(focusFirstElement,null);
+	final LayoutDescriptor layoutDescriptor;
+	
+	public ContainingBlock() {
+		this(null);
 	}
 	
-	public ContainingBlock(boolean focusFirstElement, Style style) {
-		super(focusFirstElement, style);
+	public ContainingBlock(Style style) {
+		super(false, style);
 		
-		this.layoutAttributes = LayoutAttributes.get(this);
+		this.containingBlockView = buildView();
+		setView(this.containingBlockView);
+		this.layoutDescriptor = this.containingBlockView;
 	}
 	
 	protected void initContent(int firstLineWidth, int availWidth,
@@ -54,6 +59,16 @@ public abstract class ContainingBlock extends Container implements Partable {
 			}
 		}
 	}
+	
+	abstract ContainingBlockView buildView();
+	
+	public LayoutDescriptor getLayoutDescriptor() {
+		return this.layoutDescriptor;
+	}
+	
+	public ContainingBlockView getContainingBlockView() {
+		return this.containingBlockView;
+	}
 
 	public abstract void addToBody(Item item);
 	
@@ -66,10 +81,6 @@ public abstract class ContainingBlock extends Container implements Partable {
 	public abstract InlineContainingBlock getLeftFloat();
 	
 	public abstract InlineContainingBlock getRightFloat();
-	
-	public LayoutAttributes getLayoutAttributes() {
-		return this.layoutAttributes;
-	}
 	
 //	protected Style focus(Style focusStyle, int direction) {
 //		requestInit();

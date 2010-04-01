@@ -26,7 +26,7 @@ public class Viewport extends BlockContainingBlock {
 	
 	public Viewport(ViewportContext context) {
 		//#style viewport
-		super(null);
+		super();
 		
 		this.userEventListeners = new ArrayList();
 		
@@ -53,7 +53,9 @@ public class Viewport extends BlockContainingBlock {
 	}
 	
 	public void reset() {
-		this.body.clear();
+		if(this.body != null) {
+			this.body.clear();
+		}
 		
 		if(this.floatLeft != null) {
 			this.floatLeft.clear();

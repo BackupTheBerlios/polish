@@ -4,15 +4,15 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.ToStringHelper;
 import de.enough.skylight.renderer.element.view.BlockContainingBlockView;
-import de.enough.skylight.renderer.layout.LayoutAttributes;
+import de.enough.skylight.renderer.element.view.ContainingBlockView;
+import de.enough.skylight.renderer.element.view.ContentView;
+import de.enough.skylight.renderer.layout.LayoutDescriptor;
 import de.enough.skylight.renderer.linebox.Linebox;
-import de.enough.skylight.renderer.node.CssElement;
+import de.enough.skylight.renderer.partition.Partable;
 import de.enough.skylight.renderer.partition.Partition;
 import de.enough.skylight.renderer.partition.PartitionList;
 
 public class BlockContainingBlock extends ContainingBlock {
-	
-	BlockContainingBlockView blockView;
 	
 	protected InlineContainingBlock body;
 
@@ -20,40 +20,35 @@ public class BlockContainingBlock extends ContainingBlock {
 	
 	protected InlineContainingBlock floatRight;
 	
-	CssElement element;
-	
-	ContainingBlock containingBlock;
-	
-	BlockContainingBlock block;
-	
-	Partition elementPartition;
-	
-	public BlockContainingBlock(CssElement element) {
-		this(element,element.getStyle());
+	public BlockContainingBlock() {
+		this(null);
 	}
 	
-	public BlockContainingBlock(CssElement element, Style style) {
-		super( false, style );
+	public BlockContainingBlock(Style style) {
+		super( style );
 		
-		this.element = element;
 		
-		this.blockView = new BlockContainingBlockView(this);
-		setView(this.blockView);
-		
-		//#style element
-		this.body = new InlineContainingBlock();
-		LayoutAttributes attributes = this.body.getLayoutAttributes();
-		attributes.setElement(null);
-		attributes.setContainingBlock(this);
-		attributes.setBlock(this);
-		
-		add(this.body);
+	}
+	
+	ContainingBlockView buildView() {
+		return new BlockContainingBlockView(this);
 	}
 	
 	public void addToBody(Item item) {
+		if(this.body == null) {
+			//#style element
+			this.body = new InlineContainingBlock();
+			LayoutDescriptor layoutDescriptor = (LayoutDescriptor)this.body.getContainingBlockView();
+			
+			layoutDescriptor.setCssElement(null);
+			layoutDescriptor.setContainingBlock(this);
+			layoutDescriptor.setBlock(this);
+			add(this.body);
+		}
+	
 		this.body.add(item);
-		LayoutAttributes attributes = this.body.getLayoutAttributes();
-		attributes.setContainingBlock(this.body);
+		LayoutDescriptor descriptor = ContentView.getLayoutDescriptor(item);
+		descriptor.setContainingBlock(this.body);
 	}
 	
 	public void addToLeftFloat(Item item) {
@@ -61,16 +56,17 @@ public class BlockContainingBlock extends ContainingBlock {
 			//#style element
 			this.floatLeft = new InlineContainingBlock();
 			
-			LayoutAttributes attributes = this.floatLeft.getLayoutAttributes();
-			attributes.setElement(null);
-			attributes.setContainingBlock(this);
-			attributes.setBlock(this);
+			LayoutDescriptor layoutDescriptor = this.floatLeft.getLayoutDescriptor();
+			layoutDescriptor.setCssElement(null);
+			layoutDescriptor.setContainingBlock(this);
+			layoutDescriptor.setBlock(this);
 			
 			add(this.floatLeft);
 		}
 		
 		this.floatLeft.add(item);
-		LayoutAttributes.get(item).setContainingBlock(this.floatLeft);
+		LayoutDescriptor descriptor = ContentView.getLayoutDescriptor(item);
+		descriptor.setContainingBlock(this.floatLeft);
 	}
 	
 	public void addToRightFloat(Item item) {
@@ -78,16 +74,17 @@ public class BlockContainingBlock extends ContainingBlock {
 			//#style element
 			this.floatRight = new InlineContainingBlock();
 			
-			LayoutAttributes attributes = this.floatRight.getLayoutAttributes();
-			attributes.setElement(null);
-			attributes.setContainingBlock(this);
-			attributes.setBlock(this);
+			LayoutDescriptor layoutElement = this.floatRight.getLayoutDescriptor();
+			layoutElement.setCssElement(null);
+			layoutElement.setContainingBlock(this);
+			layoutElement.setBlock(this);
 			
 			add(this.floatRight);
 		}
 		
 		this.floatRight.add(item);
-		LayoutAttributes.get(item).setContainingBlock(this.floatRight);
+		LayoutDescriptor descriptor = ContentView.getLayoutDescriptor(item);
+		descriptor.setContainingBlock(this.floatRight);
 	}
 	
 	public InlineContainingBlock getBody() {
@@ -107,13 +104,15 @@ public class BlockContainingBlock extends ContainingBlock {
 	}
 	
 	public Linebox getPaintLineBox() {
-		return this.blockView.getPaintLineBox();
+		BlockContainingBlockView view = (BlockContainingBlockView)this.layoutDescriptor;
+		return view.getPaintLineBox();
 	}
-//	
+	
 	public String toString() {
 		return new ToStringHelper("BlockContainingBlock").
+		add("hashcode", this.hashCode()).
 		add("focused", this.isFocused).
-		add("element", LayoutAttributes.get(this).getElement()).
+		add("element", this.layoutDescriptor.getCssElement()).
 		toString();
 	}
 }

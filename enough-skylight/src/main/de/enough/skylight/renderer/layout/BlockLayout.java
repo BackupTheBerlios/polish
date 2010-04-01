@@ -2,6 +2,7 @@ package de.enough.skylight.renderer.layout;
 
 import de.enough.polish.ui.Item;
 import de.enough.skylight.renderer.element.InlineContainingBlock;
+import de.enough.skylight.renderer.element.view.ContentView;
 import de.enough.skylight.renderer.linebox.Linebox;
 import de.enough.skylight.renderer.linebox.LineboxList;
 import de.enough.skylight.renderer.partition.Partition;
@@ -80,8 +81,8 @@ public class BlockLayout {
 	 
 	public void addToLinebox(Linebox linebox, Partition partition) {
 		Item partitionItem = partition.getParentItem();
-		LayoutAttributes attributes = LayoutAttributes.get(partitionItem);
-		attributes.getLineboxes().add(linebox);						
+		LayoutDescriptor layoutDescriptor = ContentView.getLayoutDescriptor(partitionItem);
+		layoutDescriptor.getLineboxes().add(linebox);						
 		
 		partition.setLineboxRelativeX(linebox.getWidth());
 		linebox.addPartition(partition);

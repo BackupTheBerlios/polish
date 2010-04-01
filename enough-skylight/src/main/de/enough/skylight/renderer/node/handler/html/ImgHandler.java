@@ -15,7 +15,7 @@ import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.Viewport;
 import de.enough.skylight.renderer.ViewportContext;
 import de.enough.skylight.renderer.node.CssElement;
-import de.enough.skylight.renderer.node.ImgElement;
+import de.enough.skylight.renderer.node.ImgCssElement;
 import de.enough.skylight.renderer.node.NodeUtils;
 import de.enough.skylight.util.UrlUtil;
 
@@ -26,11 +26,11 @@ public class ImgHandler extends BodyNodeHandler{
 	}
 
 	public CssElement createElement(DomNode node, CssElement parent, Viewport viewport) {
-		return new ImgElement(this, node, parent, viewport);
+		return new ImgCssElement(this, node, parent, viewport);
 	}
 	
 	public void handleNode(CssElement element) {
-		ImgElement imgElement = (ImgElement)element;
+		ImgCssElement imgElement = (ImgCssElement)element;
 		ViewportContext context = element.getViewport().getContext();
 		
 		String src = NodeUtils.getAttributeValue(element.getNode(), "src");
@@ -60,7 +60,7 @@ public class ImgHandler extends BodyNodeHandler{
 	public void setContent(CssElement element, Item item) {
 		super.setContent(element, item);
 		
-		ImgElement imgElement = (ImgElement)element;
+		ImgCssElement imgElement = (ImgCssElement)element;
 		ImageItem imgItem = (ImageItem)item; 
 		
 		Image image = imgElement.getImage();

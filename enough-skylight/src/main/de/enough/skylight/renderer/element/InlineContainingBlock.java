@@ -3,63 +3,53 @@ package de.enough.skylight.renderer.element;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.ToStringHelper;
+import de.enough.skylight.renderer.element.view.ContainingBlockView;
 import de.enough.skylight.renderer.element.view.InlineContainingBlockView;
-import de.enough.skylight.renderer.layout.LayoutAttributes;
-import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.partition.Partable;
 import de.enough.skylight.renderer.partition.Partition;
 import de.enough.skylight.renderer.partition.PartitionList;
 
 public class InlineContainingBlock extends ContainingBlock {
 	
-	InlineContainingBlockView inlineView;
-	
 	public InlineContainingBlock() {
-		this(null,null);
+		this( null );
 	}
 	
 	public InlineContainingBlock(Style style) {
-		this(null, style);
+		super( style );
 	}
 	
-	public InlineContainingBlock(CssElement element) {
-		this(element, null);
-	}
-	
-	public InlineContainingBlock(CssElement element, Style style) {
-		super(false,style);
-		
-		this.inlineView = new InlineContainingBlockView(this);
-		setView(this.inlineView);
+	ContainingBlockView buildView() {
+		return new InlineContainingBlockView(this);
 	}
 
 	public void addToBody(Item item) {
 		add(item);
-		LayoutAttributes.get(item).setContainingBlock(this);
+		this.layoutDescriptor.setContainingBlock(this);
 	}
 
 	public void addToLeftFloat(Item item) {
-		BlockContainingBlock block = LayoutAttributes.get(this).getBlock();
+		BlockContainingBlock block = this.layoutDescriptor.getBlock();
 		block.addToLeftFloat(item);
 	}
 	
 	public void addToRightFloat(Item item) {
-		BlockContainingBlock block = LayoutAttributes.get(this).getBlock();
+		BlockContainingBlock block = this.layoutDescriptor.getBlock();
 		block.addToRightFloat(item);
 	}
 	
 	public InlineContainingBlock getBody() {
-		BlockContainingBlock block = LayoutAttributes.get(this).getBlock();
+		BlockContainingBlock block = this.layoutDescriptor.getBlock();
 		return block.getBody();
 	}
 	
 	public InlineContainingBlock getLeftFloat() {
-		BlockContainingBlock block = LayoutAttributes.get(this).getBlock();
+		BlockContainingBlock block = this.layoutDescriptor.getBlock();
 		return block.getLeftFloat();
 	}
 	
 	public InlineContainingBlock getRightFloat() {
-		BlockContainingBlock block = LayoutAttributes.get(this).getBlock();
+		BlockContainingBlock block = this.layoutDescriptor.getBlock();
 		return block.getRightFloat();
 	}
 	
@@ -72,14 +62,13 @@ public class InlineContainingBlock extends ContainingBlock {
 				Partable partable = (Partable)item;
 				partable.partition(partitions);
 			} else {
-				Partition.partitionInline(item, partitions);
+				Partition.partitionBlock(item,partitions);
 			}
 		}
 	}
 	
 	public boolean isInItemArea(int relX, int relY) {
-		LayoutAttributes attributes = getLayoutAttributes();
-		BlockContainingBlock block = attributes.getBlock();
+		BlockContainingBlock block = this.layoutDescriptor.getBlock();
 		int blockWidth = block.itemWidth;
 		int blockHeight = block.itemHeight;
 		
@@ -93,7 +82,7 @@ public class InlineContainingBlock extends ContainingBlock {
 	public String toString() {
 		return new ToStringHelper("InlineContainingBlock").
 		add("focused", this.isFocused).
-		add("element", LayoutAttributes.get(this).getElement()).
+		add("element", this.layoutDescriptor.getCssElement()).
 		toString();
 	}
 }

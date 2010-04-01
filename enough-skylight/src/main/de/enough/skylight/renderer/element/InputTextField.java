@@ -4,13 +4,13 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.ItemStateListener;
 import de.enough.polish.ui.TextField;
 import de.enough.skylight.dom.DomNode;
-import de.enough.skylight.renderer.layout.LayoutAttributes;
+import de.enough.skylight.renderer.element.view.ContentView;
+import de.enough.skylight.renderer.layout.LayoutDescriptor;
 import de.enough.skylight.renderer.node.CssElement;
-import de.enough.skylight.renderer.partition.Partable;
-import de.enough.skylight.renderer.partition.Partition;
-import de.enough.skylight.renderer.partition.PartitionList;
 
-public class InputTextField extends TextField implements Partable, ItemStateListener {
+public class InputTextField extends TextField implements ItemStateListener {
+	
+	CssElement cssElement;
 	
 	public InputTextField() {
 		super(null,"", 512, TextField.ANY);
@@ -18,22 +18,22 @@ public class InputTextField extends TextField implements Partable, ItemStateList
 		setItemStateListener(this);
 	}
 	
-	public String toString() {
-		return "InputTextField [" + this.getText() + "]"; 
-	}
-
-	public void partition(PartitionList partitions) {
-		Partition.partitionBlock(this,partitions);
+	protected void initContent(int firstLineWidth, int availWidth,
+			int availHeight) {
+		super.initContent(firstLineWidth, availWidth, availHeight);
+		LayoutDescriptor layoutDescriptor = ContentView.getLayoutDescriptor(this);
+		this.cssElement = layoutDescriptor.getCssElement();
 	}
 
 	public void itemStateChanged(Item item) {
-		CssElement element = LayoutAttributes.get(this).getElement();
-		DomNode node = element.getNode();
+		DomNode node = this.cssElement.getNode();
 		String newText = getText();
 		//#debug
 		System.out.println("Item changed to new text '"+newText+"'");
 		node.setNodeValue(newText);
 	}
-	
-	
+		
+	public String toString() {
+		return "InputTextField [" + this.getText() + "]"; 
+	}	
 }

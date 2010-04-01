@@ -7,7 +7,8 @@ import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.StringTokenizer;
 import de.enough.polish.util.TextUtil;
-import de.enough.skylight.renderer.layout.LayoutAttributes;
+import de.enough.skylight.renderer.element.view.ContentView;
+import de.enough.skylight.renderer.layout.LayoutDescriptor;
 import de.enough.skylight.renderer.linebox.Linebox;
 import de.enough.skylight.renderer.partition.Partable;
 import de.enough.skylight.renderer.partition.Partition;
@@ -17,6 +18,8 @@ import de.enough.skylight.renderer.partition.TextPartition;
 public class TextBlock extends StringItem implements Partable {
 	
 	PartitionList textPartitions;
+	
+	LayoutDescriptor layoutDescriptor;
 	
 	public TextBlock() {
 		//#style text
@@ -42,17 +45,22 @@ public class TextBlock extends StringItem implements Partable {
 		return result;
 	}
 	
+	protected void initContent(int firstLineWidth, int availWidth,
+			int availHeight) {
+		super.initContent(firstLineWidth, availWidth, availHeight);
+		this.layoutDescriptor = ContentView.getLayoutDescriptor(this);
+	}
+
 	public void partition(PartitionList partitions) {
 		this.textPartitions.clear();
-		LayoutAttributes attributes = LayoutAttributes.get(this);
 		
-		PartitionList itemPartitions = attributes.getPartitions();
+		PartitionList itemPartitions = this.layoutDescriptor.getPartitions();
 		itemPartitions.clear();
 		
 		String text = getText();
 		Font font = getFont();
 		
-		int left = attributes.getInlineRelativeLeft();
+		int left = this.layoutDescriptor.getInlineRelativeOffset();
 		int right;
 		int height = font.getHeight();
 		int tokenWidth;
@@ -92,8 +100,7 @@ public class TextBlock extends StringItem implements Partable {
 	}
 	
 	public void drawString(String line, int x, int y, int anchor, Graphics g) {
-		BlockContainingBlock block = LayoutAttributes.get(this).getBlock();
-		Linebox linebox = block.getPaintLineBox();
+		Linebox linebox = this.layoutDescriptor.getBlock().getPaintLineBox();
 		PartitionList lineboxPartitions = linebox.getPartitions();
 		
 		TextPartition firstPartition = (TextPartition)this.textPartitions.get(0);

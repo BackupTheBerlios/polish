@@ -12,6 +12,8 @@ import de.enough.skylight.renderer.css.HtmlCssElement;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.element.ContainingBlock;
 import de.enough.skylight.renderer.element.InlineContainingBlock;
+import de.enough.skylight.renderer.element.view.ContentView;
+import de.enough.skylight.renderer.layout.LayoutDescriptor;
 import de.enough.skylight.renderer.node.handler.html.TextHandler;
 
 public class CssElement implements HtmlCssElement{
@@ -80,7 +82,7 @@ public class CssElement implements HtmlCssElement{
 		
 		buildStyle();
 		
-		buildItem();
+		buildContent();
 	}
 	
 	protected void buildStyle() {
@@ -101,11 +103,17 @@ public class CssElement implements HtmlCssElement{
 		}
 	}
 	
-	protected void buildItem() {
+	protected void buildContent() {
 		this.content = createContent();
-		
+				
 		if(this.node.hasChildNodes()) {
 			this.block = createContainingBlock();
+			
+			if(this.interactive) {
+				//#debug sl.debug.event
+				System.out.println("element " + this + " is interactive");
+				this.block.setAppearanceMode(Item.INTERACTIVE);
+			} 
 		}
 	}
 	
@@ -175,6 +183,7 @@ public class CssElement implements HtmlCssElement{
 		Item item = this.handler.createContent(this);
 		
 		if(item != null) {
+			item.setView(new ContentView(item));
 			if(isInteractive()) {
 				//#debug sl.debug.event
 				System.out.println("element " + this + " is interactive");
@@ -195,21 +204,9 @@ public class CssElement implements HtmlCssElement{
 	
 	ContainingBlock createContainingBlock() {
 		if(isDisplay(HtmlCssElement.Display.BLOCK_LEVEL)) {
-			BlockContainingBlock block = new BlockContainingBlock(this, this.style);
-			if(this.interactive) {
-				//#debug sl.debug.event
-				System.out.println("element " + this + " is interactive");
-				block.setAppearanceMode(Item.INTERACTIVE);
-			} 
-			return block;
+			return new BlockContainingBlock(this.style);
 		} else {
-			InlineContainingBlock block = new InlineContainingBlock(this, this.style);
-			if(this.interactive) {
-				//#debug sl.debug.event
-				System.out.println("element " + this + " is interactive");
-				block.setAppearanceMode(Item.INTERACTIVE);
-			} 
-			return block;
+			return new InlineContainingBlock(this.style);
 		} 
 	}
 	

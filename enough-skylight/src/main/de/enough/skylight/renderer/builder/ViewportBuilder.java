@@ -11,8 +11,8 @@ import de.enough.skylight.renderer.css.HtmlCssElement;
 import de.enough.skylight.renderer.debug.BuildDebug;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.element.ContainingBlock;
-import de.enough.skylight.renderer.element.view.ElementView;
-import de.enough.skylight.renderer.layout.LayoutAttributes;
+import de.enough.skylight.renderer.element.view.ContentView;
+import de.enough.skylight.renderer.layout.LayoutDescriptor;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.node.NodeHandler;
 import de.enough.skylight.renderer.node.NodeHandlerDirectory;
@@ -97,6 +97,9 @@ public class ViewportBuilder {
 			
 			this.viewport.setReady(true);
 			
+			//#debug sl.debug.build
+			System.out.println("build done");
+			
 		} catch(Exception e) {
 			//#debug error
 			System.out.println("error while building view : " + e);
@@ -149,35 +152,34 @@ public class ViewportBuilder {
 	protected void buildLayout(ContainingBlock parent, BlockContainingBlock parentBlock, CssElement element) {
 		if(element.hasElements())
 		{
-			ContainingBlock block = element.getContainingBlock();
+			ContainingBlock containingBlock = element.getContainingBlock();
 			
-			LayoutAttributes attributes = LayoutAttributes.get(block);
-			attributes.setElement(element);
-			attributes.setContainingBlock(parent);
-			attributes.setBlock(parentBlock);
+			LayoutDescriptor layoutDescriptor = containingBlock.getLayoutDescriptor();
+			layoutDescriptor.setCssElement(element);
+			layoutDescriptor.setBlock(parentBlock);
 			
 			if(element.isFloat()) {
 				if(element.isFloat(HtmlCssElement.Float.LEFT)) {
-					parent.addToLeftFloat((Item)block);
+					parent.addToLeftFloat((Item)containingBlock);
 					
 					//#debug sl.debug.build
-					System.out.println("added " + block + " to left float of " + parent);
+					System.out.println("added " + containingBlock + " to left float of " + parent);
 				} else if(element.isFloat(HtmlCssElement.Float.RIGHT)) {
-					parent.addToRightFloat((Item)block);
+					parent.addToRightFloat((Item)containingBlock);
 					
 					//#debug sl.debug.build
-					System.out.println("added " + block + " to right float of " + parent);
+					System.out.println("added " + containingBlock + " to right float of " + parent);
 				} 
 			} else {
-				parent.addToBody((Item)block);
+				parent.addToBody((Item)containingBlock);
 				
 				//#debug sl.debug.build
-				System.out.println("added " + block + " to body of " + parent);
+				System.out.println("added " + containingBlock + " to body of " + parent);
 			}
 			
 			BlockContainingBlock childBlock;
-			if(block instanceof BlockContainingBlock) {
-				childBlock = (BlockContainingBlock)block;
+			if(containingBlock instanceof BlockContainingBlock) {
+				childBlock = (BlockContainingBlock)containingBlock;
 			} else {
 				childBlock = parentBlock;
 			}
@@ -185,18 +187,15 @@ public class ViewportBuilder {
 			for (int index = 0; index < element.size(); index++) {
 				CssElement childElement = element.get(index);
 				
-				buildLayout(block,childBlock,childElement);
+				buildLayout(containingBlock,childBlock,childElement);
 			}
 		} else {
 			Item item = element.getContent();
 			
 			if(item != null) {
-				item.setView(new ElementView());
-				
-				LayoutAttributes attributes = LayoutAttributes.get(item);
-				attributes.setElement(element);
-				attributes.setContainingBlock(parent);
-				attributes.setBlock(parentBlock);
+				LayoutDescriptor layoutDescriptor = ContentView.getLayoutDescriptor(item);
+				layoutDescriptor.setCssElement(element);
+				layoutDescriptor.setBlock(parentBlock);
 				
 				if(element.isFloat()) {
 					if(element.isFloat(HtmlCssElement.Float.LEFT)) {
