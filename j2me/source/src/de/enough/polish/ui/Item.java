@@ -3176,37 +3176,26 @@ public abstract class Item implements UiElement, Animatable
 		//#ifdef polish.css.after
 			noneContentWidth += this.afterWidth;
 		//#endif
-		/*
-		if (noneContentWidth >= firstLineWidth) {
-			System.out.println("INVALID NONE CONTENT WIDTH=" + noneContentWidth);
-		}
-		*/
-		int firstLineContentWidth;
-		int availableContentWidth;
+		
+		int firstLineContentWidth = firstLineWidth - noneContentWidth;
+		int availableContentWidth = availWidth - noneContentWidth;
+		
 		//#ifdef polish.css.max-width
-			int firstLineAdjustedWidth = firstLineWidth;
-			int lineAdjustedWidth = availWidth;
 			if (this.maximumWidth != null ) {
-				if (firstLineAdjustedWidth > this.maximumWidth.getValue(firstLineWidth) ) {
-					firstLineAdjustedWidth = this.maximumWidth.getValue(firstLineWidth);
-				} 
 				int maxWidth = this.maximumWidth.getValue(availWidth);
-				if (lineAdjustedWidth > maxWidth ) {
-					lineAdjustedWidth = maxWidth;
+				if(firstLineContentWidth > maxWidth) {
+					firstLineContentWidth = maxWidth;
+				}
+				if(availableContentWidth > maxWidth) {
+					availableContentWidth = maxWidth;
 				}
 			}
-			firstLineContentWidth = firstLineAdjustedWidth - noneContentWidth;
-			availableContentWidth = lineAdjustedWidth - noneContentWidth;
-		//#else
-			firstLineContentWidth = firstLineWidth - noneContentWidth;
-			availableContentWidth = availWidth - noneContentWidth;
 		//#endif
 			
 		//#ifdef polish.css.width
 			int targetWidth = 0;
 			if(this.width != null) {
-				firstLineContentWidth = this.width.getValue(firstLineWidth) - noneContentWidth;
-				availableContentWidth = this.width.getValue(availWidth) - noneContentWidth;
+				availableContentWidth = this.width.getValue(availWidth);
 				targetWidth = availableContentWidth;
 			}
 		//#endif
@@ -3220,7 +3209,7 @@ public abstract class Item implements UiElement, Animatable
 			int targetHeight = 0;
 			if(this.height != null) {
 				// according to css specs the base for the height calculation is the available width
-				availHeight = this.height.getValue(availWidth) - noneContentHeight;
+				availHeight = this.height.getValue(availWidth);
 				targetHeight = availHeight;
 			}
 		//#endif
@@ -3276,27 +3265,19 @@ public abstract class Item implements UiElement, Animatable
 		if (cWidth > availableContentWidth) {
 			cWidth = availableContentWidth;
 		}
-		this.itemWidth = noneContentWidth + cWidth;
 		
 		//#ifdef polish.css.width
 			if(this.width != null) {
-				int diff = targetWidth - this.itemWidth;
-				this.itemWidth += diff;
-				setContentWidth( this.contentWidth + diff );
+				setContentWidth( targetWidth );
 				cWidth = this.contentWidth;
 			}
 		//#endif
 			
 		//#ifdef polish.css.min-width
 			if (this.minimumWidth != null) {
-				if (this.itemWidth < this.minimumWidth.getValue(availWidth) ) {
-					int minWidth = this.minimumWidth.getValue(availWidth);
-					if (minWidth > availWidth) {
-						minWidth = availWidth;
-					}
-					int diff = minWidth - this.itemWidth;
-					this.itemWidth += diff;
-					setContentWidth( this.contentWidth + diff );
+				int minWidth = this.minimumWidth.getValue(availWidth);
+				if (cWidth < minWidth ) {
+					setContentWidth( minWidth );
 					cWidth = this.contentWidth;
 				}
 			}
@@ -3304,14 +3285,14 @@ public abstract class Item implements UiElement, Animatable
 		//#ifdef polish.css.max-width
 			if (this.maximumWidth != null) {
 				int maxWidth = this.maximumWidth.getValue(availWidth);
-				if (this.itemWidth > maxWidth ) {
-					int diff = maxWidth - this.itemWidth;
-					this.itemWidth += diff;
-					setContentWidth( this.contentWidth + diff );
+				if (cWidth > maxWidth ) {
+					setContentWidth( maxWidth );
 					cWidth = this.contentWidth;
 				}
 			}
 		//#endif
+			
+		this.itemWidth = noneContentWidth + cWidth;
 			
 		//#ifdef polish.css.before
 			if (cHeight < this.beforeHeight) {
@@ -3361,14 +3342,33 @@ public abstract class Item implements UiElement, Animatable
 			cHeight += labelHeight;
 			this.contentY += labelHeight;
 		}
-		if (this.minimumHeight != null && cHeight + noneContentHeight < this.minimumHeight.getValue(availWidth)) {
-			cHeight = this.minimumHeight.getValue(availWidth) - noneContentHeight;
+		
+		//#ifdef polish.css.height
+		if(this.height != null) {
+			setContentHeight( targetHeight );
+			cHeight = this.contentHeight;
 		}
-		//#if polish.css.max-height
-			if (this.maximumHeight != null && cHeight + noneContentHeight > this.maximumHeight.getValue(availWidth)) {
-				cHeight = this.maximumHeight.getValue(availWidth) - noneContentHeight;
+		//#endif
+			
+		//#ifdef polish.css.min-height
+			if (this.minimumHeight != null) {
+				int minHeight = this.minimumHeight.getValue(availWidth);
+				if (cHeight < minHeight ) {
+					setContentHeight( minHeight );
+					cHeight = this.contentHeight;
+				}
 			}
 		//#endif
+		//#ifdef polish.css.max-height
+			if (this.maximumHeight != null) {
+				int maxHeight = this.maximumHeight.getValue(availWidth);
+				if (cWidth > maxHeight ) {
+					setContentHeight( maxHeight );
+					cHeight = this.contentHeight;
+				}
+			}
+		//#endif
+			
 		if (cHeight > this.contentHeight) {
 			int ch = cHeight;
 			if (!this.useSingleRow) {
@@ -3381,16 +3381,6 @@ public abstract class Item implements UiElement, Animatable
 			}
 		}
 		this.itemHeight = cHeight + noneContentHeight;
-		
-		//#ifdef polish.css.height
-			if(this.height != null) {
-				int diff = targetHeight - this.itemHeight;
-				System.out.println("adjusting height with :" + diff);
-				this.itemHeight += diff;
-				setContentHeight( this.contentHeight + diff );
-				cHeight = this.contentHeight;
-			}
-		//#endif
 		
 		if (this.useSingleRow) {
 			this.backgroundWidth = this.itemWidth - this.marginLeft - this.marginRight - labelWidth;
@@ -3522,6 +3512,12 @@ public abstract class Item implements UiElement, Animatable
 	 */
 	protected void setContentWidth( int width ) {
 		this.contentWidth = width;
+		
+		//#ifdef polish.css.view-type
+		if (this.view != null) {
+			this.view.contentWidth = width;
+		}
+		//#endif
 	}
 	
 	/**
@@ -3531,6 +3527,12 @@ public abstract class Item implements UiElement, Animatable
 	 */
 	protected void setContentHeight( int height ) {
 		this.contentHeight = height;
+		
+		//#ifdef polish.css.view-type
+		if (this.view != null) {
+			this.view.contentHeight = height;
+		}
+		//#endif
 	}
 	
 	//#ifdef polish.useDynamicStyles
@@ -3868,7 +3870,7 @@ public abstract class Item implements UiElement, Animatable
 		if (!this.isPressed) {
 			return;
 		}
-		// #debug
+		//#debug
 		System.out.println("notifyItemPressedEnd for " + this + ", normalStyle=" + (this.normalStyle == null ? "<none>" : this.normalStyle.name ) + ", current=" + (this.style == null ? "<none>" : this.style.name) );
 		this.isPressed = false;
 		//#if polish.css.pressed-style

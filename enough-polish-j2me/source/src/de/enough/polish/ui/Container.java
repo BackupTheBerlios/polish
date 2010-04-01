@@ -1656,9 +1656,6 @@ public class Container extends Item {
 			((Container)this.parent).updateInternalPosition( this );
 		}
 	}
-
-	
-
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#setContentWidth(int)
@@ -1666,9 +1663,26 @@ public class Container extends Item {
 	protected void setContentWidth(int width)
 	{
 		super.setContentWidth(width);
+		
+		//#ifdef polish.css.view-type
+		if(this.containerView != null) {
+			this.containerView.contentWidth = width;
+		}
+		//#endif
+		
 		if (this.focusedItem != null && (this.layout & LAYOUT_SHRINK) == LAYOUT_SHRINK) {
 			this.focusedItem.init(width, width, this.contentHeight);
 		}
+	}
+	
+	protected void setContentHeight(int height) {
+		super.setContentHeight(height);
+		
+		//#ifdef polish.css.view-type
+		if(this.containerView != null) {
+			this.containerView.contentHeight = height;
+		}
+		//#endif
 	}
 
 	/* (non-Javadoc)
