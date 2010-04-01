@@ -636,7 +636,7 @@ public class ChoiceItem extends IconItem
 	}
 
 	/**
-	 * @param lastItem the item to use the values from for adjustoing
+	 * @param lastItem the item to use the values from for adjusting
 	 */
 	public void adjustProperties(Item lastItem) {
 		this.relativeY = lastItem.relativeY;
@@ -695,9 +695,6 @@ public class ChoiceItem extends IconItem
 //		if (this.text != null) {
 //			System.out.println("ON SCREEN SIZE CHANGED FOR " + this.text + ", width=" + screenWidth + ", height=" + screenHeight);
 //		}
-//		if ("Right".equals(this.text)) {
-//			try { throw new RuntimeException("for size " + screenWidth + ", " + screenHeight); } catch (Exception e) { e.printStackTrace(); }
-//		}
 		super.onScreenSizeChanged(screenWidth, screenHeight);
 		Style newStyle = null;
 		if (screenWidth > screenHeight) {
@@ -708,7 +705,13 @@ public class ChoiceItem extends IconItem
 			newStyle = this.portraitStyle;
 		}
 		if (newStyle != null) {
-//			System.out.println("ChoiceItem.onScreenSizeChanged: normalStyle=" + newStyle.name);
+			//System.out.println("ChoiceItem.onScreenSizeChanged: normalStyle=" + newStyle.name);
+			if (this.parent instanceof Container) {
+				Container cont = (Container)this.parent;
+				if (cont.itemStyle == this.styleNormal) {
+					cont.itemStyle = newStyle;
+				}
+			}
 			this.styleNormal = newStyle;
 			//#if polish.css.focused-style
 				Style focStyle = (Style) newStyle.getObjectProperty("focused-style");
@@ -720,7 +723,7 @@ public class ChoiceItem extends IconItem
 			newStyle = (Style) newStyle.getObjectProperty("checked-style");
 			if (newStyle != null) {
 				this.styleChecked = newStyle;
-//				System.out.println("ChoiceItem.onScreenSizeChanged: styleChecked=" + newStyle.name);
+//				System.out.println("ChoiceItem.onScreenSizeChanged: styleChecked=" + newStyle.name + " for " + this.text);
 				//#if polish.css.focused-style
 					focStyle = (Style) newStyle.getObjectProperty("focused-style");
 					if (focStyle != null) {
