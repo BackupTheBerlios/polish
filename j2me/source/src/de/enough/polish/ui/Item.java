@@ -3343,11 +3343,12 @@ public abstract class Item implements UiElement, Animatable
 			this.contentY += labelHeight;
 		}
 		
+		int originalContentHeight = cHeight;
 		//#ifdef polish.css.height
-		if(this.height != null) {
-			setContentHeight( targetHeight );
-			cHeight = this.contentHeight;
-		}
+			if(this.height != null) {
+				setContentHeight( targetHeight );
+				cHeight = this.contentHeight;
+			}
 		//#endif
 			
 		//#ifdef polish.css.min-height
@@ -3362,22 +3363,22 @@ public abstract class Item implements UiElement, Animatable
 		//#ifdef polish.css.max-height
 			if (this.maximumHeight != null) {
 				int maxHeight = this.maximumHeight.getValue(availWidth);
-				if (cWidth > maxHeight ) {
+				if (cHeight > maxHeight ) {
 					setContentHeight( maxHeight );
 					cHeight = this.contentHeight;
 				}
 			}
 		//#endif
 			
-		if (cHeight > this.contentHeight) {
+		if (cHeight > originalContentHeight) {
 			int ch = cHeight;
 			if (!this.useSingleRow) {
 				ch -= labelHeight;
 			}
 			if (isLayoutVerticalCenter()) {
-				this.contentY += ( (ch - this.contentHeight) >> 1);
+				this.contentY += ( (ch - originalContentHeight) >> 1);
 			} else if (isLayoutBottom()) {
-				this.contentY += ( ch - this.contentHeight );
+				this.contentY += ( ch - originalContentHeight );
 			}
 		}
 		this.itemHeight = cHeight + noneContentHeight;
@@ -5294,8 +5295,12 @@ public abstract class Item implements UiElement, Animatable
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
 		if (this.label != null && this.label.text != null) {
-			buffer.append( '"' ).append( this.label.text ).append("\": ");
+			buffer.append( '"' ).append( this.label.text ).append("\""); 
 		}
+		if (this.style != null) {
+			buffer.append(" [").append(this.style.name).append("]");
+		}
+		buffer.append(": ");
 		buffer.append( super.toString() );
 		return buffer.toString();
 	}
