@@ -599,7 +599,7 @@ public abstract class ItemView implements Serializable{
 	 * Subclasses can override this to react to content width changes
 	 * @param width the new content width in pixel
 	 */
-	public void setContentWidth(int width) {
+	protected void setContentWidth(int width) {
 		this.contentWidth = width;
 	}
 
@@ -608,7 +608,7 @@ public abstract class ItemView implements Serializable{
 	 * Subclasses can override this to react to content height changes
 	 * @param height the new content height in pixel
 	 */
-	public void setContentHeight(int height) {
+	protected void setContentHeight(int height) {
 		this.contentHeight = height;
 	}
 
