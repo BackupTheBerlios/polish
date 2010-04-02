@@ -595,7 +595,7 @@ extends ItemView
 				//#else
 					columnIndex++;
 				//#endif
-				item.relativeX = columnX; // when equal or normal column widths are used, this is below changed again, since the widhs are just calculated right now.
+				item.relativeX = columnX; // when equal or normal column widths are used, this is below changed again, since the widths are just calculated right now.
 				if (width < availColWidth) {
 					if (item.isLayoutCenter) {
 						item.relativeX += (availColWidth - width) / 2;
@@ -833,15 +833,12 @@ extends ItemView
 			for (int i = 0; i < myItems.length; i++) {
 				Item item = myItems[i];
 				int cw = this.columnsWidths[columnIndex].getValue( availWidth );
-				if (this.columnsSetting != STATIC_WIDTH_COLUMNS) {
-					//TODO: check under which circumstances this is necessary.
-					item.relativeX = myContentWidth;
-					if (item.itemWidth < cw) {
-						if (item.isLayoutCenter) {
-							item.relativeX += (cw - item.itemWidth) / 2;
-						} else if (item.isLayoutRight) {
-							item.relativeX += (cw - item.itemWidth);
-						}
+				item.relativeX = myContentWidth;
+				if (item.itemWidth < cw) {
+					if (item.isLayoutCenter) {
+						item.relativeX += (cw - item.itemWidth) / 2;
+					} else if (item.isLayoutRight) {
+						item.relativeX += (cw - item.itemWidth);
 					}
 				}
 				myContentWidth += cw + this.paddingHorizontal;
