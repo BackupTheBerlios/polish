@@ -640,6 +640,20 @@ public abstract class Item implements UiElement, Animatable
 	//#ifdef polish.css.max-height
 		protected Dimension maximumHeight;
 	//#endif
+	
+	//#ifdef polish.css.min-item-width
+		protected Dimension minimumItemWidth;
+	//#endif
+	//#ifdef polish.css.min-item-width
+		protected Dimension minimumItemHeight;
+	//#endif
+	//#ifdef polish.css.max-item-width
+		protected Dimension maximumItemWidth;
+	//#endif
+	//#ifdef polish.css.max-item-height
+		protected Dimension maximumItemHeight;
+	//#endif
+		
 	boolean isInitialized;
 	
 	/** the background of this item  */
@@ -1524,6 +1538,20 @@ public abstract class Item implements UiElement, Animatable
 				this.width = widthDim;
 			}
 		//#endif
+		
+		//#ifdef polish.css.min-item-width
+			Dimension minItemWidthDim = (Dimension) style.getObjectProperty("min-item-width");
+			if (minItemWidthDim != null) {
+				this.minimumItemWidth = minItemWidthDim;
+			}
+		//#endif
+		//#ifdef polish.css.max-item-width
+			Dimension maxItemWidthDim  = (Dimension) style.getObjectProperty("max-item-width");
+			if (maxItemWidthDim != null) {
+				this.maximumItemWidth = maxItemWidthDim;
+			}
+		//#endif
+			
 		//#ifdef polish.css.min-height
 			Dimension minHeightDim = (Dimension) style.getObjectProperty("min-height");
 			if (minHeightDim != null) {
@@ -1536,6 +1564,7 @@ public abstract class Item implements UiElement, Animatable
 				this.maximumHeight = maxHeightDim;
 			}
 		//#endif
+			
 		//#ifdef polish.css.height
 			Dimension heightDim  = (Dimension) style.getObjectProperty("height");
 			if (heightDim != null) {
@@ -1543,7 +1572,19 @@ public abstract class Item implements UiElement, Animatable
 			}
 		//#endif
 
-	
+		//#ifdef polish.css.min-item-height
+			Dimension minItemHeightDim = (Dimension) style.getObjectProperty("min-item-height");
+			if (minItemHeightDim != null) {
+				this.minimumItemHeight = minItemHeightDim;
+			}
+		//#endif
+		//#ifdef polish.css.max-item-height
+			Dimension maxItemHeightDim  = (Dimension) style.getObjectProperty("max-item-height");
+			if (maxItemHeightDim != null) {
+				this.maximumItemHeight = maxItemHeightDim;
+			}
+		//#endif
+			
 		//#if polish.css.colspan
 			Integer colSpanInt = style.getIntProperty("colspan");
 			if ( colSpanInt != null ) {
@@ -3293,7 +3334,33 @@ public abstract class Item implements UiElement, Animatable
 		//#endif
 			
 		this.itemWidth = noneContentWidth + cWidth;
-			
+		
+		//#ifdef polish.css.min-item-width
+			if (this.minimumItemWidth != null) {
+				if (this.itemWidth < this.minimumItemWidth.getValue(availWidth) ) {
+					int minWidth = this.minimumItemWidth.getValue(availWidth);
+					if (minWidth > availWidth) {
+						minWidth = availWidth;
+					}
+					int diff = minWidth - this.itemWidth;
+					this.itemWidth += diff;
+					setContentWidth( this.contentWidth + diff );
+					cWidth = this.contentWidth;
+				}
+			}
+		//#endif
+		//#ifdef polish.css.max-item-width
+			if (this.maximumItemWidth != null) {
+				int maxWidth = this.maximumItemWidth.getValue(availWidth);
+				if (this.itemWidth > maxWidth ) {
+					int diff = maxWidth - this.itemWidth;
+					this.itemWidth += diff;
+					setContentWidth( this.contentWidth + diff );
+					cWidth = this.contentWidth;
+				}
+			}
+		//#endif
+		
 		//#ifdef polish.css.before
 			if (cHeight < this.beforeHeight) {
 				cHeight = this.beforeHeight;
@@ -3367,6 +3434,18 @@ public abstract class Item implements UiElement, Animatable
 					setContentHeight( maxHeight );
 					cHeight = this.contentHeight;
 				}
+			}
+		//#endif
+		
+		//#if polish.css.min-item-height
+			if (this.minimumItemHeight != null && cHeight + noneContentHeight < this.minimumItemHeight.getValue(availWidth)) {
+				cHeight = this.minimumItemHeight.getValue(availWidth) - noneContentHeight;
+			}
+		//#endif
+			
+		//#if polish.css.max-item-height
+			if (this.maximumItemHeight != null && cHeight + noneContentHeight > this.maximumItemHeight.getValue(availWidth)) {
+				cHeight = this.maximumItemHeight.getValue(availWidth) - noneContentHeight;
 			}
 		//#endif
 			
