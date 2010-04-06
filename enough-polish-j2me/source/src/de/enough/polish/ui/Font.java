@@ -88,9 +88,9 @@ public class Font {
     		javax.microedition.lcdui.Font
     	//#endif
     	font = null ;
-
-	private NativeFont nativeFont;
-
+    //#if polish.usePolishGui
+		private NativeFont nativeFont;
+	//#endif
 	/**
 	 * The plain style constant. This may be combined with the
 	 * other style constants for mixed styles.
