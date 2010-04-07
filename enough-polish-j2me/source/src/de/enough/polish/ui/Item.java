@@ -2343,7 +2343,6 @@ public abstract class Item implements UiElement, Animatable
 	 * though perhaps not optimally.
 	 * See <a href="#sizes">Item Sizes</a> for a complete discussion.
 	 * 
-	 * @param availHeight the available height for percentage calculations
 	 * @return the minimum height of the item
 	 * @since  MIDP 2.0
 	 */
