@@ -1729,7 +1729,7 @@ public interface ProcessingInterface {
     public int round(int value1);
 
     /**
-     * Converts a degree fixed point value measurement to its corresponding fixed point value in radians. Radians and degrees are two ways of measuring the same thing. There are 360 degrees in a circle and 2*PI radians in a circle. For example, 90Â° = PI/2 = 1.5707964. All trigonometric methods in Processing require their parameters to be specified in radian fixed point values. 
+     * Converts a degree fixed point value measurement to its corresponding fixed point value in radians. Radians and degrees are two ways of measuring the same thing. There are 360 degrees in a circle and 2*PI radians in a circle. For example, 90 degrees = PI/2 = 1.5707964. All trigonometric methods in Processing require their parameters to be specified in radian fixed point values. 
      * @param angle
      * @return angle in radians, as a fixed-point number
      */
