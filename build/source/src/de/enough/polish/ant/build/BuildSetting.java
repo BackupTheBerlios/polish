@@ -44,6 +44,7 @@ import de.enough.polish.ExtensionManager;
 import de.enough.polish.finalize.Finalizer;
 import de.enough.polish.theme.FileSetting;
 import de.enough.polish.theme.SerializeSetting;
+import de.enough.polish.util.CastUtil;
 import de.enough.polish.util.ResourceUtil;
 import de.enough.polish.util.StringUtil;
 
@@ -443,7 +444,7 @@ public class BuildSetting {
 		if ("always".equals(usePolishGuiStr)) {
 			this.usePolishGui = true;
 			this.alwaysUsePolishGui = true;
-		} else if ( "true".equalsIgnoreCase(usePolishGuiStr) || "yes".equalsIgnoreCase(usePolishGuiStr)) {
+		} else if ( CastUtil.getBoolean(usePolishGuiStr)) {
 			this.usePolishGui = true;
 			this.alwaysUsePolishGui = false;
 		} else {

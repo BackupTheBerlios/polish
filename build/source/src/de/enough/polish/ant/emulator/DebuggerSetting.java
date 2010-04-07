@@ -26,6 +26,7 @@
 package de.enough.polish.ant.emulator;
 
 import de.enough.polish.ExtensionSetting;
+import de.enough.polish.util.CastUtil;
 
 public class DebuggerSetting extends ExtensionSetting {
 	
@@ -66,10 +67,7 @@ public class DebuggerSetting extends ExtensionSetting {
 	}
 	
 	public void setServer( String isServerStr ) {
-		this.isServer =
-			"y".equalsIgnoreCase( isServerStr ) 
-			|| "yes".equalsIgnoreCase( isServerStr )
-			|| "true".equalsIgnoreCase( isServerStr );
+		this.isServer = CastUtil.getBoolean( isServerStr );
 	}
 	
 	public boolean isServer() {
@@ -77,10 +75,7 @@ public class DebuggerSetting extends ExtensionSetting {
 	}
 	
 	public void setSuspend( String isSuspendStr ) {
-		this.isSuspend =
-			"y".equalsIgnoreCase( isSuspendStr ) 
-			|| "yes".equalsIgnoreCase( isSuspendStr )
-			|| "true".equalsIgnoreCase( isSuspendStr );		
+		this.isSuspend = CastUtil.getBoolean(isSuspendStr);
 	}
 	
 	public boolean isSuspend() {
