@@ -3,14 +3,38 @@
  */
 package de.enough.polish.calendar;
 
+import java.util.Vector;
+
 import de.enough.polish.io.Serializable;
 
 /**
  * @author Ramakrishna
- *
+ * @author Timon
  */
 public class CalendarCategory implements Serializable {
 	private String name;
+	private CalendarCategory parentCategory;
+	private Vector childCategories;
+	private String image;	
+	
+	public CalendarCategory(String name){
+		this(name, null);
+	}
+	
+	public CalendarCategory(String name, CalendarCategory parentCategory){
+		this(name, parentCategory, null);
+	}
+	
+	public CalendarCategory(String name, CalendarCategory parentCategory, Vector childCategories){
+		this(name, parentCategory, childCategories, null);
+	}
+	
+	public CalendarCategory(String name, CalendarCategory parentCategory, Vector childCategories, String image){
+		this.name = name;
+		this.parentCategory = parentCategory;
+		this.childCategories = childCategories;
+		this.image = image;
+	}
 	
 	public void setName( String name ) {
 		this.name = name;
@@ -18,5 +42,29 @@ public class CalendarCategory implements Serializable {
 	
 	public String getName() {
 		return this.name;
+	}
+
+	public CalendarCategory getParentCategory() {
+		return parentCategory;
+	}
+
+	public void setParentCategory(CalendarCategory parentCategory) {
+		this.parentCategory = parentCategory;
+	}
+
+	public Vector getChildCategories() {
+		return childCategories;
+	}
+
+	public void setChildCategories(Vector childCategories) {
+		this.childCategories = childCategories;
+	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
 	}
 }
