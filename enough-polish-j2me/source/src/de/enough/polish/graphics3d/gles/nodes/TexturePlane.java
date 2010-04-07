@@ -97,7 +97,7 @@ public class TexturePlane extends Actorx
 	 */
 	public void setTexture(Image sourceImg) 
 	{
-		//using ¨last set dimension as default
+		//using last set dimension as default
 		setTexture(sourceImg, this.textureDimension, false);
 	}
 	
