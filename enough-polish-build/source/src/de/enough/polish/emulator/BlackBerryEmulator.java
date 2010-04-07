@@ -11,6 +11,7 @@ import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.ant.emulator.EmulatorSetting;
 import de.enough.polish.util.FileUtil;
+import de.enough.polish.util.OsUtil;
 
 /**
  * Invokes a specific BlackBerry simulator.
@@ -41,7 +42,7 @@ public class BlackBerryEmulator extends Emulator {
         this.executionDir = executable.getParentFile();
 
         ArrayList argumentsList = new ArrayList();
-        if (File.separatorChar == '/') { 
+        if (!OsUtil.isRunningWindows()) {
             // this is a unix environment, try wine:
             //wine can NOT execute .bat files so we need to extract the relavent info.
             System.out.println("Extracting params from ["+executable+"] for use in wine.");
