@@ -50,11 +50,15 @@ import de.enough.polish.finalize.Finalizer;
 import de.enough.polish.jar.JarPackager;
 import de.enough.polish.jar.Packager;
 import de.enough.polish.manifest.ManifestCreator;
+import de.enough.polish.util.BlackBerryUtils;
+import de.enough.polish.util.CastUtil;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.JarUtil;
 import de.enough.polish.util.OutputFilter;
 import de.enough.polish.util.ProcessUtil;
 import de.enough.polish.util.StringUtil;
+import java.util.Enumeration;
+import java.util.Hashtable;
 
 /**
  * <p>Creates COD out of JAR files for RIM BlackBerry devices, also creates an ALX file for deployment using the BlackBerry Desktop Manager.</p>
@@ -89,73 +93,8 @@ implements OutputFilter
 	{
 		String codName = jarFile.getName();
 		codName = codName.substring( 0, codName.length() - ".jar".length() );
-		String blackberryHome = env.getVariable("blackberry.home");
-		File blackberryHomeDir;
-		if ( blackberryHome == null ) {
-			blackberryHomeDir = new File( "C:\\Program Files\\Research In Motion");
-			if (blackberryHomeDir.exists()) {
-				blackberryHome = blackberryHomeDir.getAbsolutePath();
-			} else {
-				throw new BuildException("You need to define the Ant property \"blackberry.home\" that points to the JDE directory.");
-			}
-		} else {
-			blackberryHomeDir = new File( blackberryHome );
-			if (!blackberryHomeDir.exists()) {
-				throw new BuildException("Your Ant property \"blackberry.home\" points to the non existing location "  + blackberryHome + ".");
-			} else if (!blackberryHomeDir.isDirectory()) {
-				throw new BuildException("Your Ant property \"blackberry.home\" points not to a directory, but a file:"  + blackberryHome );
-			}
-		}
-		
-		
-		File rapcJarFile = new File( blackberryHomeDir, "/bin/rapc.jar" );
-		if ( !rapcJarFile.exists() ) {
-			// try to sort out the correct JDE automatically:
-			File[] files = blackberryHomeDir.listFiles();
-			String recommendedJdeVersion = env.getVariable("polish.build.BlackBerry.JDE-Version");
-			if (recommendedJdeVersion == null) {
-				if (!device.hasFeature("polish.hasTrackballEvents")) {
-					recommendedJdeVersion = "4.1";
-				}
-			}
-			Arrays.sort( files );
-			for (int i = files.length -1; i >= 0; i--) {
-				File file = files[i];
-				if (file.isDirectory() && file.getName().indexOf("JDE") != -1) {
-					if (recommendedJdeVersion == null || file.getName().indexOf(recommendedJdeVersion) != -1) {
-						blackberryHomeDir = file;
-						blackberryHome = file.getAbsolutePath();
-						rapcJarFile = new File( blackberryHomeDir, "/bin/rapc.jar" );
-						if (rapcJarFile.exists()) {
-							System.out.println("Using blackberry.home " + blackberryHome );
-							break;
-						}
-					}
-				}
-			}
-			if ( !rapcJarFile.exists() && recommendedJdeVersion != null) { 
-				for (int i = files.length -1; i >= 0; i--) {
-					File file = files[i];
-					if (file.isDirectory() && file.getName().indexOf("JDE") != -1) {
-						blackberryHomeDir = file;
-						blackberryHome = file.getAbsolutePath();
-						rapcJarFile = new File( blackberryHomeDir, "/bin/rapc.jar" );
-						if (rapcJarFile.exists()) {
-							System.out.println("WARNING: a " + recommendedJdeVersion + " JDE is recommended for " 
-									+ device.getIdentifier() + ", however such a JDE cannot be found in " 
-									+ blackberryHomeDir.getParentFile().getAbsolutePath() 
-									+ ". Now using blackberry.home " + blackberryHome );
-							break;
-						}
-					}
-				}
-			}
-			
-			if ( !rapcJarFile.exists() ) {
-				throw new BuildException("Your Ant property \"blackberry.home\" [" + blackberryHome + "] contains no JDE.");
-			}
-		}
-		
+                String blackberryHome=BlackBerryUtils.getBBHome(device, env).getAbsolutePath();
+                File rapcJarFile= BlackBerryUtils.getRapc(device, env);
 		// check if a MIDlet should be converted or whether a normal
 		// blackberry application is used:
 		String mainClassName = env.getVariable( "blackberry.main");
@@ -217,32 +156,48 @@ implements OutputFilter
 				} else {
 					iconUrl = "";
 				}
-				String[] newEntries = new String[]{
-						"MIDlet-Name: " + env.getVariable("MIDlet-Name"),
-						//"MIDlet-Name: demo",
-						"MIDlet-Version: " + env.getVariable("MIDlet-Version"),
-						//"MIDlet-Version: 1.0",
-						"MIDlet-Vendor: " + env.getVariable("MIDlet-Vendor"),
-						"MIDlet-Jar-URL: " + jarFile.getName(),
-						"MIDlet-Jar-Size: " + jarFile.length(),
-						//"MIDlet-Jar-Size: 0",
-						"MicroEdition-Profile: MIDP-2.0",
-						"MicroEdition-Configuration: CLDC-1.1",
-						//"MIDlet-1: Demo," + iconUrl + ",",
-						"MIDlet-1: " + env.getVariable("MIDlet-Name") + "," + iconUrl + ",",
-						//"MIDlet-Icon: " + iconUrl,
-						"RIM-MIDlet-Flags-1: 0"
-				};
+                                Hashtable properties=new Hashtable();
+                                properties.put("MIDlet-Name", env.getVariable("MIDlet-Name"));
+                                properties.put("MIDlet-Version", env.getVariable("MIDlet-Version"));
+                                properties.put("MIDlet-Vendor", env.getVariable("MIDlet-Vendor"));
+                                properties.put("MIDlet-Jar-URL", jarFile.getName());
+                                properties.put("MIDlet-Jar-Size", String.valueOf(jarFile.length()));
+                                properties.put("MIDlet-Name", env.getVariable("MIDlet-Name"));
+                                properties.put("MicroEdition-Profile","MIDP-2.0");
+                                properties.put("MicroEdition-Configuration","CLDC-1.1");
+                                properties.put("MIDlet-1",env.getVariable("MIDlet-Name") + "," + iconUrl + ",");
+                                properties.put("RIM-MIDlet-Flags-1","0");
 
+                                //Hacky way to get additional jad properties into the rapc compiler thingy.
+                                //Kinda taken from http://stackoverflow.com/questions/2340084/blackberry-command-line-build-and-application-auto-start/2385154#2385154
+                                //But more dynamic and allows any jad property to be included with out a build recompile.
+                                //drubin
+                                String includeProps= env.getVariable("blackberry.rapc.jad.include");
+                                if (includeProps!=null && includeProps.length()>0){
+                                        Map jadProperties;
+                                        try {
+                                           jadProperties = FileUtil.readPropertiesFile( jadFile, ':' );
+                                        } catch (Exception e) {
+                                           e.printStackTrace();
+                                           throw new BuildException("Unable to read JAD file " + e.toString() );
+                                        }
+                                        String [] addtionalIncludeProps=StringUtil.split(includeProps, ",");
+                                        for(int i=0;i<addtionalIncludeProps.length;i++){
+                                              String jadValue = (String)jadProperties.get(addtionalIncludeProps[i]);
+                                              
+                                              System.out.println(jadValue+"   "+addtionalIncludeProps[i]);
+                                              properties.put(addtionalIncludeProps[i], jadValue);
+                                        }
+                                }
 				File rapcFile = new File( jadFile.getParent(), codName + ".rapc");
-				FileUtil.writeTextFile( rapcFile, newEntries );
+				FileUtil.writeTextFile( rapcFile, getJadPropsAsString(properties));
 			} catch ( IOException e ) {
 				// this shouldn't happen
 				e.printStackTrace();
 			}
 		}
 		if (!this.verbose) {
-			this.verbose = "true".equals( env.getVariable("polish.blackberry.verbose") );
+			this.verbose = CastUtil.getBoolean(env.getVariable("polish.blackberry.verbose"));
 		}
 		// delete existing COD file to force a clean rebuild of the COD:
 		File codFile = new File( jadFile.getParent(), codName + ".cod");
@@ -476,6 +431,16 @@ implements OutputFilter
 			env.addVariable( "polish.classes.main", mainClassName );
 		}
 	}
+
+        public String [] getJadPropsAsString(Hashtable hash){
+                String [] lines = new String[hash.size()];
+                Enumeration e = hash.keys();
+                for (int i=0;i<lines.length;i++){
+                        String key = e.nextElement().toString();
+                        lines[i]=key+": "+hash.get(key);
+                }
+                return lines;
+        }
 	
 	
 	/**
