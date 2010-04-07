@@ -1432,8 +1432,8 @@ public class ProcessingContext implements ProcessingInterface {
             // Calculate line width and other stuff
             int strokeWidthDiv2 = _strokeWidth / 2 ;
             double pointDistance = Math.sqrt ( (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2) ) ;
-            int startWidth = width / 2;
-            int remainingWidth = width - startWidth ;
+            int startWidth = _strokeWidth / 2;
+            int remainingWidth = _strokeWidth - startWidth ;
             double lineCos = -(x1-x2) / pointDistance;
             double lineSin = - ( y1-y2 ) / pointDistance ;
             double cosPerpendicularLine =  - lineSin ;
@@ -1449,7 +1449,7 @@ public class ProcessingContext implements ProcessingInterface {
             __arrY[2] = (int)( y2 - sinPerpendicularLine * remainingWidth );
             __arrY[3] = (int)( y2 + sinPerpendicularLine * startWidth );
 
-            // Draw the polygon 
+            // Draw the polygon
             DrawUtil.fillPolygon(__arrX, __arrY, _strokeColor, _bufferg);
 
            // Draw the rounded entpoints of the line
@@ -1636,7 +1636,7 @@ public class ProcessingContext implements ProcessingInterface {
     }
 
     /** (non-Javadoc)
-     * @see de.enough.polish.processing.ProcessingInterface#curve(int, int, int, int, int, int, int, int) 
+     * @see de.enough.polish.processing.ProcessingInterface#_curveVertexIndexint, int, int, int, int, int, int, int)
      */
     public void curve(int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4) {
         int prevShapeMode = _shapeMode ;
