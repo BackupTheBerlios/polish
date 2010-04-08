@@ -1569,7 +1569,7 @@ public class MenuBar extends Item {
 				setOpen( true );
 				return true;
 			}
-		//#if polish.blackberry && polish.hasTrackBallEvents
+		//#if polish.blackberry && polish.hasTrackBallEvents && !polish.blackberry.dontOpenMenuOnTrackBallPress
 			} else if (keyCode == -1204 && gameAction == Canvas.FIRE && !this.isOpened && this.commandsContainer.size() > 0) {
 				// -1204 is BaseScreen.KEY_BB_FIRE, which is triggered when the trackball is pressed:
 				setOpen(true);
