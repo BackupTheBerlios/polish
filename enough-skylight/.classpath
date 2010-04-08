@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src/main"/>
 	<classpathentry kind="src" path="test/main"/>
-	<classpathentry kind="src" path="midlet/main"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/enough-polish-rhino"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/enough-polish-j2me"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
