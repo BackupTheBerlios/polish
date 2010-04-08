@@ -67,4 +67,8 @@ public class EvaluatorException extends RhinoException
         recordErrorOrigin(sourceName, lineNumber, lineSource, columnNumber);
     }
 
+    //rickyn:
+    public EvaluatorException(String detail) {
+    	this(detail,"",0,"",0);
+    }
 }
