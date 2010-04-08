@@ -1,10 +1,10 @@
 package de.enough.skylight.js;
 
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.mozilla.javascript.Script;
-
 
 public class DocumentTest extends AbstractJsTest {
 
@@ -30,20 +30,5 @@ public class DocumentTest extends AbstractJsTest {
 			fail();
 		} catch (Throwable e) {/* Ok. */}
 	}
-	
-	public void testGetElementByIdZeroParametersWithTryInJs() throws FileNotFoundException, IOException {
-		Script script = this.context.compileString("try{var element = document.getElementById();Assert.fail('bla')} catch(e){}", "test1", 1);
-		try {
-			script.exec(this.context, this.scope);
-			fail();
-		} catch (Throwable e) {/* Ok. */}
-	}
-	
-	public void testGetElementByIdZeroParameters() throws FileNotFoundException, IOException {
-		Script script = this.context.compileString("var element = document.getElementById();Assert.fail('No exception was thrown although getElementById need at least one parameter.')", "test1", 1);
-		try {
-			script.exec(this.context, this.scope);
-			fail();
-		} catch (Throwable e) {/* Ok. */}
-	}
 }
+

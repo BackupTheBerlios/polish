@@ -67,4 +67,16 @@ public class DomNodeTest extends AbstractJsTest {
 		script.exec(this.context, this.scope);
 	}
 	
+	public void testNextSibling() {
+		Script script = this.context.compileString("var element = document.getElementById('id1'); nextSiblingId = element.nextSibling.getAttribute('id'); Assert.equals('id2',nextSiblingId)", "test1", 1);
+		script.exec(this.context, this.scope);
+	}
+	
+	public void testInsertBefore() {
+		Script script = this.context.compileString("var parentElement = document.getElementById('id2'); var childElement = document.getElementById('id3'); var newElement = document.createElement('NEWCHILD'); parentElement.insertBefore(newElement,childElement); Assert.equals('NEWCHILD',parentElement.firstChild.tagName)", "test1", 1);
+		script.exec(this.context, this.scope);
+	}
+	
+	
+	
 }

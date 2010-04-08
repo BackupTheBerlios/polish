@@ -2,6 +2,7 @@ package de.enough.skylight.js;
 
 
 import org.mozilla.javascript.BaseFunction;
+import org.mozilla.javascript.Callable;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
@@ -18,7 +19,7 @@ public class ElementScriptableObject extends DomNodeScriptableObject{
 		return "Element";
 	}
 
-	public void init(ElementImpl elementImpl) {
+	public void init(final ElementImpl elementImpl) {
 		super.init(elementImpl);
 		this.elementImpl = elementImpl;
 		defineProperty("setAttribute", new BaseFunction() {
@@ -43,6 +44,12 @@ public class ElementScriptableObject extends DomNodeScriptableObject{
 		defineProperty("nodeValue", elementImpl.getNodeValue(), PERMANENT);
 		// TODO: This is not according to the standard but it is nice.
 		defineProperty("value", elementImpl.getNodeValue(), PERMANENT);
+		
+		setGetterOrSetter("tagName", 0, new Callable() {
+			public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
+				return elementImpl.getTagName();
+			}
+		}, false);
 	}
 
 	protected String doGetNodeValue() {
@@ -59,9 +66,6 @@ public class ElementScriptableObject extends DomNodeScriptableObject{
 
 	@Override
 	public Object get(String name, Scriptable start) {
-		if("tagName".equals(name)) {
-			return this.elementImpl.getTagName();
-		}
 		if("value".equals(name) || "nodeValue".equals(name)) {
 			String nodeValue = this.elementImpl.getNodeValue();
 			if(nodeValue == null) {
