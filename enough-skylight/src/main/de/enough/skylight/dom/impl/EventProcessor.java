@@ -49,7 +49,7 @@ public class EventProcessor {
 	 * @return The return value is true if any listener called preventDefault() on the event. The return value is false otherwise.
 	 */
 	public boolean processEvent(EventImpl event) {
-		DomNodeImpl target = (DomNodeImpl) event.getTarget();
+		DomNodeImpl target = event.getTarget();
 		
 		NodeListImpl eventChain = createEventChain(target);
 		informAboutEventProcessingStart(event,eventChain);

@@ -79,7 +79,7 @@ public class HtmlExpert implements EventProcessorListener{
 		
 		// There could be a attribute in the markup with a js script to execute.
 		if(eventHandlerName != null) {
-			DomNodeImpl target = (DomNodeImpl) event.getTarget();
+			DomNodeImpl target = event.getTarget();
 			DomNode scriptAttribute = target.getAttributes().getNamedItem(eventHandlerName);
 			if(scriptAttribute != null) {
 				String scriptText = scriptAttribute.getNodeValue();
@@ -103,7 +103,7 @@ public class HtmlExpert implements EventProcessorListener{
 		String eventHandlerName = this.eventTypeToEventHandlerMap.get(eventType);
 		
 		if(eventHandlerName != null) {
-			DomNodeImpl target = (DomNodeImpl) event.getTarget();
+			DomNodeImpl target = event.getTarget();
 			// Avoid lazy loading by using hasScriptable() instead of getScriptable().
 			if( ! target.hasScriptable()) {
 				Scriptable scriptable = target.getScriptable();

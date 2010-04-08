@@ -1,13 +1,7 @@
 package de.enough.skylight.js;
 
-import junit.framework.TestCase;
-
-
 import org.mozilla.javascript.Context;
-import org.mozilla.javascript.Script;
 import org.mozilla.javascript.Scriptable;
-import de.enough.skylight.js.AlertScriptableObject;
-import de.enough.skylight.js.AssertScriptableObject;
 
 public class AlertTest /*extends TestCase*/ {
 

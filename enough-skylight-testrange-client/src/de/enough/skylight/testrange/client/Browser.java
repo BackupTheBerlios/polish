@@ -19,6 +19,7 @@ import de.enough.skylight.Services;
 import de.enough.skylight.dom.Document;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.MutationEvent;
+import de.enough.skylight.dom.impl.DomNodeImpl;
 import de.enough.skylight.dom.impl.EventImpl;
 import de.enough.skylight.dom.impl.EventProcessorListener;
 import de.enough.skylight.dom.impl.NodeListImpl;
@@ -191,7 +192,7 @@ public class Browser extends Form implements CommandListener, RendererListener, 
 			String url = de.enough.skylight.util.UrlUtil.completeUrl(href, this);
 			setLocation(url);
 		} else {
-			DomNode node = element.getNode();
+			DomNodeImpl node = (DomNodeImpl)element.getNode();
 			Services.getInstance().getEventEmitter().emitClickEvent(node, 0, 0);
 		}
 	}

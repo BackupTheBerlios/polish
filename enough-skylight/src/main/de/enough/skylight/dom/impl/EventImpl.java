@@ -12,7 +12,7 @@ public abstract class EventImpl implements Event{
 
 	private boolean bubbles;
 	private boolean cancelable;
-	private EventTarget target;
+	private DomNodeImpl target;
 	private long timeStamp;
 	private short eventPhase;
 	private EventTarget currentTarget;
@@ -20,7 +20,7 @@ public abstract class EventImpl implements Event{
 	private boolean stopPropagation;
 	private boolean preventDefault;
 
-	public void init(EventTarget target) {
+	public void init(DomNodeImpl target) {
 		this.timeStamp = System.currentTimeMillis();
 		this.bubbles = true;
 		this.cancelable = true;
@@ -46,7 +46,7 @@ public abstract class EventImpl implements Event{
 		return this.eventPhase;
 	}
 
-	public EventTarget getTarget() {
+	public DomNodeImpl getTarget() {
 		return this.target;
 	}
 
@@ -95,7 +95,7 @@ public abstract class EventImpl implements Event{
 		return this.preventDefault;
 	}
 
-	void setTarget(EventTarget newEventTarget) {
+	void setTarget(DomNodeImpl newEventTarget) {
 		this.target = newEventTarget;
 	}
 

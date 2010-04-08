@@ -39,7 +39,6 @@ public class JsEngine {
 	}
 
 	public void runFunction(Object onClickFunction) {
-		// TODO Auto-generated method stub
-		
+		throw new RuntimeException("Not implemented");
 	}
 }

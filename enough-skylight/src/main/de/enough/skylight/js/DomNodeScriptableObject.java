@@ -5,8 +5,8 @@ import org.mozilla.javascript.Callable;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
-import org.w3c.dom.DOMException;
 
+import de.enough.skylight.dom.DOMException;
 import de.enough.skylight.dom.impl.DocumentImpl;
 import de.enough.skylight.dom.impl.DomNodeImpl;
 import de.enough.skylight.dom.impl.NamedNodeMapImpl;
