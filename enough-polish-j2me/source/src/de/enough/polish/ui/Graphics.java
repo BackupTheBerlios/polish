@@ -1,4 +1,4 @@
-//#condition polish.midp || polish.usePolishGui
+//#condition polish.usePolishGui
 /*
  * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *
@@ -25,12 +25,16 @@
 
 package de.enough.polish.ui;
 
+//#if polish.android
+	//# import de.enough.polish.android.lcdui.Font;
+//#endif
+
 import de.enough.polish.util.ImageUtil;
 import de.enough.polish.util.RgbImage;
 
 //#if polish.api.nokia-ui
 	import com.nokia.mid.ui.DirectGraphics;
-import com.nokia.mid.ui.DirectUtils;
+	import com.nokia.mid.ui.DirectUtils;
 //#endif
 
 import de.enough.polish.util.DeviceInfo;
