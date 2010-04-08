@@ -25,7 +25,7 @@
 	<property file="${user.name}.properties" />
 	<property file="midlet.properties" />
 	<property name="device" value="Generic/AnyPhone" />
-	<property name="devices" value="${device}, Generic/midp1, Generic/midp2, Sony-Ericsson/JavaPlatform7, Sony-Ericsson/JavaPlatform8" />
+	<property name="devices" value="${device}, Generic/midp2, Sony-Ericsson/JavaPlatform7, Sony-Ericsson/JavaPlatform8" />
 		
 	<!-- The polish.home property should point to the directory   -->
 	<!-- containing the J2ME Polish installation.                 -->
