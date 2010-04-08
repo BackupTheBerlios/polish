@@ -7,12 +7,9 @@ import de.enough.skylight.dom.Attr;
 import de.enough.skylight.dom.DOMException;
 import de.enough.skylight.dom.Document;
 import de.enough.skylight.dom.DomNode;
-import de.enough.skylight.dom.Element;
-import de.enough.skylight.dom.Event;
-import de.enough.skylight.dom.NodeList;
 import de.enough.skylight.js.DocumentScriptableObject;
 
-public class DocumentImpl extends DomNodeImpl implements Document {
+public class DocumentImpl extends DomNodeImpl implements Document,ScriptableAdapter {
 
 	private HashMap elementsById = new HashMap();
 	private DocumentScriptableObject scriptableObject;
@@ -21,7 +18,7 @@ public class DocumentImpl extends DomNodeImpl implements Document {
 		super.init(null, null, DOCUMENT_NODE);
 	}
 	
-	protected void cacheNodeWithId(String id, DomNodeImpl domNode) {
+	protected void cacheNodeWithId(String id, ElementImpl domNode) {
 		this.elementsById.put(id, domNode);
 	}
 	
@@ -30,13 +27,13 @@ public class DocumentImpl extends DomNodeImpl implements Document {
 		return null;
 	}
 
-	public Element createElement(String tagName) {
-		ElementImpl elementImpl = new ElementImpl();
-		elementImpl.init(this, null, tagName, null, DomNode.ELEMENT_NODE);
-		return elementImpl;
+	public ElementImpl createElement(String tagName) {
+		ElementImpl element = new ElementImpl();
+		element.init(this, null, tagName, null, DomNode.ELEMENT_NODE);
+		return element;
 	}
 
-	public Event createEvent(String eventType) throws DOMException {
+	public EventImpl createEvent(String eventType) throws DOMException {
 		// TODO: Using this API for generating interal events is not nice as the caller need to cast and he has to do the dispatch
 		// himself.
 		if("DOMAttrModified".equals(eventType)) {
@@ -46,15 +43,23 @@ public class DocumentImpl extends DomNodeImpl implements Document {
 		return null;
 	}
 
-	public Element getDocumentElement() {
-		return (Element)getLastChild();
+	public ElementImpl getDocumentElement() {
+		int numberOfChildren = this.childList.getLength();
+		for(int i = numberOfChildren -1; i >= 0;i--) {
+			DomNodeImpl domNodeImpl = this.childList.item(i);
+			if(domNodeImpl instanceof ElementImpl) {
+				return (ElementImpl)domNodeImpl;
+			}
+		}
+		return null;
+		
 	}
 
-	public Element getElementById(String elementId) {
-		return (Element) this.elementsById.get(elementId);
+	public ElementImpl getElementById(String elementId) {
+		return (ElementImpl)this.elementsById.get(elementId);
 	}
 	
-	public NodeList getElementsByTagName(String tagname) {
+	public NodeListImpl getElementsByTagName(String tagname) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -83,5 +88,10 @@ public class DocumentImpl extends DomNodeImpl implements Document {
 
 	public void setNodeValue(String nodeValue) throws DOMException {
 		// Has no effect.
+	}
+
+	@Override
+	protected String getAdditionalProperties() {
+		return null;
 	}
 }

@@ -8,7 +8,7 @@ public class TraceEventProcessorListener implements EventProcessorListener {
 		System.out.println("About to deliver event '"+event+"'.");
 	}
 
-	public void handleDeliveredEvent(EventImpl event) {
+	public void handleEventDelivered(EventImpl event) {
 		//#debug
 		System.out.println("Delivered event '"+event+"'.");
 	}
@@ -23,7 +23,7 @@ public class TraceEventProcessorListener implements EventProcessorListener {
 		//#debug
 		System.out.println();
 		//#debug
-		System.out.println("Start processing event '"+event+"' and deliver it to '"+numberOfEventTargets+"' elements.");
+		System.out.println("Start processing event '"+event+"' and deliver it to #'"+numberOfEventTargets+"' elements.");
 	}
 
 	public void handleEventProcessingStopped(EventImpl event) {

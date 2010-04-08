@@ -9,7 +9,6 @@ import de.enough.skylight.dom.DOMException;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.Element;
 import de.enough.skylight.dom.MutationEvent;
-import de.enough.skylight.dom.NamedNodeMap;
 import de.enough.skylight.dom.NodeList;
 import de.enough.skylight.js.ElementScriptableObject;
 
@@ -37,7 +36,7 @@ public class ElementImpl extends DomNodeImpl implements Element{
 	}
 
 	@Override
-	public NamedNodeMap getAttributes() {
+	public NamedNodeMapImpl getAttributes() {
 		return this.attributes;
 	}
 
@@ -122,18 +121,11 @@ public class ElementImpl extends DomNodeImpl implements Element{
 	}
 	
 	@Override
-	protected void toStringOfProperties(StringBuffer buffer) {
+	protected String getAdditionalProperties() {
+		StringBuffer buffer = new StringBuffer();
 		buffer.append("name='");
 		buffer.append(this.tagName);
-	}
-	
-	@Override
-	public String toString() {
-		StringBuffer buffer = new StringBuffer();
-		buffer.append("Element:[");
-		toStringOfProperties(buffer);
-		buffer.append(",");
-		super.toStringOfProperties(buffer);
+		buffer.append("'");
 		return buffer.toString();
 	}
 	

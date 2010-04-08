@@ -50,7 +50,8 @@ public class MutationEventImpl extends EventImpl implements MutationEvent{
 	}
 	
 	@Override
-	protected void toStringOfProperties(StringBuffer buffer) {
+	protected String toStringOfProperties() {
+		StringBuffer buffer = new StringBuffer();
 		buffer.append("change='");
 		buffer.append(getNameForChange());
 		buffer.append("',prevValue='");
@@ -58,16 +59,7 @@ public class MutationEventImpl extends EventImpl implements MutationEvent{
 		buffer.append("',newValue='");
 		buffer.append(this.newValueArg);
 		buffer.append("'");
-	}
-	
-	@Override
-	public String toString() {
-		StringBuffer buffer = new StringBuffer();
-		buffer.append("MutationEvent:[");
-		super.toStringOfProperties(buffer);
-		buffer.append(",");
-		toStringOfProperties(buffer);
-		buffer.append("]");
 		return buffer.toString();
 	}
+	
 }

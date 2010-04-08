@@ -68,40 +68,43 @@ public class DomParser {
 	        while ((parser.next()) != SimplePullParser.END_DOCUMENT) {
 	            newName = parser.getName();
 	            newType = parser.getType();
-	            
-	            if(newType == SimplePullParser.START_TAG) {	
-	            	NamedNodeMapImpl attributeMap = new NamedNodeMapImpl();
-	            	ElementImpl newNode = new ElementImpl();
-	            	
-	            	newNode.init(document,currentNode,newName,attributeMap,DomNode.ELEMENT_NODE);
-	                int attributeCount = parser.getAttributeCount(); 
-	                if (attributeCount > 0) {
-	                	
-	                	for (int i = 0; i < attributeCount; i++) {
-	                		String attributeName = parser.getAttributeName(i);
-	                		String attributeValue = parser.getAttributeValue(i);
-	                		AttrImpl attribute = new AttrImpl();
-	                		attribute.init(document, newNode, attributeName, attributeValue);
-	                		attributeMap.setNamedItem(attribute);
-	                	}
-	                }
-	                currentNode = newNode;
-	            }
-	            
-	            else if(newType == SimplePullParser.END_TAG) {
-	                currentNode = (DomNodeImpl)currentNode.getParentNode();
-	            }
-	            
-	            else if(newType == SimplePullParser.TEXT) {
-	                String text = parser.getText();
-	                if(text != null) {
-	                	text = text.trim();
-	                	if(text.length() == 0) {
-	                		continue;
-	                	}
-	                }
-	                TextImpl newNode = new TextImpl();
-	                newNode.init(document,currentNode,text);
+	            switch(newType){
+	            	case SimplePullParser.START_TAG:
+	            		NamedNodeMapImpl attributeMap = new NamedNodeMapImpl();
+		            	ElementImpl newElement = new ElementImpl();
+		            	newElement.init(document,currentNode,newName,attributeMap,DomNode.ELEMENT_NODE);
+		                int attributeCount = parser.getAttributeCount(); 
+		                if (attributeCount > 0) {
+		                	
+		                	for (int i = 0; i < attributeCount; i++) {
+		                		String attributeName = parser.getAttributeName(i);
+		                		String attributeValue = parser.getAttributeValue(i);
+		                		AttrImpl attribute = new AttrImpl();
+		                		attribute.init(document, newElement, attributeName, attributeValue);
+		                		attributeMap.setNamedItem(attribute);
+		                	}
+		                }
+		                currentNode = newElement;
+	            		break;
+	            		
+	            	case SimplePullParser.END_TAG:
+	            		currentNode = currentNode.getParentNode();
+	            		break;
+	            		
+	            	case SimplePullParser.TEXT:
+	            		String text = parser.getText();
+		                if(text != null) {
+		                	text = text.trim();
+		                	if(text.length() == 0) {
+		                		continue;
+		                	}
+		                }
+		                TextImpl newTextNode = new TextImpl();
+		                newTextNode.init(document,currentNode,text);
+	            		break;
+	            		
+	            	default:
+	            		throw new RuntimeException("The parsing type '"+newType+"' is unknown.");
 	            }
 	        }
 	    } catch (Exception exception) {

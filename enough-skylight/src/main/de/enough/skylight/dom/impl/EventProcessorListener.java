@@ -10,6 +10,6 @@ public interface EventProcessorListener {
 
 	void handleAboutToDeliverEvent(EventImpl event);
 
-	void handleDeliveredEvent(EventImpl event);
+	void handleEventDelivered(EventImpl event);
 
 }

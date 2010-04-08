@@ -61,4 +61,10 @@ public class TextImpl extends CharacterDataImpl implements Text{
 		this.buffer = new StringBuffer(nodeValue);
 	}
 
+	@Override
+	protected String getAdditionalProperties() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -3,7 +3,7 @@ package de.enough.skylight.dom.impl;
 import org.mozilla.javascript.Scriptable;
 
 import de.enough.polish.util.ArrayList;
-import de.enough.skylight.dom.DomNode;
+import de.enough.skylight.dom.DOMException;
 import de.enough.skylight.dom.NodeList;
 import de.enough.skylight.js.NodeListScriptableObject;
 
@@ -20,22 +20,29 @@ public class NodeListImpl implements NodeList {
 		return this.nodeList.size();
 	}
 
-	public DomNode item(int index) {
-		return (DomNode)this.nodeList.get(index);
+	public DomNodeImpl item(int index) {
+		return (DomNodeImpl)this.nodeList.get(index);
 	}
 
 	public void add(DomNodeImpl childNode) {
 		this.nodeList.add(childNode);
 	}
 	
-	void replace(DomNodeImpl newNode, DomNodeImpl oldNode) {
+	/**
+	 * 
+	 * @param newNode
+	 * @param oldNode
+	 * @return the old node which was replaced
+	 */
+	DomNodeImpl replace(DomNodeImpl newNode, DomNodeImpl oldNode) {
 		int numberNodes = this.nodeList.size();
 		for(int i = 0; i < numberNodes; i++) {
 			if(this.nodeList.get(i).equals(oldNode)) {
 				this.nodeList.set(i, newNode);
-				return;
+				return oldNode;
 			}
 		}
+		throw new DOMException(DOMException.NOT_FOUND_ERR, "The node '"+oldNode+"' is not a child of the node '"+this+"'. Could not replace it.");
 	}
 	
 	public Scriptable getScriptable() {
@@ -48,6 +55,17 @@ public class NodeListImpl implements NodeList {
 	
 	public boolean hasScriptable() {
 		return this.scriptable != null;
+	}
+
+	public DomNodeImpl insertBefore(DomNodeImpl newChild, DomNodeImpl refChild) {
+		int numberOfChildren = this.nodeList.size();
+		for (int i = 0; i < numberOfChildren; i++) {
+			if(refChild.equals(this.nodeList.get(i))) {
+				this.nodeList.add(i, newChild);
+				return newChild;
+			}
+		}
+		throw new DOMException(DOMException.NOT_FOUND_ERR, "Could not find ");
 	}
 
 }

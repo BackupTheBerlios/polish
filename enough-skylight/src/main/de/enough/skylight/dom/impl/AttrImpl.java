@@ -25,7 +25,7 @@ public class AttrImpl extends DomNodeImpl implements Attr {
 			// This will update the cache so id getElementById lookups are faster.
 			// TODO: Put this more close to the actual adding of the attributes so we do not need to
 			// remember the step each time we create a new attribute.
-			DocumentImpl ownerDocument = (DocumentImpl)owningElement.getOwnerDocument();
+			DocumentImpl ownerDocument = owningElement.getOwnerDocument();
 			ownerDocument.cacheNodeWithId(value,owningElement);
 		}
 	}
@@ -83,6 +83,15 @@ public class AttrImpl extends DomNodeImpl implements Attr {
 
 	public String getNodeName() {
 		return this.name;
+	}
+
+	@Override
+	protected String getAdditionalProperties() {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("value:'");
+		buffer.append(this.value);
+		buffer.append("'");
+		return buffer.toString();
 	}
 
 }

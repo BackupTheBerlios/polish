@@ -6,13 +6,10 @@ import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.HashMap;
 import de.enough.skylight.Services;
 import de.enough.skylight.dom.DOMException;
-import de.enough.skylight.dom.Document;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.Event;
 import de.enough.skylight.dom.EventException;
 import de.enough.skylight.dom.EventListener;
-import de.enough.skylight.dom.NamedNodeMap;
-import de.enough.skylight.dom.NodeList;
 
 public abstract class DomNodeImpl implements DomNode {
 
@@ -57,18 +54,15 @@ public abstract class DomNodeImpl implements DomNode {
 
 	}
 
-	public DomNode appendChild(DomNode newChild) throws DOMException {
+	public DomNodeImpl appendChild(DomNode newChild) throws DOMException {
 		// TODO: We need handling for DocumentFragments.
 		DomNodeImpl newChildImpl = (DomNodeImpl) newChild;
 		this.childList.add(newChildImpl);
 		newChildImpl.doSetParent(this);
-		return newChild;
+		return newChildImpl;
 	}
 
-	/**
-	 * @unimplemented
-	 */
-	public DomNode cloneNode(boolean deep) {
+	public DomNodeImpl cloneNode(boolean deep) {
 		return null;
 	}
 
@@ -78,22 +72,22 @@ public abstract class DomNodeImpl implements DomNode {
 		return Services.getInstance().getEventProcessor().processEvent(eventImpl);
 	}
 
-	public NamedNodeMap getAttributes() {
+	public NamedNodeMapImpl getAttributes() {
 		return null;
 	}
 
-	public NodeList getChildNodes() {
+	public NodeListImpl getChildNodes() {
 		return this.childList;
 	}
 
-	public DomNode getFirstChild() {
+	public DomNodeImpl getFirstChild() {
 		if (this.childList.getLength() > 0) {
 			return this.childList.item(0);
 		}
 		return null;
 	}
 
-	public DomNode getLastChild() {
+	public DomNodeImpl getLastChild() {
 		int length = this.childList.getLength();
 		if (length > 0) {
 			return this.childList.item(length - 1);
@@ -115,11 +109,11 @@ public abstract class DomNodeImpl implements DomNode {
 		return null;
 	}
 
-	public DomNode getNextSibling() {
+	public DomNodeImpl getNextSibling() {
 		if(this.parent == null) {
 			return null;
 		}
-		NodeList siblings = this.parent.getChildNodes();
+		NodeListImpl siblings = this.parent.getChildNodes();
 		int numberOfSiblings = siblings.getLength();
 		int siblingPosition = -1;
 		for(int i = 0; i < numberOfSiblings; i++) {
@@ -138,11 +132,11 @@ public abstract class DomNodeImpl implements DomNode {
 		return this.type;
 	}
 
-	public Document getOwnerDocument() {
+	public DocumentImpl getOwnerDocument() {
 		return this.ownerDocument;
 	}
 
-	public DomNode getParentNode() {
+	public DomNodeImpl getParentNode() {
 		return this.parent;
 	}
 
@@ -153,11 +147,11 @@ public abstract class DomNodeImpl implements DomNode {
 		return null;
 	}
 
-	public DomNode getPreviousSibling() {
+	public DomNodeImpl getPreviousSibling() {
 		if(this.parent == null) {
 			return null;
 		}
-		NodeList siblings = this.parent.getChildNodes();
+		NodeListImpl siblings = this.parent.getChildNodes();
 		int numberOfSiblings = siblings.getLength();
 		int siblingPosition = -1;
 		for(int i = numberOfSiblings-1; i >= 0; i--) {
@@ -187,9 +181,11 @@ public abstract class DomNodeImpl implements DomNode {
 	/**
 	 * @unimplemented
 	 */
-	public DomNode insertBefore(DomNode newChild, DomNode refChild)
-			throws DOMException {
-		return null;
+	public DomNodeImpl insertBefore(DomNode newChild, DomNode refChild)	throws DOMException {
+		DomNodeImpl newChildImpl = (DomNodeImpl)newChild;
+		DomNodeImpl refChildImpl = (DomNodeImpl)refChild;
+		
+		return this.childList.insertBefore(newChildImpl,refChildImpl);
 	}
 
 	/**
@@ -209,7 +205,7 @@ public abstract class DomNodeImpl implements DomNode {
 	/**
 	 * @unimplemented
 	 */
-	public DomNode removeChild(DomNode oldChild) throws DOMException {
+	public DomNodeImpl removeChild(DomNode oldChild) throws DOMException {
 		return null;
 	}
 
@@ -236,10 +232,9 @@ public abstract class DomNodeImpl implements DomNode {
 		}
 	}
 
-	public DomNode replaceChild(DomNode newChild, DomNode oldChild)
+	public DomNodeImpl replaceChild(DomNode newChild, DomNode oldChild)
 			throws DOMException {
-		this.childList.replace((DomNodeImpl) newChild, (DomNodeImpl) oldChild);
-		return oldChild;
+		return this.childList.replace((DomNodeImpl) newChild, (DomNodeImpl) oldChild);
 	}
 
 	/**
@@ -257,17 +252,23 @@ public abstract class DomNodeImpl implements DomNode {
 		this.parent = domNodeImpl;
 	}
 
-	protected void toStringOfProperties(StringBuffer buffer) {
-		buffer.append("children='");
-		buffer.append(this.childList.getLength());
-	}
+	protected abstract String getAdditionalProperties();
 	
 	@Override
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("DomNode:[");
-		toStringOfProperties(buffer);
-		buffer.append("]");
+		buffer.append(getTypeName());
+		buffer.append("@");
+		buffer.append(hashCode());
+		buffer.append(":{");
+//		buffer.append("children:");
+//		buffer.append(this.childList.getLength());
+		String addedProperties = getAdditionalProperties();
+		if(addedProperties != null && addedProperties.length() > 0) {
+//			buffer.append(",");
+			buffer.append(addedProperties);
+		}
+		buffer.append("}");
 		return buffer.toString();
 	}
 
@@ -293,6 +294,10 @@ public abstract class DomNodeImpl implements DomNode {
 		}
 	}
 
+	/**
+	 * TODO: Revise this method and is usefulness.
+	 * @param event
+	 */
 	public void propagateEvent(EventImpl event) {
 		String type = event.getType();
 		ArrayList listeners;
@@ -326,4 +331,6 @@ public abstract class DomNodeImpl implements DomNode {
 			// TODO: Question: Are all click event handler on all parents triggered?
 		}
 	}
+	
+	
 }

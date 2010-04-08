@@ -63,7 +63,7 @@ public class EventProcessor {
 		if(doCapture) {
 			// Propagate event downstream
 			for(int i = numberOfEventTargets-1; i >= 0; i--){
-				DomNodeImpl chainElement = (DomNodeImpl)eventChain.item(i);
+				DomNodeImpl chainElement = eventChain.item(i);
 				event.setEventEnvironment(Event.CAPTURING_PHASE,chainElement);
 				
 				informListenersAboutToDeliverEvent(event);
@@ -90,7 +90,7 @@ public class EventProcessor {
 		if(event.getBubbles()) {
 			// Bubble event upstream.
 			for(int i = 0; i < numberOfEventTargets; i++){
-				DomNodeImpl chainElement = (DomNodeImpl)eventChain.item(i);
+				DomNodeImpl chainElement = eventChain.item(i);
 				event.setEventEnvironment(Event.BUBBLING_PHASE,chainElement);
 				
 				informListenersAboutToDeliverEvent(event);
@@ -166,7 +166,7 @@ public class EventProcessor {
 		for(int i = 0; i < numberOfEventProcessorListeners; i++) {
 			try {
 				EventProcessorListener eventProcessorListener = this.eventProcessorListeners.get(i);
-				eventProcessorListener.handleDeliveredEvent(event);
+				eventProcessorListener.handleEventDelivered(event);
 			} catch(Exception e) {
 				// Do nothing.
 			}
@@ -181,10 +181,10 @@ public class EventProcessor {
 	 */
 	private NodeListImpl createEventChain(DomNodeImpl target) {
 		NodeListImpl nodeList = new NodeListImpl();
-		DomNodeImpl domNode = (DomNodeImpl)target.getParentNode();
+		DomNodeImpl domNode = target.getParentNode();
 		while(domNode != null) {
 			nodeList.add(domNode);
-			domNode = (DomNodeImpl)domNode.getParentNode();
+			domNode = domNode.getParentNode();
 		}
 		return nodeList;
 	}
