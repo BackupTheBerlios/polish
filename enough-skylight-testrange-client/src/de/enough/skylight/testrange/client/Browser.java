@@ -44,7 +44,7 @@ public class Browser extends Form implements CommandListener, RendererListener, 
 		public void handleAboutToDeliverEvent(EventImpl event) {
 			// Empty.
 		}
-		public void handleDeliveredEvent(EventImpl event) {
+		public void handleEventDelivered(EventImpl event) {
 			// Empty.
 		}
 		public void handleEventProcessingAborted(EventImpl event) {
