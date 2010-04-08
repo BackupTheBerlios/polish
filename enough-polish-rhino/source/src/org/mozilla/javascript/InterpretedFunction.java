@@ -154,7 +154,7 @@ final public class InterpretedFunction extends NativeFunction implements Script
 	        return ret;
     	} catch (RhinoException e){
     		//#debug error
-    		System.out.println("Unable to call interpreted function " + e );
+    		System.out.println("InterpretedFunction: Unable to call interpreted function " + e );
     		if(cx.isOptionOnErrorFireEvent()) {
     			EventManager.fireEvent("js.error", this, e );
     		}
@@ -163,7 +163,7 @@ final public class InterpretedFunction extends NativeFunction implements Script
     		}
     	} catch (Exception e){
     		//#debug error
-    		System.out.println("Unable to call interpreted function" + e );
+    		System.out.println("InterpretedFunction: Unable to call interpreted function " + e );
     		if(cx.isOptionOnErrorFireEvent()) {
     			StringBuffer errorText = new StringBuffer(e.getClass().toString())
     			.append(" ")
