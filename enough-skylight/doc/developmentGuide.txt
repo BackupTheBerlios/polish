@@ -13,6 +13,13 @@ Renderer: A renderer gets a perfect DOM with associated style properties and wil
 
 
 
+===================================================================================================
+Implementation Details
+
+ScriptableObject subclasses
+  - Readonly properties must be defined with two methods in exectly this order: setGetterOrSetter and defineProperty.
+    The rational is that the method setGetterOrSetter will check if the property is readonly so the getter can not be set.
+
 
 
 Styles
