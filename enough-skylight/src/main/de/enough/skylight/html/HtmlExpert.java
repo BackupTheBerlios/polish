@@ -48,7 +48,7 @@ public class HtmlExpert implements EventProcessorListener{
 		// Ignore.
 	}
 
-	public void handleDeliveredEvent(EventImpl event) {
+	public void handleEventDelivered(EventImpl event) {
 		invokeMarkupEventHandler(event);
 	}
 
