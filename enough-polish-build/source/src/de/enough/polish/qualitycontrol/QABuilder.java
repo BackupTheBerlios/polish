@@ -7,10 +7,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 
-
 import org.jdom.JDOMException;
 
-import de.enough.polish.devices.BugManager;
 import de.enough.polish.exceptions.InvalidComponentException;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.OutputFilter;
@@ -25,7 +23,6 @@ implements OutputFilter
 
 	private boolean isVerbose;
 	private VariablesManager variablesManager;
-	private BugManager bugsManager;
 	private PolishVariable[] variables;
 	
 	private final ArrayList processOutput;
@@ -36,14 +33,13 @@ implements OutputFilter
 
 	public QABuilder(File polishHome, boolean random, int maxPermutations) throws JDOMException, IOException, InvalidComponentException {
 		this.variablesManager = new VariablesManager( polishHome );
-		this.bugsManager = new BugManager(polishHome);
 		this.processOutput = new ArrayList();
 		
 		if (random) {
 			this.random = new Random();
 		}
+
 		this.maxPermutations = maxPermutations;
-		
 		this.variables = this.variablesManager.getVisibleVariables();
 	}
 	
@@ -94,9 +90,6 @@ implements OutputFilter
 		}
 	}
 
-
-
-	
 	/**
 	 * Builds a project
 	 * @param projectHome
@@ -193,6 +186,7 @@ implements OutputFilter
 		File file = new File( logFileName );
 		try {
 			FileUtil.writeTextFile( file, lines );
+			handleConfigError(StringUtil.join((String[]) lines.toArray(new String[lines.size()]), "\n"));
 		} catch (Exception e) {
 			String message = "Unable to store log " + file.getAbsolutePath() + ": " + e;
 			System.err.println(message);
