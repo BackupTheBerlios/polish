@@ -198,6 +198,45 @@ extends Layer
 	private int gridColumns;
 	private int gridRows;
 
+	//#if polish.LibraryBuild && !polish.usePolishGui
+	/**
+	 * Creates a new TiledLayer.  <p>
+	 * 
+	 * The TiledLayer's grid will be <code>rows</code> cells high and
+	 * <code>columns</code> cells wide.  All cells in the grid are initially
+	 * empty (i.e. they contain tile index 0).  The contents of the grid may
+	 * be modified through the use of <A HREF="../../../../de/enough/polish/ui/game/TiledLayer.html#setCell(int, int, int)"><CODE>setCell(int, int, int)</CODE></A> and <A HREF="../../../../javax/microedition/lcdui/game/TiledLayer.html#fillCells(int, int, int, int, int)"><CODE>fillCells(int, int, int, int, int)</CODE></A>.
+	 * <P>
+	 * The static tile set for the TiledLayer is created from the specified
+	 * Image with each tile having the dimensions of tileWidth x tileHeight.
+	 * The width of the source image must be an integer multiple of
+	 * the tile width, and the height of the source image must be an integer
+	 * multiple of the tile height; otherwise, an IllegalArgumentException
+	 * is thrown;<p>
+	 * 
+	 * The entire static tile set can be changed using
+	 * <A HREF="../../../../de/enough/polish/ui/game/TiledLayer.html#setStaticTileSet(javax.microedition.lcdui.Image, int, int)"><CODE>setStaticTileSet(Image, int, int)</CODE></A>.
+	 * These methods should be used sparingly since they are both
+	 * memory and time consuming.
+	 * Where possible, animated tiles should be used instead to
+	 * animate tile appearance.<p>
+	 * 
+	 * @param columns the width of the TiledLayer, expressed as a number of cells
+	 * @param rows the height of the TiledLayer, expressed as a number of cells
+	 * @param image the Image to use for creating the static tile set
+	 * @param tileWidth the width in pixels of a single tile
+	 * @param tileHeight the height in pixels of a single tile
+	 * @throws NullPointerException if image is null
+	 * @throws IllegalArgumentException if the number of rows or columns is less than 1
+	 *									or if tileHeight or tileWidth is less than 1
+	 *									or if the image width is not an integer multiple of the tileWidth
+	 *									or if the image height is not an integer multiple of the tileHeight
+	 */
+	public TiledLayer(int columns, int rows, de.enough.polish.ui.Image image, int tileWidth, int tileHeight) {
+		// ignore
+	}
+	//#endif
+	
 	/**
 	 * Creates a new TiledLayer.  <p>
 	 * 
