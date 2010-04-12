@@ -1,6 +1,7 @@
 package de.enough.skylight.dom.impl;
 
 import de.enough.skylight.dom.DomNode;
+import de.enough.skylight.dom.MutationEvent;
 
 public class EventEmitter {
 
@@ -38,7 +39,7 @@ public class EventEmitter {
 	public void emitDomCharacterDataModifiedEvent(DomNodeImpl target, String previousValue, String newValue) {
 		MutationEventImpl event = new MutationEventImpl();
 		event.init(target);
-		event.initMutationEvent("DOMCharacterDataModified", true, false, null, previousValue, newValue, "", (short)0);
+		event.initMutationEvent("DOMCharacterDataModified", true, false, null, previousValue, newValue, "", MutationEvent.MODIFICATION);
 		this.eventProcessorInstance.processEvent(event);
 	}
 }

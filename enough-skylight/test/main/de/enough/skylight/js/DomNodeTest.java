@@ -46,6 +46,7 @@ public class DomNodeTest extends AbstractJsTest {
 		script.exec(this.context, this.scope);
 	}
 	
+	// TODO: This tests fails because the prototyping does not work.
 	public void testNodeValue() {
 		Script script = this.context.compileString("var element = document.getElementById('id2'); element.nodeValue = 'a'", "test1", 1);
 		script.exec(this.context, this.scope);

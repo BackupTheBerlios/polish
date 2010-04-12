@@ -32,6 +32,7 @@ public class MutationEventImpl extends EventImpl implements MutationEvent{
 	}
 
 	public void initMutationEvent(String typeArg, boolean canBubbleArg,boolean cancelableArg, DomNode relatedNodeArg, String prevValueArg,String newValueArg, String attrNameArg, short attrChangeArg) {
+		// TODO: Do sanity checks here. Having a wrong integer here is hard to track down the road.
 		initEvent(typeArg, canBubbleArg, cancelableArg);
 		this.relatedNodeArg = relatedNodeArg;
 		this.prevValueArg = prevValueArg;

@@ -168,7 +168,7 @@ public class EventProcessor {
 				EventProcessorListener eventProcessorListener = this.eventProcessorListeners.get(i);
 				eventProcessorListener.handleEventDelivered(event);
 			} catch(Exception e) {
-				// Do nothing.
+				e.printStackTrace();
 			}
 		}
 	}

@@ -21,6 +21,9 @@ public class ElementScriptableObject extends DomNodeScriptableObject{
 
 	public void init(final ElementImpl elementImpl) {
 		super.init(elementImpl);
+		
+//		setPrototype(m);
+		
 		this.elementImpl = elementImpl;
 		defineProperty("setAttribute", new BaseFunction() {
 			@Override
@@ -41,9 +44,9 @@ public class ElementScriptableObject extends DomNodeScriptableObject{
 				return value;
 			}
 		}, ScriptableObject.PERMANENT);
-		defineProperty("nodeValue", elementImpl.getNodeValue(), PERMANENT);
-		// TODO: This is not according to the standard but it is nice.
-		defineProperty("value", elementImpl.getNodeValue(), PERMANENT);
+//		defineProperty("nodeValue", elementImpl.getNodeValue(), PERMANENT);
+//		// TODO: This is not according to the standard but it is nice.
+//		defineProperty("value", elementImpl.getNodeValue(), PERMANENT);
 		
 		setGetterOrSetter("tagName", 0, new Callable() {
 			public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
@@ -62,31 +65,6 @@ public class ElementScriptableObject extends DomNodeScriptableObject{
 
 	protected void doSetAttribute(String key, String value) {
 		this.elementImpl.setAttribute(key, value);
-	}
-
-	@Override
-	public Object get(String name, Scriptable start) {
-		if("value".equals(name) || "nodeValue".equals(name)) {
-			String nodeValue = this.elementImpl.getNodeValue();
-			if(nodeValue == null) {
-				return Undefined.instance;
-			}
-			return nodeValue;
-		}
-		return super.get(name, start);
-	}
-	
-	
-	
-	@Override
-	public void put(String name, Scriptable start, Object value) {
-		if("value".equals(name)) {
-			if(value != null && value instanceof String) {
-				this.elementImpl.setNodeValue((String)value);
-				return;
-			}
-		}
-		super.put(name, start, value);
 	}
 
 	@Override

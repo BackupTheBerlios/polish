@@ -10,6 +10,7 @@ import de.enough.skylight.dom.impl.DomNodeImpl;
 import de.enough.skylight.dom.impl.EventImpl;
 import de.enough.skylight.dom.impl.EventProcessorListener;
 import de.enough.skylight.dom.impl.NodeListImpl;
+import de.enough.skylight.js.JsEngine;
 
 /**
  * This listener reacts to events when they reach their target and performs HTML stuff like following a link.
@@ -85,7 +86,8 @@ public class HtmlExpert implements EventProcessorListener{
 				String scriptText = scriptAttribute.getNodeValue();
 				if(scriptText != null && scriptText.length() != 0) {
 					// There is a script in the markup for the event. Execute it.
-					Services.getInstance().getJsEngine().runScript(target, scriptText);
+					JsEngine jsEngine = Services.getInstance().getJsEngine();
+					jsEngine.runScript(target, scriptText);
 				}
 			}
 		}
