@@ -3,9 +3,8 @@
  */
 package de.enough.polish.calendar;
 
-import java.util.Vector;
-
 import de.enough.polish.io.Serializable;
+import de.enough.polish.util.ArrayList;
 
 /**
  * @author Ramakrishna
@@ -14,7 +13,7 @@ import de.enough.polish.io.Serializable;
 public class CalendarCategory implements Serializable {
 	private String name;
 	private CalendarCategory parentCategory;
-	private Vector childCategories;
+	private ArrayList childCategories;
 	private String image;	
 	
 	public CalendarCategory(String name){
@@ -25,11 +24,11 @@ public class CalendarCategory implements Serializable {
 		this(name, parentCategory, null);
 	}
 	
-	public CalendarCategory(String name, CalendarCategory parentCategory, Vector childCategories){
+	public CalendarCategory(String name, CalendarCategory parentCategory, ArrayList childCategories){
 		this(name, parentCategory, childCategories, null);
 	}
 	
-	public CalendarCategory(String name, CalendarCategory parentCategory, Vector childCategories, String image){
+	public CalendarCategory(String name, CalendarCategory parentCategory, ArrayList childCategories, String image){
 		this.name = name;
 		this.parentCategory = parentCategory;
 		this.childCategories = childCategories;
@@ -52,11 +51,11 @@ public class CalendarCategory implements Serializable {
 		this.parentCategory = parentCategory;
 	}
 
-	public Vector getChildCategories() {
+	public ArrayList getChildCategories() {
 		return childCategories;
 	}
 
-	public void setChildCategories(Vector childCategories) {
+	public void setChildCategories(ArrayList childCategories) {
 		this.childCategories = childCategories;
 	}
 
