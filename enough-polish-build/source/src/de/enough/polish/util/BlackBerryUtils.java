@@ -23,8 +23,8 @@ public class BlackBerryUtils {
     /**
      * Looks for the defined blackberry home directory. If it wasn't defined
      * it tries some default locations.
-     * @param env
-     * @return
+     * @param env the environmentt
+     * @return the directory configured as blackberry.home
      */
     public static File getBBHome(Environment env) {
         //Try user locations.
@@ -50,12 +50,12 @@ public class BlackBerryUtils {
     }
 
     /**
-     * Gets the best bbhome bassed on a spesific device.
+     * Gets the best bbhome bassed on a specific device.
      * This method searches for best possible match checking to see if the simulator was in the path
      * or via the BlackBerry platform version string.
-     * @param device
-     * @param env
-     * @return
+     * @param dev the device
+     * @param env the environment
+     * @return the directory for the best blackberry JDE
      */
     public static File getBBHome(Device dev, Environment env) {
         File blackberryHome = getBBHome(env);
