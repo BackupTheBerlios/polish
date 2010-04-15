@@ -3,31 +3,31 @@ package de.enough.skylight.renderer.linebox;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.Arrays;
 
-public class LineboxList {
+public class InlineLineboxList {
 	ArrayList lineboxList;
 	
 	boolean sorted = false;
 	
-	public LineboxList() {
+	public InlineLineboxList() {
 		this.lineboxList = new ArrayList();
 	}
 	
-	public void add(Linebox linebox) {
+	public void add(InlineLinebox linebox) {
 		this.lineboxList.add(linebox);
 		this.sorted = false;
 	}
 	
-	public void addAll(LineboxList lineboxes) {
+	public void addAll(InlineLineboxList lineboxes) {
 		for (int i = 0; i < lineboxes.size(); i++) {
-			Linebox linebox = lineboxes.get(i);
+			InlineLinebox linebox = lineboxes.get(i);
 			add(linebox);
 		}
 		this.sorted = false;
 	}
 	
-	public Linebox get(int index) {
+	public InlineLinebox get(int index) {
 		sort();
-		return (Linebox)this.lineboxList.get(index);
+		return (InlineLinebox)this.lineboxList.get(index);
 	}
 	
 	public int size() {
@@ -44,7 +44,7 @@ public class LineboxList {
 			return;
 		} else {
 			if(this.lineboxList.size() > 1) {
-				Arrays.quicksort(this.lineboxList.getInternalArray(), this.lineboxList.size(), LineboxComparator.getInstance());
+				Arrays.quicksort(this.lineboxList.getInternalArray(), this.lineboxList.size(), InlineLineboxComparator.getInstance());
 				this.sorted = true;
 			}
 		}

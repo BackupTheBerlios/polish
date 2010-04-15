@@ -1,18 +1,19 @@
 package de.enough.skylight.renderer.element.view;
 
+import javax.microedition.lcdui.Graphics;
+
 import de.enough.polish.ui.Canvas;
 import de.enough.polish.ui.ContainerView;
-import de.enough.skylight.event.UserEvent;
+import de.enough.polish.ui.Item;
 import de.enough.skylight.renderer.Viewport;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.element.ContainingBlock;
-import de.enough.skylight.renderer.layout.LayoutDescriptor;
-import de.enough.skylight.renderer.linebox.LineboxList;
+import de.enough.skylight.renderer.element.LayoutDescriptor;
+import de.enough.skylight.renderer.linebox.InlineLineboxList;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.partition.PartitionList;
 
-public class ContainingBlockView extends ContainerView implements LayoutDescriptor{
-	
+public abstract class ContainingBlockView extends ContainerView implements LayoutDescriptor{
 	ContainingBlock parentContainingBlock = null;
 	
 	CssElement cssElement = null;
@@ -21,11 +22,13 @@ public class ContainingBlockView extends ContainerView implements LayoutDescript
 	
 	BlockContainingBlock block = null;
 	
-	LineboxList lineboxes = new LineboxList();
+	InlineLineboxList lineboxes = new InlineLineboxList();
 	
 	PartitionList partitions = new PartitionList();
 	
 	int inlineRelativeOffset = 0;
+	
+	Viewport viewport;
 	
 	public ContainingBlockView(ContainingBlock parent) {
 		this.parentContainer = parent;
@@ -73,7 +76,7 @@ public class ContainingBlockView extends ContainerView implements LayoutDescript
 		return this.inlineRelativeOffset;
 	}
 
-	public LineboxList getLineboxes() {
+	public InlineLineboxList getLineboxes() {
 		return this.lineboxes;
 	}
 
@@ -96,4 +99,12 @@ public class ContainingBlockView extends ContainerView implements LayoutDescript
 	public void setInlineRelativeOffset(int inlineRelativeLeft) {
 		this.inlineRelativeOffset = inlineRelativeLeft;
 	}
+
+	public Viewport getViewport() {
+		return this.viewport;
+	}
+
+	public void setViewport(Viewport viewport) {
+		this.viewport = viewport;
+	}	
 }

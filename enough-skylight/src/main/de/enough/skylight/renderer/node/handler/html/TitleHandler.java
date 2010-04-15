@@ -15,7 +15,7 @@ public class TitleHandler extends HeadNodeHandler {
 		
 		if(firstChild.getNodeType() == DomNode.TEXT_NODE) {
 			String text = firstChild.getNodeValue();
-			element.getViewport().setTitle(text);
+			element.getViewportContext().setTitle(text);
 		}
 	}
 	

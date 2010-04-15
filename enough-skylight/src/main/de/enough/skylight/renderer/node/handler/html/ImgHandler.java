@@ -1,8 +1,5 @@
 package de.enough.skylight.renderer.node.handler.html;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
@@ -25,13 +22,13 @@ public class ImgHandler extends BodyNodeHandler{
 		return "img";
 	}
 
-	public CssElement createElement(DomNode node, CssElement parent, Viewport viewport) {
-		return new ImgCssElement(this, node, parent, viewport);
+	public CssElement createElement(DomNode node, CssElement parent, ViewportContext viewportContext) {
+		return new ImgCssElement(this, node, parent, viewportContext);
 	}
 	
 	public void handleNode(CssElement element) {
 		ImgCssElement imgElement = (ImgCssElement)element;
-		ViewportContext context = element.getViewport().getContext();
+		ViewportContext context = element.getViewportContext();
 		
 		String src = NodeUtils.getAttributeValue(element.getNode(), "src");
 		

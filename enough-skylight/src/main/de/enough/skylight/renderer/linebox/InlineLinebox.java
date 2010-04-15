@@ -6,13 +6,11 @@ import de.enough.skylight.renderer.partition.Partition;
 import de.enough.skylight.renderer.partition.PartitionList;
 
 
-public class Linebox {
+public class InlineLinebox {
 	
 	public static int UNDEFINED = Integer.MAX_VALUE;
 	
 	final PartitionList partitions;
-	
-	final InlineContainingBlock block;
 	
 	final int availableWidth;
 	
@@ -20,20 +18,17 @@ public class Linebox {
 
 	int inlineRelativeRight = UNDEFINED;
 	
-	final int blockRelativeLeft;
+	final int contextRelativeLeft;
 	
-	final int blockRelativeTop;
-	
-	int blockRelativeBottom;
+	final int contextRelativeTop;
 	
 	int lineHeight = UNDEFINED;
 	
-	public Linebox(InlineContainingBlock block, int blockRelativeLeft, int blockRelativeTop, int availableWidth) {
+	public InlineLinebox(int contextRelativeLeft, int contextRelativeTop, int availableWidth) {
 		this.availableWidth = availableWidth;
 		this.partitions = new PartitionList();
-		this.block = block;
-		this.blockRelativeLeft = blockRelativeLeft;
-		this.blockRelativeTop = blockRelativeTop;
+		this.contextRelativeLeft = contextRelativeLeft;
+		this.contextRelativeTop = contextRelativeTop;
 	}
 	
 	public void addPartition(Partition partition) {
@@ -60,20 +55,20 @@ public class Linebox {
 		return this.inlineRelativeRight;
 	}
 	
-	public int getBlockRelativeLeft() {
-		return this.blockRelativeLeft;
+	public int getContextRelativeLeft() {
+		return this.contextRelativeLeft;
 	}
 	
-	public int getBlockRelativeRight() {
-		return this.blockRelativeLeft + getTrimmedWidth();
+	public int getContextRelativeRight() {
+		return this.contextRelativeLeft + getTrimmedWidth();
 	}
 	
-	public int getBlockRelativeTop() {
-		return this.blockRelativeTop;
+	public int getContextRelativeTop() {
+		return this.contextRelativeTop;
 	}
 	
-	public int getBlockRelativeBottom() {
-		return this.blockRelativeTop + this.lineHeight;
+	public int getContextRelativeBottom() {
+		return this.contextRelativeTop + this.lineHeight;
 	}
 	
 	public int getLineHeight() {
@@ -116,19 +111,15 @@ public class Linebox {
 		return getTrimmedInlineRelativeRight() - getTrimmedInlineRelativeLeft();
 	}
 	
-	public boolean matchesArea(int top) {
-		return (top >= getBlockRelativeTop()) && (top <= getBlockRelativeBottom() - 1); 
-	}
-	
 	public PartitionList getPartitions() {
 		return this.partitions;
 	}
 	
 	public String toString() {
-		return new ToStringHelper("LineBox").
+		return new ToStringHelper("InlineLineBox").
 		add("inline relative left", this.inlineRelativeLeft).
 		add("inline relative right", this.inlineRelativeRight).
-		add("block relative y", this.blockRelativeTop).
+		add("block relative y", this.contextRelativeTop).
 		add("height", this.lineHeight).
 		add("width", getWidth()).
 		add("available width", this.availableWidth).

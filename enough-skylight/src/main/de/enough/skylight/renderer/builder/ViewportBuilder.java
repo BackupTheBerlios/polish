@@ -7,13 +7,16 @@ import de.enough.skylight.dom.Document;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.NodeList;
 import de.enough.skylight.renderer.Viewport;
+import de.enough.skylight.renderer.ViewportContext;
 import de.enough.skylight.renderer.css.HtmlCssElement;
 import de.enough.skylight.renderer.debug.BuildDebug;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.element.ContainingBlock;
+import de.enough.skylight.renderer.element.LayoutDescriptor;
 import de.enough.skylight.renderer.element.view.ContentView;
-import de.enough.skylight.renderer.layout.LayoutDescriptor;
+import de.enough.skylight.renderer.layout.floating.FloatLayout;
 import de.enough.skylight.renderer.node.CssElement;
+import de.enough.skylight.renderer.node.CssStyle;
 import de.enough.skylight.renderer.node.NodeHandler;
 import de.enough.skylight.renderer.node.NodeHandlerDirectory;
 import de.enough.skylight.renderer.node.handler.html.TextHandler;
@@ -23,24 +26,23 @@ public class ViewportBuilder {
 	
 	Viewport viewport;
 	
-	public ViewportBuilder(Viewport viewport) {
-		this.viewport = viewport;
-	}
+	ViewportContext viewportContext;
 	
-	public Viewport getViewport() {
-		return this.viewport;
+	public ViewportBuilder(Viewport viewport) {
+		setViewport(viewport);
 	}
 
 	public void setViewport(Viewport viewport) {
 		this.viewport = viewport;
-	}
-
-	public Document getDocument() {
-		return this.document;
+		this.viewportContext = this.viewport.getContext();
 	}
 
 	public void setDocument(Document document) {
 		this.document = document;
+	}
+	
+	public Document getDocument() {
+		return this.document;
 	}
 	
 	public void build() throws IllegalArgumentException {
@@ -97,7 +99,7 @@ public class ViewportBuilder {
 			
 			this.viewport.setReady(true);
 			
-			//#debug sl.debug.build
+			// #debug sl.debug.build
 			System.out.println("build done");
 			
 		} catch(Exception e) {
@@ -112,7 +114,7 @@ public class ViewportBuilder {
 		
 		if(handler != null) {
 			if(handler.isValid(node)) {
-				CssElement element = handler.createElement(node, parent, this.viewport); 
+				CssElement element = handler.createElement(node, parent, this.viewportContext); 
 				
 				try {
 					element.build();
@@ -157,6 +159,11 @@ public class ViewportBuilder {
 			LayoutDescriptor layoutDescriptor = containingBlock.getLayoutDescriptor();
 			layoutDescriptor.setCssElement(element);
 			layoutDescriptor.setBlock(parentBlock);
+			layoutDescriptor.setViewport(this.viewport);
+			
+			if(element.isPosition(HtmlCssElement.Position.ABSOLUTE)) {
+				layoutDescriptor.setFloatLayout(new FloatLayout());
+			}
 			
 			if(element.isFloat()) {
 				if(element.isFloat(HtmlCssElement.Float.LEFT)) {
@@ -196,6 +203,7 @@ public class ViewportBuilder {
 				LayoutDescriptor layoutDescriptor = ContentView.getLayoutDescriptor(item);
 				layoutDescriptor.setCssElement(element);
 				layoutDescriptor.setBlock(parentBlock);
+				layoutDescriptor.setViewport(this.viewport);
 				
 				if(element.isFloat()) {
 					if(element.isFloat(HtmlCssElement.Float.LEFT)) {

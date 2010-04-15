@@ -6,9 +6,7 @@ import de.enough.polish.util.ToStringHelper;
 import de.enough.skylight.renderer.element.view.BlockContainingBlockView;
 import de.enough.skylight.renderer.element.view.ContainingBlockView;
 import de.enough.skylight.renderer.element.view.ContentView;
-import de.enough.skylight.renderer.layout.LayoutDescriptor;
-import de.enough.skylight.renderer.linebox.Linebox;
-import de.enough.skylight.renderer.partition.Partable;
+import de.enough.skylight.renderer.linebox.InlineLinebox;
 import de.enough.skylight.renderer.partition.Partition;
 import de.enough.skylight.renderer.partition.PartitionList;
 
@@ -26,8 +24,6 @@ public class BlockContainingBlock extends ContainingBlock {
 	
 	public BlockContainingBlock(Style style) {
 		super( style );
-		
-		
 	}
 	
 	ContainingBlockView buildView() {
@@ -43,6 +39,7 @@ public class BlockContainingBlock extends ContainingBlock {
 			layoutDescriptor.setCssElement(null);
 			layoutDescriptor.setContainingBlock(this);
 			layoutDescriptor.setBlock(this);
+			layoutDescriptor.setViewport(getLayoutDescriptor().getViewport());
 			add(this.body);
 		}
 	
@@ -56,11 +53,11 @@ public class BlockContainingBlock extends ContainingBlock {
 			//#style element
 			this.floatLeft = new InlineContainingBlock();
 			
-			LayoutDescriptor layoutDescriptor = this.floatLeft.getLayoutDescriptor();
-			layoutDescriptor.setCssElement(null);
-			layoutDescriptor.setContainingBlock(this);
-			layoutDescriptor.setBlock(this);
-			
+			LayoutDescriptor layoutElement = this.floatLeft.getLayoutDescriptor();
+			layoutElement.setCssElement(null);
+			layoutElement.setContainingBlock(this);
+			layoutElement.setBlock(this);
+			layoutElement.setViewport(getLayoutDescriptor().getViewport());
 			add(this.floatLeft);
 		}
 		
@@ -78,7 +75,7 @@ public class BlockContainingBlock extends ContainingBlock {
 			layoutElement.setCssElement(null);
 			layoutElement.setContainingBlock(this);
 			layoutElement.setBlock(this);
-			
+			layoutElement.setViewport(getLayoutDescriptor().getViewport());
 			add(this.floatRight);
 		}
 		
@@ -103,7 +100,7 @@ public class BlockContainingBlock extends ContainingBlock {
 		Partition.partitionBlock(this,partitions);
 	}
 	
-	public Linebox getPaintLineBox() {
+	public InlineLinebox getPaintLineBox() {
 		BlockContainingBlockView view = (BlockContainingBlockView)this.layoutDescriptor;
 		return view.getPaintLineBox();
 	}

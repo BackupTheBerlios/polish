@@ -7,11 +7,14 @@ import de.enough.polish.ui.Dimension;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.ItemPreinit;
+import de.enough.skylight.renderer.Viewport;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
+import de.enough.skylight.renderer.element.ContainingBlock;
 import de.enough.skylight.renderer.element.InlineContainingBlock;
+import de.enough.skylight.renderer.element.LayoutDescriptor;
 import de.enough.skylight.renderer.element.TextBlock;
-import de.enough.skylight.renderer.layout.LayoutDescriptor;
-import de.enough.skylight.renderer.linebox.Linebox;
+import de.enough.skylight.renderer.layout.floating.FloatLayout;
+import de.enough.skylight.renderer.linebox.InlineLinebox;
 
 public class InlineContainingBlockView extends ContainingBlockView {
 
@@ -22,6 +25,8 @@ public class InlineContainingBlockView extends ContainingBlockView {
 	int[] itemYOffsets;
 	
 	int inlineOffset;
+	
+	transient FloatLayout floatLayout;
 	
 	public InlineContainingBlockView(InlineContainingBlock parent) {
 		super(parent);
@@ -125,9 +130,10 @@ public class InlineContainingBlockView extends ContainingBlockView {
 		System.out.println(this.containingBlock + " has dimension : " + this.contentWidth + "/" + this.contentHeight);
 	}
 	
+	
 	protected void paintContent(Item parent, int x, int y, int leftBorder,
 			int rightBorder, Graphics g) {
-		Linebox linebox = this.block.getPaintLineBox();
+		InlineLinebox linebox = this.block.getPaintLineBox();
 		
 		int lineboxInlineRelativeLeft = linebox.getInlineRelativeLeft();
 		int lineboxInlineRelativeRight = linebox.getInlineRelativeRight();
@@ -145,7 +151,7 @@ public class InlineContainingBlockView extends ContainingBlockView {
 		for (int i = 0; i < items.length; i++) {
 			if (i != this.focusedIndex) {
 				Item item = items[i];
-
+				
 				int itemX = x + this.itemXOffsets[i];
 				int itemY = y + this.itemYOffsets[i];
 				
@@ -153,7 +159,7 @@ public class InlineContainingBlockView extends ContainingBlockView {
 				itemInlineRelativeRight = itemInlineRelativeLeft + item.itemWidth;
 				
 				if(!(lineboxInlineRelativeRight <= itemInlineRelativeLeft ||
-					 lineboxInlineRelativeLeft >= itemInlineRelativeRight)) {
+						lineboxInlineRelativeLeft >= itemInlineRelativeRight)) {
 					leftBorder = itemX;
 					rightBorder = itemX + item.itemWidth;
 					
@@ -172,9 +178,32 @@ public class InlineContainingBlockView extends ContainingBlockView {
 			itemInlineRelativeRight = itemInlineRelativeLeft + focItem.itemWidth;
 			
 			if(!(lineboxInlineRelativeRight <= itemInlineRelativeLeft ||
-				lineboxInlineRelativeLeft >= itemInlineRelativeRight)) {
+					lineboxInlineRelativeLeft >= itemInlineRelativeRight)) {
 				paintItem(focItem, this.focusedIndex, focItemX, focItemY, focItemX, focItemX + focItem.itemWidth, clipX, clipY, clipWidth, clipHeight, g);
 			}
 		}
+	}
+	
+	public FloatLayout getFloatLayout() {
+		FloatLayout floatLayout = this.floatLayout;
+		ContainingBlock containingBlock = getContainingBlock();
+		
+		while(floatLayout == null) {
+				LayoutDescriptor descriptor = containingBlock.getLayoutDescriptor();
+				containingBlock = descriptor.getContainingBlock();
+				
+				if(containingBlock != null) {
+					LayoutDescriptor parentDescriptor = containingBlock.getLayoutDescriptor();
+					floatLayout = parentDescriptor.getFloatLayout();
+				} else {
+					return null;
+				}
+		}
+		
+		return floatLayout;
+	}
+
+	public void setFloatLayout(FloatLayout floatLayout) {
+		this.floatLayout = floatLayout;
 	}
 }

@@ -1,8 +1,8 @@
-package de.enough.skylight.renderer.layout;
+package de.enough.skylight.renderer.element;
 
-import de.enough.skylight.renderer.element.BlockContainingBlock;
-import de.enough.skylight.renderer.element.ContainingBlock;
-import de.enough.skylight.renderer.linebox.LineboxList;
+import de.enough.skylight.renderer.Viewport;
+import de.enough.skylight.renderer.layout.floating.FloatLayout;
+import de.enough.skylight.renderer.linebox.InlineLineboxList;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.partition.PartitionList;
 
@@ -23,9 +23,17 @@ public interface LayoutDescriptor {
 	
 	public PartitionList getPartitions();
 
-	public LineboxList getLineboxes();
+	public InlineLineboxList getLineboxes();
 	
 	public int getInlineRelativeOffset();
 
 	public void setInlineRelativeOffset(int inlineRelativeLeft);
+	
+	public Viewport getViewport();
+	
+	public void setViewport(Viewport viewport);
+	
+	public FloatLayout getFloatLayout();
+	
+	public void setFloatLayout(FloatLayout floatLayout);
 }

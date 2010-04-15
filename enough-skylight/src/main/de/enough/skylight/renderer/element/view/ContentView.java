@@ -10,11 +10,13 @@ import de.enough.polish.ui.Style;
 import de.enough.polish.ui.UiAccess;
 import de.enough.skylight.event.UserEvent;
 import de.enough.skylight.renderer.Viewport;
+import de.enough.skylight.renderer.ViewportContext;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.element.ContainingBlock;
 import de.enough.skylight.renderer.element.InputSubmitField;
-import de.enough.skylight.renderer.layout.LayoutDescriptor;
-import de.enough.skylight.renderer.linebox.LineboxList;
+import de.enough.skylight.renderer.element.LayoutDescriptor;
+import de.enough.skylight.renderer.layout.floating.FloatLayout;
+import de.enough.skylight.renderer.linebox.InlineLineboxList;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.partition.PartitionList;
 
@@ -24,19 +26,23 @@ public class ContentView extends ItemView implements LayoutDescriptor {
 		return (LayoutDescriptor) item.getView();
 	}
 
-	Item item;
+	transient Item item;
 
-	CssElement cssElement = null;
+	transient CssElement cssElement = null;
 
-	ContainingBlock containingBlock = null;
+	transient ContainingBlock containingBlock = null;
 
-	BlockContainingBlock block = null;
+	transient BlockContainingBlock block = null;
 
-	LineboxList lineboxes = new LineboxList();
+	transient InlineLineboxList lineboxes = new InlineLineboxList();
 
-	PartitionList partitions = new PartitionList();
+	transient PartitionList partitions = new PartitionList();
 
 	int inlineRelativeOffset = 0;
+	
+	transient Viewport viewport;
+	
+	transient FloatLayout floatLayout;
 
 	public static Dimension DIMENSION_ZERO = new Dimension(0);
 
@@ -90,9 +96,9 @@ public class ContentView extends ItemView implements LayoutDescriptor {
 	
 	public static boolean handleOnClick(CssElement cssElement) {
 		if (cssElement != null && cssElement.isInteractive()) {
-			Viewport viewport = cssElement.getViewport();
+			ViewportContext context = cssElement.getViewportContext();
 			UserEvent event = new UserEvent();
-			viewport.notifyUserEvent(cssElement, event);
+			context.notifyUserEvent(cssElement, event);
 			return true;
 		}
 		
@@ -115,7 +121,7 @@ public class ContentView extends ItemView implements LayoutDescriptor {
 		return this.inlineRelativeOffset;
 	}
 
-	public LineboxList getLineboxes() {
+	public InlineLineboxList getLineboxes() {
 		return this.lineboxes;
 	}
 
@@ -137,5 +143,36 @@ public class ContentView extends ItemView implements LayoutDescriptor {
 
 	public void setInlineRelativeOffset(int inlineRelativeLeft) {
 		this.inlineRelativeOffset = inlineRelativeLeft;
+	}
+	
+	public Viewport getViewport() {
+		return this.viewport;
+	}
+
+	public void setViewport(Viewport viewport) {
+		this.viewport = viewport;
+	}
+	
+	public FloatLayout getFloatLayout() {
+		FloatLayout floatLayout = this.floatLayout;
+		ContainingBlock containingBlock = getContainingBlock();
+		
+		while(floatLayout == null) {
+				LayoutDescriptor descriptor = containingBlock.getLayoutDescriptor();
+				containingBlock = descriptor.getContainingBlock();
+				
+				if(containingBlock != null) {
+					LayoutDescriptor parentDescriptor = containingBlock.getLayoutDescriptor();
+					floatLayout = parentDescriptor.getFloatLayout();
+				} else {
+					return null;
+				}
+		}
+		
+		return floatLayout;
+	}
+
+	public void setFloatLayout(FloatLayout floatLayout) {
+		this.floatLayout = floatLayout;
 	}
 }

@@ -5,7 +5,6 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.UiAccess;
 import de.enough.skylight.renderer.element.view.ContainingBlockView;
-import de.enough.skylight.renderer.layout.LayoutDescriptor;
 import de.enough.skylight.renderer.partition.Partable;
 
 public abstract class ContainingBlock extends Container implements Partable {

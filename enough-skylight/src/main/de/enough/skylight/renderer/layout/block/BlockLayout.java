@@ -1,16 +1,17 @@
-package de.enough.skylight.renderer.layout;
+package de.enough.skylight.renderer.layout.block;
 
 import de.enough.polish.ui.Item;
 import de.enough.skylight.renderer.element.InlineContainingBlock;
+import de.enough.skylight.renderer.element.LayoutDescriptor;
 import de.enough.skylight.renderer.element.view.ContentView;
-import de.enough.skylight.renderer.linebox.Linebox;
-import de.enough.skylight.renderer.linebox.LineboxList;
+import de.enough.skylight.renderer.linebox.InlineLinebox;
+import de.enough.skylight.renderer.linebox.InlineLineboxList;
 import de.enough.skylight.renderer.partition.Partition;
 import de.enough.skylight.renderer.partition.PartitionList;
 
 public class BlockLayout {
 	
-	LineboxList lineboxes;
+	InlineLineboxList lineboxes;
 	
 	int blockAvailableWidth;
 	
@@ -26,9 +27,9 @@ public class BlockLayout {
 		this.lineboxes = getLineboxes(partitions,block);
 	}
 	
-	 LineboxList getLineboxes(PartitionList partitions,InlineContainingBlock block) {
-		LineboxList lineboxes = new LineboxList();
-		Linebox linebox = null;
+	 InlineLineboxList getLineboxes(PartitionList partitions,InlineContainingBlock block) {
+		InlineLineboxList lineboxes = new InlineLineboxList();
+		InlineLinebox linebox = null;
 		
 		int top = 0;
 		
@@ -53,7 +54,7 @@ public class BlockLayout {
 						linebox = null;
 						
 						if(!partition.hasAttribute(Partition.ATTRIBUTE_WHITESPACE)) {
-							linebox = new Linebox(block, offset, top, width);
+							linebox = new InlineLinebox(offset, top, width);
 							addToLinebox(linebox, partition);
 							lineboxes.add(linebox);
 						} else {
@@ -79,7 +80,7 @@ public class BlockLayout {
 		return lineboxes;
 	}
 	 
-	public void addToLinebox(Linebox linebox, Partition partition) {
+	public void addToLinebox(InlineLinebox linebox, Partition partition) {
 		Item partitionItem = partition.getParentItem();
 		LayoutDescriptor layoutDescriptor = ContentView.getLayoutDescriptor(partitionItem);
 		layoutDescriptor.getLineboxes().add(linebox);						
@@ -100,7 +101,7 @@ public class BlockLayout {
 		return result;
 	}
 	
-	public LineboxList getLineBoxes() {
+	public InlineLineboxList getLineBoxes() {
 		return this.lineboxes;
 	}
 	

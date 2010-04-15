@@ -4,7 +4,6 @@ import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.ui.Item;
 import de.enough.skylight.renderer.element.view.ContentView;
-import de.enough.skylight.renderer.layout.LayoutDescriptor;
 import de.enough.skylight.renderer.partition.Partable;
 import de.enough.skylight.renderer.partition.Partition;
 import de.enough.skylight.renderer.partition.PartitionList;

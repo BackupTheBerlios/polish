@@ -35,7 +35,7 @@ public class LinkHandler extends HeadNodeHandler {
 		String rel = NodeUtils.getAttributeValue(node, "rel");
 		String type = NodeUtils.getAttributeValue(node, "type");
 		String href = NodeUtils.getAttributeValue(node, "href");
-		ViewportContext context = element.getViewport().getContext();
+		ViewportContext context = element.getViewportContext();
 
 		if (rel != null && rel.equals(REL_STYLESHEET) && type != null
 				&& type.equals(TYPE_TEXT_CSS) && href != null) {

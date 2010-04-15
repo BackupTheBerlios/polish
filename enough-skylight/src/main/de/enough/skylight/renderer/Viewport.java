@@ -2,11 +2,8 @@ package de.enough.skylight.renderer;
 
 import javax.microedition.lcdui.Graphics;
 
-import de.enough.polish.event.EventListener;
 import de.enough.polish.util.ArrayList;
 import de.enough.skylight.dom.DomNode;
-import de.enough.skylight.event.UserEvent;
-import de.enough.skylight.event.UserEventListener;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.node.CssElement;
 
@@ -16,6 +13,19 @@ import de.enough.skylight.renderer.node.CssElement;
  *
  */
 public class Viewport extends BlockContainingBlock {
+
+	public static class RenderStage {
+		public static final int BODY = 0x00;
+		
+		public static final int FLOAT = 0x01;
+		
+		public static final int RELATIVE = 0x02;
+		
+		public static final int ABSOLUTE = 0x03;
+	}
+	
+	int renderStage = RenderStage.BODY;
+	
 	boolean ready;
 	
 	CssElement rootElement;
@@ -31,25 +41,8 @@ public class Viewport extends BlockContainingBlock {
 		this.userEventListeners = new ArrayList();
 		
 		this.context = context;
-	}
-	
-	public void addUserEventListener(UserEventListener listener) {
-		this.userEventListeners.add(listener);
-	}
-	
-	public void removeUserEventListener(EventListener listener) {
-		this.userEventListeners.remove(listener);
-	}
-	
-	public void notifyUserEvent(CssElement element, UserEvent event) {
-		for (int i = 0; i < this.userEventListeners.size(); i++) {
-			UserEventListener listener = (UserEventListener)this.userEventListeners.get(i);
-			listener.onUserEvent(element, event);
-		}
-	}
-	
-	public void setTitle(String title) {
-		setLabel(title);
+		
+		getLayoutDescriptor().setViewport(this);
 	}
 	
 	public void reset() {
@@ -82,8 +75,26 @@ public class Viewport extends BlockContainingBlock {
 		this.ready = ready;
 	}
 
+	public int getRenderStage() {
+		return this.renderStage;
+	}
+
+	public void setRenderStage(int renderStage) {
+		this.renderStage = renderStage;
+	}
+
 	public void paint(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		if(isReady()) {
+			setRenderStage(RenderStage.BODY);
+			super.paint(x, y, leftBorder, rightBorder, g);
+			
+			setRenderStage(RenderStage.FLOAT);
+			super.paint(x, y, leftBorder, rightBorder, g);
+			
+			setRenderStage(RenderStage.RELATIVE);
+			super.paint(x, y, leftBorder, rightBorder, g);
+			
+			setRenderStage(RenderStage.ABSOLUTE);
 			super.paint(x, y, leftBorder, rightBorder, g);
 		}
 	}

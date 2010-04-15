@@ -5,7 +5,6 @@ import de.enough.polish.ui.ItemStateListener;
 import de.enough.polish.ui.TextField;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.element.view.ContentView;
-import de.enough.skylight.renderer.layout.LayoutDescriptor;
 import de.enough.skylight.renderer.node.CssElement;
 
 public class InputTextField extends TextField implements ItemStateListener {

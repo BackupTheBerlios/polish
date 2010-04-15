@@ -5,9 +5,9 @@ import de.enough.polish.ui.UiAccess;
 import de.enough.polish.util.ToStringHelper;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.element.ContainingBlock;
+import de.enough.skylight.renderer.element.LayoutDescriptor;
 import de.enough.skylight.renderer.element.view.ContentView;
-import de.enough.skylight.renderer.layout.LayoutDescriptor;
-import de.enough.skylight.renderer.linebox.Linebox;
+import de.enough.skylight.renderer.linebox.InlineLinebox;
 
 public class Partition {
 	public static void partitionInline(Item item, PartitionList partitions) {
@@ -59,10 +59,6 @@ public class Partition {
 			int width = item.itemWidth;
 			int height = item.itemHeight;
 			
-			if(width == 0) {
-				System.out.println("break");
-			}
-			
 			int left = x;
 			int right = x + width;
 			itemPartitions.add(TYPE_BLOCK, left, right, height, item);
@@ -112,7 +108,7 @@ public class Partition {
 	/**
 	 * the parenting linebox
 	 */
-	Linebox linebox = null;
+	InlineLinebox linebox = null;
 	
 	/**
 	 * the left position relative to the inline context 
@@ -186,11 +182,11 @@ public class Partition {
 		return this.height;
 	}
 	
-	public Linebox getLinebox() {
+	public InlineLinebox getLinebox() {
 		return this.linebox;
 	}
 
-	public void setLinebox(Linebox linebox) {
+	public void setLinebox(InlineLinebox linebox) {
 		this.linebox = linebox;
 	}
 	public int getLineboxRelativeX() {

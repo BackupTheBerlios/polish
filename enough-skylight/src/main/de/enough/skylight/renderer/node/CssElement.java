@@ -1,19 +1,16 @@
 package de.enough.skylight.renderer.node;
 
-import de.enough.polish.ui.Container;
-import de.enough.polish.ui.Dimension;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.ToStringHelper;
 import de.enough.skylight.dom.DomNode;
-import de.enough.skylight.renderer.Viewport;
+import de.enough.skylight.renderer.ViewportContext;
 import de.enough.skylight.renderer.css.HtmlCssElement;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.element.ContainingBlock;
 import de.enough.skylight.renderer.element.InlineContainingBlock;
 import de.enough.skylight.renderer.element.view.ContentView;
-import de.enough.skylight.renderer.layout.LayoutDescriptor;
 import de.enough.skylight.renderer.node.handler.html.TextHandler;
 
 public class CssElement implements HtmlCssElement{
@@ -27,7 +24,7 @@ public class CssElement implements HtmlCssElement{
 	
 	String verticalAlign = HtmlCssElement.VerticalAlign.TOP;
 	
-	Viewport viewport;
+	ViewportContext viewportContext;
 	
 	NodeHandler handler;
 	
@@ -65,7 +62,7 @@ public class CssElement implements HtmlCssElement{
 		return null;
 	}
 	
-	public CssElement(NodeHandler handler, DomNode node, CssElement parent, Viewport viewport) {
+	public CssElement(NodeHandler handler, DomNode node, CssElement parent, ViewportContext viewportContext) {
 		this.handler = handler;
 		
 		this.node = node;
@@ -74,7 +71,7 @@ public class CssElement implements HtmlCssElement{
 		
 		this.children = new ArrayList();
 		
-		this.viewport = viewport;
+		this.viewportContext = viewportContext;
 	}
 	
 	public void build() throws ClassCastException, IllegalArgumentException {
@@ -277,12 +274,12 @@ public class CssElement implements HtmlCssElement{
 		return this.parent;
 	}
 
-	public void setViewport(Viewport viewport) {
-		this.viewport = viewport;
+	public void setViewportContext(ViewportContext viewportContext) {
+		this.viewportContext = viewportContext;
 	}
 	
-	public Viewport getViewport() {
-		return this.viewport;
+	public ViewportContext getViewportContext() {
+		return this.viewportContext;
 	}
 
 	public boolean isInteractive() {
