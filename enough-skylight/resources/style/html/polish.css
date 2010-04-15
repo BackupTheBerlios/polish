@@ -2,6 +2,7 @@
 
 body extends element {
 	display: block;
+	position: absolute;
 }
 
 h1 extends element {
