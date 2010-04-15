@@ -2,9 +2,10 @@ package de.enough.skylight;
 
 import de.enough.skylight.dom.impl.EventEmitter;
 import de.enough.skylight.dom.impl.EventProcessor;
-import de.enough.skylight.dom.impl.TraceEventProcessorListener;
 import de.enough.skylight.html.HtmlExpert;
+import de.enough.skylight.js.DomConfigurator;
 import de.enough.skylight.js.JsEngine;
+import de.enough.skylight.js.NavigatorConfigurator;
 
 public class Services {
 
@@ -23,9 +24,13 @@ public class Services {
 	
 	private Services() {
 		this.jsEngine = new JsEngine();
+		this.jsEngine.init(new DomConfigurator());
+		this.jsEngine.init(new NavigatorConfigurator());
+		
 		this.eventProcessor = new EventProcessor();
-		this.eventProcessor.addEventProcessorListener(new TraceEventProcessorListener());
+//		this.eventProcessor.addEventProcessorListener(new TraceEventProcessorListener());
 		this.eventProcessor.addEventProcessorListener(new HtmlExpert());
+		
 		this.eventEmitter = EventEmitter.getInstance(this.eventProcessor);
 	}
 	

@@ -16,9 +16,12 @@ public class JsEngine {
 	
 	public JsEngine() {
 		this.context = Context.enter();
-		this.context.setOptionOnErrorThrowExeption(true);
 		this.scope = this.context.initStandardObjects();
-		this.scope.put("alert", this.scope, new AlertScriptableObject());
+		this.context.setOptionOnErrorThrowExeption(true);
+	}
+	
+	public void init(JsConfigurator jsConfigurator) {
+		jsConfigurator.init(this.context, this.scope);
 	}
 	
 	public void setDocument(Document document) {
@@ -26,19 +29,25 @@ public class JsEngine {
 		this.scope.put("document", this.scope, document2.getScriptable());
 	}
 	
-	public void runScript(DomNodeImpl target, String scriptText) {
+	public Object runScript(DomNodeImpl target, String scriptText) {
 		Script script = this.context.compileString(scriptText, "test1", 1);
 		Scriptable scriptable = target.getScriptable();
 		scriptable.setParentScope(this.scope);
-		script.exec(this.context, scriptable);
+		Object result = script.exec(this.context, scriptable);
+		return result;
 	}
 	
-	public void runScript(String scriptText) {
+	public Object runScript(String scriptText) {
 		Script script = this.context.compileString(scriptText, "test1", 1);
-		script.exec(this.context, this.scope);
+		Object result = script.exec(this.context, this.scope);
+		return result;
 	}
 
 	public void runFunction(Object onClickFunction) {
 		throw new RuntimeException("Not implemented");
+	}
+
+	public Scriptable newObject(String constructorName, Object[] args) {
+		return this.context.newObject(this.scope, constructorName, args);
 	}
 }

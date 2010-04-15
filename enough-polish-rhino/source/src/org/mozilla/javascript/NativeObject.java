@@ -57,7 +57,7 @@ public class NativeObject extends IdScriptableObject
 
     private static final Object OBJECT_TAG = new Object();
 
-    static void init(Scriptable scope, boolean sealed)
+    public static void init(Scriptable scope, boolean sealed)
     {
         NativeObject obj = new NativeObject();
         obj.exportAsJSClass(MAX_PROTOTYPE_ID, scope, sealed);
@@ -300,7 +300,7 @@ public class NativeObject extends IdScriptableObject
         return id;
     }
 
-    private static final int
+    public static final int
         Id_constructor           = 1,
         Id_toString              = 2,
         Id_toLocaleString        = 3,

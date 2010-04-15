@@ -120,7 +120,7 @@ public abstract class IdScriptableObject extends ScriptableObject
 
             if (id == constructorId) {
                 if (!(value instanceof IdFunctionObject)) {
-                    throw new IllegalArgumentException("consructor should be initialized with IdFunctionObject");
+                    throw new IllegalArgumentException("constructor should be initialized with an instance of IdFunctionObject");
                 }
                 constructor = (IdFunctionObject)value;
                 constructorAttrs = (short)attributes;
@@ -657,6 +657,7 @@ public abstract class IdScriptableObject extends ScriptableObject
         }
     }
 
+    // rickyn: Actual initialization
     public final void initPrototypeMethod(Object tag, int id, String name,
                                           int arity)
     {
@@ -665,6 +666,7 @@ public abstract class IdScriptableObject extends ScriptableObject
         prototypeValues.initValue(id, name, f, DONTENUM);
     }
 
+ // rickyn: Actual initialization
     public final void initPrototypeConstructor(IdFunctionObject f)
     {
         int id = prototypeValues.constructorId;
@@ -676,12 +678,14 @@ public abstract class IdScriptableObject extends ScriptableObject
         prototypeValues.initValue(id, "constructor", f, DONTENUM);
     }
 
+ // rickyn: Actual initialization
     public final void initPrototypeValue(int id, String name, Object value,
                                          int attributes)
     {
         prototypeValues.initValue(id, name, value, attributes);
     }
 
+    // rickyn: Used for lazy initialization.
     protected void initPrototypeId(int id)
     {
         throw new IllegalStateException(String.valueOf(id));

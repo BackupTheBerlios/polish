@@ -10,11 +10,12 @@ import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.Element;
 import de.enough.skylight.dom.MutationEvent;
 import de.enough.skylight.dom.NodeList;
+import de.enough.skylight.js.ElementIdScriptableObject;
 import de.enough.skylight.js.ElementScriptableObject;
 
 public class ElementImpl extends DomNodeImpl implements Element{
 
-	private ElementScriptableObject scriptableObject;
+	private Scriptable scriptableObject;
 	private String tagName;
 	private NamedNodeMapImpl attributes;
 	private String value;
@@ -22,8 +23,7 @@ public class ElementImpl extends DomNodeImpl implements Element{
 	@Override
 	public Scriptable getScriptable() {
 		if(this.scriptableObject == null) {
-			this.scriptableObject = new ElementScriptableObject();
-			this.scriptableObject.init(this);
+			this.scriptableObject = Services.getInstance().getJsEngine().newObject("Element", new Object[] {this});
 		}
 		return this.scriptableObject;
 	}

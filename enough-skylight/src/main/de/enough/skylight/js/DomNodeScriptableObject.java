@@ -5,7 +5,6 @@ import org.mozilla.javascript.Callable;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
-import org.mozilla.javascript.Undefined;
 
 import de.enough.skylight.dom.DOMException;
 import de.enough.skylight.dom.impl.DocumentImpl;
