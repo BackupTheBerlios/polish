@@ -17,7 +17,7 @@ import de.enough.skylight.dom.DomNode;
 public class DomParser {
 
 	// TODO: Rename to parseDocument.
-	public Document parseDocument(String documentText) {
+	public DocumentImpl parseDocument(String documentText) {
 		try {
 			return parseDocument(documentText, null);
 		} catch (UnsupportedEncodingException e) {
@@ -28,13 +28,13 @@ public class DomParser {
 	}
 
 	
-	public Document parseDocument(String documentText, String encoding) throws UnsupportedEncodingException {
+	public DocumentImpl parseDocument(String documentText, String encoding) throws UnsupportedEncodingException {
 		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(documentText.getBytes());
 		return parseDocument(byteArrayInputStream, encoding);
 	}
 
 	
-	public Document parseDocument(InputStream in) {
+	public DocumentImpl parseDocument(InputStream in) {
 		try {
 			return parseDocument(in, null);
 		} catch (UnsupportedEncodingException e) {
@@ -44,7 +44,7 @@ public class DomParser {
 		}
 	}
 
-	public Document parseDocument(InputStream in, String encoding) throws UnsupportedEncodingException {
+	public DocumentImpl parseDocument(InputStream in, String encoding) throws UnsupportedEncodingException {
 		XmlPullParser parser;
 	    InputStreamReader inputStreamReader;
 	    if (encoding != null) {

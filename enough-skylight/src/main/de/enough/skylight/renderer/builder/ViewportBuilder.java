@@ -6,6 +6,9 @@ import de.enough.polish.util.ItemPreinit;
 import de.enough.skylight.dom.Document;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.NodeList;
+import de.enough.skylight.dom.impl.DocumentImpl;
+import de.enough.skylight.dom.impl.DomNodeImpl;
+import de.enough.skylight.dom.impl.NodeListImpl;
 import de.enough.skylight.renderer.Viewport;
 import de.enough.skylight.renderer.ViewportContext;
 import de.enough.skylight.renderer.css.HtmlCssElement;
@@ -22,7 +25,7 @@ import de.enough.skylight.renderer.node.NodeHandlerDirectory;
 import de.enough.skylight.renderer.node.handler.html.TextHandler;
 
 public class ViewportBuilder {
-	Document document;
+	DocumentImpl document;
 	
 	Viewport viewport;
 	
@@ -37,11 +40,11 @@ public class ViewportBuilder {
 		this.viewportContext = this.viewport.getContext();
 	}
 
-	public void setDocument(Document document) {
+	public void setDocument(DocumentImpl document) {
 		this.document = document;
 	}
 	
-	public Document getDocument() {
+	public DocumentImpl getDocument() {
 		return this.document;
 	}
 	
@@ -109,7 +112,7 @@ public class ViewportBuilder {
 		}
 	}
 
-	protected CssElement buildDescription(DomNode node, CssElement parent) {
+	protected CssElement buildDescription(DomNodeImpl node, CssElement parent) {
 		NodeHandler handler = NodeHandlerDirectory.getInstance().getNodeHandler(node);
 		
 		if(handler != null) {
@@ -131,9 +134,9 @@ public class ViewportBuilder {
 				}
 				
 				if(node.hasChildNodes()) {
-					NodeList nodes = node.getChildNodes();
+					NodeListImpl nodes = node.getChildNodes();
 					for (int index = 0; index < nodes.getLength(); index++) {
-						DomNode childNode = nodes.item(index);
+						DomNodeImpl childNode = nodes.item(index);
 						
 						buildDescription(childNode, element);
 					}

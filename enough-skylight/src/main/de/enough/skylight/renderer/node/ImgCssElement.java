@@ -3,13 +3,14 @@ package de.enough.skylight.renderer.node;
 import javax.microedition.lcdui.Image;
 
 import de.enough.skylight.dom.DomNode;
+import de.enough.skylight.dom.impl.DomNodeImpl;
 import de.enough.skylight.renderer.Viewport;
 import de.enough.skylight.renderer.ViewportContext;
 
 public class ImgCssElement extends CssElement {
 	Image image;
 	
-	public ImgCssElement(NodeHandler handler, DomNode node, CssElement parent,
+	public ImgCssElement(NodeHandler handler, DomNodeImpl node, CssElement parent,
 			ViewportContext viewportContext) {
 		super(handler, node, parent, viewportContext);
 	}

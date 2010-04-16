@@ -7,6 +7,7 @@ import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
 
 import de.enough.skylight.dom.Document;
+import de.enough.skylight.dom.impl.DocumentImpl;
 import de.enough.skylight.dom.impl.DomParser;
 
 public class DocumentBuilder extends Thread{
@@ -48,10 +49,10 @@ public class DocumentBuilder extends Thread{
 		}
 	}
 	
-	public Document build() {
+	public DocumentImpl build() {
 		try {
 			InputStream stream = open(this.url);
-			Document document = new DomParser().parseDocument(stream);
+			DocumentImpl document = new DomParser().parseDocument(stream);
 			return document;
 		} catch(Exception e) {
 			//#debug error

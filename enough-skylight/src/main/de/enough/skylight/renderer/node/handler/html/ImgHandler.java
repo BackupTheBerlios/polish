@@ -9,6 +9,7 @@ import de.enough.polish.content.transform.impl.ImageContentTransform;
 import de.enough.polish.ui.ImageItem;
 import de.enough.polish.ui.Item;
 import de.enough.skylight.dom.DomNode;
+import de.enough.skylight.dom.impl.DomNodeImpl;
 import de.enough.skylight.renderer.Viewport;
 import de.enough.skylight.renderer.ViewportContext;
 import de.enough.skylight.renderer.node.CssElement;
@@ -22,7 +23,7 @@ public class ImgHandler extends BodyNodeHandler{
 		return "img";
 	}
 
-	public CssElement createElement(DomNode node, CssElement parent, ViewportContext viewportContext) {
+	public CssElement createElement(DomNodeImpl node, CssElement parent, ViewportContext viewportContext) {
 		return new ImgCssElement(this, node, parent, viewportContext);
 	}
 	

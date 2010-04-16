@@ -5,6 +5,7 @@ import de.enough.polish.ui.Style;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.ToStringHelper;
 import de.enough.skylight.dom.DomNode;
+import de.enough.skylight.dom.impl.DomNodeImpl;
 import de.enough.skylight.renderer.ViewportContext;
 import de.enough.skylight.renderer.css.HtmlCssElement;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
@@ -28,7 +29,7 @@ public class CssElement implements HtmlCssElement{
 	
 	NodeHandler handler;
 	
-	DomNode node;
+	DomNodeImpl node;
 	
 	ContainingBlock block;
 	
@@ -62,7 +63,7 @@ public class CssElement implements HtmlCssElement{
 		return null;
 	}
 	
-	public CssElement(NodeHandler handler, DomNode node, CssElement parent, ViewportContext viewportContext) {
+	public CssElement(NodeHandler handler, DomNodeImpl node, CssElement parent, ViewportContext viewportContext) {
 		this.handler = handler;
 		
 		this.node = node;
@@ -164,7 +165,7 @@ public class CssElement implements HtmlCssElement{
 		return size() > 0; 
 	}
 		
-	public DomNode getNode() {
+	public DomNodeImpl getNode() {
 		return this.node;
 	}
 	

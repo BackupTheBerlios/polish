@@ -2,6 +2,7 @@ package de.enough.skylight.renderer;
 
 import de.enough.polish.util.ArrayList;
 import de.enough.skylight.dom.Document;
+import de.enough.skylight.dom.impl.DocumentImpl;
 import de.enough.skylight.renderer.builder.DocumentBuilder;
 import de.enough.skylight.renderer.builder.ViewportBuilder;
 
@@ -110,7 +111,7 @@ public class Renderer implements Runnable{
 		
 		setState(STATE_BUILD_DOCUMENT);
 		
-		Document document = this.documentBuilder.build();
+		DocumentImpl document = this.documentBuilder.build();
 		this.viewportBuilder.setDocument(document);
 		
 		setState(STATE_BUILD_VIEW);

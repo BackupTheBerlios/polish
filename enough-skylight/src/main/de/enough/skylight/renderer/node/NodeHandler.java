@@ -4,12 +4,13 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.ToStringHelper;
 import de.enough.skylight.dom.DomNode;
+import de.enough.skylight.dom.impl.DomNodeImpl;
 import de.enough.skylight.renderer.ViewportContext;
 
 public abstract class NodeHandler {
 	public abstract String getTag();
 	
-	public CssElement createElement(DomNode node, CssElement parent, ViewportContext viewportContext) {
+	public CssElement createElement(DomNodeImpl node, CssElement parent, ViewportContext viewportContext) {
 		return new CssElement(this,node,parent, viewportContext);
 	}
 	
