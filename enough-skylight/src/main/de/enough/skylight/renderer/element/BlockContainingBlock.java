@@ -13,10 +13,6 @@ import de.enough.skylight.renderer.partition.PartitionList;
 public class BlockContainingBlock extends ContainingBlock {
 	
 	protected InlineContainingBlock body;
-
-	protected InlineContainingBlock floatLeft;
-	
-	protected InlineContainingBlock floatRight;
 	
 	public BlockContainingBlock() {
 		this(null);
@@ -48,56 +44,12 @@ public class BlockContainingBlock extends ContainingBlock {
 		descriptor.setContainingBlock(this.body);
 	}
 	
-	public void addToLeftFloat(Item item) {
-		if(this.floatLeft == null) {
-			//#style element
-			this.floatLeft = new InlineContainingBlock();
-			
-			LayoutDescriptor layoutElement = this.floatLeft.getLayoutDescriptor();
-			layoutElement.setCssElement(null);
-			layoutElement.setContainingBlock(this);
-			layoutElement.setBlock(this);
-			layoutElement.setViewport(getLayoutDescriptor().getViewport());
-			add(this.floatLeft);
-		}
-		
-		this.floatLeft.add(item);
-		LayoutDescriptor descriptor = ContentView.getLayoutDescriptor(item);
-		descriptor.setContainingBlock(this.floatLeft);
-	}
-	
-	public void addToRightFloat(Item item) {
-		if(this.floatRight == null) {
-			//#style element
-			this.floatRight = new InlineContainingBlock();
-			
-			LayoutDescriptor layoutElement = this.floatRight.getLayoutDescriptor();
-			layoutElement.setCssElement(null);
-			layoutElement.setContainingBlock(this);
-			layoutElement.setBlock(this);
-			layoutElement.setViewport(getLayoutDescriptor().getViewport());
-			add(this.floatRight);
-		}
-		
-		this.floatRight.add(item);
-		LayoutDescriptor descriptor = ContentView.getLayoutDescriptor(item);
-		descriptor.setContainingBlock(this.floatRight);
-	}
-	
 	public InlineContainingBlock getBody() {
 		return this.body;
 	}
 	
-	public InlineContainingBlock getLeftFloat() {
-		return this.floatLeft;
-	}
-	
-	public InlineContainingBlock getRightFloat() {
-		return this.floatRight;
-	}
-	
 	public void partition(PartitionList partitions) {
-		Partition.partitionBlock(this,partitions);
+		Partition.partition(this,partitions);
 	}
 	
 	public InlineLinebox getPaintLineBox() {

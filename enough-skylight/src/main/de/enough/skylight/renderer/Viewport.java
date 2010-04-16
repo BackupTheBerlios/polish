@@ -49,14 +49,6 @@ public class Viewport extends BlockContainingBlock {
 		if(this.body != null) {
 			this.body.clear();
 		}
-		
-		if(this.floatLeft != null) {
-			this.floatLeft.clear();
-		}
-		
-		if(this.floatRight != null) {
-			this.floatRight.clear();
-		}
 	}
 	
 	public CssElement getRootElement() {

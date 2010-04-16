@@ -3,13 +3,34 @@ package de.enough.skylight.renderer.partition;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.UiAccess;
 import de.enough.polish.util.ToStringHelper;
+import de.enough.skylight.renderer.css.HtmlCssElement;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.element.ContainingBlock;
 import de.enough.skylight.renderer.element.LayoutDescriptor;
 import de.enough.skylight.renderer.element.view.ContentView;
 import de.enough.skylight.renderer.linebox.InlineLinebox;
+import de.enough.skylight.renderer.node.CssElement;
 
 public class Partition {
+	
+	public final static byte TYPE_MARGIN_LEFT = 0x00;
+	
+	public final static byte TYPE_PADDING_LEFT = 0x01;
+	
+	public final static byte TYPE_CONTENT = 0x02;
+	
+	public final static byte TYPE_PADDING_RIGHT = 0x03;
+	
+	public final static byte TYPE_MARGIN_RIGHT = 0x04;
+	
+	public final static byte TYPE_TEXT = 0x05;
+	
+	public final static byte TYPE_BLOCK = 0x06;
+	
+	public final static byte TYPE_FLOAT_LEFT = 0x07;
+	
+	public final static byte TYPE_FLOAT_RIGHT = 0x08;
+	
 	public static void partitionInline(Item item, PartitionList partitions) {
 		if(item.isVisible()) { 
 			int height;
@@ -47,8 +68,18 @@ public class Partition {
 		}
 	}
 	
-	public static void partitionBlock(Item item, PartitionList partitions) {
+	public static void partition(Item item, PartitionList partitions) {
 		LayoutDescriptor layoutDescriptor = ContentView.getLayoutDescriptor(item);
+		CssElement element = layoutDescriptor.getCssElement();
+		
+		byte type = TYPE_BLOCK;	
+		if(element.isFloat()) {
+			if(element.isFloat(HtmlCssElement.Float.LEFT)) {
+				type = TYPE_FLOAT_LEFT;
+			} else if(element.isFloat(HtmlCssElement.Float.RIGHT)) {
+				type = TYPE_FLOAT_RIGHT;
+			}
+		}
 		
 		int x = layoutDescriptor.getInlineRelativeOffset();
 		
@@ -61,9 +92,9 @@ public class Partition {
 			
 			int left = x;
 			int right = x + width;
-			itemPartitions.add(TYPE_BLOCK, left, right, height, item);
+			itemPartitions.add(type, left, right, height, item);
 		} else {
-			itemPartitions.add(TYPE_BLOCK, x, x, 0, item);
+			itemPartitions.add(type, x, x, 0, item);
 		}	
 		
 		partitions.addAll(itemPartitions);
@@ -79,19 +110,6 @@ public class Partition {
 	 */
 	public final static int ATTRIBUTE_WHITESPACE = 2;
 	
-	public final static byte TYPE_MARGIN_LEFT = 0x00;
-	
-	public final static byte TYPE_PADDING_LEFT = 0x01;
-	
-	public final static byte TYPE_CONTENT = 0x02;
-	
-	public final static byte TYPE_PADDING_RIGHT = 0x03;
-	
-	public final static byte TYPE_MARGIN_RIGHT = 0x04;
-	
-	public final static byte TYPE_BLOCK = 0x05;
-	
-	public final static byte TYPE_TEXT = 0x06;
 	
 	byte type;
 	

@@ -56,27 +56,27 @@ public class BlockContainingBlockView extends ContainingBlockView {
 		
 		FloatLayout floatLayout;
 		
-		InlineContainingBlock leftFloat = this.parentContainingBlock.getLeftFloat();
-		
-		if(leftFloat != null) {
-			PartitionList leftFloatPartitions = new PartitionList();
-			
-			leftFloat.partition(leftFloatPartitions);
-			
-			leftFloatPartitions.sort();
-			
-			//#mdebug sl.debug.layout
-			System.out.println("partitions for left float " + leftFloat + " : ");
-			for (int i = 0; i < leftFloatPartitions.size(); i++) {
-				Partition partition = leftFloatPartitions.get(i);
-				System.out.println(partition);
-			}
-			//#enddebug
-			
-			floatLayout = getFloatLayout();
-			
-			//TODO add floaties to layout
-		}
+//		InlineContainingBlock leftFloat = this.parentContainingBlock.getLeftFloat();
+//		
+//		if(leftFloat != null) {
+//			PartitionList leftFloatPartitions = new PartitionList();
+//			
+//			leftFloat.partition(leftFloatPartitions);
+//			
+//			leftFloatPartitions.sort();
+//			
+//			//#mdebug sl.debug.layout
+//			System.out.println("partitions for left float " + leftFloat + " : ");
+//			for (int i = 0; i < leftFloatPartitions.size(); i++) {
+//				Partition partition = leftFloatPartitions.get(i);
+//				System.out.println(partition);
+//			}
+//			//#enddebug
+//			
+//			floatLayout = getFloatLayout();
+//			
+//			//TODO add floaties to layout
+//		}
 		
 		InlineContainingBlock body = this.parentContainingBlock.getBody();
 		

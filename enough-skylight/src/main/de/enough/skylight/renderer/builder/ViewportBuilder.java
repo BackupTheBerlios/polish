@@ -168,24 +168,10 @@ public class ViewportBuilder {
 				layoutDescriptor.setFloatLayout(new FloatLayout());
 			}
 			
-			if(element.isFloat()) {
-				if(element.isFloat(HtmlCssElement.Float.LEFT)) {
-					parent.addToLeftFloat((Item)containingBlock);
-					
-					//#debug sl.debug.build
-					System.out.println("added " + containingBlock + " to left float of " + parent);
-				} else if(element.isFloat(HtmlCssElement.Float.RIGHT)) {
-					parent.addToRightFloat((Item)containingBlock);
-					
-					//#debug sl.debug.build
-					System.out.println("added " + containingBlock + " to right float of " + parent);
-				} 
-			} else {
-				parent.addToBody((Item)containingBlock);
-				
-				//#debug sl.debug.build
-				System.out.println("added " + containingBlock + " to body of " + parent);
-			}
+			parent.addToBody((Item)containingBlock);
+			
+			//#debug sl.debug.build
+			System.out.println("added " + containingBlock + " to body of " + parent);
 			
 			BlockContainingBlock childBlock;
 			if(containingBlock instanceof BlockContainingBlock) {
@@ -208,24 +194,10 @@ public class ViewportBuilder {
 				layoutDescriptor.setBlock(parentBlock);
 				layoutDescriptor.setViewport(this.viewport);
 				
-				if(element.isFloat()) {
-					if(element.isFloat(HtmlCssElement.Float.LEFT)) {
-						parent.addToLeftFloat(item);
-						
-						//#debug sl.debug.build
-						System.out.println("added " + item + " to left float of " + parent);
-					} else if(element.isFloat(HtmlCssElement.Float.RIGHT)) {
-						parent.addToRightFloat(item);
-						
-						//#debug sl.debug.build
-						System.out.println("added " + item + " to right float of " + parent);
-					}
-				} else {
-					parent.addToBody(item);
+				parent.addToBody(item);
 					
-					//#debug sl.debug.build
-					System.out.println("added " + item + " to body of " + parent);
-				}
+				//#debug sl.debug.build
+				System.out.println("added " + item + " to body of " + parent);
 			}
 		}
 	}

@@ -14,21 +14,21 @@ import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.partition.PartitionList;
 
 public abstract class ContainingBlockView extends ContainerView implements LayoutDescriptor{
-	ContainingBlock parentContainingBlock = null;
+	transient ContainingBlock parentContainingBlock = null;
 	
-	CssElement cssElement = null;
+	transient CssElement cssElement = null;
 	
-	ContainingBlock containingBlock = null;
+	transient ContainingBlock containingBlock = null;
 	
-	BlockContainingBlock block = null;
+	transient BlockContainingBlock block = null;
 	
-	InlineLineboxList lineboxes = new InlineLineboxList();
+	transient InlineLineboxList lineboxes = new InlineLineboxList();
 	
-	PartitionList partitions = new PartitionList();
+	transient PartitionList partitions = new PartitionList();
 	
-	int inlineRelativeOffset = 0;
+	transient int inlineRelativeOffset = 0;
 	
-	Viewport viewport;
+	transient Viewport viewport;
 	
 	public ContainingBlockView(ContainingBlock parent) {
 		this.parentContainer = parent;

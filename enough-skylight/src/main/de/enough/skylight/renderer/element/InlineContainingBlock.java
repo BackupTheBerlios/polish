@@ -28,29 +28,9 @@ public class InlineContainingBlock extends ContainingBlock {
 		this.layoutDescriptor.setContainingBlock(this);
 	}
 
-	public void addToLeftFloat(Item item) {
-		BlockContainingBlock block = this.layoutDescriptor.getBlock();
-		block.addToLeftFloat(item);
-	}
-	
-	public void addToRightFloat(Item item) {
-		BlockContainingBlock block = this.layoutDescriptor.getBlock();
-		block.addToRightFloat(item);
-	}
-	
 	public InlineContainingBlock getBody() {
 		BlockContainingBlock block = this.layoutDescriptor.getBlock();
 		return block.getBody();
-	}
-	
-	public InlineContainingBlock getLeftFloat() {
-		BlockContainingBlock block = this.layoutDescriptor.getBlock();
-		return block.getLeftFloat();
-	}
-	
-	public InlineContainingBlock getRightFloat() {
-		BlockContainingBlock block = this.layoutDescriptor.getBlock();
-		return block.getRightFloat();
 	}
 	
 	public void partition(PartitionList partitions) {
@@ -62,7 +42,8 @@ public class InlineContainingBlock extends ContainingBlock {
 				Partable partable = (Partable)item;
 				partable.partition(partitions);
 			} else {
-				Partition.partitionBlock(item,partitions);
+				// partition normal item as blocks
+				Partition.partition(item,partitions);
 			}
 		}
 	}
