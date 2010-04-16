@@ -19,7 +19,6 @@ import de.enough.skylight.Services;
 import de.enough.skylight.dom.Document;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.MutationEvent;
-import de.enough.skylight.dom.impl.DomNodeImpl;
 import de.enough.skylight.dom.impl.EventImpl;
 import de.enough.skylight.dom.impl.EventProcessorListener;
 import de.enough.skylight.dom.impl.NodeListImpl;
@@ -36,7 +35,7 @@ import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.node.NodeUtils;
 import de.enough.skylight.renderer.node.handler.html.AHandler;
 
-public class Browser extends Form implements CommandListener, RendererListener, UserEventListener, ViewportContext {
+public class Browser extends Form implements CommandListener, RendererListener, ViewportContext {
 
 	Command cmdOpen = new Command("Open",Command.SCREEN,0);
 
@@ -45,7 +44,7 @@ public class Browser extends Form implements CommandListener, RendererListener, 
 		public void handleAboutToDeliverEvent(EventImpl event) {
 			// Empty.
 		}
-		public void handleEventDelivered(EventImpl event) {
+		public void handleDeliveredEvent(EventImpl event) {
 			// Empty.
 		}
 		public void handleEventProcessingAborted(EventImpl event) {
@@ -101,7 +100,6 @@ public class Browser extends Form implements CommandListener, RendererListener, 
 		this.urlField.setUrl(url);
 		
 		this.viewport = new Viewport(this);
-		this.viewport.addUserEventListener(this);
 		
 		this.documentBuilder = new DocumentBuilder();
 		documentBuilder.setUrl(url);
@@ -186,17 +184,6 @@ public class Browser extends Form implements CommandListener, RendererListener, 
 		}
 	}
 	
-	public void onUserEvent(CssElement element, UserEvent event) {
-		if(element.getHandler() instanceof AHandler) {
-			String href = NodeUtils.getAttributeValue(element.getNode(),"href");
-			String url = de.enough.skylight.util.UrlUtil.completeUrl(href, this);
-			setLocation(url);
-		} else {
-			DomNodeImpl node = (DomNodeImpl)element.getNode();
-			Services.getInstance().getEventEmitter().emitClickEvent(node, 0, 0);
-		}
-	}
-
 	public String getLocationHost() {
 		return this.host;
 	}
@@ -218,5 +205,16 @@ public class Browser extends Form implements CommandListener, RendererListener, 
 		this.renderer.setState(Renderer.STATE_VOID);
 		
 		this.renderer.render();
+	}
+
+	public void notifyUserEvent(CssElement cssElement, UserEvent event) {
+		if(cssElement.getHandler() instanceof AHandler) {
+			String href = NodeUtils.getAttributeValue(cssElement.getNode(),"href");
+			String url = de.enough.skylight.util.UrlUtil.completeUrl(href, this);
+			setLocation(url);
+		} else {
+			DomNode node = cssElement.getNode();
+			Services.getInstance().getEventEmitter().emitClickEvent(node, 0, 0);
+		}
 	}
 }
