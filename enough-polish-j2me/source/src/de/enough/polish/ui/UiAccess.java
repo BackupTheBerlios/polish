@@ -1030,10 +1030,10 @@ public final class UiAccess {
 	/**
 	 * Applies a style to the specified list item.
 	 * 
-	 * @param list the list 
+	 * @param choice the List screen or ChoiceGroup item. 
 	 * @param itemIndex the index of the list
 	 */
-	public static void setStyle(javax.microedition.lcdui.List list, int itemIndex) {
+	public static void setStyle(javax.microedition.lcdui.Choice choice, int itemIndex) {
 		// ignore
 		
 	}
@@ -1043,10 +1043,10 @@ public final class UiAccess {
 	/**
 	 * Applies a style to the specified list item.
 	 * 
-	 * @param list the list 
+	 * @param choice the List screen or ChoiceGroup item. 
 	 * @param itemIndex the index of the list
 	 */
-	public static void setStyle(List list, int itemIndex) {
+	public static void setStyle(Choice choice, int itemIndex) {
 		// ignore
 	}
 	//#endif	
@@ -1055,13 +1055,20 @@ public final class UiAccess {
 	/**
 	 * Applies a style to the specified list item.
 	 * 
-	 * @param list the list 
+	 * @param choice the List screen or ChoiceGroup item. 
 	 * @param itemIndex the index of the list
 	 * @param style the new style of the item
 	 */
-	public static void setStyle(List list, int itemIndex, Style style) {
-		Item item = list.getItem(itemIndex);
-		item.setStyle(style);
+	public static void setStyle(Choice choice, int itemIndex, Style style) {
+		Item item = null;
+		if (choice instanceof Screen) {
+			item = ((Screen)choice).getRootContainer().get(itemIndex);
+		} else if (choice instanceof Container){
+			item = ((Container)choice).get(itemIndex);
+		}
+		if (item != null) {
+			item.setStyle(style);
+		}
 	}
 	//#endif	
 	
