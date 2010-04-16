@@ -32,6 +32,11 @@ public class Partition {
 	public final static byte TYPE_FLOAT_RIGHT = 0x08;
 	
 	public static void partitionInline(Item item, PartitionList partitions) {
+		LayoutDescriptor layoutDescriptor = ContentView.getLayoutDescriptor(item);
+		
+		PartitionList itemPartitions = layoutDescriptor.getPartitions();
+		itemPartitions.clear();
+		
 		if(item.isVisible()) { 
 			int height;
 			if(item instanceof ContainingBlock) {
@@ -44,8 +49,6 @@ public class Partition {
 				height = item.getContentHeight();
 			}
 			
-			LayoutDescriptor layoutDescriptor = ContentView.getLayoutDescriptor(item);
-			
 			int x = layoutDescriptor.getInlineRelativeOffset();
 		
 			int marginLeft = x;
@@ -55,49 +58,59 @@ public class Partition {
 			int paddingRight = contentRight + UiAccess.getPaddingRight(item);
 			int marginRight = paddingRight + UiAccess.getMarginRight(item);
 			
-			PartitionList itemPartitions = layoutDescriptor.getPartitions();
-			itemPartitions.clear();
-			
-			itemPartitions.add(TYPE_MARGIN_LEFT, marginLeft, paddingLeft, height, item);
-			itemPartitions.add(TYPE_PADDING_LEFT, paddingLeft, contentLeft, height, item);
-			itemPartitions.add(TYPE_CONTENT, contentLeft, contentRight, height, item);
-			itemPartitions.add(TYPE_PADDING_RIGHT, contentRight, paddingRight, height, item);
-			itemPartitions.add(TYPE_MARGIN_RIGHT, paddingRight, marginRight, height, item);
+			addToPartitionList(itemPartitions, TYPE_MARGIN_LEFT, marginLeft, paddingLeft, height, item);
+			addToPartitionList(itemPartitions, TYPE_PADDING_LEFT, paddingLeft, contentLeft, height, item);
+			addToPartitionList(itemPartitions, TYPE_CONTENT, contentLeft, contentRight, height, item);
+			addToPartitionList(itemPartitions, TYPE_PADDING_RIGHT, contentRight, paddingRight, height, item);
+			addToPartitionList(itemPartitions, TYPE_MARGIN_RIGHT, paddingRight, marginRight, height, item);
 			
 			partitions.addAll(itemPartitions);
 		}
 	}
 	
+	static void addToPartitionList(PartitionList list, byte type, int left, int right, int height, Item parent) {
+		if(isValidPartition(left,right)) {
+			Partition partition = new Partition(type, left, right, height, parent);
+			list.add(partition);
+		}
+	}	
+	
+	static boolean isValidPartition(int left, int right) {
+		return (right - left) > 0; 
+	}
+	
 	public static void partition(Item item, PartitionList partitions) {
 		LayoutDescriptor layoutDescriptor = ContentView.getLayoutDescriptor(item);
-		CssElement element = layoutDescriptor.getCssElement();
-		
-		byte type = TYPE_BLOCK;	
-		if(element.isFloat()) {
-			if(element.isFloat(HtmlCssElement.Float.LEFT)) {
-				type = TYPE_FLOAT_LEFT;
-			} else if(element.isFloat(HtmlCssElement.Float.RIGHT)) {
-				type = TYPE_FLOAT_RIGHT;
-			}
-		}
-		
-		int x = layoutDescriptor.getInlineRelativeOffset();
 		
 		PartitionList itemPartitions = layoutDescriptor.getPartitions();
 		itemPartitions.clear();
 		
 		if(item.isVisible()) {
+			
+			CssElement element = layoutDescriptor.getCssElement();
+			
+			int x = layoutDescriptor.getInlineRelativeOffset();
+			
 			int width = item.itemWidth;
 			int height = item.itemHeight;
 			
 			int left = x;
 			int right = x + width;
-			itemPartitions.add(type, left, right, height, item);
-		} else {
-			itemPartitions.add(type, x, x, 0, item);
-		}	
-		
-		partitions.addAll(itemPartitions);
+			
+			byte type = TYPE_BLOCK;	
+			if(element.isFloat()) {
+				if(element.isFloat(HtmlCssElement.Float.LEFT)) {
+					type = TYPE_FLOAT_LEFT;
+				} else if(element.isFloat(HtmlCssElement.Float.RIGHT)) {
+					type = TYPE_FLOAT_RIGHT;
+				}
+			}
+			
+			Partition partition = new Partition(type,left, right, height, item);;
+			itemPartitions.add(partition);
+			
+			partitions.addAll(itemPartitions);
+		}
 	}
 	
 	/**

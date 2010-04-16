@@ -8,8 +8,16 @@ public class TextPartition extends Partition{
 	int index;
 	int length;
 	
-	public TextPartition(byte type, int index, int length, int left, int right, int height, Item parent) {
-		super(type, left, right, height, parent);
+	public static TextPartition createText(int index, int length, int left, int right, int height, Item parent) {
+		return new TextPartition(index, length, left, right, height, parent);
+	}
+	
+	public static TextPartition createWhiteSpace(int index, int left, int right, int height, Item parent) {
+		return new TextPartition(index, 1, left, right, height, parent);
+	}
+	
+	TextPartition(int index, int length, int left, int right, int height, Item parent) {
+		super(TYPE_TEXT, left, right, height, parent);
 		
 		this.index = index;
 		this.length = length;
