@@ -18,9 +18,9 @@ public class InlineLineboxComparator implements Comparator {
 		InlineLinebox first = (InlineLinebox)o1;
 		InlineLinebox second = (InlineLinebox)o2;
 		
-		if(first.getContextRelativeTop() < second.getContextRelativeTop()) {
+		if(first.getBlockRelativeTop() < second.getBlockRelativeTop()) {
 			return -1;
-		} else if (first.getContextRelativeTop() > second.getContextRelativeTop()) {
+		} else if (first.getBlockRelativeTop() > second.getBlockRelativeTop()) {
 			return 1;
 		} 
 		

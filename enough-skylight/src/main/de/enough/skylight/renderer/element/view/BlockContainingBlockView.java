@@ -71,9 +71,9 @@ public class BlockContainingBlockView extends ContainingBlockView {
 			}
 			//#enddebug
 			
-			BlockLayout bodyLayout = new BlockLayout(availWidth);
+			BlockLayout bodyLayout = new BlockLayout((BlockContainingBlock)this.parentContainingBlock);
 			
-			bodyLayout.addPartitions(bodyPartitions, body);
+			bodyLayout.layoutPartitions(bodyPartitions, body);
 			
 			this.bodyLines = bodyLayout.getLineBoxes();
 			
@@ -107,20 +107,21 @@ public class BlockContainingBlockView extends ContainingBlockView {
 	void positionItem(Item item) {
 		LayoutDescriptor layoutDescriptor = ContentView.getLayoutDescriptor(item);
 		
-		if(layoutDescriptor.getPartitions().size() > 0) {
-			Partition firstPartition = layoutDescriptor.getPartitions().get(0);
-			item.relativeX = firstPartition.getLineboxRelativeX();
+		if(layoutDescriptor.getLineboxes().size() == 0) {
+			// structural item, no need to position (?)
+			return;
 		}
 		
-		if(layoutDescriptor.getLineboxes().size() > 0) {
-			InlineLinebox linebox = layoutDescriptor.getLineboxes().get(0);
-			item.relativeY = linebox.getContextRelativeTop(); 
-		}
+		Partition firstPartition = layoutDescriptor.getPartitions().get(0);
+		InlineLinebox linebox = layoutDescriptor.getLineboxes().get(0);
+		
+		item.relativeX = linebox.getBlockRelativeLeft() + firstPartition.getLineboxRelativeX();
+		item.relativeY = linebox.getBlockRelativeTop();
 	}
 	
 	public void paintLineBox(InlineLinebox linebox, InlineContainingBlock block, int x, int y, Graphics g) {
-		x = x + linebox.getContextRelativeLeft();
-		y = y + linebox.getContextRelativeTop();
+		x = x + linebox.getBlockRelativeLeft();
+		y = y + linebox.getBlockRelativeTop();
 		
 		int clipX = g.getClipX();
 		int clipY = g.getClipY();

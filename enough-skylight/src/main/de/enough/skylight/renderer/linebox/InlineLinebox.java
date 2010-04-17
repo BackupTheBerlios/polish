@@ -18,17 +18,15 @@ public class InlineLinebox {
 
 	int inlineRelativeRight = UNDEFINED;
 	
-	final int contextRelativeLeft;
+	int blockRelativeLeft;
 	
-	final int contextRelativeTop;
+	int blockRelativeTop;
 	
 	int lineHeight = UNDEFINED;
 	
-	public InlineLinebox(int contextRelativeLeft, int contextRelativeTop, int availableWidth) {
+	public InlineLinebox(int availableWidth) {
 		this.availableWidth = availableWidth;
 		this.partitions = new PartitionList();
-		this.contextRelativeLeft = contextRelativeLeft;
-		this.contextRelativeTop = contextRelativeTop;
 	}
 	
 	public void addPartition(Partition partition) {
@@ -55,20 +53,28 @@ public class InlineLinebox {
 		return this.inlineRelativeRight;
 	}
 	
-	public int getContextRelativeLeft() {
-		return this.contextRelativeLeft;
+	public void setBlockRelativeLeft(int blockRelativeLeft) {
+		this.blockRelativeLeft = blockRelativeLeft;
 	}
 	
-	public int getContextRelativeRight() {
-		return this.contextRelativeLeft + getTrimmedWidth();
+	public int getBlockRelativeLeft() {
+		return this.blockRelativeLeft;
 	}
 	
-	public int getContextRelativeTop() {
-		return this.contextRelativeTop;
+	public int getBlockRelativeRight() {
+		return this.blockRelativeLeft + getTrimmedWidth();
 	}
 	
-	public int getContextRelativeBottom() {
-		return this.contextRelativeTop + this.lineHeight;
+	public int getBlockRelativeTop() {
+		return this.blockRelativeTop;
+	}
+	
+	public void setBlockRelativeTop(int blockRelativeTop) {
+		this.blockRelativeTop = blockRelativeTop;
+	}
+	
+	public int getBlockRelativeBottom() {
+		return this.blockRelativeTop + this.lineHeight;
 	}
 	
 	public int getLineHeight() {
@@ -80,13 +86,12 @@ public class InlineLinebox {
 	}
 	
 	public boolean fits(Partition partition) {
-		int maxRight = (this.inlineRelativeLeft + this.availableWidth);
-		return partition.getInlineRelativeRight() <= maxRight;
-	}
-	
-	public boolean overflows() {
-		int width = this.inlineRelativeRight - this.inlineRelativeLeft;
-		return width > this.availableWidth;
+		if(this.inlineRelativeLeft != UNDEFINED && this.inlineRelativeRight != UNDEFINED) {
+			int maxRight = (this.inlineRelativeLeft + this.availableWidth);
+			return partition.getInlineRelativeRight() <= maxRight;
+		} else {
+			return true;
+		}
 	}
 	
 	public int getTrimmedInlineRelativeLeft() {
@@ -119,7 +124,7 @@ public class InlineLinebox {
 		return new ToStringHelper("InlineLineBox").
 		add("inline relative left", this.inlineRelativeLeft).
 		add("inline relative right", this.inlineRelativeRight).
-		add("block relative y", this.contextRelativeTop).
+		add("block relative y", this.blockRelativeTop).
 		add("height", this.lineHeight).
 		add("width", getWidth()).
 		add("available width", this.availableWidth).
