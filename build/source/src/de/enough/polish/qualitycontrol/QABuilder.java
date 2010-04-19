@@ -183,12 +183,12 @@ implements OutputFilter
 		}
 		
 		String logFileName = "build-error-" + projectHome.getName() + "-" + System.currentTimeMillis() + ".log";
-		File file = new File( logFileName );
+		File logFile = new File( logFileName );
 		try {
-			FileUtil.writeTextFile( file, lines );
-			handleConfigError(StringUtil.join((String[]) lines.toArray(new String[lines.size()]), "\n"));
+			FileUtil.writeTextFile( logFile, lines );
+			executeProcessLogCommand(logFile);
 		} catch (Exception e) {
-			String message = "Unable to store log " + file.getAbsolutePath() + ": " + e;
+			String message = "Unable to store log " + logFile.getAbsolutePath() + ": " + e;
 			System.err.println(message);
 			e.printStackTrace();
 			handleConfigError(message);
