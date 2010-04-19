@@ -23,5 +23,9 @@ public interface ContactDao {
 	public Enumeration items(String matchingValue);
 
 	public Enumeration itemsByCategory(String category);
+	
+	public void lazyLoadAddrFields(ContactImpl contactImpl);
+	
+	public void lazyLoadTelFields(ContactImpl contactImpl);
 
 }

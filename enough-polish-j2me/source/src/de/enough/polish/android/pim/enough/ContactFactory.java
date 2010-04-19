@@ -24,9 +24,7 @@ public class ContactFactory {
 		ContactImpl contactImpl = new ContactImpl(id,contactListImpl);
 		
 		putNameIntoContact(personCursor,contactImpl);
-		putAddressIntoContact(contentResolver,id,contactImpl);
 		putDisplayNameIntoContact(personCursor, contactImpl);
-		putNumbersIntoContact(contentResolver,id,contactImpl);
 		putNoteIntoContact(personCursor,contactImpl);
 		
 		contactImpl.setModified(false);
@@ -41,43 +39,6 @@ public class ContactFactory {
 		contactImpl.addStringArray(Contact.NAME,PIMItem.ATTR_NONE, names);
 	}
 
-	private static void putNumbersIntoContact(ContentResolver contentResolver, int id, ContactImpl contactImpl) {
-		String where = Contacts.ContactMethods.PERSON_ID + " == " + id;
-		Cursor phoneCursor = contentResolver.query(Contacts.Phones.CONTENT_URI, null, where, null, null);
-		int dataColumn = phoneCursor.getColumnIndex(Contacts.Phones.NUMBER);
-		int typeColumn = phoneCursor.getColumnIndex(Contacts.Phones.TYPE);
-		while(phoneCursor.moveToNext()) {
-			int androidType = phoneCursor.getInt(typeColumn);
-			Integer attribute = convertPhoneTypeToAttribute(androidType);
-			String number = phoneCursor.getString(dataColumn);
-			contactImpl.addString(Contact.TEL, attribute.intValue(), number);
-		}
-		phoneCursor.close();
-	}
-
-	private static void putAddressIntoContact(ContentResolver contentResolver, int id, ContactImpl contact) {
-		String where;
-		int dataColumn;
-		int typeColumn;
-
-		where = Contacts.ContactMethods.PERSON_ID + " == " + id + " AND " + Contacts.ContactMethods.KIND + " == " + Contacts.KIND_POSTAL;
-		
-		Cursor addressCursor = contentResolver.query(Contacts.ContactMethods.CONTENT_URI, null, where, null, null);
-		
-		dataColumn = addressCursor.getColumnIndex(Contacts.ContactMethods.DATA);
-		typeColumn = addressCursor.getColumnIndex(Contacts.ContactMethods.TYPE);
-		
-		while(addressCursor.moveToNext()) {
-			int androidType = addressCursor.getInt(typeColumn);
-			Integer attribute = convertAddressTypeToAttribute(androidType);
-			String address = addressCursor.getString(dataColumn);
-			String[] value = new String[ContactListImpl.CONTACT_ADDR_FIELD_INFO.numberOfArrayElements];
-			value[Contact.ADDR_EXTRA] = address;
-			contact.addStringArray(Contact.ADDR, attribute.intValue(), value);
-		}
-		addressCursor.close();
-	}
-	
 	/**
 	 * TODO: Collaps this method and putNoteIntoContact so the code duplication is gone.
 	 * @param personCursor
@@ -100,77 +61,4 @@ public class ContactFactory {
 		}
 	}
 	
-//	private static int convertAttrToAddressType(int attribute) {
-//		if((attribute & Contact.ATTR_HOME) == Contact.ATTR_HOME){
-//			return Contacts.ContactMethods.TYPE_HOME;
-//		}
-//		if((attribute & Contact.ATTR_WORK) == Contact.ATTR_WORK){
-//			return Contacts.ContactMethods.TYPE_HOME;
-//		}
-//		if((attribute & Contact.ATTR_OTHER) == Contact.ATTR_OTHER){
-//			return Contacts.ContactMethods.TYPE_OTHER;
-//		}
-//		return Contacts.ContactMethods.TYPE_OTHER;
-//	}
-//	
-//	private static int convertAttrToTelType(int attribute) {
-//		if((attribute & Contact.ATTR_MOBILE) == Contact.ATTR_MOBILE){
-//			return Contacts.People.Phones.TYPE_MOBILE;
-//		}
-//		if((attribute & Contact.ATTR_FAX) == Contact.ATTR_FAX){
-//			if((attribute & Contact.ATTR_HOME) == Contact.ATTR_HOME){
-//				return Contacts.People.Phones.TYPE_FAX_HOME;
-//			}
-//			if((attribute & Contact.ATTR_WORK) == Contact.ATTR_WORK){
-//				return Contacts.People.Phones.TYPE_FAX_WORK;
-//			}
-//			return Contacts.People.Phones.TYPE_FAX_WORK;
-//		}
-//		if((attribute & Contact.ATTR_HOME) == Contact.ATTR_HOME){
-//			return Contacts.People.Phones.TYPE_HOME;
-//		}
-//		if((attribute & Contact.ATTR_WORK) == Contact.ATTR_WORK){
-//			return Contacts.People.Phones.TYPE_WORK;
-//		}
-//		if((attribute & Contact.ATTR_PAGER) == Contact.ATTR_PAGER){
-//			return Contacts.People.Phones.TYPE_PAGER;
-//		}
-//		if((attribute & Contact.ATTR_OTHER) == Contact.ATTR_OTHER){
-//			return Contacts.People.Phones.TYPE_OTHER;
-//		}
-//		return Contacts.People.Phones.TYPE_OTHER;
-//	}
-	
-	/**
-	 * 
-	 * @param addressType
-	 * @return returns the Contact.ATTR_ value.
-	 */
-	private static Integer convertAddressTypeToAttribute(int addressType) {
-		switch(addressType) {
-		case Contacts.ContactMethods.TYPE_HOME: return new Integer(Contact.ATTR_HOME);
-		case Contacts.ContactMethods.TYPE_WORK: return new Integer(Contact.ATTR_WORK);
-		case Contacts.ContactMethods.TYPE_OTHER: return new Integer(Contact.ATTR_OTHER);
-		case Contacts.ContactMethods.TYPE_CUSTOM: return new Integer(Contact.ATTR_OTHER);
-		}
-		return new Integer(PIMItem.ATTR_NONE);
-	}
-	
-	/**
-	 * 
-	 * @param addressType
-	 * @return returns the Contact.ATTR_ value.
-	 */
-	private static Integer convertPhoneTypeToAttribute(int addressType) {
-		switch(addressType) {
-			case Contacts.Phones.TYPE_HOME: return new Integer(Contact.ATTR_HOME);
-			case Contacts.Phones.TYPE_WORK: return new Integer(Contact.ATTR_WORK);
-			case Contacts.Phones.TYPE_OTHER: return new Integer(Contact.ATTR_OTHER);
-			case Contacts.Phones.TYPE_MOBILE: return new Integer(Contact.ATTR_MOBILE);
-			case Contacts.Phones.TYPE_FAX_HOME: return new Integer(Contact.ATTR_FAX|Contact.ATTR_HOME);
-			case Contacts.Phones.TYPE_FAX_WORK: return new Integer(Contact.ATTR_FAX|Contact.ATTR_WORK);
-			case Contacts.Phones.TYPE_PAGER: return new Integer(Contact.ATTR_PAGER);
-		}
-		return new Integer(PIMItem.ATTR_NONE);
-	}
 }

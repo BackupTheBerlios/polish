@@ -12,6 +12,7 @@ import android.provider.Contacts;
 import android.provider.Contacts.People;
 import de.enough.polish.android.midlet.MidletBridge;
 import de.enough.polish.android.pim.Contact;
+import de.enough.polish.android.pim.PIMItem;
 
 /**
  * This Data Access Object will manage JavaME PIM contact objects and talks to the Contacts ContentResolver on android.
@@ -286,6 +287,71 @@ public class ContentResolverContactDao implements ContactDao {
 	 */
 	public Enumeration itemsByCategory(String category) {
 		throw new UnsupportedOperationException();
+	}
+	
+	/**
+	 * Use this method to put the address information into the contact
+	 * @param contactImpl
+	 */
+	public void lazyLoadAddrFields(ContactImpl contactImpl) {
+		String where;
+		int dataColumn;
+		int typeColumn;
+		long id = contactImpl.getId();
+		where = Contacts.ContactMethods.PERSON_ID + " == " + id + " AND " + Contacts.ContactMethods.KIND + " == " + Contacts.KIND_POSTAL;
+		
+		Cursor addressCursor = contentResolver.query(Contacts.ContactMethods.CONTENT_URI, null, where, null, null);
+		
+		dataColumn = addressCursor.getColumnIndex(Contacts.ContactMethods.DATA);
+		typeColumn = addressCursor.getColumnIndex(Contacts.ContactMethods.TYPE);
+		
+		while(addressCursor.moveToNext()) {
+			int androidType = addressCursor.getInt(typeColumn);
+			Integer attribute = convertAddressTypeToAttribute(androidType);
+			String address = addressCursor.getString(dataColumn);
+			String[] value = new String[ContactListImpl.CONTACT_ADDR_FIELD_INFO.numberOfArrayElements];
+			value[Contact.ADDR_EXTRA] = address;
+			contactImpl.addStringArray(Contact.ADDR, attribute.intValue(), value);
+		}
+		addressCursor.close();
+	}
+	
+	public void lazyLoadTelFields(ContactImpl contactImpl) {
+		long id = contactImpl.getId();
+		String where = Contacts.ContactMethods.PERSON_ID + " == " + id;
+		Cursor phoneCursor = contentResolver.query(Contacts.Phones.CONTENT_URI, null, where, null, null);
+		int dataColumn = phoneCursor.getColumnIndex(Contacts.Phones.NUMBER);
+		int typeColumn = phoneCursor.getColumnIndex(Contacts.Phones.TYPE);
+		while(phoneCursor.moveToNext()) {
+			int androidType = phoneCursor.getInt(typeColumn);
+			Integer attribute = convertPhoneTypeToAttribute(androidType);
+			String number = phoneCursor.getString(dataColumn);
+			contactImpl.addString(Contact.TEL, attribute.intValue(), number);
+		}
+		phoneCursor.close();
+	}
+	
+	private static Integer convertAddressTypeToAttribute(int addressType) {
+		switch(addressType) {
+		case Contacts.ContactMethods.TYPE_HOME: return new Integer(Contact.ATTR_HOME);
+		case Contacts.ContactMethods.TYPE_WORK: return new Integer(Contact.ATTR_WORK);
+		case Contacts.ContactMethods.TYPE_OTHER: return new Integer(Contact.ATTR_OTHER);
+		case Contacts.ContactMethods.TYPE_CUSTOM: return new Integer(Contact.ATTR_OTHER);
+		}
+		return new Integer(PIMItem.ATTR_NONE);
+	}
+	
+	private static Integer convertPhoneTypeToAttribute(int addressType) {
+		switch(addressType) {
+			case Contacts.Phones.TYPE_HOME: return new Integer(Contact.ATTR_HOME);
+			case Contacts.Phones.TYPE_WORK: return new Integer(Contact.ATTR_WORK);
+			case Contacts.Phones.TYPE_OTHER: return new Integer(Contact.ATTR_OTHER);
+			case Contacts.Phones.TYPE_MOBILE: return new Integer(Contact.ATTR_MOBILE);
+			case Contacts.Phones.TYPE_FAX_HOME: return new Integer(Contact.ATTR_FAX|Contact.ATTR_HOME);
+			case Contacts.Phones.TYPE_FAX_WORK: return new Integer(Contact.ATTR_FAX|Contact.ATTR_WORK);
+			case Contacts.Phones.TYPE_PAGER: return new Integer(Contact.ATTR_PAGER);
+		}
+		return new Integer(PIMItem.ATTR_NONE);
 	}
 	
 }

@@ -1,9 +1,6 @@
 package de.enough.polish.android.pim.eough;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
@@ -59,6 +56,16 @@ public class AndroidPimTest extends TestCase {
 		}
 
 		public void removeContact(ContactImpl contact) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		public void lazyLoadAddrFields(ContactImpl contactImpl) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		public void lazyLoadTelFields(ContactImpl contactImpl) {
 			// TODO Auto-generated method stub
 			
 		}

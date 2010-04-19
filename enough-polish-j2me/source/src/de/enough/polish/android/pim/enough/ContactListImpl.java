@@ -182,5 +182,7 @@ public class ContactListImpl extends AbstractPIMList implements ContactList {
 		}
 		return items;
 	}
-	
+	public ContactDao getContactDao() {
+		return this.contactDao;
+	}
 }

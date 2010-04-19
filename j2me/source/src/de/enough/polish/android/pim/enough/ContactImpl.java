@@ -19,6 +19,8 @@ public class ContactImpl implements Contact {
 	private final ArrayList<Field> fields;
 	private boolean isModified;
 	private final long id;
+	private boolean addrLoaded = false;
+	private boolean telLoaded = false;
 	
 	ContactImpl(long id, ContactListImpl contactList) {
 		this.id = id;
@@ -255,6 +257,11 @@ public class ContactImpl implements Contact {
 		if(index < 0) {
 			throw new IndexOutOfBoundsException("The parameter 'index' violates constraint 'index >= 0'");
 		}
+		if(fieldId == Contact.TEL && !this.telLoaded) {
+			// Lazy load
+			this.telLoaded = true;
+			this.contactList.getContactDao().lazyLoadTelFields(this);
+		}
 		Field field = getField(fieldId,PIMItem.STRING);
 		int numberOfValues = field.values.size();
 		if(index >= numberOfValues) {
@@ -267,6 +274,11 @@ public class ContactImpl implements Contact {
 	public String[] getStringArray(int fieldId, int index) {
 		if(index < 0) {
 			throw new IndexOutOfBoundsException("The parameter 'index' violates contraint 'index >= 0'");
+		}
+		if(fieldId == Contact.ADDR && !this.addrLoaded) {
+			// Lazy load
+			this.addrLoaded = true;
+			this.contactList.getContactDao().lazyLoadAddrFields(this);
 		}
 		Field field = getField(fieldId,PIMItem.STRING_ARRAY);
 		if(index >= field.values.size()) {
