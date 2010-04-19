@@ -202,6 +202,7 @@ public class Dimension implements Externalizable
 						break;
 					}
 					dotFound = true;
+					continue; // do not multiply the factor at the dot position itself
 				} else if (Character.isDigit(c)){
 					buffer.append(c);
 				} else {
@@ -219,6 +220,7 @@ public class Dimension implements Externalizable
 			this.isPercent = true;
 			this.factor = f;
 			this.value = Integer.parseInt( buffer.toString() );
+			//System.out.println("resolved " + this.valueAsString + " to " + this.value + ", with factor=" + this.factor	 );
 			this.valueAsString = null;
 		} else if (v.endsWith("em")) {
 			//TODO support 'em'
