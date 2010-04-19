@@ -498,12 +498,6 @@ extends ItemView
 			if (isNormalWidthColumns) {
 				maxColumnWidths = new int[ this.numberOfColumns ];
 			}
-			if (this.columnsWidths == null) {
-				this.columnsWidths = new Dimension[ this.numberOfColumns ];
-				for (int i=0; i<this.numberOfColumns; i++) {
-					this.columnsWidths[i] = new Dimension( availWidth/this.numberOfColumns );
-				}
-			}
 			int maxWidth = 0; // important for "equal" columns-width
 			int myContentHeight = 0;
 			boolean hasFocusableItem = false;
@@ -512,7 +506,12 @@ extends ItemView
 			int rowStartIndex = 0;
 			for (int i=0; i< myItems.length; i++) {
 				Item item = myItems[i];
-				int availColWidth = this.columnsWidths[columnIndex].getValue( availWidth );
+				Dimension colWidthDim = this.columnsWidths[columnIndex];
+				if (colWidthDim == null) {
+					colWidthDim = new Dimension(availWidth/this.numberOfColumns);
+					this.columnsWidths[columnIndex] = colWidthDim;
+				}
+				int availColWidth = colWidthDim.getValue( availWidth );
 				//#if polish.css.colspan
 					int itemColSpan = item.colSpan;
 					if (!item.isInitialized() && item.style != null) {
@@ -1433,12 +1432,7 @@ extends ItemView
 											}
 										} else {
 									//#endif
-											boolean isPercent = widthStr.charAt( widthStr.length() -1 ) == '%';
-											if (isPercent) {
-												widthStr = widthStr.substring( 0, widthStr.length() - 1).trim();
-											}
-											int w = Integer.parseInt( widthStr );
-											this.columnsWidths[i] = new Dimension( w, isPercent );
+											this.columnsWidths[i] = new Dimension( widthStr );
 									//#ifdef polish.css.columns-width.star
 										}
 									//#endif
