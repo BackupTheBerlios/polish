@@ -72,7 +72,7 @@ public class ColumnsWidthCssAttribute extends CssAttribute {
 					if (part.charAt(part.length()-1) == '%') {
 						parsedPart = part.substring(0, part.length() - 1);
 					}
-					Integer.parseInt(parsedPart);
+					Double.parseDouble(parsedPart);
 					result.append(part);
 				} catch (NumberFormatException e) {
 					if (part.startsWith("(")) {
