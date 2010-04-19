@@ -25,10 +25,6 @@
 
 package de.enough.polish.ui;
 
-//#if polish.android
-	//# import de.enough.polish.android.lcdui.Font;
-//#endif
-
 import de.enough.polish.util.ImageUtil;
 import de.enough.polish.util.RgbImage;
 
@@ -473,6 +469,8 @@ public class Graphics {
     	graphics = null;
 
     protected RgbImage bufferedImage = null ;
+
+	private Font currentFont;
 
 	/**
 	 * Constant for centering text and images horizontally
@@ -1280,7 +1278,8 @@ public class Graphics {
      */
     public Font getFont()
     {
-        return new Font ( this.graphics.getFont() );
+    	return this.currentFont;
+        //return new Font ( this.graphics.getFont() );
     }
 
     /**
@@ -1415,6 +1414,7 @@ public class Graphics {
      */
     public void setFont ( Font font)
     {
+    	this.currentFont = font;
         this.graphics.setFont(font.font);
     }
 
