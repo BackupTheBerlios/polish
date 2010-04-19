@@ -144,7 +144,7 @@ public class ResourcesPreCompiler extends PreCompiler {
 		Element usesSdkElement = new Element("uses-sdk");
 		String minSdkVersion = env.getVariable("android.minSdkVersion");
 		if(minSdkVersion == null || minSdkVersion.length() == 0) {
-			minSdkVersion = "4";
+			minSdkVersion = "3";
 		}
 		usesSdkElement.setAttribute("minSdkVersion", minSdkVersion,namespace);
 		
