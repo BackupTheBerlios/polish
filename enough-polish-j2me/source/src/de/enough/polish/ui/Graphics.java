@@ -458,11 +458,11 @@ import de.enough.polish.util.DeviceInfo;
  */
 public class Graphics {
 
-	//#if polish.build.classes.NativeGraphics:defined
-		//#= private ${polish.build.classes.NativeGraphics} nativeGraphics;
-	//#else
-		private NativeGraphics nativeGraphics;
-	//#endif
+//	//#if polish.build.classes.NativeGraphics:defined
+//		//#= private ${polish.build.classes.NativeGraphics} nativeGraphics;
+//	//#else
+//		private NativeGraphics nativeGraphics;
+//	//#endif
 		
     protected
 	//#if polish.build.classes.NativeGraphics:defined
@@ -553,6 +553,11 @@ public class Graphics {
 	 */
 	public static final int DOTTED = 1;
 
+	/**
+	 * Creates a new graphics wrapper
+	 * 
+	 * @param g the native graphics
+	 */
     public Graphics( 
     		//#if polish.build.classes.NativeGraphics:defined
 	        	//#= ${polish.build.classes.NativeGraphics}
@@ -561,7 +566,7 @@ public class Graphics {
 	        //#endif
     		g)
     {
-        graphics = g;
+        this.graphics = g;
     }
 
     /**
@@ -579,7 +584,7 @@ public class Graphics {
      */
     public void clipRect(int x, int y, int width, int height)
     {
-        graphics.clipRect(x, y, width, height);
+        this.graphics.clipRect(x, y, width, height);
     }
 
     /**
@@ -653,7 +658,7 @@ public class Graphics {
      */
     public void copyArea(int x_src, int y_src, int width, int height, int x_dest, int y_dest, int anchor)
     {
-        graphics.copyArea( x_src,  y_src,  width,  height,  x_dest,  y_dest,  anchor);
+        this.graphics.copyArea( x_src,  y_src,  width,  height,  x_dest,  y_dest,  anchor);
     }
 
     /**
@@ -700,7 +705,7 @@ public class Graphics {
      */
     public void drawArc(int x, int y, int width, int height, int startAngle, int arcAngle)
     {
-        graphics.drawArc( x,  y,  width,  height,  startAngle,  arcAngle) ;
+        this.graphics.drawArc( x,  y,  width,  height,  startAngle,  arcAngle) ;
     }
 
     /**
@@ -719,7 +724,7 @@ public class Graphics {
      */
     public void drawChar(char character, int x, int y, int anchor)
     {
-        graphics.drawChar(character,  x,  y,  anchor) ;
+        this.graphics.drawChar(character,  x,  y,  anchor) ;
     }
 
     /**
@@ -752,7 +757,7 @@ public class Graphics {
      */
     public void drawChars(char[] data, int offset, int length, int x, int y, int anchor)
     {
-        graphics.drawChars(data,offset, length, x, y, anchor) ;
+        this.graphics.drawChars(data,offset, length, x, y, anchor) ;
     }
 
     /**
@@ -783,7 +788,7 @@ public class Graphics {
      */
     public void drawImage(Image img, int x, int y, int anchor)
     {
-        graphics.drawImage( img.image ,x, y, anchor) ;
+        this.graphics.drawImage( img.image ,x, y, anchor) ;
     }
 
     /**
@@ -797,7 +802,7 @@ public class Graphics {
      */
     public void drawLine(int x1, int y1, int x2, int y2)
     {
-        graphics.drawLine(x1, y1, x2, y2) ;
+        this.graphics.drawLine(x1, y1, x2, y2) ;
     }
 
     /**
@@ -815,7 +820,7 @@ public class Graphics {
      */
     public void drawRect(int x, int y, int width, int height)
     {
-        graphics.drawRect( x,y, width, height);
+        this.graphics.drawRect( x,y, width, height);
     }
 
     /**
@@ -916,7 +921,7 @@ public class Graphics {
      */
     public void drawRegion(Image src, int x_src, int y_src, int width, int height, int transform, int x_dest, int y_dest, int anchor)
     {
-        graphics.drawRegion( src.image,  x_src,  y_src,  width,  height,  transform,  x_dest,  y_dest,  anchor) ;
+        this.graphics.drawRegion( src.image,  x_src,  y_src,  width,  height,  transform,  x_dest,  y_dest,  anchor) ;
     }
 
     /**
@@ -1015,7 +1020,7 @@ public class Graphics {
      */
     public void drawRGB(int[] rgbData, int offset, int scanlength, int x, int y, int width, int height, boolean processAlpha)
     {
-        graphics.drawRGB(rgbData, offset,scanlength, x, y,width, height, processAlpha) ;
+        this.graphics.drawRGB(rgbData, offset,scanlength, x, y,width, height, processAlpha) ;
     }
 
     /**
@@ -1036,7 +1041,7 @@ public class Graphics {
      */
     public void drawRoundRect(int x, int y, int width, int height, int arcWidth, int arcHeight)
     {
-        graphics.drawRoundRect( x,  y,  width,  height,  arcWidth,  arcHeight) ;
+        this.graphics.drawRoundRect( x,  y,  width,  height,  arcWidth,  arcHeight) ;
     }
 
     /**
@@ -1053,7 +1058,7 @@ public class Graphics {
      */
     public void drawString(String str, int x, int y, int anchor)
     {
-        graphics.drawString( str,  x, y, anchor) ;
+        this.graphics.drawString( str,  x, y, anchor) ;
     }
 
     /**
@@ -1076,7 +1081,7 @@ public class Graphics {
      * @param x the x coordinate of the anchor point
      * @param y the y coordinate of the anchor point
      * @param anchor the anchor point for positioning the text
-     * @see #drawString(String, int, int, int).
+     * @see #drawString(String, int, int, int)
      * @throws StringIndexOutOfBoundsException if <code>offset</code>
      * and <code>length</code> do not specify
      * a valid range within the <code>String</code> <code>str</code>
@@ -1086,7 +1091,7 @@ public class Graphics {
      */
     public void drawSubstring(String str, int offset, int len, int x, int y, int anchor)
     {
-        graphics.drawSubstring(str,  offset, len,  x,  y, anchor) ;
+        this.graphics.drawSubstring(str,  offset, len,  x,  y, anchor) ;
     }
 
     /**
@@ -1137,7 +1142,7 @@ public class Graphics {
      */
     public void fillArc(int x, int y, int width, int height, int startAngle, int arcAngle)
     {
-        graphics.fillArc( x, y, width, height, startAngle, arcAngle);
+        this.graphics.fillArc( x, y, width, height, startAngle, arcAngle);
     }
 
     /**
@@ -1152,7 +1157,7 @@ public class Graphics {
      */
     public void fillRect(int x, int y, int width, int height)
     {
-        graphics.fillRect( x, y, width, height) ;
+        this.graphics.fillRect( x, y, width, height) ;
     }
 
 
@@ -1171,7 +1176,7 @@ public class Graphics {
      */
     public void fillRoundRect(int x, int y, int width, int height, int arcWidth, int arcHeight)
     {
-        graphics.fillRoundRect(x, y, width, height, arcWidth, arcHeight) ;
+        this.graphics.fillRoundRect(x, y, width, height, arcWidth, arcHeight) ;
     }
     
     /**
@@ -1181,7 +1186,7 @@ public class Graphics {
      */
     public int getBlueComponent()
     {
-        return graphics.getBlueComponent() ;
+        return this.graphics.getBlueComponent() ;
     }
 
     /**
@@ -1192,7 +1197,7 @@ public class Graphics {
      */
     public int getClipHeight()
     {
-        return graphics.getClipHeight() ;
+        return this.graphics.getClipHeight() ;
     }
 
     /**
@@ -1203,7 +1208,7 @@ public class Graphics {
      */
     public int getClipWidth()
     {
-       return graphics.getClipWidth() ;
+       return this.graphics.getClipWidth() ;
     }
 
     /**
@@ -1218,7 +1223,7 @@ public class Graphics {
      */
     public int getClipX()
     {
-        return graphics.getClipX() ;
+        return this.graphics.getClipX() ;
     }
 
     /**
@@ -1233,7 +1238,7 @@ public class Graphics {
      */
     public int getClipY()
     {
-        return graphics.getClipY() ;
+        return this.graphics.getClipY() ;
     }
 
     /**
@@ -1243,7 +1248,7 @@ public class Graphics {
      */
     public int getColor()
     {
-        return graphics.getColor() ;
+        return this.graphics.getColor() ;
     }
 
     /**
@@ -1271,7 +1276,7 @@ public class Graphics {
      * Gets the current font.
      * @return current font
      * @see javax.microedition.lcdui.Font
-     * @see #setFont(javax.microedition.lcdui.Font)
+     * @see #setFont(Font)
      */
     public Font getFont()
     {
@@ -1290,11 +1295,11 @@ public class Graphics {
      * approximates the brightness of that color.
      *
      * @return integer value in range <code>0-255</code>
-     * @see #setGrayScale
+     * @see #setGrayscale(int)
      */
     public int getGrayScale()
     {
-        return graphics.getGrayScale() ;
+        return this.graphics.getGrayScale() ;
     }
 
     /**
@@ -1304,7 +1309,7 @@ public class Graphics {
      */
     public int getGreenComponent()
     {
-        return graphics.getGreenComponent() ;
+        return this.graphics.getGreenComponent() ;
     }
 
     /**
@@ -1314,7 +1319,7 @@ public class Graphics {
      */
     public int getRedComponent()
     {
-        return graphics.getRedComponent();
+        return this.graphics.getRedComponent();
     }
 
     /**
@@ -1324,7 +1329,7 @@ public class Graphics {
      */
     public int getStrokeStyle()
     {
-        return graphics.getStrokeStyle() ;
+        return this.graphics.getStrokeStyle() ;
     }
 
     /**
@@ -1333,7 +1338,7 @@ public class Graphics {
      */
     public int getTranslateX()
     {
-        return graphics.getTranslateX() ;
+        return this.graphics.getTranslateX() ;
     }
 
     /**
@@ -1342,7 +1347,7 @@ public class Graphics {
      */
     public int getTranslateY()
     {
-        return graphics.getTranslateY();
+        return this.graphics.getTranslateY();
     }
 
     /**
@@ -1357,7 +1362,7 @@ public class Graphics {
      */
     public void setClip(int x, int y, int width, int height)
     {
-        graphics.setClip(x,y,width,height);
+        this.graphics.setClip(x,y,width,height);
     }
 
     /**
@@ -1376,7 +1381,7 @@ public class Graphics {
      */
     public void setColor(int RGB)
     {
-        graphics.setColor(RGB);
+        this.graphics.setColor(RGB);
     }
 
     /**
@@ -1394,7 +1399,7 @@ public class Graphics {
      */
     public void setColor(int red, int green, int blue)
     {
-        graphics.setColor(red,green,blue);
+        this.graphics.setColor(red,green,blue);
     }
 
     /**
@@ -1410,7 +1415,7 @@ public class Graphics {
      */
     public void setFont ( Font font)
     {
-        graphics.setFont(font.font);
+        this.graphics.setFont(font.font);
     }
 
     /**
@@ -1420,13 +1425,13 @@ public class Graphics {
      * subsequent drawing operations to be a gray color equivalent
      * to the value passed in. The value must be in the range
      * <code>0-255</code>.
-     * @param value the desired grayscale value
+     * @param gray the desired grayscale value
      * @throws IllegalArgumentException if the gray value is out of range
      * @see #getGrayScale
      */
     public void setGrayscale(int gray)
     {
-        graphics.setGrayScale(gray);
+        this.graphics.setGrayScale(gray);
     }
 
     /**
@@ -1439,7 +1444,7 @@ public class Graphics {
      */
     public void setStrokeStyle(int style)
     {
-        graphics.setStrokeStyle(style);
+        this.graphics.setStrokeStyle(style);
     }
 
     /**
@@ -1468,7 +1473,7 @@ public class Graphics {
      */
     public void translate(int x, int y)
     {
-        graphics.translate(x, y);
+        this.graphics.translate(x, y);
     }
 
     
@@ -1484,7 +1489,6 @@ public class Graphics {
      * @param y1 vertical start position
      * @param x2 horizontal end position
      * @param y2 vertical end position
-     * @param g the graphics context
      */
     public void drawTranslucentLine( int color, int x1, int y1, int x2, int y2) {
             //#if polish.blackberry && polish.usePolishGui
@@ -1498,7 +1502,7 @@ public class Graphics {
             //#elif polish.api.nokia-ui && !polish.Bugs.TransparencyNotWorkingInNokiaUiApi && !polish.Bugs.TransparencyNotWorkingInDrawPolygon
                     int[] xPoints = new int[] { x1, x2 };
                     int[] yPoints = new int[] { y1, y2 };
-                    DirectGraphics dg = DirectUtils.getDirectGraphics(graphics);
+                    DirectGraphics dg = DirectUtils.getDirectGraphics(this.graphics);
                     dg.drawPolygon(xPoints, 0, yPoints, 0, 2, color );
             //#elifdef polish.midp2
                     if (y2 < y1 ) {
@@ -1550,15 +1554,15 @@ public class Graphics {
                             //                int width,
                             //                int height,
                             //                boolean processAlpha)
-                            graphics.drawRGB( rgb, 0, width, x1, y1, width, height, true );
+                            this.graphics.drawRGB( rgb, 0, width, x1, y1, width, height, true );
                     } else {
                             // TODO use alpha channel
-                            graphics.setColor( color );
-                            graphics.drawLine(x1, y1, x2, y2);
+                            this.graphics.setColor( color );
+                            this.graphics.drawLine(x1, y1, x2, y2);
                     }
             //#else
-                    graphics.setColor( color );
-                    graphics.drawLine(x1, y1, x2, y2);
+                    this.graphics.setColor( color );
+                    this.graphics.drawLine(x1, y1, x2, y2);
             //#endif
     }
 
@@ -1574,7 +1578,7 @@ public class Graphics {
 	 */
 	public void drawRgb( int[] rgb, int x, int y, int width, int height, boolean processAlpha) {
 
-		drawRgb( rgb, x, y, width, height, processAlpha, graphics.getClipX(), graphics.getClipY(), graphics.getClipWidth(), graphics.getClipHeight());
+		drawRgb( rgb, x, y, width, height, processAlpha, this.graphics.getClipX(), this.graphics.getClipY(), this.graphics.getClipWidth(), this.graphics.getClipHeight());
 	}
 
 
@@ -1640,7 +1644,7 @@ public class Graphics {
 	 */
 	public void drawRgb(RgbImage image, int x, int y)
 	{
-		drawRgb( image.getRgbData(), x, y, image.getWidth(), image.getHeight(), image.isProcessTransparency(), graphics.getClipX(), graphics.getClipY(), graphics.getClipWidth(), graphics.getClipHeight());
+		drawRgb( image.getRgbData(), x, y, image.getWidth(), image.getHeight(), image.isProcessTransparency(), this.graphics.getClipX(), this.graphics.getClipY(), this.graphics.getClipWidth(), this.graphics.getClipHeight());
 	}
 
         /**
@@ -1684,8 +1688,8 @@ public class Graphics {
 			dg.fillPolygon( xCoords, 0, yCoords, 0, 4, color );
 		//#elif polish.midp2
 			//#ifdef polish.Bugs.drawRgbOrigin
-				x += graphics.getTranslateX();
-				y += graphics.getTranslateY();
+				x += this.graphics.getTranslateX();
+				y += this.graphics.getTranslateY();
 			//#endif
 
 			// check if the buffer needs to be created:

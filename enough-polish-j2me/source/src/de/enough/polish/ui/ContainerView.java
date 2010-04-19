@@ -498,6 +498,12 @@ extends ItemView
 			if (isNormalWidthColumns) {
 				maxColumnWidths = new int[ this.numberOfColumns ];
 			}
+			if (this.columnsWidths == null) {
+				this.columnsWidths = new Dimension[ this.numberOfColumns ];
+				for (int i=0; i<this.numberOfColumns; i++) {
+					this.columnsWidths[i] = new Dimension( availWidth/this.numberOfColumns );
+				}
+			}
 			int maxWidth = 0; // important for "equal" columns-width
 			int myContentHeight = 0;
 			boolean hasFocusableItem = false;
