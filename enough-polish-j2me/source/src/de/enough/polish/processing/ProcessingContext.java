@@ -294,6 +294,7 @@ public class ProcessingContext implements ProcessingInterface {
             }
 
 
+        resetMatrix();
         draw();
 
         _lastFrameTime = System.currentTimeMillis();
@@ -3433,7 +3434,17 @@ public class ProcessingContext implements ProcessingInterface {
      * @see de.enough.polish.processing.ProcessingInterface#text(java.lang.String, int, int) 
      */
     public void text(String text, int x, int y) {
-        text(text, x, y, Integer.MAX_VALUE, Integer.MAX_VALUE);
+        int currentColor = _bufferg.getColor();
+        _bufferg.setColor(_defaultFont.color);
+
+        pushMatrix();
+
+        _defaultFont.draw(_bufferg, text, x, y, LEFT);
+        y += _defaultFont.getHeight();
+        
+        popMatrix();
+
+        _bufferg.setColor(currentColor);
     }
 
     /** (non-Javadoc)
@@ -3447,7 +3458,7 @@ public class ProcessingContext implements ProcessingInterface {
 
         //// save current clip and apply clip to bounding area
         pushMatrix();
-        _bufferg.setClip(x, y, width, height);
+        _bufferg.setClip(x, y-_defaultFont.getHeight(), width, height);
         
         //// adjust starting baseline so that text is _contained_ within the bounds
         int textX = x;

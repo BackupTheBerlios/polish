@@ -39,10 +39,21 @@ import javax.microedition.lcdui.Graphics;
  */
 public class PFont {
 
-    public Font platformFont = null ;
-    public BitMapFont bitmapFont = null ;
-    public int color = 0x000000;
-    public int bgColor;
+    protected Font platformFont = null ;
+    protected BitMapFont bitmapFont = null ;
+    protected int color = 0x000000;
+    protected int bgColor;
+
+    public static int FACE_SYSTEM = Font.FACE_SYSTEM ;
+    public static int FACE_MONOSPACE = Font.FACE_MONOSPACE ;
+    public static int FACE_PROPORTIONAL = Font.FACE_PROPORTIONAL ;
+    public static int SIZE_LARGE = Font.SIZE_LARGE ;
+    public static int SIZE_MEDIUM = Font.SIZE_MEDIUM ;
+    public static int SIZE_SMALL = Font.SIZE_SMALL ;
+    public static int STYLE_PLAIN = Font.STYLE_PLAIN ;
+    public static int STYLE_BOLD = Font.STYLE_BOLD ;
+    public static int STYLE_ITALIC = Font.STYLE_ITALIC ;
+    public static int STYLE_UNDERLINED = Font.STYLE_UNDERLINED ;
 
     public PFont(Font font)
     {
@@ -164,7 +175,7 @@ public class PFont {
             }
             
             BitMapFontViewer bfv = bitmapFont.getViewer(str, color);
-            bfv.paint(x, y, g);
+            bfv.paint(x, y - bitmapFont.getFontHeight() , g);
 
         }
     }
