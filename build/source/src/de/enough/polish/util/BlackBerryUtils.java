@@ -97,10 +97,12 @@ public class BlackBerryUtils {
                 return jdeFolder;
             }
         }
-
+        if (jdes.length == 0) {
+        	throw new BuildException("Unable to resolve blackberry.home path of " + blackberryHome.getAbsolutePath() + ". Please correct this setting in your build.xml script.");
+        }
         System.out.println("WARNING: could not find " + bbVersion
                 + " of blackberry we are now using "
-                + jdes[jdes.length - 1].getAbsolutePath() + " in stead");
+                + jdes[jdes.length - 1].getAbsolutePath() + " instead.");
 
         //Exact version not found use last JDE
         return jdes[jdes.length - 1];
