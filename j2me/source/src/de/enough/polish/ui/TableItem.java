@@ -937,6 +937,13 @@ public class TableItem
 				Item item = (Item) data;
 				this.selectedItemStyle = item.focus( null, direction );
 				this.focusedItem = item;
+				//#if polish.blackberry
+					if(getScreen() != null) {
+						getScreen().notifyFocusSet(item);
+					} else {
+						Display.getInstance().notifyFocusSet(item);
+					}
+				//#endif
 			}
 		}
 		this.selectedColumnIndex = col;
@@ -1378,6 +1385,13 @@ public class TableItem
 			} else if (obj instanceof Item) {
 				Item item = (Item) obj;
 				this.selectedItemStyle = item.focus( null, direction );
+				//#if polish.blackberry
+					if(getScreen() != null) {
+						getScreen().notifyFocusSet(item);
+					} else {
+						Display.getInstance().notifyFocusSet(item);
+					}
+				//#endif
 			}
 		}
 //		if (this.selectionMode != SELECTION_MODE_NONE) {
@@ -1519,7 +1533,11 @@ public class TableItem
 	{
 		int row = index / getNumberOfColumns();
 		int col = index % getNumberOfColumns();
-		return (Item) this.tableData.get(col, row);
+		Object object = this.tableData.get(col, row);
+		if (object != null && !(object instanceof Item)) {
+			object = new StringItem( null, object.toString() );
+		}
+		return (Item) object;
 	}
 
 	/* (non-Javadoc)

@@ -351,7 +351,7 @@ public class Container extends Item {
 			}
 			// set following items to relativeY=0, so that they will be scrolled correctly:
 			for (int i= index + 1; i < this.itemsList.size(); i++ ) {
-				Item followingItem = (Item) this.itemsList.get(i);
+				Item followingItem = get(i);
 				followingItem.relativeY = 0;
 			}
 			if (this.isShown) {
@@ -424,7 +424,7 @@ public class Container extends Item {
 	public Item set( int index, Item item, Style itemStyle ) {
 		//#debug
 		System.out.println("Container: setting item " + index + " " + item.toString() );
-		Item last = (Item) this.itemsList.get( index );
+		Item last = get( index );
 		if (last == item && (itemStyle == null || itemStyle == item.style)) {
 			// ignore, the same item is set over again:
 			//#debug
@@ -475,7 +475,7 @@ public class Container extends Item {
 		//requestInit();
 		// set following items to relativeY=0, so that they will be scrolled correctly:
 		for (int i= index + 1; i < this.itemsList.size(); i++ ) {
-			Item followingItem = (Item) this.itemsList.get(i);
+			Item followingItem = get(i);
 			followingItem.relativeY = 0;
 		}
 		requestInit();
@@ -843,7 +843,7 @@ public class Container extends Item {
 		if (!this.isFocused) {
 			this.autoFocusEnabled = true;
 		}
-		Item item = (Item) this.itemsList.get(index );
+		Item item = get(index );
 		if (item.appearanceMode != Item.PLAIN) {
 			int direction = 0;
 			if (this.isFocused) {
@@ -1051,11 +1051,11 @@ public class Container extends Item {
 				// Now adjust the scrolling:			
 				Item nextItem;
 				if ( isDownwards && index < this.itemsList.size() - 1 ) {
-					nextItem = (Item) this.itemsList.get( index + 1 );
+					nextItem = get( index + 1 );
 					//#debug
 					System.out.println("Focusing downwards, nextItem.relativY = [" + nextItem.relativeY + "], focusedItem.relativeY=[" + item.relativeY + "], this.yOffset=" + this.yOffset + ", this.targetYOffset=" + this.targetYOffset);
 				} else if ( !isDownwards && index > 0 ) {
-					nextItem = (Item) this.itemsList.get( index - 1 );
+					nextItem = get( index - 1 );
 					//#debug
 					System.out.println("Focusing upwards, nextItem.yTopPos = " + nextItem.relativeY + ", focusedItem.relativeY=" + item.relativeY );
 				} else {
@@ -2699,7 +2699,7 @@ public class Container extends Item {
 					}
 				}
 			//#endif
-			Item item = (Item) this.itemsList.get( this.focusedIndex );
+			Item item = get( this.focusedIndex );
 //			Style previousStyle = item.style;
 //			if (previousStyle == null) {
 //				previousStyle = StyleSheet.defaultStyle;
@@ -3008,7 +3008,7 @@ public class Container extends Item {
 					for (int i=this.showDelayIndex; i<index; i++) {
 						try {
 							//System.out.println("calling show notify on item " + i + " at " + (currentTime - this.showNotifyTime) + ", show-delay=" + this.showDelay);
-							Item item = (Item) this.itemsList.get(i);
+							Item item = get(i);
 							item.showNotify();
 						} catch (Exception e) {
 							//#debug error
