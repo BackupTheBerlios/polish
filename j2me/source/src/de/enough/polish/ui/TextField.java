@@ -3035,6 +3035,7 @@ public class TextField extends StringItem
 					this.lastFieldChangedEvent = 0;
 					setString( this.editField.getText() );
 					notifyStateChanged();
+					getScreen().repaint();
 					return true;
 				}
 			//#endif
