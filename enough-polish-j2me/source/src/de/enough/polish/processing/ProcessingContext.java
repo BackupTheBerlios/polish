@@ -267,11 +267,22 @@ public class ProcessingContext implements ProcessingInterface {
             return;
         }
 
-        if (_hasBeenInitialized == false )
+        if( _hasBeenInitialized == false )
         {
-            _hasBeenInitialized = true ;
             _startTime = System.currentTimeMillis() ;
-            signalSizeChange(_prevWidth,_prevHeight);
+
+            // Wait a while to make sure we don't get out of memory errors
+            try
+            {
+                Thread.sleep(5);
+            }
+            catch (Exception ex)
+            {
+                
+            }
+
+            redraw();
+            return;
         }
 
         if ( _bufferg != null )
@@ -354,7 +365,7 @@ public class ProcessingContext implements ProcessingInterface {
      * 
      */
     public void _resetImageSize(int width, int height)
-    {       
+    {
             _buffer = Image.createImage(width, height);
             _bufferg = _buffer.getGraphics() ;
             _bufferg.setColor(0x00FFFFFF);
@@ -380,6 +391,15 @@ public class ProcessingContext implements ProcessingInterface {
             _resetImageSize(width, height);
          }
 
+    }
+
+    /** (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingInterface#executeInitializationSequence()
+     */
+    public void executeInitializationSequence()
+    {
+        setup();
+        _hasBeenInitialized = true ;
     }
 
     /** (non-Javadoc)
@@ -619,6 +639,11 @@ public class ProcessingContext implements ProcessingInterface {
      */
     public void signalHasFocus()
     {
+        if ( _hasBeenInitialized == false )
+        {
+            //ProcessingThread.queueEvent(new ProcessingEvent(this,ProcessingEvent.EVENT_SETUP));
+        }
+        
         ProcessingThread.queueEvent( new ProcessingEvent(this,ProcessingEvent.EVENT_HAS_FOCUS));
     }
 
@@ -3343,7 +3368,7 @@ public class ProcessingContext implements ProcessingInterface {
      * @see de.enough.polish.processing.ProcessingInterface#textWrap(java.lang.String, int, int) 
      */
     public String[] textWrap(String data, int width, int height) {
-
+        
         //// calculate max number of lines that will fit in height
         int maxlines = height / _defaultFont.getHeight();
         //// total number of chars in text
@@ -3434,8 +3459,11 @@ public class ProcessingContext implements ProcessingInterface {
      * @see de.enough.polish.processing.ProcessingInterface#text(java.lang.String, int, int) 
      */
     public void text(String text, int x, int y) {
-        int currentColor = _bufferg.getColor();
-        _bufferg.setColor(_defaultFont.color);
+        
+        if ( _defaultFont.isBitmapFont() == false )
+        {
+            _bufferg.setColor(_fillColor);
+        }
 
         pushMatrix();
 
@@ -3443,8 +3471,6 @@ public class ProcessingContext implements ProcessingInterface {
         y += _defaultFont.getHeight();
         
         popMatrix();
-
-        _bufferg.setColor(currentColor);
     }
 
     /** (non-Javadoc)
@@ -3453,8 +3479,10 @@ public class ProcessingContext implements ProcessingInterface {
     public void text(String text, int x, int y, int width, int height) {
         String[] data = textWrap(text, width, height);
 
-        int currentColor = _bufferg.getColor();
-        _bufferg.setColor(_defaultFont.color);
+        if ( _defaultFont.isBitmapFont() == false )
+        {
+            _bufferg.setColor(_fillColor);
+        }
 
         //// save current clip and apply clip to bounding area
         pushMatrix();
@@ -3481,8 +3509,6 @@ public class ProcessingContext implements ProcessingInterface {
         }
         //// restore clip
         popMatrix();
-
-        _bufferg.setColor(currentColor);
     }
     
     /** Precision, in number of bits for the fractional part. */

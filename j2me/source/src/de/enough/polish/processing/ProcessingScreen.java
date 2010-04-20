@@ -38,7 +38,8 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
 
     protected Command cmd = new Command("", Command.ITEM, 0);
     protected String softkeyCommandText = null;
-    ProcessingInterface context = null;
+    protected ProcessingInterface context = null;
+    protected boolean focusHasBeenTriggered = false ;
 
     /**
      * Initializes the context
@@ -46,7 +47,7 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
     public void initProcessingContext() {
         context.signalInitialization();
         context.setParent(this);
-        context.signalHasFocus();
+        
     }
 
     /**
@@ -97,6 +98,11 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
 
         context.signalSizeChange(contentWidth, contentHeight);
 
+        if ( focusHasBeenTriggered == false )
+        {
+            context.signalHasFocus();
+            focusHasBeenTriggered = true ;
+        }
 
         // Draw the processing buffer
         if ( context.isDrawingTransparent() == false )
@@ -237,6 +243,7 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
      */
     public void hideNotify() {
         context.signalLostFocus();
+        focusHasBeenTriggered = false ;
         super.hideNotify();
     }
 

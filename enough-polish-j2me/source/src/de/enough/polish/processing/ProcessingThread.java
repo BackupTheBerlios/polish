@@ -65,8 +65,7 @@ public class ProcessingThread extends Thread implements Runnable {
      * @param event
      */
     public static void queueEvent(ProcessingEvent event)
-    {
-        
+    {        
         if ( ! (event.eventType == ProcessingEvent.EVENT_INIT) )
         {
             events.addElement(event);
@@ -128,7 +127,7 @@ public class ProcessingThread extends Thread implements Runnable {
                         event.object.triggerRepaint();
                         break;
                     case ProcessingEvent.EVENT_SETUP :
-                        event.object.setup();
+                        event.object.executeInitializationSequence();
                         break;
                     case ProcessingEvent.EVENT_HAS_FOCUS :
                         event.object.focus();
@@ -171,7 +170,6 @@ public class ProcessingThread extends Thread implements Runnable {
                         break;
                 }
             }
-
 
             events.setSize(0);
 

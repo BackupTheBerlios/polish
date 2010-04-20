@@ -180,4 +180,17 @@ public class PFont {
         }
     }
 
+    public boolean isBitmapFont()
+    {
+        if ( bitmapFont != null )
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
+    }
+
 }

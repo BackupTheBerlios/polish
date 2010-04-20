@@ -231,6 +231,12 @@ public interface ProcessingInterface {
     public int getTransparentColor();
 
 
+    /**
+     * Starts the initialization sequence ( calls setup() and other initialization-related tasks )
+     */
+    public void executeInitializationSequence();
+
+
 
     /*
      * J2ME Polish extension methods and event handlers that shoud be implemented.
