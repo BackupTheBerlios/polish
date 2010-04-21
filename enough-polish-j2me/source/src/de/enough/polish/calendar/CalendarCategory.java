@@ -12,6 +12,7 @@ import de.enough.polish.util.ArrayList;
  */
 public class CalendarCategory implements Serializable {
 	private String name;
+	private String id;
 	private transient CalendarCategory parentCategory;
 	private ArrayList childCategories;
 	private String image;	
@@ -20,16 +21,21 @@ public class CalendarCategory implements Serializable {
 		this(name, null);
 	}
 	
-	public CalendarCategory(String name, CalendarCategory parentCategory){
-		this(name, parentCategory, null);
+	public CalendarCategory(String name, String id){
+		this(name, id, null);
 	}
 	
-	public CalendarCategory(String name, CalendarCategory parentCategory, ArrayList childCategories){
-		this(name, parentCategory, childCategories, null);
+	public CalendarCategory(String name, String id, CalendarCategory parentCategory){
+		this(name, id, parentCategory, null);
 	}
 	
-	public CalendarCategory(String name, CalendarCategory parentCategory, ArrayList childCategories, String image){
+	public CalendarCategory(String name, String id, CalendarCategory parentCategory, ArrayList childCategories){
+		this(name, id, parentCategory, childCategories, null);
+	}
+	
+	public CalendarCategory(String name, String id, CalendarCategory parentCategory, ArrayList childCategories, String image){
 		this.name = name;
+		this.id = id;
 		this.parentCategory = parentCategory;
 		this.childCategories = childCategories;
 		this.image = image;
@@ -41,6 +47,14 @@ public class CalendarCategory implements Serializable {
 	
 	public String getName() {
 		return this.name;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public CalendarCategory getParentCategory() {
