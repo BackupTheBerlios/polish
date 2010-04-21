@@ -4624,6 +4624,16 @@ public class TextField extends StringItem
 	}
 	//#endif
 	
+	/**
+	 * Sets the help style for this TextField
+	 * with the use of style preprocessing e.g.:
+	 * //#style myStyle
+	 * setHelpStyle();
+	 */
+	public void setHelpStyle() {
+		// nothing here
+	}
+	
 	//#if polish.TextField.showHelpText
 	/**
 	 * Sets the style of the help text

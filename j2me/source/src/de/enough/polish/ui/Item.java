@@ -1146,6 +1146,16 @@ public abstract class Item implements UiElement, Animatable
 	}
 	
 	/**
+	 * Sets the style for an item
+	 * with the use of style preprocessing e.g.:
+	 * //#style myStyle
+	 * setStyle();
+	 */
+	public void setStyle() {
+		// do nothing here
+	}
+	
+	/**
 	 * Sets the style of this item.
 	 * 
 	 * @param style the new style for this item.
