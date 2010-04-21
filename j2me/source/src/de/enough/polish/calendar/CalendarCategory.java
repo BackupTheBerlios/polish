@@ -12,7 +12,7 @@ import de.enough.polish.util.ArrayList;
  */
 public class CalendarCategory implements Serializable {
 	private String name;
-	private CalendarCategory parentCategory;
+	private transient CalendarCategory parentCategory;
 	private ArrayList childCategories;
 	private String image;	
 	
@@ -65,5 +65,15 @@ public class CalendarCategory implements Serializable {
 
 	public void setImage(String image) {
 		this.image = image;
+	}
+
+	public void setParentForChildren(){
+		ArrayList children = this.getChildCategories();
+			if(children != null){
+			for (int i = 0; i < children.size(); i++) {
+				CalendarCategory child = (CalendarCategory) children.get(i);
+				child.setParentCategory(this);
+			}
+		}
 	}
 }
