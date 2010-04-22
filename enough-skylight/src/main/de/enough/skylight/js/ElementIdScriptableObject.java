@@ -3,11 +3,14 @@ package de.enough.skylight.js;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.IdFunctionObject;
 import org.mozilla.javascript.IdScriptableObject;
-import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.UniqueTag;
 
-import de.enough.skylight.Services;
+import de.enough.skylight.dom.impl.DocumentImpl;
+import de.enough.skylight.dom.impl.DomNodeImpl;
 import de.enough.skylight.dom.impl.ElementImpl;
+import de.enough.skylight.dom.impl.NamedNodeMapImpl;
+import de.enough.skylight.dom.impl.NodeListImpl;
 
 public class ElementIdScriptableObject extends IdScriptableObject{
 
@@ -83,7 +86,7 @@ public class ElementIdScriptableObject extends IdScriptableObject{
 	
 	public static final int MAX_PROTOTYPE_ID        		= 56;
 
-	private final ElementImpl element;
+	private final ElementImpl wrappedElement;
 //	static void init(Scriptable scope, boolean sealed) {
 //		ElementImpl dummyElement = new ElementImpl();
 //		ElementIdScriptableObject obj = new ElementIdScriptableObject(dummyElement);
@@ -91,7 +94,9 @@ public class ElementIdScriptableObject extends IdScriptableObject{
 //    }
 	
 	public ElementIdScriptableObject(ElementImpl element) {
-		this.element = element;
+		this.wrappedElement = element;
+		addIdFunctionProperty(this, ELEMENT_TAG, Id_getAttribute, "getAttribute", 1);
+		addIdFunctionProperty(this, ELEMENT_TAG, Id_insertBefore, "insertBefore", 1);
 	}
 	
 	@Override
@@ -111,106 +116,7 @@ public class ElementIdScriptableObject extends IdScriptableObject{
 		if("constructor".equals(name)) {
 			return Id_constructor;
 		}
-		if("toString".equals(name)) {
-			return Id_toString;
-		}
-		if("toLocaleString".equals(name)) {
-			return Id_toLocaleString;
-		}
-		if("toSource".equals(name)) {
-			return Id_toSource;
-		}
-		if("insertBefore".equals(name)) {
-			return Id_insertBefore;
-		}
-		if("replaceChild".equals(name)) {
-			return Id_replaceChild;
-		}
-		if("removeChild".equals(name)) {
-			return Id_removeChild;
-		}
-		if("appendChild".equals(name)) {
-			return Id_appendChild;
-		}
-		if("hasChildNodes".equals(name)) {
-			return Id_hasChildNodes;
-		}
-		if("cloneNode".equals(name)) {
-			return Id_cloneNode;
-		}
-		if("normalize".equals(name)) {
-			return Id_normalize;
-		}
-		if("isSupported".equals(name)) {
-			return Id_isSupported;
-		}
-		if("hasAttributes".equals(name)) {
-			return Id_hasAttributes;
-		}
-		
-		if("getAttribute".equals(name)) {
-			return Id_getAttribute;
-		}
-		
-		if("setAttribute".equals(name)) {
-			return Id_setAttribute;
-		}
-		
-		if("removeAttribute".equals(name)) {
-			return Id_removeAttribute;
-		}
-		
-		if("getAttributeNode".equals(name)) {
-			return Id_getAttributeNode;
-		}
-		
-		if("setAttributeNode".equals(name)) {
-			return Id_setAttributeNode;
-		}
-		
-		if("removeAttributeNode".equals(name)) {
-			return Id_removeAttributeNode;
-		}
-		
-		if("getElementsByTagName".equals(name)) {
-			return Id_getElementsByTagName;
-		}
-		
-		if("getAttributeNS".equals(name)) {
-			return Id_getAttributeNS;
-		}
-		
-		if("setAttributeNS".equals(name)) {
-			return Id_setAttributeNS;
-		}
-		
-		if("removeAttriubteNS".equals(name)) {
-			return Id_removeAttributeNS;
-		}
-		
-		if("getAttributeNS".equals(name)) {
-			return Id_getAttributeNodeNS;
-		}
-		
-		if("setAttributeNS".equals(name)) {
-			return Id_setAttributeNodeNS;
-		}
-		
-		if("getElementsByTagNameNS".equals(name)) {
-			return Id_getElementsByTagNameNS;
-		}
-		
-		if("hasAttributes".equals(name)) {
-			return Id_hasAttribute;
-		}
-		
-		if("hasAttributesNS".equals(name)) {
-			return Id_hasAttributeNS;
-		}
-		
-		/*
-	private static final int Id_NOTATION_NODE 				= 55;
-		 */
+
 		if("ELEMENT_NODE".equals(name)) {
 			return Id_ELEMENT_NODE;
 		}
@@ -247,18 +153,96 @@ public class ElementIdScriptableObject extends IdScriptableObject{
 		if("NOTATION_NODE".equals(name)) {
 			return Id_NOTATION_NODE;
 		}
-		
+		if("insertBefore".equals(name)) {
+			return Id_insertBefore;
+		}
+		if("replaceChild".equals(name)) {
+			return Id_replaceChild;
+		}
+		if("removeChild".equals(name)) {
+			return Id_removeChild;
+		}
+		if("appendChild".equals(name)) {
+			return Id_appendChild;
+		}
+		if("hasChildNodes".equals(name)) {
+			return Id_hasChildNodes;
+		}
+		if("cloneNode".equals(name)) {
+			return Id_cloneNode;
+		}
+		if("normalize".equals(name)) {
+			return Id_normalize;
+		}
+		if("isSupported".equals(name)) {
+			return Id_isSupported;
+		}
+		if("hasAttributes".equals(name)) {
+			return Id_hasAttributes;
+		}
+		if("getAttribute".equals(name)) {
+			return Id_getAttribute;
+		}
+		if("setAttribute".equals(name)) {
+			return Id_setAttribute;
+		}
+		if("removeAttribute".equals(name)) {
+			return Id_removeAttribute;
+		}
+		if("getAttributeNode".equals(name)) {
+			return Id_getAttributeNode;
+		}
+		if("setAttributeNode".equals(name)) {
+			return Id_setAttributeNode;
+		}
+		if("removeAttributeNode".equals(name)) {
+			return Id_removeAttributeNode;
+		}
+		if("getElementsByTagName".equals(name)) {
+			return Id_getElementsByTagName;
+		}
+		if("getAttributeNS".equals(name)) {
+			return Id_getAttributeNS;
+		}
+		if("setAttributeNS".equals(name)) {
+			return Id_setAttributeNS;
+		}
+		if("removeAttributeNS".equals(name)) {
+			return Id_removeAttributeNS;
+		}
+		if("getAttributeNodeNS".equals(name)) {
+			return Id_getAttributeNodeNS;
+		}
+		if("setAttributeNodeNS".equals(name)) {
+			return Id_setAttributeNodeNS;
+		}
+		if("getElementsByTagNameNS".equals(name)) {
+			return Id_getElementsByTagNameNS;
+		}
+		if("hasAttribute".equals(name)) {
+			return Id_hasAttribute;
+		}
+		if("hasAttributeNS".equals(name)) {
+			return Id_hasAttributeNS;
+		}
 		return 0;
 	}
 
+	@SuppressWarnings("null")
 	@Override
 	public Object execIdCall(IdFunctionObject f, Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
 		if (!f.hasTag(ELEMENT_TAG)) {
             return super.execIdCall(f, cx, scope, thisObj, args);
         }
         int id = f.getMethodId();
+        ElementImpl thisWrappedElement = null;
+        if(thisObj != null) {
+        	// The constructor does not have a this object. All other calls will have one.
+        	ElementIdScriptableObject o = (ElementIdScriptableObject)thisObj;
+			thisWrappedElement = o.wrappedElement;
+        }
         switch (id) {
-        	case Id_constructor:
+        	case Id_constructor:{
         		boolean inNewExpr = (thisObj == null);
         		if (!inNewExpr) {
         			// IdFunctionObject.construct will set up parent, proto
@@ -266,27 +250,62 @@ public class ElementIdScriptableObject extends IdScriptableObject{
         			return f.construct(cx, scope, args);
         		}
         		return new ElementIdScriptableObject((ElementImpl)args[0]);
-        	case Id_toString:
+        	}
+        	case Id_toString:{
         		return "[Element "+hashCode()+"]";
-
-        	case Id_toLocaleString:
+        	}
+        	case Id_toLocaleString:{
         		throw new RuntimeException("toLocaleString");
-
-        	case Id_toSource:
+        	}
+        	case Id_toSource:{
         		throw new RuntimeException("toLocaleString");
-        	case Id_insertBefore: return null;
-        	case Id_replaceChild: return null;
-        	case Id_removeChild: return null;
-        	case Id_appendChild: return null;
-        	case Id_hasChildNodes: return null;
+        	}
+        	case Id_insertBefore:{
+        		ElementImpl element1 = getWrappedElement(args[0]);
+        		ElementImpl element2 = getWrappedElement(args[1]);
+        		return thisWrappedElement.insertBefore(element1,element2);
+        	}
+        	case Id_replaceChild:{
+        		ElementImpl element1 = getWrappedElement(args[0]);
+        		ElementImpl element2 = getWrappedElement(args[1]);
+        		return thisWrappedElement.replaceChild(element1,element2);
+        	}
+        	case Id_removeChild:{
+        		ElementImpl element1 = getWrappedElement(args[0]);
+        		return thisWrappedElement.removeChild(element1);
+        	}
+        	case Id_appendChild:{
+        		ElementImpl element1 = getWrappedElement(args[0]);
+        		return thisWrappedElement.appendChild(element1);
+        	}
+        	case Id_hasChildNodes:{
+        		return new Boolean(thisWrappedElement.hasChildNodes());
+        	}
         	case Id_cloneNode: return null;
         	case Id_normalize: return null;
         	case Id_isSupported: return null;
-        	case Id_hasAttributes: return null;
-        	case Id_getAttribute: return null;
-        	case Id_setAttribute: return null;
-        	case Id_removeAttribute: return null;
-        	case Id_getAttributeNode: return null;
+        	case Id_hasAttributes:{
+        		return new Boolean(thisWrappedElement.hasAttributes());
+        	}
+        	case Id_getAttribute:{
+        		String attriuteName = convertToString(args[0]);
+        		return thisWrappedElement.getAttribute(attriuteName);
+        	}
+        	case Id_setAttribute:{
+        		String arg1 = convertToString(args[0]);
+        		String arg2 = convertToString(args[1]);
+        		thisWrappedElement.setAttribute(arg1,arg2);
+        		return UniqueTag.NULL_VALUE;
+        	}
+        	case Id_removeAttribute:{
+        		String arg1 = convertToString(args[0]);
+        		thisWrappedElement.removeAttribute(arg1);
+        		return UniqueTag.NULL_VALUE;
+        	}
+        	case Id_getAttributeNode:{
+        		String arg1 = convertToString(args[0]);
+        		return thisWrappedElement.getAttributeNode(arg1);
+        	}
         	case Id_setAttributeNode: return null;
         	case Id_removeAttributeNode: return null;
         	case Id_getElementsByTagName: return null;
@@ -296,10 +315,37 @@ public class ElementIdScriptableObject extends IdScriptableObject{
         	case Id_getAttributeNodeNS: return null;
         	case Id_setAttributeNodeNS: return null;
         	case Id_getElementsByTagNameNS: return null;
-        	case Id_hasAttribute: return null;
+        	case Id_hasAttribute:{
+        		String arg1 = convertToString(args[0]);
+        		return new Boolean(thisWrappedElement.hasAttribute(arg1));
+        	}
         	case Id_hasAttributeNS: return null;
         }
         throw new IllegalStateException("Could not execute function for id '"+id+"'");
+	}
+
+	private String convertToString(Object object) {
+		if(object == null) {
+			throw Context.reportRuntimeError("The parameter to this method must not be null.");
+		}
+		String string;
+		if(object instanceof String) {
+			string = (String)object;
+		} else {
+			string = object.toString();
+		}
+		return string;
+	}
+
+	private ElementImpl getWrappedElement(Object arg) {
+		if(arg == null) {
+			throw Context.reportRuntimeError("A parameter must not be null.'");
+		}
+		if( ! (arg instanceof ElementIdScriptableObject)) {
+			throw Context.reportRuntimeError("a parameter must be an Element.");
+		}
+		ElementImpl element = ((ElementIdScriptableObject)arg).wrappedElement;
+		return element;
 	}
 
 	@Override
@@ -310,7 +356,6 @@ public class ElementIdScriptableObject extends IdScriptableObject{
         if(id <= MAX_FIELD_ID) {
         	// The id is a field
         	switch (id) {
-        		case Id_nodeName: name = "nodeName"; value = this.element.getNodeName(); attributes = DONTENUM | READONLY | PERMANENT; break;
         		case Id_ELEMENT_NODE: name = "ELEMENT_NODE"; value = new Integer(1); attributes = DONTENUM | READONLY | PERMANENT; break;
         		case Id_ATTRIBUTE_NODE: name = "ATTRIBUTE_NODE"; value = new Integer(2); attributes = DONTENUM | READONLY | PERMANENT; break;
         		case Id_TEXT_NODE: name = "TEXT_NODE"; value = new Integer(3); attributes = DONTENUM | READONLY | PERMANENT; break;
@@ -366,17 +411,57 @@ public class ElementIdScriptableObject extends IdScriptableObject{
             }
             initPrototypeMethod(ELEMENT_TAG, id, name, arity);
         }
-        
-        
 	}
 
-	
-	
 	@Override
 	protected int findInstanceIdInfo(String name) {
+		// Fields
 		if(name.equals("nodeName")) {
 			return instanceIdInfo(DONTENUM|PERMANENT|READONLY, Id_nodeName);
 		}
+		if(name.equals("nodeValue")) {
+			return instanceIdInfo(DONTENUM|PERMANENT, Id_nodeValue);
+		}
+		if(name.equals("nodeType")) {
+			return instanceIdInfo(DONTENUM|PERMANENT|READONLY, Id_nodeType);
+		}
+		if(name.equals("parentNode")) {
+			return instanceIdInfo(DONTENUM|PERMANENT|READONLY, Id_parentNode);
+		}
+		if(name.equals("childNodes")) {
+			return instanceIdInfo(DONTENUM|PERMANENT|READONLY, Id_childNodes);
+		}
+		if(name.equals("firstChild")) {
+			return instanceIdInfo(DONTENUM|PERMANENT|READONLY, Id_firstChild);
+		}
+		if(name.equals("lastChild")) {
+			return instanceIdInfo(DONTENUM|PERMANENT|READONLY, Id_lastChild);
+		}
+		if(name.equals("previousSibling")) {
+			return instanceIdInfo(DONTENUM|PERMANENT|READONLY, Id_previousSibling);
+		}
+		if(name.equals("nextSibling")) {
+			return instanceIdInfo(DONTENUM|PERMANENT|READONLY, Id_nextSibling);
+		}
+		if(name.equals("attributes")) {
+			return instanceIdInfo(DONTENUM|PERMANENT|READONLY, Id_attributes);
+		}
+		if(name.equals("ownerDocument")) {
+			return instanceIdInfo(DONTENUM|PERMANENT|READONLY, Id_ownerDocument);
+		}
+		if(name.equals("Id_namespaceURI")) {
+			return instanceIdInfo(DONTENUM|PERMANENT|READONLY, Id_namespaceURI);
+		}
+		if(name.equals("prefix")) {
+			return instanceIdInfo(DONTENUM|PERMANENT, Id_prefix);
+		}
+		if(name.equals("localName")) {
+			return instanceIdInfo(DONTENUM|PERMANENT|READONLY, Id_localName);
+		}
+		if(name.equals("tagName")) {
+			return instanceIdInfo(DONTENUM|PERMANENT|READONLY, Id_tagName);
+		}
+		
 		return 0;
 	}
 
@@ -384,6 +469,24 @@ public class ElementIdScriptableObject extends IdScriptableObject{
 	protected String getInstanceIdName(int id) {
 		switch(id) {
 			case Id_nodeName: return "nodeName";
+			case Id_nodeValue: return "nodeValue";
+			case Id_nodeType: return "nodeType";
+			case Id_parentNode: return "parentNode";
+			case Id_childNodes: return "childNodes";
+			case Id_firstChild: return "firstChild";
+			case Id_lastChild: return "lastChild";
+			case Id_previousSibling: return "previousSibling";
+			case Id_nextSibling: return "nextSibling";
+			case Id_attributes: return "attributes";
+			case Id_ownerDocument: return "ownerDocument";
+			case Id_namespaceURI: return "namespaceURI";
+			case Id_prefix: return "prefix";
+			case Id_localName: return "localName";
+			case Id_tagName: return "tagName";
+			case Id_constructor: return "constructor";
+            case Id_toString: return "toString";
+            case Id_toLocaleString:  return "toLocaleString";
+            case Id_toSource: return "toSource";
 			default: throw new RuntimeException("Could not find instace with id '"+id+"'");
 		}
 	}
@@ -391,17 +494,75 @@ public class ElementIdScriptableObject extends IdScriptableObject{
 	@Override
 	protected Object getInstanceIdValue(int id) {
 		switch(id) {
-			case Id_nodeName: return this.element.getNodeName();
-			default: throw new RuntimeException("Could not find instace with id '"+id+"'");
+			case Id_nodeName: return this.wrappedElement.getNodeName();
+			case Id_nodeValue: return this.wrappedElement.getNodeValue();
+			case Id_nodeType: return new Integer(this.wrappedElement.getNodeType());
+			case Id_parentNode:
+				DomNodeImpl parentNode = this.wrappedElement.getParentNode();
+				if(parentNode != null) {
+					return parentNode.getScriptable();
+				}
+				return UniqueTag.NULL_VALUE;
+			case Id_childNodes:
+				NodeListImpl childNodes = this.wrappedElement.getChildNodes();
+				if(childNodes != null) {
+					return childNodes.getScriptable();
+				}
+				return UniqueTag.NULL_VALUE;
+			case Id_firstChild:
+				DomNodeImpl firstChild = this.wrappedElement.getFirstChild();
+				if(firstChild != null) {
+					return firstChild.getScriptable();
+				}
+				return UniqueTag.NULL_VALUE;
+			case Id_lastChild:
+				DomNodeImpl lastChild = this.wrappedElement.getLastChild();
+				if(lastChild != null) {
+					return lastChild.getScriptable();
+				}
+				return UniqueTag.NULL_VALUE;
+			case Id_previousSibling:
+				DomNodeImpl previousSibling = this.wrappedElement.getPreviousSibling();
+				if(previousSibling != null) {
+					return previousSibling.getScriptable();
+				}
+				return UniqueTag.NULL_VALUE;
+			case Id_nextSibling:
+				DomNodeImpl nextSibling = this.wrappedElement.getNextSibling();
+				if(nextSibling != null) {
+					return nextSibling.getScriptable();
+				}
+				return UniqueTag.NULL_VALUE;
+			case Id_attributes:
+				NamedNodeMapImpl attributes  = this.wrappedElement.getAttributes();
+				if(attributes != null) {
+					return attributes.getScriptable();
+				}
+				return UniqueTag.NULL_VALUE;
+			case Id_ownerDocument:
+				DocumentImpl ownerDocument = this.wrappedElement.getOwnerDocument();
+				if(ownerDocument != null) {
+					return ownerDocument.getScriptable();
+				}
+				return UniqueTag.NULL_VALUE;
+			case Id_namespaceURI:
+				return this.wrappedElement.getNamespaceURI();
+			case Id_prefix:
+				return this.wrappedElement.getPrefix();
+			case Id_localName:
+				return this.wrappedElement.getLocalName();
+			case Id_tagName:
+				return this.wrappedElement.getTagName();
+			default: throw new RuntimeException("Could not find instance with id '"+id+"'");
 		}
 	}
 
 	@Override
 	protected void setInstanceIdValue(int id, Object value) {
-		// TODO Auto-generated method stub
-		super.setInstanceIdValue(id, value);
+		switch(id) {
+			case Id_nodeValue: this.wrappedElement.setNodeValue((String)value); break;
+			default: throw new RuntimeException("Could not find instace with id '"+id+"'");
+		}
 	}
-	
-	
 	
 }
