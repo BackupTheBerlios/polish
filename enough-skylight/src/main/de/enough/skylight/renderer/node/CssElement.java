@@ -10,6 +10,7 @@ import de.enough.skylight.renderer.ViewportContext;
 import de.enough.skylight.renderer.css.HtmlCssElement;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.element.ContainingBlock;
+import de.enough.skylight.renderer.element.FloatContainingBlock;
 import de.enough.skylight.renderer.element.InlineContainingBlock;
 import de.enough.skylight.renderer.element.view.ContentView;
 import de.enough.skylight.renderer.node.handler.html.TextHandler;
@@ -201,7 +202,9 @@ public class CssElement implements HtmlCssElement{
 	}
 	
 	ContainingBlock createContainingBlock() {
-		if(isDisplay(HtmlCssElement.Display.BLOCK_LEVEL)) {
+		if(isFloat()) {
+			return new FloatContainingBlock(this.style);
+		} else if(isDisplay(HtmlCssElement.Display.BLOCK_LEVEL)) {
 			return new BlockContainingBlock(this.style);
 		} else {
 			return new InlineContainingBlock(this.style);
