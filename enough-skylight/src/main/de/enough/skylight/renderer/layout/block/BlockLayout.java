@@ -35,13 +35,7 @@ public class BlockLayout {
 		}
 	}
 
-	public void layoutPartitions(PartitionList partitions,
-			InlineContainingBlock block) {
-		this.lineboxes = getLineboxes(partitions, block);
-	}
-
-	InlineLineboxList getLineboxes(PartitionList partitions,
-			InlineContainingBlock block) {
+	public InlineLineboxList layoutPartitions(PartitionList partitions) {
 		InlineLineboxList lineboxes = new InlineLineboxList();
 		InlineLinebox linebox = null;
 
@@ -128,10 +122,6 @@ public class BlockLayout {
 
 		partition.setLineboxRelativeX(linebox.getWidth());
 		linebox.addPartition(partition);
-	}
-
-	public InlineLineboxList getLineBoxes() {
-		return this.lineboxes;
 	}
 
 	public int getLayoutWidth() {

@@ -73,9 +73,7 @@ public class BlockContainingBlockView extends ContainingBlockView {
 			
 			BlockLayout bodyLayout = new BlockLayout((BlockContainingBlock)this.parentContainingBlock);
 			
-			bodyLayout.layoutPartitions(bodyPartitions, body);
-			
-			this.bodyLines = bodyLayout.getLineBoxes();
+			this.bodyLines = bodyLayout.layoutPartitions(bodyPartitions);
 			
 			for (int i = 0; i < body.size(); i++) {
 				Item item = body.get(i);
