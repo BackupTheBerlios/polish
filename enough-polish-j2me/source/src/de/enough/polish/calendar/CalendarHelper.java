@@ -115,4 +115,20 @@ public class CalendarHelper
 		return daysInMonth;
 	}
 
+	/**
+	 * Get a date from year, month and day
+	 * 
+	 * @param year the year
+	 * @param month the month
+	 * @param day the day
+	 * @return the date produced by calendar
+	 */
+	public static Date getDate(int year, int month, int day){
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.YEAR, year);
+		cal.set(Calendar.MONTH, month);
+		cal.set(Calendar.DAY_OF_MONTH, day);
+		
+		return cal.getTime();
+	}
 }

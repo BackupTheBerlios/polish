@@ -151,6 +151,12 @@ public class CalendarEntry implements Serializable {
         
 	}
 
+	public CalendarEntry(String summary, CalendarCategory category, int year, int month, int day){
+		this.summary = summary;
+		this.category = category;
+		this.startDate = CalendarHelper.getDate(year, month, day);
+	}
+	
 	/**
 	 * Overloaded constructor of CalendarEntry to initialize staring date and description of calendar event
 	 * @param startDate
