@@ -4624,6 +4624,7 @@ public class TextField extends StringItem
 	}
 	//#endif
 	
+	//#if polish.TextField.showHelpText
 	/**
 	 * Sets the help style for this TextField
 	 * with the use of style preprocessing e.g.:
@@ -4634,7 +4635,6 @@ public class TextField extends StringItem
 		// nothing here
 	}
 	
-	//#if polish.TextField.showHelpText
 	/**
 	 * Sets the style of the help text
 	 * @param style the style
