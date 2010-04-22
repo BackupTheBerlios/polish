@@ -3332,7 +3332,7 @@ public class ProcessingContext implements ProcessingInterface {
      * @see de.enough.polish.processing.ProcessingInterface#loadFont(java.lang.String) 
      */
     public PFont loadFont(String fontname) {
-        return new PFont(fontname, new color(0x00FFFFFF), new color(0x00FFFFFF));
+        return new PFont(fontname);
     }
 
     /** (non-Javadoc)
@@ -3468,7 +3468,6 @@ public class ProcessingContext implements ProcessingInterface {
         pushMatrix();
 
         _defaultFont.draw(_bufferg, text, x, y, LEFT);
-        y += _defaultFont.getHeight();
         
         popMatrix();
     }
@@ -3486,7 +3485,7 @@ public class ProcessingContext implements ProcessingInterface {
 
         //// save current clip and apply clip to bounding area
         pushMatrix();
-        _bufferg.setClip(x, y-_defaultFont.getHeight(), width, height);
+        _bufferg.setClip(x, y, width, height);
         
         //// adjust starting baseline so that text is _contained_ within the bounds
         int textX = x;
@@ -3504,7 +3503,7 @@ public class ProcessingContext implements ProcessingInterface {
                     textX = x + width - textWidth(line);
                     break;
             }
-            _defaultFont.draw(_bufferg, line, textX, y, LEFT);
+            _defaultFont.draw(_bufferg, line, textX, y+_defaultFont.getBaseline(), LEFT);
             y += _defaultFont.getHeight();
         }
         //// restore clip

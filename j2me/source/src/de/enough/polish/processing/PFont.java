@@ -43,6 +43,7 @@ public class PFont {
     protected BitMapFont bitmapFont = null ;
     protected int color = 0x000000;
     protected int bgColor;
+    protected boolean useNativeFontColor = false ;
 
     public static int FACE_SYSTEM = Font.FACE_SYSTEM ;
     public static int FACE_MONOSPACE = Font.FACE_MONOSPACE ;
@@ -58,6 +59,12 @@ public class PFont {
     public PFont(Font font)
     {
         platformFont = font ;
+    }
+
+    public PFont(String fontUrl)
+    {
+        bitmapFont = BitMapFont.getInstance(fontUrl);
+        useNativeFontColor = true ;
     }
 
     public PFont(String fontUrl, color textColor, color bgColor)
@@ -76,6 +83,18 @@ public class PFont {
         else
         {
             return bitmapFont.getFontHeight();
+        }
+    }
+
+    public int getBaseline()
+    {
+        if ( platformFont != null )
+        {
+            return platformFont.getBaselinePosition() ;
+        }
+        else
+        {
+            return getHeight() ;
         }
     }
 
@@ -173,8 +192,17 @@ public class PFont {
                     x -= width;
                 }
             }
-            
-            BitMapFontViewer bfv = bitmapFont.getViewer(str, color);
+
+            BitMapFontViewer bfv = null;
+            if (useNativeFontColor)
+            {
+                bfv = bitmapFont.getViewer(str);
+            }
+            else
+            {
+                bfv = bitmapFont.getViewer(str, color);
+            }
+
             bfv.paint(x, y - bitmapFont.getFontHeight() , g);
 
         }
