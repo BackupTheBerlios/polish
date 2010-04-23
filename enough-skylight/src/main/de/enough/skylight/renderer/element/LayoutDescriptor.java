@@ -22,6 +22,8 @@ public interface LayoutDescriptor {
 	public void setBlock(BlockContainingBlock block);
 	
 	public PartitionList getPartitions();
+	
+	public void setLineboxes(InlineLineboxList lineboxes);
 
 	public InlineLineboxList getLineboxes();
 	

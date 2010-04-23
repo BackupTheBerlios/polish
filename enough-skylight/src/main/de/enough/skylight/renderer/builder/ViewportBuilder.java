@@ -168,11 +168,6 @@ public class ViewportBuilder {
 				layoutDescriptor.setFloatLayout(new FloatLayout());
 			}
 			
-			parent.addToBody((Item)containingBlock);
-			
-			//#debug sl.debug.build
-			System.out.println("added " + containingBlock + " to body of " + parent);
-			
 			BlockContainingBlock childBlock;
 			if(containingBlock instanceof BlockContainingBlock) {
 				childBlock = (BlockContainingBlock)containingBlock;
@@ -185,6 +180,16 @@ public class ViewportBuilder {
 				
 				buildLayout(containingBlock,childBlock,childElement);
 			}
+			
+			if(element.isDisplay(HtmlCssElement.Display.INLINE)) {
+				parent.addInline(containingBlock);
+			} else if(element.isDisplay(HtmlCssElement.Display.BLOCK_LEVEL)) {
+				parent.addBlock(containingBlock);
+			}
+			
+			//#debug sl.debug.build
+			System.out.println("added " + containingBlock + " to body of " + parent);
+			
 		} else {
 			Item item = element.getContent();
 			
@@ -194,7 +199,11 @@ public class ViewportBuilder {
 				layoutDescriptor.setBlock(parentBlock);
 				layoutDescriptor.setViewport(this.viewport);
 				
-				parent.addToBody(item);
+				if(element.isDisplay(HtmlCssElement.Display.INLINE)) {
+					parent.addInline(item);
+				} else if(element.isDisplay(HtmlCssElement.Display.BLOCK_LEVEL)) {
+					parent.addBlock(item);
+				}
 					
 				//#debug sl.debug.build
 				System.out.println("added " + item + " to body of " + parent);

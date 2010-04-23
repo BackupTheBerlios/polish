@@ -9,6 +9,7 @@ import de.enough.skylight.renderer.Viewport;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.element.ContainingBlock;
 import de.enough.skylight.renderer.element.LayoutDescriptor;
+import de.enough.skylight.renderer.layout.floating.FloatLayout;
 import de.enough.skylight.renderer.linebox.InlineLineboxList;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.partition.PartitionList;
@@ -27,6 +28,8 @@ public abstract class ContainingBlockView extends ContainerView implements Layou
 	transient PartitionList partitions = new PartitionList();
 	
 	transient int inlineRelativeOffset = 0;
+	
+	transient FloatLayout floatLayout;
 	
 	transient Viewport viewport;
 	
@@ -76,6 +79,10 @@ public abstract class ContainingBlockView extends ContainerView implements Layou
 		return this.inlineRelativeOffset;
 	}
 
+	public void setLineboxes(InlineLineboxList lineboxes) {
+		this.lineboxes = lineboxes;
+	}
+
 	public InlineLineboxList getLineboxes() {
 		return this.lineboxes;
 	}
@@ -107,4 +114,27 @@ public abstract class ContainingBlockView extends ContainerView implements Layou
 	public void setViewport(Viewport viewport) {
 		this.viewport = viewport;
 	}	
+	
+	public FloatLayout getFloatLayout() {
+		FloatLayout floatLayout = this.floatLayout;
+		ContainingBlock containingBlock = getContainingBlock();
+		
+		while(floatLayout == null) {
+				LayoutDescriptor descriptor = containingBlock.getLayoutDescriptor();
+				containingBlock = descriptor.getContainingBlock();
+				
+				if(containingBlock != null) {
+					LayoutDescriptor parentDescriptor = containingBlock.getLayoutDescriptor();
+					floatLayout = parentDescriptor.getFloatLayout();
+				} else {
+					return null;
+				}
+		}
+		
+		return floatLayout;
+	}
+
+	public void setFloatLayout(FloatLayout floatLayout) {
+		this.floatLayout = floatLayout;
+	}
 }

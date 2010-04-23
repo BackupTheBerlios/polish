@@ -121,6 +121,10 @@ public class ContentView extends ItemView implements LayoutDescriptor {
 		return this.inlineRelativeOffset;
 	}
 
+	public void setLineboxes(InlineLineboxList lineboxes) {
+		this.lineboxes = lineboxes;
+	}
+
 	public InlineLineboxList getLineboxes() {
 		return this.lineboxes;
 	}

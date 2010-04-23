@@ -69,9 +69,13 @@ public abstract class ContainingBlock extends Container implements Partable {
 		return this.containingBlockView;
 	}
 
-	public abstract void addToBody(Item item);
+	public abstract void addInline(Item item);
 	
-	public abstract InlineContainingBlock getBody();
+	public abstract void addBlock(Item item);
+	
+	public abstract void addLeftFloat(Item item);
+	
+	public abstract void addRightFloat(Item item);
 	
 //	protected Style focus(Style focusStyle, int direction) {
 //		requestInit();

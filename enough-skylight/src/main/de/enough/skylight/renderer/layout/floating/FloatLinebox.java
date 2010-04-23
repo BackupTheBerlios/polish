@@ -97,8 +97,8 @@ public class FloatLinebox {
 		return this.height;
 	}
 	
-	public boolean fits(Item item) {
-		return (this.width + item.itemWidth) < this.availableWidth;
+	public boolean fits(Partition partition) {
+		return (this.width + partition.getWidth()) < this.availableWidth;
 	}
 	
 	public boolean isInLine(int contextRelativeY) {
@@ -115,7 +115,7 @@ public class FloatLinebox {
 	}
 	
 	int getLeftExtend(int contextRelativeY) {
-		int leftExtend = 0;
+		int leftExtend = this.contextRelativeLeft;
 		int lineRelativeY = contextRelativeY - this.contextRelativeTop;
 		for (int index = 0; index < this.partitions.size(); index++) {
 			Partition partition = this.partitions.get(index);
@@ -131,7 +131,7 @@ public class FloatLinebox {
 	}
 	
 	int getRightExtend(int contextRelativeY) {
-		int rightExtend = this.width;
+		int rightExtend = getContextRelativeRight();
 		int lineRelativeY = contextRelativeY - this.contextRelativeTop;
 		for (int index = this.partitions.size(); index > 0; --index) {
 			Partition partition = this.partitions.get(index);

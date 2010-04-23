@@ -39,16 +39,16 @@ public class FloatLineboxList {
 		this.sorted = false;
 	}
 	
-	FloatLinebox getLineboxByBlock(BlockContainingBlock block) {
-		for (int i = size(); i > 0; --i) {
-			FloatLinebox linebox = get(i);
-			if(linebox.getBlock().equals(block)) {
-				return linebox;
-			}
-		}
-		
-		return null;
-	}
+//	FloatLinebox getLineboxByBlock(BlockContainingBlock block) {
+//		for (int i = size(); i > 0; --i) {
+//			FloatLinebox linebox = get(i);
+//			if(linebox.getBlock().equals(block)) {
+//				return linebox;
+//			}
+//		}
+//		
+//		return null;
+//	}
 	
 	FloatLinebox getLineboxInLine(int relativeY) {
 		for (int i = 0; i < size(); i++) {

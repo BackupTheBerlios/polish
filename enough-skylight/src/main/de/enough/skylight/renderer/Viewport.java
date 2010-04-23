@@ -46,9 +46,7 @@ public class Viewport extends BlockContainingBlock {
 	}
 	
 	public void reset() {
-		if(this.body != null) {
-			this.body.clear();
-		}
+		clear();
 	}
 	
 	public CssElement getRootElement() {
@@ -74,6 +72,8 @@ public class Viewport extends BlockContainingBlock {
 	public void setRenderStage(int renderStage) {
 		this.renderStage = renderStage;
 	}
+	
+	
 
 	public void paint(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		if(isReady()) {
@@ -102,5 +102,11 @@ public class Viewport extends BlockContainingBlock {
 
 	public String toString() {
 		return "Viewport";
+	}
+
+	@Override
+	protected void init(int firstLineWidth, int availWidth, int availHeight) {
+		// TODO Auto-generated method stub
+		super.init(firstLineWidth, availWidth, availHeight);
 	}
 }

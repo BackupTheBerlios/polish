@@ -15,6 +15,7 @@ import de.enough.skylight.renderer.element.LayoutDescriptor;
 import de.enough.skylight.renderer.element.TextBlock;
 import de.enough.skylight.renderer.layout.floating.FloatLayout;
 import de.enough.skylight.renderer.linebox.InlineLinebox;
+import de.enough.skylight.renderer.linebox.InlineLineboxList;
 
 public class InlineContainingBlockView extends ContainingBlockView {
 
@@ -25,8 +26,6 @@ public class InlineContainingBlockView extends ContainingBlockView {
 	int[] itemYOffsets;
 	
 	int inlineOffset;
-	
-	transient FloatLayout floatLayout;
 	
 	public InlineContainingBlockView(InlineContainingBlock parent) {
 		super(parent);
@@ -43,15 +42,6 @@ public class InlineContainingBlockView extends ContainingBlockView {
 		style.addAttribute("padding-bottom", DIMENSION_ZERO);
 		super.initPadding(style, this.block.getAvailableContentWidth());
 	}
-
-	protected void initItem(Item item, BlockContainingBlock block) {
-		if(item instanceof BlockContainingBlock) {
-			ItemPreinit.preinit(item,	block.getAvailableContentWidth(),
-										block.getAvailableContentHeight());
-		} else {
-			ItemPreinit.preinit(item,Integer.MAX_VALUE,Integer.MAX_VALUE);
-		}
-	}
 	
 	protected void initContent(Item parentContainerItem, int firstLineWidth,
 			int availWidth, int availHeight) {
@@ -65,7 +55,6 @@ public class InlineContainingBlockView extends ContainingBlockView {
 		
 		if(this.cssElement != null && this.cssElement.isInteractive()) {
 			interactive = true;
-			System.out.println(this.cssElement + " : interactive");
 		}
 		
 		this.inlineOffset = this.inlineRelativeOffset + this.parentContainingBlock.getContentX();
@@ -85,7 +74,7 @@ public class InlineContainingBlockView extends ContainingBlockView {
 			LayoutDescriptor descriptor = ContentView.getLayoutDescriptor(item);
 			descriptor.setInlineRelativeOffset(this.inlineOffset + completeWidth);
 			
-			initItem(item, this.block);
+			ItemPreinit.preinit(item,Integer.MAX_VALUE,Integer.MAX_VALUE);
 			
 			if (item.isInteractive()) {
 				interactive = true;
@@ -119,7 +108,6 @@ public class InlineContainingBlockView extends ContainingBlockView {
 			//#debug sl.debug.event
 			System.out.println(this.containingBlock + " has interactive children, setting to interactive");
 			
-			this.parentContainer.setAppearanceMode(Item.INTERACTIVE);
 			setAppearanceMode(Item.INTERACTIVE);
 		}
 		
@@ -140,11 +128,6 @@ public class InlineContainingBlockView extends ContainingBlockView {
 		
 		Item[] items = this.parentContainer.getItems();
 		
-		int clipX = g.getClipX();
-		int clipY = g.getClipY();
-		int clipWidth = g.getClipWidth();
-		int clipHeight = g.getClipHeight();
-		
 		int itemInlineRelativeLeft;
 		int itemInlineRelativeRight;
 		
@@ -163,7 +146,7 @@ public class InlineContainingBlockView extends ContainingBlockView {
 					leftBorder = itemX;
 					rightBorder = itemX + item.itemWidth;
 					
-					paintItem(item, i, itemX, itemY, leftBorder, rightBorder, clipX, clipY, clipWidth, clipHeight, g);
+					item.paint(itemX, itemY, leftBorder, rightBorder, g);
 				}
 			}
 		}
@@ -179,7 +162,7 @@ public class InlineContainingBlockView extends ContainingBlockView {
 			
 			if(!(lineboxInlineRelativeRight <= itemInlineRelativeLeft ||
 					lineboxInlineRelativeLeft >= itemInlineRelativeRight)) {
-				paintItem(focItem, this.focusedIndex, focItemX, focItemY, focItemX, focItemX + focItem.itemWidth, clipX, clipY, clipWidth, clipHeight, g);
+				focItem.paint(focItemX, focItemY, leftBorder, rightBorder, g);
 			}
 		}
 	}

@@ -2,6 +2,7 @@ package de.enough.skylight.renderer.layout.floating;
 
 import de.enough.polish.ui.Item;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
+import de.enough.skylight.renderer.layout.block.InlineLayout;
 import de.enough.skylight.renderer.linebox.InlineLinebox;
 import de.enough.skylight.renderer.linebox.InlineLineboxList;
 import de.enough.skylight.renderer.partition.Partition;
@@ -17,29 +18,27 @@ public class FloatLayout {
 	
 	FloatLineboxList rightLineboxes;
 	
-	FloatLinebox currentRightLinebox;
+	FloatLinebox rightLinebox;
+	
+	int y = 0;
 	
 	public FloatLayout() {
 		this.leftLineboxes = new FloatLineboxList();
 		this.rightLineboxes = new FloatLineboxList();
 	}
 	
-	public void addLeft(Item item, BlockContainingBlock block) {
-		if(this.leftLineboxes == null) {
-			this.leftLineboxes = new FloatLineboxList();
-		}
+	public void addLeft(Partition partition, InlineLayout blockLayout) {
+//		if(this.leftLinebox == null || !this.leftLinebox.fits(partition)) {
+//			this.rightLineboxes.getLineboxInLine(relativeY);
+//			
+//			this.leftLinebox = new FloatLinebox(ORIENTATION_LEFT, block);
+//			this.leftLineboxes.add(this.leftLinebox);
+//		} else {
+//			this.leftLinebox.add(partition);
+//		}
+	}
+	
+	public void addRight(Partition partition, InlineLayout blockLayout) {
 		
-		//TODO get correct y offset
-		int relativeY = 0; 
-		
-		FloatLinebox linebox = this.leftLineboxes.getLineboxByBlock(block);
-		
-		if(linebox == null) {
-			FloatLinebox leftLineBoxInLine = this.leftLineboxes.getLineboxInLine(relativeY);
-			
-		}
-
-		
-		FloatLinebox rightLineBoxInLine = this.rightLineboxes.getLineboxInLine(relativeY);
 	}
 }

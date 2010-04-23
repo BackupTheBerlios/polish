@@ -5,32 +5,26 @@ import javax.microedition.lcdui.Graphics;
 import de.enough.polish.benchmark.Benchmark;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
+import de.enough.polish.ui.UiAccess;
+import de.enough.polish.util.ItemPreinit;
 import de.enough.skylight.renderer.Viewport;
+import de.enough.skylight.renderer.css.HtmlCssElement;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.element.ContainingBlock;
 import de.enough.skylight.renderer.element.InlineContainingBlock;
 import de.enough.skylight.renderer.element.LayoutDescriptor;
-import de.enough.skylight.renderer.layout.block.BlockLayout;
+import de.enough.skylight.renderer.layout.block.InlineLayout;
 import de.enough.skylight.renderer.layout.floating.FloatLayout;
 import de.enough.skylight.renderer.linebox.InlineLinebox;
 import de.enough.skylight.renderer.linebox.InlineLineboxList;
+import de.enough.skylight.renderer.node.CssElement;
+import de.enough.skylight.renderer.partition.Partable;
 import de.enough.skylight.renderer.partition.Partition;
 import de.enough.skylight.renderer.partition.PartitionList;
 
 public class BlockContainingBlockView extends ContainingBlockView {
 	
-	transient InlineLineboxList bodyLines;
-	
-	transient InlineLineboxList floatLeftLines;
-	
-	transient InlineLineboxList floatRightLines;
-	
-	transient FloatLayout floatLayout;
-	
-	transient InlineLinebox paintLineBox;
-	
-	int availableWidth = -1;
-	int availableHeight = -1;
+	InlineLinebox paintedLinebox;
 	
 	public BlockContainingBlockView(BlockContainingBlock parent) {
 		super(parent);
@@ -42,63 +36,108 @@ public class BlockContainingBlockView extends ContainingBlockView {
 		System.out.println("initContent for block " + this.parentContainingBlock + " : width : " + availWidth + " : height : " + availHeight);
 		
 		//#debug sl.profile.layout
-		Benchmark.start("initContent for block " + this.parentContainingBlock);
+		Benchmark.start("initContent for block " + this);
 		
-		super.initContent(this.parentContainingBlock, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
-		
-		//#debug sl.profile.layout
-		Benchmark.stop("initContent for block " + this.containingBlock,"done");
+		int relativeY = 0;
+		boolean interactive = false;
 		
 		if(this.cssElement != null && this.cssElement.isInteractive()) {
-			this.parentContainer.setAppearanceMode(Item.INTERACTIVE);
+			interactive = true;
+		}
+		
+		Item[] items = this.parentContainingBlock.getItems();
+		for (int index = 0; index < items.length; index++) {
+			Item item = items[index];
+			
+			LayoutDescriptor descriptor = ContentView.getLayoutDescriptor(item);
+			
+			CssElement cssElement = descriptor.getCssElement();
+			
+			if(cssElement != null && cssElement.isFloat()) {
+				// add float
+			}
+			
+			if(item instanceof BlockContainingBlock) {
+				// handle block elements
+				item.relativeX = 0;
+				item.relativeY = relativeY;
+				ItemPreinit.preinit(item,availWidth, availHeight);
+				relativeY += item.itemHeight;
+			} else {
+				// handle inline elements
+				
+				// initialize inline hierachy
+				ItemPreinit.preinit(item,Integer.MAX_VALUE, Integer.MAX_VALUE);
+				
+				// partition inline hierachy
+				PartitionList partitions = new PartitionList();
+				
+				if(item instanceof Partable) {
+					// partition partable
+					Partable partable = (Partable)item;
+					partable.partition(partitions);
+				} else {
+					// partition item
+					Partition.partition(item, partitions);
+				}
+				
+				// sort the partitions
+				partitions.sort();
+				
+				//#mdebug sl.debug.layout
+				System.out.println("partitions for " + item + " : ");
+				for (int i = 0; i < partitions.size(); i++) {
+					Partition partition = partitions.get(i);
+					System.out.println(partition);
+				}
+				//#enddebug
+				
+				// layout the partitions
+				InlineLayout layout = new InlineLayout((BlockContainingBlock)this.parentContainingBlock);
+				
+				layout.layoutPartitions(partitions, null, relativeY);
+				
+				InlineLineboxList lineboxes = layout.getLineboxes();
+				
+				//#mdebug sl.debug.layout
+				System.out.println("lineboxes for " + item + " : ");
+				for (int i = 0; i < lineboxes.size(); i++) {
+					InlineLinebox linebox = lineboxes.get(i);
+					System.out.println(linebox);
+				}
+				//#enddebug
+				
+				descriptor.setLineboxes(lineboxes);	
+				
+				relativeY += layout.getLayoutHeight();
+			}
+			
+			if (item.isInteractive()) {
+				interactive = true;
+			}
+		}
+		
+		//#debug sl.profile.layout
+		Benchmark.stop("initContent for block " + this,"done");
+		
+		if(interactive) {
+			//#debug sl.debug.event
+			System.out.println(this.parentContainingBlock + " has interactive children, setting to interactive");
+			
 			setAppearanceMode(Item.INTERACTIVE);
 		}
 		
-		InlineContainingBlock body = this.parentContainingBlock.getBody();
+		this.contentWidth = availWidth;
+		this.contentHeight = relativeY;
 		
-		if(body != null) {
-			PartitionList bodyPartitions = new PartitionList();
-			
-			body.partition(bodyPartitions);
-			
-			bodyPartitions.sort();
-			
-			//#mdebug sl.debug.layout
-			System.out.println("partitions for body " + body + " : ");
-			for (int i = 0; i < bodyPartitions.size(); i++) {
-				Partition partition = bodyPartitions.get(i);
-				System.out.println(partition);
-			}
-			//#enddebug
-			
-			BlockLayout bodyLayout = new BlockLayout((BlockContainingBlock)this.parentContainingBlock);
-			
-			this.bodyLines = bodyLayout.layoutPartitions(bodyPartitions);
-			
-			for (int i = 0; i < body.size(); i++) {
-				Item item = body.get(i);
-				positionItem(item);
-			}
-			
-			//#mdebug sl.debug.layout
-			System.out.println("lineboxes for body " + body + " : ");
-			for (int i = 0; i < this.bodyLines.size(); i++) {
-				InlineLinebox linebox = this.bodyLines.get(i);
-				System.out.println(linebox);
-			}
-			//#enddebug
-			
-			this.contentWidth = availWidth;
-			this.contentHeight = bodyLayout.getLayoutHeight();
-			
-			Item item = body.getFocusedItem();
-			Container parent = this.parentContainer;
-			if(item != null && parent.isFocused && !(item instanceof InlineContainingBlock)) {
-				scroll( 0, item.relativeX, item.relativeY, item.itemWidth, item.itemHeight, true );
-			}
-			
-			//#debug sl.debug.layout
-			System.out.println(this.containingBlock + " has dimension : " + this.contentWidth + "/" + this.contentHeight);
+		//setScrolling(body);
+	}
+	
+	public void setScrolling(InlineContainingBlock body) {
+		Item item = body.getFocusedItem();
+		Container parent = this.parentContainer;
+		if(item != null && parent.isFocused && !(item instanceof InlineContainingBlock)) {
+			scroll( 0, item.relativeX, item.relativeY, item.itemWidth, item.itemHeight, true );
 		}
 	}
 	
@@ -117,7 +156,7 @@ public class BlockContainingBlockView extends ContainingBlockView {
 		item.relativeY = linebox.getBlockRelativeTop();
 	}
 	
-	public void paintLineBox(InlineLinebox linebox, InlineContainingBlock block, int x, int y, Graphics g) {
+	public void paintLineBox(InlineLinebox linebox, Item item, int x, int y, Graphics g) {
 		x = x + linebox.getBlockRelativeLeft();
 		y = y + linebox.getBlockRelativeTop();
 		
@@ -137,13 +176,13 @@ public class BlockContainingBlockView extends ContainingBlockView {
 
 		int leftBorder = x - left;
 		int rightBorder = (x - left) +  width;
-		block.paint(x - left, y, leftBorder, rightBorder, g);
+		item.paint(x - left, y, leftBorder, rightBorder, g);
 
 		g.setClip(clipX, clipY, clipWidth, clipHeight);
 	}
 	
 	public InlineLinebox getPaintLineBox() {
-		return this.paintLineBox;
+		return this.paintedLinebox;
 	}
 	
 	protected void paintContent(Item parent, int x, int y, int leftBorder,
@@ -161,13 +200,22 @@ public class BlockContainingBlockView extends ContainingBlockView {
 				
 				g.clipRect(x, y, this.contentWidth, this.contentHeight);
 				
-				InlineLinebox linebox;
-				if(this.bodyLines != null) {
-					InlineContainingBlock body = this.parentContainingBlock.getBody();
-					for (int index = 0; index < this.bodyLines.size(); index++) {
-						linebox = this.bodyLines.get(index);
-						this.paintLineBox = linebox;
-						paintLineBox(linebox,body,x,y,g);
+				Item[] items = this.parentContainingBlock.getItems();
+				for (int index = 0; index < items.length; index++) {
+					Item item = items[index];
+					
+					if(item instanceof BlockContainingBlock) {
+						item.paint(x + item.relativeX, y + item.relativeY, leftBorder, rightBorder, g);
+					} else {
+						LayoutDescriptor descriptor = ContentView.getLayoutDescriptor(item);
+						InlineLineboxList lineboxes = descriptor.getLineboxes();
+						
+						InlineLinebox linebox;
+						for (int lineboxIndex = 0; lineboxIndex < lineboxes.size(); lineboxIndex++) {
+							linebox = lineboxes.get(lineboxIndex);
+							this.paintedLinebox = linebox;
+							paintLineBox(linebox,item,x,y,g);
+						}
 					}
 				}
 				
@@ -178,28 +226,5 @@ public class BlockContainingBlockView extends ContainingBlockView {
 				System.out.println(this + " : rendering float");
 			break;
 		}
-	}
-
-	public FloatLayout getFloatLayout() {
-		FloatLayout floatLayout = this.floatLayout;
-		ContainingBlock containingBlock = getContainingBlock();
-		
-		while(floatLayout == null) {
-				LayoutDescriptor descriptor = containingBlock.getLayoutDescriptor();
-				containingBlock = descriptor.getContainingBlock();
-				
-				if(containingBlock != null) {
-					LayoutDescriptor parentDescriptor = containingBlock.getLayoutDescriptor();
-					floatLayout = parentDescriptor.getFloatLayout();
-				} else {
-					return null;
-				}
-		}
-		
-		return floatLayout;
-	}
-
-	public void setFloatLayout(FloatLayout floatLayout) {
-		this.floatLayout = floatLayout;
 	}
 }

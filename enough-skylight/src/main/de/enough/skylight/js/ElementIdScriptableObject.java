@@ -228,8 +228,6 @@ public class ElementIdScriptableObject extends IdScriptableObject{
 		return 0;
 	}
 
-	@SuppressWarnings("null")
-	@Override
 	public Object execIdCall(IdFunctionObject f, Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
 		if (!f.hasTag(ELEMENT_TAG)) {
             return super.execIdCall(f, cx, scope, thisObj, args);

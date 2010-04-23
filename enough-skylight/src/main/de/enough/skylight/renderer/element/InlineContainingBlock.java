@@ -5,11 +5,14 @@ import de.enough.polish.ui.Style;
 import de.enough.polish.util.ToStringHelper;
 import de.enough.skylight.renderer.element.view.ContainingBlockView;
 import de.enough.skylight.renderer.element.view.InlineContainingBlockView;
+import de.enough.skylight.renderer.linebox.InlineLineboxList;
 import de.enough.skylight.renderer.partition.Partable;
 import de.enough.skylight.renderer.partition.Partition;
 import de.enough.skylight.renderer.partition.PartitionList;
 
 public class InlineContainingBlock extends ContainingBlock {
+	
+	InlineLineboxList lineboxes;
 	
 	public InlineContainingBlock() {
 		this( null );
@@ -22,17 +25,24 @@ public class InlineContainingBlock extends ContainingBlock {
 	ContainingBlockView buildView() {
 		return new InlineContainingBlockView(this);
 	}
-
-	public void addToBody(Item item) {
+	
+	public void addInline(Item item) {
 		add(item);
-		this.layoutDescriptor.setContainingBlock(this);
 	}
 
-	public InlineContainingBlock getBody() {
+	public void addBlock(Item item) {
 		BlockContainingBlock block = this.layoutDescriptor.getBlock();
-		return block.getBody();
+		block.addBlock(item);
 	}
 	
+	public void addLeftFloat(Item item) {
+		addBlock(item);
+	}
+	
+	public void addRightFloat(Item item) {
+		addBlock(item);
+	}
+
 	public void partition(PartitionList partitions) {
 		Partition.partitionInline(this, partitions);
 		
@@ -46,6 +56,14 @@ public class InlineContainingBlock extends ContainingBlock {
 				Partition.partition(item,partitions);
 			}
 		}
+	}
+	
+	public void setLineboxes(InlineLineboxList lineboxes) {
+		this.lineboxes = lineboxes;
+	}
+	
+	public InlineLineboxList getLineboxes() {
+		return this.lineboxes;
 	}
 	
 	public boolean isInItemArea(int relX, int relY) {

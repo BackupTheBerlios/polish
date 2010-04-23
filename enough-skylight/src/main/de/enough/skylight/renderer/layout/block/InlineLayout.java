@@ -6,13 +6,14 @@ import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.element.InlineContainingBlock;
 import de.enough.skylight.renderer.element.LayoutDescriptor;
 import de.enough.skylight.renderer.element.view.ContentView;
+import de.enough.skylight.renderer.layout.floating.FloatLayout;
 import de.enough.skylight.renderer.linebox.InlineLinebox;
 import de.enough.skylight.renderer.linebox.InlineLineboxList;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.partition.Partition;
 import de.enough.skylight.renderer.partition.PartitionList;
 
-public class BlockLayout {
+public class InlineLayout {
 
 	InlineLineboxList lineboxes;
 
@@ -26,7 +27,7 @@ public class BlockLayout {
 
 	int height;
 
-	public BlockLayout(BlockContainingBlock block) {
+	public InlineLayout(BlockContainingBlock block) {
 		this.block = block;
 		this.blockAvailableWidth = block.getAvailableContentWidth();
 		LayoutDescriptor layoutDescriptor = this.block.getLayoutDescriptor();
@@ -35,21 +36,22 @@ public class BlockLayout {
 		}
 	}
 
-	public InlineLineboxList layoutPartitions(PartitionList partitions) {
-		InlineLineboxList lineboxes = new InlineLineboxList();
+	public void layoutPartitions(PartitionList partitions, FloatLayout floatLayout, int relativeY) {
+		this.lineboxes = new InlineLineboxList();
+		
 		InlineLinebox linebox = null;
 
-		int top = 0;
+		int top = relativeY;
 
 		if (partitions.size() > 0) {
 			int index = 0;
 			while (index < partitions.size()) {
 				Partition partition = partitions.get(index);
-
+				
 				if (linebox == null) {
 					linebox = new InlineLinebox(this.blockAvailableWidth);
 					linebox.setBlockRelativeTop(top);
-					lineboxes.add(linebox);
+					this.lineboxes.add(linebox);
 				}
 
 				if (linebox.fits(partition)
@@ -57,12 +59,8 @@ public class BlockLayout {
 					addToLinebox(linebox, partition);
 					index++;
 				} else {
-					if (partition.hasAttribute(Partition.ATTRIBUTE_NEWLINE)) {
+					if (partition.hasAttribute(Partition.ATTRIBUTE_NEWLINE) || partition.hasAttribute(Partition.ATTRIBUTE_WHITESPACE)) {
 						index++;
-					} else if (partition
-							.hasAttribute(Partition.ATTRIBUTE_WHITESPACE)) {
-						// ignore whitespace at line end
-						continue;
 					} else {
 						// align linebox
 						alignLinebox(linebox, this.cssElement,
@@ -92,11 +90,9 @@ public class BlockLayout {
 					this.width = lineWidth;
 				}
 				
-				this.height = top;
+				this.height = top - relativeY;
 			}
 		}
-
-		return lineboxes;
 	}
 
 	void alignLinebox(InlineLinebox linebox, CssElement cssElement,
@@ -122,6 +118,10 @@ public class BlockLayout {
 
 		partition.setLineboxRelativeX(linebox.getWidth());
 		linebox.addPartition(partition);
+	}
+	
+	public InlineLineboxList getLineboxes() {
+		return this.lineboxes;
 	}
 
 	public int getLayoutWidth() {
