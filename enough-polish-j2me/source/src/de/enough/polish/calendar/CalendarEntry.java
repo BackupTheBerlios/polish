@@ -152,9 +152,14 @@ public class CalendarEntry implements Serializable {
 	}
 
 	public CalendarEntry(String summary, CalendarCategory category, int year, int month, int day){
+		this(summary, category, year, month, day, null);
+	}
+	
+	public CalendarEntry(String summary, CalendarCategory category, int year, int month, int day, String description){
 		this.summary = summary;
 		this.category = category;
 		this.startDate = CalendarHelper.getDate(year, month, day);
+		this.description = description;
 	}
 	
 	/**
