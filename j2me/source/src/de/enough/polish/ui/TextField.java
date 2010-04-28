@@ -4100,6 +4100,11 @@ public class TextField extends StringItem
 	 */
 	protected boolean handlePointerPressed( int x, int y ) {
 		if (isInItemArea(x, y)) {
+			
+			//#if polish.blackberry && polish.hasPointerEvents
+			 	DeviceControl.showSoftKeyboard();
+			//#endif
+			 
 			//#if polish.android1.5
 				this.androidLastPointerPressedTime = System.currentTimeMillis();
 			//#elif !tmp.forceDirectInput
