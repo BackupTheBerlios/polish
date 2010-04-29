@@ -3,9 +3,9 @@ package de.enough.skylight.dom.impl;
 import org.mozilla.javascript.Scriptable;
 
 import de.enough.polish.util.ArrayList;
+import de.enough.skylight.Services;
 import de.enough.skylight.dom.DOMException;
 import de.enough.skylight.dom.NodeList;
-import de.enough.skylight.js.NodeListScriptableObject;
 
 /**
  * @author rickyn
@@ -14,8 +14,8 @@ import de.enough.skylight.js.NodeListScriptableObject;
 public class NodeListImpl implements NodeList {
 
 	private ArrayList nodeList = new ArrayList();
-	private NodeListScriptableObject scriptable;
-	
+	private Scriptable scriptableObject;
+
 	public int getLength() {
 		return this.nodeList.size();
 	}
@@ -46,15 +46,14 @@ public class NodeListImpl implements NodeList {
 	}
 	
 	public Scriptable getScriptable() {
-		if(this.scriptable == null) {
-			this.scriptable = new NodeListScriptableObject();
-			this.scriptable.init(this);
+		if(this.scriptableObject == null) {
+			this.scriptableObject = Services.getInstance().getJsEngine().newObject("NodeList", new Object[] {this});
 		}
-		return this.scriptable;
+		return this.scriptableObject;
 	}
 	
 	public boolean hasScriptable() {
-		return this.scriptable != null;
+		return this.scriptableObject != null;
 	}
 
 	public DomNodeImpl insertBefore(DomNodeImpl newChild, DomNodeImpl refChild) {

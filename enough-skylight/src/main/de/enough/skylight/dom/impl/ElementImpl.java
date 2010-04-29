@@ -10,8 +10,6 @@ import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.Element;
 import de.enough.skylight.dom.MutationEvent;
 import de.enough.skylight.dom.NodeList;
-import de.enough.skylight.js.ElementIdScriptableObject;
-import de.enough.skylight.js.ElementScriptableObject;
 
 public class ElementImpl extends DomNodeImpl implements Element{
 

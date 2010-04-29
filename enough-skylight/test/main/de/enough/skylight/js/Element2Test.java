@@ -16,7 +16,7 @@ public class Element2Test extends AbstractJsTest {
 	}
 	public void testConstructorPresentOnObject() throws FileNotFoundException, IOException {
 		Object result = this.jsEngine.runScript("var element = document.getElementById('id2');element.constructor.prototype;");
-		Assert.assertEquals(ElementIdScriptableObject.class, result.getClass());
+		Assert.assertEquals(ElementScriptableObject.class, result.getClass());
 	}
 	
 	public void testPrototypeMechanismWorks() throws FileNotFoundException, IOException {

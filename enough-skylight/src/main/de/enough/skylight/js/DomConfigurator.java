@@ -6,7 +6,8 @@ import org.mozilla.javascript.Scriptable;
 public class DomConfigurator implements JsConfigurator {
 
 	public void init(Context context, Scriptable scope) {
-		ElementIdScriptableObject.init(scope, false);
+		ElementScriptableObject.init(scope, false);
+		NodeListScriptableObject.init(scope,false);
 	}
 
 }

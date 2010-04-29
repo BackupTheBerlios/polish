@@ -33,7 +33,8 @@ public class DomNodeTest extends AbstractJsTest {
 	}
 	
 	public void testChildNodes() {
-		this.jsEngine.runScript("var element = document.getElementById('id2'); Assert.equals(1,element.childNodes.length)");
+		Object result = this.jsEngine.runScript("var element = document.getElementById('id2'); element.childNodes.length");
+		assertEquals(new Integer(1), result);
 	}
 	
 	public void testNextSibling() {
