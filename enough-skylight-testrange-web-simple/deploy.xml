@@ -1,21 +1,52 @@
 <project 
 	name="skylight-testrange-web.deploy"
-	default="skylight-testrange-web.deploy">
+	default="deploy">
 	
 	<property file="${user.name}.properties" />
-	
-		 
-	<target name="skylight-testrange-web.deploy">
-		<scp 
-			todir="${skylight-testrange-web.deploy.user}@${skylight-testrange-web.deploy.host}:${skylight-testrange-web.deploy.path}"
-			password="${skylight-testrange-web.deploy.password}"
-			port="12097"
-			trust="yes"
-		>
-			<fileset dir="WebContent/samples/"/>
-		</scp>
+	<property file="${user.name}.secret" />
 
+	<target name="ask.password" unless="${skylight.deploy.password}">
+		<input
+			message="Please enter password (ore create a ${user.name}.secret file with the property 'skylight.deploy.password' set to your password):"
+			addproperty="skylight.deploy.password"/>
 	</target>
+	
+	<target name="deploy" depends="ask.password" description="Use this task to deploy sample files to your public web directory on a server.">
+		<condition property="error">
+			<not>
+				<and>
+					<isset property="skylight.deploy.user"/>
+					<isset property="skylight.deploy.host"/>
+					<isset property="skylight.deploy.port"/>
+				</and>
+			</not>
+		</condition>
+		
+		<fail if="error" message="Set properties 'skyligh.deploy.user', 'skylight.deploy.host' and 'skylight.deploy.port'" />
+		
+		<scp 
+			todir="${skylight.deploy.user}@${skylight.deploy.host}:public_html/skylight"
+			password="${skylight.deploy.password}"
+			port="${skylight.deploy.port}"
+			trust="yes"
+			verbose="true">
+			<fileset dir="WebContent/${skylight.deploy.user}"/>
+		</scp>
+	</target>
+
+<!-- Unused, remove it. -->
+	<target name="skylight-testrange-web.deploy">
+			<scp 
+				todir="${skylight-testrange-web.deploy.user}@${skylight-testrange-web.deploy.host}:${skylight-testrange-web.deploy.path}"
+				password="${skylight-testrange-web.deploy.password}"
+				port="12097"
+				trust="yes"
+			>
+				<fileset dir="WebContent/samples/"/>
+			</scp>
+
+		</target>
+
 </project>
 	
 	

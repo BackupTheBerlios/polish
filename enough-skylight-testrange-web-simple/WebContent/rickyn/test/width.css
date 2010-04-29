@@ -1,0 +1,14 @@
+.blockMinWidthPercent {
+	min-width: 90%;
+	background-color: blue;
+}
+ 
+.blockMaxWidthPercent {
+	max-width: 50%;
+	background-color: green;
+}
+ 
+.blockWidthPixel {
+	width: 50px;
+	background-color: red;
+}

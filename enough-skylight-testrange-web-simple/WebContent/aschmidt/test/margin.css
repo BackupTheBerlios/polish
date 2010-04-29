@@ -1,0 +1,23 @@
+.marginBlockPixel {
+	background-color: red;
+	margin: 20px;
+	color: white;
+}
+
+.marginBlockPercent {
+	background-color: blue;
+	margin: 20%;
+	color: white;
+}
+
+.marginInlinePixel {
+	background-color: purple;
+	margin: 20px;
+	color: white;
+}
+
+.marginInlinePercent {
+	background-color: green;
+	margin: 20%;
+	color: white;
+}

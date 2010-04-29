@@ -1,0 +1,13 @@
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css"	href="http://localhost/visible.css" />
+	</head>
+	<body>		<!-- onClick="this.setAttribute('class','teststyle')" -->
+		<div class="button" onclick="content = document.getElementById('content'); if(content.getAttribute('class') === 'unimportant'){content.setAttribute('class','important')} else{content.setAttribute('class','unimportant')}">
+				press me
+		</div>
+		<div class="unimportant" id="content">
+			this is some content.
+		</div>
+	</body>
+</html>
