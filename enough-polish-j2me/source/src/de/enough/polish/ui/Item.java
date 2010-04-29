@@ -644,7 +644,7 @@ public abstract class Item implements UiElement, Animatable
 	//#ifdef polish.css.min-item-width
 		protected Dimension minimumItemWidth;
 	//#endif
-	//#ifdef polish.css.min-item-width
+	//#ifdef polish.css.min-item-height
 		protected Dimension minimumItemHeight;
 	//#endif
 	//#ifdef polish.css.max-item-width
