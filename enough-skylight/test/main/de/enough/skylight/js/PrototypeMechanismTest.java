@@ -5,10 +5,11 @@ import java.io.IOException;
 
 import junit.framework.Assert;
 
-import org.mozilla.javascript.Script;
 import org.mozilla.javascript.Undefined;
 
-public class Element2Test extends AbstractJsTest {
+import de.enough.skylight.js.scriptableobjects.ElementScriptableObject;
+
+public class PrototypeMechanismTest extends AbstractJsTest {
 
 	public void testPrototypeNotPresentOnObject() throws FileNotFoundException, IOException {
 		Object result = this.jsEngine.runScript("var element = document.getElementById('id2');element.prototype;");

@@ -1,10 +1,11 @@
-package de.enough.skylight.js;
+package de.enough.skylight.js.scriptableobjects;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.IdFunctionObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.UniqueTag;
 
+import de.enough.skylight.dom.impl.AttrImpl;
 import de.enough.skylight.dom.impl.ElementImpl;
 
 public class ElementScriptableObject extends AbstractDomNodeScriptableObject{
@@ -36,8 +37,6 @@ public class ElementScriptableObject extends AbstractDomNodeScriptableObject{
 
 	public ElementScriptableObject(ElementImpl element) {
 		super(element);
-//		addIdFunctionProperty(this, ELEMENT_TAG, Id_getAttribute, "getAttribute", 1);
-//		addIdFunctionProperty(this, ELEMENT_TAG, Id_insertBefore, "insertBefore", 1);
 	}
 	
 	@Override
@@ -113,25 +112,28 @@ public class ElementScriptableObject extends AbstractDomNodeScriptableObject{
 		switch (id) {
         	
         	case Id_getAttribute:{
-        		String attriuteName = convertToString(args[0]);
+        		String attriuteName = convertToString(args,0);
         		return thisWrappedElement.getAttribute(attriuteName);
         	}
         	case Id_setAttribute:{
-        		String arg1 = convertToString(args[0]);
-        		String arg2 = convertToString(args[1]);
+        		String arg1 = convertToString(args,0);
+        		String arg2 = convertToString(args,1);
         		thisWrappedElement.setAttribute(arg1,arg2);
         		return UniqueTag.NULL_VALUE;
         	}
         	case Id_removeAttribute:{
-        		String arg1 = convertToString(args[0]);
+        		String arg1 = convertToString(args,0);
         		thisWrappedElement.removeAttribute(arg1);
         		return UniqueTag.NULL_VALUE;
         	}
         	case Id_getAttributeNode:{
-        		String arg1 = convertToString(args[0]);
-        		return thisWrappedElement.getAttributeNode(arg1);
+        		String arg1 = convertToString(args,0);
+        		AttrImpl result = thisWrappedElement.getAttributeNode(arg1);
+				return result == null?null:result.getScriptable();
         	}
-        	case Id_setAttributeNode: return null;
+        	case Id_setAttributeNode:{
+        		throw Context.reportRuntimeError("The method 'setAttributeNode' is not implemented.");
+        	}
         	case Id_removeAttributeNode: return null;
         	case Id_getElementsByTagName: return null;
         	case Id_getAttributeNS: return null;
@@ -141,7 +143,7 @@ public class ElementScriptableObject extends AbstractDomNodeScriptableObject{
         	case Id_setAttributeNodeNS: return null;
         	case Id_getElementsByTagNameNS: return null;
         	case Id_hasAttribute:{
-        		String arg1 = convertToString(args[0]);
+        		String arg1 = convertToString(args,0);
         		return new Boolean(thisWrappedElement.hasAttribute(arg1));
         	}
         	case Id_hasAttributeNS: return null;

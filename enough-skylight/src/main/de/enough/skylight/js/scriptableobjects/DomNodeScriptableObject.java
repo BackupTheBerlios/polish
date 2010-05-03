@@ -1,4 +1,4 @@
-package de.enough.skylight.js;
+package de.enough.skylight.js.scriptableobjects;
 
 import org.mozilla.javascript.BaseFunction;
 import org.mozilla.javascript.Callable;
@@ -11,6 +11,12 @@ import de.enough.skylight.dom.impl.DocumentImpl;
 import de.enough.skylight.dom.impl.DomNodeImpl;
 import de.enough.skylight.dom.impl.NamedNodeMapImpl;
 import de.enough.skylight.dom.impl.NodeListImpl;
+
+/**
+ * @deprecated Do not use this class. Construct host objects with  @link {@link AbstractScriptableObject} or @link {@link AbstractDomNodeScriptableObject}.
+ * @author rickyn
+ *
+ */
 
 public class DomNodeScriptableObject extends ScriptableObject {
 	

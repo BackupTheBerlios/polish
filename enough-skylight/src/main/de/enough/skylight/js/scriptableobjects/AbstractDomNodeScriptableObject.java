@@ -1,4 +1,4 @@
-package de.enough.skylight.js;
+package de.enough.skylight.js.scriptableobjects;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.IdFunctionObject;
@@ -72,9 +72,22 @@ public abstract class AbstractDomNodeScriptableObject extends IdScriptableObject
 	
 	protected abstract int doFindInstanceIdInfo(String name);
 	protected abstract int doFindPrototypeId(String name);
+	
+	/**
+	 * Map an id to a name.
+	 * @param id
+	 * @return null if the id is not known and the superclass should handle the id. Return the name of the id to mark the id as handled.
+	 */
 	protected abstract String doGetInstanceIdName(int id);
 	protected abstract Object doGetInstanceIdValue(int id);
 	protected abstract boolean doSetInstanceIdValue(int id, Object value);
+	
+	/**
+	 * Call {@link #initPrototypeMethod(Object, int, String, int)} and {@link #initPrototypeValue(int, String, Object, int)} in this method.
+	 * @param id
+	 * @return 'true' if this method handled the id by initalizing something. Return 'false' if the superclass should take its shot.
+	 */
+	protected abstract boolean doInitPrototypeId(int id);
 	
 	/**
 	 * Returns an object which should be the same for every instance of this class. Initialize a simple static object for this task. 
@@ -101,25 +114,32 @@ public abstract class AbstractDomNodeScriptableObject extends IdScriptableObject
 	 */
 	protected abstract Scriptable constructScriptableObject(Object toBeWrappedDomainObject);
 
-	protected String convertToString(Object object) {
-		if(object == null) {
-			throw Context.reportRuntimeError("The parameter to this method must not be null.");
+	protected String convertToString(Object[] array, int index) {
+		if(array == null || array.length == 0) {
+			throw Context.reportRuntimeError("The parameter '"+index+"' of this method must not be null.");
 		}
 		String string;
-		if(object instanceof String) {
-			string = (String)object;
+		if(array[index] instanceof String) {
+			string = (String)array[index];
 		} else {
-			string = object.toString();
+			string = array.toString();
 		}
 		return string;
 	}
-
+	
+	protected Boolean convertToBoolean(Object object) {
+		if(object instanceof Boolean) {
+			return ((Boolean)object);
+		}
+		throw Context.reportRuntimeError("A parameter must not be a boolean.'");
+	}
+	
 	/**
 	 * Extract the wrappedDomNode from the AbstractDomNodeScriptableObject in the parameter. This method is used to handle parameter in execCall
 	 * @param arg
 	 * @return
 	 */
-	protected DomNodeImpl getWrappedElement(Object arg) {
+	protected DomNodeImpl convertToWrappedDomNode(Object arg) {
 		if(arg == null) {
 			throw Context.reportRuntimeError("A parameter must not be null.'");
 		}
@@ -129,7 +149,7 @@ public abstract class AbstractDomNodeScriptableObject extends IdScriptableObject
 		DomNodeImpl domNodeImpl = ((AbstractDomNodeScriptableObject)arg).wrappedDomNode;
 		return domNodeImpl;
 	}
-
+	
 	@Override
 	protected final int findPrototypeId(String name) {
 		int result = doFindPrototypeId(name);
@@ -380,16 +400,16 @@ public abstract class AbstractDomNodeScriptableObject extends IdScriptableObject
     		}
     		return constructScriptableObject(args[0]);
         }
-        Object result = doExecIdCall(f,cx,scope,thisObj,args,id);
-        if(result != null) {
-        	return result;
+        Object execIdCallResult = doExecIdCall(f,cx,scope,thisObj,args,id);
+        if(execIdCallResult != null) {
+        	return execIdCallResult;
         }
         // We know that thisObj is never null as we it is only null when this object is called as a constructor which we checked in the previous if statement.
         AbstractDomNodeScriptableObject o = (AbstractDomNodeScriptableObject)thisObj;
-        DomNodeImpl thisWrappedElement = o.wrappedDomNode;
+        DomNodeImpl thisWrappedDomNode = o.wrappedDomNode;
         switch (id) {
         	case Id_toString:{
-        		return "[Element "+hashCode()+"]";
+        		return "["+getClassName()+" "+hashCode()+"]";
         	}
         	case Id_toLocaleString:{
         		throw new RuntimeException("toLocaleString");
@@ -398,37 +418,42 @@ public abstract class AbstractDomNodeScriptableObject extends IdScriptableObject
         		throw new RuntimeException("toLocaleString");
         	}
         	case Id_insertBefore:{
-        		DomNodeImpl element1 = getWrappedElement(args[0]);
-        		DomNodeImpl element2 = getWrappedElement(args[1]);
-        		return thisWrappedElement.insertBefore(element1,element2);
+        		DomNodeImpl element1 = convertToWrappedDomNode(args[0]);
+        		DomNodeImpl element2 = convertToWrappedDomNode(args[1]);
+        		DomNodeImpl result = thisWrappedDomNode.insertBefore(element1,element2);
+				return result == null?null:result.getScriptable();
         	}
         	case Id_replaceChild:{
-        		DomNodeImpl element1 = getWrappedElement(args[0]);
-        		DomNodeImpl element2 = getWrappedElement(args[1]);
-        		return thisWrappedElement.replaceChild(element1,element2);
+        		DomNodeImpl element1 = convertToWrappedDomNode(args[0]);
+        		DomNodeImpl element2 = convertToWrappedDomNode(args[1]);
+        		DomNodeImpl result = thisWrappedDomNode.replaceChild(element1,element2);
+				return result == null?null:result.getScriptable();
         	}
         	case Id_removeChild:{
-        		DomNodeImpl element1 = getWrappedElement(args[0]);
-        		return thisWrappedElement.removeChild(element1);
+        		DomNodeImpl element1 = convertToWrappedDomNode(args[0]);
+        		DomNodeImpl result = thisWrappedDomNode.removeChild(element1);
+				return result == null?null:result.getScriptable();
         	}
         	case Id_appendChild:{
-        		DomNodeImpl element1 = getWrappedElement(args[0]);
-        		return thisWrappedElement.appendChild(element1);
+        		DomNodeImpl element1 = convertToWrappedDomNode(args[0]);
+        		DomNodeImpl result = thisWrappedDomNode.appendChild(element1);
+				return result == null?null:result.getScriptable();
         	}
         	case Id_hasChildNodes:{
-        		return new Boolean(thisWrappedElement.hasChildNodes());
+        		return new Boolean(thisWrappedDomNode.hasChildNodes());
         	}
-        	case Id_cloneNode: return null;
+        	case Id_cloneNode:
+        		Boolean deep = convertToBoolean(args[0]);
+        		thisWrappedDomNode.cloneNode(deep.booleanValue());
+        		return null;
         	case Id_normalize: return null;
         	case Id_isSupported: return null;
         	case Id_hasAttributes:{
-        		return new Boolean(thisWrappedElement.hasAttributes());
+        		return new Boolean(thisWrappedDomNode.hasAttributes());
         	}
         }
         throw new IllegalStateException("Could not execute function for id '"+id+"'");
 	}
-	
-	
 	
 	@Override
 	protected final void initPrototypeId(int id) {
@@ -482,6 +507,4 @@ public abstract class AbstractDomNodeScriptableObject extends IdScriptableObject
 		
 	}
 
-	protected abstract boolean doInitPrototypeId(int id);
-	
 }

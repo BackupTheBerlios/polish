@@ -19,4 +19,8 @@ public class ElementTest extends AbstractJsTest {
 		Object result = this.jsEngine.runScript("var element1 = document.getElementById('id1'); var element2 = document.getElementById('id2'); element1.constructor.prototype.bla = 'value'; element2.bla");
 		Assert.assertEquals("value",result);
 	}
+	
+	public void testSetAttributeNodeNotWorking() throws FileNotFoundException, IOException {
+		this.jsEngine.runScript("var element1 = document.getElementById('id1'); try{element1.setAttributeNode(null); Assert.fail('No exception was thrown which is a bad thing');} catch(e){}");
+	}
 }

@@ -4,9 +4,10 @@ package de.enough.skylight.js;
 import java.io.IOException;
 
 import de.enough.skylight.Services;
-import de.enough.skylight.TestResources;
 import de.enough.skylight.dom.impl.AbstractDomTest;
 import de.enough.skylight.dom.impl.DocumentImpl;
+import de.enough.skylight.js.test.JsUnitConfigurator;
+import de.enough.skylight.test.TestResources;
 
 public abstract class AbstractJsTest extends AbstractDomTest {
 
@@ -27,7 +28,7 @@ public abstract class AbstractJsTest extends AbstractDomTest {
 		} catch (IOException e) {
 			throw new RuntimeException(e.toString());
 		}
-		this.documentJsEvent = (DocumentImpl)this.domParser.parseDocument(jsEventDocument);
+		this.documentJsEvent = this.domParser.parseDocument(jsEventDocument);
 		assertNotNull(this.document1);
 	}
 

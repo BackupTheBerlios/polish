@@ -3,16 +3,16 @@ package de.enough.skylight.dom.impl;
 import org.mozilla.javascript.Scriptable;
 
 import de.enough.polish.util.HashMap;
+import de.enough.skylight.Services;
 import de.enough.skylight.dom.Attr;
 import de.enough.skylight.dom.DOMException;
 import de.enough.skylight.dom.Document;
 import de.enough.skylight.dom.DomNode;
-import de.enough.skylight.js.DocumentScriptableObject;
 
 public class DocumentImpl extends DomNodeImpl implements Document,ScriptableAdapter {
 
 	private HashMap elementsById = new HashMap();
-	private DocumentScriptableObject scriptableObject;
+	private Scriptable scriptableObject;
 	
 	public void init() {
 		super.init(null, null, DOCUMENT_NODE);
@@ -71,8 +71,7 @@ public class DocumentImpl extends DomNodeImpl implements Document,ScriptableAdap
 	@Override
 	public Scriptable getScriptable() {
 		if(this.scriptableObject == null) {
-			this.scriptableObject = new DocumentScriptableObject();
-			this.scriptableObject.init(this);
+			this.scriptableObject = Services.getInstance().getJsEngine().newObject("Document", new Object[] {this});
 		}
 		return this.scriptableObject;
 	}

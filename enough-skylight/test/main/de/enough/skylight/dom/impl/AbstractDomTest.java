@@ -5,7 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import de.enough.polish.util.StreamUtil;
-import de.enough.skylight.TestResources;
+import de.enough.skylight.test.TestResources;
 import junit.framework.TestCase;
 
 public abstract class AbstractDomTest extends TestCase {
@@ -30,7 +30,7 @@ public abstract class AbstractDomTest extends TestCase {
 		} catch (IOException e) {
 			throw new RuntimeException(e.toString());
 		}
-		this.document1 = (DocumentImpl)this.domParser.parseDocument(htmlDocument);
+		this.document1 = this.domParser.parseDocument(htmlDocument);
 		assertNotNull(this.document1);
 	}
 

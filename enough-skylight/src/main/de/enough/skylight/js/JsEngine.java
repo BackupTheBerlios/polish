@@ -29,6 +29,12 @@ public class JsEngine {
 		this.scope.put("document", this.scope, document2.getScriptable());
 	}
 	
+	/**
+	 * Runs a script. This script has a toplevel scope so no return statements are allowed.
+	 * @param target the DomNode object which will be the 'this' object in the call.
+	 * @param scriptText
+	 * @return
+	 */
 	public Object runScript(DomNodeImpl target, String scriptText) {
 		Script script = this.context.compileString(scriptText, "test1", 1);
 		Scriptable scriptable = target.getScriptable();
@@ -37,6 +43,11 @@ public class JsEngine {
 		return result;
 	}
 	
+	/**
+	 * Runs a script. This script has a toplevel scope so no return statements are allowed.
+	 * @param scriptText
+	 * @return
+	 */
 	public Object runScript(String scriptText) {
 		Script script = this.context.compileString(scriptText, "test1", 1);
 		Object result = script.exec(this.context, this.scope);
@@ -47,6 +58,12 @@ public class JsEngine {
 		throw new RuntimeException("Not implemented");
 	}
 
+	/**
+	 * Use this method to create Javascript objects as if a constructor function was called.
+	 * @param constructorName
+	 * @param args
+	 * @return
+	 */
 	public Scriptable newObject(String constructorName, Object[] args) {
 		return this.context.newObject(this.scope, constructorName, args);
 	}

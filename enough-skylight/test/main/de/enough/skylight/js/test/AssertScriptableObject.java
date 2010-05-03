@@ -1,4 +1,4 @@
-package de.enough.skylight.js;
+package de.enough.skylight.js.test;
 
 import junit.framework.Assert;
 import junit.framework.AssertionFailedError;

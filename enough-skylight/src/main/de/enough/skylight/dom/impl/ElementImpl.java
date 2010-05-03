@@ -9,7 +9,6 @@ import de.enough.skylight.dom.DOMException;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.Element;
 import de.enough.skylight.dom.MutationEvent;
-import de.enough.skylight.dom.NodeList;
 
 public class ElementImpl extends DomNodeImpl implements Element{
 
@@ -51,13 +50,12 @@ public class ElementImpl extends DomNodeImpl implements Element{
 		return attributeNode.getNodeValue();
 	}
 
-	public Attr getAttributeNode(String name) {
-		return (Attr)this.attributes.getNamedItem(name);
+	public AttrImpl getAttributeNode(String name) {
+		return (AttrImpl) this.attributes.getNamedItem(name);
 	}
 
-	public NodeList getElementsByTagName(String name) {
-		// TODO Auto-generated method stub
-		return null;
+	public NodeListImpl getElementsByTagName(String name) {
+		throw new RuntimeException("Method not implemented.");
 	}
 
 	public String getTagName() {
@@ -73,8 +71,7 @@ public class ElementImpl extends DomNodeImpl implements Element{
 	}
 
 	public Attr removeAttributeNode(Attr oldAttr) throws DOMException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new RuntimeException("Method not implemented.");
 	}
 
 	public void setAttribute(String name, String value) throws DOMException {
@@ -93,8 +90,7 @@ public class ElementImpl extends DomNodeImpl implements Element{
 	}
 
 	public Attr setAttributeNode(Attr newAttr) throws DOMException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new RuntimeException("Method not implemented.");
 	}
 
 	@Override

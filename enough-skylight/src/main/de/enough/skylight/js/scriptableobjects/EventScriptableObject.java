@@ -1,4 +1,4 @@
-package de.enough.skylight.js;
+package de.enough.skylight.js.scriptableobjects;
 
 import org.mozilla.javascript.ScriptableObject;
 

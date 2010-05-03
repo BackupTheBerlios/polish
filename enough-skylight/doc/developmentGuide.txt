@@ -1,29 +1,92 @@
 
-Memos
-=====
-
-Architecture
-------------
-
-Html/Css Engine: Responsible for transforming the DOM like inserting row boxes in tables if only table cell items are present.
-  Also setting the CSS attributes in accordiance with the rules of inheritance and default values. It also associates
-  CSS to nodes by interpreting the selectors. 
-
-Renderer: A renderer gets a perfect DOM with associated style properties and will render it into the viewport.
-
-
-
 ===================================================================================================
 Implementation Details
-
-ScriptableObject subclasses
-  - Readonly properties must be defined with two methods in exectly this order: setGetterOrSetter and defineProperty.
-    The rational is that the method setGetterOrSetter will check if the property is readonly so the getter can not be set.
+=======================
 
 
+Creating a DomNode Host Object
+-------------------------------
 
-Styles
-------
+ * Let a class implement 'AbstractDomNodeScriptableObject' or 'AbstractScriptableObject'. The former will contain all DOM
+   methods.
+   
+ * Create a constructor which has a as parameter the object which should be wrapped. Call 'super(element)' with the wrapped element
+   and save it in a field.
+ 
+ * Implement 'getClassName'. Return a name for the Javascript constructor like 'Element' or 'Document'.
+ 
+ * Implement 'getTag'. Create a static final field of type object and create a simple object for it while declarating it. Return this static object in the method.
 
-Every DomNode may have an associated Syle object. This style object is not the J2ME Polish Style object.
+ * Create constants for every field and method of the class. Use constant 'FIRST_ID' from the superclass for the first value and 'FIRST_Id + 1' for subsequent values.
+ 
+ * Create a MAX_PROTOTYPE_ID constant with the value of the last constant.
+ 
+ * Create a static init method like this:
+ 
+   public static void init(Scriptable scope, boolean sealed) {
+		ElementImpl dummyElement = new ElementImpl();
+		ElementScriptableObject obj = new ElementScriptableObject(dummyElement);
+		obj.exportAsJSClass(MAX_PROTOTYPE_ID, scope, sealed);
+	}
+ 
+ * Call method 'init()' in 'DomConfigurator.init()' like this:
+ 
+   DocumentScriptableObject.init(scope,false);
+   
+   
+ 
+ * Implement 'constructScriptableObject' like this:
+ 
+   protected Scriptable constructScriptableObject(Object object) {
+		return new ElementScriptableObject((ElementImpl)object);
+	}
+ 
+ * Implement 'getScriptable' and 'hasScriptable' on the wrappedElement like this:
+ 
+     if(this.scriptableObject == null) {
+	     this.scriptableObject = Services.getInstance().getJsEngine().newObject("Classname", new Object[] {this});
+ 	 }
+	 return this.scriptableObject;
+ 
+   Replace 'Classname' with the name of the class.
+ 
+ * Implement 'findPrototypeId'. All methods and constants of the wrapped object should be mapped to previously defined id.
+
+ * Implement 'initPrototypeId'. It should init methods and constants here. It should look something like this:
+ 
+     String name;
+    	int arity;
+    	switch (id) {
+          // Element methods.
+          case Id_hasAttributeNS:   arity=2; name="hasAttributesNS";   break;
+          default: return false;
+      }
+      initPrototypeMethod(getTag(), name, arity);
+      return true;
+    
+    Use the method 'initPrototypeValue' to initalize constants. Return 'true' if the id could be handled, false otherwise.
+
+ * Implement 'execIdCall'. It should look something like this:
+ 
+     ElementScriptableObject o = (ElementScriptableObject)thisObj;
+        ElementImpl thisWrappedElement = (ElementImpl)o.wrappedDomNode;
+		switch (id) {
+        	case Id_getAttribute:{
+        		String attriuteName = convertToString(args[0]);
+        		return thisWrappedElement.getAttribute(attriuteName);
+        }
+     }
+     return null;
+ 
+ * Implement 'findInstanceIdInfo' like this:
+ 
+   if(name.equals("tagName")) {
+      return instanceIdInfo(DONTENUM|PERMANENT|READONLY, Id_tagName);
+   }
+   return 0;
+
+ * Implement 'getInstanceIdName' by simply reverse map the id of a field to a name.
+
+ * Implement field access with 'getInstanceIdValue' and 'setInstanceIdValue'.
+
 

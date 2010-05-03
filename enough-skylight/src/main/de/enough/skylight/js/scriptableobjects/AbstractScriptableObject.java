@@ -1,11 +1,9 @@
-package de.enough.skylight.js;
+package de.enough.skylight.js.scriptableobjects;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.IdFunctionObject;
 import org.mozilla.javascript.IdScriptableObject;
 import org.mozilla.javascript.Scriptable;
-
-import de.enough.skylight.dom.impl.DomNodeImpl;
 
 public abstract class AbstractScriptableObject extends IdScriptableObject {
 

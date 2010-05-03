@@ -3,6 +3,9 @@ package de.enough.skylight.js;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 
+import de.enough.skylight.js.scriptableobjects.AlertScriptableObject;
+import de.enough.skylight.js.test.AssertScriptableObject;
+
 public class AlertTest /*extends TestCase*/ {
 
 	private Scriptable scope;

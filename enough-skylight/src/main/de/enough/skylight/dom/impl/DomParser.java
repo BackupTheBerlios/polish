@@ -8,7 +8,6 @@ import java.io.UnsupportedEncodingException;
 
 import de.enough.polish.xml.SimplePullParser;
 import de.enough.polish.xml.XmlPullParser;
-import de.enough.skylight.dom.Document;
 import de.enough.skylight.dom.DomNode;
 
 /**

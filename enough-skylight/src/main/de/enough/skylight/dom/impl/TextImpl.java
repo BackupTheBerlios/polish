@@ -5,7 +5,7 @@ import org.mozilla.javascript.Scriptable;
 import de.enough.skylight.dom.DOMException;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.Text;
-import de.enough.skylight.js.TextScriptableObject;
+import de.enough.skylight.js.scriptableobjects.TextScriptableObject;
 
 public class TextImpl extends CharacterDataImpl implements Text{
 

@@ -1,7 +1,9 @@
-package de.enough.skylight.js;
+package de.enough.skylight.js.test;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
+
+import de.enough.skylight.js.JsConfigurator;
 
 public class JsUnitConfigurator implements JsConfigurator {
 

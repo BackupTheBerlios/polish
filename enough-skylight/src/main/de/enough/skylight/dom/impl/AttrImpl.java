@@ -5,7 +5,7 @@ import org.mozilla.javascript.Scriptable;
 import de.enough.skylight.dom.Attr;
 import de.enough.skylight.dom.DOMException;
 import de.enough.skylight.dom.Element;
-import de.enough.skylight.js.AttrScriptableObject;
+import de.enough.skylight.js.scriptableobjects.AttrScriptableObject;
 
 public class AttrImpl extends DomNodeImpl implements Attr {
 

@@ -1,4 +1,4 @@
-package de.enough.skylight;
+package de.enough.skylight.test;
 
 public interface TestResources {
 

@@ -20,7 +20,7 @@ public class DocumentTest extends AbstractJsTest {
 	
 	public void testGetElementByIdeFail() throws FileNotFoundException, IOException {
 		try {
-			this.jsEngine.runScript("var element = document.getElementById('kfjahdutrhwt');Assert.notNull(element)");
+			this.jsEngine.runScript("var element = document.getElementById('dskjfhsdjkhdsjk');");
 			fail();
 		} catch (Throwable e) {/* Ok. */}
 	}
