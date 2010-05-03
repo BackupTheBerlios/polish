@@ -158,6 +158,11 @@ public class ContactImpl implements Contact {
 	}
 
 	public int countValues(int fieldId) {
+		if(fieldId == Contact.TEL && !this.telLoaded) {
+			// Lazy load
+			this.telLoaded = true;
+			this.contactList.getContactDao().lazyLoadTelFields(this);
+		}
 		Field field = getField(fieldId);
 		return field.values.size();
 	}
