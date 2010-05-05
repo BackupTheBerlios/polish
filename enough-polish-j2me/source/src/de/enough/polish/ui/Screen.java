@@ -5286,7 +5286,12 @@ implements UiElement, Animatable
 			//#endif
 			//System.out.println("sizeChanged - doInit=" + doInit);
 			if (doInit) {
+				int beforeYOffset = getScrollYOffset();
 				init( width, height );
+				int afterYOffset = getScrollYOffset();
+				if (beforeYOffset != afterYOffset && getRootContainer() != null && getRootContainer().itemHeight < this.contentHeight) {
+					setScrollYOffset(0, false);
+				}
 			}
 			//#if polish.css.repaint-previous-screen
 				if (this.repaintPreviousScreen && this.previousScreen != null) {
