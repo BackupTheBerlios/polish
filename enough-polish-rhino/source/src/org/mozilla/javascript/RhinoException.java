@@ -76,7 +76,7 @@ public abstract class RhinoException extends RuntimeException
         return buf.toString();
     }
 
-    public String details()
+    private String details()
     {
         return super.getMessage();
     }
@@ -98,7 +98,7 @@ public abstract class RhinoException extends RuntimeException
      *
      * @throws IllegalStateException if the method is called more then once.
      */
-    public final void initSourceName(String sourceName)
+    private final void initSourceName(String sourceName)
     {
         if (sourceName == null) throw new IllegalArgumentException();
         if (this.sourceName != null) throw new IllegalStateException();
@@ -122,7 +122,7 @@ public abstract class RhinoException extends RuntimeException
      *
      * @throws IllegalStateException if the method is called more then once.
      */
-    public final void initLineNumber(int lineNumber)
+    private final void initLineNumber(int lineNumber)
     {
         if (lineNumber <= 0) throw new IllegalArgumentException(String.valueOf(lineNumber));
         if (this.lineNumber > 0) throw new IllegalStateException();
@@ -137,7 +137,7 @@ public abstract class RhinoException extends RuntimeException
      *
      * @throws IllegalStateException if the method is called more then once.
      */
-    public final void initColumnNumber(int columnNumber)
+    private final void initColumnNumber(int columnNumber)
     {
         if (columnNumber <= 0) throw new IllegalArgumentException(String.valueOf(columnNumber));
         if (this.columnNumber > 0) throw new IllegalStateException();
@@ -152,7 +152,7 @@ public abstract class RhinoException extends RuntimeException
      *
      * @throws IllegalStateException if the method is called more then once.
      */
-    public final void initLineSource(String lineSource)
+    private final void initLineSource(String lineSource)
     {
         if (lineSource == null) throw new IllegalArgumentException();
         if (this.lineSource != null) throw new IllegalStateException();
