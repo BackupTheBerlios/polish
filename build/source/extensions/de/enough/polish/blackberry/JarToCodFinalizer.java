@@ -93,8 +93,9 @@ implements OutputFilter
 	{
 		String codName = jarFile.getName();
 		codName = codName.substring( 0, codName.length() - ".jar".length() );
-                String blackberryHome=BlackBerryUtils.getBBHome(device, env).getAbsolutePath();
-                File rapcJarFile= BlackBerryUtils.getRapc(device, env);
+		File bbHomeDir = BlackBerryUtils.getBBHome(device, env);
+		String blackberryHome = bbHomeDir.getAbsolutePath();
+		File rapcJarFile = BlackBerryUtils.getRapc(bbHomeDir, device, env);
 		// check if a MIDlet should be converted or whether a normal
 		// blackberry application is used:
 		String mainClassName = env.getVariable( "blackberry.main");
@@ -113,7 +114,7 @@ implements OutputFilter
 			try {
 				storeJadProperties(jadFile, classesDir, env);
 				FileUtil.delete(jarFile);
-				
+
 				Packager packager = (Packager) env.get( Packager.KEY_ENVIRONMENT );
 				//System.out.println("Using packager " + packager.getClass().getName() );
 				packager.createPackage( classesDir, jarFile, device, locale, env );
@@ -131,7 +132,7 @@ implements OutputFilter
 				String[] newEntries = new String[ entries.length + 1 ];
 				System.arraycopy( entries, 0, newEntries, 0, entries.length );
 				newEntries[ entries.length ] = "RIM-MIDlet-Flags-1: 0";
-				*/
+				 */
 				String iconUrl = env.getVariable("MIDlet-Icon");
 				if (iconUrl == null || iconUrl.length() == 0) {
 					String midletDef = env.getVariable("MIDlet-1");
@@ -156,39 +157,39 @@ implements OutputFilter
 				} else {
 					iconUrl = "";
 				}
-                                Hashtable properties=new Hashtable();
-                                properties.put("MIDlet-Name", env.getVariable("MIDlet-Name"));
-                                properties.put("MIDlet-Version", env.getVariable("MIDlet-Version"));
-                                properties.put("MIDlet-Vendor", env.getVariable("MIDlet-Vendor"));
-                                properties.put("MIDlet-Jar-URL", jarFile.getName());
-                                properties.put("MIDlet-Jar-Size", String.valueOf(jarFile.length()));
-                                properties.put("MIDlet-Name", env.getVariable("MIDlet-Name"));
-                                properties.put("MicroEdition-Profile","MIDP-2.0");
-                                properties.put("MicroEdition-Configuration","CLDC-1.1");
-                                properties.put("MIDlet-1",env.getVariable("MIDlet-Name") + "," + iconUrl + ",");
-                                properties.put("RIM-MIDlet-Flags-1","0");
+				Hashtable properties=new Hashtable();
+				properties.put("MIDlet-Name", env.getVariable("MIDlet-Name"));
+				properties.put("MIDlet-Version", env.getVariable("MIDlet-Version"));
+				properties.put("MIDlet-Vendor", env.getVariable("MIDlet-Vendor"));
+				properties.put("MIDlet-Jar-URL", jarFile.getName());
+				properties.put("MIDlet-Jar-Size", String.valueOf(jarFile.length()));
+				properties.put("MIDlet-Name", env.getVariable("MIDlet-Name"));
+				properties.put("MicroEdition-Profile","MIDP-2.0");
+				properties.put("MicroEdition-Configuration","CLDC-1.1");
+				properties.put("MIDlet-1",env.getVariable("MIDlet-Name") + "," + iconUrl + ",");
+				properties.put("RIM-MIDlet-Flags-1","0");
 
-                                //Hacky way to get additional jad properties into the rapc compiler thingy.
-                                //Kinda taken from http://stackoverflow.com/questions/2340084/blackberry-command-line-build-and-application-auto-start/2385154#2385154
-                                //But more dynamic and allows any jad property to be included with out a build recompile.
-                                //drubin
-                                String includeProps= env.getVariable("blackberry.rapc.jad.include");
-                                if (includeProps!=null && includeProps.length()>0){
-                                        Map jadProperties;
-                                        try {
-                                           jadProperties = FileUtil.readPropertiesFile( jadFile, ':' );
-                                        } catch (Exception e) {
-                                           e.printStackTrace();
-                                           throw new BuildException("Unable to read JAD file " + e.toString() );
-                                        }
-                                        String [] addtionalIncludeProps=StringUtil.split(includeProps, ",");
-                                        for(int i=0;i<addtionalIncludeProps.length;i++){
-                                              String jadValue = (String)jadProperties.get(addtionalIncludeProps[i]);
-                                              
-                                              System.out.println(jadValue+"   "+addtionalIncludeProps[i]);
-                                              properties.put(addtionalIncludeProps[i], jadValue);
-                                        }
-                                }
+				//Hacky way to get additional jad properties into the rapc compiler thingy.
+				//Kinda taken from http://stackoverflow.com/questions/2340084/blackberry-command-line-build-and-application-auto-start/2385154#2385154
+				//But more dynamic and allows any jad property to be included with out a build recompile.
+				//drubin
+				String includeProps= env.getVariable("blackberry.rapc.jad.include");
+				if (includeProps!=null && includeProps.length()>0){
+					Map jadProperties;
+					try {
+						jadProperties = FileUtil.readPropertiesFile( jadFile, ':' );
+					} catch (Exception e) {
+						e.printStackTrace();
+						throw new BuildException("Unable to read JAD file " + e.toString() );
+					}
+					String [] addtionalIncludeProps=StringUtil.split(includeProps, ",");
+					for(int i=0;i<addtionalIncludeProps.length;i++){
+						String jadValue = (String)jadProperties.get(addtionalIncludeProps[i]);
+
+						System.out.println(jadValue+"   "+addtionalIncludeProps[i]);
+						properties.put(addtionalIncludeProps[i], jadValue);
+					}
+				}
 				File rapcFile = new File( jadFile.getParent(), codName + ".rapc");
 				FileUtil.writeTextFile( rapcFile, getJadPropsAsString(properties));
 			} catch ( IOException e ) {
@@ -238,14 +239,14 @@ implements OutputFilter
 			} catch ( InvocationTargetException e ) {
 				// the Compiler class calls System.exit() after the successfull 
 			}
-			*/
-//			Object[] args = commands.toArray();
-//			StringBuffer argsBuffer = new StringBuffer();
-//			for (int i = 0; i < args.length; i++) {
-//				Object object = args[i];
-//				argsBuffer.append( object ).append(" ");
-//			}
-//			System.out.println("Call to rapc: " + argsBuffer.toString() );
+			 */
+			//			Object[] args = commands.toArray();
+			//			StringBuffer argsBuffer = new StringBuffer();
+			//			for (int i = 0; i < args.length; i++) {
+			//				Object object = args[i];
+			//				argsBuffer.append( object ).append(" ");
+			//			}
+			//			System.out.println("Call to rapc: " + argsBuffer.toString() );
 			File distDir = jarFile.getParentFile();
 			int result = ProcessUtil.exec( commands, "rapc: ", true, this, distDir );
 			if (iconFile != null) {
@@ -257,11 +258,11 @@ implements OutputFilter
 			}
 
 			// CSO file is required for signing
-//			File csoFile = new File( distDir, codName + ".cso" );
-//			File debugFile = new File( distDir, codName + ".debug" );
-//			csoFile.delete();
-//			debugFile.delete();
-			
+			//			File csoFile = new File( distDir, codName + ".cso" );
+			//			File debugFile = new File( distDir, codName + ".debug" );
+			//			csoFile.delete();
+			//			debugFile.delete();
+
 			// now create an ALX file for deployment using the BlackBerry Desktop Manager:
 			ArrayList lines = new ArrayList();
 			lines.add( "<loader version=\"1.0\">");
@@ -301,8 +302,8 @@ implements OutputFilter
 			lines.add( "</loader>");
 			File alxFile = new File( jarFile.getParentFile(),  codName  + ".alx" );
 			FileUtil.writeTextFile(alxFile, lines);
-			
-		
+
+
 			// request signature when the "blackberry.certificate.dir" variable is set:
 			if ( env.getVariable("blackberry.certificate.dir") != null) {
 				SignatureRequester requester = new SignatureRequester();
@@ -312,10 +313,10 @@ implements OutputFilter
 						System.out.println("Unable to request BlackBerry signature: Signing request returned " + signResult );
 					}
 				} catch (Exception e) {
-				    throw new BuildException("Unable to to request BlackBerry signature: " + e.toString() );
+					throw new BuildException("Unable to to request BlackBerry signature: " + e.toString() );
 				}
 			}
-			
+
 			// 2008-01-17: deactivating this functionality again, since it does
 			// not work correctly for all customers - now we clean the xx.jad.alt.jad 
 			// from the RIM values:
@@ -331,16 +332,16 @@ implements OutputFilter
 					value = StringUtil.replace(value, '$', '%');
 					jadProperties.put( key, value );
 				}
-                // rickyn:2008-03-07: We need all RIM entries if unpacking the .cod for OTA.
-//				if (key.startsWith("RIM") && key.charAt( key.length() - 2) == '-') {
-//					jadProperties.remove(key);
-//				}
+				// rickyn:2008-03-07: We need all RIM entries if unpacking the .cod for OTA.
+				//				if (key.startsWith("RIM") && key.charAt( key.length() - 2) == '-') {
+				//					jadProperties.remove(key);
+				//				}
 			}
-            File backupJadFile = new File(jadFile.getParent(), jadFile.getName() + ".bak");
-            FileUtil.copy( jadFile, backupJadFile);
+			File backupJadFile = new File(jadFile.getParent(), jadFile.getName() + ".bak");
+			FileUtil.copy( jadFile, backupJadFile);
 			FileUtil.writePropertiesFile( jadFile, ':', jadProperties );
 
-	
+
 			// store new JAR path and name so that later finalizers work on the correct file:
 			env.setVariable( "polish.jarPath", codFile.getAbsolutePath() );
 			env.setVariable("polish.jarName", codFile.getName() );
@@ -348,11 +349,11 @@ implements OutputFilter
 		} catch (BuildException e) {
 			throw e;
 		} catch (Exception e){
-		    e.printStackTrace();
+			e.printStackTrace();
 			System.err.println("rapc-call: " + commands.toString() );
-		    throw new BuildException("rapc was unable to to transform JAR file: " + e.toString() );
+			throw new BuildException("rapc was unable to to transform JAR file: " + e.toString() );
 		}
-    }
+	}
 
 	/**
 	 * Writes the JAD properties in a way so that the MIDlet can load them.
@@ -385,7 +386,7 @@ implements OutputFilter
 		fileOut.flush();
 		fileOut.close();
 	}
-	
+
 	/**
 	 * Enables or disables the verbose mode with more logging.
 	 * @param verbose true if verbose output is desired
@@ -401,11 +402,11 @@ implements OutputFilter
 		if ( this.verbose 
 				|| 
 				(message.indexOf("Parsing") == -1 
-				&& message.indexOf("Warning!") == -1
-				&& message.indexOf("Reading ") == -1
-				&& message.indexOf(".class:") == -1
-				&& message.indexOf("Duplicate method only") == -1
-				&& message.indexOf("not required") == -1
+						&& message.indexOf("Warning!") == -1
+						&& message.indexOf("Reading ") == -1
+						&& message.indexOf(".class:") == -1
+						&& message.indexOf("Duplicate method only") == -1
+						&& message.indexOf("not required") == -1
 				) ) 
 		{
 			//output.println( message + this.verbose + message.indexOf("Warning!") );
@@ -432,17 +433,17 @@ implements OutputFilter
 		}
 	}
 
-        public String [] getJadPropsAsString(Hashtable hash){
-                String [] lines = new String[hash.size()];
-                Enumeration e = hash.keys();
-                for (int i=0;i<lines.length;i++){
-                        String key = e.nextElement().toString();
-                        lines[i]=key+": "+hash.get(key);
-                }
-                return lines;
-        }
-	
-	
+	public String [] getJadPropsAsString(Hashtable hash){
+		String [] lines = new String[hash.size()];
+		Enumeration e = hash.keys();
+		for (int i=0;i<lines.length;i++){
+			String key = e.nextElement().toString();
+			lines[i]=key+": "+hash.get(key);
+		}
+		return lines;
+	}
+
+
 	/**
 	 * Can be used to invoke the JAR-2-COD converter without using Ant.
 	 * Please specify following System properties by using -D[name]=[value] command line parameters:
@@ -474,7 +475,7 @@ implements OutputFilter
 			FileUtil.delete(tmpDir);
 		}
 		tmpDir.mkdirs();
-		
+
 		// create device database:
 		DeviceDatabase db = new DeviceDatabase( polishHome );
 		Device device = db.getDevice( deviceName );
@@ -482,7 +483,7 @@ implements OutputFilter
 			System.err.println("Unknown device: \"" + deviceName + "\" - please check your device system environment variable" );
 			System.exit(2);
 		}
-		
+
 		Map jadProperties = null;
 		try {
 			jadProperties = FileUtil.readPropertiesFile( jad, ':' );
@@ -491,7 +492,7 @@ implements OutputFilter
 			System.err.println("Unable to read jad file " + jad.getAbsolutePath() );
 			System.exit(2);
 		}
-		
+
 		// extract JAR to temp folder:
 		String jarUrl = (String) jadProperties.get("MIDlet-Jar-URL");
 		if (jarUrl == null) {
@@ -499,7 +500,7 @@ implements OutputFilter
 			System.exit(2);
 		}
 		File jar = new File( jad.getParentFile(), jarUrl.trim() );
-		
+
 		try {
 			JarUtil.unjar(jar, tmpDir);
 		} catch (IOException e) {
@@ -507,11 +508,11 @@ implements OutputFilter
 			System.err.println("Unable to extract referenced JAR file " + jar.getAbsolutePath() );
 			System.exit(3);
 		}
-		
+
 		device.setClassesDir(tmp);
 
-		
-		
+
+
 		Environment env = new Environment(polishHome);
 		File midletClassFile = new File( tmp, "MIDlet.class");
 		if (midletClassFile.exists()) 
@@ -543,22 +544,22 @@ implements OutputFilter
 			addOptionalProperty("blackberry.certificate.dir", env );
 			addOptionalProperty("blackberry.certificate.password", env );
 		}
-		
+
 		// now convert the JAD/JAR to a JAD/COD:
 		JarToCodFinalizer finalizer = new JarToCodFinalizer();
 		finalizer.finalize(jad, jar, device, null, env);
 
-		
+
 		System.exit(0);
 	}
-	
+
 	/**
 	 * @param string
 	 * @param env
 	 */
 	private static void addOptionalProperty(String string, Environment env) {
 		// TODO robertvirkus implement addOptionalProperty
-		
+
 	}
 
 	private static String getString(String name) {
@@ -585,7 +586,7 @@ implements OutputFilter
 		return file;
 	}
 
-	
+
 	private static void printUsageInfo() {
 		System.out.println("Usage: please specify all parameters as environment variables using the -D[name]=[value] switch.");
 		System.out.println("Mandatory environment variables:");
@@ -598,6 +599,6 @@ implements OutputFilter
 		System.out.println("blackberry.certificate.dir: directory that contains the CSK certificate file");
 		System.out.println("blackberry.certificate.password: password for signing the application");
 	}
-	
+
 
 }

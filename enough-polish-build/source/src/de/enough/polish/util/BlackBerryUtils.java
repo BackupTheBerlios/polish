@@ -152,10 +152,13 @@ public class BlackBerryUtils {
     }
 
     public static File getRapc(Device dev, Environment env) {
-        File home = getBBHome(dev, env);
-        File rapc = new File(home, "/bin/rapc.jar");
+        return getRapc( getBBHome(dev, env), dev, env );
+    }
+    
+    public static File getRapc(File bbHome, Device dev, Environment env) {
+        File rapc = new File(bbHome, "/bin/rapc.jar");
         if (!rapc.exists()) {
-            throw new BuildException("Could not find any rapc.jar files, looking in [" + home.getAbsolutePath() + "]");
+            throw new BuildException("Could not find any rapc.jar files, looking in [" + bbHome.getAbsolutePath() + "]");
         }
         return rapc;
     }
