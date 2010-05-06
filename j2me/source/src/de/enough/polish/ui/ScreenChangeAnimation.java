@@ -102,6 +102,7 @@ implements Runnable
 	protected boolean useNextCanvasRgb;
 	protected int screenWidth;
 	protected int screenHeight;
+	protected Displayable lastDisplayable;
 	protected Displayable nextDisplayable;
 	protected boolean isForwardAnimation;
 	protected int nextContentX;
@@ -143,6 +144,7 @@ implements Runnable
 		this.screenHeight = height;
 		this.display = dsplay;
 		this.nextCanvas = (Canvas) nxtDisplayable;
+		this.lastDisplayable = lstDisplayable;
 		this.nextDisplayable = nxtDisplayable;
 		Screen lastScreen = (Screen) (lstDisplayable instanceof Screen ? lstDisplayable : null);
 		Screen nextScreen = (Screen) (nxtDisplayable instanceof Screen ? nxtDisplayable : null);
