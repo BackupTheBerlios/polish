@@ -29,9 +29,6 @@ public class BuildDebug {
 	}
 	
 	public static void printBlock(ContainingBlock block) {
-		//#debug sl.debug.build
-		System.out.println("");
-		
 		printBlock(block,0);
 	}
 	

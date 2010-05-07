@@ -181,15 +181,16 @@ public class ViewportBuilder {
 				buildLayout(containingBlock,childBlock,childElement);
 			}
 			
-			if(element.isDisplay(HtmlCssElement.Display.INLINE)) {
-				parent.addInline(containingBlock);
-			} else if(element.isDisplay(HtmlCssElement.Display.BLOCK_LEVEL)) {
-				parent.addBlock(containingBlock);
-			}
-			
-			//#debug sl.debug.build
-			System.out.println("added " + containingBlock + " to body of " + parent);
-			
+			if(containingBlock.size() > 0) {
+				if(element.isDisplay(HtmlCssElement.Display.INLINE)) {
+					parent.addInline(containingBlock);
+				} else if(element.isDisplay(HtmlCssElement.Display.BLOCK_LEVEL)) {
+					parent.addBlock(containingBlock);
+				}
+				
+				//#debug sl.debug.build
+				System.out.println("added " + containingBlock + " to body of " + parent);
+			} 
 		} else {
 			Item item = element.getContent();
 			
