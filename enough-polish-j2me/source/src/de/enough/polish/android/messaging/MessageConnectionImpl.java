@@ -180,12 +180,13 @@ implements MessageConnection
 		//#debug
 		System.out.println("SMS:onReceive.");
 		Bundle bundle = intent.getExtras();
-		Object[] messages = (Object[]) bundle.get("pdus");
-		for (int n = 0; n < messages.length; n++) {
-			SmsMessage msg = SmsMessage.createFromPdu((byte[]) messages[n]);
+		Object[] pdus = (Object[]) bundle.get("pdus");
+		for (int n = 0; n < pdus.length; n++) {
+			SmsMessage androidSmsMessage = SmsMessage.createFromPdu((byte[]) pdus[n]);
 			//TODO: how to create binary messages?
-			TextMessage textMsg = new TextMessageImpl( msg.getOriginatingAddress(), new Date(msg.getTimestampMillis()) );
-			this.receivedMessages.add(textMsg);
+			TextMessage textMessage = new TextMessageImpl( androidSmsMessage.getOriginatingAddress(), new Date(androidSmsMessage.getTimestampMillis()) );
+			textMessage.setPayloadText(androidSmsMessage.getMessageBody());
+			this.receivedMessages.add(textMessage);
 			synchronized (this.receiveLock) {
 				this.receiveLock.notify();
 			}
