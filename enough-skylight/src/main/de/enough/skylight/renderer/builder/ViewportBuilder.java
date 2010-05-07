@@ -161,6 +161,7 @@ public class ViewportBuilder {
 			
 			LayoutDescriptor layoutDescriptor = containingBlock.getLayoutDescriptor();
 			layoutDescriptor.setCssElement(element);
+			layoutDescriptor.setContainingBlock(parent);
 			layoutDescriptor.setBlock(parentBlock);
 			layoutDescriptor.setViewport(this.viewport);
 			
@@ -197,6 +198,7 @@ public class ViewportBuilder {
 			if(item != null) {
 				LayoutDescriptor layoutDescriptor = ContentView.getLayoutDescriptor(item);
 				layoutDescriptor.setCssElement(element);
+				layoutDescriptor.setContainingBlock(parent);
 				layoutDescriptor.setBlock(parentBlock);
 				layoutDescriptor.setViewport(this.viewport);
 				

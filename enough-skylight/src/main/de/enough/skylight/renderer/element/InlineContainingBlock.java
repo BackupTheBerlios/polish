@@ -4,6 +4,7 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.ToStringHelper;
 import de.enough.skylight.renderer.element.view.ContainingBlockView;
+import de.enough.skylight.renderer.element.view.ContentView;
 import de.enough.skylight.renderer.element.view.InlineContainingBlockView;
 import de.enough.skylight.renderer.linebox.InlineLineboxList;
 import de.enough.skylight.renderer.partition.Partable;
@@ -32,6 +33,10 @@ public class InlineContainingBlock extends ContainingBlock {
 
 	public void addBlock(Item item) {
 		BlockContainingBlock block = this.layoutDescriptor.getBlock();
+		
+		LayoutDescriptor descriptor = ContentView.getLayoutDescriptor(item);
+		descriptor.setContainingBlock(block);
+		
 		block.addBlock(item);
 	}
 	

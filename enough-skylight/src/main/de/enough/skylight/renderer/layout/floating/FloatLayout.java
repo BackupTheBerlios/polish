@@ -1,10 +1,6 @@
 package de.enough.skylight.renderer.layout.floating;
 
-import de.enough.polish.ui.Item;
-import de.enough.skylight.renderer.element.BlockContainingBlock;
 import de.enough.skylight.renderer.layout.block.InlineLayout;
-import de.enough.skylight.renderer.linebox.InlineLinebox;
-import de.enough.skylight.renderer.linebox.InlineLineboxList;
 import de.enough.skylight.renderer.partition.Partition;
 
 public class FloatLayout {
@@ -19,8 +15,6 @@ public class FloatLayout {
 	FloatLineboxList rightLineboxes;
 	
 	FloatLinebox rightLinebox;
-	
-	int y = 0;
 	
 	public FloatLayout() {
 		this.leftLineboxes = new FloatLineboxList();

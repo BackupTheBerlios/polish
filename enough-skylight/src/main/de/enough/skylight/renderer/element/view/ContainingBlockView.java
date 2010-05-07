@@ -117,21 +117,18 @@ public abstract class ContainingBlockView extends ContainerView implements Layou
 	
 	public FloatLayout getFloatLayout() {
 		FloatLayout floatLayout = this.floatLayout;
-		ContainingBlock containingBlock = getContainingBlock();
 		
-		while(floatLayout == null) {
+		if(floatLayout == null) {
+			ContainingBlock containingBlock = getContainingBlock();
+			if(containingBlock != null) {
 				LayoutDescriptor descriptor = containingBlock.getLayoutDescriptor();
-				containingBlock = descriptor.getContainingBlock();
-				
-				if(containingBlock != null) {
-					LayoutDescriptor parentDescriptor = containingBlock.getLayoutDescriptor();
-					floatLayout = parentDescriptor.getFloatLayout();
-				} else {
-					return null;
-				}
+				return descriptor.getFloatLayout();
+			} else {
+				return null;
+			}
+		} else {
+			return floatLayout;
 		}
-		
-		return floatLayout;
 	}
 
 	public void setFloatLayout(FloatLayout floatLayout) {

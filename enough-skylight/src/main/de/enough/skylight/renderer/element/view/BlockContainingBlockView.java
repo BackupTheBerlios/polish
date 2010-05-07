@@ -54,7 +54,7 @@ public class BlockContainingBlockView extends ContainingBlockView {
 			CssElement cssElement = descriptor.getCssElement();
 			
 			if(cssElement != null && cssElement.isFloat()) {
-				// add float
+				FloatLayout layout = descriptor.getFloatLayout();
 			}
 			
 			if(item instanceof BlockContainingBlock) {
