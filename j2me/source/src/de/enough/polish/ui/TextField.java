@@ -789,6 +789,7 @@ public class TextField extends StringItem
 	private boolean isPassword;
 	private boolean enableDirectInput;
 	private boolean noNewLine = false;
+	private boolean noComplexInput = false;
 
 	//#if (!tmp.suppressCommands && !tmp.supportsSymbolEntry) || tmp.supportsSymbolEntry
 		private ItemCommandListener additionalItemCommandListener;
@@ -1956,6 +1957,9 @@ public class TextField extends StringItem
 			}
 			if(this.noNewLine){
 				bbStyle |= BasicEditField.NO_NEWLINE;
+			}
+			if(this.noComplexInput){
+				bbStyle |= BasicEditField.NO_COMPLEX_INPUT;	
 			}
 			if (this.editField != null) {
 				// remove the old edit field from the blackberry screen:
@@ -4815,6 +4819,17 @@ public class TextField extends StringItem
 	public void setTitle(String title) {
 		this.title = title;
 	}
+	
+	/**
+	 * Set if the textfield should accept only simple input.
+	 * 
+	 * @param noComplexInput set if the textfield should accept only simple input
+	 */
+	public void setNoComplexInput(boolean noComplexInput){
+		this.noComplexInput= noComplexInput;
+		this.setConstraints(this.constraints);
+	}
+	
 	
 	/**
 	 * Set if the textfield should accept the enter key as an input which results in a new line.
