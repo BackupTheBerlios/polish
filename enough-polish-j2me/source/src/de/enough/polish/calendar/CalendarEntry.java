@@ -18,7 +18,11 @@ import java.util.TimeZone;
  */
 public class CalendarEntry implements Serializable {
 
-		
+	public static final int REOCCURENCE_DAILY = 0;
+	public static final int REOCCURENCE_WEEKLY = 1;
+	public static final int REOCCURENCE_MONTHLY = 2;
+	public static final int REOCCURENCE_YEARLY = 3;
+	
 	/**
 	 * field to contain starting date of calendar event 
 	 */
@@ -114,6 +118,11 @@ public class CalendarEntry implements Serializable {
 	 * field to contain id of calendar event
 	 */
 	private String id;
+	
+	/**
+	 * field to contain a users id of calendar event (e.g. for birthdays and anniversaries)
+	 */
+	private String userId;
 	
 	/**
 	 * field to contain classType of calendar event
@@ -617,6 +626,14 @@ public class CalendarEntry implements Serializable {
 	 */
 	public void setOtherFields(Hashtable otherFields) {
 		this.otherFields = otherFields;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 	
 	
