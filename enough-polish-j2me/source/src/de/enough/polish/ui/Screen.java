@@ -315,7 +315,7 @@ implements UiElement, Animatable
 		private boolean separateMenubar = true;
 	//#endif
 	//#if polish.css.repaint-previous-screen
-		private boolean repaintPreviousScreen;
+		protected boolean repaintPreviousScreen;
 		//#if polish.css.repaint-previous-screen-anchor
 			private int repaintPreviousScreenAnchor;
 		//#endif
