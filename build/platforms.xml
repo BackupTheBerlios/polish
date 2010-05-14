@@ -114,7 +114,6 @@
 		<capability name="build.classes.NativeImage" value="de.enough.polish.blackberry.ui.Image" />
 		<capability name="build.classes.NativeGraphics" value="de.enough.polish.blackberry.ui.Graphics" />
 		<capability name="polish.usePolishTitle" value="true" />
-		<capability name="blackberry.keyUpCalledOnKeyRelease" value="true" />
 	</platform>
 	
 	<platform>
@@ -186,7 +185,6 @@
 		<!-- key for opening/closing the menu -->
 		<capability name="key.Menu" value="268566528" />
 		<capability name="JavaPackage" value="location,wmapi,pdaapi,mmapi,jsr172, btapi" />	
-		<capability name="blackberry.keyUpCalledOnKeyRelease" value="true" />
 	</platform>
 
 	<platform>
@@ -197,7 +195,6 @@
 		<!-- key for opening/closing the menu -->
 		<capability name="key.Menu" value="268566528" />
 		<capability name="JavaPackage" value="location,wmapi,pdaapi,mmapi,jsr172, btapi" />	
-		<capability name="blackberry.keyUpCalledOnKeyRelease" value="true" />
 	</platform>
 
 	<platform>

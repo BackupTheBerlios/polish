@@ -71,13 +71,6 @@ public abstract class BaseScreen
     private boolean dummyFieldHasFocus = true;
 	private boolean isObscured;
 	public Item currentItem;
-	//#if !polish.blackberry.keyUpCalledOnKeyRelease
-		//#if polish.JavaPlatform >= BlackBerry/4.3
-			//#define tmp.checkKeyUp
-			private static boolean versionHigherThan46 = checkSoftwareVersionHigherThan(4.6);
-		//#endif
-		private int keyDownKeyCode;
-	//#endif
 	private int lastWidth;
 	private int lastHeight;
 	
@@ -933,15 +926,6 @@ public abstract class BaseScreen
      * @see net.rim.device.api.ui.Screen#keyDown(int, int)
      */
     protected boolean keyDown(int keyCode, int time) {
-        //#if !polish.blackberry.keyUpCalledOnKeyRelease
-			//#if tmp.checkKeyUp
-    		if (!versionHigherThan46) {
-    		//#endif
-        		this.keyDownKeyCode = keyCode;
-			//#if tmp.checkKeyUp
-    		}
-    		//#endif
-    	//#endif
     	// note: the BlackBerry JavaDocs say that true is returned, when the event is consumed.
     	// This is correct, but it seems that native components do not return true,
     	// even though they (should have) handled the event. Text entry, for example, works
@@ -965,15 +949,6 @@ public abstract class BaseScreen
     	System.out.println("keyDown: keyCode=" + keyCode + ", key=" + Keypad.key( keyCode) + ", char=" + Keypad.map( keyCode ) );
     	keyCode = getMidpKeyCode(keyCode);
         keyPressed( keyCode );
-        //#if !polish.blackberry.keyUpCalledOnKeyRelease
-			//#if tmp.checkKeyUp
-			if (!versionHigherThan46) {
-			//#endif
-				keyReleased( keyCode );
-			//#if tmp.checkKeyUp
-    		}
-    		//#endif
-       	//#endif
         if ( screen != null ) {
         	return (screen.keyPressedProcessed 
         	        //#if !polish.blackberry.keyUpCalledOnKeyRelease
@@ -1034,48 +1009,28 @@ public abstract class BaseScreen
      * @see net.rim.device.api.ui.Screen#keyUp(int, int)
      */ 
 	protected boolean keyUp(int keyCode, int time) {
-        //#if !polish.blackberry.keyUpCalledOnKeyRelease
-	    	// note: this is only a notification triggered for the CAPS key,
-			// not a keyReleased action on platforms before 4.7:
-			//#if tmp.checkKeyUp
-			if (!versionHigherThan46) {
-			//#endif
-				if (keyCode != this.keyDownKeyCode) {
-					return keyDown( keyCode, time );
-				}
-				return false;
-			//#if tmp.checkKeyUp
-			} else {
-			//#endif
-				
-		//#endif
-			//#if polish.blackberry.keyUpCalledOnKeyRelease || tmp.checkKeyUp
-		        Screen screen = getPolishScreen();
-		        if ( screen != null ) {
-		           if (forwardEventToNativeField( screen, keyCode) 
-		        		   && (Keypad.map( keyCode ) != Keypad.KEY_ESCAPE))
-		           {
-		        	   try {
-		        		   return super.keyUp(keyCode, time);                	   
-		        	   } catch (Exception e) {
-		        		   //#debug error
-		        		   System.out.println("super.keyUp(" + keyCode + ", " + time + ") failed" + e );
-		        	   }
-		           }
-		        }
-		        //#debug
-		    	System.out.println("keyUp: keyCode=" + keyCode + ", key=" + Keypad.key( keyCode) + ", char=" + Keypad.map( keyCode ) );
-		    	keyCode = getMidpKeyCode(keyCode);
-		        keyReleased( keyCode );
-		        if ( screen != null ) {
-		        	return (screen.keyReleasedProcessed);
-		        } else { 
-		        	return true; // consume the key event
-		        } 
-			//#endif
-		//#if tmp.checkKeyUp
-		}
-		//#endif
+        Screen screen = getPolishScreen();
+        if ( screen != null ) {
+           if (forwardEventToNativeField( screen, keyCode) 
+        		   && (Keypad.map( keyCode ) != Keypad.KEY_ESCAPE))
+           {
+        	   try {
+        		   return super.keyUp(keyCode, time);                	   
+        	   } catch (Exception e) {
+        		   //#debug error
+        		   System.out.println("super.keyUp(" + keyCode + ", " + time + ") failed" + e );
+        	   }
+           }
+        }
+        //#debug
+    	System.out.println("keyUp: keyCode=" + keyCode + ", key=" + Keypad.key( keyCode) + ", char=" + Keypad.map( keyCode ) );
+    	keyCode = getMidpKeyCode(keyCode);
+        keyReleased( keyCode );
+        if ( screen != null ) {
+        	return (screen.keyReleasedProcessed);
+        } else { 
+        	return true; // consume the key event
+        } 
    }
 
 	/* (non-Javadoc)
