@@ -76,7 +76,7 @@ public abstract class MIDlet extends UiApplication
 	 */
 	protected MIDlet()
 	{
-		//TODO implement MIDlet
+		//nothing to implement
 	}
 
 	/**
@@ -449,6 +449,7 @@ public abstract class MIDlet extends UiApplication
 				//#= MIDlet midlet = (MIDlet) Class.forName("${polish.classes.midlet-1}").newInstance();		
 			//#endif
 			midlet.startApp();	
+			midlet.enableKeyUpEvents(true);
 			midlet.enterEventDispatcher();
 		} catch (InstantiationException e) {
 			e.printStackTrace();

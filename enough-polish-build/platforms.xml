@@ -114,6 +114,7 @@
 		<capability name="build.classes.NativeImage" value="de.enough.polish.blackberry.ui.Image" />
 		<capability name="build.classes.NativeGraphics" value="de.enough.polish.blackberry.ui.Graphics" />
 		<capability name="polish.usePolishTitle" value="true" />
+		<capability name="blackberry.keyUpCalledOnKeyRelease" value="true" />
 	</platform>
 	
 	<platform>
