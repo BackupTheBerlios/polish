@@ -4161,6 +4161,21 @@ public class Container extends Item {
 		}
 	}
 
+	/**
+	 * Recursively returns the focused child item of this Container or of the currently focused child Container. 
+	 * @return the focused child item or this Container when there is no focused child.
+	 */
+	public Item getFocusedChild() {
+		Item item = getFocusedItem();
+		if (item == null) {
+			return this;
+		}
+		if (item instanceof Container) {
+			return ((Container)item).getFocusedChild();
+		}
+		return item;
+	}
+
 
 
 
