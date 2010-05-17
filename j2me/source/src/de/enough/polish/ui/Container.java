@@ -1132,7 +1132,12 @@ public class Container extends Item {
 		//#debug
 		System.out.println("scroll: scrolling for item " + item  + ", item.internalX=" + item.internalX +", relativeInternalY=" + ( item.relativeY + item.contentY + item.internalY ) + ", relativeY=" + item.relativeY + ", contentY=" + item.contentY + ", internalY=" + item.internalY);
 		if (item.internalX != NO_POSITION_SET 
-				&& ( (item.itemHeight > getScrollHeight()) || ((item.internalY + item.internalHeight) > item.contentHeight ) ) ) 
+                && ( item instanceof TextField  || 
+                		( 
+                			( (item.itemHeight > getScrollHeight()) || ( (item.internalY + item.internalHeight) > item.contentHeight ) )
+                		)  
+                	)
+            ) 
 		{
 			// use internal position of item for scrolling:
 			//System.out.println("using internal area for scrolling");
