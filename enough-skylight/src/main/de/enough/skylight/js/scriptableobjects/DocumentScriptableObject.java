@@ -53,7 +53,7 @@ public class DocumentScriptableObject extends AbstractDomNodeScriptableObject {
 	}
 
 	@Override
-	protected Object doExecIdCall(IdFunctionObject f, Context cx, Scriptable scope, Scriptable thisObj, Object[] args, int id) {
+	protected final Object doExecIdCall(IdFunctionObject f, Context cx, Scriptable scope, Scriptable thisObj, Object[] args, int id) {
 		DocumentScriptableObject o = (DocumentScriptableObject)thisObj;
 		DocumentImpl thisWrappedDocument = (DocumentImpl)o.wrappedDomNode;
 		switch (id) {
@@ -111,7 +111,7 @@ public class DocumentScriptableObject extends AbstractDomNodeScriptableObject {
 	}
 
 	@Override
-	protected int doFindInstanceIdInfo(String name) {
+	protected final int doFindInstanceIdInfo(String name) {
 		if(name.equals("doctype")) {
 			return instanceIdInfo(DONTENUM|PERMANENT|READONLY, Id_doctype);
 		}
@@ -125,7 +125,7 @@ public class DocumentScriptableObject extends AbstractDomNodeScriptableObject {
 	}
 
 	@Override
-	protected int doFindPrototypeId(String name) {
+	protected final int doFindPrototypeId(String name) {
 		if("createElement".equals(name)) {
 			return Id_createElement;
 		}
@@ -172,7 +172,7 @@ public class DocumentScriptableObject extends AbstractDomNodeScriptableObject {
 	}
 
 	@Override
-	protected String doGetInstanceIdName(int id) {
+	protected final String doGetInstanceIdName(int id) {
 		switch(id) {
 			case Id_doctype: return "doctype";
 			case Id_implementation: return "implementation";
@@ -182,7 +182,7 @@ public class DocumentScriptableObject extends AbstractDomNodeScriptableObject {
 	}
 
 	@Override
-	protected Object doGetInstanceIdValue(int id) {
+	protected final Object doGetInstanceIdValue(int id) {
 		switch(id) {
 		case Id_doctype: throw Context.reportRuntimeError("This method is not supported at the moment.");
 		case Id_implementation: throw Context.reportRuntimeError("This method is not supported at the moment.");
@@ -194,7 +194,7 @@ public class DocumentScriptableObject extends AbstractDomNodeScriptableObject {
 	}
 
 	@Override
-	protected boolean doSetInstanceIdValue(int id, Object value) {
+	protected final boolean doSetInstanceIdValue(int id, Object value) {
 		switch(id) {
 			case Id_doctype: throw Context.reportRuntimeError("This value is not settable.");
 			case Id_implementation: throw Context.reportRuntimeError("This value is not settable.");
@@ -204,7 +204,7 @@ public class DocumentScriptableObject extends AbstractDomNodeScriptableObject {
 	}
 
 	@Override
-	protected boolean doInitPrototypeId(int id) {
+	protected final boolean doInitPrototypeId(int id) {
 		String name;
     	int arity;
     	switch (id) {

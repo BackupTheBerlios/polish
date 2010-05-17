@@ -193,7 +193,7 @@ public class ElementScriptableObject extends AbstractDomNodeScriptableObject{
 			default: throw new RuntimeException("Could not find instace with id '"+id+"'");
 		}
 	}
-
+	
 	@Override
 	protected Object doGetInstanceIdValue(int id) {
 		ElementImpl wrappedElement = (ElementImpl)this.wrappedDomNode;
