@@ -17,8 +17,8 @@
 						<img class="icon" src="resources/icon_key.png"/>
 						<input type="password" id="passwordField" value=""/><br/>
 					</div>
-					<div class="field"><!-- if(document.getElementById('passwordField').value === ''){alert('A password is needed')} else {alert('Welcome To Skylight, '+document.getElementById('usernameField').value+'!')} -->
-						<input type="submit" value="login" onclick="username = document.getElementById('usernameField').nodeValue; if(username === '' || username === undefined){alert('A username is needed'); return void;} else{password = document.getElementById('passwordField').nodeValue; if(password === '' || password === undefined){alert('A password is needed')} else {alert('Welcome To Skylight, '+username)}}"/>
+					<div class="field">
+						<input type="submit" value="login" onclick="username = document.getElementById('usernameField').nodeValue; password = document.getElementById('passwordField').nodeValue; if(!username){alert('A username is needed')} else { if(!password){alert('A password is needed')} else {alert('Welcome To Skylight, '+username)}}"/>
 					</div>
 				</form>
 			</div>
