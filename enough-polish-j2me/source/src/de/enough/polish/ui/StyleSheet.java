@@ -51,7 +51,7 @@ import de.enough.polish.util.TextUtil;
  *        05-Jan-2004 - rob creation
  * </pre>
  */
-public final class StyleSheet {
+public final class StyleSheet extends StyleSheetContentContainer {
 	
 	protected static Hashtable imagesByName;
 	//#ifdef polish.images.backgroundLoad
@@ -82,8 +82,7 @@ public final class StyleSheet {
 
 	
 	
-	// do not change the following line!
-//$$IncludeStyleSheetDefinitionHere$$//
+
 	/** Access to the currently shown J2ME Polish screen, if any */
 	public static Screen currentScreen;	
 	/** Access to the application's Display */
