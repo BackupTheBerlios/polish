@@ -19,7 +19,7 @@ public class DisplayUtil {
 	public int handleKey(int keyCode, KeyEvent event, Canvas canvas) {
 		int flags = event.getFlags();
 		if (keyCode == KeyEvent.KEYCODE_MENU 
-				//#if polish.android1.5
+				//#if polish.javaplatform >= Android/1.5
 				&& ((flags & KeyEvent.FLAG_FROM_SYSTEM) == KeyEvent.FLAG_FROM_SYSTEM) 
 			//#endif
 		){

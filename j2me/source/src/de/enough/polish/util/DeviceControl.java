@@ -234,7 +234,7 @@ public class DeviceControl
 	 * @see #isSoftKeyboardShown()
 	 */
 	public static void showSoftKeyboard() {
-		//#if polish.android1.5
+		//#if polish.javaplatform >= Android/1.5
 			MidletBridge.instance.showSoftKeyboard();
 		//#elif polish.blackberry && polish.hasPointerEvents && polish.usePolishGui
 			Display disp = Display.getInstance();
@@ -253,7 +253,7 @@ public class DeviceControl
 	 * @see #isSoftKeyboardShown()
 	 */
 	public static void hideSoftKeyboard() {
-		//#if polish.android1.5
+		//#if polish.javaplatform >= Android/1.5
 			MidletBridge.instance.hideSoftKeyboard();
 		//#elif polish.blackberry && polish.hasPointerEvents && polish.usePolishGui
 			Display disp = Display.getInstance();
@@ -274,7 +274,7 @@ public class DeviceControl
 	 */
 	public static boolean isSoftKeyboardShown() {
 		boolean result = false;
-		//#if polish.android1.5
+		//#if polish.javaplatform >= Android/1.5
 			result = MidletBridge.instance.isSoftKeyboadShown();
 		//#elif polish.blackberry && polish.hasPointerEvents && polish.usePolishGui
 			Display disp = Display.getInstance();

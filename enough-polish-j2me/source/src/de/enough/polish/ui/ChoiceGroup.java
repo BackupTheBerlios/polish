@@ -31,7 +31,7 @@ import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
-//#if polish.android1.5
+//#if polish.android
 import de.enough.polish.android.midlet.MidletBridge;
 //#endif
 import de.enough.polish.util.ArrayList;
@@ -1307,7 +1307,7 @@ implements Choice
 		if (!this.isPopupClosed) {
 			return;
 		}
-		//#if polish.android1.5
+		//#if polish.javaplatform >= Android/1.5
 			if (this.isShown) {
 				MidletBridge.instance.hideSoftKeyboard();
 			}

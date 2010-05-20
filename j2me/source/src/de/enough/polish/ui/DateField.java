@@ -162,7 +162,7 @@ implements
 		private PolishDateField blackberryDateField;
 		private int bbYAdjust;	
 	//#endif
-	//#if polish.android1.5
+	//#if polish.javaplatform >= Android/1.5
 		private long androidFocusedTime;
 		private long androidLastInvalidCharacterTime;
 	//#endif
@@ -899,7 +899,7 @@ implements
 		return this.text.length();
 	}
 
-	//#if polish.android1.5
+	//#if polish.javaplatform >= Android/1.5
 	/*
 	 * (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#focus(de.enough.polish.ui.Style, int)
@@ -913,7 +913,7 @@ implements
 	}
 	//#endif
 	
-	//#if polish.android1.5
+	//#if polish.javaplatform >= Android/1.5
 	/*
 	 * (non-Javadoc)
 	 * @see de.enough.polish.ui.StringItem#showNotify()
@@ -997,7 +997,7 @@ implements
 				//#else
 					-8;
 				//#endif
-			//#if polish.android1.5
+			//#if polish.javaplatform >= Android/1.5
 				if (keyCode == clearKey) {
 					long invalidCharInputTime = this.androidLastInvalidCharacterTime;
 					if (invalidCharInputTime != 0) {
@@ -1034,7 +1034,7 @@ implements
 			} else if ( this.date != null && gameAction == Canvas.RIGHT ) {
 				moveForward(true);
 			} else if (gameAction != Canvas.FIRE){
-				//#if polish.android1.5
+				//#if polish.javaplatform >= Android/1.5
 					this.androidLastInvalidCharacterTime = System.currentTimeMillis();
 				//#else
 					// force check before leaving this date=-field:
@@ -1377,7 +1377,7 @@ implements
 	}
 	//#endif
 
-	//#if polish.hasPointerEvents && (tmp.useMidp || tmp.directInputPointer || polish.android1.5)
+	//#if polish.hasPointerEvents && (tmp.useMidp || tmp.directInputPointer || polish.javaplatform >= Android/1.5)
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#handlePointerReleased(int, int)
 	 */
@@ -1388,7 +1388,7 @@ implements
 				showPolishCalendar();
 			//#elif tmp.useMidp 
 				showDateForm();
-			//#elif polish.android1.5
+			//#elif polish.javaplatform >= Android/1.5
 				if (this.isFocused && ((System.currentTimeMillis() - this.androidFocusedTime) > 200)) {
 					MidletBridge.instance.toggleSoftKeyboard();
 					return true;

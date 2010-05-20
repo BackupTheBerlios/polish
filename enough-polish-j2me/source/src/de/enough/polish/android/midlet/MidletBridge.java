@@ -357,7 +357,7 @@ public class MidletBridge extends Activity {
 	protected void onStop() {
 		//#debug
 		System.out.println("onStop().");
-		//#if polish.android1.5
+		//#if polish.javaplatform >= Android/1.5
 			hideSoftKeyboard();
 		//#endif
 		//Debug.stopMethodTracing();
@@ -376,7 +376,7 @@ public class MidletBridge extends Activity {
 	protected void onDestroy() {
 		//#debug
 		System.out.println("onDestroy().");
-		//#if polish.android1.5
+		//#if polish.javaplatform >= Android/1.5
 			hideSoftKeyboard();
 		//#endif
 		//Debug.stopMethodTracing();
@@ -620,7 +620,7 @@ public class MidletBridge extends Activity {
 	public void showSoftKeyboard() {
 		//#debug
 		System.out.println("Handling showSoftKeyboard");
-		//#if polish.android1.5
+		//#if polish.javaplatform >= Android/1.5
 			
 			Configuration configuration;
 			configuration = getBaseContext().getResources().getConfiguration();
@@ -704,7 +704,7 @@ public class MidletBridge extends Activity {
 		//#debug
 		System.out.println("Handling hideSoftKeyboard");
 
-		//#if polish.android1.5
+		//#if polish.javaplatform >= Android/1.5
 		Configuration configuration;
 		configuration = getBaseContext().getResources().getConfiguration();
 		//#debug
@@ -744,7 +744,7 @@ public class MidletBridge extends Activity {
 		//#debug
 		System.out.println("Handling toggleSoftKeyboard");
 
-		//#if polish.android1.5
+		//#if polish.javaplatform >= Android/1.5
 		
 			InputMethodManager inputMethodManager = (InputMethodManager)getSystemService( Context.INPUT_METHOD_SERVICE);
 			Configuration configuration;
@@ -853,7 +853,7 @@ public class MidletBridge extends Activity {
 	}
 
 	public void onSizeChanged( int w, int h) {
-		//#if polish.android1.5
+		//#if polish.javaplatform >= Android/1.5
 			hideSoftKeyboard();
 			this.isSoftkeyboardOpen = false;
 		//#endif
@@ -947,7 +947,7 @@ public class MidletBridge extends Activity {
 		if (this.isMenuOpened) {
 			return false;
 		}
-		//#if polish.android1.5
+		//#if polish.javaplatform >= Android/1.5
 			if (this.isSoftkeyboardOpen) {
 				hideSoftKeyboard();
 				return true;

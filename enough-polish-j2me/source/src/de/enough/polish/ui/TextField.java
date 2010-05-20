@@ -68,7 +68,7 @@ import de.enough.polish.util.Properties;
 	import de.enough.polish.windows.Keyboard;
 //#endif
 
-//#if polish.android1.5
+//#if polish.android
 import de.enough.polish.android.midlet.MidletBridge;
 //#endif
 
@@ -1022,7 +1022,7 @@ public class TextField extends StringItem
 	//#endif
 	private boolean isKeyPressedHandled;
 	
-	//#if polish.android1.5
+	//#if polish.javaplatform >= Android/1.5
 		private long androidFocusedTime;
 		private long androidLastPointerPressedTime;
 		private long androidLastInvalidCharacterTime;
@@ -3535,7 +3535,7 @@ public class TextField extends StringItem
 						return true;								
 					}
 				}
-				//#if polish.android1.5
+				//#if polish.javaplatform >= Android/1.5
 					if (this.isNumeric) {
 						this.androidLastInvalidCharacterTime = System.currentTimeMillis();
 					}
@@ -3642,7 +3642,7 @@ public class TextField extends StringItem
 				}
 			//#endif			
 			if ( this.text != null && this.text.length() > 0) {
-				//#if polish.android1.5
+				//#if polish.javaplatform >= Android/1.5
 					long invalidCharInputTime = this.androidLastInvalidCharacterTime;
 					if (invalidCharInputTime != 0) {
 						this.androidLastInvalidCharacterTime = 0;
@@ -4089,7 +4089,7 @@ public class TextField extends StringItem
 	}
 	//#endif
 	
-	//#if polish.hasPointerEvents && (!tmp.forceDirectInput || polish.android1.5)
+	//#if polish.hasPointerEvents && (!tmp.forceDirectInput || polish.javaplatform >= Android/1.5)
 	/**
 	 * Handles the event when a pointer has been pressed at the specified position.
 	 * The default method translates the pointer-event into an artificial
@@ -4109,7 +4109,7 @@ public class TextField extends StringItem
 			 	DeviceControl.showSoftKeyboard();
 			//#endif
 			 
-			//#if polish.android1.5
+			//#if polish.javaplatform >= Android/1.5
 				this.androidLastPointerPressedTime = System.currentTimeMillis();
 			//#elif !tmp.forceDirectInput
 				return notifyItemPressedStart();
@@ -4141,7 +4141,7 @@ public class TextField extends StringItem
 					showTextBox();
 					return true;
 				}
-			//#elif polish.android1.5
+			//#elif polish.javaplatform >= Android/1.5
 				if (this.isFocused && ((System.currentTimeMillis() - this.androidFocusedTime) > 1000)) {
 					notifyItemPressedEnd();
 					MidletBridge.instance.toggleSoftKeyboard();
@@ -4157,7 +4157,7 @@ public class TextField extends StringItem
 	}
 	//#endif
 	
-	//#if polish.hasPointerEvents && polish.android1.5
+	//#if polish.hasPointerEvents && polish.javaplatform >= Android/1.5
 	protected boolean handlePointerDragged(int relX, int relY) {
 		return super.handlePointerDragged(relX, relY) 
 		|| (((System.currentTimeMillis() - this.androidLastPointerPressedTime) < 500) && isInItemArea(relX, relY));
@@ -4392,7 +4392,7 @@ public class TextField extends StringItem
 		//#endif
 	}
 		
-	//#if (tmp.directInput && (polish.TextField.showInputInfo != false)) || polish.blackberry || polish.TextField.activateUneditableWithFire || polish.android1.5
+	//#if (tmp.directInput && (polish.TextField.showInputInfo != false)) || polish.blackberry || polish.TextField.activateUneditableWithFire || polish.javaplatform >= Android/1.5
 	protected void defocus(Style originalStyle) {
 		super.defocus(originalStyle);
 		//#if polish.blackberry
@@ -4424,7 +4424,7 @@ public class TextField extends StringItem
 				notifyStateChanged();
 			}
 		//#endif
-		//#if polish.android1.5 && polish.TextField.hideSoftKeyboardOnDefocus
+		//#if polish.javaplatform >= Android/1.5 && polish.TextField.hideSoftKeyboardOnDefocus
 				MidletBridge.instance.hideSoftKeyboard();
 		//#endif
 
@@ -4461,7 +4461,7 @@ public class TextField extends StringItem
 			updateDeleteCommand( this.text );
 		//#endif
 		
-		//#if polish.android1.5
+		//#if polish.javaplatform >= Android/1.5
 			if (this.isShown) {
 				DeviceControl.showSoftKeyboard();
 				this.androidFocusedTime = System.currentTimeMillis();
@@ -4561,7 +4561,7 @@ public class TextField extends StringItem
 				updateInfo();
 			}
 		//#endif
-		//#if (polish.blackberry && polish.hasPointerEvents) || polish.android1.5
+		//#if (polish.blackberry && polish.hasPointerEvents) || polish.javaplatform >= Android/1.5
 			if (this.isFocused) {
 				DeviceControl.showSoftKeyboard();
 			}
@@ -4583,7 +4583,7 @@ public class TextField extends StringItem
 			//#if polish.blackberry && polish.hasPointerEvents
 				// 2009-11-11: hiding the softkeyboard is not really necessary as we have a finer grained control about this in BaseScreen.notifyDisplayChange()
 				//# //Display.getInstance().getVirtualKeyboard().setVisibility(net.rim.device.api.ui.VirtualKeyboard.HIDE);
-			//#elif polish.android1.5
+			//#elif polish.javaplatform >= Android/1.5
 				MidletBridge.instance.hideSoftKeyboard();
 			//#endif
 		}	

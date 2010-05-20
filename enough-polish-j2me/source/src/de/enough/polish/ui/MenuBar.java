@@ -1179,7 +1179,7 @@ public class MenuBar extends Item {
 			//#if polish.blackberry
 				Display.getInstance().notifyFocusSet(null);
 			//#endif
-			//#if polish.android1.5
+			//#if polish.javaplatform >= Android/1.5
 				MidletBridge.instance.hideSoftKeyboard();
 			//#endif
 			//#if !polish.MenuBar.focusFirstAfterClose
