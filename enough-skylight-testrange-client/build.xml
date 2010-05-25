@@ -82,10 +82,10 @@
 				</sources>
 				<debug if="test" showLogOnError="true" verbose="true" level="error">
 					<!-- debugging -->
-					<filter pattern="de.enough.skylight.*" level="warn" />
-					<!--
-					<filter pattern="de.enough.skylight.*" level="sl.debug.event" />
 					<filter pattern="de.enough.skylight.*" level="sl.debug.build" />
+					<!--
+					<filter pattern="de.enough.skylight.*" level="sl.debug.layout" />
+					<filter pattern="de.enough.skylight.*" level="sl.debug.event" />
 					<filter pattern="de.enough.skylight.*" level="sl.debug.style" />
 					-->
 					<!-- profiling -->

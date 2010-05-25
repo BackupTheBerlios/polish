@@ -1,27 +1,12 @@
 <html>
-	<head>
+<head>
 		<link rel="stylesheet" type="text/css"	href="form.css" />
-	</head>
-	<body>
-		<div class="frame">
-			<h1 class="frameTitle">
-			Welcome
-			</h1>
-			<div class="content">
-				<form>
-					<div class="field">
-						<img class="icon" src="resources/icon_user.png"/>
-						<input type="text" id="usernameField" value=""/><br/>
-					</div>
-					<div class="field">
-						<img class="icon" src="resources/icon_key.png"/>
-						<input type="password" id="passwordField" value=""/><br/>
-					</div>
-					<div class="field"><!-- if(document.getElementById('passwordField').value === ''){alert('A password is needed')} else {alert('Welcome To Skylight, '+document.getElementById('usernameField').value+'!')} -->
-						<input type="submit" value="login" onclick="username = document.getElementById('usernameField').nodeValue; password = document.getElementById('passwordField').nodeValue; if(!username){alert('A username is needed')} else { if(!password){alert('A password is needed')} else {alert('Welcome To Skylight, '+username)}}"/>
-					</div>
-				</form>
-			</div>
-		</div>
-	</body>
+</head>
+<body>
+<div class="mainDiv">
+<div class="blockTest2"><div class="rightFloat">R1</div>This is <div class="leftFloat"><div class="boxDiv">L1</div><div class="boxDiv"> TRALALA </div><img src="/resources/icon_user.png"/><div class="rightFloat">INNER_R</div></div> a long sample text just to check how <div class="leftFloat"><div class="boxDiv">L2</div></div> inline content is handled right now</div>
+<div class="blockTest1">TEXT this is a very very long text because I somehow <img src="/resources/icon_key.png"/> need to check what happens if text overflows to the next line since I haven't tried that yet.</div>
+<div class="blockTest1">TEXT</div>
+</div>
+</body>
 </html>

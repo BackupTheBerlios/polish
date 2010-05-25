@@ -1,3 +1,43 @@
+.blockTest1
+{
+background: red;
+display: block;
+}
+
+.blockTest2
+{
+width: 90%;
+background: blue;
+display: block;
+}
+
+.mainDiv
+{
+	width: 200px;
+}
+
+.boxDiv
+{
+ width: 30px;
+ height: 30px;
+ display: block;
+}
+
+.leftFloat
+{
+float: left;
+width: 30px;
+display: inline;
+}
+
+.rightFloat
+{
+float: right;
+width: 15px;
+height: 30 px;
+display: inline;
+}
+
 .frame {
 	display: block;
 	margin: 15%;
@@ -37,3 +77,9 @@
 }
 
 .content:hover {}
+
+.test
+{
+float: right;
+display: block;
+}
