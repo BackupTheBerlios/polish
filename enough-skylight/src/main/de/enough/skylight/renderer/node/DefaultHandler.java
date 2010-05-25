@@ -1,5 +1,6 @@
 package de.enough.skylight.renderer.node;
 
+import de.enough.ovidiu.NodeInterface;
 import de.enough.polish.ui.Item;
 
 public class DefaultHandler extends NodeHandler{
@@ -23,5 +24,9 @@ public class DefaultHandler extends NodeHandler{
 	}
 
 	public void setContent(CssElement element, Item item) {
+	}
+
+	public int getContentType() {
+		return CssElement.CONTENT_CONTAINING_ELEMENT;
 	}
 }

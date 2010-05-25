@@ -15,4 +15,8 @@ public class MinHeightHandler extends CssAttributeHandler {
 	protected void addAttribute(Style style, Object value) {
 		style.addAttribute("min-height", value);
 	}
+
+	protected Object getAttribute(Style style) {
+		return style.getObjectProperty("min-height");
+	}
 }

@@ -2,6 +2,7 @@ package de.enough.skylight.renderer;
 
 import javax.microedition.lcdui.Graphics;
 
+import de.enough.ovidiu.LayoutModeler;
 import de.enough.polish.util.ArrayList;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
@@ -88,6 +89,8 @@ public class Viewport extends BlockContainingBlock {
 			
 			setRenderStage(RenderStage.ABSOLUTE);
 			super.paint(x, y, leftBorder, rightBorder, g);
+			
+			LayoutModeler.paintRootBox(g);
 		}
 	}
 	

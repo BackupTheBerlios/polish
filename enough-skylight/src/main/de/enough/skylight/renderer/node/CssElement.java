@@ -1,5 +1,6 @@
 package de.enough.skylight.renderer.node;
 
+import de.enough.ovidiu.NodeInterface;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.ArrayList;
@@ -13,9 +14,17 @@ import de.enough.skylight.renderer.element.ContainingBlock;
 import de.enough.skylight.renderer.element.FloatContainingBlock;
 import de.enough.skylight.renderer.element.InlineContainingBlock;
 import de.enough.skylight.renderer.element.view.ContentView;
+import de.enough.skylight.renderer.node.handler.html.ImgHandler;
 import de.enough.skylight.renderer.node.handler.html.TextHandler;
 
-public class CssElement implements HtmlCssElement{
+public class CssElement implements HtmlCssElement, NodeInterface{
+	
+	public final static int CONTENT_CONTAINING_ELEMENT = 0x00;
+	public final static int CONTENT_TEXT = 0x01;
+	public final static int CONTENT_IMAGE = 0x02;
+	public final static int CONTENT_CONTAINING_TEXT = 0x03;
+	
+	
 	String display = HtmlCssElement.Display.INLINE;
 	
 	String position = HtmlCssElement.Position.STATIC;
@@ -34,7 +43,7 @@ public class CssElement implements HtmlCssElement{
 	
 	ContainingBlock block;
 	
-	Item content;
+	Item item;
 	
 	Style style;
 	
@@ -45,6 +54,11 @@ public class CssElement implements HtmlCssElement{
 	ArrayList children;
 	
 	boolean interactive;
+	
+	public String getValue()
+	{
+		return getNode().getNodeValue();
+	}	
 	
 	public static CssElement getElementWithNode(CssElement root, DomNode node) {
 		if(root.hasElements()) {
@@ -81,7 +95,7 @@ public class CssElement implements HtmlCssElement{
 		
 		buildStyle();
 		
-		buildContent();
+		buildItem();
 	}
 	
 	protected void buildStyle() {
@@ -102,8 +116,8 @@ public class CssElement implements HtmlCssElement{
 		}
 	}
 	
-	protected void buildContent() {
-		this.content = createContent();
+	protected void buildItem() {
+		this.item = createItem();
 				
 		if(this.node.hasChildNodes()) {
 			this.block = createContainingBlock();
@@ -123,10 +137,10 @@ public class CssElement implements HtmlCssElement{
 		
 		setStyle(this.style);
 
-		if(this.content != null) {
-			this.handler.setContent(this, this.content);
-			this.content.requestInit();
-			this.content.getScreen().repaint();
+		if(this.item != null) {
+			this.handler.setContent(this, this.item);
+			this.item.requestInit();
+			this.item.getScreen().repaint();
 		}
 		
 		if(this.block != null) {
@@ -154,6 +168,11 @@ public class CssElement implements HtmlCssElement{
 		this.children.add(child);
 	}
 	
+	public void remove(CssElement child)
+	{
+		this.children.remove(child);
+	}
+	
 	public CssElement get(int index) {
 		return (CssElement)this.children.get(index);
 	}
@@ -178,7 +197,7 @@ public class CssElement implements HtmlCssElement{
 		return this.textStyle;
 	}
 	
-	Item createContent() {
+	Item createItem() {
 		Item item = this.handler.createContent(this);
 		
 		if(item != null) {
@@ -193,8 +212,8 @@ public class CssElement implements HtmlCssElement{
 		return item;
 	}
 	
-	public Item getContent() {
-		return this.content;
+	public Item getItem() {
+		return this.item;
 	}
 	
 	public NodeHandler getHandler() {
@@ -277,6 +296,10 @@ public class CssElement implements HtmlCssElement{
 	public CssElement getParent() {
 		return this.parent;
 	}
+	
+	public ArrayList getChildren() {
+		return this.children;
+	}
 
 	public void setViewportContext(ViewportContext viewportContext) {
 		this.viewportContext = viewportContext;
@@ -289,6 +312,11 @@ public class CssElement implements HtmlCssElement{
 	public boolean isInteractive() {
 		return this.interactive;
 	}
+	
+	public void setValue(String value)
+	{
+		getNode().setNodeValue(value);
+	}
 
 	public void setInteractive(boolean interactive) {
 		this.interactive = interactive;
@@ -300,6 +328,35 @@ public class CssElement implements HtmlCssElement{
 		} else {
 			return node.equals(this.node);
 		}
+	}
+
+	public Object getContent() {
+		// TODO Auto-generated method stub
+		return getValue();
+	}
+	
+	public void setContent(String value)
+	{
+		getNode().setNodeValue(value);
+	}
+	
+	public int getContentType() {
+		// TODO Auto-generated method stub
+		
+		if ( this.handler instanceof ImgHandler)
+		{
+			return CONTENT_IMAGE;
+		}
+		else if ( this.handler instanceof TextHandler )
+		{
+			if ( this.getChildren().size() == 0 )
+			{
+				return CONTENT_CONTAINING_TEXT ;
+			}
+		}
+		
+		return CONTENT_CONTAINING_ELEMENT;
+		
 	}
 	
 	/* (non-Javadoc)
@@ -318,4 +375,5 @@ public class CssElement implements HtmlCssElement{
 		add("vertical-align", this.verticalAlign).
 		toString();
 	}
+	
 }

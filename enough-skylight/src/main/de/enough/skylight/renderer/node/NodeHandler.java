@@ -8,6 +8,7 @@ import de.enough.skylight.dom.impl.DomNodeImpl;
 import de.enough.skylight.renderer.ViewportContext;
 
 public abstract class NodeHandler {
+		
 	public abstract String getTag();
 	
 	public CssElement createElement(DomNodeImpl node, CssElement parent, ViewportContext viewportContext) {
@@ -40,6 +41,8 @@ public abstract class NodeHandler {
 	
 	public abstract void handleNode(CssElement element) throws ClassCastException, IllegalArgumentException;
 	
+	public abstract int getContentType();
+	
 	public abstract Item createContent(CssElement element);
 	
 	public abstract void setContent(CssElement element, Item item);
@@ -52,6 +55,7 @@ public abstract class NodeHandler {
 		//#style element
 		return new Style();
 	}
+	
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()

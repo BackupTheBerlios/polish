@@ -42,6 +42,8 @@ public class CssStyle {
 		Style resultStyle = new Style(defaultTextStyle);
 		
 		// get the attributes to extend the style 
+		/*String x = extendStyle.getProperty("float");
+		String y = extendStyle.getProperty("display");*/
 		Color extendFontColor = extendStyle.getColorProperty("font-color");
 		Integer extendFontStyle = extendStyle.getIntProperty("font-style");
 		Integer extendFontSize = extendStyle.getIntProperty("font-size"); 

@@ -1,8 +1,15 @@
 package de.enough.skylight.renderer.builder;
 
+import javax.microedition.lcdui.Font;
+
+import de.enough.ovidiu.LayoutModeler;
+import de.enough.ovidiu.NodeInterface;
 import de.enough.polish.benchmark.Benchmark;
+import de.enough.polish.ui.DebugHelper;
 import de.enough.polish.ui.Item;
+import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.ItemPreinit;
+import de.enough.polish.util.TextUtil;
 import de.enough.skylight.dom.Document;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.NodeList;
@@ -22,6 +29,7 @@ import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.node.CssStyle;
 import de.enough.skylight.renderer.node.NodeHandler;
 import de.enough.skylight.renderer.node.NodeHandlerDirectory;
+import de.enough.skylight.renderer.node.TextCssElement;
 import de.enough.skylight.renderer.node.handler.html.TextHandler;
 
 public class ViewportBuilder {
@@ -48,6 +56,34 @@ public class ViewportBuilder {
 		return this.document;
 	}
 	
+
+	public static CssElement findHTMLNode (CssElement rootNode)
+	{
+		String tag = rootNode.getHandler().getTag();
+		if ("body".equals(tag))
+		{
+			return rootNode;
+		}
+		else
+		{
+			ArrayList kids = rootNode.getChildren();
+			CssElement temp;
+			int size = kids.size();
+			int i = 0;
+			while ( i < size)
+			{
+				temp = findHTMLNode((CssElement)kids.get(i)) ;
+				if ( temp != null )
+				{
+					return temp;
+				}
+				i++;
+			}
+		}
+		return null;
+	}
+	
+	
 	public void build() throws IllegalArgumentException {
 		if(this.viewport == null) {
 			throw new IllegalStateException("viewport is null");
@@ -67,10 +103,17 @@ public class ViewportBuilder {
 			
 			this.viewport.reset();
 			
-			CssElement rootElement = buildDescription(this.document, null);
+			ItemPreinit.preinit(this.viewport);		
 			
+			CssElement rootElement = buildDescription(this.document, null);
+			CssElement htmlNode = findHTMLNode(rootElement);
+						
+			LayoutModeler layout = new LayoutModeler();
+			layout.model(htmlNode, 300);
+			
+
 			//#debug sl.debug.build
-			BuildDebug.printCssElement(rootElement);
+			BuildDebug.printCssElement(htmlNode);
 			
 			//#debug sl.profile.build
 			Benchmark.stop("description","done");
@@ -80,8 +123,9 @@ public class ViewportBuilder {
 			//#debug sl.profile.build
 			Benchmark.start("layout");
 			
-			buildLayout(this.viewport, this.viewport, rootElement);
-			
+			//TODO model here
+			//buildLayout(this.viewport, this.viewport, rootElement);
+						
 			//#debug sl.debug.build
 			BuildDebug.printBlock(this.viewport);
 			
@@ -112,6 +156,7 @@ public class ViewportBuilder {
 		}
 	}
 
+			
 	protected CssElement buildDescription(DomNodeImpl node, CssElement parent) {
 		NodeHandler handler = NodeHandlerDirectory.getInstance().getNodeHandler(node);
 		
@@ -139,6 +184,34 @@ public class ViewportBuilder {
 						DomNodeImpl childNode = nodes.item(index);
 						
 						buildDescription(childNode, element);
+					}
+				} else {
+					switch(element.getContentType()) {
+						case CssElement.CONTENT_CONTAINING_TEXT :
+							// split text and as css elements
+							
+							
+							CssElement parentElement = element.getParent();
+							String text = element.getValue();
+							text = TextUtil.replace(text, " ", "\t \t");
+							String [] words = TextUtil.split(text, '\t');
+							
+							int i = 0;
+							while ( i < words.length )
+							{
+								String word = words[i];
+								TextCssElement textChild = new TextCssElement(handler, node, word, element, this.viewportContext);
+								textChild.build();
+								parentElement.add(textChild);
+								i++;
+							}
+							
+							// Font font = element.getStyle().getFont();
+							parentElement.remove(element);
+														
+							break;
+						case CssElement.CONTENT_CONTAINING_ELEMENT:
+							break;
 					}
 				}
 				
@@ -193,7 +266,7 @@ public class ViewportBuilder {
 				System.out.println("added " + containingBlock + " to body of " + parent);
 			} 
 		} else {
-			Item item = element.getContent();
+			Item item = element.getItem();
 			
 			if(item != null) {
 				LayoutDescriptor layoutDescriptor = ContentView.getLayoutDescriptor(item);

@@ -36,7 +36,7 @@ public abstract class CssAttributeHandler {
 	protected abstract int getType();
 	
 	protected abstract void addAttribute(Style style, Object value);
-	
+		
 	Object getValue(String text) {
 		if(this.type == TYPE_RANGE) {
 			if(this.range != null) {

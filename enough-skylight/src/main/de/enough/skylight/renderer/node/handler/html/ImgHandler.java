@@ -3,6 +3,7 @@ package de.enough.skylight.renderer.node.handler.html;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
+import de.enough.ovidiu.NodeInterface;
 import de.enough.polish.content.ContentDescriptor;
 import de.enough.polish.content.ContentException;
 import de.enough.polish.content.transform.impl.ImageContentTransform;
@@ -69,5 +70,9 @@ public class ImgHandler extends BodyNodeHandler{
 		} else {
 			imgItem.setAppearanceMode(Item.PLAIN);
 		}
+	}
+	
+	public int getContentType() {
+		return CssElement.CONTENT_IMAGE;
 	}
 }
