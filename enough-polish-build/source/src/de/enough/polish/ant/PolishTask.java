@@ -1477,9 +1477,9 @@ public class PolishTask extends ConditionalTask {
 			TextFile file = new TextFile( baseDir, fileName, lastModificationTime, this.resourceUtil );
 			textFileManager.addTextFile(file);
 			if (fileName.startsWith("de")) {
-				if (fileName.endsWith("StyleSheet.java")) {
-					if ("de/enough/polish/ui/StyleSheet.java".equals(fileName)
-							|| 	"de\\enough\\polish\\ui\\StyleSheet.java".equals(fileName)) {
+				if (fileName.endsWith("StyleSheetContentContainer.java")) {
+					if ("de/enough/polish/ui/StyleSheetContentContainer.java".equals(fileName)
+							|| 	"de\\enough\\polish\\ui\\StyleSheetContentContainer.java".equals(fileName)) {
 						this.styleSheetSourceFile = file;
 					}
 				} else if (fileName.endsWith("StyleCache.java")) {
