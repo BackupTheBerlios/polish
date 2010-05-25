@@ -487,6 +487,15 @@ These namespaces/schemas will be used soon.
     <capability name="JavaPlatform" value="Android/1.5" />
     <capability name="JavaConfiguration" value="Android/1.5" />
   </device>
+  
+  <device supportsPolishGui="true">
+    <identifier>Generic/android1.6</identifier>
+    <features>isVirtual</features>
+    <description>An Android compatible device with the 1.6 firmware.</description>
+    <groups>android</groups>
+    <capability name="JavaPlatform" value="Android/1.6" />
+    <capability name="JavaConfiguration" value="Android/1.6" />
+  </device>
 
   <device supportsPolishGui="true">
     <identifier>Generic/android2.0</identifier>
