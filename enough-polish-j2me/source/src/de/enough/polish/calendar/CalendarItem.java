@@ -433,17 +433,12 @@ public class CalendarItem extends TableItem
 	}
 	//#endif
 	
-	public Calendar getSelectedCalendar()
-	{
-		int col = getSelectedColumn();
-		int row = getSelectedRow() - 1;
-//		System.out.println("selected col/row=" + col + "/" + row);
+	public Calendar getCellCalendar(int row, int col){
 		Calendar cal = Calendar.getInstance();
 		cal.set( Calendar.DAY_OF_MONTH, 1);
 		cal.set( Calendar.YEAR, this.shownYear );
 		cal.set( Calendar.MONTH, this.shownMonth );
 		int startCol = getColumn( cal.get( Calendar.DAY_OF_WEEK) );
-//		System.out.println("start col=" + startCol);
 		if (row == 0 && col < startCol) {
 			// previous month selected:
 			CalendarHelper helper = new CalendarHelper( cal );
@@ -465,6 +460,13 @@ public class CalendarItem extends TableItem
 		System.out.println("detected date=" + cal.get( Calendar.DAY_OF_MONTH) + "." + (cal.get(Calendar.MONTH) + 1) + "." + cal.get(Calendar.YEAR));
 		
 		return cal;
+	}
+	
+	public Calendar getSelectedCalendar()
+	{
+		int col = getSelectedColumn();
+		int row = getSelectedRow() - 1;
+		return getCellCalendar(row, col);
 	}
 
 	/**
@@ -589,6 +591,8 @@ public class CalendarItem extends TableItem
 		//#endif		
 	}
 	
-	
+	public int getShownMonth(){
+		return this.shownMonth;
+	}
 
 }
