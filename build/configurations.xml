@@ -78,6 +78,14 @@
 	</configuration>
 	
 	<configuration>
+		<identifier>Android/1.6</identifier>
+		<features>android, cldc, cldc11, cldc1.1, hasFloatingPoint</features>
+		<description>android</description>
+		<capability name="build.BootClassPath" value="android-1.6.jar" />
+		<capability name="SupportFloatingPoint" value="true" />
+	</configuration>
+	
+	<configuration>
 		<identifier>Android/2.0</identifier>
 		<features>android, cldc, cldc11, cldc1.1, hasFloatingPoint</features>
 		<description>android</description>
