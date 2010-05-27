@@ -243,6 +243,8 @@ public class VerticalScrollTextEffect extends TextEffect{
 	}
 	
 	public void onDetach(Item parent) {
+		//reset the lineOffset on the end of animation
+		this.lineOffset = 0;
 		AnimationThread.removeAnimationItem(parent);
 	}
 
