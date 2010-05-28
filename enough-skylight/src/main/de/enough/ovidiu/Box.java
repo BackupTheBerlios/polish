@@ -1,18 +1,34 @@
 package de.enough.ovidiu;
 
+import de.enough.polish.ui.Border;
 import de.enough.polish.util.ArrayList;
 import de.enough.skylight.renderer.node.CssElement;
 
 public class Box 
 {	
 
-	public int absoluteX = 0, absoluteY = 0;
+	public int absoluteX = 0;
+	public int absoluteY = 0;
 	
-	public int x=0,y=0,contentWidth=0,contentHeight=0;
+	public int x=0;
+	public int y=0;
+	public int contentWidth=0;
+	public int contentHeight=0;
 	
-	public int marginLeft = 0, marginTop = 0, marginRight =0, marginBottom = 0;
+	public int marginLeft = 0;
+	public int marginTop = 0;
+	public int marginRight = 0;
+	public int marginBottom = 0;
 	
-	public int paddingLeft =0, paddingTop = 0, paddingRight = 0, paddingBottom = 0;
+	public int paddingLeft = 0;
+	public int paddingTop = 0;
+	public int paddingRight = 0;
+	public int paddingBottom = 0;
+	
+	public int borderLeft = 0;
+	public int borderTop = 0;
+	public int borderRight = 0;
+	public int borderBottom = 0;
 	
 	public ArrayList children = new ArrayList();
 	
@@ -57,12 +73,12 @@ public class Box
 	public int getTotalWidth()
 	{
 		// TODO: margins, paddings, etc;
-		return contentWidth + paddingLeft + paddingRight;
+		return contentWidth + paddingLeft + paddingRight +	marginLeft + marginRight + borderLeft + borderRight;
 	}
 	
 	public int getTotalHeight()
 	{
 		// TODO: margins, paddings, etc;
-		return contentHeight + paddingTop + paddingBottom ;
+		return contentHeight + paddingTop + paddingBottom +	marginBottom + marginTop + borderBottom + borderTop;
 	}
 }
