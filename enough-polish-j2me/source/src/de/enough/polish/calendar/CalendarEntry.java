@@ -18,10 +18,11 @@ import java.util.TimeZone;
  */
 public class CalendarEntry implements Serializable {
 
-	public static final int REOCCURENCE_DAILY = 0;
-	public static final int REOCCURENCE_WEEKLY = 1;
-	public static final int REOCCURENCE_MONTHLY = 2;
-	public static final int REOCCURENCE_YEARLY = 3;
+	public static final int REOCCURENCE_NONE = 0;
+	public static final int REOCCURENCE_DAILY = 1;
+	public static final int REOCCURENCE_WEEKLY = 2;
+	public static final int REOCCURENCE_MONTHLY = 3;
+	public static final int REOCCURENCE_YEARLY = 4;
 	
 	/**
 	 * field to contain starting date of calendar event 
@@ -164,11 +165,20 @@ public class CalendarEntry implements Serializable {
 		this(summary, category, year, month, day, null);
 	}
 	
+	public CalendarEntry(String summary, CalendarCategory category, int year, int month, int day, int reoccurence){
+		this(summary, category, year, month, day, null, reoccurence);
+	}
+	
 	public CalendarEntry(String summary, CalendarCategory category, int year, int month, int day, String description){
+		this(summary, category, year, month, day, null, CalendarEntry.REOCCURENCE_NONE);
+	}
+	
+	public CalendarEntry(String summary, CalendarCategory category, int year, int month, int day, String description, int reoccurence){
 		this.summary = summary;
 		this.category = category;
 		this.startDate = CalendarHelper.getDate(year, month, day);
 		this.description = description;
+		this.reoccurence = reoccurence;
 	}
 	
 	/**
