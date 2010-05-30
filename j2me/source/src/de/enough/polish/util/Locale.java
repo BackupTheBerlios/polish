@@ -615,6 +615,11 @@ public final class Locale {
 				buffer.append( day );
 				i++;
 			} else if ( c == 'H' && nextC == 'H') {
+				//#if polish.blackberry
+				if (hour < 10) {
+					buffer.append('0');
+				}
+				//#endif
 				buffer.append(hour);
 				i++;
 			} else if (c == 'm' && nextC == 'm') {
