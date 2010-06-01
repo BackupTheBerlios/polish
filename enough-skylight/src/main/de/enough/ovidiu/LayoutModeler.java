@@ -22,7 +22,7 @@ public class LayoutModeler
 	{
 		CssElement node = box.correspondingNode ;
 		
-		String text = "[ " + node.getHandler().getTag() + " D: " + StyleManager.getProperty(box, "display") + " F: " + StyleManager.getProperty(box, "float") + " X: " + box.x + " Y: " + box.y + "AX: " + box.getAbsoluteX() + " AY: " + box.absoluteY + " W: " + box.contentWidth + " H: " + box.contentHeight + " C: " + node.getContent() + " ]"; 
+		String text = "[ " + node.getHandler().getTag() + " D: " + StyleManager.getProperty(box, "display") + " F: " + StyleManager.getProperty(box, "float") + " X: " + box.x + " Y: " + box.y + " M: " + box.marginLeft + " CW: " + box.contentWidth + " CH: " + box.contentHeight + " C: " + node.getContent() + " ]";
 		
 		out (text,level);
 	}
@@ -96,23 +96,29 @@ public class LayoutModeler
 	
 	public static void paintBox(Box b, Graphics g)
 	{
+
 		if ( ! "none".equals( StyleManager.getProperty(b, "float") ) )
 		{
 			g.setColor(0x110000FF);
-			g.fillRect(b.getAbsoluteX(), b.absoluteY, b.getTotalWidth(), b.getTotalHeight());
+			g.fillRect(b.getAbsoluteX(), b.getAbsoluteY(), b.getTotalWidth(), b.getTotalHeight());
 		}
 
+                // Draw outer box margins
 		g.setColor(0x11FF0000);
-		g.drawRect(b.getAbsoluteX(), b.absoluteY, b.getTotalWidth(), b.getTotalHeight());
+		g.drawRect(b.getAbsoluteX(), b.getAbsoluteY(), b.getTotalWidth(), b.getTotalHeight());
+
+                // Draw inner box margins (actual content borders)
+		g.setColor(0x1100FF00);
+		g.drawRect(b.getAbsoluteX() + b.marginLeft, b.getAbsoluteY() + b.marginTop, b.getTotalWidth() - b.marginLeft - b.marginRight, b.getTotalHeight() - b.marginTop - b.marginBottom );
 		
 		if ( b.correspondingNode.getContentType() == CssElement.CONTENT_TEXT )
 		{
 			g.setFont(b.correspondingNode.getStyle().getFont());
-			g.drawString( (String) b.correspondingNode.getContent(), b.getAbsoluteX() + b.paddingLeft, b.absoluteY + b.paddingTop, Graphics.TOP | Graphics.LEFT );
+			g.drawString( (String) b.correspondingNode.getContent(), b.getAbsoluteX() + b.paddingLeft + b.marginLeft, b.getAbsoluteY() + b.paddingTop + b.marginTop, Graphics.TOP | Graphics.LEFT );
 		}
 		else if ( b.correspondingNode.getContentType() == CssElement.CONTENT_IMAGE )
 		{
-			g.drawImage( ((ImgCssElement) b.correspondingNode).getImage(), b.getAbsoluteX(), b.absoluteY, Graphics.TOP | Graphics.LEFT );					
+			g.drawImage( ((ImgCssElement) b.correspondingNode).getImage(), b.getAbsoluteX() + b.marginLeft, b.getAbsoluteY() + b.marginTop, Graphics.TOP | Graphics.LEFT );
 		}
 			
 		
@@ -156,7 +162,6 @@ public class LayoutModeler
 		
 		doModel(myBox);
 		
-		System.out.println("END MODEL");
 		
 		dumpBoxTree(myBox,0);
 		rootBox = myBox;
@@ -169,7 +174,7 @@ public class LayoutModeler
 		CssElement node = (CssElement) box.correspondingNode;
 		
 		StyleManager.mapStyleToBox(box);
-		
+                
 		LayoutContext context = new LayoutContext(box,floats);	
 	
 		
@@ -185,24 +190,21 @@ public class LayoutModeler
 		String displayMode = (String) StyleManager.getProperty(box, "display");
 		String floatMode = (String) StyleManager.getProperty(box, "float");
 		
-		// Figure out where I start
-		// TODO: margins, paddings & co.
-		int startX = box.parent.x;
-		int startY = box.parent.y ;	
-		
-		
 		// If I am a float, map the width property REGARDLESS of my display type 
 		// Otherwise, figure out the width of my children and then figure out my width
+                boolean useMaxXAsWidth = false;
 		if ( ! "none".equals(floatMode) )
 		{
 			Dimension d = (Dimension) StyleManager.getProperty(box, "width");
 			if ( d != null )
 			{
-				box.contentWidth = (d.getValue(box.parent.contentWidth));
+				box.contentWidth = (d.getValue(box.parent.contentWidth)) - box.marginLeft - box.marginRight ;
 			}
 			else
 			{
-				// TODO: Figure out width of children
+                            // No width specified, use maxwidth for now and figure out the actual width later
+                            useMaxXAsWidth = true;
+                            box.contentWidth = box.parent.contentWidth ; // Temp value.
 			}
 		}
 		// If I am a block context, then I should use all available width,
@@ -212,12 +214,12 @@ public class LayoutModeler
 			Dimension d = (Dimension) StyleManager.getProperty(box, "width");
 			if ( d != null )
 			{
-				box.contentWidth = (d.getValue(box.parent.contentWidth));
+				box.contentWidth = (d.getValue(box.parent.contentWidth)) - box.marginLeft - box.marginRight;
 			}
 			else
 			{
 				// Use all available
-				box.contentWidth = context.getMaxBoxWidth(box);
+				box.contentWidth = context.getMaxBoxWidth(box) - box.marginLeft - box.marginRight;
 			}
 		}
 		
@@ -239,7 +241,7 @@ public class LayoutModeler
 			StyleManager.mapStyleToBox(child);
 			if ( child.getTotalWidth() > box.getTotalWidth() )
 			{
-				System.out.println("FUCK THIS SHIT!");
+				System.out.println("FUCK THIS SHIT YEAH!!!!");
 				text(child, 0);
 				System.out.println(context.currentXPosition);
 				context.nextRow();
@@ -257,13 +259,15 @@ public class LayoutModeler
 			if ( "block".equals(childDisplayMode) )
 			{					
 				// This might be very slow in the long run
-				do
+                                context.nextRow();
+                                context.prepareToPlaceOnCurrentRow(child);
+                                doModel(child);
+				while ( ! context.fitsOnCurrentRow(child) )
 				{
-					context.nextRow();
+					context.nextRow(1);
 					context.prepareToPlaceOnCurrentRow(child);
 					doModel(child);
 				}
-				while ( ! context.fitsOnCurrentRow(child) ) ;
 				context.placeOnCurrentRow(child);
 				context.nextRow();
 			}
@@ -279,14 +283,15 @@ public class LayoutModeler
 				}
 				else					
 				{
-					
-					do
+					context.nextRow();
+                                        context.prepareToPlaceOnCurrentRow(child);
+                                        doModel(child);
+					while ( ! context.fitsOnCurrentRow(child) )
 					{
-						context.nextRow();
+						context.nextRow(1);
 						context.prepareToPlaceOnCurrentRow(child);
 						doModel(child);
 					}
-					while ( ! context.fitsOnCurrentRow(child) ) ;
 					context.placeOnCurrentRow(child);
 				}
 			}
@@ -295,15 +300,20 @@ public class LayoutModeler
 		// Complete the current row
 		context.nextRow() ;
 		
-		// Is my height pre-set or should I use my current height (i.e Y-position )
+		// Is my content height pre-set or should I use my current height (i.e Y-position )
 		if ( StyleManager.getProperty(box, "height") != null )
 		{
-			box.contentHeight = ( (Dimension) StyleManager.getProperty(box, "height") ).getValue(box.parent.contentHeight);
+			box.contentHeight = ( (Dimension) StyleManager.getProperty(box, "height") ).getValue(box.parent.contentHeight) ;
 		}
 		else
 		{
-			box.contentHeight = context.getMaxY();
+			box.contentHeight = context.getMaxY() + box.marginTop + box.marginBottom ;
 		}
+
+                if ( useMaxXAsWidth == true )
+                {
+                    box.contentWidth = context.getMaxX() ;
+                }
 				
 		return;
 	}

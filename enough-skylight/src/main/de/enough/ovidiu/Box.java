@@ -63,7 +63,19 @@ public class Box
 		}
 		else
 		{
-			return x + parent.getAbsoluteX() ;
+			return x + parent.getAbsoluteX() + parent.marginLeft ;
+		}
+	}
+
+        public int getAbsoluteY()
+	{
+		if ( parent == null )
+		{
+			return 0;
+		}
+		else
+		{
+			return y + parent.getAbsoluteY() + parent.marginTop ;
 		}
 	}
 	
@@ -73,7 +85,7 @@ public class Box
 	public int getTotalWidth()
 	{
 		// TODO: margins, paddings, etc;
-		return contentWidth + paddingLeft + paddingRight +	marginLeft + marginRight + borderLeft + borderRight;
+		return contentWidth + paddingLeft + paddingRight + marginLeft + marginRight + borderLeft + borderRight;
 	}
 	
 	public int getTotalHeight()

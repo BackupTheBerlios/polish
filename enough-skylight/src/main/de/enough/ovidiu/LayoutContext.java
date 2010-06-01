@@ -37,10 +37,10 @@ public class LayoutContext
 	 * Set the current Y position
 	 * @param y
 	 */
-	public void setCurrent(int y)
+	public void setCurrentYPosition(int y)
 	{
 		currentYPosition = y;
-		currentXPosition = floats.leftIntersectionPoint(box.getAbsoluteX(), box.absoluteY + y, currentRowMaxWidth);
+		currentXPosition = floats.leftIntersectionPoint(box.getAbsoluteX() + box.marginLeft, box.getAbsoluteY() + y + box.marginTop, currentRowMaxWidth);
 	}
 	
 	public int getCurrentY()
@@ -69,7 +69,7 @@ public class LayoutContext
 	
 	public int getCurrentRowHeight()
 	{
-		if ( rowHeightNoFloats != 0 )
+                if ( rowHeightNoFloats != 0 )
 		{
 			return rowHeightNoFloats;
 		}
@@ -102,9 +102,7 @@ public class LayoutContext
 	public void prepareToPlaceOnCurrentRow(Box box)
 	{
 		box.y = getCurrentY()  ;
-		box.absoluteY = getCurrentY() + box.parent.absoluteY;
 		box.x = getCurrentX() ;
-		box.absoluteX = getCurrentX() + box.parent.absoluteX ;
 	}
 	
 	public void arrangeCurrentRow()
@@ -180,10 +178,8 @@ public class LayoutContext
 			temp = (Box) currentRow.get(i);
 			
 			temp.y = currentYPosition;
-			temp.absoluteY = temp.parent.absoluteY + temp.y ;
 			
 			temp.x = xPos ;
-			temp.absoluteX = temp.parent.absoluteX + temp.x ;
 			
 			
 			if ( ! "none".equals( StyleManager.getProperty(temp, "float") ) ) 
@@ -193,12 +189,12 @@ public class LayoutContext
 				{
 					type = FloatBoxManager.FLOAT_RIGHT;
 				}
-				floats.addFloat(temp.getAbsoluteX(), temp.absoluteY, temp.contentWidth, temp.contentHeight, type);
+				floats.addFloat(temp.getAbsoluteX(), temp.getAbsoluteY(), temp.getTotalWidth(), temp.getTotalHeight(), type);
 			}
 			else // This is not a float
 			{
 				// TODO: Proper vertical align
-				temp.absoluteY += ( getCurrentRowHeight() - temp.getTotalHeight() );	
+				temp.y += ( getCurrentRowHeight() - temp.getTotalHeight() );
 			}
 			
 			xPos += temp.getTotalWidth();
@@ -245,8 +241,13 @@ public class LayoutContext
 			
 		}
 	}
+
+        public void nextRow()
+        {
+            nextRow(0);
+        }
 	
-	public void nextRow()
+	public void nextRow(int minimumOffset)
 	{
 		// Arrange the current row
 		arrangeCurrentRow();
@@ -254,14 +255,14 @@ public class LayoutContext
 		// Step 4 : Profit
 		
 		// Increment the Y position
-		setCurrent(currentYPosition + getCurrentRowHeight() );
+		setCurrentYPosition(Math.max(minimumOffset,currentYPosition + getCurrentRowHeight()) );
 				
 		// Clear current row buffer
 		currentRow.clear();
 		
 		// Update left offset for this row
-		int x = box.getAbsoluteX();
-		int y = box.absoluteY + getCurrentY();
+		int x = box.getAbsoluteX() + box.marginLeft;
+		int y = box.getAbsoluteY() + getCurrentY() + box.marginTop;
 		int theoreticalMaxWidth = box.contentWidth;		
 		currentRowMaxWidth = getMaxRowWidth(currentYPosition);
 		startXPosition = floats.leftIntersectionPoint(x, y, theoreticalMaxWidth) ;
@@ -279,15 +280,17 @@ public class LayoutContext
 	 */
 	public int getMaxRowWidth(int yPosition)
 	{
-		int x = box.getAbsoluteX();
-		int y = box.absoluteY + yPosition;
-		int theoreticalMaxWidth = box.parent.contentWidth ;
+		int x = box.getAbsoluteX() + box.marginLeft;
+		int y = box.getAbsoluteY() + yPosition + box.marginTop ;
+		int theoreticalMaxWidth = box.parent.contentWidth;
 		
 		
 		int leftPoint = floats.leftIntersectionPoint(x, y, theoreticalMaxWidth);
 		int rightPoint = floats.rightIntersectionPoint(x, y, theoreticalMaxWidth);			
-		
-		return (rightPoint - leftPoint);
+
+                System.out.println("MRW: " + yPosition + " " + (rightPoint - leftPoint));
+                LayoutModeler.text(box, 0);
+		return (rightPoint - leftPoint) ;
 		
 	}
 	
@@ -299,7 +302,7 @@ public class LayoutContext
 	public int getMaxBoxWidth(Box box)
 	{
 		int x = box.getAbsoluteX();
-		int y = box.parent.absoluteY + box.y;
+		int y = box.parent.getAbsoluteY() + box.y + box.parent.marginTop;
 		int theoreticalMaxWidth = box.parent.contentWidth;
 		
 		int leftCut = floats.leftIntersectionPoint(x, y, theoreticalMaxWidth);

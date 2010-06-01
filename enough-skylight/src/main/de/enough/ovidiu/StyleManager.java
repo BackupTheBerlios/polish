@@ -13,6 +13,8 @@ public class StyleManager {
 	public static final int HEIGHT_ID = 227;
 	public static final int FLOAT_ID = 32709;
 	public static final int DISPLAY_ID = 32710;
+        public static final int MARGIN_ID = 32717;
+        public static final int PADDING_ID = -6;
 	
 	
 	public static void mapStyleToBox(Box box)
@@ -48,6 +50,28 @@ public class StyleManager {
 				{
 					box.contentHeight = (d.getValue(100));
 				}
+			}
+		}
+
+                // Margins
+                // TODO: Implement properly (e.g. take into consideration margin-left, right, top and bottom,
+                // take into consideration % values and more)
+                if ( getProperty(box,"margin") != null )
+		{
+                        int marginValue = 0;
+			Dimension d = (Dimension) getProperty(box, "margin");
+			if ( d != null )
+			{
+				if (d.isPercent())
+				{
+					marginValue = (d.getValue(box.parent.contentWidth));
+				}
+				else
+				{
+					marginValue = (d.getValue(100));
+				}
+
+                                box.marginLeft = box.marginRight = box.marginTop = box.marginBottom = marginValue;
 			}
 		}
 	}
@@ -103,6 +127,18 @@ public class StyleManager {
 		{
 			return elem.getStyle().getObjectProperty(DISPLAY_ID);
 		}
+                else if ( propertyName.equals("margin") )
+                {
+                    Dimension d = ( Dimension ) (  elem.getStyle().getObjectProperty(MARGIN_ID) );
+                    if ( d == null )
+                    {
+                        return new Dimension(0);
+                    }
+                    else
+                    {
+                        return d;
+                    }
+                }
 		
 		return null;
 		
