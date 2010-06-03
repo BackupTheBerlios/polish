@@ -57,17 +57,21 @@ import de.enough.polish.util.Locale;
 public class ChoiceGroup 
 extends Container 
 implements Choice
-//#if polish.ChoiceGroup.suppressMarkCommands == true
+//#if polish.ChoiceGroup.supressCommands == true
 	//#define tmp.suppressMarkCommands
-//#else
-	//#define tmp.allowMarkCommands
-//#endif
-//#if polish.ChoiceGroup.suppressSelectCommand == true
 	//#define tmp.suppressSelectCommand
 //#else
-	//#define tmp.allowSelectCommand
+	//#if polish.ChoiceGroup.suppressMarkCommands == true
+		//#define tmp.suppressMarkCommands
+	//#else
+		//#define tmp.allowMarkCommands
+	//#endif
+	//#if polish.ChoiceGroup.suppressSelectCommand == true
+		//#define tmp.suppressSelectCommand
+	//#else
+		//#define tmp.allowSelectCommand
+	//#endif
 //#endif
-
 //#if tmp.suppressMarkCommands && tmp.suppressSelectCommand
 	//#define tmp.suppressAllCommands
 //#else
