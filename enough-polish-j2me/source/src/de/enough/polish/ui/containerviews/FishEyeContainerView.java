@@ -331,11 +331,19 @@ public class FishEyeContainerView extends ContainerView {
 		}
 		return current;
 	}
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.ItemView#isValid(de.enough.polish.ui.Item, de.enough.polish.ui.Style)
+	 */
+	protected boolean isValid(Item parent, Style style) {
+		return (parent instanceof Container) && ((Container)parent).size() > 1;
+	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#initContent(de.enough.polish.ui.Container, int, int)
 	 */
 	protected void initContent(Item parentContainerItem, int firstLineWidth, int availWidth, int availHeight) {
+		
 		//#if polish.hasPointerEvents
 			if (!isPointerDraggedEnabled) {
 				isPointerDraggedEnabled = Display.getInstance().hasPointerMotionEvents();
