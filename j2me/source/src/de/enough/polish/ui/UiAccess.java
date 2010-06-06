@@ -3392,38 +3392,8 @@ public final class UiAccess {
 	 * @return the RGB data as an int array.
 	 */
 	public static int[] getRgbData( Item item, int opacity ) {
-		//#if polish.midp2
-			if (item.itemWidth < 1 || item.itemHeight < 1) {
-				//#debug error
-				System.out.println("Unable to retrieve RGB data for item with a dimension of " + item.itemWidth + "x" + item.itemHeight );
-				return new int[0];
-			}
-			Image image = Image.createImage( item.itemWidth, item.itemHeight );
-			int transparentColor = 0x12345678;
-			Graphics g = image.getGraphics();
-			g.setColor(transparentColor);
-			g.fillRect(0, 0, item.itemWidth, item.itemHeight );
-			int[] transparentColorRgb = new int[1];
-			image.getRGB(transparentColorRgb, 0, 1, 0, 0, 1, 1 );
-			transparentColor = transparentColorRgb[0];
-			item.paint( 0, 0, 0, item.itemWidth, g );
-			int[] itemRgbData = new int[  item.itemWidth * item.itemHeight ];
-			image.getRGB(itemRgbData, 0, item.itemWidth, 0, 0, item.itemWidth, item.itemHeight );
-			boolean addOpacity = (opacity != 255);
-			opacity = (opacity << 24) | (0x00ffffff);
-			// ensure transparent parts are indeed transparent
-			for (int i = 0; i < itemRgbData.length; i++) {
-				int data = itemRgbData[i];
-				if( data == transparentColor ) {
-					itemRgbData[i] = 0;
-				} else if (addOpacity) {
-					itemRgbData[i] = data & opacity;
-				}
-			}
-			return itemRgbData;
-		//#else
-			//# return null;
-		//#endif
+		return item.getRgbData(true, opacity);
+
 	}
 	//#endif
 

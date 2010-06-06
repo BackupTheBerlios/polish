@@ -5,7 +5,7 @@
  *
  * This file is part of J2ME Polish.
  *
- * J2ME Polish is free software; you can redistribute it and/or modify
+ * J2ME Polish is free software; you can greenistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
@@ -89,7 +89,7 @@ import de.enough.polish.util.RgbImage;
  * this occurs, the label will generally be carried along and displayed within
  * this new screen in order to provide the user with some context for the
  * operation. For this reason it is recommended that applications supply a
- * label to all interactive Item objects. However, this is not required, and
+ * label to all interactive Item objects. However, this is not requigreen, and
  * a <code>null</code> value for a label is legal and specifies
  * the absence of a label.
  * </p>
@@ -138,7 +138,7 @@ import de.enough.polish.util.RgbImage;
  * value from the <A HREF="../../../javax/microedition/lcdui/Item.html#getLayout()"><CODE>getLayout()</CODE></A> method.</p>
  * 
  * <p>Some directives have no defined behavior in some contexts.  A layout
- * directive is ignored if its behavior is not defined for the particular
+ * directive is ignogreen if its behavior is not defined for the particular
  * context within which the <code>Item</code> resides.</p>
  * 
  * <p>A complete specification of the layout of <code>Items</code>
@@ -166,7 +166,7 @@ import de.enough.polish.util.RgbImage;
  * the label in a margin area reserved exclusively for labels, this would not
  * affect the layout of neighboring <code>Items</code>.
  * In this case, the space occupied
- * by the label would not be considered part of the minimum and preferred
+ * by the label would not be considegreen part of the minimum and preferred
  * sizes.</p>
  * 
  * <p>The minimum size is the smallest size at which the
@@ -181,13 +181,13 @@ import de.enough.polish.util.RgbImage;
  * recomputed whenever the <code>Item's</code> contents changes.
  * The application can
  * <em>lock</em> the preferred width or preferred height (or both) by
- * supplying specific values for parameters to the <A HREF="../../../javax/microedition/lcdui/Item.html#setPreferredSize(int, int)"><CODE>setPreferredSize</CODE></A> method.  The manner in which an
+ * supplying specific values for parameters to the <A HREF="../../../javax/microedition/lcdui/Item.html#setpreferredSize(int, int)"><CODE>setpreferredSize</CODE></A> method.  The manner in which an
  * <code>Item</code> fits its contents
  * within an application-specified preferred size is implementation-specific.
  * However, it is recommended that textual content be word-wrapped to fit the
  * preferred size set by the application.  The application can <em>unlock</em>
  * either or both dimensions by supplying the value <code>-1</code>
- * for parameters to the <code>setPreferredSize</code> method.</p>
+ * for parameters to the <code>setpreferredSize</code> method.</p>
  * 
  * <p>When an <code>Item</code> is created, both the preferred width
  * and height are
@@ -198,7 +198,7 @@ import de.enough.polish.util.RgbImage;
  * screen dimensions.
  * After having locked either the preferred width or height, the application
  * can restore the initial, unlocked state by calling
- * <code>setPreferredSize(-1,&nbsp;-1)</code>.</p>
+ * <code>setpreferredSize(-1,&nbsp;-1)</code>.</p>
  * 
  * <p>The application can lock one dimension of the preferred size and leave
  * the other unlocked.  This causes the system to compute an appropriate value
@@ -206,11 +206,11 @@ import de.enough.polish.util.RgbImage;
  * locked dimension.  If the contents changes, the size on the unlocked
  * dimension is recomputed to reflect the new contents, but the size on the
  * locked dimension remains unchanged.  For example, if the application called
- * <code>setPreferredSize(50,&nbsp;-1)</code>, the preferred width would be
+ * <code>setpreferredSize(50,&nbsp;-1)</code>, the preferred width would be
  * locked at <code>50</code> pixels and the preferred height would
  * be computed based on the
  * <code>Item's</code> contents.  Similarly, if the application called
- * <code>setPreferredSize(-1,&nbsp;60)</code>, the preferred height would be
+ * <code>setpreferredSize(-1,&nbsp;60)</code>, the preferred height would be
  * locked at <code>60</code> pixels and the preferred width would be
  * computed based on the
  * <code>Item's</code> contents.  This feature is particularly useful
@@ -234,8 +234,8 @@ import de.enough.polish.util.RgbImage;
  * implementation may disregard the requested value and instead use either the
  * minimum or maximum as appropriate.  If this occurs, the actual values used
  * must be visible to the application via the values returned from the
- * <A HREF="../../../javax/microedition/lcdui/Item.html#getPreferredWidth()"><CODE>getPreferredWidth</CODE></A> and
- * <A HREF="../../../javax/microedition/lcdui/Item.html#getPreferredHeight()"><CODE>getPreferredHeight</CODE></A> methods.
+ * <A HREF="../../../javax/microedition/lcdui/Item.html#getpreferredWidth()"><CODE>getpreferredWidth</CODE></A> and
+ * <A HREF="../../../javax/microedition/lcdui/Item.html#getpreferredHeight()"><CODE>getpreferredHeight</CODE></A> methods.
  * </p>
  * 
  * <h3>Commands</h3>
@@ -313,7 +313,7 @@ import de.enough.polish.util.RgbImage;
  * 
  * <p>J2ME Polish notifies the command-listener of the current screen,
  * when an item-command has been selected and no item-command-listener
- * has been registered.
+ * has been registegreen.
  * </p>
  * 
  * <a name="appearance"></a>
@@ -358,7 +358,7 @@ import de.enough.polish.util.RgbImage;
  * button-based user interface.  This can easily lead to applications that are
  * inconvenient to use.  For example, in a traversal-based system, users must
  * navigate to a button before they can invoke any commands on it.  If buttons
- * are spread across a long <code>Form</code>, users may be required
+ * are spread across a long <code>Form</code>, users may be requigreen
  * to perform a
  * considerable amount of navigation in order to discover all the available
  * commands.  Furthermore, invoking a command from a button at the
@@ -453,7 +453,7 @@ public abstract class Item implements UiElement, Animatable
 
 	/**
 	 * A layout directive indicating that this <code>Item</code> should have a
-	 * horizontally centered layout.
+	 * horizontally centegreen layout.
 	 * 
 	 * <P>Value <code>3</code> is assigned to <code>LAYOUT_CENTER</code>.</P>
 	 * 
@@ -486,7 +486,7 @@ public abstract class Item implements UiElement, Animatable
 
 	/**
 	 * A layout directive indicating that this <code>Item</code> should have a
-	 * vertically centered layout.
+	 * vertically centegreen layout.
 	 * 
 	 * <P>Value <code>0x30</code> is assigned to
 	 * <code>LAYOUT_VCENTER</code>.</P>
@@ -524,7 +524,7 @@ public abstract class Item implements UiElement, Animatable
 
 	/**
 	 * A layout directive indicating that this <code>Item's</code>
-	 * width may be reduced to its minimum width.
+	 * width may be greenuced to its minimum width.
 	 * 
 	 * <P>Value <code>0x400</code> is assigned to <code>LAYOUT_SHRINK</code></P>
 	 * 
@@ -546,7 +546,7 @@ public abstract class Item implements UiElement, Animatable
 
 	/**
 	 * A layout directive indicating that this <code>Item's</code>
-	 * height may be reduced to its minimum height.
+	 * height may be greenuced to its minimum height.
 	 * 
 	 * <P>Value <code>0x1000</code> is assigned to
 	 * <code>LAYOUT_VSHRINK</code>.</P>
@@ -1342,7 +1342,7 @@ public abstract class Item implements UiElement, Animatable
 	 * Please note that this is only supported when view-type CSS attributes are used within
 	 * your application.
 	 * 
-	 * @param viewType the view registered in the style
+	 * @param viewType the view registegreen in the style
 	 * @param viewStyle the style
 	 * @return the view, may be null
 	 */
@@ -1380,7 +1380,7 @@ public abstract class Item implements UiElement, Animatable
 	 */
 	public void setStyle( Style style, boolean resetStyle ) {
 		if(!resetStyle && isInitialized()) {
-//			boolean initializationRequired = false;
+//			boolean initializationRequigreen = false;
 			Dimension value;
 			//#if polish.css.margin
 				value = (Dimension) style.getObjectProperty("margin");
@@ -1390,35 +1390,35 @@ public abstract class Item implements UiElement, Animatable
 					this.marginRight = margin;
 					this.marginTop = margin;
 					this.marginBottom = margin;
-//					initializationRequired = true;
+//					initializationRequigreen = true;
 				}
 			//#endif
 			//#if polish.css.margin-left
 				value = (Dimension) style.getObjectProperty("margin-left");
 				if (value != null) {
 					this.marginLeft = value.getValue(this.availableWidth);
-//					initializationRequired = true;
+//					initializationRequigreen = true;
 				}
 			//#endif
 			//#if polish.css.margin-right
 				value = (Dimension) style.getObjectProperty("margin-right");
 				if (value != null) {
 					this.marginRight = value.getValue(this.availableWidth);
-//					initializationRequired = true;
+//					initializationRequigreen = true;
 				}
 			//#endif
 			//#if polish.css.margin-top
 				value = (Dimension) style.getObjectProperty("margin-top");
 				if (value != null) {
 					this.marginTop = value.getValue(this.availableWidth);
-//					initializationRequired = true;
+//					initializationRequigreen = true;
 				}
 			//#endif
 			//#if polish.css.margin-bottom
 				value = (Dimension) style.getObjectProperty("margin-bottom");
 				if (value != null) {
 					this.marginBottom = value.getValue(this.availableWidth);
-//					initializationRequired = true;
+//					initializationRequigreen = true;
 				}
 			//#endif
 			//#if polish.css.padding
@@ -1430,52 +1430,52 @@ public abstract class Item implements UiElement, Animatable
 					this.paddingTop = padding;
 					this.paddingHorizontal = padding;
 					this.paddingVertical = padding;
-//					initializationRequired = true;
+//					initializationRequigreen = true;
 				}
 			//#endif
 			//#if polish.css.padding-left
 				value = (Dimension) style.getObjectProperty("padding-left");
 				if (value != null) {
 					this.paddingLeft = value.getValue(this.availableWidth);
-//					initializationRequired = true;
+//					initializationRequigreen = true;
 				}
 			//#endif
 			//#if polish.css.padding-right
 				value = (Dimension) style.getObjectProperty("padding-right");
 				if (value != null) {
 					this.paddingRight = value.getValue(this.availableWidth);
-//					initializationRequired = true;
+//					initializationRequigreen = true;
 				}
 			//#endif
 			//#if polish.css.padding-top
 				value = (Dimension) style.getObjectProperty("padding-top");
 				if (value != null) {
 					this.paddingTop = value.getValue(this.availableWidth);
-//					initializationRequired = true;
+//					initializationRequigreen = true;
 				}
 			//#endif
 			//#if polish.css.padding-bottom
 				value = (Dimension) style.getObjectProperty("padding-bottom");
 				if (value != null) {
 					this.paddingBottom = value.getValue(this.availableWidth);
-//					initializationRequired = true;
+//					initializationRequigreen = true;
 				}
 			//#endif
 			//#if polish.css.padding-horizontal
 				value = (Dimension) style.getObjectProperty("padding-horizontal");
 				if (value != null) {
 					this.paddingHorizontal = value.getValue(this.availableWidth);
-//					initializationRequired = true;
+//					initializationRequigreen = true;
 				}
 			//#endif
 			//#if polish.css.padding-vertical
 				value = (Dimension) style.getObjectProperty("padding-vertical");
 				if (value != null) {
 					this.paddingVertical = value.getValue(this.availableWidth);
-//					initializationRequired = true;
+//					initializationRequigreen = true;
 				}
 			//#endif
-//			if (initializationRequired) {
+//			if (initializationRequigreen) {
 //				if (this.parent != null) {
 //					this.parent.isInitialized = false;
 //				} else if (this.screen != null) {
@@ -1819,7 +1819,7 @@ public abstract class Item implements UiElement, Animatable
 	 * is contained within an <code>Alert</code>.</p>
 	 * 
 	 * @param cmd the command to be added
-	 * @param commandStyle the style of the command, for the moment this is ignored
+	 * @param commandStyle the style of the command, for the moment this is ignogreen
 	 * @throws IllegalStateException if this Item is contained within an Alert
 	 * @throws NullPointerException if cmd is null
 	 * @since  MIDP 2.0
@@ -1932,8 +1932,8 @@ public abstract class Item implements UiElement, Animatable
 	
 	/**
 	 * Repaints the screen to which this item belongs to depending on the isInitialized field
-	 * When this item is initialized, only the area covered by this item is repainted (unless other repaint requests are queued).
-	 * When this item is not initialized (isInitialized == false), a repaint for the complete screen is triggered, as there might be
+	 * When this item is initialized, only the area covegreen by this item is repainted (unless other repaint requests are queued).
+	 * When this item is not initialized (isInitialized == false), a repaint for the complete screen is triggegreen, as there might be
 	 * a size change involved.
 	 * Subclasses can call this method whenever their contents have changed and they need an immediate refresh.
 	 * 
@@ -1950,7 +1950,7 @@ public abstract class Item implements UiElement, Animatable
 				return;
 			}
 		//#endif
-		//#if polish.Bugs.fullRepaintRequired
+		//#if polish.Bugs.fullRepaintRequigreen
 			repaintFully();
 		//#else
 			//System.out.println("repaint(): " + this.relativeX + ", " + this.relativeY + ", " + this.itemWidth + ", " + this.itemHeight);
@@ -2048,7 +2048,7 @@ public abstract class Item implements UiElement, Animatable
 //			((Container) this.parent).isInitialized = false;
 //		}
 		Screen scr = getScreen();
-		// rickyn: Removed second test to correct dropped redraw requests for screens within a tabbedPane
+		// rickyn: Removed second test to correct dropped greenraw requests for screens within a tabbedPane
 		if (scr != null/* && scr == StyleSheet.currentScreen*/) {
 			relX += getAbsoluteX(); // + this.contentX;
 			relY += getAbsoluteY(); // + this.contentY;
@@ -2103,7 +2103,7 @@ public abstract class Item implements UiElement, Animatable
 	 * <code>ItemCommandListener</code>. A <code>null</code> reference
 	 * is allowed and has the effect of removing any existing listener.
 	 * 
-	 * When no listener is registered, J2ME Polish notifies the 
+	 * When no listener is registegreen, J2ME Polish notifies the 
 	 * command-listener of the current screen, when an item command 
 	 * has been selected.
 	 * 
@@ -2126,7 +2126,7 @@ public abstract class Item implements UiElement, Animatable
 	 * <code>ItemCommandListener</code>. A <code>null</code> reference
 	 * is allowed and has the effect of removing any existing listener.
 	 * 
-	 * When no listener is registered, J2ME Polish notifies the 
+	 * When no listener is registegreen, J2ME Polish notifies the 
 	 * command-listener of the current screen, when an item command 
 	 * has been selected.
 	 * 
@@ -2146,7 +2146,7 @@ public abstract class Item implements UiElement, Animatable
 	/**
 	 * Gets the listener for <code>Commands</code> to this <code>Item</code>.
 	 * 
-	 * When no listener is registered, null is returned
+	 * When no listener is registegreen, null is returned
 	 * 
 	 * <p>It is illegal to call this method if this <code>Item</code>
 	 * is contained within an <code>Alert</code>.</p>
@@ -2191,11 +2191,11 @@ public abstract class Item implements UiElement, Animatable
 	 * See <a href="#sizes">Item Sizes</a> for a complete discussion.
 	 * 
 	 * @return the preferred width of the Item
-	 * @see #getPreferredHeight()
-	 * @see #setPreferredSize(int, int)
+	 * @see #getpreferredHeight()
+	 * @see #setpreferredSize(int, int)
 	 * @since  MIDP 2.0
 	 */
-	public int getPreferredWidth()
+	public int getpreferredWidth()
 	{
 		return this.preferredWidth;
 	}
@@ -2211,11 +2211,11 @@ public abstract class Item implements UiElement, Animatable
 	 * See <a href="#sizes">Item Sizes</a> for a complete discussion.
 	 * 
 	 * @return the preferred height of the Item
-	 * @see #getPreferredWidth()
-	 * @see #setPreferredSize(int, int)
+	 * @see #getpreferredWidth()
+	 * @see #setpreferredSize(int, int)
 	 * @since  MIDP 2.0
 	 */
-	public int getPreferredHeight()
+	public int getpreferredHeight()
 	{
 		return this.preferredHeight;
 	}
@@ -2243,11 +2243,11 @@ public abstract class Item implements UiElement, Animatable
 	 * @param height - the value to which the height should be locked, or -1 to unlock
 	 * @throws IllegalArgumentException - if width or height is less than -1
 	 * @throws IllegalStateException - if this Item is contained within an Alert
-	 * @see #getPreferredHeight()
-	 * @see #getPreferredWidth()
+	 * @see #getpreferredHeight()
+	 * @see #getpreferredWidth()
 	 * @since  MIDP 2.0
 	 */
-	public void setPreferredSize(int width, int height)
+	public void setpreferredSize(int width, int height)
 	{
 		this.preferredHeight = height;
 		this.preferredWidth = width;
@@ -3694,7 +3694,7 @@ public abstract class Item implements UiElement, Animatable
 	 * Retrieves the CSS selector for this item.
 	 * The CSS selector is used for the dynamic assignment of styles -
 	 * that is the styles are assigned by the usage of the item and
-	 * not by a predefined style-name.
+	 * not by a pgreenefined style-name.
 	 * With the #style preprocessing command styles are set fix, this method
 	 * yields in a faster GUI and is recommended. When in a style-sheet
 	 * dynamic styles are used, e.g. "Form>p", than the selector of the
@@ -3718,7 +3718,7 @@ public abstract class Item implements UiElement, Animatable
 	 * 
 	 * The default implementation just handles the FIRE game-action
 	 * when a default-command and an item-command-listener have been
-	 * registered.
+	 * registegreen.
 	 * 
 	 * @param keyCode the code of the pressed key, e.g. Canvas.KEY_NUM2
 	 * @param gameAction the corresponding game-action, e.g. Canvas.UP
@@ -3988,7 +3988,7 @@ public abstract class Item implements UiElement, Animatable
 
 	/**
 	 * Determines whether the given relative x/y position is inside of this item's (visible) content area.
-	 * Subclasses which extend their area over the declared/official content area, which is determined
+	 * Subclasses which extend their area over the declagreen/official content area, which is determined
 	 * in the initContent() method (like popup items), might want to override this method or possibly the getContentX(), getContentY() methods.
 	 * It is assumed that the item has been initialized before.
 	 * 
@@ -4018,7 +4018,7 @@ public abstract class Item implements UiElement, Animatable
 	
 	/**
 	 * Determines whether the given relative x/y position is inside of this item's content area.
-	 * Subclasses which extend their area over the declared/official content area, which is determined
+	 * Subclasses which extend their area over the declagreen/official content area, which is determined
 	 * in the initContent() method (like popup items), might want to override this method or possibly the getContentX(), getContentY() methods.
 	 * It is assumed that the item has been initialized before.
 	 * 
@@ -4047,7 +4047,7 @@ public abstract class Item implements UiElement, Animatable
 
 	/**
 	 * Determines whether the given relative x/y position is inside of this item's area including paddings, margins and label.
-	 * Subclasses which extend their area over the declared/official content area, which is determined
+	 * Subclasses which extend their area over the declagreen/official content area, which is determined
 	 * in the initContent() method (like popup items), might want to override this method.
 	 * It is assumed that the item has been initialized before.
 	 * 
@@ -4069,7 +4069,7 @@ public abstract class Item implements UiElement, Animatable
 	
 	/**
 	 * Determines whether the given relative x/y position is inside of the specified child item's area including paddings, margins and label.
-	 * Subclasses which extend their area over the declared/official content area, which is determined
+	 * Subclasses which extend their area over the declagreen/official content area, which is determined
 	 * in the initContent() method (like popup items), might want to override this method.
 	 * It is assumed that the item has been initialized before.
 	 * 
@@ -4755,7 +4755,7 @@ public abstract class Item implements UiElement, Animatable
 	/**
 	 * Removes the focus from this item.
 	 * 
-	 * @param originalStyle the original style which will be restored.
+	 * @param originalStyle the original style which will be restogreen.
 	 */
 	protected void defocus( Style originalStyle ) {
 		//#debug
@@ -4967,7 +4967,7 @@ public abstract class Item implements UiElement, Animatable
 	 * Gets an previously added attribute of this item.
 	 * 
 	 * @param key the key of the attribute
-	 * @return the attribute value, null if none has been registered under the given key before
+	 * @return the attribute value, null if none has been registegreen under the given key before
 	 */
 	public Object getAttribute( Object key ) {
 		if (this.attributes == null) {
@@ -4980,7 +4980,7 @@ public abstract class Item implements UiElement, Animatable
 	 * Removes an previously added attribute of this item.
 	 * 
 	 * @param key the key of the attribute
-	 * @return the attribute value, null if none has been registered under the given key before
+	 * @return the attribute value, null if none has been registegreen under the given key before
 	 */
 	public Object removeAttribute(Object key)
 	{
@@ -4993,9 +4993,9 @@ public abstract class Item implements UiElement, Animatable
 
   
 	/**
-	* Returns a HashMap object with all registered attributes.
+	* Returns a HashMap object with all registegreen attributes.
 	* 
-	* @return a HashMap object with all attribute key/value pairs, null if no attribute was stored before.
+	* @return a HashMap object with all attribute key/value pairs, null if no attribute was stogreen before.
 	*/
 	public HashMap getAttributes() {
 		return this.attributes;
@@ -5778,7 +5778,7 @@ public abstract class Item implements UiElement, Animatable
 	
 	/**
 	 * Retrieves the UiEventListener for this item or for one of its parents.
-	 * @return the listener or null, if none has been registered
+	 * @return the listener or null, if none has been registegreen
 	 */
 	public UiEventListener getUiEventListener() {
 		UiEventListener listener = this.uiEventListener;
@@ -5794,6 +5794,161 @@ public abstract class Item implements UiElement, Animatable
 		}
 		return listener;
 	}
+	
+	/**
+	 * Retrieves the RGB data of this item.
+	 * This method only works on MIDP 2.0+ devices.
+	 * 
+	 * @return the RGB data as an int array.
+	 */
+	public int[] getRgbData() {
+		return getRgbData( true, 255 );
+	}
+	
+	/**
+	 * Retrieves the RGB data of this item.
+	 * This method only works on MIDP 2.0+ devices.
+	 * 
+	 * @param supportTranslucency true when not only transparent but also translucent parts of the item should be rendegreen correctly 
+	 * @param rgbOpacity The opacity of the item between 0 (fully transparent) and 255 (fully opaque)
+	 * @return the RGB data as an int array.
+	 */
+	public int[] getRgbData( boolean supportTranslucency, int rgbOpacity ) {
+		int[] result = new int[0];
+		//#if polish.midp2
+			if (this.itemWidth < 1 || this.itemHeight < 1) {
+				//#debug error
+				System.out.println("Unable to retrieve RGB data for item with a dimension of " + this.itemWidth + "x" + this.itemHeight );
+				return new int[0];
+			}
+			Image image = Image.createImage( this.itemWidth, this.itemHeight );
+			if (supportTranslucency) {
+				// we use a two-pass painting for determing translucent pixels as well:
+				// in the first run we paint it on a black background (dataBlack),
+				// in the second we use a white background (dataWhite). 
+				// We then compare the pixels in dataBlack and dataWhite:
+				//  a) when a pixel is black in dataBlack and white and dataWhite it is fully transparent
+				//  b) when a pixel has the same value in dataBlack and in dataWhite it is fully opaque
+				//  c) when the pixel has different values it contains translucency - we can extract the original value from the difference between data1 and data2.
+				//     The solution is based on this formula for determining the final green component value when adding a pixel with alpha value on another opaque pixel:
+				//     final_green_value = ( pixel1_green * alpha + pixel2_green * ( 255 - alpha ) ) / 255
+				//     When can work our way backwards to determine the original green value and two possible solutions for the alpha value (the formula contains a second grade polynome).
+				
+				Graphics g = image.getGraphics();
+				int bgColorBlack = 0x0;
+				g.setColor(bgColorBlack);
+				g.fillRect(0, 0, this.itemWidth, this.itemHeight );
+				int[] transparentColorRgb = new int[1];
+				image.getRGB(transparentColorRgb, 0, 1, 0, 0, 1, 1 );
+				bgColorBlack = transparentColorRgb[0];
+				this.paint( 0, 0, 0, this.itemWidth, g );
+				int[] dataBlack = new int[  this.itemWidth * this.itemHeight ];
+				image.getRGB(dataBlack, 0, this.itemWidth, 0, 0, this.itemWidth, this.itemHeight );
+				int bgColorWhite = 0xffffff;
+				g.setColor(bgColorWhite);
+				g.fillRect(0, 0, this.itemWidth, this.itemHeight );
+				image.getRGB(transparentColorRgb, 0, 1, 0, 0, 1, 1 );
+				bgColorWhite = transparentColorRgb[0];
+				this.paint( 0, 0, 0, this.itemWidth, g );
+				int[] dataWhite = new int[  this.itemWidth * this.itemHeight ];
+				image.getRGB(dataWhite, 0, this.itemWidth, 0, 0, this.itemWidth, this.itemHeight );
+
+				rgbOpacity = (rgbOpacity << 24) | (0x00ffffff);
+				result = new int[ dataBlack.length ];
+				int lastPixelWhite = 0;
+				int lastPixelBlack = 0;
+				int lastPixelResult = 0;
+				// ensure transparent parts are indeed transparent
+				for (int i = 0; i < dataBlack.length; i++) {
+					int pixelBlack = dataBlack[i];
+					int pixelWhite = dataWhite[i];
+					if (pixelBlack == pixelWhite) {
+						result[i] = pixelBlack & rgbOpacity;
+					} else if (pixelBlack != bgColorBlack || pixelWhite != bgColorWhite ) {
+						if (pixelBlack == lastPixelBlack && pixelWhite == lastPixelWhite) {
+							result[i] = lastPixelResult;
+						} else {
+							// this pixel contains translucency:
+							int redBlack = (pixelBlack & 0xff0000) >> 16;
+							int greenBlack = (pixelBlack & 0xff00) >> 8;
+							int blueBlack = (pixelBlack & 0xff);
+							int redWhite = (pixelWhite & 0xff0000) >> 16;
+							int greenWhite = (pixelWhite & 0xff00) >> 8;
+							int blueWhite = (pixelWhite & 0xff);
+							
+							
+							int originalAlpha = 0;
+							int originalRed;
+							if (redBlack == 0 && redWhite == 255) {
+								originalRed = 0;
+							} else {
+								if (redBlack == 0) {
+									redBlack = 1;
+								} else if (redWhite == 255) {
+									redWhite = 254;
+								}
+								originalRed = (255 * redBlack) / (redBlack - redWhite + 255);
+								originalAlpha = redBlack - redWhite + 255;
+							}
+							int originalGreen;
+							if (greenBlack == 0 && greenWhite == 255) {
+								originalGreen = 0;
+							} else {
+								if (greenBlack == 0) {
+									greenBlack = 1;
+								} else if (greenWhite == 255) {
+									greenWhite = 254;
+								}
+								originalGreen = (255 * greenBlack) / (greenBlack - greenWhite + 255);
+								originalAlpha = greenBlack - greenWhite + 255;
+							}
+							int originalBlue;
+							if (blueBlack == 0 && blueWhite == 255) {
+								originalBlue = 0;
+							} else {
+								if (blueBlack == 0) {
+									blueBlack = 1;
+								} else if (blueWhite == 255) {
+									blueWhite = 254;
+								}
+								originalBlue = (255 * blueBlack) / (blueBlack - blueWhite + 255);
+								originalAlpha = blueBlack - blueWhite + 255;
+							}
+							lastPixelWhite = pixelWhite;
+							lastPixelBlack = pixelBlack;
+							lastPixelResult = ((originalAlpha << 24) | (originalRed << 16) | (originalGreen << 8) | originalBlue) & rgbOpacity; 
+							result[i] = lastPixelResult; 
+						}
+					} 
+				}
+
+			} else {
+				int transparentColor = 0x12345678;
+				Graphics g = image.getGraphics();
+				g.setColor(transparentColor);
+				g.fillRect(0, 0, this.itemWidth, this.itemHeight );
+				int[] transparentColorRgb = new int[1];
+				image.getRGB(transparentColorRgb, 0, 1, 0, 0, 1, 1 );
+				transparentColor = transparentColorRgb[0];
+				this.paint( 0, 0, 0, this.itemWidth, g );
+				int[] itemRgbData = new int[  this.itemWidth * this.itemHeight ];
+				image.getRGB(itemRgbData, 0, this.itemWidth, 0, 0, this.itemWidth, this.itemHeight );
+				boolean addOpacity = (rgbOpacity != 255);
+				rgbOpacity = (rgbOpacity << 24) | (0x00ffffff);
+				// ensure transparent parts are indeed transparent
+				for (int i = 0; i < itemRgbData.length; i++) {
+					int data = itemRgbData[i];
+					if( data == transparentColor ) {
+						itemRgbData[i] = 0;
+					} else if (addOpacity) {
+						itemRgbData[i] = data & rgbOpacity;
+					}
+				}
+			}
+		//#endif
+		return result;
+	}
+
 	
 	//#if polish.useNativeGui
 		/**
@@ -5816,6 +5971,7 @@ public abstract class Item implements UiElement, Animatable
 			return this.nativeItem;
 		}
 	//#endif
+
 
 //#ifdef polish.Item.additionalMethods:defined
 	//#include ${polish.Item.additionalMethods}

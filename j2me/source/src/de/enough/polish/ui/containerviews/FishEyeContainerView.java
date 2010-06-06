@@ -417,7 +417,7 @@ public class FishEyeContainerView extends ContainerView {
 			int width = item.getItemWidth( firstLineWidth, availWidth, availHeight );
 			int height = item.getItemHeight( firstLineWidth, availWidth, availHeight );
 			//#if polish.midp2
-				int[] data = UiAccess.getRgbData(item);
+				int[] data = item.getRgbData( true, 255 );
 				this.originalRgbData[i] = data;
 				this.originalRgbDataWidths[i] = width;
 				if (this.scaleFactor == 100) {
