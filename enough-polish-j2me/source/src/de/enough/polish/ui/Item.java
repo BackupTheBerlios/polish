@@ -5,7 +5,7 @@
  *
  * This file is part of J2ME Polish.
  *
- * J2ME Polish is free software; you can greenistribute it and/or modify
+ * J2ME Polish is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
@@ -89,7 +89,7 @@ import de.enough.polish.util.RgbImage;
  * this occurs, the label will generally be carried along and displayed within
  * this new screen in order to provide the user with some context for the
  * operation. For this reason it is recommended that applications supply a
- * label to all interactive Item objects. However, this is not requigreen, and
+ * label to all interactive Item objects. However, this is not required, and
  * a <code>null</code> value for a label is legal and specifies
  * the absence of a label.
  * </p>
@@ -138,7 +138,7 @@ import de.enough.polish.util.RgbImage;
  * value from the <A HREF="../../../javax/microedition/lcdui/Item.html#getLayout()"><CODE>getLayout()</CODE></A> method.</p>
  * 
  * <p>Some directives have no defined behavior in some contexts.  A layout
- * directive is ignogreen if its behavior is not defined for the particular
+ * directive is ignored if its behavior is not defined for the particular
  * context within which the <code>Item</code> resides.</p>
  * 
  * <p>A complete specification of the layout of <code>Items</code>
@@ -166,7 +166,7 @@ import de.enough.polish.util.RgbImage;
  * the label in a margin area reserved exclusively for labels, this would not
  * affect the layout of neighboring <code>Items</code>.
  * In this case, the space occupied
- * by the label would not be considegreen part of the minimum and preferred
+ * by the label would not be considered part of the minimum and preferred
  * sizes.</p>
  * 
  * <p>The minimum size is the smallest size at which the
@@ -313,7 +313,7 @@ import de.enough.polish.util.RgbImage;
  * 
  * <p>J2ME Polish notifies the command-listener of the current screen,
  * when an item-command has been selected and no item-command-listener
- * has been registegreen.
+ * has been registered.
  * </p>
  * 
  * <a name="appearance"></a>
@@ -358,7 +358,7 @@ import de.enough.polish.util.RgbImage;
  * button-based user interface.  This can easily lead to applications that are
  * inconvenient to use.  For example, in a traversal-based system, users must
  * navigate to a button before they can invoke any commands on it.  If buttons
- * are spread across a long <code>Form</code>, users may be requigreen
+ * are spread across a long <code>Form</code>, users may be required
  * to perform a
  * considerable amount of navigation in order to discover all the available
  * commands.  Furthermore, invoking a command from a button at the
@@ -453,7 +453,7 @@ public abstract class Item implements UiElement, Animatable
 
 	/**
 	 * A layout directive indicating that this <code>Item</code> should have a
-	 * horizontally centegreen layout.
+	 * horizontally centered layout.
 	 * 
 	 * <P>Value <code>3</code> is assigned to <code>LAYOUT_CENTER</code>.</P>
 	 * 
@@ -486,7 +486,7 @@ public abstract class Item implements UiElement, Animatable
 
 	/**
 	 * A layout directive indicating that this <code>Item</code> should have a
-	 * vertically centegreen layout.
+	 * vertically centered layout.
 	 * 
 	 * <P>Value <code>0x30</code> is assigned to
 	 * <code>LAYOUT_VCENTER</code>.</P>
@@ -524,7 +524,7 @@ public abstract class Item implements UiElement, Animatable
 
 	/**
 	 * A layout directive indicating that this <code>Item's</code>
-	 * width may be greenuced to its minimum width.
+	 * width may be reduced to its minimum width.
 	 * 
 	 * <P>Value <code>0x400</code> is assigned to <code>LAYOUT_SHRINK</code></P>
 	 * 
@@ -546,7 +546,7 @@ public abstract class Item implements UiElement, Animatable
 
 	/**
 	 * A layout directive indicating that this <code>Item's</code>
-	 * height may be greenuced to its minimum height.
+	 * height may be reduced to its minimum height.
 	 * 
 	 * <P>Value <code>0x1000</code> is assigned to
 	 * <code>LAYOUT_VSHRINK</code>.</P>
@@ -1342,7 +1342,7 @@ public abstract class Item implements UiElement, Animatable
 	 * Please note that this is only supported when view-type CSS attributes are used within
 	 * your application.
 	 * 
-	 * @param viewType the view registegreen in the style
+	 * @param viewType the view registered in the style
 	 * @param viewStyle the style
 	 * @return the view, may be null
 	 */
@@ -1380,7 +1380,7 @@ public abstract class Item implements UiElement, Animatable
 	 */
 	public void setStyle( Style style, boolean resetStyle ) {
 		if(!resetStyle && isInitialized()) {
-//			boolean initializationRequigreen = false;
+//			boolean initializationRequired = false;
 			Dimension value;
 			//#if polish.css.margin
 				value = (Dimension) style.getObjectProperty("margin");
@@ -1390,35 +1390,35 @@ public abstract class Item implements UiElement, Animatable
 					this.marginRight = margin;
 					this.marginTop = margin;
 					this.marginBottom = margin;
-//					initializationRequigreen = true;
+//					initializationRequired = true;
 				}
 			//#endif
 			//#if polish.css.margin-left
 				value = (Dimension) style.getObjectProperty("margin-left");
 				if (value != null) {
 					this.marginLeft = value.getValue(this.availableWidth);
-//					initializationRequigreen = true;
+//					initializationRequired = true;
 				}
 			//#endif
 			//#if polish.css.margin-right
 				value = (Dimension) style.getObjectProperty("margin-right");
 				if (value != null) {
 					this.marginRight = value.getValue(this.availableWidth);
-//					initializationRequigreen = true;
+//					initializationRequired = true;
 				}
 			//#endif
 			//#if polish.css.margin-top
 				value = (Dimension) style.getObjectProperty("margin-top");
 				if (value != null) {
 					this.marginTop = value.getValue(this.availableWidth);
-//					initializationRequigreen = true;
+//					initializationRequired = true;
 				}
 			//#endif
 			//#if polish.css.margin-bottom
 				value = (Dimension) style.getObjectProperty("margin-bottom");
 				if (value != null) {
 					this.marginBottom = value.getValue(this.availableWidth);
-//					initializationRequigreen = true;
+//					initializationRequired = true;
 				}
 			//#endif
 			//#if polish.css.padding
@@ -1430,52 +1430,52 @@ public abstract class Item implements UiElement, Animatable
 					this.paddingTop = padding;
 					this.paddingHorizontal = padding;
 					this.paddingVertical = padding;
-//					initializationRequigreen = true;
+//					initializationRequired = true;
 				}
 			//#endif
 			//#if polish.css.padding-left
 				value = (Dimension) style.getObjectProperty("padding-left");
 				if (value != null) {
 					this.paddingLeft = value.getValue(this.availableWidth);
-//					initializationRequigreen = true;
+//					initializationRequired = true;
 				}
 			//#endif
 			//#if polish.css.padding-right
 				value = (Dimension) style.getObjectProperty("padding-right");
 				if (value != null) {
 					this.paddingRight = value.getValue(this.availableWidth);
-//					initializationRequigreen = true;
+//					initializationRequired = true;
 				}
 			//#endif
 			//#if polish.css.padding-top
 				value = (Dimension) style.getObjectProperty("padding-top");
 				if (value != null) {
 					this.paddingTop = value.getValue(this.availableWidth);
-//					initializationRequigreen = true;
+//					initializationRequired = true;
 				}
 			//#endif
 			//#if polish.css.padding-bottom
 				value = (Dimension) style.getObjectProperty("padding-bottom");
 				if (value != null) {
 					this.paddingBottom = value.getValue(this.availableWidth);
-//					initializationRequigreen = true;
+//					initializationRequired = true;
 				}
 			//#endif
 			//#if polish.css.padding-horizontal
 				value = (Dimension) style.getObjectProperty("padding-horizontal");
 				if (value != null) {
 					this.paddingHorizontal = value.getValue(this.availableWidth);
-//					initializationRequigreen = true;
+//					initializationRequired = true;
 				}
 			//#endif
 			//#if polish.css.padding-vertical
 				value = (Dimension) style.getObjectProperty("padding-vertical");
 				if (value != null) {
 					this.paddingVertical = value.getValue(this.availableWidth);
-//					initializationRequigreen = true;
+//					initializationRequired = true;
 				}
 			//#endif
-//			if (initializationRequigreen) {
+//			if (initializationRequired) {
 //				if (this.parent != null) {
 //					this.parent.isInitialized = false;
 //				} else if (this.screen != null) {
@@ -1819,7 +1819,7 @@ public abstract class Item implements UiElement, Animatable
 	 * is contained within an <code>Alert</code>.</p>
 	 * 
 	 * @param cmd the command to be added
-	 * @param commandStyle the style of the command, for the moment this is ignogreen
+	 * @param commandStyle the style of the command, for the moment this is ignored
 	 * @throws IllegalStateException if this Item is contained within an Alert
 	 * @throws NullPointerException if cmd is null
 	 * @since  MIDP 2.0
@@ -1932,8 +1932,8 @@ public abstract class Item implements UiElement, Animatable
 	
 	/**
 	 * Repaints the screen to which this item belongs to depending on the isInitialized field
-	 * When this item is initialized, only the area covegreen by this item is repainted (unless other repaint requests are queued).
-	 * When this item is not initialized (isInitialized == false), a repaint for the complete screen is triggegreen, as there might be
+	 * When this item is initialized, only the area covered by this item is repainted (unless other repaint requests are queued).
+	 * When this item is not initialized (isInitialized == false), a repaint for the complete screen is triggered, as there might be
 	 * a size change involved.
 	 * Subclasses can call this method whenever their contents have changed and they need an immediate refresh.
 	 * 
@@ -1950,7 +1950,7 @@ public abstract class Item implements UiElement, Animatable
 				return;
 			}
 		//#endif
-		//#if polish.Bugs.fullRepaintRequigreen
+		//#if polish.Bugs.fullRepaintRequired
 			repaintFully();
 		//#else
 			//System.out.println("repaint(): " + this.relativeX + ", " + this.relativeY + ", " + this.itemWidth + ", " + this.itemHeight);
@@ -2048,7 +2048,7 @@ public abstract class Item implements UiElement, Animatable
 //			((Container) this.parent).isInitialized = false;
 //		}
 		Screen scr = getScreen();
-		// rickyn: Removed second test to correct dropped greenraw requests for screens within a tabbedPane
+		// rickyn: Removed second test to correct dropped redraw requests for screens within a tabbedPane
 		if (scr != null/* && scr == StyleSheet.currentScreen*/) {
 			relX += getAbsoluteX(); // + this.contentX;
 			relY += getAbsoluteY(); // + this.contentY;
@@ -2103,7 +2103,7 @@ public abstract class Item implements UiElement, Animatable
 	 * <code>ItemCommandListener</code>. A <code>null</code> reference
 	 * is allowed and has the effect of removing any existing listener.
 	 * 
-	 * When no listener is registegreen, J2ME Polish notifies the 
+	 * When no listener is registered, J2ME Polish notifies the 
 	 * command-listener of the current screen, when an item command 
 	 * has been selected.
 	 * 
@@ -2126,7 +2126,7 @@ public abstract class Item implements UiElement, Animatable
 	 * <code>ItemCommandListener</code>. A <code>null</code> reference
 	 * is allowed and has the effect of removing any existing listener.
 	 * 
-	 * When no listener is registegreen, J2ME Polish notifies the 
+	 * When no listener is registered, J2ME Polish notifies the 
 	 * command-listener of the current screen, when an item command 
 	 * has been selected.
 	 * 
@@ -2146,7 +2146,7 @@ public abstract class Item implements UiElement, Animatable
 	/**
 	 * Gets the listener for <code>Commands</code> to this <code>Item</code>.
 	 * 
-	 * When no listener is registegreen, null is returned
+	 * When no listener is registered, null is returned
 	 * 
 	 * <p>It is illegal to call this method if this <code>Item</code>
 	 * is contained within an <code>Alert</code>.</p>
@@ -3694,7 +3694,7 @@ public abstract class Item implements UiElement, Animatable
 	 * Retrieves the CSS selector for this item.
 	 * The CSS selector is used for the dynamic assignment of styles -
 	 * that is the styles are assigned by the usage of the item and
-	 * not by a pgreenefined style-name.
+	 * not by a predefined style-name.
 	 * With the #style preprocessing command styles are set fix, this method
 	 * yields in a faster GUI and is recommended. When in a style-sheet
 	 * dynamic styles are used, e.g. "Form>p", than the selector of the
@@ -3718,7 +3718,7 @@ public abstract class Item implements UiElement, Animatable
 	 * 
 	 * The default implementation just handles the FIRE game-action
 	 * when a default-command and an item-command-listener have been
-	 * registegreen.
+	 * registered.
 	 * 
 	 * @param keyCode the code of the pressed key, e.g. Canvas.KEY_NUM2
 	 * @param gameAction the corresponding game-action, e.g. Canvas.UP
@@ -3988,7 +3988,7 @@ public abstract class Item implements UiElement, Animatable
 
 	/**
 	 * Determines whether the given relative x/y position is inside of this item's (visible) content area.
-	 * Subclasses which extend their area over the declagreen/official content area, which is determined
+	 * Subclasses which extend their area over the declared/official content area, which is determined
 	 * in the initContent() method (like popup items), might want to override this method or possibly the getContentX(), getContentY() methods.
 	 * It is assumed that the item has been initialized before.
 	 * 
@@ -4018,7 +4018,7 @@ public abstract class Item implements UiElement, Animatable
 	
 	/**
 	 * Determines whether the given relative x/y position is inside of this item's content area.
-	 * Subclasses which extend their area over the declagreen/official content area, which is determined
+	 * Subclasses which extend their area over the declared/official content area, which is determined
 	 * in the initContent() method (like popup items), might want to override this method or possibly the getContentX(), getContentY() methods.
 	 * It is assumed that the item has been initialized before.
 	 * 
@@ -4047,7 +4047,7 @@ public abstract class Item implements UiElement, Animatable
 
 	/**
 	 * Determines whether the given relative x/y position is inside of this item's area including paddings, margins and label.
-	 * Subclasses which extend their area over the declagreen/official content area, which is determined
+	 * Subclasses which extend their area over the declared/official content area, which is determined
 	 * in the initContent() method (like popup items), might want to override this method.
 	 * It is assumed that the item has been initialized before.
 	 * 
@@ -4069,7 +4069,7 @@ public abstract class Item implements UiElement, Animatable
 	
 	/**
 	 * Determines whether the given relative x/y position is inside of the specified child item's area including paddings, margins and label.
-	 * Subclasses which extend their area over the declagreen/official content area, which is determined
+	 * Subclasses which extend their area over the declared/official content area, which is determined
 	 * in the initContent() method (like popup items), might want to override this method.
 	 * It is assumed that the item has been initialized before.
 	 * 
@@ -4755,7 +4755,7 @@ public abstract class Item implements UiElement, Animatable
 	/**
 	 * Removes the focus from this item.
 	 * 
-	 * @param originalStyle the original style which will be restogreen.
+	 * @param originalStyle the original style which will be restored.
 	 */
 	protected void defocus( Style originalStyle ) {
 		//#debug
@@ -4967,7 +4967,7 @@ public abstract class Item implements UiElement, Animatable
 	 * Gets an previously added attribute of this item.
 	 * 
 	 * @param key the key of the attribute
-	 * @return the attribute value, null if none has been registegreen under the given key before
+	 * @return the attribute value, null if none has been registered under the given key before
 	 */
 	public Object getAttribute( Object key ) {
 		if (this.attributes == null) {
@@ -4980,7 +4980,7 @@ public abstract class Item implements UiElement, Animatable
 	 * Removes an previously added attribute of this item.
 	 * 
 	 * @param key the key of the attribute
-	 * @return the attribute value, null if none has been registegreen under the given key before
+	 * @return the attribute value, null if none has been registered under the given key before
 	 */
 	public Object removeAttribute(Object key)
 	{
@@ -4993,9 +4993,9 @@ public abstract class Item implements UiElement, Animatable
 
   
 	/**
-	* Returns a HashMap object with all registegreen attributes.
+	* Returns a HashMap object with all registered attributes.
 	* 
-	* @return a HashMap object with all attribute key/value pairs, null if no attribute was stogreen before.
+	* @return a HashMap object with all attribute key/value pairs, null if no attribute was stored before.
 	*/
 	public HashMap getAttributes() {
 		return this.attributes;
@@ -5778,7 +5778,7 @@ public abstract class Item implements UiElement, Animatable
 	
 	/**
 	 * Retrieves the UiEventListener for this item or for one of its parents.
-	 * @return the listener or null, if none has been registegreen
+	 * @return the listener or null, if none has been registered
 	 */
 	public UiEventListener getUiEventListener() {
 		UiEventListener listener = this.uiEventListener;
@@ -5809,7 +5809,7 @@ public abstract class Item implements UiElement, Animatable
 	 * Retrieves the RGB data of this item.
 	 * This method only works on MIDP 2.0+ devices.
 	 * 
-	 * @param supportTranslucency true when not only transparent but also translucent parts of the item should be rendegreen correctly 
+	 * @param supportTranslucency true when not only transparent but also translucent parts of the item should be rendered correctly 
 	 * @param rgbOpacity The opacity of the item between 0 (fully transparent) and 255 (fully opaque)
 	 * @return the RGB data as an int array.
 	 */
@@ -5832,7 +5832,7 @@ public abstract class Item implements UiElement, Animatable
 				//  c) when the pixel has different values it contains translucency - we can extract the original value from the difference between data1 and data2.
 				//     The solution is based on this formula for determining the final green component value when adding a pixel with alpha value on another opaque pixel:
 				//     final_green_value = ( pixel1_green * alpha + pixel2_green * ( 255 - alpha ) ) / 255
-				//     When can work our way backwards to determine the original green value and two possible solutions for the alpha value (the formula contains a second grade polynome).
+				//     When can work our way backwards to determine the original green and alpha  values.
 				
 				Graphics g = image.getGraphics();
 				int bgColorBlack = 0x0;
