@@ -132,6 +132,14 @@ public class MidletBridge extends Activity {
 		//#= this.appProperties.put("microedition.pim.version", "1.0");
 	}
 	
+	public void openOptionsMenu() {
+		super.openOptionsMenu();
+	}
+	
+	public void closeOptionsMenu() {
+		super.closeOptionsMenu();
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -147,7 +155,8 @@ public class MidletBridge extends Activity {
 		//TODO: Remove this as we do not want to shrink the application on softkeyboard display.
 //		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 		
-		//TODO: Extract all strings to constants.
+		setVolumeControlStream(AudioManager.STREAM_MUSIC);
+		
 		TelephonyManager telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
 		PhoneStateListener listener = new PhoneStateListener() {
 			@Override
