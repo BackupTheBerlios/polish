@@ -225,7 +225,7 @@ public class CssConverter extends Converter {
 
 		int blocks = styles.length / BLOCKSIZE +  (styles.length % BLOCKSIZE == 0 ? 0 : 1);
 		codeList.add("static { // init styles:" );
-		for (int i=0; i<blocks; i++) {
+		for (int i=0; i<blocks+1; i++) {
 			codeList.add("\tinitStyles" + i + "();");
 		}
 		codeList.add("}");
@@ -245,6 +245,8 @@ public class CssConverter extends Converter {
 			if (i == blocks -1) {
 				// register all styles in the last static method:
 				// process dynamic styles:
+				codeList.add( "}");
+				codeList.add( "private static final void initStyles" + (i + 1) + "(){");
 				if (styleSheet.containsDynamicStyles()) {
 					Style[] dynamicStyles = styleSheet.getDynamicStyles(); 
 					for (int j = 0; j < dynamicStyles.length; j++) {
