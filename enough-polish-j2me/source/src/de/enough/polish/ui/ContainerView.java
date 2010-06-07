@@ -1067,7 +1067,11 @@ extends ItemView
 			//#if polish.css.view-type-sequential-traversal
 				}
 			//#endif
-			return shiftFocus( true, 0, myItems );
+			boolean allowCycle = this.allowCycling;
+			if (this.isHorizontal && gameAction == Canvas.RIGHT && !this.isVertical) {
+				allowCycle = true;
+			}
+			return shiftFocus( true, 0, myItems, allowCycle );
 			
 		} else if ( 
 				//#if polish.blackberry && !polish.hasTrackballEvents
@@ -1086,7 +1090,11 @@ extends ItemView
 			//#if polish.css.view-type-sequential-traversal
 				}
 			//#endif
-			return shiftFocus( false, 0, myItems );
+			boolean allowCycle = this.allowCycling;
+			if (this.isHorizontal && gameAction == Canvas.LEFT && !this.isVertical) {
+				allowCycle = true;
+			}
+			return shiftFocus( false, 0, myItems, allowCycle );
 		}
 		
 //		System.out.println("getNextItem: returning null for " + getScreen().getKeyName( keyCode )	);
@@ -1106,10 +1114,25 @@ extends ItemView
 	 * @return the item that has been focused or null, when no item has been focused.
 	 */
 	protected Item shiftFocus(boolean forwardFocus, int steps, Item[] items) {
+		return shiftFocus( forwardFocus, steps, items, this.allowCycling );
+	}
+	
+	/**
+	 * Shifts the focus to the next or the previous item.
+	 * 
+	 * @param forwardFocus true when the next item should be focused, false when
+	 * 		  the previous item should be focused.
+	 * @param steps how many steps forward or backward the search for the next focusable item should be started,
+	 *        0 for the current item, negative values go backwards.
+	 * @param items the items of this view
+	 * @param allowCycle true when cycling should be allowed (starting at the first item when the last has been reached and the other way round)
+	 * @return the item that has been focused or null, when no item has been focused.
+	 */
+	protected Item shiftFocus(boolean forwardFocus, int steps, Item[] items, boolean allowCycle) {
 		//#debug
 		System.out.println("ContainerView.shiftFocus( forward=" + forwardFocus + ", steps=" + steps + ", focusedIndex=" + this.focusedIndex + " [container:" + this.parentContainer.focusedIndex + "])" );
 //		System.out.println("parent.focusedIndex=" + this.parentContainer.getFocusedIndex() );
-		boolean allowCycle = this.allowCycling;
+		//boolean allowCycle = this.allowCycling;
 		if (!allowCycle && forwardFocus && steps != 0 && isInBottomRow(this.focusedIndex) ) {
 			return null;
 		}
