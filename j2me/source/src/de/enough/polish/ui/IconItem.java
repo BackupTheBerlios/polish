@@ -184,11 +184,11 @@ implements ImageConsumer
 		this.imageHeight = imgHeight;
 		int yAdjustImage = 0;
 		if (this.imageAlign == Graphics.LEFT || this.imageAlign == Graphics.RIGHT ) {
-			imgWidth += this.paddingHorizontal;
-			this.imageWidth = imgWidth;
-			firstLineWidth -= imgWidth;
-			availWidth -= imgWidth;
-			if (this.isTextVisible) {
+			if (this.isTextVisible && getText() != null) {
+				imgWidth += this.paddingHorizontal;
+				this.imageWidth = imgWidth;
+				firstLineWidth -= imgWidth;
+				availWidth -= imgWidth;
 				if (availWidth <= 0) {
 					availWidth += imgWidth;
 				}
@@ -230,16 +230,16 @@ implements ImageConsumer
 			}
 			this.contentWidth += imgWidth;
 		} else { // image align is top or bottom:
-			//#if polish.css.icon-padding
-				if (this.paddingIcon == 0) {
-					this.paddingIcon = this.paddingVertical;
-				}
-				imgHeight += this.paddingIcon;
-			//#else
-				imgHeight += this.paddingVertical;
-			//#endif
-			this.imageHeight = imgHeight;
-			if (this.isTextVisible) {
+			if (this.isTextVisible && getText() != null) {
+				//#if polish.css.icon-padding
+					if (this.paddingIcon == 0) {
+						this.paddingIcon = this.paddingVertical;
+					}
+					imgHeight += this.paddingIcon;
+				//#else
+					imgHeight += this.paddingVertical;
+				//#endif
+				this.imageHeight = imgHeight;
 				super.initContent(firstLineWidth, availWidth, availHeight);
 			} else {
 				this.contentHeight = 0;
@@ -811,6 +811,31 @@ implements ImageConsumer
 		setInitialized(false);
 	}
 
+	//#if polish.midp2
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#getRgbData(boolean, int)
+	 */
+	public int[] getRgbData(boolean supportTranslucency, int rgbOpacity) {
+		if ( this.background == null 
+			&& this.border == null
+			&& (this.itemWidth == this.imageWidth || this.itemWidth == this.imageWidth + 2)
+			&& (this.itemHeight == this.imageHeight|| this.itemHeight == this.imageHeight + 2) ) 
+		{
+			// this item only displays the image, so we can speed up the RGB retrieval:
+			int[] rgbImageData = new int[ this.itemWidth * this.itemHeight ];
+			int offset = 0;
+			if (this.itemWidth > this.imageWidth) {
+				offset = 1;
+			}
+			if (this.itemHeight > this.imageHeight) {
+				offset += this.itemWidth;
+			}
+			this.image.getRGB(rgbImageData, offset, this.itemWidth, 0, 0, this.imageWidth, this.imageHeight );
+			return rgbImageData;
+		}
+		return super.getRgbData(supportTranslucency, rgbOpacity);
+	}
+	//#endif
 	
 	
 //#ifdef polish.IconItem.additionalMethods:defined
