@@ -9,6 +9,7 @@ import net.rim.device.api.system.TrackwheelListener;
 import net.rim.device.api.ui.Keypad;
 import net.rim.device.api.ui.Field;
 import net.rim.device.api.ui.Manager;
+import net.rim.device.api.ui.component.Menu;
 //#if polish.hasPointerEvents
 	import net.rim.device.api.ui.TouchEvent; 
 //#endif
@@ -73,6 +74,7 @@ public abstract class BaseScreen
 	public Item currentItem;
 	private int lastWidth;
 	private int lastHeight;
+	private boolean ignoreObscureEvent;
 	
     /**
      * Constructs a new <code>Canvas</code> object.
@@ -741,6 +743,9 @@ public abstract class BaseScreen
 	protected void onExposed() {
 		this.isObscured = false;
 		super.onExposed();
+		if (!this.ignoreObscureEvent) {
+			showNotify();
+		}
 	}
 	
 	/* (non-Javadoc)
@@ -749,17 +754,30 @@ public abstract class BaseScreen
 	protected void onObscured() {
 		this.isObscured = true;
 		super.onObscured();
+		if (!this.ignoreObscureEvent) {
+			hideNotify();
+		}
 	}
-	
-   protected void onDisplay() {
-        super.onDisplay();
-        showNotify();
-    }
-    
+
+	//#if polish.JavaPlatform >= BlackBerry/4.3
+	protected void onUiEngineAttached(boolean attached) {
+		if (attached) {
+			showNotify();
+		} else {
+			hideNotify();
+		}
+		super.onUiEngineAttached(attached);
+	}
+	//#else
+	protected void onDisplay() {
+		super.onDisplay();
+		showNotify();
+	}
     protected void onUndisplay() {
         super.onUndisplay();
         hideNotify();
     }
+    //#endif
 
 
 	/* (non-Javadoc)
@@ -777,11 +795,14 @@ public abstract class BaseScreen
             }
     }
 
-    //#if polish.useFullScreen
     /* (non-Javadoc)
      * @see net.rim.device.api.ui.Screen#onMenu(int)
      */
     public boolean onMenu( int instance ) {
+    	//#if !polish.useFullScreen
+    		this.ignoreObscureEvent = true;
+    		//# return super.onMenu(instance);
+    	//#else
             boolean processed = super.onMenu( instance );
             if (processed) {
             	return true;
@@ -815,7 +836,18 @@ public abstract class BaseScreen
                     keyReleased( MENU_KEY );
             //#endif
             return true;
+        //#endif
     }
+    
+    //#if !polish.useFullScreen
+    
+    /* (non-Javadoc)
+	 * @see net.rim.device.api.ui.Screen#onMenuDismissed(net.rim.device.api.ui.component.Menu)
+	 */
+	protected void onMenuDismissed(Menu m) {
+		super.onMenuDismissed(m);
+		this.ignoreObscureEvent = false;
+	}
     //#endif
 
     /* (non-Javadoc)
@@ -887,9 +919,8 @@ public abstract class BaseScreen
     	}
     }
     
-    
-    
-    /**
+
+	/**
      * Detects a focus change and focuses the dummy field if a focus change occured.
      * @param screen the J2ME Polish screen
      * @return true when the focus has changed
