@@ -1443,6 +1443,17 @@ public abstract class BaseScreen
 	
 	public void addCommand( de.enough.polish.ui.Command cmd ) {
 		//#if !tmp.fullscreen
+			Object[] items = this.addedMenuItems.getInternalArray();
+			for (int i = 0; i < items.length; i++) {
+				CommandMenuItem item = (CommandMenuItem) items[i];
+				if (item == null) {
+					break;
+				}
+				if (item.cmd == cmd) {
+					// ignore this command, it's been added already:
+					return;
+				}
+			}
 			CommandMenuItem item = new CommandMenuItem( cmd, Display.getInstance().getNextOrCurrent() );
 			this.addedMenuItems.add(item);
 			addMenuItem( item );
