@@ -123,10 +123,6 @@ public class ResourcesPreCompiler extends PreCompiler {
 		Namespace namespace = rootElement.getNamespace("android");
 
 		Element permissionElement;
-		permissionElement = new Element("uses-permission");
-		permissionElement.setAttribute("name","android.permission.INTERNET",namespace);
-		rootElement.addContent(permissionElement);
-		//TODO: use actual permissions:
 		String permissionsString = env.getVariable("polish.build.android.permissions");
 		if(permissionsString == null || permissionsString.length() == 0){
 			throw new BuildException("The variable 'polish.build.android.permissions' must be defined. Normally it is definied in the platforms.xml file for the Android platforms.");
@@ -181,6 +177,7 @@ public class ResourcesPreCompiler extends PreCompiler {
 
 		Element applicationElement = rootElement.getChild("application");
 		applicationElement.setAttribute("label",midletName,namespace);
+		applicationElement.setAttribute("debuggable","true",namespace);
 		
 		Element activityElement = applicationElement.getChild("activity");
 		activityElement.setAttribute("configChanges","mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|fontScale",namespace);
