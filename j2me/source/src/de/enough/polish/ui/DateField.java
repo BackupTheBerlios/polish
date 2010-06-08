@@ -31,9 +31,9 @@ import java.util.TimeZone;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 
+import de.enough.polish.util.DateUtil;
 import de.enough.polish.util.DrawUtil;
 import de.enough.polish.util.Locale;
-import de.enough.polish.util.TextUtil;
 
 //#if polish.blackberry
 	import net.rim.device.api.ui.Field;
@@ -265,11 +265,12 @@ implements
 		//#endif
 		//#if polish.blackberry
 			this.blackberryDateField = new PolishDateField( 
-					System.currentTimeMillis(),
+					Long.MIN_VALUE,
 					PolishDateField.getDateFormat( getDateFormatPattern() ),
 					PolishDateField.getStyle(this.inputMode) );
 //					PolishDateField.getDateFormat( mode, this.timeZone ),
 //					PolishDateField.EDITABLE );
+			this.blackberryDateField.setTimeZone(this.timeZone);
 			if (this.style != null) {
 				this.blackberryDateField.setStyle( this.style );
 			}
@@ -338,18 +339,6 @@ implements
 	 */
 	public void setDate( Date date)
 	{
-		//#if polish.blackberry
-			if (this.blackberryDateField != null && date != this.date ) {
-				Object bbLock = UiApplication.getEventLock();
-				synchronized (bbLock) {
-	                if (date != null) {
-	                    this.blackberryDateField.setDate( date.getTime() );
-	                } else {
-	                    this.blackberryDateField.setDate( System.currentTimeMillis() );
-	                }
-				}
-			}
-		//#endif
 		if ( date != null && this.inputMode == TIME) {
 			// check if the year-month-day is set to zero (so that the date starts at 1970-01-01)
 			// 1 day =
@@ -374,6 +363,19 @@ implements
 				//System.out.println( this.calendar );
 			}
 		}
+		//#if polish.blackberry
+			if (this.blackberryDateField != null && date != this.date ) {
+				Object bbLock = UiApplication.getEventLock();
+				synchronized (bbLock) {
+					if (date != null) {
+						this.blackberryDateField.setDate( date.getTime() );
+					} else {
+						this.blackberryDateField.setDate( Long.MIN_VALUE );
+					}
+				}
+			}
+		//#endif
+			
 		this.date = date;
 		//#if tmp.useMidp
 		if (this.midpDateField != null) {
@@ -1015,7 +1017,7 @@ implements
 				 || foundNumber != -1)
 			{
 				if (this.date == null) {
-					setDate( new Date( System.currentTimeMillis() ) );
+					setDate( DateUtil.getCurrentTimeZoneDate() );
 				}
 				char c;
 				if (foundNumber != -1) {
