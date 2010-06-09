@@ -3,11 +3,15 @@
  */
 package de.enough.polish.calendar;
 
-import de.enough.polish.io.Serializable;
-
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.TimeZone;
+
+import de.enough.polish.io.Externalizable;
+import de.enough.polish.io.Serializer;
 
 
 /**
@@ -16,12 +20,19 @@ import java.util.TimeZone;
  * @author Nagendra Sharma
  * 
  */
-public class CalendarEntry implements Serializable {
+public class CalendarEntry implements Externalizable {
+	
+	private static final int VERSION = 100;
 
+	/** this entry does not recur at all */
 	public static final int REOCCURENCE_NONE = 0;
+	/** this entry recurs daily */
 	public static final int REOCCURENCE_DAILY = 1;
+	/** this entry recurs weekly */
 	public static final int REOCCURENCE_WEEKLY = 2;
+	/** this entry recurs monthly */
 	public static final int REOCCURENCE_MONTHLY = 3;
+	/** this entry recurs yearly */
 	public static final int REOCCURENCE_YEARLY = 4;
 	
 	/**
@@ -645,11 +656,221 @@ public class CalendarEntry implements Serializable {
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
+
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.io.Externalizable#write(java.io.DataOutputStream)
+	 */
+	public void write(DataOutputStream out) throws IOException {
+		out.writeInt(VERSION);
+		long time = -1;
+		if (this.startDate != null) {
+			time = this.startDate.getTime();
+		}
+		out.writeLong( time );
+		time = -1;
+		if (this.endDate != null) {
+			time = this.endDate.getTime();
+		}
+		out.writeLong( time );
+		time = -1;
+		if (this.createdDate != null) {
+			time = this.createdDate.getTime();
+		}
+		out.writeLong( time );
+		time = -1;
+		if (this.lastModifiedDate != null) {
+			time = this.lastModifiedDate.getTime();
+		}
+		out.writeLong( time );
+		time = -1;
+		if (this.timeStamp != null) {
+			time = this.timeStamp.getTime();
+		}
+		out.writeLong( time );
+		out.writeBoolean( this.isAllday );
+		out.writeInt( this.durationInMinutes );
+		out.writeInt( this.reoccurence );
+		out.writeInt( this.sequence );
+		boolean isNotNull = (this.summary != null);
+		out.writeBoolean( isNotNull );
+		if (isNotNull) {
+			out.writeUTF( this.summary );
+		}
+		out.writeInt( this.alarm );
+		isNotNull = (this.notes != null);
+		out.writeBoolean( isNotNull );
+		if (isNotNull) {
+			out.writeUTF( this.notes );
+		}
+		isNotNull = (this.otherFields != null);
+		out.writeBoolean( isNotNull );
+		if (isNotNull) {
+			Serializer.serialize(this.otherFields, out);
+		}
+		isNotNull = (this.location != null);
+		out.writeBoolean(isNotNull);
+		if (isNotNull) {
+			out.writeUTF(this.location);
+		}
+		isNotNull = (this.description != null);
+		out.writeBoolean(isNotNull);
+		if (isNotNull) {
+			out.writeUTF(this.description);
+		}
+		isNotNull = (this.organizer != null);
+		out.writeBoolean(isNotNull);
+		if (isNotNull) {
+			out.writeUTF(this.organizer);
+		}		
+		isNotNull = (this.status != null);
+		out.writeBoolean(isNotNull);
+		if (isNotNull) {
+			out.writeUTF(this.status);
+		}
+		isNotNull = (this.type != null);
+		out.writeBoolean(isNotNull);
+		if (isNotNull) {
+			out.writeUTF(this.type);
+		}
+		isNotNull = (this.id != null);
+		out.writeBoolean(isNotNull);
+		if (isNotNull) {
+			out.writeUTF(this.id);
+		}
+		isNotNull = (this.userId != null);
+		out.writeBoolean(isNotNull);
+		if (isNotNull) {
+			out.writeUTF(this.userId);
+		}
+		isNotNull = (this.classType != null);
+		out.writeBoolean(isNotNull);
+		if (isNotNull) {
+			out.writeUTF(this.classType);
+		}
+		isNotNull = (this.category != null);
+		out.writeBoolean(isNotNull);
+		if (isNotNull) {
+			this.category.write( out );
+		}
+		isNotNull = (this.calendarAlarm != null);
+		out.writeBoolean(isNotNull);
+		if (isNotNull) {
+			this.calendarAlarm.write( out );
+		}
+		isNotNull = (this.eventRepeatRule != null);
+		out.writeBoolean(isNotNull);
+		if (isNotNull) {
+			this.eventRepeatRule.write( out );
+		}
+		isNotNull = (this.timeZone != null);
+		out.writeBoolean( isNotNull );
+		if (isNotNull) {
+			out.writeUTF(this.timeZone.getID());
+		}
+	}
 	
-	
-	
-	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.io.Externalizable#read(java.io.DataInputStream)
+	 */
+	public void read(DataInputStream in) throws IOException {
+		int version = in.readInt();
+		if (version != VERSION) {
+			throw new IOException("unknown version " + version);
+		}
+		long time = in.readLong();
+		if (time != -1) {
+			this.startDate = new Date( time );
+		}
+		time = in.readLong();
+		if (time != -1) {
+			this.endDate = new Date( time );
+		}
+		time = in.readLong();
+		if (time != -1) {
+			this.createdDate = new Date( time );
+		}
+		time = in.readLong();
+		if (time != -1) {
+			this.lastModifiedDate = new Date( time );
+		}
+		time = in.readLong();
+		if (time != -1) {
+			this.timeStamp = new Date( time );
+		}
+		this.isAllday = in.readBoolean();
+		this.durationInMinutes = in.readInt();
+		this.reoccurence = in.readInt();
+		this.sequence = in.readInt();
+		boolean isNotNull = in.readBoolean();
+		if (isNotNull) {
+			this.summary = in.readUTF();
+		}
+		this.alarm = in.readInt();
+		isNotNull = in.readBoolean();
+		if (isNotNull) {
+			this.notes = in.readUTF();
+		}
+		isNotNull = in.readBoolean();
+		if (isNotNull) {
+			this.otherFields = (Hashtable) Serializer.deserialize(in);
+		}
+		isNotNull = in.readBoolean();
+		if (isNotNull) {
+			this.location = in.readUTF();
+		}
+		isNotNull = in.readBoolean();
+		if (isNotNull) {
+			this.description = in.readUTF();
+		}
+		isNotNull = in.readBoolean();
+		if (isNotNull) {
+			this.organizer = in.readUTF();
+		}
+		isNotNull = in.readBoolean();
+		if (isNotNull) {
+			this.status = in.readUTF();
+		}
+		isNotNull = in.readBoolean();
+		if (isNotNull) {
+			this.type = in.readUTF();
+		}
+		isNotNull = in.readBoolean();
+		if (isNotNull) {
+			this.id = in.readUTF();
+		}
+		isNotNull = in.readBoolean();
+		if (isNotNull) {
+			this.userId = in.readUTF();
+		}
+		isNotNull = in.readBoolean();
+		if (isNotNull) {
+			this.classType = in.readUTF();
+		}
+		isNotNull = in.readBoolean();
+		if (isNotNull) {
+			this.category = new CalendarCategory();
+			this.category.read(in);
+		}
+		isNotNull = in.readBoolean();
+		if (isNotNull) {
+			this.calendarAlarm = new CalendarAlarm();
+			this.calendarAlarm.read(in);
+		}
+		isNotNull = in.readBoolean();
+		if (isNotNull) {
+			this.eventRepeatRule = new EventRepeatRule();
+			this.eventRepeatRule.read(in);
+		}
+		isNotNull = in.readBoolean();
+		if (isNotNull) {
+			String timeZoneId = in.readUTF();
+			this.timeZone = TimeZone.getTimeZone(timeZoneId);
+		}
+	}
+
 	
 
 }

@@ -1,14 +1,21 @@
 package de.enough.polish.calendar;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.Date;
 
-import de.enough.polish.io.Serializable;
+import de.enough.polish.io.Externalizable;
 
 /**
- * @author Nagendra Sharma
+ * Allows to add complex repeat rules to CalendarEntries or other events.
  * 
+ * @author Nagendra Sharma
+ * @author Robert Virkus
  */
-public class EventRepeatRule  implements Serializable{
+public class EventRepeatRule  implements Externalizable {
+	
+	private static final int VERSION = 100;
 
 	/**
 	 * field to contain interval of repeat
@@ -39,6 +46,13 @@ public class EventRepeatRule  implements Serializable{
 	 * field to contain starting day of week according to calendar
 	 */
 	private String weekStart;
+	
+	/**
+	 * Creates a new empty repeat rule.
+	 */
+	public EventRepeatRule() {
+		// use methods for defining the repeat rule
+	}
 
 	/**
 	 * @return returns which day of month for repeat
@@ -129,6 +143,66 @@ public class EventRepeatRule  implements Serializable{
 	 */
 	public void setWeekStart(String weekStart) {
 		this.weekStart = weekStart;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.io.Externalizable#read(java.io.DataInputStream)
+	 */
+	public void read(DataInputStream in) throws IOException {
+		int version = in.readInt();
+		if (version != VERSION) {
+			throw new IOException("unknown version " + version);
+		}
+		this.interval = in.readInt();
+		this.byMonthDay = in.readInt();
+		boolean isNotNull = in.readBoolean();
+		if (isNotNull) {
+			this.untilDate = new Date( in.readLong() );
+		}
+		isNotNull = in.readBoolean();
+		if (isNotNull) {
+			this.byDay = in.readUTF();
+		}
+		isNotNull = in.readBoolean();
+		if (isNotNull) {
+			this.frequency = in.readUTF();
+		}
+		isNotNull = in.readBoolean();
+		if (isNotNull) {
+			this.weekStart = in.readUTF();
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.io.Externalizable#write(java.io.DataOutputStream)
+	 */
+	public void write(DataOutputStream out) throws IOException {
+		out.writeInt( VERSION );
+		out.writeInt( this.interval );
+		out.writeInt( this.byMonthDay );
+		boolean isNotNull = (this.untilDate != null);
+		out.writeBoolean(isNotNull);
+		if (isNotNull) {
+			out.writeLong(this.untilDate.getTime());
+		}
+		isNotNull = (this.byDay != null);
+		out.writeBoolean(isNotNull);
+		if (isNotNull) {
+			out.writeUTF(this.byDay);
+		}
+		isNotNull = (this.frequency != null);
+		out.writeBoolean(isNotNull);
+		if (isNotNull) {
+			out.writeUTF(this.frequency);
+		}
+		isNotNull = (this.weekStart != null);
+		out.writeBoolean(isNotNull);
+		if (isNotNull) {
+			out.writeUTF(this.weekStart);
+		}
+
 	}
 
 }

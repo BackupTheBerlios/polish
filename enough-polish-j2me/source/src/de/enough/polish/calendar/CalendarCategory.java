@@ -3,30 +3,45 @@
  */
 package de.enough.polish.calendar;
 
-import de.enough.polish.io.Serializable;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
+import de.enough.polish.io.Externalizable;
 import de.enough.polish.util.ArrayList;
 
 /**
+ * Represents a category for a calendar entry (e.g. office, private, holidays, etc).
+ * 
  * @author Ramakrishna
  * @author Timon
  */
-public class CalendarCategory implements Serializable {
+public class CalendarCategory implements Externalizable {
+	private static final int VERSION = 100;
 	private String name;
 	private String id;
 	private transient CalendarCategory parentCategory;
 	private ArrayList childCategories;
 	private String image;	
 	
+	/**
+	 * Creates a new empty category.
+	 */
+	public CalendarCategory() {
+		this(null, null, null, null, null);
+	}
+
+	
 	public CalendarCategory(String name){
-		this(name, null);
+		this(name, null, null, null, null);
 	}
 	
 	public CalendarCategory(String name, String id){
-		this(name, id, null);
+		this(name, id, null, null, null);
 	}
 	
 	public CalendarCategory(String name, String id, CalendarCategory parentCategory){
-		this(name, id, parentCategory, null);
+		this(name, id, parentCategory, null, null);
 	}
 	
 	public CalendarCategory(String name, String id, CalendarCategory parentCategory, ArrayList childCategories){
@@ -41,6 +56,7 @@ public class CalendarCategory implements Serializable {
 		this.image = image;
 	}
 	
+
 	public void setName( String name ) {
 		this.name = name;
 	}
@@ -89,5 +105,76 @@ public class CalendarCategory implements Serializable {
 				child.setParentCategory(this);
 			}
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.io.Externalizable#read(java.io.DataInputStream)
+	 */
+	public void read(DataInputStream in) throws IOException {
+		int version = in.readInt();
+		if (version != VERSION) {
+			throw new IOException("unknown version " + version);
+		}
+		boolean isNotNull = in.readBoolean();
+		if (isNotNull) {
+			this.name = in.readUTF();
+		}
+		isNotNull = in.readBoolean();
+		if (isNotNull) {
+			this.id = in.readUTF();
+		}
+		isNotNull = in.readBoolean();
+		if (isNotNull) {
+			this.image = in.readUTF();
+		}
+		isNotNull = in.readBoolean();
+		if (isNotNull) {
+			int size = in.readInt();
+			this.childCategories = new ArrayList( size );
+			for (int i = 0; i < size; i++) {
+				CalendarCategory child = new CalendarCategory();
+				child.read(in);
+				child.setParentCategory(this);
+				this.childCategories.add(child);
+			}
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.io.Externalizable#write(java.io.DataOutputStream)
+	 */
+	public void write(DataOutputStream out) throws IOException {
+		out.writeInt( VERSION );
+		boolean isNotNull = (this.name != null);
+		out.writeBoolean(isNotNull);
+		if (isNotNull) {
+			out.writeUTF(this.name);
+		}
+		isNotNull = (this.id != null);
+		out.writeBoolean(isNotNull);
+		if (isNotNull) {
+			out.writeUTF(this.id);
+		}
+		isNotNull = (this.image != null);
+		out.writeBoolean(isNotNull);
+		if (isNotNull) {
+			out.writeUTF(this.image);
+		}
+		isNotNull = (this.childCategories != null);
+		out.writeBoolean(isNotNull);
+		if (isNotNull) {
+			out.writeInt( this.childCategories.size() );
+			Object[] objects = this.childCategories.getInternalArray();
+			for (int i = 0; i < objects.length; i++) {
+				CalendarCategory child = (CalendarCategory) objects[i];
+				if (child == null) {
+					break;
+				}
+				child.write(out);
+			}
+		}
+
 	}
 }
