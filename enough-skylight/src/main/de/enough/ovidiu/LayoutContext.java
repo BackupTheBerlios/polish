@@ -1,26 +1,34 @@
 package de.enough.ovidiu;
 
 import de.enough.polish.util.ArrayList;
+import de.enough.skylight.renderer.debug.BuildDebug;
 import de.enough.skylight.renderer.node.CssElement;
+import de.enough.skylight.renderer.node.TextCssElement;
 
 public class LayoutContext 
 {	
-	
+	// in the content
 	int currentYPosition = 0;
-	
+
+        // in the content
 	int currentXPosition = 0;
-	
+
+        // in the content
 	int startXPosition = 0;
 	
 	int maximumXUsed = 0;
 	
 	int maximumYUsed = 0;
+
+        int maxPossibleContentWidth = 0;
 	
 	Box box = null;
 	
 	FloatBoxManager floats = null;
 	
 	ArrayList currentRow = new ArrayList();
+
+        ArrayList savedForLater = new ArrayList();
 	
 	int childPos = 0;
 	int childSize= 0;
@@ -40,8 +48,17 @@ public class LayoutContext
 	public void setCurrentYPosition(int y)
 	{
 		currentYPosition = y;
-		currentXPosition = floats.leftIntersectionPoint(box.getAbsoluteX() + box.marginLeft, box.getAbsoluteY() + y + box.marginTop, currentRowMaxWidth);
+		currentXPosition = floats.leftIntersectionPoint(box.getAbsoluteX() + box.marginLeft + box.paddingLeft, box.getAbsoluteY() + y + box.marginTop + box.paddingTop, currentRowMaxWidth, box);
 	}
+
+        public void setMaxPossibleContentWidth(int width)
+        {
+            if ( width == 0 )
+            {
+                
+            }
+            maxPossibleContentWidth = width ;
+        }
 	
 	public int getCurrentY()
 	{
@@ -82,9 +99,35 @@ public class LayoutContext
 			return 0;
 		}
 	}
+
+
+        public void removeFloatsForBox(Box b)
+        {
+            floats.removeFloatsForBox(b);
+        }
+
+        public boolean doesNotFitWithin(Box source)
+        {
+            return (source.getTotalWidth() > box.contentWidth);
+        }
+
+        public void forcePlacementOnSeparateRow(Box box)
+        {
+            do
+            {
+            nextRow(1);
+            removeFloatsForBox(box);
+            prepareToPlaceOnCurrentRow(box);
+            }
+            while ( floats.lineOverlapsAnyFloat(box.getAbsoluteX(), box.getAbsoluteY(), box.getTotalWidth()) ) ;
+
+            placeOnCurrentRow(box);
+            nextRow();
+        }
 	
 	public boolean fitsOnCurrentRow(Box box)
 	{
+                System.out.println("> " + currentRowMaxWidth + " " + getCurrentRowWidth() + " " + box.getTotalWidth() );
 		if (getCurrentRowWidth() + box.getTotalWidth() <= currentRowMaxWidth)
 		{			
 			return true;
@@ -104,6 +147,24 @@ public class LayoutContext
 		box.y = getCurrentY()  ;
 		box.x = getCurrentX() ;
 	}
+
+        public boolean nextChildFromSavedElements = true ;
+
+        public void saveForLater(Box b)
+        {
+            nextChildFromSavedElements = false;
+            removeFloatsForBox(b);
+            if ( savedForLater.indexOf(b) < 0 )
+            {
+                System.out.println("SAVED FLOAT FOR LATER!");
+                savedForLater.add(b);
+            }
+        }
+
+        public void backOneRegularChild()
+        {
+            childPos--;
+        }
 	
 	public void arrangeCurrentRow()
 	{
@@ -149,20 +210,25 @@ public class LayoutContext
 		Box first, second;
 		if ( currentRow.size() > 1 )
 		{
-			i = 1;
-			while ( i < currentRow.size() )
+			i = 0;
+			while ( i < currentRow.size()-1 )
 			{
-				first = (Box) currentRow.get(i-1);
-				second = (Box) currentRow.get(i);
+				first = (Box) currentRow.get(i);
+				second = (Box) currentRow.get(i+1);
 				if (  ( first.correspondingNode.getContentType() == CssElement.CONTENT_TEXT )  &&
 					 ( second.correspondingNode.getContentType() == CssElement.CONTENT_TEXT ) ) 
 				{
-					String text = first.correspondingNode.getValue() + second.correspondingNode.getValue() ;
-					//System.out.println("MY VALUE: " + text);
-					first.correspondingNode.setValue( text );
-					second.parent.removeChild(second);
+                                        TextCssElement elem1 = (TextCssElement) first.correspondingNode ;
+                                        TextCssElement elem2 = (TextCssElement) second.correspondingNode ;
+					String text = elem1.getValue() + elem2.getValue() ;
+					System.out.println("MY VALUE: " + text);
+					elem1.setValue( text );
+                                        elem1.getParent().getParent().getChildren().remove( elem2);
+                                        elem2.getParent().getParent().getChildren().remove( elem2);
+                                        first.parent.removeChild(second);
 					currentRow.remove(second);
-					StyleManager.mapStyleToBox(first) ; 
+					StyleManager.mapStyleToBox(first) ;
+                                        childPos--;
 					continue;
 				}
 				i++;
@@ -172,15 +238,26 @@ public class LayoutContext
 		// Update X and Y positions for items on the current row
 		i = 0;
 		size = currentRow.size();
-		int xPos = startXPosition;
+		int leftmostEdge = startXPosition;
+                int rightmostEdge = 0;
+
+                // If no width is specified, use the width of the row as the starting
+                // rightmost edge
+                if ( StyleManager.getProperty(box, "width") == null )
+                {
+                    rightmostEdge = startXPosition + getCurrentRowWidth() ;
+                }
+                else // use the current row max width
+                {
+                    rightmostEdge = startXPosition + currentRowMaxWidth ;
+                }
+
+
 		while ( i < size )
 		{
 			temp = (Box) currentRow.get(i);
 			
-			temp.y = currentYPosition;
-			
-			temp.x = xPos ;
-			
+			temp.y = currentYPosition;			
 			
 			if ( ! "none".equals( StyleManager.getProperty(temp, "float") ) ) 
 			{
@@ -188,17 +265,29 @@ public class LayoutContext
 				if ( "right".equals( StyleManager.getProperty(temp, "float") ) )
 				{
 					type = FloatBoxManager.FLOAT_RIGHT;
+
+                                        // Align the box according the the rightmost edge
+                                        // and adjust it accordingly
+                                        temp.x = rightmostEdge - temp.getTotalWidth();
+                                        rightmostEdge = temp.x;
 				}
-				floats.addFloat(temp.getAbsoluteX(), temp.getAbsoluteY(), temp.getTotalWidth(), temp.getTotalHeight(), type);
+                                else
+                                {
+                                    // Left float
+                                    temp.x = leftmostEdge ;
+                                    leftmostEdge += temp.getTotalWidth();
+                                }
+				FloatBoxManager.Float f = floats.addFloat(temp.getAbsoluteX(), temp.getAbsoluteY(), temp.getTotalWidth(), temp.getTotalHeight(), type, temp);
 			}
 			else // This is not a float
 			{
 				// TODO: Proper vertical align
 				temp.y += ( getCurrentRowHeight() - temp.getTotalHeight() );
-			}
-			
-			xPos += temp.getTotalWidth();
-			
+
+                                // Align the text to the left
+                                temp.x = leftmostEdge ;
+                                leftmostEdge += temp.getTotalWidth();
+			}	
 			
 			i++;
 		}
@@ -209,6 +298,7 @@ public class LayoutContext
 	
 	public void placeOnCurrentRow(Box box)
 	{
+                savedForLater.remove(box);
 		currentRow.add(box);
 		
 		// See if this box has the biggest Y so far
@@ -241,12 +331,12 @@ public class LayoutContext
 			
 		}
 	}
+        
 
         public void nextRow()
         {
             nextRow(0);
         }
-	
 	public void nextRow(int minimumOffset)
 	{
 		// Arrange the current row
@@ -255,21 +345,24 @@ public class LayoutContext
 		// Step 4 : Profit
 		
 		// Increment the Y position
-		setCurrentYPosition(Math.max(minimumOffset,currentYPosition + getCurrentRowHeight()) );
+		setCurrentYPosition(Math.max(currentYPosition + minimumOffset,currentYPosition + getCurrentRowHeight()) );
 				
 		// Clear current row buffer
 		currentRow.clear();
 		
 		// Update left offset for this row
-		int x = box.getAbsoluteX() + box.marginLeft;
-		int y = box.getAbsoluteY() + getCurrentY() + box.marginTop;
-		int theoreticalMaxWidth = box.contentWidth;		
-		currentRowMaxWidth = getMaxRowWidth(currentYPosition);
-		startXPosition = floats.leftIntersectionPoint(x, y, theoreticalMaxWidth) ;
+		int x = box.getAbsoluteX() + box.marginLeft + box.paddingLeft;
+		int y = box.getAbsoluteY() + getCurrentY() + box.marginTop + box.paddingTop ;
+		int theoreticalMaxWidth = 99999999;
+                //System.out.println("OORO: " + minimumOffset + " " + currentYPosition );
+                currentRowMaxWidth = getMaxRowWidth(currentYPosition);
+		startXPosition = floats.leftIntersectionPoint(x, y, theoreticalMaxWidth, box);
 		currentXPosition = startXPosition ;
 					
 		rowHeightFloats = Integer.MAX_VALUE;
 		rowHeightNoFloats = 0;
+
+                nextChildFromSavedElements = true ;
 		
 	}
 	
@@ -280,16 +373,20 @@ public class LayoutContext
 	 */
 	public int getMaxRowWidth(int yPosition)
 	{
-		int x = box.getAbsoluteX() + box.marginLeft;
-		int y = box.getAbsoluteY() + yPosition + box.marginTop ;
-		int theoreticalMaxWidth = box.parent.contentWidth;
-		
-		
-		int leftPoint = floats.leftIntersectionPoint(x, y, theoreticalMaxWidth);
-		int rightPoint = floats.rightIntersectionPoint(x, y, theoreticalMaxWidth);			
+		int x = box.getAbsoluteX() + box.marginLeft + box.paddingLeft;
+		int y = box.getAbsoluteY() + yPosition + box.marginTop + box.paddingTop;
+		int theoreticalMaxWidth = box.parent.contentWidth - box.marginLeft - box.marginRight - box.paddingLeft - box.paddingRight ;
 
-                System.out.println("MRW: " + yPosition + " " + (rightPoint - leftPoint));
-                LayoutModeler.text(box, 0);
+                if ( box.contentWidth > 0 )
+                {
+                    theoreticalMaxWidth = box.contentWidth ;
+                }
+		
+		int leftPoint = floats.leftIntersectionPoint(x, y, theoreticalMaxWidth, box);
+		int rightPoint = floats.rightIntersectionPoint(x, y, theoreticalMaxWidth, box);
+
+//                System.out.println("MRW: " + yPosition + " " + leftPoint + " " + rightPoint + " " + (rightPoint - leftPoint));
+               // LayoutModeler.text(box, 0);
 		return (rightPoint - leftPoint) ;
 		
 	}
@@ -299,17 +396,16 @@ public class LayoutContext
 	 * @param yPosition
 	 * @return
 	 */
-	public int getMaxBoxWidth(Box box)
+	public int getMaxContentWidth(Box box)
 	{
-		int x = box.getAbsoluteX();
-		int y = box.parent.getAbsoluteY() + box.y + box.parent.marginTop;
-		int theoreticalMaxWidth = box.parent.contentWidth;
+		int x = box.getAbsoluteX() + box.marginLeft + box.paddingLeft;
+		int y = box.getAbsoluteY() + box.marginTop + box.paddingTop;
+		int theoreticalMaxWidth = box.parent.contentWidth - box.marginLeft - box.marginRight - box.paddingLeft - box.paddingRight ;
 		
-		int leftCut = floats.leftIntersectionPoint(x, y, theoreticalMaxWidth);
-		int rightCut = floats.rightIntersectionPoint(x, y, theoreticalMaxWidth);	
-		
-		
-		return (rightCut-leftCut);
+		int leftCut = floats.leftIntersectionPoint(x, y, theoreticalMaxWidth, box);
+		int rightCut = floats.rightIntersectionPoint(x, y, theoreticalMaxWidth, box);
+				
+		return (rightCut-leftCut) ;
 		
 	}
 	
@@ -335,6 +431,7 @@ public class LayoutContext
 		this.box = box;
 		this.floats = floats;
 		nextRow();
+                setMaxPossibleContentWidth(box.parent.contentWidth);
 		children = box.correspondingNode.getChildren() ;
 		childPos = 0;
 		childSize = children.size() ;
@@ -343,7 +440,7 @@ public class LayoutContext
 	
 	public boolean hasMoreChildren()
 	{
-		if ( childPos < childSize )
+		if ( (childPos < children.size() ) || ( savedForLater.size() > 0 ) )
 		{
 			return true;
 		}
@@ -352,13 +449,59 @@ public class LayoutContext
 			return false;
 		}
 	}
+
+        public boolean hasMoreRegularChildren()
+        {
+            if ( (childPos < children.size() ) )
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+        }
+
+        public boolean hasBeenSavedForLater(Box b)
+        {
+            return ( savedForLater.indexOf(b) >= 0);
+        }
+
+        public boolean hasSavedForLaterChildren()
+        {
+            return ( savedForLater.size() > 0 );
+        }
 	
 	public Box nextChild()
 	{
-		CssElement temp = (CssElement) children.get(childPos);			
-		Box child = new Box(temp);
-		childPos++;
-		return child;
+		CssElement temp = null ;
+
+                if ( ( (savedForLater.size() > 0 ) && nextChildFromSavedElements) ||
+                      ( (savedForLater.size() > 0) && ( childPos >= childSize ) ) )
+                {
+                    return (Box) savedForLater.get(0);
+                }
+                else
+                {
+                    System.out.println("KIDS: " + childPos + " " + children.size() );
+                    temp = (CssElement) children.get(childPos);
+                    childPos++;
+                
+                
+                    Box child = null ;
+                    if ( temp.box != null )
+                    {
+                        child = temp.box;
+                    }
+                    else
+                    {
+                        child = new Box(temp);
+                        temp.box = child ;
+                    }
+                    return child;
+                
+                }
 	}
 
 }

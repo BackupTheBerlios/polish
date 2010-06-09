@@ -18,41 +18,7 @@ public class StyleManager {
 	
 	
 	public static void mapStyleToBox(Box box)
-	{
-		// Width
-		if ( getProperty(box,"width") != null )
-		{
-			Dimension d = (Dimension) getProperty(box, "width");
-			if ( d != null )
-			{
-				if (d.isPercent())
-				{
-					box.contentWidth = (d.getValue(box.parent.contentWidth));
-				}
-				else
-				{
-					box.contentWidth = (d.getValue(100));
-				}
-			}
-		}
-		
-		// Height
-		if ( getProperty(box,"height") != null )
-		{
-			Dimension d = (Dimension) getProperty(box, "height");
-			if ( d != null )
-			{
-				if (d.isPercent())
-				{
-					box.contentHeight = (d.getValue(box.parent.contentHeight));
-				}
-				else
-				{
-					box.contentHeight = (d.getValue(100));
-				}
-			}
-		}
-
+	{	
                 // Margins
                 // TODO: Implement properly (e.g. take into consideration margin-left, right, top and bottom,
                 // take into consideration % values and more)
@@ -73,6 +39,69 @@ public class StyleManager {
 
                                 box.marginLeft = box.marginRight = box.marginTop = box.marginBottom = marginValue;
 			}
+		}
+
+                // Paddings
+                // TODO: Implement properly (e.g. take into consideration padding-left, right, top and bottom,
+                // take into consideration % values and more)
+                if ( getProperty(box,"padding") != null )
+		{
+                        int paddingValue = 0;
+			Dimension d = (Dimension) getProperty(box, "padding");
+			if ( d != null )
+			{
+				if (d.isPercent())
+				{
+					paddingValue = (d.getValue(box.parent.contentWidth));
+				}
+				else
+				{
+					paddingValue = (d.getValue(100));
+				}
+
+                                box.paddingLeft = box.paddingRight = box.paddingTop = box.paddingBottom = paddingValue;
+                                if ( box.paddingLeft != 0)
+                                {
+                                    System.out.println("PADDING: " + box.paddingLeft );
+                                }
+			}
+		}
+
+                // Width
+		if ( getProperty(box,"width") != null )
+		{
+			Dimension d = (Dimension) getProperty(box, "width");
+			if ( d != null )
+			{
+				if (d.isPercent())
+				{
+					box.contentWidth = (d.getValue(box.parent.contentWidth));
+
+				}
+				else
+				{
+					box.contentWidth = (d.getValue(100));
+				}
+			}
+                        box.contentWidth = box.contentWidth - box.marginLeft - box.marginRight - box.paddingLeft - box.paddingRight ;
+		}
+
+		// Height
+		if ( getProperty(box,"height") != null )
+		{
+			Dimension d = (Dimension) getProperty(box, "height");
+			if ( d != null )
+			{
+				if (d.isPercent())
+				{
+					box.contentHeight = (d.getValue(box.parent.contentHeight));
+				}
+				else
+				{
+					box.contentHeight = (d.getValue(100));
+				}
+			}
+                        box.contentHeight = box.contentHeight - box.marginBottom - box.marginTop - box.paddingTop - box.paddingBottom ;
 		}
 	}
 	
@@ -130,6 +159,18 @@ public class StyleManager {
                 else if ( propertyName.equals("margin") )
                 {
                     Dimension d = ( Dimension ) (  elem.getStyle().getObjectProperty(MARGIN_ID) );
+                    if ( d == null )
+                    {
+                        return new Dimension(0);
+                    }
+                    else
+                    {
+                        return d;
+                    }
+                }
+                else if ( propertyName.equals("padding") )
+                {
+                    Dimension d = ( Dimension ) (  elem.getStyle().getObjectProperty(PADDING_ID) );
                     if ( d == null )
                     {
                         return new Dimension(0);

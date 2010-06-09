@@ -37,6 +37,8 @@ public class Box
 	public Box parent = null;
 	
 	public String comment = "" ;
+
+        public boolean hasDynamicSize = false ;
 	
 	public Box(CssElement correspondingNode)
 	{
@@ -46,6 +48,7 @@ public class Box
 	public void addChild(Box b)
 	{
 		b.parent = this;
+                children.remove(b);
 		children.add(b);
 	}
 	
@@ -54,6 +57,11 @@ public class Box
 		b.parent = null;
 		children.remove(b);
 	}
+
+        public void removeAllChildren()
+        {
+            children.clear();
+        }
 	
 	public int getAbsoluteX()
 	{
@@ -63,7 +71,7 @@ public class Box
 		}
 		else
 		{
-			return x + parent.getAbsoluteX() + parent.marginLeft ;
+			return x + parent.getAbsoluteX() + parent.marginLeft + parent.paddingLeft;
 		}
 	}
 
@@ -75,7 +83,7 @@ public class Box
 		}
 		else
 		{
-			return y + parent.getAbsoluteY() + parent.marginTop ;
+			return y + parent.getAbsoluteY() + parent.marginTop + parent.paddingTop ;
 		}
 	}
 	
@@ -84,13 +92,11 @@ public class Box
 	
 	public int getTotalWidth()
 	{
-		// TODO: margins, paddings, etc;
 		return contentWidth + paddingLeft + paddingRight + marginLeft + marginRight + borderLeft + borderRight;
 	}
 	
 	public int getTotalHeight()
 	{
-		// TODO: margins, paddings, etc;
-		return contentHeight + paddingTop + paddingBottom +	marginBottom + marginTop + borderBottom + borderTop;
+		return contentHeight + paddingTop + paddingBottom + marginBottom + marginTop + borderBottom + borderTop;
 	}
 }

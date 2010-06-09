@@ -1,5 +1,6 @@
 package de.enough.skylight.renderer.node;
 
+import de.enough.ovidiu.Box;
 import de.enough.ovidiu.NodeInterface;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
@@ -23,7 +24,8 @@ public class CssElement implements HtmlCssElement, NodeInterface{
 	public final static int CONTENT_TEXT = 0x01;
 	public final static int CONTENT_IMAGE = 0x02;
 	public final static int CONTENT_CONTAINING_TEXT = 0x03;
-	
+
+        public Box box = null ;
 	
 	String display = HtmlCssElement.Display.INLINE;
 	

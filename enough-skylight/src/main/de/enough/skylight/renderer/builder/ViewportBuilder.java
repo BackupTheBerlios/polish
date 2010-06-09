@@ -207,7 +207,7 @@ public class ViewportBuilder {
 							}
 							
 							// Font font = element.getStyle().getFont();
-							parentElement.remove(element);
+							element.getParent().remove(element);
 														
 							break;
 						case CssElement.CONTENT_CONTAINING_ELEMENT:

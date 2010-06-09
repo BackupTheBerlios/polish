@@ -24,7 +24,6 @@ public class TextCssElement extends CssElement
 	{
 		super(handler,node,parent,viewportContext);
 		myValue = text;
-		getNode().setNodeValue(text);	
 	}
 	
 	
@@ -47,7 +46,7 @@ public class TextCssElement extends CssElement
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return new ToStringHelper("CssElement").
+		return new ToStringHelper("CssTextElement").
 		add("text", getValue()).
 		add("handler", this.handler).
 		add("node", this.node).
