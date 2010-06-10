@@ -4191,6 +4191,17 @@ implements UiElement, Animatable
 			if (super.isShown()) {
 				requestRepaint();
 			}
+		//#else
+			Object[] commands = getCommands();
+			if (commands != null) {
+				for (int i = 0; i < commands.length; i++) {
+					Command cmd = (Command) commands[i];
+					if (cmd == null) {
+						break;
+					}
+					removeCommand(cmd);
+				}
+			}
 		//#endif
 		//#ifdef tmp.triggerBackCommand
 			this.backCommand = null;
