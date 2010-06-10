@@ -85,28 +85,6 @@ public class RmsStorage
 		this.indexRecordId = -1;
 	}
 	
-	/**
-	 * Closes all master recordstores. Should be called at the end of an 
-	 * application.
-	 */
-	public static void shutdown()
-	{
-		for (int i = 0; i < masterRecordStores.size(); i++) {
-			RecordStore store = (RecordStore)masterRecordStores.get(i);
-			try {
-				//#debug debug
-				System.out.println("closing master recordstore " + store.getName());
-				
-				store.closeRecordStore();
-			} catch (RecordStoreNotOpenException e) {
-				// its already closed
-			} 
-			catch (RecordStoreException e) {
-				//#debug error
-				System.out.println("unable to close master recordstore " + e.toString());
-			}
-		}
-	}
 	
 	/**
 	 * Creates a new RmsStorage that uses a single record store for several stored objects
@@ -179,6 +157,30 @@ public class RmsStorage
 			this.indexRecordId = -1;
 		}
 	}
+	
+	/**
+	 * Closes all master recordstores. Should be called at the end of an 
+	 * application.
+	 */
+	public static void shutdown()
+	{
+		for (int i = 0; i < masterRecordStores.size(); i++) {
+			RecordStore store = (RecordStore)masterRecordStores.get(i);
+			try {
+				//#debug debug
+				System.out.println("closing master recordstore " + store.getName());
+				
+				store.closeRecordStore();
+			} catch (RecordStoreNotOpenException e) {
+				// its already closed
+			} 
+			catch (RecordStoreException e) {
+				//#debug error
+				System.out.println("unable to close master recordstore " + e.toString());
+			}
+		}
+	}
+	
 
 	/**
 	 * Retrieves the record set ID for the given name.
@@ -547,6 +549,9 @@ public class RmsStorage
 		}
 	}
 
+	/**
+	 * Closes the underlying RecordStore - only for cases when one RmsStorage is used for several stores.
+	 */
 	public void close() {
 		try {
 			this.masterRecordStore.closeRecordStore();
@@ -555,6 +560,28 @@ public class RmsStorage
 			System.out.println("Unable to close record store" + e);
 		}
 		this.isClosed = true;
+	}
+
+
+	/**
+	 * Checks if the given store exists
+	 * @param name the name of the store
+	 * @return true when the store exists
+	 */
+	public boolean exists(String name) {
+		if (this.masterRecordStore != null) {
+			return (getRecordSetId(name) != -1);
+		}
+		String[] names = RecordStore.listRecordStores();
+		if (names != null) {
+			for (int i = 0; i < names.length; i++) {
+				String rcdstName = names[i];
+				if (name.equals(rcdstName)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 }
