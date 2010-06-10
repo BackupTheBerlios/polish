@@ -65,10 +65,12 @@ public class RmsStorage
 //#endif
 {
 	
-	private final RecordStore masterRecordStore;
+	private RecordStore masterRecordStore;
 	private final HashMap masterRecordSetIdsByName;
 	private final HashMap masterRecordSetNameById;
 	private final int indexRecordId;
+	private boolean isClosed;
+	private String mastRecordStoreName;
 	
 	static ArrayList masterRecordStores = new ArrayList();
 
@@ -119,6 +121,7 @@ public class RmsStorage
 	{
 		if ( singleRecordStoreName != null ) {
 			try {
+				this.mastRecordStoreName = singleRecordStoreName;
 				this.masterRecordStore = RecordStore.openRecordStore(singleRecordStoreName, true);
 				this.masterRecordSetIdsByName = new HashMap();
 				this.masterRecordSetNameById = new HashMap();
@@ -302,6 +305,7 @@ public class RmsStorage
 	private void saveData(String newKey, String oldKey, byte[] data)throws IOException {
 		try {
 			if (this.masterRecordStore != null) {
+				ensureOpen();
 				int recordSetId = -1;
 				if (oldKey != null){
 					recordSetId = getRecordSetId( oldKey );
@@ -366,6 +370,7 @@ public class RmsStorage
 		RecordStore store = null;
 		try {
 			if (this.masterRecordStore != null) {
+				ensureOpen();
 				int recordId = getRecordSetId(name);
 				if (recordId == -1) {
 					throw new IOException( name + " is unknown");
@@ -432,6 +437,7 @@ public class RmsStorage
 			} else if (this.masterRecordSetIdsByName != null
 	               && !this.masterRecordSetIdsByName.isEmpty())
 			{
+				ensureOpen();
 				Integer id = (Integer) this.masterRecordSetIdsByName.remove(name);
 				this.masterRecordSetNameById.remove( id);
 				if (id != null) {
@@ -529,6 +535,26 @@ public class RmsStorage
 			System.out.println("Unable to retrieve available masterStoreSize" + e );
 		}
 		return -1;
+	}
+	
+	private void ensureOpen() throws IOException {
+		if (this.isClosed && this.masterRecordStore != null) {
+			try {
+				this.masterRecordStore = RecordStore.openRecordStore(this.mastRecordStoreName, true);
+			} catch (Exception e) {
+				throw new IOException(e.toString());
+			}
+		}
+	}
+
+	public void close() {
+		try {
+			this.masterRecordStore.closeRecordStore();
+		} catch (Exception e) {
+			//#debug error
+			System.out.println("Unable to close record store" + e);
+		}
+		this.isClosed = true;
 	}
 	
 }
