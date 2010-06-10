@@ -1093,6 +1093,9 @@ public class Display
 						if (lastScreen != null) {
 							lastScreen._hideNotify();
 						}
+						//#if !tmp.fullScreen
+							screenAnimation.setTitle( nextScreen.getTitle() );
+						//#endif
 						screenAnimation._showNotify();
 						if ( !isShown() ) {
 							this.nativeDisplay.setCurrent( this );
@@ -1113,9 +1116,6 @@ public class Display
 		if (isShown()) {
 			if (this.commandListener != null) {
 				this.commandListener = null;
-				//#if polish.midp2
-					super.setFullScreenMode(true);
-				//#endif
 			}
 			if (canvas != null) {
 				canvas._showNotify();
@@ -1983,7 +1983,7 @@ public class Display
 		this.idle.setTime(System.currentTimeMillis());
 		//#endif
 	}
-
+	
 	
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#keyRepeated(int)

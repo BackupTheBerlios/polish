@@ -882,12 +882,12 @@ implements Displayable
     //#endif
     
     protected void _showNotify() {
+    	Display instance = Display.getInstance();
+    	//#if polish.midp2
+    		instance.setFullScreenMode( (this._commands == null && this._title == null) );
+    	//#endif
     	if (this._commands != null) {
     		Object[] commands = this._commands.getInternalArray();
-    		Display instance = Display.getInstance();
-    		//#if polish.midp2
-    			instance.setFullScreenMode(false);
-    		//#endif
     		for (int i = 0; i < commands.length; i++) {
 				Command cmd = (Command) commands[i];
 				if (cmd == null) {
@@ -899,16 +899,14 @@ implements Displayable
     		instance.setCommandListener(this._commandListener);
     	}
     	//#if !polish.midp1
-	    	if (this._title != null) {
-	    		//#if polish.blackberry
-		    		Object lock = net.rim.device.api.system.Application.getEventLock();
-	                synchronized (lock) {
-				//#endif
-	                	Display.getInstance().setTitle(this._title);
-				//#if polish.blackberry
-	                }
-				//#endif
-	    	}
+    		//#if polish.blackberry
+	    		Object lock = net.rim.device.api.system.Application.getEventLock();
+                synchronized (lock) {
+			//#endif
+                	instance.setTitle(this._title);
+			//#if polish.blackberry
+                }
+			//#endif
     	//#endif
     	this._isShown = true;
     	showNotify();
