@@ -4805,6 +4805,11 @@ implements UiElement, Animatable
 					this.scrollBar.isPointerPressedHandled = false;
 				}
 			//#endif
+			//#if tmp.usingTitle
+				if (!processed && this.title != null) {
+					processed = this.title.handlePointerPressed(x - this.title.relativeX, y - this.title.relativeY);
+				}
+			//#endif
 			//#ifdef tmp.usingTitle
 				//boolean processed = handlePointerPressed( x, y - (this.titleHeight + this.infoHeight + this.subTitleHeight) );
 				if (processed || this.isRepaintRequested) {
@@ -4948,6 +4953,11 @@ implements UiElement, Animatable
 			//#if tmp.useScrollBar
 				if (!processed) {
 					processed = this.scrollBar.handlePointerReleased( x - this.scrollBar.relativeX, y - this.scrollBar.relativeY );
+				}
+			//#endif
+			//#if tmp.usingTitle
+				if (!processed && this.title != null) {
+					processed = this.title.handlePointerReleased(x - this.title.relativeX, y - this.title.relativeY);
 				}
 			//#endif
 				
