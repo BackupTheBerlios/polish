@@ -259,14 +259,14 @@
 	<group>
 		<name>Series60E5</name>
 		<parent>Series60E2FP2</parent>
+		<features>hasPointerEvents</features>
 		<capability name="OS" value="Symbian OS 9.1" />
 		<capability name="JavaPlatform" value="MIDP/2.0, MSA/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="JavaPackage" value="m3g, pdaapi, webservice, sipapi, svgapi, securityapi" />		
 		<capability name="build.Emulator.Skin" value="S60_5th_MIDP_SDK" />
 		<capability name="Bugs" value="" />
-		<capability name="Bugs" value="GaugeNoProgessIndicatorOnAlerts, GameCanvasGetGraphicsNotInConstructor, ExitCommandAlwaysPresent, drawRgbOrigin, TransparencyNotWorkingInNokiaUiApi, displaySetCurrentFlickers, requiresHardcodedCanvasDimensionsInFullScreenMode, OverrideGetWidthGetHeightInFullCanvas" />
-		<capability name="Bugs" value="needsBottomOrientiationForStringDrawing, NoBacklight, videoControlBeforePlayer" />
+		<capability name="Bugs" value="GaugeNoProgessIndicatorOnAlerts, GameCanvasGetGraphicsNotInConstructor, ExitCommandAlwaysPresent, drawRgbOrigin, TransparencyNotWorkingInNokiaUiApi, displaySetCurrentFlickers, requiresHardcodedCanvasDimensionsInFullScreenMode, OverrideGetWidthGetHeightInFullCanvas, needsBottomOrientiationForStringDrawing, NoBacklight, videoControlBeforePlayer" />
 	</group>
 
 	<group>

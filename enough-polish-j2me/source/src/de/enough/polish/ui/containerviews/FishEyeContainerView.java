@@ -130,6 +130,10 @@ public class FishEyeContainerView extends ContainerView {
 		private boolean isPlaceLabelAtTop;
 	//#endif
 		
+	//#if polish.css.fisheyeview-text-style
+		private Style focusedLabelStyle;
+		private Style focusedLabelFocusedStyle;
+	//#endif
 	private final Object lock = new Object();
 	
 	/**
@@ -376,10 +380,20 @@ public class FishEyeContainerView extends ContainerView {
 		//#if polish.css.show-text-in-title
 			if (this.isRemoveText && this.focusedLabel == null && !this.isShowTextInTitle) {
 				this.focusedLabel = new StringItem(null, null);
+				//#if polish.css.fisheyeview-text-style
+					if (this.focusedLabelStyle != null) {
+						this.focusedLabel.setStyle(this.focusedLabelStyle);
+					}
+				//#endif
 			}
 		//#else
 			if (this.isRemoveText && this.focusedLabel == null) {
 				this.focusedLabel = new StringItem(null, null);
+				//#if polish.css.fisheyeview-text-style
+					if (this.focusedLabelStyle != null) {
+						this.focusedLabel.setStyle(this.focusedLabelStyle);
+					}
+				//#endif
 			}
 		//#endif
 
@@ -614,6 +628,11 @@ public class FishEyeContainerView extends ContainerView {
 	protected void defocus(Style originalStyle) {
 		super.defocus(originalStyle);
 		AnimationThread.addAnimationItem( this.parentItem );
+		//#if polish.css.fisheyeview-text-style
+			if (this.focusedLabelFocusedStyle != null && this.focusedLabelStyle != null) {
+				this.focusedLabel.setStyle( this.focusedLabelStyle );
+			}
+		//#endif
 	}
 
 	/* (non-Javadoc)
@@ -622,6 +641,11 @@ public class FishEyeContainerView extends ContainerView {
 	public void focus(Style focusstyle, int direction) {
 		super.focus(focusstyle, direction);
 		AnimationThread.removeAnimationItem( this.parentItem );
+		//#if polish.css.fisheyeview-text-style
+			if (this.focusedLabelFocusedStyle != null) {
+				this.focusedLabel.setStyle( this.focusedLabelFocusedStyle );
+			}
+		//#endif
 	}
 
 	/* (non-Javadoc)
@@ -708,7 +732,11 @@ public class FishEyeContainerView extends ContainerView {
 				}
 			} else if (this.focusedLabel != null) {
 				this.focusedLabel.setText( this.labels[ focIndex ] );
-				if (this.focusedLabel.getStyle() != item.getStyle() ) {
+				if (this.focusedLabel.getStyle() != item.getStyle() 
+						//#if polish.css.fisheyeview-text-style
+							&& (this.focusedLabelStyle == null)
+						//#endif
+				) {
 					this.focusedLabel.setStyle( item.getStyle() );
 					removeItemBackground( this.focusedLabel );
 					removeItemBorder( this.focusedLabel );
@@ -918,6 +946,16 @@ public class FishEyeContainerView extends ContainerView {
 			if (removeTextBool != null) {
 				this.isRemoveText = removeTextBool.booleanValue();
 			}
+			//#if polish.css.fisheyeview-text-style
+				Style textStyle = (Style) style.getObjectProperty("fisheyeview-text-style");
+				if (textStyle != null) {
+					this.focusedLabelStyle = textStyle;
+					if (this.focusedLabel != null) {
+						this.focusedLabel.setStyle(textStyle);
+						this.focusedLabelFocusedStyle = (Style) textStyle.getObjectProperty("focused-style");
+					}
+				}
+			//#endif
 		//#endif
 		//#if polish.css.fisheyeview-place-label-at-top
 			Boolean placeLabelAtTopBool = style.getBooleanProperty("fisheyeview-place-label-at-top");
