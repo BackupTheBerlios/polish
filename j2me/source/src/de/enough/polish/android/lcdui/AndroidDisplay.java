@@ -22,7 +22,7 @@ import de.enough.polish.util.ArrayList;
 //#if polish.javaplatform >= Android/1.5
 	import android.view.inputmethod.BaseInputConnection;
 	import android.view.inputmethod.EditorInfo;
-	import android.view.inputmethod.InputConnection;
+import android.view.inputmethod.InputConnection;
 //#endif
 
 /**
@@ -375,6 +375,11 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 		int key = this.util.handleKey(keyCode, event, this.currentPolishCanvas);
 		//#debug
 		System.out.println("onKeyDown:converted android key code '" + keyCode+"' to ME code '"+key+"'");
+		
+		if(key == -13 || key == -14) {
+//			super.onKeyDown(keyCode, event);
+			return false;
+		}
 		
 		this.currentPolishCanvas.keyPressed(key);
 		//#if !tmp.fullScreen

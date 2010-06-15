@@ -5,6 +5,11 @@ package de.enough.polish.android.media;
 import java.io.IOException;
 import java.io.InputStream;
 
+import de.enough.polish.android.media.enough.AudioPlaybackPlayer;
+import de.enough.polish.android.media.enough.AudioRecordingPlayer;
+
+// TODO: Register a hook on the MidletBridge to release all running players when the application finishes.
+
 /**
  * <code>Manager</code> is the access point for obtaining
  * system dependent resources such as <code>Players</code>
@@ -123,6 +128,11 @@ public final class Manager extends Object
 	 */
 	public static final String TONE_DEVICE_LOCATOR = "device://tone";
 
+	private static final String[] supportedHttpContentTypes = new String[] {"audio/mpeg","audio/mp3"};
+	private static final String[] supportedFileContentTypes = new String[] {"audio/mpeg","audio/mp3","video/mpeg"};
+	private static final String[] supportedDeviceContentTypes = new String[] {};
+	private static final String[] supportedCaptureContentTypes = new String[] {};
+	
 	/**
 	 * Return the list of supported content types for the given protocol.
 	 * <p>
@@ -148,8 +158,32 @@ public final class Manager extends Object
 	 */
 	public static String[] getSupportedContentTypes( String protocol)
 	{
+		if(protocol == null) {
+			int numberOfSupportedContentTypes = supportedHttpContentTypes.length + supportedCaptureContentTypes.length + supportedDeviceContentTypes.length + supportedFileContentTypes.length;
+			String[] result = new String[numberOfSupportedContentTypes];
+			int i = 0;
+			System.arraycopy(supportedCaptureContentTypes, 0, result, i, supportedCaptureContentTypes.length);
+			i += supportedCaptureContentTypes.length;
+			System.arraycopy(supportedDeviceContentTypes, 0, result, i, supportedDeviceContentTypes.length);
+			i += supportedDeviceContentTypes.length;
+			System.arraycopy(supportedFileContentTypes, 0, result, i, supportedFileContentTypes.length);
+			i += supportedFileContentTypes.length;
+			System.arraycopy(supportedHttpContentTypes, 0, result, i, supportedHttpContentTypes.length);
+			return result;
+		}
+		if("http".equals(protocol)) {
+			return supportedHttpContentTypes;
+		}
+		if("device".equals(protocol)) {
+			return supportedDeviceContentTypes;
+		}
+		if("file".equals(protocol)) {
+			return supportedFileContentTypes;
+		}
+		if("capture".equals(protocol)) {
+			return supportedCaptureContentTypes;
+		}
 		return new String[0];
-		//TODO implement getSupportedContentTypes
 	}
 
 	/**
@@ -179,15 +213,14 @@ public final class Manager extends Object
 	 * @param content_type - The content type for the supported protocols.
 	 * @return The list of supported protocols for the given content type.
 	 */
-	public static String[] getSupportedProtocols( String content_type)
+	public static String[] getSupportedProtocols(String content_type)
 	{
 		return new String[0];
-		//TODO implement getSupportedProtocols
 	}
 
 	/**
 	 * Create a <code>Player</code> from an input locator.
-	 * 
+	 * @j2mepolish As locator parameters only the http protocol is supported.
 	 * @param locator - A locator string in URI syntax that describes the media content.
 	 * @return A new Player.
 	 * @throws IllegalArgumentException - Thrown if locator is null.
@@ -195,10 +228,20 @@ public final class Manager extends Object
 	 * @throws IOException - Thrown if there was a problem connecting with the source pointed to by the locator.
 	 * @throws SecurityException - Thrown if the caller does not have security permission to create the Player.
 	 */
-	public static Player createPlayer( String locator) throws IOException, MediaException
+	public static Player createPlayer(String locator) throws IOException, MediaException
 	{
-		return null;
-		//TODO implement createPlayer
+		if(locator == null || locator.length() == 0) {
+			throw new IllegalArgumentException("The parameter 'locator' must not be null.");
+		}
+		if(locator.startsWith("http://")) {
+			AudioPlaybackPlayer player = new AudioPlaybackPlayer(locator);
+			return player;
+		}
+		if(locator.startsWith("capture://")) {
+			AudioRecordingPlayer player = new AudioRecordingPlayer(locator);
+			return player;
+		}
+		throw new MediaException("Could not create player for locator '"+locator+"'");
 	}
 
 	/**
@@ -224,8 +267,7 @@ public final class Manager extends Object
 	 */
 	public static Player createPlayer( InputStream stream, String type) throws IOException, MediaException
 	{
-		return null;
-		//TODO implement createPlayer
+		throw new RuntimeException("Not implemented");
 	}
 
 	/**
@@ -249,7 +291,7 @@ public final class Manager extends Object
 	 */
 	public static void playTone(int note, int duration, int volume) throws MediaException
 	{
-		//TODO implement playTone
+		throw new RuntimeException("Not implemented");
 	}
 
 }
