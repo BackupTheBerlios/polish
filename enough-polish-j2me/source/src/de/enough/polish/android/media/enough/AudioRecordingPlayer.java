@@ -1,3 +1,4 @@
+//#condition polish.android
 package de.enough.polish.android.media.enough;
 
 import java.io.ByteArrayOutputStream;
