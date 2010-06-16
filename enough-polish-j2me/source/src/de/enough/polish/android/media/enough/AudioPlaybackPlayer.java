@@ -35,27 +35,22 @@ public class AudioPlaybackPlayer extends AbstractPlayer implements VolumeControl
 		this.androidAudioManager = (AudioManager)MidletBridge.instance.getSystemService(Context.AUDIO_SERVICE);
 	}
 
-	@Override
 	protected void doClose() {
 		this.mediaPlayer.release();
 	}
 
-	@Override
 	protected void doDeallocate() {
 		this.mediaPlayer.reset();
 	}
 
-	@Override
 	protected String doGetContentType() {
 		throw new RuntimeException("Not supported.");
 	}
 
-	@Override
 	protected long doGetMediaTime() {
 		return this.mediaPlayer.getCurrentPosition();
 	}
 
-	@Override
 	protected void doPrefetch() throws MediaException {
 		try {
 			this.mediaPlayer.prepare();
@@ -66,22 +61,18 @@ public class AudioPlaybackPlayer extends AbstractPlayer implements VolumeControl
 		}
 	}
 
-	@Override
 	protected void doRealize() throws MediaException {
 		// not needed. Done with setDataSource.
 	}
 
-	@Override
 	protected long doSetMediaTime(long arg0) {
 		throw new RuntimeException("Not supported.");
 	}
 
-	@Override
 	protected void doStart() {
 		this.mediaPlayer.start();
 	}
 
-	@Override
 	protected void doStop() throws MediaException {
 		this.mediaPlayer.stop();
 	}
@@ -115,7 +106,6 @@ public class AudioPlaybackPlayer extends AbstractPlayer implements VolumeControl
 		this.androidAudioManager.setStreamMute(AudioManager.STREAM_MUSIC, mute);
 	}
 
-	@Override
 	public Control getControl(String controlType) {
 		if("VolumeControl".equals(controlType)) {
 			return this;
@@ -123,12 +113,10 @@ public class AudioPlaybackPlayer extends AbstractPlayer implements VolumeControl
 		return null;
 	}
 
-	@Override
 	public Control[] getControls() {
 		return new Control[] {this};
 	}
 
-	@Override
 	protected void doStarted() {
 		// TODO Auto-generated method stub
 		
