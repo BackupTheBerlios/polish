@@ -17,7 +17,7 @@ public class DisplayHandler extends CssAttributeHandler {
 
 	protected Object[] getRange() {
 		return new Object[]{HtmlCssElement.Display.BLOCK_LEVEL,
-							HtmlCssElement.Display.INLINE};
+							HtmlCssElement.Display.INLINE, HtmlCssElement.Display.INLINE_BLOCK};
 	}
 
 	protected void addAttribute(Style style, Object value) {

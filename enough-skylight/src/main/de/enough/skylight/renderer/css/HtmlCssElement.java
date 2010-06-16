@@ -6,6 +6,7 @@ public interface HtmlCssElement {
 	public static class Display {
 		public static final String BLOCK_LEVEL = "block";
 		public static final String INLINE = "inline";
+                public static final String INLINE_BLOCK = "inline-block";
 	}
 	
 	public static class Position {

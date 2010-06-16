@@ -200,7 +200,7 @@ public class ViewportBuilder {
 							while ( i < words.length )
 							{
 								String word = words[i];
-								TextCssElement textChild = new TextCssElement(handler, node, word, element, this.viewportContext);
+								TextCssElement textChild = new TextCssElement(handler, node, word, element.getParent(), this.viewportContext);
 								textChild.build();
 								parentElement.add(textChild);
 								i++;
@@ -260,6 +260,8 @@ public class ViewportBuilder {
 					parent.addInline(containingBlock);
 				} else if(element.isDisplay(HtmlCssElement.Display.BLOCK_LEVEL)) {
 					parent.addBlock(containingBlock);
+				} else if(element.isDisplay(HtmlCssElement.Display.INLINE_BLOCK)) {
+					parent.addInlineBlock(containingBlock);
 				}
 				
 				//#debug sl.debug.build
@@ -279,6 +281,8 @@ public class ViewportBuilder {
 					parent.addInline(item);
 				} else if(element.isDisplay(HtmlCssElement.Display.BLOCK_LEVEL)) {
 					parent.addBlock(item);
+				} else if(element.isDisplay(HtmlCssElement.Display.INLINE_BLOCK)) {
+					parent.addInlineBlock(item);
 				}
 					
 				//#debug sl.debug.build

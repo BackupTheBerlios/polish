@@ -33,12 +33,23 @@ public class Box
 	public ArrayList children = new ArrayList();
 	
 	public CssElement correspondingNode = null;
-	
+
+        // On-screen parent
 	public Box parent = null;
+
+        // Actual DOM parent (if different than the on-screen parent, otherwise null - for inline, this can be different fromt the on-screen parent)
+        public Box DOMParent = null ;
+
+        // Stack frame of this box, if any
+        public LayoutContext.StackFrame frame = null ;
 	
 	public String comment = "" ;
 
         public boolean hasDynamicSize = false ;
+
+        public boolean isInline = false;
+        public boolean firstElementInInline = false;
+        public boolean lastElementInInline = false ;
 	
 	public Box(CssElement correspondingNode)
 	{
@@ -92,6 +103,10 @@ public class Box
 	
 	public int getTotalWidth()
 	{
+            if ( contentWidth < 0 || paddingLeft < 0 || marginLeft < 0)
+            {
+                //
+            }
 		return contentWidth + paddingLeft + paddingRight + marginLeft + marginRight + borderLeft + borderRight;
 	}
 	

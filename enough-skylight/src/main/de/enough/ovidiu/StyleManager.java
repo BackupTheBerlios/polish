@@ -28,18 +28,50 @@ public class StyleManager {
 			Dimension d = (Dimension) getProperty(box, "margin");
 			if ( d != null )
 			{
-				if (d.isPercent())
-				{
-					marginValue = (d.getValue(box.parent.contentWidth));
-				}
-				else
-				{
-					marginValue = (d.getValue(100));
-				}
-
-                                box.marginLeft = box.marginRight = box.marginTop = box.marginBottom = marginValue;
+                                marginValue = (d.getValue(box.parent.contentWidth));
+                                box.marginBottom = box.marginTop = box.marginLeft = box.marginRight = marginValue;
 			}
 		}
+                if ( getProperty(box,"margin-left") != null )
+		{
+                        int marginValue = 0;
+			Dimension d = (Dimension) getProperty(box, "margin-left");
+			if ( d != null )
+			{
+                                marginValue = (d.getValue(box.parent.contentWidth));
+                                box.marginLeft = marginValue;
+			}
+		}
+                if ( getProperty(box,"margin-right") != null )
+		{
+                        int marginValue = 0;
+			Dimension d = (Dimension) getProperty(box, "margin-right");
+			if ( d != null )
+			{
+                                marginValue = (d.getValue(box.parent.contentWidth));
+                                box.marginRight = marginValue;
+			}
+		}
+                if ( getProperty(box,"margin-top") != null )
+		{
+                        int marginValue = 0;
+			Dimension d = (Dimension) getProperty(box, "margin-top");
+			if ( d != null )
+			{
+                                marginValue = (d.getValue(box.parent.contentWidth));
+                                box.marginTop = marginValue;
+			}
+		}
+                if ( getProperty(box,"margin-bottom") != null )
+		{
+                        int marginValue = 0;
+			Dimension d = (Dimension) getProperty(box, "margin-bottom");
+			if ( d != null )
+			{
+                                marginValue = (d.getValue(box.parent.contentWidth));
+                                box.marginBottom = marginValue;
+			}
+		}                
 
                 // Paddings
                 // TODO: Implement properly (e.g. take into consideration padding-left, right, top and bottom,
@@ -50,22 +82,51 @@ public class StyleManager {
 			Dimension d = (Dimension) getProperty(box, "padding");
 			if ( d != null )
 			{
-				if (d.isPercent())
-				{
-					paddingValue = (d.getValue(box.parent.contentWidth));
-				}
-				else
-				{
-					paddingValue = (d.getValue(100));
-				}
-
-                                box.paddingLeft = box.paddingRight = box.paddingTop = box.paddingBottom = paddingValue;
-                                if ( box.paddingLeft != 0)
-                                {
-                                    System.out.println("PADDING: " + box.paddingLeft );
-                                }
+                                paddingValue = (d.getValue(box.parent.contentWidth));
+                                box.paddingBottom = box.paddingTop = box.paddingLeft = box.paddingRight = paddingValue;
 			}
 		}
+                if ( getProperty(box,"padding-left") != null )
+		{
+                        int paddingValue = 0;
+			Dimension d = (Dimension) getProperty(box, "padding-left");
+			if ( d != null )
+			{
+                                paddingValue = (d.getValue(box.parent.contentWidth));
+                                box.paddingLeft = paddingValue;
+			}
+		}
+                if ( getProperty(box,"padding-right") != null )
+		{
+                        int paddingValue = 0;
+			Dimension d = (Dimension) getProperty(box, "padding-right");
+			if ( d != null )
+			{
+                                paddingValue = (d.getValue(box.parent.contentWidth));
+                                box.paddingRight = paddingValue;
+			}
+		}
+                if ( getProperty(box,"padding-top") != null )
+		{
+                        int paddingValue = 0;
+			Dimension d = (Dimension) getProperty(box, "padding-top");
+			if ( d != null )
+			{
+                                paddingValue = (d.getValue(box.parent.contentWidth));
+                                box.paddingTop = paddingValue;
+			}
+		}
+                if ( getProperty(box,"padding-bottom") != null )
+		{
+                        int paddingValue = 0;
+			Dimension d = (Dimension) getProperty(box, "padding-bottom");
+			if ( d != null )
+			{
+                                paddingValue = (d.getValue(box.parent.contentWidth));
+                                box.paddingBottom = paddingValue;
+			}
+		}
+
 
                 // Width
 		if ( getProperty(box,"width") != null )
@@ -179,11 +240,9 @@ public class StyleManager {
                     {
                         return d;
                     }
-                }
-		
-		return null;
-		
-		
+                }		
+
+                return null;
 	}
 
 }

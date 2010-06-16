@@ -1,5 +1,6 @@
 package de.enough.skylight.renderer.node;
 
+import de.enough.ovidiu.StyleManager;
 import javax.microedition.lcdui.Image;
 
 import de.enough.skylight.dom.DomNode;
@@ -14,6 +15,12 @@ public class ImgCssElement extends CssElement {
 			ViewportContext viewportContext) {
 		super(handler, node, parent, viewportContext);
 	}
+
+        protected void buildStyle()
+        {
+            super.buildStyle();
+            style.addAttribute(StyleManager.DISPLAY_ID, "inline-block");
+        }
 	
 	public void setImage(Image image) {
 		this.image = image;

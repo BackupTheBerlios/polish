@@ -22,7 +22,7 @@ public class LayoutModeler
 	{
 		CssElement node = box.correspondingNode ;
 		
-		String text = "[ " + node.getHandler().getTag() + " D: " + StyleManager.getProperty(box, "display") + " F: " + StyleManager.getProperty(box, "float") + " X: " + box.x + " Y: " + box.y + " M: " + box.marginLeft + " TW: " + box.getTotalWidth() +" CW: " + box.contentWidth + " CH: " + box.contentHeight + " C: " + node.getContent() + " ]";
+		String text = "[ " + node.getHandler().getTag() + " " + box.DOMParent + " D: " + StyleManager.getProperty(box, "display") + " F: " + StyleManager.getProperty(box, "float") + " X: " + box.x + " Y: " + box.y + " M: " + box.marginLeft + " TW: " + box.getTotalWidth() +" CW: " + box.contentWidth + " CH: " + box.contentHeight + " C: " + node.getContent() + " ]";
 		
 		out (text,level);
 	}
@@ -227,20 +227,115 @@ public class LayoutModeler
 				box.contentWidth = context.getMaxContentWidth(box) ;                                
 			}
 		}
+                else // For inline context, have dynamic size!
+                if (  "inline".equals(displayMode))
+                {
+                   box.contentWidth = 9999999 ; // Temp value.
+                   box.hasDynamicSize = true ;
+                }
+
 					
 		// Process child nodes one by one
 		while ( context.hasMoreChildren() )
 		{
 			Box child = context.nextChild();
+                        context.removeFloatsForBox(child);
 			box.addChild(child);
+                        StyleManager.mapStyleToBox(child);
 
                         // Retrieve some very important layout/display properties
                         String childFloatMode = (String) StyleManager.getProperty(child, "float");                       						
 			String childDisplayMode = (String) StyleManager.getProperty(child, "display");
 
-			// If I am a block child, then I should be alone on my own row ....
+			
+
+			// If I am an inline-block element, or an inline float things get tricky
+                        if ( "inline-block".equals(childDisplayMode) || ( ! "none".equals(childFloatMode ) ) )
+			{
+				context.prepareToPlaceOnCurrentRow(child);
+				doModel(child);
+
+                               // Content width is larger than the parent,
+                                // so just force its placement on a separate row.
+                                // TODO: is this right ???
+
+                                if ( context.doesNotFitWithin(child) )
+                                {
+                                    System.out.println("DEGEABA!");
+                                    context.forcePlacementOnSeparateRow(child);
+                                    continue;
+                                }
+
+                                System.out.println("INLINE CHILD OR FLOAT:");
+                                dumpBoxTree(child, 0);
+
+                                // For floats, I should see if I can be placed on the current row,
+                                // or if I must be saved for later so other elements can be placed in my stead.
+                                // --------------------------------
+
+                                if ( ! "none".equals(childFloatMode) )
+                                {
+                                    System.out.println("FLOAT!");
+                                    // See if we can place it on the current row :
+                                    // if it fits, and
+                                    // - if there is no other "saved for later" element, or
+                                    // - if it is the next in line "saved for later" element
+                                    if ( context.fitsOnCurrentRow(child) && 
+                                          ( ( context.hasSavedForLaterChildren() == false ) || ( context.hasBeenSavedForLater(child) ) ) )
+                                    {
+                                            System.out.println("PLACE ON CURRENT ROW!");
+                                            context.placeOnCurrentRow(child);
+                                            continue;
+                                    }
+                                    // If we can't fit it and we have more regular children, save it for later and
+                                    // continue with the regular children
+                                    else if ( context.hasMoreRegularChildren() )
+                                    {
+                                            System.out.println("SAVE FOR LATER");
+                                            context.saveForLater(child);
+                                            continue;
+                                    }
+                                    else
+                                    {
+                                        System.out.println("TREAT AS REGULAR CHILD");
+                                        // No more regular elements left, so we must treat this child
+                                        // as a regular element and place it ... somewhere.
+                                    }                                    
+                                }
+
+                                // For regular (non-float) elements, try to place me on the current row,
+                                // otherwise go to the next row.
+                                // ---------------------------------
+
+                                // Try to place on the current row
+				if ( context.fitsOnCurrentRow(child) )
+				{
+                                    System.out.println("FITS ON CURRENT ROW!");
+					context.placeOnCurrentRow(child);
+				}
+				else                                
+				{
+                                        System.out.println("NOPE, NEXT ROW!");
+                                    // That didn't work, jump to the next row
+                                    context.removeFloatsForBox(child);
+                                    context.nextRow(1);
+
+                                    // Make sure that I'm still the next child returned by nextChild()
+                                    context.repeatLastChild();
+				}
+			}
+
+                        // For regular inline stuff, just go into the child
+                        else if ( "inline".equals(childDisplayMode) )
+                        {
+                            System.out.println("GOING INTO A CHILD");
+                            child.isInline = true;
+                            context.removeFloatsForBox(child);
+                            context.goInto(child);
+                        }
+                        else // If I am a block child, then I should be alone on my own row ....
 			if ( "block".equals(childDisplayMode) )
-			{					
+			{
                                 context.nextRow();
                                 context.prepareToPlaceOnCurrentRow(child);
                                 doModel(child);
@@ -262,78 +357,14 @@ public class LayoutModeler
 					context.prepareToPlaceOnCurrentRow(child);
 					doModel(child);
 				}
-                                
+
 				context.placeOnCurrentRow(child);
 				context.nextRow();
 			}
-
-			// If I am an inline element, things get tricky
-			else if ( "inline".equals(childDisplayMode) )
-			{
-				context.prepareToPlaceOnCurrentRow(child);
-				doModel(child);
-
-                                // For floats, I should see if I can be placed on the current row,
-                                // or if I must be saved for later so other elements can be placed in my stead.
-                                // --------------------------------
-
-                                if ( ! "none".equals(childFloatMode) )
-                                {
-                                    // See if we can place it on the current row :
-                                    // if it fits, and
-                                    // - if there is no other "saved for later" element, or
-                                    // - if it is the next in line "saved for later" element
-                                    if ( context.fitsOnCurrentRow(child) && 
-                                          ( ( context.hasSavedForLaterChildren() == false ) || ( context.hasBeenSavedForLater(child) ) ) )
-                                    {
-                                            context.placeOnCurrentRow(child);
-                                            continue;
-                                    }
-                                    // If we can't fit it and we have more regular children, save it for later and
-                                    // continue with the regular children
-                                    else if ( context.hasMoreRegularChildren() )
-                                    {
-                                            context.saveForLater(child);
-                                            continue;
-                                    }
-                                    else
-                                    {
-                                        // No more regular elements left, so we must treat this child
-                                        // as a regular element and place it ... somewhere.
-                                    }                                    
-                                }
-
-                                // For regular (non-float) elements, try to place me on the current row,
-                                // otherwise go to the next row.
-                                // ---------------------------------
-
-                                // Content width is larger than the parent,
-                                // so just force its placement on a separate row.
-                                // TODO: is this right ???
-                                
-                                if ( context.doesNotFitWithin(child) )
-                                {
-                                    System.out.println("DEGEABA!");
-                                    context.forcePlacementOnSeparateRow(child);
-                                    continue;
-                                }
-
-                                // Try to place on the current row
-				if ( context.fitsOnCurrentRow(child) )
-				{
-					context.placeOnCurrentRow(child);
-				}
-				else                                
-				{
-                                    // That didn't work, jump to the next row
-                                    context.nextRow(1);
-
-                                    // Make sure that I'm still the next child returned by nextChild()
-                                    context.backOneRegularChild();
-				}
-			}
 		}
-		
+
+                System.out.println("FILL IN THE REMAINING STUFF!");
+
 		// Complete the current row
 		context.nextRow() ;
 		

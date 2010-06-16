@@ -42,6 +42,11 @@ public class FloatBoxManager {
 		Float temp;
 		int minX = 0;
 		int tempLength = 0;
+
+                if ( box.isInline )
+                {
+                    box = box.parent ;
+                }
 		
 		while ( i < count )
 		{
@@ -73,6 +78,12 @@ public class FloatBoxManager {
 		int maxX = 0;
 		int tempLength = 0;
 		int leftPoint = x + length ;
+
+                if ( box.isInline )
+                {
+                    box = box.parent ;
+                }
+
 		while ( i < count )
 		{
 			temp = (Float) floats.get(i);

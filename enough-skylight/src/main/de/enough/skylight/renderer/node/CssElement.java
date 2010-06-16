@@ -227,6 +227,8 @@ public class CssElement implements HtmlCssElement, NodeInterface{
 			return new FloatContainingBlock(this.style);
 		} else if(isDisplay(HtmlCssElement.Display.BLOCK_LEVEL)) {
 			return new BlockContainingBlock(this.style);
+		} else if(isDisplay(HtmlCssElement.Display.INLINE_BLOCK)) {
+			return new InlineContainingBlock(this.style);
 		} else {
 			return new InlineContainingBlock(this.style);
 		} 

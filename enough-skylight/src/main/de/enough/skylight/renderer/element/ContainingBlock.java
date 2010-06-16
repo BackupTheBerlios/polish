@@ -70,6 +70,12 @@ public abstract class ContainingBlock extends Container implements Partable {
 	}
 
 	public abstract void addInline(Item item);
+
+        public void addInlineBlock(Item item)
+        {
+            addInline(item);
+            item.setStyle(getStyle());
+        }
 	
 	public abstract void addBlock(Item item);
 	

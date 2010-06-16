@@ -36,6 +36,7 @@ public class BlockContainingBlock extends ContainingBlock {
 		
 		this.currentInline.add(item);
 	}
+
 	
 	public void addBlock(Item item) {
 		add(item);

@@ -1,6 +1,7 @@
 package de.enough.skylight.renderer.node;
 
 import de.enough.ovidiu.NodeInterface;
+import de.enough.ovidiu.StyleManager;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.ArrayList;
@@ -25,6 +26,12 @@ public class TextCssElement extends CssElement
 		super(handler,node,parent,viewportContext);
 		myValue = text;
 	}
+
+        protected void buildStyle()
+        {
+            super.buildStyle();
+            style.addAttribute(StyleManager.DISPLAY_ID, "inline-block");
+        }
 	
 	
 	public String getValue()
