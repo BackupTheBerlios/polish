@@ -46,8 +46,11 @@ public class Box
 	public String comment = "" ;
 
         public boolean hasDynamicSize = false ;
+        public boolean useAllAvailableWidth = false;
 
         public boolean isInline = false;
+        public boolean isFloat = false;
+        public boolean isBlock = false ;
         public boolean firstElementInInline = false;
         public boolean lastElementInInline = false ;
 	
@@ -114,4 +117,9 @@ public class Box
 	{
 		return contentHeight + paddingTop + paddingBottom + marginBottom + marginTop + borderBottom + borderTop;
 	}
+
+        public int getContentWidthFromTotalWidth(int totalWidth)
+        {
+            return totalWidth - paddingLeft - paddingRight - marginLeft - marginRight ;
+        }
 }

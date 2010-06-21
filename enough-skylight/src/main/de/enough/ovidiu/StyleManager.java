@@ -174,7 +174,7 @@ public class StyleManager {
 		{
 			if ( elem instanceof TextCssElement )
 			{
-				return new Dimension(elem.getStyle().getFont().stringWidth( ((TextCssElement) elem).getValue() ));
+                                return new Dimension(elem.getStyle().getFont().stringWidth( ((TextCssElement) elem).getValue() ));
 			}
 			else if ( elem instanceof ImgCssElement )
 			{

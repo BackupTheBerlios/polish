@@ -15,6 +15,7 @@ import de.enough.skylight.renderer.element.ContainingBlock;
 import de.enough.skylight.renderer.element.FloatContainingBlock;
 import de.enough.skylight.renderer.element.InlineContainingBlock;
 import de.enough.skylight.renderer.element.view.ContentView;
+import de.enough.skylight.renderer.node.handler.html.BrHandler;
 import de.enough.skylight.renderer.node.handler.html.ImgHandler;
 import de.enough.skylight.renderer.node.handler.html.TextHandler;
 
@@ -24,6 +25,8 @@ public class CssElement implements HtmlCssElement, NodeInterface{
 	public final static int CONTENT_TEXT = 0x01;
 	public final static int CONTENT_IMAGE = 0x02;
 	public final static int CONTENT_CONTAINING_TEXT = 0x03;
+
+        public final static int CONTENT_BR = 0x04;
 
         public Box box = null ;
 	
@@ -358,6 +361,11 @@ public class CssElement implements HtmlCssElement, NodeInterface{
 				return CONTENT_CONTAINING_TEXT ;
 			}
 		}
+                else if ( this.handler instanceof BrHandler )
+                {
+                    System.out.println("BR");
+                    return CONTENT_BR ;
+                }
 		
 		return CONTENT_CONTAINING_ELEMENT;
 		

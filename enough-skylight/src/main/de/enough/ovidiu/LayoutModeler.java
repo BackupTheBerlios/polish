@@ -22,7 +22,7 @@ public class LayoutModeler
 	{
 		CssElement node = box.correspondingNode ;
 		
-		String text = "[ " + node.getHandler().getTag() + " " + box.DOMParent + " D: " + StyleManager.getProperty(box, "display") + " F: " + StyleManager.getProperty(box, "float") + " X: " + box.x + " Y: " + box.y + " M: " + box.marginLeft + " TW: " + box.getTotalWidth() +" CW: " + box.contentWidth + " CH: " + box.contentHeight + " C: " + node.getContent() + " ]";
+		String text = "[ " + node.getHandler().getTag() + " " + box.hasDynamicSize + " D: " + StyleManager.getProperty(box, "display") + " F: " + StyleManager.getProperty(box, "float") + " X: " + box.x + " Y: " + box.y + " M: " + box.marginLeft + " TW: " + box.getTotalWidth() +" CW: " + box.contentWidth + " CH: " + box.contentHeight + " C: " + node.getContent() + " ]";
 		
 		out (text,level);
 	}
@@ -159,8 +159,9 @@ public class LayoutModeler
 		// Define a box for the root node
 		Box myBox = new Box(rootNode);
 		box.addChild(myBox);
-		
-		doModel(myBox);
+
+                LayoutContext context = new LayoutContext(myBox,floats);
+		doModel(myBox,context);
 		
 		
 		dumpBoxTree(myBox,0);
@@ -171,7 +172,7 @@ public class LayoutModeler
 		
 	}
 			
-	protected void doModel(Box box)
+	protected void doModel(Box box, LayoutContext parentContext)
 	{                
 		CssElement node = (CssElement) box.correspondingNode;
 
@@ -199,6 +200,7 @@ public class LayoutModeler
 		// Otherwise, figure out the total width of my children and then figure out my width
 		if ( ! "none".equals(floatMode) )
 		{
+                        box.isFloat = true ;
 			Dimension d = (Dimension) StyleManager.getProperty(box, "width");
 			if ( d != null )
 			{
@@ -208,10 +210,10 @@ public class LayoutModeler
 			{
                             // No width specified, use maxwidth for now and figure out the actual width later
                             box.hasDynamicSize = true ;
-                            box.contentWidth = 99999999 ; // Temp value.
+                            box.contentWidth = box.getContentWidthFromTotalWidth(box.parent.contentWidth) ; // Temp value.
 			}
 		}
-                
+                else
 		// If I am a block context, then I should use all available width,
 		// unless I am forced to have a certain width
 		if ( "block".equals(displayMode) )
@@ -222,17 +224,28 @@ public class LayoutModeler
 				box.contentWidth = (d.getValue(box.parent.contentWidth)) - box.marginLeft - box.marginRight - box.paddingLeft - box.paddingRight;
 			}
 			else
-			{
-				// Use all available
-				box.contentWidth = context.getMaxContentWidth(box) ;                                
+                        {
+                            // If the parent has dynamic size, so should I
+                            if ( box.parent.hasDynamicSize )
+                            {
+                               // box.hasDynamicSize = true;
+                            }
+
+                            // Be as big as I can without overflowing
+                            box.contentWidth = box.getContentWidthFromTotalWidth(parentContext.getRemainingRowWidth());
+                            System.out.println("HOPA: " + box.contentWidth + " " + parentContext.currentRowMaxWidth + " " + parentContext.getCurrentX() );
+                               
 			}
 		}
                 else // For inline context, have dynamic size!
-                if (  "inline".equals(displayMode))
+                if (  "inline".equals(displayMode) || "inline-block".equals(displayMode) )
                 {
                    box.contentWidth = 9999999 ; // Temp value.
                    box.hasDynamicSize = true ;
                 }
+
+                // Initialize the layout context's first row
+                context.nextRow();
 
 					
 		// Process child nodes one by one
@@ -240,6 +253,14 @@ public class LayoutModeler
 		{
 			Box child = context.nextChild();
                         context.removeFloatsForBox(child);
+
+                        // Is the child a BR ?
+                        if ( child.correspondingNode.getContentType() == CssElement.CONTENT_BR)
+                        {
+                            context.nextRow(box.correspondingNode.getStyle().getFont().getHeight());
+                            continue;
+                        }
+
 			box.addChild(child);
                         StyleManager.mapStyleToBox(child);
 
@@ -253,7 +274,7 @@ public class LayoutModeler
                         if ( "inline-block".equals(childDisplayMode) || ( ! "none".equals(childFloatMode ) ) )
 			{
 				context.prepareToPlaceOnCurrentRow(child);
-				doModel(child);
+				doModel(child, context);
 
                                // Content width is larger than the parent,
                                 // so just force its placement on a separate row.
@@ -275,7 +296,8 @@ public class LayoutModeler
 
                                 if ( ! "none".equals(childFloatMode) )
                                 {
-                                    System.out.println("FLOAT!");
+
+                                    System.out.println("FLOAT! ");
                                     // See if we can place it on the current row :
                                     // if it fits, and
                                     // - if there is no other "saved for later" element, or
@@ -307,11 +329,13 @@ public class LayoutModeler
                                 // otherwise go to the next row.
                                 // ---------------------------------
 
+                                System.out.println("INLINE-BLOCK CHILD");
+
                                 // Try to place on the current row
 				if ( context.fitsOnCurrentRow(child) )
 				{
-                                    System.out.println("FITS ON CURRENT ROW!");
-					context.placeOnCurrentRow(child);
+                                    System.out.println("FITS ON CURRENT ROW! " + context.currentRowMaxWidth );
+                                    context.placeOnCurrentRow(child);
 				}
 				else                                
 				{
@@ -323,7 +347,7 @@ public class LayoutModeler
                                     // Make sure that I'm still the next child returned by nextChild()
                                     context.repeatLastChild();
 				}
-			}
+			} 
 
                         // For regular inline stuff, just go into the child
                         else if ( "inline".equals(childDisplayMode) )
@@ -336,9 +360,26 @@ public class LayoutModeler
                         else // If I am a block child, then I should be alone on my own row ....
 			if ( "block".equals(childDisplayMode) )
 			{
-                                context.nextRow();
+                                System.out.println("BLOCK CHILD");
+                                if ( context.currentRowHasOnlyFloats() == false )
+                                {
+                                    System.out.println("J1");
+                                    context.nextRow();
+                                }
+                                else
+                                {
+                                    System.out.println("DO NOT JUMP!");
+                                }
+
+                                context.maxPossibleContentWidth = context.box.contentWidth+5;
+                                context.currentRowMaxWidth = context.box.contentWidth;
+                                context.startXPosition = 0; 
+                                context.currentXPosition=0;
+                                child.isBlock = true ;
+
                                 context.prepareToPlaceOnCurrentRow(child);
-                                doModel(child);
+                                System.out.println("MODEL CHILD");
+                                doModel(child, context);
 
                                 // Content width is larger than the parent,
                                 // so just force its placement on a separate row.
@@ -353,12 +394,14 @@ public class LayoutModeler
                                 // If I don't fit on the current row, go lower until I do.
 				while ( ! context.fitsOnCurrentRow(child) )
 				{
+                                        System.out.println("J2");
 					context.nextRow(1);
 					context.prepareToPlaceOnCurrentRow(child);
-					doModel(child);
+					doModel(child, context);
 				}
 
 				context.placeOnCurrentRow(child);
+                                System.out.println("J3");
 				context.nextRow();
 			}
 		}
@@ -381,7 +424,14 @@ public class LayoutModeler
                 // Do I have a dynamic size (based on the maximum X coordinate used) ?
                 if ( box.hasDynamicSize == true )
                 {
-                    box.contentWidth = context.getMaxX() ;
+                    if ( "block".equals(displayMode) && "none".equals(floatMode) )
+                    {
+                        box.contentWidth = Math.max(context.getMaxX(), box.getContentWidthFromTotalWidth(parentContext.getRemainingRowWidth())) ;
+                    }
+                    else
+                    {
+                        box.contentWidth = context.getMaxX() ;
+                    }
                 }
 
                 box.parent.addChild(box);

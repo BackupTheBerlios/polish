@@ -43,7 +43,7 @@ public class FloatBoxManager {
 		int minX = 0;
 		int tempLength = 0;
 
-                if ( box.isInline )
+                while ( box.isInline )
                 {
                     box = box.parent ;
                 }
@@ -51,10 +51,10 @@ public class FloatBoxManager {
 		while ( i < count )
 		{
 			temp = (Float) floats.get(i);
-			if ( (temp.y<=y) && (temp.y+temp.height>y) &&
+			if ( (temp.y<=y) && (temp.y+temp.height-1>=y) &&
 				  ( ( (temp.x>=x) && ( temp.x <= endX) ) || ( (temp.x+temp.width>x) && ( temp.x + temp.width< endX) ) ) && 
 			      ( temp.type == FLOAT_LEFT) &&
-                              (temp.box.parent == box)
+                              ( (temp.box.parent == box) || ( ( temp.box.parent == box.parent) && box.isBlock ) )
                               )
 			{
 				tempLength = temp.x+temp.width - x;
@@ -79,7 +79,7 @@ public class FloatBoxManager {
 		int tempLength = 0;
 		int leftPoint = x + length ;
 
-                if ( box.isInline )
+                while ( box.isInline )
                 {
                     box = box.parent ;
                 }
@@ -87,10 +87,10 @@ public class FloatBoxManager {
 		while ( i < count )
 		{
 			temp = (Float) floats.get(i);
-			if ( (temp.y<=y) && (temp.y+temp.height>y) &&
+			if ( (temp.y<=y) && (temp.y+temp.height-1>=y) &&
 					  ( ( (temp.x>=x) && ( temp.x <= endX) ) || ( (temp.x+temp.width>x) && ( temp.x + temp.width< endX) ) ) && 
 				      ( temp.type == FLOAT_RIGHT) &&
-                                      (temp.box.parent == box)
+                                      ( (temp.box.parent == box) || ( ( temp.box.parent == box.parent) && box.isBlock ) )
                                       )
 			{
 				tempLength = leftPoint - temp.x ;
