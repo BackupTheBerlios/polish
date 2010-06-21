@@ -101,7 +101,7 @@ public final class StyleSheet extends StyleSheetContentContainer {
 	//#endif
 	/** default CANCEL command */
 	//#ifdef polish.i18n.useDynamicTranslations
-		public static Command CANCEL_CMD = new Command(Locale.get("polish.command.cancel"), Command.CANCEL, 2 );
+		public static Command CANCEL_CMD = new Command(Locale.get("polish.command.cancel"), Command.CANCEL, 3 );
 	//#elifdef polish.command.cancel:defined
 		//#= public static final Command CANCEL_CMD = new Command("${polish.command.cancel}", Command.CANCEL, 3 );
 	//#else
