@@ -95,17 +95,17 @@ public final class StyleSheet extends StyleSheetContentContainer {
 	//#ifdef polish.i18n.useDynamicTranslations
 		public static Command OK_CMD = new Command( Locale.get("polish.command.ok"), Command.OK, 2 );
 	//#elifdef polish.command.ok:defined
-		//#= public static final Command OK_CMD = new Command("${polish.command.ok}", Command.OK, 2 );
+		//#= public static Command OK_CMD = new Command("${polish.command.ok}", Command.OK, 2 );
 	//#else
-		//# public static final Command OK_CMD = new Command("OK", Command.OK, 2 );
+		//# public static Command OK_CMD = new Command("OK", Command.OK, 2 );
 	//#endif
 	/** default CANCEL command */
 	//#ifdef polish.i18n.useDynamicTranslations
 		public static Command CANCEL_CMD = new Command(Locale.get("polish.command.cancel"), Command.CANCEL, 3 );
 	//#elifdef polish.command.cancel:defined
-		//#= public static final Command CANCEL_CMD = new Command("${polish.command.cancel}", Command.CANCEL, 3 );
+		//#= public static Command CANCEL_CMD = new Command("${polish.command.cancel}", Command.CANCEL, 3 );
 	//#else
-		//# public static final Command CANCEL_CMD = new Command("Cancel", Command.CANCEL, 3 );
+		//# public static Command CANCEL_CMD = new Command("Cancel", Command.CANCEL, 3 );
 	//#endif
 
 	/**
