@@ -132,6 +132,12 @@ public class MenuBar extends Item {
 	//rprivate int screenWidth;
 	private int screenHeight;
 
+	//Allow setting via includeAddtionalMethods if need be.
+	//For apps that do not want to use polish translations
+	private static String OPTIONS_CMD_TXT = "Options";
+	private static String SELECT_CMD_TXT = "Select";
+	private static String CANCEL_CMD_TXT = "Cancel";
+
 	/**
 	 * Creates a new menu bar
 	 * 
@@ -752,30 +758,7 @@ public class MenuBar extends Item {
 				//#else
 					item = this.singleLeftCommandItem;
 				//#endif
-				item.isInitialized = false;
-				if (this.selectImage != null) {
-					item.setImage( this.selectImage );
-					if (this.showImageAndText) {
-						//#ifdef polish.i18n.useDynamicTranslations
-							item.setText( Locale.get( "polish.command.select" ) ); 
-						//#elifdef polish.command.select:defined
-							//#= item.setText( "${polish.command.select}" );
-						//#else
-							item.setText( "Select" );
-						//#endif
-					} else {
-						item.setText( null );
-					}
-				} else {
-					item.setImage( (Image)null );
-					//#ifdef polish.i18n.useDynamicTranslations
-						item.setText( Locale.get( "polish.command.select" ) ); 
-					//#elifdef polish.command.select:defined
-						//#= item.setText( "${polish.command.select}" );
-					//#else
-						item.setText( "Select" );
-					//#endif
-				}
+                                setupCommandMenuItem(item, getMenuSelectText(), selectImage);
 				//#if tmp.OkCommandOnLeft
 					this.singleRightCommandItem.setText(null);
 					this.singleRightCommandItem.setImage( (Image)null );
@@ -785,29 +768,7 @@ public class MenuBar extends Item {
 					//#else
 						item = this.singleRightCommandItem;
 					//#endif
-					item.isInitialized = false;
-					if (this.cancelImage != null) {
-						item.setImage( this.cancelImage );
-						if (this.showImageAndText) {
-							//#ifdef polish.i18n.useDynamicTranslations
-								item.setText( Locale.get( "polish.command.cancel" ) ); 
-							//#elifdef polish.command.cancel:defined
-								//#= item.setText(  "${polish.command.cancel}" );
-							//#else
-								item.setText( "Cancel" );
-							//#endif
-						} else {
-							item.setText( null );
-						}
-					} else {
-						//#ifdef polish.i18n.useDynamicTranslations
-							item.setText( Locale.get( "polish.command.cancel" ) ); 
-						//#elifdef polish.command.cancel:defined
-							//#= item.setText(  "${polish.command.cancel}"  );
-						//#else
-							item.setText( "Cancel" );
-						//#endif
-					}
+                                        setupCommandMenuItem(item, getMenuCancelText(), cancelImage);
 				//#endif
 			//#endif
 		} else {
@@ -860,30 +821,7 @@ public class MenuBar extends Item {
 					//#else
 						item = this.singleLeftCommandItem;
 					//#endif
-					item.isInitialized = false;
-					if (this.optionsImage != null) {
-						item.setImage( this.optionsImage );
-						if (this.showImageAndText) {
-							//#ifdef polish.i18n.useDynamicTranslations
-								item.setText( Locale.get( "polish.command.options" ) ); 
-							//#elifdef polish.command.options:defined
-								//#= item.setText( "${polish.command.options}" );
-							//#else
-								item.setText( "Options" );				
-							//#endif
-						} else {
-							item.setText( null );
-						}
-					} else {
-						item.setImage( (Image)null );
-						//#ifdef polish.i18n.useDynamicTranslations
-							item.setText( Locale.get( "polish.command.options" ) ); 
-						//#elifdef polish.command.options:defined
-							//#= item.setText( "${polish.command.options}" );
-						//#else
-							item.setText( "Options" );				
-						//#endif
-					}
+                                        setupCommandMenuItem(item, getMenuOptionsText(), optionsImage);
 				}
 			//#endif
 		}
@@ -997,6 +935,63 @@ public class MenuBar extends Item {
 				}
 		//#endif
 	}
+
+        /**
+         * Setups up and initializes a command item. Bassed on settings and if images are shown.
+         * @param item IconItem to setup
+         * @param text Text to display if enabled
+         * @param img  Image to show if enabled
+         */
+        protected void setupCommandMenuItem(IconItem item, String text, Image img){
+            item.isInitialized = false;
+            //Reset every thing
+            item.setImage( (Image)null );
+            item.setText( null );
+            //Show image if there was one.
+            if (img!= null) {
+                item.setImage( img );
+            }
+            //Show text if we have both images and text OR simply if there is no image.
+            if (this.showImageAndText || img ==null) {
+                    item.setText(text);
+            }
+        }
+
+        public String getMenuOptionsText(){
+            String optionsText =
+            //#ifdef polish.i18n.useDynamicTranslations
+                  //#= Locale.get( "polish.command.options" );
+            //#elifdef polish.command.options:defined
+                  //#= "${polish.command.options}" ;
+            //#else
+                    OPTIONS_CMD_TXT;
+            //#endif
+            return optionsText;
+        }
+
+        public String getMenuSelectText(){
+            String selectText =
+            //#ifdef polish.i18n.useDynamicTranslations
+                    //#= Locale.get( "polish.command.select" );
+            //#elifdef polish.command.select:defined
+                    //#= "${polish.command.select}";
+            //#else
+                   SELECT_CMD_TXT;
+            //#endif
+             return selectText;
+        }
+
+        public String getMenuCancelText(){
+            String cancelText =
+            //#ifdef polish.i18n.useDynamicTranslations
+                    //#= Locale.get( "polish.command.cancel" ) ;
+            //#elifdef polish.command.cancel:defined
+                    //#= "${polish.command.cancel}";
+            //#else
+                    CANCEL_CMD_TXT ;
+            //#endif
+            return cancelText;
+        }
 	
 	
 
