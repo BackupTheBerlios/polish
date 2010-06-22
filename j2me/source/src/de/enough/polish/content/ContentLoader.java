@@ -137,11 +137,13 @@ public class ContentLoader extends ContentSource implements Runnable {
 		QueueElement prev;
 		QueueElement next;
 	}
-
+	
 	/**
 	 * The main id
 	 */
 	public final static String ID = "ContentLoader";
+	
+	public final static int LOADER_CACHE_SIZE = 100000;
 
 	/**
 	 * The memory cache
@@ -177,7 +179,7 @@ public class ContentLoader extends ContentSource implements Runnable {
 	 * Creates a new ContentLoader instance with a default StorageIndex
 	 */
 	public ContentLoader() {
-		super(ID, new StorageIndex(100000));
+		super(ID, new StorageIndex(LOADER_CACHE_SIZE));
 	}
 
 	/**
@@ -188,7 +190,7 @@ public class ContentLoader extends ContentSource implements Runnable {
 	 *            the ContentSource
 	 */
 	public ContentLoader(ContentSource source) {
-		this(new StorageIndex(100000), source);
+		this(new StorageIndex(LOADER_CACHE_SIZE), source);
 	}
 
 	/**
@@ -242,6 +244,20 @@ public class ContentLoader extends ContentSource implements Runnable {
 			//#debug debug
 			System.out.println("content is already requested");
 		}
+	}
+	
+	/**
+	 * Cancels the request of the content described throught the given ContentDescriptor
+	 * 
+	 * @param descriptor
+	 *            the ContentDescriptor
+	 */
+	public void cancelContent(ContentDescriptor descriptor) {
+		try {
+			synchronized (this.lock) {
+				this.queue.cancel(descriptor);
+			}
+		} catch (InterruptedException e) {}
 	}
 
 	/*
