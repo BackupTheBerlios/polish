@@ -3300,7 +3300,7 @@ public class Container extends Item {
 		Item item = this.focusedItem;
 		if (this.enableScrolling) {
 			int scrollDiff = Math.abs(getScrollYOffset() - this.lastPointerPressYOffset);
-			if ( scrollDiff > 20  ||  handlePointerScrollReleased(relX, relY) ) {
+			if ( scrollDiff > Display.getScreenHeight()/10  ||  handlePointerScrollReleased(relX, relY) ) {
 				// we have scrolling in the meantime
 				boolean processed = false;
 				if (item != null && item.isPressed) {
@@ -3327,7 +3327,7 @@ public class Container extends Item {
 					if (this.yOffset > this.lastPointerPressYOffset) {
 						direction = Canvas.UP;
 					}
-					startScroll( direction,  (int) ((scrollDiff * 1000 ) / dragTime), 20 );
+					startScroll( direction,  (int) ((scrollDiff * 1000 ) / dragTime), Display.getScreenHeight()/10 );
 				} else if (this.yOffset > 0) {
 					setScrollYOffset(0, true);
 				}
@@ -3536,14 +3536,14 @@ public class Container extends Item {
 		//#endif
 		if (this.enableScrolling) {
 			int scrollDiff = Math.abs(getScrollYOffset() - this.lastPointerPressYOffset);
-			if (scrollDiff > 20) {
+			if (scrollDiff > Display.getScreenHeight()/10) {
 				long dragTime = System.currentTimeMillis() - this.lastPointerPressTime;
 				if (dragTime < 1000 && dragTime > 1) {
 					int direction = Canvas.DOWN;
 					if (this.yOffset > this.lastPointerPressYOffset) {
 						direction = Canvas.UP;
 					}
-					startScroll( direction,  (int) ((scrollDiff * 1000 ) / dragTime), 20 );
+					startScroll( direction,  (int) ((scrollDiff * 1000 ) / dragTime), Display.getScreenHeight()/10 );
 				} else if (this.yOffset > 0) {
 					setScrollYOffset( 0, true );
 				}
