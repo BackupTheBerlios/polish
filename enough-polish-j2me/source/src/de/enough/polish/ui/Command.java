@@ -2,9 +2,8 @@
 
 package de.enough.polish.ui;
 
-import javax.microedition.lcdui.Image;
-
 import de.enough.polish.event.AsynchronousMultipleCommandListener;
+import de.enough.polish.util.IdentityArrayList;
 
 /**
  * The <code>Command</code> class is a construct that encapsulates the semantic information of an action. 
@@ -155,9 +154,9 @@ import de.enough.polish.event.AsynchronousMultipleCommandListener;
  */
 public class Command
 //#if polish.midp
-extends javax.microedition.lcdui.Command
+	extends javax.microedition.lcdui.Command
 //#elif polish.android
-//# extends de.enough.polish.android.lcdui.Command
+	//# extends de.enough.polish.android.lcdui.Command
 //#endif
 {
 	/**
@@ -301,25 +300,10 @@ extends javax.microedition.lcdui.Command
 	private int commandType;
 	private int priority;
 	
-	private Container children;
-	protected boolean hasChildren;
-	private int childIndicatorWidth = 5;
-	private int childIndicatorYOffset;
-	private int childIndicatorHeight = 5;
-	//#if polish.css.command-child-indicator
-		private Image childIndicator;
-	//#endif
-	//#if polish.css.command-child-indicator-color
-		private int childIndicatorColor = -1;
-	//#endif
-	private boolean isOpen;
-
+	private IdentityArrayList children;
 	private Style style;
-
 	private String label;
-
 	private ItemCommandListener itemCommandListener;
-
 	private CommandListener commandListener;
 
 	/**
@@ -595,6 +579,66 @@ extends javax.microedition.lcdui.Command
 	 */
 	public void setStyle(Style style) {
 		this.style = style;
+	}
+	
+	/**
+	 * Adds a subcommand to this command.
+	 * @param child the subcommand that should be added
+	 * @return true when the sub command was added, false when the command has been added previously
+	 */ 
+	public boolean addSubCommand( Command child ) {
+		if (this.children == null) {
+			this.children = new IdentityArrayList();
+		}
+		if (!this.children.contains(child)) {
+			this.children.add(child);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * Removes a subcommand from this command.
+	 * @param child the subcommand that should be removed
+	 */ 
+	public void removeSubCommand(Command child) {
+		if (this.children != null) {
+			this.children.remove(child);
+		}
+	}
+
+	
+	/**
+	 * Checks if this command has subcommands/children
+	 * @return true when this command has subcommands
+	 */
+	public boolean hasSubCommands() {
+		return (this.children != null && this.children.size() > 0);
+	}
+	
+	/**
+	 * Retrieves the internal array of children commands.
+	 * This method has no overhead compared to getSubCommands().
+	 * 
+	 * @return the internal array of subcommands, this might be null (compare hasSubCommands()) and some or all contained elements might be null
+	 */
+	public Object[] getSubCommmandsArray() {
+		if (this.children == null) {
+			return null;
+		}
+		return this.children.getInternalArray();
+	}
+	
+	/**
+	 * Retrieves all sub commands of this command.
+	 * @return an array of children commands, might be empty but not null
+	 */
+	public Command[] getSubCommands() {
+		if (this.children == null) {
+			return new Command[0];
+		}
+		return (Command[]) this.children.toArray( new Command[ this.children.size() ] );
 	}
 	
 }

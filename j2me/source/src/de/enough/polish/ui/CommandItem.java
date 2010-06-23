@@ -86,6 +86,16 @@ public class CommandItem extends IconItem {
 		this.appearanceMode = Item.INTERACTIVE;
 		this.command = command;
 		this.parent = parent;
+		if (command.hasSubCommands()) {
+			Object[] cmds = command.getSubCommmandsArray();
+			for (int i = 0; i < cmds.length; i++) {
+				Command child = (Command) cmds[i];
+				if (child == null) {
+					break;
+				}
+				addChild( child, child.getStyle() );
+			}
+		}
 	}
 	
 	/**

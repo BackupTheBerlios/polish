@@ -1058,7 +1058,17 @@ public abstract class BaseScreen
     	keyCode = getMidpKeyCode(keyCode);
         keyReleased( keyCode );
         if ( screen != null ) {
-        	return (screen.keyReleasedProcessed);
+        	boolean handled = screen.keyReleasedProcessed; 
+    		//#if !tmp.fullscreen
+	        	if (!handled && (Keypad.map( keyCode ) == Keypad.KEY_ESCAPE)) {
+	        		if (this.addedMenuItems.size() == 1) {
+        				CommandMenuItem item = (CommandMenuItem) this.addedMenuItems.get(0);
+        				item.run();
+        				handled = true;
+	        		}
+	        	}
+        	//#endif
+        	return handled;
         } else { 
         	return true; // consume the key event
         } 
@@ -1279,8 +1289,9 @@ public abstract class BaseScreen
     	boolean processed = super.navigationClick(status, time);
     	if (!processed) {
     		keyPressed( KEY_BB_FIRE );
-    		if ( (Object)this instanceof Screen ) {
-    			processed = ((Screen)((Object)this)).keyPressedProcessed;
+            Screen screen = getPolishScreen();
+            if ( screen != null ) {
+    			processed = screen.keyPressedProcessed;
     		} else {
     			processed = true;
     		}
@@ -1300,8 +1311,16 @@ public abstract class BaseScreen
     	boolean processed = super.navigationUnclick(status, time);
     	if (!processed) {
     		keyReleased( KEY_BB_FIRE );
-    		if ( (Object)this instanceof Screen ) {
-    			processed = ((Screen)((Object)this)).keyReleasedProcessed;
+            Screen screen = getPolishScreen();
+            if ( screen != null ) {
+    			processed = screen.keyReleasedProcessed;
+        		//#if !tmp.fullscreen
+		        	if (!processed && this.addedMenuItems.size() == 1) {
+        				CommandMenuItem item = (CommandMenuItem) this.addedMenuItems.get(0);
+        				item.run();
+        				processed = true;
+		        	}
+	        	//#endif
     		} else {
     			processed = true;
     		}

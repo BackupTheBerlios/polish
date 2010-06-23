@@ -1922,6 +1922,7 @@ public final class UiAccess {
 	 * @param screen the screen.
 	 */
 	public static void addSubCommand(  Command child, Command parent, Screen screen  ) {
+		//parent.addSubCommand(child);
 		screen.addSubCommand( child, parent );
 	}
 	//#endif
@@ -1936,6 +1937,10 @@ public final class UiAccess {
 	 * @param style the style of the command
 	 */
 	public static void addSubCommand(  Command child, Command parent, Screen screen, Style style  ) {
+//		if (style != null) {
+//			child.setStyle(style);
+//		}
+		//parent.addSubCommand(child);
 		screen.addSubCommand( child, parent, style );
 	}
 	//#endif
@@ -1964,6 +1969,7 @@ public final class UiAccess {
 	 */
 	public static void removeSubCommand(Command childCommand, Command parentCommand, Screen screen)
 	{
+		//parentCommand.removeSubCommand( childCommand );
 		screen.removeSubCommand(childCommand, parentCommand);
 	}
 	//#endif

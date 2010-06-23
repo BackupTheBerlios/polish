@@ -27,14 +27,15 @@
  */
 package de.enough.polish.blackberry.ui;
 
+import net.rim.device.api.system.Application;
+import net.rim.device.api.ui.MenuItem;
+import net.rim.device.api.ui.UiApplication;
 import de.enough.polish.ui.Command;
 import de.enough.polish.ui.CommandListener;
 import de.enough.polish.ui.Displayable;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.UiAccess;
-
-import net.rim.device.api.ui.MenuItem;
 
 /**
  * <p>Maps from a command to a menuitem</p>
@@ -49,13 +50,21 @@ public class CommandMenuItem extends MenuItem {
 	private Item item;
 
 	/**
-	 * @param cmd 
-	 * @param displayable 
+	 * @param cmd the command associated with this item
+	 * @param displayable the displayable to which this command belongs to
 	 */
 	public CommandMenuItem(Command cmd, Displayable displayable) {
-		super(cmd.getLabel(), cmd.getPriority(), cmd.getPriority() );
+		super( getLabel( cmd  ), cmd.getPriority(), cmd.getPriority() );
 		this.cmd = cmd;
 		this.displayable = displayable;
+	}
+
+
+	private static String getLabel(Command command) {
+		if (command.hasSubCommands()) {
+			return command.getLabel() + "   >";
+		}
+		return command.getLabel();
 	}
 
 
@@ -70,18 +79,38 @@ public class CommandMenuItem extends MenuItem {
 	 * @see java.lang.Runnable#run()
 	 */
 	public void run() {
-		if (this.displayable != null) {
-			if (this.displayable instanceof Screen) {
-				UiAccess.handleCommand((Screen)this.displayable, this.cmd);
-			} else if (this.displayable instanceof CommandListener) {
-				((CommandListener)this.displayable).commandAction(this.cmd, this.displayable);
+		handleCommand(this.cmd, this.displayable, this.item);
+	}
+
+
+	/**
+	 * Handles the given command.
+	 * 
+	 * @param cmd the command associated with this item
+	 * @param displayable the displayable to which this command belongs to
+	 * @param item the item to which this command belongs to
+	 * 
+	 */
+	public static void handleCommand(Command cmd, Displayable displayable, Item item) {
+		if (cmd.hasSubCommands()) {
+			// display children commands:
+			CommandsPopup popup = new CommandsPopup( cmd, displayable, item );
+	        Object lock = Application.getEventLock();
+	        synchronized (lock) {
+	        	UiApplication.getUiApplication().pushScreen(popup);
+	        }
+		} else if (displayable != null) {
+			if (displayable instanceof Screen) {
+				UiAccess.handleCommand((Screen)displayable, cmd);
+			} else if (displayable instanceof CommandListener) {
+				((CommandListener)displayable).commandAction(cmd, displayable);
 	//		} else {
-	//			Display.getInstance().commandAction(this.cmd, this.displayable);
+	//			Display.getInstance().commandAction(cmd, displayable);
 			}
 		} else {
-			boolean handled = UiAccess.handleCommand(this.item, this.cmd);
+			boolean handled = UiAccess.handleCommand(item, cmd);
 			if (!handled) {
-				UiAccess.handleCommand(this.item.getScreen(), this.cmd);
+				UiAccess.handleCommand(item.getScreen(), cmd);
 			}
 		}
 	}

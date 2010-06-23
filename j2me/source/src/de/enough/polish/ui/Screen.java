@@ -4236,8 +4236,12 @@ implements UiElement, Animatable
 	 * @param parent the parent command
 	 */
 	public void addSubCommand(Command child, Command parent) {
-		//#style menuitem, menu, default
-		addSubCommand( child, parent );
+		if (child.getStyle() != null) {
+			addSubCommand( child, parent, child.getStyle() );
+		} else {
+			//#style menuitem, menu, default
+			addSubCommand( child, parent );
+		}
 	}
 	
 	/**
@@ -4249,11 +4253,11 @@ implements UiElement, Animatable
 	 * @throws IllegalStateException when the parent command has not been added before
 	 */
 	public void addSubCommand(Command child, Command parent, Style commandStyle) {
-		//#if !tmp.menuFullScreen
-			child.setLabel( parent.getLabel() + " > " + child.getLabel() );
-			removeCommand( parent );
-			addCommand( child );
-		//#else
+		if (commandStyle != null) {
+			child.setStyle( commandStyle );
+		}
+		parent.addSubCommand(child);
+		//#if tmp.menuFullScreen
 			//#debug
 			System.out.println("Adding subcommand " + child.getLabel() );
 			//#ifdef tmp.useExternalMenuBar
