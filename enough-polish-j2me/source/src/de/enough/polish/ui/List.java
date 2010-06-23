@@ -801,6 +801,64 @@ public class List extends Screen implements Choice
 		}
 		super.removeCommand(cmd);
 	}
+	
+	//#if polish.LibraryBuild
+	/**
+	 * Sets the <code>Command</code> to be used for an
+	 * <code>IMPLICIT</code> <code>List</code> selection
+	 * action.
+	 * By default, an implicit selection of a List will result in the
+	 * predefined <code>List.SELECT_COMMAND</code> being used. This
+	 * behavior may be
+	 * overridden by calling the <code>List.setSelectCommand()</code>
+	 * method with an
+	 * appropriate parameter value.  If a <code>null</code> reference
+	 * is passed, this
+	 * indicates that no &quot;select&quot; action is appropriate for
+	 * the contents
+	 * of this <code>List</code>.
+	 * 
+	 * <p> If a reference to a command object is passed, and
+	 * it is not the special command <code>List.SELECT_COMMAND</code>, and
+	 * it is not currently present on this <code>List</code> object,
+	 * the command object is added to this <code>List</code> as if
+	 * <code>addCommand(command)</code> had been called
+	 * prior to the command being made the select command.  This
+	 * indicates that this command
+	 * is to be invoked when the user performs the &quot;select&quot;
+	 * on an element of
+	 * this <code>List</code>. </p>
+	 * 
+	 * <p> The select command should have a command type of
+	 * <code>ITEM</code> to indicate
+	 * that it operates on the currently selected object.  It is not an error
+	 * if the command is of some other type.
+	 * (<code>List.SELECT_COMMAND</code> has a type
+	 * of <code>SCREEN</code> for historical purposes.)  For purposes
+	 * of presentation and
+	 * placement within its user interface, the implementation is allowed to
+	 * treat the select command as if it were of type <code>ITEM</code>. </p>
+	 * 
+	 * <p> If the select command is later removed from the <code>List</code>
+	 * with <code>removeCommand()</code>, the <code>List</code> is set to have
+	 * no select command as if <code>List.setSelectCommand(null)</code> had
+	 * been called.</p>
+	 * 
+	 * <p> The default behavior can be reestablished explicitly by calling
+	 * <code>setSelectCommand()</code> with an argument of
+	 * <code>List.SELECT_COMMAND</code>.</p>
+	 * 
+	 * <p> This method has no effect if the type of the
+	 * <code>List</code> is not <code>IMPLICIT</code>. </p>
+	 * 
+	 * @param command the command to be used for an IMPLICIT list selection action, or null if there is none
+	 * @since  MIDP 2.0
+	 */
+	public void setSelectCommand( javax.microedition.lcdui.Command command)
+	{
+		// ignore
+	}
+	//#endif
 
 	/**
 	 * Sets the <code>Command</code> to be used for an
