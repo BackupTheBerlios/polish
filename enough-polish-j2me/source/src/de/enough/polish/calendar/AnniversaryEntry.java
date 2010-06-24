@@ -86,6 +86,52 @@ public class AnniversaryEntry extends CalendarEntry implements Externalizable {
 		return anniversary;
 	}
 	
+	
+	/**
+	 * Since anniversary is a recurring event it has no fix start date.
+	 * Therefore we have to update the startDate of this event.  
+	 * @return boolean - true if update was successful and false if update failed. 
+	 */
+	public void updateStartDate() {
+
+		Calendar c = Calendar.getInstance();
+		Date currentDate = new Date();
+		/* Since we only need the month and the day of the anniversary date we use the startDate as our anniversaryDate */
+		Date anniversaryDate = super.getStartDate();
+		int currentYear, currentMonth, currentDay;
+		int anniversaryMonth, anniversaryDay;
+		int newYear, newMonth, newDay;
+		
+		c.setTime(anniversaryDate);
+		anniversaryMonth = c.get(Calendar.MONTH);
+		anniversaryDay = c.get(Calendar.DAY_OF_MONTH);
+		
+		newMonth = anniversaryMonth;
+		newDay = anniversaryDay;
+		
+		c.setTime(currentDate);
+		currentYear = c.get(Calendar.YEAR);
+		currentMonth = c.get(Calendar.MONTH);
+		currentDay = c.get(Calendar.DAY_OF_MONTH);
+		
+		if( (anniversaryMonth > currentMonth) || ( (anniversaryMonth == currentMonth) && (anniversaryDay >= currentDay) ) ) {
+			newYear = currentYear;
+		} else {
+			newYear = currentYear + 1;
+		}
+		
+		c.set(Calendar.YEAR, newYear);
+		c.set(Calendar.MONTH, newMonth);
+		c.set(Calendar.DAY_OF_MONTH, newDay);
+		
+		Date newStartDate = c.getTime();
+		
+		super.setStartDate(newStartDate);
+	}
+	
+	
+	
+	
 	/*
 	 * (non-Javadoc)
 	 * @see de.enough.polish.io.Externalizable#write(java.io.DataOutputStream)
