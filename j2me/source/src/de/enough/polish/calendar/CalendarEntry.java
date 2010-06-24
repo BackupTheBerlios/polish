@@ -35,6 +35,8 @@ public class CalendarEntry implements Externalizable {
 	/** this entry recurs yearly */
 	public static final int REOCCURENCE_YEARLY = 4;
 	
+	
+	
 	/**
 	 * field to contain starting date of calendar event 
 	 */
@@ -150,21 +152,21 @@ public class CalendarEntry implements Externalizable {
 	 * field to contain details of alarm 
 	 */
 	private CalendarAlarm calendarAlarm;
-	
-	
+
+
 
 	/**
 	 * field to contain the details for repeat rule
 	 */
 	transient private EventRepeatRule eventRepeatRule;
-
+	
 	
 	/**
 	 * field to contain timeZone of calendar event
 	 */
 	private transient TimeZone timeZone;
 	
-		
+	
 	/**
 	 * Constructor for CalendarEntry
 	 */
@@ -870,7 +872,7 @@ public class CalendarEntry implements Externalizable {
 			this.timeZone = TimeZone.getTimeZone(timeZoneId);
 		}
 	}
-
 	
-
+	
+	
 }
