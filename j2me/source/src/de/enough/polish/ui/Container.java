@@ -2932,7 +2932,6 @@ public class Container extends Item {
 			if (timeDelta > 1000) {
 				timeDelta = AnimationThread.ANIMATION_INTERVAL;
 			}
-			this.lastAnimationTime = currentTime;
 			speed = (int) ((speed * timeDelta) / 1000);
 			if (speed == 0) {
 				this.scrollSpeed = 0;
@@ -2994,6 +2993,8 @@ public class Container extends Item {
 			}
 			repaintRegion.addRegion( x, y, width, height );
 		}
+		
+		this.lastAnimationTime = currentTime;
 		
 		Item focItem = this.focusedItem;
 		if (focItem != null) {
@@ -3327,7 +3328,7 @@ public class Container extends Item {
 					if (this.yOffset > this.lastPointerPressYOffset) {
 						direction = Canvas.UP;
 					}
-					startScroll( direction,  (int) ((scrollDiff * 1000 ) / dragTime), Display.getScreenHeight()/10 );
+					startScroll( direction,  (int) ((scrollDiff * 1000 ) / dragTime), 20 );
 				} else if (this.yOffset > 0) {
 					setScrollYOffset(0, true);
 				}
@@ -3543,7 +3544,7 @@ public class Container extends Item {
 					if (this.yOffset > this.lastPointerPressYOffset) {
 						direction = Canvas.UP;
 					}
-					startScroll( direction,  (int) ((scrollDiff * 1000 ) / dragTime), Display.getScreenHeight()/10 );
+					startScroll( direction,  (int) ((scrollDiff * 1000 ) / dragTime), 20 );
 				} else if (this.yOffset > 0) {
 					setScrollYOffset( 0, true );
 				}
@@ -3793,8 +3794,8 @@ public class Container extends Item {
 			return;
 		}
 		this.scrollDirection = direction;
-		this.scrollSpeed = speed;
 		this.scrollDamping = damping;
+		this.scrollSpeed = speed;
 	}
 
 	/**
