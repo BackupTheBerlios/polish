@@ -14,6 +14,7 @@ public class BirthdayEntry extends CalendarEntry implements Externalizable {
 	 * field to contain the actual birth date. 
 	 */
 	private Date birthDate;
+	private int age = Integer.MIN_VALUE;
 	
 	
 	/**
@@ -152,42 +153,45 @@ public class BirthdayEntry extends CalendarEntry implements Externalizable {
 		return age;
 	}
 	
-//	private int calculateCurrentAge() {
-//		
-//		int age = Integer.MIN_VALUE;
-//		
-//		Calendar c = Calendar.getInstance();
-//		Date currentDate = new Date();
-//		
-//		int cDay, cMonth, cYear;					// the current day, month and year
-//		int bDay, bMonth, bYear;					// the birth day, month and year
-//		
-//		c.setTime(currentDate);
-//		cDay = c.get(Calendar.DAY_OF_MONTH);
-//		cMonth = c.get(Calendar.MONTH);
-//		cYear = c.get(Calendar.YEAR);
-//		
-//		if( this.birthDate != null ) {
-//			c.setTime(this.birthDate);
-//			bDay = c.get(Calendar.DAY_OF_MONTH);
-//			bMonth = c.get(Calendar.MONTH);
-//			bYear = c.get(Calendar.YEAR);
-//			
-//			if( cMonth > bMonth ) {
-//				// This year's birthday was already.
-//				age = cYear - bYear;
-//			} else if( (cMonth == bMonth) && (cDay >= bDay) ) {
-//				// This year's birthday was already or is today.
-//				age = cYear - bYear;
-//			} else {
-//				// This year's birthday is still up front.
-//				age = (cYear - bYear) - 1;	
-//			}
-//		} else {
-//			//#debug info
-//			System.out.println("Could not calculate the age since there is no birth date available.");
-//			// do nothing;
-//		}
-//		return age;
-//	}
+	/**
+	 * Since birthday is a recurring event it has no fix start date.
+	 * Therefore we have to update the startDate of this event.  
+	 * @return boolean - true if update was successful and false if update failed. 
+	 */
+	public void updateStartDate() {
+
+		Calendar c = Calendar.getInstance();
+		Date currentDate = new Date();
+		/* Since we only need the month and the day of the birth date we use the startDate as our birthDate */
+		Date birthDate = super.getStartDate();
+		int currentYear, currentMonth, currentDay;
+		int birthMonth, birthDay;
+		int newYear, newMonth, newDay;
+		
+		c.setTime(birthDate);
+		birthMonth = c.get(Calendar.MONTH);
+		birthDay = c.get(Calendar.DAY_OF_MONTH);
+		
+		newMonth = birthMonth;
+		newDay = birthDay;
+		
+		c.setTime(currentDate);
+		currentYear = c.get(Calendar.YEAR);
+		currentMonth = c.get(Calendar.MONTH);
+		currentDay = c.get(Calendar.DAY_OF_MONTH);
+		
+		if( (birthMonth > currentMonth) || ( (birthMonth == currentMonth) && (birthDay >= currentDay) ) ) {
+			newYear = currentYear;
+		} else {
+			newYear = currentYear + 1;
+		}
+		
+		c.set(Calendar.YEAR, newYear);
+		c.set(Calendar.MONTH, newMonth);
+		c.set(Calendar.DAY_OF_MONTH, newDay);
+		
+		Date newStartDate = c.getTime();
+		
+		super.setStartDate(newStartDate);
+	}
 }
