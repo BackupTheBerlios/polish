@@ -107,6 +107,8 @@ implements ImageConsumer
 		private RgbFilter[] originalIconFilters;
 		private int iconFilterLayout;
 	//#endif
+	private Image imageHover;
+	private Image imageNormal;
 	
 	/**
 	 * Creates a new icon.
@@ -641,6 +643,19 @@ implements ImageConsumer
 		}
 	}
 
+	/**
+	 * Sets the image for this icon when it is focused (:hover).
+	 * 
+	 * @param img the image for this focused icon, when null is given, the default image is painted.
+	 */
+	public void setHoverImage(Image img) {
+		this.imageHover = img;
+		if (this.isFocused && img != null) {
+			this.imageNormal = this.image;
+			setImage( img, null );
+		}
+	}
+	
 	
 	/**
 	 * Sets the image align for this icon.
@@ -750,20 +765,35 @@ implements ImageConsumer
 	}
 	//#endif
 
-	//#if polish.midp2 && polish.css.scale-factor
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#defocus(de.enough.polish.ui.Style)
 	 */
 	protected void defocus(Style originalStyle) {
-		super.defocus(originalStyle);
-		this.scaleFinished = false;
-		this.scaleDown = false;
-		this.currentStep = 0;
-		this.scaleData = null;
+		if (this.imageNormal != null) {
+			this.image = this.imageNormal;
+		}
+		super.defocus(originalStyle);		
+		//#if polish.midp2 && polish.css.scale-factor
+			this.scaleFinished = false;
+			this.scaleDown = false;
+			this.currentStep = 0;
+			this.scaleData = null;
+		//#endif
 	}
-	//#endif
+	
 
-	//#if polish.debug.enabled
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#focus(de.enough.polish.ui.Style, int)
+	 */
+	protected Style focus(Style newStyle, int direction) {
+		if (this.imageHover != null) {
+			this.imageNormal = this.image;
+			this.image = this.imageHover;
+		}
+		return super.focus(newStyle, direction);
+	}
+
+		//#if polish.debug.enabled
 		public String toString(){
 			return "IconItem(" + this.text + ")/" + super.toString();
 		}
@@ -819,7 +849,10 @@ implements ImageConsumer
 		if ( this.background == null 
 			&& this.border == null
 			&& (this.itemWidth == this.imageWidth || this.itemWidth == this.imageWidth + 2)
-			&& (this.itemHeight == this.imageHeight|| this.itemHeight == this.imageHeight + 2) ) 
+			&& (this.itemHeight == this.imageHeight|| this.itemHeight == this.imageHeight + 2)
+			&& this.image != null
+			) 
+			
 		{
 			// this item only displays the image, so we can speed up the RGB retrieval:
 			int[] rgbImageData = new int[ this.itemWidth * this.itemHeight ];
@@ -836,7 +869,8 @@ implements ImageConsumer
 		return super.getRgbData(supportTranslucency, rgbOpacity);
 	}
 	//#endif
-	
+
+
 	
 //#ifdef polish.IconItem.additionalMethods:defined
 	//#include ${polish.IconItem.additionalMethods}

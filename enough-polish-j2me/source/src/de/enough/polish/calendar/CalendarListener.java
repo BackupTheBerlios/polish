@@ -11,22 +11,14 @@ import de.enough.polish.io.Serializable;
  * @author Ramakrishna
  *
  */
-public class CalendarListener implements Serializable {
+public interface CalendarListener{
 	
-	protected boolean notifyDaySelected(Date day) {
-		return true;
-	}
+	boolean notifyDaySelected(Date day);
 	
-	protected boolean notifyEntrySelected(CalendarEntry entry) {
-		return true;
-	}
+	boolean notifyEntrySelected(CalendarEntry entry);
 	
-	protected boolean notifyTimeSelected(Date time) {
-		return true;
-	}
+	boolean notifyTimeSelected(Date time);
 	
-	protected boolean notifyEntryStarted(CalendarEntry entry) {
-		return true;
-	}
+	boolean notifyEntryStarted(CalendarEntry entry);
 
 }

@@ -18,7 +18,7 @@ import de.enough.polish.io.Serializable;
 public class CalendarModel implements Serializable {
 	private int day;
 	private transient TimeZone timeZone; 
-	private CalendarListener listener;
+	private transient CalendarListener listener;
 	private Hashtable calendarEntries;
 	
 	/**
@@ -88,13 +88,13 @@ public class CalendarModel implements Serializable {
 	
 	/**
 	* gets all event entries on specified date
-	* @param day date on which calendar entries have to be returned
+	* @param forDay date on which calendar entries have to be returned
 	 * @return all calendar entry, null when none are defined
 	*/
-	public CalendarEntry[] getEntries(Date day ) {
+	public CalendarEntry[] getEntries(Date forDay ) {
 		if(this.calendarEntries != null && this.calendarEntries.size() > 1) {
-			if(this.calendarEntries.get(day) != null) {
-				return (CalendarEntry[])this.calendarEntries.get(day);
+			if(this.calendarEntries.get(forDay) != null) {
+				return (CalendarEntry[])this.calendarEntries.get(forDay);
 			} else {
 				return null;
 			}
