@@ -216,7 +216,7 @@ public class ContentLoader extends ContentSource implements Runnable {
 	 * @param listener
 	 *            the ContentListener
 	 */
-	public void requestContent(ContentDescriptor descriptor,
+	public synchronized void requestContent(ContentDescriptor descriptor,
 			ContentListener listener) {
 		if (this.thread == null) {
 			// create thread if not already ...
@@ -252,9 +252,10 @@ public class ContentLoader extends ContentSource implements Runnable {
 	 * @param descriptor
 	 *            the ContentDescriptor
 	 */
-	public void cancelContent(ContentDescriptor descriptor) {
+	public synchronized void cancelContent(ContentDescriptor descriptor) {
 		try {
 			synchronized (this.lock) {
+				this.listeners.remove(descriptor.getHash());
 				this.queue.cancel(descriptor);
 			}
 		} catch (InterruptedException e) {}
@@ -292,9 +293,11 @@ public class ContentLoader extends ContentSource implements Runnable {
 					Object data = loadContent(descriptor);
 					// notify the listener that content is loaded
 					listener.onContentLoaded(descriptor, data);
-				} catch (ContentException e) {
+				} catch (Exception e) {
 					// notify the listener that an error occured
 					listener.onContentError(descriptor, e);
+				} finally {
+					this.listeners.remove(descriptor.getHash());
 				}
 			}
 

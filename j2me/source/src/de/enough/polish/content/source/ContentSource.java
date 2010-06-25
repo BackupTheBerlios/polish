@@ -534,7 +534,7 @@ public abstract class ContentSource {
 	 *             if an error occurs
 	 */
 	public void sweep() throws ContentException {
-		if (this.hasStorage()) {
+		if (hasStorage()) {
 			for (int index = 0; index < this.storageIndex.size(); index++) {
 				StorageReference reference = this.storageIndex
 						.getReference(index);
@@ -542,6 +542,11 @@ public abstract class ContentSource {
 				// destroy the content
 				destroyContent(reference);
 			}
+		}
+		
+		for (int index = 0; index < this.sources.size(); index++) {
+			ContentSource source = (ContentSource) this.sources.get(index);
+			source.sweep();
 		}
 	}
 
@@ -555,10 +560,6 @@ public abstract class ContentSource {
 
 		for (int index = 0; index < this.sources.size(); index++) {
 			ContentSource source = (ContentSource) this.sources.get(index);
-
-			//#debug debug
-			info("closing shutdown");
-
 			source.shutdown();
 		}
 	}
