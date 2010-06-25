@@ -14,7 +14,14 @@ public class BirthdayEntry extends CalendarEntry implements Externalizable {
 	 * field to contain the actual birth date. 
 	 */
 	private Date birthDate;
+	
 	private int age = Integer.MIN_VALUE;
+	
+	/**
+	 * field to contain the date of the next birthday.
+	 * Since the startDate field will be used to identify an event we cannot change the startDate.
+	 */
+	private Date recentStartDate;
 	
 	
 	/**
@@ -153,12 +160,32 @@ public class BirthdayEntry extends CalendarEntry implements Externalizable {
 		return age;
 	}
 	
+	
 	/**
+	 * Method to get the date of the next birthday.
 	 * Since birthday is a recurring event it has no fix start date.
-	 * Therefore we have to update the startDate of this event.  
-	 * @return boolean - true if update was successful and false if update failed. 
+	 * Therefore we use recentStartDate as the actual calendar startDate.
+	 * E.g.
+	 * actual birth date:	25.06.2000
+	 * current date:		24.06.2010		>	recentStartDate:	25.06.2010
+	 * current date:		25.06.2010		>	recentStartDate:	25.06.2010 (birthday is today)
+	 * current date:		26.06.2010		>	recentStartDate:	25.06.2011
+	 * @return date of the next birthday.
 	 */
-	public void updateStartDate() {
+	public Date getRecentStartDate() {
+		
+		if( this.recentStartDate == null ) {
+			updateRecentStartDate();
+		} else {
+			// do nothing;
+		}
+		return this.recentStartDate;
+	}
+	
+	/**
+	 * Private method which updates the recentStartDate. 
+	 */
+	private void updateRecentStartDate() {
 
 		Calendar c = Calendar.getInstance();
 		Date currentDate = new Date();
@@ -190,8 +217,6 @@ public class BirthdayEntry extends CalendarEntry implements Externalizable {
 		c.set(Calendar.MONTH, newMonth);
 		c.set(Calendar.DAY_OF_MONTH, newDay);
 		
-		Date newStartDate = c.getTime();
-		
-		super.setStartDate(newStartDate);
+		this.recentStartDate = c.getTime();
 	}
 }

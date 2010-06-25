@@ -17,6 +17,13 @@ public class AnniversaryEntry extends CalendarEntry implements Externalizable {
 	
 	
 	/**
+	 * field to contain the date of the next anniversary.
+	 * Since the startDate field will be used to identify an event we cannot change the startDate.
+	 */
+	private Date recentStartDate;
+	
+	
+	/**
 	 * Constructor for AnniversaryEntry
 	 */
 	public AnniversaryEntry() {
@@ -88,11 +95,31 @@ public class AnniversaryEntry extends CalendarEntry implements Externalizable {
 	
 	
 	/**
+	 * Method to get the date of the next anniversary.
 	 * Since anniversary is a recurring event it has no fix start date.
-	 * Therefore we have to update the startDate of this event.  
-	 * @return boolean - true if update was successful and false if update failed. 
+	 * Therefore we use recentStartDate as the actual calendar startDate.
+	 * E.g.
+	 * actual anniversary date:	25.06.2000 (year married)
+	 * current date:			24.06.2010		>	recentStartDate:	25.06.2010
+	 * current date:			25.06.2010		>	recentStartDate:	25.06.2010 (anniversary is today)
+	 * current date:			26.06.2010		>	recentStartDate:	25.06.2011
+	 * @return date of the next anniversary.
 	 */
-	public void updateStartDate() {
+	public Date getRecentStartDate() {
+		
+		if( this.recentStartDate == null ) {
+			updateRecentStartDate();
+		} else {
+			// do nothing;
+		}
+		return this.recentStartDate;
+	}
+	
+	
+	/**
+	 * Private method which updates the recentStartDate. 
+	 */
+	public void updateRecentStartDate() {
 
 		Calendar c = Calendar.getInstance();
 		Date currentDate = new Date();
@@ -124,9 +151,7 @@ public class AnniversaryEntry extends CalendarEntry implements Externalizable {
 		c.set(Calendar.MONTH, newMonth);
 		c.set(Calendar.DAY_OF_MONTH, newDay);
 		
-		Date newStartDate = c.getTime();
-		
-		super.setStartDate(newStartDate);
+		this.recentStartDate = c.getTime();
 	}
 	
 	
