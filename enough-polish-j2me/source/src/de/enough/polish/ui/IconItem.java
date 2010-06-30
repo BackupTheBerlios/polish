@@ -770,7 +770,7 @@ implements ImageConsumer
 	 */
 	protected void defocus(Style originalStyle) {
 		if (this.imageNormal != null) {
-			this.image = this.imageNormal;
+			setImage( this.imageNormal );
 		}
 		super.defocus(originalStyle);		
 		//#if polish.midp2 && polish.css.scale-factor
@@ -788,7 +788,7 @@ implements ImageConsumer
 	protected Style focus(Style newStyle, int direction) {
 		if (this.imageHover != null) {
 			this.imageNormal = this.image;
-			this.image = this.imageHover;
+			setImage( this.imageHover );
 		}
 		return super.focus(newStyle, direction);
 	}
