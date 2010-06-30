@@ -981,11 +981,7 @@ public abstract class BaseScreen
     	keyCode = getMidpKeyCode(keyCode);
         keyPressed( keyCode );
         if ( screen != null ) {
-        	return (screen.keyPressedProcessed 
-        	        //#if !polish.blackberry.keyUpCalledOnKeyRelease
-        			|| screen.keyReleasedProcessed
-        			//#endif
-        			);
+        	return (screen.keyPressedProcessed);
         } else { 
         	return true; // consume the key event
         } 
