@@ -5,10 +5,10 @@ import de.enough.skylight.renderer.css.HtmlCssElement;
 
 
 
-public class DisplayHandler extends CssAttributeHandler {
+public class ClearHandler extends CssAttributeHandler {
 	
 	protected String getName() {
-		return "display";
+		return "clear";
 	}
 	
 	protected int getType() {
@@ -16,11 +16,13 @@ public class DisplayHandler extends CssAttributeHandler {
 	}
 
 	protected Object[] getRange() {
-		return new Object[]{HtmlCssElement.Display.BLOCK_LEVEL,
-							HtmlCssElement.Display.INLINE, HtmlCssElement.Display.INLINE_BLOCK, HtmlCssElement.Display.LIST_ITEM};
+		return new Object[]{HtmlCssElement.Clear.LEFT,
+							HtmlCssElement.Clear.RIGHT,
+							HtmlCssElement.Clear.NONE,
+                                                        HtmlCssElement.Clear.BOTH};
 	}
-
+	
 	protected void addAttribute(Style style, Object value) {
-		style.addAttribute("display", value);
+		style.addAttribute("clear", value);
 	}
 }

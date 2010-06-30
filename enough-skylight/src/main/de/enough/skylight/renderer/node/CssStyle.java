@@ -1,5 +1,6 @@
 package de.enough.skylight.renderer.node;
 
+import de.enough.polish.util.TextUtil;
 import de.enough.polish.ui.Color;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
@@ -48,6 +49,18 @@ public class CssStyle {
 		Integer extendFontStyle = extendStyle.getIntProperty("font-style");
 		Integer extendFontSize = extendStyle.getIntProperty("font-size"); 
 		Style extendFocusedStyle = getFocusedStyle(extendStyle);
+               
+
+                /*
+                extendFontSize = extendStyle.getIntProperty("margin-left");
+                extendFontSize = extendStyle.getIntProperty("margin-right");
+                extendFontSize = extendStyle.getIntProperty("margin-top");
+                extendFontSize = extendStyle.getIntProperty("margin-bottom");
+
+                extendFontSize = extendStyle.getIntProperty("padding-left");
+                extendFontSize = extendStyle.getIntProperty("padding-right");
+                extendFontSize = extendStyle.getIntProperty("padding-top");
+                extendFontSize = extendStyle.getIntProperty("padding-bottom"); */
 		
 		// if a base style is given ...
 		if(baseStyle == null) {
@@ -173,18 +186,24 @@ public class CssStyle {
 		Style style = handler.getDefaultStyle(element);
 		
 		if(clazz != null) {
-			clazz = clazz.toLowerCase();
-			Style classStyle = StyleSheet.getStyle(clazz);
-			 
-			if(classStyle != null) {
-				//#debug sl.debug.style
-				System.out.println("create style for " + handler.getTag() + " : " + clazz);
-				
-				return createStyle(style, classStyle);
-			} else {
-				//#debug error
-				System.out.println("style " + clazz + " could not be found");
-			} 
+                        String [] classes = TextUtil.split(clazz, ' ');
+                        int size = classes.length;
+                        for (int i=0;i<size;i++)
+                        {
+                            Style classStyle = StyleSheet.getStyle(classes[i]);
+
+                            if(classStyle != null) {
+                                    //#debug sl.debug.style
+                                    System.out.println("create style for " + handler.getTag() + " : " + classes[i]);
+
+                                    style = createStyle(style, classStyle);
+                            } else {
+                                    //#debug error
+                                    System.out.println("style " + classes[i] + " could not be found");
+                            }
+                        }
+                        return style;
+
 		}
 		
 		//#debug sl.debug.style

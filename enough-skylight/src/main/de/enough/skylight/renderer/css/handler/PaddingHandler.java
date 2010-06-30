@@ -21,7 +21,11 @@ public class PaddingHandler extends CssAttributeHandler {
 	public void addToStyle(Style style, String text) {
 		String[] values = TextUtil.split(text, ' ');
 		if (values.length == 1) {
-			style.addAttribute("padding", new Dimension(text));
+			//style.addAttribute("padding", new Dimension(text));
+                        style.addAttribute("padding-top", new Dimension(text));
+                        style.addAttribute("padding-left", new Dimension(text));
+                        style.addAttribute("padding-right", new Dimension(text));
+                        style.addAttribute("padding-bottom", new Dimension(text));
 		} else if (values.length == 2) {
 			Dimension vertical = new Dimension( values[0]);
 			Dimension horizontal = new Dimension( values[1]);

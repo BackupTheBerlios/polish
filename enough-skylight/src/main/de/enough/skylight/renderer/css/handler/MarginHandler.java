@@ -21,7 +21,11 @@ public class MarginHandler extends CssAttributeHandler {
 	public void addToStyle(Style style, String text) {
 		String[] values = TextUtil.split(text, ' ');
 		if (values.length == 1) {
-			style.addAttribute("margin", new Dimension(text));
+			//style.addAttribute("margin", new Dimension(text));
+                        style.addAttribute("margin-top", new Dimension(text));
+                        style.addAttribute("margin-left", new Dimension(text));
+                        style.addAttribute("margin-right", new Dimension(text));
+                        style.addAttribute("margin-bottom", new Dimension(text));
 		} else if (values.length == 2) {
 			Dimension vertical = new Dimension( values[0]);
 			Dimension horizontal = new Dimension( values[1]);

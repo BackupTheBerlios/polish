@@ -43,28 +43,43 @@ public class FloatBoxManager {
 		int minX = 0;
 		int tempLength = 0;
 
+                boolean goAllTheWayUp = false ;
+
                 while ( box.isInline )
                 {
                     box = box.parent ;
                 }
-		
-		while ( i < count )
-		{
-			temp = (Float) floats.get(i);
-			if ( (temp.y<=y) && (temp.y+temp.height-1>=y) &&
-				  ( ( (temp.x>=x) && ( temp.x <= endX) ) || ( (temp.x+temp.width>x) && ( temp.x + temp.width< endX) ) ) && 
-			      ( temp.type == FLOAT_LEFT) &&
-                              ( (temp.box.parent == box) || ( ( temp.box.parent == box.parent) && box.isBlock ) )
-                              )
-			{
-				tempLength = temp.x+temp.width - x;
-				if ( tempLength > minX )
-				{
-					minX = tempLength ;
-				}
-			}
-			i++;
-		}
+                
+                if ( box.isBlock || box.isFloat )
+                {
+                    goAllTheWayUp = true;
+                }                
+
+                do
+                {
+
+                    i = 0;
+                    while ( i < count )
+                    {
+                            temp = (Float) floats.get(i);
+                            if ( (temp.y<=y) && (temp.y+temp.height-1>=y) &&
+                                      ( ( (temp.x>=x) && ( temp.x <= endX) ) || ( (temp.x+temp.width>x) && ( temp.x + temp.width< endX) ) ) &&
+                                  ( temp.type == FLOAT_LEFT) &&
+                                  ( (temp.box.parent == box) || ( ( temp.box.parent == box.parent) && box.isBlock ) )
+                                  )
+                            {
+                                    tempLength = temp.x+temp.width - x;
+                                    if ( tempLength > minX )
+                                    {
+                                            minX = tempLength ;
+                                    }
+                            }
+                            i++;
+                    }
+                    
+                    box = box.parent;
+                }
+                while ( ( box != null ) && goAllTheWayUp);
 		
 		return minX;
 	}
@@ -79,29 +94,45 @@ public class FloatBoxManager {
 		int tempLength = 0;
 		int leftPoint = x + length ;
 
+                boolean goAllTheWayUp = false ;
+
                 while ( box.isInline )
                 {
                     box = box.parent ;
                 }
 
-		while ( i < count )
-		{
-			temp = (Float) floats.get(i);
-			if ( (temp.y<=y) && (temp.y+temp.height-1>=y) &&
-					  ( ( (temp.x>=x) && ( temp.x <= endX) ) || ( (temp.x+temp.width>x) && ( temp.x + temp.width< endX) ) ) && 
-				      ( temp.type == FLOAT_RIGHT) &&
-                                      ( (temp.box.parent == box) || ( ( temp.box.parent == box.parent) && box.isBlock ) )
-                                      )
-			{
-				tempLength = leftPoint - temp.x ;
-				if ( tempLength > maxX )					
-				{
-					maxX = tempLength ;
-					break;
-				}
-			}
-			i++;
-		}
+                if ( box.isBlock || box.isFloat )
+                {
+                    goAllTheWayUp = true;
+                }
+
+                do
+                {
+
+                    i = 0;
+                    while ( i < count )
+                    {
+                            temp = (Float) floats.get(i);
+                            if ( (temp.y<=y) && (temp.y+temp.height-1>=y) &&
+                                              ( ( (temp.x>=x) && ( temp.x <= endX) ) || ( (temp.x+temp.width>x) && ( temp.x + temp.width< endX) ) ) &&
+                                          ( temp.type == FLOAT_RIGHT) &&
+                                          ( (temp.box.parent == box) || ( ( temp.box.parent == box.parent) && box.isBlock ) )
+                                          )
+                            {
+                                    tempLength = leftPoint - temp.x ;
+                                    System.out.println("CHECK FLOAT: " + temp.x + " " + tempLength);
+                                    if ( tempLength > maxX )
+                                    {
+                                            maxX = tempLength ;
+                                    }
+                            }
+                            i++;
+                    }
+
+                    box = box.parent;
+                }
+                while ( ( box != null ) && goAllTheWayUp);
+		
 		return length - maxX;
 	}
 

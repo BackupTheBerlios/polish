@@ -29,6 +29,11 @@ public class Box
 	public int borderTop = 0;
 	public int borderRight = 0;
 	public int borderBottom = 0;
+
+        public boolean clearLeft = false;
+        public boolean clearRight = false;
+
+        public boolean isFirstItemOnRow = false;
 	
 	public ArrayList children = new ArrayList();
 	
@@ -39,9 +44,6 @@ public class Box
 
         // Actual DOM parent (if different than the on-screen parent, otherwise null - for inline, this can be different fromt the on-screen parent)
         public Box DOMParent = null ;
-
-        // Stack frame of this box, if any
-        public LayoutContext.StackFrame frame = null ;
 	
 	public String comment = "" ;
 
@@ -51,6 +53,7 @@ public class Box
         public boolean isInline = false;
         public boolean isFloat = false;
         public boolean isBlock = false ;
+        public boolean isListItem = false ;
         public boolean firstElementInInline = false;
         public boolean lastElementInInline = false ;
 	

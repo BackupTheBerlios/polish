@@ -263,6 +263,9 @@ public class ViewportBuilder {
 				} else if(element.isDisplay(HtmlCssElement.Display.INLINE_BLOCK)) {
 					parent.addInlineBlock(containingBlock);
 				}
+                                else if(element.isDisplay(HtmlCssElement.Display.LIST_ITEM)) {
+					parent.addBlock(containingBlock);
+				}
 				
 				//#debug sl.debug.build
 				System.out.println("added " + containingBlock + " to body of " + parent);

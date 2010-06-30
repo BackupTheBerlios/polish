@@ -5,6 +5,7 @@ import java.io.Reader;
 import de.enough.polish.browser.css.CssInterpreter;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.ArrayList;
+import de.enough.skylight.renderer.css.handler.ClearHandler;
 import de.enough.skylight.renderer.css.handler.CssAttributeHandler;
 import de.enough.skylight.renderer.css.handler.DisplayHandler;
 import de.enough.skylight.renderer.css.handler.FloatHandler;
@@ -40,6 +41,7 @@ public class HtmlCssInterpreter extends CssInterpreter{
 	void load() {
 		addAttributeHandler(new DisplayHandler());
 		addAttributeHandler(new FloatHandler());
+                addAttributeHandler(new ClearHandler());
 		addAttributeHandler(new PositionHandler());
 		
 		addAttributeHandler(new MinHeightHandler());

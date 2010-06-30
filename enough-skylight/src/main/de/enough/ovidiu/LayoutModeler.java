@@ -22,7 +22,7 @@ public class LayoutModeler
 	{
 		CssElement node = box.correspondingNode ;
 		
-		String text = "[ " + node.getHandler().getTag() + " " + box.hasDynamicSize + " D: " + StyleManager.getProperty(box, "display") + " F: " + StyleManager.getProperty(box, "float") + " X: " + box.x + " Y: " + box.y + " M: " + box.marginLeft + " TW: " + box.getTotalWidth() +" CW: " + box.contentWidth + " CH: " + box.contentHeight + " C: " + node.getContent() + " ]";
+		String text = "[ " + node.getHandler().getTag() + " " + " " + box.clearLeft + " " + box.clearRight + " " + box.hasDynamicSize + " D: " +  StyleManager.getProperty(box, "display") + " F: " + StyleManager.getProperty(box, "float") + " X: " + box.x + " Y: " + box.y + " M: " + box.marginLeft + " TW: " + box.getTotalWidth() +" CW: " + box.contentWidth + " CH: " + box.contentHeight + " C: " + node.getContent() + " ]";
 		
 		out (text,level);
 	}
@@ -97,6 +97,7 @@ public class LayoutModeler
 	public static void paintBox(Box b, Graphics g)
 	{
 
+                // Paint floats blue
 		if ( ! "none".equals( StyleManager.getProperty(b, "float") ) )
 		{
 			g.setColor(0x110000FF);
@@ -110,7 +111,8 @@ public class LayoutModeler
                 // Draw inner box margins (actual content borders)
 		g.setColor(0x1100FF00);
 		g.drawRect(b.getAbsoluteX() + b.marginLeft, b.getAbsoluteY() + b.marginTop, b.getTotalWidth() - b.marginLeft - b.marginRight, b.getTotalHeight() - b.marginTop - b.marginBottom );
-		
+
+                // Draw the actual content
 		if ( b.correspondingNode.getContentType() == CssElement.CONTENT_TEXT )
 		{
 			g.setFont(b.correspondingNode.getStyle().getFont());
@@ -120,15 +122,34 @@ public class LayoutModeler
 		{
 			g.drawImage( ((ImgCssElement) b.correspondingNode).getImage(), b.getAbsoluteX() + b.marginLeft + b.paddingLeft, b.getAbsoluteY() + b.marginTop + b.paddingTop, Graphics.TOP | Graphics.LEFT );
 		}
-			
-		
+
+                
+		Box firstListItem = null ;
+                Box workBox = null;
+
+                // Paint sub-children
 		int size = b.children.size();
 		int i = 0;
 		while ( i < size )
 		{
-			paintBox ( (Box) b.children.get(i), g );
-			i++;
+                    workBox = (Box) b.children.get(i) ;
+                    paintBox ( workBox, g );
+
+                    // First item in a list item ?
+                    if ( b.isListItem && firstListItem == null && workBox.isFirstItemOnRow )
+                    {
+                        firstListItem = workBox;
+                    }
+
+                    i++;
 		}
+
+                // Draw the bullet point if this is a list-item
+                if  ( b.isListItem && firstListItem != null)
+                {
+                    g.setColor(255, 0, 0);
+                    g.fillRect(firstListItem.getAbsoluteX() - 10, firstListItem.getAbsoluteY() + 3 , 5 , 5);
+                }
 	
 	}
 	
@@ -216,7 +237,7 @@ public class LayoutModeler
                 else
 		// If I am a block context, then I should use all available width,
 		// unless I am forced to have a certain width
-		if ( "block".equals(displayMode) )
+		if ( "block".equals(displayMode) || "list-item".equals(displayMode) )
 		{
 			Dimension d = (Dimension) StyleManager.getProperty(box, "width");
 			if ( d != null )
@@ -268,7 +289,11 @@ public class LayoutModeler
                         String childFloatMode = (String) StyleManager.getProperty(child, "float");                       						
 			String childDisplayMode = (String) StyleManager.getProperty(child, "display");
 
-			
+                        // Handle the clear attribute
+                        if ( ( ! "none".equals(childFloatMode) ) || ( "block".equals(childDisplayMode) ) )
+                        {
+                            
+                        }
 
 			// If I am an inline-block element, or an inline float things get tricky
                         if ( "inline-block".equals(childDisplayMode) || ( ! "none".equals(childFloatMode ) ) )
@@ -296,6 +321,55 @@ public class LayoutModeler
 
                                 if ( ! "none".equals(childFloatMode) )
                                 {
+                                    if ( child.clearRight )
+                                    {
+                                        if ( ( context.getRightFloatsCount() ) > 0 || ( context.getCurrentRowRightFloatOccupiedSpace() > 0) )
+                                        {
+                                            if ( context.hasMoreRegularChildren() )
+                                            {
+                                                context.removeFloatsForBox(child);
+                                                context.saveForLater(child);
+                                                continue;
+                                            }
+                                            else
+                                            {
+                                                do
+                                                {
+                                                    context.nextRow(1);
+                                                }
+                                                while ( ( context.getCurrentRowRightFloatOccupiedSpace() > 0) ) ;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            context.requestClearRight();
+                                        }
+                                    }
+                                    if ( child.clearLeft )
+                                    {
+                                        if ( context.hasMoreRegularChildren() )
+                                            {
+                                                context.removeFloatsForBox(child);
+                                                context.saveForLater(child);
+                                                continue;
+                                            }
+                                            else
+                                            {
+                                                do
+                                                {
+                                                    context.nextRow(1);
+                                                }
+                                                while ( ( context.getCurrentRowLeftFloatOccupiedSpace() > 0) ) ;
+                                            }
+                                    }
+
+
+                                    // Consider previous clear attributes and go to the next row if a clear: right has
+                                    // been requested by a previous element
+                                    if ( context.hasClearRightRequested() )
+                                    {
+                                        context.nextRow();
+                                    }
 
                                     System.out.println("FLOAT! ");
                                     // See if we can place it on the current row :
@@ -358,8 +432,37 @@ public class LayoutModeler
                             context.goInto(child);
                         }
                         else // If I am a block child, then I should be alone on my own row ....
-			if ( "block".equals(childDisplayMode) )
+			if ( "block".equals(childDisplayMode) || "list-item".equals(childDisplayMode) )
 			{
+                                if ( child.clearRight )
+                                {
+                                    if ( ( context.getRightFloatsCount() ) > 0 || ( context.getCurrentRowRightFloatOccupiedSpace() > 0) )
+                                    {
+                                        do
+                                        {
+                                            context.removeFloatsForBox(child);
+                                            context.nextRow(1);
+                                        }
+                                        while ( ( context.getCurrentRowRightFloatOccupiedSpace() > 0) ) ;
+                                    }
+                                    else
+                                    {
+                                        context.requestClearRight();
+                                    }
+                                }
+                                if ( child.clearLeft )
+                                {
+                                    if ( ( context.getLeftFloatsCount() ) > 0 || ( context.getCurrentRowLeftFloatOccupiedSpace() > 0) )
+                                    {
+                                        do
+                                        {
+                                            context.removeFloatsForBox(child);
+                                            context.nextRow(1);
+                                        }
+                                        while ( ( context.getCurrentRowLeftFloatOccupiedSpace() > 0) ) ;
+                                    }
+                                }
+
                                 System.out.println("BLOCK CHILD");
                                 if ( context.currentRowHasOnlyFloats() == false )
                                 {
@@ -371,14 +474,18 @@ public class LayoutModeler
                                     System.out.println("DO NOT JUMP!");
                                 }
 
-                                context.maxPossibleContentWidth = context.box.contentWidth+5;
-                                context.currentRowMaxWidth = context.box.contentWidth;
-                                context.startXPosition = 0; 
-                                context.currentXPosition=0;
+                                // Adjust some row properties to suit block elements
+                                context.clearCalculatedRowLimits();
                                 child.isBlock = true ;
 
+
+                                if ( "list-item".equals(childDisplayMode) )
+                                {
+                                    child.isListItem = true ;
+                                }
+
                                 context.prepareToPlaceOnCurrentRow(child);
-                                System.out.println("MODEL CHILD");
+                                
                                 doModel(child, context);
 
                                 // Content width is larger than the parent,

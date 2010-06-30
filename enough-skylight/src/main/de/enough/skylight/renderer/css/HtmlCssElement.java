@@ -7,6 +7,7 @@ public interface HtmlCssElement {
 		public static final String BLOCK_LEVEL = "block";
 		public static final String INLINE = "inline";
                 public static final String INLINE_BLOCK = "inline-block";
+                public static final String LIST_ITEM = "list-item";
 	}
 	
 	public static class Position {
@@ -19,6 +20,13 @@ public interface HtmlCssElement {
 		public static final String NONE = "none";
 		public static final String LEFT = "left";
 		public static final String RIGHT = "right";
+	}
+
+        public static class Clear {
+		public static final String NONE = "none";
+		public static final String LEFT = "left";
+		public static final String RIGHT = "right";
+                public static final String BOTH = "both";
 	}
 	
 	public static class TextAlign {

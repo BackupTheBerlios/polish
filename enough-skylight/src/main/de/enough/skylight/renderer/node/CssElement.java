@@ -232,7 +232,9 @@ public class CssElement implements HtmlCssElement, NodeInterface{
 			return new BlockContainingBlock(this.style);
 		} else if(isDisplay(HtmlCssElement.Display.INLINE_BLOCK)) {
 			return new InlineContainingBlock(this.style);
-		} else {
+		} else if(isDisplay(HtmlCssElement.Display.LIST_ITEM)) {
+			return new BlockContainingBlock(this.style);
+		}else {
 			return new InlineContainingBlock(this.style);
 		} 
 	}

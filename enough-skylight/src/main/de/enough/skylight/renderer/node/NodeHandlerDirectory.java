@@ -13,6 +13,7 @@ import de.enough.skylight.renderer.node.handler.html.H1Handler;
 import de.enough.skylight.renderer.node.handler.html.IHandler;
 import de.enough.skylight.renderer.node.handler.html.ImgHandler;
 import de.enough.skylight.renderer.node.handler.html.InputHandler;
+import de.enough.skylight.renderer.node.handler.html.LiHandler;
 import de.enough.skylight.renderer.node.handler.html.LinkHandler;
 import de.enough.skylight.renderer.node.handler.html.PHandler;
 import de.enough.skylight.renderer.node.handler.html.SpanHandler;
@@ -20,6 +21,7 @@ import de.enough.skylight.renderer.node.handler.html.StrongHandler;
 import de.enough.skylight.renderer.node.handler.html.StyleHandler;
 import de.enough.skylight.renderer.node.handler.html.TextHandler;
 import de.enough.skylight.renderer.node.handler.html.TitleHandler;
+import de.enough.skylight.renderer.node.handler.html.UlHandler;
 
 public class NodeHandlerDirectory {
 	HashMap directory;
@@ -63,6 +65,9 @@ public class NodeHandlerDirectory {
 		addHandler(new BHandler());
 		addHandler(new TextHandler());
 		addHandler(new ImgHandler());
+                // list elements
+                addHandler(new UlHandler());
+                addHandler(new LiHandler());
 	}
 	
 	public void setDefaultHandler(NodeHandler handler) {
