@@ -255,8 +255,8 @@ public class ContentLoader extends ContentSource implements Runnable {
 	public synchronized void cancelContent(ContentDescriptor descriptor) {
 		try {
 			synchronized (this.lock) {
-				this.listeners.remove(descriptor.getHash());
 				this.queue.cancel(descriptor);
+				this.listeners.remove(descriptor.getHash());
 			}
 		} catch (InterruptedException e) {}
 	}
@@ -287,17 +287,19 @@ public class ContentLoader extends ContentSource implements Runnable {
 				// retrieve the listener
 				ContentListener listener = (ContentListener) this.listeners
 						.get(descriptor.getHash());
-
-				try {
-					// load the content
-					Object data = loadContent(descriptor);
-					// notify the listener that content is loaded
-					listener.onContentLoaded(descriptor, data);
-				} catch (Exception e) {
-					// notify the listener that an error occured
-					listener.onContentError(descriptor, e);
-				} finally {
-					this.listeners.remove(descriptor.getHash());
+				
+				if(listener != null) {
+					try {
+						// load the content
+						Object data = loadContent(descriptor);
+						// notify the listener that content is loaded
+						listener.onContentLoaded(descriptor, data);
+					} catch (Exception e) {
+						// notify the listener that an error occured
+						listener.onContentError(descriptor, e);
+					} finally {
+						this.listeners.remove(descriptor.getHash());
+					}
 				}
 			}
 
