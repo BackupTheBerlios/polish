@@ -28,8 +28,8 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/yguard-lib.jar"/>
 	<classpathentry kind="lib" path="lib/enough-webprocessor.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/enough-polish-j2me"/>
 	<classpathentry kind="lib" path="lib/bluecove-2.0.3.jar"/>
 	<classpathentry kind="lib" path="lib/osgi-3.0.1.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/enough-polish-j2me"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

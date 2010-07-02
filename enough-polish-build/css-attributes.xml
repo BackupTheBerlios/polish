@@ -1284,6 +1284,7 @@
 		<mapping from="layered" to="new de.enough.polish.ui.containerviews.LayerContainerView()"  />
 		<!--  for Gauges: -->
 		<mapping from="gauge-recline" to="new de.enough.polish.ui.gaugeviews.RecLineGaugeView()"  appliesTo="Gauge" />
+		<mapping from="gauge-scanline" to="new de.enough.polish.ui.gaugeviews.ScanningGaugeView()"  appliesTo="Gauge" />
 		<mapping from="gauge-rotating-arcs" to="new de.enough.polish.ui.gaugeviews.RotatingArcsGaugeView()" appliesTo="Gauge" />
 		<mapping from="gauge-cycling-spheres" to="new de.enough.polish.ui.gaugeviews.CyclingSpheresGaugeView()" appliesTo="Gauge" />
 		<mapping from="gauge-horizontal-spheres" to="new de.enough.polish.ui.gaugeviews.HorizontalSpheresGaugeView()" appliesTo="Gauge" />
@@ -2975,6 +2976,7 @@
 		description="The number of an unselected rects."
 		id="215"
 	/>
+
 	
 	<attribute
 		name="fade-screen-change-animation-steps"
@@ -5192,6 +5194,94 @@
 		description="Style for the text that is displayed in fisheyeview containers or choicegroups - only used when fisheyeview-remove-text is also true."
 		id="449"
 		since="J2ME Polish 2.2"
+	/>
+	
+	<attribute
+		name="gauge-scanline-width"
+		type="int"
+		appliesTo="RecLineGaugeView"
+		description="The width of the rects."
+		id="450"
+	/>
+	
+	<attribute
+		name="gauge-scanline-height"
+		type="int"
+		appliesTo="RecLineGaugeView"
+		description="The height of the rects."
+		id="451"
+	/>
+	
+	<attribute
+		name="gauge-scanline-number"
+		type="int"
+		appliesTo="RecLineGaugeView"
+		description="The number of scanline rects ."
+		id="452"
+	/>
+	
+	<attribute
+		name="gauge-scanline-selectedcolor"
+		type="color"
+		appliesTo="RecLineGaugeView"
+		description="The color of a selected rect."
+		id="453"
+	/>
+	
+	<attribute
+		name="gauge-scanline-unselectedcolor"
+		type="color"
+		appliesTo="RecLineGaugeView"
+		description="The color of an unselected rect."
+		id="454"
+	/>
+	
+	<attribute
+		name="gauge-scanline-image-left"
+		type="imageurl"
+		appliesTo="ScanlineGaugeView"
+		description="Image url for the left part of the scanning element"
+		id="455"
+	/>
+	
+	<attribute
+		name="gauge-scanline-image-middle"
+		type="imageurl"
+		appliesTo="ScanlineGaugeView"
+		description="Image url for the middle part of the scanning element"
+		id="456"
+	/>
+	
+	<attribute
+		name="gauge-scanline-image-right"
+		type="imageurl"
+		appliesTo="ScanlineGaugeView"
+		description="Image url for the right part of the scanning element"
+		id="457"
+	/>
+	
+	<attribute
+		name="gauge-scanline-background-image-left"
+		type="imageurl"
+		appliesTo="ScanlineGaugeView"
+		description="Image url for the left part of the background"
+		id="458"
+	/>
+	
+	<attribute
+		name="gauge-scanline-background-image-middle"
+		type="imageurl"
+		appliesTo="ScanlineGaugeView"
+		description="Image url for the middle part of the background"
+		id="459"
+	/>
+	
+	<attribute
+		name="gauge-scanline-background-image-right"
+		type="imageurl"
+		appliesTo="ScanlineGaugeView"
+		description="Image url for the right part of the background"
+		id="460"
 	/>
 	
 <!--
