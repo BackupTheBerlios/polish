@@ -607,8 +607,34 @@ public class TabbedForm extends Form {
 		return handled;
 	}
 	
-	
-	
+	//#ifdef polish.hasPointerEvents
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#handlePointerPressed(int, int)
+	 */
+	protected boolean handlePointerPressed(int x, int y)
+	{
+		if (this.tabBar.isInItemArea(x - this.tabBar.relativeX, y - this.tabBar.relativeY)) {
+			return this.tabBar.handlePointerPressed(x - this.tabBar.relativeX, y - this.tabBar.relativeY);
+		}
+
+		return super.handlePointerPressed(x, y);
+	}
+	//#endif
+
+	//#ifdef polish.hasPointerEvents
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#handlePointerReleased(int, int)
+	 */
+	protected boolean handlePointerReleased(int x, int y)
+	{
+		if (this.tabBar.isInItemArea(x - this.tabBar.relativeX, y - this.tabBar.relativeY)) {
+			return this.tabBar.handlePointerReleased(x, y);
+		}
+
+		return super.handlePointerReleased(x, y);
+	}
+	//#endif
+
 	//#if polish.TabbedForm.allowTabSelection
 	/*
 	 * (non-Javadoc)
