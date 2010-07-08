@@ -1,3 +1,4 @@
+//#condition polish.usePolishGui
 package de.enough.polish.ui.gaugeviews;
 
 import java.io.IOException;
