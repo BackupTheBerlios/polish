@@ -15,6 +15,17 @@ public class AnniversaryEntry extends CalendarEntry implements Externalizable {
 	 */
 	private int yearMarried = Integer.MIN_VALUE;
 	
+	/**
+	 * Field that contains the date of the first anniversary.
+	 */
+	private Date anniversaryDate;
+	
+	
+	/**
+	 * Field that contains the year of the first anniversary.
+	 */
+	private int anniversaryYear = Integer.MIN_VALUE;
+	
 	
 	/**
 	 * field to contain the date of the next anniversary.
@@ -51,10 +62,10 @@ public class AnniversaryEntry extends CalendarEntry implements Externalizable {
 	}
 	
 	
-	public void setYearMarried(int yearMarried) {
-		
-		this.yearMarried = yearMarried;
-	}
+//	public void setYearMarried(int yearMarried) {
+//		
+//		this.yearMarried = yearMarried;
+//	}
 	
 	/**
 	 * Method to get year of the marriage.
@@ -64,6 +75,34 @@ public class AnniversaryEntry extends CalendarEntry implements Externalizable {
 		
 		return this.yearMarried;
 	}
+	
+	
+	public void setAnniversaryDate(Date date) {
+		
+		this.anniversaryDate = date;
+		setAnniversaryYear(this.anniversaryDate);
+	}
+	
+	
+	private void setAnniversaryYear(Date anniversaryDate) {
+		
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(anniversaryDate);
+		this.anniversaryYear = calendar.get(Calendar.YEAR);
+	}
+	
+	
+	public Date getAnniversaryDate() {
+		
+		return this.anniversaryDate;
+	}
+
+	
+	public int getAnniversaryYear() {
+		
+		return this.anniversaryYear;
+	}
+
 	
 	/**
 	 * Method to get the current number of an anniversary.
@@ -166,6 +205,7 @@ public class AnniversaryEntry extends CalendarEntry implements Externalizable {
 		super.write(out);
 		
 		out.writeInt( this.yearMarried );
+		out.writeInt( this.anniversaryYear );
 	}
 	
 	/*
@@ -177,5 +217,6 @@ public class AnniversaryEntry extends CalendarEntry implements Externalizable {
 		super.read(in);
 		
 		this.yearMarried = in.readInt();
+		this.anniversaryYear = in.readInt();
 	}
 }
