@@ -351,7 +351,7 @@ public class CssConverter extends Converter {
 			
 			try 
 			{
-				FileUtil.writeTextFile( new File(rootFile.getParent(),"StylePieceClass" + i + ".java"), (String[]) toStyleSheetPiece.toArray( new String[ toStyleDefinitionsJava.size()]));
+				FileUtil.writeTextFile( new File(rootFile.getParent(),"StylePieceClass" + i + ".java"), (String[]) toStyleSheetPiece.toArray( new String[end-start+1]));
 			} catch (IOException e) 
 			{
 				// TODO Auto-generated catch block
