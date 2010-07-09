@@ -126,17 +126,7 @@ public class CssConverter extends Converter {
 		env.set( ColorConverter.ENVIRONMENT_KEY,  this.colorConverter );
 		this.abbreviationGenerator = null;
 		// search for the position to include the style-sheet definitions:
-		int index = -1;
-		while (sourceCode.next()) {
-			String line = sourceCode.getCurrent();
-			if (INCLUDE_MARK.equals(line)) {
-				index = sourceCode.getCurrentIndex() + 1;
-				break;
-			}
-		}
-		if (index == -1) {
-			throw new BuildException("Unable to modify StyleSheet.java, include point [" + INCLUDE_MARK + "] not found.");
-		}
+
 		// okay start with the creation of source code:
 		ArrayList toStyleDefinitionsJava = new ArrayList();
 		
@@ -221,6 +211,9 @@ public class CssConverter extends Converter {
 		}
 		String[] defaultNames = (String[]) defaultStyleNames.toArray( new String[ defaultStyleNames.size() ]);
 		Style[] styles = styleSheet.getUsedAndReferencedStyles(defaultNames, this.attributesManager);
+		
+		
+		
 		boolean isLabelStyleReferenced = false;
 		
 		toStyleDefinitionsJava.add("\t//static and referenced styles:");
@@ -240,6 +233,35 @@ public class CssConverter extends Converter {
 		
 
 		int blocks = styles.length / BLOCKSIZE +  (styles.length % BLOCKSIZE == 0 ? 0 : 1);		
+		
+		int index = -1;
+		sourceCode.setCurrentIndex(0);
+		if ( blocks > 0)
+		{			
+			while (sourceCode.next()) {
+				String line = sourceCode.getCurrent();
+				if (EXTENDS_MARK.equals(line)) {
+					sourceCode.insert("extends StylePieceClass0");
+					index = sourceCode.getCurrentIndex() + 1;
+					break;
+				}
+			}
+			if (index == -1) {
+				throw new BuildException("Unable to modify StyleSheet.java, include point [" + EXTENDS_MARK + "] not found.");
+			}
+		}
+				
+		index = -1;
+		while (sourceCode.next()) {
+			String line = sourceCode.getCurrent();
+			if (INCLUDE_MARK.equals(line)) {
+				index = sourceCode.getCurrentIndex() + 1;
+				break;
+			}
+		}
+		if (index == -1) {
+			throw new BuildException("Unable to modify StyleSheet.java, include point [" + INCLUDE_MARK + "] not found.");
+		}
 		
 		
 		toMainStyleClass.add("public static boolean hasBeenInitialized = false ;" );
