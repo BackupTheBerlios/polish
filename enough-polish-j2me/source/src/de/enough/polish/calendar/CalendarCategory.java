@@ -66,7 +66,7 @@ public class CalendarCategory implements Externalizable {
 	}
 
 	public String getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setId(String id) {
