@@ -7,7 +7,8 @@ import javax.microedition.lcdui.Font;
 
 
 
-public class StyleSheetContentContainer {
+public class StyleSheetContentContainer extends StylePieceClass0
+{
 	
 
 	//#ifdef polish.LibraryBuild

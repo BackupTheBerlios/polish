@@ -1919,7 +1919,9 @@ public class PolishTask extends ConditionalTask {
 								this.preprocessor.getStyleSheet(),
 								device,
 								this.preprocessor,
-								this.environment );
+								this.environment,
+								targetFile
+								);
 					}
 					//this.styleSheetSourceFile.saveToDir(targetDir, this.styleSheetCode.getArray(), false );
 					FileUtil.writeTextFile(targetFile, styleCode.getArray());
