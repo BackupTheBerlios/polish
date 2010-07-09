@@ -149,6 +149,12 @@ public class CalendarEntry implements Externalizable {
 	private CalendarCategory category;
 	
 	/**
+	 * field to contain the parent category of the calendar event
+	 */
+	private CalendarCategory parentCategory;
+	
+	
+	/**
 	 * field to contain details of alarm 
 	 */
 	private CalendarAlarm calendarAlarm;
@@ -268,6 +274,13 @@ public class CalendarEntry implements Externalizable {
 	 */
 	public CalendarCategory getCategory() {
 		return this.category;
+	}
+	
+	/**
+	 * @return returns parent category of calendar entry
+	 */
+	public CalendarCategory getParenCategory() {
+		return this.parentCategory;
 	}
 
 	/**
@@ -413,6 +426,14 @@ public class CalendarEntry implements Externalizable {
 		this.category = category;
 	}
 	
+	
+	/**
+	 * setter method for parent CalendarCategory
+	 * @param category
+	 */
+	public void setParentCategory(CalendarCategory category) {
+		this.parentCategory = category;
+	}
 	
 	
 	/**
@@ -756,6 +777,11 @@ public class CalendarEntry implements Externalizable {
 		if (isNotNull) {
 			this.category.write( out );
 		}
+		isNotNull = (this.parentCategory != null);
+		out.writeBoolean(isNotNull);
+		if (isNotNull) {
+			this.parentCategory.write( out );
+		}
 		isNotNull = (this.calendarAlarm != null);
 		out.writeBoolean(isNotNull);
 		if (isNotNull) {
@@ -855,6 +881,11 @@ public class CalendarEntry implements Externalizable {
 		if (isNotNull) {
 			this.category = new CalendarCategory();
 			this.category.read(in);
+		}
+		isNotNull = in.readBoolean();
+		if (isNotNull) {
+			this.parentCategory = new CalendarCategory();
+			this.parentCategory.read(in);
 		}
 		isNotNull = in.readBoolean();
 		if (isNotNull) {
