@@ -173,12 +173,12 @@ public class VerticalScrollTextEffect extends TextEffect{
 		int linesHeight;
 		
 		linesHeight = lineHeight * (this.lines);
-		
-		//#if polish.Bugs.needsBottomOrientiationForStringDrawing
-			g.clipRect(x, y + linesHeight, rightBorder - leftBorder, linesHeight);
-		//#else
-			g.clipRect(x, y, rightBorder - leftBorder, linesHeight);
-		//#endif
+	       
+        //#if polish.Bugs.needsBottomOrientiationForStringDrawing
+            g.clipRect(x, y - linesHeight, rightBorder - leftBorder, linesHeight);
+        //#else
+            g.clipRect(x, y, rightBorder - leftBorder, linesHeight);
+        //#endif
 		
 		leftBorder = x;
 		
