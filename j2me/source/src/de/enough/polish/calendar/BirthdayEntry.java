@@ -15,7 +15,8 @@ public class BirthdayEntry extends CalendarEntry implements Externalizable {
 	 */
 	private Date birthDate;
 	
-	private int age = Integer.MIN_VALUE;
+	private int birthYear = Integer.MIN_VALUE;
+	
 	
 	/**
 	 * field to contain the date of the next birthday.
@@ -70,6 +71,7 @@ public class BirthdayEntry extends CalendarEntry implements Externalizable {
 			time = this.birthDate.getTime();
 		}
 		out.writeLong( time );
+		out.writeInt( this.birthYear );
 	}
 	
 	/*
@@ -84,12 +86,28 @@ public class BirthdayEntry extends CalendarEntry implements Externalizable {
 		if( time != -1 ) {
 			this.birthDate = new Date(time);
 		}
+		this.birthYear = in.readInt();
 	}
 	
 	public void setBirthDate(Date birthDate) {
 		
 		this.birthDate = birthDate;
+		//# debug info
+		System.out.println("The birth date was set to: " + this.birthDate.toString());
+		setBirthYear(birthDate);
 	}
+	
+	
+	private void setBirthYear(Date birthDate) {
+		
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(this.birthDate);
+		this.birthYear = calendar.get(Calendar.YEAR);
+		//#debug info
+		System.out.println("The birth year was set to: " + this.birthYear);
+	}
+	
+	
 	
 	/**
 	 * Mehtod to get the birth date.
@@ -103,6 +121,13 @@ public class BirthdayEntry extends CalendarEntry implements Externalizable {
 			return this.birthDate;
 		}
 	}
+	
+	
+	public int getBirthYear() {
+		
+		return this.birthYear;
+	}
+	
 	
 	/**
 	 * Mehtod to get the current age according to the birth date and current date.
