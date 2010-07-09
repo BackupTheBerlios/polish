@@ -7,7 +7,10 @@ import javax.microedition.lcdui.Font;
 
 
 
-public class StyleSheetContentContainer extends StylePieceClass0
+public class StyleSheetContentContainer
+//$$IncludeExtendsStatementHere$$//
+
+
 {
 	
 
