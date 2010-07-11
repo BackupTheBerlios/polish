@@ -25,6 +25,7 @@
  */
 package de.enough.polish.util;
 
+
 /**
  * <p>Provides the functionality of the J2SE java.util.HashMap for J2ME applications and uses reference checks for comparing keys.</p>
  * <p>WARNING: Only use this implementation when you can ensure that you always
@@ -52,8 +53,14 @@ package de.enough.polish.util;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public final class IdentityHashMap
+//#if polish.java5
+<K, V>
+//#endif
 //#if polish.Map.dropInterface != true
 	implements Map 
+	//#if polish.java5
+		<K, V>
+	//#endif
 //#endif
 {
 	
@@ -63,7 +70,11 @@ public final class IdentityHashMap
 	public static final int DEFAULT_LOAD_FACTOR = 75;
 	
 	private final int loadFactor;	
-	Element[] buckets;
+	Element
+	//#if polish.java5
+		<K, V>
+	//#endif
+		[] buckets;
 	private final boolean isPowerOfTwo;
 	int size;
 
@@ -154,7 +165,11 @@ public final class IdentityHashMap
 	/* (non-Javadoc)
 	 * @see de.enough.polish.util.Map#get(java.lang.Object)
 	 */
-	public Object get( Object key ) {
+	//#if polish.java5
+	public V get( K key ) {
+	//#else
+		//# public Object get( Object key ) { 
+	//#endif
 		if (key == null) {
 			throw new IllegalArgumentException();
 		}
@@ -164,7 +179,11 @@ public final class IdentityHashMap
 		} else {
 			index = (key.hashCode() & 0x7FFFFFFF) % this.buckets.length;
 		}
-		Element element = this.buckets[ index ];
+		Element
+		//#if polish.java5
+			<K,V>
+		//#endif
+			element = this.buckets[ index ];
 		if (element == null) {
 			return null;
 		}
@@ -230,16 +249,28 @@ public final class IdentityHashMap
 	/* (non-Javadoc)
 	 * @see de.enough.polish.util.Map#containsKey(java.lang.Object)
 	 */
-	public boolean containsKey( Object key ) {
+	//#if polish.java5
+	public boolean containsKey( K key ) {
+	//#else
+		//# public boolean containsKey( Object key ) {
+	//#endif
 		return get( key ) != null;
 	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.util.Map#containsValue(java.lang.Object)
 	 */
-	public boolean containsValue( Object value ) {
+	//#if polish.java5
+	public boolean containsValue( V value ) {
+	//#else
+		//# public boolean containsValue( Object value ) {
+	//#endif
 		for (int i = 0; i < this.buckets.length; i++) {
-			Element element = this.buckets[i];
+			Element
+			//#if polish.java5
+				<K,V> 
+			//#endif
+				element = this.buckets[i];
 			while (element != null) {
 				if (element.value == value ) {
 					return true;
@@ -264,16 +295,43 @@ public final class IdentityHashMap
 	 * @see de.enough.polish.util.Map#values()
 	 */
 	public Object[] values() {
-		return values( new Object[ this.size ] );
+		//#if polish.java5
+			Object[] objects = new Object[ this.size ];
+			int index = 0;
+			for (int i = 0; i < this.buckets.length; i++) {
+				Element 
+				//#if polish.java5
+					<K,V> 
+				//#endif
+				element = this.buckets[i];
+				while (element != null) {
+					objects[index] = element.value;
+					index++;
+					element = element.next;
+				}
+			}
+			return objects;
+		
+		//#else
+			//# return values( new Object[ this.size ] );
+		//#endif
 	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.util.Map#values(java.lang.Object[])
 	 */
-	public Object[] values(Object[] objects) {
+	//#if polish.java5
+	public V[] values(V[] objects) {
+	//#else
+		//# public Object[] values(Object[] objects) {
+	//#endif
 		int index = 0;
 		for (int i = 0; i < this.buckets.length; i++) {
-			Element element = this.buckets[i];
+			Element
+			//#if polish.java5
+				<K,V> 
+			//#endif
+				element = this.buckets[i];
 			while (element != null) {
 				objects[index] = element.value;
 				index++;
@@ -287,16 +345,38 @@ public final class IdentityHashMap
 	 * @see de.enough.polish.util.Map#keys()
 	 */
 	public Object[] keys() {
-		return keys( new Object[ this.size ] );
+		//#if polish.java5
+			Object[] objects = new Object[ this.size ];
+			int index = 0;
+			for (int i = 0; i < this.buckets.length; i++) {
+				Element<K,V> element = this.buckets[i];
+				while (element != null) {
+					objects[index] = element.key;
+					index++;
+					element = element.next;
+				}
+			}
+			return objects;
+		//#else
+			//# return keys( new Object[ this.size ] ); 
+		//#endif
 	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.util.Map#keys(java.lang.Object[])
 	 */
-	public Object[] keys(Object[] objects) {
+	//#if polish.java5
+	public K[] keys(K[] objects) {
+	//#else
+		//# public Object[] keys(Object[] objects) { 
+	//#endif
 		int index = 0;
 		for (int i = 0; i < this.buckets.length; i++) {
-			Element element = this.buckets[i];
+			Element
+			//#if polish.java5
+			<K,V>
+			//#endif
+					element = this.buckets[i];
 			while (element != null) {
 				objects[index] = element.key;
 				index++;
@@ -325,7 +405,7 @@ public final class IdentityHashMap
 
 	
 	/**
-	 * Increaases the internal capacity of this map.
+	 * Increases the internal capacity of this map.
 	 */
 	private void increaseSize() {
 		int newCapacity;
@@ -334,9 +414,17 @@ public final class IdentityHashMap
 		} else {
 			newCapacity = (this.buckets.length << 1) - 1; // * 2 - 1 
 		}
-		Element[] newBuckets = new Element[ newCapacity ];
+		Element
+		//#if polish.java5
+			<K,V>
+		//#endif
+			[] newBuckets = new Element[ newCapacity ];
 		for (int i = 0; i < this.buckets.length; i++) {
-			Element element = this.buckets[i];
+			Element
+			//#if polish.java5
+				<K,V>
+			//#endif
+				element = this.buckets[i];
 			while (element != null) {				
 				int index;
 				if (this.isPowerOfTwo) {
@@ -344,7 +432,11 @@ public final class IdentityHashMap
 				} else {
 					index = (element.hashCodeValue & 0x7FFFFFFF) % newCapacity;
 				}
-				Element newElement = newBuckets[ index ];
+				Element
+				//#if polish.java5
+					<K,V>
+				//#endif
+					newElement = newBuckets[ index ];
 				if (newElement == null ) {
 					newBuckets[ index ] = element;
 				} else {
@@ -355,7 +447,11 @@ public final class IdentityHashMap
 					newElement.next = element;
 					
 				}
-				Element lastElement = element;
+				Element
+				//#if polish.java5
+					<K,V>
+				//#endif
+					lastElement = element;
 				element = element.next;
 				lastElement.next = null;
 			}
@@ -368,13 +464,36 @@ public final class IdentityHashMap
 	}
 
 
-	private static final class Element {
-		public final Object key;
+	private static final class Element
+	//#if polish.java5
+		<K, V>
+	//#endif
+	{
+		//#if polish.java5
+		public final K key;
+		//#else
+			//# public final Object key; 
+		//#endif
+		
 		public final int hashCodeValue;
-		public Object value;
-		public Element next;
+		//#if polish.java5
+		public V value;
+		//#else
+			//# public Object value; 
+		//#endif
+		
+		//#if polish.java5
+		public Element<K,V> next;
+		//#else
+			//# public Element next;
+		//#endif
 
-		public Element ( int hashCode, Object key, Object value ) {
+
+		//#if polish.java5
+		public Element ( int hashCode, K key, V value ) {
+		//#else
+			//# public Element ( int hashCode, Object key, Object value ) { 
+		//#endif
 			this.hashCodeValue = hashCode;
 			this.key = key;
 			this.value = value;

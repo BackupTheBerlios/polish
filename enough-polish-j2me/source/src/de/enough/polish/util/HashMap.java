@@ -443,7 +443,7 @@ public class HashMap
 	}
 	
 	/**
-	 * Increaases the internal capacity of this map.
+	 * Increases the internal capacity of this map.
 	 */
 	private void increaseSize() {
 		int newCapacity;

@@ -560,6 +560,32 @@ public final class Locale {
 		return buffer.toString();
 	}
 
+	/**
+	 * Formats the given calendar to the current locale's format.
+	 * 
+	 * @param calendar the calendar which holds the date
+	 * @return the locale specific date representation.
+	 * @throws NullPointerException when the calendar is null
+	 */
+	public static String formatDate( TimePoint calendar ) {
+		StringBuffer buffer = new StringBuffer(10);
+		formatDate( calendar.getAsCalendar(), buffer );
+		return buffer.toString();
+	}
+	
+	/**
+	 * Formats the given calendar to the current locale's format.
+	 * 
+	 * @param calendar the calendar which holds the date
+	 * @param dateFormat the date format that may include yyyy (year), MM (month), dd (day of month), HH (hour of day) and mm (minute of hour)
+	 * @return the locale specific date representation.
+	 * @throws NullPointerException when the calendar is null
+	 */
+	public static String formatDate( TimePoint calendar, String dateFormat ) {
+		StringBuffer buffer = new StringBuffer(10);
+		formatDate( calendar.getAsCalendar(), buffer, dateFormat );
+		return buffer.toString();
+	}
 
 	/**
 	 * Formats the given calendar to the current locale's format.
