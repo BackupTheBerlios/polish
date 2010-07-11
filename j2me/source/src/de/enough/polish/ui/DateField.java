@@ -34,6 +34,7 @@ import javax.microedition.lcdui.Graphics;
 import de.enough.polish.util.DateUtil;
 import de.enough.polish.util.DrawUtil;
 import de.enough.polish.util.Locale;
+import de.enough.polish.util.TimePoint;
 
 //#if polish.blackberry
 	import net.rim.device.api.ui.Field;
@@ -585,6 +586,15 @@ implements
 			setInitialized(false);
 		}
 		repaint();
+	}
+	
+	/**
+	 * Sets the date of this DateField. 
+	 * @param date the date
+	 * @see #setDate(Date)
+	 */
+	public void setTimePoint( TimePoint date ) {
+		setDate( date.getAsDate() );
 	}
 	
 	/**

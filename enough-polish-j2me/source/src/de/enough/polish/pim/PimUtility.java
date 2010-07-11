@@ -578,14 +578,14 @@ public class PimUtility {
 			        			calendarEntry.setStartDate(new Date(event.getDate(field, 0)));
 			        		} else if(field == Event.END) {
 			        			calendarEntry.setEndDate(new Date(event.getDate(field, 0)));
-			        		} else if(field == Event.REVISION) {
-			        			calendarEntry.setLastModifiedDate(new Date(event.getDate(field, 0)));
+//			        		} else if(field == Event.REVISION) {
+//			        			calendarEntry.setLastModifiedDate(new Date(event.getDate(field, 0)));
 			        		}
 			                break;
 			            }
 			        	case PIMItem.INT: {
 			        		if(field == Event.CLASS) {
-			        			calendarEntry.getOtherFields().put("ClassOfEvent", new Integer(event.getInt(field, 0)));
+			        			calendarEntry.setField("ClassOfEvent", new Integer(event.getInt(field, 0)));
 			        		} else if(field == Event.ALARM) {
 			        			calendarEntry.setAlarm(event.getInt(field, 0));
 			        		}
@@ -920,17 +920,17 @@ public class PimUtility {
 		            }
 		        	case PIMItem.DATE: {
 		        		if(field == Event.START) {
-		        			event.addDate(Event.START, PIMItem.ATTR_NONE, calendarEntry.getStartDate().getTime());
+		        			event.addDate(Event.START, PIMItem.ATTR_NONE, calendarEntry.getStartDate().getTimeInMillis());
 		        		} else if(field == Event.END) {
-		        			event.addDate(Event.END, PIMItem.ATTR_NONE, calendarEntry.getEndDate().getTime());
-		        		} else if(field == Event.REVISION) {
-		        			event.addDate(Event.REVISION, PIMItem.ATTR_NONE, calendarEntry.getLastModifiedDate().getTime());
+		        			event.addDate(Event.END, PIMItem.ATTR_NONE, calendarEntry.getEndDate().getTimeInMillis());
+//		        		} else if(field == Event.REVISION) {
+//		        			event.addDate(Event.REVISION, PIMItem.ATTR_NONE, calendarEntry.getLastModifiedDate().getTime());
 		        		}
 		                break;
 		            }
 		        	case PIMItem.INT: {
 		        		if(field == Event.CLASS) {
-		        			Integer classOfEvent = (Integer)calendarEntry.getOtherFields().get("ClassOfEvent");
+		        			Integer classOfEvent = (Integer)calendarEntry.getField("ClassOfEvent");
 		        			if (classOfEvent != null) {
 		        				event.addInt(Event.CLASS, PIMItem.ATTR_NONE, classOfEvent.intValue());
 		        			}
@@ -1401,17 +1401,17 @@ public class PimUtility {
 		            }
 		        	case PIMItem.DATE: {
 		        		if(field == Event.START) {
-		        			event.setDate(Event.START, 0, PIMItem.ATTR_NONE, calendarEntry.getStartDate().getTime());
+		        			event.setDate(Event.START, 0, PIMItem.ATTR_NONE, calendarEntry.getStartDate().getTimeInMillis());
 		        		} else if(field == Event.END) {
-		        			event.setDate(Event.END, 0, PIMItem.ATTR_NONE, calendarEntry.getEndDate().getTime());
-		        		} else if(field == Event.REVISION) {
-		        			event.setDate(Event.REVISION, 0, PIMItem.ATTR_NONE, calendarEntry.getLastModifiedDate().getTime());
+		        			event.setDate(Event.END, 0, PIMItem.ATTR_NONE, calendarEntry.getEndDate().getTimeInMillis());
+//		        		} else if(field == Event.REVISION) {
+//		        			event.setDate(Event.REVISION, 0, PIMItem.ATTR_NONE, calendarEntry.getLastModifiedDate().getTime());
 		        		}
 		                break;
 		            }
 		        	case PIMItem.INT: {
 		        		if(field == Event.CLASS) {
-		        			Integer classOfEvent = (Integer)calendarEntry.getOtherFields().get("ClassOfEvent");
+		        			Integer classOfEvent = (Integer)calendarEntry.getField("ClassOfEvent");
 		        			if (classOfEvent != null) {
 		        				event.setInt(Event.CLASS, 0, PIMItem.ATTR_NONE, classOfEvent.intValue());
 		        			}

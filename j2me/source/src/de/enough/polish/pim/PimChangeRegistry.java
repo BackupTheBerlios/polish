@@ -206,11 +206,12 @@ public class PimChangeRegistry {
 					PimChangeItem changedItem = (PimChangeItem)this.items.elementAt(j);
 					if(changedItem.getTypeOfItem().equals(PimConstants.EVENT_TOKEN)) {
 						if(changedItem.getUid().equals(calendarEntry.getId())) {
-							if(changedItem.getRevisionDate().getTime() == calendarEntry.getLastModifiedDate().getTime()) {
-								//flag = true;
-							} else {
+							//TODO implement modified support without modified date support in CalendarEntry
+//							if(changedItem.getRevisionDate().getTime() == calendarEntry.getLastModifiedDate().getTime()) {
+//								//flag = true;
+//							} else {
 								modifiedEvents.add(this.pimUtility.findEventByUid(calendarEntry.getId()));
-							}
+//							}
 						}
 					}
 				}
@@ -387,7 +388,7 @@ public class PimChangeRegistry {
 				CalendarEntry calendarEntry = (CalendarEntry)allEvents[i];
 				pimChangeItem = new PimChangeItem();
 				pimChangeItem.setUid(calendarEntry.getId());
-				pimChangeItem.setRevisionDate(calendarEntry.getLastModifiedDate());
+				//pimChangeItem.setRevisionDate(calendarEntry.getLastModifiedDate());
 				pimChangeItem.setTypeOfItem(PimConstants.EVENT_TOKEN);
 				this.items.addElement(pimChangeItem);
 			}

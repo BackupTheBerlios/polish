@@ -31,11 +31,14 @@ import java.util.Date;
 
 import javax.microedition.lcdui.Canvas;
 
+import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.TableItem;
 import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.TimePeriod;
+import de.enough.polish.util.TimePoint;
 
 /**
  * <p>Displays a calendar for a specific month</p>
@@ -84,18 +87,23 @@ public class CalendarItem extends TableItem
 		//#endif
 	private static String MONTHS = "January,February,March,April,May,June,July,August,September,October,November,December";
 
-	private Calendar calendar;
-	private int shownMonth;
-	private int shownYear;
+	private TimePoint originalDay;
+	private TimePoint shownMonth;
+//	private int shownMonth;
+//	private int shownYear;
+//	private int lastMonth;
+//	private int lastYear;
+//	private int lastDay;
 	private int showMode;
-	private int lastMonth;
-	private int lastYear;
-	private int lastDay;
 	
 	private Style calendarWeekdayStyle;
 	private Style calendarDayInactiveStyle;
 	private Style calendarDayStyle;
 	private Style calendarCurrentdayStyle;
+	private CalendarEntryModel model;
+	private boolean isLimitToEnabledEntries;
+	private CalendarRenderer renderer;
+	private TimePoint firstColumnFirstRowDay;
 	
 	
 	
@@ -156,7 +164,7 @@ public class CalendarItem extends TableItem
 	 */
 	public CalendarItem()
 	{
-		this( Calendar.getInstance(), null );
+		this( TimePoint.now(), null, null );
 	}
 
 	/**
@@ -166,7 +174,7 @@ public class CalendarItem extends TableItem
 	 */
 	public CalendarItem(Style style)
 	{
-		this(Calendar.getInstance(),style);
+		this( TimePoint.now(), null, style );
 	}
 	
 	/**
@@ -178,7 +186,7 @@ public class CalendarItem extends TableItem
 	{
 		this( cal, null );
 	}
-
+	
 	/**
 	 * Creates a new Calendar Item.
 	 * 
@@ -187,10 +195,53 @@ public class CalendarItem extends TableItem
 	 */
 	public CalendarItem(Calendar cal, Style style)
 	{
+		this( new TimePoint(cal), null, style );
+	}
+	
+	/**
+	 * Creates a new Calendar Item.
+	 * 
+	 * @param timePoint the month that should be displayed by default.
+	 */
+	public CalendarItem(TimePoint timePoint) {
+		this( timePoint, null, null );
+	}
+	
+	/**
+	 * Creates a new Calendar Item.
+	 * 
+	 * @param originalDay the month that should be displayed by default.
+	 * @param style the style of the calendar item
+	 */
+	public CalendarItem(TimePoint originalDay, Style style)
+	{
+		this( originalDay, null, style );
+	}
+	
+	/**
+	 * Creates a new Calendar Item.
+	 * 
+	 * @param originalDay the month that should be displayed by default.
+	 * @param model the model that contains events for this CalendarItem
+	 */
+	public CalendarItem(TimePoint originalDay, CalendarEntryModel model)
+	{
+		this( originalDay, model, null);
+	}
+
+	/**
+	 * Creates a new Calendar Item.
+	 * 
+	 * @param originalDay the month that should be displayed by default.
+	 * @param style the style of the calendar item
+	 */
+	public CalendarItem(TimePoint originalDay, CalendarEntryModel model, Style style)
+	{
 		// depending on the month up to 6 rows my be used, typically 5 are enough + 1 for the day abbreviations
 		//TODO where are the year and the month name shown? (right now the label is used)
 		super( 7, 7, style); 
-		this.calendar = cal;
+		this.model = model;
+		this.originalDay = originalDay;
 		
 //		cal.set( Calendar.YEAR, 2009);
 //		cal.set( Calendar.MONTH, Calendar.FEBRUARY);
@@ -204,30 +255,29 @@ public class CalendarItem extends TableItem
 			set( i, 0, item );
 		}
 		
-		this.lastYear = this.calendar.get( Calendar.YEAR );
-		this.lastMonth = this.calendar.get( Calendar.MONTH );
-		this.lastDay = this.calendar.get( Calendar.DAY_OF_MONTH );
 		
-		buildCalendar( cal );
+		buildCalendar( new TimePoint( originalDay) );
 		setSelectionMode( SELECTION_MODE_CELL | SELECTION_MODE_INTERACTIVE );
 	}
 	
 	/**
-	 * @param cal
+	 * Builds up this calendar for the specified point in time
+	 * @param shownMonth the point in time (most notably the month that should be shown)
 	 */
-	private void buildCalendar(Calendar cal)
+	protected void buildCalendar(TimePoint shownMonth)
 	{
+		this.shownMonth = shownMonth;
 		this.ignoreRepaintRequests = true;
+		
+		
 		
 		int selRow = getSelectedRow();
 		int selCol = getSelectedColumn();
-
-		int calMonth = cal.get( Calendar.MONTH );
-		int calYear = cal.get( Calendar.YEAR );
-		this.shownMonth = calMonth;
-		this.shownYear = calYear;
 		
-		String infoText = TextUtil.split( MONTHS, ',')[calMonth] + " " + calYear;
+		int currentMonth = shownMonth.getMonth();
+		int currentYear = shownMonth.getYear();
+		
+		String infoText = TextUtil.split( MONTHS, ',')[currentMonth] + " " + currentYear;
 		if (this.showMode == SHOW_MODE_LABEL) {
 			setLabel( infoText );
 		} else if (this.showMode == SHOW_MODE_TITLE) {
@@ -237,83 +287,114 @@ public class CalendarItem extends TableItem
 			}
 		}
 		
-		cal.set( Calendar.DAY_OF_MONTH, 1);
-		int dayOfWeek = cal.get( Calendar.DAY_OF_WEEK);
-		boolean isInCurrentMonth = (calMonth == this.lastMonth && calYear == this.lastYear);
+		TimePoint day = new TimePoint( shownMonth );
+		day.setDay(1);
+		int dayOfWeek = day.getDayOfWeek();
 		
 		int col = getColumn(dayOfWeek);
-		int row = 1;
+		while (col > 0) {
+			day.addDay(-1);
+			col--;
+		}
+		this.firstColumnFirstRowDay = new TimePoint( day );
+		CalendarEntryList eventsList = null;
+		CalendarEntry[] entriesForTheDay = null;
+		if (this.model != null) {
+			int daysToAdd = 7 * (getNumberOfRows() - 1) + 1;
+			TimePoint endDate = new TimePoint( day );
+			endDate.addDay(daysToAdd);
+			TimePeriod period = new TimePeriod( day, true, endDate, false );
+			if (this.isLimitToEnabledEntries) {
+				eventsList = this.model.getEnabledEntries( period);
+			} else {
+				eventsList = this.model.getEntries( period);				
+			}
+		}
 		//#debug
-		System.out.println(infoText + ": dayOfWeek=" + dayOfWeek + "(" + getDayOfWeekName(dayOfWeek) + "), col=" + col + ", row=" + row + ", daysInMonth=" + getDaysInMonth(cal));
-
-		if (col > 0) {
-			Calendar previous = Calendar.getInstance();
-			if (calMonth == 0) {
-				previous.set( Calendar.YEAR, cal.get(Calendar.YEAR) - 1);
-				previous.set( Calendar.MONTH, Calendar.DECEMBER );
-			} else {
-				previous.set( Calendar.YEAR, cal.get(Calendar.YEAR) );
-				previous.set( Calendar.MONTH, calMonth - 1 );			
-			}
-			int daysInMonth = getDaysInMonth( previous );
-			for (int day = daysInMonth; --col >= 0; ) {
-				//#style calendarDayInactive?
-				StringItem item = new StringItem( null, Integer.toString( day ));
-				item.setAppearanceMode( INTERACTIVE );
-				set( col, row, item);			
-				day--;
-			}
-			col = getColumn(dayOfWeek);
-		}
-		
-		StringItem item;
-	
-		int daysInMonth = getDaysInMonth(cal);
-		for (int day = 1; day <= daysInMonth; day++) {
-			if (isInCurrentMonth && day == this.lastDay) {
-				//#style calendarCurrentday?
-				item = new StringItem( null, Integer.toString( day ));				
-			} else {
-				//#style calendarDay?
-				item = new StringItem( null, Integer.toString( day ));
-			}
-			item.setAppearanceMode( INTERACTIVE );
-			set( col, row, item);
-			col++;
-			if (col > 6) {
-				col = 0;
-				row++;
-			}
-//			System.out.println("day=" + day + ", col=" + col + ", row=" + row);
-		}
-		for (int day=1; col < 7; col++) {
-			//#style calendarDayInactive?
-			item = new StringItem( null, Integer.toString( day ));
-			item.setAppearanceMode( INTERACTIVE );
-			set( col, row, item);			
-			day++;
-		}
-		
-		for (; ++row < 7; ) {
-			for (int i=0; i<7; i++) {
-				set( i, row, null);
+		System.out.println(infoText + ": dayOfWeek=" + dayOfWeek + "(" + getDayOfWeekName(dayOfWeek) + "), col=" + col + ", daysInMonth=" + shownMonth.getDaysInMonth());
+		for (int row = 1; row < getNumberOfRows(); row++) {
+			for (col = 0; col < 7; col++) {
+				if (eventsList != null) {
+					entriesForTheDay = eventsList.getEntriesForDay(day);
+				}
+				Item item = createCalendaryDay(day, shownMonth, this.originalDay, entriesForTheDay, col, row);
+				set( col, row, item);
+				day.addDay(1);
 			}
 		}
 		
 		this.ignoreRepaintRequests = false;
+		
 		if (selCol != -1 && selRow != -1) {
 			setSelectedCell( selCol, selRow );
-		} else if (isInCurrentMonth) {
+		} else if (this.shownMonth.equalsMonth(this.originalDay)) {
 			col = getColumn(dayOfWeek);
-			row = (col + this.lastDay) / 7 + 1;
-			cal.set( Calendar.DAY_OF_MONTH, this.lastDay );
-			col = getColumn( cal.get( Calendar.DAY_OF_WEEK) );
+			int row = (col + this.shownMonth.getDay()) / 7 + 1;
+			shownMonth.setDay( this.shownMonth.getDay() );
+			col = getColumn( shownMonth.getDayOfWeek() );
 			setSelectedCell( col, row );
 		}
 		if (this.availableWidth != 0) {
 			init( this.availableWidth, this.availableWidth, this.availableHeight );
 		}
 		repaint();
+	}
+
+	/**
+	 * Creates an item that represents a day within this CalendarItem
+	 * @param day the corresponding day
+	 * @param currentMonth the month that is currently shown
+	 * @param originalCurrentDay the original day (e.g. today) that was used to initialize this CalendarItem (should be highlighted in most cases)
+	 * @param entriesForTheDay the events for the day, may be null
+	 * @param col the table column for which the item is generated, you cannot expect a certain column for a specific day due to possible design and architecture changes
+	 * @param row the table row for which the item is generated, you cannot expect a certain row for a specific day due to possible design and architecture changes
+	 * @return the created item, must not be null
+	 */
+	protected Item createCalendaryDay(TimePoint day, TimePoint currentMonth, TimePoint originalCurrentDay, CalendarEntry[] entriesForTheDay, int col, int row) {
+		if (this.renderer != null) {
+			return this.renderer.createCalendaryDay(day, currentMonth, originalCurrentDay, entriesForTheDay);
+		} else {
+			return createCalendaryDay(day, currentMonth, originalCurrentDay, entriesForTheDay);
+		}
+
+	}
+	
+
+	/**
+	 * Creates an item that represents a day within this CalendarItem
+	 * @param day the corresponding day
+	 * @param currentMonth the month that is currently shown
+	 * @param originalCurrentDay the original day (e.g. today) that was used to initialize this CalendarItem (should be highlighted in most cases)
+	 * @param entriesForTheDay the events for the day, may be null
+	 * @return the created item, must not be null
+	 */
+	public static Item createCalendaryDay(TimePoint day, TimePoint currentMonth,
+			TimePoint originalCurrentDay, CalendarEntry[] entriesForTheDay) 
+	{
+		StringItem item;
+		if (!day.equalsMonth(currentMonth)) {
+			//#style calendarDayInactive?
+			item = new StringItem( null, Integer.toString( day.getDay() ));
+		} else {
+			if (day.equalsDay(originalCurrentDay)) {
+				//#style calendarCurrentday?
+				item = new StringItem( null, Integer.toString( day.getDay() ));				
+			} else {
+				//#style calendarDay?
+				item = new StringItem( null, Integer.toString( day.getDay() ));
+			}
+
+		}
+		item.setAppearanceMode( INTERACTIVE );
+		return item;
+	}
+
+	/**
+	 * Specifies a renderer for this CalendarItem
+	 * @param renderer a renderer that is responsible for creating calendar items
+	 */
+	public void setRenderer( CalendarRenderer renderer) {
+		this.renderer = renderer;
 	}
 
 	/**
@@ -335,28 +416,24 @@ public class CalendarItem extends TableItem
 		return days[dayOfWeek];
 	}
 
+	/**
+	 * Retrieves the days within the currently shown month
+	 * @return the number of days within the month that is currently shown.
+	 */
 	public int getDaysInMonth() {
-		return getDaysInMonth( this.calendar );
+		return this.originalDay.getDaysInMonth();
 	}
 	
+	/**
+	 * Deprecated method to retrieve the number of days of a given calendar
+	 * @param cal the calendar
+	 * @return the number of days within the month of the given calendar
+	 * @deprecated
+	 * @see TimePoint#getDaysInMonth()
+	 */
 	public static int getDaysInMonth(Calendar cal) {
-		int daysInMonth = DAYS_PER_MONTH[ cal.get( Calendar.MONTH ) ];
-		if (daysInMonth == 28) {
-			// this is February, check for leap year:
-			int dayOfMonth = cal.get( Calendar.DAY_OF_MONTH );
-			if (dayOfMonth == 29) { // okay, this is easy ;-)
-				daysInMonth = 29;
-			} else {
-				long addedTime = (29L - dayOfMonth) * 24 * 60 * 60 * 1000;
-				Date testDate = new Date( cal.getTime().getTime() + addedTime );
-				Calendar cal2 = Calendar.getInstance();
-				cal2.setTime( testDate );
-				if (cal2.get( Calendar.DAY_OF_MONTH) == 29) {
-					daysInMonth = 29;
-				}
-			}
-		}
-		return daysInMonth;
+		TimePoint point = new TimePoint( cal );
+		return point.getDaysInMonth();
 	}
 
 	/* (non-Javadoc)
@@ -382,17 +459,9 @@ public class CalendarItem extends TableItem
 	 */
 	public void goNextMonth()
 	{
-		Calendar cal = Calendar.getInstance();
-		int nextMonth = this.shownMonth + 1;
-		int nextYear = this.shownYear; 
-		if (nextMonth > Calendar.DECEMBER) {
-			nextMonth = Calendar.JANUARY;
-			nextYear++;
-		}
-		cal.set( Calendar.DAY_OF_MONTH, 1);
-		cal.set( Calendar.MONTH, nextMonth );
-		cal.set( Calendar.YEAR, nextYear );
-		buildCalendar( cal );
+		this.shownMonth.addMonth(1);
+		this.shownMonth.setDay(1);
+		buildCalendar( this.shownMonth );
 	}
 
 	/**
@@ -400,17 +469,10 @@ public class CalendarItem extends TableItem
 	 */
 	public void goPreviousMonth()
 	{
-		Calendar cal = Calendar.getInstance();
-		int nextMonth = this.shownMonth - 1;
-		int nextYear = this.shownYear; 
-		if (nextMonth < 0) {
-			nextMonth = Calendar.DECEMBER;
-			nextYear--;
-		}
-		cal.set( Calendar.DAY_OF_MONTH, 1);
-		cal.set( Calendar.MONTH, nextMonth );
-		cal.set( Calendar.YEAR, nextYear );
-		buildCalendar( cal );
+		this.shownMonth.addMonth(-1);
+		this.shownMonth.setDay(1);
+		buildCalendar( this.shownMonth );
+
 	}
 
 	
@@ -433,35 +495,45 @@ public class CalendarItem extends TableItem
 	}
 	//#endif
 	
-	public Calendar getCellCalendar(int row, int col){
-		Calendar cal = Calendar.getInstance();
-		cal.set( Calendar.DAY_OF_MONTH, 1);
-		cal.set( Calendar.YEAR, this.shownYear );
-		cal.set( Calendar.MONTH, this.shownMonth );
-		int startCol = getColumn( cal.get( Calendar.DAY_OF_WEEK) );
-		if (row == 0 && col < startCol) {
-			// previous month selected:
-			CalendarHelper helper = new CalendarHelper( cal );
-			helper.previousMonth();
-			int days = helper.getDaysInMonth();
-			cal.set( Calendar.DAY_OF_MONTH, days + col - startCol + 1 );
-		} else {
-			int day = (row * 7) - startCol + col + 1;
-			int daysInMonth = CalendarHelper.getDaysInMonth(cal);
-			if (day <= daysInMonth) {
-				cal.set( Calendar.DAY_OF_MONTH, day);
-			} else {
-				CalendarHelper helper = new CalendarHelper( cal );
-				helper.nextMonth();
-				cal.set( Calendar.DAY_OF_MONTH, day - daysInMonth );
-			}
-		}
-		//#debug
-		System.out.println("detected date=" + cal.get( Calendar.DAY_OF_MONTH) + "." + (cal.get(Calendar.MONTH) + 1) + "." + cal.get(Calendar.YEAR));
-		
-		return cal;
+	/**
+	 * Retrieves the TimePoint of the given row and column within the shown Calendar
+	 * @param row the row index
+	 * @param col the column index
+	 * @return the corresponding TimePoint
+	 */
+	public TimePoint getCellTimePoint(int row, int col){
+		TimePoint tp = new TimePoint( this.firstColumnFirstRowDay );
+		tp.addDay( (row * 7) + col );
+		return tp;
 	}
 	
+	/**
+	 * Retrieves the Calendar of the given row and column within the shown Calendar
+	 * @param row the row index
+	 * @param col the column index
+	 * @return the corresponding Calendar
+	 */
+	public Calendar getCellCalendar(int row, int col){
+		return getCellTimePoint(row, col).getAsCalendar();
+
+	}
+	
+	/**
+	 * Retrieves the currently selected day as a Calendar
+	 * @return a Calendar representing the currently selected day
+	 */
+	public TimePoint getSelectedTimePoint()
+	{
+		int col = getSelectedColumn();
+		int row = getSelectedRow() - 1;
+		return getCellTimePoint(row, col);
+	}
+
+	
+	/**
+	 * Retrieves the currently selected day as a Calendar
+	 * @return a Calendar representing the currently selected day
+	 */
 	public Calendar getSelectedCalendar()
 	{
 		int col = getSelectedColumn();
@@ -470,7 +542,8 @@ public class CalendarItem extends TableItem
 	}
 
 	/**
-	 * @return the selected date
+	 * Retrieves the currently selected day as a Date
+	 * @return a Date representing the currently selected day
 	 */
 	public Date getSelectedDate()
 	{
@@ -591,9 +664,45 @@ public class CalendarItem extends TableItem
 		//#endif		
 	}
 	
+	/**
+	 * Retrieves the shown month
+	 * @return the shown month as in java.util.Calendar, e.g. java.util.Calendar.JANUARY
+	 */
 	public int getShownMonth(){
+		return this.shownMonth.getMonth();
+	}
+	
+	/**
+	 * Retrieves the shown month as a TimePoint
+	 * @return the currently shown month as a TimePoint
+	 */
+	public TimePoint getShownTimePoint() {
 		return this.shownMonth;
 	}
 
+	/**
+	 * Sets a data model that contains calendar events for this CalendarItem.
+	 * @param model the model use null to remove the model 
+	 * @see #setModelLimitToEnabledCategories(boolean)
+	 */
+	public void setModel( CalendarEntryModel model ) {
+		this.model = model;
+	}
+	
+	/**
+	 * Retrieves the model used in this CalendarItem
+	 * @return the model used, can be null
+	 */
+	public CalendarEntryModel getModel() {
+		return this.model;
+	}
 
+	/**
+	 * Specifies whether only enabled categories should be displayed in this CalendarItem
+	 * @param limit true when only enabled categories should be shown
+	 * @see #setModel(CalendarEntryModel)
+	 */
+	public void setModelLimitToEnabledCategories( boolean limit ) {
+		this.isLimitToEnabledEntries = limit;
+	}
 }

@@ -7,11 +7,12 @@ import java.util.Calendar;
 import java.util.Date;
 
 import de.enough.polish.io.Externalizable;
+import de.enough.polish.util.TimePeriod;
+import de.enough.polish.util.TimePoint;
 
 /**
  * Allows to add complex repeat rules to CalendarEntries or other events.
  * 
- * @author Nagendra Sharma
  * @author Robert Virkus
  */
 public class EventRepeatRule  implements Externalizable {
@@ -21,30 +22,31 @@ public class EventRepeatRule  implements Externalizable {
 	/**
 	 * Events that are repeated yearly
 	 */
-	public static final int INTERVAL_YEARLY = 1;
+	public static final TimePoint INTERVAL_YEARLY = new TimePoint( 1, 0, 0 ); // year-month-day
 	/**
 	 * Events that are repeated monthly
 	 */
-	public static final int INTERVAL_MONTHLY = 2;
+	public static final TimePoint INTERVAL_MONTHLY = new TimePoint( 0, 1, 0 ); // year-month-day
 	/**
 	 * Events that are repeated weekly
 	 */
-	public static final int INTERVAL_WEEKLY = 3;
+	public static final TimePoint INTERVAL_WEEKLY = new TimePoint( 0, 0, 7 ); // year-month-day
+
+	/**
+	 * A simple rule for events that are repeated each year on the same date, e.g. anniversaries, birthdays, Christmas, and so on.
+	 */
+	public static final EventRepeatRule RULE_YEARLY = new EventRepeatRule( INTERVAL_YEARLY );
+
+	/**
+	 * A simple rule for events that are repeated each month on the same date.
+	 */
+	public static final EventRepeatRule RULE_MONTHLY = new EventRepeatRule( INTERVAL_MONTHLY );
 	
 
 	/**
 	 * the interval for repeats, typically yearly
 	 */
-	private int interval = INTERVAL_YEARLY;
-	/**
-	 * the factor by which the interval should be repeated, e.g. a factor of 2 with a INTERVAL_WEEKLY interval results in a biweekly interval.
-	 */
-	private int intervalFactor = 1;
-
-	/**
-	 * The month of the event, same as the Calendar constants
-	 */
-	private int month = -1;
+	private TimePoint interval = INTERVAL_YEARLY;
 	
 	/**
 	 * The weekday of the event, e.g. it always falls on a Monday (Calendar.MONDAY)
@@ -54,17 +56,12 @@ public class EventRepeatRule  implements Externalizable {
 	/**
 	 * Which weekday of the given month does match, e.g. the first one (1), second one (2) or last one (-1).
 	 */
-	private int match;
+	private int weekdayMatchInMonth;
 	
 	/**
-	 * field to contain by which day of the month of repeat
+	 * Last possible date until events can be repeated
 	 */
-	private int monthDay = -1;
-	
-	/**
-	 * field to contain date of end of repeat
-	 */
-	private Date untilDate;
+	private TimePoint untilDate;
 
 		
 	/**
@@ -73,34 +70,48 @@ public class EventRepeatRule  implements Externalizable {
 	public EventRepeatRule() {
 		// use methods for defining the repeat rule
 	}
+	
+	/**
+	 * Creates a new interval based rule.
+	 * @param interval the interval, e.g. new TimePoint( 1, 0, 0 ) for a yearly interval
+	 * @see #INTERVAL_YEARLY
+	 * @see #INTERVAL_MONTHLY
+	 * @see #INTERVAL_WEEKLY
+	 */
+	public EventRepeatRule(TimePoint interval) {
+		this.interval = interval;
+	}
 
+
+	/**
+	 * Creates a yearly repeat rule for a certain weekday
+	 * @param weekday the weekday, e.g. Calendar.MONDAY
+	 * @param match the day within the month, e.g. the first (1), second (2) or last (-1) weekday
+	 */
 	public EventRepeatRule( int weekday, int match ) {
-		//this.interval = INTERVAL_YEARLY; is default
-		if (weekday == -1 || match == 0) {
+		this( INTERVAL_YEARLY, weekday, match);
+	}
+	
+	/**
+	 * Creates a repeat rule for a certain weekday
+	 * 
+	 * @param interval the interval for this rule, e.g. new TimePoint( 0, 1, 0 ) for a monthly interval
+	 * @param weekday the weekday, e.g. Calendar.MONDAY
+	 * @param match the day within the month, e.g. the first (1), second (2) or last (-1) weekday
+	 * @see #INTERVAL_YEARLY
+	 * @see #INTERVAL_MONTHLY
+	 * @see #INTERVAL_WEEKLY
+	 */
+	public EventRepeatRule( TimePoint interval, int weekday, int match ) {
+		if (weekday == -1 || match == 0 || interval == null) {
 			throw new IllegalArgumentException();
 		}
+		this.interval = interval;
 		this.weekday = weekday;
-		this.match = match;
+		this.weekdayMatchInMonth = match;
 	}
 	
 
-	/**
-	 * Retrieves the day of the month for a certain event
-	 * @return returns which day of month should be repeated, e.g. 31 for New Years Eve
-	 */
-	public int getMonthDay() {
-		return this.monthDay;
-	}
-
-	/**
-	 * Sets the day of the month for a certain event
-	 * @param monthDay defines which day of month should be repeated, e.g. 31 for New Years Eve
-	 */
-	public void setMonthDay(int monthDay) {
-		this.monthDay = monthDay;
-	}
-
-	
 	/**
 	 * Retrieves the repetition interval of this event.
 	 * 
@@ -108,60 +119,28 @@ public class EventRepeatRule  implements Externalizable {
 	 * @see #INTERVAL_YEARLY
 	 * @see #INTERVAL_MONTHLY
 	 * @see #INTERVAL_WEEKLY
-	 * @see #getIntervalFactor()
 	 */
-	public int getInterval() {
+	public TimePoint getInterval() {
 		return this.interval;
 	}
 
 	/**
-	 * setter method for interval of repeat
-	 * @param interval
+	 * Sets the interval of this repeat rule
+	 * @param interval the new interval, e.g. new TimePoint( 0, 0, 7) for a weekly repeat rule
+	 * @see #INTERVAL_YEARLY
+	 * @see #INTERVAL_MONTHLY
+	 * @see #INTERVAL_WEEKLY
 	 */
-	public void setInterval(int interval) {
+	public void setInterval(TimePoint interval) {
 		this.interval = interval;
 	}
 	
-	/**
-	 * Retrieves the factor by which the interval should be repeated, e.g. a factor of 2 with a INTERVAL_WEEKLY interval results in a biweekly interval. 
-	 * @return the interval factor, typically 1.
-	 */
-	public int getIntervalFactor() {
-		return this.intervalFactor;
-	}
-
-	/**
-	 * Sets the factor by which the interval should be repeated, e.g. a factor of 2 with a INTERVAL_WEEKLY interval results in a biweekly interval. 
-	 * @param intervalFactor the interval factor, typically 1.
-	 */
-	public void setIntervalFactor(int intervalFactor) {
-		this.intervalFactor = intervalFactor;
-	}
-
-
-	/**
-	 * Retrieves the month for which the corresponding event should be repeated
-	 * @return the month like in Calendar defined, e.g. Calendar.JANUARY
-	 */
-	public int getMonth() {
-		return this.month;
-	}
-
-
-
-	/**
-	 * Sets the month for which the corresponding event should be repeated
-	 * @param month the month like in Calendar defined, e.g. Calendar.JANUARY
-	 */
-	public void setMonth(int month) {
-		this.month = month;
-	}
-
-
+	
 
 	/**
 	 * Retrieves the weekday for which the event should be repeated
-	 * @return the weekday, e.g. Calendar.MONDAY
+	 * @return the weekday, e.g. Calendar.MONDAY; -1 when this repeat rule should not be repeated on a certain weekday of a month
+	 * @see #getWeekdayMatch()
 	 */
 	public int getWeekday() {
 		return this.weekday;
@@ -171,7 +150,8 @@ public class EventRepeatRule  implements Externalizable {
 
 	/**
 	 * Sets the weekday for which the event should be repeated
-	 * @param weekday the weekday, e.g. Calendar.MONDAY
+	 * @param weekday the weekday, e.g. Calendar.MONDAY or -1 when this repeat rule should not be repeated on a certain weekday of a month
+	 * @see #setWeekdayMatch(int)
 	 */
 	public void setWeekday(int weekday) {
 		this.weekday = weekday;
@@ -180,21 +160,23 @@ public class EventRepeatRule  implements Externalizable {
 
 
 	/**
-	 * Specifies the matching weekday, e.g. the first (1), second (2) or last (-1) of the gievn month
+	 * Specifies the matching weekday, e.g. the first (1), second (2) or last (-1) of a given month
 	 * @return the match the matching weekday
+	 * @see #getWeekday()
 	 */
-	public int getMatch() {
-		return this.match;
+	public int getWeekdayMatch() {
+		return this.weekdayMatchInMonth;
 	}
 
 
 
 	/**
-	 * Sets the matching weekday, e.g. the first (1), second (2) or last (-1) of the gievn month
+	 * Sets the matching weekday, e.g. the first (1), second (2) or last (-1) of a given month
 	 * @param match the matching weekday
+	 * @see #setWeekday(int)
 	 */
-	public void setMatch(int match) {
-		this.match = match;
+	public void setWeekdayMatch(int match) {
+		this.weekdayMatchInMonth = match;
 	}
 
 
@@ -202,7 +184,7 @@ public class EventRepeatRule  implements Externalizable {
 	 * Retrieves the last date until an event should be repeated
 	 * @return returns the end of repeat
 	 */
-	public Date getUntilDate() {
+	public TimePoint getUntilDate() {
 		return this.untilDate;
 	}
 
@@ -210,7 +192,7 @@ public class EventRepeatRule  implements Externalizable {
 	 * Defines the last date until which an event should be repeated
 	 * @param untilDate the last possible recurring date
 	 */
-	public void setUntilDate(Date untilDate) {
+	public void setUntilDate(TimePoint untilDate) {
 		this.untilDate = untilDate;
 	}
 
@@ -224,15 +206,12 @@ public class EventRepeatRule  implements Externalizable {
 		if (version != VERSION) {
 			throw new IOException("unknown version " + version);
 		}
-		this.interval = in.readInt();
-		this.intervalFactor = in.readInt();
-		this.month = in.readInt();
-		this.monthDay = in.readInt();
+		this.interval = new TimePoint(in);
 		this.weekday = in.readInt();
-		this.match = in.readInt();
+		this.weekdayMatchInMonth = in.readInt();
 		boolean isNotNull = in.readBoolean();
 		if (isNotNull) {
-			this.untilDate = new Date( in.readLong() );
+			this.untilDate = new TimePoint( in );
 		}
 	}
 
@@ -242,88 +221,83 @@ public class EventRepeatRule  implements Externalizable {
 	 */
 	public void write(DataOutputStream out) throws IOException {
 		out.writeInt( VERSION );
-		out.writeInt( this.interval );
-		out.writeInt( this.intervalFactor );
-		out.writeInt( this.month );
-		out.writeInt( this.monthDay );
+		this.interval.write(out);
 		out.writeInt( this.weekday );
-		out.writeInt( this.match );
+		out.writeInt( this.weekdayMatchInMonth );
 		boolean isNotNull = (this.untilDate != null);
 		out.writeBoolean(isNotNull);
 		if (isNotNull) {
-			out.writeLong(this.untilDate.getTime());
+			this.untilDate.write(out);
 		}
 
 	}
 
 	/**
-	 * Retrieves the next date for the given event
-	 * @param event 
-	 * @param from
-	 * @return
+	 * Retrieves the next date for the given event within the specified period
+	 * @param entry the calendar entry event to which the next repeating event should be found
+	 * @param period the allowed time period
+	 * @return the next time point, null if there is none matching.
 	 */
-	public Calendar getNextDate( CalendarEntry event, Calendar from ) {
-		Calendar nextDate = Calendar.getInstance();
-		return getNextDate( event, from, nextDate );
-	}
-	
-	public Calendar getNextDate( CalendarEntry event, Calendar from, Calendar nextDate ) {
-		int fromYear = from.get(Calendar.YEAR);
-		int fromMonth = from.get(Calendar.MONTH);
-		int fromDay = from.get(Calendar.DAY_OF_MONTH);
-		nextDate.setTime( event.getStartDate() );
-		int eventYear = nextDate.get(Calendar.YEAR);
-		int eventMonth = nextDate.get(Calendar.MONTH);
-		int eventDay = nextDate.get(Calendar.DAY_OF_MONTH);
-		if (this.interval == INTERVAL_YEARLY) {
-//			System.out.println("from: " + fromYear + "-" + fromMonth + "-" + fromDay);
-//			System.out.println("event: " + eventYear + "-" + eventMonth + "-" + eventDay);
-			while (eventYear < fromYear || (eventYear == fromYear && (eventMonth < fromMonth || (eventMonth == fromMonth && eventDay <= fromDay)))) {
-				eventYear += this.intervalFactor;
-			}
-			nextDate.set( Calendar.YEAR, eventYear );
-			if (this.monthDay != -1) {
-				//nothing else to change...
-			} else {
-				int weekdayMatch = this.match;
-				if (this.weekday != -1 && weekdayMatch != 0) {
-					int offset = 0;
-					boolean increaseYear = false;
-					if (weekdayMatch > 0) {
-						do {
-							if (increaseYear) {
-								eventYear += this.intervalFactor;
-								nextDate.set( Calendar.YEAR, eventYear );
-							}
-							nextDate.set( Calendar.DAY_OF_MONTH, 1);
-							int currentWeekday = nextDate.get(Calendar.DAY_OF_WEEK);
-							offset = (currentWeekday <= this.weekday) ? this.weekday - currentWeekday : 7 + this.weekday - currentWeekday;
-							offset += (weekdayMatch - 1)*7;
-							increaseYear = true;
-						} while (fromYear == eventYear && fromMonth == eventMonth && 1 + offset <= fromDay);
-						nextDate.set( Calendar.DAY_OF_MONTH, 1 + offset);
-					} else {
-						int daysInMonth = CalendarItem.getDaysInMonth(nextDate);
-						do {
-							if (increaseYear) {
-								eventYear += this.intervalFactor;
-								nextDate.set( Calendar.YEAR, eventYear );
-							}
-							nextDate.set( Calendar.DAY_OF_MONTH, daysInMonth);
-							int currentWeekday = nextDate.get(Calendar.DAY_OF_WEEK);
-							offset = (currentWeekday >= this.weekday) ? currentWeekday - this.weekday : 7 - this.weekday + currentWeekday;
-							offset -= (weekdayMatch + 1)*7;
-							increaseYear = true;
-						} while (fromYear == eventYear && fromMonth == eventMonth && daysInMonth - offset <= fromDay);
-						nextDate.set( Calendar.DAY_OF_MONTH, daysInMonth - offset);
+	public TimePoint getNextDate( CalendarEntry entry, TimePeriod period ) {
+//		System.out.println("getNextDate for entry " + entry.getSummary() + ", start=" + entry.getStartDate() + ", period=" + period);
+		TimePoint periodStart = period.getStart();
+		if (this.untilDate != null && this.untilDate.isBefore(periodStart)) {
+			return null;
+		}
+		TimePoint nextDate = new TimePoint( entry.getStartDate() );
+		TimePoint periodEnd = period.getEnd();
+		while (!period.matches(nextDate) && !nextDate.isAfter(periodEnd)) {
+			nextDate.add( this.interval );
+//			System.out.println("(1) added interval to date: " + nextDate);
+		}
+		if (this.weekday != -1 && this.weekdayMatchInMonth != 0) {
+			// now find a the matching weekday, e.g. the first Tuesday of the month or the last Thursday (see weekday and weekdayMatchInMonth)
+			int offset = 0;
+			boolean addInterval = false;
+			if (this.weekdayMatchInMonth > 0) {
+				do {
+					if (addInterval) {
+						nextDate.add( this.interval );
+//						System.out.println("(2) added interval to date: " + nextDate);
 					}
-				}
+					nextDate.setDay(1);
+					int currentWeekday = nextDate.getDayOfWeek();
+					offset = (currentWeekday <= this.weekday) ? this.weekday - currentWeekday : 7 + this.weekday - currentWeekday;
+					offset += (this.weekdayMatchInMonth - 1)*7;
+					addInterval = true;
+					nextDate.setDay( 1 + offset);
+//					if (!period.matches(nextDate)) {
+//						System.out.println("(2) nextDate " + nextDate + " does not match period " + period);
+//					}
+				} while (!period.matches(nextDate) && !nextDate.isAfter(periodEnd));
+			} else {
+				int daysInMonth = nextDate.getDaysInMonth();
+				do {
+					if (addInterval) {
+						nextDate.add( this.interval );
+//						System.out.println("(3) added interval to date: " + nextDate);
+					}
+					nextDate.setDay( daysInMonth );
+					int currentWeekday = nextDate.getDayOfWeek();
+					offset = (currentWeekday >= this.weekday) ? currentWeekday - this.weekday : 7 - this.weekday + currentWeekday;
+					offset -= (this.weekdayMatchInMonth + 1)*7;
+					addInterval = true;
+					nextDate.setDay( daysInMonth - offset);
+//					if (!period.matches(nextDate)) {
+//						System.out.println("(3) nextDate " + nextDate + " does not match period " + period);
+//					}
+				} while (!period.matches(nextDate) && !nextDate.isAfter(periodEnd));
 			}
 		}
 		
-		if (this.untilDate != null && (nextDate.getTime().getTime() > this.untilDate.getTime())) {
-			return null;
+		if ((this.untilDate != null) && (nextDate.isAfter( this.untilDate ) ) ) {
+			nextDate = null;
 		}
+		
+		if (!period.matches(nextDate)) {
+			nextDate = null;
+		}
+
 		return nextDate;
 	}
 }

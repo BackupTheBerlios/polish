@@ -6,23 +6,27 @@ package de.enough.polish.calendar;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.TimeZone;
 
 import de.enough.polish.io.Externalizable;
 import de.enough.polish.io.Serializer;
+import de.enough.polish.util.TimePeriod;
+import de.enough.polish.util.TimePoint;
 
 
 /**
  * Calendar Entry class provides access to data in events provided in the calendar.
  * @author Ramakrishna
  * @author Nagendra Sharma
+ * @author Robert Virkus (clean up)
  * 
  */
 public class CalendarEntry implements Externalizable {
 	
-	private static final int VERSION = 100;
+	private static final int VERSION = 103;
 
 	/** this entry does not recur at all */
 	public static final int REOCCURENCE_NONE = 0;
@@ -35,32 +39,29 @@ public class CalendarEntry implements Externalizable {
 	/** this entry recurs yearly */
 	public static final int REOCCURENCE_YEARLY = 4;
 	
-	
+	/**
+	 * For entries that are classified public.
+	 */
+	public static final String CLASS_PUBLIC = "PUBLIC";
+	/**
+	 * For entries that are classified private.
+	 */
+	public static final String CLASS_PRIVATE = "PRIVATE";
+	/**
+	 * For entries that are classified confidential.
+	 */
+	public static final String CLASS_CONFIDENTIAL = "CONFIDENTIAL";
 	
 	/**
 	 * field to contain starting date of calendar event 
 	 */
-	private Date startDate;
+	private TimePoint startDate;
 	
 	/**
 	 * field to contain ending date of calendar event
 	 */
-	private Date endDate;
+	private TimePoint endDate;
 	
-	/**
-	 * field to contain date of creation of calendar event
-	 */
-	private Date createdDate;
-	
-	/**
-	 * field to contain last modified date of calendar event
-	 */
-	private Date lastModifiedDate;
-	
-	/**
-	 * field to contain time stamp of calendar event
-	 */
-	private Date timeStamp;
 	
 	/**
 	 * field to contain whether is all day of calendar event
@@ -75,7 +76,9 @@ public class CalendarEntry implements Externalizable {
 	/**
 	 * field to contain reoccurence of calendar event
 	 */
-	private int reoccurence;
+	private int simpleReoccurence;
+	
+	private int anniversaryYear;
 	
 	/**
 	 * field to contain sequence of calendar event
@@ -101,7 +104,7 @@ public class CalendarEntry implements Externalizable {
 	/**
 	 * a collection variable to hold any device specific fields in the form of name/value pairs.
 	 */
-	private Hashtable otherFields = new Hashtable();
+	private Hashtable otherFields;
 	
 	/**
 	 * field to contain location of calendar event
@@ -126,7 +129,7 @@ public class CalendarEntry implements Externalizable {
 	/**
 	 * field to contain type of calendar event
 	 */
-	private String type;
+	private int type;
 	
 	/**
 	 * field to contain id of calendar event
@@ -149,29 +152,25 @@ public class CalendarEntry implements Externalizable {
 	private CalendarCategory category;
 	
 	/**
-	 * field to contain the parent category of the calendar event
-	 */
-	private CalendarCategory parentCategory;
-	
-	
-	/**
 	 * field to contain details of alarm 
 	 */
 	private CalendarAlarm calendarAlarm;
 
 
-
 	/**
 	 * field to contain the details for repeat rule
 	 */
-	transient private EventRepeatRule eventRepeatRule;
+	private EventRepeatRule eventRepeatRule;
 	
 	
 	/**
 	 * field to contain timeZone of calendar event
 	 */
-	private transient TimeZone timeZone;
+	private TimeZone timeZone;
 	
+	private CalendarEntry parent;
+
+	private CalendarTextResolver textResolver;
 	
 	/**
 	 * Constructor for CalendarEntry
@@ -181,7 +180,7 @@ public class CalendarEntry implements Externalizable {
 	}
 
 	public CalendarEntry(String summary, CalendarCategory category, int year, int month, int day){
-		this(summary, category, year, month, day, null);
+		this(summary, category, year, month, day, null, CalendarEntry.REOCCURENCE_NONE);
 	}
 	
 	public CalendarEntry(String summary, CalendarCategory category, int year, int month, int day, int reoccurence){
@@ -193,20 +192,35 @@ public class CalendarEntry implements Externalizable {
 	}
 	
 	public CalendarEntry(String summary, CalendarCategory category, int year, int month, int day, String description, int reoccurence){
-		this.summary = summary;
-		this.category = category;
-		this.startDate = CalendarHelper.getDate(year, month, day);
-		this.description = description;
-		this.reoccurence = reoccurence;
+		this( summary, category, new TimePoint(year, month, day), description, reoccurence );
 	}
 	
+	public CalendarEntry(String summary, CalendarCategory category, TimePoint start){
+		this(summary, category, start, null, REOCCURENCE_NONE);
+	}
+	
+	public CalendarEntry(String summary, CalendarCategory category, TimePoint start, int reoccurence){
+		this(summary, category, start, null, reoccurence);
+	}
+	
+	public CalendarEntry(String summary, CalendarCategory category, TimePoint start, String description){
+		this(summary, category, start, null, CalendarEntry.REOCCURENCE_NONE);
+	}
+	
+	public CalendarEntry(String summary, CalendarCategory category, TimePoint start, String description, int reoccurence){
+		this.summary = summary;
+		this.category = category;
+		this.startDate = start;
+		this.description = description;
+		this.simpleReoccurence = reoccurence;
+	}
 	/**
-	 * Overloaded constructor of CalendarEntry to initialize staring date and description of calendar event
+	 * Creates a new CalendarEntry
 	 * @param startDate
 	 * @param description
 	 */
-	public CalendarEntry(Date startDate,String description) {
-		this.startDate=startDate;
+	public CalendarEntry(TimePoint startDate,String description) {
+		this.startDate = startDate;
 		this.description = description;
 	}
 	
@@ -220,7 +234,7 @@ public class CalendarEntry implements Externalizable {
 	 * @param timeZone
 	 * @param durationInMinutes
 	 */
-	CalendarEntry(Date startDate, Date endDate, boolean isAllday,
+	CalendarEntry(TimePoint startDate, TimePoint endDate, boolean isAllday,
 			CalendarCategory category, String description, TimeZone timeZone,
 			int durationInMinutes) {
 		this.startDate = startDate;
@@ -246,7 +260,7 @@ public class CalendarEntry implements Externalizable {
 	 * @param reoccurence
 	 * @param organizer
 	 */
-	CalendarEntry(Date startDate, Date endDate, boolean isAllday,
+	CalendarEntry(TimePoint startDate, TimePoint endDate, boolean isAllday,
 			CalendarCategory category, String description, TimeZone timeZone,
 			int durationInMinutes,String location,	int reoccurence,String organizer) {
 		this.startDate = startDate;
@@ -257,11 +271,41 @@ public class CalendarEntry implements Externalizable {
 		this.timeZone = timeZone;
 		this.durationInMinutes = durationInMinutes;
 		this.location=location;
-		this.reoccurence=reoccurence;
+		this.simpleReoccurence=reoccurence;
 		this.organizer=organizer;
 		
 	}
 	
+	/**
+	 * Creates a new entry based on the specified one
+	 * @param original the original entry of which all relevant settings are copied
+	 */
+	public CalendarEntry(CalendarEntry original) {
+		this.alarm = original.alarm;
+		this.calendarAlarm = original.calendarAlarm;
+		this.category = original.category;
+		this.classType = original.classType;
+		this.description = original.description;
+		this.durationInMinutes = original.durationInMinutes;
+		this.endDate = original.endDate;
+		this.eventRepeatRule = original.eventRepeatRule;
+		this.id = original.id;
+		this.isAllday = original.isAllday;
+		this.location = original.location;
+		this.notes = original.notes;
+		this.organizer = original.organizer;
+		this.otherFields = original.otherFields;
+		this.simpleReoccurence = original.simpleReoccurence;
+		this.sequence = original.sequence;
+		this.startDate = original.startDate;
+		this.status = original.status;
+		this.summary = original.summary;
+		this.timeZone = original.timeZone;
+		this.type = original.type;
+		this.userId = original.userId;
+		this.textResolver = original.textResolver;
+	}
+
 	/**
 	 * @return returns alarm setting of calendar entry
 	 */
@@ -275,57 +319,32 @@ public class CalendarEntry implements Externalizable {
 	public CalendarCategory getCategory() {
 		return this.category;
 	}
-	
-	/**
-	 * @return returns parent category of calendar entry
-	 */
-	public CalendarCategory getParenCategory() {
-		return this.parentCategory;
-	}
 
 	/**
 	 * @return returns category of calendar entry
 	 */
 	public String getDescription() {
-		this.description = this.description != null ? this.description: "";
+		if (this.textResolver != null) {
+			return this.textResolver.resolveDescription(this.description, this);
+		}
 		return this.description;
 	}
 	
 	/**
 	 * @return returns starting date of calendar entry
 	 */
-	public Date getStartDate() {
+	public TimePoint getStartDate() {
 		return this.startDate;
 	}
 	
 	/**
 	 * @return returns ending date of calendar entry
 	 */
-	public Date getEndDate() {
+	public TimePoint getEndDate() {
 		return this.endDate;
 	}
 	
-	/**
-	 * @return returns time stamp of calendar entry
-	 */
-	public Date getTimeStamp() {
-		return this.timeStamp;
-	}
 	
-	/**
-	 * @return returns date of creation of calendar entry
-	 */
-	public Date getCreatedDate() {
-		return this.createdDate;
-	}
-
-	/**
-	 * @return returns last modified date of calendar entry
-	 */
-	public Date getLastModifiedDate() {
-		return this.lastModifiedDate;
-	}
-
 	/**
 	 * @return returns local time zone of calendar entry
 	 */
@@ -344,7 +363,6 @@ public class CalendarEntry implements Externalizable {
 	 * @return returns organizer of calendar entry
 	 */
 	public String getOrganizer() {
-		this.organizer = this.organizer != null ? this.organizer: "";
 		return this.organizer;
 	}
 	
@@ -352,15 +370,7 @@ public class CalendarEntry implements Externalizable {
 	 * @return returns location of calendar entry
 	 */
 	public String getLocation() {
-		this.location = this.location != null ? this.location: "";
 		return this.location;
-	}
-	
-	/**
-	 * @return returns reoccurence of calendar entry
-	 */
-	public int getReoccurence() {
-		return this.reoccurence;
 	}
 	
 	/**
@@ -374,17 +384,27 @@ public class CalendarEntry implements Externalizable {
 	 * @return returns status of calendar entry
 	 */
 	public String getStatus() {
-		this.status = this.status != null ? this.status: "";
 		return this.status;
 	}
 	
 	/**
-	 * @return returns type of calendar entry
+	 * Retrieves the type of this entry.
+	 * This is an extension point that can be used by different implementations.
+	 * @return returns type of calendar entry as set by the application
 	 */
-	public String getType() {
-		this.type = this.type != null ? this.type: "";
+	public int getType() {
 		return this.type;
 	}
+	
+	/**
+	 * Specifies a type of this entry.
+	 * This can be used to implement different behavior. 
+	 * @param type the implementation specific type
+	 */
+	public void setType(int type) {
+		this.type = type;
+	}
+
 
 	/**
 	 * @return returns isAllday of calendar entry
@@ -398,23 +418,43 @@ public class CalendarEntry implements Externalizable {
 	 * @return returns id of calendar entry
 	 */
 	public String getId() {
-		this.id = this.id != null ? this.id: "";
 		return this.id;
 	}
 	
 	/**
-	 * @return returns classType of calendar entry
+	 * Retrieves the class of this entry.
+	 * By default entries are deemed to be public.
+	 * 
+	 * @return returns classType of this calendar entry
+	 * @see #CLASS_PUBLIC
+	 * @see #CLASS_PRIVATE
+	 * @see #CLASS_CONFIDENTIAL
 	 */
 	public String getClassType() {
-		this.classType = this.classType != null ? this.classType: "";
 		return this.classType;
 	}
+	
+
+	/**
+	 * Sets the class of this entry
+	 * 
+	 * @param classType
+	 * @see #CLASS_PUBLIC
+	 * @see #CLASS_PRIVATE
+	 * @see #CLASS_CONFIDENTIAL
+	 */
+	public void setClassType(String classType) {
+		this.classType = classType;
+	}
+
 	
 	/**
 	 * @return returns summary of calendar entry
 	 */
 	public String getSummary() {
-		this.summary = this.summary != null ? this.summary: "";
+		if (this.textResolver != null) {
+			return this.textResolver.resolveSummary(this.summary, this);
+		}
 		return this.summary;
 	}
 
@@ -426,14 +466,6 @@ public class CalendarEntry implements Externalizable {
 		this.category = category;
 	}
 	
-	
-	/**
-	 * setter method for parent CalendarCategory
-	 * @param category
-	 */
-	public void setParentCategory(CalendarCategory category) {
-		this.parentCategory = category;
-	}
 	
 	
 	/**
@@ -449,7 +481,7 @@ public class CalendarEntry implements Externalizable {
 	 * @param startDate
 	 * @param durationInMinutes
 	 */
-	public void setDate(Date startDate, int durationInMinutes) {
+	public void setStartDate(TimePoint startDate, int durationInMinutes) {
 		this.startDate = startDate;
 		this.durationInMinutes = durationInMinutes;
 	}
@@ -466,7 +498,7 @@ public class CalendarEntry implements Externalizable {
 	 * setter method for start date 
 	 * @param startDate
 	 */
-	public void setStartDate(Date startDate) {
+	public void setStartDate(TimePoint startDate) {
 		this.startDate = startDate;
 	}
 
@@ -474,35 +506,10 @@ public class CalendarEntry implements Externalizable {
 	 * setter method for end date
 	 * @param endDate
 	 */
-	public void setEndDate(Date endDate) {
+	public void setEndDate(TimePoint endDate) {
 		this.endDate = endDate;
 	}
 	
-	/**
-	 * setter method for time stamp details
-	 * @param timeStamp
-	 */
-	public void setTimeStamp(Date timeStamp) {
-		this.timeStamp = timeStamp;
-	}
-
-	
-	/**
-	 * setter method for date of creation
-	 * @param createdDate
-	 */
-	public void setCreatedDate(Date createdDate) {
-	  this.createdDate=createdDate;
-	}
-
-	/**
-	 * setter method for last modified date
-	 * @param lastModifiedDate
-	 */
-	public void  setLastModifiedDate(Date lastModifiedDate) {
-	 this.lastModifiedDate=lastModifiedDate;
-	}
-
 	
 	
 	/**
@@ -534,7 +541,6 @@ public class CalendarEntry implements Externalizable {
 	}
 
 	
-
 	/**
 	 * setter method for location
 	 * @param location
@@ -545,13 +551,30 @@ public class CalendarEntry implements Externalizable {
 	
 
 	/**
-	 * setter method for reoccurence
-	 * @param reoccurence
+	 * Specifies a simple reoccurence for this entry.
+	 * Use setRepeat() for complex reoccurcence rules.
+	 * 
+	 * @param reoccurence the reoccurrence for this event.
+	 * @see #REOCCURENCE_YEARLY
+	 * @see #REOCCURENCE_MONTHLY
+	 * @see #REOCCURENCE_WEEKLY
+	 * @see #REOCCURENCE_DAILY
+	 * @see #REOCCURENCE_NONE
+	 * @see #setRepeat(EventRepeatRule)
 	 */
 	public void setReoccurence(int reoccurence) {
-		this.reoccurence = reoccurence;
+		this.simpleReoccurence = reoccurence;
 	}
 
+	/**
+	 * Sets a repeat rule for this entry.
+	 * 
+	 * @param eventRepeatRule the new repeat rule
+	 * @see #setReoccurence(int)
+	 */
+	public void setRepeat(EventRepeatRule eventRepeatRule) {
+		this.eventRepeatRule = eventRepeatRule;
+	}
 	
 	/**
 	 * setter method for status
@@ -560,15 +583,6 @@ public class CalendarEntry implements Externalizable {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	
-	/**
-	 * setter method for type
-	 * @param type
-	 */
-	public void setType(String type) {
-		this.type = type;
-	}
-
 	
 
 	/**
@@ -579,15 +593,6 @@ public class CalendarEntry implements Externalizable {
 		this.id = id;
 	}
 
-	
-
-	/**
-	 * setter method for classType of calendar entry
-	 * @param classType
-	 */
-	public void setClassType(String classType) {
-		this.classType = classType;
-	}
 
 	/**
 	 * setter method for isAllday of calendar entry
@@ -616,19 +621,30 @@ public class CalendarEntry implements Externalizable {
 	}
 
 	/**
+	 * Retrieves the event repeat rule for this entry
 	 * @return returns the repeat rule of calendar entry
 	 */
 	public EventRepeatRule getRepeat() {
-		return this.eventRepeatRule;
+		EventRepeatRule rule = this.eventRepeatRule;
+		if (rule == null && this.simpleReoccurence != REOCCURENCE_NONE) {
+			switch (this.simpleReoccurence) {
+			case REOCCURENCE_YEARLY:
+				rule = EventRepeatRule.RULE_YEARLY;
+				break;
+			case REOCCURENCE_MONTHLY:
+				rule = EventRepeatRule.RULE_MONTHLY;
+				break;
+			case REOCCURENCE_WEEKLY:
+				rule = new EventRepeatRule(EventRepeatRule.INTERVAL_WEEKLY);
+				break;
+			case REOCCURENCE_DAILY:
+				rule = new EventRepeatRule(new TimePoint( 0, 0, 1));
+				break;
+			}
+		}
+		return rule;
 	}
 
-	/**
-	 * setter method for repeat rule of calendar entry
-	 * @param eventRepeatRule
-	 */
-	public void setRepeat(EventRepeatRule eventRepeatRule) {
-		this.eventRepeatRule = eventRepeatRule;
-	}
 
 	/**
 	 * @return the alarm value
@@ -659,17 +675,29 @@ public class CalendarEntry implements Externalizable {
 	}
 
 	/**
-	 * @return otherFields gets the the other fields of this calendar entry
+	 * Retrieves another field that is stored within this CalendarEntry
+	 * @param name the name of the field key
+	 * @return the value of that specified field, can be null
+	 * @see #setField(String, Object)
 	 */
-	public Hashtable getOtherFields() {
-		return this.otherFields;
+	public Object getField(String name) {
+		if (this.otherFields == null) {
+			return null;
+		}
+		return this.otherFields.get(name);
 	}
 
 	/**
-	 * @param otherFields gets the the other fields of this calendar entry
+	 * Adds an arbitrary field value to this entry
+	 * @param name the name of the field
+	 * @param value the value of the field
+	 * @see #getField(String)
 	 */
-	public void setOtherFields(Hashtable otherFields) {
-		this.otherFields = otherFields;
+	public void setField(String name, Object value) {
+		if (this.otherFields == null) {
+			this.otherFields = new Hashtable();
+		}
+		this.otherFields.put( name, value);
 	}
 
 	public String getUserId() {
@@ -687,34 +715,19 @@ public class CalendarEntry implements Externalizable {
 	 */
 	public void write(DataOutputStream out) throws IOException {
 		out.writeInt(VERSION);
-		long time = -1;
-		if (this.startDate != null) {
-			time = this.startDate.getTime();
+		boolean notNull = this.startDate != null;
+		out.writeBoolean(notNull);
+		if (notNull) {
+			this.startDate.write(out);
 		}
-		out.writeLong( time );
-		time = -1;
-		if (this.endDate != null) {
-			time = this.endDate.getTime();
+		notNull = this.endDate != null;
+		out.writeBoolean(notNull);
+		if (notNull) {
+			this.endDate.write(out);
 		}
-		out.writeLong( time );
-		time = -1;
-		if (this.createdDate != null) {
-			time = this.createdDate.getTime();
-		}
-		out.writeLong( time );
-		time = -1;
-		if (this.lastModifiedDate != null) {
-			time = this.lastModifiedDate.getTime();
-		}
-		out.writeLong( time );
-		time = -1;
-		if (this.timeStamp != null) {
-			time = this.timeStamp.getTime();
-		}
-		out.writeLong( time );
 		out.writeBoolean( this.isAllday );
 		out.writeInt( this.durationInMinutes );
-		out.writeInt( this.reoccurence );
+		out.writeInt( this.simpleReoccurence );
 		out.writeInt( this.sequence );
 		boolean isNotNull = (this.summary != null);
 		out.writeBoolean( isNotNull );
@@ -752,11 +765,7 @@ public class CalendarEntry implements Externalizable {
 		if (isNotNull) {
 			out.writeUTF(this.status);
 		}
-		isNotNull = (this.type != null);
-		out.writeBoolean(isNotNull);
-		if (isNotNull) {
-			out.writeUTF(this.type);
-		}
+		out.writeInt( this.type );
 		isNotNull = (this.id != null);
 		out.writeBoolean(isNotNull);
 		if (isNotNull) {
@@ -776,11 +785,6 @@ public class CalendarEntry implements Externalizable {
 		out.writeBoolean(isNotNull);
 		if (isNotNull) {
 			this.category.write( out );
-		}
-		isNotNull = (this.parentCategory != null);
-		out.writeBoolean(isNotNull);
-		if (isNotNull) {
-			this.parentCategory.write( out );
 		}
 		isNotNull = (this.calendarAlarm != null);
 		out.writeBoolean(isNotNull);
@@ -805,32 +809,40 @@ public class CalendarEntry implements Externalizable {
 	 */
 	public void read(DataInputStream in) throws IOException {
 		int version = in.readInt();
-		if (version != VERSION) {
+		if (version > VERSION) {
 			throw new IOException("unknown version " + version);
 		}
-		long time = in.readLong();
-		if (time != -1) {
-			this.startDate = new Date( time );
+		if (version == 100) {
+			long time = in.readLong();
+			if (time != -1) {
+				Calendar cal = Calendar.getInstance();
+				cal.setTime( new Date( time ) );
+				this.startDate = new TimePoint(cal);
+			}
+			time = in.readLong();
+			if (time != -1) {
+				Calendar cal = Calendar.getInstance();
+				cal.setTime( new Date( time ) );
+				this.endDate = new TimePoint(cal);
+			}
+		} else {
+			boolean notNull = in.readBoolean();
+			if (notNull) {
+				this.startDate = new TimePoint(in);
+			}
+			notNull = in.readBoolean();
+			if (notNull) {
+				this.endDate = new TimePoint(in);
+			}
 		}
-		time = in.readLong();
-		if (time != -1) {
-			this.endDate = new Date( time );
-		}
-		time = in.readLong();
-		if (time != -1) {
-			this.createdDate = new Date( time );
-		}
-		time = in.readLong();
-		if (time != -1) {
-			this.lastModifiedDate = new Date( time );
-		}
-		time = in.readLong();
-		if (time != -1) {
-			this.timeStamp = new Date( time );
+		if (version == 101) {
+			in.readLong();
+			in.readLong();
+			in.readLong();
 		}
 		this.isAllday = in.readBoolean();
 		this.durationInMinutes = in.readInt();
-		this.reoccurence = in.readInt();
+		this.simpleReoccurence = in.readInt();
 		this.sequence = in.readInt();
 		boolean isNotNull = in.readBoolean();
 		if (isNotNull) {
@@ -861,9 +873,13 @@ public class CalendarEntry implements Externalizable {
 		if (isNotNull) {
 			this.status = in.readUTF();
 		}
-		isNotNull = in.readBoolean();
-		if (isNotNull) {
-			this.type = in.readUTF();
+		if (version == 102) {
+			isNotNull = in.readBoolean();
+			if (isNotNull) {
+				in.readUTF();
+			}
+		} else {
+			this.type = in.readInt();
 		}
 		isNotNull = in.readBoolean();
 		if (isNotNull) {
@@ -884,11 +900,6 @@ public class CalendarEntry implements Externalizable {
 		}
 		isNotNull = in.readBoolean();
 		if (isNotNull) {
-			this.parentCategory = new CalendarCategory();
-			this.parentCategory.read(in);
-		}
-		isNotNull = in.readBoolean();
-		if (isNotNull) {
 			this.calendarAlarm = new CalendarAlarm();
 			this.calendarAlarm.read(in);
 		}
@@ -903,7 +914,90 @@ public class CalendarEntry implements Externalizable {
 			this.timeZone = TimeZone.getTimeZone(timeZoneId);
 		}
 	}
+
+	/**
+	 * Clones this calendar entry for the specified date.
+	 * @param start the new and only date for the cloned copy
+	 * @return a copy of this event with the new date as its only event time
+	 */
+	public CalendarEntry clone(TimePoint start) {
+		CalendarEntry copy = new CalendarEntry( this );
+		copy.setStartDate( start, this.durationInMinutes );
+		copy.simpleReoccurence = 0;
+		copy.eventRepeatRule = null;
+		copy.parent = this;
+		return copy;
+	}
+
+
+	/**
+	 * Checks if this entry either starts or ends in the given time period
+	 * @param period the period
+	 * @return true when this event falls into the given time sequence
+	 */
+	public boolean matches(TimePeriod period) {
+		return (this.startDate != null && period.matches(this.startDate)) 
+			|| (this.endDate != null && period.matches(this.endDate));
+	}
 	
+	/**
+	 * Retrieves access to the original calendar entry.
+	 * @return the parent entry, can be null if this is not a cloned copy
+	 */
+	public CalendarEntry getParent() {
+		return this.parent;
+	}
 	
+	/**
+	 * Retrieves the difference in years between the start date of this entry and the specified time point
+	 * @param timePoint the time point
+	 * @return the difference in years, -1 if no start date has been defined
+	 */
+	public int getYearsSinceStart( TimePoint timePoint ) {
+		return timePoint.getYear() - this.startDate.getYear();
+	}
+
+	public void setStartDate(Date date) {
+		setStartDate( new TimePoint(date) );
+	}
+
+	public void setEndDate(Date date) {
+		setEndDate( new TimePoint(date) );
+	}
+
+	/**
+	 * Sets a text resolver that is used for resolving the summary and description of this CalendarEntry.
+	 * Note that a resolver is not serialized when saving this entry.
+	 * 
+	 * @param resolver the resolver, use null for removing the resolver.
+	 */
+	public void setTextResolver( CalendarTextResolver resolver ) {
+		this.textResolver = resolver;
+	}
 	
+	/**
+	 * Retrieves the used text resolver.
+	 * @return the text resolver or null if none has been registered
+	 */
+	public CalendarTextResolver getTextResolver() {
+		return this.textResolver;
+	}
+
+	/**
+	 * Generates a global unique ID for this entry.
+	 * 	 
+	 * @return the generated GUID
+	 */
+	public long getGuid() {
+		long guid = 0;
+		if (this.id != null) {
+			guid = this.id.hashCode();
+		} else if (this.summary != null) {
+			guid = this.summary.hashCode();
+		}
+		if (this.startDate != null) {
+			guid |= (this.startDate.hashCode()) >> 32;
+		}
+		return guid;
+	}
 }
