@@ -153,7 +153,7 @@ implements Externalizable
 			if (child == null) {
 				break;
 			}
-			CalendarCategory found = getCategory( guid, root );
+			CalendarCategory found = getCategory( guid, child );
 			if (found != null) {
 				return found;
 			}
