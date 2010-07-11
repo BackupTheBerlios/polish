@@ -94,6 +94,7 @@ extends Background
 			bbGraphics.fillRoundRect(x, y, width, height, this.arcWidth, this.arcHeight );
 			bbGraphics.setGlobalAlpha( 0xff ); // reset to fully opaque
 		//#elif polish.midp2
+			//#define tmp.useBuffer
 			if (this.buffer == null || width != this.lastWidth || height != this.lastHeight ) {
 				if (width < this.arcWidth || height < this.arcHeight) {
 					return;
@@ -157,10 +158,12 @@ extends Background
 		 */
 		public void setStyle(Style style)
 		{
+			boolean resetBuffer = false;
 			//#if polish.css.background-round-rect-translucent-color
 				Color col = style.getColorProperty("background-round-rect-translucent-color");
 				if (col != null) {
 					this.color = col.getColor();
+					resetBuffer = true;
 				}
 			//#endif
 			//#if polish.css.background-round-rect-translucent-arc
@@ -168,18 +171,26 @@ extends Background
 				if (arcInt != null) {
 					this.arcWidth = arcInt.intValue();
 					this.arcHeight = arcInt.intValue();
+					resetBuffer = true;
 				}
 			//#endif
 			//#if polish.css.background-round-rect-translucent-arc-width
 				Integer arcWidthInt = style.getIntProperty("background-round-rect-translucent-arc-width");
 				if (arcWidthInt != null) {
 					this.arcWidth = arcWidthInt.intValue();
+					resetBuffer = true;
 				}
 			//#endif
 			//#if polish.css.background-round-rect-translucent-arc-height
 				Integer arcHeightInt = style.getIntProperty("background-round-rect-translucent-arc-height");
 				if (arcHeightInt != null) {
 					this.arcHeight = arcHeightInt.intValue();
+					resetBuffer = true;
+				}
+			//#endif
+			//#if tmp.useBuffer
+				if (resetBuffer) {
+					this.buffer = null;
 				}
 			//#endif
 		}
