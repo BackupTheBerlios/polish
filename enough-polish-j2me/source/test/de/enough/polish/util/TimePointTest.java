@@ -497,4 +497,49 @@ public class TimePointTest extends TestCase {
 		
 		assertEquals( time, tp.getTimeInMillis() );
 	}
+	
+	public void testGetWeekday() {
+		TimePoint point = new TimePoint(2011, Calendar.MAY, 1);
+		assertEquals( Calendar.SUNDAY, point.getDayOfWeek());
+	}
+	
+	public void testCompare() {
+		TimePoint tp1;
+		TimePoint tp2;
+		
+		tp1 = new TimePoint( 2010, Calendar.MARCH, 17 );
+		tp2 = new TimePoint( 2010, Calendar.MARCH, 18 );
+		
+		assertTrue( tp1.compareTo(tp2) < 0);
+		assertTrue( tp2.compareTo(tp1) > 0);
+		
+		tp2 = new TimePoint( 2010, Calendar.MARCH, 17 );
+		assertEquals( 0, tp1.compareTo(tp2));
+		assertEquals( 0, tp2.compareTo(tp1));
+		
+		tp1 = new TimePoint( 2010, Calendar.MARCH, 17 );
+		tp2 = new TimePoint( 2010, Calendar.MARCH, 17, 1, 0 ); // 1 AM
+		
+		assertTrue( tp1.compareTo(tp2) < 0);
+		assertTrue( tp2.compareTo(tp1) > 0);
+		
+		tp1 = new TimePoint( 2010, Calendar.MARCH, 17 );
+		tp2 = new TimePoint( 2011, Calendar.MARCH, 17, 1, 0 ); // 1 AM
+		
+		assertTrue( tp1.compareTo(tp2) < 0);
+		assertTrue( tp2.compareTo(tp1) > 0);
+		
+		tp1 = new TimePoint( 2010, Calendar.MARCH, 18 );
+		tp2 = new TimePoint( 2011, Calendar.MARCH, 17, 1, 0 ); // 1 AM
+		
+		assertTrue( tp1.compareTo(tp2) < 0);
+		assertTrue( tp2.compareTo(tp1) > 0);
+		
+		tp1 = new TimePoint( 2010, Calendar.APRIL, 17 );
+		tp2 = new TimePoint( 2011, Calendar.MARCH, 17, 1, 0 ); // 1 AM
+		assertTrue( tp1.compareTo(tp2) < 0);
+		assertTrue( tp2.compareTo(tp1) > 0);
+
+
+	}
 }
