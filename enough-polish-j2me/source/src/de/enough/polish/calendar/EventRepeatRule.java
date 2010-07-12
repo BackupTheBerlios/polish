@@ -103,7 +103,7 @@ public class EventRepeatRule  implements Externalizable {
 	 * @see #INTERVAL_WEEKLY
 	 */
 	public EventRepeatRule( TimePoint interval, int weekday, int match ) {
-		if (weekday == -1 || match == 0 || interval == null) {
+		if (weekday < Calendar.SUNDAY || weekday > Calendar.SATURDAY || match == 0 || interval == null) {
 			throw new IllegalArgumentException();
 		}
 		this.interval = interval;
