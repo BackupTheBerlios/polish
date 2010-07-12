@@ -379,7 +379,13 @@ implements Externalizable
 	
 	private void getEntries(CalendarCategory category, TimePeriod period, TimePeriod nextDatePeriod, CalendarEntryList list) 
 	{
-		Object[] entries = ((CalendarEntryList) this.calendarEntriesByCategory.get(category)).getInternalArray();
+		CalendarEntryList calendarEntryList = (CalendarEntryList) this.calendarEntriesByCategory.get(category);
+		if (calendarEntryList == null) {
+			//#debug warn
+			System.out.println("no entries found for cateogry " + category.getName());
+			return;
+		}
+		Object[] entries = calendarEntryList.getInternalArray();
 		for (int j = 0; j < entries.length; j++) {
 			CalendarEntry entry = (CalendarEntry) entries[j];
 			if (entry == null) {
