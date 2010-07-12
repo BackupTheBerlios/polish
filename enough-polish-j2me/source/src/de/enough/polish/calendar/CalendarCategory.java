@@ -151,6 +151,17 @@ public class CalendarCategory implements Externalizable {
 		return this.childCategories.size();
 	}
 
+	/**
+	 * Determines whether this category has child categories
+	 * @return true when there is at least 1 child category
+	 */
+	public boolean hasChildCategories() {
+		if (this.childCategories == null || this.childCategories.size() == 0) {
+			return false;
+		}
+		return true;
+	}
+
 
 	/**
 	 * Retrieves the child categories' internal array
