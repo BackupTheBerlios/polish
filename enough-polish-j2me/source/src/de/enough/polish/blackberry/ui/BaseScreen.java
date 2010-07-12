@@ -1213,8 +1213,7 @@ public abstract class BaseScreen
 	        } else if (!this.dummyFieldHasFocus) {
 	        	this.currentItem = null;
 	            this.dummyFieldHasFocus = true;
-	            //this makes problems since BB OS 5.0
-	            //setFocus( this.dummyField, 0, 0, 0, 0 );
+	            setFocus( this.dummyField, 0, 0, 0, 0 );
 	            //System.out.println("Canvas.focus(): focusing dummy");
 	        }
     	} catch (IllegalStateException e) {
