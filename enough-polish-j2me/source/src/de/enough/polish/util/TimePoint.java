@@ -652,7 +652,7 @@ implements Externalizable, Comparator, Comparable
 	 */
 	public void setDay( int day) {
 		if (day < 1 || day > 31) {
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("for " + day);
 		}
 		this.day = day;
 		this.resetCalendar = true;
@@ -668,7 +668,7 @@ implements Externalizable, Comparator, Comparable
 
 	public void setHour( int hour) {
 		if (hour < 0 || hour > 23) {
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("for " + hour);
 		}
 		this.hour = hour;
 		this.resetCalendar = true;
@@ -954,7 +954,15 @@ implements Externalizable, Comparator, Comparable
 	 */
 	public int compareTo(Object obj) {
 		TimePoint tp = (TimePoint) obj;
-		return (int) (getTimeInMillis() - tp.getTimeInMillis());
+		int result;
+		if (equals(tp)) {
+			result = 0;
+		} else if (isBefore(tp)) {
+			result = -1;
+		} else {
+			result = 1;
+		}
+		return result; 
 	}
 
 
