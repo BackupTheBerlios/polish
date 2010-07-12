@@ -798,6 +798,12 @@ implements
 		}
 		// init StringItem:
 		super.initContent(firstLineWidth, availWidth, availHeight);
+		
+		//#if polish.blackberry && polish.hasPointerEvents
+			//this is needed to open the native DateField-Keyboard from the whole content
+			this.contentWidth = availWidth;
+		//#endif
+		
 		this.originalWidth = this.contentWidth;
 		this.originalHeight = this.contentHeight;
 		if (this.minimumWidth != null && this.contentWidth < this.minimumWidth.getValue(firstLineWidth)) {
