@@ -1501,6 +1501,11 @@ public abstract class BaseScreen
 	public void setCommandListener( javax.microedition.lcdui.CommandListener l) {
 		// ignore
 	}
+
+	public void setIgnoreObscureEvent(boolean ignore) {
+		this.ignoreObscureEvent = ignore;
+		
+	}
     
 }
 

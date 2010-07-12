@@ -239,8 +239,10 @@ public class DeviceControl
 		//#elif polish.blackberry && polish.hasPointerEvents && polish.usePolishGui
 			Display disp = Display.getInstance();
 			if (disp != null) {
-				VirtualKeyboard keyboard = ((BaseScreen)(Object)disp).getVirtualKeyboard();
+				BaseScreen baseScreen = (BaseScreen)(Object)disp;
+				VirtualKeyboard keyboard = baseScreen.getVirtualKeyboard();
 				if (keyboard != null) {
+					baseScreen.setIgnoreObscureEvent(true);
 					keyboard.setVisibility( VirtualKeyboard.SHOW );					
 				}
 			}
@@ -258,8 +260,10 @@ public class DeviceControl
 		//#elif polish.blackberry && polish.hasPointerEvents && polish.usePolishGui
 			Display disp = Display.getInstance();
 			if (disp != null) {
-				VirtualKeyboard keyboard = ((BaseScreen)(Object)disp).getVirtualKeyboard();
+				BaseScreen baseScreen = (BaseScreen)(Object)disp;
+				VirtualKeyboard keyboard = baseScreen.getVirtualKeyboard();
 				if (keyboard != null) {
+					baseScreen.setIgnoreObscureEvent(false);
 					keyboard.setVisibility( VirtualKeyboard.HIDE );					
 				}
 			}
