@@ -345,6 +345,20 @@ implements Externalizable
 	public CalendarEntryList getEnabledEntries( TimePeriod period ) {
 		return getEntries( period, true );
 	}
+	
+	/**
+	 * Retrieves all calendar entries for the specified period and category
+	 * @param category the category
+	 * @param period the time period
+	 * @return all events that start or end within the given times and that belong to the specified category
+	 */
+	public CalendarEntryList getEntries(CalendarCategory category, TimePeriod period) {
+		TimePeriod nextDatePeriod = new TimePeriod( period );
+		CalendarEntryList list = new CalendarEntryList();
+		getEntries( category, period, nextDatePeriod, list );
+		return list;
+	}
+
 
 	private CalendarEntryList getEntries(TimePeriod period, boolean filterByEnabledCategories) {
 		CalendarCategory[] categories = (CalendarCategory[]) this.calendarEntriesByCategory.keys( new CalendarCategory[ this.calendarEntriesByCategory.size() ] );
@@ -356,35 +370,41 @@ implements Externalizable
 		for (int i = 0; i < categories.length; i++) {
 			CalendarCategory category = categories[i];
 			if (!filterByEnabledCategories || category.isEnabled()) {
-				Object[] entries = ((CalendarEntryList) this.calendarEntriesByCategory.get(category)).getInternalArray();
-				for (int j = 0; j < entries.length; j++) {
-					CalendarEntry entry = (CalendarEntry) entries[j];
-					if (entry == null) {
-						break;
-					}
-					EventRepeatRule rule = entry.getRepeat();
-					if (rule == null) {
-						if (entry.matches( period)) {
-//							System.out.println("adding " + entry.getSummary() + "period: " + period.getStart() + ", " + period.getEnd() + ", entry=" + entry.getStartDate());
-							list.add(entry);
-						}
-					} else {
-						nextDatePeriod.setStart(period.getStart(), period.isIncludeStart());
-						TimePoint nextDate;
-						while ((nextDate = rule.getNextDate(entry, nextDatePeriod )) != null) {
-//							System.out.println("matching next date " + nextDate + " for period ending on " + nextDatePeriod.getEnd());
-							CalendarEntry copy = entry.clone( nextDate );
-							list.add( copy );
-							nextDatePeriod.setStart(nextDate, false);
-						}
-						
-					}
-				}
+				getEntries( category, period, nextDatePeriod, list );
+
 			}
 		}
 		return list;
 	}
 	
+	private void getEntries(CalendarCategory category, TimePeriod period, TimePeriod nextDatePeriod, CalendarEntryList list) 
+	{
+		Object[] entries = ((CalendarEntryList) this.calendarEntriesByCategory.get(category)).getInternalArray();
+		for (int j = 0; j < entries.length; j++) {
+			CalendarEntry entry = (CalendarEntry) entries[j];
+			if (entry == null) {
+				break;
+			}
+			EventRepeatRule rule = entry.getRepeat();
+			if (rule == null) {
+				if (entry.matches( period)) {
+//					System.out.println("adding " + entry.getSummary() + "period: " + period.getStart() + ", " + period.getEnd() + ", entry=" + entry.getStartDate());
+					list.add(entry);
+				}
+			} else {
+				nextDatePeriod.setStart(period.getStart(), period.isIncludeStart());
+				TimePoint nextDate;
+				while ((nextDate = rule.getNextDate(entry, nextDatePeriod )) != null) {
+//					System.out.println("matching next date " + nextDate + " for period ending on " + nextDatePeriod.getEnd());
+					CalendarEntry copy = entry.clone( nextDate );
+					list.add( copy );
+					nextDatePeriod.setStart(nextDate, false);
+				}
+				
+			}
+		}		
+	}
+
 	/**
 	 * Retrieves all stored CalendarEntries for the specified category
 	 * @param category the category
@@ -523,6 +543,7 @@ implements Externalizable
 		}
 		this.isDirty = false;
 	}
+
 
 	
 }
