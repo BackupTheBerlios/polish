@@ -696,8 +696,14 @@ implements Externalizable, Comparator, Comparable
 		return this.second;
 	}
 	
+	/**
+	 * Sets the second of this point in time
+	 * Typically the second is a value between 0 and 59, however in some circumstances there are leap seconds, in that case '60' is also an allowed value.
+	 * @param second the second
+	 * @throws IllegalArgumentException when the second is below 0 or higher than 60
+	 */
 	public void setSecond(int second) {
-		if (second < 0 || second > 59) {
+		if (second < 0 || second > 60) {
 			throw new IllegalArgumentException();
 		}
 		this.second = second;
@@ -963,6 +969,85 @@ implements Externalizable, Comparator, Comparable
 			result = 1;
 		}
 		return result; 
+	}
+
+	/**
+	 * Parses the given text in RFC3339 format.
+	 * 
+	 * @param dateTimeText the date time text as defined by RFC3339
+	 * @return the parsed TimePoint represented by the given dateTime text
+	 * @see "http://tools.ietf.org/html/rfc3339"
+	 * @throws IllegalArgumentException when the text could not be parsed
+	 */
+	public static TimePoint parseRfc3339(String dateTimeText) {
+		try {
+			int year = Integer.parseInt( dateTimeText.substring(0, 4 ));
+			int month = Integer.parseInt(dateTimeText.substring( 5, 7)) - 1;
+			int day = Integer.parseInt(dateTimeText.substring( 8, 10));
+			int hour = 0;
+			int minute = 0;
+			int second = 0;
+			int millisecond = 0;
+			TimeZone timeZone = null;
+			if (dateTimeText.length() > 10){
+				hour = Integer.parseInt(dateTimeText.substring( 11, 13));
+				minute = Integer.parseInt( dateTimeText.substring( 14, 16) );
+				if (dateTimeText.length() > 17) {
+					second = Integer.parseInt( dateTimeText.substring( 17, 19) );
+					if (dateTimeText.length() > 19) {
+						char c = dateTimeText.charAt(19);
+						int index = 20;
+						if (c == '.') {
+							// this is a fraction of a second
+							long divider = 1;
+							while (dateTimeText.length() > index && Character.isDigit(dateTimeText.charAt(index)) ) {
+								index++;
+								divider *= 10;
+							}
+							millisecond = (int)((1000L * Long.parseLong( dateTimeText.substring( 20, index) )) / divider);
+							c = dateTimeText.charAt(index);
+							index++;
+						}
+						if (c == 'Z') {
+							// this is a UTC timezone, use GMT:
+							timeZone = TimeZone.getTimeZone("GMT");
+						} else if (c == '+' ||c == '-'){
+							// this is a timezone definition
+							int tzHour = Integer.parseInt(dateTimeText.substring(index, index + 2));
+							int tzMinute = Integer.parseInt(dateTimeText.substring(index + 3, index + 5));
+							long rawOffset =      tzMinute * 60L * 1000L
+											+ tzHour * 60L * 60L * 1000L;
+							if (c == '-') {
+								rawOffset *= -1;
+							}
+							String[] ids = TimeZone.getAvailableIDs();
+							long minDiff = Long.MAX_VALUE;
+							TimeZone minDiffTimeZone = null;
+							for (int i = 0; i < ids.length; i++) {
+								TimeZone tz = TimeZone.getTimeZone( ids[i] );
+								long diff = tz.getRawOffset() - rawOffset;
+								if (diff == 0) {
+									// found the correct one:
+									minDiffTimeZone = tz;
+									break;
+								}
+								if (diff < minDiff) {
+									minDiffTimeZone = tz;
+									minDiff = diff;
+								}
+							}
+							if (minDiffTimeZone != null) {
+								timeZone = minDiffTimeZone;
+							}
+						}
+					}
+				}
+			}
+			TimePoint tp = new TimePoint(year, month, day, hour, minute, second, millisecond, timeZone);
+			return tp;
+		} catch (Exception e) {
+			throw new IllegalArgumentException("for " + dateTimeText + ": " + e);
+		}
 	}
 
 

@@ -27,6 +27,7 @@ package de.enough.polish.util;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import de.enough.polish.util.TimePoint;
 
@@ -540,6 +541,77 @@ public class TimePointTest extends TestCase {
 		assertTrue( tp1.compareTo(tp2) < 0);
 		assertTrue( tp2.compareTo(tp1) > 0);
 
+
+	}
+	
+	public void testParseRfc3339() {
+		String date;
+		TimePoint tp;
+		
+		date = "1985-04-12T23:20:50Z";
+		tp = TimePoint.parseRfc3339(date);
+		assertEquals( 1985, tp.getYear() );
+		assertEquals( Calendar.APRIL, tp.getMonth() );
+		assertEquals( 12, tp.getDay() );
+		assertEquals( 23, tp.getHour() );
+		assertEquals( 20, tp.getMinute() );
+		assertEquals(50, tp.getSecond() );
+		assertEquals( TimeZone.getTimeZone("GMT"), tp.getTimeZone() );
+		
+		date = "1985-04-12T23:20:50.52Z";
+		tp = TimePoint.parseRfc3339(date);
+		assertEquals( 1985, tp.getYear() );
+		assertEquals( Calendar.APRIL, tp.getMonth() );
+		assertEquals( 12, tp.getDay() );
+		assertEquals( 23, tp.getHour() );
+		assertEquals( 20, tp.getMinute() );
+		assertEquals(50, tp.getSecond() );
+		assertEquals(520, tp.getMillisecond() );
+		assertEquals( TimeZone.getTimeZone("GMT"), tp.getTimeZone() );
+
+		
+		date = "1985-04-12T23:20:50.521Z";
+		tp = TimePoint.parseRfc3339(date);
+		assertEquals( 1985, tp.getYear() );
+		assertEquals( Calendar.APRIL, tp.getMonth() );
+		assertEquals( 12, tp.getDay() );
+		assertEquals( 23, tp.getHour() );
+		assertEquals( 20, tp.getMinute() );
+		assertEquals(50, tp.getSecond() );
+		assertEquals(521, tp.getMillisecond() );
+		assertEquals( TimeZone.getTimeZone("GMT"), tp.getTimeZone() );
+
+		date = "1985-04-12T23:20:50-01:00";
+		tp = TimePoint.parseRfc3339(date);
+		assertEquals( 1985, tp.getYear() );
+		assertEquals( Calendar.APRIL, tp.getMonth() );
+		assertEquals( 12, tp.getDay() );
+		assertEquals( 23, tp.getHour() );
+		assertEquals( 20, tp.getMinute() );
+		assertEquals(50, tp.getSecond() );
+		assertEquals( -1 * 60 * 60 * 1000, tp.getTimeZone().getRawOffset() );
+
+		date = "1985-04-12T23:20:50.52+01:00";
+		tp = TimePoint.parseRfc3339(date);
+		assertEquals( 1985, tp.getYear() );
+		assertEquals( Calendar.APRIL, tp.getMonth() );
+		assertEquals( 12, tp.getDay() );
+		assertEquals( 23, tp.getHour() );
+		assertEquals( 20, tp.getMinute() );
+		assertEquals(50, tp.getSecond() );
+		assertEquals(520, tp.getMillisecond() );
+		assertEquals( 1 * 60 * 60 * 1000, tp.getTimeZone().getRawOffset() );
+
+		date = "1985-04-12T23:20:50.52000000+01:00";
+		tp = TimePoint.parseRfc3339(date);
+		assertEquals( 1985, tp.getYear() );
+		assertEquals( Calendar.APRIL, tp.getMonth() );
+		assertEquals( 12, tp.getDay() );
+		assertEquals( 23, tp.getHour() );
+		assertEquals( 20, tp.getMinute() );
+		assertEquals(50, tp.getSecond() );
+		assertEquals(520, tp.getMillisecond() );
+		assertEquals( 1 * 60 * 60 * 1000, tp.getTimeZone().getRawOffset() );
 
 	}
 }
