@@ -525,13 +525,13 @@ implements Runnable, ResourceLoader
 	private void parsePartialPage(SimplePullParser parser)
 	{
 		HashMap attributeMap = new HashMap();
+		boolean openingTag;
 		while (parser.next() != SimplePullParser.END_DOCUMENT)
 		{
 			int type = parser.getType();
-			if (type == SimplePullParser.START_TAG
-					|| type == SimplePullParser.END_TAG)
+			openingTag = (type == SimplePullParser.START_TAG);
+			if (openingTag || type == SimplePullParser.END_TAG)
 			{
-				boolean openingTag = (type == SimplePullParser.START_TAG);
 
 				// #debug
 				//System.out.println( "looking for handler for " + parser.getName()  + ", openingTag=" + openingTag );
