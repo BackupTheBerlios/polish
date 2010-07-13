@@ -29,6 +29,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.util.Hashtable;
 
@@ -137,16 +138,29 @@ public class XmlDomParser
 	 */
 	public static XmlDomNode parseTree(InputStream in, String encoding) throws UnsupportedEncodingException
     {
-    	XmlPullParser parser;
         InputStreamReader inputStreamReader;
         if (encoding != null) {
         	inputStreamReader = new InputStreamReader(in, encoding);
         } else {
         	inputStreamReader = new InputStreamReader(in);
         }
+        return parseTree( inputStreamReader );
+    }
 
+	/**
+	 * Parses an XML document and returns it's root element as an XmlDomNode.
+	 * When the XML document has no root element, it will return an artificial root element that contains
+	 * all root elements of the document.
+	 * 
+	 * @param reader the reader for the XML document that should be parsed 
+	 * @return the root element of the document as XmlDomNode
+	 * @throws RuntimeException when the parsing fails
+	 */
+	public static XmlDomNode parseTree(Reader reader) 
+	{
+		XmlPullParser parser;
         try {
-            parser = new XmlPullParser(inputStreamReader);
+            parser = new XmlPullParser(reader);
         } catch (IOException exception) {
             throw new RuntimeException("Could not create xml parser."+exception);
         }

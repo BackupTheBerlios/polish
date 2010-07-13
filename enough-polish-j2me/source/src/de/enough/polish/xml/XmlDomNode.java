@@ -85,8 +85,8 @@ public class XmlDomNode
     }
     
     /**
-     * Retrieves the name child element
-     * @param childName the name of the child
+     * Retrieves the named child element
+     * @param childName the name of the child node
      * @return the first child with the given name or null if no child node is found.
      */
     public XmlDomNode getChild(String childName) {
