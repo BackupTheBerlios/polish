@@ -4562,9 +4562,11 @@ public class TextField extends StringItem
 			}
 		//#endif
 		//#if (polish.blackberry && polish.hasPointerEvents) || polish.javaplatform >= Android/1.5
-			if (this.isFocused) {
-				DeviceControl.showSoftKeyboard();
-			}
+			//#if polish.showSoftKeyboardOnShowNotify != false
+				if (this.isFocused) {
+					DeviceControl.showSoftKeyboard();
+				}
+			//#endif
 		//#endif
 		super.showNotify();
 	}
