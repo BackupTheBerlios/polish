@@ -29,7 +29,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 
+import de.enough.polish.io.RedirectHttpConnection;
 import de.enough.polish.io.StringReader;
 import de.enough.polish.util.HashMap;
 import de.enough.polish.util.IdentityArrayList;
@@ -54,6 +56,7 @@ public class AtomFeed {
 	private String updatedString;
 	private TimePoint updated;
 	private AtomAuthor author;
+	private boolean isUpdating;
 	
 	/**
 	 * Creates a new empty feed
@@ -142,6 +145,84 @@ public class AtomFeed {
 			}
 		}
 	}
+	
+	/**
+	 * Updates this feed and inserts new items at the beginning.
+	 * @param in the input stream
+	 * @param consumer the update consumer which is informed about updated entries
+	 * @throws IOException when parsing fails
+	 */
+	public void update(InputStream in, AtomUpdateConsumer consumer) throws IOException {
+		update( new InputStreamReader(in), consumer );
+	}
+	
+	/**
+	 * Updates this feed and inserts new items at the beginning.
+	 * @param in the input stream
+	 * @param encoding the encoding of the stream
+	 * @param consumer the update consumer which is informed about updated entries
+	 * @throws IOException when parsing fails
+	 */
+	public void update(InputStream in, String encoding, AtomUpdateConsumer consumer) throws IOException {
+        InputStreamReader inputStreamReader;
+        if (encoding != null) {
+        	inputStreamReader = new InputStreamReader(in, encoding);
+        } else {
+        	inputStreamReader = new InputStreamReader(in);
+        }
+        update( inputStreamReader, consumer );
+	}
+	
+	/**
+	 * Updates this feed and inserts new items at the beginning.
+	 * @param reader the reader
+	 * @param consumer the update consumer which is informed about updated entries
+	 * @throws IOException when parsing fails
+	 */
+	public void update( Reader reader, AtomUpdateConsumer consumer ) throws IOException {
+		XmlDomNode root = XmlDomParser.parseTree(reader);
+		update( root, consumer );
+	}
+
+
+	/**
+	 * Updates this feed and inserts new items at the beginning.
+	 * @param root the root node
+	 * @param consumer the update consumer which is informed about updated entries
+	 * @throws IOException when parsing fails
+	 */
+	public void update( XmlDomNode root, AtomUpdateConsumer consumer ) throws IOException {
+		this.feeId = root.getChildText("id");
+		this.title = root.getChildText("title");
+		this.subtitle = root.getChildText("subtitle");
+		this.updatedString = root.getChildText( "updated" );
+		XmlDomNode authorNode = root.getChild("author");
+		if (authorNode != null) {
+			this.author = new AtomAuthor( authorNode.getChildText("name"), authorNode.getChildText("email"), authorNode.getChildText("uri"));
+		}
+		String lastEntryId = null;
+		if (this.entries.size() > 0) {
+			AtomEntry lastEntry = (AtomEntry) this.entries.get( this.entries.size() - 1);
+			lastEntryId = lastEntry.getId();
+		}
+		int childCount = root.getChildCount();
+		int index = 0;
+		for (int i=0; i<childCount; i++) {
+			XmlDomNode node = root.getChild(i);
+			if ("entry".equals(node.getName())) {
+				AtomEntry entry = new AtomEntry( node );
+				if (lastEntryId != null && lastEntryId.equals(entry.getId())) {
+					break;
+				}
+				this.entries.add(index, entry);
+				index++;
+				if (consumer != null) {
+					consumer.onUpdated(this, entry);
+				}
+			}
+		}
+	}
+
 
 
 	/**
@@ -215,5 +296,61 @@ public class AtomFeed {
 	 */
 	public AtomEntry getEntry( int index) {
 		return (AtomEntry) this.entries.get(index);
+	}
+	
+	/**
+	 * Updates this feed in the current thread.
+	 * 
+	 * @param consumer the update consumer which is informed about updated entries
+	 * @param url the URL from which the feed should be downloaded
+	 */
+	public void update( AtomUpdateConsumer consumer, String url ) {
+		this.isUpdating = true;
+		InputStream in = null;
+		try {
+			RedirectHttpConnection connection = new RedirectHttpConnection( url );
+			in = connection.openInputStream();
+			update( in, consumer ); 
+		} catch (Throwable e) {
+			if (consumer != null) {
+				consumer.onUpdateError(e);
+			}
+		} finally {
+			if (consumer != null) {
+				consumer.onUpdateFinished(this);
+			}
+			if (in != null) {
+				try {
+					in.close();
+				} catch (IOException e) {
+					// ignore
+				}
+			}
+			this.isUpdating = false;
+		}
+	}
+	
+
+	/**
+	 * Updates this feed in a new background thread.
+	 * 
+	 * @param consumer the update consumer which is informed about updated entries
+	 * @param url the URL from which the feed should be downloaded
+	 */
+	public void updateInBackground( final AtomUpdateConsumer consumer, final String url ) {
+		Thread t = new Thread() {
+			public void run() {
+				update( consumer, url );
+			}
+		};
+		t.start();
+	}
+	
+	/**
+	 * Determines whether this feed is currently being updated
+	 * @return true when this thread is updated
+	 */
+	public boolean isUpdating() {
+		return this.isUpdating;
 	}
 }
