@@ -253,8 +253,7 @@ public class CalendarItem extends TableItem
 			//#style calendarWeekday?
 			StringItem item = new StringItem( null, abbreviation);
 			set( i, 0, item );
-		}
-		
+		}		
 		
 		buildCalendar( new TimePoint( originalDay) );
 		setSelectionMode( SELECTION_MODE_CELL | SELECTION_MODE_INTERACTIVE );
@@ -395,6 +394,9 @@ public class CalendarItem extends TableItem
 	 */
 	public void setRenderer( CalendarRenderer renderer) {
 		this.renderer = renderer;
+		if (renderer != null) {
+			buildCalendar(this.shownMonth);
+		}
 	}
 
 	/**
@@ -687,6 +689,9 @@ public class CalendarItem extends TableItem
 	 */
 	public void setModel( CalendarEntryModel model ) {
 		this.model = model;
+		if (this.renderer != null) {
+			buildCalendar(this.shownMonth);
+		}
 	}
 	
 	/**
