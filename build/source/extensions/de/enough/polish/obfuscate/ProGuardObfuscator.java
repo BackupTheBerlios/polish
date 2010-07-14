@@ -94,7 +94,7 @@ implements OutputFilter
 		if (this.proGuardJarFile == null) {
 			String proguardPath;
 			ExtensionDefinition definition = getExtensionDefinition();
-			if (definition != null) {
+			if (definition != null && definition.getClassPath() != null) {
 				proguardPath = getEnvironment().writeProperties( definition.getClassPath().toString() );
 			} else {
 				proguardPath = getEnvironment().writeProperties( "${polish.home}/lib/proguard.jar" );
@@ -245,6 +245,8 @@ implements OutputFilter
 				}
 			}
 		}
+		
+		adaptParameters( params, device, env );
 
 		//System.out.println( argsList );
 		int result = 0;
@@ -329,6 +331,19 @@ implements OutputFilter
 			throw new BuildException("ProGuard was unable to obfuscate: " + e.getMessage(), e );
 		}
 		*/
+	}
+
+
+
+	/**
+	 * Allows subclasses to adapt the launch parameters
+	 * @param params the launch parameters
+	 * @param device the device
+	 * @param env the environment
+	 */
+	protected void adaptParameters(OrderedMultipleEntriesMap params, Device device, Environment env) {
+		// let subclasses handle this
+		
 	}
 
 

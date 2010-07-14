@@ -23,7 +23,7 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.preverify;
+package de.enough.polish.blackberry;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,6 +31,7 @@ import java.io.IOException;
 import org.apache.tools.ant.types.Path;
 
 import de.enough.polish.Device;
+import de.enough.polish.preverify.CldcPreverifier;
 
 /**
  * <p></p>

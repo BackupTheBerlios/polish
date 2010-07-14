@@ -537,7 +537,7 @@
 	<extension>
 		<type>preverifier</type>
 		<name>blackberry</name>
-		<class>de.enough.polish.preverify.BlackBerryPreverifier</class>
+		<class>de.enough.polish.blackberry.BlackBerryPreverifier</class>
 	</extension>
 
 	<!-- Obfuscator -->
@@ -555,6 +555,13 @@
 		<class>de.enough.polish.obfuscate.ProGuardObfuscator</class>
 		<classpath>${polish.home}/lib/proguard.jar</classpath>
 	</extension>
+	
+	<extension>
+		<type>obfuscator</type>
+		<name>blackberry</name>
+		<class>de.enough.polish.blackberry.BlackBerryObfuscator</class>
+	</extension>
+	
 
 	<extension>
 		<type>obfuscator</type>

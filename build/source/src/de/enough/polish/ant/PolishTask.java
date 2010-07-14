@@ -2728,6 +2728,21 @@ public class PolishTask extends ConditionalTask {
 	 */
 	protected Obfuscator[] getObfuscators()
 	{
+		String obfuscatorOverride = this.environment.getVariable("polish.build.obfuscator");
+		if (obfuscatorOverride != null && (!"true".equals(this.environment.getVariable("test")) || this.obfuscators != null)) { 
+			// the 'test' check is a quick and dirty hack but this allows us to use an obfuscator in normal
+			// builds even though no obfuscator has been specified by the developer (which is the typical case for BlackBerry devices, for example)
+			try {
+				Obfuscator obfuscator = (Obfuscator) this.extensionManager.getTemporaryExtension( ExtensionManager.TYPE_OBFUSCATOR, obfuscatorOverride, this.environment);
+				return new Obfuscator[]{ obfuscator };
+			} catch (Exception e) {
+				e.printStackTrace();
+				String msg = "Unable to load obfuscator " + obfuscatorOverride + ": " + e;
+				System.out.println( msg );
+				throw new BuildException(msg, e);
+			}
+			
+		}
 		if (this.obfuscators == null) {
 			return new Obfuscator[0];
 		}
