@@ -43,25 +43,40 @@ implements Externalizable
 	
 	/**
 	 * Adds an entry to this model.
+	 * If the corresponding category has not been added before, it will be added implicitly.
 	 * @param entry the calendar entry
 	 */
 	public void addEntry( CalendarEntry entry ) {
 		//#debug
 		System.out.println("adding entry " + entry.getSummary());
 		CalendarCategory category = entry.getCategory();
-		CalendarCategory parent = category;
-		while (parent.getParentCategory() != null) {
-			parent = parent.getParentCategory();
-		}
-		if (!this.rootCategories.contains(parent)) {
-			this.rootCategories.add(parent);
-		}
 		CalendarEntryList list = (CalendarEntryList) this.calendarEntriesByCategory.get(category);
 		if (list == null) {
+			list = addCategory(category);
+		}
+		list.add(entry);
+	}
+	
+	/**
+	 * Adds an (empty) category to this model.
+	 * Any root category are added implicitly.
+	 * @param category the category
+	 * @return the empty list of events of the added category
+	 */
+	public CalendarEntryList addCategory( CalendarCategory category ) {
+		CalendarEntryList list = (CalendarEntryList) this.calendarEntriesByCategory.get(category);
+		if (list == null) {
+			CalendarCategory parent = category;
+			while (parent.getParentCategory() != null) {
+				parent = parent.getParentCategory();
+			}
+			if (!this.rootCategories.contains(parent)) {
+				this.rootCategories.add(parent);
+			}
 			list = new CalendarEntryList();
 			this.calendarEntriesByCategory.put(category, list);
 		}
-		list.add(entry);
+		return list;
 	}
 	
 	/**
@@ -132,7 +147,13 @@ implements Externalizable
 		}
 	}
 	
-	private CalendarCategory getCategory(long guid) {
+	/**
+	 * Retrieves a category by its global unique ID
+	 * @param guid the ID of the category
+	 * @return the found category or null if no matching category has been found
+	 * @see CalendarCategory#getGuid()
+	 */
+	public CalendarCategory getCategory(long guid) {
 		for (int i=0; i<this.rootCategories.size(); i++) {
 			CalendarCategory root = (CalendarCategory) this.rootCategories.get(i);
 			CalendarCategory found = getCategory( guid, root );
