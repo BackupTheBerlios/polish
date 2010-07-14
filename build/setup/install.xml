@@ -91,6 +91,8 @@
             <file src="custom-devices.xml" targetdir="$INSTALL_PATH"/>
             <file src="../setup/JadTool.jar" targetdir="$INSTALL_PATH/bin"/>
             <file src="android" targetdir="$INSTALL_PATH"/>
+			<!-- copy the BlackBerry obfuscation dictionary -->
+            <file src="../bbclassdictionary.txt" targetdir="$INSTALL_PATH"/>
             <!--
             <file src="../setup/build.xml" targetdir="$INSTALL_PATH"/>
             <parsable targetfile="$INSTALL_PATH/build.xml" type="shell" /> 
