@@ -926,10 +926,11 @@ public class Container extends Item {
 	 * @param index the position
 	 * @param item the item which should be focused
 	 * @param direction the direction, either Canvas.DOWN, Canvas.RIGHT, Canvas.UP, Canvas.LEFT or 0.
+	 * @param force true when the child should be focused again even though is has been focused before
 	 */
 	public void focusChild( int index, Item item, int direction, boolean force ) {
 		//#debug
-		System.out.println("Container (" + this + "): Focusing item " + index + " (" + item + "), isInitialized=" + this.isInitialized + ", autoFocusEnabled=" + this.autoFocusEnabled );
+		System.out.println("Container (" + this + "): Focusing child item " + index + " (" + item + "), isInitialized=" + this.isInitialized + ", autoFocusEnabled=" + this.autoFocusEnabled );
 		//System.out.println("focus: yOffset=" + this.yOffset + ", targetYOffset=" + this.targetYOffset + ", enableScrolling=" + this.enableScrolling + ", isInitialized=" + this.isInitialized );
 		
 		if (!isInitialized() && this.autoFocusEnabled) {
@@ -1228,11 +1229,11 @@ public class Container extends Item {
 			System.out.println("scroll: item too low: verticalSpace=" + verticalSpace + "  y=" + y + ", height=" + height + ", yOffset=" + currentYOffset + ", yTopAdjust=" + yTopAdjust + ", relativeY=" + this.relativeY + ", screen.contentY=" +  scr.contentY + ", scr=" + scr);
 			//currentYOffset += verticalSpace - (y + height + currentYOffset + yTopAdjust);
 			int newYOffset = verticalSpace - (y + height + yTopAdjust);
-			if ( isDownwards) {
-				// check if the top of the area is still visible when scrolling downwards:
-				if ( isDownwards && y + newYOffset < 0) {
-					newYOffset = -y;
-				}
+			// check if the top of the area is still visible when scrolling downwards:
+			if ( !isUpwards && y + newYOffset < 0) {
+				newYOffset = -y;
+			}
+			if (isDownwards) {
 				// check if we scroll down more than one page:
 				int difference = 	Math.max(Math.abs(currentYOffset), Math.abs(newYOffset)) - 
 				 					Math.min(Math.abs(currentYOffset), Math.abs(newYOffset));
