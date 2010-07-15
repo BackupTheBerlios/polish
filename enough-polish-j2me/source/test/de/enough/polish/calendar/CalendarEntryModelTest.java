@@ -303,4 +303,38 @@ public class CalendarEntryModelTest extends TestCase {
 		
 
 	}
+	
+	
+	public void testAddModelWithEmptyCategories() {
+		CalendarEntryModel model = new CalendarEntryModel();
+		CalendarCategory root = new CalendarCategory("root1");
+		CalendarEntry entry = new CalendarEntry("entry1", root,  2010, Calendar.MARCH, 17);
+		model.addEntry(entry);
+		CalendarCategory root2 = new CalendarCategory("root2");
+		CalendarEntry entry2 = new CalendarEntry("entry2", root2,  2010, Calendar.JANUARY, 17);
+		model.addEntry(entry2);
+		CalendarEntry entry3 = new CalendarEntry("entry3", root2,  2010, Calendar.JANUARY, 4);		
+		model.addEntry(entry3);
+		model.enableCategory(root2);
+		entry.setReoccurence(CalendarEntry.REOCCURENCE_YEARLY);
+		entry2.setRepeat( EventRepeatRule.RULE_YEARLY);
+		entry3.setRepeat( new EventRepeatRule( Calendar.MONDAY, 1));
+		CalendarCategory rootEmpty = new CalendarCategory("rootEmpty");
+		model.addCategory(rootEmpty);
+
+		CalendarCategory category = model.getCategory(rootEmpty.getGuid() );
+		assertNotNull( category);
+		assertNotNull( model.getEntries( category ));
+		assertEquals( 0, model.getEntries( category ).size() );
+
+		
+		CalendarEntryModel model2 = new CalendarEntryModel();
+		model2.addEntries(model);
+		
+		category = model2.getCategory(rootEmpty.getGuid() );
+		assertNotNull( category);
+		assertNotNull( model2.getEntries( category ));
+		assertEquals( 0, model2.getEntries( category ).size() );
+		
+	}
 }
