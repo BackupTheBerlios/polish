@@ -6316,6 +6316,21 @@ implements UiElement, Animatable
 	public Container getRootContainer() {
 		return this.container;
 	}
+	
+	/**
+	 * Sets the root container of this screen
+	 * @param cont the root container
+	 */
+	public void setRootContainer(Container cont) {
+		if (cont != null) {
+			cont.screen = this;
+			cont.isFocused = true;
+		}
+		this.container = cont;
+		if (this.isInitialized) {
+			requestInit();
+		}
+	}
 
 	/**
 	 * Retrieves the height of the title.
