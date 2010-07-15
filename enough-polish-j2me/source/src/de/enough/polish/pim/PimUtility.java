@@ -1120,7 +1120,7 @@ public class PimUtility {
 			matchingEvent.addString(Event.LOCATION, PIMItem.ATTR_NONE, calendarEntry.getLocation());
 		}
 		if(calendarEntry.getStartDate() != null) {
-			matchingEvent.addDate(Event.START, PIMItem.ATTR_NONE, calendarEntry.getStartDate().getTime());
+			matchingEvent.addDate(Event.START, PIMItem.ATTR_NONE, calendarEntry.getStartDate().getTimeInMillis());
 		}
 		if(calendarEntry.getId() != null) {
 			matchingEvent.addString(Event.UID, PIMItem.ATTR_NONE, calendarEntry.getId());
