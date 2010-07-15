@@ -47,7 +47,11 @@ public class JadAttributes extends Variables {
 	public JadAttributes() {
 		//this.list = new ArrayList();
 	}
-	
+
+	public void addConfiguredProperty( Attribute attribute ) {
+		addConfiguredAttribute(attribute);
+	}
+
 	public void addConfiguredAttribute( Attribute attribute ) {
 		if (!attribute.containsMultipleVariables()) {
 			if (attribute.getName() == null) {
