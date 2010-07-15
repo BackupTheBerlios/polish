@@ -30,8 +30,8 @@ package de.enough.polish.format.atom;
  *
  * <p>Copyright Enough Software 2010</p>
  * @author Robert Virkus, j2mepolish@enough.de
- * @see AtomFeed#update(AtomConsumer)
- * @see AtomFeed#updateInBackground(AtomConsumer)
+ * @see AtomFeed#update(AtomUpdateConsumer)
+ * @see AtomFeed#updateInBackground(AtomUpdateConsumer)
  */
 public interface AtomUpdateConsumer {
 
@@ -50,7 +50,8 @@ public interface AtomUpdateConsumer {
 	
 	/**
 	 * Informs the consumer about an error that occurred during the update
+	 * @param feed the updated feed
 	 * @param exception the exception that occurred
 	 */
-	void onUpdateError( Throwable exception );
+	void onUpdateError( AtomFeed feed, Throwable exception );
 }

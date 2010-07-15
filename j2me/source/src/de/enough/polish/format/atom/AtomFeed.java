@@ -202,7 +202,7 @@ public class AtomFeed {
 		}
 		String lastEntryId = null;
 		if (this.entries.size() > 0) {
-			AtomEntry lastEntry = (AtomEntry) this.entries.get( this.entries.size() - 1);
+			AtomEntry lastEntry = (AtomEntry) this.entries.get( 0 );
 			lastEntryId = lastEntry.getId();
 		}
 		int childCount = root.getChildCount();
@@ -211,7 +211,8 @@ public class AtomFeed {
 			XmlDomNode node = root.getChild(i);
 			if ("entry".equals(node.getName())) {
 				AtomEntry entry = new AtomEntry( node );
-				if (lastEntryId != null && lastEntryId.equals(entry.getId())) {
+				String id = entry.getId();
+				if (lastEntryId != null && lastEntryId.equals(id)) {
 					break;
 				}
 				this.entries.add(index, entry);
@@ -313,7 +314,7 @@ public class AtomFeed {
 			update( in, consumer ); 
 		} catch (Throwable e) {
 			if (consumer != null) {
-				consumer.onUpdateError(e);
+				consumer.onUpdateError(this, e);
 			}
 		} finally {
 			if (consumer != null) {
