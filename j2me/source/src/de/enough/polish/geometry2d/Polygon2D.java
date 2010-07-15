@@ -46,17 +46,18 @@ public class Polygon2D
      *
      * @return the cloned object
      */
-    public Polygon2D clone()
+    public Polygon2D clonePolygon()
     {
 
         Polygon2D result = new Polygon2D();
         Vector resultPoints = result.points ;
 
-        Enumeration items = points.elements();
+        Enumeration items = this.points.elements();
 
         while ( items.hasMoreElements() )
         {
-            resultPoints.addElement( ((Point2D) items.nextElement()).clone() );
+            Point2D point = (Point2D) items.nextElement();
+			resultPoints.addElement( point.clonePoint() );
         }
         
         return result;

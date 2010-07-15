@@ -65,9 +65,9 @@ public class Point2D {
      *
      * @return the cloned object.
      */
-    public Point2D clone()
+    public Point2D clonePoint()
     {
-        return new Point2D(x,y);
+        return new Point2D(this.x,this.y);
     }
 
 }

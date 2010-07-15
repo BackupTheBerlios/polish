@@ -51,17 +51,17 @@ public class Line2D {
 
     public Line2D()
     {
-        p1 = null;
-        p2 = null ;
-        isSegment = true ;
+        this.p1 = null;
+        this.p2 = null ;
+        this.isSegment = true ;
     }
 
     /**
      * Creates a line or a line segment defined by the specified points.
      * 
-     * @param the first point
-     * @param the second point
-     * @param should this be a line or a line segment ?
+     * @param p1 the first point
+     * @param p2 the second point
+     * @param isSegment should this be a line or a line segment ?
      */
     public Line2D(Point2D p1, Point2D p2, boolean isSegment)
     {
@@ -76,9 +76,9 @@ public class Line2D {
      *
      * @return the cloned object
      */
-    public Line2D clone()
+    public Line2D cloneLine()
     {
-        Line2D result = new Line2D(p1.clone(),p2.clone(),isSegment);
+        Line2D result = new Line2D(this.p1.clonePoint(),this.p2.clonePoint(),this.isSegment);
         return result;
     }
 
