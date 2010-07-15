@@ -133,6 +133,12 @@ implements Externalizable
 			for (int i = 0; i < entries.length; i++) {
 				CalendarEntry entry = (CalendarEntry) entries[i];
 				if (entry == null) {
+					if (i == 0) {	// Adding a category even if it has no entries.
+						CalendarEntryList list = (CalendarEntryList) this.calendarEntriesByCategory.get(category);
+						if (list == null) {
+							addCategory(category);
+						}
+					}
 					break;
 				}
 				if (original != null) {
