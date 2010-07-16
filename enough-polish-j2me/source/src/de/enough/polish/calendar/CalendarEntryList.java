@@ -116,6 +116,35 @@ implements Comparator
 		}
 		return (CalendarEntry[]) l.toArray(new CalendarEntry[l.size()]);
 	}
+	
+	
+	public CalendarEntry[] searchEntries(String searchString, boolean onlyAtStart) {
+		
+		if (this.list.size() == 0) {
+			return new CalendarEntry[0];
+		}
+		
+		ArrayList foundMatches = new ArrayList();
+		CalendarEntry[] entries = getEntries();
+		for (int i = 0; i < entries.length; i++) {
+			CalendarEntry entry = entries[i];
+			if(onlyAtStart){
+				if(entry.getSummary().toLowerCase().startsWith(searchString.toLowerCase())){
+					foundMatches.add(entry);
+				}
+			}else{
+				if(entry.getSummary().indexOf(searchString) != -1){
+					foundMatches.add(entry);
+				}
+			}
+		}
+		
+		CalendarEntry[] matches = new CalendarEntry[foundMatches.size()];
+		foundMatches.toArray(matches);
+		
+		return matches;
+	}
+	
 
 	/*
 	 * (non-Javadoc)
