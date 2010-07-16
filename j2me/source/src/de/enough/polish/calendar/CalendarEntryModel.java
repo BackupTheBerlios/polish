@@ -436,12 +436,33 @@ implements Externalizable
 	}
 
 	/**
-	 * Retrieves all stored CalendarEntries for the specified category
+	 * Retrieves all stored CalendarEntries for the specified category.
+	 * If the specified category has no entries we will look in its child categories for entries.
 	 * @param category the category
-	 * @return all entries of that category
+	 * @return all entries of that category. An empty list if the category has no entries.
 	 */
 	public CalendarEntryList getEntries( CalendarCategory category ) {
-		return (CalendarEntryList) this.calendarEntriesByCategory.get(category);
+		
+		CalendarEntryList returnList = new CalendarEntryList();
+		
+		while ( category.hasChildCategories() ) {
+			CalendarCategory[] childCategory = category.getChildCategories();
+			for (int i = 0; i < childCategory.length; i++) {
+				CalendarEntryList entryList =  getEntries(childCategory[i]);
+				CalendarEntry[] entries = entryList.getEntries();
+				for (int j = 0; j < entries.length; j++) {
+					returnList.add(entries[j]);
+				}
+			}
+			return returnList;
+		}
+		
+		CalendarEntryList entryList = (CalendarEntryList) this.calendarEntriesByCategory.get(category);
+		if (entryList == null) {
+			return returnList;
+		} else {
+			return entryList;
+		}
 	}
 	
 	/**
