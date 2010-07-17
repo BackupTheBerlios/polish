@@ -29,13 +29,40 @@ public class ToStringHelper {
 	 */
 	ArrayList attributes;
 	
+	static ToStringHelper instance;
+	
+	public static ToStringHelper getInstance(String name) {
+		if(instance == null) {
+			instance = new ToStringHelper();
+		}
+		
+		instance.setName(name);
+		instance.clear();
+		
+		return instance;
+	}
+	
 	/**
 	 * Creates a new ToStringHelper instance
 	 * @param name the name to use
 	 */
-	public ToStringHelper(String name) {
-		this.name = name;
+	public ToStringHelper() {
 		this.attributes = new ArrayList();
+	}
+	
+	/**
+	 * Clear the attribute map
+	 */
+	void clear() {
+		this.attributes.clear();
+	}
+
+	/**
+	 * sets the name
+	 * @param name the name
+	 */
+	void setName(String name) {
+		this.name = name;
 	}
 	
 	/**
@@ -56,60 +83,60 @@ public class ToStringHelper {
 	}
 	
 	/**
-	 * adds a numerical value
+	 * sets a numerical value
 	 * @param id the id 
 	 * @param value the value
 	 * @return the ToStringHelper instance
 	 */
-	public ToStringHelper add(String id, long value) {
+	public ToStringHelper set(String id, long value) {
 		String description = id + FORMAT_DESCRIPTION_SEPARATOR + value;
 		this.attributes.add(description);
 		return this;
 	}
 
 	/**
-	 * adds a boolean value
+	 * sets a boolean value
 	 * @param id the id 
 	 * @param value the value
 	 * @return the ToStringHelper instance
 	 */
-	public ToStringHelper add(String id, boolean value) {
+	public ToStringHelper set(String id, boolean value) {
 		String description = id + FORMAT_DESCRIPTION_SEPARATOR + value;
 		this.attributes.add(description);
 		return this;
 	}
 	
 	/**
-	 * adds an Object value
+	 * sets an Object value
 	 * @param id the id 
 	 * @param value the value
 	 * @return the ToStringHelper instance
 	 */
-	public ToStringHelper add(String id, Object value) {
+	public ToStringHelper set(String id, Object value) {
 		String description = id + FORMAT_DESCRIPTION_SEPARATOR + value;
 		this.attributes.add(description);
 		return this;
 	}
 	
 	/**
-	 * adds a String value
+	 * sets a String value
 	 * @param id the id 
 	 * @param value the value
 	 * @return the ToStringHelper instance
 	 */
-	public ToStringHelper add(String id, String value) {
+	public ToStringHelper set(String id, String value) {
 		String description = id + FORMAT_DESCRIPTION_SEPARATOR + "\"" + value + "\"";
 		this.attributes.add(description);
 		return this;
 	}
 	
 	/**
-	 * adds an ArrayList
+	 * sets an ArrayList
 	 * @param id the id 
 	 * @param value the value
 	 * @return the ToStringHelper instance
 	 */
-	public ToStringHelper add(String id, ArrayList value) {
+	public ToStringHelper set(String id, ArrayList value) {
 		String description = id + FORMAT_DESCRIPTION_SEPARATOR;
 		for (int i = 0; i < value.size(); i++) {
 			Object object = value.get(i);
@@ -123,12 +150,12 @@ public class ToStringHelper {
 	}
 	
 	/**
-	 * adds a HashMap
+	 * sets a HashMap
 	 * @param id the id 
 	 * @param value the value
 	 * @return the ToStringHelper instance
 	 */
-	public ToStringHelper add(String id, HashMap value) {
+	public ToStringHelper set(String id, HashMap value) {
 		String description = id + FORMAT_DESCRIPTION_SEPARATOR;
 		Object[] keys = value.keys();
 		for (int i = 0; i < keys.length; i++) {

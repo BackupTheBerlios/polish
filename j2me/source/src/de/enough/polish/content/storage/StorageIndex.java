@@ -269,9 +269,9 @@ public class StorageIndex implements Comparator {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return new ToStringHelper("StorageIndex").add("cacheSize",
-				this.cacheSize).add("maxCacheSize", this.maxCacheSize).add(
-				"threshold", this.threshold).add("isPrepared", this.isPrepared)
-				.add("index", this.index).toString();
+		return ToStringHelper.getInstance("StorageIndex").set("cacheSize",
+				this.cacheSize).set("maxCacheSize", this.maxCacheSize).set(
+				"threshold", this.threshold).set("isPrepared", this.isPrepared)
+				.set("index", this.index).toString();
 	}
 }

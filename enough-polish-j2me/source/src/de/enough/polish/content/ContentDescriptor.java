@@ -179,8 +179,8 @@ public class ContentDescriptor implements Serializable {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return new ToStringHelper("ContentDescriptor").add("url", this.url)
-				.add("hash", this.hash).add("version", this.version).add(
+		return ToStringHelper.getInstance("ContentDescriptor").set("url", this.url)
+				.set("hash", this.hash).set("version", this.version).set(
 						"cachingPolicy", this.cachingPolicy).toString();
 	}
 

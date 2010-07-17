@@ -570,9 +570,9 @@ public abstract class ContentSource {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return new ToStringHelper("ContentSource").add("id", this.id).add(
-				"sources", this.sources).add("transformers", this.transformers)
-				.add("filter", this.filter).toString();
+		return ToStringHelper.getInstance("ContentSource").set("id", this.id).set(
+				"sources", this.sources).set("transformers", this.transformers)
+				.set("filter", this.filter).toString();
 	}
 
 	/**
