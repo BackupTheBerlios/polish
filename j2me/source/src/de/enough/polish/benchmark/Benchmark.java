@@ -65,19 +65,22 @@ public class Benchmark {
         //#enddebug
     }
 
-    public static void stop(String key, String name) {
+    public static long stop(String key, String name) {
+    	long time = 0;
         //#mdebug benchmark
         Benchmark benchmark = (Benchmark) benchmarks.get(key);
 
         if (benchmark == null) {
-            return;
+            return -1;
         }
 
-        long time = System.currentTimeMillis() - benchmark.getTime();
+        time = System.currentTimeMillis() - benchmark.getTime();
         String formattedTime = getFormattedTime(time);
 
         System.out.println(key + " : " + name + ": " + formattedTime + " seconds");
+        
         //#enddebug
+        return time;
     }
 
     /**
