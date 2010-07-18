@@ -1,3 +1,4 @@
+//#condition polish.blackberry
 package de.enough.polish.content.source.impl;
 
 import java.io.ByteArrayInputStream;
