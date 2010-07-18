@@ -1,12 +1,8 @@
+//#condition polish.blackberry
 package de.enough.polish.blackberry.persistent;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Vector;
-
-import de.enough.polish.blackberry.persistent.PersistentRecordStore;
-import de.enough.polish.blackberry.persistent.PersistentRecordStoreConstraints;
-import de.enough.polish.blackberry.persistent.PersistentRecordStoreIndex;
 
 import net.rim.device.api.system.PersistentObject;
 import net.rim.device.api.system.PersistentStore;
