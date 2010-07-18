@@ -442,23 +442,23 @@ implements Externalizable
 	 * @return all entries of that category. An empty list if the category has no entries.
 	 */
 	public CalendarEntryList getEntries( CalendarCategory category ) {
-		
-		CalendarEntryList returnList = new CalendarEntryList();
-		
-		while ( category.hasChildCategories() ) {
-			CalendarCategory[] childCategory = category.getChildCategories();
-			for (int i = 0; i < childCategory.length; i++) {
-				CalendarEntryList entryList =  getEntries(childCategory[i]);
-				CalendarEntry[] entries = entryList.getEntries();
-				for (int j = 0; j < entries.length; j++) {
-					returnList.add(entries[j]);
-				}
-			}
-			return returnList;
-		}
-		
 		CalendarEntryList entryList = (CalendarEntryList) this.calendarEntriesByCategory.get(category);
 		if (entryList == null) {
+			CalendarEntryList returnList = new CalendarEntryList();
+			while ( category.hasChildCategories() ) {
+				CalendarCategory[] childCategory = category.getChildCategories();
+				for (int i = 0; i < childCategory.length; i++) {
+					entryList =  getEntries(childCategory[i]);
+					Object[] objects = entryList.getInternalArray();
+					for (int j = 0; j < objects.length; j++) {
+						CalendarEntry entry = (CalendarEntry) objects[j];
+						if (entry == null) {
+							break;
+						}
+						returnList.add(entry);
+					}
+				}
+			}
 			return returnList;
 		} else {
 			return entryList;
