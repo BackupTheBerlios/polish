@@ -135,13 +135,14 @@ public class ClippingRegion {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return ToStringHelper.getInstance("ClippingRegion").
-		set("leftX",this.leftX).
-		set("topY",this.topY).
-		set("rightX",this.rightX).
-		set("bottomY",this.bottomY).
-		set("containsRegion",this.containsRegion).
-		toString();
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("ClipReg.( ")
+		.append( this.leftX ).append( ", ")
+		.append( this.topY ).append( ", ")
+		.append( this.rightX ).append( ", ")
+		.append( this.bottomY )
+		.append( " ); containsRegion=").append(this.containsRegion).append(']');
+		return buffer.toString();
 	}
 
 }
