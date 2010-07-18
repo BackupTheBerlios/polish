@@ -54,6 +54,10 @@ implements Externalizable
 	private char separator = '=';
 	private char comment = '#';
 
+	ArrayList orderedKeys = new ArrayList();
+	
+	ArrayList orderedValues = new ArrayList();
+	
 	/**
 	 * Creates a new empty Properties set.
 	 */
@@ -136,6 +140,8 @@ implements Externalizable
 	 */
 	public void load(InputStream in, String encoding, boolean generateIntegerValues ) throws IOException
 	{
+		this.orderedKeys.clear(); 
+		this.orderedValues.clear(); 
 		this.isIntegerValues = generateIntegerValues;
 		int bufferLength = 2 * 1024;
 		byte[] buffer = new byte[ bufferLength ];
@@ -179,6 +185,8 @@ implements Externalizable
 						}
 						String key = line.substring( start, splitPos );
 						String value = line.substring( splitPos + 1, end );
+						this.orderedKeys.add(key);
+						this.orderedValues.add(value);
 						if (generateIntegerValues) {
 							try {
 								put( key, Integer.valueOf(value) );
@@ -213,6 +221,24 @@ implements Externalizable
 	public Object[] propertyNames()
 	{
 		return this.keys();
+	}
+	
+	/**
+	 * Returns the keys in the original order
+	 * @return the ordered keys
+	 */
+	public String[] orderedPropertyNames() 
+	{
+		return (String[])this.orderedKeys.toArray(new String[this.orderedKeys.size()]);
+	}
+	
+	/**
+	 * Returns the values in the original order
+	 * @return the ordered values
+	 */
+	public String[] orderedPropertyValues() 
+	{
+		return (String[])this.orderedValues.toArray(new String[this.orderedValues.size()]);
 	}
 
 	/* (non-Javadoc)
