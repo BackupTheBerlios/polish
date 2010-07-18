@@ -115,7 +115,7 @@ public class StorageReference extends ContentDescriptor {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return ToStringHelper.getInstance("StorageReference").set("url", this.url).set(
+		return ToStringHelper.createInstance("StorageReference").set("url", this.url).set(
 				"hash", this.hash).set("creationTime", this.creationTime).set(
 				"activityCount", this.activityCount).set("activityTime",
 				this.activityTime).set("reference", this.reference).set("size",

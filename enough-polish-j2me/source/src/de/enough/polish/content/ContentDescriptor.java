@@ -179,7 +179,7 @@ public class ContentDescriptor implements Serializable {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return ToStringHelper.getInstance("ContentDescriptor").set("url", this.url)
+		return ToStringHelper.createInstance("ContentDescriptor").set("url", this.url)
 				.set("hash", this.hash).set("version", this.version).set(
 						"cachingPolicy", this.cachingPolicy).toString();
 	}

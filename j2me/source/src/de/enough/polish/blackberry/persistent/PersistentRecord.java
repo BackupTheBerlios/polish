@@ -59,7 +59,7 @@ public class PersistentRecord implements Persistable {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return ToStringHelper.getInstance("PersistentRecord").
+		return ToStringHelper.createInstance("PersistentRecord").
 		set("data", this.data).
 		set("size", this.size).
 		toString();

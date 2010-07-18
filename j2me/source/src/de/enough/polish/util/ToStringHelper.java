@@ -7,7 +7,7 @@ package de.enough.polish.util;
  */
 public class ToStringHelper {
 	
-	static String FORMAT_HEADER = "[";
+	static String FORMAT_HEADER = " [";
 	
 	static String FORMAT_FOOTER = "]";
 	
@@ -24,37 +24,50 @@ public class ToStringHelper {
 	 */
 	String name;
 	
+	StringBuffer buffer;
+
+	private boolean isNameInserted;
+	private boolean addListSeparator;
+	
 	/**
-	 * The single value descriptions
+	 * Creates a new instance of ToStringHelper
+	 *  
+	 * @param name the name of instance
+	 * @return a new ToStringHelper instance
 	 */
-	ArrayList attributes;
+	public static ToStringHelper createInstance(String name) {		
+		return new ToStringHelper(name);
+	}
 	
-	static ToStringHelper instance;
-	
-	public static ToStringHelper getInstance(String name) {
-		if(instance == null) {
-			instance = new ToStringHelper();
-		}
-		
-		instance.setName(name);
-		instance.clear();
-		
-		return instance;
+	/**
+	 * Creates a new ToStringHelper instance
+	 */
+	public ToStringHelper() {
+		this(null);
 	}
 	
 	/**
 	 * Creates a new ToStringHelper instance
 	 * @param name the name to use
 	 */
-	public ToStringHelper() {
-		this.attributes = new ArrayList();
+	public ToStringHelper(String name) {
+		this.buffer = new StringBuffer();
+		this.buffer.append(FORMAT_HEADER);
+		this.name = name;
 	}
 	
 	/**
 	 * Clear the attribute map
 	 */
 	void clear() {
-		this.attributes.clear();
+		if (this.isNameInserted) {
+			this.buffer.delete(0, this.buffer.length());
+			this.isNameInserted = false;
+			this.buffer.append(FORMAT_HEADER);
+		} else {
+			this.buffer.delete(FORMAT_HEADER.length(), this.buffer.length());
+		}
+		this.addListSeparator = false;
 	}
 
 	/**
@@ -62,24 +75,12 @@ public class ToStringHelper {
 	 * @param name the name
 	 */
 	void setName(String name) {
+		if (this.isNameInserted) {
+			// remove current name from buffer:
+			this.buffer.delete(0, this.name.length());
+			this.isNameInserted = false;
+		}
 		this.name = name;
-	}
-	
-	/**
-	 * Returns the header
-	 * @param name the name
-	 * @return the header
-	 */
-	String getHeader(String name) {
-		return name + " " + FORMAT_HEADER;
-	}
-	
-	/**
-	 * Returns the footer
-	 * @return the footer
-	 */
-	String getFooter() {
-		return FORMAT_FOOTER;
 	}
 	
 	/**
@@ -89,8 +90,11 @@ public class ToStringHelper {
 	 * @return the ToStringHelper instance
 	 */
 	public ToStringHelper set(String id, long value) {
-		String description = id + FORMAT_DESCRIPTION_SEPARATOR + value;
-		this.attributes.add(description);
+		if (this.addListSeparator) {
+			this.buffer.append(FORMAT_LIST_SEPARATOR);
+		}
+		this.buffer.append(id).append(FORMAT_DESCRIPTION_SEPARATOR).append(value);
+		this.addListSeparator = true;
 		return this;
 	}
 
@@ -101,8 +105,11 @@ public class ToStringHelper {
 	 * @return the ToStringHelper instance
 	 */
 	public ToStringHelper set(String id, boolean value) {
-		String description = id + FORMAT_DESCRIPTION_SEPARATOR + value;
-		this.attributes.add(description);
+		if (this.addListSeparator) {
+			this.buffer.append(FORMAT_LIST_SEPARATOR);
+		}
+		this.buffer.append( id ).append(FORMAT_DESCRIPTION_SEPARATOR).append(value);
+		this.addListSeparator = true;
 		return this;
 	}
 	
@@ -113,8 +120,11 @@ public class ToStringHelper {
 	 * @return the ToStringHelper instance
 	 */
 	public ToStringHelper set(String id, Object value) {
-		String description = id + FORMAT_DESCRIPTION_SEPARATOR + value;
-		this.attributes.add(description);
+		if (this.addListSeparator) {
+			this.buffer.append(FORMAT_LIST_SEPARATOR);
+		}
+		this.buffer.append( id ).append( FORMAT_DESCRIPTION_SEPARATOR ).append(value);
+		this.addListSeparator = true;
 		return this;
 	}
 	
@@ -125,8 +135,11 @@ public class ToStringHelper {
 	 * @return the ToStringHelper instance
 	 */
 	public ToStringHelper set(String id, String value) {
-		String description = id + FORMAT_DESCRIPTION_SEPARATOR + "\"" + value + "\"";
-		this.attributes.add(description);
+		if (this.addListSeparator) {
+			this.buffer.append(FORMAT_LIST_SEPARATOR);
+		}
+		this.buffer.append(id).append(FORMAT_DESCRIPTION_SEPARATOR).append('"').append(value).append('"');
+		this.addListSeparator = true;
 		return this;
 	}
 	
@@ -137,15 +150,19 @@ public class ToStringHelper {
 	 * @return the ToStringHelper instance
 	 */
 	public ToStringHelper set(String id, ArrayList value) {
-		String description = id + FORMAT_DESCRIPTION_SEPARATOR;
-		for (int i = 0; i < value.size(); i++) {
+		if (this.addListSeparator) {
+			this.buffer.append(FORMAT_LIST_SEPARATOR);
+		}
+		this.buffer.append(id).append(FORMAT_DESCRIPTION_SEPARATOR);
+		int size = value.size();
+		for (int i = 0; i < size; i++) {
 			Object object = value.get(i);
-			description += object.toString();
-			if(i != this.attributes.size() - 1) {
-				description += FORMAT_DESCRIPTION_LIST_SEPARATOR;
+			this.buffer.append( object );
+			if(i != size  - 1) {
+				this.buffer.append( FORMAT_DESCRIPTION_LIST_SEPARATOR );
 			}
 		}
-		this.attributes.add(description);
+		this.addListSeparator = true;
 		return this;
 	}
 	
@@ -156,17 +173,21 @@ public class ToStringHelper {
 	 * @return the ToStringHelper instance
 	 */
 	public ToStringHelper set(String id, HashMap value) {
+		if (this.addListSeparator) {
+			this.buffer.append(FORMAT_LIST_SEPARATOR);
+		}
+		this.buffer.append( id ).append( FORMAT_DESCRIPTION_SEPARATOR );
 		String description = id + FORMAT_DESCRIPTION_SEPARATOR;
 		Object[] keys = value.keys();
 		for (int i = 0; i < keys.length; i++) {
 			Object key = keys[i];
 			Object object = value.get(key);
-			description += key.toString() + FORMAT_DESCRIPTION_KEYVALUE_SEPARATOR + object.toString();
-			if(i != this.attributes.size() - 1) {
-				description += FORMAT_DESCRIPTION_LIST_SEPARATOR;
+			this.buffer.append(key).append(FORMAT_DESCRIPTION_KEYVALUE_SEPARATOR).append(object);
+			if(i != keys.length - 1) {
+				this.buffer.append( FORMAT_DESCRIPTION_LIST_SEPARATOR );
 			}
 		}
-		this.attributes.add(description);
+		this.addListSeparator = true;
 		return this;
 	}
 	
@@ -174,19 +195,14 @@ public class ToStringHelper {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		String result = "";
-		result += getHeader(this.name);
-		
-		for (int i = 0; i < this.attributes.size(); i++) {
-			String description = (String)this.attributes.get(i);
-			result += description;
-			if(i != this.attributes.size() - 1) {
-				result += FORMAT_LIST_SEPARATOR;
-			}
+		if (!this.isNameInserted && this.name != null) {
+			this.buffer.insert(0, this.name);
+			this.isNameInserted = true;
 		}
-		
-		result += getFooter();
-		
+		this.buffer.append(FORMAT_FOOTER);
+		String result = this.buffer.toString();
+		// remove footer again for subsequent changes:
+		this.buffer.delete(this.buffer.length() - FORMAT_FOOTER.length(), this.buffer.length());
 		return result;
 	}
 }
