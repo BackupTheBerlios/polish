@@ -141,7 +141,8 @@ public class ClippingRegion {
 		.append( this.topY ).append( ", ")
 		.append( this.rightX ).append( ", ")
 		.append( this.bottomY )
-		.append( " ); containsRegion=").append(this.containsRegion).append(']');
+		.append( " ); containsRegion=").append(this.containsRegion).append("] ")
+		.append( super.toString() );
 		return buffer.toString();
 	}
 
