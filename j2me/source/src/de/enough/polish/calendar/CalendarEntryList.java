@@ -117,7 +117,13 @@ implements Comparator
 		return (CalendarEntry[]) l.toArray(new CalendarEntry[l.size()]);
 	}
 	
-	
+	/**
+	 * Searches entries that start or include the specified search term in their summary.
+	 * 
+	 * @param searchString the search term
+	 * @param onlyAtStart true when the entry summary should start with the given search term 
+	 * @return an array of found entries, may be empty but not null
+	 */
 	public CalendarEntry[] searchEntries(String searchString, boolean onlyAtStart) {
 		
 		if (this.list.size() == 0) {
@@ -126,14 +132,20 @@ implements Comparator
 		
 		ArrayList foundMatches = new ArrayList();
 		CalendarEntry[] entries = getEntries();
+		searchString = searchString.toLowerCase();
 		for (int i = 0; i < entries.length; i++) {
 			CalendarEntry entry = entries[i];
+			String summary = entry.getSummary();
+			if (summary == null) {
+				continue;
+			}
+			summary = summary.toLowerCase();
 			if(onlyAtStart){
-				if(entry.getSummary().toLowerCase().startsWith(searchString.toLowerCase())){
+				if(summary.startsWith(searchString)){
 					foundMatches.add(entry);
 				}
 			}else{
-				if(entry.getSummary().indexOf(searchString) != -1){
+				if(summary.indexOf(searchString) != -1){
 					foundMatches.add(entry);
 				}
 			}
