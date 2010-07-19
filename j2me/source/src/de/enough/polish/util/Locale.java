@@ -181,6 +181,7 @@ public final class Locale {
 	//#endif
 	
 	private static String DATE_FORMAT_PATTERN;
+	private static String[] monthNames;
 
 	
 	//#if polish.i18n.useDynamicTranslations || polish.LibraryBuild
@@ -474,6 +475,22 @@ public final class Locale {
 	public static void setDefaultDateFormatPattern( String pattern ) {
 		DATE_FORMAT_PATTERN = pattern;
 	}
+	
+	/**
+	 * Sets the names of months for date formatting.
+	 * @param names the names
+	 */
+	public static void setMonthNames( String[] names ) {
+		monthNames = names;
+	}
+	
+	/**
+	 * Retrieves the names of the months of the year
+	 * @return the names of the months of the year starting with January, might be null
+	 */
+	public static String[] getMonthNames() {
+		return monthNames;
+	}
 		
 	/**
 	 * Formats the given date to the current locale's format.
@@ -493,7 +510,7 @@ public final class Locale {
 	 * This method just calls the formatDate-method with a new Date instance.
 	 * 
 	 * @param time the time in milliseconds after 1.1.1970 GMT.
-	 * @param dateFormat the date format that may include yyyy (year), MM (month), dd (day of month), HH (hour of day) and mm (minute of hour)
+	 * @param dateFormat the date format that may include yyyy (year), M, MM, MMMMM (month in numerical [M, MM] or textual representation), dd (day of month), HH (hour of day) and mm (minute of hour)
 	 * @return the locale specific date representation.
 	 * @throws NullPointerException when the date is null
 	 * @see #formatDate(Date)
@@ -522,7 +539,7 @@ public final class Locale {
 	 * This method just calls the formatDate-method with a new Calendar instance.
 	 * 
 	 * @param date the date
-	 * @param dateFormat the date format that may include yyyy (year), MM (month), dd (day of month), HH (hour of day) and mm (minute of hour)
+	 * @param dateFormat the date format that may include yyyy (year), M, MM, MMMMM (month in numerical [M, MM] or textual representation), dd (day of month), HH (hour of day) and mm (minute of hour)
 	 * @return the locale specific date representation.
 	 * @throws NullPointerException when the date is null
 	 * @see #formatDate(Calendar)
@@ -550,7 +567,7 @@ public final class Locale {
 	 * Formats the given calendar to the current locale's format.
 	 * 
 	 * @param calendar the calendar which holds the date
-	 * @param dateFormat the date format that may include yyyy (year), MM (month), dd (day of month), HH (hour of day) and mm (minute of hour)
+	 * @param dateFormat the date format that may include yyyy (year), M, MM, MMMMM (month in numerical [M, MM] or textual representation), dd (day of month), HH (hour of day) and mm (minute of hour)
 	 * @return the locale specific date representation.
 	 * @throws NullPointerException when the calendar is null
 	 */
@@ -577,7 +594,7 @@ public final class Locale {
 	 * Formats the given calendar to the current locale's format.
 	 * 
 	 * @param calendar the calendar which holds the date
-	 * @param dateFormat the date format that may include yyyy (year), MM (month), dd (day of month), HH (hour of day) and mm (minute of hour)
+	 * @param dateFormat the date format that may include yyyy (year), M, MM, MMMMM (month in numerical [M, MM] or textual representation), dd (day of month), HH (hour of day) and mm (minute of hour)
 	 * @return the locale specific date representation.
 	 * @throws NullPointerException when the calendar is null
 	 */
@@ -605,7 +622,7 @@ public final class Locale {
 	 * 
 	 * @param calendar the calendar which holds the date
 	 * @param buffer a StringBuffer, should be at least 10 characters big
-	 * @param dateFormat the date format that may include yyyy (year), MM (month), dd (day of month), HH (hour of day) and mm (minute of hour)
+	 * @param dateFormat the date format that may include yyyy (year), M, MM, MMMMM (month in numerical [M, MM] or textual representation), dd (day of month), HH (hour of day) and mm (minute of hour)
 	 * @throws NullPointerException when the calendar is null
 	 */
 	public static void formatDate( Calendar calendar, StringBuffer buffer, String dateFormat  ) {
@@ -615,6 +632,8 @@ public final class Locale {
 		int hour = calendar.get( Calendar.HOUR_OF_DAY );
 		int minute = calendar.get( Calendar.MINUTE );
 		int length = dateFormat.length();
+		boolean isMonthTextual = (dateFormat.indexOf("MMMMM") != -1);
+		boolean isMonthNumerical2Digit = !isMonthTextual && (dateFormat.indexOf("MM") != -1);
 		for (int i=0; i<length-1; i++) {
 			char c = dateFormat.charAt(i);
 			char nextC = dateFormat.charAt(i+1);
@@ -628,12 +647,27 @@ public final class Locale {
 				}
 				buffer.append(year);
 				i += 3;
-			} else if ( c == 'M' && nextC == 'M') {
-				if (month < 10) {
-					buffer.append('0');
+			} else if ( c == 'M' ) {
+				if (isMonthTextual) {
+					if (monthNames != null) {
+						String monthName = monthNames[month-1];
+						buffer.append(monthName);
+					} else {
+						if (month < 10) {
+							buffer.append('0');
+						}
+						buffer.append(month);
+					}
+					i+= "MMMMM".length();
+				} else if (isMonthNumerical2Digit) {
+					if (month < 10) {
+						buffer.append('0');
+					}
+					buffer.append(month);
+					i++;
+				} else {
+					buffer.append(month);
 				}
-				buffer.append(month);
-				i++;
 			} else if ( c == 'd' && nextC == 'd') {
 				if (day < 10) {
 					buffer.append( '0' );
