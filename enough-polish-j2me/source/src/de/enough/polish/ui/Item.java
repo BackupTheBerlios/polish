@@ -753,7 +753,7 @@ public abstract class Item implements UiElement, Animatable
 	
 	//#ifdef polish.css.before
 		private String beforeUrl;
-		private int beforeWidth;
+		protected int beforeWidth;
 		private int beforeHeight;
 		private Image beforeImage;
 	//#endif

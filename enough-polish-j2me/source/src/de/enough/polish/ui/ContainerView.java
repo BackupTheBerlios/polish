@@ -244,7 +244,7 @@ extends ItemView
 	 */
 	public void setScrollXOffset( int offset, boolean smooth) {
 		//#debug
-		System.out.println("Setting scrollXOffset to " + offset + " for " + this);
+		System.out.println("Setting scrollXOffset from " + this.xOffset + "/" + this.targetXOffset + " to " + offset + ", smooth=" + smooth +  " for " + this);
 		//try { throw new RuntimeException("for xOffset=" + offset); } catch (Exception e) { e.printStackTrace(); }
 		if (!smooth  
 		//#ifdef polish.css.scroll-mode
@@ -1702,7 +1702,7 @@ extends ItemView
 	private boolean startHorizontalScroll(int x, int y) {
 		int offset = this.xOffset;
 		int scrollDiff = Math.abs(offset - this.lastPointerPressXOffset);
-		if ( scrollDiff > 20 || offset > 0 || offset + this.contentWidth < this.availableWidth) {
+		if ( scrollDiff > this.availableWidth/10 || offset > 0 || offset + this.contentWidth < this.availableWidth) {
 			// we have scrolling in the meantime
 			// check if we should continue the scrolling:
 			long dragTime = System.currentTimeMillis() - this.lastPointerPressTime;
@@ -1830,6 +1830,7 @@ extends ItemView
 		} else {
 			//#debug
 			System.out.println("start horizontal scrolling " + (direction == Canvas.RIGHT ? "right" : "left") + " with speed=" + speed + ", damping=" + damping + " for " + this);
+			this.lastAnimationTime = System.currentTimeMillis();
 			this.scrollDirection = direction;
 			this.scrollSpeed = speed;
 			this.scrollDamping = damping;

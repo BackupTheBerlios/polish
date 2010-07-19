@@ -3140,6 +3140,9 @@ public class Container extends Item {
 		int origRelY = relY;
 		relY -= this.yOffset;
 		relY -= this.contentY;
+		//#ifdef polish.css.before
+			relX -= this.beforeWidth;
+		//#endif
 		relX -= this.contentX;
 		//#ifdef tmp.supportViewType
 			int viewXOffset = 0;
@@ -3298,6 +3301,9 @@ public class Container extends Item {
 				this.needsCheckItemInVisibleContent=true;
 			//#endif
 		//#endif
+		//#ifdef polish.css.before
+			relX -= this.beforeWidth;
+		//#endif
 		
 		Item item = this.focusedItem;
 		if (this.enableScrolling) {
@@ -3340,7 +3346,11 @@ public class Container extends Item {
 			}
 		}
 		// foward event to currently focused item:
-		int origRelX = relX;
+		int origRelX = relX
+		//#ifdef polish.css.before
+			+ this.beforeWidth
+		 //#endif
+		 ;
 		int origRelY = relY;
 		relY -= this.yOffset;
 		relY -= this.contentY;
@@ -3433,9 +3443,10 @@ public class Container extends Item {
 	protected boolean handlePointerDragged(int relX, int relY) {
 		//#debug
 		System.out.println("handlePointerDraggged " + relX + ", " + relY + " for " + this + ", enableScrolling=" + this.enableScrolling + ", focusedItem=" + this.focusedItem);
-		//#if polish.blackberry
-			
+		//#ifdef polish.css.before
+			relX -= this.beforeWidth;
 		//#endif
+		
 		Item item = this.focusedItem;
 		if (item != null && item.handlePointerDragged( relX - this.contentX - item.relativeX, relY - this.yOffset - this.contentY - item.relativeY)) {
 			return true;
@@ -3575,6 +3586,9 @@ public class Container extends Item {
 	 */
 	public Item getItemAt(int relX, int relY) {
 		relY -= this.yOffset;
+		//#ifdef polish.css.before
+			relX -= this.beforeWidth;
+		//#endif
 		relX -= this.contentX;
 		relY -= this.contentY;
 		//#ifdef tmp.supportViewType
@@ -3636,6 +3650,9 @@ public class Container extends Item {
 	 */
 	protected Item getChildAtImpl(int relX, int relY) {
 		relY -= this.yOffset;
+		//#ifdef polish.css.before
+			relX -= this.beforeWidth;
+		//#endif
 		relY -= this.contentY;
 		relX -= this.contentX;
 		//#ifdef tmp.supportViewType
