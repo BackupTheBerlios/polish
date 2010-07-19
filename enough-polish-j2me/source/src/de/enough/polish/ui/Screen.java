@@ -1034,7 +1034,6 @@ implements UiElement, Animatable
 		this.contentHeight = height;
 			
 		adjustContentArea( x, y, originalWidth, height, cont );
-
 		height = this.contentHeight;
 		originalWidth = this.contentWidth;
 		
@@ -5015,16 +5014,17 @@ implements UiElement, Animatable
 	protected boolean handlePointerReleased( int x, int y ) {
 		boolean handled = false;
 		//#ifdef polish.hasPointerEvents
-			if (this.container != null) {
-				handled = this.container.handlePointerReleased(x - this.container.relativeX, y - this.container.relativeY );
+			Container cont = this.container;
+			if (cont != null) {
+				handled = cont.handlePointerReleased(x - cont.relativeX, y - cont.relativeY );
 			}
 			//#if polish.css.repaint-previous-screen
 				if (!handled && this.repaintPreviousScreen) {
-					if (this.container != null) {
-						int left = this.container.relativeX;
-						int top = this.container.relativeY - this.titleHeight;
-						int right = left + this.container.itemWidth;
-						int bottom = top + Math.min( this.contentHeight, this.container.itemHeight );
+					if (cont != null) {
+						int left = cont.relativeX;
+						int top = cont.relativeY - this.titleHeight;
+						int right = left + cont.itemWidth;
+						int bottom = top + Math.min( this.contentY + this.contentHeight, cont.itemHeight );
 						if (x <= left || y <= top
 							 || x >= right || y >= bottom)
 						{
