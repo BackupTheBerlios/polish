@@ -1262,6 +1262,7 @@ implements ScreenInitializerListener
 		Screen scr = this.currentScreen;
 		if ((scr == null ||!scr.isMenuOpened()) && tabs.isInItemArea(x - tabs.relativeX, y - tabs.relativeY)) {
 			if (tabs.handlePointerPressed(x - tabs.relativeX, y - tabs.relativeY)) {
+				this.lastInteractionTime = System.currentTimeMillis();
 				repaint();
 			}
 			return;
@@ -1284,6 +1285,7 @@ implements ScreenInitializerListener
 		Screen scr = this.currentScreen;
 		if ((scr == null ||!scr.isMenuOpened()) && tabs.isInItemArea(x - tabs.relativeX, y - tabs.relativeY)) {
 			if (scr == null || scr.getRootContainer() == null || !scr.getRootContainer().isPresed()) {
+				this.lastInteractionTime = System.currentTimeMillis();
 				tabs.handlePointerReleased(x - tabs.relativeX, y - tabs.relativeY);
 				int index = tabs.getFocusedIndex();
 				if (index != -1) {
