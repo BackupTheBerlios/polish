@@ -99,8 +99,9 @@ public class RedirectHttpConnection implements HttpConnection
 			Object[] keys = requestProperties.keys();
 			for (int i = 0; i < keys.length; i++)
 			{
-				setRequestProperty((String) keys[i], 
-						(String) requestProperties.get(keys[i]));
+				String key = (String) keys[i];
+				String value = (String) requestProperties.get(keys[i]);
+				setRequestProperty(key, value);
 			}
 		}
 		this.currentHttpConnection = (HttpConnection) Connector.open(url, Connector.READ_WRITE, true);
