@@ -25,6 +25,7 @@
  */
 package de.enough.polish.format.atom;
 
+import de.enough.polish.util.HashMap;
 import de.enough.polish.util.Task;
 
 /**
@@ -41,6 +42,7 @@ implements Task
 	private final AtomFeed atomFeed;
 	private final AtomUpdateConsumer consumer;
 	private final String url;
+	private final HashMap requestProperties;
 
 	/**
 	 * Creates a new feed loading task
@@ -49,9 +51,20 @@ implements Task
 	 * @param consumer the update consumer for the feed
 	 */
 	public FeedLoadTask( String url, AtomFeed feed, AtomUpdateConsumer consumer) {
+		this( url, feed, consumer, null);
+	}
+	/**
+	 * Creates a new feed loading task
+	 * @param url the URL of the feed
+	 * @param feed the feed
+	 * @param consumer the update consumer for the feed
+	 * @param requestProperties the request properties to be set for each http request (String name, String value)
+	 */
+	public FeedLoadTask( String url, AtomFeed feed, AtomUpdateConsumer consumer, HashMap requestProperties) {
 		this.url = url;
 		this.atomFeed = feed;
 		this.consumer = consumer;
+		this.requestProperties = requestProperties;
 	}
 	
 	
@@ -60,7 +73,7 @@ implements Task
 	 * @see de.enough.polish.util.Task#execute()
 	 */
 	public void execute() throws Exception {
-		this.atomFeed.update(this.consumer, this.url);
+		this.atomFeed.update(this.consumer, this.url, this.requestProperties);
 	}
 	
 }

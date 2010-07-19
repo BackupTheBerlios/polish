@@ -25,6 +25,7 @@
  */
 package de.enough.polish.format.atom;
 
+import de.enough.polish.util.HashMap;
 import de.enough.polish.util.Task;
 
 /**
@@ -40,8 +41,7 @@ implements Task
 	
 	private final AtomEntry entry;
 	private final AtomImageConsumer consumer;
-
-
+	private final HashMap requestProperties;
 
 	/**
 	 * Creates a new feed entry image loading task
@@ -49,8 +49,20 @@ implements Task
 	 * @param consumer the update consumer for the image
 	 */
 	public ImageLoadTask( AtomEntry entry, AtomImageConsumer consumer) {
+		this( entry, consumer, null);
+	}
+
+
+	/**
+	 * Creates a new feed entry image loading task
+	 * @param entry the entry
+	 * @param consumer the update consumer for the image
+	 * @param requestProperties the request properties to be set for each http request (String name, String value)
+	 */
+	public ImageLoadTask( AtomEntry entry, AtomImageConsumer consumer, HashMap requestProperties) {
 		this.entry = entry;
 		this.consumer = consumer;
+		this.requestProperties = requestProperties;
 	}
 	
 	
@@ -59,7 +71,7 @@ implements Task
 	 * @see de.enough.polish.util.Task#execute()
 	 */
 	public void execute() throws Exception {
-		this.entry.loadImages(this.consumer);
+		this.entry.loadImages(this.consumer, this.requestProperties);
 	}
 	
 }

@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import de.enough.polish.io.RedirectHttpConnection;
+import de.enough.polish.util.HashMap;
 import de.enough.polish.util.IdentityArrayList;
 import de.enough.polish.util.StreamUtil;
 import de.enough.polish.util.TimePoint;
@@ -181,6 +182,15 @@ public class AtomEntry {
 	 * @param consumer the consumer
 	 */
 	public void loadImages( AtomImageConsumer consumer ) {
+		loadImages( consumer, null);
+	}
+	
+	/**
+	 * Loads the referenced images in this thread.
+	 * @param consumer the consumer
+	 * @param requestProperties the request properties to be set for each http request (String name, String value)
+	 */
+	public void loadImages( AtomImageConsumer consumer, HashMap requestProperties ) {
 		if (this.images == null) {
 			consumer.onAtomImageLoadFinished(this);
 			return;
@@ -191,7 +201,7 @@ public class AtomEntry {
 			AtomImage image = (AtomImage) this.images.get(i);
 			String url = image.getUrl();
 			try {
-				connection = new RedirectHttpConnection( url );
+				connection = new RedirectHttpConnection( url, requestProperties );
 				in = connection.openInputStream();
 				if (connection.getResponseCode() != 200) {
 					throw new IOException("response code " + connection.getResponseCode() + " for " + url);

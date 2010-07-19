@@ -311,11 +311,22 @@ public class AtomFeed {
 	 * @param url the URL from which the feed should be downloaded
 	 */
 	public void update( AtomUpdateConsumer consumer, String url ) {
+		update( consumer, url, null);
+	}
+	
+	/**
+	 * Updates this feed in the current thread.
+	 * 
+	 * @param consumer the update consumer which is informed about updated entries
+	 * @param url the URL from which the feed should be downloaded
+	 * @param requestProperties the request properties to be set for each http request (String name, String value)
+	 */
+	public void update( AtomUpdateConsumer consumer, String url, HashMap requestProperties ) {
 		this.isUpdating = true;
 		InputStream in = null;
 		RedirectHttpConnection connection = null;
 		try {
-			connection = new RedirectHttpConnection( url );
+			connection = new RedirectHttpConnection( url, requestProperties );
 			in = connection.openInputStream();
 			if (connection.getResponseCode() != 200) {
 				throw new IOException("response code " + connection.getResponseCode() + " for " + url);
