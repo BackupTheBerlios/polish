@@ -26,13 +26,11 @@
  */
 package de.enough.polish.ui.containerviews;
 
+import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.ui.Container;
-import de.enough.polish.ui.ContainerView;
-import de.enough.polish.ui.IconItem;
 import de.enough.polish.ui.Item;
-import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.Style;
 
 
@@ -94,12 +92,11 @@ public class LeftHorizontalContainerView extends HorizontalContainerView {
 			}				
 			if (item != null) {
 				if (focIndex < prevFocIndex && this.targetXOffset != this.xSlots[focIndex]) {
-					setScrollXOffset( this.contentWidth + this.xOffset, false);
+					setScrollXOffset( this.availableWidth + this.xOffset, false);
 				}
 				setScrollXOffset(-item.relativeX, true);
 			}
 		}
-		
 		return result;
 
 	
@@ -118,6 +115,7 @@ public class LeftHorizontalContainerView extends HorizontalContainerView {
 		if (this.xOffset != this.targetXOffset) {
 			//if (this.xOffset > this.targetXOffset) {
 				// paint last item on left side:
+	    		g.clipRect( x, y, rightBorder - x + 1, this.contentHeight + 1 );
 				int index = this.focusedIndex - 1;
 				if (index < 0) {
 					index = myItems.length - 1;
@@ -125,8 +123,9 @@ public class LeftHorizontalContainerView extends HorizontalContainerView {
 				}
 				Item item = myItems[index];
 				x += this.xOffset + this.xSlots[index];
-				//System.out.println("painting " + index + " at " + x + ", xOffset=" + this.xOffset + ", target=" + this.targetXOffset + ", xSlot=" + this.xSlots[index]);
 				item.paint(x, y, x, x + item.itemWidth, g);
+				g.setClip(clipX, clipY, clipWidth, clipHeight);
+				//System.out.println("painting " + index + " at " + x + ", xOffset=" + this.xOffset + ", target=" + this.targetXOffset + ", xSlot=" + this.xSlots[index]);
 			//} 
 		}
 		
@@ -150,4 +149,14 @@ public class LeftHorizontalContainerView extends HorizontalContainerView {
 //		//#endif
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.ContainerView#startScroll(int, int, int)
+	 */
+	public void startScroll( int direction,int speed, int damping) {
+		if (direction == Canvas.UP || direction == Canvas.DOWN) {
+			super.startScroll(direction, speed, damping);
+		}
+
+	}
 }
