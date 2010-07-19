@@ -1021,6 +1021,8 @@ implements ScreenInitializerListener
 	 * @see de.enough.polish.ui.Screen#paintScreen(Graphics)
 	 */
 	protected void paintScreen(Graphics g) {
+		Container cont = this.tabIconsContainer;
+		cont.paint( cont.relativeX, cont.relativeY, cont.relativeX, cont.relativeX + cont.itemWidth, g);
 		Screen screen = this.currentScreen;
 		if (screen != null) {
 			screen.paintScreen(g);
@@ -1034,8 +1036,6 @@ implements ScreenInitializerListener
 	 * @see de.enough.polish.ui.Screen#paintMenuBar(Graphics)
 	 */
 	protected void paintMenuBar(Graphics g) {
-		Container cont = this.tabIconsContainer;
-		cont.paint( cont.relativeX, cont.relativeY, cont.relativeX, cont.relativeX + cont.itemWidth, g);
 		if (this.currentScreen != null) {
 			this.currentScreen.paintMenuBar(g);
 		} else {
