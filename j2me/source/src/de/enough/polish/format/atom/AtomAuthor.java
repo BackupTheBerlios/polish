@@ -25,17 +25,34 @@
  */
 package de.enough.polish.format.atom;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
+import de.enough.polish.io.Externalizable;
+
 /**
  * <p>Encapsulates information about an Atom feed author</p>
  *
  * <p>Copyright Enough Software 2010</p>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class AtomAuthor {
-	
+public class AtomAuthor
+implements Externalizable
+{
+
+	private static final int VERSION = 100;
 	private String name;
 	private String email;
 	private String uri;
+	
+	/**
+	 * Creates an empty author
+	 */
+	public AtomAuthor() {
+		// nothing to init
+	}
+
 	
 	/**
 	 * Creates a new author
@@ -49,6 +66,7 @@ public class AtomAuthor {
 		this.uri = uri;
 	}
 
+	
 	/**
 	 * @return the name
 	 */
@@ -69,7 +87,52 @@ public class AtomAuthor {
 	public String getUri() {
 		return this.uri;
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.io.Externalizable#write(java.io.DataOutputStream)
+	 */
+	public void write(DataOutputStream out) throws IOException {
+		out.writeInt( VERSION );
+		boolean notNull = (this.name != null);
+		out.writeBoolean(notNull);
+		if (notNull) {
+			out.writeUTF( this.name );
+		}
+		notNull = (this.email != null);
+		out.writeBoolean(notNull);
+		if (notNull) {
+			out.writeUTF( this.email );
+		}
+		notNull = (this.uri != null);
+		out.writeBoolean(notNull);
+		if (notNull) {
+			out.writeUTF( this.uri );
+		}
+	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.io.Externalizable#read(java.io.DataInputStream)
+	 */
+	public void read(DataInputStream in) throws IOException {
+		int version = in.readInt();
+		if (version != VERSION) {
+			throw new IOException("unknown verion " + version);
+		}
+		boolean notNull = in.readBoolean();
+		if (notNull) {
+			this.name = in.readUTF();
+		}
+		notNull = in.readBoolean();
+		if (notNull) {
+			this.email = in.readUTF();
+		}
+		notNull = in.readBoolean();
+		if (notNull) {
+			this.uri = in.readUTF();
+		}
+	}
 	
 
 }

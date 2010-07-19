@@ -25,12 +25,15 @@
  */
 package de.enough.polish.format.atom;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 
+import de.enough.polish.io.Externalizable;
 import de.enough.polish.io.RedirectHttpConnection;
 import de.enough.polish.io.StringReader;
 import de.enough.polish.util.HashMap;
@@ -47,10 +50,13 @@ import de.enough.polish.xml.XmlPullParser;
  * <p>Copyright Enough Software 2010</p>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class AtomFeed {
+public class AtomFeed
+implements Externalizable
+{
 	
+	private static final int VERSION = 100;
 	private final IdentityArrayList entries;
-	private String feeId;
+	private String feedId;
 	private String title;
 	private String subtitle;
 	private String updatedString;
@@ -128,7 +134,7 @@ public class AtomFeed {
 	 */
 	public void parse(XmlDomNode root) {
 		// general feed information:
-		this.feeId = root.getChildText("id");
+		this.feedId = root.getChildText("id");
 		this.title = root.getChildText("title");
 		this.subtitle = root.getChildText("subtitle");
 		this.updatedString = root.getChildText( "updated" );
@@ -192,7 +198,7 @@ public class AtomFeed {
 	 * @throws IOException when parsing fails
 	 */
 	public void update( XmlDomNode root, AtomUpdateConsumer consumer ) throws IOException {
-		this.feeId = root.getChildText("id");
+		this.feedId = root.getChildText("id");
 		this.title = root.getChildText("title");
 		this.subtitle = root.getChildText("subtitle");
 		this.updatedString = root.getChildText( "updated" );
@@ -230,7 +236,7 @@ public class AtomFeed {
 	 * @return the id
 	 */
 	public String getId() {
-		return this.feeId;
+		return this.feedId;
 	}
 
 
@@ -323,8 +329,8 @@ public class AtomFeed {
 	 */
 	public void update( AtomUpdateConsumer consumer, String url, HashMap requestProperties ) {
 		this.isUpdating = true;
-		InputStream in = null;
 		RedirectHttpConnection connection = null;
+		InputStream in = null;
 		try {
 			connection = new RedirectHttpConnection( url, requestProperties );
 			in = connection.openInputStream();
@@ -381,4 +387,82 @@ public class AtomFeed {
 	public boolean isUpdating() {
 		return this.isUpdating;
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.io.Externalizable#write(java.io.DataOutputStream)
+	 */
+	public void write(DataOutputStream out) throws IOException {
+		out.writeInt( VERSION );
+		boolean notNull = (this.feedId != null);
+		out.writeBoolean(notNull);
+		if (notNull) {
+			out.writeUTF(this.feedId);
+		}
+		notNull = (this.title != null);
+		out.writeBoolean(notNull);
+		if (notNull) {
+			out.writeUTF(this.title);
+		}
+		notNull = (this.subtitle != null);
+		out.writeBoolean(notNull);
+		if (notNull) {
+			out.writeUTF(this.subtitle);
+		}
+		notNull = (this.updatedString != null);
+		out.writeBoolean(notNull);
+		if (notNull) {
+			out.writeUTF(this.updatedString);
+		}
+		notNull = (this.author != null);
+		out.writeBoolean(notNull);
+		if (notNull) {
+			this.author.write(out);
+		}
+		int size = this.entries.size();
+		out.writeInt(size);
+		for (int i=0; i<size; i++) {
+			AtomEntry entry = (AtomEntry) this.entries.get(i);
+			entry.write(out);
+		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.io.Externalizable#read(java.io.DataInputStream)
+	 */
+	public void read(DataInputStream in) throws IOException {
+		int version = in.readInt();
+		if (version != VERSION) {
+			throw new IOException("unknown verion " + version);
+		}
+		boolean notNull = in.readBoolean();
+		if (notNull) {
+			this.feedId = in.readUTF();
+		}
+		notNull = in.readBoolean();
+		if (notNull) {
+			this.title = in.readUTF();
+		}
+		notNull = in.readBoolean();
+		if (notNull) {
+			this.subtitle = in.readUTF();
+		}
+		notNull = in.readBoolean();
+		if (notNull) {
+			this.updatedString = in.readUTF();
+		}
+		notNull = in.readBoolean();
+		if (notNull) {
+			this.author = new AtomAuthor();
+			this.author.read(in);
+		}
+		int size = in.readInt();
+		for (int i=0; i<size; i++) {
+			AtomEntry entry = new AtomEntry();
+			entry.read(in);
+			this.entries.add(entry);
+		}
+	}
+
 }

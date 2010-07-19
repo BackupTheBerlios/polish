@@ -25,9 +25,12 @@
  */
 package de.enough.polish.format.atom;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import de.enough.polish.io.Externalizable;
 import de.enough.polish.io.RedirectHttpConnection;
 import de.enough.polish.util.HashMap;
 import de.enough.polish.util.IdentityArrayList;
@@ -41,8 +44,11 @@ import de.enough.polish.xml.XmlDomNode;
  * <p>Copyright Enough Software 2010</p>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class AtomEntry {
+public class AtomEntry
+implements Externalizable
+{
 
+	private static final int VERSION = 100;
 	private String id;
 	private String title;
 	private String updatedString;
@@ -229,5 +235,95 @@ public class AtomEntry {
 			consumer.onAtomImageLoadFinished(this);
 		}
 		this.hasLoadedImages = true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.io.Externalizable#write(java.io.DataOutputStream)
+	 */
+	public void write(DataOutputStream out) throws IOException {
+		out.writeInt( VERSION );
+		boolean notNull = (this.id != null);
+		out.writeBoolean(notNull);
+		if (notNull) {
+			out.writeUTF(this.id);
+		}
+		notNull = (this.title != null);
+		out.writeBoolean(notNull);
+		if (notNull) {
+			out.writeUTF(this.title);
+		}
+		notNull = (this.updatedString != null);
+		out.writeBoolean(notNull);
+		if (notNull) {
+			out.writeUTF(this.updatedString);
+		}
+		notNull = (this.summary != null);
+		out.writeBoolean(notNull);
+		if (notNull) {
+			out.writeUTF(this.summary);
+		}
+		notNull = (this.content != null);
+		out.writeBoolean(notNull);
+		if (notNull) {
+			out.writeUTF(this.content);
+		}
+		notNull = (this.images != null);
+		out.writeBoolean(notNull);
+		if (notNull) {
+			int size = this.images.size();
+			out.writeInt( size );
+			for (int i=0; i<size; i++) {
+				AtomImage image = (AtomImage) this.images.get(i);
+				image.write(out);
+			}
+		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.io.Externalizable#read(java.io.DataInputStream)
+	 */
+	public void read(DataInputStream in) throws IOException {
+		int version = in.readInt();
+		if (version != VERSION) {
+			throw new IOException("unknown verion " + version);
+		}
+		boolean notNull = in.readBoolean();
+		if (notNull) {
+			this.id = in.readUTF();
+		}
+		notNull = in.readBoolean();
+		if (notNull) {
+			this.title = in.readUTF();
+		}
+		notNull = in.readBoolean();
+		if (notNull) {
+			this.updatedString = in.readUTF();
+		}
+		notNull = in.readBoolean();
+		if (notNull) {
+			this.summary = in.readUTF();
+		}
+		notNull = in.readBoolean();
+		if (notNull) {
+			this.content = in.readUTF();
+		}
+		notNull = in.readBoolean();
+		if (notNull) {
+			int size = in.readInt();
+			this.images = new IdentityArrayList(size);
+			boolean dataLoaded = false;
+			for (int i=0; i<size; i++) {
+				AtomImage image = new AtomImage();
+				image.read(in);
+				this.images.add(image);
+				if (image.getData() != null) {
+					dataLoaded = true;
+				}
+			}
+			this.hasLoadedImages = dataLoaded;
+		}
+
 	}
 }

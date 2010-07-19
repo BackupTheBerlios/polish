@@ -25,14 +25,23 @@
  */
 package de.enough.polish.format.atom;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
+import de.enough.polish.io.Externalizable;
+
 /**
  * <p>Provides access to an image of an AtomEntry</p>
  *
  * <p>Copyright Enough Software 2010</p>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class AtomImage {
+public class AtomImage
+implements Externalizable
+{
 	
+	private static final int VERSION = 100;
 	private String url;
 	private byte[] data;
 	private Object nativeRepresentation;
@@ -105,6 +114,47 @@ public class AtomImage {
 	 */
 	public void setNativeRepresentation( Object object ) {
 		this.nativeRepresentation = object;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.io.Externalizable#write(java.io.DataOutputStream)
+	 */
+	public void write(DataOutputStream out) throws IOException {
+		out.writeInt( VERSION );
+		boolean notNull = (this.url != null);
+		out.writeBoolean(notNull);
+		if (notNull) {
+			out.writeUTF(this.url);
+		}
+		notNull = (this.data != null);
+		out.writeBoolean(notNull);
+		if (notNull) {
+			out.writeInt(this.data.length);
+			out.write(this.data, 0, this.data.length);
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.io.Externalizable#read(java.io.DataInputStream)
+	 */
+	public void read(DataInputStream in) throws IOException {
+		int version = in.readInt();
+		if (version != VERSION) {
+			throw new IOException("unknown verion " + version);
+		}
+		boolean notNull = in.readBoolean();
+		if (notNull) {
+			this.url = in.readUTF();
+		}
+		notNull = in.readBoolean();
+		if (notNull) {
+			int size = in.readInt();
+			byte[] buffer = new byte[size];
+			in.read(buffer, 0, size);
+			this.data = buffer;
+		}
 	}
 
 }
