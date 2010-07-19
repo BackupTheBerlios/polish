@@ -30,6 +30,7 @@ package de.enough.polish.util;
  *
  * <p>Copyright Enough Software 2007 - 2010</p>
  * @author Robert Virkus, j2mepolish@enough.de
+ * @see TaskThread
  */
 public interface Task {
 	

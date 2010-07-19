@@ -32,6 +32,7 @@ import java.util.Vector;
  *
  * <p>Copyright Enough Software 2007 - 2010</p>
  * @author Robert Virkus, j2mepolish@enough.de
+ * @see Task
  */
 public class TaskThread extends Thread {
 	
