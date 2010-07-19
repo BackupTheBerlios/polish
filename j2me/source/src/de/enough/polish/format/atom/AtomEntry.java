@@ -25,7 +25,12 @@
  */
 package de.enough.polish.format.atom;
 
+import java.io.IOException;
+import java.io.InputStream;
+
+import de.enough.polish.io.RedirectHttpConnection;
 import de.enough.polish.util.IdentityArrayList;
+import de.enough.polish.util.StreamUtil;
 import de.enough.polish.util.TimePoint;
 import de.enough.polish.xml.XmlDomNode;
 
@@ -44,7 +49,8 @@ public class AtomEntry {
 	private String summary;
 	private String content;
 	private String contentType;
-	private IdentityArrayList imageUrls;
+	private IdentityArrayList images;
+	private boolean hasLoadedImages;
 
 	public AtomEntry() {
 		// nothing to init here
@@ -68,10 +74,10 @@ public class AtomEntry {
 				if (type != null && type.startsWith("image")) {
 					String href = linkNode.getAttribute("href");
 					if (href != null) {
-						if (this.imageUrls == null) {
-							this.imageUrls = new IdentityArrayList();
+						if (this.images == null) {
+							this.images = new IdentityArrayList();
 						}
-						this.imageUrls.add( href );
+						this.images.add( new AtomImage(href) );
 					}
 				}
 			}
@@ -79,6 +85,7 @@ public class AtomEntry {
 	}
 
 	/**
+	 * Retrieves the ID of this entry
 	 * @return the id
 	 */
 	public String getId() {
@@ -86,6 +93,7 @@ public class AtomEntry {
 	}
 
 	/**
+	 * Retrieves the title of this entry
 	 * @return the title
 	 */
 	public String getTitle() {
@@ -93,7 +101,8 @@ public class AtomEntry {
 	}
 
 	/**
-	 * @return the updatedString
+	 * Retrieves the updated time
+	 * @return the update time of this entry, might be null
 	 */
 	public TimePoint getUpdated() {
 		if (this.updated == null && this.updatedString != null) {
@@ -103,6 +112,7 @@ public class AtomEntry {
 	}
 
 	/**
+	 * Retrieves the summary of this entry
 	 * @return the summary
 	 */
 	public String getSummary() {
@@ -110,39 +120,104 @@ public class AtomEntry {
 	}
 
 	/**
+	 * Retrieves the content of this entry
 	 * @return the content
+	 * @see #getContentType()
 	 */
 	public String getContent() {
 		return this.content;
 	}
 
 	/**
-	 * @return the contentType
+	 * Retrieves the type of this content
+	 * @return the contentType, e.g. html
 	 */
 	public String getContentType() {
 		return this.contentType;
 	}
 	
 	/**
-	 * Retrieves the URLs for images that are stored in this entry
-	 * @return an array of URLs of referenced images, can be empty but not null
+	 * Determines whether this entry has any images at all.
+	 * @return true when there are referenced images
 	 */
-	public String[] getImageUrls() {
-		if (this.imageUrls == null) {
-			return new String[0];
+	public boolean hasImages() {
+		return (this.images != null);
+	}
+	
+	/**
+	 * Retrieves the images that are stored in this entry
+	 * @return an array of AtomImages of referenced images, can be empty but not null
+	 */
+	public AtomImage[] getImages() {
+		if (this.images == null) {
+			return new AtomImage[0];
 		}
-		return (String[]) this.imageUrls.toArray( new String[ this.imageUrls.size() ] );
+		return (AtomImage[]) this.images.toArray( new AtomImage[ this.images.size() ] );
 	}
 	
 	/**
 	 * Retrieves the internal array of the image URLs stored in this entry
-	 * @return either null or the internal array of stored URLs which may contain null values
+	 * @return either null or the internal array of stored AtomImages which may contain null values
 	 */
-	public Object[] getImageUrlsAsInternalArray() {
-		if (this.imageUrls == null) {
+	public Object[] getImagesAsInternalArray() {
+		if (this.images == null) {
 			return null;
 		}
-		return this.imageUrls.getInternalArray();
+		return this.images.getInternalArray();
+	}
+
+	/**
+	 * Determines whether the referenced images have been loaded yet.
+	 * @return true when the images have been loaded
+	 * @see #getImages()
+	 * @see #loadImages(AtomImageConsumer)
+	 */
+	public boolean hasLoadedImages() {
+		return this.hasLoadedImages;
 	}
 	
+	/**
+	 * Loads the referenced images in this thread.
+	 * @param consumer the consumer
+	 */
+	public void loadImages( AtomImageConsumer consumer ) {
+		if (this.images == null) {
+			consumer.onAtomImageLoadFinished(this);
+			return;
+		}
+		InputStream in = null;
+		RedirectHttpConnection connection = null;
+		for (int i=0; i<this.images.size(); i++) {
+			AtomImage image = (AtomImage) this.images.get(i);
+			String url = image.getUrl();
+			try {
+				connection = new RedirectHttpConnection( url );
+				in = connection.openInputStream();
+				if (connection.getResponseCode() != 200) {
+					throw new IOException("response code " + connection.getResponseCode() + " for " + url);
+				}
+				byte[] data = StreamUtil.readFully(in);
+				image.setData( data );
+				if (consumer != null) {
+					consumer.onAtomImageLoaded(image, this);
+				}
+				try {
+					in.close();
+					in = null;
+					connection.close();
+					connection = null;
+				} catch (Exception e) {
+					// ignore
+				}
+			} catch (Throwable e) {
+				if (consumer != null) {
+					consumer.onAtomImageLoadError(image, this, e);
+				}
+			}
+		}
+		if (consumer != null) {
+			consumer.onAtomImageLoadFinished(this);
+		}
+		this.hasLoadedImages = true;
+	}
 }

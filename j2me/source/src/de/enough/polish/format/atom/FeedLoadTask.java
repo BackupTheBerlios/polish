@@ -1,5 +1,5 @@
 /*
- * Created on Jul 14, 2010 at 10:34:52 PM.
+ * Created on Jul 19, 2010 at 7:23:36 PM.
  * 
  * Copyright (c) 2010 Robert Virkus / Enough Software
  *
@@ -25,33 +25,42 @@
  */
 package de.enough.polish.format.atom;
 
+import de.enough.polish.util.Task;
+
 /**
- * <p>Consumes updated AtomEntries of an AtomFeed</p>
+ * <p>Loads a defined feed</p>
  *
  * <p>Copyright Enough Software 2010</p>
  * @author Robert Virkus, j2mepolish@enough.de
- * @see AtomFeed#update(AtomUpdateConsumer, String)
- * @see AtomFeed#updateInBackground(AtomUpdateConsumer, String)
+ * @see de.enough.polish.util.TaskThread
  */
-public interface AtomUpdateConsumer {
+public class FeedLoadTask 
+implements Task
+{
+	
+	private final AtomFeed atomFeed;
+	private final AtomUpdateConsumer consumer;
+	private final String url;
 
 	/**
-	 * Is called when a new AtomEntry has been read
-	 * @param feed the parent feed of the entry
-	 * @param entry the read entry
+	 * Creates a new feed loading task
+	 * @param url the URL of the feed
+	 * @param feed the feed
+	 * @param consumer the update consumer for the feed
 	 */
-	void onUpdated( AtomFeed feed, AtomEntry entry );
+	public FeedLoadTask( String url, AtomFeed feed, AtomUpdateConsumer consumer) {
+		this.url = url;
+		this.atomFeed = feed;
+		this.consumer = consumer;
+	}
 	
-	/**
-	 * Is called when the update of the feed has been finished
-	 * @param feed the updated feed
-	 */
-	void onUpdateFinished(AtomFeed feed);
 	
-	/**
-	 * Informs the consumer about an error that occurred during the update
-	 * @param feed the updated feed
-	 * @param exception the exception that occurred
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.util.Task#execute()
 	 */
-	void onUpdateError( AtomFeed feed, Throwable exception );
+	public void execute() throws Exception {
+		this.atomFeed.update(this.consumer, this.url);
+	}
+	
 }

@@ -1,5 +1,5 @@
 /*
- * Created on Jul 14, 2010 at 10:34:52 PM.
+ * Created on Jul 19, 2010 at 7:23:36 PM.
  * 
  * Copyright (c) 2010 Robert Virkus / Enough Software
  *
@@ -25,33 +25,41 @@
  */
 package de.enough.polish.format.atom;
 
+import de.enough.polish.util.Task;
+
 /**
- * <p>Consumes updated AtomEntries of an AtomFeed</p>
+ * <p>Loads images for a specified AtomEntry</p>
  *
  * <p>Copyright Enough Software 2010</p>
  * @author Robert Virkus, j2mepolish@enough.de
- * @see AtomFeed#update(AtomUpdateConsumer, String)
- * @see AtomFeed#updateInBackground(AtomUpdateConsumer, String)
+ * @see de.enough.polish.util.TaskThread
  */
-public interface AtomUpdateConsumer {
+public class ImageLoadTask 
+implements Task
+{
+	
+	private final AtomEntry entry;
+	private final AtomImageConsumer consumer;
+
+
 
 	/**
-	 * Is called when a new AtomEntry has been read
-	 * @param feed the parent feed of the entry
-	 * @param entry the read entry
+	 * Creates a new feed entry image loading task
+	 * @param entry the entry
+	 * @param consumer the update consumer for the image
 	 */
-	void onUpdated( AtomFeed feed, AtomEntry entry );
+	public ImageLoadTask( AtomEntry entry, AtomImageConsumer consumer) {
+		this.entry = entry;
+		this.consumer = consumer;
+	}
 	
-	/**
-	 * Is called when the update of the feed has been finished
-	 * @param feed the updated feed
-	 */
-	void onUpdateFinished(AtomFeed feed);
 	
-	/**
-	 * Informs the consumer about an error that occurred during the update
-	 * @param feed the updated feed
-	 * @param exception the exception that occurred
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.util.Task#execute()
 	 */
-	void onUpdateError( AtomFeed feed, Throwable exception );
+	public void execute() throws Exception {
+		this.entry.loadImages(this.consumer);
+	}
+	
 }

@@ -30,8 +30,8 @@ package de.enough.polish.format.atom;
  *
  * <p>Copyright Enough Software 2010</p>
  * @author Robert Virkus, j2mepolish@enough.de
- * @see AtomFeed#update(AtomUpdateConsumer)
- * @see AtomFeed#updateInBackground(AtomUpdateConsumer)
+ * @see AtomFeed#update(AtomUpdateConsumer, String)
+ * @see AtomFeed#updateInBackground(AtomUpdateConsumer, String)
  */
 public interface AtomUpdateConsumer {
 

@@ -146,8 +146,8 @@ public class AtomFeedTest extends TestCase {
 			+ "<p>Rumours that Seacom was looking at either forming a merger or formal alliance with Main One, the Nigerian-based private equity company whose cable stretching from Lagos to Portugal became operational last week, have been circulating for some time.</p>"
 			+ "<br /> ";
 		assertEquals( content, entry.getContent() );
-		assertEquals( 1, entry.getImageUrls().length );
-		assertEquals("http://www.newstoday.co.za/images/stories/stories/october09/internet1005.jpg", entry.getImageUrls()[0] );
+		assertEquals( 1, entry.getImages().length );
+		assertEquals("http://www.newstoday.co.za/images/stories/stories/october09/internet1005.jpg", entry.getImages()[0].getUrl() );
 		
 	}
 }

@@ -251,7 +251,8 @@ public class AtomFeed {
 
 
 	/**
-	 * @return the updated
+	 * Retrieves the updated time
+	 * @return the update time of this feed, might be null
 	 */
 	public TimePoint getUpdated() {
 		if (this.updated == null && this.updatedString != null) {
@@ -261,6 +262,10 @@ public class AtomFeed {
 	}
 
 
+	/**
+	 * Retrieves information about the author of this feed.
+	 * @return the author of this feed, might be null
+	 */
 	public AtomAuthor getAuthor() {
 		return this.author;
 	}
@@ -308,9 +313,13 @@ public class AtomFeed {
 	public void update( AtomUpdateConsumer consumer, String url ) {
 		this.isUpdating = true;
 		InputStream in = null;
+		RedirectHttpConnection connection = null;
 		try {
-			RedirectHttpConnection connection = new RedirectHttpConnection( url );
+			connection = new RedirectHttpConnection( url );
 			in = connection.openInputStream();
+			if (connection.getResponseCode() != 200) {
+				throw new IOException("response code " + connection.getResponseCode() + " for " + url);
+			}
 			update( in, consumer ); 
 		} catch (Throwable e) {
 			if (consumer != null) {
@@ -323,6 +332,13 @@ public class AtomFeed {
 			if (in != null) {
 				try {
 					in.close();
+				} catch (IOException e) {
+					// ignore
+				}
+			}
+			if (connection != null) {
+				try {
+					connection.close();
 				} catch (IOException e) {
 					// ignore
 				}

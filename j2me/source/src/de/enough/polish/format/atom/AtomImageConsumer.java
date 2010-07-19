@@ -1,5 +1,5 @@
 /*
- * Created on Jul 14, 2010 at 10:34:52 PM.
+ * Created on Jul 19, 2010 at 5:45:15 PM.
  * 
  * Copyright (c) 2010 Robert Virkus / Enough Software
  *
@@ -26,32 +26,33 @@
 package de.enough.polish.format.atom;
 
 /**
- * <p>Consumes updated AtomEntries of an AtomFeed</p>
+ * <p>Informs about images loaded by an atom entry</p>
  *
  * <p>Copyright Enough Software 2010</p>
  * @author Robert Virkus, j2mepolish@enough.de
- * @see AtomFeed#update(AtomUpdateConsumer, String)
- * @see AtomFeed#updateInBackground(AtomUpdateConsumer, String)
+ * @see AtomEntry#loadImages(AtomImageConsumer)
  */
-public interface AtomUpdateConsumer {
-
-	/**
-	 * Is called when a new AtomEntry has been read
-	 * @param feed the parent feed of the entry
-	 * @param entry the read entry
-	 */
-	void onUpdated( AtomFeed feed, AtomEntry entry );
+public interface AtomImageConsumer {
 	
 	/**
-	 * Is called when the update of the feed has been finished
-	 * @param feed the updated feed
+	 * Notifies about a successful loaded image
+	 * @param image the image
+	 * @param entry the source AtomEntry
 	 */
-	void onUpdateFinished(AtomFeed feed);
+	void onAtomImageLoaded( AtomImage image, AtomEntry entry );
 	
 	/**
-	 * Informs the consumer about an error that occurred during the update
-	 * @param feed the updated feed
+	 * Notifies about an error that occurred while loading images
+	 * @param image the image
+	 * @param entry the source AtomEntry
 	 * @param exception the exception that occurred
 	 */
-	void onUpdateError( AtomFeed feed, Throwable exception );
+	void onAtomImageLoadError( AtomImage image, AtomEntry entry, Throwable exception );
+	
+	/**
+	 * Notifies the consumer that all images have been loaded.
+	 * @param entry the source AtomEntry
+	 */
+	void onAtomImageLoadFinished( AtomEntry entry );
+
 }
