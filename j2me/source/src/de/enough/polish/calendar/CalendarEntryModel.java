@@ -10,6 +10,8 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 import de.enough.polish.io.Externalizable;
+import de.enough.polish.util.Arrays;
+import de.enough.polish.util.Comparator;
 import de.enough.polish.util.IdentityArrayList;
 import de.enough.polish.util.IdentityHashMap;
 import de.enough.polish.util.Iterator;
@@ -31,6 +33,7 @@ implements Externalizable
 	private final IdentityArrayList rootCategories;
 	private IdentityArrayList listeners;
 	private boolean isDirty;
+	private Comparator rootCategoriesComparator;
 	
 	
 	/**
@@ -326,18 +329,28 @@ implements Externalizable
 	
 	/**
 	 * Retrieves all root categories.
+	 * If you want to sort the root categories please register a comparator with setRootCategiriesComparator().
+	 * 
 	 * @return an array root categories, can be empty but not null.
 	 * @see #getEnabledRootCategories()
+	 * @see #setRootCategoriesComparator(Comparator)
 	 */
 	public CalendarCategory[] getRootCategories() {
-		return (CalendarCategory[]) this.rootCategories.toArray(new CalendarCategory[ this.rootCategories.size()]);
+		CalendarCategory[] roots = (CalendarCategory[]) this.rootCategories.toArray(new CalendarCategory[ this.rootCategories.size()]);
+		if (this.rootCategoriesComparator != null) {
+			Arrays.sort(roots, this.rootCategoriesComparator);
+		}
+		return roots;
 	}
 
 	
 	/**
 	 * Retrieves all enabled root categories.
+	 * If you want to sort the root categories please register a comparator with setRootCategiriesComparator().
+	 * 
 	 * @return an array of active root categories, can be empty but not null.
-	 * @see CalendarEntryModel#getRootCategories()
+	 * @see #getRootCategories()
+	 * @see #setRootCategoriesComparator(Comparator)
 	 */
 	public CalendarCategory[] getEnabledRootCategories() {
 		IdentityArrayList list = new IdentityArrayList();
@@ -347,7 +360,21 @@ implements Externalizable
 				list.add( category );
 			}
 		}
-		return (CalendarCategory[]) list.toArray( new CalendarCategory[ list.size() ]);
+		CalendarCategory[] roots = (CalendarCategory[]) list.toArray( new CalendarCategory[ list.size() ]);
+		if (this.rootCategoriesComparator != null) {
+			Arrays.sort(roots, this.rootCategoriesComparator);
+		}
+		return roots;
+	}
+	
+	/**
+	 * Sets a comparator for sorting the root categories whenever calling getRootCategories or getEnabeldRootCategories.
+	 * @param comparator the sorting comparator, null to deactive sorting
+	 * @see #getRootCategories()
+	 * @see #getEnabledRootCategories()
+	 */
+	public void setRootCategoriesComparator( Comparator comparator ) {
+		this.rootCategoriesComparator = comparator;
 	}
 	
 	/**
