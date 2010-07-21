@@ -3,8 +3,7 @@ package de.enough.skylight.renderer;
 import de.enough.polish.util.ArrayList;
 import de.enough.skylight.dom.Document;
 import de.enough.skylight.dom.impl.DocumentImpl;
-import de.enough.skylight.renderer.builder.DocumentBuilder;
-import de.enough.skylight.renderer.builder.ViewportBuilder;
+import de.enough.skylight.renderer.builder.DocumentManager;
 
 public class Renderer implements Runnable{
 	/**
@@ -52,19 +51,16 @@ public class Renderer implements Runnable{
 	 */
 	int state = STATE_VOID;
 	
-	DocumentBuilder documentBuilder;
-	
-	ViewportBuilder viewportBuilder;
+	DocumentManager documentBuilder;
 	
 	/**
 	 * Creates a new Renderer instance
 	 * @param viewport the viewport to render to
 	 * @param policy the policy for this renderer
 	 */
-	public Renderer(DocumentBuilder documentBuilder, ViewportBuilder viewportBuilder) {
+	public Renderer(DocumentManager documentBuilder) {
 		this.listeners = new ArrayList();
 		this.documentBuilder = documentBuilder;
-		this.viewportBuilder = viewportBuilder;
 	}
 	
 	/**
@@ -92,7 +88,7 @@ public class Renderer implements Runnable{
 		
 		for (int index = 0; index < this.listeners.size(); index++) {
 			RendererListener listener = (RendererListener)this.listeners.get(index);
-			listener.onState(this, state);
+			listener.onRenderStateChange(state);
 		}
 	}
 	
@@ -111,21 +107,13 @@ public class Renderer implements Runnable{
 		
 		setState(STATE_BUILD_DOCUMENT);
 		
-		DocumentImpl document = this.documentBuilder.build();
-		this.viewportBuilder.setDocument(document);
-		
 		setState(STATE_BUILD_VIEW);
-		
-		this.viewportBuilder.build();
 		
 		setState(STATE_READY);
 	}
 
-	public DocumentBuilder getDocumentBuilder() {
+	public DocumentManager getDocumentBuilder() {
 		return this.documentBuilder;
 	}
 
-	public ViewportBuilder getViewportBuilder() {
-		return this.viewportBuilder;
-	}	
 }

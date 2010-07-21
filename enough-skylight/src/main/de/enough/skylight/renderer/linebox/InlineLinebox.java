@@ -122,13 +122,13 @@ public class InlineLinebox {
 	
 	public String toString() {
 		return new ToStringHelper("InlineLineBox").
-		add("inline relative left", this.inlineRelativeLeft).
-		add("inline relative right", this.inlineRelativeRight).
-		add("block relative y", this.blockRelativeTop).
-		add("height", this.lineHeight).
-		add("width", getWidth()).
-		add("available width", this.availableWidth).
-		add("partitions", this.partitions.size()).
+		set("inline relative left", this.inlineRelativeLeft).
+		set("inline relative right", this.inlineRelativeRight).
+		set("block relative y", this.blockRelativeTop).
+		set("height", this.lineHeight).
+		set("width", getWidth()).
+		set("available width", this.availableWidth).
+		set("partitions", this.partitions.size()).
 		toString();
 	}
 }

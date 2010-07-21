@@ -1,13 +1,15 @@
 package de.enough.skylight.renderer.node;
 
-import de.enough.ovidiu.Box;
-import de.enough.ovidiu.NodeInterface;
+import de.enough.polish.ui.Color;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
+import de.enough.polish.ui.StyleSheet;
 import de.enough.polish.util.ArrayList;
+import de.enough.polish.util.TextUtil;
 import de.enough.polish.util.ToStringHelper;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.impl.DomNodeImpl;
+import de.enough.skylight.modeller.Box;
 import de.enough.skylight.renderer.ViewportContext;
 import de.enough.skylight.renderer.css.HtmlCssElement;
 import de.enough.skylight.renderer.element.BlockContainingBlock;
@@ -19,16 +21,16 @@ import de.enough.skylight.renderer.node.handler.html.BrHandler;
 import de.enough.skylight.renderer.node.handler.html.ImgHandler;
 import de.enough.skylight.renderer.node.handler.html.TextHandler;
 
-public class CssElement implements HtmlCssElement, NodeInterface{
+public class CssElement implements HtmlCssElement{
 	
 	public final static int CONTENT_CONTAINING_ELEMENT = 0x00;
 	public final static int CONTENT_TEXT = 0x01;
 	public final static int CONTENT_IMAGE = 0x02;
 	public final static int CONTENT_CONTAINING_TEXT = 0x03;
 
-        public final static int CONTENT_BR = 0x04;
+	public final static int CONTENT_BR = 0x04;
 
-        public Box box = null ;
+    public Box box = null ;
 	
 	String display = HtmlCssElement.Display.INLINE;
 	
@@ -59,6 +61,14 @@ public class CssElement implements HtmlCssElement, NodeInterface{
 	ArrayList children;
 	
 	boolean interactive;
+	
+	final short FOCUSED_STYLE_KEY = 1;
+	
+	//#style element
+	final Style defaultStyle = new Style();
+	final Style defaultFocusedStyle = getFocusedStyle(this.defaultStyle);
+	//#style text
+	final Style defaultTextStyle =  new Style();
 	
 	public String getValue()
 	{
@@ -104,7 +114,7 @@ public class CssElement implements HtmlCssElement, NodeInterface{
 	}
 	
 	protected void buildStyle() {
-		this.style = CssStyle.getStyle(this);
+		this.style = getStyle(this);
 		
 		setStyle(this.style);
 
@@ -114,9 +124,9 @@ public class CssElement implements HtmlCssElement, NodeInterface{
 			if(this.parent != null) {
 				Style parentTextStyle = this.parent.getTextStyle();
 				
-				this.textStyle = CssStyle.createTextStyle(parentTextStyle, this.style);
+				this.textStyle = createTextStyle(parentTextStyle, this.style);
 			} else {
-				this.textStyle = CssStyle.createTextStyle(null, this.style);
+				this.textStyle = createTextStyle(null, this.style);
 			}
 		}
 	}
@@ -138,7 +148,7 @@ public class CssElement implements HtmlCssElement, NodeInterface{
 	public void update() {
 		this.handler.handle(this);
 		
-		this.style = CssStyle.getStyle(this);
+		this.style = getStyle(this);
 		
 		setStyle(this.style);
 
@@ -157,7 +167,7 @@ public class CssElement implements HtmlCssElement, NodeInterface{
 	
 	public void setContainingBlock(ContainingBlock containingBlock) {
 		if(containingBlock != null) {
-			CssStyle.apply(this.style, containingBlock);
+			containingBlock.setStyle(this.style);
 			
 			if(this.interactive) {
 				//#debug sl.debug.event
@@ -378,16 +388,203 @@ public class CssElement implements HtmlCssElement, NodeInterface{
 	 */
 	public String toString() {
 		return new ToStringHelper("CssElement").
-		add("handler", this.handler).
-		add("node", this.node).
-		add("interactive", this.interactive).
-		add("children.size", this.children.size()).
-		add("float", this.floating).
-		add("position", this.position).
-		add("display", this.display).
-		add("text-align", this.textAlign).
-		add("vertical-align", this.verticalAlign).
+		set("handler", this.handler).
+		set("node", this.node).
+		set("interactive", this.interactive).
+		set("children.size", this.children.size()).
+		set("float", this.floating).
+		set("position", this.position).
+		set("display", this.display).
+		set("text-align", this.textAlign).
+		set("vertical-align", this.verticalAlign).
 		toString();
+	}
+	
+	private Style createTextStyle(Style baseStyle, Style extendStyle) {
+		if(baseStyle != null && extendStyle != null) {
+			if(baseStyle.name.equals(extendStyle.name)) {
+				return baseStyle;
+			}
+		}
+		
+		//#mdebug sl.debug.style
+		if(baseStyle != null) {
+			System.out.println("creating text style : " + baseStyle.name + " / " + extendStyle.name);
+		} else {
+			System.out.println("creating text style from " + extendStyle.name);
+		}
+		//#enddebug
+		
+		Style resultStyle = new Style(defaultTextStyle);
+		
+		// get the attributes to extend the style 
+		/*String x = extendStyle.getProperty("float");
+		String y = extendStyle.getProperty("display");*/
+		Color extendFontColor = extendStyle.getColorProperty("font-color");
+		Integer extendFontStyle = extendStyle.getIntProperty("font-style");
+		Integer extendFontSize = extendStyle.getIntProperty("font-size"); 
+		Style extendFocusedStyle = getFocusedStyle(extendStyle);
+               
+
+                /*
+                extendFontSize = extendStyle.getIntProperty("margin-left");
+                extendFontSize = extendStyle.getIntProperty("margin-right");
+                extendFontSize = extendStyle.getIntProperty("margin-top");
+                extendFontSize = extendStyle.getIntProperty("margin-bottom");
+
+                extendFontSize = extendStyle.getIntProperty("padding-left");
+                extendFontSize = extendStyle.getIntProperty("padding-right");
+                extendFontSize = extendStyle.getIntProperty("padding-top");
+                extendFontSize = extendStyle.getIntProperty("padding-bottom"); */
+		
+		// if a base style is given ...
+		if(baseStyle == null) {
+			resultStyle.name = extendStyle.name;
+			resultStyle.addAttribute("font-color", extendFontColor);
+			resultStyle.addAttribute("font-style", extendFontStyle);
+			resultStyle.addAttribute("font-size", extendFontSize);	
+			resultStyle.addAttribute("focused-style", extendFocusedStyle);
+		} else {
+			// get default size and color from text style
+			Integer defaultFontSize = resultStyle.getIntProperty("font-size");
+			Color defaultFontColor = resultStyle.getColorProperty("font-color");
+			
+			// get font attributes from the base style
+			Color baseFontColor = baseStyle.getColorProperty("font-color");
+			Integer baseFontStyle = baseStyle.getIntProperty("font-style");
+			Integer baseFontSize = baseStyle.getIntProperty("font-size");
+			
+			Color resultTextColor = (Color) extendValue(baseFontColor, extendFontColor, defaultFontColor);
+			Integer resultTextStyle = extendFlag(baseFontStyle, extendFontStyle);
+			Integer resultTextSize = (Integer) extendValue(baseFontSize, extendFontSize, defaultFontSize);
+			
+			Style baseFocusedStyle = getFocusedStyle(baseStyle);
+			
+			// add the resulting attributes to the text style
+			resultStyle.name = baseStyle.name + "." + extendStyle.name;
+			resultStyle.addAttribute("font-color", resultTextColor);
+			resultStyle.addAttribute("font-style", resultTextStyle);
+			resultStyle.addAttribute("font-size", resultTextSize);
+			
+			// extend the focused style
+			if(extendFocusedStyle != null) {
+				Style resultFocusedStyle = createTextStyle(baseFocusedStyle,extendFocusedStyle);
+				resultStyle.addAttribute("focused-style", resultFocusedStyle);
+			} 
+		}
+		return resultStyle;
+	}
+	
+	private Integer extendFlag(Integer baseFlag, Integer extendFlag ) {
+		if(extendFlag == null) {
+			return baseFlag;
+		} else {
+			// extend the flags
+			return new Integer( baseFlag.intValue() | extendFlag.intValue() );
+		}
+	}
+	
+	private Object extendValue(Object baseValue, Object extendValue, Object defaultValue) {
+		// if the value to extend is not the default value ...
+		Object resultValue = defaultValue;
+		if(extendValue != null && !extendValue.equals(defaultValue)) {
+			// set it as the result value
+			resultValue = extendValue;
+		} else {
+			// set the base value as the result value
+			resultValue = baseValue;
+		}
+		
+		return resultValue;
+	}
+	
+	private Style getFocusedStyle(Style style) {
+		return (Style)style.getObjectProperty("focused-style");
+	}
+	
+	private Style createStyle(Style baseStyle, Style extendStyle) {
+		if(baseStyle != null && extendStyle != null) {
+			if(baseStyle.name.equals(extendStyle.name)) {
+				return baseStyle;
+			}
+		}
+		
+		//#debug sl.debug.style
+		System.out.println("extending style " + baseStyle.name + " with style " + extendStyle.name);
+		
+		Style result = new Style(baseStyle);
+		
+		result.name = baseStyle.name + "." + extendStyle.name;
+		
+		if(extendStyle.layout != Item.LAYOUT_DEFAULT) {
+			result.layout = extendStyle.layout;
+		}
+		
+		if(extendStyle.border != null) {
+			result.border = extendStyle.border;
+		}
+				
+		if(extendStyle.background != null) {
+			result.background = extendStyle.background;
+		}
+		
+		Style baseFocusedStyle = (Style) baseStyle.getObjectProperty("focused-style");
+		short[] keys = extendStyle.getRawAttributeKeys();
+		
+		if(keys != null) {
+			for (int i = 0; i < keys.length; i++) {
+				short key = keys[i];
+				Object value = extendStyle.getObjectProperty(key);
+				
+				if(key == FOCUSED_STYLE_KEY && baseFocusedStyle != null && value != null) {
+					Style extendFocusedStyle = (Style)value;
+					Style resultFocusedStyle = createStyle(baseFocusedStyle, extendFocusedStyle);
+					result.addAttribute(key, resultFocusedStyle);
+				} else
+				{
+					if(value != null) {
+						result.addAttribute(key, value);
+					}
+				}
+			}
+		}
+		
+		return result;
+	}
+	
+	private Style getStyle(CssElement element) {
+		NodeHandler handler = element.getHandler();
+		DomNode node = element.getNode();
+		
+		String clazz = NodeUtils.getAttributeValue(node, "class");
+		
+		Style style = handler.getDefaultStyle(element);
+		
+		if(clazz != null) {
+                        String [] classes = TextUtil.split(clazz, ' ');
+                        int size = classes.length;
+                        for (int i=0;i<size;i++)
+                        {
+                            Style classStyle = StyleSheet.getStyle(classes[i]);
+
+                            if(classStyle != null) {
+                                    //#debug sl.debug.style
+                                    System.out.println("create style for " + handler.getTag() + " : " + classes[i]);
+
+                                    style = createStyle(style, classStyle);
+                            } else {
+                                    //#debug error
+                                    System.out.println("style " + classes[i] + " could not be found");
+                            }
+                        }
+                        return style;
+
+		}
+		
+		//#debug sl.debug.style
+		System.out.println("returning default style for " + handler.getTag() + " : " + style.name);
+		
+		return style;
 	}
 	
 }

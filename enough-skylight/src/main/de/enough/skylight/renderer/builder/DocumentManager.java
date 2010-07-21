@@ -6,28 +6,15 @@ import java.io.InputStream;
 import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
 
-import de.enough.skylight.dom.Document;
 import de.enough.skylight.dom.impl.DocumentImpl;
 import de.enough.skylight.dom.impl.DomParser;
 
-public class DocumentBuilder extends Thread{
+public class DocumentManager extends Thread{
 	
 	final static String PREFIX_HTTP = "http://";
 	final static String PREFIX_FILE = "file://";
 
-	DomParser domParser;
-	
-	String url;
-
-	public String getUrl() {
-		return url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
-	}
-	
-	public InputStream open(String url) throws IllegalArgumentException {
+	private InputStream open(String url) throws IllegalArgumentException {
 		
 		if(url == null) {
 			throw new IllegalArgumentException("url must not be null");
@@ -42,16 +29,16 @@ public class DocumentBuilder extends Thread{
 				HttpConnection connection = (HttpConnection)Connector.open(url);
 				return connection.openInputStream();
 			} catch (IOException e) {
-				throw new IllegalArgumentException("could not open url : " + this.url);
+				throw new IllegalArgumentException("could not open url : " + url);
 			}
 		} else {
 			throw new IllegalArgumentException("unknown url format");
 		}
 	}
 	
-	public DocumentImpl build() {
+	public DocumentImpl build(String urlPath) {
 		try {
-			InputStream stream = open(this.url);
+			InputStream stream = open(urlPath);
 			DocumentImpl document = new DomParser().parseDocument(stream);
 			return document;
 		} catch(Exception e) {

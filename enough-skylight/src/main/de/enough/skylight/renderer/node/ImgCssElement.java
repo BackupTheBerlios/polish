@@ -1,10 +1,11 @@
 package de.enough.skylight.renderer.node;
 
-import de.enough.ovidiu.StyleManager;
+
 import javax.microedition.lcdui.Image;
 
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.impl.DomNodeImpl;
+import de.enough.skylight.modeller.StyleManager;
 import de.enough.skylight.renderer.Viewport;
 import de.enough.skylight.renderer.ViewportContext;
 

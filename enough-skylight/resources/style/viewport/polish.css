@@ -26,8 +26,27 @@ viewport extends element {
 
 viewport:hover{}
 
+boxcontainer {
+	padding: 0;
+	margin: 0;
+	/*
+	font-size: small;
+	font-color: text;
+	font-style: normal;
+	*/
+}
+
+boxcontainer:hover{}
+
 title {
 	background-color: black;
 	font-color: white;
 	layout: expand | newline-after;
+}
+
+/* This style is needed so that the preprocessor does not remove property handling code from the Style class. The real
+values are set in the BoxRenderer. */
+dummyStringItem{
+	font-size: large;
+	font-color: blue;
 }

@@ -9,8 +9,7 @@ package de.enough.skylight.renderer;
 public interface RendererListener {
 	
 	/**
-	 * @param renderer the renderer
 	 * @param state the state of the renderer
 	 */
-	public void onState(Renderer renderer, int state);
+	public void onRenderStateChange(int state);
 }

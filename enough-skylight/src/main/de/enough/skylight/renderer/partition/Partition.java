@@ -261,16 +261,16 @@ public class Partition {
 	 */
 	public String toString() {
 		return new ToStringHelper("Partition").
-		add("type", toString(this.type)).
-		add("inline relative X", this.inlineRelativeLeft).
-		add("linebox relative X", this.lineboxRelativeX).
-		add("linebox relative Y", this.lineboxRelativeY).
-		add("width", this.width).
-		add("height", this.height).
-		add("is newline", hasAttribute(ATTRIBUTE_NEWLINE)).
-		add("is whitespace", hasAttribute(ATTRIBUTE_WHITESPACE)).
-		add("parent item", this.parentItem).
-		add("linebox", this.linebox).
+		set("type", toString(this.type)).
+		set("inline relative X", this.inlineRelativeLeft).
+		set("linebox relative X", this.lineboxRelativeX).
+		set("linebox relative Y", this.lineboxRelativeY).
+		set("width", this.width).
+		set("height", this.height).
+		set("is newline", hasAttribute(ATTRIBUTE_NEWLINE)).
+		set("is whitespace", hasAttribute(ATTRIBUTE_WHITESPACE)).
+		set("parent item", this.parentItem).
+		set("linebox", this.linebox).
 		toString();
 	}
 	

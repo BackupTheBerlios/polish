@@ -53,9 +53,8 @@
     			</obfuscator>
     			
     			<debug if="test" level="info" showLogOnError="true" verbose="true">
-    				<!--
-    				<filter level="debug" class="de.enough.polish.ui.ChoiceTextField" />
-    				-->
+    				<filter level="debug" class="de.enough.polish.ui.ContainerView" />
+    				<filter level="debug" class="de.enough.skylight.*" />
     			</debug>
     			
     			<resources

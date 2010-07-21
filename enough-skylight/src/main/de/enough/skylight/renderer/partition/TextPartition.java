@@ -36,17 +36,17 @@ public class TextPartition extends Partition{
 	 */
 	public String toString() {
 		return new ToStringHelper("TextPartition").
-		add("inline relative X", this.inlineRelativeLeft).
-		add("relative X", this.lineboxRelativeX).
-		add("relative Y", this.lineboxRelativeY).
-		add("width", this.width).
-		add("height", this.height).
-		add("is newline", hasAttribute(ATTRIBUTE_NEWLINE)).
-		add("is whitespace", hasAttribute(ATTRIBUTE_WHITESPACE)).
-		add("parent item", this.parentItem).
-		add("linebox", this.linebox).
-		add("index", this.index).
-		add("length", this.length).
+		set("inline relative X", this.inlineRelativeLeft).
+		set("relative X", this.lineboxRelativeX).
+		set("relative Y", this.lineboxRelativeY).
+		set("width", this.width).
+		set("height", this.height).
+		set("is newline", hasAttribute(ATTRIBUTE_NEWLINE)).
+		set("is whitespace", hasAttribute(ATTRIBUTE_WHITESPACE)).
+		set("parent item", this.parentItem).
+		set("linebox", this.linebox).
+		set("index", this.index).
+		set("length", this.length).
 		toString();
 	}
 }

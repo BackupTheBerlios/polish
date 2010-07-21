@@ -21,9 +21,9 @@ public class FloatContainingBlock extends BlockContainingBlock {
 	
 	public String toString() {
 		return new ToStringHelper("FloatContainingBlock").
-		add("hashcode", this.hashCode()).
-		add("focused", this.isFocused).
-		add("element", this.layoutDescriptor.getCssElement()).
+		set("hashcode", this.hashCode()).
+		set("focused", this.isFocused).
+		set("element", this.layoutDescriptor.getCssElement()).
 		toString();
 	}
 }

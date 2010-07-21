@@ -1,6 +1,5 @@
 package de.enough.skylight.renderer.node;
 
-import de.enough.ovidiu.NodeInterface;
 import de.enough.polish.ui.Item;
 
 public class DefaultHandler extends NodeHandler{

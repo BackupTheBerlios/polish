@@ -85,8 +85,8 @@ public class InlineContainingBlock extends ContainingBlock {
 
 	public String toString() {
 		return new ToStringHelper("InlineContainingBlock").
-		add("focused", this.isFocused).
-		add("element", this.layoutDescriptor.getCssElement()).
+		set("focused", this.isFocused).
+		set("element", this.layoutDescriptor.getCssElement()).
 		toString();
 	}
 

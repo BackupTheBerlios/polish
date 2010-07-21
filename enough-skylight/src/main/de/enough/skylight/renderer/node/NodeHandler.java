@@ -60,9 +60,10 @@ public abstract class NodeHandler {
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
+	@Override
 	public String toString() {
 		return new ToStringHelper("NodeHandler").
-		add("tag", getTag()).
+		set("tag", getTag()).
 		toString();
 	}
 }

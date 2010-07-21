@@ -74,9 +74,9 @@ public class BlockContainingBlock extends ContainingBlock {
 	
 	public String toString() {
 		return new ToStringHelper("BlockContainingBlock").
-		add("hashcode", this.hashCode()).
-		add("focused", this.isFocused).
-		add("element", this.layoutDescriptor.getCssElement()).
+		set("hashcode", this.hashCode()).
+		set("focused", this.isFocused).
+		set("element", this.layoutDescriptor.getCssElement()).
 		toString();
 	}
 }

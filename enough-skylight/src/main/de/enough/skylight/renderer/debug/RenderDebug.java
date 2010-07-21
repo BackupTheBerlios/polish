@@ -16,10 +16,10 @@ public class RenderDebug {
 	public static void printClipping(Graphics g) {
 		System.out.println(
 			new ToStringHelper("Clipping").
-			add("x", g.getClipX()).
-			add("y", g.getClipY()).
-			add("width", g.getClipWidth()).
-			add("height", g.getClipHeight()).
+			set("x", g.getClipX()).
+			set("y", g.getClipY()).
+			set("width", g.getClipWidth()).
+			set("height", g.getClipHeight()).
 			toString()
 		);
 	}

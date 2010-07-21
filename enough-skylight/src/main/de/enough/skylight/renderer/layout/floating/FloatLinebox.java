@@ -152,11 +152,11 @@ public class FloatLinebox {
 	
 	public String toString() {
 		return new ToStringHelper("FloatLineBox").
-		add("orientation",this.orientation).
-		add("contextRelativeLeft",this.contextRelativeLeft).
-		add("contextRelativeTop",this.contextRelativeTop).
-		add("width",this.width).
-		add("height",this.height).
+		set("orientation",this.orientation).
+		set("contextRelativeLeft",this.contextRelativeLeft).
+		set("contextRelativeTop",this.contextRelativeTop).
+		set("width",this.width).
+		set("height",this.height).
 		toString();
 	}
 }

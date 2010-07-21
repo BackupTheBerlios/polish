@@ -17,7 +17,7 @@ import de.enough.skylight.renderer.ViewportContext;
 import de.enough.skylight.renderer.css.HtmlCssInterpreter;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.node.NodeUtils;
-import de.enough.skylight.util.UrlUtil;
+import de.enough.util.UrlUtil;
 
 public class LinkHandler extends HeadNodeHandler {
 	final static String PREFIX_HTTP = "http://";
@@ -40,7 +40,7 @@ public class LinkHandler extends HeadNodeHandler {
 		if (rel != null && rel.equals(REL_STYLESHEET) && type != null
 				&& type.equals(TYPE_TEXT_CSS) && href != null) {
 
-			String url = UrlUtil.completeUrl(href, context);
+			String url = UrlUtil.completeUrl(href, context.getLocationHost());
 			
 			ContentDescriptor descriptor = new ContentDescriptor(url);
 			descriptor.setCachingPolicy(ContentDescriptor.CACHING_READ);

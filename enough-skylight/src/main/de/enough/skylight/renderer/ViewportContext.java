@@ -7,14 +7,9 @@ import de.enough.skylight.renderer.node.CssElement;
 public interface ViewportContext {
 	
 	public void setTitle(String title);
-	
-	public String getLocationHost();
-	
 	public String getLocationUrl();
-	
+	public String getLocationHost();
 	public ContentLoader getContentLoader();
-	
-	public void setLocation(String url);
-	
+	public void displayPage(String url);
 	public void notifyUserEvent(CssElement cssElement, UserEvent event);
 }

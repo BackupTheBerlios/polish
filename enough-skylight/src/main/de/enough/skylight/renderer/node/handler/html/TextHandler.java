@@ -1,13 +1,10 @@
 package de.enough.skylight.renderer.node.handler.html;
 
-import de.enough.ovidiu.NodeInterface;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.skylight.dom.DomNode;
-import de.enough.skylight.dom.impl.DomNodeImpl;
 import de.enough.skylight.renderer.element.TextBlock;
 import de.enough.skylight.renderer.node.CssElement;
-import de.enough.skylight.renderer.node.CssStyle;
 import de.enough.skylight.renderer.node.NodeHandler;
 
 public class TextHandler extends BodyNodeHandler{

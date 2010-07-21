@@ -1,4 +1,4 @@
-package de.enough.skylight.util;
+package de.enough.util;
 
 import de.enough.skylight.renderer.ViewportContext;
 
@@ -7,11 +7,9 @@ public class UrlUtil {
 	
 	static String PREFIX_RESOURCE = "resources://";
 	
-	public static String completeUrl(String url, ViewportContext context) {
+	public static String completeUrl(String url, String host) {
 		String result;
 		
-		String host = context.getLocationHost();
-
 		url = url.trim();
 		
 		if(url.startsWith(PREFIX_HTTP) || url.startsWith(PREFIX_RESOURCE)) {

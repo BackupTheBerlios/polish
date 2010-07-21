@@ -3,7 +3,6 @@ package de.enough.skylight.renderer.node.handler.html;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
-import de.enough.ovidiu.NodeInterface;
 import de.enough.polish.content.ContentDescriptor;
 import de.enough.polish.content.ContentException;
 import de.enough.polish.content.transform.impl.ImageContentTransform;
@@ -16,7 +15,7 @@ import de.enough.skylight.renderer.ViewportContext;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.node.ImgCssElement;
 import de.enough.skylight.renderer.node.NodeUtils;
-import de.enough.skylight.util.UrlUtil;
+import de.enough.util.UrlUtil;
 
 public class ImgHandler extends BodyNodeHandler{
 	
@@ -35,7 +34,7 @@ public class ImgHandler extends BodyNodeHandler{
 		String src = NodeUtils.getAttributeValue(element.getNode(), "src");
 		
 		try {
-			String url = UrlUtil.completeUrl(src, context);
+			String url = UrlUtil.completeUrl(src, context.getLocationHost());
 			
 			ContentDescriptor descriptor = new ContentDescriptor(url);
 			descriptor.setTransformID(ImageContentTransform.ID);
