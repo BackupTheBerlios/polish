@@ -54,7 +54,7 @@ public class AtomFeed
 implements Externalizable
 {
 	
-	private static final int VERSION = 100;
+	private static final int VERSION = 101;
 	private final IdentityArrayList entries;
 	private String feedId;
 	private String title;
@@ -267,6 +267,13 @@ implements Externalizable
 		return this.updated;
 	}
 
+	/**
+	 * Sets the update time for this feed
+	 * @param tp the update time
+	 */
+	public void setUpdated( TimePoint tp) {
+		this.updated = tp;
+	}
 
 	/**
 	 * Retrieves information about the author of this feed.
@@ -337,7 +344,12 @@ implements Externalizable
 			if (connection.getResponseCode() != 200) {
 				throw new IOException("response code " + connection.getResponseCode() + " for " + url);
 			}
-			update( in, consumer ); 
+			String contentEncoding = null;
+			contentEncoding = connection.getEncoding();
+			if (contentEncoding == null) {
+				contentEncoding = connection.getHeaderField("Content-Encoding");
+			}
+			update( in, contentEncoding, consumer ); 
 		} catch (Throwable e) {
 			if (consumer != null) {
 				consumer.onUpdateError(this, e);
@@ -409,10 +421,10 @@ implements Externalizable
 		if (notNull) {
 			out.writeUTF(this.subtitle);
 		}
-		notNull = (this.updatedString != null);
+		notNull = (getUpdated() != null);
 		out.writeBoolean(notNull);
 		if (notNull) {
-			out.writeUTF(this.updatedString);
+			getUpdated().write(out);
 		}
 		notNull = (this.author != null);
 		out.writeBoolean(notNull);
@@ -433,7 +445,7 @@ implements Externalizable
 	 */
 	public void read(DataInputStream in) throws IOException {
 		int version = in.readInt();
-		if (version != VERSION) {
+		if (version > VERSION) {
 			throw new IOException("unknown verion " + version);
 		}
 		boolean notNull = in.readBoolean();
@@ -450,7 +462,11 @@ implements Externalizable
 		}
 		notNull = in.readBoolean();
 		if (notNull) {
-			this.updatedString = in.readUTF();
+			if (version == 100) {
+				this.updatedString = in.readUTF();
+			} else {
+				this.updated = new TimePoint(in);
+			}
 		}
 		notNull = in.readBoolean();
 		if (notNull) {
