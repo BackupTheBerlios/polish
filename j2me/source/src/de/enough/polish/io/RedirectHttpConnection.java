@@ -56,16 +56,16 @@ import javax.microedition.io.HttpConnection;
  */
 public class RedirectHttpConnection implements HttpConnection
 {
-	// #ifndef polish.Browser.MaxRedirects:defined
+	//#ifndef polish.Browser.MaxRedirects:defined
 		private static final int MAX_REDIRECTS = 5;
-	// #else
+	//#else
 		// #= private static final int MAX_REDIRECTS = ${polish.Browser.MaxRedirects};
-	// #endif
+	//#endif
 
 	private final String originalUrl;
 	private String requestMethod = HttpConnection.GET;
 	private HashMap requestProperties;
-	private HttpConnection httpConnection;
+	HttpConnection httpConnection;
 	private ByteArrayOutputStream byteArrayOutputStream;
 	private InputStream inputStream;
 
@@ -113,7 +113,7 @@ public class RedirectHttpConnection implements HttpConnection
 	 * 
 	 * @throws IOException when the connection failed
 	 */
-	private synchronized void ensureConnectionCreated() 
+	protected synchronized void ensureConnectionCreated() 
 	throws IOException
 	{
 		if (this.httpConnection != null)
@@ -154,6 +154,8 @@ public class RedirectHttpConnection implements HttpConnection
 
 				if (postData != null && postData.length > 0)
 				{
+					tmpHttpConnection.setRequestProperty("Content-length", Integer.toString(postData.length));
+					tmpHttpConnection.setRequestProperty("Content-Length", Integer.toString(postData.length));
 					OutputStream out = tmpHttpConnection.openOutputStream();
 					out.write(postData);
 					out.close();
