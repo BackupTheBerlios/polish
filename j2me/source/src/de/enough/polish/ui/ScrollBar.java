@@ -432,7 +432,7 @@ public class ScrollBar extends Item {
 		//#endif
 	}
 	
-	//#ifdef polish.hasPointerEvents
+	//#if polish.hasPointerEvents && (polish.ScrollBar.handlePointerEvents != false)
 	/**
 	 * Handles the event when a pointer has been pressed at the specified position.
 	 * The default method discards this event when relX/relY is outside of the item's area.
@@ -464,7 +464,7 @@ public class ScrollBar extends Item {
 	}
 	//#endif
 
-	//#ifdef polish.hasPointerEvents
+	//#if polish.hasPointerEvents && (polish.ScrollBar.handlePointerEvents != false)
 	/**
 	 * Handles the event when a pointer has been released at the specified position.
 	 * The default method discards this event when relX/relY is outside of the item's area.
@@ -508,7 +508,7 @@ public class ScrollBar extends Item {
 	}
 	//#endif
 
-	//#ifdef polish.hasPointerEvents
+	//#if polish.hasPointerEvents && (polish.ScrollBar.handlePointerEvents != false)
 	/**
 	 * Allows to drag the scroll handle.
 	 * 
