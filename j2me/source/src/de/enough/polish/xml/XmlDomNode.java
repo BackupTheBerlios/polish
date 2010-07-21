@@ -254,6 +254,55 @@ public class XmlDomNode
 	{
 		return (XmlDomNode[]) this.childList.toArray( new XmlDomNode[ this.childList.size() ] );
 	}
+	
+	/**
+	 * Retrieves the children of this node with the specified name.
+	 * 
+	 * @param childName the name of the children
+	 * @return all children with the specified name in an array - may be empty but not null;
+	 */
+	public XmlDomNode[] getChildren(String childName)
+	{
+		return getChildren( childName, false );
+	}
+	
+	/**
+	 * Retrieves the children of this node and optionally this children nodes with the specified name.
+	 * 
+	 * @param childName the name of the children
+	 * @param recursive true when all children of this node should also be investigated
+	 * @return all children with the specified name in an array - may be empty but not null;
+	 */
+	public XmlDomNode[] getChildren(String childName, boolean recursive)
+	{
+		ArrayList children = new ArrayList();
+		getChildren( childName, recursive, children );
+		return (XmlDomNode[]) children.toArray( new XmlDomNode[ children.size() ] );
+	}
+	
+	/**
+	 * Retrieves the children of this node and optionally this children nodes with the specified name.
+	 * 
+	 * @param childName the name of the children
+	 * @param recursive true when all children of this node should also be investigated
+	 * @param resultList the result list that will contain XmlDomNode elements
+	 */
+	public void getChildren(String childName, boolean recursive, ArrayList resultList)
+	{
+		Object[] objects = this.childList.getInternalArray();
+		for (int i = 0; i < objects.length; i++) {
+			XmlDomNode child = (XmlDomNode) objects[i];
+			if (child == null) {
+				break;
+			}
+			if (childName.equals(child.getName())) {
+				resultList.add(child);
+			}
+			if (recursive) {
+				child.getChildren(childName, recursive, resultList);
+			}
+		}
+	}
 
 	/**
 	 * Retrieves an XML representation of this XML node and its nested children.

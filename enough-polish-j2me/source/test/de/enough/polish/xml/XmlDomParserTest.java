@@ -57,22 +57,64 @@ public class XmlDomParserTest extends TestCase
 	}
 	
 	public void testPerformance() throws IOException {
+		int repeat = 1000;
 		long startTime = System.currentTimeMillis();
-		XmlDomParser.parseTree(getClass().getResourceAsStream("/source/test/de/enough/polish/xml/test.html"));
+		//XmlDomParser.parseTree(getClass().getResourceAsStream("/source/test/de/enough/polish/xml/test.html"));
+		for (int i=0; i<repeat; i++) {
+			XmlDomParser.parseTree(getClass().getResourceAsStream("test.html"));
+		}
 		System.out.println("XmlDomNode parsing took " + (System.currentTimeMillis() - startTime) + " ms");
 		
 		startTime = System.currentTimeMillis();
-		SimplePullParser parser = new XmlPullParser(new InputStreamReader(getClass().getResourceAsStream("/source/test/de/enough/polish/xml/test.html")));
-		while (parser.next() != SimplePullParser.END_DOCUMENT)
-	    {
-	      if (parser.getType() == SimplePullParser.START_TAG
-	          || parser.getType() == SimplePullParser.END_TAG)
-	      {
-	        boolean openingTag = parser.getType() == SimplePullParser.START_TAG;
-	      }
-	      
-	    }
+		//SimplePullParser parser = new XmlPullParser(new InputStreamReader(getClass().getResourceAsStream("/source/test/de/enough/polish/xml/test.html")));
+		for (int i=0; i<repeat; i++) {
+			SimplePullParser parser = new XmlPullParser(new InputStreamReader(getClass().getResourceAsStream("test.html")));
+			while (parser.next() != SimplePullParser.END_DOCUMENT)
+		    {
+		      if (parser.getType() == SimplePullParser.START_TAG
+		          || parser.getType() == SimplePullParser.END_TAG)
+		      {
+		        boolean openingTag = parser.getType() == SimplePullParser.START_TAG;
+		      }
+		      
+		    }
+		}
 		System.out.println("SimplePullParser parsing took " + (System.currentTimeMillis() - startTime) + " ms");
 	}
+	
+	public void testGetChildren() {
+		String document = "<P>(BANG) - <P>Ali Larter is expecting her first child."
+			+ "</P><P>The 'Heroes' actress - who married stand-up comedian Hayes McArthur last August - will reportedly welcome the new addition to her family into the world this winter."
+			+ "</P><P>Her spokesperson confirmed: \"Ali and Hayes are thrilled to be expecting their first child.\" "
+			+ "</P><P>Ali, 34, has previously admitted that she was desperate to settle down and have children with Hayes from the first time they started dating."
+			+ "</P><P>Speaking after their engagement in 2007, she confessed: \"I told Hayes after three weeks that I wanted to marry him and that we could do it tomorrow. I look forward to the time that I'm at home with babies."
+			+ "</P><P>\"He has brought light to my life. I feel lucky every morning when I wake up and see him. Not everybody is fortunate enough to find their soul mate in life.\""
+			+ "</P><P>Ali has also previously admitted she ruined several relationships before she met Hayes because she was so obsessed with getting married."
+			+ "</P><P>She <a href=\"http://test.com?x=10&amp;y=11\" >said:</a> \"Since I was 15 years old, all I wanted was to find the guy I was going to marry. My heart got broken so many times because I put so much pressure on it. And then I got blindsided." 
+			+ "</P><P>\"Hayes showed me the way, and all was right. This is how it's supposed to be.\""
+			+ "</P><P></P> (C) BANG Media International</P> "
+            + "<br/> "
+            + "<xoom><a  href=\"http://m.cosmopolitan.co.za/pl/svt/si/ttcosmo/po/thumbtribe/pa/157881\" >xx</a><a>yy</a></xoom>"
+            + "<div>" 
+            + "<a href=\"http://m.cosmopolitan.co.za/pl/svt/si/ttcosmo/po/thumbtribe/pa/157881\" >Read more </a><a href=\"http://test.com?x=10&amp;y=11\" >testing </a>"
+            + "</div>"
+	        + "<br/> "
+	        + "<a  href=\"http://m.cosmopolitan.co.za/pl/svt/si/ttcosmo/po/thumbtribe/pa/157881\" >xx</a><a>yy</a>";
+		XmlDomNode root = XmlDomParser.parseTree(document);
+		print( root, "" );
+		XmlDomNode[] children = root.getChildren("a");
+		assertEquals( 2, children.length );
+		children = root.getChildren("P");
+		assertEquals( 1, children.length );
+		children = root.getChildren("a", true);
+		assertEquals( 7, children.length );
+	}
 
+	void print( XmlDomNode node, String start ) {
+		System.out.println(start + node.getName()+ ": " + node.getText());
+		for (int i=0; i<node.getChildCount(); i++) {
+			XmlDomNode child = node.getChild(i);
+			print( child, start + " ");
+		}
+	}
 }
