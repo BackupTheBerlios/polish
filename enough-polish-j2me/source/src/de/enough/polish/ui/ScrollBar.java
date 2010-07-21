@@ -35,10 +35,16 @@ import javax.microedition.lcdui.Image;
  * <p>
  *    The scrollbar needs to be activated using the &quot;polish.useScrollBar&quot;
  *    variable:
+ * </p>
  *    <pre>
  *    &lt;variable name=&quot;polish.useScrollBar&quot; value=&quot;true&quot; /&gt;
  *    </pre>
- * </p>
+ * <p>
+ *   If you don't want the scrollbar to handle pointer/drag events itself, you can specify 
+ *   &quot;polish.ScrollBar.handlePointerEvents&quot;:
+ *   <pre>
+ *    &lt;variable name=&quot;polish.ScrollBar.handlePointerEvents&quot; value=&quot;false&quot; /&gt;
+ *   </pre>
  * <p>Design the scrollbar using the predefined &quot;scrollbar&quot; style. You
  *    can also specify a screen specific style by defining the &quot;scrollbar-style&quot; CSS attribute.
  *    <br />
