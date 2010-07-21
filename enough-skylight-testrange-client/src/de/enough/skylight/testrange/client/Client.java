@@ -26,7 +26,8 @@ public class Client extends MIDlet{
 		}
 		
 		NodeHandlerDirectory.getInstance().addHtmlHandlers();
-		Browser browser = new Browser(url, Display.getDisplay(this));
+		Browser browser = new Browser(Display.getDisplay(this));
+		browser.displayPage(url);
 		
 		Display.getDisplay(this).setCurrent(browser);
 	}

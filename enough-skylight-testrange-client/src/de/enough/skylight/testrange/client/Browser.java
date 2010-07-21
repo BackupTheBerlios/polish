@@ -16,29 +16,29 @@ import de.enough.polish.ui.Form;
 import de.enough.polish.ui.StyleSheet;
 import de.enough.polish.util.UrlUtil;
 import de.enough.skylight.Services;
-import de.enough.skylight.dom.Document;
 import de.enough.skylight.dom.DomNode;
 import de.enough.skylight.dom.MutationEvent;
+import de.enough.skylight.dom.impl.DocumentImpl;
 import de.enough.skylight.dom.impl.DomNodeImpl;
 import de.enough.skylight.dom.impl.EventImpl;
 import de.enough.skylight.dom.impl.EventProcessorListener;
 import de.enough.skylight.dom.impl.NodeListImpl;
 import de.enough.skylight.event.UserEvent;
-import de.enough.skylight.event.UserEventListener;
-import de.enough.skylight.js.JsEngine;
+import de.enough.skylight.modeller.Box;
+import de.enough.skylight.modeller.LayoutModeler;
+import de.enough.skylight.modeller.StyleManager;
+import de.enough.skylight.renderer.BoxRenderer;
 import de.enough.skylight.renderer.Renderer;
 import de.enough.skylight.renderer.RendererListener;
 import de.enough.skylight.renderer.Viewport;
 import de.enough.skylight.renderer.ViewportContext;
-import de.enough.skylight.renderer.builder.DocumentBuilder;
-import de.enough.skylight.renderer.builder.ViewportBuilder;
+import de.enough.skylight.renderer.builder.DocumentManager;
 import de.enough.skylight.renderer.node.CssElement;
 import de.enough.skylight.renderer.node.NodeUtils;
 import de.enough.skylight.renderer.node.handler.html.AHandler;
 
 public class Browser extends Form implements CommandListener, RendererListener, ViewportContext {
 
-	Command cmdOpen = new Command("Open",Command.SCREEN,0);
 
 	class UpdateUIEventProcessorListener implements EventProcessorListener{
 
@@ -66,62 +66,62 @@ public class Browser extends Form implements CommandListener, RendererListener, 
 		}
 	}
 	
-	Command cmdRefresh = new Command("Refresh",Command.SCREEN,0);
+	private static Command cmdOpen = new Command("Open",Command.SCREEN,0);
+	private static Command cmdRefresh = new Command("Refresh",Command.SCREEN,0);
+	private static Command cmdExit = new Command("Exit",Command.EXIT,Integer.MAX_VALUE);
 	
-	Command cmdExit = new Command("Exit",Command.EXIT,Integer.MAX_VALUE);
-	
-	DocumentBuilder documentBuilder;
-	
-	ViewportBuilder viewportBuilder;
-	
-	ContentLoader contentLoader;
-	
-	UrlField urlField;
-	
-	Viewport viewport;
-	
-	Renderer renderer;
-	
-	Refresh refresh;
-	
-	Display display;
-	
-	String url;
-	
-	String host;
+	private DocumentManager documentManager;
+	private ContentLoader contentLoader;
+	private UrlEntryForm urlEntryForm;
+	private Viewport viewport;
+	private RefreshForm refreshForm;
+	private BoxRenderer renderer;
+	private Display display;
+	// The url may be relative.
+	private String url;
+	private String host;
 
-	public Browser(String url, Display display) {
+	public Browser(Display display) {
 		//#style browser
 		super(null);
 		
-		this.url = url;
-		this.host = UrlUtil.getPath(url);
-		
-		this.urlField = new UrlField(this);
-		this.urlField.setUrl(url);
-		
+		this.display = display;
+		this.contentLoader = buildContentLoader();
+		this.urlEntryForm = new UrlEntryForm(this);
+		this.documentManager = new DocumentManager();
+		this.renderer = new BoxRenderer();
 		this.viewport = new Viewport(this);
 		
-		this.documentBuilder = new DocumentBuilder();
-		documentBuilder.setUrl(url);
-		
-		this.viewportBuilder = new ViewportBuilder(this.viewport);
-		
-		this.contentLoader = buildContentLoader();
-		
-		this.renderer = new Renderer(this.documentBuilder, this.viewportBuilder);
-		this.renderer.addListener(this);
-		
 		append(this.viewport);
+		
+		this.refreshForm = new RefreshForm();
+		this.renderer.addRendererListener(this.refreshForm);
+		this.renderer.addRendererListener(this);
+		
 		setCommandListener(this);
 		
-		this.refresh = new Refresh();
-		this.renderer.addListener(this.refresh);
-		
-		this.display = display;
-		
+		// TODO: Exit belongs in the client.
 		addCommand(cmdExit);
 		addCommand(cmdOpen);
+		addCommand(cmdRefresh);
+	}
+	
+	public void displayPage(String urlPath) {
+		this.url = urlPath;
+		this.host = UrlUtil.getPath(this.url);
+		
+		this.viewport.clear();
+		
+		DocumentImpl document = this.documentManager.build(this.url);
+		
+		CssElement rootElement = StyleManager.buildDescription(document, null,this);
+		CssElement htmlNode = StyleManager.findBodyCssElement(rootElement);
+					
+		LayoutModeler layouter = new LayoutModeler();
+		// TODO: Get the width from the viewport.
+		Box root = layouter.model(htmlNode, 300);
+		
+		this.renderer.render(this.viewport, root);
 	}
 	
 	protected ContentLoader buildContentLoader() {
@@ -152,32 +152,33 @@ public class Browser extends Form implements CommandListener, RendererListener, 
 
 	public void showNotify() {
 		super.showNotify();
-		if(this.renderer.getState() == Renderer.STATE_VOID) {
-			this.renderer.render();
-		}
+//		if(this.renderer.getState() == Renderer.STATE_VOID) {
+//			this.renderer.render();
+//		}
 	}
 	
-	public void onState(Renderer renderer, int state) {
+	public void onRenderStateChange(int state) {
 		if(state == Renderer.STATE_START) {
-			this.display.setCurrent(this.refresh);
+			System.out.println("Browser.onRenderStateChange():handling render state: "+state+ " and displaying refresh form.");
+			this.display.setCurrent(this.refreshForm);
 		}
 		
 		if(state == Renderer.STATE_READY) {
+			System.out.println("Browser.onRenderStateChange():handling render state: "+state+" and displaying browser.");
 			this.display.setCurrent(this);
 		} 
 		
 		if(state == Renderer.STATE_BUILD_VIEW) {
-			Services service = Services.getInstance();
-			JsEngine jsEngine = service.getJsEngine();
-			Document document = this.viewportBuilder.getDocument();
-			jsEngine.setDocument(document);
+//			Services service = Services.getInstance();
+//			JsEngine jsEngine = service.getJsEngine();
+//			jsEngine.setDocument(document);
 		}
 	}
 	
 	public void commandAction(Command command, Displayable screen) {
 		if(command == cmdOpen) {
-			this.urlField.setUrl(this.url);
-			Display.getInstance().setCurrent(this.urlField);
+			this.urlEntryForm.setUrl(this.url);
+			Display.getInstance().setCurrent(this.urlEntryForm);
 		}
 		
 		if(command == cmdExit) {
@@ -185,10 +186,6 @@ public class Browser extends Form implements CommandListener, RendererListener, 
 		}
 	}
 	
-	public String getLocationHost() {
-		return this.host;
-	}
-
 	public String getLocationUrl() {
 		return this.url;
 	}
@@ -197,25 +194,19 @@ public class Browser extends Form implements CommandListener, RendererListener, 
 		return this.contentLoader;
 	}
 
-	public void setLocation(String url) {
-		this.url = url;
-		this.host = UrlUtil.getPath(url);
-		
-		this.documentBuilder.setUrl(url);
-		
-		this.renderer.setState(Renderer.STATE_VOID);
-		
-		this.renderer.render();
-	}
-
 	public void notifyUserEvent(CssElement cssElement, UserEvent event) {
 		if(cssElement.getHandler() instanceof AHandler) {
 			String href = NodeUtils.getAttributeValue(cssElement.getNode(),"href");
-			String url = de.enough.skylight.util.UrlUtil.completeUrl(href, this);
-			setLocation(url);
+			String url = de.enough.util.UrlUtil.completeUrl(href, this.getLocationHost());
+//			setLocation(url);
 		} else {
 			DomNodeImpl node = cssElement.getNode();
 			Services.getInstance().getEventEmitter().emitClickEvent(node, 0, 0);
 		}
 	}
+	
+	public String getLocationHost() {
+		return this.host;
+	}
+
 }

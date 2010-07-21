@@ -5,11 +5,11 @@ import de.enough.polish.ui.Gauge;
 import de.enough.skylight.renderer.RendererListener;
 import de.enough.skylight.renderer.Renderer;
 
-public class Refresh extends Form implements RendererListener{
+public class RefreshForm extends Form implements RendererListener{
 
 	Gauge progress;
 	
-	public Refresh() {
+	public RefreshForm() {
 		//#style refresh
 		super(null);
 		
@@ -19,7 +19,7 @@ public class Refresh extends Form implements RendererListener{
 		append(this.progress);
 	}
 
-	public void onState(Renderer renderer, int state) {
+	public void onRenderStateChange(int state) {
 		if(isShown()) {
 			if(state == Renderer.STATE_START) {
 				this.progress.setValue(0);

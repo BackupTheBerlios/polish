@@ -7,17 +7,17 @@ import de.enough.polish.ui.Displayable;
 import de.enough.polish.ui.Form;
 import de.enough.polish.ui.TextField;
 
-public class UrlField extends Form implements CommandListener {
+public class UrlEntryForm extends Form implements CommandListener {
 
-	Command cmdGo = new Command("Go",Command.SCREEN,0);
+	private static Command cmdGo = new Command("Go",Command.SCREEN,0);
 	
-	Command cmdBack = new Command("Back",Command.BACK,0);
+	private static Command cmdBack = new Command("Back",Command.BACK,0);
 	
 	Browser browser;
 
 	TextField urlField;
 	
-	public UrlField(Browser parent) {
+	public UrlEntryForm(Browser parent) {
 		//#style url
 		super(null);
 		
@@ -28,8 +28,8 @@ public class UrlField extends Form implements CommandListener {
 		
 		append(this.urlField);
 		
-		addCommand(this.cmdGo);
-		addCommand(this.cmdBack);
+		addCommand(cmdGo);
+		addCommand(cmdBack);
 		
 		setCommandListener(this);
 	}
@@ -45,8 +45,8 @@ public class UrlField extends Form implements CommandListener {
 	public void commandAction(Command command, Displayable screen) {
 		if(command == cmdGo) {
 			Display.getInstance().setCurrent(this.browser);
-			String url = getUrl();
-			this.browser.setLocation(url);
+//			String url = getUrl();
+//			this.browser.setLocation(url);
 		}
 		
 		if(command == cmdBack) {
