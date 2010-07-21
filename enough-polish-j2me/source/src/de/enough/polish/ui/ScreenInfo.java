@@ -285,7 +285,7 @@ public class ScreenInfo {
 			item.paint( itemX, itemY, itemX, screenWidth, g );
 		} else {
 			//#debug
-			System.out.println("painting screeninfo " + item + " without set position at " + 0 + ", " + titleHeight );
+			System.out.println("painting screeninfo " + item + " without set position at 0, 0" );
 			item.paint( 0, 0, 0, screenWidth, g );
 		}
 	}
