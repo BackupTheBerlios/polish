@@ -27,22 +27,14 @@
  */
 package de.enough.polish.io;
 
-import de.enough.polish.util.HashMap;
-import de.enough.polish.util.TextUtil;
-
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Date;
 
-import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
 
+import de.enough.polish.util.HashMap;
+
 /**
- * Provides a <code>HttpConnection</code> that supports HTTP redirects. This
+ * Provides a <code>HttpConnection</code> that supports HTTP redirects and allows easy creation of HTTP POST requests. This
  * class is compatible to <code>javax.microedition.io.HttpConnection</code>.
  * 
  * <p>
