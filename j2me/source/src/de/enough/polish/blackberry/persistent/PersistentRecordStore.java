@@ -122,7 +122,7 @@ public class PersistentRecordStore implements Persistable {
 	/**
 	 * the next record id
 	 */
-	int nextRecordId = 0;
+	int nextRecordId = 1;
 	
 	/**
 	 * the number of records
@@ -152,7 +152,7 @@ public class PersistentRecordStore implements Persistable {
 	protected PersistentRecordStore(String name, long persistentStorageId) {
 		this.name = name;
 		this.persistentStoreId = persistentStorageId;
-		this.persistentRecordOffset = persistentStorageId + 1;
+		this.persistentRecordOffset = persistentStorageId;
 		this.recordIds = new Vector();
 	}
 	
@@ -590,11 +590,15 @@ public class PersistentRecordStore implements Persistable {
 			throw new RecordStoreFullException("the record store " + this.name + " exceeds " + PersistentRecordStoreConstraints.RECORDSTORE_MAX_SIZE);
 		}
 		
+		// create the specified data chunk
+		byte[] dataChunk = new byte[numBytes];
+		System.arraycopy(data, 0, dataChunk, offset, numBytes);
+		
 		int recordId = this.nextRecordId;
 		long persistentRecordId = getPersistentRecordId(recordId);
 		
 		// create a new record
-		PersistentRecord record = new PersistentRecord(data);
+		PersistentRecord record = new PersistentRecord(dataChunk);
 		
 		// store record in PersistentStore
 		PersistentObject persistent = PersistentStore.getPersistentObject(persistentRecordId);
@@ -618,7 +622,7 @@ public class PersistentRecordStore implements Persistable {
 		commit();
 		
 		//#debug debug
-		System.out.println("added record : " + record);
+		System.out.println("added record with persistent id :" + persistentRecordId + ":" + record);
 		
 		return recordId;
 	}
@@ -737,7 +741,6 @@ public class PersistentRecordStore implements Persistable {
 		PersistentObject persistent =  PersistentStore.getPersistentObject(persistentRecordId);
 		PersistentRecord record = (PersistentRecord)persistent.getContents();
 		
-
 		//#debug debug
 		System.out.println("got record : " + record);
 		
@@ -774,8 +777,8 @@ public class PersistentRecordStore implements Persistable {
 		long persistentRecordId = getPersistentRecordId(recordId);
 
 		// create the specified data chunk of the new data
-		byte[] data = new byte[numBytes];
-		System.arraycopy(newData, 0, data, offset, numBytes);
+		byte[] dataChunk = new byte[numBytes];
+		System.arraycopy(newData, 0, dataChunk, offset, numBytes);
 		
 		// get the record
 		PersistentObject persistent =  PersistentStore.getPersistentObject(persistentRecordId);
@@ -785,7 +788,7 @@ public class PersistentRecordStore implements Persistable {
 		this.size -= record.getSize();
 		
 		// set the data
-		record.set(data);
+		record.set(dataChunk);
 		
 		// increase the size by the new data size
 		this.size += record.getSize();
@@ -799,7 +802,7 @@ public class PersistentRecordStore implements Persistable {
 		commit();
 		
 		//#debug debug
-		System.out.println("set record : " + record);
+		System.out.println("set record with persistent id :" + persistentRecordId + ":" + record);
 	}
 	
 	/**
@@ -811,9 +814,7 @@ public class PersistentRecordStore implements Persistable {
 			long persistentRecordId = getPersistentRecordId(recordId);
 			
 			// clear the record
-			PersistentObject persistent =  PersistentStore.getPersistentObject(persistentRecordId);
-			persistent.setContents(null);
-			persistent.forceCommit();
+			PersistentStore.destroyPersistentObject(persistentRecordId);
 		}
 		
 		// reset the size and number of records

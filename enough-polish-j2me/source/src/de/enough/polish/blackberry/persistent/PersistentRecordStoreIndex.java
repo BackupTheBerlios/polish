@@ -195,7 +195,7 @@ public class PersistentRecordStoreIndex implements Persistable{
 	 * Wipes everything in the PersistentStore
 	 */
 	public static void wipeStore() {
-		for (int i = 0; i < Long.MAX_VALUE + 1; i++) {
+		for (int i = 0; i <= Long.MAX_VALUE; i++) {
 			PersistentStore.destroyPersistentObject(i);
 		}
 	}
