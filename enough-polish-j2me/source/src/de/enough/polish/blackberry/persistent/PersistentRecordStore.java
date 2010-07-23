@@ -715,10 +715,14 @@ public class PersistentRecordStore implements Persistable {
 		// get the record data
 		byte[] data = getRecord(recordId);
 
-		// create the specified data chunk
-		System.arraycopy(data, 0, buffer, offset, data.length);
+		if(data != null) {
+			// create the specified data chunk
+			System.arraycopy(data, 0, buffer, offset, data.length);
 
-		return data.length - offset;
+			return data.length - offset;
+		} else {
+			return 0;
+		}
 	}
 
 	/**
@@ -745,7 +749,12 @@ public class PersistentRecordStore implements Persistable {
 		System.out.println("got record : " + record);
 		
 		if(record != null) {
-			return record.getData();
+			if(record.getSize() > 0) {
+				return record.getData();
+			} else {
+				return null;
+			}
+			
 		} else {
 			throw new InvalidRecordIDException("the record id " + recordId + "is invalid for the record store " + name);
 		}
