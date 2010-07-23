@@ -10,6 +10,7 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 import de.enough.polish.io.Externalizable;
+import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.Arrays;
 import de.enough.polish.util.Comparator;
 import de.enough.polish.util.IdentityArrayList;
@@ -25,7 +26,7 @@ import de.enough.polish.util.TimePoint;
  *
  */
 public class CalendarEntryModel 
-implements Externalizable 
+implements Externalizable, CalendarSubject 
 {
 	private static final int VERSION = 100;
 	private TimeZone timeZone; 
@@ -34,6 +35,8 @@ implements Externalizable
 	private IdentityArrayList listeners;
 	private boolean isDirty;
 	private Comparator rootCategoriesComparator;
+	
+	private ArrayList observers = new ArrayList();
 	
 	
 	/**
@@ -58,6 +61,18 @@ implements Externalizable
 			list = addCategory(category);
 		}
 		list.add(entry);
+		
+		notifyObservers();
+	}
+	
+	
+	/**
+	 * Not implemented yet.
+	 * @param entry
+	 */
+	public void updateEntry(CalendarEntry entry) {
+		// TODO
+		
 	}
 	
 	/**
@@ -78,6 +93,8 @@ implements Externalizable
 			}
 			list = new CalendarEntryList();
 			this.calendarEntriesByCategory.put(category, list);
+
+			notifyObservers();
 		}
 		return list;
 	}
@@ -112,6 +129,8 @@ implements Externalizable
 					this.rootCategories.remove(category);
 				}
 			}
+
+			notifyObservers();
 		}
 	}
 	
@@ -621,6 +640,35 @@ implements Externalizable
 		}
 		this.isDirty = false;
 	}
+
+	
+	// TODO
+	public void addObserver(CalendarObserver observer) {
+
+		if ( this.observers.contains(observer) ) {
+			// Do nothing;
+		} else {
+			this.observers.add(observer);
+		}
+	}
+
+	
+	// TODO
+	public void removeObserver(CalendarObserver observer) {
+		
+		this.observers.remove(observer);
+	}
+
+	
+	private void notifyObservers() {
+		
+		// loop through and notify each observer
+		for (int i = 0; i < observers.size(); i++) {
+			CalendarObserver observer = (CalendarObserver)observers.get(i);
+			observer.updatedCalendarModel(this);
+		}
+	}
+
 
 
 	
