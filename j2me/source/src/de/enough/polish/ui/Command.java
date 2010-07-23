@@ -608,6 +608,11 @@ public class Command
 		}
 	}
 
+	public void removeSubCommands() {
+		if(this.children != null) {
+			this.children.clear();
+		}
+	}
 	
 	/**
 	 * Checks if this command has subcommands/children
