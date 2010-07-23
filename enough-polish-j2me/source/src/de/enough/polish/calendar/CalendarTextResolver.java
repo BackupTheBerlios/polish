@@ -25,6 +25,8 @@
  */
 package de.enough.polish.calendar;
 
+import de.enough.polish.util.TimePoint;
+
 /**
  * <p>Resolves texts of a CalendarEntry dynamically, e.g. for internationalization or dynamic names that depend on the year.</p>
  *
@@ -33,7 +35,7 @@ package de.enough.polish.calendar;
  */
 public interface CalendarTextResolver {
 	
-	String resolveSummary( String summary, CalendarEntry entry );
+	String resolveSummary( String summary, CalendarEntry entry, TimePoint calendarTimePoint );
 	
 	String resolveDescription( String description, CalendarEntry entry );
 
