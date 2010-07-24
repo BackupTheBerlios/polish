@@ -453,7 +453,7 @@ public class CalendarEntry implements Externalizable {
 	 */
 	public String getSummary() {
 		if (this.textResolver != null) {
-			return this.textResolver.resolveSummary(this.summary, this);
+			return this.textResolver.resolveSummary(this.summary, this, null);
 		}
 		return this.summary;
 	}
