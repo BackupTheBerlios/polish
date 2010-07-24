@@ -203,8 +203,6 @@ public class VerticalScrollTextEffect extends TextEffect{
 	 */
 	public String[] wrap(Item parent, String text, int textColor, Font font,
 			int firstLineWidth, int lineWidth) {
-		StringItem parentItem = (StringItem)parent;
-		
 		this.textLines = super.wrap(text, textColor, font, firstLineWidth, lineWidth);
 		
 		if(this.textLines.length > this.maxLines)
