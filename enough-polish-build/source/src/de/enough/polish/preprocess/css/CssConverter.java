@@ -133,7 +133,7 @@ public class CssConverter extends Converter {
 		toStyleDefinitionsJava.add("package de.enough.polish.ui ;");
 		toStyleDefinitionsJava.add("");
 		toStyleDefinitionsJava.add("import java.util.Hashtable;");
-		toStyleDefinitionsJava.add("import javax.microedition.lcdui.Font;");
+//		toStyleDefinitionsJava.add("import javax.microedition.lcdui.Font;");
 		toStyleDefinitionsJava.add("class StyleDefinitions {");
 		
 		this.referencedStyles = new ArrayList();
