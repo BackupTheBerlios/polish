@@ -36,12 +36,7 @@ public class PersistentRecordEnumerationImpl implements PersistentRecordEnumerat
 	public PersistentRecordEnumerationImpl(PersistentRecordStore store) {
 		this.store = store;
 		this.recordIds = store.getRecordIds();
-		
-		if(this.recordIds.size() > 0) {
-			this.recordIdIndex = 0;
-		} else {
-			this.recordIdIndex = -1;
-		}
+		this.recordIdIndex = -1;
 	}
 	
 	/* (non-Javadoc)
@@ -56,7 +51,7 @@ public class PersistentRecordEnumerationImpl implements PersistentRecordEnumerat
 	 * @see de.enough.polish.persistent.PersistentRecordEnumeration#hasNextElement()
 	 */
 	public boolean hasNextElement() {
-		return this.recordIdIndex + 1 < this.recordIds.size();
+		return (hasRecordIds() && this.recordIdIndex + 1 < this.recordIds.size());
 	}
 
 	
@@ -64,7 +59,7 @@ public class PersistentRecordEnumerationImpl implements PersistentRecordEnumerat
 	 * @see de.enough.polish.persistent.PersistentRecordEnumeration#hasPreviousElement()
 	 */
 	public boolean hasPreviousElement() {
-		return this.recordIdIndex - 1 >= 0;
+		return (hasRecordIds() && this.recordIdIndex - 1 >= 0);
 	}
 
 	
@@ -146,6 +141,14 @@ public class PersistentRecordEnumerationImpl implements PersistentRecordEnumerat
 	 */
 	public void reset() {
 		//TODO implement
+	}
+	
+	/**
+	 * Returns true if there are record ids
+	 * @return true if there are record ids otherwise false
+	 */
+	boolean hasRecordIds() {
+		return this.recordIds.size() > 0;
 	}
 	
 	/**

@@ -1,5 +1,10 @@
 package de.enough.polish.content;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
+import de.enough.polish.io.Externalizable;
 import de.enough.polish.io.Serializable;
 import de.enough.polish.util.ToStringHelper;
 
@@ -9,7 +14,7 @@ import de.enough.polish.util.ToStringHelper;
  * @author Andre
  * 
  */
-public class ContentDescriptor implements Serializable {
+public class ContentDescriptor implements Externalizable {
 	/**
 	 * the default version
 	 */
@@ -33,12 +38,12 @@ public class ContentDescriptor implements Serializable {
 	/**
 	 * the url
 	 */
-	protected final String url;
+	protected String url;
 
 	/**
 	 * the hash of the url
 	 */
-	protected final int hash;
+	protected int hash;
 
 	/**
 	 * the transformation
@@ -55,6 +60,13 @@ public class ContentDescriptor implements Serializable {
 	 */
 	protected int cachingPolicy = CACHING_READ_WRITE;
 
+	
+	/**
+	 * Default descriptor for instantiation for serialization
+	 * DO NOT USE !
+	 */
+	public ContentDescriptor() {}
+	
 	/**
 	 * Creates a new ContentDescriptor instance
 	 * 
@@ -182,6 +194,28 @@ public class ContentDescriptor implements Serializable {
 		return ToStringHelper.createInstance("ContentDescriptor").set("url", this.url)
 				.set("hash", this.hash).set("version", this.version).set(
 						"cachingPolicy", this.cachingPolicy).toString();
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.io.Externalizable#read(java.io.DataInputStream)
+	 */
+	public void read(DataInputStream in) throws IOException {
+		this.url = in.readUTF();
+		this.hash = in.readInt();
+		this.transformId = in.readUTF();
+		this.version = in.readInt();
+		this.cachingPolicy = in.readInt();
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.io.Externalizable#write(java.io.DataOutputStream)
+	 */
+	public void write(DataOutputStream out) throws IOException {
+		out.writeUTF(this.url);
+		out.writeInt(this.hash);
+		out.writeUTF(this.transformId);
+		out.writeInt(this.version);
+		out.writeInt(this.cachingPolicy);
 	}
 
 }

@@ -1,6 +1,11 @@
 package de.enough.polish.content.storage;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 import de.enough.polish.content.ContentDescriptor;
+import de.enough.polish.io.Serializer;
 import de.enough.polish.util.ToStringHelper;
 
 /**
@@ -13,17 +18,17 @@ public class StorageReference extends ContentDescriptor {
 	/**
 	 * the reference to the data
 	 */
-	final Object reference;
+	Object reference;
 
 	/**
 	 * the creation time of this reference
 	 */
-	final long creationTime;
+	long creationTime;
 
 	/**
 	 * the size of the content data
 	 */
-	final int size;
+	int size;
 
 	/**
 	 * the activity of the content data
@@ -35,6 +40,12 @@ public class StorageReference extends ContentDescriptor {
 	 */
 	long activityTime;
 
+	/**
+	 * Default descriptor for instantiation for serialization
+	 * DO NOT USE !
+	 */
+	public StorageReference() {}
+	
 	/**
 	 * Creates a new StorageReference instance.
 	 * 
@@ -107,6 +118,30 @@ public class StorageReference extends ContentDescriptor {
 	public void updateActivity() {
 		this.activityCount++;
 		this.activityTime = System.currentTimeMillis();
+	}
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.content.ContentDescriptor#read(java.io.DataInputStream)
+	 */
+	public void read(DataInputStream in) throws IOException {
+		super.read(in);
+		this.reference = Serializer.deserialize(in);
+		this.creationTime = in.readLong();
+		this.size = in.readInt();
+		this.activityCount = in.readInt();
+		this.activityTime = in.readLong();
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.content.ContentDescriptor#write(java.io.DataOutputStream)
+	 */
+	public void write(DataOutputStream out) throws IOException {
+		super.write(out);
+		Serializer.serialize(this.reference, out);
+		out.writeLong(this.creationTime);
+		out.writeInt(this.size);
+		out.writeInt(this.activityCount);
+		out.writeLong(this.activityTime);
 	}
 
 	/*
