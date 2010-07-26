@@ -47,12 +47,13 @@ implements Externalizable, CalendarSubject
 		this.rootCategories = new IdentityArrayList();
 	}
 	
+	
 	/**
 	 * Adds an entry to this model.
 	 * If the corresponding category has not been added before, it will be added implicitly.
 	 * @param entry the calendar entry
 	 */
-	public void addEntry( CalendarEntry entry ) {
+	public void addEntry(CalendarEntry entry) {
 		//#debug
 		System.out.println("adding entry " + entry.getSummary());
 		CalendarCategory category = entry.getCategory();
@@ -61,18 +62,52 @@ implements Externalizable, CalendarSubject
 			list = addCategory(category);
 		}
 		list.add(entry);
-		
-		notifyObservers();
 	}
 	
 	
 	/**
-	 * Not implemented yet.
-	 * @param entry
+	 * Adds an entry to this model.
+	 * If the corresponding category has not been added before, it will be added implicitly.
+	 * @param entry the calendar entry
+	 * @param notifyObserver Notifies the observer if true.
+	 */
+	public void addEntry(CalendarEntry entry, boolean notifyObserver) {
+
+		addEntry(entry);
+		
+		if (notifyObserver) {
+			notifyObservers();
+		} else {
+			// Do not notify the observer;
+		}
+	}
+	
+	
+	/**
+	 * Updates an event by first removing it and than adding it back again.
+	 * @param entry The event to update.
+	 * @param notifyObserver Notifies the observer if true.
+	 */
+	public void updateEntry(CalendarEntry entry, boolean notifyObserver) {
+		
+		updateEntry(entry);
+		
+		if (notifyObserver) {
+			notifyObservers();
+		} else {
+			// Do not notify the observer;
+		}
+	}
+	
+	
+	/**
+	 * Updates an event by first removing it and than adding it back again.
+	 * @param entry The event to update.
 	 */
 	public void updateEntry(CalendarEntry entry) {
-		// TODO
 		
+		removeEntry(entry);
+		addEntry(entry);
 	}
 	
 	/**
@@ -82,6 +117,7 @@ implements Externalizable, CalendarSubject
 	 * @return the empty list of events of the added category
 	 */
 	public CalendarEntryList addCategory( CalendarCategory category ) {
+		
 		CalendarEntryList list = (CalendarEntryList) this.calendarEntriesByCategory.get(category);
 		if (list == null) {
 			CalendarCategory parent = category;
@@ -93,52 +129,129 @@ implements Externalizable, CalendarSubject
 			}
 			list = new CalendarEntryList();
 			this.calendarEntriesByCategory.put(category, list);
-
-			notifyObservers();
 		}
 		return list;
 	}
 	
+	
+	/**
+	 * Adds an (empty) category to this model.
+	 * Any root category are added implicitly.
+	 * @param category the category.
+	 * @param notifyObserver notifyObserver Notifies the observer if true.
+	 * @return the empty list of events of the added category
+	 */
+	public CalendarEntryList addCategory(CalendarCategory category, boolean notifyObserver) {
+		
+		CalendarEntryList list = addCategory(category);
+		
+		if (notifyObserver) {
+			notifyObservers();
+		} else {
+			// Do not notify the observer;
+		}
+		
+		return list;
+	}
+	
+	
 	/**
 	 * Removes a calendar entry.
-	 * When there are no other events/entries left, the corresponding parent categories will also be removed.
-	 * @param entry the event that should be removed
+	 * @param entry The event that should be removed
 	 */
 	public void removeEntry( CalendarEntry entry ) {
 		CalendarCategory category = entry.getCategory();
 		CalendarEntryList list = (CalendarEntryList) this.calendarEntriesByCategory.get(category);
 		if (list != null) {
 			list.remove(entry);
-			if (list.size() == 0) {
-				// remove category:
-				this.calendarEntriesByCategory.remove(category);
-				// check if root category should also be removed:
-				boolean noEntriesFound = true;
-				while (category.getParentCategory() != null && noEntriesFound) {
-					category = category.getParentCategory();
-					CalendarCategory[] children = category.getChildCategories();
-					for (int i = 0; i < children.length; i++) {
-						CalendarCategory child = children[i];
-						if (this.calendarEntriesByCategory.get(child) != null) {
-							noEntriesFound = false;
-							break;
+		}
+	}
+	
+	
+	/**
+	 * Removes a calendar entry.
+	 * When there are no other events/entries left, the corresponding parent categories will also be removed.
+	 * @param entry The event that should be removed
+	 */
+	public void removeEntry(CalendarEntry entry, boolean removeEmptyCategory) {
+		
+		if (removeEmptyCategory) {
+			CalendarCategory category = entry.getCategory();
+			CalendarEntryList list = (CalendarEntryList) this.calendarEntriesByCategory.get(category);
+			if (list != null) {
+				list.remove(entry);
+				if (list.size() == 0) {
+					// remove category:
+					this.calendarEntriesByCategory.remove(category);
+					// check if root category should also be removed:
+					boolean noEntriesFound = true;
+					while (category.getParentCategory() != null && noEntriesFound) {
+						category = category.getParentCategory();
+						CalendarCategory[] children = category.getChildCategories();
+						for (int i = 0; i < children.length; i++) {
+							CalendarCategory child = children[i];
+							if (this.calendarEntriesByCategory.get(child) != null) {
+								noEntriesFound = false;
+								break;
+							}
 						}
 					}
-				}
-				if (noEntriesFound) {
-					this.rootCategories.remove(category);
+					if (noEntriesFound) {
+						this.rootCategories.remove(category);
+					}
 				}
 			}
-
-			notifyObservers();
+		} else {	// Do not remove empty categories;
+			removeEntry(entry);
 		}
+	}
+	
+	
+	/**
+	 * Removes a calendar entry.
+	 * When there are no other events/entries left, the corresponding parent categories will also be removed.
+	 * @param entry the event that should be removed
+	 */
+	public void removeEntry(CalendarEntry entry, boolean removeEmptyCategory, boolean notifyObserver) {
+		
+		removeEntry(entry, removeEmptyCategory);
+		
+		if (notifyObserver) {
+			notifyObservers();
+		} else {
+			// Do not notify the observer;
+		}
+	}
+	
+	
+	/**
+	 * Adds all entries of the given model to this model.
+	 * @param model The model of which entries should be copied to this model.
+	 */
+	public void addEntries(CalendarEntryModel model) {
+		
+		addEntries(model, false);
 	}
 	
 	/**
 	 * Adds all entries of the given model to this model.
-	 * @param model the model of which entries should be copied to this model.
+	 * @param model The model of which entries should be copied to this model.
+	 * @param notifyObserver Notifies the observer if true.
 	 */
-	public void addEntries( CalendarEntryModel model ) {
+	public void addEntries(CalendarEntryModel model, boolean notifyObserver) {
+	
+		addEntries(model, notifyObserver, false);
+	}
+	
+	
+	/**
+	 * Adds all entries of the given model to this model.
+	 * @param model The model of which entries should be copied to this model.
+	 * @param notifyObserver Notifies the observer if true.
+	 * @param forEachEvent Notifies the observer every time an event is added if true.  
+	 */
+	public void addEntries(CalendarEntryModel model, boolean notifyObserver, boolean forEachEvent) {
+		
 		IdentityHashMap entriesByCategory = model.calendarEntriesByCategory;
 		Iterator it = entriesByCategory.keysIterator();
 		while (it.hasNext()) {
@@ -166,11 +279,16 @@ implements Externalizable, CalendarSubject
 				// check if the original does not already contain this entry (compare by GUID), in case the user has 
 				// edited a global entry from entries.xml:
 				if (originalList == null || !originalList.containsEntryWithGuid( entry.getGuid() )) {
-					addEntry( entry );
+					addEntry(entry, forEachEvent);
 				}
 			}
 		}
+		
+		if (notifyObserver && !forEachEvent) {
+			notifyObservers();
+		}
 	}
+	
 	
 	/**
 	 * Retrieves a category by its global unique ID
@@ -669,6 +787,11 @@ implements Externalizable, CalendarSubject
 		}
 	}
 
+	
+//	public void notifyObserversExplicitly() {
+//		
+//		notifyObservers();
+//	}
 
 
 	
