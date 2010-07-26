@@ -169,6 +169,11 @@ public class CalendarEntry implements Externalizable {
 	private TimeZone timeZone;
 	
 	private CalendarEntry parent;
+	
+	/**
+	 * Field which contains the children of a repeating entry.
+	 */
+	private CalendarEntry[] children;
 
 	private CalendarTextResolver textResolver;
 	
@@ -451,6 +456,24 @@ public class CalendarEntry implements Externalizable {
 	/**
 	 * @return returns summary of calendar entry
 	 */
+//	public String getSummary() {
+//		
+//		return getSummary(null);
+//	}
+//	
+//	
+//	public String getSummary(TimePoint calendarTimePoint) {
+//		
+//		String returnSummary;
+//		
+//		if (calendarTimePoint != null && this.textResolver != null) {
+//			returnSummary =  this.textResolver.resolveSummary(this.summary, this, calendarTimePoint);
+//		} else {
+//			returnSummary = this.summary;
+//		}
+//		
+//		return returnSummary;
+//	}
 	public String getSummary() {
 		if (this.textResolver != null) {
 			return this.textResolver.resolveSummary(this.summary, this, null);
@@ -946,6 +969,26 @@ public class CalendarEntry implements Externalizable {
 	 */
 	public CalendarEntry getParent() {
 		return this.parent;
+	}
+	
+	
+	/**
+	 * Gets the children of a repeating entry.
+	 * @return CalandarEntry[] The array with the children. Null if the entry has no children.
+	 */
+	public CalendarEntry[] getChildren() {
+		
+		return this.children;
+	}
+	
+	
+	/**
+	 * Sets the children of a repeating entry.
+	 * @param entryList A CalendarEntryList which contains the children.
+	 */
+	public void setChildren(CalendarEntryList entryList) {
+		
+		this.children = entryList.getEntries();
 	}
 	
 	/**
