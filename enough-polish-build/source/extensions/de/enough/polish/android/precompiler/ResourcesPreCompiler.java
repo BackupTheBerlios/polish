@@ -124,8 +124,10 @@ public class ResourcesPreCompiler extends PreCompiler {
 
 		Element permissionElement;
 		String permissionsString = env.getVariable("polish.build.android.permissions");
-		if(permissionsString == null || permissionsString.length() == 0){
-			throw new BuildException("The variable 'polish.build.android.permissions' must be defined. Normally it is definied in the platforms.xml file for the Android platforms.");
+		if(permissionsString == null){
+			// Allow application without any permissions.
+			permissionsString = "";
+//			throw new BuildException("The variable 'polish.build.android.permissions' must be defined. Normally it is definied in the platforms.xml file for the Android platforms.");
 		}
 		
 		String[] permissions = permissionsString.split(",");
