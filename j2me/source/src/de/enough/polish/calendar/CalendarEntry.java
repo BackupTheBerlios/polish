@@ -456,29 +456,23 @@ public class CalendarEntry implements Externalizable {
 	/**
 	 * @return returns summary of calendar entry
 	 */
-//	public String getSummary() {
-//		
-//		return getSummary(null);
-//	}
-//	
-//	
-//	public String getSummary(TimePoint calendarTimePoint) {
-//		
-//		String returnSummary;
-//		
-//		if (calendarTimePoint != null && this.textResolver != null) {
-//			returnSummary =  this.textResolver.resolveSummary(this.summary, this, calendarTimePoint);
-//		} else {
-//			returnSummary = this.summary;
-//		}
-//		
-//		return returnSummary;
-//	}
 	public String getSummary() {
-		if (this.textResolver != null) {
-			return this.textResolver.resolveSummary(this.summary, this, null);
+		
+		return getSummary(null);
+	}
+	
+	
+	public String getSummary(TimePoint calendarTimePoint) {
+		
+		String returnSummary;
+		
+		if (calendarTimePoint != null && this.textResolver != null) {
+			returnSummary =  this.textResolver.resolveSummary(this.summary, this, calendarTimePoint);
+		} else {
+			returnSummary = this.summary;
 		}
-		return this.summary;
+		
+		return returnSummary;
 	}
 
 	/**
