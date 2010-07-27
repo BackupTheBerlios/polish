@@ -261,14 +261,9 @@ public class AnimationThread extends Thread
 				}
 			} catch (InterruptedException e) {
 				// ignore
-			} catch (Throwable e) {
+			} catch (Exception e) {
 				//#debug error
 				System.out.println("unable to animate screen" + e );
-				/*
-				 * THIS IS A TEMPORARY OUTPUT FOR BLACKBERRY
-				 */
-				System.out.println("unable to animate screen" + e );
-				e.printStackTrace();
 			}
 
 		}
