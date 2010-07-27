@@ -608,6 +608,9 @@ public class Command
 		}
 	}
 
+	/**
+	 * Removes all subcommands from this command.
+	 */
 	public void removeSubCommands() {
 		if(this.children != null) {
 			this.children.clear();
