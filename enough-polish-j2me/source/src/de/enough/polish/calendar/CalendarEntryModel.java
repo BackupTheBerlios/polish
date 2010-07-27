@@ -328,6 +328,56 @@ implements Externalizable, CalendarSubject
 		}
 		return null;
 	}
+	
+	
+	/**
+	 * Removes a category if it has no child categories. Note, this will also remove all entries in this category.
+	 * @param category The category which will be removed.
+	 */
+	public void removeCategory(CalendarCategory category) {
+		
+		removeCategory(category, false);
+	}
+	
+	
+	/**
+	 * Removes a category if it has no child categories. Note, this will also remove all entries in this category.
+	 * @param category The category which will be removed.
+	 * @param notifyObserver Notifies the observer if true. 
+	 */
+	public void removeCategory(CalendarCategory category, boolean notifyObserver) {
+		
+		if ( category.hasChildCategories() ) {
+			//#debug info
+			System.out.println("Cannot delete category since it contains child categories. Can only delete categories on the lowest level.");
+		} else {
+			
+			// Removing all entries from the category before removing the category itself.
+			CalendarEntryList entryList = getEntries(category);
+			CalendarEntry[] entries = entryList.getEntries();
+			for (int i = 0; i < entries.length; i++) {
+				CalendarEntry entryToRemove = entries[i];
+				removeEntry(entryToRemove);
+			}
+			// Removing the category.
+			CalendarCategory parentCategory = category.getParentCategory();
+			if (parentCategory != null) {
+				ArrayList childCategoryList = parentCategory.getChildCategoriesAsList();
+				childCategoryList.remove(category);
+				parentCategory.setChildCategories(childCategoryList);
+				
+				if (notifyObserver) {
+					this.recentChangedCategory = parentCategory;
+					notifyObservers();
+				} else {
+					// Do nothing;
+				}
+			} else {
+				//#debug info
+				System.out.println("Cannot delete category since it is a root category.");
+			}
+		}
+	}
 
 	/**
 	* sets the calendar Time Zone
@@ -792,10 +842,10 @@ implements Externalizable, CalendarSubject
 	}
 
 	
-//	public void notifyObserversExplicitly() {
-//		
-//		notifyObservers();
-//	}
+	public void notifyObserversExplicitly() {
+		
+		notifyObservers();
+	}
 
 
 	
