@@ -35,6 +35,8 @@ implements Externalizable, CalendarSubject
 	private IdentityArrayList listeners;
 	private boolean isDirty;
 	private Comparator rootCategoriesComparator;
+	private CalendarEntry recentChangedEntry;
+	private CalendarCategory recentChangedCategory;
 	
 	private ArrayList observers = new ArrayList();
 	
@@ -93,6 +95,7 @@ implements Externalizable, CalendarSubject
 		updateEntry(entry);
 		
 		if (notifyObserver) {
+			this.recentChangedEntry = entry;
 			notifyObservers();
 		} else {
 			// Do not notify the observer;
@@ -146,6 +149,7 @@ implements Externalizable, CalendarSubject
 		CalendarEntryList list = addCategory(category);
 		
 		if (notifyObserver) {
+			this.recentChangedCategory = category;
 			notifyObservers();
 		} else {
 			// Do not notify the observer;
@@ -783,7 +787,7 @@ implements Externalizable, CalendarSubject
 		// loop through and notify each observer
 		for (int i = 0; i < observers.size(); i++) {
 			CalendarObserver observer = (CalendarObserver)observers.get(i);
-			observer.updatedCalendarModel(this);
+			observer.updatedCalendarModel(this, this.recentChangedEntry, this.recentChangedCategory);
 		}
 	}
 
