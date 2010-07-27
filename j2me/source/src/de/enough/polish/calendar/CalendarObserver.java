@@ -13,4 +13,10 @@ public interface CalendarObserver {
 	 * @param changedCategory A category which was changed/added in the model. Null if no category has been changed.
 	 */
 	public void updatedCalendarModel(CalendarSubject subject, CalendarEntry changedEntry, CalendarCategory changedCategory);
+
+	
+	/**
+	 * Removes the listener.
+	 */
+	public void removeObserver();
 }
