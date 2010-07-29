@@ -43,23 +43,48 @@ import javax.microedition.lcdui.Font;
  * @author Robert Virkus, robert@enough.de
  */
 public final class TextUtil {
-	
+
 	/**
 	 * standard maximum lines number for text wrapping 
+	 * @see #wrap(String, Font, int, int, int, String)
 	 */
 	public static final int MAXLINES_UNLIMITED = Integer.MAX_VALUE;
-	
+
+	/**
+	 * Position of the appendix is at the end of the text.
+	 * @see #wrap(String, Font, int, int, int, String)
+	 */
 	public static final int MAXLINES_APPENDIX_POSITION_AFTER = 0x00;
-	
+
+	/**
+	 * Position of the appendix is at the beginning of the text.
+	 * @see #wrap(String, Font, int, int, int, String)
+	 */
 	public static final int MAXLINES_APPENDIX_POSITION_BEFORE = 0x01;
-	
+
 	/**
 	 * the default appendix to attach to a truncated text
+	 * @see #wrap(String, Font, int, int, int, String)
 	 */
 	public static final String MAXLINES_APPENDIX = "...";
-	
+
 	private static final String UNRESERVED = "-_.!~*'()\"";
-	
+
+	private static final String HEXES = "0123456789ABCDEF";
+	/**
+	 * A string form (for less overhead when unescaping is not used) of named HTML entities, compare 
+	 * http://www.w3.org/TR/WD-html40-970708/sgml/entities.html.
+	 * For making this list as dense as possible, we just have the name followed by the integer value of that named character.
+	 * nbsp160iexcl161 means &amp;nbsp; translates to &amp;#160; and &amp;iexcl; to &amp;#161;, for example.
+	 * Problematic are names such as sup2 or frac34 which include numbers, they can lead to wrong unescaping when
+	 * there is for example an (invalid) &amp;frac; entity. For now we deal with that risk, however.
+	 * When going further there are elements such as sub, sube and nsub for example, when they are not ordered correctly we might find nsub when searching for sub, for example. 
+	 * Right now we don't support neither Greek nor mathematical named HTML entities, however. 
+	 */
+	private static final String HTML_NAMED_ENTITIES = "quot34amp38lt60gt62"
+													+ "nbsp160iexcl161cent162pound163curren164yen165brvbar166sect167uml168copy169ordf170laquo171not172shy173reg174macr175deg176plusmn177sup2178sup3179acute180micro181para182middot183cedil184sup1185ordm186raquo187frac14188frac12189frac34190iquest191Agrave192Aacute193Acirc194Atilde195Auml196Aring197AElig198Ccedil199Egrave200Eacute201Ecirc202Euml203Igrave204Iacute205Icirc206Iuml207ETH208Ntilde209Ograve210Oacute211Ocirc212Otilde213Ouml214times215Oslash216Ugrave217Uacute218Ucirc219Uuml220Yacute221THORN222szlig223"
+													+ "agrave224aacute225acirc226atilde227auml228aring229aelig230ccedil231egrave232eacute233ecirc234euml235igrave236iacute237icirc238iuml239eth240ntilde241ograve242oacute243ocirc244otilde245ouml246divide247oslash248ugrave249uacute250ucirc251uuml252yacute253thorn254yuml255";
+
 	/**
 	 * Splits the given String around the matches defined by the given delimiter into an array.
 	 * Example:
@@ -91,7 +116,7 @@ public final class TextUtil {
 		strings.add( new String( valueChars, lastIndex, valueChars.length - lastIndex ) );
 		return (String[]) strings.toArray( new String[ strings.size() ] );
 	}
-	
+
 
 	/**
 	 * Splits the given String around the matches defined by the given delimiter into an array.
@@ -109,11 +134,11 @@ public final class TextUtil {
 		for (int i = 0; i < result.length; i++)
 		{
 			result[i] = result[i].trim();
-			
+
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Splits the given String around the matches defined by the given delimiter into an array.
 	 * Example:
@@ -172,7 +197,7 @@ public final class TextUtil {
 		return wrap(value, font, firstLineWidth, lineWidth, MAXLINES_UNLIMITED, (String)null, TextUtil.MAXLINES_APPENDIX_POSITION_AFTER);
 	}
 	//#endif
-	
+
 	//#if polish.midp || polish.usePolishGui
 	/**
 	 * Wraps the given string so it fits on the specified lines.
@@ -188,7 +213,7 @@ public final class TextUtil {
 	public static String[] wrap( String value, Font font, int firstLineWidth, int lineWidth) {
 		return wrap(value, font, firstLineWidth, lineWidth, MAXLINES_UNLIMITED, (String)null, TextUtil.MAXLINES_APPENDIX_POSITION_AFTER);
 	}
-	
+
 	/**
 	 * Wraps the given string so it fits on the specified lines.
 	 * First of al it is splitted at the line-breaks ('\n'), subsequently the substrings
@@ -225,7 +250,7 @@ public final class TextUtil {
 			//#debug error
 			System.out.println("INVALID LINE WIDTH FOR SPLITTING " + firstLineWidth + " / " + lineWidth + " ( for string " + value + ")");
 			//#if polish.debug.error
-				try { throw new RuntimeException("INVALID LINE WIDTH FOR SPLITTING " + firstLineWidth + " / " + lineWidth + " ( for string " + value + ")"); } catch (Exception e) { e.printStackTrace(); }	
+			try { throw new RuntimeException("INVALID LINE WIDTH FOR SPLITTING " + firstLineWidth + " / " + lineWidth + " ( for string " + value + ")"); } catch (Exception e) { e.printStackTrace(); }	
 			//#endif
 			return new String[]{ value };
 		}
@@ -236,7 +261,7 @@ public final class TextUtil {
 			//if (hasLineBreaks) {
 			//	return split( "complete/linebreaks:" + completeWidth + "> " + value, '\n');
 			//} else {
-				return new String[]{ value };
+			return new String[]{ value };
 			//}
 		}
 		// the given string does not fit on the first line:
@@ -266,7 +291,7 @@ public final class TextUtil {
 					completeWidth = font.stringWidth(line);
 					if (completeWidth <= firstLineWidth ) {
 						lines.add( line );
-						
+
 						if(lines.size() == maxLines)
 						{
 							// break if the maximum number of lines is reached
@@ -288,7 +313,7 @@ public final class TextUtil {
 				lines.add("");
 			}
 		}
-		
+
 		if(lines.size() >= maxLines)
 		{
 			String line = (String)lines.get(maxLines - 1);
@@ -301,13 +326,13 @@ public final class TextUtil {
 				lines.remove( lines.size() -1 );
 			}
 		}
-		
+
 		//#debug
 		System.out.println("Wrapped [" + value + "] into " + lines.size() + " rows.");
 		return (String[]) lines.toArray( new String[ lines.size() ]);
 	}
 	//#endif
-	
+
 	//#if polish.midp || polish.usePolishGui
 	/**
 	 * Wraps the given string so that the substrings fit into the the given line-widths.
@@ -336,7 +361,7 @@ public final class TextUtil {
 		wrap(value, font, completeWidth, firstLineWidth, lineWidth, list, MAXLINES_UNLIMITED, MAXLINES_APPENDIX_POSITION_AFTER);
 	}
 	//#endif
-	
+
 	//#if polish.midp || polish.usePolishGui
 	/**
 	 * Wraps the given string so that the substrings fit into the the given line-widths.
@@ -368,7 +393,7 @@ public final class TextUtil {
 			list.add(value);
 			return;
 		}
-		
+
 		int lastLineIndex = maxLines - 1;
 		char[] valueChars = value.toCharArray();
 		int startPos = 0;
@@ -392,7 +417,7 @@ public final class TextUtil {
 					list.add( new String( valueChars, startPos, valueChars.length - startPos ) );
 					break;
 				}
-				
+
 				// need to create a line break:
 				if (c == ' ' || c == '\t') { 
 					String line = new String( valueChars, startPos, i - startPos );
@@ -429,21 +454,21 @@ public final class TextUtil {
 					startPos =  lastSpacePos + 1;
 					lastSpacePos = -1;
 				}
-				
+
 				firstLineWidth = lineWidth; 
 			} else if (c == ' ' || c == '\t') {
 				lastSpacePos = i;
 				lastSpacePosLength = currentLineWidth;
 			}
-			
+
 		} 
-		
+
 		if(list.size() != maxLines)
 		{
 			// add tail:
 			list.add( new String( valueChars, startPos, valueChars.length - startPos ) );
 		}
-		
+
 		/*
 		try {
 		int widthPerChar = (completeWidth * 100) / valueChars.length;
@@ -479,12 +504,12 @@ public final class TextUtil {
 			e.printStackTrace();
 			System.out.println("complete width=" + completeWidth + " number of chars=" + value.length());
 		}
-		*/
+		 */
 	}
 	//#endif
-	
+
 	//#if polish.midp || polish.usePolishGui
-	
+
 	/**
 	 * Adds the specified appendix to the give line of text
 	 * and shortens the text to fit the available width 
@@ -514,7 +539,7 @@ public final class TextUtil {
 					}
 					completeWidth = font.stringWidth(line);
 				}
-				
+
 				return line;
 			}
 			else
@@ -527,10 +552,10 @@ public final class TextUtil {
 						} else if(position == TextUtil.MAXLINES_APPENDIX_POSITION_BEFORE) {
 							line = line.substring(1);
 						}
-							
+
 						completeWidth = font.stringWidth(line) +  appendixWidth;
 					}
-					
+
 					if(position == TextUtil.MAXLINES_APPENDIX_POSITION_AFTER) {
 						return line + appendix;
 					} else {
@@ -547,165 +572,165 @@ public final class TextUtil {
 		}
 	}
 	//#endif
-	
-//	 Unreserved punctuation mark/symbols
 
-    /**
-     * Converts Hex digit to a UTF-8 "Hex" character
-     * 
-     * @param digitValue digit to convert to Hex
-     * @return the converted Hex digit
-     */
-    private static char toHexChar(int digitValue) {
-        if (digitValue < 10)
-            // Convert value 0-9 to char 0-9 hex char
-            return (char)('0' + digitValue);
-        else
-            // Convert value 10-15 to A-F hex char
-            return (char)('A' + (digitValue - 10));
-    }
+	//	 Unreserved punctuation mark/symbols
 
-    /**
-     * Encodes a URL string.
-     * This method assumes UTF-8 usage.
-     * 
-     * @param url URL to encode
-     * @return the encoded URL
-     */
-    public static String encodeUrl(String url) {
-        StringBuffer encodedUrl = new StringBuffer(); // Encoded URL
-        int len = url.length();
-        // Encode each URL character
-        for (int i = 0; i < len; i++) {
-            char c = url.charAt(i); // Get next character
-            if ((c >= '0' && c <= '9') ||
-                (c >= 'a' && c <= 'z') ||
-                (c >= 'A' && c <= 'Z')) {
-                // Alphanumeric characters require no encoding, append as is
-                encodedUrl.append(c);
-            } else {
-                int imark = UNRESERVED.indexOf(c);
-                if (imark >=0) {
-                    // Unreserved punctuation marks and symbols require
-                    //  no encoding, append as is
-                    encodedUrl.append(c);
-                } else {
-                    // Encode all other characters to Hex, using the format "%XX",
-                    //  where XX are the hex digits
-                    encodedUrl.append('%'); // Add % character
-                    // Encode the character's high-order nibble to Hex
-                    encodedUrl.append(toHexChar((c & 0xF0) >> 4));
-                    // Encode the character's low-order nibble to Hex
-                    encodedUrl.append(toHexChar (c & 0x0F));
-                }
-            }
-        }
-        return encodedUrl.toString(); // Return encoded URL
-    }
-    
-    /**
-     * Encodes a string for parsing using an XML parser.
-     * &amp, &lt; and &gt; are replaced.
-     * 
-     * @param text the text
-     * @return the cleaned text
-     */
-    public static String encodeForXmlParser( String text ) {
-    	int len = text.length();
-    	StringBuffer buffer = new StringBuffer(len + 10);
-        for (int i = 0; i < len; i++) {
-            char c = text.charAt(i);
-            if (c == '&') {
-            	buffer.append("&amp;");
-            } else if (c == '<') {
-            	buffer.append("&lt;");
-            } else if (c == '>') {
-            	buffer.append("&gt;");
-            } else {
-            	buffer.append(c);
-            }
-        }
-    	return buffer.toString();
-    }
+	/**
+	 * Converts Hex digit to a UTF-8 "Hex" character
+	 * 
+	 * @param digitValue digit to convert to Hex
+	 * @return the converted Hex digit
+	 */
+	private static char toHexChar(int digitValue) {
+		if (digitValue < 10)
+			// Convert value 0-9 to char 0-9 hex char
+			return (char)('0' + digitValue);
+		else
+			// Convert value 10-15 to A-F hex char
+			return (char)('A' + (digitValue - 10));
+	}
 
-    /**
-     * Replaces the all matches within a String.
-     * 
-     * @param input the input string
-     * @param search the string that should be replaced
-     * @param replacement the replacement
-     * @return the input string where the search string has been replaced
-     * @throws NullPointerException when one of the specified strings is null
-     */
-    public static String replace( String input, String search, String replacement ) {
-    	int pos = input.indexOf( search );
-    	if (pos != -1) {
-    		StringBuffer buffer = new StringBuffer();
-    		int lastPos = 0;
-    		do {
-    			buffer.append( input.substring( lastPos, pos ) )
-    			      .append( replacement );
-    			lastPos = pos + search.length();
-    			pos = input.indexOf( search, lastPos );
-    		} while (pos != -1);
-    		buffer.append( input.substring( lastPos ));
-    		input = buffer.toString();
-    	}
-    	return input;
-    }
+	/**
+	 * Encodes a URL string.
+	 * This method assumes UTF-8 usage.
+	 * 
+	 * @param url URL to encode
+	 * @return the encoded URL
+	 */
+	public static String encodeUrl(String url) {
+		StringBuffer encodedUrl = new StringBuffer(); // Encoded URL
+		int len = url.length();
+		// Encode each URL character
+		for (int i = 0; i < len; i++) {
+			char c = url.charAt(i); // Get next character
+			if ((c >= '0' && c <= '9') ||
+					(c >= 'a' && c <= 'z') ||
+					(c >= 'A' && c <= 'Z')) {
+				// Alphanumeric characters require no encoding, append as is
+				encodedUrl.append(c);
+			} else {
+				int imark = UNRESERVED.indexOf(c);
+				if (imark >=0) {
+					// Unreserved punctuation marks and symbols require
+					//  no encoding, append as is
+					encodedUrl.append(c);
+				} else {
+					// Encode all other characters to Hex, using the format "%XX",
+					//  where XX are the hex digits
+					encodedUrl.append('%'); // Add % character
+					// Encode the character's high-order nibble to Hex
+					encodedUrl.append(toHexChar((c & 0xF0) >> 4));
+					// Encode the character's low-order nibble to Hex
+					encodedUrl.append(toHexChar (c & 0x0F));
+				}
+			}
+		}
+		return encodedUrl.toString(); // Return encoded URL
+	}
 
-    
-    /**
-     * Replaces the first match in a String.
-     * 
-     * @param input the input string
-     * @param search the string that should be replaced
-     * @param replacement the replacement
-     * @return the input string where the first match of the search string has been replaced
-     * @throws NullPointerException when one of the specified strings is null
-     */
-    public static String replaceFirst( String input, String search, String replacement ) {
-    	int pos = input.indexOf( search );
-    	if (pos != -1) {
-    		input = input.substring(0, pos) + replacement + input.substring( pos + search.length() );
-    	}
-    	return input;
-    }
+	/**
+	 * Encodes a string for parsing using an XML parser.
+	 * &amp, &lt; and &gt; are replaced.
+	 * 
+	 * @param text the text
+	 * @return the cleaned text
+	 */
+	public static String encodeForXmlParser( String text ) {
+		int len = text.length();
+		StringBuffer buffer = new StringBuffer(len + 10);
+		for (int i = 0; i < len; i++) {
+			char c = text.charAt(i);
+			if (c == '&') {
+				buffer.append("&amp;");
+			} else if (c == '<') {
+				buffer.append("&lt;");
+			} else if (c == '>') {
+				buffer.append("&gt;");
+			} else {
+				buffer.append(c);
+			}
+		}
+		return buffer.toString();
+	}
 
-    /**
-     * Replaces the last match in a String.
-     * 
-     * @param input the input string
-     * @param search the string that should be replaced
-     * @param replacement the replacement
-     * @return the input string where the last match of the search string has been replaced
-     * @throws NullPointerException when one of the specified strings is null
-     */
-    public static String replaceLast( String input, String search, String replacement ) {
-    	int pos = input.indexOf( search );
-    	if (pos != -1) {
-	    	int lastPos = pos;
-	    	while (true) {
-	    		pos = input.indexOf( search, lastPos + 1 );
-	    		if (pos == -1) {
-	    			break;
-	    		} else {
-	    			lastPos = pos;
-	    		}
-	    	}
-    		input = input.substring(0, lastPos) + replacement + input.substring( lastPos + search.length() );
-    	}
-    	return input;
-    }
+	/**
+	 * Replaces the all matches within a String.
+	 * 
+	 * @param input the input string
+	 * @param search the string that should be replaced
+	 * @param replacement the replacement
+	 * @return the input string where the search string has been replaced
+	 * @throws NullPointerException when one of the specified strings is null
+	 */
+	public static String replace( String input, String search, String replacement ) {
+		int pos = input.indexOf( search );
+		if (pos != -1) {
+			StringBuffer buffer = new StringBuffer();
+			int lastPos = 0;
+			do {
+				buffer.append( input.substring( lastPos, pos ) )
+				.append( replacement );
+				lastPos = pos + search.length();
+				pos = input.indexOf( search, lastPos );
+			} while (pos != -1);
+			buffer.append( input.substring( lastPos ));
+			input = buffer.toString();
+		}
+		return input;
+	}
 
-    /**
-     * Retrieves the last index of the given match in the specified text.
-     * 
-     * @param text the text in which the match is given
-     * @param match the match within the text
-     * @return the last index of the match or -1 when the match is not found in the given text
-     * @throws NullPointerException when text or match is null
-     */
+
+	/**
+	 * Replaces the first match in a String.
+	 * 
+	 * @param input the input string
+	 * @param search the string that should be replaced
+	 * @param replacement the replacement
+	 * @return the input string where the first match of the search string has been replaced
+	 * @throws NullPointerException when one of the specified strings is null
+	 */
+	public static String replaceFirst( String input, String search, String replacement ) {
+		int pos = input.indexOf( search );
+		if (pos != -1) {
+			input = input.substring(0, pos) + replacement + input.substring( pos + search.length() );
+		}
+		return input;
+	}
+
+	/**
+	 * Replaces the last match in a String.
+	 * 
+	 * @param input the input string
+	 * @param search the string that should be replaced
+	 * @param replacement the replacement
+	 * @return the input string where the last match of the search string has been replaced
+	 * @throws NullPointerException when one of the specified strings is null
+	 */
+	public static String replaceLast( String input, String search, String replacement ) {
+		int pos = input.indexOf( search );
+		if (pos != -1) {
+			int lastPos = pos;
+			while (true) {
+				pos = input.indexOf( search, lastPos + 1 );
+				if (pos == -1) {
+					break;
+				} else {
+					lastPos = pos;
+				}
+			}
+			input = input.substring(0, lastPos) + replacement + input.substring( lastPos + search.length() );
+		}
+		return input;
+	}
+
+	/**
+	 * Retrieves the last index of the given match in the specified text.
+	 * 
+	 * @param text the text in which the match is given
+	 * @param match the match within the text
+	 * @return the last index of the match or -1 when the match is not found in the given text
+	 * @throws NullPointerException when text or match is null
+	 */
 	public static int lastIndexOf(String text, String match) {
 		int lastIndex = -1;
 		int index = text.indexOf( match );
@@ -715,35 +740,35 @@ public final class TextUtil {
 		}
 		return lastIndex;
 	}
-    
 
-  /**
-   * Compares two strings in a case-insensitive way. Both strings are lower cased and
-   * then compared. If both are equal this method returns <code>true</code>,
-   * <code>false</code> otherwise.
-   *    
-   * @param str1 the string to compare
-   * @param str2 the string to compare to
-   * 
-   * @return <code>true</code> if both strings are equals except case,
-   * <code>false</code>
-   * 
-   * @throws NullPointerException if <code>str1</code> is <code>null</code>
-   * 
-   * @see String#equals(Object)
-   * @see String#equalsIgnoreCase(String)
-   */
+
+	/**
+	 * Compares two strings in a case-insensitive way. Both strings are lower cased and
+	 * then compared. If both are equal this method returns <code>true</code>,
+	 * <code>false</code> otherwise.
+	 *    
+	 * @param str1 the string to compare
+	 * @param str2 the string to compare to
+	 * 
+	 * @return <code>true</code> if both strings are equals except case,
+	 * <code>false</code>
+	 * 
+	 * @throws NullPointerException if <code>str1</code> is <code>null</code>
+	 * 
+	 * @see String#equals(Object)
+	 * @see String#equalsIgnoreCase(String)
+	 */
 	public static boolean equalsIgnoreCase(String str1, String str2)
 	{
-	//#if polish.cldc1.1
+		//#if polish.cldc1.1
 		//# return str1.equalsIgnoreCase(str2);
-	//#else
+		//#else
 		if (str2 == null || str1.length() != str2.length() )
 		{
 			return false;
 		}
 		return str1.toLowerCase().equals(str2.toLowerCase());
-	//#endif
+		//#endif
 	}
 
 
@@ -758,7 +783,7 @@ public final class TextUtil {
 		StringBuffer output = new StringBuffer( input.length() );
 		StringBuffer ltrCharacters = new StringBuffer();
 		boolean isCurrRTL = true;
-		
+
 		int size = input.length();
 		for(int index = size - 1; index >= 0;)
 		{
@@ -771,7 +796,7 @@ public final class TextUtil {
 				} else {
 					nextChr = curr;
 				}
-				
+
 				if(isEnglishChar(curr) || isEnglishChar(nextChr))
 				{
 					isCurrRTL = false;
@@ -790,10 +815,10 @@ public final class TextUtil {
 					{
 						output.append( curr ); //left to right language - save the chars
 					}
-					
+
 					index--;
 				}
-				
+
 			}
 			ltrCharacters.delete(0, ltrCharacters.length() );
 			while(!isCurrRTL && index >= 0) // English....
@@ -818,103 +843,178 @@ public final class TextUtil {
 					isCurrRTL = true;
 				}
 			}
-			 
+
 			output.append( ltrCharacters );
-		 }
+		}
 		return output.toString();
 	}
-	
-	 private static boolean isEnglishChar(char chr)
-	 {
-		 if ( chr < 128 && (chr >= 'a' && chr <= 'z' || chr >= 'A' && chr <= 'Z' || chr >= '0' && chr <= '9' || chr == '+' ) )
-		 {
-			 return true;
-		 }
-		 else 
-		 {
-			 return false;
-		 }
-	 }
-	 
-	 private static final String HEXES = "0123456789ABCDEF";
-		
-		/**
-		 * This method encodes a string to a quoted-printable string according to <a href="http://tools.ietf.org/html/rfc2045#section-6.7">RFC 2045</a>.
-		 * All five rules are implemented.
-		 * @param clearText the string to encode
-		 * @param enc The encoding which sould be used to interpret the cleartext.
-		 * @return the encoded string
-		 * @throws UnsupportedEncodingException if the given encoding is not supported
-		 */
-		public static String encodeAsQuotedPrintable(String clearText, String enc) throws UnsupportedEncodingException {
-			StringBuffer buffer = new StringBuffer();
 
-			int lastIndex = clearText.length()-1;
-			int numberCharsInRow = 0;
-			for(int i = 0; i <= lastIndex; i++) {
-				char character = clearText.charAt(i);
-				if(character == '=') {
-					// Quote the quote character.
-					numberCharsInRow = numberCharsInRow + encodeCharacterAsQP(buffer,character,enc);
+	private static boolean isEnglishChar(char chr)
+	{
+		if ( chr < 128 && (chr >= 'a' && chr <= 'z' || chr >= 'A' && chr <= 'Z' || chr >= '0' && chr <= '9' || chr == '+' ) )
+		{
+			return true;
+		}
+		else 
+		{
+			return false;
+		}
+	}
+
+
+	/**
+	 * This method encodes a string to a quoted-printable string according to <a href="http://tools.ietf.org/html/rfc2045#section-6.7">RFC 2045</a>.
+	 * All five rules are implemented.
+	 * @param clearText the string to encode
+	 * @param enc The encoding which should be used to interpret the cleartext.
+	 * @return the encoded string
+	 * @throws UnsupportedEncodingException if the given encoding is not supported
+	 */
+	public static String encodeAsQuotedPrintable(String clearText, String enc) throws UnsupportedEncodingException {
+		StringBuffer buffer = new StringBuffer();
+
+		int lastIndex = clearText.length()-1;
+		int numberCharsInRow = 0;
+		for(int i = 0; i <= lastIndex; i++) {
+			char character = clearText.charAt(i);
+			if(character == '=') {
+				// Quote the quote character.
+				numberCharsInRow = numberCharsInRow + encodeCharacterAsQP(buffer,character,enc);
+			} else {
+				if((33 <= character && character <= 60) || (62 <= character && character <= 126)) {
+					// Rule 2. Literal representation
+					buffer.append(character);
+					numberCharsInRow = numberCharsInRow + 1;
 				} else {
-					if((33 <= character && character <= 60) || (62 <= character && character <= 126)) {
-						// Rule 2. Literal representation
-						buffer.append(character);
-						numberCharsInRow = numberCharsInRow + 1;
-					} else {
-						// Rule 3. White Space
-						if(character == 9 || character == 32) {
-							if(i+2 <= lastIndex && clearText.charAt(i+1) == '\r' && clearText.charAt(i+2) == '\n') {
-								// Encode whitespace at the end of line of the clear text.
-								numberCharsInRow = numberCharsInRow + encodeCharacterAsQP(buffer,character,enc);
-							} else {
-								buffer.append(character);
-								numberCharsInRow++;
-							}
+					// Rule 3. White Space
+					if(character == 9 || character == 32) {
+						if(i+2 <= lastIndex && clearText.charAt(i+1) == '\r' && clearText.charAt(i+2) == '\n') {
+							// Encode whitespace at the end of line of the clear text.
+							numberCharsInRow = numberCharsInRow + encodeCharacterAsQP(buffer,character,enc);
 						} else {
-							// Other non-printable character.
+							buffer.append(character);
+							numberCharsInRow++;
+						}
+					} else {
+						// Other non-printable character.
+						// Rule 4. Line Breaks
+						if(i+1 <= lastIndex && character == '\r' && clearText.charAt(i+1) == '\n') {
+							buffer.append('\r');
+						} else {
 							// Rule 4. Line Breaks
-							if(i+1 <= lastIndex && character == '\r' && clearText.charAt(i+1) == '\n') {
-								buffer.append('\r');
+							if(i-1>=0 && character == '\n' && clearText.charAt(i-1) == '\r') {
+								buffer.append('\n');
+								numberCharsInRow = 0;
 							} else {
-								// Rule 4. Line Breaks
-								if(i-1>=0 && character == '\n' && clearText.charAt(i-1) == '\r') {
-									buffer.append('\n');
-									numberCharsInRow = 0;
-								} else {
-									// Rule 1. General 8bit representation
-									numberCharsInRow = numberCharsInRow + encodeCharacterAsQP(buffer,character,enc);
-								}
+								// Rule 1. General 8bit representation
+								numberCharsInRow = numberCharsInRow + encodeCharacterAsQP(buffer,character,enc);
 							}
 						}
 					}
 				}
-				// Rule 5. Soft Line Breaks
-				if(numberCharsInRow > 76) {
-					int lastIndexOfBuffer = buffer.length()-1;
-					int numberOfCharsOverflowingLine = numberCharsInRow-76;
-					int lastIndexOnLine = lastIndexOfBuffer-numberOfCharsOverflowingLine;
-					buffer.insert(lastIndexOnLine,"=\r\n");
-					// Add the one character that was the last on the previous line.
-					numberCharsInRow = numberOfCharsOverflowingLine + 1;
+			}
+			// Rule 5. Soft Line Breaks
+			if(numberCharsInRow > 76) {
+				int lastIndexOfBuffer = buffer.length()-1;
+				int numberOfCharsOverflowingLine = numberCharsInRow-76;
+				int lastIndexOnLine = lastIndexOfBuffer-numberOfCharsOverflowingLine;
+				buffer.insert(lastIndexOnLine,"=\r\n");
+				// Add the one character that was the last on the previous line.
+				numberCharsInRow = numberOfCharsOverflowingLine + 1;
+			}
+		}
+		return buffer.toString();
+	}
+
+	private static int encodeCharacterAsQP(StringBuffer buffer, char character,String encoding) throws UnsupportedEncodingException {
+		int numberCharactersGenerated = 0;
+		//			byte[] bytes = Character.toString(character).getBytes(encoding);
+		byte[] bytes = new String(new char[] {character}).getBytes(encoding);
+		for (int i = 0; i < bytes.length; i++) {
+			byte b = bytes[i];
+			buffer.append("=");
+			// Encode the byte as hex
+			buffer.append(HEXES.charAt((b & 0xF0) >> 4));
+			buffer.append(HEXES.charAt((b & 0x0F)));
+			numberCharactersGenerated = numberCharactersGenerated + 3;
+		}
+		return numberCharactersGenerated;
+	}
+	
+	/**
+	 * Resolves the specified HTML entity such as "lt", "quot", "auml" and similar.
+	 * Please note that right now no Greek nor mathematical symbols are supported.
+	 * Compare http://www.w3.org/TR/WD-html40-970708/sgml/entities.html for known HTML entities.
+	 * 
+	 * @param name the name of the entity
+	 * @return the corresponding character, '?' when the entity could not be resolved.
+	 */
+	public static char resolveNamedHtmlEntity( String name ) {
+		int index = HTML_NAMED_ENTITIES.indexOf(name);
+		if (index == -1) {
+			return '?';
+		}
+		index += name.length();
+		StringBuffer digits = new StringBuffer(5);
+		char c = HTML_NAMED_ENTITIES.charAt(index);
+		while (Character.isDigit( c )) {
+			digits.append(c);
+			index++;
+			c = HTML_NAMED_ENTITIES.charAt(index);
+		}
+		try {
+			int value = Integer.parseInt( digits.toString() );
+			return (char)value;
+		} catch (Exception e) {
+			//#debug error
+			System.out.println("Unable to resolve html entity " + name + e );
+			return '?';
+		}
+	}
+
+	/**
+	 * Decodes text that contains HTML entities such as &amp;quot; or &amp;#62;.
+	 * @param input the text input that might contain HTML entities
+	 * @return the cleaned text. When an HTML entity could not be resolved, it will be replaced with a question mark '?'.
+	 */
+	public static String unescapeHtmlEntities(String input) {
+		int length = input.length();
+		StringBuffer output = new StringBuffer( length );
+		StringBuffer entity = new StringBuffer(7);
+		int start;
+		for (int i=0; i<length; i++) {
+			char c = input.charAt(i);
+			if (c == '&') {
+				// this could be an HTML entity:
+				start = i;
+				while ( (++i < length) && (i < start + 10) && ((c = input.charAt(i)) != ';')) {
+					entity.append(c);
 				}
+				if (c == ';') {
+					// okay, this was a named entity.
+					c = entity.charAt(0);
+					if (c == '#') {
+						// this is a &#123; numerical entity
+						entity.delete(0, 1);
+						try {
+							c = (char)Integer.parseInt(entity.toString());
+						} catch (Exception e) {
+							//#debug error
+							System.out.println("Unable to parse HTML entity &#" + entity.toString() + "; " + e);
+							c = '?';
+						}
+					} else {
+						// this is a named HTML entity, e.g. &amp;
+						c = resolveNamedHtmlEntity(entity.toString());
+					}
+				} else { // this is not an HTML entity:
+					i = start;
+					c = '&';
+				}
+				entity.delete(0, entity.length());
 			}
-			return buffer.toString();
+			output.append(c);
 		}
-
-		private static int encodeCharacterAsQP(StringBuffer buffer, char character,String encoding) throws UnsupportedEncodingException {
-			int numberCharactersGenerated = 0;
-//			byte[] bytes = Character.toString(character).getBytes(encoding);
-			byte[] bytes = new String(new char[] {character}).getBytes(encoding);
-			for (int i = 0; i < bytes.length; i++) {
-				byte b = bytes[i];
-				buffer.append("=");
-				// Encode the byte as hex
-				buffer.append(HEXES.charAt((b & 0xF0) >> 4));
-				buffer.append(HEXES.charAt((b & 0x0F)));
-				numberCharactersGenerated = numberCharactersGenerated + 3;
-			}
-			return numberCharactersGenerated;
-		}
-
+		return output.toString();
+	}
 }

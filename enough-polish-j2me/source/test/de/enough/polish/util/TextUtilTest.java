@@ -177,4 +177,22 @@ public class TextUtilTest extends TestCase {
 		System.out.println(input);
 		System.out.println(reversed);
 	}
+	
+	public void testResolveNamedHtmlEntity() {
+		assertEquals( '&', TextUtil.resolveNamedHtmlEntity("amp"));
+		assertEquals( '"', TextUtil.resolveNamedHtmlEntity("quot"));
+		assertEquals( (char)34, TextUtil.resolveNamedHtmlEntity("quot"));
+		assertEquals( (char)189, TextUtil.resolveNamedHtmlEntity("frac12"));
+		assertEquals( 'ä', TextUtil.resolveNamedHtmlEntity("auml"));
+		assertEquals( 'Ä', TextUtil.resolveNamedHtmlEntity("Auml"));
+		assertEquals( '>', TextUtil.resolveNamedHtmlEntity("gt"));
+		assertEquals( '<', TextUtil.resolveNamedHtmlEntity("lt"));
+	}
+	
+	public void testUnescapeHtmlEntities() {
+		assertEquals( "<variable name=\"test\" />", TextUtil.unescapeHtmlEntities("&lt;variable name=&quot;test&quot; /&gt;"));
+		assertEquals( "<variable name=\"test\" />", TextUtil.unescapeHtmlEntities("&#60;variable name=&#34;test&#34; /&#62;"));
+		assertEquals( "19 <= 20 && 19 > 0", TextUtil.unescapeHtmlEntities("19 &lt;= 20 &amp;&amp; 19 &gt; 0"));
+		assertEquals( "19 <= 20 && 19 > 0", TextUtil.unescapeHtmlEntities("19 &#60;= 20 &#38;&#38; 19 &#62; 0"));
+	}
 }
