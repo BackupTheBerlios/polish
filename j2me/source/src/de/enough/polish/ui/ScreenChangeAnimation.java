@@ -335,11 +335,6 @@ implements Runnable
 		} catch (Throwable e) {
 			//#debug error
 			System.out.println("Unable to paint animation" + e );
-			/*
-			 * THIS IS A TEMPORARY OUTPUT FOR BLACKBERRY
-			 */
-			System.out.println("unable to animate screen" + e );
-			e.printStackTrace();
 		}
 	}
 
