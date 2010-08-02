@@ -29,15 +29,26 @@ public class StreamUtil {
 	 * @param bufferLength the length of the used temporary buffer
 	 * @return the lines as an ArrayList
 	 * @throws IOException when reading fails
+	 * @throws NullPointerException when the given input stream is null
 	 */
 	public static String[] getLines(InputStream in, String encoding, int bufferLength) 
 	throws IOException
 	{
-		String allLines = getString(in,encoding,bufferLength);
-		
+		String allLines = getString(in, encoding, bufferLength);
 		String[] lines = TextUtil.split(allLines, '\n');
-		
 		return lines;
+	}
+	
+	/**
+	 * Returns the content of a stream as a String 
+	 * @param in the stream to read with the text in the default encoding
+	 * @return the resulting String
+	 * @throws IOException when reading fails
+	 */	
+	public static String getString(InputStream in) 
+	throws IOException
+	{
+		return getString( in, null, 8096 );
 	}
 	
 	/**
@@ -47,6 +58,7 @@ public class StreamUtil {
 	 * @param bufferLength the length of the used temporary buffer
 	 * @return the resulting String
 	 * @throws IOException when reading fails
+	 * @throws NullPointerException when the given input stream is null
 	 */	
 	public static String getString(InputStream in, String encoding, int bufferLength) 
 	throws IOException
@@ -65,6 +77,7 @@ public class StreamUtil {
 	 * @param in the input stream
 	 * @return the read data
 	 * @throws IOException when reading fails
+	 * @throws NullPointerException when the given input stream is null
 	 */
 	public static byte[] readFully(InputStream in)
 	throws IOException 
@@ -78,6 +91,7 @@ public class StreamUtil {
 	 * @param bufferLength the length of the used temporary buffer
 	 * @return the read data
 	 * @throws IOException when reading fails
+	 * @throws NullPointerException when the given input stream is null
 	 */
 	public static byte[] readFully(InputStream in, int bufferLength)
 	throws IOException 
