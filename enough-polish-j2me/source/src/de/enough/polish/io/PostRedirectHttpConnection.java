@@ -99,7 +99,7 @@ public class PostRedirectHttpConnection extends RedirectHttpConnection
 	{
 		if (this.httpConnection == null)
 		{
-			System.out.println("POST: [" + this.body + "]");
+			//System.out.println("POST: [" + this.body + "]");
 			byte[] data = this.body.toString().getBytes();
 			openOutputStream().write(data, 0, data.length);
 		}
