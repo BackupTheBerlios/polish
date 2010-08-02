@@ -279,5 +279,18 @@ public class AtomFeedTest extends TestCase {
 		assertEquals( content, entry.getContent() );
 		assertEquals( 1, entry.getImages().length );
 		assertEquals("http://www.newstoday.co.za/images/stories/stories/october09/internet1005.jpg", entry.getImages()[0].getUrl() );
+		
+		
+		// test maximum number of serialized entries:
+		AtomFeed.setMaxNumberOfSerializedEntries(2);
+		byteOut = new ByteArrayOutputStream();
+		out = new DataOutputStream(byteOut);
+		feed.write(out);
+		assertEquals( 3, feed.size() );
+		
+		in = new DataInputStream( new ByteArrayInputStream( byteOut.toByteArray()));
+		feed = new AtomFeed();
+		feed.read(in);
+		assertEquals( 2, feed.size() );
 	}
 }

@@ -55,6 +55,7 @@ implements Externalizable
 {
 	
 	private static final int VERSION = 101;
+	private static int maxNumberOfSerializedEntries;
 	private final IdentityArrayList entries;
 	private String feedId;
 	private String title;
@@ -80,6 +81,24 @@ implements Externalizable
 	public AtomFeed(InputStream in) throws IOException {
 		this();
 		parse( in );
+	}
+	
+	/**
+	 * Sets a limit for the number of entries when this feed is serialized.
+	 * By default the number is not limited.
+	 * @param max the maximum number of serialized entries
+	 */
+	public static void setMaxNumberOfSerializedEntries(int max) {
+		maxNumberOfSerializedEntries = max;
+	}
+	
+	/**
+	 * Retrieves a possible limit for the number of entries when this feed is serialized.
+	 * By default the number is not limited.
+	 * @return the maximum number of serialized entries, values <= 0 mean that entries are not limited
+	 */
+	public static int getMaxNumberOfSerializedEntries() {
+		return maxNumberOfSerializedEntries;
 	}
 	
 	/**
@@ -432,6 +451,9 @@ implements Externalizable
 			this.author.write(out);
 		}
 		int size = this.entries.size();
+		if (maxNumberOfSerializedEntries > 0 && size > maxNumberOfSerializedEntries) {
+			size = maxNumberOfSerializedEntries;
+		}
 		out.writeInt(size);
 		for (int i=0; i<size; i++) {
 			AtomEntry entry = (AtomEntry) this.entries.get(i);
