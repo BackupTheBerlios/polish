@@ -25,6 +25,7 @@
  */
 package de.enough.polish.xml;
 
+import java.io.PrintStream;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
@@ -341,5 +342,65 @@ public class XmlDomNode
 			}
 		}
 		xml.append( indent ).append( "</" ).append( this.name ).append(">\n");
+	}
+
+	/**
+	 * Helper method for logging.
+	 * Just prints the complete node to the standard out.
+	 */
+	public void print() {
+		print( System.out );
+	}
+	
+	/**
+	 * Helper method for logging.
+	 * Just prints the complete node to the specified output.
+	 * @param out the output stream to which the complete node should be printed
+	 */
+	public void print( PrintStream out ) {
+		print( this, "", out );
+	}
+
+	private void print(XmlDomNode node, String start, PrintStream out) {
+		out.print( start );
+		out.print( '<' );
+		out.print( node.name );
+		if (node.attributes != null) {
+			Enumeration attrEnum = node.attributes.keys();
+			while (attrEnum.hasMoreElements()) {
+				String attrName = (String) attrEnum.nextElement();
+				String attrValue = (String) node.attributes.get(attrName);
+				out.print(' ');
+				out.print(attrName);
+				out.print('=');
+				out.print('"');
+				out.print(attrValue);
+				out.print('"');
+			}
+		}
+		if (node.text == null && node.childList == null) {
+			out.println("/>");
+		} else {
+			out.println('>');
+			if (node.text != null) {
+				out.print(start);
+				out.println(node.text);
+			}
+			if (node.childList != null) {
+				Object[] objects = node.childList.getInternalArray();
+				String childStart = start+ "  ";
+				for (int i = 0; i < objects.length; i++) {
+					XmlDomNode child = (XmlDomNode) objects[i];
+					if (child == null) {
+						break;
+					}
+					print( child, childStart, out );
+				}
+			}
+			out.print(start);
+			out.print("</");
+			out.print( node.name );
+			out.println('>');
+		}
 	}
 }
