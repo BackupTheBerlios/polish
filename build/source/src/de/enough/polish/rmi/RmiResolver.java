@@ -27,6 +27,7 @@ package de.enough.polish.rmi;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -90,8 +91,18 @@ public class RmiResolver
 	throws IOException
 	{
 		boolean useObfuscation = true;
-		try {			
-			int version = in.readInt();
+
+		try {
+			int version;
+
+			try {
+				version = in.readInt();
+			}
+			catch (EOFException e) {
+				// No data send. There is basically no RMI call.
+				return;
+			}
+
 			if (version > 101) {
 				useObfuscation = in.readBoolean();
 			} else if (version < 100) {
