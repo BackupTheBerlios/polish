@@ -17,13 +17,14 @@ import de.enough.polish.util.ArrayList;
  * @author Timon
  */
 public class CalendarCategory implements Externalizable {
-	private static final int VERSION = 101;
+	private static final int VERSION = 102;
 	private String name;
 	private String id;
 	private transient CalendarCategory parentCategory;
 	private ArrayList childCategories;
 	private String image;
 	private boolean isEnabled;	
+	private String styleName;
 	
 	/**
 	 * Creates a new empty category.
@@ -200,6 +201,29 @@ public class CalendarCategory implements Externalizable {
 			}
 		}
 	}
+	
+	/**
+	 * Sets the name of the style for this category.
+	 * You can use StyleSheet.getStyle( String name ) for dynamic retrieval of styles.
+	 * @param styleName the name of the style
+	 * @see #getStyleName()
+	 */
+	public void setStyleName( String styleName ) {
+		this.styleName = styleName;
+	}
+	
+	/**
+	 * Retrieves the name of the style for either this category or one of its parent categories.
+	 * @return the name of the associated style, might be null.
+	 * @see #setStyleName(String)
+	 */
+	public String getStyleName() {
+		String sName = this.styleName;
+		if (sName == null && this.parentCategory != null) {
+			sName = this.parentCategory.getStyleName();
+		}
+		return sName;
+ 	}
 
 	/*
 	 * (non-Javadoc)
@@ -207,7 +231,7 @@ public class CalendarCategory implements Externalizable {
 	 */
 	public void read(DataInputStream in) throws IOException {
 		int version = in.readInt();
-		if (version != VERSION) {
+		if (version > VERSION) {
 			throw new IOException("unknown version " + version);
 		}
 		boolean isNotNull = in.readBoolean();
@@ -221,6 +245,12 @@ public class CalendarCategory implements Externalizable {
 		isNotNull = in.readBoolean();
 		if (isNotNull) {
 			this.image = in.readUTF();
+		}
+		if (version > 101) {
+			isNotNull = in.readBoolean();
+			if (isNotNull) {
+				this.styleName = in.readUTF();
+			}			
 		}
 		if (version > 100) {
 			this.isEnabled = in.readBoolean();
@@ -260,6 +290,11 @@ public class CalendarCategory implements Externalizable {
 		out.writeBoolean(isNotNull);
 		if (isNotNull) {
 			out.writeUTF(this.image);
+		}
+		isNotNull = (this.styleName != null);
+		out.writeBoolean(isNotNull);
+		if (isNotNull) {
+			out.writeUTF(this.styleName);
 		}
 		out.writeBoolean( this.isEnabled );
 		isNotNull = (this.childCategories != null);
