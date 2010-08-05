@@ -649,4 +649,15 @@ public class Command
 		return (Command[]) this.children.toArray( new Command[ this.children.size() ] );
 	}
 	
+	/**
+	 * Retrieves the number of subcommands that have been added to this command.
+	 * @return the number of subcommands
+	 */
+	public int getSubCommandsCount() {
+		if (this.children == null) {
+			return 0;
+		}
+		return this.children.size();
+		
+	}
 }
