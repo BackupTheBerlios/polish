@@ -6,7 +6,6 @@ package de.enough.polish.calendar;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.TimeZone;
 
 import de.enough.polish.io.Externalizable;
@@ -56,14 +55,7 @@ implements Externalizable, CalendarSubject
 	 * @param entry the calendar entry
 	 */
 	public void addEntry(CalendarEntry entry) {
-		//#debug
-		System.out.println("adding entry " + entry.getSummary());
-		CalendarCategory category = entry.getCategory();
-		CalendarEntryList list = (CalendarEntryList) this.calendarEntriesByCategory.get(category);
-		if (list == null) {
-			list = addCategory(category);
-		}
-		list.add(entry);
+		addEntry( entry, false );
 	}
 	
 	
@@ -74,16 +66,28 @@ implements Externalizable, CalendarSubject
 	 * @param notifyObserver Notifies the observer if true.
 	 */
 	public void addEntry(CalendarEntry entry, boolean notifyObserver) {
-
-		addEntry(entry);
-		
+		//#debug
+		System.out.println("adding entry " + entry.getSummary());
+		CalendarCategory category = entry.getCategory();
+		CalendarEntryList list = (CalendarEntryList) this.calendarEntriesByCategory.get(category);
+		if (list == null) {
+			list = addCategory(category, false);
+		}
+		list.add(entry);
+		this.isDirty = true;
 		if (notifyObserver) {
 			notifyObservers();
-		} else {
-			// Do not notify the observer;
 		}
 	}
-	
+
+	/**
+	 * Updates an event by first removing it and than adding it back again.
+	 * @param entry The event to update.
+	 */
+	public void updateEntry(CalendarEntry entry) {
+		updateEntry( entry, false );
+	}
+
 	
 	/**
 	 * Updates an event by first removing it and than adding it back again.
@@ -91,27 +95,15 @@ implements Externalizable, CalendarSubject
 	 * @param notifyObserver Notifies the observer if true.
 	 */
 	public void updateEntry(CalendarEntry entry, boolean notifyObserver) {
-		
-		updateEntry(entry);
-		
+		removeEntry(entry);
+		addEntry(entry);
 		if (notifyObserver) {
 			this.recentChangedEntry = entry;
 			notifyObservers();
-		} else {
-			// Do not notify the observer;
 		}
 	}
 	
 	
-	/**
-	 * Updates an event by first removing it and than adding it back again.
-	 * @param entry The event to update.
-	 */
-	public void updateEntry(CalendarEntry entry) {
-		
-		removeEntry(entry);
-		addEntry(entry);
-	}
 	
 	/**
 	 * Adds an (empty) category to this model.
@@ -120,20 +112,7 @@ implements Externalizable, CalendarSubject
 	 * @return the empty list of events of the added category
 	 */
 	public CalendarEntryList addCategory( CalendarCategory category ) {
-		
-		CalendarEntryList list = (CalendarEntryList) this.calendarEntriesByCategory.get(category);
-		if (list == null) {
-			CalendarCategory parent = category;
-			while (parent.getParentCategory() != null) {
-				parent = parent.getParentCategory();
-			}
-			if (!this.rootCategories.contains(parent)) {
-				this.rootCategories.add(parent);
-			}
-			list = new CalendarEntryList();
-			this.calendarEntriesByCategory.put(category, list);
-		}
-		return list;
+		return addCategory( category, false );
 	}
 	
 	
@@ -145,14 +124,22 @@ implements Externalizable, CalendarSubject
 	 * @return the empty list of events of the added category
 	 */
 	public CalendarEntryList addCategory(CalendarCategory category, boolean notifyObserver) {
-		
-		CalendarEntryList list = addCategory(category);
-		
-		if (notifyObserver) {
-			this.recentChangedCategory = category;
-			notifyObservers();
-		} else {
-			// Do not notify the observer;
+		CalendarEntryList list = (CalendarEntryList) this.calendarEntriesByCategory.get(category);
+		if (list == null) {
+			CalendarCategory parent = category;
+			while (parent.getParentCategory() != null) {
+				parent = parent.getParentCategory();
+			}
+			if (!this.rootCategories.contains(parent)) {
+				this.rootCategories.add(parent);
+			}
+			list = new CalendarEntryList();
+			this.calendarEntriesByCategory.put(category, list);
+			this.isDirty = true;		
+			if (notifyObserver) {
+				this.recentChangedCategory = category;
+				notifyObservers();
+			}
 		}
 		
 		return list;
@@ -222,8 +209,6 @@ implements Externalizable, CalendarSubject
 		
 		if (notifyObserver) {
 			notifyObservers();
-		} else {
-			// Do not notify the observer;
 		}
 	}
 	
@@ -343,39 +328,40 @@ implements Externalizable, CalendarSubject
 	/**
 	 * Removes a category if it has no child categories. Note, this will also remove all entries in this category.
 	 * @param category The category which will be removed.
-	 * @param notifyObserver Notifies the observer if true. 
+	 * @param notifyObserver Notifies the observer if true.
+	 * @throws IllegalStateException when this category has children categories (those would need to be removed first) 
 	 */
 	public void removeCategory(CalendarCategory category, boolean notifyObserver) {
 		
 		if ( category.hasChildCategories() ) {
 			//#debug info
 			System.out.println("Cannot delete category since it contains child categories. Can only delete categories on the lowest level.");
-		} else {
+			throw new IllegalStateException();
+		}
+		
+		// Removing all entries from the category before removing the category itself.
+		CalendarEntryList entryList = getEntries(category);
+		CalendarEntry[] entries = entryList.getEntries();
+		for (int i = 0; i < entries.length; i++) {
+			CalendarEntry entryToRemove = entries[i];
+			removeEntry(entryToRemove);
+		}
+		// Removing the category.
+		CalendarCategory parentCategory = category.getParentCategory();
+		if (parentCategory != null) {
+			ArrayList childCategoryList = parentCategory.getChildCategoriesAsList();
+			childCategoryList.remove(category);
+			parentCategory.setChildCategories(childCategoryList);
 			
-			// Removing all entries from the category before removing the category itself.
-			CalendarEntryList entryList = getEntries(category);
-			CalendarEntry[] entries = entryList.getEntries();
-			for (int i = 0; i < entries.length; i++) {
-				CalendarEntry entryToRemove = entries[i];
-				removeEntry(entryToRemove);
-			}
-			// Removing the category.
-			CalendarCategory parentCategory = category.getParentCategory();
-			if (parentCategory != null) {
-				ArrayList childCategoryList = parentCategory.getChildCategoriesAsList();
-				childCategoryList.remove(category);
-				parentCategory.setChildCategories(childCategoryList);
-				
-				if (notifyObserver) {
-					this.recentChangedCategory = parentCategory;
-					notifyObservers();
-				} else {
-					// Do nothing;
-				}
+			if (notifyObserver) {
+				this.recentChangedCategory = parentCategory;
+				notifyObservers();
 			} else {
-				//#debug info
-				System.out.println("Cannot delete category since it is a root category.");
+				// Do nothing;
 			}
+		} else {
+			//#debug info
+			System.out.println("Cannot delete category since it is a root category.");
 		}
 	}
 
