@@ -1513,7 +1513,7 @@ public abstract class Item implements UiElement, Animatable
 				if ( !afterUrlStr.equals(this.afterUrl) ) {
 					try {
 						this.afterImage = StyleSheet.getImage(afterUrlStr, null, true );
-						this.afterWidth = this.afterImage.getWidth() + this.paddingHorizontal;
+						this.afterWidth = this.afterImage.getWidth();
 						this.afterHeight = this.afterImage.getHeight();
 					} catch (IOException e) {
 						this.afterUrl = null;
@@ -2753,7 +2753,7 @@ public abstract class Item implements UiElement, Animatable
 		//System.out.println( this.style.name + ":  increasing leftBorder by " + (this.marginLeft + this.borderWidth + this.paddingLeft));
 		rightBorder -= (this.marginRight + getBorderWidthRight() + this.paddingRight);
 		//#ifdef polish.css.after
-			rightBorder -= this.afterWidth;
+			rightBorder -= getAfterWidthWithPadding();
 		//#endif
 
 		//System.out.println( this.style.name + ":  decreasing rightBorder by " + (this.marginRight + this.borderWidth + this.paddingRight));
@@ -2887,7 +2887,7 @@ public abstract class Item implements UiElement, Animatable
 					}
 					//#endif
 				}
-				g.drawImage(this.afterImage, rightBorder, afterY, Graphics.TOP | Graphics.LEFT );
+				g.drawImage(this.afterImage, rightBorder + this.paddingHorizontal, afterY, Graphics.TOP | Graphics.LEFT );
 			}
 		//#endif
 		
@@ -3224,7 +3224,7 @@ public abstract class Item implements UiElement, Animatable
 			noneContentWidth += this.beforeWidth;
 		//#endif
 		//#ifdef polish.css.after
-			noneContentWidth += this.afterWidth;
+			noneContentWidth += getAfterWidthWithPadding();
 		//#endif
 		
 		int firstLineContentWidth = firstLineWidth - noneContentWidth;
@@ -3546,6 +3546,14 @@ public abstract class Item implements UiElement, Animatable
 		System.out.println("Item.init(): contentWidth=" + this.contentWidth + ", itemWidth=" + this.itemWidth + ", backgroundWidth=" + this.backgroundWidth);
 	}
 	
+	private int getAfterWidthWithPadding() {
+		int w = this.afterWidth;
+		if (w != 0) {
+			w += this.paddingHorizontal;
+		}
+		return w;
+	}
+
 	protected void initLayout(Style style, int availWidth) {
 		//#ifdef polish.css.view-type
 		if (this.view != null) {
