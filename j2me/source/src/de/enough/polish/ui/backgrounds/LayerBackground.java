@@ -95,6 +95,7 @@ public class LayerBackground extends Background
 	 * Creates a new layer background.
 	 * 
 	 * @param layers the nested backgrounds 
+	 * @param margins optional margins for separating the backgrounds
 	 */
 	public LayerBackground( Background[] layers, Dimension[] margins )
 	{

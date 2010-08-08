@@ -1,6 +1,6 @@
 //#condition polish.usePolishGui
 /*
- * Created on March 10, 2009 at 8:46:44 AM.
+ * Created on August 8, 2010 at 22:25:40.
  * 
  * Copyright (c) 2010 Robert Virkus / Enough Software
  *
@@ -36,7 +36,7 @@ import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.Style;
 
 /**
- * <p>Provides a background consisting of several other backgrounds.</p>
+ * <p>Provides a background consisting of several other backgrounds that are stacked on top of each other.</p>
  * <p>Usage example:
  * <pre>
 backgrounds {
@@ -65,42 +65,29 @@ backgrounds {
 .myScreen {
 	padding: 2%;
 	<b>background {
-		type: layer;
+		type: vertical-layer;
 		layers: contentTop, contentBottom, contentBg;
 	}</b>
 }
  * </pre>
  * </p>
  *
- * <p>Copyright Enough Software 2009</p>
+ * <p>Copyright Enough Software 2010</p>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class LayerBackground extends Background
+public class LayerVerticalBackground extends Background
 {
 
 	private final Background[] layers;
-	protected final Dimension[] margins;
 
 	/**
 	 * Creates a new layer background.
 	 * 
 	 * @param layers the nested backgrounds 
 	 */
-	public LayerBackground( Background[] layers )
-	{
-		this( layers, null );
-	}
-	
-	/**
-	 * Creates a new layer background.
-	 * 
-	 * @param layers the nested backgrounds 
-	 * @param margins optional margins for separating the backgrounds
-	 */
-	public LayerBackground( Background[] layers, Dimension[] margins )
+	public LayerVerticalBackground( Background[] layers )
 	{
 		this.layers = layers;
-		this.margins = margins;
 	}
 
 
@@ -109,16 +96,14 @@ public class LayerBackground extends Background
 	 */
 	public void paint(int x, int y, int width, int height, Graphics g)
 	{
-		int m = 0;
-		Dimension[] mrgs = this.margins;
 		Background[] bgs = this.layers;
+		int heightPerBg = height / bgs.length;
+		y += height;
 		for (int i = bgs.length; --i >= 0; )
 		{
 			Background background = bgs[i];
-			if (mrgs != null) {
-				m = mrgs[i].getValue(width);
-			}
-			background.paint( x + m, y + m, width - (m * 2), height - (m * 2), g );
+			y -= heightPerBg;
+			background.paint( x, y, width, heightPerBg, g );
 		}
 	}
 
