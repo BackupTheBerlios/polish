@@ -3935,9 +3935,9 @@
 		name="table-line-stroke"
 		type="integer"
 		default="solid" 
-		values="solid,dotted" 
+		values="solid,dotted,invisible" 
 		appliesTo="TableItem"
-		description="The stroke style of lines between cells."
+		description="The stroke style of lines between cells - invisible will remove lines between cells."
 		id="323"
 		since="2.0"
 	/>
@@ -5282,6 +5282,15 @@
 		appliesTo="ScanlineGaugeView"
 		description="Image url for the right part of the background"
 		id="460"
+	/>
+	
+	<attribute
+		name="calendar-show-mode"
+		type="integer"
+		appliesTo="CalendarItem"
+		description="Sets the mode for visualizing the current month and year"
+		values="label,title,item,none"
+		id="461"
 	/>
 	
 <!--
