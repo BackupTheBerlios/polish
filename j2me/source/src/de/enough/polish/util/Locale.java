@@ -572,7 +572,7 @@ public final class Locale {
 	 * @throws NullPointerException when the calendar is null
 	 */
 	public static String formatDate( Calendar calendar, String dateFormat ) {
-		StringBuffer buffer = new StringBuffer(10);
+		StringBuffer buffer = new StringBuffer(dateFormat.length());
 		formatDate( calendar, buffer, dateFormat );
 		return buffer.toString();
 	}
@@ -658,7 +658,7 @@ public final class Locale {
 						}
 						buffer.append(month);
 					}
-					i+= "MMMMM".length();
+					i+= "MMMMM".length() - 1;
 				} else if (isMonthNumerical2Digit) {
 					if (month < 10) {
 						buffer.append('0');
