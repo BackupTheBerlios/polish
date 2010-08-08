@@ -67,7 +67,16 @@ public class LocaleTest extends TestCase {
 		
 		pattern = "yyyy-MM-dd";
 		date = Locale.formatDate(calendar, pattern);
-		assertEquals("2010-06-01", date);
+		assertEquals("2010-01-06", date);
+
+		Locale.setMonthNames(new String[]{"January","February","March","April","May","June","July","August","September","October","November","December"} );
+		pattern = "yyyy-MMMMM-dd";
+		date = Locale.formatDate(calendar, pattern);
+		assertEquals("2010-January-06", date);
+		
+		pattern =  "MMMMM dd, yyyy";
+		date = Locale.formatDate(calendar, pattern);
+		assertEquals("January 06, 2010", date);
 
 		pattern = "day=dd, month=MM, year=yyyy";
 		date = Locale.formatDate(calendar, pattern);
