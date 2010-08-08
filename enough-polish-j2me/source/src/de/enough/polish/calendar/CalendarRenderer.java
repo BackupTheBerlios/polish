@@ -37,7 +37,7 @@ import de.enough.polish.util.TimePoint;
  *
  * <p>Copyright Enough Software 2010</p>
  * @author Robert Virkus, j2mepolish@enough.de
- * @see CalendarItem#createCalendaryDay(TimePoint, TimePoint, TimePoint, CalendarEntry[])
+ * @see CalendarItem#createCalendaryDay(TimePoint, TimePoint, TimePoint, CalendarEntry[], CalendarItem)
  */
 public interface CalendarRenderer {
 
@@ -47,7 +47,8 @@ public interface CalendarRenderer {
 	 * @param currentMonth the month that is currently shown
 	 * @param originalCurrentDay the original day (e.g. today) that was used to initialize this CalendarItem (should be highlighted in most cases)
 	 * @param entriesForTheDay the events for the day, may be null
+	 * @param parent the parent calendar item
 	 * @return the created item, must not be null
 	 */
-	Item createCalendaryDay(TimePoint day, TimePoint currentMonth, TimePoint originalCurrentDay, CalendarEntry[] entriesForTheDay);
+	Item createCalendaryDay(TimePoint day, TimePoint currentMonth, TimePoint originalCurrentDay, CalendarEntry[] entriesForTheDay, CalendarItem parent);
 }

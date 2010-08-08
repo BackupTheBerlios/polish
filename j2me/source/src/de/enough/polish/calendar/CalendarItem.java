@@ -62,11 +62,10 @@ public class CalendarItem extends TableItem
 	 * Show mode for displaying the current month and year within the item that has been specified with setMonthItem().
 	 */
 	public static final int SHOW_MODE_ITEM = 2;
-	
 	/**
-	 * Days per month - note that February might be 28 or 29 days, depending on whether the current year is a leap year
+	 * Show mode for not displaying the current month and year.
 	 */
-	private static final int[] DAYS_PER_MONTH = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+	public static final int SHOW_MODE_NONE = 3;
 	
 	/**
 	 * first day of the week can be Sunday or Monday depending on the country/religion.
@@ -104,6 +103,8 @@ public class CalendarItem extends TableItem
 	private boolean isLimitToEnabledEntries;
 	private CalendarRenderer renderer;
 	private TimePoint firstColumnFirstRowDay;
+	private boolean isEditable = true;
+	private boolean isBuild;
 	
 	
 	
@@ -233,6 +234,7 @@ public class CalendarItem extends TableItem
 	 * Creates a new Calendar Item.
 	 * 
 	 * @param originalDay the month that should be displayed by default.
+	 * @param model the model that contains any calendar entries that might get visualized. Can be null.
 	 * @param style the style of the calendar item
 	 */
 	public CalendarItem(TimePoint originalDay, CalendarEntryModel model, Style style)
@@ -254,27 +256,26 @@ public class CalendarItem extends TableItem
 			StringItem item = new StringItem( null, abbreviation);
 			set( i, 0, item );
 		}		
-		
-		buildCalendar( new TimePoint( originalDay) );
+		this.shownMonth = new TimePoint( originalDay );
 		setSelectionMode( SELECTION_MODE_CELL | SELECTION_MODE_INTERACTIVE );
 	}
 	
 	/**
 	 * Builds up this calendar for the specified point in time
-	 * @param shownMonth the point in time (most notably the month that should be shown)
+	 * @param forMonth the point in time (most notably the month that should be shown)
 	 */
-	protected void buildCalendar(TimePoint shownMonth)
+	protected void buildCalendar(TimePoint forMonth)
 	{
-		this.shownMonth = shownMonth;
+		this.shownMonth = forMonth;
 		this.ignoreRepaintRequests = true;
-		
+		this.isBuild = true;
 		
 		
 		int selRow = getSelectedRow();
 		int selCol = getSelectedColumn();
 		
-		int currentMonth = shownMonth.getMonth();
-		int currentYear = shownMonth.getYear();
+		int currentMonth = forMonth.getMonth();
+		int currentYear = forMonth.getYear();
 		
 		String infoText = TextUtil.split( MONTHS, ',')[currentMonth] + " " + currentYear;
 		if (this.showMode == SHOW_MODE_LABEL) {
@@ -286,7 +287,7 @@ public class CalendarItem extends TableItem
 			}
 		}
 		
-		TimePoint day = new TimePoint( shownMonth );
+		TimePoint day = new TimePoint( forMonth );
 		day.setDay(1);
 		int dayOfWeek = day.getDayOfWeek();
 		
@@ -310,13 +311,13 @@ public class CalendarItem extends TableItem
 			}
 		}
 		//#debug
-		System.out.println(infoText + ": dayOfWeek=" + dayOfWeek + "(" + getDayOfWeekName(dayOfWeek) + "), col=" + col + ", daysInMonth=" + shownMonth.getDaysInMonth());
+		System.out.println(infoText + ": dayOfWeek=" + dayOfWeek + "(" + getDayOfWeekName(dayOfWeek) + "), col=" + col + ", daysInMonth=" + forMonth.getDaysInMonth());
 		for (int row = 1; row < getNumberOfRows(); row++) {
 			for (col = 0; col < 7; col++) {
 				if (eventsList != null) {
 					entriesForTheDay = eventsList.getEntriesForDay(day);
 				}
-				Item item = createCalendaryDay(day, shownMonth, this.originalDay, entriesForTheDay, col, row);
+				Item item = createCalendaryDay(day, forMonth, this.originalDay, entriesForTheDay, col, row);
 				set( col, row, item);
 				day.addDay(1);
 			}
@@ -329,8 +330,8 @@ public class CalendarItem extends TableItem
 		} else if (this.shownMonth.equalsMonth(this.originalDay)) {
 			col = getColumn(dayOfWeek);
 			int row = (col + this.shownMonth.getDay()) / 7 + 1;
-			shownMonth.setDay( this.shownMonth.getDay() );
-			col = getColumn( shownMonth.getDayOfWeek() );
+			forMonth.setDay( this.shownMonth.getDay() );
+			col = getColumn( forMonth.getDayOfWeek() );
 			setSelectedCell( col, row );
 		}
 		if (this.availableWidth != 0) {
@@ -351,9 +352,9 @@ public class CalendarItem extends TableItem
 	 */
 	protected Item createCalendaryDay(TimePoint day, TimePoint currentMonth, TimePoint originalCurrentDay, CalendarEntry[] entriesForTheDay, int col, int row) {
 		if (this.renderer != null) {
-			return this.renderer.createCalendaryDay(day, currentMonth, originalCurrentDay, entriesForTheDay);
+			return this.renderer.createCalendaryDay(day, currentMonth, originalCurrentDay, entriesForTheDay, this);
 		} else {
-			return createCalendaryDay(day, currentMonth, originalCurrentDay, entriesForTheDay);
+			return createCalendaryDay(day, currentMonth, originalCurrentDay, entriesForTheDay, this);
 		}
 
 	}
@@ -365,22 +366,31 @@ public class CalendarItem extends TableItem
 	 * @param currentMonth the month that is currently shown
 	 * @param originalCurrentDay the original day (e.g. today) that was used to initialize this CalendarItem (should be highlighted in most cases)
 	 * @param entriesForTheDay the events for the day, may be null
+	 * @param parent the parent calendar item, can be null
 	 * @return the created item, must not be null
 	 */
-	public static Item createCalendaryDay(TimePoint day, TimePoint currentMonth,
-			TimePoint originalCurrentDay, CalendarEntry[] entriesForTheDay) 
+	public static Item createCalendaryDay(TimePoint day, TimePoint currentMonth, TimePoint originalCurrentDay, CalendarEntry[] entriesForTheDay, CalendarItem parent) 
 	{
 		StringItem item;
 		if (!day.equalsMonth(currentMonth)) {
 			//#style calendarDayInactive?
 			item = new StringItem( null, Integer.toString( day.getDay() ));
+			if (parent != null && parent.calendarDayInactiveStyle != null) {
+				item.setStyle(parent.calendarDayInactiveStyle);
+			}
 		} else {
 			if (day.equalsDay(originalCurrentDay)) {
 				//#style calendarCurrentday?
 				item = new StringItem( null, Integer.toString( day.getDay() ));				
+				if (parent != null && parent.calendarCurrentdayStyle != null) {
+					item.setStyle(parent.calendarCurrentdayStyle);
+				}
 			} else {
 				//#style calendarDay?
 				item = new StringItem( null, Integer.toString( day.getDay() ));
+				if (parent != null && parent.calendarDayStyle != null) {
+					item.setStyle(parent.calendarDayStyle);
+				}
 			}
 
 		}
@@ -394,7 +404,7 @@ public class CalendarItem extends TableItem
 	 */
 	public void setRenderer( CalendarRenderer renderer) {
 		this.renderer = renderer;
-		if (renderer != null) {
+		if (renderer != null && this.isBuild) {
 			buildCalendar(this.shownMonth);
 		}
 	}
@@ -444,7 +454,7 @@ public class CalendarItem extends TableItem
 	protected boolean handleKeyPressed(int keyCode, int gameAction)
 	{
 		boolean handled = super.handleKeyPressed(keyCode, gameAction);
-		if (!handled) {
+		if (!handled && isInteractive()) {
 			if (gameAction == Canvas.LEFT || gameAction == Canvas.UP) {
 				goPreviousMonth();
 				return true;
@@ -484,7 +494,7 @@ public class CalendarItem extends TableItem
 	 */
 	protected boolean handlePointerReleased(int relX, int relY)
 	{
-		if (relY <= this.contentY && relY >= 0) {
+		if (isInteractive() && relY <= this.contentY && relY >= 0) {
 			if (relX <= this.itemWidth / 2) {
 				goPreviousMonth();
 				return true;
@@ -504,6 +514,18 @@ public class CalendarItem extends TableItem
 	 * @return the corresponding TimePoint
 	 */
 	public TimePoint getCellTimePoint(int row, int col){
+		if (this.firstColumnFirstRowDay == null) {
+			TimePoint day = new TimePoint( this.originalDay );
+			day.setDay(1);
+			int dayOfWeek = day.getDayOfWeek();
+			
+			int daycol = getColumn(dayOfWeek);
+			while (daycol > 0) {
+				day.addDay(-1);
+				daycol--;
+			}
+			this.firstColumnFirstRowDay = new TimePoint( day );
+		}
 		TimePoint tp = new TimePoint( this.firstColumnFirstRowDay );
 		tp.addDay( (row * 7) + col );
 		return tp;
@@ -557,10 +579,26 @@ public class CalendarItem extends TableItem
 	 * @param isInteractive true when the item should be editable and selectable
 	 */
 	public void setEditable( boolean isInteractive ) {
+		this.isEditable = isInteractive;
 		if (isInteractive) {
 			setAppearanceMode( INTERACTIVE );
 		} else {
 			setAppearanceMode( PLAIN );
+		}
+	}
+	
+	
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.TableItem#initContent(int, int, int)
+	 */
+	protected void initContent(int firstLineWidth, int availWidth, int availHeight) {
+		if (!this.isBuild) {
+			buildCalendar(this.shownMonth);
+		}
+		super.initContent(firstLineWidth, availWidth, availHeight);
+		if (!this.isEditable || (this.selectionMode == SELECTION_MODE_NONE)) {
+			this.appearanceMode = PLAIN;
 		}
 	}
 
@@ -644,6 +682,12 @@ public class CalendarItem extends TableItem
 			Style headingStyle = (Style) style.getObjectProperty("calendar-weekday-style");
 			if (headingStyle != null) {
 				this.calendarWeekdayStyle = headingStyle;
+				for (int i=0; i<7; i++) {
+					Item item = (Item) get( i, 0 );
+					if (item != null) {
+						item.setStyle( headingStyle );
+					}
+				}
 			}
 		//#endif
 		//#if polish.css.calendar-day-inactive-style
@@ -664,6 +708,36 @@ public class CalendarItem extends TableItem
 				this.calendarCurrentdayStyle = currentDayStyle;
 			}
 		//#endif		
+		//#if polish.css.calendar-show-mode
+			Integer showModeInt = style.getIntProperty("calendar-show-mode");
+			if (showModeInt != null) {
+				this.showMode = showModeInt.intValue();
+			}
+		//#endif
+	}
+	
+	/**
+	 * Sets the style for the current day
+	 * @param dayStyle the style for the current day
+	 */
+	public void setStyleCurrentDay(Style dayStyle) {
+		this.calendarCurrentdayStyle = dayStyle;
+	}
+	
+	/**
+	 * Sets the style for days that do not belong to the current month
+	 * @param dayStyle the style for days that don't belong to the current month
+	 */
+	public void setStyleInactiveDay(Style dayStyle) {
+		this.calendarDayInactiveStyle = dayStyle;
+	}
+	
+	/**
+	 * Sets the style for days of the current month
+	 * @param dayStyle the style for days of the current month
+	 */
+	public void setStyleDay(Style dayStyle) {
+		this.calendarDayStyle = dayStyle;
 	}
 	
 	/**
@@ -689,7 +763,7 @@ public class CalendarItem extends TableItem
 	 */
 	public void setModel( CalendarEntryModel model ) {
 		this.model = model;
-		if (this.renderer != null) {
+		if (this.renderer != null && this.isBuild) {
 			buildCalendar(this.shownMonth);
 		}
 	}
@@ -709,5 +783,39 @@ public class CalendarItem extends TableItem
 	 */
 	public void setModelLimitToEnabledCategories( boolean limit ) {
 		this.isLimitToEnabledEntries = limit;
+	}
+	
+	/**
+	 * Specifies the visualization for the year and month
+	 * @param mode the mode
+	 * @see #SHOW_MODE_ITEM
+	 * @see #SHOW_MODE_LABEL
+	 * @see #SHOW_MODE_NONE
+	 * @see #SHOW_MODE_TITLE
+	 * @see #getShowMode()
+	 */
+	public void setShowMode( int mode ) {
+		if (mode < SHOW_MODE_LABEL || mode > SHOW_MODE_NONE) {
+			throw new IllegalArgumentException();
+		}
+		if (mode != this.showMode) {
+		this.showMode = mode;
+			if (isInitialized()) {
+				requestInit();
+			}
+		}
+	}
+	
+	/**
+	 * Retrieves the visualization for the year and month
+	 * @return the mode
+	 * @see #SHOW_MODE_ITEM
+	 * @see #SHOW_MODE_LABEL
+	 * @see #SHOW_MODE_NONE
+	 * @see #SHOW_MODE_TITLE
+	 * @see #setShowMode(int)
+	 */
+	public int getShowMode() {
+		return this.showMode;
 	}
 }
