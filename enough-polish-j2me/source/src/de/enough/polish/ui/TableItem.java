@@ -73,7 +73,7 @@ public class TableItem
 	/** default style for lines between cells */
 	public static final int LINE_STYLE_SOLID = 0;
 	/** dotted style for lines between cells */
-	public static final int LINE_STYLE_DOTTED = 2;
+	public static final int LINE_STYLE_DOTTED = 1;
 	/** no lines between cells */
 	public static final int LINE_STYLE_INVISIBLE = 2;
 	
