@@ -3249,7 +3249,19 @@ public abstract class Item implements UiElement, Animatable
 				targetWidth = availableContentWidth;
 			}
 		//#endif
-			
+		
+		//#ifdef polish.css.max-item-width
+			if (this.maximumItemWidth != null && this.isLayoutExpand) {
+				int maxWidth = this.maximumItemWidth.getValue(availWidth);
+				if (availableContentWidth + noneContentWidth > maxWidth ) {
+					availableContentWidth = maxWidth - noneContentWidth;
+					if (firstLineContentWidth > availableContentWidth) {
+						firstLineContentWidth = availableContentWidth;
+					}
+				}
+			}
+		//#endif
+
 		this.contentX = this.marginLeft + getBorderWidthLeft() + this.paddingLeft;
 		int noneContentHeight = this.marginTop + getBorderWidthTop() + this.paddingTop;
 		this.contentY = noneContentHeight; 
