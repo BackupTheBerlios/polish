@@ -3969,6 +3969,11 @@ implements UiElement, Animatable
 	 * @see javax.microedition.lcdui.Displayable#addCommand(javax.microedition.lcdui.Command)
 	 */
 	public void addCommand(Command cmd) {
+		//#if polish.Item.suppressItemCommands
+			if (cmd.getCommandType() == Command.ITEM) {
+				return;
+			}
+		//#endif
 		//#ifdef tmp.menuFullScreen
 			//#if tmp.useExternalMenuBar 
 				Style menuItemStyle = this.menuBar.getMenuItemStyle();
@@ -4010,6 +4015,11 @@ implements UiElement, Animatable
 	 * @param commandStyle the style for the command
 	 */
 	public void addCommand(Command cmd, Style commandStyle ) {
+		//#if polish.Item.suppressItemCommands
+			if (cmd.getCommandType() == Command.ITEM) {
+				return;
+			}
+		//#endif
 		//#debug
 		System.out.println("adding command [" + cmd.getLabel() + "] to screen [" + this + "].");
 		//#if tmp.useExternalMenuBar && polish.vendor.siemens
