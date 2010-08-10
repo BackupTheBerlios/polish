@@ -1371,13 +1371,11 @@ public abstract class CustomItem extends Item
 		// translate the coordinates to the origin of this custom-item:
 		if ( !isInContentArea(x, y) ) {
 			// the content area has not been clicked, so return false:
-			return false;
+			return super.handlePointerPressed(x, y);
 		}
-		x -= this.contentX;
-		y -= this.contentY;
 		this.isEventHandled = false;
-		pointerPressed( x, y );
-		return (this.isEventHandled || !isInitialized());
+		pointerPressed( x - this.contentX, y - this.contentY );
+		return (this.isEventHandled || !isInitialized() || super.handlePointerPressed(x, y));
 	}
 	//#endif
 	
@@ -1396,13 +1394,11 @@ public abstract class CustomItem extends Item
 		// translate the coordinates to the origin of this custom-item:
 		if ( !isInContentArea(x, y) ) {
 			// the content area has not been clicked, so return false:
-			return false;
+			return super.handlePointerReleased(x, y);
 		}
-		x -= this.contentX;
-		y -= this.contentY;
 		this.isEventHandled = false;
-		pointerReleased( x, y );
-		return (this.isEventHandled || isInitialized());
+		pointerReleased( x - this.contentX, y - this.contentY );
+		return (this.isEventHandled || isInitialized() || super.handlePointerReleased(x, y));
 	}
 	//#endif
 	
@@ -1421,13 +1417,11 @@ public abstract class CustomItem extends Item
 		// translate the coordinates to the origin of this custom-item:
 		if ( !isInContentArea(x, y) ) {
 			// the content area has not been affected, so return false:
-			return false;
+			return super.handlePointerDragged(x, y);
 		}
-		x -= this.contentX;
-		y -= this.contentY;
 		this.isEventHandled = false;
-		pointerDragged( x, y );
-		return (this.isEventHandled || isInitialized());
+		pointerDragged( x - this.contentX, y - this.contentY );
+		return (this.isEventHandled || isInitialized() || super.handlePointerDragged(x, y));
 	}
 	//#endif
 
