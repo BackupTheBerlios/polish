@@ -1384,14 +1384,16 @@ public class TableItem
 				selectCell();
 			} else if (obj instanceof Item) {
 				Item item = (Item) obj;
-				this.selectedItemStyle = item.focus( null, direction );
-				//#if polish.blackberry
-					if(getScreen() != null) {
-						getScreen().notifyFocusSet(item);
-					} else {
-						Display.getInstance().notifyFocusSet(item);
-					}
-				//#endif
+				if (!item.isFocused) {
+					this.selectedItemStyle = item.focus( null, direction );
+					//#if polish.blackberry
+						if(getScreen() != null) {
+							getScreen().notifyFocusSet(item);
+						} else {
+							Display.getInstance().notifyFocusSet(item);
+						}
+					//#endif
+				}
 			}
 		}
 //		if (this.selectionMode != SELECTION_MODE_NONE) {
