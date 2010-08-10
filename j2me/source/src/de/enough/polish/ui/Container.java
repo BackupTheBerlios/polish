@@ -874,10 +874,11 @@ public class Container extends Item {
 			 * @return true if item is in visible content area else false 
 			 */
 			private boolean isItemInVisibleContentArea(Item item){
-				if(item == null)
+				if(item == null) {
 					return false;
-				int relativeY = (item.getAbsoluteY() + this.getCurrentScrollYOffset() - this.getScrollYOffset());
-				if(relativeY <= this.getAvailableContentHeight() && relativeY >= 0){
+				}
+				int relY = (item.getAbsoluteY() + this.getCurrentScrollYOffset() - this.getScrollYOffset());
+				if(relY <= this.getAvailableContentHeight() && relY >= 0){
 					return true;
 				}
 				return false;
@@ -1668,16 +1669,20 @@ public class Container extends Item {
 	 */
 	protected void setContentWidth(int width)
 	{
-		super.setContentWidth(width);
-		
-		//#ifdef tmp.supportViewType
-			if (this.containerView != null) {
-				this.containerView.setContentWidth( width );
+		if (width < this.contentWidth) {
+			initContent( width, width, this.availContentHeight);
+		} else {
+			super.setContentWidth(width);
+			
+			//#ifdef tmp.supportViewType
+				if (this.containerView != null) {
+					this.containerView.setContentWidth( width );
+				}
+			//#endif
+			
+			if (this.focusedItem != null && (this.layout & LAYOUT_SHRINK) == LAYOUT_SHRINK) {
+				this.focusedItem.init(width, width, this.contentHeight);
 			}
-		//#endif
-		
-		if (this.focusedItem != null && (this.layout & LAYOUT_SHRINK) == LAYOUT_SHRINK) {
-			this.focusedItem.init(width, width, this.contentHeight);
 		}
 	}
 	
@@ -2902,7 +2907,6 @@ public class Container extends Item {
 //			}
 			// # debug
 			//System.out.println("animate(): adjusting yOffset to " + this.yOffset );
-			
 			// add repaint region:
 			int x, y, width, height;
 			Screen scr = getScreen();
@@ -3338,6 +3342,31 @@ public class Container extends Item {
 					startScroll( direction,  (int) ((scrollDiff * 1000 ) / dragTime), 20 );
 				} else if (this.yOffset > 0) {
 					setScrollYOffset(0, true);
+				} else if (this.yOffset + this.contentHeight < this.availContentHeight) {
+					setScrollYOffset( this.availContentHeight - this.contentHeight, true );
+					/* todo: use the more complex situation taken from animate():
+					 * 				int maxItemHeight = getItemAreaHeight();
+				Screen scr = this.screen;
+//				Style myStyle = this.style;
+//				if (myStyle != null) {
+//					maxItemHeight -= myStyle.getPaddingTop(this.availableHeight) + myStyle.getPaddingBottom(this.availableHeight) + myStyle.getMarginTop(this.availableHeight) + myStyle.getMarginBottom(this.availableHeight);
+//				}
+				if (scr != null 
+						&& this == scr.container 
+						&& this.relativeY > scr.contentY 
+				) {
+					// this is an adjustment for calculating the correct scroll offset for containers with a vertical-center or bottom layout:
+					maxItemHeight += this.relativeY - scr.contentY;
+				}
+				if (offset + maxItemHeight < this.scrollHeight) { 
+					this.scrollSpeed = 0;
+					target = this.scrollHeight - maxItemHeight;
+					//#if polish.Container.ScrollBounce:defined && polish.Container.ScrollBounce == false
+						offset = target;
+					//#endif
+				}
+
+					 */
 				}
 				if (this.isPressed) {
 					notifyItemPressedEnd();
