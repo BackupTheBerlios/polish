@@ -1306,9 +1306,12 @@ public abstract class BaseScreen
     {
     	boolean processed = super.navigationUnclick(status, time);
     	if (!processed) {
+    		Screen screenBefore = getPolishScreen();
     		keyReleased( KEY_BB_FIRE );
-            Screen screen = getPolishScreen();
-            if ( screen != null ) {
+    		Screen screen = getPolishScreen();
+    		if (screen != screenBefore) {
+    			processed = true;
+    		} else if ( screen != null ) {
     			processed = screen.keyReleasedProcessed;
         		//#if !tmp.fullscreen
 		        	if (!processed && this.addedMenuItems.size() == 1) {
