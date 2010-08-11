@@ -818,6 +818,11 @@ public class CalendarEntry implements Externalizable {
 		if (isNotNull) {
 			out.writeUTF(this.timeZone.getID());
 		}
+		isNotNull = (this.textResolver != null);
+		out.writeBoolean( isNotNull );
+		if (isNotNull) {
+			Serializer.serialize(this.textResolver, out);
+		}
 	}
 	
 	/*
@@ -929,6 +934,10 @@ public class CalendarEntry implements Externalizable {
 		if (isNotNull) {
 			String timeZoneId = in.readUTF();
 			this.timeZone = TimeZone.getTimeZone(timeZoneId);
+		}
+		isNotNull = in.readBoolean();
+		if (isNotNull) {
+			this.textResolver = (CalendarTextResolver) Serializer.deserialize(in);
 		}
 	}
 
