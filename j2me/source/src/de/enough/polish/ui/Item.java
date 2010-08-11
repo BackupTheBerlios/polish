@@ -627,10 +627,10 @@ public abstract class Item implements UiElement, Animatable
 	protected int preferredWidth;
 	protected int preferredHeight;
 	//#ifdef  polish.css.width
-		protected Dimension width;
+		protected Dimension cssWidth;
 	//#endif
 	//#ifdef  polish.css.height
-		protected Dimension height;
+		protected Dimension cssHeight;
 	//#endif
 	protected Dimension minimumWidth;
 	protected Dimension minimumHeight;
@@ -1545,7 +1545,7 @@ public abstract class Item implements UiElement, Animatable
 		//#ifdef polish.css.width
 			Dimension widthDim  = (Dimension) style.getObjectProperty("width");
 			if (widthDim != null) {
-				this.width = widthDim;
+				this.cssWidth = widthDim;
 			}
 		//#endif
 		
@@ -1578,7 +1578,7 @@ public abstract class Item implements UiElement, Animatable
 		//#ifdef polish.css.height
 			Dimension heightDim  = (Dimension) style.getObjectProperty("height");
 			if (heightDim != null) {
-				this.height = heightDim;
+				this.cssHeight = heightDim;
 			}
 		//#endif
 
@@ -3244,8 +3244,8 @@ public abstract class Item implements UiElement, Animatable
 			
 		//#ifdef polish.css.width
 			int targetWidth = 0;
-			if(this.width != null) {
-				availableContentWidth = this.width.getValue(availWidth);
+			if(this.cssWidth != null) {
+				availableContentWidth = this.cssWidth.getValue(availWidth);
 				targetWidth = availableContentWidth;
 			}
 		//#endif
@@ -3269,9 +3269,9 @@ public abstract class Item implements UiElement, Animatable
 			
 		//#ifdef polish.css.height
 			int targetHeight = 0;
-			if(this.height != null) {
+			if(this.cssHeight != null) {
 				// according to css specs the base for the height calculation is the available width
-				availHeight = this.height.getValue(availWidth);
+				availHeight = this.cssHeight.getValue(availWidth);
 				targetHeight = availHeight;
 			}
 		//#endif
@@ -3329,7 +3329,7 @@ public abstract class Item implements UiElement, Animatable
 		}
 		
 		//#ifdef polish.css.width
-			if(this.width != null) {
+			if(this.cssWidth != null) {
 				setContentWidth( targetWidth );
 				cWidth = this.contentWidth;
 			}
@@ -3433,7 +3433,7 @@ public abstract class Item implements UiElement, Animatable
 		
 		int originalContentHeight = cHeight;
 		//#ifdef polish.css.height
-			if(this.height != null) {
+			if(this.cssHeight != null) {
 				setContentHeight( targetHeight );
 				cHeight = this.contentHeight;
 			}
