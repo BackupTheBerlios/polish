@@ -3558,6 +3558,7 @@ public abstract class Item implements UiElement, Animatable
 		System.out.println("Item.init(): contentWidth=" + this.contentWidth + ", itemWidth=" + this.itemWidth + ", backgroundWidth=" + this.backgroundWidth);
 	}
 	
+	//#if polish.css.after
 	private int getAfterWidthWithPadding() {
 		int w;
 		//#if polish.css.after
@@ -3570,6 +3571,7 @@ public abstract class Item implements UiElement, Animatable
 		//#endif
 		return w;
 	}
+	//#endif
 
 	protected void initLayout(Style style, int availWidth) {
 		//#ifdef polish.css.view-type
