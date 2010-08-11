@@ -3970,8 +3970,16 @@ public abstract class Item implements UiElement, Animatable
 	 * Determines whether this item is currently pressed.
 	 * @return true when this item is pressed
 	 */
-	public boolean isPresed() {
+	public boolean isPressed() {
 		return this.isPressed;
+	}
+	
+	/**
+	 * Determines whether this item is currently focused.
+	 * @return true when this item is focused
+	 */
+	public boolean isFocused() {
+		return this.isFocused;
 	}
 	
 	/**
