@@ -750,13 +750,13 @@ implements UiElement, Animatable
 		}
 		//#if polish.Screen.callSuperEvents
 			//#  super.requestRepaint();
+			super.repaint();
 		//#else
 			Display instance = Display.getInstance();
 			if (instance != null) {
 				instance.requestRepaint();
 			}
 		//#endif
-		super.repaint();
 	}
 
 	/**
@@ -4058,7 +4058,7 @@ implements UiElement, Animatable
 		//#endif
 		//#ifdef tmp.useExternalMenuBar
 			this.menuBar.addCommand(cmd, commandStyle);
-			if (this.isInitialized) {
+			if (this.isInitialized || this.screenWidth > 0) {
 				initMenuBar();
 			}
 			if (super.isShown()) {
