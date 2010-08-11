@@ -1284,7 +1284,7 @@ implements ScreenInitializerListener
 		Container tabs = this.tabIconsContainer;
 		Screen scr = this.currentScreen;
 		if ((scr == null ||!scr.isMenuOpened()) && tabs.isInItemArea(x - tabs.relativeX, y - tabs.relativeY)) {
-			if (scr == null || scr.getRootContainer() == null || !scr.getRootContainer().isPresed()) {
+			if (scr == null || scr.getRootContainer() == null || !scr.getRootContainer().isPressed()) {
 				this.lastInteractionTime = System.currentTimeMillis();
 				tabs.handlePointerReleased(x - tabs.relativeX, y - tabs.relativeY);
 				int index = tabs.getFocusedIndex();
