@@ -3560,15 +3560,10 @@ public abstract class Item implements UiElement, Animatable
 	
 	//#if polish.css.after
 	private int getAfterWidthWithPadding() {
-		int w;
-		//#if polish.css.after
-			w = this.afterWidth;
-			if (w != 0) {
-				w += this.paddingHorizontal;
-			}
-		//#else
-			w = 0;
-		//#endif
+		int w = this.afterWidth;
+		if (w != 0) {
+			w += this.paddingHorizontal;
+		}
 		return w;
 	}
 	//#endif
