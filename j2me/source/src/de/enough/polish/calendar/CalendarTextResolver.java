@@ -25,7 +25,6 @@
  */
 package de.enough.polish.calendar;
 
-import de.enough.polish.io.Serializable;
 import de.enough.polish.util.TimePoint;
 
 /**
@@ -34,7 +33,7 @@ import de.enough.polish.util.TimePoint;
  * <p>Copyright Enough Software 2010</p>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public interface CalendarTextResolver extends Serializable {
+public interface CalendarTextResolver {
 	
 	String resolveSummary( String summary, CalendarEntry entry, TimePoint calendarTimePoint );
 	
