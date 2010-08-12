@@ -643,7 +643,7 @@ implements Externalizable, CalendarSubject
 	 * Retrieves all stored CalendarEntries for the specified category.
 	 * If the specified category has no entries we will look in its child categories for entries.
 	 * @param category the category
-	 * @return all entries of that category. An empty list if the category has no entries.
+	 * @return CalendarEntryList List of all entries of that category. An empty list if the category has no entries.
 	 */
 	public CalendarEntryList getEntries( CalendarCategory category ) {
 		CalendarEntryList entryList = (CalendarEntryList) this.calendarEntriesByCategory.get(category);
