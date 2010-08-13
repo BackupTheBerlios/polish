@@ -26,6 +26,7 @@
  */
 package de.enough.polish.blackberry.nativeui;
 
+import net.rim.device.api.i18n.Locale;
 import net.rim.device.api.ui.ContextMenu;
 import net.rim.device.api.ui.Field;
 import net.rim.device.api.ui.FieldChangeListener;
@@ -105,15 +106,56 @@ implements FieldChangeListener, NativeItem
 		return style;
 	}
 
+	//#if polish.JavaPlatform < BlackBerry/6.0
 	/* (non-Javadoc)
 	 * @see net.rim.device.api.ui.Field#makeContextMenu(net.rim.device.api.ui.ContextMenu, int)
 	 */
 	protected void makeContextMenu(ContextMenu menu, int index) {
-		super.makeContextMenu(menu, index);
+		//# super.makeContextMenu(menu, index);
 		FieldHelper.makeContextMenu(menu, this.textField);
 	}
-	
-	
+	//#else
+	/* (non-Javadoc)
+	 * @see net.rim.device.api.ui.component.BasicEditField#makeContextMenu(net.rim.device.api.ui.ContextMenu)
+	 */
+	protected void makeContextMenu(ContextMenu menu) {
+		super.makeContextMenu(menu);
+		FieldHelper.makeContextMenu(menu, this.textField);
+	}
+	//#endif
+
+	/* (non-Javadoc)
+	 * @see net.rim.device.api.im.ITextInputStyle#getPreferredInputLocale()
+	 */
+	public Locale getPreferredInputLocale() {
+		// TODO Besitzer implement getPreferredInputLocale
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see net.rim.device.api.im.ITextInputStyle#getTextInputStyle()
+	 */
+	public int getTextInputStyle() {
+		// TODO Besitzer implement getTextInputStyle
+		return 0;
+	}
+
+	/* (non-Javadoc)
+	 * @see net.rim.device.api.im.ITextInputStyle#isUnicodeInputAllowed()
+	 */
+	public boolean isUnicodeInputAllowed() {
+		// TODO Besitzer implement isUnicodeInputAllowed
+		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see net.rim.device.api.im.ITextInputStyle#updateInputStyle()
+	 */
+	public void updateInputStyle() {
+		// TODO Besitzer implement updateInputStyle
+		
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see net.rim.device.api.ui.FieldChangeListener#fieldChanged(net.rim.device.api.ui.Field, int)

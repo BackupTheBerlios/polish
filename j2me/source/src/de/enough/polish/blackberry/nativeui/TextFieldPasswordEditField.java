@@ -74,13 +74,23 @@ implements NativeItem, FieldChangeListener
 		super.setChangeListener(this);
 	}
 
+	//#if polish.JavaPlatform < BlackBerry/6.0
 	/* (non-Javadoc)
 	 * @see net.rim.device.api.ui.Field#makeContextMenu(net.rim.device.api.ui.ContextMenu, int)
 	 */
 	protected void makeContextMenu(ContextMenu menu, int index) {
-		super.makeContextMenu(menu, index);
+		//# super.makeContextMenu(menu, index);
 		FieldHelper.makeContextMenu(menu, this.textField);
 	}
+	//#else
+	/* (non-Javadoc)
+	 * @see net.rim.device.api.ui.component.BasicEditField#makeContextMenu(net.rim.device.api.ui.ContextMenu)
+	 */
+	protected void makeContextMenu(ContextMenu menu) {
+		super.makeContextMenu(menu);
+		FieldHelper.makeContextMenu(menu, this.textField);
+	}
+	//#endif
 
 	
 	/*
