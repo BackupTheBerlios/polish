@@ -647,9 +647,10 @@ implements Externalizable, CalendarSubject
 	 */
 	public CalendarEntryList getEntries( CalendarCategory category ) {
 		CalendarEntryList entryList = (CalendarEntryList) this.calendarEntriesByCategory.get(category);
-		if (entryList == null) {
+		if ( entryList == null || entryList.size() == 0 ) {
 			CalendarEntryList returnList = new CalendarEntryList();
-			while ( category.hasChildCategories() ) {
+			boolean hasChildCategory = category.hasChildCategories();
+			while ( hasChildCategory ) {
 				CalendarCategory[] childCategory = category.getChildCategories();
 				for (int i = 0; i < childCategory.length; i++) {
 					entryList =  getEntries(childCategory[i]);
@@ -662,6 +663,7 @@ implements Externalizable, CalendarSubject
 						returnList.add(entry);
 					}
 				}
+				hasChildCategory = false;
 			}
 			return returnList;
 		} else {
