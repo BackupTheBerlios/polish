@@ -29,6 +29,7 @@ import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.Arrays;
 import de.enough.polish.util.Comparator;
 import de.enough.polish.util.IdentityArrayList;
+import de.enough.polish.util.TimePeriod;
 import de.enough.polish.util.TimePoint;
 
 /**
@@ -55,6 +56,23 @@ implements Comparator
 	public void add( CalendarEntry entry ) {
 		this.sortedEntries = null;
 		this.list.add(entry);
+	}
+	
+	
+	/**
+	 * Adds a list of entries.
+	 * @param entryList The list with the entries to add.
+	 */
+	public void add(CalendarEntryList entryList) {
+		
+		Object[] objects = entryList.getInternalArray();
+		for (int i = 0; i < objects.length; i++) {
+			CalendarEntry entryToAdd = (CalendarEntry) objects[i];
+			if (entryToAdd == null) {
+				break;
+			}
+			add(entryToAdd);
+		}
 	}
 	
 	/**
@@ -115,6 +133,26 @@ implements Comparator
 			}
 		}
 		return (CalendarEntry[]) l.toArray(new CalendarEntry[l.size()]);
+	}
+	
+	
+	/**
+	 * Retrieves all entries for the specified time period.
+	 * @param period
+	 * @return returnList All entries which lies in the specified time period. Can be empty but not null.
+	 */
+	public CalendarEntryList getEntriesForPeriod(TimePeriod period) {
+		
+		CalendarEntryList returnList = new CalendarEntryList();
+		
+		for (int i = 0; i < this.list.size(); i++) {
+			CalendarEntry entry = (CalendarEntry) this.list.get(i);
+			if (entry.matches( period)) {
+				returnList.add(entry);
+			}
+		}
+		
+		return returnList;
 	}
 	
 	/**
