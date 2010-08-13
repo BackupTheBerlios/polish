@@ -3,6 +3,10 @@
  */
 package de.enough.polish.calendar;
 
+
+//TODO: Some of the getEntries() method should be reorganized. E.g getEntries(CalendarCategory category) should get an additional boolean parameter 'includeChildCategories' so we can better reuse the method.
+
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -578,41 +582,67 @@ implements Externalizable, CalendarSubject
 	 * Retrieves all calendar entries for the specified period and category
 	 * @param category the category
 	 * @param period the time period
-	 * @return all events that start or end within the given times and that belong to the specified category
+	 * @return all events that start or end within the given times and that belong to the specified category. Can be empty but not null.
 	 */
 	public CalendarEntryList getEntries(CalendarCategory category, TimePeriod period) {
+		
+		CalendarEntryList returnList = new CalendarEntryList();
 		TimePeriod nextDatePeriod = new TimePeriod( period );
-		CalendarEntryList list = new CalendarEntryList();
-		getEntries( category, period, nextDatePeriod, list );
-		return list;
+		CalendarEntryList entryList = getEntries( category, period, nextDatePeriod );
+		
+		if (entryList == null || entryList.size() == 0) {		// Looking for entries in child categories.
+			boolean hasChildCategories = category.hasChildCategories();
+			while (hasChildCategories) {
+				CalendarCategory[] childCategories = category.getChildCategories(); 
+				for (int i = 0; i < childCategories.length; i++) {
+					CalendarCategory childCategory = childCategories[i];
+					entryList =  getEntries(childCategory, period);
+					Object[] objects = entryList.getInternalArray();
+					for (int j = 0; j < objects.length; j++) {
+						CalendarEntry entry = (CalendarEntry) objects[j];
+						if (entry == null) {
+							break;
+						}
+						returnList.add(entry);
+					}
+				}
+				hasChildCategories = false;
+			}
+		} else {
+			returnList = entryList;
+		}
+		
+		return returnList;
 	}
 
 
 	private CalendarEntryList getEntries(TimePeriod period, boolean filterByEnabledCategories) {
 		CalendarCategory[] categories = (CalendarCategory[]) this.calendarEntriesByCategory.keys( new CalendarCategory[ this.calendarEntriesByCategory.size() ] );
 		TimePeriod nextDatePeriod = new TimePeriod( period );
-		CalendarEntryList list = new CalendarEntryList();
+		CalendarEntryList returnList = new CalendarEntryList();
 //		Date dateStart = new Date( period.getStart() );
 //		Calendar calStart = Calendar.getInstance();
 //		Calendar calNextDate = Calendar.getInstance();
 		for (int i = 0; i < categories.length; i++) {
 			CalendarCategory category = categories[i];
 			if (!filterByEnabledCategories || category.isEnabled()) {
-				getEntries( category, period, nextDatePeriod, list );
-
+				CalendarEntryList list = getEntries( category, period, nextDatePeriod );
+				returnList.add(list);
 			}
 		}
-		return list;
+		return returnList;
 	}
 	
-	private void getEntries(CalendarCategory category, TimePeriod period, TimePeriod nextDatePeriod, CalendarEntryList list) 
+	private CalendarEntryList getEntries(CalendarCategory category, TimePeriod period, TimePeriod nextDatePeriod) 
 	{
+		CalendarEntryList returnList = new CalendarEntryList();
 		CalendarEntryList calendarEntryList = (CalendarEntryList) this.calendarEntriesByCategory.get(category);
 		if (calendarEntryList == null) {
 			//#debug warn
 			System.out.println("no entries found for cateogry " + category.getName());
-			return;
+			return returnList;
 		}
+		
 		Object[] entries = calendarEntryList.getInternalArray();
 		for (int j = 0; j < entries.length; j++) {
 			CalendarEntry entry = (CalendarEntry) entries[j];
@@ -623,7 +653,7 @@ implements Externalizable, CalendarSubject
 			if (rule == null) {
 				if (entry.matches( period)) {
 //					System.out.println("adding " + entry.getSummary() + "period: " + period.getStart() + ", " + period.getEnd() + ", entry=" + entry.getStartDate());
-					list.add(entry);
+					returnList.add(entry);
 				}
 			} else {
 				nextDatePeriod.setStart(period.getStart(), period.isIncludeStart());
@@ -631,12 +661,12 @@ implements Externalizable, CalendarSubject
 				while ((nextDate = rule.getNextDate(entry, nextDatePeriod )) != null) {
 //					System.out.println("matching next date " + nextDate + " for period ending on " + nextDatePeriod.getEnd());
 					CalendarEntry copy = entry.clone( nextDate );
-					list.add( copy );
+					returnList.add( copy );
 					nextDatePeriod.setStart(nextDate, false);
 				}
-				
 			}
-		}		
+		}
+		return returnList;
 	}
 
 	/**
