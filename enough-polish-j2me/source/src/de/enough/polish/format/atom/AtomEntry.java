@@ -48,7 +48,7 @@ public class AtomEntry
 implements Externalizable
 {
 
-	private static final int VERSION = 100;
+	private static final int VERSION = 101;
 	private String id;
 	private String title;
 	private String updatedString;
@@ -58,6 +58,7 @@ implements Externalizable
 	private String contentType;
 	private IdentityArrayList images;
 	private boolean hasLoadedImages;
+	private boolean isRead;
 
 	public AtomEntry() {
 		// nothing to init here
@@ -239,6 +240,39 @@ implements Externalizable
 		}
 		this.hasLoadedImages = true;
 	}
+	
+	/**
+	 * Determines whether this entry has been read already.
+	 * @return true when this entry has been read
+	 * @see #markRead()
+	 */
+	public boolean isRead() {
+		return this.isRead;
+	}
+	
+	/**
+	 * Sets this entry as read.
+	 * @return true when the read state of this entry has been changed
+	 * @see #isRead()
+	 */
+	public boolean markRead() {
+		return setRead(true);
+	}
+	
+
+	/**
+	 * Sets the read state of this entry.
+	 * @param isRead true when this article is deemed as read
+	 * @return true when the read state of this entry has been changed
+	 * @see #isRead()
+	 */
+	public boolean setRead(boolean isRead) {
+		if (this.isRead != isRead) {
+			this.isRead = isRead;
+			return true;
+		}
+		return false;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -281,6 +315,7 @@ implements Externalizable
 				image.write(out);
 			}
 		}
+		out.writeBoolean(this.isRead);
 	}
 	
 	/*
@@ -289,7 +324,7 @@ implements Externalizable
 	 */
 	public void read(DataInputStream in) throws IOException {
 		int version = in.readInt();
-		if (version != VERSION) {
+		if (version > VERSION) {
 			throw new IOException("unknown verion " + version);
 		}
 		boolean notNull = in.readBoolean();
@@ -327,6 +362,8 @@ implements Externalizable
 			}
 			this.hasLoadedImages = dataLoaded;
 		}
-
+		if (version > 100) {
+			this.isRead = in.readBoolean();
+		}
 	}
 }
