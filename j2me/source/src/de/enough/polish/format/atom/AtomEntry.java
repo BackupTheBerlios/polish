@@ -35,6 +35,7 @@ import de.enough.polish.io.RedirectHttpConnection;
 import de.enough.polish.util.HashMap;
 import de.enough.polish.util.IdentityArrayList;
 import de.enough.polish.util.StreamUtil;
+import de.enough.polish.util.TextUtil;
 import de.enough.polish.util.TimePoint;
 import de.enough.polish.xml.XmlDomNode;
 
@@ -139,12 +140,67 @@ implements Externalizable
 		return this.content;
 	}
 
+	
+	/**
+	 * Sets the content of this entry
+	 * @param content the new content
+	 */
+	public void setContent(String content) {
+		this.content = content;		
+	}
+
 	/**
 	 * Retrieves the type of this content
 	 * @return the contentType, e.g. html
 	 */
 	public String getContentType() {
 		return this.contentType;
+	}
+	
+	public AtomContentLink[] getContentLinks() {
+		if (this.content == null) {
+			return new AtomContentLink[0];
+		}
+		IdentityArrayList links = new IdentityArrayList();	
+		int startIndex = 0;
+		int foundIndex;
+		while ((foundIndex = this.content.indexOf("<a", startIndex)) != -1) {
+			int hrefIndex = this.content.indexOf("href", foundIndex+2);
+			if (hrefIndex != -1) {
+				boolean isInQuotes = false;
+				StringBuffer href = new StringBuffer();
+				char c;
+				while (hrefIndex < this.content.length()) {
+					c = this.content.charAt(hrefIndex);
+					if (c == '"') {
+						if (isInQuotes) {
+							break;
+						} else {
+							isInQuotes = true;
+						}
+					} else if (isInQuotes) {
+						href.append(c);
+					}
+					hrefIndex++;
+				}
+				StringBuffer description = new StringBuffer();
+				isInQuotes = false;
+				while (hrefIndex < this.content.length()) {
+					c = this.content.charAt(hrefIndex);
+					if (c == '>') {
+						isInQuotes = true;
+					} else if (c == '<') {
+						break;
+					} else if (isInQuotes) {
+						description.append(c);
+					}
+					hrefIndex++;
+				}
+				links.add( new AtomContentLink(href.toString(), description.toString()));
+			}
+			startIndex = hrefIndex;
+		}
+		return (AtomContentLink[]) links.toArray(new AtomContentLink[links.size()]);
 	}
 	
 	/**
@@ -274,6 +330,7 @@ implements Externalizable
 		return false;
 	}
 
+
 	/*
 	 * (non-Javadoc)
 	 * @see de.enough.polish.io.Externalizable#write(java.io.DataOutputStream)
@@ -366,4 +423,5 @@ implements Externalizable
 			this.isRead = in.readBoolean();
 		}
 	}
+
 }
