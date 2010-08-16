@@ -62,7 +62,7 @@ public class RightBorder extends Border {
 		if (this.borderWidthRight > 1) {
 			int border = this.borderWidthRight - 1;
 			while ( border > 0) {
-				g.drawLine( x + border, y, x + border, endY );
+				g.drawLine( x - border, y, x - border, endY );
 				border--;
 			}
 		}
