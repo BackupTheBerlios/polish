@@ -3343,30 +3343,20 @@ public class Container extends Item {
 				} else if (this.yOffset > 0) {
 					setScrollYOffset(0, true);
 				} else if (this.yOffset + this.contentHeight < this.availContentHeight) {
-					setScrollYOffset( this.availContentHeight - this.contentHeight, true );
-					/* todo: use the more complex situation taken from animate():
-					 * 				int maxItemHeight = getItemAreaHeight();
-				Screen scr = this.screen;
-//				Style myStyle = this.style;
-//				if (myStyle != null) {
-//					maxItemHeight -= myStyle.getPaddingTop(this.availableHeight) + myStyle.getPaddingBottom(this.availableHeight) + myStyle.getMarginTop(this.availableHeight) + myStyle.getMarginBottom(this.availableHeight);
-//				}
-				if (scr != null 
-						&& this == scr.container 
-						&& this.relativeY > scr.contentY 
-				) {
-					// this is an adjustment for calculating the correct scroll offset for containers with a vertical-center or bottom layout:
-					maxItemHeight += this.relativeY - scr.contentY;
-				}
-				if (offset + maxItemHeight < this.scrollHeight) { 
-					this.scrollSpeed = 0;
-					target = this.scrollHeight - maxItemHeight;
-					//#if polish.Container.ScrollBounce:defined && polish.Container.ScrollBounce == false
-						offset = target;
-					//#endif
-				}
+					int maxItemHeight = getItemAreaHeight();
+					Screen scr = this.screen;
+					if (scr != null 
+							&& this == scr.container 
+							&& this.relativeY > scr.contentY 
+					) {
+						// this is an adjustment for calculating the correct scroll offset for containers with a vertical-center or bottom layout:
+						maxItemHeight += this.relativeY - scr.contentY;
+					}
+					if (this.yOffset + maxItemHeight < this.scrollHeight) { 
+						int target = this.scrollHeight - maxItemHeight;
+						setScrollYOffset( target, true );
+					}
 
-					 */
 				}
 				if (this.isPressed) {
 					notifyItemPressedEnd();
