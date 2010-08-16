@@ -4598,6 +4598,14 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		return this.availableHeight;
 	}
 
+	/**
+	 * Determines whether this item is currently focused.
+	 * @return true when this item is focused
+	 */
+	public boolean isFocused() {
+		return this.isFocused;
+	}
+	
 
 
 
