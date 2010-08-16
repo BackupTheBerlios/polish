@@ -594,7 +594,7 @@ implements Externalizable, Comparator, Comparable
 			addMonth( tp.month );
 			addYear( tp.year );
 		} else {
-			addMillisecond(tp.getTimeInMillis());
+			setDate( getTimeInMillis() + tp.getTimeInMillis() );
 		}
 		
 	}
@@ -613,7 +613,7 @@ implements Externalizable, Comparator, Comparable
 			addMonth( -tp.month );
 			addYear( -tp.year );
 		} else {
-			addMillisecond(-tp.getTimeInMillis());
+			setDate( getTimeInMillis() - tp.getTimeInMillis() );
 		}
 	}
 	
@@ -730,6 +730,7 @@ implements Externalizable, Comparator, Comparable
 	
 	/**
 	 * Tests whether this point in time refers to the same hour as the specified TimePoint.
+	 * Note that timezones are ignored for the comparison.
 	 * @param tp the other TimePoint that should be compared to this one
 	 * @return true when both this and the other TimePoint are within the same hour, day, month and year
 	 */
@@ -744,6 +745,7 @@ implements Externalizable, Comparator, Comparable
 
 	/**
 	 * Tests whether this point in time refers to the same day as the specified TimePoint.
+	 * Note that timezones are ignored for the comparison.
 	 * @param tp the other TimePoint that should be compared to this one
 	 * @return true when both this and the other TimePoint are within the same day, month and year
 	 */
@@ -757,6 +759,7 @@ implements Externalizable, Comparator, Comparable
 	
 	/**
 	 * Tests whether this point in time refers to the same month as the specified TimePoint.
+	 * Note that timezones are ignored for the comparison.
 	 * @param tp the other TimePoint that should be compared to this one
 	 * @return true when both this and the other TimePoint are within the same month and year
 	 */
@@ -770,12 +773,13 @@ implements Externalizable, Comparator, Comparable
 
 	/**
 	 * Tests whether this point in time refers to the same month as the specified TimePoint.
+	 * Note that timezones are ignored for the comparison.
 	 * @param tp the other TimePoint that should be compared to this one
 	 * @return true when both this and the other TimePoint are within the same month and year
 	 */
 	public boolean equalsYear( TimePoint tp ) {
 		return (
-				this.month == tp.month
+				this.year == tp.year
 				);
 	}
 
