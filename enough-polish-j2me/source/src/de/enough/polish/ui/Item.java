@@ -3812,10 +3812,12 @@ public abstract class Item implements UiElement, Animatable
 				item = this.parent;
 			}
 			if (item.defaultCommand != null) {
-				if (item.itemCommandListener != null) {
-					item.itemCommandListener.commandAction(item.defaultCommand, this);
-				} else {			
-					scr.callCommandListener(item.defaultCommand);
+				if (!item.defaultCommand.commandAction(this, scr)) {
+					if (item.itemCommandListener != null) {
+						item.itemCommandListener.commandAction(item.defaultCommand, this);
+					} else {			
+						scr.callCommandListener(item.defaultCommand);
+					}
 				}
 				//#if polish.css.visited-style
 					notifyVisited();
@@ -4754,7 +4756,7 @@ public abstract class Item implements UiElement, Animatable
 		if (cmd.commandAction(this, null)) {
 			return true;
 		}
-		if (this.commands == null || this.itemCommandListener == null || !this.commands.contains(cmd) ) {
+		if (this.itemCommandListener == null || !((this.commands == null && this.commands.contains(cmd)) || (cmd == this.defaultCommand)) ) {
 			return false;
 		}
 		try {

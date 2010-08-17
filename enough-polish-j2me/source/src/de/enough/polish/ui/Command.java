@@ -548,7 +548,7 @@ public class Command
 			while (item instanceof Container && (item.commands == null || !item.commands.contains(this)) ) {
 				item = ((Container)item).getFocusedItem();
 			}
-			if (item != null && item.commands != null && item.commands.contains(this)) {
+			if (item != null && ((item.commands != null && item.commands.contains(this)) || (item.getDefaultCommand() == this))) {
 				this.itemCommandListener.commandAction(this, item);
 				return true;
 			}
