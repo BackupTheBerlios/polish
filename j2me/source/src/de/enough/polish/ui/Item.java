@@ -4756,11 +4756,18 @@ public abstract class Item implements UiElement, Animatable
 		if (cmd.commandAction(this, null)) {
 			return true;
 		}
-		if (this.itemCommandListener == null || !((this.commands == null && this.commands.contains(cmd)) || (cmd == this.defaultCommand)) ) {
-			return false;
+		ItemCommandListener listener = this.itemCommandListener;
+		if (this.commands == null || listener == null || !this.commands.contains(cmd) ) {
+			//#if polish.Item.suppressDefaultCommand
+			if (listener == null || cmd != this.defaultCommand) {
+			//#endif
+				return false;
+			//#if polish.Item.suppressDefaultCommand
+			}
+			//#endif
 		}
 		try {
-			this.itemCommandListener.commandAction( cmd, this );
+			listener.commandAction( cmd, this );
 			return true;
 		} catch (Exception e) {
 			//#debug error
