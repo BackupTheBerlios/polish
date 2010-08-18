@@ -367,6 +367,9 @@ implements Externalizable
 			contentEncoding = connection.getEncoding();
 			if (contentEncoding == null) {
 				contentEncoding = connection.getHeaderField("Content-Encoding");
+				if (contentEncoding == null) {
+					contentEncoding = "utf8";
+				}
 			}
 			update( in, contentEncoding, consumer ); 
 		} catch (Throwable e) {
