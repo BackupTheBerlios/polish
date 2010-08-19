@@ -64,6 +64,7 @@ implements Externalizable
 	private TimePoint updated;
 	private AtomAuthor author;
 	private boolean isUpdating;
+	private Object data;
 	
 	/**
 	 * Creates a new empty feed
@@ -368,7 +369,7 @@ implements Externalizable
 			if (contentEncoding == null) {
 				contentEncoding = connection.getHeaderField("Content-Encoding");
 				if (contentEncoding == null) {
-					contentEncoding = "utf8";
+					contentEncoding = "UTF-8";
 				}
 			}
 			update( in, contentEncoding, consumer ); 
@@ -504,6 +505,24 @@ implements Externalizable
 			entry.read(in);
 			this.entries.add(entry);
 		}
+	}
+	
+	/**
+	 * Sets an arbitrary data object.
+	 * Note that the data object is not serialized/persisted.
+	 * @param data the data
+	 * @see #getData()
+	 */
+	public void setData( Object data ) {
+		this.data = data;
+	}
+	
+	/**
+	 * Retrieves a previously set data object
+	 * @return the data object
+	 */
+	public Object getData() {
+		return this.data;
 	}
 
 }
