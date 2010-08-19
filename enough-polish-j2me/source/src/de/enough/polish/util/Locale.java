@@ -591,17 +591,29 @@ public final class Locale {
 	}
 	
 	/**
-	 * Formats the given calendar to the current locale's format.
+	 * Formats the given TimePoint to the current locale's format.
 	 * 
-	 * @param calendar the calendar which holds the date
+	 * @param tp the TimePoint which holds the date
 	 * @param dateFormat the date format that may include yyyy (year), M, MM, MMMMM (month in numerical [M, MM] or textual representation), dd (day of month), HH (hour of day) and mm (minute of hour)
 	 * @return the locale specific date representation.
 	 * @throws NullPointerException when the calendar is null
 	 */
-	public static String formatDate( TimePoint calendar, String dateFormat ) {
-		StringBuffer buffer = new StringBuffer(10);
-		formatDate( calendar.getAsCalendar(), buffer, dateFormat );
+	public static String formatDate( TimePoint tp, String dateFormat ) {
+		StringBuffer buffer = new StringBuffer(dateFormat.length());
+		formatDate( tp.getYear(), tp.getMonth(), tp.getDay(), tp.getHour(), tp.getMinute(), dateFormat, buffer );
 		return buffer.toString();
+	}
+	
+	/**
+	 * Formats the given TimePoint to the current locale's format.
+	 * 
+	 * @param tp the TimePoint which holds the date
+	 * @param dateFormat the date format that may include yyyy (year), M, MM, MMMMM (month in numerical [M, MM] or textual representation), dd (day of month), HH (hour of day) and mm (minute of hour)
+	 * @param buffer the buffer into which the formated date is appended
+	 * @throws NullPointerException when the calendar is null
+	 */
+	public static void formatDate( TimePoint tp, String dateFormat, StringBuffer buffer ) {
+		formatDate( tp.getYear(), tp.getMonth(), tp.getDay(), tp.getHour(), tp.getMinute(), dateFormat, buffer );
 	}
 
 	/**
@@ -631,6 +643,12 @@ public final class Locale {
 		int day = calendar.get( Calendar.DAY_OF_MONTH );
 		int hour = calendar.get( Calendar.HOUR_OF_DAY );
 		int minute = calendar.get( Calendar.MINUTE );
+		formatDate(year, month, day, hour, minute, dateFormat, buffer);
+	}
+
+	private static void formatDate(int year, int month, int day, int hour,
+			int minute, String dateFormat, StringBuffer buffer) 
+	{
 		int length = dateFormat.length();
 		boolean isMonthTextual = (dateFormat.indexOf("MMMMM") != -1);
 		boolean isMonthNumerical2Digit = !isMonthTextual && (dateFormat.indexOf("MM") != -1);

@@ -25,7 +25,10 @@
  */
 package de.enough.polish.util;
 
-//#if polish.midp || polish.android
+//#if polish.api.bluetooth
+	import javax.bluetooth.LocalDevice;
+//#endif
+//#if polish.midp || polish.usePolishGui
 	import javax.microedition.lcdui.Canvas;
 	import javax.microedition.lcdui.Graphics;
 	import javax.microedition.lcdui.Image;
@@ -162,33 +165,37 @@ public class DeviceInfo
 	 * @return the name of this device model or null when it cannot be determined
 	 */
 	public static String getDeviceName() {
-		String platform = System.getProperty( "microedition.platform" );
-		if (platform == null || "j2me".equals(platform)) {
-			platform = System.getProperty( "device.model" );
-		}
-		if (platform != null) {
-			String vendor = getVendorName();
-			if (vendor != null) {
-				int index = platform.toLowerCase().indexOf(vendor.toLowerCase());
-				if (index != -1) {
-					platform = platform.substring( index + vendor.length() ).trim();
-				}
-				index = platform.indexOf(' ');
-				if (index != -1) {
-					platform = platform.substring(0, index );
-				}
-				index = platform.indexOf('-');
-				if (index != -1) {
-					platform = platform.substring(0, index );
-				}
-				index = platform.indexOf('/');
-				if (index != -1) {
-					platform = platform.substring(0, index );
-				}
-				return platform;
+		//#if polish.blackberry
+			//# return net.rim.device.api.system.DeviceInfo.getDeviceName();
+		//#else
+			String platform = System.getProperty( "microedition.platform" );
+			if (platform == null || "j2me".equals(platform)) {
+				platform = System.getProperty( "device.model" );
 			}
-		}
-		return null;
+			if (platform != null) {
+				String vendor = getVendorName();
+				if (vendor != null) {
+					int index = platform.toLowerCase().indexOf(vendor.toLowerCase());
+					if (index != -1) {
+						platform = platform.substring( index + vendor.length() ).trim();
+					}
+					index = platform.indexOf(' ');
+					if (index != -1) {
+						platform = platform.substring(0, index );
+					}
+					index = platform.indexOf('-');
+					if (index != -1) {
+						platform = platform.substring(0, index );
+					}
+					index = platform.indexOf('/');
+					if (index != -1) {
+						platform = platform.substring(0, index );
+					}
+					return platform;
+				}
+			}
+			return null;
+		//#endif
 	}
 	
 	/**
@@ -279,6 +286,49 @@ public class DeviceInfo
 			}
 		//#endif
 		return false;
+	}
+
+	/**
+	 * Retrieves a unique ID of this device.
+	 * This could be the IMEI or the local Bluetooth address of this device.
+	 * Note that some phones allow to access the IMEI but only when the application has been signed.
+	 * @return
+	 */
+	public static String getDeviceId() {
+		//#if polish.blackberry
+			int idInt = net.rim.device.api.system.DeviceInfo.getDeviceId();
+			//# return Integer.toString(idInt);
+		//#else
+			String[] properties = new String[]{ "phone.imei", "phone.imei", "com.sonyericsson.imei", "IMEI", "com.motorola.IMEI", "com.samsung.imei", "com.lge.imei"};
+			String id = null;
+			for (int i = 0; i < properties.length; i++) {
+				String name = properties[i];
+				try {
+					id = System.getProperty(name);
+					if (id != null) {
+						break;
+					}
+				} catch (Exception e) {
+					//#debug info
+					System.out.println("Unable to retrieve System property " + name + ": most likely need to be signed" + e);
+				}
+			}
+			if (id != null) {
+				return id;
+			}
+			//#if polish.api.bluetooth
+				try {
+					id = LocalDevice.getLocalDevice().getBluetoothAddress();
+					if (id != null) {
+						return id;
+					}
+				} catch (Exception e) {
+					//#debug error
+					System.out.println("Unable to retrieve local Bluetooth address");
+				}
+			//#endif
+			return null;
+		//#endif
 	}
 
 }
