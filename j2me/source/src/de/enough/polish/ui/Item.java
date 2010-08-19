@@ -3398,7 +3398,7 @@ public abstract class Item implements UiElement, Animatable
 					//#if polish.css.max-width
 						this.maximumWidth == null && 
 					//#endif
-					this.itemWidth + labelWidth <= availWidth && (this.label == null || !this.label.isLayoutNewlineAfter())) 
+					this.itemWidth + labelWidth <= availWidth && (this.label == null || !(this.label.isLayoutNewlineAfter() || isLayoutNewlineBefore()))) 
 				{
 					this.itemWidth += availableContentWidth - cWidth - labelWidth;
 				} else {
