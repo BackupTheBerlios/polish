@@ -207,16 +207,20 @@ public class HorizontalContainerView extends ContainerView {
 			}
 		}
 		//#endif
-		
 		if(item != null) {
 			if (this.isClippingRequired) {
 				if (getScrollTargetXOffset() + item.relativeX < 0) {
 					setScrollXOffset( -item.relativeX, true );
-				} else if (getScrollTargetXOffset() + item.relativeX + item.itemWidth > this.contentWidth) {
-					setScrollXOffset( this.contentWidth - item.relativeX - item.itemWidth, true );
+				} else if (getScrollTargetXOffset() + item.relativeX + item.itemWidth > this.availableWidth) {
+					setScrollXOffset( this.availableWidth - item.relativeX - item.itemWidth, true );
 				}
-			}
-			
+			}			
+			//#if polish.css.horizontalview-align-heights
+				Item lastFocusedItem = this.focusedItem;
+				if (this.isAlignHeights && lastFocusedItem != null && lastFocusedItem.getContentHeight() < item.getContentHeight()) {
+					this.parentContainer.setInitialized(false);
+				}
+			//#endif
 			return super.focusItem(focIndex, item, direction, focStyle);
 		}
 		
