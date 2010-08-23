@@ -600,7 +600,7 @@ public final class Locale {
 	 */
 	public static String formatDate( TimePoint tp, String dateFormat ) {
 		StringBuffer buffer = new StringBuffer(dateFormat.length());
-		formatDate( tp.getYear(), tp.getMonth(), tp.getDay(), tp.getHour(), tp.getMinute(), dateFormat, buffer );
+		formatDate( tp.getYear(), tp.getMonth() + 1, tp.getDay(), tp.getHour(), tp.getMinute(), dateFormat, buffer );
 		return buffer.toString();
 	}
 	
@@ -613,7 +613,7 @@ public final class Locale {
 	 * @throws NullPointerException when the calendar is null
 	 */
 	public static void formatDate( TimePoint tp, String dateFormat, StringBuffer buffer ) {
-		formatDate( tp.getYear(), tp.getMonth(), tp.getDay(), tp.getHour(), tp.getMinute(), dateFormat, buffer );
+		formatDate( tp.getYear(), tp.getMonth() + 1, tp.getDay(), tp.getHour(), tp.getMinute(), dateFormat, buffer );
 	}
 
 	/**
