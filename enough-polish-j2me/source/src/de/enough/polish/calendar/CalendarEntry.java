@@ -193,7 +193,7 @@ public class CalendarEntry implements Externalizable {
 	}
 	
 	public CalendarEntry(String summary, CalendarCategory category, int year, int month, int day, String description){
-		this(summary, category, year, month, day, null, CalendarEntry.REOCCURENCE_NONE);
+		this(summary, category, year, month, day, description, CalendarEntry.REOCCURENCE_NONE);
 	}
 	
 	public CalendarEntry(String summary, CalendarCategory category, int year, int month, int day, String description, int reoccurence){
