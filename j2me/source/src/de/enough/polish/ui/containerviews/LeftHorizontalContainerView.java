@@ -159,4 +159,13 @@ public class LeftHorizontalContainerView extends HorizontalContainerView {
 		}
 
 	}
+	
+	//#ifdef polish.hasPointerEvents
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.ItemView#handlePointerDragged(int, int)
+	 */
+	public boolean handlePointerDragged(int x, int y) {
+		return false;
+	}
+	//#endif
 }
