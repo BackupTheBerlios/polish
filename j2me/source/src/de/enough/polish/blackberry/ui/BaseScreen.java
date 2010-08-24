@@ -6,6 +6,7 @@ package de.enough.polish.blackberry.ui;
 import net.rim.device.api.system.Application;
 import net.rim.device.api.system.DeviceInfo;
 import net.rim.device.api.system.TrackwheelListener;
+import net.rim.device.api.ui.ContextMenu;
 import net.rim.device.api.ui.Keypad;
 import net.rim.device.api.ui.Field;
 import net.rim.device.api.ui.Manager;
@@ -33,7 +34,7 @@ public abstract class BaseScreen
 	//#define tmp.fullscreen
 	//# extends net.rim.device.api.ui.container.FullScreen
 //#else
-	extends net.rim.device.api.ui.container.MainScreen
+	extends net.rim.device.api.ui.container.FullScreen //net.rim.device.api.ui.container.MainScreen
 //#endif
 
 {
@@ -84,7 +85,8 @@ public abstract class BaseScreen
     	//#if polish.useFullScreen
     		//# super( BaseScreenManager.getInstance(), 0 );
     	//#else
-    		super( DEFAULT_MENU );
+    		super( BaseScreenManager.getInstance(), DEFAULT_MENU );
+    		
     		//#if polish.BlackBerry.addDefaultClose != true
     			super.setDefaultClose(false);
     		//#endif
@@ -1440,7 +1442,6 @@ public abstract class BaseScreen
 	        }
 	    //#endif
 		//#if !tmp.fullscreen
-	    	removeAllMenuItems();
 	    	this.addedMenuItems.clear();
 //	    	
 //	    	if (nextDisplayable instanceof Canvas) {
@@ -1458,7 +1459,7 @@ public abstract class BaseScreen
 //	    	}
 	    //#endif
 	}
-	
+
 	public void addCommand( de.enough.polish.ui.Command cmd ) {
 		//#if !tmp.fullscreen
 			Object[] items = this.addedMenuItems.getInternalArray();
@@ -1474,10 +1475,9 @@ public abstract class BaseScreen
 			}
 			CommandMenuItem item = new CommandMenuItem( cmd, Display.getInstance().getNextOrCurrent() );
 			this.addedMenuItems.add(item);
-			addMenuItem( item );
 		//#endif
 	}
-	
+
 	public void removeCommand( de.enough.polish.ui.Command cmd ) {
 		//#if !tmp.fullscreen
 			Object[] items = this.addedMenuItems.getInternalArray();
@@ -1487,7 +1487,6 @@ public abstract class BaseScreen
 					break;
 				}
 				if (item.cmd == cmd) {
-					super.removeMenuItem( item );
 					this.addedMenuItems.remove(i);
 					break;
 				}
@@ -1495,12 +1494,48 @@ public abstract class BaseScreen
 		//#endif
 	}
 	
-	//#if tmp.fullscreen
+	//#if !tmp.fullscreen
+	/* (non-Javadoc)
+	 * @see net.rim.device.api.ui.Screen#makeMenu(net.rim.device.api.ui.component.Menu, int)
+	 */
+	protected void makeMenu(Menu menu, int instance) {
+		super.makeMenu(menu, instance);
+		Object[] objects = this.addedMenuItems.getInternalArray();
+		for (int i = 0; i < objects.length; i++) {
+			CommandMenuItem item = (CommandMenuItem) objects[i];
+			if (item == null) {
+				break;
+			}
+			menu.add(item);
+		}
+	}	
+	//#endif
+
+	//#if !tmp.fullscreen
+	/* (non-Javadoc)
+	 * @see net.rim.device.api.ui.Field#makeContextMenu(net.rim.device.api.ui.ContextMenu)
+	 */
+	protected void makeContextMenu(ContextMenu menu) {
+		super.makeContextMenu(menu);
+		Object[] objects = this.addedMenuItems.getInternalArray();
+		for (int i = 0; i < objects.length; i++) {
+			CommandMenuItem item = (CommandMenuItem) objects[i];
+			if (item == null) {
+				break;
+			}
+			if (item.isContextMenu()) {
+				menu.addItem(item);
+			}
+		}
+	}
+	//#endif
+
+	//#if tmp.fullscreen || true
 	public void setTitle( String title) {
 		// ignore
 	}
 	//#endif
-	
+
 	public void setCommandListener( javax.microedition.lcdui.CommandListener l) {
 		// ignore
 	}

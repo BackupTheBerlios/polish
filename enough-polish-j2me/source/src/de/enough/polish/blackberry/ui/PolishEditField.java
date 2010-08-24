@@ -28,6 +28,7 @@ package de.enough.polish.blackberry.ui;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.StyleSheet;
 
+import net.rim.device.api.i18n.Locale;
 import net.rim.device.api.ui.component.EditField;
 
 public class PolishEditField extends EditField implements PolishTextField {
@@ -36,9 +37,9 @@ public class PolishEditField extends EditField implements PolishTextField {
 	private boolean isFocused;
 	public boolean processKeyEvents = true;
 	private int fontColor;
-	//#if ${ version(polish.JavaPlatform, BlackBerry) } >= ${version(4.6)}
-	private BackgroundWrapper backgroundWrapper;
-	//#endif
+//	//#if ${polish.JavaPlatform} >= BlackBerry/4.6
+//	private BackgroundWrapper backgroundWrapper;
+//	//#endif
 
 	public PolishEditField(String label, String text, int numChars, long style) {
 		super(label, text, numChars, style);
@@ -66,10 +67,47 @@ public class PolishEditField extends EditField implements PolishTextField {
 	}
 
 	public void paint( net.rim.device.api.ui.Graphics g ) {
-    	if (this.isFocused && !StyleSheet.currentScreen.isMenuOpened()) {
+    	if (this.isFocused 
+    		//#if polish.useFullScreen
+    			&& !StyleSheet.currentScreen.isMenuOpened()
+    		//#endif
+    	) {
     		g.setColor( this.fontColor );
     		super.paint( g );
     	}
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see net.rim.device.api.im.ITextInputStyle#getPreferredInputLocale()
+	 */
+	public Locale getPreferredInputLocale() {
+		// TODO Besitzer implement getPreferredInputLocale
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see net.rim.device.api.im.ITextInputStyle#getTextInputStyle()
+	 */
+	public int getTextInputStyle() {
+		// TODO Besitzer implement getTextInputStyle
+		return 0;
+	}
+
+	/* (non-Javadoc)
+	 * @see net.rim.device.api.im.ITextInputStyle#isUnicodeInputAllowed()
+	 */
+	public boolean isUnicodeInputAllowed() {
+		// TODO Besitzer implement isUnicodeInputAllowed
+		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see net.rim.device.api.im.ITextInputStyle#updateInputStyle()
+	 */
+	public void updateInputStyle() {
+		// TODO Besitzer implement updateInputStyle
+		
 	}
 
 	public void setFont(Font font, int textColor) {
@@ -107,7 +145,7 @@ public class PolishEditField extends EditField implements PolishTextField {
 			System.out.println("Layout error: " + e );
 		}
 		this.fontColor = style.getFontColor();
-		//#if ${ version(polish.JavaPlatform, BlackBerry) } >= ${version(4.6)}
+		//#if polish.JavaPlatform >= BlackBerry/4.6
 			setBackground(BackgroundWrapper.INSTANCE);
 		//#endif
 	}

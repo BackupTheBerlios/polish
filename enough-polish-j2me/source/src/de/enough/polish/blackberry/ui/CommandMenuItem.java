@@ -114,5 +114,14 @@ public class CommandMenuItem extends MenuItem {
 			}
 		}
 	}
+	
+	/**
+	 * Checks if this item should be added to the context menu.
+	 * @return true when this item should be added
+	 */
+	public boolean isContextMenu() {
+		int type = this.cmd.getCommandType();
+		return (type == Command.ITEM || type == Command.OK);
+	}
 
 }

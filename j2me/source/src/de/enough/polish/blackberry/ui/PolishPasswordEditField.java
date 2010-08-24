@@ -66,7 +66,11 @@ public class PolishPasswordEditField extends PasswordEditField implements Polish
         }
         
         public void paint( net.rim.device.api.ui.Graphics g ) {
-        	if (this.isFocused && !StyleSheet.currentScreen.isMenuOpened()) {
+        	if (this.isFocused 
+        		//#if polish.useFullScreen
+        			&& !StyleSheet.currentScreen.isMenuOpened()
+        		//#endif
+    		) {
         		g.setColor( this.fontColor );
         		super.paint( g );
         	}
