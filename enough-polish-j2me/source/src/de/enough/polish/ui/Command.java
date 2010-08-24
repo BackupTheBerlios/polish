@@ -306,6 +306,8 @@ public class Command
 	private ItemCommandListener itemCommandListener;
 	private CommandListener commandListener;
 
+	private Object data;
+
 	/**
 	 * Creates a new command object with the given short
 	 * 
@@ -659,5 +661,23 @@ public class Command
 		}
 		return this.children.size();
 		
+	}
+
+	/**
+	 * Sets an arbitrary data object that can for example be used by the CommandListener.
+	 * @param data the data object
+	 * @see #getData()
+	 */
+	public void setData(Object data) {
+		this.data = data;
+	}
+	
+	/**
+	 * Retrieves a previously set data object
+	 * @return the previously set data
+	 * @see #setData(Object)
+	 */
+	public Object getData() {
+		return this.data;
 	}
 }
