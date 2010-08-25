@@ -380,7 +380,7 @@ public class CalendarItem extends TableItem
 			}
 		} else {
 			if (day.equalsDay(originalCurrentDay)) {
-				//#style calendarCurrentday?
+				//#style calendarCurrentday, calendarDay, default
 				item = new StringItem( null, Integer.toString( day.getDay() ));				
 				if (parent != null && parent.calendarCurrentdayStyle != null) {
 					item.setStyle(parent.calendarCurrentdayStyle);
