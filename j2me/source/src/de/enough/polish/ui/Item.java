@@ -796,7 +796,7 @@ public abstract class Item implements UiElement, Animatable
 		protected Border completeBorder;
 	//#endif
 	//#if polish.css.complete-background || polish.css.complete-border
-		protected int completeBackgroundPadding;
+		protected Dimension completeBackgroundPadding;
 	//#endif
 	/** The vertical offset for the background, can be used for smoother scrolling, for example */ 
 	protected int backgroundYOffset;
@@ -1610,9 +1610,9 @@ public abstract class Item implements UiElement, Animatable
 
 		//#if polish.css.complete-background || polish.css.complete-border 
 			//#if polish.css.complete-background-padding
-				Integer completeBackgroundPaddingInt = style.getIntProperty("complete-background-padding");
-				if (completeBackgroundPaddingInt != null) {
-					this.completeBackgroundPadding = completeBackgroundPaddingInt.intValue();
+				Dimension completeBackgroundPaddingDim = (Dimension) style.getObjectProperty("complete-background-padding");
+				if (completeBackgroundPaddingDim != null) {
+					this.completeBackgroundPadding = completeBackgroundPaddingDim;
 				}
 			//#endif
 		//#endif
@@ -2711,10 +2711,11 @@ public abstract class Item implements UiElement, Animatable
 			}
 		//#endif
 		//#if polish.css.complete-background || polish.css.complete-border
-			int width = this.itemWidth - this.marginLeft - this.marginRight + (this.completeBackgroundPadding << 1);
-			int height = this.itemHeight - this.marginTop - this.marginBottom + (this.completeBackgroundPadding << 1);
-			int bX = x + this.marginLeft - this.completeBackgroundPadding;
-			int bY = y + this.marginTop + this.backgroundYOffset - this.completeBackgroundPadding;
+			int cbPadding = this.completeBackground == null ? 0 : this.completeBackgroundPadding.getValue(this.availContentWidth);
+			int width = this.itemWidth - this.marginLeft - this.marginRight + (cbPadding << 1);
+			int height = this.itemHeight - this.marginTop - this.marginBottom + (cbPadding << 1);
+			int bX = x + this.marginLeft - cbPadding;
+			int bY = y + this.marginTop + this.backgroundYOffset - cbPadding;
 			//#if polish.css.complete-background
 				if (this.completeBackground != null) {
 					this.completeBackground.paint(bX, bY, width, height, g);
@@ -4511,7 +4512,7 @@ public abstract class Item implements UiElement, Animatable
 			//#endif
 			if (addAbsolute) {
 				//System.out.println("adding absolute repaint: bgX=" + getBackgroundX() + ", bgY=" + getBackgroundY() + ", itemHeight-bgHeight=" + (this.itemHeight - this.backgroundHeight) + ", itemWidth-bgWidth=" + (this.itemWidth - this.backgroundWidth));
-				int padding = this.completeBackgroundPadding;
+				int padding = this.completeBackgroundPadding.getValue(this.availContentWidth);
 				repaintRegion.addRegion( 
 					getAbsoluteX() + x - 1 - padding, 
 					getAbsoluteY() + y - 1 - padding,

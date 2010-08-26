@@ -3761,7 +3761,7 @@
 
 	<attribute
 		name="complete-background-padding"
-		type="integer"
+		type="dimension"
 		appliesTo="Item"
 		description="The padding that is added to the complete-background and/or complete-border. Note that this does not change the size of the item, so you might need to adapt margins or normal paddings for your design."
 		id="305"
