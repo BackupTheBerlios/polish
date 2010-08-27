@@ -361,7 +361,7 @@ implements Externalizable, Comparator, Comparable
 	 * @return true when the given time point is before this one.
 	 */
 	public boolean isBefore(TimePoint tp) {
-		if (this.timeZone == tp.timeZone) {
+		if (equalsTimeZone( tp )) {
 			return (this.year < tp.year)
 				|| (this.year == tp.year && this.month < tp.month)
 				|| (this.year == tp.year && this.month == tp.month && this.day < tp.day)
@@ -373,13 +373,26 @@ implements Externalizable, Comparator, Comparable
 		return getAsCalendar().before( tp.getAsCalendar() );
 	}
 	
+	private boolean equalsTimeZone(TimePoint tp) {
+		if ( this.timeZone == tp.timeZone ) {
+			return true;
+		}
+		TimeZone defaultTimeZone = TimeZone.getDefault();
+		if ( (defaultTimeZone.equals(this.timeZone) && tp.timeZone == null) 
+			|| (this.timeZone == null && defaultTimeZone.equals(tp.timeZone))
+		) {
+			return true;
+		}
+		return false;
+	}
+
 	/**
 	 * Checks whether this given point in time is before this TimePoint
 	 * @param tp the time point that might be before this one
 	 * @return true when the given time point is before this one.
 	 */
 	public boolean isAfter(TimePoint tp) {
-		if (this.timeZone == tp.timeZone) {
+		if (equalsTimeZone( tp )) {
 			return (this.year > tp.year)
 				|| (this.year == tp.year && this.month > tp.month)
 				|| (this.year == tp.year && this.month == tp.month && this.day > tp.day)
@@ -585,7 +598,7 @@ implements Externalizable, Comparator, Comparable
 	 * @param tp the timepoint that should be added
 	 */
 	public void add( TimePoint tp ) {
-		if (this.timeZone == tp.timeZone) {
+		if (equalsTimeZone(tp)) {
 			addMillisecond( tp.millisecond );
 			addSecond( tp.second );
 			addHour( tp.hour );
@@ -604,7 +617,7 @@ implements Externalizable, Comparator, Comparable
 	 * @param tp the timepoint that should be subtracted
 	 */
 	public void subtract( TimePoint tp ) {
-		if (this.timeZone == tp.timeZone) {
+		if (equalsTimeZone(tp)) {
 			addMillisecond( -tp.millisecond );
 			addSecond( -tp.second );
 			addMinute( -tp.minute );
@@ -792,7 +805,7 @@ implements Externalizable, Comparator, Comparable
 	public boolean equals(Object o) {
 		if (o instanceof TimePoint) {
 			TimePoint tp = (TimePoint) o;
-			if (this.timeZone == tp.timeZone) {
+			if (equalsTimeZone(tp)) {
 				return (this.year == tp.year) && (this.month == tp.month) && (this.day == tp.day) 
 						&& (this.hour == tp.hour) && (this.minute == tp.minute) 
 						&& (this.second == tp.second) && (this.millisecond == tp.millisecond);
@@ -828,7 +841,7 @@ implements Externalizable, Comparator, Comparable
 	 */
 	public void read(DataInputStream in) throws IOException {
 		int version = in.readInt();
-		if (version != VERSION) {
+		if (version > VERSION) {
 			throw new IOException("invalid version " + version);
 		}
 		boolean notNull = in.readBoolean();
@@ -944,6 +957,9 @@ implements Externalizable, Comparator, Comparable
 			}
 			buffer.append( this.second ).append(':');
 			buffer.append( this.millisecond );
+		}
+		if (this.timeZone != null) {
+			buffer.append(": ").append( this.timeZone.getID() );
 		}
 		buffer.append(" ~ ").append( super.toString() );
 		return buffer.toString();
