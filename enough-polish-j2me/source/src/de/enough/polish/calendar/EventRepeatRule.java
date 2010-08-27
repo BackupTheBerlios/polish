@@ -239,7 +239,9 @@ public class EventRepeatRule  implements Externalizable {
 	 * @return the next time point, null if there is none matching.
 	 */
 	public TimePoint getNextDate( CalendarEntry entry, TimePeriod period ) {
-//		System.out.println("getNextDate for entry " + entry.getSummary() + ", start=" + entry.getStartDate() + ", period=" + period);
+//		System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+//		System.out.println("getNextDate for entry " + entry.getSummary() + ", start=" + entry.getStartDate() + ", period=" + period + ", interval=" + this.interval);
+//		System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 		TimePoint periodStart = period.getStart();
 		if (this.untilDate != null && this.untilDate.isBefore(periodStart)) {
 			return null;
@@ -248,7 +250,7 @@ public class EventRepeatRule  implements Externalizable {
 		TimePoint periodEnd = period.getEnd();
 		while (!period.matches(nextDate) && !nextDate.isAfter(periodEnd)) {
 			nextDate.add( this.interval );
-//			System.out.println("(1) added interval to date: " + nextDate);
+//			System.out.println("(1) added interval to date: " + nextDate + ", interval=" + this.interval);
 		}
 		if (this.weekday != -1 && this.weekdayMatchInMonth != 0) {
 			// now find a the matching weekday, e.g. the first Tuesday of the month or the last Thursday (see weekday and weekdayMatchInMonth)
@@ -289,12 +291,10 @@ public class EventRepeatRule  implements Externalizable {
 				} while (!period.matches(nextDate) && !nextDate.isAfter(periodEnd));
 			}
 		}
-		
+//		System.out.println("nextDate (almos final): " + nextDate);
 		if ((this.untilDate != null) && (nextDate.isAfter( this.untilDate ) ) ) {
 			nextDate = null;
-		}
-		
-		if (!period.matches(nextDate)) {
+		} else  if (!period.matches(nextDate)) {
 			nextDate = null;
 		}
 

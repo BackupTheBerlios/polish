@@ -36,12 +36,12 @@ implements Externalizable, CalendarSubject
 	private IdentityHashMap calendarEntriesByCategory;
 	private final IdentityArrayList rootCategories;
 	private IdentityArrayList listeners;
+	private IdentityArrayList observers;
 	private boolean isDirty;
 	private Comparator rootCategoriesComparator;
 	private CalendarEntry recentChangedEntry;
 	private CalendarCategory recentChangedCategory;
 	
-	private ArrayList observers = new ArrayList();
 	
 	
 	/**
@@ -223,7 +223,7 @@ implements Externalizable, CalendarSubject
 	 */
 	public void addEntries(CalendarEntryModel model) {
 		
-		addEntries(model, false);
+		addEntries(model, false, false);
 	}
 	
 	/**
@@ -255,6 +255,27 @@ implements Externalizable, CalendarSubject
 			CalendarEntryList originalList = null;
 			if (original != null) {
 				originalList = (CalendarEntryList) this.calendarEntriesByCategory.get(original);
+			} 
+			// adjust the parent categories of this category:
+			CalendarCategory parent = category.getParentCategory();
+			CalendarCategory child = category;
+			while (parent != null) {
+				CalendarCategory originalParent = getCategory( parent.getGuid() );
+				if (originalParent != null) {
+					if (original != null) {
+						child.setParentCategory(originalParent);
+					} else {
+						CalendarCategory originalChild = originalParent.getChildCategory( child.getGuid() );
+						if (originalChild == null) {
+							originalParent.addChildCategory(child);
+						} else {
+							child.setParentCategory(originalParent);
+						}
+					}
+					break;
+				}
+				child = parent;
+				parent = parent.getParentCategory();
 			}
 			CalendarEntryList entriesList = (CalendarEntryList) entriesByCategory.get(category);
 			Object[] entries = entriesList.getInternalArray();
@@ -591,6 +612,7 @@ implements Externalizable, CalendarSubject
 		CalendarEntryList entryList = getEntries( category, period, nextDatePeriod );
 		
 		if (entryList == null || entryList.size() == 0) {		// Looking for entries in child categories.
+			System.out.println("Searching children...");
 			boolean hasChildCategories = category.hasChildCategories();
 			while (hasChildCategories) {
 				CalendarCategory[] childCategories = category.getChildCategories(); 
@@ -781,6 +803,7 @@ implements Externalizable, CalendarSubject
 
 	private void storeCategoryGuids(CalendarCategory category, LongHashMap categoriesByGuid) {
 		categoriesByGuid.put(category.getGuid(), category);
+		categoriesByGuid.put(category.getGuidOld(), category);
 		Object[] objects = category.getChildCategoriesAsInternalArray();
 		for (int i = 0; i < objects.length; i++) {
 			CalendarCategory child = (CalendarCategory) objects[i];
@@ -832,39 +855,50 @@ implements Externalizable, CalendarSubject
 	}
 
 	
-	// TODO
+	/**
+	 * Adds an observer to this model.
+	 * @param observer the observer
+	 * @see #removeObserver(CalendarObserver)
+	 * @see #notifyObservers()
+	 */
 	public void addObserver(CalendarObserver observer) {
-
-		if ( this.observers.contains(observer) ) {
-			// Do nothing;
-		} else {
-			this.observers.add(observer);
+		if (this.observers == null) {
+			this.observers = new IdentityArrayList();
+			this.observers.add(observer);			
+		} else if (!this.observers.contains(observer)) {
+			this.observers.add(observer);			
 		}
 	}
-
 	
-	// TODO
+	/**
+	 * Removes an observer from this model.
+	 * @param observer the observer that should be removed
+	 * @see #addObserver(CalendarObserver)
+	 * @see #notifyObservers()
+	 */
 	public void removeObserver(CalendarObserver observer) {
-		
-		this.observers.remove(observer);
-	}
-
-	
-	private void notifyObservers() {
-		
-		// loop through and notify each observer
-		for (int i = 0; i < observers.size(); i++) {
-			CalendarObserver observer = (CalendarObserver)observers.get(i);
-			observer.updatedCalendarModel(this, this.recentChangedEntry, this.recentChangedCategory);
+		if (this.observers != null) {
+			this.observers.remove(observer);
 		}
 	}
 
-	
-	public void notifyObserversExplicitly() {
-		
-		notifyObservers();
+	/**
+	 * Notifies all registered observers.
+	 * @see #addObserver(CalendarObserver)
+	 * @see #removeObserver(CalendarObserver)
+	 */
+	public void notifyObservers() {
+		if (this.observers != null) {
+			// loop through and notify each observer
+			Object[] objects = this.observers.getInternalArray();
+			for (int i = 0; i < objects.length; i++) {
+				CalendarObserver observer = (CalendarObserver) objects[i];
+				if (observer == null) {
+					break;
+				}
+				observer.updatedCalendarModel(this, this.recentChangedEntry, this.recentChangedCategory);
+			}
+		}
 	}
-
-
 	
 }

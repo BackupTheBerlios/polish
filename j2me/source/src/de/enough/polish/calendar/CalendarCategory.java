@@ -68,7 +68,7 @@ public class CalendarCategory implements Externalizable {
 	}
 
 	public String getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setId(String id) {
@@ -76,7 +76,7 @@ public class CalendarCategory implements Externalizable {
 	}
 
 	public CalendarCategory getParentCategory() {
-		return parentCategory;
+		return this.parentCategory;
 	}
 
 	public void setParentCategory(CalendarCategory parentCategory) {
@@ -370,6 +370,26 @@ public class CalendarCategory implements Externalizable {
 	 */
 	public long getGuid() {
 		long guid = 0;
+		if (this.name != null) {
+			guid = this.name.hashCode();
+		} else if (this.id != null) {
+			guid = this.id.hashCode();
+		} else {
+			guid = hashCode();
+		}
+		if (this.parentCategory != null) {
+			guid ^= this.parentCategory.getGuid();
+		}
+		return guid;
+	}
+	
+	/**
+	 * Generates the guid in the old way (first ID, then name)
+	 * 	 
+	 * @return the generated GUID
+	 */
+	public long getGuidOld() {
+		long guid = 0;
 		if (this.id != null) {
 			guid = this.id.hashCode();
 		} else if (this.name != null) {
@@ -381,5 +401,43 @@ public class CalendarCategory implements Externalizable {
 		return guid;
 	}
 
+
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	public boolean equals( Object o) {
+		if (o instanceof CalendarCategory) {
+			CalendarCategory cc = (CalendarCategory) o;
+			return cc.getGuid() == getGuid();
+		}
+		return false;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	public int hashCode() {
+		return (int) getGuid();
+	}
+
+
+	public CalendarCategory getChildCategory(long guid) {
+		if (this.childCategories == null) {
+			return null;
+		}
+		Object[] children = this.childCategories.getInternalArray();
+		for (int i = 0; i < children.length; i++) {
+			CalendarCategory child = (CalendarCategory) children[i];
+			if (child == null) {
+				break;
+			}
+			if (child.getGuid() == guid) {
+				return child;
+			}
+		}
+		return null;
+	}
 
 }
