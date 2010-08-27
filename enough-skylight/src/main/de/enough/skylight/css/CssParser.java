@@ -79,7 +79,7 @@ public class CssParser {
 	}
 	
 	private void parseImports() {
-		consumeWhitespace();
+		acceptWhitespace();
 		// Look for @import
 		boolean matches = this.text.regionMatches(false, this.position, this.keywords, 0, 7);
 		if(!matches) {
@@ -91,8 +91,12 @@ public class CssParser {
 
 	private void parseStatements() {
 		// TODO Auto-generated method stub
-		parseAtRule();
-		parseRuleSet();
+		acceptWhitespace();
+		if(accept('@')) {
+			parseAtRule();
+		} else {
+			parseRuleSet();
+		}
 	}
 
 	private void parseRuleSet() {
@@ -128,8 +132,21 @@ public class CssParser {
 		
 	}
 	
-	private void consumeWhitespace() {
-		
+	private boolean acceptWhitespace() {
+		char charAt = this.text.charAt(this.position);
+		if(' ' == charAt || '\t' == charAt) {
+			this.position++;
+			return true;
+		}
+		return false;
+	}
+	
+	private boolean accept(char character) {
+		if(this.text.charAt(this.position) == character) {
+			this.position++;
+			return true;
+		}
+		return false;
 	}
 
 	private void parseString() {
