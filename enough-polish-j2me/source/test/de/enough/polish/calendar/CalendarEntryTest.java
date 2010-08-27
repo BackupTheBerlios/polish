@@ -63,4 +63,12 @@ public class CalendarEntryTest extends TestCase {
 				
 	}
 
+	public void testEventRepeatRule() {
+		CalendarEntry entry = new CalendarEntry();
+		entry.setSummary("test");
+		entry.setReoccurence(CalendarEntry.REOCCURENCE_YEARLY);
+		EventRepeatRule rule = entry.getRepeat();
+		assertNotNull( rule );
+		assertEquals( rule.getInterval(), EventRepeatRule.INTERVAL_YEARLY);
+	}
 }

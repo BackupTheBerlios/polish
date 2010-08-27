@@ -59,7 +59,8 @@ public class CalendarEntryModelTest extends TestCase {
 		
 		model.removeEntry(entry);
 		assertNotNull( model.getRootCategories() );
-		assertEquals( 0, model.getRootCategories().length );
+		assertEquals( 1, model.getRootCategories().length );
+		assertEquals( 0, model.getEntries(root).size());
 		
 		CalendarCategory subCategory = new CalendarCategory("sub");
 		root.addChildCategory(subCategory);
@@ -73,7 +74,7 @@ public class CalendarEntryModelTest extends TestCase {
 		
 		model.removeEntry(entry);
 		assertNotNull( model.getRootCategories() );
-		assertEquals( 0, model.getRootCategories().length );
+		assertEquals( 1, model.getRootCategories().length );
 		
 		CalendarCategory root2 = new CalendarCategory("test2");
 		CalendarEntry entry2 = new CalendarEntry("St. Patricks Day2", root2,  2010, Calendar.MARCH, 17);
@@ -300,10 +301,141 @@ public class CalendarEntryModelTest extends TestCase {
 		assertNotNull( entries.getEntries()[0].getStartDate());
 		assertNotNull( entries.getEntries()[1].getStartDate());
 		assertNotNull( entries.getEntries()[2].getStartDate());
-		
-
 	}
 	
+	public void testAddModelWithNestedCategories() {
+		CalendarEntryModel model = new CalendarEntryModel();
+		CalendarCategory root = new CalendarCategory("root1");
+		root.setId("1");
+		CalendarCategory nestedRoot = new CalendarCategory("subroot");
+		root.addChildCategory(nestedRoot);
+		CalendarEntry entry = new CalendarEntry("entry1", nestedRoot,  2010, Calendar.MARCH, 17);
+		model.addEntry(entry);
+		CalendarCategory root2 = new CalendarCategory("root2");
+		CalendarCategory nestedRoot2 = new CalendarCategory("subroot2");
+		root2.addChildCategory(nestedRoot2);
+		CalendarEntry entry2 = new CalendarEntry("entry2", nestedRoot2,  2010, Calendar.JANUARY, 17);
+		model.addEntry(entry2);
+		CalendarEntry entry3 = new CalendarEntry("entry3", nestedRoot2,  2010, Calendar.JANUARY, 4);		
+		model.addEntry(entry3);
+		entry.setReoccurence(CalendarEntry.REOCCURENCE_YEARLY);
+		entry2.setRepeat( EventRepeatRule.RULE_YEARLY);
+		entry3.setRepeat( new EventRepeatRule( Calendar.MONDAY, 1));
+		
+		
+		TimePoint start = new TimePoint( 2010, Calendar.JANUARY, 1 );
+		TimePoint end = new TimePoint( 2011, Calendar.JANUARY, 1 );
+		TimePeriod period = new TimePeriod( start, true, end, false );
+		
+		CalendarEntryList entries = model.getEntries( period);
+		assertNotNull( entries );
+		assertEquals( 3, entries.size() );
+		assertTrue( entries.containsEntryWithGuid(entry.getGuid()));
+		assertTrue( entries.containsEntryWithGuid(entry2.getGuid()));
+		assertTrue( entries.containsEntryWithGuid(entry3.getGuid()));
+		assertEquals( 2, model.getRootCategories().length );
+		
+		CalendarEntryModel model2 = new CalendarEntryModel();
+		model2.addEntries(model);
+		entries = model2.getEntries( period);
+		assertNotNull( entries );
+		assertEquals( 3, entries.size() );
+		assertTrue( entries.containsEntryWithGuid(entry.getGuid()));
+		assertTrue( entries.containsEntryWithGuid(entry2.getGuid()));
+		assertTrue( entries.containsEntryWithGuid(entry3.getGuid()));
+		assertEquals( 2, model2.getRootCategories().length );
+		
+		model2 = new CalendarEntryModel();
+		CalendarCategory root1Clone = new CalendarCategory("root1");
+		root1Clone.setId("1");
+		CalendarCategory nestedRootClone = new CalendarCategory("subroot");
+		root1Clone.addChildCategory(nestedRootClone);
+		CalendarEntry entry4 = new CalendarEntry("entry4", nestedRootClone,  2010, Calendar.MARCH, 17);
+		model2.addEntry(entry4);
+
+
+		model2.addEntries(model);
+		entries = model2.getEntries( period);
+		assertNotNull( entries );
+		assertEquals( 4, entries.size() );
+		assertTrue( entries.containsEntryWithGuid(entry.getGuid()));
+		assertTrue( entries.containsEntryWithGuid(entry2.getGuid()));
+		assertTrue( entries.containsEntryWithGuid(entry3.getGuid()));
+		assertTrue( entries.containsEntryWithGuid(entry4.getGuid()));
+		assertEquals( 2, model2.getRootCategories().length );
+
+		assertNotNull( entries.getEntries()[0].getStartDate());
+		assertNotNull( entries.getEntries()[1].getStartDate());
+		assertNotNull( entries.getEntries()[2].getStartDate());
+		assertNotNull( entries.getEntries()[3].getStartDate());
+		
+		model2 = new CalendarEntryModel();
+		CalendarCategory nestedRoot3 = new CalendarCategory("subroot3");
+		root1Clone.addChildCategory(nestedRoot3);
+		CalendarEntry entry5 = new CalendarEntry("entry5", nestedRoot3,  2010, Calendar.APRIL, 22);
+		model2.addEntry(entry4);
+		model2.addEntry(entry5);
+		
+		model2.addEntries(model);
+		entries = model2.getEntries( period);
+		assertNotNull( entries );
+		assertEquals( 5, entries.size() );
+		assertTrue( entries.containsEntryWithGuid(entry.getGuid()));
+		assertTrue( entries.containsEntryWithGuid(entry2.getGuid()));
+		assertTrue( entries.containsEntryWithGuid(entry3.getGuid()));
+		assertTrue( entries.containsEntryWithGuid(entry4.getGuid()));
+		assertTrue( entries.containsEntryWithGuid(entry5.getGuid()));
+		
+		CalendarCategory cat = model2.getCategory( nestedRoot.getGuid() );
+		CalendarEntryList list = model2.getEntries(cat);
+		assertEquals( 2, list.size() );
+		cat = model2.getCategory( nestedRoot2.getGuid() );
+		list = model2.getEntries(cat);
+		assertEquals( 2, list.size() );		
+		cat = model2.getCategory( nestedRoot3.getGuid() );
+		list = model2.getEntries(cat);
+		assertEquals( 1, list.size() );
+		
+		assertEquals( 2, model2.getRootCategories().length );
+
+		
+		
+		model2 = new CalendarEntryModel();
+		CalendarCategory root3 = new CalendarCategory("root3");
+		CalendarCategory nestedRoot4 = new CalendarCategory("subroot4");
+		root3.addChildCategory(nestedRoot4);
+		CalendarEntry entry6 = new CalendarEntry("entry6", nestedRoot4,  2010, Calendar.MAY, 22);
+		model2.addEntry(entry4);
+		model2.addEntry(entry5);
+		model2.addEntry(entry6);
+		
+		model2.addEntries(model);
+		entries = model2.getEntries( period);
+		assertNotNull( entries );
+		assertEquals( 6, entries.size() );
+		assertTrue( entries.containsEntryWithGuid(entry.getGuid()));
+		assertTrue( entries.containsEntryWithGuid(entry2.getGuid()));
+		assertTrue( entries.containsEntryWithGuid(entry3.getGuid()));
+		assertTrue( entries.containsEntryWithGuid(entry4.getGuid()));
+		assertTrue( entries.containsEntryWithGuid(entry5.getGuid()));
+		assertTrue( entries.containsEntryWithGuid(entry6.getGuid()));
+		
+		cat = model2.getCategory( nestedRoot.getGuid() );
+		list = model2.getEntries(cat);
+		assertEquals( 2, list.size() );
+		cat = model2.getCategory( nestedRoot2.getGuid() );
+		list = model2.getEntries(cat);
+		assertEquals( 2, list.size() );		
+		cat = model2.getCategory( nestedRoot3.getGuid() );
+		list = model2.getEntries(cat);
+		assertEquals( 1, list.size() );		
+		cat = model2.getCategory( nestedRoot4.getGuid() );
+		list = model2.getEntries(cat);
+		assertEquals( 1, list.size() );		
+		
+		assertEquals( 3, model2.getRootCategories().length );
+
+	}
 	
 	public void testAddModelWithEmptyCategories() {
 		CalendarEntryModel model = new CalendarEntryModel();
