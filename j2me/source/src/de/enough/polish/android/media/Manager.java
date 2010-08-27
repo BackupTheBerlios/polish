@@ -128,8 +128,8 @@ public final class Manager extends Object
 	 */
 	public static final String TONE_DEVICE_LOCATOR = "device://tone";
 
-	private static final String[] supportedHttpContentTypes = new String[] {"audio/mpeg","audio/mp3"};
-	private static final String[] supportedFileContentTypes = new String[] {"audio/mpeg","audio/mp3","video/mpeg"};
+	private static final String[] supportedHttpContentTypes = new String[] {"aidio/amr"};
+	private static final String[] supportedFileContentTypes = new String[] {"audio/amr"};
 	private static final String[] supportedDeviceContentTypes = new String[] {};
 	private static final String[] supportedCaptureContentTypes = new String[] {};
 	
