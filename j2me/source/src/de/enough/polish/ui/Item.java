@@ -3245,8 +3245,9 @@ public abstract class Item implements UiElement, Animatable
 			
 		//#ifdef polish.css.width
 			int targetWidth = 0;
-			if(this.cssWidth != null) {
+			if (this.cssWidth != null) {
 				availableContentWidth = this.cssWidth.getValue(availWidth);
+				firstLineContentWidth = availableContentWidth;
 				targetWidth = availableContentWidth;
 			}
 		//#endif
