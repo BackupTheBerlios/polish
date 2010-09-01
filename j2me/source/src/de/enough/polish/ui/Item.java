@@ -2599,6 +2599,7 @@ public abstract class Item implements UiElement, Animatable
 			if ((previousItemWidth != this.itemWidth || previousItemHeight != this.itemHeight) && this.parent != null)
 			{
 				this.parent.requestInit();
+				return;
 			}
 		}
 		

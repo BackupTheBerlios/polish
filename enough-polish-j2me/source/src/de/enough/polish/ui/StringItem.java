@@ -399,7 +399,7 @@ public class StringItem extends Item
 				this.textLines = null;
 			}
 			this.isTextInitializationRequired = true;
-			requestInit();
+			setInitialized(false);
 		}
 		notifyValueChanged(text);
 	}
