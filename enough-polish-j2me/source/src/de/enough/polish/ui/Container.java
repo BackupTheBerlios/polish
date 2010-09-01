@@ -1035,7 +1035,8 @@ public class Container extends Item {
 			//System.out.println("focus: contentWidth=" + this.contentWidth + ", of container " + this);
 			//int wAfter = item.getItemWidth( this.availableContentWidth, this.availableContentWidth, this.availableHeight );
 			// fix 2008-11-11: availableContentWidth can be different from the width granted to items in a ContainerView: 
-			int wAfter = item.getItemWidth( item.availableWidth, item.availableWidth, item.availableHeight );
+			
+			int wAfter = getChildWidth( item );
 			int hAfter = item.itemHeight;
 			int layoutAfter = item.layout;
 			if (wAfter != wBefore || hAfter != hBefore || layoutAfter != layoutBefore ) {
@@ -1098,7 +1099,18 @@ public class Container extends Item {
 		notifyStateChanged();
 		//#endif
 	}
-	
+
+	/**
+	 * Queries the width of an child item of this container.
+	 * This allows subclasses to control the possible re-initialization that is happening here.
+	 * @param item the child item
+	 * @return the width of the child item
+	 */
+	protected int getChildWidth(Item item) {
+		int widthAfter = item.getItemWidth( item.availableWidth, item.availableWidth, item.availableHeight );
+		return widthAfter;
+	}
+
 	/**
 	 * Retrieves the best matching focus style for the given item
 	 * @param index the index of the item

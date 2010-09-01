@@ -34,8 +34,12 @@ import javax.microedition.lcdui.Image;
 	import net.rim.device.api.ui.Field;
 //#endif
 
+import de.enough.polish.benchmark.Benchmark;
 import de.enough.polish.event.EventManager;
+import de.enough.polish.event.GestureEvent;
+import de.enough.polish.event.UiEventListener;
 import de.enough.polish.util.ArrayList;
+import de.enough.polish.util.Arrays;
 import de.enough.polish.util.DrawUtil;
 import de.enough.polish.util.HashMap;
 import de.enough.polish.util.RgbImage;
@@ -674,6 +678,12 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	protected Command defaultCommand;
 	protected int preferredWidth;
 	protected int preferredHeight;
+	//#ifdef  polish.css.width
+		protected Dimension cssWidth;
+	//#endif
+	//#ifdef  polish.css.height
+		protected Dimension cssHeight;
+	//#endif
 	protected Dimension minimumWidth;
 	protected Dimension minimumHeight;
 	//#ifdef polish.css.max-width
@@ -682,6 +692,20 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	//#ifdef polish.css.max-height
 		protected Dimension maximumHeight;
 	//#endif
+	
+	//#ifdef polish.css.min-item-width
+		protected Dimension minimumItemWidth;
+	//#endif
+	//#ifdef polish.css.min-item-height
+		protected Dimension minimumItemHeight;
+	//#endif
+	//#ifdef polish.css.max-item-width
+		protected Dimension maximumItemWidth;
+	//#endif
+	//#ifdef polish.css.max-item-height
+		protected Dimension maximumItemHeight;
+	//#endif
+		
 	boolean isInitialized;
 	
 	/** the background of this item  */
@@ -713,6 +737,8 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	protected int contentWidth;
 	/** The height of this item's content **/
 	protected int contentHeight;
+	protected int availContentWidth;
+	protected int availContentHeight;
 	protected int backgroundWidth;
 	protected int backgroundHeight;
 	/** The appearance mode of this item, either PLAIN or one of the interactive modes BUTTON, HYPERLINK or INTERACTIVE. */
@@ -751,7 +777,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	public int relativeX;
 	/** the vertical start position of this item relative to it's parent item top content edge */
 	public int relativeY; 
-	/** the horizontal position of this item's content relative to it's left edge */
+	/** the horizontal position of this item's content relative to it's left edge (so for a left aligned item its marginLeft + border.widthLeft + paddingLeft */
 	protected int contentX;
 	/** the vertical position of this item's content relative to it's top edge */
 	protected int contentY; // absolute top vertical position of the content 
@@ -779,7 +805,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	
 	//#ifdef polish.css.before
 		private String beforeUrl;
-		private int beforeWidth;
+		protected int beforeWidth;
 		private int beforeHeight;
 		private Image beforeImage;
 	//#endif
@@ -802,8 +828,8 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	protected Style focusedStyle;
 	protected boolean isPressed;
 	//#if polish.css.pressed-style
-		private Style pressedStyle;
 		private Style normalStyle;
+		private Style pressedStyle;
 	//#endif
 
 	//#if polish.css.colspan
@@ -822,7 +848,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		protected Border completeBorder;
 	//#endif
 	//#if polish.css.complete-background || polish.css.complete-border
-		protected int completeBackgroundPadding;
+		protected Dimension completeBackgroundPadding;
 	//#endif
 	/** The vertical offset for the background, can be used for smoother scrolling, for example */ 
 	protected int backgroundYOffset;
@@ -878,8 +904,10 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		private RgbFilter[] filters;
 		private boolean isFiltersActive;
 		private boolean filterPaintNormally;
-		private RgbImage filterRgbImage;
 		private RgbFilter[] originalFilters;
+		private RgbImage filterRgbImage;
+		private RgbImage filterProcessedRgbImage;
+                public boolean cacheItemImage ;
 	//#endif
 	//#if polish.css.inline-label
 		protected boolean isInlineLabel;
@@ -899,6 +927,25 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		protected Style landscapeStyle;
 		protected Style portraitStyle;
 	//#endif
+	//#if polish.Item.ShowCommandsOnHold
+		//#define tmp.supportTouchGestures
+		private boolean isShowCommands;
+		private Container commandsContainer;
+	//#endif
+	//#if polish.supportTouchGestures
+		//#define tmp.supportTouchGestures
+	//#endif
+	//#if tmp.supportTouchGestures
+		private long gestureStartTime;
+		private int gestureStartX;
+		private int gestureStartY;
+		private boolean isIgnorePointerReleaseForGesture;
+	//#endif
+	//#if polish.useNativeGui
+		protected NativeItem nativeItem;
+	//#endif
+	private UiEventListener uiEventListener;
+
 
 
 
@@ -922,7 +969,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	/**
 	 * Convenience constructor.
 	 * Creates a new item with the specified label and layout, an Item.PLAIN appearance mode and default style.
-	 * @param label the label for this item
+	 * @param label the label of this item
 	 * @param layout the layout of this item
 	 */
 	protected FakeCustomItem( String label, int layout) {
@@ -951,6 +998,10 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 			this.style = style;
 			this.isStyleInitialised = false;
 		}
+
+                //#if polish.css.filter
+                cacheItemImage = true ;
+                //#endif
 	}
 
 	/**
@@ -1146,6 +1197,16 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	}
 	
 	/**
+	 * Sets the style for an item
+	 * with the use of style preprocessing e.g.:
+	 * //#style myStyle
+	 * setStyle();
+	 */
+	public void setStyle() {
+		// do nothing here
+	}
+	
+	/**
 	 * Sets the style of this item.
 	 * 
 	 * @param style the new style for this item.
@@ -1156,6 +1217,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		System.out.println("setting style " + style.name + " for " + this );
 		this.isStyleInitialised = true;
 		this.style = style;
+		
 		if (style != StyleSheet.defaultStyle) {
 			setLayout( style.layout );
 		}
@@ -1498,7 +1560,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 				if ( !afterUrlStr.equals(this.afterUrl) ) {
 					try {
 						this.afterImage = StyleSheet.getImage(afterUrlStr, null, true );
-						this.afterWidth = this.afterImage.getWidth() + this.paddingHorizontal;
+						this.afterWidth = this.afterImage.getWidth();
 						this.afterHeight = this.afterImage.getHeight();
 					} catch (IOException e) {
 						this.afterUrl = null;
@@ -1516,31 +1578,70 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 			}
 		//#endif
 		//#ifdef polish.css.min-width
-			Dimension minWidthInt = (Dimension) style.getObjectProperty("min-width");
-			if (minWidthInt != null) {
-				this.minimumWidth = minWidthInt;
+			Dimension minWidthDim = (Dimension) style.getObjectProperty("min-width");
+			if (minWidthDim != null) {
+				this.minimumWidth = minWidthDim;
 			}
 		//#endif
 		//#ifdef polish.css.max-width
-			Dimension maxWidthInt  = (Dimension) style.getObjectProperty("max-width");
-			if (maxWidthInt != null) {
-				this.maximumWidth = maxWidthInt;
+			Dimension maxWidthDim  = (Dimension) style.getObjectProperty("max-width");
+			if (maxWidthDim != null) {
+				this.maximumWidth = maxWidthDim;
 			}
 		//#endif
+		//#ifdef polish.css.width
+			Dimension widthDim  = (Dimension) style.getObjectProperty("width");
+			if (widthDim != null) {
+				this.cssWidth = widthDim;
+			}
+		//#endif
+		
+		//#ifdef polish.css.min-item-width
+			Dimension minItemWidthDim = (Dimension) style.getObjectProperty("min-item-width");
+			if (minItemWidthDim != null) {
+				this.minimumItemWidth = minItemWidthDim;
+			}
+		//#endif
+		//#ifdef polish.css.max-item-width
+			Dimension maxItemWidthDim  = (Dimension) style.getObjectProperty("max-item-width");
+			if (maxItemWidthDim != null) {
+				this.maximumItemWidth = maxItemWidthDim;
+			}
+		//#endif
+			
 		//#ifdef polish.css.min-height
-			Dimension minHeightInt = (Dimension) style.getObjectProperty("min-height");
-			if (minHeightInt != null) {
-				this.minimumHeight = minHeightInt;
+			Dimension minHeightDim = (Dimension) style.getObjectProperty("min-height");
+			if (minHeightDim != null) {
+				this.minimumHeight = minHeightDim;
 			}
 		//#endif
 		//#ifdef polish.css.max-height
-			Dimension maxHeightInt  = (Dimension) style.getObjectProperty("max-height");
-			if (maxHeightInt != null) {
-				this.maximumHeight = maxHeightInt;
+			Dimension maxHeightDim  = (Dimension) style.getObjectProperty("max-height");
+			if (maxHeightDim != null) {
+				this.maximumHeight = maxHeightDim;
+			}
+		//#endif
+			
+		//#ifdef polish.css.height
+			Dimension heightDim  = (Dimension) style.getObjectProperty("height");
+			if (heightDim != null) {
+				this.cssHeight = heightDim;
 			}
 		//#endif
 
-	
+		//#ifdef polish.css.min-item-height
+			Dimension minItemHeightDim = (Dimension) style.getObjectProperty("min-item-height");
+			if (minItemHeightDim != null) {
+				this.minimumItemHeight = minItemHeightDim;
+			}
+		//#endif
+		//#ifdef polish.css.max-item-height
+			Dimension maxItemHeightDim  = (Dimension) style.getObjectProperty("max-item-height");
+			if (maxItemHeightDim != null) {
+				this.maximumItemHeight = maxItemHeightDim;
+			}
+		//#endif
+			
 		//#if polish.css.colspan
 			Integer colSpanInt = style.getIntProperty("colspan");
 			if ( colSpanInt != null ) {
@@ -1556,9 +1657,9 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 
 		//#if polish.css.complete-background || polish.css.complete-border 
 			//#if polish.css.complete-background-padding
-				Integer completeBackgroundPaddingInt = style.getIntProperty("complete-background-padding");
-				if (completeBackgroundPaddingInt != null) {
-					this.completeBackgroundPadding = completeBackgroundPaddingInt.intValue();
+				Dimension completeBackgroundPaddingDim = (Dimension) style.getObjectProperty("complete-background-padding");
+				if (completeBackgroundPaddingDim != null) {
+					this.completeBackgroundPadding = completeBackgroundPaddingDim;
 				}
 			//#endif
 		//#endif
@@ -1797,6 +1898,9 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 //					scr.addCommand( cmd );
 //				}
 			}
+			//#if polish.Item.ShowCommandsOnHold
+				this.commandsContainer = null;
+			//#endif
 			if (this.isInitialized) {
 				repaint();
 			}
@@ -1844,6 +1948,9 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 						scr.removeCommand( cmd );
 					}
 				}
+				//#if polish.Item.ShowCommandsOnHold
+					this.commandsContainer = null;
+				//#endif
 				if (this.isInitialized) {
 					repaint();
 				}
@@ -1869,7 +1976,6 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 			scr.requestRepaint();
 		}
 	}
-	
 	
 	
 	/**
@@ -2064,11 +2170,11 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 * See <a href="#sizes">Item Sizes</a> for a complete discussion.
 	 * 
 	 * @return the preferred width of the Item
-	 * @see #getPreferredHeight()
-	 * @see #setPreferredSize(int, int)
+	 * @see #getpreferredHeight()
+	 * @see #setpreferredSize(int, int)
 	 * @since  MIDP 2.0
 	 */
-	public int getPreferredWidth()
+	public int getpreferredWidth()
 	{
 		return this.preferredWidth;
 	}
@@ -2084,11 +2190,11 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 * See <a href="#sizes">Item Sizes</a> for a complete discussion.
 	 * 
 	 * @return the preferred height of the Item
-	 * @see #getPreferredWidth()
-	 * @see #setPreferredSize(int, int)
+	 * @see #getpreferredWidth()
+	 * @see #setpreferredSize(int, int)
 	 * @since  MIDP 2.0
 	 */
-	public int getPreferredHeight()
+	public int getpreferredHeight()
 	{
 		return this.preferredHeight;
 	}
@@ -2116,11 +2222,11 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 * @param height - the value to which the height should be locked, or -1 to unlock
 	 * @throws IllegalArgumentException - if width or height is less than -1
 	 * @throws IllegalStateException - if this Item is contained within an Alert
-	 * @see #getPreferredHeight()
-	 * @see #getPreferredWidth()
+	 * @see #getpreferredHeight()
+	 * @see #getpreferredWidth()
 	 * @since  MIDP 2.0
 	 */
-	public void setPreferredSize(int width, int height)
+	public void setpreferredSize(int width, int height)
 	{
 		this.preferredHeight = height;
 		this.preferredWidth = width;
@@ -2137,7 +2243,22 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 */
 	public int getMinimumWidth()
 	{
-		return this.minimumWidth.getValue(100);
+		return getMinimumWidth(100);
+	}
+	
+	/**
+	 * Gets the minimum width for this <code>Item</code>.  
+	 *
+	 * @param availWidth the available width for percentage calculations
+	 * @return the minimum width of the item
+	 * @since  MIDP 2.0
+	 */
+	public int getMinimumWidth(int availWidth) {
+		if (this.minimumWidth != null) {
+			return this.minimumWidth.getValue(availWidth);
+		} else {
+			return 0;
+		}
 	}
 
 	/**
@@ -2151,8 +2272,90 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 */
 	public int getMinimumHeight()
 	{
-		return this.minimumHeight.getValue(100);
+		return getMinimumHeight(100);
 	}
+	
+	/**
+	 * Gets the minimum height for this <code>Item</code>.  
+	 * 
+	 * @param availHeight the available height for percentage calculations
+	 * @return the minimum height of the item
+	 * @since  MIDP 2.0
+	 */
+	public int getMinimumHeight(int availHeight)
+	{
+		if (this.minimumHeight != null) {
+			return this.minimumHeight.getValue(availHeight);
+		} else {
+			return 0;
+		}
+	}
+	
+
+	
+	//#if polish.css.max-width
+	/**
+	 * Gets the maximum width for this <code>Item</code>.  This is a height
+	 * at which the item can function and display its contents,
+	 * though perhaps not optimally.
+	 * See <a href="#sizes">Item Sizes</a> for a complete discussion.
+	 * 
+	 * @return the minimum height of the item
+	 * @since  MIDP 2.0
+	 */
+	public int getMaximumWidth()
+	{
+		return getMaximumWidth(100);
+	}
+	
+	/**
+	 * Gets the maximum width for this <code>Item</code>.  
+	 * 
+	 * @param availWidth the available height for percentage calculations
+	 * @return the minimum height of the item
+	 * @since  MIDP 2.0
+	 */
+	public int getMaximumWidth(int availWidth)
+	{
+		if (this.maximumWidth != null) {
+			return this.maximumWidth.getValue(availWidth);
+		} else {
+			return 0;
+		}
+	}
+	//#endif
+	
+	//#if polish.css.max-height
+	/**
+	 * Gets the maximum height for this <code>Item</code>.  This is a height
+	 * at which the item can function and display its contents,
+	 * though perhaps not optimally.
+	 * See <a href="#sizes">Item Sizes</a> for a complete discussion.
+	 * 
+	 * @return the minimum height of the item
+	 * @since  MIDP 2.0
+	 */
+	public int getMaximumHeight()
+	{
+		return getMaximumHeight(100);
+	}
+	
+	/**
+	 * Gets the maximum height for this <code>Item</code>.  
+	 * 
+	 * @param availHeight the available height for percentage calculations
+	 * @return the minimum height of the item
+	 * @since  MIDP 2.0
+	 */
+	public int getMaximumHeight(int availHeight)
+	{
+		if (this.maximumHeight != null) {
+			return this.maximumHeight.getValue(availHeight);
+		} else {
+			return 0;
+		}
+	}
+	//#endif
 
 	/**
 	 * Sets default <code>Command</code> for this <code>Item</code>.
@@ -2201,8 +2404,11 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 				this.appearanceMode = INTERACTIVE;
 			}
 		//#endif
-		if (this.isFocused) {
-			getScreen().notifyDefaultCommand( cmd );
+		if (this.isFocused) 
+		{
+			Screen scr = getScreen();
+			if(scr != null)
+				scr.notifyDefaultCommand( cmd );
 		}
 	}
 	
@@ -2272,7 +2478,29 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		if (scr == null) {
 			scr = getScreen();
 		}
+		if (scr != null) {
+		}
 	}
+	
+	/**
+	 * Notifies this item about a change event, e.g. when the text of a StringItem has been changed or similar.
+	 * In contrast to notifyStateChanged() this method is also called when the change is not user initiated, i.e. when
+	 * the application itself changes the value.
+	 * The default implementation notfies native UI items about the change and fires an Event when either CSS animations are used 
+	 * or when the preprocessing variable <code>polish.handleEvents</code> is set to <code>true</code>.
+	 * @param newValue the changed value of this object
+	 * @see #notifyStateChanged()
+	 */
+	protected void notifyValueChanged(Object newValue) {
+		//#if polish.useNativeGui
+			if (this.nativeItem != null) {
+			}
+		//#endif
+		//#if tmp.handleEvents
+			EventManager.fireEvent( EventManager.EVENT_VALUE_CHANGE, this, newValue); 
+		//#endif
+	}
+
 	
 	void setAvailableDimensions(int leftBorder, int rightBorder)
 	{
@@ -2329,7 +2557,10 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 				return;
 			}
 		//#endif
-
+			
+		//#debug ovidiu
+		Benchmark.startSmartTimer("0");
+			
 		// initialise this item if necessary:
 		if (!this.isInitialized) {
 			if (this.availableWidth == 0) {
@@ -2346,6 +2577,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 				this.parent.requestInit();
 			}
 		}
+		
 		//#if polish.css.x-adjust
 			if (this.xAdjustment != null) {
 				int value = this.xAdjustment.getValue(this.itemWidth);
@@ -2359,31 +2591,60 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 				y += this.yAdjustment.getValue(this.itemHeight);
 			}
 		//#endif
+		int origX = x;
+		int origY = y;
 			
 		//#if polish.css.filter && polish.midp2
 			if (this.isFiltersActive && this.filters != null && !this.filterPaintNormally) {
+
 				RgbImage rgbImage = this.filterRgbImage;
-				if ( rgbImage == null) {
+
+                                // Do not use the cached item image.
+                                // Used for real-time dynamic objects
+                                // suct as ProcessingItem
+                                if ( !this.cacheItemImage )
+                                {
+                                  rgbImage = null ;
+                                }
+                                
+				if ( (rgbImage == null) ) {
 					this.filterPaintNormally = true;
 					int[] rgbData = UiAccess.getRgbData( this );
 					rgbImage = new RgbImage( rgbData, this.itemWidth);
 					this.filterRgbImage = rgbImage;
 					this.filterPaintNormally = false;
 				} 
-				//System.out.println("painting RGB data for " + this  + ", pixel=" + Integer.toHexString( rgbData[ rgbData.length / 2 ]));
-				for (int i=0; i<this.filters.length; i++) {
-					RgbFilter filter = this.filters[i];
-					rgbImage = filter.process(rgbImage);
-				}
-				int width = rgbImage.getWidth();
-				int height = rgbImage.getHeight();
-				int[] rgbData = rgbImage.getRgbData();
-				if (this.isLayoutRight) {
-					x = rightBorder - width;
-				} else if (this.isLayoutCenter) {
-					x =  leftBorder + ((rightBorder - leftBorder)/2) - (width/2);
-				}
-				DrawUtil.drawRgb(rgbData, x, y, width, height, true, g );
+				//System.out.println("painting RGB data for " + this  + ", pixel=" + Integer.toHexString( rgbData[ rgbData.length / 2 ]));		
+				this.filterProcessedRgbImage = paintFilter(x, y, this.filters, rgbImage, this.layout, g);
+                if ( (this.filterProcessedRgbImage.getWidth() != this.itemWidth ) || ( this.filterProcessedRgbImage.getHeight() != this.itemHeight) )
+                {
+                    repaint(0, 0, this.filterProcessedRgbImage.getWidth(), this.filterProcessedRgbImage.getHeight());
+                }
+//				for (int i=0; i<this.filters.length; i++) {
+//					RgbFilter filter = this.filters[i];
+//					rgbImage = filter.process(rgbImage);
+//				}				
+//				
+//				int width = rgbImage.getWidth();
+//				int height = rgbImage.getHeight();
+//				int[] rgbData = rgbImage.getRgbData();
+//				if (this.isLayoutRight) {
+//					x = rightBorder - width;
+//				} else if (this.isLayoutCenter) {
+//					x =  leftBorder + ((rightBorder - leftBorder)/2) - (width/2);
+//				}
+//				DrawUtil.drawRgb(rgbData, x, y, width, height, true, g );
+//				
+				//#mdebug ovidiu
+				Benchmark.pauseSmartTimer("0");
+				Benchmark.incrementSmartTimer("1");
+				Benchmark.check();
+				//#enddebug
+				//#if polish.Item.ShowCommandsOnHold
+					if (this.isShowCommands) {
+						paintCommands( origX, origY, g );
+					}
+				//#endif
 				return;
 			}
 		//#endif
@@ -2403,6 +2664,11 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 				} 
 				//System.out.println("painting RGB data for " + this  + ", pixel=" + Integer.toHexString( rgbData[ rgbData.length / 2 ]));
 				DrawUtil.drawRgb(rgbData, x, y, this.itemWidth, this.itemHeight, true, g );
+				//#if polish.Item.ShowCommandsOnHold
+					if (this.isShowCommands) {
+						paintCommands( origX, origY, g );
+					}
+				//#endif
 				return;
 			}
 		//#endif
@@ -2421,10 +2687,11 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 			}
 		//#endif
 		//#if polish.css.complete-background || polish.css.complete-border
-			int width = this.itemWidth - this.marginLeft - this.marginRight + (this.completeBackgroundPadding << 1);
-			int height = this.itemHeight - this.marginTop - this.marginBottom + (this.completeBackgroundPadding << 1);
-			int bX = x + this.marginLeft - this.completeBackgroundPadding;
-			int bY = y + this.marginTop + this.backgroundYOffset - this.completeBackgroundPadding;
+			int cbPadding = this.completeBackground == null ? 0 : this.completeBackgroundPadding.getValue(this.availContentWidth);
+			int width = this.itemWidth - this.marginLeft - this.marginRight + (cbPadding << 1);
+			int height = this.itemHeight - this.marginTop - this.marginBottom + (cbPadding << 1);
+			int bX = x + this.marginLeft - cbPadding;
+			int bY = y + this.marginTop + this.backgroundYOffset - cbPadding;
 			//#if polish.css.complete-background
 				if (this.completeBackground != null) {
 					this.completeBackground.paint(bX, bY, width, height, g);
@@ -2438,13 +2705,21 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		//#endif
 		
 		// paint label:
-		if (this.label != null) {
+		StringItem labelItem = this.label;
+		if (labelItem != null) {
 			if (this.useSingleRow) {
-				this.label.paint( x, y, leftBorder, rightBorder - (this.contentWidth + this.paddingHorizontal), g );
-				leftBorder += this.label.itemWidth;
+				labelItem.paint( x + labelItem.relativeX, y + labelItem.relativeY, leftBorder, rightBorder - (this.contentWidth + this.paddingHorizontal), g );
+				leftBorder += labelItem.itemWidth;
 			} else {
-				this.label.paint( x, y, leftBorder, rightBorder, g );
-				y += this.label.itemHeight;
+				int labelX = x;
+				int labelLeftBorder = leftBorder;
+				if (this.isLayoutRight && (labelItem.itemWidth > this.itemWidth)) {
+					int diff = labelItem.itemWidth - this.itemWidth;
+					labelX -= diff;
+					labelLeftBorder -= diff;
+				}
+				labelItem.paint( labelX + labelItem.relativeX, y + labelItem.relativeY, labelLeftBorder, rightBorder, g );
+				y += labelItem.itemHeight;
 			}
 		}
 		
@@ -2455,7 +2730,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		//System.out.println( this.style.name + ":  increasing leftBorder by " + (this.marginLeft + this.borderWidth + this.paddingLeft));
 		rightBorder -= (this.marginRight + getBorderWidthRight() + this.paddingRight);
 		//#ifdef polish.css.after
-			rightBorder -= this.afterWidth;
+			rightBorder -= getAfterWidthWithPadding();
 		//#endif
 
 		//System.out.println( this.style.name + ":  decreasing rightBorder by " + (this.marginRight + this.borderWidth + this.paddingRight));
@@ -2482,29 +2757,26 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 //		}
 		
 		
-		// paint background:
 		x += this.marginLeft;
 		y += this.marginTop;
+		// paint background and border:
 		//#if polish.css.include-label
 			if (!this.includeLabel) {
 		//#endif
 				int backgroundX = x;
-				int backgroundY = y;
-				if (this.useSingleRow && this.label != null) {
-					backgroundX += this.label.itemWidth;
+				if (labelItem != null) { 
+					backgroundX += this.contentX - this.paddingLeft - this.marginLeft - getBorderWidthLeft();
+					if (this.isLayoutCenter) {
+						//TODO: what happens when having an animated background width?
+                        rightBorder = backgroundX + this.backgroundWidth - this.paddingRight - this.marginRight - getBorderWidthRight();
+                        leftBorder = x + this.contentX;
+					}
 				}
-				if(this.isLayoutRight)
-				{
-					backgroundX = rightBorder + this.paddingRight - this.backgroundWidth;
-					//#if polish.css.after
-						backgroundX += this.afterWidth;
-					//#endif
-				}
-				paintBackgroundAndBorder(backgroundX, backgroundY, this.backgroundWidth, this.backgroundHeight, g);
+				paintBackgroundAndBorder(backgroundX, y, this.backgroundWidth, this.backgroundHeight, g);
 		//#if polish.css.include-label
 			}
 		//#endif
-		
+
 		//#if polish.css.content-x-adjust
 			if (this.contentXAdjustment != null) {
 				x += this.contentXAdjustment.getValue(this.contentWidth);
@@ -2517,8 +2789,8 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		//#endif
 		x += this.contentX - this.marginLeft; //getBorderWidthLeft() + this.paddingLeft;
 		y += this.contentY - this.marginTop; //getBorderWidthTop() + this.paddingTop;
-		if (this.label != null && !this.useSingleRow) {
-			y -= this.label.itemHeight;
+		if (labelItem != null && !this.useSingleRow) {
+			y -= labelItem.itemHeight;
 		}
 		int originalContentY = y;
 		
@@ -2526,7 +2798,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		//#if polish.css.before || polish.css.after || polish.css.min-height  || polish.css.max-height
 			boolean isVerticalCenter = (this.layout & LAYOUT_VCENTER) == LAYOUT_VCENTER; 
 			boolean isTop = !isVerticalCenter && (this.layout & LAYOUT_TOP) == LAYOUT_TOP; 
-			boolean isBottom = !isVerticalCenter && (this.layout & LAYOUT_BOTTOM) == LAYOUT_BOTTOM; 
+			boolean isBottom = !isVerticalCenter && (this.layout & LAYOUT_BOTTOM) == LAYOUT_BOTTOM;
 		//#endif
 		//#ifdef polish.css.before
 			if (this.beforeImage != null) {
@@ -2535,7 +2807,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 				int yAdjust = this.beforeHeight - this.contentHeight;
 				if ( this.beforeHeight < this.contentHeight) {
 					if (isTop) {
-						beforeY -= yAdjust;
+						//beforeY -= yAdjust;
 					} else if (isBottom) {
 						beforeY += yAdjust;
 					} else {
@@ -2592,7 +2864,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 					}
 					//#endif
 				}
-				g.drawImage(this.afterImage, rightBorder, afterY, Graphics.TOP | Graphics.LEFT );
+				g.drawImage(this.afterImage, rightBorder + this.paddingHorizontal, afterY, Graphics.TOP | Graphics.LEFT );
 			}
 		//#endif
 		
@@ -2605,7 +2877,6 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 			// paint content:
 			//#ifdef polish.css.view-type
 				if (this.view != null) {
-					// Nothing to do here.
 				} else {
 			//#endif
 					paintContent( x, y, leftBorder, rightBorder, g );
@@ -2622,8 +2893,78 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 //			g.setColor(0x00ff00);
 //			g.drawRect( this.parent.getAbsoluteX()  + this.parent.contentX + this.relativeX, this.parent.getAbsoluteY() + this.parent.contentY + this.relativeY, this.itemWidth, this.itemHeight);
 //		}
+		//#if polish.Item.ShowCommandsOnHold
+			if (this.isShowCommands) {
+				paintCommands( origX, origY, g );
+			}
+		//#endif
 	}
 	
+	/**
+	 * Paints the commands for this item after the user has pressed/clicked on an item for a long time.
+	 * Note that the preproessing variable polish.Item.ShowCommandsOnHold needs to be set to true for this feature.
+	 * 
+	 * @param x horizontal left start position
+	 * @param y vertical top start position
+	 * @param g the graphics context
+	 */
+	protected void paintCommands(int x, int y, Graphics g) {
+		//#if polish.Item.ShowCommandsOnHold
+			if (this.commandsContainer == null) {
+				//#style itemcommands?
+				this.commandsContainer = new Container(true);
+				//#if polish.css.commands-style
+					if (this.style != null) {
+						Style commandsStyle = (Style) this.style.getObjectProperty("commands-style");
+						if (commandsStyle != null) {
+							this.commandsContainer.setStyle( commandsStyle );
+						}
+					}
+				//#endif
+				//#if polish.css.child-style
+					Style childStyle = null;
+					if (this.commandsContainer.style != null) {
+						childStyle = (Style) this.commandsContainer.style.getObjectProperty("child-style");
+					}
+				//#endif
+				
+				Object[] commandsArr = this.commands.getInternalArray();
+				for (int i = 0; i < commandsArr.length; i++) {
+					Command cmd = (Command) commandsArr[i];
+					if (cmd == null) {
+						break;
+					}
+				}
+				this.commandsContainer.init( this.availableWidth, this.availableWidth, this.availableHeight );
+				int relX = 0;
+				if (this.commandsContainer.isLayoutRight()) {
+					relX = this.availableWidth - this.commandsContainer.itemWidth;
+				} else if (this.commandsContainer.isLayoutCenter()) {
+					relX = (this.availableWidth - this.commandsContainer.itemWidth)/2;
+				}
+				this.commandsContainer.relativeX = relX;
+				int relY = this.itemHeight;
+				if (this.commandsContainer.isLayoutTop()) {
+					relY = - this.commandsContainer.itemHeight;
+				} else if (this.commandsContainer.isLayoutVerticalCenter()) {
+					relY = (this.itemHeight - this.commandsContainer.itemHeight)/2;
+				}
+				int absY = getAbsoluteY();
+				Screen scr = getScreen();
+				int contY = scr.getScreenContentY();
+				if (absY + relY < contY) {
+					relY = contY - absY;
+				} else if (absY + relY + this.commandsContainer.itemHeight > contY + scr.getScreenContentHeight()) {
+					relY = contY + scr.getScreenContentHeight() - absY - this.commandsContainer.itemHeight;
+				}
+				this.commandsContainer.relativeY = relY;
+			}
+			x += this.commandsContainer.relativeX;
+			this.commandsContainer.paint(x, y + this.commandsContainer.relativeY, x, x + this.commandsContainer.itemWidth, g);
+		//#endif
+		
+	}
+
 	/**
 	 * Paints the background and border of this item.
 	 * The call is forwarded to paintBackground() and paintBorder().
@@ -2707,7 +3048,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	}
 
 	/**
-	 * Paints the background of this item.
+	 * Paints the background and - if defined - the bgborder of this item.
 	 * 
 	 * @param x the horizontal start position
 	 * @param y the vertical start position
@@ -2742,6 +3083,46 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		//#if polish.css.view-type
 			}
 		//#endif
+	}
+	
+	/**
+	 * Paints the given filters and retrieves the last processed RGB image.
+	 * @param x horizontal paint position
+	 * @param y vertical paint position
+	 * @param partFilters the filters
+	 * @param rgbImage the initial RGB image
+	 * @param lo the layout for the processed RGB image
+	 * @param g the graphics context
+	 * @return the processed RGB image
+	 */
+	protected RgbImage paintFilter(int x, int y, RgbFilter[] partFilters, RgbImage rgbImage, int lo, Graphics g) {
+		//System.out.println("painting RGB data for " + this  + ", pixel=" + Integer.toHexString( rgbData[ rgbData.length / 2 ]));
+		int origWidth = rgbImage.getWidth();
+		int origHeight = rgbImage.getHeight();
+		for (int i=0; i<partFilters.length; i++) {
+			RgbFilter filter = partFilters[i];
+			rgbImage = filter.process(rgbImage);
+		}
+		int width = rgbImage.getWidth();
+		int height = rgbImage.getHeight();
+		//System.out.println("Changed dimension from " + this.imageWidth +"x" + this.imageHeight + " to " + width + "x" + height);
+		int[] rgb = rgbImage.getRgbData();
+		if (origWidth != width) {
+			if ((lo & LAYOUT_CENTER) == LAYOUT_CENTER) {
+				x -= (width - origWidth) / 2;
+			} else if ((lo & LAYOUT_CENTER) == LAYOUT_RIGHT) {
+				x -= (width - origWidth);
+			}
+		}
+		if (origHeight != height) {
+			if ((lo & LAYOUT_VCENTER) == LAYOUT_VCENTER) {
+				y -= (height - origHeight) / 2; 
+			} else if ((lo & LAYOUT_VCENTER) == LAYOUT_TOP) {
+				y -= (height - origHeight);
+			}
+		}
+		DrawUtil.drawRgb(rgb, x , y, width, height, true, g );
+		return rgbImage;
 	}
 
 	/**
@@ -2787,18 +3168,14 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 			}
 		//#endif
 		
+		//#ifdef polish.css.view-type
+		if (this.view != null) {
+		}
+		//#endif
+		
 		Style myStyle = this.style;
 		if (myStyle != null) {
-			this.paddingLeft = myStyle.getPaddingLeft(availWidth);
-			this.paddingRight = myStyle.getPaddingRight(availWidth);
-			this.paddingTop = myStyle.getPaddingTop(availWidth);
-			this.paddingBottom = myStyle.getPaddingBottom(availWidth);
-			this.paddingVertical = myStyle.getPaddingVertical(availWidth);
-			this.paddingHorizontal = myStyle.getPaddingHorizontal(availWidth);
-			this.marginLeft = getMarginLeft(availWidth);
-			this.marginRight = getMarginRight(availWidth);
-			this.marginTop = getMarginTop(availWidth);
-			this.marginBottom = getMarginBottom(availWidth);
+			initLayout(myStyle, availWidth);
 		}
 		
 		int labelWidth = 0;
@@ -2815,43 +3192,59 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 			noneContentWidth += this.beforeWidth;
 		//#endif
 		//#ifdef polish.css.after
-			noneContentWidth += this.afterWidth;
+			noneContentWidth += getAfterWidthWithPadding();
 		//#endif
-		/*
-		if (noneContentWidth >= firstLineWidth) {
-			System.out.println("INVALID NONE CONTENT WIDTH=" + noneContentWidth);
-		}
-		*/
-		int firstLineContentWidth;
-		int availableContentWidth;
+		
+		int firstLineContentWidth = firstLineWidth - noneContentWidth;
+		int availableContentWidth = availWidth - noneContentWidth;
+		
 		//#ifdef polish.css.max-width
-			int firstLineAdjustedWidth = firstLineWidth;
-			int lineAdjustedWidth = availWidth;
 			if (this.maximumWidth != null ) {
-				if (firstLineAdjustedWidth > this.maximumWidth.getValue(firstLineWidth) ) {
-					firstLineAdjustedWidth = this.maximumWidth.getValue(firstLineWidth);
-				} 
-				if (lineAdjustedWidth > this.maximumWidth.getValue(firstLineWidth) ) {
-					lineAdjustedWidth = this.maximumWidth.getValue(firstLineWidth);
+				int maxWidth = this.maximumWidth.getValue(availWidth);
+				if(firstLineContentWidth > maxWidth) {
+					firstLineContentWidth = maxWidth;
+				}
+				if(availableContentWidth > maxWidth) {
+					availableContentWidth = maxWidth;
 				}
 			}
-			firstLineContentWidth = firstLineAdjustedWidth - noneContentWidth;
-			availableContentWidth = lineAdjustedWidth - noneContentWidth;
-		//#else
-			firstLineContentWidth = firstLineWidth - noneContentWidth;
-			availableContentWidth = availWidth - noneContentWidth;
 		//#endif
-		
-		this.contentX = this.marginLeft + getBorderWidthLeft() + this.paddingLeft;
-		this.contentY = this.marginTop + getBorderWidthTop() + this.paddingTop; 
-		
-		//#if polish.css.inline-label
-			if (this.isInlineLabel && labelWidth < (90 * availWidth)/100) {
-				firstLineContentWidth -= labelWidth;
-				availableContentWidth -= labelWidth;
+			
+		//#ifdef polish.css.width
+			int targetWidth = 0;
+			if (this.cssWidth != null) {
+				availableContentWidth = this.cssWidth.getValue(availWidth);
+				firstLineContentWidth = availableContentWidth;
+				targetWidth = availableContentWidth;
 			}
 		//#endif
 		
+		//#ifdef polish.css.max-item-width
+			if (this.maximumItemWidth != null && this.isLayoutExpand) {
+				int maxWidth = this.maximumItemWidth.getValue(availWidth);
+				if (availableContentWidth + noneContentWidth > maxWidth ) {
+					availableContentWidth = maxWidth - noneContentWidth;
+					if (firstLineContentWidth > availableContentWidth) {
+						firstLineContentWidth = availableContentWidth;
+					}
+				}
+			}
+		//#endif
+
+		this.contentX = this.marginLeft + getBorderWidthLeft() + this.paddingLeft;
+		int noneContentHeight = this.marginTop + getBorderWidthTop() + this.paddingTop;
+		this.contentY = noneContentHeight; 
+		noneContentHeight += this.paddingBottom + getBorderWidthBottom() + this.marginBottom;
+			
+		//#ifdef polish.css.height
+			int targetHeight = 0;
+			if(this.cssHeight != null) {
+				// according to css specs the base for the height calculation is the available width
+				availHeight = this.cssHeight.getValue(availWidth);
+				targetHeight = availHeight;
+			}
+		//#endif
+			
 		// initialise content by subclass:
 		//#if polish.css.content-visible
 			if (!this.isContentVisible) {
@@ -2859,7 +3252,15 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 				this.contentHeight = 0;
 			} else {
 		//#endif
-			availHeight -= this.marginTop + getBorderWidthTop() + this.paddingTop + this.paddingBottom + getBorderWidthBottom() + this.marginBottom; 
+			availHeight -= noneContentHeight;
+			this.availContentWidth = availableContentWidth;
+			this.availContentHeight = availHeight;
+			//#if polish.css.inline-label
+				if (this.isInlineLabel && labelWidth < (90 * availWidth)/100) {
+					firstLineContentWidth -= labelWidth;
+					availableContentWidth -= labelWidth;
+				}
+			//#endif
 			//#ifdef polish.css.view-type
 				if (this.view != null) {
 					this.contentWidth = this.view.contentWidth;
@@ -2870,11 +3271,20 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 			//#ifdef polish.css.view-type
 				}
 			//#endif
+			//#if polish.css.inline-label
+				if (this.isInlineLabel && labelWidth < (90 * availWidth)/100) {
+					availableContentWidth += labelWidth;
+				}
+			//#endif
+			
 		//#if polish.css.content-visible
 			}
 		//#endif
-		
-		if (this.contentWidth == 0 && this.contentHeight == 0) {
+			
+		int cWidth = this.contentWidth;
+		int cHeight = this.contentHeight;
+
+		if (cWidth == 0 && cHeight == 0) {
 			this.itemWidth = labelWidth;
 			this.itemHeight = labelHeight;
 			this.backgroundHeight = 0;
@@ -2882,37 +3292,90 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 			setInitialized(true);
 			return;
 		}
+		if (cWidth > availableContentWidth) {
+			cWidth = availableContentWidth;
+		}
 		
-		this.itemWidth = noneContentWidth + this.contentWidth;
+		//#ifdef polish.css.width
+			if(this.cssWidth != null) {
+				setContentWidth( targetWidth );
+				cWidth = this.contentWidth;
+			}
+		//#endif
+			
 		//#ifdef polish.css.min-width
 			if (this.minimumWidth != null) {
-				if (this.itemWidth < this.minimumWidth.getValue(availWidth) ) {
-					int diff = this.minimumWidth.getValue(availWidth) - this.itemWidth;
-					this.itemWidth += diff;
-					setContentWidth( this.contentWidth + diff );
+				int minWidth = this.minimumWidth.getValue(availWidth);
+				if (cWidth < minWidth ) {
+					setContentWidth( minWidth );
+					cWidth = this.contentWidth;
 				}
 			}
 		//#endif
 		//#ifdef polish.css.max-width
-			if (this.maximumWidth != null && this.itemWidth > this.maximumWidth.getValue(availWidth) ) {
-				int diff = this.maximumWidth.getValue(availWidth) - this.itemWidth;
-				this.itemWidth += diff;
-				setContentWidth( this.contentWidth + diff );
+			if (this.maximumWidth != null) {
+				int maxWidth = this.maximumWidth.getValue(availWidth);
+				if (cWidth > maxWidth ) {
+					setContentWidth( maxWidth );
+					cWidth = this.contentWidth;
+				}
 			}
 		//#endif
-		int cHeight = this.contentHeight;
+			
+		this.itemWidth = noneContentWidth + cWidth;
+		
+		//#ifdef polish.css.min-item-width
+			if (this.minimumItemWidth != null) {
+				if (this.itemWidth < this.minimumItemWidth.getValue(availWidth) ) {
+					int minWidth = this.minimumItemWidth.getValue(availWidth);
+					if (minWidth > availWidth) {
+						minWidth = availWidth;
+					}
+					int diff = minWidth - this.itemWidth;
+					this.itemWidth += diff;
+					setContentWidth( this.contentWidth + diff );
+					cWidth = this.contentWidth;
+				}
+			}
+		//#endif
+		//#ifdef polish.css.max-item-width
+			if (this.maximumItemWidth != null) {
+				int maxWidth = this.maximumItemWidth.getValue(availWidth);
+				if (this.itemWidth > maxWidth ) {
+					int diff = maxWidth - this.itemWidth;
+					this.itemWidth += diff;
+					setContentWidth( this.contentWidth + diff );
+					cWidth = this.contentWidth;
+				}
+			}
+		//#endif
+		
 		//#ifdef polish.css.before
-			if (this.contentHeight < this.beforeHeight) {
+			if (cHeight < this.beforeHeight) {
 				cHeight = this.beforeHeight;
 			}
 		//#endif
 		//#ifdef polish.css.after
-			if (this.contentHeight < this.afterHeight) {
+			if (cHeight < this.afterHeight) {
 				cHeight = this.afterHeight;
 			}
 		//#endif
-		int noneContentHeight = this.marginTop + getBorderWidthTop() + this.paddingTop 
-			  + this.paddingBottom + getBorderWidthBottom() + this.marginBottom;
+		if ( this.isLayoutExpand ) {
+			if (cWidth < availableContentWidth) {
+				if (
+					//#if polish.css.max-width
+						this.maximumWidth == null && 
+					//#endif
+					this.itemWidth + labelWidth <= availWidth && (this.label == null || !(this.label.isLayoutNewlineAfter() || isLayoutNewlineBefore()))) 
+				{
+					this.itemWidth += availableContentWidth - cWidth - labelWidth;
+				} else {
+					this.itemWidth += availableContentWidth - cWidth;
+				}
+			}
+		} else if (this.itemWidth > availWidth) {
+			this.itemWidth = availWidth;
+		}
 		if (this.itemWidth + labelWidth <= availWidth) {
 			// label and content fit on one row:
 			this.useSingleRow = true;
@@ -2923,51 +3386,71 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 					this.contentY += labelHeight;
 				}
 			}
-			if (this.useSingleRow) {
+			if (this.useSingleRow && labelWidth > 0) {
 				this.itemWidth += labelWidth;
 				this.contentX += labelWidth;
-			}
-			if ( cHeight + noneContentHeight < labelHeight ) {
-				cHeight = labelHeight - noneContentHeight;
+				if ( cHeight + noneContentHeight < labelHeight ) {
+					cHeight = labelHeight - noneContentHeight;
+				}
 			}
 		} else {
 			this.useSingleRow = false;
 			cHeight += labelHeight;
 			this.contentY += labelHeight;
 		}
-		if (labelWidth > this.itemWidth) {
-			this.itemWidth = labelWidth;
-		}
-		if ( this.isLayoutExpand ) {
-			this.itemWidth = availWidth;
-			//#ifdef polish.css.max-width
-				if (this.maximumWidth != null && availWidth > this.maximumWidth.getValue(firstLineWidth) ) {
-					this.itemWidth = this.maximumWidth.getValue(firstLineWidth);
-				}
-			//#endif
-		} else if (this.itemWidth > availWidth) {
-			this.itemWidth = availWidth;
-		}
-		if (this.minimumHeight != null && cHeight + noneContentHeight < this.minimumHeight.getValue(availWidth)) {
-			cHeight = this.minimumHeight.getValue(availWidth) - noneContentHeight;
-		}
-		//#if polish.css.max-height
-			if (this.maximumHeight != null && cHeight + noneContentHeight > this.maximumHeight.getValue(availWidth)) {
-				cHeight = this.maximumHeight.getValue(availWidth) - noneContentHeight;
+		
+		int originalContentHeight = cHeight;
+		//#ifdef polish.css.height
+			if(this.cssHeight != null) {
+				setContentHeight( targetHeight );
+				cHeight = this.contentHeight;
 			}
 		//#endif
-		if (cHeight > this.contentHeight) {
+			
+		//#ifdef polish.css.min-height
+			if (this.minimumHeight != null) {
+				int minHeight = this.minimumHeight.getValue(availWidth);
+				if (cHeight < minHeight ) {
+					setContentHeight( minHeight );
+					cHeight = this.contentHeight;
+				}
+			}
+		//#endif
+		//#ifdef polish.css.max-height
+			if (this.maximumHeight != null) {
+				int maxHeight = this.maximumHeight.getValue(availWidth);
+				if (cHeight > maxHeight ) {
+					setContentHeight( maxHeight );
+					cHeight = this.contentHeight;
+				}
+			}
+		//#endif
+		
+		//#if polish.css.min-item-height
+			if (this.minimumItemHeight != null && cHeight + noneContentHeight < this.minimumItemHeight.getValue(availWidth)) {
+				cHeight = this.minimumItemHeight.getValue(availWidth) - noneContentHeight;
+			}
+		//#endif
+			
+		//#if polish.css.max-item-height
+			if (this.maximumItemHeight != null && cHeight + noneContentHeight > this.maximumItemHeight.getValue(availWidth)) {
+				cHeight = this.maximumItemHeight.getValue(availWidth) - noneContentHeight;
+			}
+		//#endif
+			
+		if (cHeight > originalContentHeight) {
 			int ch = cHeight;
 			if (!this.useSingleRow) {
 				ch -= labelHeight;
 			}
 			if (isLayoutVerticalCenter()) {
-				this.contentY += ( (ch - this.contentHeight) >> 1);
+				this.contentY += ( (ch - originalContentHeight) >> 1);
 			} else if (isLayoutBottom()) {
-				this.contentY += ( ch - this.contentHeight );
+				this.contentY += ( ch - originalContentHeight );
 			}
 		}
 		this.itemHeight = cHeight + noneContentHeight;
+		
 		if (this.useSingleRow) {
 			this.backgroundWidth = this.itemWidth - this.marginLeft - this.marginRight - labelWidth;
 			this.backgroundHeight = cHeight
@@ -2981,6 +3464,35 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 							  - this.marginTop
 							  - this.marginBottom
 							  - labelHeight;
+//			if (labelWidth > this.itemWidth) {
+//				int diff = labelWidth - this.itemWidth;
+//				if (isLayoutCenter()) {
+//					this.contentX += diff/2;
+//				} else if (isLayoutRight()) {
+//					this.contentX += diff;
+//				}
+//				this.itemWidth = labelWidth;
+//			}
+		}
+		if (labelWidth > 0 && availableContentWidth > this.contentWidth) {
+			//int diff = availableContentWidth - this.contentWidth;
+			int contX = this.contentX;
+			if (isLayoutCenter()) {
+				contX = (availWidth - this.contentWidth)/2;
+			} else if (isLayoutRight()) {
+				contX = (availWidth - this.contentWidth);
+			}
+			if (contX > this.contentX) {
+				this.contentX = contX;
+				this.itemWidth = availWidth;
+			}
+		}
+		if (labelWidth > 0 && this.useSingleRow && labelHeight < this.itemHeight) {
+			if (this.label.isLayoutVerticalCenter()) {
+				this.label.relativeY = (this.itemHeight - labelHeight) / 2;
+			} else if (this.label.isLayoutBottom()) {
+				this.label.relativeY = (this.itemHeight - labelHeight);
+			}
 		}
 		//#if polish.css.background-width
 			this.originalBackgroundWidth = this.backgroundWidth;
@@ -3014,64 +3526,63 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		System.out.println("Item.init(): contentWidth=" + this.contentWidth + ", itemWidth=" + this.itemWidth + ", backgroundWidth=" + this.backgroundWidth);
 	}
 	
-	
-	/**
-	 * Retrieves the margin in pixels for at the right.
-	 * Subclasses may override this (required for containers embedded in Screens)
-	 * @param availWidth the available width
-	 * @return the margin at the right in pixels
-	 */
-	protected int getMarginRight(int availWidth)
-	{
-		if (this.style != null) {
-			return this.style.getMarginRight( availWidth );
+	//#if polish.css.after
+	private int getAfterWidthWithPadding() {
+		int w = this.afterWidth;
+		if (w != 0) {
+			w += this.paddingHorizontal;
 		}
-		return 0;
+		return w;
 	}
-	
-	/**
-	 * Retrieves the margin in pixels for at the left.
-	 * Subclasses may override this (required for containers embedded in Screens)
-	 * @param availWidth the available width
-	 * @return the margin at the left in pixels
-	 */
-	protected int getMarginLeft(int availWidth)
+	//#endif
+
+	protected void initLayout(Style style, int availWidth) {
+		//#ifdef polish.css.view-type
+		if (this.view != null) {
+			this.view.initPadding(style, availWidth);
+		} else
+		//#endif
 	{
-		if (this.style != null) {
-			return this.style.getMarginLeft( availWidth );
+			initPadding(style, availWidth);
 		}
-		return 0;
+	
+		//#ifdef polish.css.view-type
+		if (this.view != null) {
+			this.view.initMargin(style, availWidth);
+		} else
+		//#endif
+	{
+			initMargin(style, availWidth);
+		}
 	}
 
 	/**
-	 * Retrieves the margin in pixels for at the top.
-	 * Subclasses may override this (required for containers embedded in Screens)
+	 * Initializes the margin of this item
+	 * Subclasses can override this (e.g. the container embedded in a screen)
+	 * @param style the style
 	 * @param availWidth the available width
-	 * @return the margin at the top in pixels
 	 */
-	protected int getMarginTop(int availWidth)
-	{
-		if (this.style != null) {
-			return this.style.getMarginTop( availWidth );
-		}
-		return 0;
+	protected void initMargin(Style style, int availWidth) {
+		this.marginLeft = style.getMarginLeft(availWidth);
+		this.marginRight = style.getMarginRight(availWidth);
+		this.marginTop = style.getMarginTop(availWidth);
+		this.marginBottom = style.getMarginBottom(availWidth);
 	}
 
 	/**
-	 * Retrieves the margin in pixels for at the bottom.
-	 * Subclasses may override this (required for containers embedded in Screens)
+	 * Initializes the padding of this item
+	 * Subclasses can override this (e.g. the container embedded in a screen)
+	 * @param style the style
 	 * @param availWidth the available width
-	 * @return the margin at the bottom in pixels
 	 */
-	protected int getMarginBottom(int availWidth)
-	{
-		if (this.style != null) {
-			return this.style.getMarginBottom( availWidth );
+	protected void initPadding(Style style, int availWidth) {
+		this.paddingLeft = style.getPaddingLeft(availWidth);
+		this.paddingRight = style.getPaddingRight(availWidth);
+		this.paddingTop = style.getPaddingTop(availWidth);
+		this.paddingBottom = style.getPaddingBottom(availWidth);
+		this.paddingVertical = style.getPaddingVertical(availWidth);
+		this.paddingHorizontal = style.getPaddingHorizontal(availWidth);
 		}
-		return 0;
-	}
-
-	
 
 	/**
 	 * Sets the content width of this item.
@@ -3080,6 +3591,12 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 */
 	protected void setContentWidth( int width ) {
 		this.contentWidth = width;
+		
+		//#ifdef polish.css.view-type
+			if (this.view != null) {
+				this.view.setContentWidth( width );
+			}
+		//#endif
 	}
 	
 	/**
@@ -3089,6 +3606,12 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 */
 	protected void setContentHeight( int height ) {
 		this.contentHeight = height;
+		
+		//#ifdef polish.css.view-type
+			if (this.view != null) {
+				this.view.setContentHeight( height );
+			}
+		//#endif
 	}
 	
 	//#ifdef polish.useDynamicStyles
@@ -3187,10 +3710,18 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	protected boolean handleKeyPressed( int keyCode, int gameAction ) {
 		//#debug
 		System.out.println("item " + this + ": handling keyPressed for keyCode=" + keyCode + ", gameAction=" + gameAction);
-		if ( this.appearanceMode != PLAIN && getScreen().isGameActionFire(keyCode, gameAction) )
+		Screen scr = getScreen();
+		if ( this.appearanceMode != PLAIN && null != scr && scr.isGameActionFire(keyCode, gameAction) )
 		{
 			return notifyItemPressedStart();
 		}
+		
+		//#ifdef polish.css.view-type
+			if(this.view != null) {
+				return this.view.handleKeyPressed(keyCode, gameAction);
+			}
+		//#endif
+		
 		return false;
 	}
 	
@@ -3207,7 +3738,15 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 * @see #handleKeyPressed(int, int)
 	 */
 	protected boolean handleKeyRepeated( int keyCode, int gameAction ) {
-		return handleKeyPressed(keyCode, gameAction);
+		boolean handled = handleKeyPressed(keyCode, gameAction);
+		
+		//#ifdef polish.css.view-type
+			if(!handled && this.view != null) {
+				handled = this.view.handleKeyPressed(keyCode, gameAction);
+			}
+		//#endif
+		
+		return handled;
 	}
 	
 	/**
@@ -3225,7 +3764,8 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	protected boolean handleKeyReleased( int keyCode, int gameAction ) {
 		//#debug
 		System.out.println("handleKeyReleased(" + keyCode + ", " + gameAction + ") for " + this + ", isPressed=" + this.isPressed );
-		if (this.appearanceMode != PLAIN && this.isPressed && getScreen().isGameActionFire(keyCode, gameAction) )
+		Screen scr = getScreen();
+		if (this.appearanceMode != PLAIN && this.isPressed && scr != null && scr.isGameActionFire(keyCode, gameAction) )
 		{
 			notifyItemPressedEnd();
 		}
@@ -3249,31 +3789,112 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 				}
 			}
 			if (deleteCommand != null) {
-				if (this.itemCommandListener == null) {
-					Screen scr = getScreen();
-					if (scr != null ) {
-						scr.callCommandListener(deleteCommand);
-					}
+				if (this.itemCommandListener != null) {
+				} else if (scr != null ) {
+					scr.callCommandListener(deleteCommand);
 				}				
 			}
 		}
+		
+		//#ifdef polish.css.view-type
+			if(this.view != null) {
+				return this.view.handleKeyReleased(keyCode, gameAction);
+			}
+		//#endif
 
 		return false;
 	}
 
+	/**
+	 * Is called when this item has been visited.
+	 */
+	public void notifyVisited() {
+		//#if polish.css.visited-style
+			if (this.style != null && !this.hasBeenVisited) {
+				if (this.isPressed) {
+					notifyItemPressedEnd();
+				}
+				Style visitedStyle = (Style) this.style.getObjectProperty("visited-style");
+				if (visitedStyle != null) {
+					this.hasBeenVisited = true;
+					//#debug
+					System.out.println("found visited style " + visitedStyle.name + " in " + this.style.name);
+					setStyle( visitedStyle );
+				} 
+				if (this.parent instanceof Container) {
+					Container cont = (Container) this.parent;
+					visitedStyle = (Style) cont.itemStyle.getObjectProperty("visited-style");
+					if (visitedStyle != null) {
+						//#debug
+						System.out.println("found visited style " + visitedStyle.name + " in " + cont.itemStyle.name);								
+						cont.itemStyle = visitedStyle;
+					}
+				}
+			}
+		//#endif
+		//#if tmp.handleEvents
+			EventManager.fireEvent( EventManager.EVENT_VISIT, this, null); 
+		//#endif
+
+	}
 	
+	/**
+	 * Is called when the visited state of this item should be reset.
+	 */
+	public void notifyUnvisited() {
+		//#if polish.css.visited-style
+			if (this.style != null && this.hasBeenVisited) {
+				if (this.isPressed) {
+					notifyItemPressedEnd();
+				}
+				this.hasBeenVisited = false;
+				Style[] styles = (Style[]) Arrays.toArray(StyleSheet.getStyles().elements(), new Style[ StyleSheet.getStyles().size()] );
+				Container cont = null;
+				if (this.parent instanceof Container) {
+					cont = (Container) this.parent;
+				}
+				boolean oneLeft = false;
+				for (int i = 0; i < styles.length; i++) {
+					Style aStyle = styles[i];
+					Style visitedStyle = (Style) aStyle.getObjectProperty("visited-style");
+					if (visitedStyle == this.style) {
+						setStyle( aStyle );
+						if (oneLeft) {
+							break;
+						} else {
+							oneLeft = true;
+						}
+					}
+					else if (cont != null && cont.itemStyle == visitedStyle) {
+						cont.itemStyle = aStyle;
+						if (!oneLeft) {
+							Style focStyle = (Style) aStyle.getObjectProperty("focused-style");
+							if (focStyle != null) {
+								setStyle( focStyle );
+							}
+						}
+						break;
+					}
+				}
+			}
+		//#endif	
+		//#if tmp.handleEvents
+			EventManager.fireEvent( EventManager.EVENT_UNVISIT, this, null); 
+		//#endif
+	}
+
 	/**
 	 * Is called when an item is pressed using the FIRE game action
 	 * 
 	 * @return true when the item requests a repaint after this action
 	 */
-	protected boolean notifyItemPressedStart() {
+	public boolean notifyItemPressedStart() {
 		//try { throw new RuntimeException(); } catch (Exception e) { e.printStackTrace(); }
 		if (this.isPressed) {
 			return false;
 		}
 		//#debug
-		System.out.println("notifyItemPressedStart");
+		System.out.println("notifyItemPressedStart for " + this);
 		this.isPressed = true;
 		boolean handled = false;
 		//#if polish.css.pressed-style
@@ -3285,20 +3906,36 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 			}
 		//#endif
 		//#if tmp.handleEvents
-			EventManager.fireEvent( EventManager.EVENT_PRESS, this, null); 
+			EventManager.fireEvent( EventManager.EVENT_PRESS, this, null);
 		//#endif
 		return handled;
 	}
 	
 	/**
+	 * Determines whether this item is currently pressed.
+	 * @return true when this item is pressed
+	 */
+	public boolean isPressed() {
+		return this.isPressed;
+	}
+	
+	/**
+	 * Determines whether this item is currently focused.
+	 * @return true when this item is focused
+	 */
+	public boolean isFocused() {
+		return this.isFocused;
+	}
+	
+	/**
 	 * Is called when an item is pressed
 	 */
-	protected void notifyItemPressedEnd() {
+	public void notifyItemPressedEnd() {
 		if (!this.isPressed) {
 			return;
 		}
 		//#debug
-		System.out.println("notifyItemPressedEnd for " + this);
+		System.out.println("notifyItemPressedEnd for " + this + ", normalStyle=" + (this.normalStyle == null ? "<none>" : this.normalStyle.name ) + ", current=" + (this.style == null ? "<none>" : this.style.name) );
 		this.isPressed = false;
 		//#if polish.css.pressed-style
 			Style previousStyle = this.normalStyle;
@@ -3318,11 +3955,14 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		//#if tmp.handleEvents
 			EventManager.fireEvent( EventManager.EVENT_UNPRESS, this, null); 
 		//#endif
+		if (this.parent != null) {
+			this.parent.notifyItemPressedEnd();
+		}
 	}
 
 
 	/**
-	 * Determines whether the given relative x/y position is inside of this item's content area.
+	 * Determines whether the given relative x/y position is inside of this item's (visible) content area.
 	 * Subclasses which extend their area over the declared/official content area, which is determined
 	 * in the initContent() method (like popup items), might want to override this method or possibly the getContentX(), getContentY() methods.
 	 * It is assumed that the item has been initialized before.
@@ -3334,19 +3974,49 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 */
 	public boolean isInContentArea( int relX, int relY ) {
 		int contTop = this.contentY;
-		if ( relY < contTop || relY > contTop + this.contentHeight ) {
+		int contLeft = this.contentX;
+		int contW = this.contentWidth;
+		if (contW > this.availContentWidth) {
+			contW = this.availContentWidth;
+		}
+		if ( relY < contTop || relX < contLeft || relY > contTop + this.contentHeight || relX > contLeft + contW) {
 			//#debug
 			System.out.println("isInContentArea(" + relX + "," + relY + ") = false: contentY=" + this.contentY + ", contentY + contentHeight=" + (contTop + this.contentHeight) + " (" + this +")");
-			return false;
-		}
-		int contLeft = this.contentX;
-		if (relX < contLeft || relX > contLeft + this.contentWidth) {
 			//#debug
-			System.out.println("isInContentArea(" + relX + "," + relY + ") = false: contentX=" + this.contentX + ", contentX + contentWidth=" + (contLeft + this.contentWidth) + " (" + this +")");
+			System.out.println("isInContentArea(" + relX + "," + relY + ") = false: contentX=" + this.contentX + ", contentX + contentWidth=" + (contLeft + contW) + " (" + this +")");
 			return false;
 		}
 		//#debug
-		System.out.println("isInContentArea(" + relX + "," + relY + ") = true: contentX=" + this.contentX + ", contentX + contentWidth=" + (contLeft + this.contentWidth) + ", contentY=" + this.contentY + ", contentY + contentHeight=" + (contTop + this.contentHeight) + " (" + this +")");
+		System.out.println("isInContentArea(" + relX + "," + relY + ") = true: contentX=" + this.contentX + ", contentX + contentWidth=" + (contLeft + contW) + ", contentY=" + this.contentY + ", contentY + contentHeight=" + (contTop + this.contentHeight) + " (" + this +")");
+		return true;
+	}
+	
+	/**
+	 * Determines whether the given relative x/y position is inside of this item's content area.
+	 * Subclasses which extend their area over the declared/official content area, which is determined
+	 * in the initContent() method (like popup items), might want to override this method or possibly the getContentX(), getContentY() methods.
+	 * It is assumed that the item has been initialized before.
+	 * 
+	 * @param relX the x position relative to this item's left position
+	 * @param relY the y position relative to this item's top position
+	 * @return true when the relX/relY coordinate is within this item's content + padding area.
+	 * @see #initContent(int, int, int)
+	 */
+	public boolean isInContentWithPaddingArea( int relX, int relY ) {
+		int contTop = this.contentY - this.paddingTop;
+		if ( relY < contTop || relY > contTop + this.contentHeight + this.paddingTop + this.paddingBottom ) {
+			//#debug
+			System.out.println("isInContentWithPaddingArea(" + relX + "," + relY + ") = false: contentY=" + this.contentY + ", contentY + contentHeight=" + (contTop + this.contentHeight) + " (" + this +")");
+			return false;
+		}
+		int contLeft = this.contentX - this.paddingLeft;
+		if (relX < contLeft || relX > contLeft + this.contentWidth + this.paddingLeft + this.paddingRight) {
+			//#debug
+			System.out.println("isInContentWithPaddingArea(" + relX + "," + relY + ") = false: contentX=" + this.contentX + ", contentX + contentWidth=" + (contLeft + this.contentWidth) + " (" + this +")");
+			return false;
+		}
+		//#debug
+		System.out.println("isInContentWithPaddingArea(" + relX + "," + relY + ") = true: contentX=" + this.contentX + ", contentX + contentWidth=" + (contLeft + this.contentWidth) + ", contentY=" + this.contentY + ", contentY + contentHeight=" + (contTop + this.contentHeight) + " (" + this +")");
 		return true;
 	}
 
@@ -3362,7 +4032,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 * @see #initContent(int, int, int)
 	 */
 	public boolean isInItemArea( int relX, int relY ) {
-		if (relY < 0 || relY > this.itemHeight || relX < 0 || relX > Math.max(this.itemWidth, this.contentX + this.contentWidth)) {
+		if (relY < 0 || relY > this.itemHeight || relX < 0 || relX > this.itemWidth) { //Math.max(this.itemWidth, this.contentX + this.contentWidth)) {
 			//#debug
 			System.out.println("isInItemArea(" + relX + "," + relY + ") = false: itemWidth=" + this.itemWidth + ", itemHeight=" + this.itemHeight + " (" + this + ")");
 			return false;
@@ -3396,7 +4066,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 * The default method discards this event when relX/relY is outside of the item's area.
 	 * When the event took place inside of the content area, the pointer-event is translated into an artificial
 	 * FIRE game-action keyPressed event, which is subsequently handled
-	 * bu the handleKeyPressed(-1, Canvas.FIRE) method.
+	 * by the handleKeyPressed(-1, Canvas.FIRE) method.
 	 * This method needs should be overwritten only when the "polish.hasPointerEvents"
 	 * preprocessing symbol is defined: "//#ifdef polish.hasPointerEvents".
 	 *    
@@ -3411,10 +4081,45 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 */
 	protected boolean handlePointerPressed( int relX, int relY ) {
 		//#ifdef polish.hasPointerEvents
-			if ( isInItemArea(relX, relY)) {
+			//#if polish.Item.ShowCommandsOnHold
+				if (this.isShowCommands) {
+					Container cmdCont = this.commandsContainer;
+					if (cmdCont != null && cmdCont.handlePointerPressed(relX - cmdCont.relativeX, relY - cmdCont.relativeY)) {
+						return true;
+					}
+				}
+			//#endif
+			//#ifdef polish.css.view-type
+				if (this.view != null && this.view.handlePointerPressed(relX, relY)) {
+					return true;
+				}
+			//#endif
+			if ( isInItemArea(relX, relY) ) {
+				//#if tmp.supportTouchGestures
+					this.gestureStartTime = System.currentTimeMillis();
+					this.gestureStartX = relX;
+					this.gestureStartY = relY;
+				//#endif
 				return handleKeyPressed( 0, Canvas.FIRE );
 			}
+			//#if polish.Item.ShowCommandsOnHold
+				else {
+					this.gestureStartTime = 0;
+					if (this.isShowCommands) {
+						this.isShowCommands = false;
+						return true;
+					}
+				}
+			//#endif			
 		//#endif
+		
+			
+		//#ifdef polish.css.view-type
+			if(this.view != null) {
+				return this.view.handlePointerPressed(relX, relY);
+			}
+		//#endif
+		
 		return false;
 	}
 	
@@ -3440,13 +4145,54 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		//#ifdef polish.hasPointerEvents
 			//#debug
 			System.out.println("handlePointerReleased " + relX + ", " + relY + " for item " + this + " isPressed=" + this.isPressed);
-			if ( isInItemArea(relX, relY)) {
+			//#if tmp.supportTouchGestures
+				if (this.isIgnorePointerReleaseForGesture) {
+					this.isIgnorePointerReleaseForGesture = false;
+					return true;
+				}
+			//#endif
+			//#if polish.Item.ShowCommandsOnHold
+				if (this.isShowCommands) {
+					this.commandsContainer.handlePointerReleased(relX - this.commandsContainer.relativeX, relY - this.commandsContainer.relativeY);
+					this.isShowCommands = false;
+					notifyItemPressedEnd();
+					return true;
+				}
+			//#endif
+			//#if tmp.supportTouchGestures
+				int verticalDiff = Math.abs( relY - this.gestureStartY );
+				if (verticalDiff < 20) {
+					int horizontalDiff = relX - this.gestureStartX;
+					if (horizontalDiff > this.itemWidth/2) {
+						if (handleGesture(GestureEvent.GESTURE_SWIPE_RIGHT, relX, relY)) {
+							return true;
+						}
+					} else if (horizontalDiff < -this.itemWidth/2) {
+						if (handleGesture(GestureEvent.GESTURE_SWIPE_LEFT, relX, relY)) {
+							return true;
+						}						
+					}
+				}
+			//#endif
+			//#ifdef polish.css.view-type
+				if (this.view != null && this.view.handlePointerReleased(relX, relY)) {
+					return true;
+				}
+			//#endif
+			if ( isInItemArea(relX, relY) ) {
 				return handleKeyReleased( 0, Canvas.FIRE );
 			} else if (this.isPressed) {
 				notifyItemPressedEnd();
 				return true;
 			}
 		//#endif
+		
+		//#ifdef polish.css.view-type
+			if(this.view != null) {
+				return this.view.handlePointerReleased(relX, relY);
+			}
+		//#endif
+			
 		return false;
 	}
 	
@@ -3463,12 +4209,142 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	protected boolean handlePointerDragged(int relX, int relY)
 	{
 		//#ifdef polish.hasPointerEvents
+			//#if tmp.supportTouchGestures
+				if (this.gestureStartTime != 0 && Math.abs( relX - this.gestureStartX) > 30 || Math.abs( relY - this.gestureStartY) > 30) {
+					// abort (hold) gesture after moving out for too much:
+					this.gestureStartTime = 0;
+				}
+			//#endif
+			//#if polish.Item.ShowCommandsOnHold
+				if (this.isShowCommands && this.commandsContainer.handlePointerDragged(relX - this.commandsContainer.relativeX, relY - this.commandsContainer.relativeY)) {
+					return true;
+				}
+			//#endif
 			//#ifdef polish.css.view-type
 				if (this.view != null && this.view.handlePointerDragged(relX, relY)) {
 					return true;
 				}
 			//#endif
 		//#endif
+		
+		//#ifdef polish.css.view-type
+			if(this.view != null) {
+				return this.view.handlePointerDragged(relX, relY);
+			}
+		//#endif
+		
+		return false;
+	}
+	
+	/**
+	 * Handles a touch down/press event. 
+	 * This is similar to a pointerPressed event, however it is only available on devices with screens that differentiate
+	 * between press and touch events (read: BlackBerry Storm).
+	 * 
+	 * @param x the horizontal pixel position of the touch event relative to this item's left position
+	 * @param y  the vertical pixel position of the touch event relative to this item's top position
+	 * @return true when the event was handled
+	 */
+	public boolean handlePointerTouchDown( int x, int y ) {
+		//#if polish.hasTouchEvents && polish.css.view-type
+			if (this.view != null && this.view.handlePointerTouchDown(x, y)) {
+				return true;
+			}
+		//#endif
+		return false;
+	}
+	
+
+	/**
+	 * Handles a touch up/release event. 
+	 * This is similar to a pointerReleased event, however it is only available on devices with screens that differentiate
+	 * between press and touch events (read: BlackBerry Storm).
+	 * 
+	 * @param x the horizontal pixel position of the touch event relative to this item's left position
+	 * @param y  the vertical pixel position of the touch event relative to this item's top position
+	 * @return true when the event was handled
+	 */
+	public boolean handlePointerTouchUp( int x, int y ) {
+		//#if polish.hasTouchEvents && polish.css.view-type
+			if (this.view != null && this.view.handlePointerTouchUp(x, y)) {
+				return true;
+			}
+		//#endif
+		return false;
+	}
+	
+	/**
+	 * Handles a touch gestures.
+	 * Note that touch gesture support needs to be activated using the preprocessing variable polish.supportGestures.
+	 * The default implementation calls handleGestureHold() in case GESTURE_HOLD is specified.
+	 * @param gesture the gesture identifier, e.g. GESTURE_HOLD
+	 * @return true when this gesture was handled
+	 * @see #handleGestureHold(int, int)
+	 */
+	protected boolean handleGesture(int gesture, int x, int y) {
+		boolean handled = false;
+		switch (gesture) {
+		case GestureEvent.GESTURE_HOLD:
+			handled = handleGestureHold(x, y);
+			break;
+		case GestureEvent.GESTURE_SWIPE_LEFT:
+			handled = handleGestureSwipeLeft(x, y);
+			break;
+		case GestureEvent.GESTURE_SWIPE_RIGHT:
+			handled = handleGestureSwipeRight(x, y);
+		}
+		if (!handled) {
+			GestureEvent event = GestureEvent.getInstance();
+			event.reset( gesture, x, y );
+			UiEventListener listener = getUiEventListener();
+			if (listener != null) {
+				listener.handleUiEvent(event, this);
+				handled = event.isHandled();
+			}
+			//#if tmp.handleEvents
+				if (!handled) {
+					EventManager.fireEvent(event.getGestureName(), this, event );
+					handled = event.isHandled();
+				}
+			//#endif			
+		}
+		return handled;
+	}
+
+	/**
+	 * Handles the hold touch gestures.
+	 * Note that touch gesture support needs to be activated using the preprocessing variable polish.supportGestures
+	 * The default implementation shows the commands of this item, but only when the preprocessing variable
+	 * polish.Item.ShowCommandsOnHold is set to true.
+	 * 
+	 * @return true when this gesture was handled
+	 */
+	protected boolean handleGestureHold(int x, int y) {
+		//#if polish.Item.ShowCommandsOnHold
+			if (this.commands != null && !this.isShowCommands && this.commands.size() > 1) {
+				this.isShowCommands = true;
+				if (this.commandsContainer != null) {
+					this.commandsContainer.focusChild(-1);
+				}
+				return true;
+			}
+		//#endif
+		return false;
+	}
+	
+	/**
+	 * Handles the swipe left gesture.
+	 * @return true when the gesture was handled
+	 */
+	protected boolean handleGestureSwipeLeft(int x, int y) {
+		return false;
+	}
+	
+	/**
+	 * Handles the swipe right gesture.
+	 * @return true when the gesture was handled
+	 */
+	protected boolean handleGestureSwipeRight(int x, int y) {
 		return false;
 	}
 
@@ -3478,12 +4354,42 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 * @param repaintRegion the clipping rectangle to which the repaint area should be added
 	 */
 	public void addRepaintArea( ClippingRegion repaintRegion ) {
+		int absX = getAbsoluteX();
+		int absY = getAbsoluteY();
+		int w = this.itemWidth;
+		int h = this.itemHeight + 1;
+		//#if polish.css.filter
+			RgbImage img = this.filterProcessedRgbImage;
+			if (img != null && (img.getHeight() > h || img.getWidth() > w)) {
+				int lo = this.layout;
+				int wFilter = img.getWidth();
+				int hFilter = img.getHeight();
+				int horDiff = wFilter - w;
+				int verDiff = hFilter - h;
+				if ((lo & LAYOUT_CENTER) == LAYOUT_CENTER) {
+					absX -= horDiff / 2;
+					w += horDiff;
+				} else if ((lo & LAYOUT_CENTER) == LAYOUT_RIGHT) {
+					absX -= horDiff;
+				} else {
+					w += horDiff;
+				}
+				if ((lo & LAYOUT_VCENTER) == LAYOUT_VCENTER) {
+					absY -= verDiff / 2;
+					h += verDiff;
+				} else if ((lo & LAYOUT_VCENTER) == LAYOUT_TOP) {
+					absY -= verDiff; 
+				} else {
+					h += verDiff;
+				}
+			}
+		//#endif
 		//System.out.println("adding repaint area x=" + getAbsoluteX() + ", width=" + this.itemWidth + ", y=" + getAbsoluteY() + " for " + this);
 		repaintRegion.addRegion(
-				getAbsoluteX(),
-				getAbsoluteY(),
-				this.itemWidth, 
-				this.itemHeight + 1 );
+				absX,
+				absY,
+				w, 
+				h );
 	}
 	
 	/**
@@ -3548,7 +4454,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 			//#endif
 			if (addAbsolute) {
 				//System.out.println("adding absolute repaint: bgX=" + getBackgroundX() + ", bgY=" + getBackgroundY() + ", itemHeight-bgHeight=" + (this.itemHeight - this.backgroundHeight) + ", itemWidth-bgWidth=" + (this.itemWidth - this.backgroundWidth));
-				int padding = this.completeBackgroundPadding;
+				int padding = this.completeBackgroundPadding.getValue(this.availContentWidth);
 				repaintRegion.addRegion( 
 					getAbsoluteX() + x - 1 - padding, 
 					getAbsoluteY() + y - 1 - padding,
@@ -3579,10 +4485,22 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 * @see #addRelativeToContentRegion(ClippingRegion, int, int, int, int)
 	 */
 	public void animate( long currentTime, ClippingRegion repaintRegion) {
+
 		if (this.label != null) {
 			this.label.animate( currentTime, repaintRegion );
 		}
-
+		if (this.background != null) {
+		}
+		if (this.border != null) {
+		}
+		//#if polish.css.complete-background
+			if (this.completeBackground != null) {
+			}
+		//#endif
+		//#if polish.css.complete-border
+			if (this.completeBorder != null) {
+			}
+		//#endif
 		if (animate()) {
 			repaintRegion.addRegion( getAbsoluteX(), getAbsoluteY(), this.itemWidth, this.itemHeight );
 		}
@@ -3591,9 +4509,28 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 				this.view.animate(currentTime, repaintRegion);
 			}
 		//#endif
+		//#if tmp.supportTouchGestures
+			if (this.isPressed && (this.gestureStartTime != 0) && (currentTime - this.gestureStartTime > 500)) {
+				boolean handled = handleGesture( GestureEvent.GESTURE_HOLD, this.gestureStartX, this.gestureStartY );
+				if (handled) {
+					this.isIgnorePointerReleaseForGesture = true;
+					notifyItemPressedEnd();
+					this.gestureStartTime = 0;					
+					Screen scr = getScreen();
+					repaintRegion.addRegion( scr.contentX, scr.contentY, scr.contentWidth, scr.contentHeight );
+				} else {
+					this.gestureStartTime = 0;
+				}
+			}
+		//#endif
+		//#if polish.Item.ShowCommandsOnHold
+			if (this.isShowCommands && this.commandsContainer != null) {
+				this.commandsContainer.animate(currentTime, repaintRegion);
+			}
+		//#endif
 	}
 	
-	
+
 	/**
 	 * Animates this item.
 	 * Subclasses can override this method to create animations.
@@ -3614,8 +4551,15 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 * @return the style used for focussing this item.
 	 */
 	public Style getFocusedStyle() {
-		if (!this.isStyleInitialised && this.style != null) {
-			setStyle( this.style );
+		if (!this.isStyleInitialised) {
+			if (this.style != null) {
+				setStyle( this.style );
+			}
+			//#ifdef polish.useDynamicStyles
+			else {
+				initStyle();
+			}
+			//#endif
 		}
 		Style focStyle;
 		if (this.focusedStyle != null) {
@@ -3650,31 +4594,43 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	protected Style focus( Style newStyle, int direction ) {
 		//#debug
 		System.out.println("focus " + this);
+		
 		Style oldStyle = this.style;
-		if (!this.isStyleInitialised && oldStyle != null) {
-			setStyle( oldStyle );
+		
+		if(!this.isFocused) {
+			if (!this.isStyleInitialised && oldStyle != null) {
+				setStyle( oldStyle );
+			}
+			if (newStyle == null) {
+				newStyle = getFocusedStyle();
+			}
+			//#if polish.css.view-type
+				this.preserveViewType = true;
+			//#endif
+				
+			setStyle( newStyle );
+			
+			//#if polish.css.pressed-style
+				if (this.isPressed) {
+					this.normalStyle = newStyle;
+				}
+			//#endif
+			//#if polish.css.view-type
+				this.preserveViewType = false;
+			//#endif
+			this.isFocused = true;
+			// now set any commands of this item:
+			if (this.commands != null) {
+				showCommands();
+			}
+			if (oldStyle == null) {
+				oldStyle = StyleSheet.defaultStyle;
+			}
+			//#if tmp.handleEvents
+				EventManager.fireEvent( EventManager.EVENT_FOCUS, this, new Integer(direction));
+			//#endif
 		}
-		if (newStyle == null) {
-			newStyle = getFocusedStyle();
-		}
-		//#if polish.css.view-type
-			this.preserveViewType = true;
-		//#endif
-		setStyle( newStyle );
-		//#if polish.css.view-type
-			this.preserveViewType = false;
-		//#endif
-		this.isFocused = true;
-		// now set any commands of this item:
-		if (this.commands != null) {
-			showCommands();
-		}
-		if (oldStyle == null) {
-			oldStyle = StyleSheet.defaultStyle;
-		}
-		//#if tmp.handleEvents
-			EventManager.fireEvent( EventManager.EVENT_FOCUS, this, new Integer(direction));
-		//#endif
+		
 		return oldStyle;
 	}
 	
@@ -3687,7 +4643,6 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		addCommands( COMMANDS );
 		Screen scr = getScreen();
 		if (scr != null) {
-			// Nothing to do here.
 		}			
 	}
 	
@@ -3733,8 +4688,18 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 * @return true when the command has been handled by this item
 	 */
 	protected boolean handleCommand( Command cmd ) {
-		if (this.commands == null || this.itemCommandListener == null || !this.commands.contains(cmd) ) {
-			return false;
+		if (cmd == this.defaultCommand) {
+			notifyVisited();
+		}
+		ItemCommandListener listener = this.itemCommandListener;
+		if (this.commands == null || listener == null || !this.commands.contains(cmd) ) {
+			//#if polish.Item.suppressDefaultCommand
+			if (listener == null || cmd != this.defaultCommand) {
+			//#endif
+				return false;
+			//#if polish.Item.suppressDefaultCommand
+			}
+			//#endif
 		}
 		try {
 			return true;
@@ -3784,9 +4749,11 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		if (this.commands != null) {
 			Screen scr = getScreen();
 			if (scr != null) {
-				// Nothing to do here.
 			}
 		}
+		//#if polish.Item.ShowCommandsOnHold
+			this.isShowCommands = false;
+		//#endif
 		//#if tmp.handleEvents
 			EventManager.fireEvent( EventManager.EVENT_DEFOCUS, this, null); 
 		//#endif
@@ -3832,7 +4799,6 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		//#endif
 		//#if polish.blackberry
 			if (this.isFocused  && this._bbField != null) {
-				// Nothing to do here.
 			}
 		//#endif
 		//#if tmp.handleEvents
@@ -3925,6 +4891,32 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 					filter.releaseResources();
 				}
 			}
+		//#endif
+	}
+	
+	/**
+	 * Destroy the item by removing all references to parent, screen, listeners etc.
+	 * and calling releaseResources()
+	 */
+	public void destroy() {
+		releaseResources();
+		
+		AnimationThread.removeAnimationItem(this);
+		
+		if(null != this.itemCommandListener)
+			this.itemCommandListener = null;
+		if(null != this.itemStateListener)
+			this.itemStateListener = null;
+		if(null != this.parent)
+			this.parent = null;
+		if(null != this.screen)
+			this.screen = null;
+		
+		//#ifdef polish.css.view-type
+		if (this.view != null) {
+			this.view.destroy();
+			this.view = null;
+		}
 		//#endif
 	}
 
@@ -4059,7 +5051,6 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		int currentAbsY = getAbsoluteY();
 		int diff = absY - currentAbsY;
 		//System.out.println("setting absY to " + absY + ", current=" + currentAbsY + ", diff=" + diff + " for item " + this);
-
 		//System.out.println("after setAbsoluteY=" + getAbsoluteY() + ", should be=" + absY);
 	}
 	
@@ -4097,6 +5088,24 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	public int getContentHeight()
 	{
 		return this.contentHeight;
+	}
+	
+	/**
+	 * Retrieves the width of the content.
+	 * @return the content width in pixels
+	 */
+	public int getAvailableContentWidth()
+	{
+		return this.availContentWidth;
+	}
+	
+	/**
+	 * Retrieves the height of the content.
+	 * @return the content height in pixels
+	 */
+	public int getAvailableContentHeight()
+	{
+		return this.availContentHeight;
 	}
 	
 	/**
@@ -4215,29 +5224,10 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 				// remove any item commands:
 				Screen scr = getScreen();
 				if (scr != null) {
-					// Nothing to do here.
 				}
-				int itemIndex = -1;
-				boolean isFocusSet = parentContainer.focusClosestItemAbove( itemIndex );
 				this.isFocused = false;
-				//System.out.println("new focus set: " + isFocusSet + ", new index=" + parentContainer.focusedIndex + ", this.index=" + itemIndex );
-				if (isFocusSet) {
-					if (parentContainer.focusedIndex > itemIndex ) {
-						// focused has moved downwards, since the above item is now invisible,
-						// adjust the scrolling accordingly:
-						int offset = parentContainer.yOffset + this.itemHeight + parentContainer.paddingVertical;
-						if (offset > 0) {
-							offset = 0;
-						}
-						//System.out.println("setting parent scroll offset to " + offset );
-						parentContainer.setScrollYOffset( offset, false );
-					} else {
-						parentContainer.scroll( 0, parentContainer.focusedItem, true );
-					}
-				} else {
-					parentContainer.focusChild(-1);
-				}
-			} else if (!this.isFocused && parentContainer.focusedIndex > 1) {
+
+			} else if (!this.isFocused ) {
 				// adjust scrolling so that the focused element of the parent container stays in the current position:
 				int offset;
 				if (invisible) {
@@ -4311,8 +5301,12 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
 		if (this.label != null && this.label.text != null) {
-			buffer.append( '"' ).append( this.label.text ).append("\": ");
+			buffer.append( '"' ).append( this.label.text ).append("\""); 
 		}
+		if (this.style != null) {
+			buffer.append(" [").append(this.style.name).append("]");
+		}
+		buffer.append(": ");
 		buffer.append( super.toString() );
 		return buffer.toString();
 	}
@@ -4521,6 +5515,77 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		return ((this.layout & LAYOUT_VCENTER) == LAYOUT_VCENTER);
 	}
 	
+	/**
+	 * Determines the layout of this item.
+	 * Note that either setLayout() or init() has to be called before this method returns valid values.
+	 * 
+	 * @return true when the item has a vshrink layout.
+	 * @see #setLayout(int)
+	 * @see #init(int,int,int)
+	 */	
+	public boolean isLayoutVerticalShrink() {
+		return ((this.layout & LAYOUT_VSHRINK) == LAYOUT_VSHRINK);
+	}
+	
+	/**
+	 * Determines the layout of this item.
+	 * Note that either setLayout() or init() has to be called before this method returns valid values.
+	 * 
+	 * @return true when the item has a vexpand layout.
+	 * @see #setLayout(int)
+	 * @see #init(int,int,int)
+	 */	
+	public boolean isLayoutVerticalExpand() {
+		return ((this.layout & LAYOUT_VEXPAND) == LAYOUT_VEXPAND);
+	}
+	
+	/**
+	 * Determines the layout of this item.
+	 * Note that either setLayout() or init() has to be called before this method returns valid values.
+	 * 
+	 * @return true when the item has a horizontal expand layout.
+	 * @see #setLayout(int)
+	 * @see #init(int,int,int)
+	 */	
+	public boolean isLayoutExpand() {
+		return ((this.layout & LAYOUT_EXPAND) == LAYOUT_EXPAND);
+	}
+	
+	/**
+	 * Determines the layout of this item.
+	 * Note that either setLayout() or init() has to be called before this method returns valid values.
+	 * 
+	 * @return true when the item has a horizontal shrink layout.
+	 * @see #setLayout(int)
+	 * @see #init(int,int,int)
+	 */	
+	public boolean isLayoutShrink() {
+		return ((this.layout & LAYOUT_SHRINK) == LAYOUT_SHRINK);
+	}
+	
+	/**
+	 * Determines the layout of this item.
+	 * Note that either setLayout() or init() has to be called before this method returns valid values.
+	 * 
+	 * @return true when the item has a newwline-after layout.
+	 * @see #setLayout(int)
+	 * @see #init(int,int,int)
+	 */	
+	public boolean isLayoutNewlineAfter() {
+		return ((this.layout & LAYOUT_NEWLINE_AFTER) == LAYOUT_NEWLINE_AFTER);
+	}
+	
+	/**
+	 * Determines the layout of this item.
+	 * Note that either setLayout() or init() has to be called before this method returns valid values.
+	 * 
+	 * @return true when the item has a newwline-after layout.
+	 * @see #setLayout(int)
+	 * @see #init(int,int,int)
+	 */	
+	public boolean isLayoutNewlineBefore() {
+		return ((this.layout & LAYOUT_NEWLINE_BEFORE) == LAYOUT_NEWLINE_BEFORE);
+	}
 	public void setItemTransition( ItemTransition transition ) {
 		this.itemTransition = transition;
 	}
@@ -4561,6 +5626,11 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 * @param screenHeight the screen height
 	 */
 	public void onScreenSizeChanged( int screenWidth, int screenHeight ) {
+		//#debug
+		System.out.println("onScreenSizeChanged to " + screenWidth + ", " + screenHeight + " for " + this);
+		if (this.label != null) {
+			this.label.onScreenSizeChanged(screenWidth, screenHeight);
+		}
 		//#if polish.css.portrait-style || polish.css.landscape-style
 			if (!this.isStyleInitialised && this.style != null) {
 				setStyle( this.style );
@@ -4573,10 +5643,28 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 			} else if (this.portraitStyle != null && this.style != this.portraitStyle){
 				newStyle = this.portraitStyle;
 			}
+			Style oldStyle = null;
 			if (newStyle != null) {
+				//#debug
+				System.out.println("onScreenSizeChanged(): setting new style " + newStyle.name + " for " + this);
+				oldStyle = this.style; 
 				setStyle( newStyle );
+				//#if polish.css.pressed-style
+					if (this.isPressed) {
+						this.normalStyle = newStyle;
+					}
+				//#endif
 				if (this.isFocused) {
-					Screen scr = getScreen();
+					if (this.parent instanceof Container) {
+						Container cont = (Container)this.parent;
+						cont.itemStyle = newStyle;
+						setStyle( getFocusedStyle() );
+					}
+				} else if (oldStyle != null && this.parent instanceof Container) {
+					Container cont = (Container)this.parent;
+					if (cont.itemStyle == oldStyle) {
+						cont.itemStyle = newStyle;
+					}
 				}
 			}
 		//#endif
@@ -4599,17 +5687,211 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	}
 
 	/**
-	 * Determines whether this item is currently focused.
-	 * @return true when this item is focused
+	 * Sets an UiEventListener for the this item and its children.
+	 * @param listener the listener, use null to remove a listener
 	 */
-	public boolean isFocused() {
-		return this.isFocused;
+	public void setUiEventListener(UiEventListener listener) {
+		this.uiEventListener = listener;
 	}
 	
+	/**
+	 * Retrieves the UiEventListener for this item or for one of its parents.
+	 * @return the listener or null, if none has been registered
+	 */
+	public UiEventListener getUiEventListener() {
+		UiEventListener listener = this.uiEventListener;
+		if (listener == null) {
+			Item parentItem = this.parent;
+			while (parentItem != null && listener == null) {
+				parentItem = parentItem.parent;
+			}
+			if (listener == null) {
+				listener = getScreen().getUiEventListener();
+			}
+		}
+		return listener;
+	}
+	
+	/**
+	 * Retrieves the RGB data of this item.
+	 * This method only works on MIDP 2.0+ devices.
+	 * 
+	 * @return the RGB data as an int array.
+	 */
+	public int[] getRgbData() {
+		return getRgbData( true, 255 );
+	}
+	
+	/**
+	 * Retrieves the RGB data of this item.
+	 * This method only works on MIDP 2.0+ devices.
+	 * 
+	 * @param supportTranslucency true when not only transparent but also translucent parts of the item should be rendered correctly 
+	 * @param rgbOpacity The opacity of the item between 0 (fully transparent) and 255 (fully opaque)
+	 * @return the RGB data as an int array.
+	 */
+	public int[] getRgbData( boolean supportTranslucency, int rgbOpacity ) {
+		int[] result = new int[0];
+		//#if polish.midp2
+			if (this.itemWidth < 1 || this.itemHeight < 1) {
+				//#debug error
+				System.out.println("Unable to retrieve RGB data for item with a dimension of " + this.itemWidth + "x" + this.itemHeight );
+				return new int[0];
+			}
+			Image image = Image.createImage( this.itemWidth, this.itemHeight );
+			if (supportTranslucency) {
+				// we use a two-pass painting for determing translucent pixels as well:
+				// in the first run we paint it on a black background (dataBlack),
+				// in the second we use a white background (dataWhite). 
+				// We then compare the pixels in dataBlack and dataWhite:
+				//  a) when a pixel is black in dataBlack and white and dataWhite it is fully transparent
+				//  b) when a pixel has the same value in dataBlack and in dataWhite it is fully opaque
+				//  c) when the pixel has different values it contains translucency - we can extract the original value from the difference between data1 and data2.
+				//     The solution is based on this formula for determining the final green component value when adding a pixel with alpha value on another opaque pixel:
+				//     final_green_value = ( pixel1_green * alpha + pixel2_green * ( 255 - alpha ) ) / 255
+				//     When can work our way backwards to determine the original green and alpha  values.
+				
+				Graphics g = image.getGraphics();
+				int bgColorBlack = 0x0;
+				g.setColor(bgColorBlack);
+				g.fillRect(0, 0, this.itemWidth, this.itemHeight );
+				int[] transparentColorRgb = new int[1];
+				image.getRGB(transparentColorRgb, 0, 1, 0, 0, 1, 1 );
+				bgColorBlack = transparentColorRgb[0];
+				this.paint( 0, 0, 0, this.itemWidth, g );
+				int[] dataBlack = new int[  this.itemWidth * this.itemHeight ];
+				image.getRGB(dataBlack, 0, this.itemWidth, 0, 0, this.itemWidth, this.itemHeight );
+				int bgColorWhite = 0xffffff;
+				g.setColor(bgColorWhite);
+				g.fillRect(0, 0, this.itemWidth, this.itemHeight );
+				image.getRGB(transparentColorRgb, 0, 1, 0, 0, 1, 1 );
+				bgColorWhite = transparentColorRgb[0];
+				this.paint( 0, 0, 0, this.itemWidth, g );
+				int[] dataWhite = new int[  this.itemWidth * this.itemHeight ];
+				image.getRGB(dataWhite, 0, this.itemWidth, 0, 0, this.itemWidth, this.itemHeight );
 
+				rgbOpacity = (rgbOpacity << 24) | (0x00ffffff);
+				result = new int[ dataBlack.length ];
+				int lastPixelWhite = 0;
+				int lastPixelBlack = 0;
+				int lastPixelResult = 0;
+				// ensure transparent parts are indeed transparent
+				for (int i = 0; i < dataBlack.length; i++) {
+					int pixelBlack = dataBlack[i];
+					int pixelWhite = dataWhite[i];
+					if (pixelBlack == pixelWhite) {
+						result[i] = pixelBlack & rgbOpacity;
+					} else if (pixelBlack != bgColorBlack || pixelWhite != bgColorWhite ) {
+						if (pixelBlack == lastPixelBlack && pixelWhite == lastPixelWhite) {
+							result[i] = lastPixelResult;
+						} else {
+							// this pixel contains translucency:
+							int redBlack = (pixelBlack & 0xff0000) >> 16;
+							int greenBlack = (pixelBlack & 0xff00) >> 8;
+							int blueBlack = (pixelBlack & 0xff);
+							int redWhite = (pixelWhite & 0xff0000) >> 16;
+							int greenWhite = (pixelWhite & 0xff00) >> 8;
+							int blueWhite = (pixelWhite & 0xff);
+							
+							
+							int originalAlpha = 0;
+							int originalRed;
+							if (redBlack == 0 && redWhite == 255) {
+								originalRed = 0;
+							} else {
+								if (redBlack == 0) {
+									redBlack = 1;
+								} else if (redWhite == 255) {
+									redWhite = 254;
+								}
+								originalRed = (255 * redBlack) / (redBlack - redWhite + 255);
+								originalAlpha = redBlack - redWhite + 255;
+							}
+							int originalGreen;
+							if (greenBlack == 0 && greenWhite == 255) {
+								originalGreen = 0;
+							} else {
+								if (greenBlack == 0) {
+									greenBlack = 1;
+								} else if (greenWhite == 255) {
+									greenWhite = 254;
+								}
+								originalGreen = (255 * greenBlack) / (greenBlack - greenWhite + 255);
+								originalAlpha = greenBlack - greenWhite + 255;
+							}
+							int originalBlue;
+							if (blueBlack == 0 && blueWhite == 255) {
+								originalBlue = 0;
+							} else {
+								if (blueBlack == 0) {
+									blueBlack = 1;
+								} else if (blueWhite == 255) {
+									blueWhite = 254;
+								}
+								originalBlue = (255 * blueBlack) / (blueBlack - blueWhite + 255);
+								originalAlpha = blueBlack - blueWhite + 255;
+							}
+							lastPixelWhite = pixelWhite;
+							lastPixelBlack = pixelBlack;
+							lastPixelResult = ((originalAlpha << 24) | (originalRed << 16) | (originalGreen << 8) | originalBlue) & rgbOpacity; 
+							result[i] = lastPixelResult; 
+						}
+					} 
+				}
+
+			} else {
+				int transparentColor = 0x12345678;
+				Graphics g = image.getGraphics();
+				g.setColor(transparentColor);
+				g.fillRect(0, 0, this.itemWidth, this.itemHeight );
+				int[] transparentColorRgb = new int[1];
+				image.getRGB(transparentColorRgb, 0, 1, 0, 0, 1, 1 );
+				transparentColor = transparentColorRgb[0];
+				this.paint( 0, 0, 0, this.itemWidth, g );
+				int[] itemRgbData = new int[  this.itemWidth * this.itemHeight ];
+				image.getRGB(itemRgbData, 0, this.itemWidth, 0, 0, this.itemWidth, this.itemHeight );
+				boolean addOpacity = (rgbOpacity != 255);
+				rgbOpacity = (rgbOpacity << 24) | (0x00ffffff);
+				// ensure transparent parts are indeed transparent
+				for (int i = 0; i < itemRgbData.length; i++) {
+					int data = itemRgbData[i];
+					if( data == transparentColor ) {
+						itemRgbData[i] = 0;
+					} else if (addOpacity) {
+						itemRgbData[i] = data & rgbOpacity;
+					}
+				}
+			}
+		//#endif
+		return result;
+	}
+
+	
+	//#if polish.useNativeGui
+		/**
+		 * Species a native implementation for this item.
+		 * This method is only available when the preprocessing variable polish.useNativeGui is set to true.
+		 * @param nativeItem the native implementation
+		 */
+		public void setNativeItem( NativeItem nativeItem ) {
+			this.nativeItem = nativeItem;
+		}
+	//#endif
+
+	//#if polish.useNativeGui
+		/**
+		 * Species a native implementation for this item.
+		 * This method is only available when the preprocessing variable polish.useNativeGui is set to true.
+		 * @return the native implementation, can be null
+		 */
+		public NativeItem getNativeItem() {
+			return this.nativeItem;
+		}
+	//#endif
 
 
 //#ifdef polish.Item.additionalMethods:defined
 	//#include ${polish.Item.additionalMethods}
 //#endif
+
 }
