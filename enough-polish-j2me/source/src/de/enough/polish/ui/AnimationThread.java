@@ -140,9 +140,9 @@ public class AnimationThread extends Thread
 		ClippingRegion repaintRegion = new ClippingRegion();
 //		int animationCounter = 0;
 		long lastIdleTime = 0;
-
+		int sleepIntervalCounter = 0;
+		
 		while ( true ) {
-                        
 			try {
 				Screen screen = StyleSheet.currentScreen;
 				//System.out.println("AnimationThread: animating " + screen + ", current=" + StyleSheet.display.getCurrent());
@@ -210,9 +210,24 @@ public class AnimationThread extends Thread
 						}
 					} else if (sleeptime != SLEEP_INTERVAL) {
 						sleeptime = SLEEP_INTERVAL;
+						sleepIntervalCounter = 0;
 						//#if polish.Animation.fireIdleEvents
 							EventManager.fireEvent( EVENT_IDLE_MODE_ON, this, null);
 						//#endif
+					} else {
+						// we are in idle mode and are sleeping for the SLEEP_INTERVAL...
+						sleepIntervalCounter++;
+						if (sleepIntervalCounter > 20) {
+							sleepIntervalCounter = 0;
+							Display instance = Display.getInstance();
+							if (instance != null) {
+								synchronized (instance) {
+									instance.emitNotifyOnUserEvents(true);
+									instance.wait();
+								}
+								continue;
+							}
+						}
 					}
 					//#if polish.Animation.fireIdleEvents
 						if (idleTime > 1000) {
@@ -251,6 +266,7 @@ public class AnimationThread extends Thread
 
 					this.totalDelta = (System.currentTimeMillis() - currentTime) - ANIMATION_INTERVAL;
 				} else {
+					// there is no currently shown screen:
 					if (releaseResourcesOnScreenChange) {
 						StyleSheet.releaseResources();
 						releaseResourcesOnScreenChange = false;

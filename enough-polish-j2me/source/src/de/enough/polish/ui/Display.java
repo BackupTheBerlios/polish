@@ -618,6 +618,7 @@ public class Display
 	//#endif
 
 	private Displayable nextOrCurrentDisplayable;
+	private boolean emitNotifyOnUserEvent;
 		
 	//#if polish.build.classes.NativeDisplay:defined
 		//#= protected Display( MIDlet midlet, ${polish.build.classes.NativeDisplay} nativeDisplay ) {
@@ -1966,6 +1967,12 @@ public class Display
 			return;
 		}
 		//#endif
+		if (this.emitNotifyOnUserEvent) {
+			this.emitNotifyOnUserEvent = false;
+			synchronized (this) {
+				this.notifyAll();
+			}
+		}
 		
 		//#debug
 		System.out.println("Display.keyPressed " + keyCode);
@@ -2069,6 +2076,13 @@ public class Display
 			return;
 		}
 		//#endif
+		if (this.emitNotifyOnUserEvent) {
+			this.emitNotifyOnUserEvent = false;
+			synchronized (this) {
+				this.notifyAll();
+			}
+		}
+
 		
 		if (this.currentCanvas != null) { 
 			//#if tmp.screenOrientation
@@ -2137,6 +2151,12 @@ public class Display
 	 * @return true when the event was handled
 	 */
 	public boolean handlePointerTouchDown( int x, int y ) {
+		if (this.emitNotifyOnUserEvent) {
+			this.emitNotifyOnUserEvent = false;
+			synchronized (this) {
+				this.notifyAll();
+			}
+		}
 		if (this.currentCanvas != null) {
 			//#if tmp.screenOrientation
 				Point p = translatePoint( x, y );
@@ -2809,5 +2829,14 @@ public class Display
 
 	public void setMidlet(MIDlet midlet) {
 		this.midlet = midlet;
+	}
+
+	/**
+	 * Emits a notify on this instance when there are new user events.
+	 * This is used by the AnimationThread to hold the animation thread completely after a time of inactivity
+	 * @param emitNotify true when this.notifyAll() should be called after receiving an input event.
+	 */
+	protected void emitNotifyOnUserEvents(boolean emitNoify) {
+		this.emitNotifyOnUserEvent = emitNoify;
 	}
 }
