@@ -1192,7 +1192,7 @@ implements Displayable
 		if (this._commands == null) {
 			this._commands = new IdentityArrayList();
 		}
-		boolean add = !this._commands.contains(cmd);
+		boolean add = !(this._commands.contains(cmd));
 		this._commands.add( cmd );
 		if (add && this._isShown) {
 			Display.getInstance().addCommand( cmd );
