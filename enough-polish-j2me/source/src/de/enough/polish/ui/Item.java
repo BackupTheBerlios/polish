@@ -2741,8 +2741,14 @@ public abstract class Item implements UiElement, Animatable
 					int diff = labelItem.itemWidth - this.itemWidth;
 					labelX -= diff;
 					labelLeftBorder -= diff;
+				} else if (labelItem.isLayoutRight) {
+					labelX = rightBorder - labelItem.itemWidth;
+					labelLeftBorder = labelX;
+				} else if (labelItem.isLayoutCenter) {
+					labelX = (rightBorder - leftBorder - labelItem.itemWidth) / 2;
+					labelLeftBorder = labelX;
 				}
-				labelItem.paint( labelX + labelItem.relativeX, y + labelItem.relativeY, labelLeftBorder, rightBorder, g );
+				labelItem.paint( labelX + labelItem.relativeX, y + labelItem.relativeY, labelLeftBorder, labelLeftBorder + labelItem.itemWidth, g );
 				y += labelItem.itemHeight;
 			}
 		}
@@ -3213,9 +3219,10 @@ public abstract class Item implements UiElement, Animatable
 		
 		int labelWidth = 0;
 		int labelHeight = 0;
-		if (this.label != null) {
-			labelWidth = this.label.getItemWidth( firstLineWidth, availWidth, availHeight );
-			labelHeight = this.label.itemHeight;
+		Item labelItem = this.label;
+		if (labelItem != null) {
+			labelWidth = labelItem.getItemWidth( firstLineWidth, availWidth, availHeight );
+			labelHeight = labelItem.itemHeight;
 		}
 		// calculate content width and content height:
 		int noneContentWidth =  
