@@ -50,6 +50,9 @@ public class DimensionCssAttribute extends CssAttribute {
 	 * @see de.enough.polish.preprocess.css.CssAttribute#getValue(java.lang.String, de.enough.polish.Environment)
 	 */
 	public String getValue(String value, Environment environment ) {
+		if ("none".equals(value)) {
+			return "null";
+		}
 		if (value.endsWith("%")) {
 			try {
 				String plainValue = value.substring( 0, value.length() - 1);
