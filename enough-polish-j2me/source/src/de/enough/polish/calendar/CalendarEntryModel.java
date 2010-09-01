@@ -40,6 +40,7 @@ implements Externalizable, CalendarSubject
 	private boolean isDirty;
 	private Comparator rootCategoriesComparator;
 	private CalendarEntry recentChangedEntry;
+	private CalendarEntry recentDeletedEntry;
 	private CalendarCategory recentChangedCategory;
 	
 	
@@ -212,6 +213,7 @@ implements Externalizable, CalendarSubject
 		removeEntry(entry, removeEmptyCategory);
 		
 		if (notifyObserver) {
+			this.recentDeletedEntry = entry;
 			notifyObservers();
 		}
 	}
@@ -896,7 +898,7 @@ implements Externalizable, CalendarSubject
 				if (observer == null) {
 					break;
 				}
-				observer.updatedCalendarModel(this, this.recentChangedEntry, this.recentChangedCategory);
+				observer.updatedCalendarModel(this, this.recentChangedEntry, this.recentDeletedEntry, this.recentChangedCategory);
 			}
 		}
 	}
