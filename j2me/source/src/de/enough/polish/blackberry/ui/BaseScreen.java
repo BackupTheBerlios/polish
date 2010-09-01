@@ -1329,6 +1329,16 @@ public abstract class BaseScreen
     	return processed;
     }
     //#endif
+    
+    //#if ${ version(polish.JavaPlatform, BlackBerry) } >= ${version(6.0)}
+    protected boolean focusChangeNeeded(Field field) {
+    	if(field instanceof PolishTextField) {
+    		return ((PolishEditField)field).needsNavigationFix();
+    	} else {
+    		return false;
+    	}
+    }
+    //#endif
 
     //#if polish.hasTrackballEvents
     /* (non-Javadoc)
@@ -1350,7 +1360,11 @@ public abstract class BaseScreen
         			   processed = super.navigationMovement(dx, dy, status, time);                     
         		   }
                    if (processed) {
-                	   if (focusChangeDetected(screen)) {
+                	   if (focusChangeDetected(screen)
+               			   //#if ${ version(polish.JavaPlatform, BlackBerry) } >= ${version(6.0)}
+                  			|| focusChangeNeeded(this.currentItem._bbField)
+                  			//#endif   
+                	   		) {
                 		   processed = false;
                 	   } else {
                 		   //#debug 

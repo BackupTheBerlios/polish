@@ -29,6 +29,7 @@ import de.enough.polish.ui.Style;
 import de.enough.polish.ui.StyleSheet;
 
 import net.rim.device.api.i18n.Locale;
+import net.rim.device.api.ui.Graphics;
 import net.rim.device.api.ui.component.EditField;
 
 public class PolishEditField extends EditField implements PolishTextField {
@@ -149,6 +150,36 @@ public class PolishEditField extends EditField implements PolishTextField {
 			setBackground(BackgroundWrapper.INSTANCE);
 		//#endif
 	}
+	
+	//#if ${ version(polish.JavaPlatform, BlackBerry) } >= ${version(6.0)}
+	boolean needsCursorFix = false;
+	boolean needsNavigationFix = false;
+	
+	protected void update(int arg0) {
+		super.update(arg0);
+		this.needsCursorFix = true;
+	}
+
+	protected void drawFocus(Graphics arg0, boolean arg1) {
+		if(this.isFocused) {
+			if(this.needsCursorFix) {
+				setCursorPosition(getCursorPosition());
+				this.needsCursorFix = false;
+			}
+			super.drawFocus(arg0, arg1);
+		}
+	}
+
+	protected int moveFocus(int arg0, int arg1, int arg2) {
+		int remaining  = super.moveFocus(arg0, arg1, arg2);
+		this.needsNavigationFix = (remaining != 0);
+		return remaining;
+	}
+	
+	public boolean needsNavigationFix() {
+		return this.needsNavigationFix;
+	}
+	//#endif
 
 //	public int drawText(Graphics arg0, int arg1, int arg2, int arg3, int arg4, DrawTextParam arg5) {
 //	// TODO Auto-generated method stub
