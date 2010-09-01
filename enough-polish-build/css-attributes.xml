@@ -5202,6 +5202,7 @@
 		appliesTo="RecLineGaugeView"
 		description="The width of the rects."
 		id="450"
+		since="J2ME Polish 2.2"
 	/>
 	
 	<attribute
@@ -5210,6 +5211,7 @@
 		appliesTo="RecLineGaugeView"
 		description="The height of the rects."
 		id="451"
+		since="J2ME Polish 2.2"
 	/>
 	
 	<attribute
@@ -5218,6 +5220,7 @@
 		appliesTo="RecLineGaugeView"
 		description="The number of scanline rects ."
 		id="452"
+		since="J2ME Polish 2.2"
 	/>
 	
 	<attribute
@@ -5226,6 +5229,7 @@
 		appliesTo="RecLineGaugeView"
 		description="The color of a selected rect."
 		id="453"
+		since="J2ME Polish 2.2"
 	/>
 	
 	<attribute
@@ -5234,6 +5238,7 @@
 		appliesTo="RecLineGaugeView"
 		description="The color of an unselected rect."
 		id="454"
+		since="J2ME Polish 2.2"
 	/>
 	
 	<attribute
@@ -5242,6 +5247,7 @@
 		appliesTo="ScanlineGaugeView"
 		description="Image url for the left part of the scanning element"
 		id="455"
+		since="J2ME Polish 2.2"
 	/>
 	
 	<attribute
@@ -5274,6 +5280,7 @@
 		appliesTo="ScanlineGaugeView"
 		description="Image url for the middle part of the background"
 		id="459"
+		since="J2ME Polish 2.2"
 	/>
 	
 	<attribute
@@ -5282,6 +5289,7 @@
 		appliesTo="ScanlineGaugeView"
 		description="Image url for the right part of the background"
 		id="460"
+		since="J2ME Polish 2.2"
 	/>
 	
 	<attribute
@@ -5291,7 +5299,18 @@
 		description="Sets the mode for visualizing the current month and year"
 		values="label,title,item,none"
 		id="461"
+		since="J2ME Polish 2.2"
 	/>
+	
+	<attribute
+		name="table-row-height"
+		type="dimension"
+		appliesTo="TableItem,CalendarItem"
+		description="The height of a row within a table item, e.g. table-row-height: 10%; The row-height is calculated in relation to the available height."
+		id="462"
+		since="J2ME Polish 2.2"
+	/>
+	
 	
 <!--
 	<attribute

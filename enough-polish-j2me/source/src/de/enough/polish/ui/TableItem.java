@@ -101,6 +101,9 @@ public class TableItem
 	private int currentRowIndex = -1;
 	private Style cellContainerStyle;
 	
+	//#if polish.css.table-row-height
+		private Dimension rowHeight;
+	//#endif
 	private final Object paintLock = new Object();
 	private boolean focusedItemHandledKeyEvent;
 	private boolean focusedItemHandledPointerEvent;
@@ -215,7 +218,12 @@ public class TableItem
 				this.selectedColumnBackground = scBackground;
 			}
 		//#endif
-		
+		//#if polish.css.table-row-height
+			Dimension rowHeightDim = (Dimension) style.getObjectProperty("table-row-height");
+			if (rowHeightDim != null) {
+				this.rowHeight = rowHeightDim;
+			}
+		//#endif
 	}
 	
 	/* (non-Javadoc)
@@ -275,16 +283,23 @@ public class TableItem
 		int textHeight = this.font.getHeight();
 		int width;
 		int height;
+		int availRowHeight = availHeight;
+		//#if polish.css.table-row-height
+			if (this.rowHeight != null) {
+				availRowHeight = this.rowHeight.getValue(availHeight);
+			}
+		//#endif
 		for (int col = 0; col < numberOfColumns; col++ ) {
 			for (int row = 0; row < numberOfRows; row++ ) {
 				Object data = this.tableData.get(col, row);
 				if (data == null) {
 					continue;
 				}
+				Item item = null;
 				if (data instanceof Item) {
-					Item item = (Item) data;
-					width = item.getItemWidth(availWidth, availWidth, availHeight);
-					height = item.getItemHeight(availWidth, availWidth, availHeight);
+					item = (Item) data;
+					width = item.getItemWidth(availWidth, availWidth, availRowHeight);
+					height = item.getItemHeight(availWidth, availWidth, availRowHeight);
 				} else {
 					width = this.font.stringWidth( data.toString() );
 					height = textHeight;
@@ -299,9 +314,18 @@ public class TableItem
 				if (width > widths[col]) {
 					widths[col] = width;
 				}
+				//#if polish.css.table-row-height
+					if (this.rowHeight != null) {
+						//TODO handled cases in which an item is larger than the allowed table-row-height
+						height = availRowHeight;
+						if (item != null) {
+							item.setItemHeight(availRowHeight);
+						}
+					}
+				//#endif
 				if (height > heights[row]) {
 					heights[row] = height;
-				}
+				}					
 			}
 		}
 //		if (numberOfRows > 0) {
@@ -313,7 +337,7 @@ public class TableItem
 			height = 0;
 			int colWidth = widths[col] - this.paddingHorizontal;
 			for (int row = 0; row < numberOfRows; row++ ) {
-				int rowHeight = heights[row];
+				int currentRowHeight = heights[row];
 				Object data = this.tableData.get(col, row);
 				if (data instanceof Item) {
 					Item item = (Item) data;
@@ -336,15 +360,15 @@ public class TableItem
 //							item.itemHeight = rowHeight;
 //						}
 //					//#endif
-					if (item.itemHeight < rowHeight) {
+					if (item.itemHeight < currentRowHeight) {
 						if ((item.layout & LAYOUT_VCENTER) == LAYOUT_VCENTER) {
-							item.relativeY += (rowHeight - item.itemHeight) / 2;
+							item.relativeY += (currentRowHeight - item.itemHeight) / 2;
 						} else if ((item.layout & LAYOUT_BOTTOM) == LAYOUT_BOTTOM) {
-							item.relativeY += (rowHeight - item.itemHeight);
+							item.relativeY += (currentRowHeight - item.itemHeight);
 						}
 					}
 				}
-				height += rowHeight;
+				height += currentRowHeight;
 			}
 			width += colWidth + this.paddingHorizontal;
 		}
@@ -361,6 +385,20 @@ public class TableItem
 		//System.out.println("contentHeight=" + this.contentHeight + ", width=" + this.contentWidth );
 		updateInternalArea();
 	}
+	
+	//#if polish.css.table-row-height
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Container#getChildWidth(Item)
+	 */
+	protected int getChildWidth( Item item ) {
+		int width = item.getItemWidth( item.availableWidth, item.availableWidth, item.availableHeight );
+		if (this.rowHeight != null) {
+			int availableRowHeight = this.rowHeight.getValue( this.availContentHeight );
+			item.setItemHeight(availableRowHeight);
+		}
+		return width;
+	}
+	//#endif
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#paintContent(int, int, int, int, javax.microedition.lcdui.Graphics)
@@ -929,14 +967,37 @@ public class TableItem
 	public void setSelectedCell(int col, int row, int direction)
 	{
 		if ((this.selectionMode & SELECTION_MODE_CELL) == SELECTION_MODE_CELL) {
-			if (this.selectedItemStyle != null && this.focusedItem != null) {
-				this.focusedItem.defocus(this.selectedItemStyle);
+			Item focItem = this.focusedItem;
+			if (this.selectedItemStyle != null && focItem != null) {
+				focItem.defocus(this.selectedItemStyle);
+				if (this.isInitialized) {
+					int wBefore = focItem.itemWidth;
+					int hBefore = focItem.itemHeight;
+					int layoutBefore = focItem.layout;
+					int wAfter = getChildWidth( focItem );
+					int hAfter = focItem.itemHeight;
+					int layoutAfter = focItem.layout;
+					if (wAfter != wBefore || hAfter != hBefore || layoutAfter != layoutBefore ) {
+						setInitialized(false);
+					}
+				}
 			}
 			Object data = get(col, row);
 			if (data instanceof Item) {
 				Item item = (Item) data;
+				int wBefore = item.itemWidth;
+				int hBefore = item.itemHeight;
+				int layoutBefore = item.layout;
 				this.selectedItemStyle = item.focus( null, direction );
 				this.focusedItem = item;
+				if (this.isInitialized) {
+					int wAfter = getChildWidth( item );
+					int hAfter = item.itemHeight;
+					int layoutAfter = item.layout;
+					if (wAfter != wBefore || hAfter != hBefore || layoutAfter != layoutBefore ) {
+						setInitialized(false);
+					}
+				}
 				//#if polish.blackberry
 					if(getScreen() != null) {
 						getScreen().notifyFocusSet(item);
