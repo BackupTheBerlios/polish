@@ -74,12 +74,19 @@ public class CalendarItem extends TableItem
 	 */
 	private static int FIRST_DAY_OF_WEEK =
 		//#if ${lowercase(polish.CalendarItem.FirstDayOfWeek)} == sunday
+			//#define tmp.startWithSunday
 			//# Calendar.SUNDAY;
 		//#else
 			Calendar.MONDAY;
 		//#endif
-	private static String WEEKDAY_ABBREVIATIONS = 
-		//#if ${lowercase(polish.CalendarItem.FirstDayOfWeek)} == sunday
+	private static String WEEKDAY_ABBREVIATIONS =
+		//#if tmp.startWithSunday && polish.CalendarItem.WeekdayAbbreviationsSunday:defined
+			//#= "${polish.CalendarItem.WeekdayAbbreviationsSunday}";
+		//#elif !tmp.startWithSunday && polish.CalendarItem.WeekdayAbbreviationsMonday:defined
+			//#= "${polish.CalendarItem.WeekdayAbbreviationsMonday}";
+		//#elif polish.CalendarItem.WeekdayAbbreviations:defined
+			//#= "${polish.CalendarItem.WeekdayAbbreviations}";
+		//#elif tmp.startWithSunday
 			//# "S,M,T,W,T,F,S";
 		//#else
 			"M,T,W,T,F,S,S";
