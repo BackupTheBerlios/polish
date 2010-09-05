@@ -58,19 +58,19 @@ public class RoundRectBackgroundConverter extends BackgroundConverter {
 	protected String createNewStatement(Map background, Style style, StyleSheet styleSheet) throws BuildException {
 		String arc = (String) background.get("arc");
 		if (arc != null) {
-			parseInt( "arc", arc );
+			arc = Integer.toString( parseInt( "arc", arc ) );
 		} else {
 			arc = "8";
 		}
 		String arcHeight = (String) background.get("arc-height");
 		if (arcHeight != null) {
-			parseInt( "arc-height", arc );
+			arcHeight = Integer.toString( parseInt( "arc-height", arcHeight ) );
 		} else {
 			arcHeight = arc;
 		}
 		String arcWidth = (String) background.get("arc-width");
 		if (arcWidth != null) {
-			parseInt( "arc-width", arc );
+			arcWidth = Integer.toString( parseInt( "arc-width", arcWidth ) );
 		} else {
 			arcWidth = arc;
 		}
