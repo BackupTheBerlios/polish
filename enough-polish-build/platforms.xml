@@ -201,6 +201,7 @@
 	<platform>
 		<identifier>BlackBerry/6.0</identifier>
 		<parent>BlackBerry</parent>
+		<capability name="build.Obfuscator" value="" />
 		<capability name="build.BootClassPath" value="blackberry-6.0.0.jar" />
 		<capability name="build.BlackBerry.JDE-Version" value="6.0" />
 		<!-- key for opening/closing the menu -->
