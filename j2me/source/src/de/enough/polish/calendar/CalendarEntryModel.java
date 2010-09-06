@@ -166,6 +166,24 @@ implements Externalizable, CalendarSubject
 		}
 	}
 	
+	/**
+	 * Removes a calendar entry.
+	 * @param categoryGuid the GUID of the category of the entry
+	 * @param entryGuid The GUID of the event that should be removed
+	 * @return true when the entry was found and removed
+	 */
+	public boolean removeEntry( long categoryGuid, long entryGuid ) {
+		CalendarCategory category = getCategory(categoryGuid);
+		if (category != null) {
+			CalendarEntryList list = (CalendarEntryList) this.calendarEntriesByCategory.get(category);
+			if (list != null) {
+				return list.remove(entryGuid);
+			}
+		}
+		return false;
+	}
+
+	
 	
 	/**
 	 * Removes a calendar entry.

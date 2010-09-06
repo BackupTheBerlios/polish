@@ -81,10 +81,36 @@ implements Comparator
 	 * @return true when the entry was found and removed
 	 */
 	public boolean remove( CalendarEntry entry ) {
+		boolean removed = this.list.remove(entry);
+		if (!removed) {
+			return remove( entry.getGuid() );
+		}
 		this.sortedEntries = null;
-		return this.list.remove(entry);		
+		return removed;
 	}
 	
+	/**
+	 * Removes a CalendarEntry from this list
+	 * @param guid the GUID of the entry that should be removed
+	 * @return true when the entry was found and removed
+	 */
+	public boolean remove(long guid) {
+		Object[] objects = this.list.getInternalArray();
+		for (int i = 0; i < objects.length; i++) {
+			CalendarEntry entry = (CalendarEntry) objects[i];
+			if (entry == null) {
+				break;
+			}
+			if (entry.getGuid() == guid) {
+				this.list.remove(i);
+				this.sortedEntries = null;
+				return true;
+			}
+		}
+		return false;
+		
+	}
+
 	/**
 	 * Clears the complete list, i.e. removes all entries.
 	 */
