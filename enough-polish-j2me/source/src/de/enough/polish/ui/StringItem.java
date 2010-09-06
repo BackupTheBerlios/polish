@@ -400,6 +400,7 @@ public class StringItem extends Item
 			}
 			this.isTextInitializationRequired = true;
 			setInitialized(false);
+			repaint();
 		}
 		notifyValueChanged(text);
 	}
