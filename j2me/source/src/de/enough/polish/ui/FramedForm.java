@@ -1032,9 +1032,14 @@ public class FramedForm extends Form {
 			}
 			initContent(newFrame);
 		}
-		if (keepMainFocus && newFrame != this.container) {
-			this.keepContentFocused = true;
+		if (keepMainFocus) {
+			if (newFrame != this.container) {
+				this.keepContentFocused = true;
+			}
+		} else {
+			this.keepContentFocused = false;
 		}
+		
 		if (this.screenStateListener != null) {
 			this.screenStateListener.screenStateChanged( this );
 		}
