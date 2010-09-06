@@ -114,9 +114,13 @@ public class DimensionMapCssAttribute extends MapCssAttribute {
 			}
 		}
 		try {
+			if (value.endsWith("pt")) {
+				return "new Dimension(\"" + value + "\")";
+			}
 			if (value.endsWith("px")) {
 				value = value.substring(0, value.length() - 2).trim();
 			}
+			
 			int intValue;
 			try {
 				intValue = Integer.parseInt( value );
