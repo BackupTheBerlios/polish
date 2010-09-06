@@ -78,10 +78,11 @@ implements Comparator
 	/**
 	 * Removes a CalendarEntry from this list
 	 * @param entry the entry
+	 * @return true when the entry was found and removed
 	 */
-	public void remove( CalendarEntry entry ) {
+	public boolean remove( CalendarEntry entry ) {
 		this.sortedEntries = null;
-		this.list.remove(entry);		
+		return this.list.remove(entry);		
 	}
 	
 	/**
