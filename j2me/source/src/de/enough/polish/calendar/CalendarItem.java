@@ -401,7 +401,9 @@ public class CalendarItem extends TableItem
 			}
 
 		}
-		item.setAppearanceMode( INTERACTIVE );
+		if (parent.selectionMode != TableItem.SELECTION_MODE_NONE) {
+			item.setAppearanceMode( INTERACTIVE );
+		}
 		return item;
 	}
 
