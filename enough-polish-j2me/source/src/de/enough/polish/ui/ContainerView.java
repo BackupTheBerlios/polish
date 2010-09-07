@@ -816,11 +816,6 @@ extends ItemView
 					for (int i=0; i<this.numberOfColumns; i++) {
 						this.columnsWidths[i] = new Dimension( newMaxColumnWidths[i], false );
 					}
-					if (columnIndex != 0) {
-						// last row is not completely filled.
-						myContentHeight += maxRowHeight;
-						//System.out.println("end of last line(2): myContentHeight=" + myContentHeight + ", columnIndex=" + columnIndex + " for " + this);
-					}
 				}
 			} else if (this.columnsSetting == EQUAL_WIDTH_COLUMNS) {
 				// Use the maximum used column-width for each column,
