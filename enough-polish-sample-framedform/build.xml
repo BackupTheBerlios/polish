@@ -217,10 +217,6 @@
 					<localization locales="en_US" if="test" />
 				</resources>
 
-				<finalizer name="dotterupload" if="polish.api.iphone || polish.api.windows">
-					<parameter name="url" value="http://localhost:8180/dotter-upload/upload.faces" />
-				</finalizer>
-				
 				<!-- obfuscator settings: do not obfuscate when the test-property is true -->
 				<obfuscator name="ProGuard" unless="test || polish.blackberry" >
 					<!--
