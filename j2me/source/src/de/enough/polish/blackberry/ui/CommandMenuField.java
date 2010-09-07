@@ -27,6 +27,8 @@
 package de.enough.polish.blackberry.ui;
 
 import de.enough.polish.ui.Command;
+import de.enough.polish.ui.CommandListener;
+import de.enough.polish.ui.Display;
 import de.enough.polish.ui.Displayable;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
@@ -51,6 +53,13 @@ implements FieldChangeListener
 	private final Displayable displayable;
 	private final Item item;
 	private final CommandsPopup popup;
+	private CommandListener listener;
+	
+	public CommandMenuField(CommandsPopup popup, Command cmd, CommandListener listener) {
+		this( popup, cmd, Display.getInstance().getCurrent(), null );
+		this.listener = listener;
+	}
+
 
 	public CommandMenuField(CommandsPopup popup, Command cmd, Displayable displayable, Item item) {
 		super( cmd.getLabel(), Field.FOCUSABLE | ButtonField.CONSUME_CLICK | Field.FIELD_HCENTER );
@@ -66,7 +75,11 @@ implements FieldChangeListener
 			if (!this.cmd.hasSubCommands()) {
 				this.popup.close();
 			}
-			CommandMenuItem.handleCommand(this.cmd, this.displayable, this.item);
+			if (this.listener != null) {
+				this.listener.commandAction(this.cmd, this.displayable);
+			} else {
+				CommandMenuItem.handleCommand(this.cmd, this.displayable, this.item);
+			}
 		}
 	}
 	

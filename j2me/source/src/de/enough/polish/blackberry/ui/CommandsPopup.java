@@ -28,6 +28,7 @@
 package de.enough.polish.blackberry.ui;
 
 import de.enough.polish.ui.Command;
+import de.enough.polish.ui.CommandListener;
 import de.enough.polish.ui.Display;
 import de.enough.polish.ui.Displayable;
 import de.enough.polish.ui.Item;
@@ -53,10 +54,6 @@ public class CommandsPopup
 //#endif
 {
 	
-	final Command cmd;
-	private Displayable displayable;
-	private Item item;
-
 	/**
 	 * Creates a new sub commands popup that is populated with the subcommands from the command parameter
 	 * @param command
@@ -67,9 +64,6 @@ public class CommandsPopup
 		super(new VerticalFieldManager(Manager.VERTICAL_SCROLL), Field.FIELD_BOTTOM | Field.FIELD_HCENTER);
 		LabelField title = new LabelField( command.getLabel() ); 
 		add( title );
-		this.cmd = command;
-		this.displayable = displayable;
-		this.item = item;
 		Object[] cmds = command.getSubCommmandsArray();
 		for (int i = 0; i < cmds.length; i++) {
 			Command child = (Command) cmds[i];
@@ -77,6 +71,23 @@ public class CommandsPopup
 				break;
 			}
 			CommandMenuField field = new CommandMenuField( this, child, displayable, item );
+			add(field);
+		}
+	}
+	
+	/**
+	 * Creates a new sub commands popup that is populated with the subcommands from the command parameter
+	 * @param cmds the commands that should be displayed
+	 * @param listener the command listener
+	 */
+	public CommandsPopup(Command[] cmds, CommandListener listener) {
+		super(new VerticalFieldManager(Manager.VERTICAL_SCROLL), Field.FIELD_BOTTOM | Field.FIELD_HCENTER);
+		for (int i = 0; i < cmds.length; i++) {
+			Command child = (Command) cmds[i];
+			if (child == null) {
+				break;
+			}
+			CommandMenuField field = new CommandMenuField( this, child, listener );
 			add(field);
 		}
 	}
@@ -120,6 +131,8 @@ public class CommandsPopup
 		}
 		return handled;
 	}
+	
+	//TODO when touch down outside of area exit this popup
 
     
 }
