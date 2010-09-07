@@ -102,6 +102,20 @@ implements ScreenStateListener, CommandListener
 		group.append( Locale.get("label.setting.normal"), null);
 		//#style settingsItem
 		group.append( Locale.get("label.setting.slow"), null);
+
+		//#style settingsItem
+		group.append("Test 1", null);
+		//#style settingsItem
+		group.append("Test 2", null);
+		//#style settingsItem
+		group.append("Test 3", null);
+		//#style settingsItem
+		group.append("Test 4", null);
+		//#style settingsItem
+		group.append("Test 5", null);
+		//#style settingsItem
+		group.append("Test 6", null);
+
 		group.setSelectedIndex(0, true);
 		form.append( 1, group );
 //		label = new StringItem( null, "click me", StringItem.BUTTON );
