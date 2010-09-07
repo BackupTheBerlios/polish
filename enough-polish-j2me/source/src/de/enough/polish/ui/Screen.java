@@ -202,7 +202,8 @@ implements UiElement, Animatable
 	private boolean isLayoutHorizontalShrink;
 	private boolean isLayoutVerticalShrink;
 	boolean isInitialized;
-	//#if polish.ScreenChangeAnimation.forward:defined
+	//#if polish.css.screen-transition || polish.css.screen-change-animation || polish.ScreenChangeAnimation.forward:defined
+		//#define tmp.screenTransitions
 		protected Command lastTriggeredCommand;
 	//#endif	
 	//#if polish.key.ReturnKey:defined || polish.css.repaint-previous-screen
@@ -4695,7 +4696,7 @@ implements UiElement, Animatable
 		//#elif tmp.menuFullScreen
 			openMenu(false);
 		//#endif
-		//#if polish.ScreenChangeAnimation.forward:defined
+		//#if tmp.screenTransitions
 			this.lastTriggeredCommand = cmd;
 		//#endif
 		if (this.forwardCommandListener != null) {
@@ -5372,7 +5373,7 @@ implements UiElement, Animatable
 		} else if (item.isFocused){
 			// ignore:
 			return;
-		} else {
+		} else if (force || item.isInteractive()){
 			index = this.container.itemsList.indexOf(item);
 			if (index == -1) {
 				ArrayList children = new ArrayList();
@@ -5419,6 +5420,8 @@ implements UiElement, Animatable
 					return;
 				}
 			}
+		} else {
+			return;
 		}
 		focus( index, item, force );
 	}

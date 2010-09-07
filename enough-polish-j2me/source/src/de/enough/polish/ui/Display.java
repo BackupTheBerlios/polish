@@ -985,10 +985,7 @@ public class Display
 				if(animation.nextCanvas != null) {
 					animation.nextCanvas._hideNotify();
 				}
-			}
-		
-			// check if a screen transition should be played:
-			if (this.enableScreenChangeAnimations && !(this.currentCanvas instanceof ScreenChangeAnimation)) {
+			} else if (this.enableScreenChangeAnimations) { // check if a screen transition should be played
 				try {
 					Screen nextScreen = null;
 					if ( nextDisplayable instanceof Screen ) {
@@ -1043,7 +1040,11 @@ public class Display
 									}
 								}
 							//#endif							
-							if ( (screenAnimation == null || lastScreen instanceof Alert) && lastScreen.style != null && lastScreen.enableScreenChangeAnimation) {
+							Command lastCommand = lastScreen.lastTriggeredCommand;
+							if (lastCommand != null && lastCommand.getCommandType() == Command.BACK ) {
+								isForwardAnimation = false;
+							}
+							if ( (screenAnimation == null || !isForwardAnimation || lastScreen instanceof Alert) && lastScreen.style != null && lastScreen.enableScreenChangeAnimation) {
 								if (screenAnimation == null || lastScreen.style.getObjectProperty("screen-change-animation") != null) {
 									screenstyle = lastScreen.style;
 									screenAnimation = (ScreenChangeAnimation) screenstyle.getObjectProperty("screen-change-animation");

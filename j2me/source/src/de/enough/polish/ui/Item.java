@@ -659,6 +659,9 @@ public abstract class Item implements UiElement, Animatable
 	/** the background of this item  */
 	public Background background;
 	protected Border border;
+	//#if polish.css.border-adjust
+		private Dimension borderAdjust;
+	//#endif
 	//#if polish.css.bgborder
 		/** the background border of an item - this border is painted before the background. This field
 		 * is only present when polish.css.bgborder is true.
@@ -753,7 +756,7 @@ public abstract class Item implements UiElement, Animatable
 	
 	//#ifdef polish.css.before
 		private String beforeUrl;
-		protected int beforeWidth;
+		private int beforeWidth;
 		private int beforeHeight;
 		private Image beforeImage;
 	//#endif
@@ -1490,7 +1493,7 @@ public abstract class Item implements UiElement, Animatable
 				if ( !beforeUrlStr.equals(this.beforeUrl) ) {
 					try {
 						this.beforeImage = StyleSheet.getImage(beforeUrlStr, null, true );
-						this.beforeWidth = this.beforeImage.getWidth() + this.paddingHorizontal;
+						this.beforeWidth = this.beforeImage.getWidth();
 						this.beforeHeight = this.beforeImage.getHeight();
 					} catch (IOException e) {
 						this.beforeUrl = null;
@@ -1674,6 +1677,15 @@ public abstract class Item implements UiElement, Animatable
 				}
 			//#endif
 		}
+		//#if polish.css.border-adjust
+			Dimension borderAdjustDim = (Dimension) style.getObjectProperty("border-adjust");
+			if (borderAdjustDim != null) {
+				this.borderAdjust = borderAdjustDim;
+			} else if (resetStyle) {
+				this.borderAdjust = null;
+			}
+		//#endif
+
 		//#if polish.css.filter && polish.midp2
 		if (this.filters != null) {
 			boolean isActive = false;
@@ -2755,7 +2767,7 @@ public abstract class Item implements UiElement, Animatable
 		
 		leftBorder += (this.marginLeft + getBorderWidthLeft() + this.paddingLeft);
 		//#ifdef polish.css.before
-			leftBorder += this.beforeWidth;
+			leftBorder += getBeforeWidthWithPadding();
 		//#endif
 		//System.out.println( this.style.name + ":  increasing leftBorder by " + (this.marginLeft + this.borderWidth + this.paddingLeft));
 		rightBorder -= (this.marginRight + getBorderWidthRight() + this.paddingRight);
@@ -2860,7 +2872,7 @@ public abstract class Item implements UiElement, Animatable
 				}
 				
 				g.drawImage(this.beforeImage, beforeX, beforeY, Graphics.TOP | Graphics.LEFT );
-				x += this.beforeWidth;
+				x += getBeforeWidthWithPadding();
 			}
 		//#endif
 		
@@ -3074,6 +3086,16 @@ public abstract class Item implements UiElement, Animatable
 	 */
 	protected void paintBorder(int x, int y, int width, int height, Graphics g)
 	{
+		//#if polish.css.border-adjust
+			if (this.borderAdjust != null) {
+				int adjust = this.borderAdjust.getValue(this.availableWidth);
+				x += adjust;
+				y += adjust;
+				adjust <<= 1;
+				width -= adjust;
+				height -= adjust;
+			}
+		//#endif
 		//#if polish.css.view-type
 			if (this.view != null) {
 				this.view.paintBorder( this.border, x, y, width, height, g );
@@ -3229,7 +3251,7 @@ public abstract class Item implements UiElement, Animatable
 			 	this.marginLeft + getBorderWidthLeft() + this.paddingLeft 
 				+ this.paddingRight + getBorderWidthRight() + this.marginRight;
 		//#ifdef polish.css.before
-			noneContentWidth += this.beforeWidth;
+			noneContentWidth += getBeforeWidthWithPadding();
 		//#endif
 		//#ifdef polish.css.after
 			noneContentWidth += getAfterWidthWithPadding();
@@ -3567,8 +3589,26 @@ public abstract class Item implements UiElement, Animatable
 		System.out.println("Item.init(): contentWidth=" + this.contentWidth + ", itemWidth=" + this.itemWidth + ", backgroundWidth=" + this.backgroundWidth);
 	}
 	
+	//#if polish.css.before
+	/**
+	 * Gets the before width along plus the horizontal padding when there is an before element defined.
+	 * @return the width of the before element plus the horizontal padding or 0.
+	 */
+	protected int getBeforeWidthWithPadding() {
+		int w = this.beforeWidth;
+		if (w != 0) {
+			w += this.paddingHorizontal;
+		}
+		return w;
+	}
+	//#endif
+	
 	//#if polish.css.after
-	private int getAfterWidthWithPadding() {
+	/**
+	 * Gets the after width along plus the horizontal padding when there is an after element defined.
+	 * @return the width of the after element plus the horizontal padding or 0.
+	 */
+	protected int getAfterWidthWithPadding() {
 		int w = this.afterWidth;
 		if (w != 0) {
 			w += this.paddingHorizontal;
@@ -3577,23 +3617,28 @@ public abstract class Item implements UiElement, Animatable
 	}
 	//#endif
 
-	protected void initLayout(Style style, int availWidth) {
+	/**
+	 * Initializes paddings and margins.
+	 * @param layoutStyle the style of this item
+	 * @param availWidth the available width in case paddings or margins include relative values
+	 */
+	protected void initLayout(Style layoutStyle, int availWidth) {
 		//#ifdef polish.css.view-type
 		if (this.view != null) {
-			this.view.initPadding(style, availWidth);
+			this.view.initPadding(layoutStyle, availWidth);
 		} else
 		//#endif
-	{
-			initPadding(style, availWidth);
+		{
+			initPadding(layoutStyle, availWidth);
 		}
 	
 		//#ifdef polish.css.view-type
 		if (this.view != null) {
-			this.view.initMargin(style, availWidth);
+			this.view.initMargin(layoutStyle, availWidth);
 		} else
 		//#endif
-	{
-			initMargin(style, availWidth);
+		{
+			initMargin(layoutStyle, availWidth);
 		}
 	}
 

@@ -1471,6 +1471,9 @@ public class Container extends Item {
 			boolean hasFocusableItem = false;
 			int myContentStartX = Integer.MAX_VALUE;
 			int myContentEndX = Integer.MIN_VALUE;
+			int numberOfVerticalExpandItems = 0;
+			Item lastVerticalExpandItem = null;
+			int lastVerticalExpandItemIndex = 0;
 			for (int i = 0; i < myItems.length; i++) {
 				Item item = myItems[i];
 				//System.out.println("initalising " + item.getClass().getName() + ":" + i);
@@ -1483,6 +1486,11 @@ public class Container extends Item {
 				//if (item.isInvisible && height != 0) {
 				//	System.out.println("*** item.height != 0 even though it is INVISIBLE - isInitialized=" + item.isInitialized );
 				//}
+				if (item.isLayoutVerticalExpand()) {
+					numberOfVerticalExpandItems++;
+					lastVerticalExpandItem = item;
+					lastVerticalExpandItemIndex = i;
+				}
 				if (item.appearanceMode != PLAIN) {
 					hasFocusableItem = true;
 				}
@@ -1544,6 +1552,32 @@ public class Container extends Item {
 				//System.out.println("item.yTopPos=" + item.yTopPos);
 			} // cycling through all items
 			
+			if (numberOfVerticalExpandItems > 0 && myContentHeight < availHeight) {
+				int diff = availHeight - myContentHeight;
+				if (numberOfVerticalExpandItems == 1) {
+					// this is a simple case:
+					lastVerticalExpandItem.setItemHeight( lastVerticalExpandItem.itemHeight + diff );
+					for (int i = lastVerticalExpandItemIndex+1; i < myItems.length; i++)
+					{
+						Item item = myItems[i];
+						item.relativeY += diff;
+					}
+				} else {
+					// okay, there are several items that would like to be expanded vertically:
+					diff = diff / numberOfVerticalExpandItems;
+					int relYAdjust = 0;
+					for (int i = 0; i < myItems.length; i++)
+					{
+						Item item = myItems[i];
+						item.relativeY +=  relYAdjust;
+						if (item.isLayoutVerticalExpand()) {
+							item.setItemHeight(item.itemHeight + diff );
+							relYAdjust += diff;
+						}
+					}
+				}
+				myContentHeight = availHeight;
+			}
 			if (myContentEndX - myContentStartX > myContentWidth) {
 				// this can happen when there are different layouts like left and right within the same container:
 				myContentWidth = myContentEndX - myContentStartX;
@@ -3157,7 +3191,7 @@ public class Container extends Item {
 		relY -= this.yOffset;
 		relY -= this.contentY;
 		//#ifdef polish.css.before
-			relX -= this.beforeWidth;
+			relX -= getBeforeWidthWithPadding();
 		//#endif
 		relX -= this.contentX;
 		//#ifdef tmp.supportViewType
@@ -3318,7 +3352,7 @@ public class Container extends Item {
 			//#endif
 		//#endif
 		//#ifdef polish.css.before
-			relX -= this.beforeWidth;
+			relX -= getBeforeWidthWithPadding();
 		//#endif
 		
 		Item item = this.focusedItem;
@@ -3379,7 +3413,7 @@ public class Container extends Item {
 		// foward event to currently focused item:
 		int origRelX = relX
 		//#ifdef polish.css.before
-			+ this.beforeWidth
+			+ getBeforeWidthWithPadding()
 		 //#endif
 		 ;
 		int origRelY = relY;
@@ -3475,7 +3509,7 @@ public class Container extends Item {
 		//#debug
 		System.out.println("handlePointerDraggged " + relX + ", " + relY + " for " + this + ", enableScrolling=" + this.enableScrolling + ", focusedItem=" + this.focusedItem);
 		//#ifdef polish.css.before
-			relX -= this.beforeWidth;
+			relX -= getBeforeWidthWithPadding();
 		//#endif
 		
 		Item item = this.focusedItem;
@@ -3618,7 +3652,7 @@ public class Container extends Item {
 	public Item getItemAt(int relX, int relY) {
 		relY -= this.yOffset;
 		//#ifdef polish.css.before
-			relX -= this.beforeWidth;
+			relX -= getBeforeWidthWithPadding();
 		//#endif
 		relX -= this.contentX;
 		relY -= this.contentY;
@@ -3682,7 +3716,7 @@ public class Container extends Item {
 	protected Item getChildAtImpl(int relX, int relY) {
 		relY -= this.yOffset;
 		//#ifdef polish.css.before
-			relX -= this.beforeWidth;
+			relX -= getBeforeWidthWithPadding();
 		//#endif
 		relY -= this.contentY;
 		relX -= this.contentX;
