@@ -125,6 +125,7 @@ public class GradientVerticalBackground  extends Background {
 			this.gradient = DrawUtil.getGradient( this.topColor, this.bottomColor, steps );
 			this.lastHeight = height;
 		}
+		width--;
 		g.setColor( this.topColor );
 		for (int i = 0; i < height; i++) {
 			if (i >= startOffset  && i < endOffset ) {
