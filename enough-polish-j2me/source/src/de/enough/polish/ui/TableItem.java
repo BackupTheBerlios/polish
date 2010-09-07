@@ -96,7 +96,6 @@ public class TableItem
 	protected Background selectedColumnBackground;
 	private int selectedRowIndex = -1;
 	private int selectedColumnIndex = -1;
-	private Style selectedItemStyle;
 	private int currentColumnIndex = -1;
 	private int currentRowIndex = -1;
 	private Style cellContainerStyle;
@@ -968,8 +967,8 @@ public class TableItem
 	{
 		if ((this.selectionMode & SELECTION_MODE_CELL) == SELECTION_MODE_CELL) {
 			Item focItem = this.focusedItem;
-			if (this.selectedItemStyle != null && focItem != null) {
-				focItem.defocus(this.selectedItemStyle);
+			if (this.itemStyle != null && focItem != null) {
+				focItem.defocus(this.itemStyle);
 				if (this.isInitialized) {
 					int wBefore = focItem.itemWidth;
 					int hBefore = focItem.itemHeight;
@@ -988,7 +987,7 @@ public class TableItem
 				int wBefore = item.itemWidth;
 				int hBefore = item.itemHeight;
 				int layoutBefore = item.layout;
-				this.selectedItemStyle = item.focus( null, direction );
+				this.itemStyle = item.focus( null, direction );
 				this.focusedItem = item;
 				if (this.isInitialized) {
 					int wAfter = getChildWidth( item );
@@ -1428,7 +1427,7 @@ public class TableItem
 			Object obj = getSelectedCell();
 			if (obj instanceof Item) {
 				Item item = (Item) obj;
-				item.defocus(this.selectedItemStyle);
+				item.defocus(this.itemStyle);
 			}
 		}
 	}
@@ -1446,7 +1445,7 @@ public class TableItem
 			} else if (obj instanceof Item) {
 				Item item = (Item) obj;
 				if (!item.isFocused) {
-					this.selectedItemStyle = item.focus( null, direction );
+					this.itemStyle = item.focus( null, direction );
 					//#if polish.blackberry
 						if(getScreen() != null) {
 							getScreen().notifyFocusSet(item);
