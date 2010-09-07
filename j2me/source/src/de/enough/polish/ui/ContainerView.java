@@ -344,9 +344,10 @@ extends ItemView
 		
 		this.parentContainer = parent;
 		Item[] myItems = parent.getItems();
+		int myItemsLength = myItems.length;
 
 		//#ifdef tmp.useTable
-			if (this.columnsSetting == NO_COLUMNS || myItems.length <= 1 || this.numberOfColumns <= 1) {
+			if (this.columnsSetting == NO_COLUMNS || myItemsLength <= 1 || this.numberOfColumns <= 1) {
 		//#endif
 			this.isHorizontal = false;
 			this.isVertical = true;
@@ -355,7 +356,7 @@ extends ItemView
 			int myContentWidth = 0;
 			int myContentHeight = 0;
 			boolean hasFocusableItem = false;
-			for (int i = 0; i < myItems.length; i++) {
+			for (int i = 0; i < myItemsLength; i++) {
 				Item item = myItems[i];
 				//System.out.println("initalising " + item.getClass().getName() + ":" + i);
 				int width = item.itemWidth;
@@ -425,7 +426,7 @@ extends ItemView
 					if (parent.minimumWidth != null && parent.minimumWidth.getValue(firstLineWidth) > myContentWidth) {
 						myContentWidth = parent.minimumWidth.getValue(firstLineWidth) - (parent.getBorderWidthLeft() + parent.getBorderWidthRight() + parent.marginLeft + parent.paddingLeft + parent.marginRight + parent.paddingRight);
 					}
-					for (int i = 0; i < myItems.length; i++)
+					for (int i = 0; i < myItemsLength; i++)
 					{
 						Item item = myItems[i];
 						if (!item.isLayoutExpand && item.itemWidth < myContentWidth) {
@@ -483,10 +484,10 @@ extends ItemView
 			}
 				
 			//#if polish.css.colspan
-				ArrayList rowHeightsList = new ArrayList( (myItems.length / this.numberOfColumns) + 1 );
+				ArrayList rowHeightsList = new ArrayList( (myItemsLength / this.numberOfColumns) + 1 );
 			//#else
-				this.numberOfRows = (myItems.length / this.numberOfColumns);
-				if (myItems.length % this.numberOfColumns != 0) {
+				this.numberOfRows = (myItemsLength / this.numberOfColumns);
+				if (myItemsLength % this.numberOfColumns != 0) {
 					this.numberOfRows += 1;
 				}
 				this.rowsHeights = new int[ this.numberOfRows ];
@@ -504,7 +505,7 @@ extends ItemView
 			int columnX = 0; // the horizontal position of the current column relative to the content's left corner (starting a 0)
 			//System.out.println("starting init of " + myItems.length + " container items.");
 			int rowStartIndex = 0;
-			for (int i=0; i< myItems.length; i++) {
+			for (int i=0; i< myItemsLength; i++) {
 				Item item = myItems[i];
 				Dimension colWidthDim = this.columnsWidths[columnIndex];
 				if (colWidthDim == null) {
@@ -610,7 +611,7 @@ extends ItemView
 				}
 
 				item.relativeY = myContentHeight;
-				if (columnIndex == this.numberOfColumns) {
+				if ((columnIndex == this.numberOfColumns) || (i == myItemsLength - 1)) {
 					if (item.isLayoutRight && isLayoutExpand()) {
 						// position item to the far right side:
 						item.relativeX = availWidth - width + 1;
@@ -743,7 +744,7 @@ extends ItemView
 				} else {
 					//System.out.println("container-view: too wide");
 					// okay, some columns need to be adjusted:
-					// re-initialise the table:
+					// re-initialize the table:
 					int leftAvailableColumnWidth = (availableRowWidth - usedUpWidth) / leftColumns;
 					int[] newMaxColumnWidths = new int[ this.numberOfColumns ];
 					myContentHeight = 0;
@@ -753,7 +754,7 @@ extends ItemView
 					maxWidth = 0;
 					rowStartIndex = 0;
 					//System.out.println("starting init of " + myItems.length + " container items.");
-					for (int i = 0; i < myItems.length; i++) {
+					for (int i = 0; i < myItemsLength; i++) {
 						Item item = myItems[i];
 						int width = item.itemWidth;
 						int height = item.itemHeight;
@@ -785,7 +786,7 @@ extends ItemView
 						}
 						item.relativeY = myContentHeight;
 						//System.out.println( i + ": yTopPos=" + item.yTopPos );
-						if (columnIndex == this.numberOfColumns) {
+						if ((columnIndex == this.numberOfColumns) || (i == myItemsLength-1)) {
 							//System.out.println("starting new row: rowIndex=" + rowIndex + "  numberOfRows: " + numberOfRows);
 							columnIndex = 0;
 							this.rowsHeights[rowIndex] = maxRowHeight;
@@ -835,7 +836,7 @@ extends ItemView
 			int myContentWidth = 0;
 			
 			columnIndex = 0;
-			for (int i = 0; i < myItems.length; i++) {
+			for (int i = 0; i < myItemsLength; i++) {
 				Item item = myItems[i];
 				int cw = this.columnsWidths[columnIndex].getValue( availWidth );
 				item.relativeX = myContentWidth;
