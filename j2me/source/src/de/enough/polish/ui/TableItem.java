@@ -967,6 +967,11 @@ public class TableItem
 	{
 		if ((this.selectionMode & SELECTION_MODE_CELL) == SELECTION_MODE_CELL) {
 			Item focItem = this.focusedItem;
+			Object data = get(col, row);
+			if (focItem == data) {
+				// this cell is already selected:
+				return;
+			}
 			if (this.itemStyle != null && focItem != null) {
 				focItem.defocus(this.itemStyle);
 				if (this.isInitialized) {
@@ -981,7 +986,6 @@ public class TableItem
 					}
 				}
 			}
-			Object data = get(col, row);
 			if (data instanceof Item) {
 				Item item = (Item) data;
 				int wBefore = item.itemWidth;
