@@ -10,14 +10,14 @@ xmlstarlet can be found at http://xmlstar.sourceforge.net/
 
 These namespaces will be used soon:
 
-targetNamespace="http://www.enough.de/polish/1.4/"
-xmlns="http://www.enough.de/polish/1.4/"
+targetNamespace="http://www.enough.de/polish/2.1/"
+xmlns="http://www.enough.de/polish/2.1/"
 
 -->
 
 <xsd:schema	
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-	xmlns:polish="http://www.enough.de/polish/1.4/">
+	xmlns:polish="http://www.enough.de/polish/2.1/">
 
 	<xsd:element name="devices">
 	    <xsd:complexType>
