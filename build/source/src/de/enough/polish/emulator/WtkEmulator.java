@@ -96,8 +96,9 @@ public class WtkEmulator extends Emulator {
 	 */
 	protected boolean supportsPreferencesFile() {
 		//Not supported in the new WTK version
-		if(this.wtkNewVersion)
+		if(this.wtkNewVersion) {
 			return false;
+		}
 		return true;
 	}
 
@@ -122,8 +123,9 @@ public class WtkEmulator extends Emulator {
 	 */
 	protected boolean supportsHeapsize() {
 		//Not supported in the new WTK version
-		if(this.wtkNewVersion)
+		if(this.wtkNewVersion) {
 			return false;
+		}
 		return true;
 	}
 
@@ -154,9 +156,10 @@ public class WtkEmulator extends Emulator {
 	 */
 	protected File getEmulatorSkin(File wtkHome, String xDevice) {
 		if (this.wtkNewVersion) {
-			if(devicesFolder==null)
+			if(this.devicesFolder == null) {
 				return null;
-			File[] fileList = devicesFolder.listFiles();
+			}
+			File[] fileList = this.devicesFolder.listFiles();
 			for (int i = 0; i < fileList.length; i++) {
 				File file = new File(fileList[i], "properties.xml");
 				if (file.exists()) {
@@ -254,8 +257,8 @@ public class WtkEmulator extends Emulator {
 	 *            TODO
 	 * @return the file which points to the emulator-application
 	 */
-	protected File getEmulatorExcecutable(File wtkHome, String xDevice,
-			Device dev, Environment env) {
+	protected File getEmulatorExcecutable(File wtkHome, String xDevice, Device dev, Environment env) 
+	{
 		File executable = null;
 		if (File.separatorChar == '/') {
 			executable = new File(wtkHome, "bin/emulator");
@@ -320,9 +323,7 @@ public class WtkEmulator extends Emulator {
 					this.wtkNewVersion = true;
 					skinFile = getEmulatorSkin(wtkHome, xDevice);
 					if (skinFile == null || !skinFile.exists()) {
-						System.out
-								.println("Warning: did not find emulator referenced by -Xdevice parameter "
-										+ xDevice);
+						System.out.println("Warning: did not find emulator referenced by -Xdevice parameter " + xDevice);
 						return false;
 					}
 				}
@@ -331,7 +332,7 @@ public class WtkEmulator extends Emulator {
 			String[] skinNames = getEmulatorSkinNames(env);
 			File skinFile = null;
 			for (int i = 0; i < skinNames.length; i++) {
-				System.out.println("New Xdevevice "+skinNames[i]);
+				System.out.println("New Xdevice "+skinNames[i]);
 				xDevice = skinNames[i];
 				skinFile = getEmulatorSkin(wtkHome, xDevice);
 				
@@ -357,8 +358,7 @@ public class WtkEmulator extends Emulator {
 					xDevice = "DefaultCldcPhone1";
 					skinFile = getEmulatorSkin(wtkHome, xDevice);
 					if (skinFile == null || !skinFile.exists()) {
-						System.out
-								.println("Cannot intialize the default skin for the WTK 3.0 and higher");
+						System.out.println("Cannot intialize the default skin for the WTK 3.0 and higher");
 						return false;
 					}
 				} else {
@@ -421,8 +421,7 @@ public class WtkEmulator extends Emulator {
 		File execFile = getEmulatorExcecutable(wtkHome, xDevice, dev, env);
 		String executable = execFile.getAbsolutePath();
 		if (!execFile.exists()) {
-			System.out.println("Warning: unable to find the emulator ["
-					+ executable + "].");
+			System.out.println("Warning: unable to find the emulator [" + executable + "].");
 			return false;
 		}
 
@@ -445,8 +444,7 @@ public class WtkEmulator extends Emulator {
 			HttpServer httpServer = new HttpServer(port, dir);
 			httpServer.start();
 		} else {
-			argumentsList.add("-Xdescriptor:"
-					+ env.getVariable("polish.jadPath"));
+			argumentsList.add("-Xdescriptor:" + env.getVariable("polish.jadPath"));
 		}
 
 		// add the -Xverbose-parameter:
@@ -461,12 +459,10 @@ public class WtkEmulator extends Emulator {
 			boolean usingPreferencesFile = false;
 			if (preferencesFile != null) {
 				if (preferencesFile.exists()) {
-					argumentsList.add("-Xprefs:"
-							+ preferencesFile.getAbsolutePath());
+					argumentsList.add("-Xprefs:" + preferencesFile.getAbsolutePath());
 					usingPreferencesFile = true;
 				} else {
-					System.err
-							.println("Warning: unable to use preferences-file: the file ["
+					System.err.println("Warning: unable to use preferences-file: the file ["
 									+ preferencesFile.getAbsolutePath()
 									+ "] does not exist.");
 				}
@@ -494,22 +490,17 @@ public class WtkEmulator extends Emulator {
 				}
 
 				addProperties(setting, emulatorPropertiesMap);
-				preferencesFile = new File(dev.getBaseDir()
-						+ File.separatorChar + "emulator.properties");
+				preferencesFile = new File(dev.getBaseDir() + File.separatorChar + "emulator.properties");
 				try {
 					emulatorPropertiesMap.writeFile(preferencesFile);
 					//FileUtil.writePropertiesFile(preferences, emulatorPropertiesMap);
-					argumentsList.add("-Xprefs:"
-							+ preferencesFile.getAbsolutePath());
+					argumentsList.add("-Xprefs:" + preferencesFile.getAbsolutePath());
 				} catch (IOException e) {
 					e.printStackTrace();
-					System.out
-							.println("Unable to set preferences-file for emulator: "
-									+ e.toString());
+					System.out.println("Unable to set preferences-file for emulator: " + e.toString());
 				}
 			} else if (setting.writePreferencesFile()) {
-				System.out
-						.println("Warning: unable to enable any profiler/monitor, since a preferences-file is used.");
+				System.out.println("Warning: unable to enable any profiler/monitor, since a preferences-file is used.");
 			}
 		} // the device supports the -Xprefs parameter.
 
@@ -587,14 +578,13 @@ public class WtkEmulator extends Emulator {
 		return false;
 	}
 
-	protected void addProperties(EmulatorSetting setting,
-			PropertyFileMap emulatorPropertiesMap) {
+	protected void addProperties(EmulatorSetting setting, PropertyFileMap emulatorPropertiesMap) {
 		// now write a preferences-file:
 		emulatorPropertiesMap.put("kvem.memory.monitor.enable", ""
 				+ setting.enableMemoryMonitor());
 		emulatorPropertiesMap.put("kvem.profiler.enable", ""
 				+ setting.enableProfiler());
-		String enableNetworkMonitor = "" + setting.enableNetworkMonitor();
+		String enableNetworkMonitor = Boolean.toString( setting.enableNetworkMonitor() );
 		emulatorPropertiesMap.put("kvem.netmon.enable", enableNetworkMonitor);
 		emulatorPropertiesMap.put("kvem.netmon.comm.enable",
 				enableNetworkMonitor);
@@ -613,11 +603,9 @@ public class WtkEmulator extends Emulator {
 		emulatorPropertiesMap.put("bluetooth.device.authentication", "on");
 		emulatorPropertiesMap.put("bluetooth.device.authorization", "on");
 		emulatorPropertiesMap.put("bluetooth.device.discovery.enable", "true");
-		emulatorPropertiesMap
-				.put("bluetooth.device.discovery.timeout", "10000");
+		emulatorPropertiesMap.put("bluetooth.device.discovery.timeout", "10000");
 		emulatorPropertiesMap.put("bluetooth.device.encryption", "on");
-		emulatorPropertiesMap.put("bluetooth.device.friendlyName",
-				"WirelessToolkit");
+		emulatorPropertiesMap.put("bluetooth.device.friendlyName", "WirelessToolkit");
 		emulatorPropertiesMap.put("bluetooth.enable", "true");
 		emulatorPropertiesMap.put("bluetooth.l2cap.receiveMTU.max", "512");
 		emulatorPropertiesMap.put("bluetooth.sd.attr.retrievable.max", "10");
@@ -635,8 +623,7 @@ public class WtkEmulator extends Emulator {
 		emulatorPropertiesMap.put("kvem.api.exclude", "");
 		emulatorPropertiesMap.put("kvem.device", "DefaultColorPhone");
 		emulatorPropertiesMap.put("kvem.netmon.autoclose", "false");
-		emulatorPropertiesMap.put("kvem.netmon.filter_file_name",
-				"netmon_filter.dat");
+		emulatorPropertiesMap.put("kvem.netmon.filter_file_name", "netmon_filter.dat");
 		emulatorPropertiesMap.put("kvem.netmon.fixed_font_name", "Courier New");
 		emulatorPropertiesMap.put("kvem.netmon.fixed_font_size", "12");
 		emulatorPropertiesMap.put("kvem.netmon.variable_font_name", "Arial");
@@ -749,8 +736,7 @@ public class WtkEmulator extends Emulator {
 		emulatorPropertiesMap.put("screen.refresh.mode", "");
 		emulatorPropertiesMap.put("screen.refresh.rate", "30");
 		if (setting.getSecurityDomain() != null) {
-			emulatorPropertiesMap.put("security.domain", setting
-					.getSecurityDomain());
+			emulatorPropertiesMap.put("security.domain", setting.getSecurityDomain());
 		} else {
 			emulatorPropertiesMap.put("security.domain", "untrusted");
 		}
@@ -761,8 +747,7 @@ public class WtkEmulator extends Emulator {
 		emulatorPropertiesMap.put("vmspeed.range", "100,1000");
 		emulatorPropertiesMap.put("wma.client.phoneNumber", "");
 		emulatorPropertiesMap.put("wma.server.deliveryDelayMS", "");
-		emulatorPropertiesMap.put("wma.server.firstAssignedPhoneNumber",
-				"+5550000");
+		emulatorPropertiesMap.put("wma.server.firstAssignedPhoneNumber", "+5550000");
 		emulatorPropertiesMap.put("wma.server.percentFragmentLoss", "0");
 		emulatorPropertiesMap.put("wma.smsc.phoneNumber", "+1234567890");
 	}
