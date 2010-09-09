@@ -229,7 +229,6 @@ public final class Font extends Object
 	private Font( int face, int style, Dimension size ) throws ClassNotFoundException {
 		this.face = face;
 		this.style = style;
-		this.size = SIZE_MEDIUM;
 		this.isItalic = (style & STYLE_ITALIC) == STYLE_ITALIC;
 		
 		//#if !building.theme
@@ -249,10 +248,12 @@ public final class Font extends Object
 			if ( (style & STYLE_UNDERLINED) == STYLE_UNDERLINED  ) {
 				bbStyle |= net.rim.device.api.ui.Font.UNDERLINED;
 			}
-			int bbSize;
-			int defaultSize = net.rim.device.api.ui.Font.getDefault().getHeight();
-			bbSize = size.getValue(defaultSize);
-			this.font = family.getFont( bbStyle, bbSize, Ui.UNITS_px  );
+			this.size = size.getValue(100);
+			int unit = Ui.UNITS_px;
+			if(size.getUnit() == Dimension.UNIT_PT) {
+				unit = Ui.UNITS_pt;
+			}
+			this.font = family.getFont( bbStyle, this.size, unit );
 			if (this.font == null) {
 				//#debug
 				System.out.println("Unable to retrieve font...");

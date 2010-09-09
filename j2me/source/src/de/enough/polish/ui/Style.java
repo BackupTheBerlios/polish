@@ -559,6 +559,7 @@ public class Style implements Externalizable
 				Object size = style.getObjectProperty("font-size");
 				if (size instanceof Dimension) {
 					fontSizeDimension = (Dimension) size;
+					fontDefined = true;
 				} else {
 					Integer sizeInt = style.getIntProperty("font-size");
 					if (sizeInt != null) {

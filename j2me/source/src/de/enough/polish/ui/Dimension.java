@@ -37,22 +37,29 @@ import de.enough.polish.io.Externalizable;
  * <p>Copyright Enough Software 2008 - 2009</p>
  * @author Robert Virkus, j2mepolish@enough.de
  */
+/**
+ * @author Andre
+ *
+ */
 public class Dimension implements Externalizable
 {
 	
 	private static final int VERSION = 100;
 	
-	/** A pixel value is absolute */
-	public final static int UNIT_PIXEL = 0;
-	/** A percentage value is taken relative to some other '100%' value */
-	public final static int UNIT_PERCENT = 1;
-	/** A value relative to the font's height. */
-	public final static int UNIT_EM = 1;
+	private final static int UNIT_UNDEFINED = Integer.MIN_VALUE;
+	
+	public final static int UNIT_PX = 0x00;
+	
+	public final static int UNIT_PERCENT = 0x01;
+	
+	public final static int UNIT_PT = 0x02;
 
+	private int unit;
 	private int value;
 	private boolean isPercent;
 	private int factor;
 	private String valueAsString;
+	
 	
 	/**
 	 * Creates a new absolute (pixel) dimension.
@@ -110,10 +117,25 @@ public class Dimension implements Externalizable
 		if (this.valueAsString != null) {
 			resolve();
 		}
+		
 		if (this.isPercent) {
 			return (range * this.value) / (this.factor * 100);
 		}
 		return this.value;
+	}
+	
+	/**
+	 * Returns the unit of the dimension
+	 * @return the unit
+	 */
+	public int getUnit() {
+		// if the unit is undefined ...
+		if(this.unit == UNIT_UNDEFINED) {
+			// call resolve
+			resolve();
+		}
+		
+		return this.unit;
 	}
 	
 	/**
@@ -134,7 +156,6 @@ public class Dimension implements Externalizable
 		this.isPercent = isPercent;
 	}
 	
-
 	/**
 	 * Sets a new (possibly complex) value.
 	 * 
@@ -189,6 +210,7 @@ public class Dimension implements Externalizable
 	private void resolve() {
 		String v = this.valueAsString;
 		int l = v.length();
+		
 		if (v.charAt(l-1) == '%') {
 			int f = 1;
 			boolean dotFound = false;
@@ -218,38 +240,50 @@ public class Dimension implements Externalizable
 				}
 			}
 			this.isPercent = true;
+			this.unit = UNIT_PERCENT;
 			this.factor = f;
 			this.value = Integer.parseInt( buffer.toString() );
 			//System.out.println("resolved " + this.valueAsString + " to " + this.value + ", with factor=" + this.factor	 );
 			this.valueAsString = null;
-		} else if (v.endsWith("em")) {
-			//TODO support 'em'
+		} else if (v.endsWith("pt")) {
+			v = v.substring(0, l-2).trim();
+			if(parseNumberValue(v)) {
+				this.unit = UNIT_PT;
+			}
 		} else {
 			if (v.endsWith("px")) {
 				v = v.substring(0, l-2).trim();
 			}
-			try {
-				this.value = Integer.parseInt(v);
-			} catch (NumberFormatException e) {
-				//#debug warn
-				System.out.println("Encountered invalid dimension: " + this.valueAsString );
-				StringBuffer buffer = new StringBuffer(l);
-				for (int i=0; i<l-1; i++) {
-					char c = v.charAt(i);
-					if (Character.isDigit(c)){
-						buffer.append(c);
-					} else {
-						break;
-					}
-				}
-				this.value = Integer.parseInt(buffer.toString());
+			if(parseNumberValue(v)) {
+				this.unit = UNIT_PX;
 			}
-			this.isPercent = false;
-			this.factor = 1;
-			this.valueAsString = null;
+		}  
+		
+	}
+	
+	private boolean parseNumberValue(String v) {
+		int l = v.length(); 
+		try {
+			this.value = Integer.parseInt(v);
+		} catch (NumberFormatException e) {
+			//#debug warn
+			System.out.println("Encountered invalid dimension: " + this.valueAsString );
+			StringBuffer buffer = new StringBuffer(l);
+			for (int i=0; i<l-1; i++) {
+				char c = v.charAt(i);
+				if (Character.isDigit(c)){
+					buffer.append(c);
+				} else {
+					break;
+				}
+			}
+			this.value = Integer.parseInt(buffer.toString());
+			return false;
 		}
-		
-		
+		this.isPercent = false;
+		this.factor = 1;
+		this.valueAsString = null;
+		return true;
 	}
 
 }
