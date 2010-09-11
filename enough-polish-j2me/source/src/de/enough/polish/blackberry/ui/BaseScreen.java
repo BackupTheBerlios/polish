@@ -1127,31 +1127,43 @@ public abstract class BaseScreen
 	    		}
         	}
     	}
-		if (event == TouchEvent.CLICK) {
-    			pointerPressed( x, y );
-    			return true;
+    	
+    	if (event == TouchEvent.MOVE) {
+			pointerDragged( x, y );
+			invalidate();
+			return true;
+    	} else 
+    	//#if polish.hasPointerEvents && polish.hasTouchEvents
+    	if (event == TouchEvent.CLICK) {
+			pointerPressed( x, y );
+    		return true;
 		} else if (event == TouchEvent.UNCLICK) {
-    			pointerReleased( x, y );
-    			return true;
-		} else {
-			if (event == TouchEvent.MOVE) {
-				pointerDragged( x, y );
-				invalidate();
-				return true;
-			} else if (event == TouchEvent.UP) {
-					if (handlePointerTouchUp(x, y)) {
-						invalidate();
-						return true;
-					}
-					return false;
-			} else if (event == TouchEvent.DOWN) {
-				if (handlePointerTouchDown(x, y)) {
+			pointerReleased( x, y );
+    		return true;
+		} else if (event == TouchEvent.UP) {
+			if (handlePointerTouchUp(x, y)) {
 					invalidate();
 					return true;
-				}
+			} else {
 				return false;
 			}
-    	}
+		} else if (event == TouchEvent.DOWN) {
+			if (handlePointerTouchDown(x, y)) {
+				invalidate();
+				return true;
+			} else {
+				return false;
+			}
+		}
+    	//#elif polish.hasPointerEvents && !polish.hasTouchEvents
+    	if (event == TouchEvent.DOWN) {
+    		pointerPressed( x, y );
+    		return true;
+		} else if (event == TouchEvent.UP) {
+			pointerReleased( x, y );
+    		return true;
+		}
+    	//#endif
 		if (isSuperCalled) {
 			return false;
 		}
