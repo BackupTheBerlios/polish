@@ -273,6 +273,7 @@ public class ClockItem
 	 */
 	protected void showNotify() {
 		super.showNotify();
+		updateTime(System.currentTimeMillis());
 		AnimationThread.addAnimationItem( this );
 	}
 
