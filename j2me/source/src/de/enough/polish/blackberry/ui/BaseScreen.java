@@ -5,6 +5,7 @@ package de.enough.polish.blackberry.ui;
 
 import net.rim.device.api.system.Application;
 import net.rim.device.api.system.DeviceInfo;
+import net.rim.device.api.system.KeypadListener;
 import net.rim.device.api.system.TrackwheelListener;
 import net.rim.device.api.ui.ContextMenu;
 import net.rim.device.api.ui.Keypad;
@@ -1286,16 +1287,12 @@ public abstract class BaseScreen
      */
     protected boolean navigationClick(int status, int time)
     {
-		/* From Blackberry Java Development Guide, might be useful in the future.
-		  if ((status & KeypadListener.STATUS_TRACKWHEEL) == KeypadListener.STATUS_TRACKWHEEL)
-		  {
-		    // TODO: Do something here.
-		  }
-		  else if ((status & KeypadListener.STATUS_FOUR_WAY) == KeypadListener.STATUS_FOUR_WAY)
-		  {
-		    // TODO: Do something here.
-		  }
-		*/
+    	// if no valid key event was fired (e.g. in case of a touch event) ...
+    	if (status == 0) {
+    		// return
+    		return true;
+    	}
+    	
     	boolean processed = super.navigationClick(status, time);
     	if (!processed) {
     		keyPressed( KEY_BB_FIRE );
@@ -1318,6 +1315,12 @@ public abstract class BaseScreen
      */
     protected boolean navigationUnclick(int status, int time)
     {
+    	// if no valid key event was fired (e.g. in case of a touch event) ...
+    	if (status == 0) {
+    		// return
+    		return true;
+    	}
+    	
     	boolean processed = super.navigationUnclick(status, time);
     	if (!processed) {
     		Screen screenBefore = getPolishScreen();
