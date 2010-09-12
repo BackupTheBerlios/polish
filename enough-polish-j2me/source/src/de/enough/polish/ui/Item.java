@@ -1337,6 +1337,7 @@ public abstract class Item implements UiElement, Animatable
 		// now set other style attributes:
 		setStyle( style, true );
 		setInitialized(false);
+		repaint();
 	}
 	
 	//#ifdef polish.css.view-type	
