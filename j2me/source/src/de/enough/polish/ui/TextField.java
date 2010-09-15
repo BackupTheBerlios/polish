@@ -2510,7 +2510,16 @@ public class TextField extends StringItem
 				// alowing native field to expand to the fully available width,
 				// the content size does not need to be changed as the same font is being
 				// used.
-				this.editField.layout( availWidth, this.contentHeight );
+				this.editField.layout( availWidth, this.contentHeight );	
+				
+				// On some devices, like the 9000, after layout() the native EditField
+				// grows larger than the maximum specified height, but only by a few
+				// pixels. When that happens, we have to increase the content height accordingly.
+				if ( this.editField.getExtent().height > this.contentHeight )
+                {
+                    this.contentHeight = this.editField.getExtent().height;
+                }
+				
 				updateInternalArea();
 			}
 		//#elif tmp.directInput
