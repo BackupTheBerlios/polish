@@ -68,8 +68,8 @@ public class RedirectHttpConnection implements HttpConnection
 	HttpConnection httpConnection;
 	private ByteArrayOutputStream byteArrayOutputStream;
 	private InputStream inputStream;
-
 	private HttpConnection currentHttpConnection;
+	private boolean limitContentLengthParams;
 
 	/**
 	 * Creates a new http connection that understands redirects.
@@ -154,8 +154,11 @@ public class RedirectHttpConnection implements HttpConnection
 
 				if (postData != null && postData.length > 0)
 				{
-					tmpHttpConnection.setRequestProperty("Content-length", Integer.toString(postData.length));
+					
 					tmpHttpConnection.setRequestProperty("Content-Length", Integer.toString(postData.length));
+					if (!this.limitContentLengthParams) {
+						tmpHttpConnection.setRequestProperty("Content-length", Integer.toString(postData.length));	
+					}
 					OutputStream out = tmpHttpConnection.openOutputStream();
 					out.write(postData);
 					out.close();
@@ -201,6 +204,16 @@ public class RedirectHttpConnection implements HttpConnection
 		this.currentHttpConnection = tmpHttpConnection;
 		this.inputStream = tmpIn;
 	}
+	
+	/**
+	 * Allows to disable sending of both "Content-Length" and "Content-length" parameters.
+	 * 
+	 * @param limit false, when only the "Content-Length" header should be set, not the "Content-length" request header.
+	 */
+	public void setLimitContentLengthParams(boolean limit) {
+		this.limitContentLengthParams = limit;
+	}
+
 
 	/*
 	 * (non-Javadoc)
