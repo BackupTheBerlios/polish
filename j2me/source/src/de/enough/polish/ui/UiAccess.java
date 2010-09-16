@@ -1011,6 +1011,7 @@ public final class UiAccess {
 	 */
 	public static void setStyle( Item item, Style style ) {
 		item.setStyle( style );
+		item.repaint();
 	}
 	//#endif
 
@@ -1023,6 +1024,7 @@ public final class UiAccess {
 	 */
 	public static void setStyle( Screen screen, Style style ) {
 		screen.setStyle( style );
+		screen.repaint();
 	}
 	//#endif	
 
