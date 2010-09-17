@@ -36,10 +36,7 @@ import de.enough.polish.io.Externalizable;
  *
  * <p>Copyright Enough Software 2008 - 2009</p>
  * @author Robert Virkus, j2mepolish@enough.de
- */
-/**
- * @author Andre
- *
+ * @author Andre Schmidt
  */
 public class Dimension implements Externalizable
 {
@@ -48,11 +45,14 @@ public class Dimension implements Externalizable
 	
 	private final static int UNIT_UNDEFINED = Integer.MIN_VALUE;
 	
-	public final static int UNIT_PX = 0x00;
-	
-	public final static int UNIT_PERCENT = 0x01;
-	
-	public final static int UNIT_PT = 0x02;
+	/** A pixel value is absolute */
+	public final static int UNIT_PIXEL = 0;
+	/** A percentage value is taken relative to some other '100%' value */
+	public final static int UNIT_PERCENT = 1;
+	/** A value relative to the font's height. */
+	public final static int UNIT_EM = 1;
+	/** One point equals one dot in a display that has 72dpi */
+	public final static int UNIT_POINT = 2;
 
 	private int unit;
 	private int value;
@@ -101,10 +101,28 @@ public class Dimension implements Externalizable
 	}
 	
 	/**
+	 * Creates a new value with fake floating point support.
+	 * 
+	 * @param value the floating point percent value that has been multiplied with the factor 
+	 * @param factor the factor
+	 * @param unit the unit
+	 * 
+	 */
+	public Dimension( int value, int factor, int unit )
+	{
+		this.value = value;
+		this.factor = factor;
+		this.isPercent = (unit == UNIT_PIXEL);
+		this.unit = unit;
+	}
+
+	
+	/**
 	 * Creates a new dimension that is parsed later
+	 * 
 	 * @param value the value that is parsed at a later stage
 	 */
-	public Dimension( String value) {
+	public Dimension( String value ) {
 		this.valueAsString = value;
 	}
 	
@@ -152,9 +170,34 @@ public class Dimension implements Externalizable
 	 * @param isPercent true when the integer value is a percentage value
 	 */
 	public void setValue( int value, boolean isPercent ) {
-		this.value = value;
-		this.isPercent = isPercent;
+		setValue( value, 1, isPercent ? UNIT_PERCENT : UNIT_PIXEL );
 	}
+	
+	/**
+	 * Sets a new percentage value with fake floating point support.
+	 * 
+	 * @param value the floating point percent value that has been multiplied with the factor 
+	 * @param factor the factor
+	 */
+	public void setValue( int value, int factor ) {
+		setValue( value, factor, UNIT_PERCENT );
+	}
+
+	
+	/**
+	 * Sets a new value with fake floating point support.
+	 * 
+	 * @param value the floating point percent value that has been multiplied with the factor 
+	 * @param factor the factor
+	 * @param unit the unit
+	 */
+	public void setValue( int value, int factor, int unit ) {
+		this.value = value;
+		this.factor = factor;
+		this.unit = unit;
+		this.isPercent = (unit == UNIT_PERCENT);
+	}
+
 	
 	/**
 	 * Sets a new (possibly complex) value.
@@ -163,6 +206,7 @@ public class Dimension implements Externalizable
 	 */
 	public void setValue( String value ) {
 		this.valueAsString = value;
+		this.unit = UNIT_UNDEFINED;
 	}
 
 
@@ -248,28 +292,28 @@ public class Dimension implements Externalizable
 		} else if (v.endsWith("pt")) {
 			v = v.substring(0, l-2).trim();
 			if(parseNumberValue(v)) {
-				this.unit = UNIT_PT;
+				this.unit = UNIT_POINT;
 			}
 		} else {
 			if (v.endsWith("px")) {
 				v = v.substring(0, l-2).trim();
 			}
 			if(parseNumberValue(v)) {
-				this.unit = UNIT_PX;
+				this.unit = UNIT_PIXEL;
 			}
 		}  
 		
 	}
 	
 	private boolean parseNumberValue(String v) {
-		int l = v.length(); 
 		try {
 			this.value = Integer.parseInt(v);
 		} catch (NumberFormatException e) {
 			//#debug warn
 			System.out.println("Encountered invalid dimension: " + this.valueAsString );
-			StringBuffer buffer = new StringBuffer(l);
-			for (int i=0; i<l-1; i++) {
+			int length = v.length(); 
+			StringBuffer buffer = new StringBuffer(length);
+			for (int i=0; i<length-1; i++) {
 				char c = v.charAt(i);
 				if (Character.isDigit(c)){
 					buffer.append(c);

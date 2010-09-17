@@ -250,7 +250,7 @@ public final class Font extends Object
 			}
 			this.size = size.getValue(100);
 			int unit = Ui.UNITS_px;
-			if(size.getUnit() == Dimension.UNIT_PT) {
+			if(size.getUnit() == Dimension.UNIT_POINT) {
 				unit = Ui.UNITS_pt;
 			}
 			this.font = family.getFont( bbStyle, this.size, unit );
