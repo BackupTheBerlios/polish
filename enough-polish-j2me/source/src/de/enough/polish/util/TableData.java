@@ -361,5 +361,48 @@ public class TableData implements Externalizable
 		}
 	}
 
+	/**
+	 * Retrieves the column index for the specified item or object
+	 * @param obj the object
+	 * @return the column index, -1 when the obj was not found
+	 */
+	public int getColumnIndex(Object obj) {
+		int columns = this.numberOfColumns;
+		int rows = this.numberOfRows;
+		for (int col = 0; col < columns; col++)
+		{
+			for (int row = 0; row < rows; row++)
+			{
+				Object dt = this.data[col][row];
+				if (dt == obj) {
+					return col;
+				}
+			}
+		}
+		return -1;
+	}
+	
+
+	/**
+	 * Retrieves the column index for the specified item or object
+	 * @param obj the object
+	 * @return the row index, -1 when the obj was not found
+	 */
+	public int getRowIndex(Object obj) {
+		int columns = this.numberOfColumns;
+		int rows = this.numberOfRows;
+		for (int col = 0; col < columns; col++)
+		{
+			for (int row = 0; row < rows; row++)
+			{
+				Object dt = this.data[col][row];
+				if (dt == obj) {
+					return row;
+				}
+			}
+		}
+		return -1;
+	}
+
 
 }
