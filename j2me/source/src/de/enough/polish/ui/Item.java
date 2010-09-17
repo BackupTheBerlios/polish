@@ -787,7 +787,7 @@ public abstract class Item implements UiElement, Animatable
 		protected int colSpan = 1;
 	//#endif
 	//#if polish.css.rowspan
-		protected int rowSpan;
+		protected int rowSpan = 1;
 	//#endif
 	//#if polish.css.include-label
 		protected boolean includeLabel;
@@ -1337,7 +1337,6 @@ public abstract class Item implements UiElement, Animatable
 		// now set other style attributes:
 		setStyle( style, true );
 		setInitialized(false);
-		repaint();
 	}
 	
 	//#ifdef polish.css.view-type	
@@ -1603,6 +1602,12 @@ public abstract class Item implements UiElement, Animatable
 			Integer colSpanInt = style.getIntProperty("colspan");
 			if ( colSpanInt != null ) {
 				this.colSpan = colSpanInt.intValue();
+			}
+		//#endif	
+		//#if polish.css.rowspan
+			Integer rowSpanInt = style.getIntProperty("rowspan");
+			if ( rowSpanInt != null ) {
+				this.rowSpan = rowSpanInt.intValue();
 			}
 		//#endif	
 		//#if polish.css.include-label
@@ -5546,6 +5551,24 @@ public abstract class Item implements UiElement, Animatable
 			this.contentY += diff;
 		}
 	}
+	
+	/**
+	 * Sets the item's complete width
+	 * @param width the width in pixel
+	 */
+	public void setItemWidth( int width ) {
+		int diff = width - this.itemWidth;
+		//#debug
+		System.out.println("setting item width " + width + ", diff=" + diff + ", hcenter=" +isLayoutCenter() + " for " + this );
+		this.itemWidth = width;
+		this.backgroundWidth += diff;
+		if (isLayoutCenter()) {
+			this.contentX += diff/2;
+		} else if (isLayoutRight()) {
+			this.contentX += diff;
+		}
+	}
+
 	
 	/**
 	 * Retrieves the internal area's horizontal start relative to this item's content area

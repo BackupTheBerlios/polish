@@ -295,10 +295,26 @@ public class TableItem
 					continue;
 				}
 				Item item = null;
+				int columnSpan = 1;
+				int rowingSpan = 1;
 				if (data instanceof Item) {
 					item = (Item) data;
+					boolean isExpand = false;
+					if (item.isLayoutExpand) {
+						item.isLayoutExpand = false;
+						isExpand = true;
+					}
 					width = item.getItemWidth(availWidth, availWidth, availRowHeight);
 					height = item.getItemHeight(availWidth, availWidth, availRowHeight);
+					if (isExpand) {
+						item.isLayoutExpand = true;
+					}
+					//#if polish.css.colspan
+						columnSpan = item.colSpan;
+					//#endif
+					//#if polish.css.rowspan
+						rowingSpan = item.rowSpan;
+					//#endif
 				} else {
 					width = this.font.stringWidth( data.toString() );
 					height = textHeight;
@@ -310,19 +326,21 @@ public class TableItem
 					width += (this.paddingHorizontal << 1);
 					height += (this.paddingVertical << 1);
 				}
-				if (width > widths[col]) {
+				if ((width > widths[col]) && (columnSpan == 1)){
 					widths[col] = width;
 				}
 				//#if polish.css.table-row-height
 					if (this.rowHeight != null) {
 						//TODO handled cases in which an item is larger than the allowed table-row-height
-						height = availRowHeight;
-						if (item != null) {
-							item.setItemHeight(availRowHeight);
+						if (rowingSpan == 1) {
+							height = availRowHeight;
+							if (item != null) {
+								item.setItemHeight(availRowHeight);
+							}
 						}
 					}
 				//#endif
-				if (height > heights[row]) {
+				if ((height > heights[row]) && (rowingSpan == 1)) {
 					heights[row] = height;
 				}					
 			}
@@ -346,6 +364,32 @@ public class TableItem
 //							item.itemWidth = colWidth;
 //						}
 //					//#endif
+					if (item.isLayoutExpand) {
+						int w = colWidth - this.paddingHorizontal;
+						if (this.lineStroke != LINE_STYLE_INVISIBLE) {
+							w--;
+						}
+						item.setItemWidth(w);
+					}
+					//#if polish.css.colspan
+						if (item.colSpan > 1) {
+							int w = colWidth;
+							for (int i=1; i<item.colSpan; i++) {
+								w += widths[i+col];
+							}
+							w -= this.paddingHorizontal;
+							item.setItemWidth( w );
+						}
+					//#endif
+					//#if polish.css.rowspan
+						if (item.rowSpan > 1) {
+							int h = currentRowHeight;
+							for (int i=1; i<item.rowSpan; i++) {
+								h += heights[i+row];
+							}
+							item.setItemHeight( h );
+						}
+					//#endif
 					if (item.itemWidth < colWidth) {
 						if (item.isLayoutCenter) {
 							item.relativeX += (colWidth - item.itemWidth) / 2;
@@ -366,6 +410,7 @@ public class TableItem
 							item.relativeY += (currentRowHeight - item.itemHeight);
 						}
 					}
+					
 				}
 				height += currentRowHeight;
 			}
@@ -385,19 +430,32 @@ public class TableItem
 		updateInternalArea();
 	}
 	
-	//#if polish.css.table-row-height
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Container#getChildWidth(Item)
 	 */
 	protected int getChildWidth( Item item ) {
+		boolean isExpand = false;
+		int previousWidth = 0;
+		if (item.isLayoutExpand) {
+			item.isLayoutExpand = false;
+			isExpand = true;
+			previousWidth = item.itemWidth;
+		}
 		int width = item.getItemWidth( item.availableWidth, item.availableWidth, item.availableHeight );
+		if (isExpand) {
+			item.isLayoutExpand = true;
+			width = previousWidth;
+			item.setItemWidth(width);
+		}
+		//#if polish.css.table-row-height
 		if (this.rowHeight != null) {
 			int availableRowHeight = this.rowHeight.getValue( this.availContentHeight );
 			item.setItemHeight(availableRowHeight);
 		}
+		//#endif
 		return width;
 	}
-	//#endif
+
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#paintContent(int, int, int, int, javax.microedition.lcdui.Graphics)
@@ -917,6 +975,25 @@ public class TableItem
 		return -1;
 	}
 	
+	/**
+	 * Retrieves the column index for the specified item or object
+	 * @param obj the object
+	 * @return the column index, -1 when the obj was not found
+	 */
+	protected int getColumnIndex(Object obj) {
+		return this.tableData.getColumnIndex(obj);
+	}
+
+	
+	/**
+	 * Retrieves the row index for the specified item or object
+	 * @param obj the object
+	 * @return the row index, -1 when the obj was not found
+	 */
+	protected int getRowIndex(Object obj) {
+		return this.tableData.getRowIndex(obj);
+	}
+
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#getItemAreaHeight()
@@ -951,6 +1028,8 @@ public class TableItem
 	}
 	
 	/**
+	 * Selects the specified cell
+	 * 
 	 * @param col the column
 	 * @param row the row
 	 */
@@ -958,17 +1037,19 @@ public class TableItem
 	{
 		setSelectedCell(col, row, 0);
 	}
+	
 	/**
+	 * Selects the specified cell
 	 * @param col the column
 	 * @param row the row
-	 * @param direction the direction
+	 * @param direction the direction, e.g. Canvas.DOWN
 	 */
 	public void setSelectedCell(int col, int row, int direction)
 	{
 		if ((this.selectionMode & SELECTION_MODE_CELL) == SELECTION_MODE_CELL) {
 			Item focItem = this.focusedItem;
 			Object data = get(col, row);
-			if (focItem == data) {
+			if (focItem == data && data != null) {
 				// this cell is already selected:
 				return;
 			}
@@ -1261,6 +1342,29 @@ public class TableItem
 		}
 		repaint();
 	}
+	
+	/**
+	 * Sets the values for the given row.
+	 * @param row the vertical position
+	 * @param values the values that should be insert from column 0 in that specified row
+	 * @throws ArrayIndexOutOfBoundsException when the row is invalid or there are too many value elements given
+	 */
+	public void setRow( int row, Object[] values ) {
+		setRow( row, values, null );
+	}
+	
+	/**
+	 * Sets the values for the given row.
+	 * @param row the vertical position
+	 * @param values the values that should be insert from column 0 in that specified row
+	 * @param itemStyle the style of the added value item, if the value is not an Item it will be converted to a StringItem
+	 * @throws ArrayIndexOutOfBoundsException when the row is invalid or there are too many value elements given
+	 */
+	public void setRow( int row, Object[] values, Style itemStyle ) {
+		for (int i=0; i<values.length; i++) {
+			set( i, row, values[i], itemStyle );
+		}
+	}
 
 	/**
 	 * Sets the value of the given table position.
@@ -1525,6 +1629,7 @@ public class TableItem
 				}
 			}
 		}
+		System.out.println("DID NOT FIND SELECTABLE CELL");
 	}
 	
 	/**
