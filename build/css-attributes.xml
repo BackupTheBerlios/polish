@@ -2017,8 +2017,7 @@
 		default="1"
 		id="106"
 	/>
- <!--	
-	<attribute
+ 	<attribute
 		name="rowspan"
 		type="integer"
 		appliesTo="Item"
@@ -2026,7 +2025,6 @@
 		default="1"
 		id="107"
 	/>
--->
 
 	<attribute
 		name="view-type-left-x-offset"
@@ -5311,6 +5309,14 @@
 		since="J2ME Polish 2.2"
 	/>
 	
+	<attribute
+		name="border-adjust"
+		type="dimension"
+		appliesTo="Item,FakeCustomItem"
+		description="Change the border width, height and position by specifying border-adjust. A positive value moves the border to the right and bottom."
+		id="463"
+		since="J2ME Polish 2.2"
+	/>
 	
 <!--
 	<attribute
