@@ -2495,7 +2495,7 @@
 	
 	<attribute
 		name="image-y-offset"
-		type="integer"
+		type="dimension"
 		appliesTo="ImageItem"
 		description="The y offset for the image of an image item, negative values push the image upwards." 
 		id="160"
@@ -2503,7 +2503,7 @@
 	
 	<attribute
 		name="image-height"
-		type="integer"
+		type="dimension"
 		appliesTo="ImageItem"
 		description="The assumed height for the image of an image item." 
 		id="161"
@@ -5315,6 +5315,24 @@
 		appliesTo="Item,FakeCustomItem"
 		description="Change the border width, height and position by specifying border-adjust. A positive value moves the border to the right and bottom."
 		id="463"
+		since="J2ME Polish 2.2"
+	/>
+	
+	<attribute
+		name="max-image-height"
+		type="dimension"
+		appliesTo="ImageItem"
+		description="The maximum height of an image. If the image exceeds the maximum height, it will be scaled down accordingly." 
+		id="464"
+		since="J2ME Polish 2.2"
+	/>
+	
+	<attribute
+		name="max-image-width"
+		type="dimension"
+		appliesTo="ImageItem"
+		description="The maximum width of an image. If the image exceeds the maximum width it will be scaled down accordingly. Example: max-image-width: 100%; ensures that the image will fit within the available space." 
+		id="465"
 		since="J2ME Polish 2.2"
 	/>
 	

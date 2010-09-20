@@ -30,6 +30,8 @@ import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
+import de.enough.polish.util.ImageUtil;
+
 /**
  * An item that can contain an image.
  * 
@@ -83,12 +85,22 @@ public class ImageItem extends Item
 	protected String altText;
 	protected int textColor;
 	protected Font font;
-	protected int yOffset;
-	protected int height = -1;
+	//#if polish.css.image-y-offset
+		protected Dimension yOffset;
+	//#endif
+	//#if polish.css.image-height
+		protected Dimension height;
+	//#endif
 	protected int xOffset;
 	protected int xOverlap;
 	protected int imageWidth;
 	protected int imageHeight;
+	//#if polish.css.max-image-height
+		private Dimension maxImageHeight;
+	//#endif
+	//#if polish.css.max-image-width
+		private Dimension maxImageWidth;
+	//#endif
 
 	/**
 	 * Creates a new <code>ImageItem</code> with the given label, image, layout
@@ -329,7 +341,12 @@ public class ImageItem extends Item
 				clipHeight = g.getClipHeight();
 				g.clipRect( x, clipY, this.contentWidth, clipHeight );
 			}
-			y += this.yOffset;
+			//#if polish.css.image-y-offset
+				Dimension offset = this.yOffset;
+				if (offset != null) {
+					y += offset.getValue(this.availableHeight);
+				}
+			//#endif
 			x += this.xOffset;
 			if (this.isLayoutExpand) {
 				if (this.isLayoutCenter) {
@@ -357,13 +374,46 @@ public class ImageItem extends Item
 	 */
 	protected void initContent(int firstLineWidth, int availWidth, int availHeight) {
 		this.xOverlap = 0;
-		if (this.image != null) {
-			int imgWidth = this.image.getWidth();
-			int imgHeight = this.image.getHeight();
+		Image img = this.image;
+		if (img != null) {
+			int imgWidth = img.getWidth();
+			int imgHeight = img.getHeight();
+			//#if polish.css.max-image-width && polish.midp2
+				if (this.maxImageWidth != null) {
+					int maxWidth = this.maxImageWidth.getValue(availWidth);
+					if (imgWidth > maxWidth) {
+						int newHeight = (maxWidth * imgHeight) / imgWidth;
+						//#if polish.css.max-image-height
+							if (this.maxImageHeight != null) {
+								int maxHeight = this.maxImageHeight.getValue(availHeight);
+								if (newHeight > maxHeight) {
+									maxWidth = (maxHeight * imgWidth) / imgHeight;
+									newHeight = maxHeight;
+								}
+							}
+						//#endif
+						img = ImageUtil.scale(img, maxWidth, newHeight);
+						imgWidth = maxWidth;
+						imgHeight = newHeight;
+						this.image = img;
+					}
+				}
+			//#elif polish.css.max-image-height && polish.midp2
+				if (this.maxImageHeight != null) {
+					int maxHeight = this.maxImageHeight.getValue(availHeight);
+					if (imgHeight > maxHeight) {
+						int maxWidth = (maxHeight * imgWidth) / imgHeight;
+						img = ImageUtil.scale(img, maxWidth, maxHeight);
+						imgWidth = maxWidth;
+						imgHeight = maxHeight;
+						this.image = img;
+					}
+				}
+			//#endif
 			this.imageWidth = imgWidth;
 			this.imageHeight = imgHeight;
-			this.contentHeight = this.image.getHeight();
-			this.contentWidth = this.image.getWidth();
+			this.contentHeight = img.getHeight();
+			this.contentWidth = img.getWidth();
 			//#if polish.ImageItem.allowUserInteraction != false
 				if (this.contentWidth > availWidth) {
 					this.xOverlap = this.contentWidth - availWidth;
@@ -381,9 +431,11 @@ public class ImageItem extends Item
 			this.contentHeight = 0;
 			this.contentWidth = 0;
 		}
-		if (this.height != -1) {
-			this.contentHeight = this.height;
-		}
+		//#if polish.css.image-height
+			if (this.height != null) {
+				this.contentHeight = this.height.getValue(availHeight);
+			}
+		//#endif
 	}
 
 	//#ifdef polish.useDynamicStyles
@@ -405,15 +457,35 @@ public class ImageItem extends Item
 			this.font = style.getFont();
 		}
 		//#if polish.css.image-y-offset
-			Integer yOffsetInt = style.getIntProperty("image-y-offset");
+			Dimension yOffsetInt = (Dimension) style.getObjectProperty("image-y-offset");
 			if (yOffsetInt != null) {
-				this.yOffset = yOffsetInt.intValue(); 
+				this.yOffset = yOffsetInt; 
+			} else if (resetStyle) {
+				this.yOffset = null;
 			}
 		//#endif
 		//#if polish.css.image-height
-			Integer imageHeightInt = style.getIntProperty("image-height");
+			Dimension imageHeightInt = (Dimension) style.getObjectProperty("image-height");
 			if (imageHeightInt != null) {
-				this.height = imageHeightInt.intValue(); 
+				this.height = imageHeightInt; 
+			} else if (resetStyle) {
+				this.height = null;
+			}
+		//#endif
+		//#if polish.css.max-image-height && polish.midp2
+			Dimension maxImageHeightDim = (Dimension) style.getObjectProperty("max-image-height");
+			if (maxImageHeightDim != null) {
+				this.maxImageHeight = maxImageHeightDim; 
+			} else if (resetStyle) {
+				this.maxImageHeight = null;
+			}
+		//#endif
+		//#if polish.css.max-image-width && polish.midp2
+			Dimension maxImageWidthDim = (Dimension) style.getObjectProperty("max-image-width");
+			if (maxImageWidthDim != null) {
+				this.maxImageWidth = maxImageWidthDim; 
+			} else if (resetStyle) {
+				this.maxImageWidth = null;
 			}
 		//#endif
 	}
