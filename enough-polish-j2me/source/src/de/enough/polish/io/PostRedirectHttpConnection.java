@@ -75,6 +75,7 @@ public class PostRedirectHttpConnection extends RedirectHttpConnection
 	{
 		super( url, requestProperties );
 		setRequestMethod( HttpConnection.POST );
+		setRequestProperty("Content-type", "application/x-www-form-urlencoded");
 		this.body = new StringBuffer();
 	}
 	
