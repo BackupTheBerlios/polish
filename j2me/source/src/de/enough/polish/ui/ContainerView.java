@@ -1488,6 +1488,12 @@ extends ItemView
 				this.isSequentialTraversal = sequentialTraversalBool.booleanValue();
 			}
 		//#endif
+		//#if polish.css.view-type-auto-traversal
+			Boolean autoTraversalBool = style.getBooleanProperty("view-type-auto-traversal");
+			if (autoTraversalBool != null) {
+				this.allowsAutoTraversal = autoTraversalBool.booleanValue();
+			}
+		//#endif
 		//#if polish.css.expand-items
 			Boolean expandItemsBool = style.getBooleanProperty("expand-items");
 			if (expandItemsBool != null) {
