@@ -47,7 +47,7 @@
 
 	<platform>
 		<identifier>MIDP/2.1</identifier>
-		<features>midp, midp21</features>
+		<features>midp, midp21, midp2</features>
 		<description>Mobile Information Device Profile 2.1.</description>
 		<capability name="build.BootClassPath" value="midp-2.1.jar" />
 		<capability name="build.ImplicitGroups" value="midp21" />
