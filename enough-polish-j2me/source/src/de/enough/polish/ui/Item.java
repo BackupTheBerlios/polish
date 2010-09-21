@@ -4061,6 +4061,7 @@ public abstract class Item implements UiElement, Animatable
 					boolean removeViewType = ( this.style.getObjectProperty("view-type") != null  && previousStyle.getObjectProperty( "view-type") == null); 
 				//#endif
 				setStyle( previousStyle );
+				repaint();
 				this.normalStyle = null;
 				//#ifdef polish.css.view-type
 					if (removeViewType) {
