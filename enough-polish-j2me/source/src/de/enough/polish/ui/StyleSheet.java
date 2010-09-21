@@ -51,7 +51,7 @@ import de.enough.polish.util.TextUtil;
  *        05-Jan-2004 - rob creation
  * </pre>
  */
-public final class StyleSheet extends StyleSheetContentContainer {
+public final class StyleSheet {
 	
 	protected static Hashtable imagesByName;
 	//#ifdef polish.images.backgroundLoad
@@ -82,7 +82,8 @@ public final class StyleSheet extends StyleSheetContentContainer {
 
 	
 	
-
+	// do not change the following line!
+//$$IncludeStyleSheetDefinitionHere$$//
 	/** Access to the currently shown J2ME Polish screen, if any */
 	public static Screen currentScreen;	
 	/** Access to the application's Display */
@@ -488,7 +489,6 @@ public final class StyleSheet extends StyleSheetContentContainer {
 						if (!isExpectingFeatureName) {
 							if ("touchscreen".equals(part)) {
 								result = DeviceInfo.hasPointerEvents();
-								System.out.println("found touchscreen, result=" + result);
 							} else if (!("all".equals(part) || "screen".equals(part))) {
 								// this is a unsupported media type (otherwise a parentheses would have been necessary):
 								result = false;
