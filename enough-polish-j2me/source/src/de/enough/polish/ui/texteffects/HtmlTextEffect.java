@@ -39,6 +39,7 @@ import de.enough.polish.ui.TextEffect;
 import de.enough.polish.ui.containerviews.Midp2ContainerView;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.WrappedText;
 import de.enough.polish.xml.SimplePullParser;
 import de.enough.polish.xml.XmlPullParser;
 
@@ -61,19 +62,16 @@ public class HtmlTextEffect extends TextEffect {
 		this.isTextSensitive = true;
 	}
 	
-	
-	/*
-	 * (non-Javadoc)
-	 * @see de.enough.polish.ui.TextEffect#drawStrings(java.lang.String[], int, int, int, int, int, int, int, int, javax.microedition.lcdui.Graphics)
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.TextEffect#drawStrings(de.enough.polish.util.WrappedText, int, int, int, int, int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
-	public void drawStrings(String[] textLines, int textColor, int x, int y,
+	public void drawStrings(WrappedText textLines, int textColor, int x, int y,
 			int leftBorder, int rightBorder, int lineHeight, int maxWidth,
 			int layout, Graphics g) 
 	{
-		//System.out.println("drawStrings: " + this.midp2View + " at x=" + x + ", y=" + y + ", leftBorder=" + leftBorder + ", rightBorder=" + rightBorder);
 		if (this.midp2View == null) {
 			super.drawStrings(textLines, textColor, x, y, leftBorder, rightBorder,
-				lineHeight, maxWidth, layout, g);
+					lineHeight, maxWidth, layout, g);
 		} else {
 			//#if polish.Bugs.needsBottomOrientiationForStringDrawing
 				y -= this.midp2View.getContentHeight();
@@ -83,22 +81,18 @@ public class HtmlTextEffect extends TextEffect {
 			} else if ((layout & Item.LAYOUT_CENTER) == Item.LAYOUT_RIGHT) {
 				x += ((rightBorder - leftBorder) - this.midp2View.getContentWidth());				
 			}
-			this.midp2View.paintContent( this.textItems, x, y, leftBorder, rightBorder, g );
+			this.midp2View.paintContent( this.textItems, x, y, leftBorder, rightBorder, g );			
 		}
 	}
 
-
-
-
-
-	/*
-	 * (non-Javadoc)
-	 * @see de.enough.polish.ui.TextEffect#wrap(java.lang.String, int, javax.microedition.lcdui.Font, int, int)
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.TextEffect#wrap(de.enough.polish.ui.StringItem, java.lang.String, int, javax.microedition.lcdui.Font, int, int, int, java.lang.String, int, de.enough.polish.util.WrappedText)
 	 */
-	public String[] wrap(String htmlText, int textColor, Font font,
-			int firstLineWidth, int lineWidth) 
+	public void wrap(StringItem parent, String htmlText, int textColor, Font meFont,
+			int firstLineWidth, int lineWidth, int maxLines,
+			String maxLinesAppendix, int maxLinesAppendixPosition,
+			WrappedText wrappedText) 
 	{
-//		XmlDomNode root = XmlDomParser.parseTree( "<r>" + htmlText + "</r>" );
 		ArrayList childList = new ArrayList();
 		Style baseStyle = this.style.clone(true);
 		baseStyle.removeAttribute("text-effect");
@@ -113,7 +107,9 @@ public class HtmlTextEffect extends TextEffect {
 		} catch (IOException e) {
 			//#debug error
 			System.out.println("Unable to parse text " + htmlText + e );
-			return super.wrap( htmlText, textColor, font, firstLineWidth, lineWidth );
+			super.wrap(parent, htmlText, textColor, meFont, firstLineWidth, lineWidth, maxLines,
+					maxLinesAppendix, maxLinesAppendixPosition, wrappedText);
+			return;
 		}
 
 		
@@ -128,8 +124,49 @@ public class HtmlTextEffect extends TextEffect {
 		this.textItems = items;
 		this.midp2View = view;
 		//System.out.println("WRAPPING RESULT: items=" + items.length + ", view=" + view.getContentWidth() + " X " + view.getContentHeight());
-		return new String[]{""};
+		wrappedText.setMaxLineWidth(view.getContentWidth());
 	}
+
+
+//	/*
+//	 * (non-Javadoc)
+//	 * @see de.enough.polish.ui.TextEffect#wrap(java.lang.String, int, javax.microedition.lcdui.Font, int, int)
+//	 */
+//	public String[] wrap(String htmlText, int textColor, Font font,
+//			int firstLineWidth, int lineWidth) 
+//	{
+////		XmlDomNode root = XmlDomParser.parseTree( "<r>" + htmlText + "</r>" );
+//		ArrayList childList = new ArrayList();
+//		Style baseStyle = this.style.clone(true);
+//		baseStyle.removeAttribute("text-effect");
+//		baseStyle.layout = (baseStyle.layout & (~(Item.LAYOUT_EXPAND | Item.LAYOUT_VEXPAND | Item.LAYOUT_SHRINK | Item.LAYOUT_VSHRINK)) );
+//		baseStyle.background = null;
+//		baseStyle.border = null;
+//		
+//		try {
+//			XmlPullParser xmlReader = new XmlPullParser(new StringReader(htmlText), false );
+//			xmlReader.relaxed = true;
+//			parse( xmlReader, baseStyle, childList );
+//		} catch (IOException e) {
+//			//#debug error
+//			System.out.println("Unable to parse text " + htmlText + e );
+//			return super.wrap( htmlText, textColor, font, firstLineWidth, lineWidth );
+//		}
+//
+//		
+//		Item[] items = (Item[]) childList.toArray( new Item[childList.size()]);
+//		for (int i = 0; i < items.length; i++) {
+//			Item item = items[i];
+//			//System.out.println( i + ": " + ((StringItem)item).getText());
+//			item.getItemWidth( lineWidth, lineWidth, -1);
+//		}
+//		Midp2ContainerView view = new Midp2ContainerView();
+//		view.initContent(items, firstLineWidth, lineWidth, -1);
+//		this.textItems = items;
+//		this.midp2View = view;
+//		//System.out.println("WRAPPING RESULT: items=" + items.length + ", view=" + view.getContentWidth() + " X " + view.getContentHeight());
+//		return new String[]{""};
+//	}
 
 
 
@@ -271,27 +308,9 @@ public class HtmlTextEffect extends TextEffect {
 	 */
 	public int stringWidth(String str) {
 		if (this.midp2View == null) {
-			wrap( str, 0, getFont(), Integer.MAX_VALUE, Integer.MAX_VALUE );
+			wrap( (StringItem)null, str, 0, getFont(), Integer.MAX_VALUE, Integer.MAX_VALUE, TextUtil.MAXLINES_UNLIMITED, null, TextUtil.MAXLINES_APPENDIX_POSITION_AFTER, new WrappedText() );
 		} 
 		return this.midp2View.getContentWidth();
 	}
-
-
-	
-
-	/*
-	 * (non-Javadoc)
-	 * @see de.enough.polish.ui.TextEffect#getMaxWidth(de.enough.polish.ui.Item, java.lang.String[])
-	 */
-	public int getMaxWidth(Item parent, String[] lines) {
-		if (this.midp2View == null) {
-			return super.getMaxWidth(parent, lines);
-		} else {
-			return this.midp2View.getContentWidth();
-		}
-	}
-
-	
-	
 
 }

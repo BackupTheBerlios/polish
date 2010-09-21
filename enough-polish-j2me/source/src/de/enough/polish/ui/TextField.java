@@ -1874,7 +1874,7 @@ public class TextField extends StringItem
 				int col = 0;
 				int passedCharacters = 0;
 				String textLine = null;
-				for (int i = 0; i < this.textLines.length; i++) {
+				for (int i = 0; i < this.textLines.size(); i++) {
 					textLine = this.realTextLines[i]; //this.textLines[i];
 					passedCharacters += textLine.length();
 					//System.out.println("passedCharacters=" + passedCharacters + ", line=" + textLine );
@@ -1889,7 +1889,7 @@ public class TextField extends StringItem
 				this.caretRow = row;	
 				this.caretColumn = col;
 				
-				textLine = this.textLines[ row ];
+				textLine = this.textLines.getLine( row );
 				String firstPart;
 				if (this.caretColumn < textLine.length()) {
 					firstPart = textLine.substring(0, this.caretColumn);
@@ -2510,7 +2510,7 @@ public class TextField extends StringItem
 				// alowing native field to expand to the fully available width,
 				// the content size does not need to be changed as the same font is being
 				// used.
-				this.editField.layout( availWidth, this.contentHeight );	
+				this.editField.layout( availWidth, this.contentHeight );
 				
 				// On some devices, like the 9000, after layout() the native EditField
 				// grows larger than the maximum specified height, but only by a few
@@ -2540,7 +2540,7 @@ public class TextField extends StringItem
 			} else {
 				// init the original text-lines with spaces and line-breaks:
  				//System.out.println("TextField.initContent(): text=[" + this.text + "], (this.realTextLines == null): " + (this.realTextLines == null) + ", this.caretPosition=" + this.caretPosition + ", caretColumn=" + this.caretColumn + ", doSetCaretPos=" + this.doSetCaretPosition + ", hasBeenSet=" + this.caretPositionHasBeenSet);
-				int length = this.textLines.length;
+				int length = this.textLines.size();
 				int textLength = this.text.length();
 				String[] realLines = this.realTextLines;
 				if (realLines == null || realLines.length != length) {
@@ -2553,7 +2553,7 @@ public class TextField extends StringItem
 //				}
 				int endOfLinePos = 0;
 				for (int i = 0; i < length; i++) {
-					String line = this.textLines[i];
+					String line = this.textLines.getLine(i);
 					endOfLinePos += line.length();
 					if (endOfLinePos < textLength) {
 						char c = this.text.charAt( endOfLinePos );
@@ -2586,7 +2586,7 @@ public class TextField extends StringItem
 					this.caretY = 0; // this.rowHeight * (this.realTextLines.length - 1);
 					//System.out.println(this + ".initContent()/font3: caretX=" + this.caretX);
 					//this.textLines[ this.textLines.length -1 ] += " "; 
-					this.textLines[ 0 ] += " ";
+					this.textLines.setLine( 0, this.textLines.getLine(0) + " " );
 				}
 			}
 			// set the internal information so that big TextBoxes can still be scrolled
@@ -3824,7 +3824,7 @@ public class TextField extends StringItem
 				//#endif
 				return true;
 			} else if (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8) {
-				if (this.textLines == null || this.caretRow >= this.textLines.length - 1) {
+				if (this.textLines == null || this.caretRow >= this.textLines.size() - 1) {
 					return false;
 				} 
 	
@@ -4705,14 +4705,15 @@ public class TextField extends StringItem
 			this.internalX = 0;
 			this.internalHeight = lineHeight;
 			this.internalWidth = this.contentWidth;
-			if (cursorPosition >= this.text.length() - this.textLines[this.textLines.length-1].length()) {
+			int size = this.textLines.size();
+			if (cursorPosition >= this.text.length() - this.textLines.getLine(size-1).length()) {
 				this.internalY = this.contentHeight - lineHeight;
 			} else {
 				this.internalY = -1;
 				int endOfLinePos = 0;
 				int textLength = this.text.length();
-				for (int i = 0; i < this.textLines.length; i++) {
-					String line = this.textLines[i];
+				for (int i = 0; i < size; i++) {
+					String line = this.textLines.getLine(i);
 					endOfLinePos += line.length();
 					if (endOfLinePos < textLength) {
 						char c = this.text.charAt( endOfLinePos );

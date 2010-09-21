@@ -6,6 +6,7 @@ import javax.microedition.rms.RecordStoreException;
 
 import de.enough.polish.ui.TextField;
 import de.enough.polish.util.ArrayList;
+import de.enough.polish.util.WrappedText;
 
 public abstract class TextBuilder {
 
@@ -209,6 +210,49 @@ public abstract class TextBuilder {
 			this.element = 0;
 		}
 	}
+	
+	/**
+	 * Retrieves the line the caret is positioned.
+	 * 
+	 * @param textLines
+	 *            the text lines of the field
+	 * @return the index of the line
+	 */
+	public int getElementLine(WrappedText textLines) {
+		int caretPosition = this.getCaret();
+		int length = 0;
+		int index = 0;
+
+		for (index = 0; index < textLines.size(); index++) {
+			length += textLines.getLine(index).length();
+
+			if (length >= caretPosition - 1)
+				return index;
+		}
+
+		return textLines.size() - 1;
+	}
+	
+	/**
+	 * Retrieves the caret position if a the caret should be positioned in the previous or the next line
+	 * 
+	 * @param jumpDirection
+	 *            the direction of the caret jump
+	 * @return the caret position
+	 */
+	public int getJumpPosition(int jumpDirection, WrappedText textLines) {
+		int caretLine = getElementLine(textLines);
+		int caretPosition = getCaretPosition();
+
+		if (jumpDirection == JUMP_PREV && caretLine > 0)
+			return caretPosition - textLines.getLine(caretLine - 1).length();
+
+		if (jumpDirection == JUMP_NEXT && caretLine != (textLines.size() - 1))
+			return caretPosition + textLines.getLine(caretLine).length();
+
+		return -1;
+	}
+
 
 	/**
 	 * Retrieves the line the caret is positioned.
@@ -233,8 +277,7 @@ public abstract class TextBuilder {
 	}
 
 	/**
-	 * Retrieves the caret position if a the caret should be positioned in the
-	 * previousor the next line
+	 * Retrieves the caret position if a the caret should be positioned in the previous or the next line
 	 * 
 	 * @param jumpDirection
 	 *            the direction of the caret jump

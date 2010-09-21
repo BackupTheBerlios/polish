@@ -31,6 +31,7 @@ import javax.microedition.lcdui.Image;
 
 import de.enough.polish.util.RgbImage;
 import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.WrappedText;
 
 /**
  * An item that can contain a string.
@@ -49,7 +50,7 @@ public class StringItem extends Item
 	private static final int DIRECTION_LEFT = 1;
 	private static final int DIRECTION_RIGHT = 2;
 	protected String text;
-	protected String[] textLines;
+	protected final WrappedText textLines;
 	protected int textColor;
 	protected Font font;
 	//#ifdef polish.css.text-wrap
@@ -209,6 +210,7 @@ public class StringItem extends Item
 	{
 		super( label, LAYOUT_DEFAULT, appearanceMode, style );
 		this.text = text;
+		this.textLines = new WrappedText();
 	}
 	
 	
@@ -396,16 +398,25 @@ public class StringItem extends Item
 		if (text != this.text) {
 			this.text = text;
 			if (text == null) {
-				this.textLines = null;
+				this.textLines.clear();
 			}
 			this.isTextInitializationRequired = true;
-			setInitialized(false);
-			repaint();
+			requestInit();
 		}
 		notifyValueChanged(text);
 	}
 
 	//#if tmp.useTextEffect
+	/**
+	 * Sets the effect for this StringItem
+	 * Note that this method is only available when either using
+	 * font-bitmap or the text-effect CSS attributes:
+	 * <pre>
+	 * 	//#if polish.css.font-bitmap || polish.css.text-effect
+	 * </pre>
+	 * 
+	 * @param effect the new text effect, use null for removing the current text effect
+	 */
 	public void setTextEffect(TextEffect effect)
 	{
 		if (effect != this.textEffect) {
@@ -528,134 +539,156 @@ public class StringItem extends Item
 	}
 	private void paintText( int x, int y, int leftBorder, int rightBorder, Graphics g) {
 	//#endif
-		String[] lines = this.textLines;
-		if (lines != null) {
-			//#if polish.css.text-wrap
-				int clipX = 0;
-				int clipY = 0;
-				int clipWidth = 0;
-				int clipHeight = 0;
-				if (this.useSingleLine && this.clipText ) {
-					clipX = g.getClipX();
-					clipY = g.getClipY();
-					clipWidth = g.getClipWidth();
-					clipHeight = g.getClipHeight();
-					g.clipRect( x, y, this.availableTextWidth, this.contentHeight );
-				}
-			//#endif
-			//#ifdef polish.css.text-vertical-adjustment
-				y += this.textVerticalAdjustment;
-			//#endif
-				
-			//#if polish.Bugs.needsBottomOrientiationForStringDrawing
-				y += getFontHeight();
-			//#endif
-
-			g.setFont( this.font );
-			g.setColor( this.textColor );
-			
-			int lineHeight = getLineHeight();
-			//#ifdef polish.css.text-horizontal-adjustment
-				x += this.textHorizontalAdjustment;
-				leftBorder += this.textHorizontalAdjustment;
-				rightBorder += this.textHorizontalAdjustment;
-			//#endif
-
-			//#if tmp.useTextEffect
-				if (this.textEffect != null) {
-					//#if polish.css.text-wrap
-						if (this.useSingleLine && this.clipText ) {
-							x += this.xOffset;
-						}
-					//#endif
-					int lo;
-					//#if polish.css.text-layout
-						lo = this.textLayout & ~Item.LAYOUT_VCENTER;
-					//#else
-						lo = this.layout & ~Item.LAYOUT_VCENTER;
-					//#endif
-					//#if polish.Bugs.needsBottomOrientiationForStringDrawing
-						this.textEffect.drawStrings( this, lines, this.textColor, x, y, leftBorder, rightBorder, lineHeight, this.contentWidth, lo	 | Item.LAYOUT_BOTTOM, g );
-					//#else
-						this.textEffect.drawStrings( this, lines, this.textColor, x, y, leftBorder, rightBorder, lineHeight, this.contentWidth, lo | Item.LAYOUT_TOP, g );
-					//#endif
-				} else {
-			//#endif
-					int centerX = 0;
-					boolean isCenter;
-					boolean isRight;
-					boolean isExpand;
-					//#if polish.css.text-layout
-						int lo = this.textLayout;
-						isCenter = (lo & LAYOUT_CENTER) == LAYOUT_CENTER;
-						isRight = (lo & LAYOUT_CENTER) == LAYOUT_RIGHT;
-						isExpand = (lo & LAYOUT_EXPAND) == LAYOUT_EXPAND;
-					//#else
-						isCenter = this.isLayoutCenter;
-						isRight = this.isLayoutRight;
-					//#endif
-					
-					if (isCenter) {
-						//#if polish.css.text-layout && polish.text-layout.parentCenter
-						if(isExpand && this.parent != null) {
-							int parentLeft = this.parent.getAbsoluteX() + this.parent.getContentX(); 
-							int parentRight = parentLeft + this.parent.getContentWidth();
-							centerX = parentLeft + (parentRight - parentLeft) / 2;
-							//#ifdef polish.css.text-horizontal-adjustment
-							centerX += this.textHorizontalAdjustment;
-							//#endif
-						}
-						else
-						//#endif
-						{
-							centerX = leftBorder + (rightBorder - leftBorder) / 2;
-							//#ifdef polish.css.text-horizontal-adjustment
-							centerX += this.textHorizontalAdjustment;
-							//#endif
-						}
-					}
-					int lineX = x;
-					int lineY = y;
-					int orientation;
-					// adjust the painting according to the layout:
-					if (isRight) {
-						lineX = rightBorder; //x + this.backgroundWidth - this.paddingLeft - this.paddingRight; // rightBorder can be influenced by sub classes such as IconItem, the rest not.
-						orientation = Graphics.RIGHT;
-					} else if (isCenter) {
-						lineX = centerX;
-						orientation = Graphics.HCENTER;
-					} else {
-						orientation = Graphics.LEFT;
-					}
-					
-					//#if polish.css.text-wrap
-						if (this.clipText) {
-							// when clipping (and therefore a scrolling animation) is needed,
-							// center and right layouts don't really make sense - this would
-							// start and stop the scrolling at wrong places outside of the clipping area: 
-							orientation = Graphics.LEFT;
-							lineX = x + this.xOffset;
-						}
-					//#endif
-					//#if polish.Bugs.needsBottomOrientiationForStringDrawing
-						orientation = Graphics.BOTTOM | orientation;
-					//#else
-						orientation = Graphics.TOP | orientation;
-					//#endif
-					for (int i = 0; i < lines.length; i++) {
-						String line = lines[i];
-						drawString( line, lineX, lineY, orientation, g );
-						lineY += lineHeight;
-					}
-			//#if tmp.useTextEffect
-				}
-			//#endif
-			//#if polish.css.text-wrap
-				if (this.useSingleLine && this.clipText ) {
-					g.setClip( clipX, clipY, clipWidth, clipHeight );
-				}
-			//#endif
+		WrappedText lines = this.textLines;
+		if (lines.size() == 0) {
+			return;
 		}
+		//#if polish.css.text-wrap
+			int clipX = 0;
+			int clipY = 0;
+			int clipWidth = 0;
+			int clipHeight = 0;
+			if (this.useSingleLine && this.clipText ) {
+				clipX = g.getClipX();
+				clipY = g.getClipY();
+				clipWidth = g.getClipWidth();
+				clipHeight = g.getClipHeight();
+				g.clipRect( x, y, this.availableTextWidth, this.contentHeight );
+			}
+		//#endif
+		//#ifdef polish.css.text-vertical-adjustment
+			y += this.textVerticalAdjustment;
+		//#endif
+			
+		//#if polish.Bugs.needsBottomOrientiationForStringDrawing
+			y += getFontHeight();
+		//#endif
+
+		g.setFont( this.font );
+		g.setColor( this.textColor );
+		
+		int lineHeight = getLineHeight();
+		//#ifdef polish.css.text-horizontal-adjustment
+			x += this.textHorizontalAdjustment;
+			leftBorder += this.textHorizontalAdjustment;
+			rightBorder += this.textHorizontalAdjustment;
+		//#endif
+
+		//#if tmp.useTextEffect
+			if (this.textEffect != null) {
+				//#if polish.css.text-wrap
+					if (this.useSingleLine && this.clipText ) {
+						x += this.xOffset;
+					}
+				//#endif
+				int lo;
+				//#if polish.css.text-layout
+					lo = this.textLayout & ~Item.LAYOUT_VCENTER;
+				//#else
+					lo = this.layout & ~Item.LAYOUT_VCENTER;
+				//#endif
+				//#if polish.Bugs.needsBottomOrientiationForStringDrawing
+					lo |= Item.LAYOUT_BOTTOM;
+				//#else
+					lo |= Item.LAYOUT_TOP;
+				//#endif
+				this.textEffect.drawStrings( this, lines, this.textColor, x, y, leftBorder, rightBorder, lineHeight, this.contentWidth, lo, g );
+			} else {
+		//#endif
+				int centerX = 0;
+				boolean isCenter;
+				boolean isRight;
+				boolean isExpand;
+				//#if polish.css.text-layout
+					int lo = this.textLayout;
+					isCenter = (lo & LAYOUT_CENTER) == LAYOUT_CENTER;
+					isRight = (lo & LAYOUT_CENTER) == LAYOUT_RIGHT;
+					isExpand = (lo & LAYOUT_EXPAND) == LAYOUT_EXPAND;
+				//#else
+					isCenter = this.isLayoutCenter;
+					isRight = this.isLayoutRight;
+				//#endif
+				
+				if (isCenter) {
+					//#if polish.css.text-layout && polish.text-layout.parentCenter
+					if(isExpand && this.parent != null) {
+						int parentLeft = this.parent.getAbsoluteX() + this.parent.getContentX(); 
+						int parentRight = parentLeft + this.parent.getContentWidth();
+						centerX = parentLeft + (parentRight - parentLeft) / 2;
+						//#ifdef polish.css.text-horizontal-adjustment
+						centerX += this.textHorizontalAdjustment;
+						//#endif
+					}
+					else
+					//#endif
+					{
+						centerX = leftBorder + (rightBorder - leftBorder) / 2;
+						//#ifdef polish.css.text-horizontal-adjustment
+						centerX += this.textHorizontalAdjustment;
+						//#endif
+					}
+				}
+				int lineX = x;
+				int lineY = y;
+				int orientation;
+				// adjust the painting according to the layout:
+				if (isRight) {
+					lineX = rightBorder; //x + this.backgroundWidth - this.paddingLeft - this.paddingRight; // rightBorder can be influenced by sub classes such as IconItem, the rest not.
+					orientation = Graphics.RIGHT;
+				} else if (isCenter) {
+					lineX = centerX;
+					orientation = Graphics.HCENTER;
+				} else {
+					orientation = Graphics.LEFT;
+				}
+				
+				//#if polish.css.text-wrap
+					if (this.clipText) {
+						// when clipping (and therefore a scrolling animation) is needed,
+						// center and right layouts don't really make sense - this would
+						// start and stop the scrolling at wrong places outside of the clipping area: 
+						orientation = Graphics.LEFT;
+						lineX = x + this.xOffset;
+					}
+				//#endif
+				//#if polish.Bugs.needsBottomOrientiationForStringDrawing
+					orientation = Graphics.BOTTOM | orientation;
+				//#else
+					orientation = Graphics.TOP | orientation;
+				//#endif
+				int startIndex = 0;
+				int endIndex = lines.size();
+				if (endIndex > 2) {
+					int clippingY = g.getClipY();
+					int clippingHeight = g.getClipHeight();
+					if (lineY + endIndex * lineHeight > clippingY + clippingHeight) {
+						endIndex -= ((lineY + endIndex * lineHeight) - (clippingY + clippingHeight)) / lineHeight;
+					}
+					if (lineY < clippingY) {
+						startIndex = (clippingY - lineY) / lineHeight;
+						lineY += startIndex * lineHeight;
+					}
+					//#if polish.Bugs.needsBottomOrientiationForStringDrawing
+						endIndex++;
+					//#endif
+					if (endIndex > lines.size()) {
+						endIndex = lines.size();
+					}
+				}
+				Object[] lineObjects = lines.getLinesInternalArray();
+				for (int i = startIndex; i < endIndex; i++) {
+					String line = (String) lineObjects[i];
+					drawString( line, lineX, lineY, orientation, g );
+					lineY += lineHeight;
+				}
+		//#if tmp.useTextEffect
+			}
+		//#endif
+		//#if polish.css.text-wrap
+			if (this.useSingleLine && this.clipText ) {
+				g.setClip( clipX, clipY, clipWidth, clipHeight );
+			}
+		//#endif
 	}
 	
 	/**
@@ -679,7 +712,7 @@ public class StringItem extends Item
 	/**
 	 * Calculates the width of the given text.
 	 * When a bitmap font is used, the calculation is forwarded to it.
-	 * When a texteffect is used, the calculation is forwared to it.
+	 * When a texteffect is used, the calculation is forwarded to it.
 	 * In other cases font.stringWidth(text) is returned.
 	 * 
 	 * @param str the text of which the width should be determined
@@ -741,7 +774,7 @@ public class StringItem extends Item
 		) {
 			this.contentWidth = 0;
 			this.contentHeight = 0;
-			this.textLines = null;
+			this.textLines.clear();
 			return;
 		}
 		if (!this.isTextInitializationRequired && availWidth == this.lastAvailableContentWidth) {
@@ -751,19 +784,12 @@ public class StringItem extends Item
 		}
 		this.isTextInitializationRequired = false;
 		this.lastAvailableContentWidth = availWidth;
+		this.textLines.clear();
 		//#if polish.css.text-wrap
 			if ( this.useSingleLine ) {
 				this.availableTextWidth = availWidth;
-				this.textLines = new String[]{ 
-					//#if polish.i18n.rightToLeft
-						TextUtil.reverseForRtlLanguage(
-					//#endif
-							body 
-					//#if polish.i18n.rightToLeft
-						)
-					//#endif
-				};
 				int myTextWidth = stringWidth(body);
+				this.textLines.addLine(body, myTextWidth);
 				if (myTextWidth > availWidth) {
 					this.clipText = true;
 					this.textWidth = myTextWidth;
@@ -776,34 +802,20 @@ public class StringItem extends Item
 				this.contentHeight = getFontHeight();
 			} else {
 		//#endif
-				String[] lines = wrap(body, firstLineWidth, availWidth);
-						
-				int fontHeight = getFontHeight();
-				this.contentHeight = (lines.length * (fontHeight + this.paddingVertical)) - this.paddingVertical;
-				int maxWidth = 0;
-				//#ifdef tmp.useTextEffect
-				if(this.textEffect != null)
-				{
-					maxWidth = this.textEffect.getMaxWidth(this,lines);
-				}
-				else
-				{
-				//#endif
-					for (int i = 0; i < lines.length; i++) {
-						String line = lines[i];
-						int width = stringWidth(line);
-						if (width > maxWidth) {
-							maxWidth = width;
-						}
-						//#if polish.i18n.rightToLeft
-							lines[i] =  TextUtil.reverseForRtlLanguage( line );
-						//#endif
+				wrap(body, firstLineWidth, availWidth);
+				WrappedText lines = this.textLines;
+				this.contentHeight = (lines.size() * getLineHeight()) - this.paddingVertical;
+				int maxWidth = lines.getMaxLineWidth();
+				//#if polish.i18n.rightToLeft
+					Object[] lineObjects = lines.getLinesInternalArray();
+					for (int i = 0; i < lines.size(); i++) {
+						String line = (String) lineObjects[i];
+						line = TextUtil.reverseForRtlLanguage( line );
+						//todo: possibly re-calculate the line width?
+						lines.setLine(i, line );  
 					}
-				//#ifdef tmp.useTextEffect
-				}
 				//#endif
 				this.contentWidth = maxWidth;
-				this.textLines = lines;
 		//#if polish.css.text-wrap
 			}
 		//#endif
@@ -812,33 +824,30 @@ public class StringItem extends Item
 	}
 	
 	/**
-	 * Wraps the specified text
+	 * Wraps the specified text and adds the result to the internal field 'wrappedText'.
 	 * @param body the text
 	 * @param firstLineWidth the available width for the first line
 	 * @param availWidth the available width for subsequent lines
-	 * @return an array of text lines that fit into the specified dimensions
 	 */
-	String[] wrap(String body, int firstLineWidth, int availWidth)
+	protected void wrap(String body, int firstLineWidth, int availWidth)
 	{
-		String[] result;
-		//#ifdef tmp.useTextEffect
-		if (this.textEffect != null) {
-			//#ifdef polish.css.max-lines
-				result = this.textEffect.wrap(this, body, this.textColor, this.font, firstLineWidth, availWidth, this.maxLines, this.maxLinesAppendix, this.maxLinesAppendixPosition);
-			//#else
-				result = this.textEffect.wrap(this, body, this.textColor, this.font, firstLineWidth, availWidth);
-			//#endif
-		} else {
+		int maxNumberOfLines = TextUtil.MAXLINES_UNLIMITED;
+		String maxAppendix = null;
+		int maxPosition = TextUtil.MAXLINES_APPENDIX_POSITION_AFTER;
+		//#ifdef polish.css.max-lines
+			maxNumberOfLines = this.maxLines;
+			maxAppendix = this.maxLinesAppendix;
+			maxPosition = this.maxLinesAppendixPosition;
 		//#endif
-			//#ifdef polish.css.max-lines
-				result = TextUtil.wrap(body, this.font, firstLineWidth, availWidth, this.maxLines, this.maxLinesAppendix, this.maxLinesAppendixPosition);
-			//#else
-				result = TextUtil.wrap(body, this.font, firstLineWidth, availWidth);
-			//#endif
+		//#ifdef tmp.useTextEffect
+			if (this.textEffect != null) {
+				this.textEffect.wrap(this, body, this.textColor, this.font, firstLineWidth, availWidth, maxNumberOfLines, maxAppendix, maxPosition, this.textLines );
+			} else {
+		//#endif
+				TextUtil.wrap(body, this.font, firstLineWidth, availWidth, maxNumberOfLines, maxAppendix, maxPosition, this.textLines);
 		//#ifdef tmp.useTextEffect
 			}
 		//#endif
-		return result;
 	}
 	
 	

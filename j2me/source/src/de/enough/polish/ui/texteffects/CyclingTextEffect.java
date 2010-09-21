@@ -31,8 +31,10 @@ import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.ui.ClippingRegion;
 import de.enough.polish.ui.Item;
+import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.TextEffect;
+import de.enough.polish.util.WrappedText;
 
 /**
  * <p>Cycles through text so that only a single line or word is being shown.</p>
@@ -44,12 +46,11 @@ public class CyclingTextEffect extends TextEffect
 {
 
 	private static final long DEFAULT_INTERVAL = 1 * 1000;
-	private String lastText;
-	private String[] textRows;
 	private int currentRow;
 	private long interval = DEFAULT_INTERVAL;
 	private long lastSwitchTime;
 	private Font textFont;
+	private WrappedText wrappedText;
 
 
 
@@ -78,7 +79,7 @@ public class CyclingTextEffect extends TextEffect
 		} 
 		else if (currentTime - this.lastSwitchTime > this.interval) {
 			int index = this.currentRow + 1;
-			if (index >= this.textRows.length) {
+			if (index >= this.wrappedText.size()) {
 				index = 0;
 			}
 			this.currentRow = index;
@@ -90,9 +91,6 @@ public class CyclingTextEffect extends TextEffect
 		}
 	}
 	
-	
-
-
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.TextEffect#showNotify()
 	 */
@@ -101,34 +99,34 @@ public class CyclingTextEffect extends TextEffect
 		super.showNotify();
 		this.lastSwitchTime = 0;
 	}
-
-
+	
 
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.TextEffect#wrap(java.lang.String, int, javax.microedition.lcdui.Font, int, int)
+	 * @see de.enough.polish.ui.TextEffect#wrap(de.enough.polish.ui.StringItem, java.lang.String, int, javax.microedition.lcdui.Font, int, int, int, java.lang.String, int, de.enough.polish.util.WrappedText)
 	 */
-	public String[] wrap(String text, int textColor, Font font,
-			int firstLineWidth, int lineWidth)
+	public void wrap(StringItem parent, String text, int textColor, Font font,
+			int firstLineWidth, int lineWidth, int maxLines,
+			String maxLinesAppendix, int maxLinesAppendixPosition,
+			WrappedText wrappedTextResult) 
 	{
-		if (text != this.lastText) {
-			this.lastText = text;
-			this.textRows = super.wrap(text, textColor, font, firstLineWidth, lineWidth);
-		}
+		super.wrap(parent, text, textColor, font, firstLineWidth, lineWidth, maxLines,
+				maxLinesAppendix, maxLinesAppendixPosition, wrappedTextResult);
+		this.wrappedText = wrappedTextResult;
 		this.textFont = font;
-		if (this.textRows.length > 0) {
-			return new String[]{ this.textRows[0] };
-		}
-		return new String[]{""};
 	}
 
 
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.TextEffect#drawStrings(java.lang.String[], int, int, int, int, int, int, int, int, javax.microedition.lcdui.Graphics)
+	 * @see de.enough.polish.ui.TextEffect#drawStrings(de.enough.polish.util.WrappedText, int, int, int, int, int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
-	public void drawStrings(String[] textLines, int textColor, int x, int y,
+	public void drawStrings(WrappedText textLines, int textColor, int x, int y,
 			int leftBorder, int rightBorder, int lineHeight, int maxWidth,
-			int layout, Graphics g)
+			int layout, Graphics g) 
 	{
+		if (this.wrappedText == null) {
+			super.drawStrings(textLines, textColor, x, y, leftBorder, rightBorder,
+				lineHeight, maxWidth, layout, g);
+		}
 		if ( ( layout & Item.LAYOUT_CENTER ) == Item.LAYOUT_CENTER ) {
 			x = leftBorder + (rightBorder - leftBorder) / 2;
 		} else if ( ( layout & Item.LAYOUT_RIGHT ) == Item.LAYOUT_RIGHT ) {
@@ -143,8 +141,9 @@ public class CyclingTextEffect extends TextEffect
 			}
 		}
 		int anchor = this.style.getAnchorHorizontal();
-		String line = this.textRows[ this.currentRow ];
+		String line = this.wrappedText.getLine( this.currentRow );
 		g.drawString( line, x, y, Graphics.TOP | anchor );
+
 	}
 
 	/* (non-Javadoc)

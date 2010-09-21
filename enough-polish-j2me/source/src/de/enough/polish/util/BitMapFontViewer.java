@@ -496,33 +496,49 @@ public class BitMapFontViewer {
 
 
 	/**
-	 * @param text
-	 * @return an array of strings
+	 * Wraps the given text
+	 * @param text the text
+	 * @return an array of strings, may be empty but not null
 	 */
 	public String[] wrap(String text)
+	{
+		WrappedText wrappedText = new WrappedText();
+		wrap( text, wrappedText );
+		return wrappedText.getLines();
+	}
+	
+	/**
+	 * Wraps the given text
+	 * @param text the text
+	 * @param wrappedText the resulting wrapped text
+	 */
+	public void wrap(String text, WrappedText wrappedText )
 	{
 		if (this.lineWidths == null) {
 			throw new IllegalStateException();
 		}
-		String[] lines = new String[ this.numberOfLines ];
 		int start = 0;
 		int lineIndex = 0;
+		int lineWidth = 0;
 		for (int i = 0; i < this.xPositions.length; i++ ) {
 			int characterWidth = this.usedCharactersWidths[i];
 			if (characterWidth < 0) {
 				// this is a linebreak:
-				lines[lineIndex] = text.substring(start, i);
+				String line = text.substring(start, i);
+				wrappedText.addLine(line, lineWidth);
+				lineWidth = 0;
 				start = i + 1;
 				lineIndex++;
 				if (lineIndex >= this.numberOfLines) {
 					break;
 				}
+			} else {
+				lineWidth += characterWidth;
 			}
 		}
 		if (lineIndex < this.numberOfLines) {
-			lines[lineIndex] = text.substring(start);
+			wrappedText.addLine( text.substring(start), lineWidth );
 		}
-		return lines;
 	}
 
 }

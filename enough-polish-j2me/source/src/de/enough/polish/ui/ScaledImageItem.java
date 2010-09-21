@@ -37,8 +37,8 @@ public class ScaledImageItem
 	extends ImageItem
 {
 	private Image originalImage;
-	private Dimension imageWidth;
-	private Dimension imageHeight;
+	private Dimension scaledImageWidth;
+	private Dimension scaledImageHeight;
 
 	/**
 	 * Creates a scaled image item with the give size constraints.
@@ -80,8 +80,8 @@ public class ScaledImageItem
 	{
 		super(label, image, layout, altText, style);
 		this.originalImage = image;
-		this.imageWidth = imageWidth;
-		this.imageHeight = imageHeight;
+		this.scaledImageWidth = imageWidth;
+		this.scaledImageHeight = imageHeight;
 	}
 
 	//#if polish.midp2
@@ -102,19 +102,19 @@ public class ScaledImageItem
 			int targetWidth = sourceWidth;
 			int targetHeight = sourceHeight;
 	
-			if (this.imageWidth != null) {
-				targetWidth = this.imageWidth.getValue(this.imageWidth.isPercent() ? availWidth : 0);
+			if (this.scaledImageWidth != null) {
+				targetWidth = this.scaledImageWidth.getValue(availWidth);
 			}
 	
-			if (this.imageHeight != null) {
-				targetHeight = this.imageHeight.getValue(this.imageHeight.isPercent() ? availHeight: 0);
+			if (this.scaledImageHeight != null) {
+				targetHeight = this.scaledImageHeight.getValue(availHeight);
 			}
 	
 			// Overwrite content size.
 			this.contentHeight = targetHeight;
 			this.contentWidth = targetWidth;
 	
-			// Don't try to scale a non-existant image.
+			// Don't try to scale a non-existent image.
 			if (this.originalImage == null) {
 				return;
 			}

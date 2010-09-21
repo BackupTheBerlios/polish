@@ -41,8 +41,10 @@ import javax.microedition.lcdui.Image;
 
 
 //#if polish.usePolishGui
+	import de.enough.polish.ui.ScreenInfo;
 	import de.enough.polish.ui.Style;
 	import de.enough.polish.ui.Background;
+	import de.enough.polish.ui.UiAccess;
 //#endif
 import de.enough.polish.util.TextUtil;
 
@@ -280,6 +282,10 @@ implements Runnable
 				}
 			}
 		//#endif
+		//#if polish.ScreenInfo.enable && polish.usePolishGui
+			ScreenInfo.paint( g, 0, width );
+		//#endif
+
 	}
 
 	/* (non-Javadoc)
@@ -365,6 +371,9 @@ implements Runnable
 		if (this.isStarted) {
 			return;
 		}
+		//#if polish.ScreenInfo.enable && polish.usePolishGui
+			UiAccess.showNotify( ScreenInfo.item );
+		//#endif
 		this.isStarted = true;
 		Thread thread = new Thread( this );
 		thread.start();
@@ -400,5 +409,5 @@ implements Runnable
 		repaint();
 	}
 	//#endif
-
+	
 }

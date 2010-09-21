@@ -539,12 +539,12 @@ public class PredictiveAccess implements TrieSetupCallback{
 	 */
 	protected int getChoicesY(int paddingVertical, int borderWidth) {
 		if (this.choiceOrientation == ORIENTATION_BOTTOM) {
-			int resultY = (this.parent.contentHeight / this.parent.textLines.length)
+			int resultY = (this.parent.contentHeight / this.parent.textLines.size())
 					* (this.builder.getElementLine(this.parent.textLines) + 1);
 
 			return (resultY + paddingVertical + borderWidth);
 		} else {
-			int resultY = (this.parent.contentHeight / this.parent.textLines.length)
+			int resultY = (this.parent.contentHeight / this.parent.textLines.size())
 					* (this.builder.getElementLine(this.parent.textLines));
 
 			return (resultY - this.choicesContainer.itemHeight
@@ -567,7 +567,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 			int charsToLine = 0;
 
 			for (int i = 0; i < line; i++)
-				charsToLine += this.parent.textLines[i].length() + 1;
+				charsToLine += this.parent.textLines.getLine(i).length() + 1;
 
 			TextElement element = this.builder.getTextElement();
 

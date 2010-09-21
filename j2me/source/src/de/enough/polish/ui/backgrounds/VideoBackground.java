@@ -64,7 +64,7 @@ public class VideoBackground extends Background
 	 * @param color 
 	 * @param url 
 	 * @param mimeType 
-	 * @param loopCount 
+	 * @param loopCount the number of times the video is being played, -1 will loop it indefinitely 
 	 * @param anchor 
 	 * @param xOffset 
 	 * @param yOffset 
@@ -92,7 +92,7 @@ public class VideoBackground extends Background
 			g.fillRect( x, y, width, height );
 		}
 		if (this.player == null) {
-			InputStream is = this.getClass().getResourceAsStream( this.url );
+			InputStream is = openInputStream();
 			if (is == null) {
 				//#debug error
 				System.out.println("did not find video resource " + this.url);
@@ -136,6 +136,10 @@ public class VideoBackground extends Background
 	        	System.out.println("unable to start video " + e);
 	        }
 		}
+	}
+
+	protected InputStream openInputStream() {
+		return this.getClass().getResourceAsStream( this.url );
 	}
 
 	/* (non-Javadoc)

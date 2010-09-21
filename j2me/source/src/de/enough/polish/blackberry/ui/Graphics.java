@@ -1063,6 +1063,9 @@ public class Graphics extends Object
 	 */
 	public void drawString( String str, int x, int y, int anchor)
 	{
+		// does not work:
+//		anchor = translateAnchor(anchor);
+//		g.drawText( str, x + this.translateX - 1, y + this.translateY, DrawStyle.LEFT | DrawStyle.TOP );
 		if (( anchor & RIGHT ) == RIGHT ) {
 			x -= this.font.font.getAdvance( str );
 		} else if (( anchor & HCENTER ) == HCENTER ) {

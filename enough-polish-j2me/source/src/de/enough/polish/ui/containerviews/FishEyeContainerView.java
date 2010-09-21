@@ -795,11 +795,12 @@ public class FishEyeContainerView extends ContainerView {
 //				//TODO add background.borderWidth << 1 + border.borderWidth << 1 ??
 //			}
 			int backgroundX = x + ((rightBorder - leftBorder) >> 1) - (backgroundWidth >> 1 ); 
+			int backgroundY = y + this.referenceYCenterPositions[this.referenceFocusedIndex];
 			if (this.focusedBackground != null) {
-				this.focusedBackground.paint( backgroundX, y, backgroundWidth, backgroundHeight, g);
+				this.focusedBackground.paint( backgroundX, backgroundY, backgroundWidth, backgroundHeight, g);
 			}
 			if (this.focusedBorder != null) {
-				this.focusedBorder.paint( backgroundX, y, backgroundWidth, backgroundHeight, g);
+				this.focusedBorder.paint( backgroundX, backgroundY, backgroundWidth, backgroundHeight, g);
 			}
 		}
 		int itemX;

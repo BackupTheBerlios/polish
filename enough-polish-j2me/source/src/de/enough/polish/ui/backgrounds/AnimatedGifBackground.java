@@ -26,6 +26,9 @@
  */
 package de.enough.polish.ui.backgrounds;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
 /**
  * <p>Plays back animated gifs in GIF89a format.</p>
  *
@@ -39,6 +42,8 @@ package de.enough.polish.ui.backgrounds;
 public class AnimatedGifBackground extends VideoBackground
 {
 
+	private byte[] data;
+
 	/**
 	 * @param url
 	 * @param loopCount
@@ -48,4 +53,25 @@ public class AnimatedGifBackground extends VideoBackground
 		super(color, url, "image/gif", loopCount, anchor, xOffset, yOffset );
 	}
 
+	/**
+	 * @param url
+	 * @param loopCount
+	 */
+	public AnimatedGifBackground(int color, byte[] data, int loopCount, int anchor, int xOffset, int yOffset)
+	{
+		super(color, null, "image/gif", loopCount, anchor, xOffset, yOffset );
+		this.data = data;
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.backgrounds.VideoBackground#openInputStream()
+	 */
+	protected InputStream openInputStream() {
+		if (this.data != null) {
+			return new ByteArrayInputStream(this.data);
+		}
+		return super.openInputStream();
+	}
+	
+	
 }

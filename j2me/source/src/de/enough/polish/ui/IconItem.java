@@ -835,7 +835,7 @@ implements ImageConsumer
 	public void setTextVisible( boolean isTextVisible ) {
 		this.isTextVisible = isTextVisible;
 		if (!isTextVisible) {
-			this.textLines = null;
+			this.textLines.clear();
 		}
 		this.isTextInitializationRequired = true;
 		setInitialized(false);

@@ -30,10 +30,12 @@ import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.ui.Item;
+import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.TextEffect;
 import de.enough.polish.util.BitMapFont;
 import de.enough.polish.util.BitMapFontViewer;
+import de.enough.polish.util.WrappedText;
 
 /**
  * <p>Renders texts with a given bitmap font.</p>
@@ -55,7 +57,7 @@ public class BitmapFontTextEffect extends TextEffect {
 
 	protected transient BitMapFont font;
 	protected transient BitMapFontViewer viewer;
-	private String[] lastText;
+//	private String[] lastText;
 
 	/**
 	 * Creates a text with smileys
@@ -101,42 +103,26 @@ public class BitmapFontTextEffect extends TextEffect {
 		return this.font.charWidth(c);
 	}
 
+	
 
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.TextEffect#wrap(java.lang.String, javax.microedition.lcdui.Font, int, int)
+	 * @see de.enough.polish.ui.TextEffect#wrap(de.enough.polish.ui.StringItem, java.lang.String, int, javax.microedition.lcdui.Font, int, int, int, java.lang.String, int, de.enough.polish.util.WrappedText)
 	 */
-	public String[] wrap(String text, int textColor, Font fnt, int firstLineWidth, int lineWidth)
+	public void wrap(StringItem parent, String text, int textColor, Font meFont,
+			int firstLineWidth, int lineWidth, int maxLines,
+			String maxLinesAppendix, int maxLinesAppendixPosition,
+			WrappedText wrappedText) 
 	{
 		if (this.font == null) {
-			return super.wrap(text, textColor, fnt, firstLineWidth, lineWidth);
+			super.wrap(parent, text, textColor, meFont, firstLineWidth, lineWidth, maxLines,
+					maxLinesAppendix, maxLinesAppendixPosition, wrappedText);
+			return;
 		}
 		this.viewer = this.font.getViewer(text,textColor);
 		if (this.viewer == null) {
-			return super.wrap( text, textColor, fnt, firstLineWidth, lineWidth );
-		}
-		int pv = 1;
-		int anchor = Graphics.LEFT;
-		if (this.style != null) {
-			pv = this.style.getPaddingVertical( lineWidth );
-			anchor = this.style.getAnchorHorizontal();
-		}
-		this.viewer.layout(firstLineWidth, lineWidth, pv,  anchor );
-		String[] wrappedText = this.viewer.wrap( text );
-		this.lastText = wrappedText;
-		return wrappedText;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see de.enough.polish.ui.TextEffect#wrap(java.lang.String, int, javax.microedition.lcdui.Font, int, int, int, java.lang.String, int)
-	 */
-	public String[] wrap(String text, int textColor, Font fnt, int firstLineWidth, int lineWidth, int maxLines, String maxLinesAppendix, int maxLinesAppendixPosition) {
-		if (this.font == null) {
-			return super.wrap(text, textColor, fnt, firstLineWidth, lineWidth);
-		}
-		this.viewer = this.font.getViewer(text,textColor);
-		if (this.viewer == null) {
-			return super.wrap( text, textColor, fnt, firstLineWidth, lineWidth );
+			super.wrap(parent, text, textColor, meFont, firstLineWidth, lineWidth, maxLines,
+					maxLinesAppendix, maxLinesAppendixPosition, wrappedText);
+			return;
 		}
 		int pv = 1;
 		int anchor = Graphics.LEFT;
@@ -145,10 +131,12 @@ public class BitmapFontTextEffect extends TextEffect {
 			anchor = this.style.getAnchorHorizontal();
 		}
 		this.viewer.layout(firstLineWidth, lineWidth, pv,  anchor, maxLines, maxLinesAppendix, this.font );
-		String[] wrappedText = this.viewer.wrap( text );
-		this.lastText = wrappedText;
-		return wrappedText;
+		this.viewer.wrap( text, wrappedText );
+//		this.lastText = wrappedText;
 	}
+
+
+
 
 
 	/* (non-Javadoc)
@@ -173,27 +161,29 @@ public class BitmapFontTextEffect extends TextEffect {
 	{
 		this.font = font;
 	}
+	
+	
 
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.TextEffect#drawStrings(java.lang.String[], int, int, int, int, int, int, int, int, javax.microedition.lcdui.Graphics)
+	 * @see de.enough.polish.ui.TextEffect#drawStrings(de.enough.polish.util.WrappedText, int, int, int, int, int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
-	public void drawStrings(String[] textLines, int textColor, int x, int y,
+	public void drawStrings(WrappedText textLines, int textColor, int x, int y,
 			int leftBorder, int rightBorder, int lineHeight, int maxWidth,
-			int layout, Graphics g)
+			int layout, Graphics g) 
 	{
-		if (textLines != this.lastText && this.font != null) {
-			StringBuffer buffer = new StringBuffer();
-			for (int i = 0; i < textLines.length; i++)
-			{
-				buffer.append( textLines[i] );
-				if (i != textLines.length - 1) {
-					buffer.append('\n');
-				}
-			}
-			
-			this.viewer = this.font.getViewer(buffer.toString(),textColor);
-			this.lastText = textLines;
-		}
+//		if (textLines != this.lastText && this.font != null) {
+//			StringBuffer buffer = new StringBuffer();
+//			for (int i = 0; i < textLines.length; i++)
+//			{
+//				buffer.append( textLines[i] );
+//				if (i != textLines.length - 1) {
+//					buffer.append('\n');
+//				}
+//			}
+//			
+//			this.viewer = this.font.getViewer(buffer.toString(),textColor);
+//			this.lastText = textLines;
+//		}
 		if (this.viewer == null) {
 			super.drawStrings(textLines, textColor, x, y, leftBorder, rightBorder,
 				lineHeight, maxWidth, layout, g);
@@ -214,8 +204,8 @@ public class BitmapFontTextEffect extends TextEffect {
 			}
 			this.viewer.paint(x, y, g);
 		}
+		
 	}
-
 
 
 	/* (non-Javadoc)

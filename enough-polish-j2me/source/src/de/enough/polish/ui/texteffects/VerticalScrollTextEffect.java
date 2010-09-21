@@ -35,6 +35,7 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.TextEffect;
+import de.enough.polish.util.WrappedText;
 
 /**
  * <p>A text effect that scrolls through the wrapped lines</p>
@@ -62,8 +63,8 @@ public class VerticalScrollTextEffect extends TextEffect{
 	int lineHeight = 0;
 	int drawCount = 0;
 		
-	String[] textLines = null;
-	String[] drawLines = null;
+	WrappedText textLines = null;
+	WrappedText drawLines = null;
 	
 	long stageTime = 0;
 	int stageCurrent = STAGE_SHOW;
@@ -74,6 +75,7 @@ public class VerticalScrollTextEffect extends TextEffect{
 	int lastLineWidth = -1;
 	
 	boolean needsAnimation = false;
+	private WrappedText originalWrappedText;
 	
 	public VerticalScrollTextEffect()
 	{
@@ -95,7 +97,7 @@ public class VerticalScrollTextEffect extends TextEffect{
 	 * @see de.enough.polish.ui.TextEffect#animate()
 	 */
 	public boolean animate() {
-		if(this.textLines != null && this.textLines.length != 1){
+		if(this.textLines != null && this.textLines.size() != 1){
 			long currentTime = System.currentTimeMillis();
 			
 			if (this.stageTime == 0) {
@@ -125,7 +127,7 @@ public class VerticalScrollTextEffect extends TextEffect{
 						//#debug debug
 						System.out.println("stage change to STAGE_SHOW");
 						
-						this.lineIndex = (this.lineIndex + 1) % this.textLines.length;
+						this.lineIndex = (this.lineIndex + 1) % this.textLines.size();
 						this.lineOffset = 0;
 						
 						this.stageCurrent = STAGE_SHOW;
@@ -139,8 +141,7 @@ public class VerticalScrollTextEffect extends TextEffect{
 	}
 	
 	/**
-	 * Calculates and returns the offset to draw the textlines
-	 * for the animation  
+	 * Calculates and returns the offset to draw the textlines for the animation  
 	 * @param timePassed the passed time since the last animation
 	 * @param lineHeight the line height
 	 * @return the offset
@@ -151,18 +152,27 @@ public class VerticalScrollTextEffect extends TextEffect{
 		return (lineHeight * 1000 / 100) * progress / 1000;
 	}
 
+	
+	
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.TextEffect#drawStrings(java.lang.String[], int, int, int, int, int, int, int, int, javax.microedition.lcdui.Graphics)
+	 * @see de.enough.polish.ui.TextEffect#drawStrings(de.enough.polish.util.WrappedText, int, int, int, int, int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
-	public void drawStrings(Item parent, String[] textLines, int textColor, int x, int y,
+	public void drawStrings(WrappedText wrappedText, int textColor, int x, int y,
 			int leftBorder, int rightBorder, int lineHeight, int maxWidth,
-			int layout, Graphics g) {
-		
+			int layout, Graphics g) 
+	{
+		int textLinesSize = this.textLines.size();
+		if (textLinesSize < this.maxLines) {
+			super.drawStrings(wrappedText, textColor, x, y, leftBorder, rightBorder,
+					lineHeight, maxWidth, layout, g);
+			return;
+		}
 		this.lineHeight = lineHeight;
 		
 		int index = this.lineIndex;
-		for (int i = 0; i < this.drawLines.length; i++) {
-			this.drawLines[i] = this.textLines[(index + i) % this.textLines.length];
+		for (int i = 0; i < this.drawLines.size(); i++) {
+			int textLinesIndex = (index + i) % textLinesSize;
+			this.drawLines.setLine(i, this.textLines.getLine( textLinesIndex ), this.textLines.getLineWidth(textLinesIndex) );
 		}
 		
 		int clipX = g.getClipX();
@@ -187,51 +197,40 @@ public class VerticalScrollTextEffect extends TextEffect{
 		
 		g.setClip(clipX, clipY, clipWidth, clipHeight);
 	}
-	
-	
 
-	/*
-	 * (non-Javadoc)
-	 * @see de.enough.polish.ui.TextEffect#wrap(de.enough.polish.ui.Item, java.lang.String, int, javax.microedition.lcdui.Font, int, int, int, java.lang.String, int)
-	 */
-	public String[] wrap(Item item, String text, int textColor, Font font, int firstLineWidth, int lineWidth, int maxLinesParam, String maxLinesAppendix, int maxLinesAppendixPosition) {
-		return wrap( item, text, textColor, font, firstLineWidth, lineWidth );
-	}
 
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.TextEffect#wrap(java.lang.String, int, javax.microedition.lcdui.Font, int, int)
+	 * @see de.enough.polish.ui.TextEffect#wrap(de.enough.polish.ui.StringItem, java.lang.String, int, javax.microedition.lcdui.Font, int, int, int, java.lang.String, int, de.enough.polish.util.WrappedText)
 	 */
-	public String[] wrap(Item parent, String text, int textColor, Font font,
-			int firstLineWidth, int lineWidth) {
-		this.textLines = super.wrap(text, textColor, font, firstLineWidth, lineWidth);
-		
-		if(this.textLines.length > this.maxLines)
+	public void wrap(StringItem parent, String text, int textColor, Font font,
+			int firstLineWidth, int lineWidth, int maxLines,
+			String maxLinesAppendix, int maxLinesAppendixPosition,
+			WrappedText wrappedTextResult) 
+	{
+		super.wrap(parent, text, textColor, font, firstLineWidth, lineWidth, maxLines,
+				maxLinesAppendix, maxLinesAppendixPosition, wrappedTextResult);
+		this.textLines = wrappedTextResult;
+		if (wrappedTextResult.size() > this.maxLines)
 		{
-			 this.drawLines = new String[this.maxLines + 1];
-			 this.lines = this.maxLines;
-			 
-			 this.needsAnimation = true;
-			 
-			 AnimationThread.addAnimationItem(parent);
+			this.originalWrappedText = new WrappedText( wrappedTextResult );
+			this.drawLines = new WrappedText();
+			for (int i=0; i<this.maxLines + 1; i++) {
+				this.drawLines.addLine( wrappedTextResult.getLine(i), wrappedTextResult.getLineWidth(i));
+			}
+			this.lines = this.maxLines;
+			this.needsAnimation = true;
+			AnimationThread.addAnimationItem(parent);
+			wrappedTextResult.clear();
+			wrappedTextResult.addAll( this.drawLines );
 		}
 		else
 		{
 			this.drawLines = this.textLines;
-			this.lines = this.textLines.length;
-			
+			this.lines = wrappedTextResult.size();
 			this.needsAnimation = false;
-			
 			AnimationThread.removeAnimationItem(parent);
 		}
 
-		
-		String[] resultLines = new String[this.lines];
-		
-		for (int index = 0; index < resultLines.length; index++) {
-			resultLines[index] = this.textLines[index];
-		}
-		
-		return resultLines;
 	}
 	
 	public void onAttach(Item parent) {
@@ -281,10 +280,4 @@ public class VerticalScrollTextEffect extends TextEffect{
 		//#endif
 	}
 
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.TextEffect#getMaxWidth(java.lang.String[])
-	 */
-	public int getMaxWidth(Item parent, String[] lines) {
-		return super.getMaxWidth(parent, this.textLines);
-	}
 }

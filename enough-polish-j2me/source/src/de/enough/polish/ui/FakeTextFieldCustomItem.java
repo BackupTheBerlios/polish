@@ -33,6 +33,11 @@
  */
 package de.enough.polish.ui;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
@@ -40,10 +45,18 @@ import javax.microedition.lcdui.Graphics;
 	import de.enough.polish.predictive.TextBuilder;
 	import de.enough.polish.predictive.trie.TrieProvider;
 //#endif
+import de.enough.polish.ui.keyboard.view.KeyboardView;
+import de.enough.polish.util.ArrayList;
+import de.enough.polish.util.DeviceControl;
+import de.enough.polish.util.DeviceInfo;
 import de.enough.polish.util.DrawUtil;
+import de.enough.polish.util.IntHashMap;
 import de.enough.polish.util.Locale;
+import de.enough.polish.util.Properties;
 
 //#if polish.blackberry
+import de.enough.polish.android.midlet.MidletBridge;
+import de.enough.polish.blackberry.ui.PolishEmailAddressEditField;
 	import de.enough.polish.blackberry.ui.PolishTextField;
 	import de.enough.polish.blackberry.ui.PolishEditField;
 	import de.enough.polish.blackberry.ui.PolishPasswordEditField;
@@ -490,6 +503,29 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 	 * @since MIDP 2.0
 	 */
 	public static final int DECIMAL = 5;
+	
+	/**
+	 * The user is allowed to enter numeric values with two decimal
+	 * fractions, for example &quot;-123.00&quot;, &quot;0.13&quot;, or
+	 * &quot;0.50&quot;.
+	 * 
+	 * <p>Numbers are appended in the last decimal fraction by default, so when &quot;1&quot; is pressed this results
+	 * in &quot;0.01&quot;. Similarly pressing &quot;1&quot;, &quot;2&quot; and &quot;3&quot; results in &quot;1.23&quot;.
+	 * </p>
+	 * <p>Sample usage:</p>
+	 * <pre>
+	 * TextField cashRegister = new TextField("Price: ",  null, 5, UiAccess.CONSTRAINT_FIXED_POINT_DECIMAL );
+	 * </pre>
+	 * 
+	 * <p>Constant <code>20</code> is assigned to <code>FIXED_POINT_DECIMAL</code>.</p>
+	 * 
+	 * @since J2ME Polish 2.1.3
+	 * @see UiAccess#CONSTRAINT_FIXED_POINT_DECIMAL
+	 * @see #setNumberOfDecimalFractions(int)
+	 * @see #getNumberOfDecimalFractions()
+	 * @see #convertToFixedPointDecimal(String)
+	 */
+	public static final int FIXED_POINT_DECIMAL = 20;
 
 	/**
 	 * Indicates that the text entered is confidential data that should be
@@ -643,6 +679,12 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 	 * @since MIDP 2.0
 	 */
 	public static final int INITIAL_CAPS_SENTENCE = 0x200000;
+	
+	/**
+	 * A flag to hint to the implementation that during text editing,the
+	 * initial letter of each sentence should NOT be capitalized.
+	 */
+	public static final int INITIAL_CAPS_NEVER = 0x400000;
 
 	/**
 	 * The mask value for determining the constraint mode. 
@@ -661,50 +703,57 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 
 	// clear command is used in DateField, too:
 	//#ifdef polish.command.clear.priority:defined
-	//#= private final static int CLEAR_PRIORITY = ${polish.command.clear.priority};
+		//#= private final static int CLEAR_PRIORITY = ${polish.command.clear.priority};
 	//#else
 		private final static int CLEAR_PRIORITY = 8;
 	//#endif
-	//#ifdef polish.i18n.useDynamicTranslations
-			public static Command CLEAR_CMD = new Command( Locale.get("polish.command.clear"), Command.CANCEL, CLEAR_PRIORITY );
-	//#elifdef polish.command.clear:defined
-		//#= public static final Command CLEAR_CMD = new Command( "${polish.command.clear}", Command.CANCEL, CLEAR_PRIORITY );
+	//#ifdef polish.command.clear.type:defined
+		//#= private final static int CLEAR_TYPE = ${polish.command.clear.type};
 	//#else
-		//# public static final Command CLEAR_CMD = new Command( "Clear", Command.CANCEL, CLEAR_PRIORITY ); 
+		private final static int CLEAR_TYPE = Command.ITEM;
+	//#endif
+	//#ifdef polish.i18n.useDynamicTranslations
+			/**
+			 * Command for clearing the complete text of this field
+			 */
+			public static Command CLEAR_CMD = new Command( Locale.get("polish.command.clear"), CLEAR_TYPE, CLEAR_PRIORITY );
+	//#elifdef polish.command.clear:defined
+		//#= public static final Command CLEAR_CMD = new Command( "${polish.command.clear}", CLEAR_TYPE, CLEAR_PRIORITY );
+	//#else
+		//# public static final Command CLEAR_CMD = new Command( "Clear", CLEAR_TYPE, CLEAR_PRIORITY ); 
 	//#endif
 
 		
 	//#ifndef tmp.suppressCommands
 	
-		//#ifdef polish.command.delete.priority:defined
-		//#= private final static int DELETE_PRIORITY = ${polish.command.delete.priority};
-		//#else
-			private final static int DELETE_PRIORITY = 1;
-		//#endif
-			
 		//#if (polish.TextField.suppressDeleteCommand != true) && !polish.blackberry && !polish.TextField.keepDeleteCommand
 			//#define tmp.updateDeleteCommand
 		//#endif
 			
+		//#ifdef polish.command.delete.priority:defined
+			//#= private final static int DELETE_PRIORITY = ${polish.command.delete.priority};
+		//#else
+			private final static int DELETE_PRIORITY = 1;
+		//#endif
+		
+			
 		// the delete command is a Command.ITEM type when the extended menubar is used in conjunction with a defined return-key, 
 		// because CANCEL will be mapped on special keys like the return key on Sony Ericsson devices.
-		//#if polish.MenuBar.useExtendedMenuBar && polish.key.ReturnKey:defined
-			//#ifdef polish.i18n.useDynamicTranslations
-				//#	public static Command DELETE_CMD = new Command( Locale.get("polish.command.delete"), Command.ITEM, DELETE_PRIORITY );
-			//#elifdef polish.command.delete:defined
-				//#= public static final Command DELETE_CMD = new Command( "${polish.command.delete}", Command.ITEM, DELETE_PRIORITY );
-			//#else
-				//# public static final Command DELETE_CMD = new Command( "Delete", Command.ITEM, DELETE_PRIORITY ); 
-			//#endif
+		private final static int DELETE_TYPE = 
+				//#ifdef polish.command.delete.type:defined
+					//#= ${polish.command.delete.type};
+				//#elif polish.MenuBar.useExtendedMenuBar && (polish.key.ReturnKey:defined || polish.css.repaint-previous-screen && polish.hasPointerEvents)
+					//# Command.ITEM;
+				//#else
+					Command.CANCEL;
+				//#endif
+		//#ifdef polish.i18n.useDynamicTranslations
+			public static Command DELETE_CMD = new Command( Locale.get("polish.command.delete"), DELETE_TYPE, DELETE_PRIORITY );
+		//#elifdef polish.command.delete:defined
+			//#= public static final Command DELETE_CMD = new Command( "${polish.command.delete}", DELETE_TYPE, DELETE_PRIORITY );
 		//#else
-			//#ifdef polish.i18n.useDynamicTranslations
-				public static Command DELETE_CMD = new Command( Locale.get("polish.command.delete"), Command.CANCEL, DELETE_PRIORITY );
-			//#elifdef polish.command.delete:defined
-				//#= public static final Command DELETE_CMD = new Command( "${polish.command.delete}", Command.CANCEL, DELETE_PRIORITY );
-			//#else
-				//# public static final Command DELETE_CMD = new Command( "Delete", Command.CANCEL, DELETE_PRIORITY ); 
-			//#endif
-	  	//#endif
+			//# public static final Command DELETE_CMD = new Command( "Delete", DELETE_TYPE, DELETE_PRIORITY ); 
+		//#endif
 	//#endif	
 	
 	//#if polish.key.maybeSupportsAsciiKeyMap
@@ -733,7 +782,9 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 	private String passwordText;
 	private boolean isPassword;
 	private boolean enableDirectInput;
-	
+	private boolean noNewLine = false;
+	private boolean noComplexInput = false;
+
 	//#if (!tmp.suppressCommands && !tmp.supportsSymbolEntry) || tmp.supportsSymbolEntry
 		private ItemCommandListener additionalItemCommandListener;
 	//#endif
@@ -757,11 +808,11 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 			//#endif
 				
 			//#ifdef polish.i18n.useDynamicTranslations
-				public static Command ENTER_SYMBOL_CMD = new Command( Locale.get("polish.command.entersymbol"), Command.ITEM, ENTER_SYMBOL_PRIORITY );
+				public static Command ENTER_SYMBOL_CMD = new Command( Locale.get("polish.command.entersymbol"), Command.SCREEN, ENTER_SYMBOL_PRIORITY );
 			//#elifdef polish.command.entersymbol:defined
-				//#= public static final Command ENTER_SYMBOL_CMD = new Command( "${polish.command.entersymbol}", Command.ITEM, ENTER_SYMBOL_PRIORITY );
+				//#= public static final Command ENTER_SYMBOL_CMD = new Command( "${polish.command.entersymbol}", Command.SCREEN, ENTER_SYMBOL_PRIORITY );
 			//#else
-				//# public static final Command ENTER_SYMBOL_CMD = new Command( "Add Symbol", Command.ITEM, ENTER_SYMBOL_PRIORITY ); 
+				//# public static final Command ENTER_SYMBOL_CMD = new Command( "Add Symbol", Command.SCREEN, ENTER_SYMBOL_PRIORITY ); 
 			//#endif
 		//#endif
 		private boolean isKeyDown;
@@ -782,8 +833,10 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 		public static final int MODE_NATIVE = 4;
 		//#ifdef polish.key.ChangeInputModeKey:defined
 			//#= protected static final int KEY_CHANGE_MODE = ${polish.key.ChangeInputModeKey};
+		//#elif ${polish.vendor} == Generic
+			public static final int KEY_CHANGE_MODE = DeviceInfo.getKeyInputModeSwitch();
 		//#else
-			public static final int KEY_CHANGE_MODE = Canvas.KEY_POUND;
+			//# public static final int KEY_CHANGE_MODE = Canvas.KEY_POUND;
 		//#endif
 		//#ifdef polish.key.ClearKey:defined
 		   //#= public static final int KEY_DELETE = ${polish.key.ClearKey};
@@ -816,67 +869,71 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 		private int characterIndex; // the index within the available characters of the current key
 		// the characters for each key:
 		//#ifdef polish.TextField.charactersKey1:defined
-			//#= private static final String charactersKey1 = "${polish.TextField.charactersKey1}";
+			//#= private static String charactersKey1 = "${polish.TextField.charactersKey1}";
 		//#else
-		private static final String charactersKey1 = ".,!?\u00bf:/()@_-+1'\";";
+		private static String charactersKey1 = ".,!?\u00bf:/()@_-+1'\";";
 		//#endif
 		//#ifdef polish.TextField.charactersKey2:defined
-			//#= private static final String charactersKey2 = "${polish.TextField.charactersKey2}";
+			//#= private static String charactersKey2 = "${polish.TextField.charactersKey2}";
 		//#else
-			private static final String charactersKey2 = "abc2\u00e1\u00e2\u00e3\u00e4\u00e5\u00e6\u00e7";
+			private static String charactersKey2 = "abc2\u00e1\u00e2\u00e3\u00e4\u00e5\u00e6\u00e7";
 		//#endif
 		//#ifdef polish.TextField.charactersKey3:defined
-			//#= private static final String charactersKey3 = "${polish.TextField.charactersKey3}";
+			//#= private static String charactersKey3 = "${polish.TextField.charactersKey3}";
 		//#else
-			private static final String charactersKey3 = "def3\u00e8\u00e9\u00ea\u00eb";
+			private static String charactersKey3 = "def3\u00e8\u00e9\u00ea\u00eb";
 		//#endif
 		//#ifdef polish.TextField.charactersKey4:defined
-			//#= private static final String charactersKey4 = "${polish.TextField.charactersKey4}";
+			//#= private static String charactersKey4 = "${polish.TextField.charactersKey4}";
 		//#else
-			private static final String charactersKey4 = "ghi4\u00ec\u00ed\u00ee\u00ef";
+			private static String charactersKey4 = "ghi4\u00ec\u00ed\u00ee\u00ef";
 		//#endif
 		//#ifdef polish.TextField.charactersKey5:defined
-			//#= private static final String charactersKey5 = "${polish.TextField.charactersKey5}";
+			//#= private static String charactersKey5 = "${polish.TextField.charactersKey5}";
 		//#else
-			private static final String charactersKey5 = "jkl5";
+			private static String charactersKey5 = "jkl5";
 		//#endif
 		//#ifdef polish.TextField.charactersKey6:defined
-			//#= private static final String charactersKey6 = "${polish.TextField.charactersKey6}";
+			//#= private static String charactersKey6 = "${polish.TextField.charactersKey6}";
 		//#else
-			private static final String charactersKey6 = "mno6\u00f1\u00f2\u00f3\u00f4\u00f5\u00f6";
+			private static String charactersKey6 = "mno6\u00f1\u00f2\u00f3\u00f4\u00f5\u00f6";
 		//#endif
 		//#ifdef polish.TextField.charactersKey7:defined
-			//#= private static final String charactersKey7 = "${polish.TextField.charactersKey7}";
+			//#= private static String charactersKey7 = "${polish.TextField.charactersKey7}";
 		//#else
-			private static final String charactersKey7 = "pqrs7\u00df";
+			private static String charactersKey7 = "pqrs7\u00df";
 		//#endif
 		//#ifdef polish.TextField.charactersKey8:defined
-			//#= private static final String charactersKey8 = "${polish.TextField.charactersKey8}";
+			//#= private static String charactersKey8 = "${polish.TextField.charactersKey8}";
 		//#else
-			private static final String charactersKey8 = "tuv8\u00f9\u00fa\u00fb\u00fc";
+			private static String charactersKey8 = "tuv8\u00f9\u00fa\u00fb\u00fc";
 		//#endif
 		//#ifdef polish.TextField.charactersKey9:defined
-			//#= private static final String charactersKey9 = "${polish.TextField.charactersKey9}";
+			//#= private static String charactersKey9 = "${polish.TextField.charactersKey9}";
 		//#else
-			private static final String charactersKey9 = "wxyz9\u00fd";
+			private static String charactersKey9 = "wxyz9\u00fd";
 		//#endif
 		//#ifdef polish.TextField.charactersKey0:defined
-			//#= private static final String charactersKey0 = "${polish.TextField.charactersKey0}";
+			//#= private static String charactersKey0 = "${polish.TextField.charactersKey0}";
 		//#else
-			protected static final String charactersKey0 = " 0";
+			protected static String charactersKey0 = " 0";
 		//#endif
 		//#ifdef polish.TextField.charactersKeyStar:defined
-			//#= protected static final String charactersKeyStar = "${polish.TextField.charactersKeyStar}";
+			//#= protected static String charactersKeyStar = "${polish.TextField.charactersKeyStar}";
 		//#else
-			protected static final String charactersKeyStar = ".,!?\u00bf:/@_-+1'\";";
+			protected static String charactersKeyStar = ".,!?\u00bf:/@_-+1'\";";
 		//#endif
 		//#ifdef polish.TextField.charactersKeyPound:defined
-			//#= protected static final String charactersKeyPound = "${polish.TextField.charactersKeyPound}";
+			//#= protected static String charactersKeyPound = "${polish.TextField.charactersKeyPound}";
 		//#else
-			protected static final String charactersKeyPound = null;
+			protected static String charactersKeyPound = null;
 		//#endif
 		/** map of characters that can be triggered witht the 0..9 and #, * keys */
-		public static final String[] CHARACTERS = new String[]{ charactersKey0, charactersKey1, charactersKey2, charactersKey3, charactersKey4, charactersKey5, charactersKey6, charactersKey7, charactersKey8, charactersKey9 };
+		public static String[] CHARACTERS = new String[]{ charactersKey0, charactersKey1, charactersKey2, charactersKey3, charactersKey4, charactersKey5, charactersKey6, charactersKey7, charactersKey8, charactersKey9 };
+		//#if tmp.useDynamicCharset
+			public static String[] CHARACTERS_UPPER = new String[]{ charactersKey0, charactersKey1, charactersKey2, charactersKey3, charactersKey4, charactersKey5, charactersKey6, charactersKey7, charactersKey8, charactersKey9 };
+			public static boolean usesDynamicCharset;
+		//#endif
 		private static final String[] EMAIL_CHARACTERS = new String[]{ VALID_LOCAL_EMAIL_ADDRESS_CHARACTERS + "0", VALID_LOCAL_EMAIL_ADDRESS_CHARACTERS + "1", "abc2", "def3", "ghi4", "jkl5", "mno6", "pqrs7", "tuv8", "wxyz9" };
 		private String[] characters;
 		private boolean isNumeric;
@@ -892,29 +949,53 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 		//#elif polish.TextField.showInputInfo != false
 			//#define tmp.useInputInfo
 		//#endif
-		protected final Object lock;
+		protected final Object lock = new Object();
 		private long deleteKeyRepeatCount;
 	//#endif
 	protected char emailSeparatorChar = ';';
 	//#if polish.blackberry
+		private int originalContentWidth;
 		private PolishTextField editField;
 		//#if polish.Bugs.ItemStateListenerCalledTooEarly
 			private long lastFieldChangedEvent;
 		//#endif
+		private int bbLastCursorPosition;
 	//#endif
-	//#if polish.midp && !polish.blackberry
+	//#if polish.midp && !polish.blackberry && !polish.api.windows && !polish.TextField.useVirtualKeyboard
 		//#define tmp.useNativeTextBox
 		private de.enough.polish.midp.ui.TextBox midpTextBox;
+		//#if polish.TextField.passCharacterToNativeEditor
+			//Variable passedChar used as container for char which is passed to native TextBox.
+			//So when key is pressed (e.g. '2') view goes to native mode and 'a' character is appended to the current text
+			private char passedChar;
+			//Timer responsible for checking delay between two, subsequent presses 
+			private final Timer keyDelayTimer = new Timer();
+			private TimerTask keyDelayTimerTask = null;
+			//last time when button was pressed
+			private long lastTimeKeyPressed;
+			//number of presses of one phone button
+			private int keyPressCounter = 0;
+			//latest key pressed keyCode
+			private int latestKey;
+			//maximum delay between subseqent key presses. If exceeded, will timer will call native editor.
+			private int delayBetweenKeys =
+			//#if polish.nativeEditor.delayBetweenKeys:defined
+				//#= ${polish.nativeEditor.delayBetweenKeys};
+			//#else
+				200;
+			//#endif
+		//#endif
+		private boolean skipKeyReleasedEvent = false;
 	//#endif
+	private boolean cskOpensNativeEditor = true;
 	
-	long lastTimePressed = -1;
 	
 	//#if tmp.usePredictiveInput
+		long lastTimePressed = -1;
 		boolean predictiveInput = false;
 		private PredictiveAccess predictiveAccess;
-		
 		boolean nextMode 	 = this.predictiveInput;
-		public static final int SWITCH_DELAY 	 = 1000;
+		static final int SWITCH_DELAY 	 = 1000;
 	//#endif		
 		
 	protected boolean flashCaret = true;
@@ -934,7 +1015,175 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 		//#define tmp.supportsAsciiKeyMap
 	//#endif
 	private boolean isKeyPressedHandled;
+	
+	//#if polish.javaplatform >= Android/1.5
+		private long androidFocusedTime;
+		private long androidLastPointerPressedTime;
+		private long androidLastInvalidCharacterTime;
+	//#endif
+	private int numberOfDecimalFractions = 2;
 
+	//#if polish.TextField.useVirtualKeyboard
+	static IntHashMap keyboardViews = new IntHashMap();
+	//#endif
+
+	//#if tmp.useDynamicCharset
+	/**
+	 * Reads the .properties files for lowercase
+	 * and uppercase letters and maps the values of the predefined keys
+	 * to the character maps. Uses UTF-8 as encoding.
+	 * @param lowercaseUrl the properties file for lower case
+	 * @param uppercaseUrl the properties file for upper case
+	 */
+	public static void loadCharacterSets(String lowercaseUrl,String uppercaseUrl)
+	{
+		loadCharacterSets(lowercaseUrl, uppercaseUrl,"UTF8");
+	}
+	
+	/**
+	 * Reads the .properties files for lowercase
+	 * and uppercase letters and maps the values of the predefined keys
+	 * to the character maps. Uses UTF-8 as encoding.
+	 * @param lowercaseStream the input stream of properties for lower case
+	 * @param uppercaseStream the input stream of properties for upper case
+	 */
+	public static void loadCharacterSets(InputStream lowercaseStream, InputStream uppercaseStream)
+	{
+		loadCharacterSets(lowercaseStream, uppercaseStream,"UTF8");
+	}
+	
+	/**
+	 * Reads the .properties files for lowercase
+	 * and uppercase letters and maps the values of the predefined keys
+	 * to the character maps. 
+	 * @param lowercaseUrl the properties file for lower case
+	 * @param uppercaseUrl the properties file for upper case
+	 * @param encoding the encoding to use
+	 */
+	public static void loadCharacterSets(String lowercaseUrl,String uppercaseUrl, String encoding)
+	{
+		loadCharacterSets(CHARACTERS,lowercaseUrl, encoding);
+		loadCharacterSets(CHARACTERS_UPPER,uppercaseUrl, encoding);
+		
+		try
+		{
+			validateSets();
+			usesDynamicCharset = true;
+		}catch(IllegalArgumentException e)
+		{
+			//#debug error
+			System.out.println("unable to load dynamic character sets : " + e.getMessage());
+		}
+	}
+	
+	/**
+	 * Reads the .properties files for lowercase
+	 * and uppercase letters and maps the values of the predefined keys
+	 * to the character maps. 
+	 * @param lowercaseStream the properties file for lower case
+	 * @param uppercaseStream the properties file for upper case
+	 * @param encoding the encoding to use
+	 */
+	public static void loadCharacterSets(InputStream lowercaseStream,InputStream uppercaseStream, String encoding)
+	{
+		loadCharacterSets(CHARACTERS,lowercaseStream, encoding);
+		loadCharacterSets(CHARACTERS_UPPER,uppercaseStream, encoding);
+		
+		try
+		{
+			validateSets();
+			usesDynamicCharset = true;
+		}catch(IllegalArgumentException e)
+		{
+			//#debug error
+			System.out.println("unable to load dynamic character sets : " + e.getMessage());
+		}
+	}
+	
+	/**
+	 * Validates the character sets for lowercase and uppercase by
+	 * comparing the number of entries for a key 
+	 * @throws IllegalArgumentException
+	 */
+	static void validateSets() throws IllegalArgumentException
+	{
+		for (int i = 0; i < CHARACTERS.length; i++) {
+			if(CHARACTERS[i].length() != CHARACTERS_UPPER[i].length())
+			{
+				throw new IllegalArgumentException("the dynamic charsets have a different number of entries at index " + i);
+			}
+		}
+	}
+	
+	/**
+	 * Reads a .properties file and maps
+	 * the values of the predefined keys
+	 * to the specified character maps
+	 * @param target the character map
+	 * @param url the properties file
+	 * @param encoding the encoding
+	 */
+	static void loadCharacterSets(String[] target, String url, String encoding)
+	{
+		Properties properties;
+		try {
+			properties = new Properties(url,encoding);
+			loadCharacterSets(target,properties);
+		} catch (IOException e) {
+			//#debug error
+			System.out.println("unable to load character set : " +  url);
+		}
+	}
+	
+	/**
+	 * Reads a .properties file and maps
+	 * the values of the predefined keys
+	 * to the specified character maps
+	 * @param target the character map
+	 * @param stream the properties file
+	 * @param encoding the encoding
+	 */
+	static void loadCharacterSets(String[] target, InputStream stream, String encoding)
+	{
+		Properties properties;
+		try {
+			properties = new Properties();
+			properties.load(stream, encoding, false);
+			loadCharacterSets(target,properties);
+		} catch (IOException e) {
+			//#debug error
+			System.out.println("unable to load character set : " +  stream.toString());
+		}
+	}
+	
+	/**
+	 * Reads a .properties file and maps
+	 * the values of the predefined keys
+	 * to the character maps 
+	 * @param target the character map
+	 * @param properties the properties file
+	 */
+	static void loadCharacterSets(String[] target, Properties properties)
+	{
+		//#if tmp.directInput	
+			Object[] keys = properties.keys();
+			
+			for (int i = 0; i < keys.length; i++) {
+				String key = (String)keys[i];
+				try
+				{
+					int index = Integer.parseInt(key);
+					target[index] = properties.getProperty(key);
+				}catch(NumberFormatException e)
+				{
+					//#debug error
+					System.out.println("key " + key + " has wrong format, must be 0 - 9" );
+				}
+			}
+		//#endif
+	}
+	//#endif
+	
 	/**
 	 * Creates a new <code>TextField</code> object with the given label, initial
 	 * contents, maximum size in characters, and constraints.
@@ -990,8 +1239,12 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 	public FakeTextFieldCustomItem( String label, String text, int maxSize, int constraints, Style style)
 	{
 		super( label, null, INTERACTIVE, style );
-		//#if tmp.directInput
-			this.lock = new Object();
+		//#if polish.vendor == Generic && tmp.directInput
+			int spaceKey = DeviceInfo.getKeySpace();
+			if (spaceKey == Canvas.KEY_POUND) {
+				charactersKey0 = "0";
+				charactersKeyPound = " ";
+			}
 		//#endif
 		this.constraints = constraints;
 		this.maxSize = maxSize;
@@ -1008,7 +1261,8 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 			this.isPassword = true;
 		}
 		//#ifndef polish.hasPointerEvents
-			if ((constraints & NUMERIC) == NUMERIC && (constraints & DECIMAL) != DECIMAL) {
+			int fieldType = constraints & 0xffff;
+			if (fieldType == NUMERIC) {
 				this.enableDirectInput = true;
 			}
 		//#endif
@@ -1046,7 +1300,9 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 				useAsciiKeyMap = true;
 			//#endif
 		//#endif
-
+		//#if polish.TextField.noNewLine
+			this.noNewLine = true;
+		//#endif
 		setString(text);
 	}
 	
@@ -1061,7 +1317,12 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 		if (!this.isUneditable) {
 			this.midpTextBox.addCommand(StyleSheet.CANCEL_CMD);
 		}
-		this.midpTextBox.setCommandListener( this );	
+		this.midpTextBox.setCommandListener( this );
+		//#if polish.midp2
+			if ((this.constraints & TextField.INITIAL_CAPS_NEVER) == TextField.INITIAL_CAPS_NEVER){
+				this.midpTextBox.setInitialInputMode("MIDP_LOWERCASE_LATIN");
+			}
+		//#endif
 	}
 	//#endif
 	
@@ -1143,8 +1404,20 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 	public void setString( String text)
 	{
 		//#debug
-		System.out.println("setString [" + text + "] for textfield [" + (this.label != null ? this.label.getText() : "no label") + "].");
-		//#if !(tmp.forceDirectInput || polish.blackberry)
+		System.out.println("setString [" + text + "]"); // for textfield [" + (this.label != null ? this.label.getText() : "no label") + "].");
+		if (text != null && text.length() > 0) {
+			int fieldType = this.constraints & 0xffff;
+			if (fieldType == FIXED_POINT_DECIMAL) {
+				int lengthBefore = text.length();
+				text = convertToFixedPointDecimal(text);
+				//#if !polish.blackberry
+				if (text.length() > lengthBefore) {
+					setCaretPosition( getCaretPosition() + text.length() - lengthBefore);
+				}
+				//#endif
+			}
+		}
+		//#if tmp.useNativeTextBox
 			if (this.midpTextBox != null) {
 				this.midpTextBox.setString( text );
 			}
@@ -1156,13 +1429,16 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 					this.screen = getScreen();
 				}
 				synchronized (bbLock) {
-                    if (this.isFocused) {
-                    	Display.getInstance().notifyFocusSet(null);
+                    if (this.isFocused && this.isShown) {
+                    	// don't want to have endless loops of change events:
+                    	this.screen.notifyFocusSet(null);
                     }
                     if (text != null) {
                         this.editField.setText(text);
                     } else {
                         this.editField.setText(""); // setting null triggers an IllegalArgumentException
+                    }
+                    if (this.isFocused && this.isShown) {
                     }
 				}
 			}
@@ -1218,30 +1494,97 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 			}
 		//#endif
 	}
+	
+	/**
+	 * Sets the number of decimal fractions that are allowed for FIXED_POINT_DECIMAL constrained TextFields
+	 * @param number the number (defaults to 2)
+	 * @see UiAccess#CONSTRAINT_FIXED_POINT_DECIMAL
+	 * @see #FIXED_POINT_DECIMAL
+	 */
+	public void setNumberOfDecimalFractions(int number) {
+		this.numberOfDecimalFractions = number;
+	}
+	
+	/**
+	 * Retrieves the number of decimal fractions that are allowed for FIXED_POINT_DECIMAL constrained TextFields
+	 * @return the number (defaults to 2)
+	 * @see UiAccess#CONSTRAINT_FIXED_POINT_DECIMAL
+	 * @see #FIXED_POINT_DECIMAL
+	 */
+	public int getNumberOfDecimalFractions() {
+		return this.numberOfDecimalFractions;
+	}
+
+	/**
+	 * Converts the given entry into cash format.
+	 * Subclasses may override this to implement their own behavior.
+	 * @param original the original text, e.g. "1"
+	 * @return the processed text, e.g. "0.01"
+	 * @see #FIXED_POINT_DECIMAL
+	 * @see UiAccess#CONSTRAINT_FIXED_POINT_DECIMAL
+	 * @see #getNumberOfDecimalFractions()
+	 * @see #setNumberOfDecimalFractions(int)
+	 */
+	protected String convertToFixedPointDecimal(String original) {
+		int fractions = this.numberOfDecimalFractions;
+		StringBuffer buffer = new StringBuffer( original.length() + 3 );
+		int added = 0;
+		for (int i=original.length(); --i >= 0; ) {
+			char c = original.charAt(i);
+			if (c >= '0' && c <= '9') {
+				buffer.insert(0, c);
+				added++;
+				if (added == fractions) {
+					buffer.insert(0, Locale.DECIMAL_SEPARATOR);
+				}
+			}
+		}
+		fractions++;
+		while (added > fractions) {
+			char c = buffer.charAt(0);
+			if (c == '0') {
+				buffer.deleteCharAt(0);
+				added--;
+			} else {
+				break;
+			}
+		}
+		while (added < fractions) {
+			buffer.insert(0, '0');
+			added++;
+			if (added == fractions-1) {
+				buffer.insert(0, Locale.DECIMAL_SEPARATOR);
+			}
+		}
+		original = buffer.toString();
+		return original;
+	}
 	 	
 	protected void updateDeleteCommand(String newText) {
 		//#if tmp.updateDeleteCommand
-		// remove delete command when the caret is before the first character,
-		// add it when it is after the first character:
-		// #debug
-		//System.out.println("updateDeleteCommand: newText=[" + newText + "]");
-		if ( !this.isUneditable ) {
-			if ( newText == null 
-				//#ifdef tmp.directInput
-					|| (this.caretPosition == 0    &&    this.caretChar == this.editingCaretChar)
-				//#else
-					|| newText.length() == 0 
-				//#endif
-			) {
-				removeCommand( DELETE_CMD );
-			} else if ((this.text == null || this.text.length() == 0)
-				//#ifdef tmp.directInput
-					|| this.caretPosition == 1
-				//#endif						
-			) {
-				addCommand( DELETE_CMD );
+			// remove delete command when the caret is before the first character,
+			// add it when it is after the first character:
+			// #debug
+			//System.out.println("updateDeleteCommand: newText=[" + newText + "]");
+			if ( !this.isUneditable ) {
+				if ( newText == null 
+					//#ifdef tmp.directInput
+						|| (this.caretPosition == 0    &&    this.caretChar == this.editingCaretChar)
+					//#else 
+						|| newText.length() == 0 
+					//#endif
+				) {
+					removeCommand( DELETE_CMD );
+				} else if ((this.text == null || this.text.length() == 0)
+					//#if tmp.directInput
+						// needed for native input as the string is passed as a whole
+						// and thus skips caretPosition == 1
+						|| this.caretPosition > 0
+					//#endif						
+				) {
+					addCommand( DELETE_CMD );
+				}
 			}
-		}
 		//#endif		
 	}
 
@@ -1340,13 +1683,7 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 	 */
 	public void insert( String src, int position)
 	{
-		String txt = this.text;
-		if(txt == null)
-			txt = "";
-		
-		if (this.isPassword) {
-			txt = this.passwordText;
-		}
+		String txt = getString(); // cannot be null
 		String start = txt.substring( 0, position );
 		String end = txt.substring( position );
 		setString( start + src + end );
@@ -1412,10 +1749,7 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 	 */
 	public void delete(int offset, int length)
 	{
-		String txt = this.text;
-		if (this.isPassword) {
-			txt = this.passwordText;
-		}
+		String txt = getString();
 		String start = txt.substring(0, offset );
 		String end = txt.substring( offset + length );
 		setString( start + end );
@@ -1451,7 +1785,7 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 		if ((this.text != null && maxSize < this.text.length()) || (maxSize < 1)) {
 			throw new IllegalArgumentException();
 		}
-		//#if ! tmp.forceDirectInput && !polish.blackberry
+		//#if tmp.useNativeTextBox
 			if (this.midpTextBox != null) {
 				this.maxSize = this.midpTextBox.setMaxSize(maxSize);
 				return this.maxSize;
@@ -1459,7 +1793,7 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 		//#endif
 				this.maxSize = maxSize;
 				return maxSize;
-		//#if ! tmp.forceDirectInput  && !polish.blackberry
+		//#if tmp.useNativeTextBox
 			}
 		//#endif
 	}
@@ -1492,7 +1826,7 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 		//#ifdef tmp.allowDirectInput
 			if (this.enableDirectInput) {
 				return this.caretPosition;
-			//#if !tmp.forceDirectInput
+			//#if tmp.useNativeTextBox
 			} else if (this.midpTextBox != null) {
 				return this.midpTextBox.getCaretPosition();
 			//#endif
@@ -1503,9 +1837,11 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 		//#elif tmp.forceDirectInput
 			//# return this.caretPosition;
 		//#else
-			if (this.midpTextBox != null) {
-				return this.midpTextBox.getCaretPosition();
-			}
+			//#ifdef tmp.useNativeTextBox
+				if (this.midpTextBox != null) {
+					return this.midpTextBox.getCaretPosition();
+				}
+			//#endif
 			return 0;
 		//#endif
 	}
@@ -1518,7 +1854,11 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 	 */
 	public void setCaretPosition(int position) {
 		//#if polish.blackberry
-			this.editField.setCursorPosition(position);
+			Object bbLock = Application.getEventLock();
+			synchronized ( bbLock )
+			{
+				this.editField.setCursorPosition(position);
+			}
 		//#elif tmp.allowDirectInput || tmp.forceDirectInput
 			this.caretPosition = position;
 			if ( this.isInitialized  && this.realTextLines != null ){
@@ -1526,7 +1866,7 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 				int col = 0;
 				int passedCharacters = 0;
 				String textLine = null;
-				for (int i = 0; i < this.textLines.length; i++) {
+				for (int i = 0; i < this.textLines.size(); i++) {
 					textLine = this.realTextLines[i]; //this.textLines[i];
 					passedCharacters += textLine.length();
 					//System.out.println("passedCharacters=" + passedCharacters + ", line=" + textLine );
@@ -1541,7 +1881,7 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 				this.caretRow = row;	
 				this.caretColumn = col;
 				
-				textLine = this.textLines[ row ];
+				textLine = this.textLines.getLine( row );
 				String firstPart;
 				if (this.caretColumn < textLine.length()) {
 					firstPart = textLine.substring(0, this.caretColumn);
@@ -1584,11 +1924,13 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 		//#if polish.blackberry
 			
 			long bbStyle = Field.FOCUSABLE;
-			if (!this.isUneditable) {
-				bbStyle |= Field.EDITABLE;
+			if (this.isUneditable) {
+				bbStyle |= Field.READONLY;
+			} else {
+				bbStyle |= Field.EDITABLE;				
 			}
 			
-			if ( fieldType == DECIMAL) {
+			if ( fieldType == DECIMAL || fieldType == FIXED_POINT_DECIMAL) {
 				bbStyle |= BasicEditField.FILTER_REAL_NUMERIC;
 			} else if (fieldType == NUMERIC) {
 				bbStyle |= BasicEditField.FILTER_INTEGER;
@@ -1599,21 +1941,55 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 			} else if ( fieldType == URL ) {
 				bbStyle |= BasicEditField.FILTER_URL;
 			}
+			if ((constraints & SENSITIVE) == SENSITIVE) {
+				bbStyle |= BasicEditField.NO_LEARNING; 
+			}
+			if ((constraints & NON_PREDICTIVE) == NON_PREDICTIVE) {
+				bbStyle |= BasicEditField.NO_LEARNING; 
+			}
+			if(this.noNewLine){
+				bbStyle |= BasicEditField.NO_NEWLINE;
+			}
+			if(this.noComplexInput){
+				bbStyle |= BasicEditField.NO_COMPLEX_INPUT;	
+			}
 			if (this.editField != null) {
 				// remove the old edit field from the blackberry screen:
+				Object bbLock = Application.getEventLock();
+				synchronized ( bbLock ) {
+					Manager manager = this._bbField.getManager();
+					if (manager != null) {
+						manager.delete(this._bbField);
+					}
+					if (this.isFocused) {
+					}					
+				}
 			}
+			int max = this.maxSize;
+			if (fieldType == FIXED_POINT_DECIMAL) {
+				max++;
+			}
+			this.isPassword = false;
 			if ((constraints & PASSWORD) == PASSWORD) {
 				this.isPassword = true;
-				this.editField = new PolishPasswordEditField( null, getString(), this.maxSize, bbStyle );
-			} else {
-				this.isPassword = false;
-				this.editField = new PolishEditField( null, getString(), this.maxSize, bbStyle );
+				this.editField = new PolishPasswordEditField( null, getString(), max, bbStyle );
+			}else if((bbStyle & BasicEditField.FILTER_EMAIL) == BasicEditField.FILTER_EMAIL) {
+                this.editField = new PolishEmailAddressEditField( null, getString(), max, bbStyle );
+            } else {
+                    this.editField = new PolishEditField( null, getString(), max, bbStyle );
+            } 
+
+			if (this.style != null) {
+				this.editField.setStyle( this.style );
 			}
 			//# this.editField.setChangeListener( this );
 			this._bbField = (Field) this.editField;
-		//#elif !tmp.forceDirectInput
+		//#elif tmp.useNativeTextBox
 			if (this.midpTextBox != null) {
 				this.midpTextBox.setConstraints(constraints);
+			}
+			if ((constraints & PASSWORD) == PASSWORD) {
+				this.isPassword = true;
 			}
 		//#endif
 		//#ifdef tmp.directInput
@@ -1632,7 +2008,7 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 			} else {
 				this.isNumeric = false;
 			}
-			if (fieldType == DECIMAL) {
+			if (fieldType == DECIMAL || fieldType == FIXED_POINT_DECIMAL) {
 				this.isNumeric = true;
 				this.isDecimal = true;
 				this.inputMode = MODE_NUMBERS;
@@ -1675,7 +2051,6 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 		if(!this.suppressCommands)
 		{
 			if (this.isFocused) {
-				// Nothing to do here.
 			}
 			
 			// add default text field item-commands:
@@ -1755,7 +2130,6 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 					setConstraints(this.constraints);
 				}
 				if (this.isFocused) {
-					// Nothing to do here.
 				}
 			}
 			else
@@ -1808,11 +2182,13 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 	 */
 	public void setInitialInputMode( String characterSubset)
 	{
-		//#if !(tmp.forceDirectInput || polish.blackberry) && polish.midp2
+		//#if tmp.useNativeTextBox
 			if (this.midpTextBox == null) {
 				createTextBox();
 			}
-			this.midpTextBox.setInitialInputMode( characterSubset );
+			//#if !polish.midp1
+				this.midpTextBox.setInitialInputMode( characterSubset );
+			//#endif
 		//#endif
 	}
 
@@ -1823,24 +2199,20 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 	
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		//#if polish.blackberry
-        	if (this.isFocused && !StyleSheet.currentScreen.isMenuOpened() ) {
-				this.editField.setPaintPosition( x + g.getTranslateX(), y + g.getTranslateY() );
-			} else {
-				super.paintContent(x, y, leftBorder, rightBorder, g);
-			}
+
 		//#else
         
-        //#if tmp.includeInputInfo
-    		if (this.isUneditable || !this.isFocused) {
-        //#endif
-    			super.paintContent(x, y, leftBorder, rightBorder, g);
-    	//#if tmp.includeInputInfo
-    		}
-		//#endif
-    		
 		if (this.isUneditable || !this.isFocused) {
+			//#if polish.TextField.showHelpText
+				if(this.text == null || this.text.length() == 0)
+				{
+					this.helpItem.paint(x, y, leftBorder, rightBorder, g);
+				} else
+			//#endif
+    			super.paintContent(x, y, leftBorder, rightBorder, g);
 			return;
 		}
+		
 		int availWidth = rightBorder-leftBorder;
 		int availHeight = this.availableHeight;
 		//#ifdef tmp.directInput
@@ -1849,7 +2221,7 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 			//#endif
 				// adjust text-start for input info abc|Abc|ABC|123 if it should be shown on the same line:
 				//#if tmp.includeInputInfo && !polish.TextField.useExternalInfo
-					if (this.infoItem != null && this.isShowInputInfo) {
+					if (this.isFocused && this.infoItem != null && this.isShowInputInfo) {
 						int infoWidth = this.infoItem.getItemWidth( availWidth, availWidth, availHeight);
 						if (this.infoItem.isLayoutRight) {
 							int newRightBorder = rightBorder - infoWidth;
@@ -1863,15 +2235,62 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 						}
 					}
 				//#endif
-				super.paintContent(x, y, leftBorder, rightBorder, g);
-
 				//#if polish.TextField.showHelpText
-				if(this.text == null || this.text.length() == 0)
-				{
-					this.helpItem.paint(x, y, leftBorder, rightBorder, g);
-				}
+					if(this.text == null || this.text.length() == 0)
+					{
+						this.helpItem.paint(x, y, leftBorder, rightBorder, g);
+					} else
 				//#endif
-				
+				if (this.isPassword && !(this.showCaret || this.isNumeric || this.caretChar == this.editingCaretChar)) {
+					int cX = getCaretXPosition(x, rightBorder, availWidth);
+					int cY = y + this.caretY;
+					int clipX = g.getClipX();
+					int clipY = g.getClipY();
+					int clipWidth = g.getClipWidth();
+					int clipHeight = g.getClipHeight();
+					g.clipRect( x, y, cX - x, clipHeight );
+					super.paintContent(x, y, leftBorder, rightBorder, g);
+					g.setClip( clipX, clipY, clipWidth, clipHeight );
+					int w = this.caretWidth;
+                	int starWidth = charWidth('*');
+                	if (starWidth > w) {
+                		w = starWidth;
+                	}
+                	if (this.caretX + w < this.contentWidth) {
+						g.clipRect( cX + w, y, clipWidth, clipHeight );
+						super.paintContent(x, y, leftBorder, rightBorder, g);
+						g.setClip( clipX, clipY, clipWidth, clipHeight );
+                	}
+					if (cY > y) {
+						g.clipRect( clipX, clipY, clipWidth, cY - clipY );
+						super.paintContent(x, y, leftBorder, rightBorder, g);
+						g.setClip( clipX, clipY, clipWidth, clipHeight );
+					}
+					int h = getFontHeight();
+					if (this.caretY + h < this.contentHeight) {
+						g.clipRect( x, cY + h, clipWidth, clipHeight );
+						super.paintContent(x, y, leftBorder, rightBorder, g);
+						g.setClip( clipX, clipY, clipWidth, clipHeight );
+					}
+					g.setColor( this.textColor);
+                    int anchor = Graphics.TOP | Graphics.LEFT;
+        			//#if polish.Bugs.needsBottomOrientiationForStringDrawing
+                    	cY += h;
+                    	anchor = Graphics.BOTTOM | Graphics.LEFT;
+                    //#endif
+                    //#if polish.css.text-effect
+                    	if (this.textEffect != null) {
+                    		this.textEffect.drawChar( this.caretChar, cX, cY, anchor, g);
+                    	} else {
+                    //#endif
+                    		g.drawChar( this.caretChar, cX, cY, anchor );
+                    //#if polish.css.text-effect
+                    	}
+                    //#endif
+				} else {
+					super.paintContent(x, y, leftBorder, rightBorder, g);
+				}
+
 
 		  		//#ifdef polish.css.text-wrap
 		        	if (this.useSingleLine) {
@@ -1886,26 +2305,13 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 					//#else
 						g.setColor( this.textColor );
 					//#endif
-					int cX;
-					if (!this.isLayoutCenter && !this.isLayoutRight) {
-						cX = x + this.caretX;
-					} else {
-						if (this.isLayoutCenter) {
-							cX = x + (((availWidth) - this.caretRowWidth) >> 1 ) + this.caretX;
-						} else  {
-							//#if polish.i18n.rightToLeft
-								cX = rightBorder -  this.caretX;
-							//#else
-								cX = rightBorder - this.caretRowWidth + this.caretX;
-							//#endif
-						}
-					}
+					int cX = getCaretXPosition(x, rightBorder, availWidth);
 					int cY = y + this.caretY;
                     if (this.caretChar != this.editingCaretChar) {
                     	// draw background rectangle
                         int w = this.caretWidth;
                         if (this.isPassword) {
-                        	int starWidth = stringWidth("*");
+                        	int starWidth = charWidth('*');
                         	if (starWidth > w) {
                         		w = starWidth;
                         	}
@@ -1914,12 +2320,19 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
                         g.fillRect( cX, cY, w, h);
                         //display highlighted text in white color
                         g.setColor( DrawUtil.getComplementaryColor(g.getColor()) );
-                        //TODO use bitmap font and text-effect
+                        int anchor = Graphics.TOP | Graphics.LEFT;
             			//#if polish.Bugs.needsBottomOrientiationForStringDrawing
-                        	cY += this.font.getHeight();
-                        	g.drawChar( this.caretChar, cX, cY, Graphics.BOTTOM | Graphics.LEFT );
-                        //#else
-                        	g.drawChar( this.caretChar, cX, cY, Graphics.TOP | Graphics.LEFT );
+                        	cY += h;
+                        	anchor = Graphics.BOTTOM | Graphics.LEFT;
+                        //#endif
+                        //#if polish.css.text-effect
+                        	if (this.textEffect != null) {
+                        		this.textEffect.drawChar( this.caretChar, cX, cY, anchor, g);
+                        	} else {
+                        //#endif
+                        		g.drawChar( this.caretChar, cX, cY, anchor );
+                        //#if polish.css.text-effect
+                        	}
                         //#endif
                     } else {
                         g.drawLine( cX, cY, cX, cY + getFontHeight() - 2);
@@ -1931,11 +2344,19 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 					this.predictiveAccess.paintChoices(x, y, this.caretX, this.caretY, leftBorder, rightBorder, g);
 				//#endif
 					
+//					g.setColor( 0xffffff );
+//					g.fillRect( x, y, 10, getFontHeight() );
+//					g.setColor( 0xff0000 );
+//					g.drawChar( this.caretChar, x, y, Graphics.LEFT | Graphics.TOP );
+
 				return;
 			//#ifdef tmp.allowDirectInput
+			} else { 
+				super.paintContent(x, y, leftBorder, rightBorder, g);
 			}
 			//#endif
 		//#else
+			super.paintContent(x, y, leftBorder, rightBorder, g);
 			// no direct input possible, but paint caret
 			if (this.showCaret && this.isFocused ) {
 				//#ifndef polish.css.textfield-caret-color
@@ -1960,13 +2381,38 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 		//#endif
 	}
 
+	//#ifdef tmp.directInput
+	/**
+	 * Calculates the exact horizontal caret position. 
+	 * @param x the x position of this field
+	 * @param rightBorder the right border
+	 * @param availWidth the available width
+	 * @return the caret position
+	 */
+	private int getCaretXPosition(int x, int rightBorder, int availWidth) {
+		int cX;
+		if (this.isLayoutCenter) {
+			cX = x + (((availWidth) - this.caretRowWidth) >> 1 ) + this.caretX;
+		} else if (this.isLayoutRight) {
+			//#if polish.i18n.rightToLeft
+				cX = rightBorder -  this.caretX;
+			//#else
+				cX = rightBorder - this.caretRowWidth + this.caretX;
+			//#endif
+		} else {
+			cX = x + this.caretX;
+		}
+		return cX;
+	}
+	//#endif
+
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#initItem()
 	 */
 	protected void initContent(int firstLineWidth, int availWidth, int availHeight) {
 		this.screen = getScreen();
 		//#if tmp.includeInputInfo
-			if (this.infoItem != null) {
+			if (this.infoItem != null && this.isFocused && this.isShowInputInfo) {
 				int infoWidth = this.infoItem.getItemWidth(firstLineWidth, availWidth, availHeight);
 				firstLineWidth -= infoWidth;
 				availWidth -= infoWidth;
@@ -1978,6 +2424,21 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 			}
 		//#endif
 		super.initContent(firstLineWidth, availWidth, availHeight);
+		//#if polish.blackberry
+			this.originalContentWidth = this.contentWidth;
+		//#endif
+		//#if polish.TextField.showHelpText
+		UiAccess.init(this.helpItem, firstLineWidth, availWidth, availHeight);
+		//#endif
+		
+		//#if tmp.includeInputInfo
+			if (this.infoItem != null && this.isFocused && this.isShowInputInfo) {
+				this.contentWidth += this.infoItem.itemWidth;
+				if (this.contentHeight < this.infoItem.itemHeight) {
+					this.contentHeight = this.infoItem.itemHeight;
+				}
+			}
+		//#endif
 		if (this.font == null) {
 			this.font = Font.getDefaultFont();
 		}
@@ -1995,10 +2456,14 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 			}
 			if(this.editField != null)
 			{
+				if (this.style != null) {
+					this.editField.setStyle( this.style );
+				}
 				// alowing native field to expand to the fully available width,
 				// the content size does not need to be changed as the same font is being
 				// used.
 				this.editField.layout( availWidth, this.contentHeight );
+				updateInternalArea();
 			}
 		//#elif tmp.directInput
 			this.rowHeight = getFontHeight() + this.paddingVertical;			
@@ -2018,8 +2483,7 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 			} else {
 				// init the original text-lines with spaces and line-breaks:
  				//System.out.println("TextField.initContent(): text=[" + this.text + "], (this.realTextLines == null): " + (this.realTextLines == null) + ", this.caretPosition=" + this.caretPosition + ", caretColumn=" + this.caretColumn + ", doSetCaretPos=" + this.doSetCaretPosition + ", hasBeenSet=" + this.caretPositionHasBeenSet);
-				int length = this.textLines.length;
-				int endOfLinePos = 0;
+				int length = this.textLines.size();
 				int textLength = this.text.length();
 				String[] realLines = this.realTextLines;
 				if (realLines == null || realLines.length != length) {
@@ -2030,8 +2494,9 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 //				if (this.caretChar != this.editingCaretChar) {
 //					cp++;
 //				}
+				int endOfLinePos = 0;
 				for (int i = 0; i < length; i++) {
-					String line = this.textLines[i];
+					String line = this.textLines.getLine(i);
 					endOfLinePos += line.length();
 					if (endOfLinePos < textLength) {
 						char c = this.text.charAt( endOfLinePos );
@@ -2052,32 +2517,19 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 				this.realTextLines = realLines;
 				if (!caretPositionHasBeenSet) {
 					//System.out.println("caret position has not been set before");
-					//#ifdef polish.css.font-bitmap
-						//if (this.textLines != null) {
-						if (this.bitMapFontViewer == null) {
-					//#endif
-							//this.caretPosition = this.text.length();
-							this.caretRow = 0; //this.realTextLines.length - 1;
-							String caretRowText = this.realTextLines[ this.caretRow ];
-							int caretRowLength = caretRowText.length();
-							if (caretRowLength > 0 && caretRowText.charAt( caretRowLength-1) == '\n' ) {
-								caretRowText = caretRowText.substring(0, caretRowLength-1);
-							}
-							setCaretRow( caretRowText, caretRowLength );						
-							this.caretPosition = this.caretColumn;
-							this.caretY = 0; // this.rowHeight * (this.realTextLines.length - 1);
-							//System.out.println(this + ".initContent()/font3: caretX=" + this.caretX);
-							//this.textLines[ this.textLines.length -1 ] += " "; 
-							this.textLines[ 0 ] += " ";
-					//#ifdef polish.css.font-bitmap
-						} else {
-							// a bitmap-font is used:
-							this.caretPosition = this.text.length();
-							this.caretX = this.bitMapFontViewer.getWidth();
-							//System.out.println(this + ".initContent(): caretX=bitMapFontViewer.getWidth()=" + this.caretX);
-							this.caretY = this.bitMapFontViewer.getHeight() - this.bitMapFontViewer.getFontHeight();
-						}
-					//#endif
+					//this.caretPosition = this.text.length();
+					this.caretRow = 0; //this.realTextLines.length - 1;
+					String caretRowText = this.realTextLines[ this.caretRow ];
+					int caretRowLength = caretRowText.length();
+					if (caretRowLength > 0 && caretRowText.charAt( caretRowLength-1) == '\n' ) {
+						caretRowText = caretRowText.substring(0, caretRowLength-1);
+					}
+					setCaretRow( caretRowText, caretRowLength );						
+					this.caretPosition = this.caretColumn;
+					this.caretY = 0; // this.rowHeight * (this.realTextLines.length - 1);
+					//System.out.println(this + ".initContent()/font3: caretX=" + this.caretX);
+					//this.textLines[ this.textLines.length -1 ] += " "; 
+					this.textLines.setLine( 0, this.textLines.getLine(0) + " " );
 				}
 			}
 			// set the internal information so that big TextBoxes can still be scrolled
@@ -2141,8 +2593,8 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 		//System.out.println("caretRowWidth=" + this.caretRowWidth + " for line=" + line);
 		//#if polish.css.text-wrap
 			if (this.useSingleLine) {
-				if (this.caretX > this.contentWidth) {
-					this.xOffset = this.contentWidth - this.caretX - this.caretWidth - 5;
+				if (this.caretX > this.availableTextWidth) {
+					this.xOffset = this.availableTextWidth - this.caretX - this.caretWidth - 5;
 				} else {
 					this.xOffset = 0;
 				}
@@ -2153,96 +2605,6 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 	}
 	//#endif
 	
-	
-
-	/*
-	 * Checks the caret position - is only used during debugging.
-	private void checkCaretPosition() {
-		int cPos = 0;
-		for (int i = 0; i < this.realTextLines.length; i++) {
-			String line = this.realTextLines[i];
-			if (i == this.caretRow) {
-				cPos += this.caretColumn;
-				break;
-			}
-			cPos += line.length();
-		}
-		if (cPos != this.caretPosition) {
-			System.out.println("=============================");
-			System.out.println("Warning: this.caretPosition = " + this.caretPosition);
-			System.out.println("but it should be: " + cPos );
-			System.out.println("=============================");
-		}
-	}
-	 */
-
-	//#ifdef tmp.directInput
-	/*
-	 * Calculates the caret x and y positions.
-	private void calculateCaretPosition() {
-		// calculate row, column, x and y position of the caret:
-		if (this.text == null) {
-			this.caretX = 0;
-			this.caretY = 0;
-			return;
-		}
-		//#ifdef polish.css.font-bitmap
-			if (this.bitMapFontViewer != null) {
-				// a bitmap-font is used
-				//TODO calculate caret-position with bitmap-fonts
-			}
-		//#endif
-		// no bitmap-font is used:
-		int maxPos = this.text.length();
-		if (this.caretPosition == maxPos) {
-			int length = this.textLines.length - 1;
-			this.caretY = length * (this.font.getHeight() + this.paddingVertical);
-			this.caretX = this.font.stringWidth( this.textLines[ length ] );
-			return;
-		}
-		int pos = 0;
-		int row = 0;
-		int y = 0;
-		int rowHeight = this.font.getHeight() + this.paddingVertical;
-		for (int i = 0; i < this.textLines.length; i++) {
-			String line = this.textLines[i];
-			int lineLength = line.length();
-			int textIndex = this.text.indexOf(line, pos);
-			int lastPos = textIndex + lineLength;
-			if (lastPos < maxPos) {
-				char lastChar = this.text.charAt( lastPos );
-				if (lastChar == ' ') {
-					pos++;
-					line += " ";
-				}
-			}
-			
-			if (this.caretPosition <= pos + lineLength) {
-				this.caretColumn = this.caretPosition - pos;
-				this.caretRow = row;
-				//TODO respect the layout of the text:
-				if ( this.caretColumn != 0 ) {
-					this.caretX = this.font.stringWidth(line.substring(0, this.caretColumn));
-				} else {
-					this.caretX = 0;
-				}
-				this.caretY = y;
-				break;
-			}
-			pos += lineLength;
-			y += rowHeight;
-			row++;
-		}
-	}
-	 */
-	//#endif
-	
-	//#if polish.blackberry
-//	protected void hideNotify() {
-//		this.editField.onUndisplay();
-//	}
-	//#endif
-
 	//#ifdef polish.useDynamicStyles
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#getCssSelector()
@@ -2396,7 +2758,7 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 		boolean nextCharInputHasChanged = false;
 		//#if polish.TextField.suppressAutoInputModeChange
 			if ( this.inputMode == MODE_FIRST_UPPERCASE  
-				&& (insertChar == ' ' ||  ( insertChar == '.' && !(this.isEmail || this.isUrl)) )) 
+				&& (insertChar == ' ' ||  ( insertChar == '.' && !(this.isEmail || this.isUrl || (this.constraints & INITIAL_CAPS_NEVER) == INITIAL_CAPS_NEVER)) )) 
 			{
 				this.nextCharUppercase = true;
 			} else {
@@ -2406,7 +2768,7 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 			nextCharInputHasChanged = this.nextCharUppercase;
 			if ( ( (this.inputMode == MODE_FIRST_UPPERCASE || this.nextCharUppercase) 
 					&& insertChar == ' ') 
-				|| ( insertChar == '.' && !(this.isEmail || this.isUrl))) 
+				|| ( insertChar == '.' && !(this.isEmail || this.isUrl || (this.constraints & INITIAL_CAPS_NEVER) == INITIAL_CAPS_NEVER))) 
 			{
 				this.nextCharUppercase = true;
 			} else {
@@ -2441,13 +2803,8 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 			return;
 		}
 		//#debug
-		System.out.println( "inserting character " + insertChar + ", append=" + append + ", commit=" + commit +", caretPos=" + this.caretPosition );
-		String myText;
-		if (this.isPassword) {
-			myText = this.passwordText;
-		} else {
-			myText = this.text;
-		}
+		System.out.println( "insertCharacter " + insertChar); // + ", append=" + append + ", commit=" + commit +", caretPos=" + this.caretPosition );
+		String myText = getString();
 		
 		int cp = this.caretPosition;
 		if (!isValidInput( insertChar, cp, myText )) {
@@ -2510,15 +2867,6 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 			}
 		} else {
 			notifyStateChanged();			
-			//#if polish.css.textfield-show-length  && tmp.useInputInfo
-				if (this.showLength || nextCharInputHasChanged) {
-					updateInfo();
-				}
-			//#elif tmp.useInputInfo
-				if (nextCharInputHasChanged) {
-					updateInfo();
-				}
-			//#endif
 		}
 	}
 	//#endif
@@ -2619,6 +2967,11 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 		//#if tmp.usePredictiveInput
 			this.predictiveAccess.animateChoices(currentTime, repaintRegion );
 		//#endif
+		//#if polish.useNativeGui
+			if (this.nativeItem != null) {
+				this.nativeItem.animate(currentTime, repaintRegion);
+			}
+		//#endif
 		super.animate(currentTime, repaintRegion);
 	}
 
@@ -2636,6 +2989,7 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 					this.lastFieldChangedEvent = 0;
 					setString( this.editField.getText() );
 					notifyStateChanged();
+					getScreen().repaint();
 					return true;
 				}
 			//#endif
@@ -2646,7 +3000,6 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 					if (this.caretChar != this.editingCaretChar) {
 						if ( !this.isKeyDown && (currentTime - this.lastInputTime) >= INPUT_TIMEOUT ) {
 							commitCurrentCharacter();
-							//insertCharacter( this.caretChar, false, true);
 						}
 					} else if (this.isKeyDown && 
 							this.deleteKeyRepeatCount != 0 && 
@@ -2694,39 +3047,80 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 	 * @see de.enough.polish.ui.Item#handleKeyPressed(int, int)
 	 */
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
-		this.isKeyPressedHandled = false;
-		//#ifndef tmp.directInput
-			//#if polish.bugs.inversedGameActions
-				if ((gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM8)
-					|| (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM2)
-					|| (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM6)
-					|| (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM4)
-					|| (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5)
-					|| (this.screen.isSoftKey(keyCode, gameAction))
-				) 
-				{
-					return false;
+		//#debug
+		System.out.println("handleKeyPressed " + keyCode );
+	
+		//#if  tmp.useNativeTextBox
+			//#if polish.TextField.passCharacterToNativeEditor
+			if (keyCode >0)
+			{
+				String alphabet = null;
+				if (keyCode == Canvas.KEY_POUND) {
+					alphabet = charactersKeyPound;
+				} else if (keyCode == Canvas.KEY_STAR) {
+					alphabet = charactersKeyStar;
+				} else {
+					int index = keyCode - Canvas.KEY_NUM0;
+					if (index >= 0 && index <= CHARACTERS.length) {
+						alphabet = CHARACTERS[ index ];
+					}
 				}
-			//#else
-				if ((gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) 
-						|| (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
-						|| (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4)
-						|| (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6)
+				if (alphabet != null && (alphabet.length() >= 0)) {
+					if(this.keyDelayTimerTask==null || this.latestKey != keyCode){
+						this.keyPressCounter=0;
+						this.passedChar = alphabet.charAt(this.keyPressCounter++);
+						this.latestKey = keyCode;
+					}
+					else {
+						this.passedChar = alphabet.charAt(this.keyPressCounter++);
+						this.latestKey = keyCode;
+						if (this.keyPressCounter == alphabet.length()){
+							this.keyPressCounter=0;	
+						}
+					}
+					if ((this.constraints & NUMERIC) == NUMERIC){
+						this.passedChar = (char)keyCode;
+					}
+				}
+			}
+			//#endif
+		//#endif
+		
+		this.isKeyPressedHandled = false;
+		
+		//#ifndef tmp.directInput
+			if (keyCode < 32 || keyCode > 126) {
+				//#if polish.bugs.inversedGameActions
+					if ((gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM8)
+						|| (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM2)
+						|| (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM6)
+						|| (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM4)
 						|| (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5)
 						|| (this.screen.isSoftKey(keyCode, gameAction))
 					) 
-				{
-					return false;
-				}
-			//#endif
+					{
+						return false;
+					}
+				//#else
+					if ((gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) 
+							|| (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
+							|| (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4)
+							|| (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6)
+							|| (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5)
+							|| (this.screen.isSoftKey(keyCode, gameAction))
+						) 
+					{
+						return false;
+					}
+				//#endif
+			}
 		//#elif !polish.blackberry
 			if (this.inputMode == MODE_NATIVE) {
 				if ((gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) 
 						|| (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
 						|| (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4)
 						|| (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6)
-						|| (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5)
-						|| (this.screen.isSoftKey(keyCode, gameAction))
+						|| (!(gameAction == Canvas.FIRE && this.cskOpensNativeEditor) && this.screen.isSoftKey(keyCode, gameAction))
 						) 
 				{
 					return false;
@@ -2740,13 +3134,29 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 		//#endif
 				//#ifdef tmp.directInput
 					//#if !polish.blackberry
+						if (this.inputMode == MODE_NATIVE && keyCode != KEY_CHANGE_MODE
 						//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
-						//#= if (this.inputMode == MODE_NATIVE && keyCode != KEY_CHANGE_MODE && keyCode != ${polish.key.ChangeNumericalAlphaInputModeKey}  ) {
-						//#else
-						if (this.inputMode == MODE_NATIVE && keyCode != KEY_CHANGE_MODE) {
+								//#= && keyCode != ${polish.key.ChangeNumericalAlphaInputModeKey}  
 						//#endif
+						) {
 							//#if tmp.useNativeTextBox
+								//#if polish.TextField.passCharacterToNativeEditor
+								this.lastTimeKeyPressed = System.currentTimeMillis();
+								if (this.keyDelayTimerTask==null && !((this.constraints & UNEDITABLE) == UNEDITABLE)){
+									final int localGameAction = gameAction;
+									final int localKeyCode = keyCode;
+									this.keyDelayTimerTask = new TimerTask(){
+	
+										public void run() {
+										}
+										
+									};
+									
+									this.keyDelayTimer.schedule(this.keyDelayTimerTask, 0,this.delayBetweenKeys);
+								}
+								//#else
 								showTextBox();
+								//#endif	
 								return true;
 							//#endif
 						}
@@ -2792,20 +3202,6 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
                         }
                         //#endif
 
-                        //#ifdef polish.key.ChangeNumericalAlphaInputModeKey:defined
-                        //#= if(!handled &&
-                        //#=     !(keyCode == KEY_CHANGE_MODE && !this.isNumeric &&
-                        //#=       !(KEY_CHANGE_MODE == Canvas.KEY_NUM0 &&
-                        //#=         this.inputMode == MODE_NUMBERS)) &&
-                        //#=     !(keyCode == ${polish.key.ChangeNumericalAlphaInputModeKey} &&
-                        //#=       !this.isNumeric))
-                        //#else
-                        if(!handled && keyCode != KEY_CHANGE_MODE)
-                        //#endif
-                        {
-                                handled = handleKeyInsert(keyCode, gameAction);
-                        }
-						
 						// Backspace
 						//#ifdef polish.key.ClearKey:defined
 							//#= if (keyCode == ${polish.key.ClearKey}
@@ -2819,15 +3215,39 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 						{
 							handled = handleKeyClear(keyCode, gameAction);
 						}
+						
+						//#if polish.key.Menu:defined
+							int menuKey = 0;
+							//#= menuKey = ${polish.key.Menu};
+							if(keyCode == menuKey) {
+								return false;
+							}
+						//#endif
 							
+							
+						//#ifdef polish.key.ChangeNumericalAlphaInputModeKey:defined
+                        //#= if(!handled &&
+                        //#=     !(keyCode == KEY_CHANGE_MODE && !this.isNumeric &&
+                        //#=       !(KEY_CHANGE_MODE == Canvas.KEY_NUM0 &&
+                        //#=         this.inputMode == MODE_NUMBERS)) &&
+                        //#=     !(keyCode == ${polish.key.ChangeNumericalAlphaInputModeKey} &&
+                        //#=       !this.isNumeric))
+                        //#else
+                        if(!handled && keyCode != KEY_CHANGE_MODE)
+                        //#endif
+                        {
+                                handled = handleKeyInsert(keyCode, gameAction);
+                        }
+	                        
 						// Navigate the caret
-						if (   (gameAction == Canvas.UP 	|| 
+						if (  !handled && 
+								(gameAction == Canvas.UP 	|| 
 								gameAction == Canvas.DOWN 	||
 								gameAction == Canvas.LEFT 	||
 								gameAction == Canvas.RIGHT  ||
-								gameAction == Canvas.FIRE)  &&
-								!handled) 
-						{
+								gameAction == Canvas.FIRE
+								)
+						) {
 							handled = handleKeyNavigation(keyCode, gameAction);
 							if (!handled && getScreen().isGameActionFire(keyCode, gameAction) && this.defaultCommand != null) {
 								notifyItemPressedStart();
@@ -2864,18 +3284,18 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 					this.isKeyPressedHandled = true;
 					return true;
 				}
-				if (currentLength > 0) {
-					//#ifdef polish.key.ClearKey:defined
-						//#= if ((keyCode == ${polish.key.ClearKey}) || (gameAction == Canvas.LEFT)) {
-					//#else
-						if (keyCode == -8 || gameAction == Canvas.LEFT) {						
-					//#endif
-						setString( currentText.substring(0, currentLength - 1) );
-						notifyStateChanged();
+				//#ifdef polish.key.ClearKey:defined
+					//#= if ((keyCode == ${polish.key.ClearKey}) || (gameAction == Canvas.LEFT)) {
+				//#else
+					if (keyCode == -8 || gameAction == Canvas.LEFT) {						
+				//#endif
+						if (currentLength > 0) {
+							setString( currentText.substring(0, currentLength - 1) );
+							notifyStateChanged();
+						}				
 						this.isKeyPressedHandled = true;
 						return true;
-					}
-				}				
+				}
 				return false;
 			}
 		//#endif
@@ -2892,7 +3312,7 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 			//#endif
 			|| (getScreen().isGameActionFire(keyCode, gameAction) ) )
 		{	
-			//#if !(polish.blackberry || tmp.forceDirectInput)
+			//#if tmp.useNativeTextBox
 				showTextBox();
 			//#endif
 			return true;
@@ -2914,14 +3334,8 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 		//#if tmp.directInput
 			//#if tmp.usePredictiveInput
 				if (this.predictiveInput) {
-					//#if tmp.supportsAsciiKeyMap
-						if (!this.screen.isKeyboardAccessible()) {
-					//#endif
-							return this.predictiveAccess.keyInsert(keyCode, gameAction);
-					//#if tmp.supportsAsciiKeyMap
-						}
-					//#endif
-				}
+						return this.predictiveAccess.keyInsert(keyCode, gameAction);
+			}
 			//#endif
 			
 			int currentLength = (this.text == null ? 0 : this.text.length());
@@ -2944,20 +3358,26 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 								&& ( !getScreen().isSoftKey(keyCode, gameAction) )
 						) {
 							useAsciiKeyMap = true;
+							//#if tmp.usePredictiveInput
+								this.predictiveInput = false;
+							//#endif
 						}
 					}
 				//#endif
 				if (keyCode >= 32 
-						&& this.screen.isKeyboardAccessible() 
 						//#if polish.key.maybeSupportsAsciiKeyMap
 							&& useAsciiKeyMap
 						//#endif
 						&& this.inputMode != MODE_NUMBERS 
 						&& !this.isNumeric
-						&& !( 	   (gameAction == Canvas.UP     &&  insertChar != '2' && keyCode == this.screen.getKeyCode(Canvas.UP) ) 
-								|| (gameAction == Canvas.DOWN   &&  insertChar != '8' && keyCode == this.screen.getKeyCode(Canvas.DOWN)  )
+						&& this.screen.isKeyboardAccessible() 
+						&& !( 	(insertChar < 'a' || insertChar > 'z')
+								&& 
+								(  (gameAction == Canvas.UP     &&  insertChar != '2' && keyCode == this.screen.getKeyCode(Canvas.UP)   ) 
+								|| (gameAction == Canvas.DOWN   &&  insertChar != '8' && keyCode == this.screen.getKeyCode(Canvas.DOWN) )
 								|| (gameAction == Canvas.LEFT   &&  insertChar != '4' && keyCode == this.screen.getKeyCode(Canvas.LEFT)	)
 								|| (gameAction == Canvas.RIGHT  &&  insertChar != '6' && keyCode == this.screen.getKeyCode(Canvas.RIGHT))
+								)
 								//|| (gameAction == Canvas.FIRE   &&  keyCode == this.screen.getKeyCode(Canvas.FIRE) )  
 							)
 						) 
@@ -2989,7 +3409,7 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 					return true;
 				}
 				//#if polish.TextField.numerickeys.1:defined
-					String numericKeyStr = null;
+					String numericKeyStr = "";
 					int foundNumber = -1;
 					//#= numericKeyStr = "${polish.TextField.numerickeys.1}";
 					if (numericKeyStr.indexOf(insertChar) != -1) {
@@ -3043,18 +3463,22 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 				//#endif
 				if ( this.isDecimal ) {
 					//System.out.println("handling key for DECIMAL TextField");
-					if (currentLength < this.maxSize 
-							&& ( keyCode == Canvas.KEY_POUND || keyCode == Canvas.KEY_STAR )
-							&& (this.text.indexOf( Locale.DECIMAL_SEPARATOR) == -1)
-							) 
+					if (this.text == null || 
+						(currentLength < this.maxSize 
+						&& ( keyCode == Canvas.KEY_POUND || keyCode == Canvas.KEY_STAR )
+						&& this.text.indexOf( Locale.DECIMAL_SEPARATOR) == -1)
+						) 
 					{
-						
 						insertChar = Locale.DECIMAL_SEPARATOR;
 						insertCharacter(insertChar, true, true );
 						return true;								
 					}
 				}
-				
+				//#if polish.javaplatform >= Android/1.5
+					if (this.isNumeric) {
+						this.androidLastInvalidCharacterTime = System.currentTimeMillis();
+					}
+				//#endif
 			}
 			if ( (!this.isNumeric) //this.inputMode != MODE_NUMBERS 
 					&& !this.isUneditable
@@ -3120,17 +3544,19 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 				if ( this.inputMode == MODE_UPPERCASE 
 						|| this.nextCharUppercase ) 
 				{
-					newCharacter = Character.toUpperCase(newCharacter);
-				}
-				//#ifdef polish.css.font-bitmap
-					if (this.bitMapFont != null) {
-						this.caretWidth = this.bitMapFont.charWidth( newCharacter );
-					} else {
-				//#endif
-						this.caretWidth = this.font.charWidth( newCharacter );
-				//#ifdef polish.css.font-bitmap
+					//#if polish.TextField.useDynamicCharset 
+					if(usesDynamicCharset && keyCode >= Canvas.KEY_NUM0 && keyCode <= Canvas.KEY_NUM9)
+					{
+						alphabet = CHARACTERS_UPPER[ keyCode - Canvas.KEY_NUM0 ];
+						newCharacter = alphabet.charAt(this.characterIndex);
 					}
-				//#endif
+					else
+					//#endif
+					{
+						newCharacter = Character.toUpperCase(newCharacter);
+					}
+				}
+				this.caretWidth = charWidth( newCharacter );
 				this.caretChar = newCharacter;
 				if (alphabetLength == 1) {
 					insertCharacter( newCharacter, true, true );
@@ -3154,7 +3580,17 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 					return this.predictiveAccess.keyClear(keyCode, gameAction);
 				}
 			//#endif			
-			if ( this.text != null && this.text.length() > 0) {			
+			if ( this.text != null && this.text.length() > 0) {
+				//#if polish.javaplatform >= Android/1.5
+					long invalidCharInputTime = this.androidLastInvalidCharacterTime;
+					if (invalidCharInputTime != 0) {
+						this.androidLastInvalidCharacterTime = 0;
+						if (invalidCharInputTime - System.currentTimeMillis() <= 10 * 1000) {
+							// consume clear, when the last invalid input is less then 10 seconds ago:
+							return true;
+						}
+					}
+				//#endif
 				return deleteCurrentChar();
 			}
 		//#endif
@@ -3172,7 +3608,9 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 			//#endif
 			
 			//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
-				//#= if (keyCode == ${polish.key.ChangeNumericalAlphaInputModeKey} && !this.isNumeric && !this.isUneditable) {
+				int changeNumericalAlphaInputModeKey = 0;
+				//#= changeNumericalAlphaInputModeKey = ${polish.key.ChangeNumericalAlphaInputModeKey};
+				if (keyCode ==changeNumericalAlphaInputModeKey && !this.isNumeric && !this.isUneditable) {
 					if (this.inputMode == MODE_NUMBERS) {
 						this.inputMode = MODE_LOWERCASE;
 					} else {
@@ -3189,19 +3627,19 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 					} else {
 						this.nextCharUppercase = false;
 					}
-					//# return true;
-				//# }
+					return true;
+				}
 			//#endif
 			//#if polish.key.supportsAsciiKeyMap.condition:defined && polish.key.shift:defined
 				// there is a shift key responsible for switching the input mode which
 				// is only used when the device is opened up - example includes the Nokia/E70.
 				if (!this.screen.isKeyboardAccessible()) {
 			//#endif
-				//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
-					//#= if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable && (!(KEY_CHANGE_MODE == Canvas.KEY_NUM0 && this.inputMode == MODE_NUMBERS)) ) {
-				//#else
-				if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable) {
-				//#endif
+				if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable
+						//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
+							&& (!(KEY_CHANGE_MODE == Canvas.KEY_NUM0 && this.inputMode == MODE_NUMBERS)) 
+						//#endif
+				) {
 					if (this.nextCharUppercase && this.inputMode == MODE_LOWERCASE) {
 						this.nextCharUppercase = false;
 					} else {
@@ -3279,8 +3717,8 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 			}
 		
 			//#if tmp.usePredictiveInput
-				if(this.predictiveInput) {
-					return this.predictiveAccess.keyNavigation(keyCode, gameAction);
+				if(this.predictiveInput && this.predictiveAccess.keyNavigation(keyCode, gameAction)) {
+					return true;
 				}
 			//#endif
 			
@@ -3297,13 +3735,6 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 				return true;
 			}
 			else if (gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) {
-				//#ifdef polish.css.font-bitmap
-					if (this.bitMapFontViewer != null) {
-						// a bitmap-font is used
-						return false;
-					}
-				//#endif
-				// this TextField has a normal font:
 				if (this.caretRow ==  0) {
 					return false;
 				} 
@@ -3322,13 +3753,7 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 				//#endif
 				return true;
 			} else if (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8) {
-				//#ifdef polish.css.font-bitmap
-					if (this.bitMapFontViewer != null) {
-						// a bitmap-font is used
-						return false;
-					}
-				//#endif
-				if (this.textLines == null || this.caretRow >= this.textLines.length - 1) {
+				if (this.textLines == null || this.caretRow >= this.textLines.size() - 1) {
 					return false;
 				} 
 	
@@ -3351,13 +3776,6 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 			//#else
 			} else if (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4) {
 			//#endif
-				//#ifdef polish.css.font-bitmap
-				if (this.bitMapFontViewer != null) {
-					// a bitmap-font is used
-					// delete last character:
-					return deleteCurrentChar();
-				}
-				//#endif
 				int column = this.caretColumn;
 				if (column > 0) {
 					this.caretPosition--;
@@ -3403,12 +3821,6 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 					//System.out.println("right but character inserted");
 					return true;
 				}
-				//#ifdef polish.css.font-bitmap
-					if (this.bitMapFontViewer != null) {
-						// a bitmap-font is used
-						return false;
-					}
-				//#endif
 				boolean isOnNewlineChar = this.caretColumn < this.originalRowText.length() 
 										&& this.originalRowText.charAt( this.caretColumn ) == '\n';
 				if (this.caretColumn < this.originalRowText.length() && !isOnNewlineChar ) {
@@ -3480,7 +3892,7 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 			// ignore repeat events when the current input mode is numbers:
 			if ( this.isNumeric || this.inputMode == MODE_NUMBERS ) {
 				if (keyCode == Canvas.KEY_NUM0 && this.inputMode == PHONENUMBER) {
-					if (this.caretPosition == 0 || "0".equals(this.text)) {
+					if (this.caretPosition == 1 && this.text.charAt(0) == '0') {
 						String str = getString();
 						if (str.length() > 0 && str.charAt(0) == '0') {
 							str = str.substring(1);
@@ -3497,15 +3909,7 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 				// enter number character:
 				this.lastInputTime = System.currentTimeMillis();
 				char newCharacter = Integer.toString(keyCode - 48).charAt(0);
-				//#ifdef polish.css.font-bitmap
-					if (this.bitMapFont != null) {
-						this.caretWidth = this.bitMapFont.charWidth( newCharacter );
-					} else {
-				//#endif
-						this.caretWidth = this.font.charWidth( newCharacter );
-				//#ifdef polish.css.font-bitmap
-					}
-				//#endif
+				this.caretWidth = charWidth( newCharacter );
 				if (newCharacter != this.caretChar) {
 					
 					//#if tmp.usePredictiveInput
@@ -3521,6 +3925,7 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 								builder.addString("" + newCharacter);
 							}catch(Exception e)
 							{
+								//#debug error
 								System.out.println("unable to clear " + e);
 							}
 							
@@ -3538,30 +3943,37 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 			}
 		}
 		//#ifdef polish.key.ClearKey:defined
-			//#= if (keyCode == ${polish.key.ClearKey}
+			//#= if ( (keyCode == ${polish.key.ClearKey}
 		//#else
-		if ( keyCode == -8 
+		if ( (keyCode == -8 
 		//#endif
 		//#if polish.key.backspace:defined
 			//#= || keyCode == ${polish.key.backspace}
 		//#endif
-				&& this.caretPosition > 0
+				) && this.caretPosition > 0
 				&& this.text != null
 		) 
 		{
 			this.deleteKeyRepeatCount++;
 		}
-
-		return super.handleKeyRepeated(keyCode, gameAction);
+		return false;
+		//return super.handleKeyRepeated(keyCode, gameAction);
 	}
 	//#endif
-
+	
 	//#if !polish.blackberry && tmp.directInput
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#handleKeyReleased(int, int)
 	 */
 	protected boolean handleKeyReleased( int keyCode, int gameAction ) {
-		//System.out.println("handleKeyReleased for textfield " + getString() );
+		//#debug
+		System.out.println("handleKeyReleased  " + keyCode );
+		//#if tmp.useNativeTextBox && !(polish.Vendor == Samsung)
+			if(this.skipKeyReleasedEvent) {
+				this.skipKeyReleasedEvent = false;
+				return true;
+			}
+		//#endif
 		this.isKeyDown = false;
 		this.deleteKeyRepeatCount = 0;
 		
@@ -3584,7 +3996,7 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 			//#= !this.isNumeric && !this.isUneditable && 
 			//#= (!(KEY_CHANGE_MODE == Canvas.KEY_NUM0 && this.inputMode == MODE_NUMBERS) || keyCode == ${polish.key.ChangeNumericalAlphaInputModeKey}) )
 		//#else
-		if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable)
+		if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable )
 		//#endif
 		{
 			//#if tmp.usePredictiveInput && !polish.key.ChangeNumericalAlphaInputModeKey:defined
@@ -3604,7 +4016,9 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 				return true;
 			}
 			//#endif
-			this.lastTimePressed = -1;
+			//#if tmp.usePredictiveInput
+				this.lastTimePressed = -1;
+			//#endif
 			return handleKeyMode(keyCode, gameAction) || clearKeyPressed;
 		}
 		
@@ -3613,7 +4027,7 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 	}
 	//#endif
 	
-	//#if polish.hasPointerEvents && !tmp.forceDirectInput
+	//#if polish.hasPointerEvents && (!tmp.forceDirectInput || polish.javaplatform >= Android/1.5)
 	/**
 	 * Handles the event when a pointer has been pressed at the specified position.
 	 * The default method translates the pointer-event into an artificial
@@ -3628,14 +4042,22 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 	 */
 	protected boolean handlePointerPressed( int x, int y ) {
 		if (isInItemArea(x, y)) {
-			return notifyItemPressedStart();
-		} else {
-			return false;
+			
+			//#if polish.blackberry && polish.hasPointerEvents
+			 	DeviceControl.showSoftKeyboard();
+			//#endif
+			 
+			//#if polish.javaplatform >= Android/1.5
+				this.androidLastPointerPressedTime = System.currentTimeMillis();
+			//#elif !tmp.forceDirectInput
+				return notifyItemPressedStart();
+			//#endif
 		}
+		return super.handlePointerPressed(x, y);
 	}
 	//#endif
 	
-	//#if polish.hasPointerEvents && !tmp.forceDirectInput
+	//#if polish.hasPointerEvents
 	/**
 	 * Handles the event when a pointer has been pressed at the specified position.
 	 * The default method translates the pointer-event into an artificial
@@ -3650,14 +4072,34 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 	 */
 	protected boolean handlePointerReleased( int x, int y ) {
 		if (isInItemArea(x, y)) {
-			notifyItemPressedEnd();
-			showTextBox();
-			return true;
-		} else {
-			return false;
+			//#if tmp.useNativeTextBox
+				int fieldType = this.constraints & 0xffff;
+				if (fieldType != FIXED_POINT_DECIMAL) {
+					notifyItemPressedEnd();
+					showTextBox();
+					return true;
+				}
+			//#elif polish.javaplatform >= Android/1.5
+				if (this.isFocused && ((System.currentTimeMillis() - this.androidFocusedTime) > 1000)) {
+					notifyItemPressedEnd();
+					MidletBridge.instance.toggleSoftKeyboard();
+					return true;
+				}
+			//#elif polish.TextField.useVirtualKeyboard
+				return true;
+			//#endif
 		}
+		return super.handlePointerReleased(x, y);
 	}
 	//#endif
+	
+	//#if polish.hasPointerEvents && polish.javaplatform >= Android/1.5
+	protected boolean handlePointerDragged(int relX, int relY) {
+		return super.handlePointerDragged(relX, relY) 
+		|| (((System.currentTimeMillis() - this.androidLastPointerPressedTime) < 500) && isInItemArea(relX, relY));
+	}
+	//#endif
+
 
 	
 	//#ifdef tmp.directInput
@@ -3707,7 +4149,10 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 	/**
 	 * Shows the TextBox for entering texts.
 	 */
-	private void showTextBox() {
+	protected void showTextBox() {
+	//TODO: drubin better handling of textfield events.
+	//(Currently this is the easiest method to overload if you want to tie into
+	//"is editing mode" events.) that is triggered by both touch and commands
 		if (this.midpTextBox == null) {
 			createTextBox();
 		}
@@ -3756,10 +4201,12 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 		//#if tmp.useNativeTextBox
 			if (cmd == StyleSheet.CANCEL_CMD) {
 				this.midpTextBox.setString( this.text );
+				this.skipKeyReleasedEvent = true;
 			} else if (!this.isUneditable) {
 				setString( this.midpTextBox.getString() );
 				setCaretPosition( size() );
 				notifyStateChanged();
+				this.skipKeyReleasedEvent = true;
 			}
 			StyleSheet.display.setCurrent( this.screen );
 		//#endif
@@ -3810,15 +4257,19 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 		//#debug
 		System.out.println("TextField.commandAction( " + cmd.getLabel() + ", " + this + " )");
 		//#if tmp.usePredictiveInput
-			if (this.predictiveInput && this.predictiveAccess.commandAction(cmd, item)) {			
+			if (this.predictiveAccess.commandAction(cmd, item)) {			
 				return;
 			}
 		//#endif
-		
 		//#if tmp.implementsItemCommandListener
 			//#if tmp.supportsSymbolEntry 
 				if (cmd == ENTER_SYMBOL_CMD ) {
-					//#if !polish.TextField.ignoreSymbolCommand
+					//#if polish.TextField.ignoreSymbolCommand
+						Screen scr = getScreen();
+						if (scr != null & scr.getCommandListener() != null) {
+							scr.getCommandListener().commandAction(cmd, scr);
+						}
+					//#else
 						showSymbolsList();
 					//#endif
 					return;
@@ -3874,7 +4325,7 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 		//#endif
 	}
 		
-	//#if (tmp.directInput && (polish.TextField.showInputInfo != false)) || polish.blackberry || polish.TextField.activateUneditableWithFire
+	//#if (tmp.directInput && (polish.TextField.showInputInfo != false)) || polish.blackberry || polish.TextField.activateUneditableWithFire || polish.javaplatform >= Android/1.5
 	protected void defocus(Style originalStyle) {
 		super.defocus(originalStyle);
 		//#if polish.blackberry
@@ -3888,7 +4339,13 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 					notifyStateChanged();
 				}
 			//#endif
-			this.editField.focusRemove();
+			Object bbLock = UiApplication.getEventLock();
+			synchronized (bbLock) {
+				this.editField.focusRemove();
+			}
+			//#if polish.hasPointerEvents && polish.TextField.hideSoftKeyboardOnDefocus
+				DeviceControl.hideSoftKeyboard();
+			//#endif
 		//#elif polish.TextField.showInputInfo != false && !tmp.includeInputInfo
 			if (this.screen != null) {
 				this.screen.setInfo((Item)null);
@@ -3900,13 +4357,16 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 				notifyStateChanged();
 			}
 		//#endif
+		//#if polish.javaplatform >= Android/1.5 && polish.TextField.hideSoftKeyboardOnDefocus
+				MidletBridge.instance.hideSoftKeyboard();
+		//#endif
 
 	}
 	//#endif
 	
-	//#if tmp.directInput || !(polish.TextField.suppressDeleteCommand || polish.blackberry) 
+	//#if tmp.directInput || !polish.TextField.suppressDeleteCommand 
 	protected Style focus(Style focStyle, int direction) {
-		//#if tmp.directInput
+		//#if tmp.directInput || polish.blackberry
 			//#ifdef tmp.allowDirectInput
 				if (this.enableDirectInput) {
 			//#endif
@@ -3914,9 +4374,13 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 						updateInfo();
 					//#endif
 					//#if polish.TextField.jumpToStartOnFocus
-						if (this.caretPosition != 0) {
-							setCaretPosition( 0 );
-						}
+						//#if !polish.blackberry
+							if (this.caretPosition != 0) {
+						//#endif
+								setCaretPosition( 0 );
+						//#if !polish.blackberry
+							}
+						//#endif
 					//#elif !polish.TextField.keepCaretPosition
 						setCaretPosition( getString().length() );
 					//#endif
@@ -3926,10 +4390,16 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 		//#endif
 		
 		Style unfocusedStyle = super.focus(focStyle, direction);
-		//#if tmp.updateDeleteCommand
+		//#if tmp.updateDeleteCommand && !polish.blackberry
 			updateDeleteCommand( this.text );
 		//#endif
-			
+		
+		//#if polish.javaplatform >= Android/1.5
+			if (this.isShown) {
+				DeviceControl.showSoftKeyboard();
+				this.androidFocusedTime = System.currentTimeMillis();
+			}
+		//#endif
 		return unfocusedStyle;
 	}
 	//#endif
@@ -3943,14 +4413,20 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 	public void fieldChanged(Field field, int context) {
 		if (context != FieldChangeListener.PROGRAMMATIC && this.isInitialized ) {
 			//#if polish.Bugs.ItemStateListenerCalledTooEarly
-				long currentTime = System.currentTimeMillis();
-				this.lastFieldChangedEvent = currentTime;
-				Screen scr = getScreen();
-				if (scr != null) {
-					scr.lastInteractionTime = currentTime;
+				int fieldType = this.constraints & 0xffff;
+				if (fieldType == NUMERIC || fieldType == DECIMAL || fieldType == FIXED_POINT_DECIMAL) {
+					setString( this.editField.getText() );				
+					notifyStateChanged();					
+				} else {
+					long currentTime = System.currentTimeMillis();
+					this.lastFieldChangedEvent = currentTime;
+					Screen scr = getScreen();
+					if (scr != null) {
+						scr.lastInteractionTime = currentTime;
+					}
 				}
 			//#else
-				setString( this.editField.getText() );
+				setString( this.editField.getText() );				
 				notifyStateChanged();
 			//#endif
 		}
@@ -4003,6 +4479,10 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 		
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.StringItem#showNotify()
+	 */
 	protected void showNotify() {
 		//#if tmp.updateDeleteCommand
 			updateDeleteCommand(this.text);
@@ -4014,18 +4494,33 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 				updateInfo();
 			}
 		//#endif
+		//#if (polish.blackberry && polish.hasPointerEvents) || polish.javaplatform >= Android/1.5
+			//#if polish.showSoftKeyboardOnShowNotify != false
+				if (this.isFocused) {
+					DeviceControl.showSoftKeyboard();
+				}
+			//#endif
+		//#endif
 		super.showNotify();
 	}
 
-	//#if  !polish.blackberry && tmp.directInput
+	//#if  (!polish.blackberry && tmp.directInput) || (polish.blackberry && polish.hasPointerEvents)
 		/* (non-Javadoc)
 		 * @see de.enough.polish.ui.StringItem#hideNotify()
 		 */
 		protected void hideNotify() {
-			if (this.caretChar != this.editingCaretChar) {
-				commitCurrentCharacter();
-			}
+			//#if !polish.blackberry
+				if (this.caretChar != this.editingCaretChar) {
+					commitCurrentCharacter();
+				}
+			//#endif
 			super.hideNotify();
+			//#if polish.blackberry && polish.hasPointerEvents
+				// 2009-11-11: hiding the softkeyboard is not really necessary as we have a finer grained control about this in BaseScreen.notifyDisplayChange()
+				//# //Display.getInstance().getVirtualKeyboard().setVisibility(net.rim.device.api.ui.VirtualKeyboard.HIDE);
+			//#elif polish.javaplatform >= Android/1.5
+				MidletBridge.instance.hideSoftKeyboard();
+			//#endif
 		}	
 	//#endif
 		
@@ -4060,6 +4555,13 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 	}
 
 	//#if polish.TextField.showHelpText
+	/**
+	 * Sets a help text for this TextField. The help text
+	 * appears when a TextField has no input yet and is
+	 * used to inform the user about the desired content 
+	 * (e.g. "Insert name here ...")
+	 * @param text the help text
+	 */
 	public void setHelpText(String text)
 	{
 		this.helpItem.setText(text);
@@ -4067,6 +4569,20 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 	//#endif
 	
 	//#if polish.TextField.showHelpText
+	/**
+	 * Sets the help style for this TextField
+	 * with the use of style preprocessing e.g.:
+	 * //#style myStyle
+	 * setHelpStyle();
+	 */
+	public void setHelpStyle() {
+		// nothing here
+	}
+	
+	/**
+	 * Sets the style of the help text
+	 * @param style the style
+	 */
 	public void setHelpStyle(Style style)
 	{
 		this.helpItem.setStyle(style);
@@ -4074,10 +4590,18 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 	//#endif
 
 	//#if polish.TextField.useExternalInfo && !polish.blackberry
+	/**
+	 * Returns the StringItem which is displaying the input info
+	 * @return the StringItem displaying the input info
+	 */
 	public StringItem getInfoItem() {
 		return this.infoItem;
 	}
 
+	/**
+	 * Sets the StringItem which should display the input info 
+	 * @param infoItem the StringItem to display the input info
+	 */
 	public void setInfoItem(StringItem infoItem) {
 		this.infoItem = infoItem;
 	}
@@ -4092,26 +4616,186 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 		return definedSymbols;
 	}
 	//#endif
-	
-	/*
-	public boolean keyChar(char key, int status, int time) {
-		Screen scr = getScreen();
-		if (!this.isFocused || scr == null || !scr.isShown()) {
-			return false;
-		}
-		int currentLength = (this.text == null ? 0 : this.text.length());
-		if (currentLength < this.maxSize) { 
-			this.caretChar = key;
-			insertCharacter();
-			return true;
+
+	//#if polish.blackberry
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#updateInternalArea()
+	 */
+	public void updateInternalArea() {
+		int cursorPosition = this.editField.getCursorPosition();
+		// check if cursor is in visible area:
+		int lineHeight = this.font.getHeight() + this.paddingVertical;
+		if (this.textLines != null) {
+			this.internalX = 0;
+			this.internalHeight = lineHeight;
+			this.internalWidth = this.contentWidth;
+			int size = this.textLines.size();
+			if (cursorPosition >= this.text.length() - this.textLines.getLine(size-1).length()) {
+				this.internalY = this.contentHeight - lineHeight;
+			} else {
+				this.internalY = -1;
+				int endOfLinePos = 0;
+				int textLength = this.text.length();
+				for (int i = 0; i < size; i++) {
+					String line = this.textLines.getLine(i);
+					endOfLinePos += line.length();
+					if (endOfLinePos < textLength) {
+						char c = this.text.charAt( endOfLinePos );
+						if (c == ' '  || c == '\t'  || c == '\n') {
+							line += c;
+							endOfLinePos++;
+						}
+					}
+					if (cursorPosition <= endOfLinePos) {
+						this.internalY = lineHeight * i;
+						break;
+					}
+				}
+				if (this.internalY == -1) {
+					this.internalY= this.contentHeight - lineHeight;
+				}
+			}
+			if (this.parent instanceof Container) {
+				int direction = Canvas.DOWN;
+				
+				if (cursorPosition > this.bbLastCursorPosition) {
+					direction = Canvas.UP;
+				}
+				this.bbLastCursorPosition = cursorPosition;
+			}
 		} else {
-			return false;
+			this.internalX = NO_POSITION_SET;
 		}
 	}
-	*/
+	//#endif
+
+	/**
+	 * Retrieves matching words for the specified textfield.
+	 * Note that you need to enable the predictive input mode using the preprocessing variable
+	 * <code>polish.TextField.usePredictiveInputMode</code>.
+	 * 
+	 * @return ArrayList&lt;String&gt; of allowed words - null when no predictive mode is used
+	 */
+	public ArrayList getPredictiveMatchingWords() {
+		//#if tmp.usePredictiveInput
+			PredictiveAccess predictive = getPredictiveAccess();
+			return predictive.getResults();
+		//#else
+			//# return null;
+		//#endif
+	}
+
+	/**
+	 * Allows the given words for the specified textfield.
+	 * Note that you need to enable the predictive input mode using the preprocessing variable
+	 * <code>polish.TextField.usePredictiveInputMode</code>.
+	 * 
+	 * @param words array of allowed words - use null to reset the allowed words to the default RMS dictionary
+	 */
+	public void setPredictiveDictionary(String[] words) {
+	 	//#if tmp.usePredictiveInput
+			PredictiveAccess predictive = getPredictiveAccess();
+			predictive.initPredictiveInput(words);
+			
+			setString("");
+			predictive.synchronize();
+			
+			if(words == null)
+			{
+				predictive.setPredictiveType(PredictiveAccess.TRIE);
+			}
+			else
+			{
+				predictive.setPredictiveType(PredictiveAccess.ARRAY);
+			}
+		//#endif
+	}
+
+	//TODO andre: document
+	public void setPredictiveInfo(String info) {
+	 	//#if tmp.usePredictiveInput
+			PredictiveAccess predictive = getPredictiveAccess();
+			predictive.setInfo(info);
+		//#endif
+	}
+	
+	/**
+	 * Set the word-not-found box in the textfield
+	 * 
+	 * @param alert the alert
+	 */
+	public void setPredictiveWordNotFoundAlert(Alert alert) {
+	 	//#if  tmp.usePredictiveInput
+			getPredictiveAccess().setAlert(alert);
+		//#endif
+	}
+
+	
+	/**
+	 * Returns true if the flag to open the native editor on CenterSoftKey press is set to true
+	 * @return true when the native editor is opened when FIRE is pressed
+	 */
+	public boolean isCskOpensNativeEditor() {
+		return this.cskOpensNativeEditor;
+	}
+	
+	/**
+	 * Sets the flag to open the native editor on CenterSoftKey press
+	 * @param cskOpensNativeEditor true when the native editor should be opened when FIRE is pressed
+	 */
+	public void setCskOpensNativeEditor(boolean cskOpensNativeEditor) {
+		this.cskOpensNativeEditor = cskOpensNativeEditor;
+	}
+
+	/**
+	 * Sets the title to be displayed in the native textbox
+	 * @param title the title to set
+	 */
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	
+	/**
+	 * Set if the textfield should accept only simple input.
+	 * 
+	 * @param noComplexInput set if the textfield should accept only simple input
+	 */
+	public void setNoComplexInput(boolean noComplexInput){
+		this.noComplexInput= noComplexInput;
+		this.setConstraints(this.constraints);
+	}
+	
+	
+	/**
+	 * Set if the textfield should accept the enter key as an input which results in a new line.
+	 * 
+	 * @param noNewLine set if new lines should be ignored
+	 */
+	public void setNoNewLine(boolean noNewLine) {
+		this.noNewLine = noNewLine;
+		//#if polish.blackberry
+			this.setConstraints(this.constraints);
+		//#endif
+	}
+
+	/**
+	 * Checks if the textfield should accept the enter key as an input which results in a new line.
+	 * 
+	 * @return true if new lines should be ignored
+	 */
+	public boolean isNoNewLine() {
+		return this.noNewLine;
+	}
+
+	/**
+	 * Checks if this textfield is edtiable.
+	 * @return true when this field is editable
+	 */
+	public boolean isEditable() {
+		return ((this.constraints & TextField.UNEDITABLE) != TextField.UNEDITABLE);
+	}
 	
 //#ifdef polish.TextField.additionalMethods:defined
 	//#include ${polish.TextField.additionalMethods}
 //#endif
-
 }
