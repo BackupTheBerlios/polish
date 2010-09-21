@@ -1,6 +1,8 @@
 /*********************************************************************************
  *                                                                               *
  *  Contains default styles for several J2ME Polish components                   *
+ *  IMPORTANT: YOU CANNOT EXTEND STYLES - NEITHER EXPLICITELY WITH THE           *
+ *  "EXTENDS" KEYWORD NOR IMPLICITELY, E.G. :HOVER OR :PRESSED.                  *
  *                                                                               *
  *********************************************************************************/
  
@@ -241,6 +243,7 @@ scrollbar {
 
 /* KEYBOARD STYLES *******************************************************************/
 
+//#if polish.TextField.useVirtualKeyboard 
 keyDimension {
 	min-height: 15%;
 	min-width: 15%;
@@ -251,6 +254,22 @@ keySpaceDimension extends keyDimension {
 }
 
 key extends keyDimension{
+	inherit: false;
+	margin: 1%;
+	
+	border-color: black;
+	border-width: 1;
+	
+	font-color: black;
+	font-size: large;
+	
+	text-layout: center | vcenter;
+	layout: center | vcenter;
+	focused-style: keyFocused;
+}
+
+keyFocused{
+	inherit: false;
 	margin: 1%;
 	
 	border-color: black;
@@ -263,31 +282,28 @@ key extends keyDimension{
 	layout: center | vcenter;
 }
 
-key:pressed {
-	font-color: white;
-	background-color: black;
-}
-
-key:hover{}
-
 keySpace extends keySpaceDimension {
 	margin: 1%;
 	
 	border-color: black;
 	border-width: 1;
 	
-	font-color: black;
+	font-size: large;
+	
+	layout: center | vcenter;
+	focused-style: keySpaceFocused;
+}
+
+.keySpaceFocused {
+	margin: 1%;
+	
+	border-color: black;
+	border-width: 1;
+	
 	font-size: large;
 	
 	layout: center | vcenter;
 }
-
-keySpace:pressed {
-	font-color: white;
-	background-color: black;
-}
-
-keySpace:hover{}
 
 keyShift extends key {}
 
@@ -305,9 +321,14 @@ keyrow {
 	view-type: horizontal;
 	padding: 0;
 	layout: center;
+	focused-style: keyrowFocused; 
 }
 
-keyrow:hover{}
+keyrowFocused{
+	view-type: horizontal;
+	padding: 0;
+	layout: center;
+}
 
 keyboard {
 	margin-top: 3%;
@@ -338,11 +359,18 @@ keyboardViewSubmit {
 	border-width: 1;
 	text-layout: center | vcenter;
 	layout: vcenter;
+	focused-style: keyboardViewSubmitFocused;
 }
 
-keyboardViewSubmit:hover {}
-
-keyboardViewSubmit:pressed {}
+keyboardViewSubmitFocused {
+	margin: 1%;
+	min-height: 15%;
+	min-width: 15%;
+	border-color: black;
+	border-width: 1;
+	text-layout: center | vcenter;
+	layout: vcenter;
+}
 
 keyboardViewDisplay {
 	margin: 1%;
@@ -352,7 +380,17 @@ keyboardViewDisplay {
 	border-width: 1;
 	max-lines: 1;
 	max-lines-appendix-position: before;
+	focused-style: keyboardViewDisplayFocused;
 }
 
-keyboardViewDisplay:hover{
+keyboardViewDisplayFocused{
+	margin: 1%;
+	text-layout: left | vcenter;
+	layout: expand | vcenter;
+	border-color: black;
+	border-width: 1;
+	max-lines: 1;
+	max-lines-appendix-position: before;
 }
+
+//#endif
