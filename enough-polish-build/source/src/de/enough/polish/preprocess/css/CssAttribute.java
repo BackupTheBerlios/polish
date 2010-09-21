@@ -288,7 +288,7 @@ implements Comparable
 	}
 	
 	/**
-	 * Instantiates the referened value.
+	 * Instantiates the referenced value.
 	 * 
 	 * @param sourceCode the transformed value of this attribute
 	 * @return the instantiated value (value as object instead of source code) 

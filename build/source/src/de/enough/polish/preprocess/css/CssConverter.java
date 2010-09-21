@@ -40,9 +40,9 @@ import de.enough.polish.preprocess.Preprocessor;
 import de.enough.polish.preprocess.css.attributes.ParameterizedCssAttribute;
 import de.enough.polish.preprocess.css.attributes.StyleCssAttribute;
 import de.enough.polish.util.AbbreviationsGenerator;
+import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.StringList;
 import de.enough.polish.util.StringUtil;
-import de.enough.polish.util.FileUtil;
 
 /**
  * <p>Converts CSS files to Java-Code.</p>
@@ -56,8 +56,9 @@ import de.enough.polish.util.FileUtil;
 public class CssConverter extends Converter {
 	
 	private static final int BLOCKSIZE = 100;
+	private static final int MAX_BLOCKS_FOR_STYLESHEET_JAVA = 1; 
+	private static final int MAX_BLOCKS_PER_FILE = 4;
 	private static final String INCLUDE_MARK = "//$$IncludeStyleSheetDefinitionHere$$//";
-	private static final String EXTENDS_MARK = "//$$IncludeExtendsStatementHere$$//";
 
 	protected ArrayList referencedStyles;
 	protected AbbreviationsGenerator abbreviationGenerator;
@@ -71,6 +72,7 @@ public class CssConverter extends Converter {
 	private final ParameterizedAttributeConverter parameterizedAttributeConverter;
 
 	private String[] backgroundAttributeNames;
+	private String[] borderAttributeNames;
 	
 	/**
 	 * Creates a new CSS converter
@@ -96,15 +98,22 @@ public class CssConverter extends Converter {
 		this.borderAttribute = attributesManager.getAttribute("border");
 		// save all external background attributes:
 		ArrayList bgAttributesList = new ArrayList();
+		ArrayList brdAttributesList = new ArrayList();
 		CssAttribute[] attributes = attributesManager.getAttributes();
 		for (int i = 0; i < attributes.length; i++)
 		{
 			CssAttribute attribute = attributes[i];
-			if ( (!attribute.isImplicit()) && attribute.getName().startsWith("background-")) {
-				bgAttributesList.add( attribute.getName().substring("background-".length()) );
+			if ( !attribute.isImplicit()) {
+				String name = attribute.getName();
+				if (name.startsWith("background-")) {
+					bgAttributesList.add( name.substring("background-".length()) );
+				} else if (name.startsWith("border-")) {
+					brdAttributesList.add( name.substring("border-".length()) );
+				}
 			}
 		}
 		this.backgroundAttributeNames = (String[])bgAttributesList.toArray( new String[ bgAttributesList.size() ] );
+		this.borderAttributeNames = (String[])brdAttributesList.toArray( new String[ brdAttributesList.size() ] );
 	}
 	
 
@@ -120,21 +129,24 @@ public class CssConverter extends Converter {
 								   StyleSheet styleSheet, 
 								   Device device,
 								   Preprocessor preprocessor,
-								   Environment env,
-								   File rootFile) 
+								   Environment env ) 
 	{
 		env.set( ColorConverter.ENVIRONMENT_KEY,  this.colorConverter );
 		this.abbreviationGenerator = null;
 		// search for the position to include the style-sheet definitions:
-
+		int index = -1;
+		while (sourceCode.next()) {
+			String line = sourceCode.getCurrent();
+			if (INCLUDE_MARK.equals(line)) {
+				index = sourceCode.getCurrentIndex() + 1;
+				break;
+			}
+		}
+		if (index == -1) {
+			throw new BuildException("Unable to modify StyleSheet.java, include point [" + INCLUDE_MARK + "] not found.");
+		}
 		// okay start with the creation of source code:
-		ArrayList toStyleDefinitionsJava = new ArrayList();
-		
-		toStyleDefinitionsJava.add("package de.enough.polish.ui ;");
-		toStyleDefinitionsJava.add("");
-		toStyleDefinitionsJava.add("import java.util.Hashtable;");
-//		toStyleDefinitionsJava.add("import javax.microedition.lcdui.Font;");
-		toStyleDefinitionsJava.add("class StyleDefinitions {");
+		ArrayList codeList = new ArrayList();
 		
 		this.referencedStyles = new ArrayList();
 		// initialise the syle sheet:
@@ -151,10 +163,10 @@ public class CssConverter extends Converter {
 			if ("default".equals(groupName)) {
 				defaultFontDefined = true;
 				HashMap group = (HashMap) fonts.get( groupName );
-				processFont(group, groupName, null, toStyleDefinitionsJava, styleSheet, true, env );
+				processFont(group, groupName, null, codeList, styleSheet, true, env );
 			} else {
 				HashMap group = (HashMap) fonts.get( groupName );
-				processFont(group, groupName, null, toStyleDefinitionsJava, styleSheet, true, env );
+				processFont(group, groupName, null, codeList, styleSheet, true, env );
 			}
 		}
 		
@@ -171,7 +183,7 @@ public class CssConverter extends Converter {
 				defaultBackgroundDefined = true;
 			} 
 			HashMap group = (HashMap) backgrounds.get( groupName );
-			processBackground(groupName, group, null, toStyleDefinitionsJava, styleSheet, true, env );
+			processBackground(groupName, group, null, codeList, false, styleSheet, true, env );
 		}
 		
 		// add the borders-definition:
@@ -184,17 +196,12 @@ public class CssConverter extends Converter {
 				defaultBorderDefined = true;
 			} 
 			HashMap group = (HashMap) borders.get( groupName );
-			processBorder(groupName, group, null, toStyleDefinitionsJava, styleSheet, true, env );
+			processBorder(groupName, group, null, codeList, false, styleSheet, true, env );
 		}
 		ArrayList staticCodeList = new ArrayList();
 		ArrayList styleCodeList = new ArrayList();
-		// add the default style:
-		processDefaultStyle( defaultFontDefined,  
-				defaultBackgroundDefined, defaultBorderDefined,
-				styleCodeList, toStyleDefinitionsJava, styleSheet, device, env  );
 		
-		
-		// now add all other static and referenced styles:
+		// retrieve all used styles:
 		ArrayList defaultStyleNames = new ArrayList();
 		defaultStyleNames.add( "default");
 		defaultStyleNames.add( "label");
@@ -209,155 +216,104 @@ public class CssConverter extends Converter {
 			defaultStyleNames.add( "menu");
 			defaultStyleNames.add( "menuitem");
 		}
+		
+		
 		String[] defaultNames = (String[]) defaultStyleNames.toArray( new String[ defaultStyleNames.size() ]);
 		Style[] styles = styleSheet.getUsedAndReferencedStyles(defaultNames, this.attributesManager);
 		
+		int blocks = styles.length / BLOCKSIZE +  (styles.length % BLOCKSIZE == 0 ? 0 : 1);
+		boolean defineStylesOutside = (blocks > MAX_BLOCKS_FOR_STYLESHEET_JAVA);
+
+		// add the default style:
+		processDefaultStyle( defaultFontDefined,  
+				defaultBackgroundDefined, defaultBorderDefined,
+				styleCodeList, codeList, defineStylesOutside, styleSheet, device, env  );
 		
 		
+		// now add all other static and referenced styles:
 		boolean isLabelStyleReferenced = false;
-		
-		toStyleDefinitionsJava.add("\t//static and referenced styles:");
+		codeList.add("\t//static and referenced styles:");
 		for (int i = 0; i < styles.length; i++) {
 			Style style = styles[i];
 			if (!"default".equals(style.getSelector())) {
 				if ("label".equals(style.getSelector())) {
 					isLabelStyleReferenced = true;
 				}
-				processStyle( style, styleCodeList, toStyleDefinitionsJava, styleSheet, device, env );
+				processStyle( style, styleCodeList, codeList, defineStylesOutside, styleSheet, device, env );
 			}
 		}
-
-		ArrayList toMainStyleClass = new ArrayList();
-		
 		// register referenced and dynamic styles:
+		codeList.add("\tprotected static final Hashtable stylesByName = new Hashtable(" + styles.length + ");");
 		
-
-		int blocks = styles.length / BLOCKSIZE +  (styles.length % BLOCKSIZE == 0 ? 0 : 1);		
-		
-		int index = -1;
-		sourceCode.setCurrentIndex(0);
-		if ( blocks > 0)
-		{			
-			while (sourceCode.next()) {
-				String line = sourceCode.getCurrent();
-				if (EXTENDS_MARK.equals(line)) {
-					sourceCode.insert("extends StylePieceClass0");
-					index = sourceCode.getCurrentIndex() + 1;
-					break;
+		if (defineStylesOutside) {
+			codeList.add("static { // init styles:" );
+			int fileNumber = 0;
+			int fileIndex = 0;
+			for (int i=0; i<blocks; i++) {
+				codeList.add("\tStyleDefinitions" + fileNumber + ".initStyles" + i + "();");
+				fileIndex++;
+				if (fileIndex >= MAX_BLOCKS_PER_FILE) {
+					fileIndex = 0;
+					fileNumber++;
 				}
 			}
-			if (index == -1) {
-				throw new BuildException("Unable to modify StyleSheet.java, include point [" + EXTENDS_MARK + "] not found.");
-			}
-		}
-				
-		index = -1;
-		while (sourceCode.next()) {
-			String line = sourceCode.getCurrent();
-			if (INCLUDE_MARK.equals(line)) {
-				index = sourceCode.getCurrentIndex() + 1;
-				break;
-			}
-		}
-		if (index == -1) {
-			throw new BuildException("Unable to modify StyleSheet.java, include point [" + INCLUDE_MARK + "] not found.");
-		}
-		
-		
-		toMainStyleClass.add("public static boolean hasBeenInitialized = false ;" );
-		toMainStyleClass.add("static { // init styles:" );		
-		toMainStyleClass.add("\tmanualInit();");
-		toMainStyleClass.add("}");
-		
-		toMainStyleClass.add("public static void manualInit() { // init styles:" );
-		toMainStyleClass.add("if ( hasBeenInitialized ) { return ; } ;" );
-		for (int i=0; i<blocks+1; i++) {
-			toMainStyleClass.add("\tinitStyles" + i + "();");
-		}		
-		toMainStyleClass.add("\thasBeenInitialized = true;");
-		toMainStyleClass.add("}");
-		
-
-		ArrayList toStyleSheetPiece = new ArrayList();
-		
-		int lineIndex = 0;
-		for (int i=0; i<blocks; i++) {
-			int start = i * BLOCKSIZE;
-			int end = Math.min(  (i+1) * BLOCKSIZE, styles.length);
-			
-			toStyleSheetPiece.clear();	
-			toStyleSheetPiece.add("package de.enough.polish.ui ;");
-			toStyleSheetPiece.add("");
-			toStyleSheetPiece.add("class StylePieceClass" + i);
-			if ( i < (blocks-1) )
-			{
-				toStyleSheetPiece.add("extends StylePieceClass" + (i+1));
-			}
-			else
-			{
-				toStyleSheetPiece.add("extends StyleDefinitions");
-			}
-			toStyleSheetPiece.add("{");
-		
-			
-			toStyleSheetPiece.add( "protected static final void initStyles" + i + "(){");
-			for (int j=start; j<end;) {
-				String line = (String) styleCodeList.get(lineIndex);
-				toStyleSheetPiece.add( line );
-				if (line.indexOf(';') != -1) {
-					j++;
-				}
-				lineIndex++;
-			}
-			if (i == blocks -1) {
-				// register all styles in the last static method:
-				// process dynamic styles:
-				toStyleSheetPiece.add( "}");
-				toStyleSheetPiece.add( "protected static final void initStyles" + (i + 1) + "(){");
-				if (styleSheet.containsDynamicStyles()) {
-					Style[] dynamicStyles = styleSheet.getDynamicStyles(); 
-					for (int j = 0; j < dynamicStyles.length; j++) {
-						Style style = dynamicStyles[j];
-						this.referencedStyles.add( style );
+			codeList.add("}");
+			fileNumber = -1;
+			fileIndex = MAX_BLOCKS_PER_FILE;
+			ArrayList externalCodeList = new ArrayList(1000);
+			int lineIndex = 0;
+			for (int i=0; i<blocks; i++) {
+				if (fileIndex >= MAX_BLOCKS_PER_FILE) {
+					if (externalCodeList.size() > 0) {
+						externalCodeList.add("}");
+						try {
+							File target = new File( device.getSourceDir() + "/de/enough/polish/ui/StyleDefinitions" + fileNumber + ".java");
+							FileUtil.writeTextFile(target, externalCodeList);
+						} catch (IOException e) {
+							e.printStackTrace();
+							throw new BuildException(e);
+						}
+						externalCodeList.clear();
 					}
+					fileIndex = 0;
+					fileNumber++;
+					externalCodeList.add("package de.enough.polish.ui;");
+					externalCodeList.add("");
+					externalCodeList.add("import java.util.Hashtable;");
+					externalCodeList.add("class StyleDefinitions" + fileNumber + " {");
+					externalCodeList.add("");
 				}
-				toStyleSheetPiece.add("");
-				toStyleSheetPiece.add("\t//register referenced and dynamic styles:");
-				for (int j = 0; j < styles.length; j++) {
-					Style style = styles[j];
-					String selector = style.getSelector();
-					toStyleSheetPiece.add("\tstylesByName.put( " + selector + "Style.name, " + style.getStyleName() + "Style );");
-				}
-				styles = (Style[]) this.referencedStyles.toArray( new Style[ this.referencedStyles.size() ] );
-				for (int j = 0; j < styles.length; j++) {
-					Style style = styles[j];
-					String name = style.getAbbreviation();
-					if (name == null) {
-						// quickfix 2009-02-24: 
-						// only when there is no abbreviation, this style is a truly dynamic
-						// one... Or so we hope.
-						name = style.getSelector();
-						toStyleSheetPiece.add("\tstylesByName.put( " + name + "Style.name, " + style.getStyleName() + "Style );");
-					}
-				}
-				for (Iterator iter = staticCodeList.iterator(); iter.hasNext();) {
-					String line  = (String) iter.next();
-					toStyleSheetPiece.add( line );
+				int start = i * BLOCKSIZE;
+				int end = Math.min(  (i+1) * BLOCKSIZE, styles.length);
+				lineIndex = addInitStylesMethod(externalCodeList, staticCodeList, styleCodeList,
+						styles, blocks, i, lineIndex, start, end, styleSheet);
+				fileIndex++;
+			}
+			if (externalCodeList.size() > 0) {
+				externalCodeList.add("}");
+				try {
+					File target = new File( device.getSourceDir() + "/de/enough/polish/ui/StyleDefinitions" + fileNumber + ".java");
+					FileUtil.writeTextFile(target, externalCodeList);
+				} catch (IOException e) {
+					e.printStackTrace();
+					throw new BuildException(e);
 				}
 			}
-			
-			toStyleSheetPiece.add( "}");
-			toStyleSheetPiece.add( "}");
-			
-			try 
-			{
-				FileUtil.writeTextFile( new File(rootFile.getParent(),"StylePieceClass" + i + ".java"), (String[]) toStyleSheetPiece.toArray( new String[end-start+1]));
-			} catch (IOException e) 
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		} else { // define all styles within StyleSheet.java:
+			codeList.add("static { // init styles:" );
+			for (int i=0; i<blocks; i++) {
+				codeList.add("\tinitStyles" + i + "();");
+			}
+			codeList.add("}");
+			int lineIndex = 0;
+			for (int i=0; i<blocks; i++) {
+				int start = i * BLOCKSIZE;
+				int end = Math.min(  (i+1) * BLOCKSIZE, styles.length);
+				lineIndex = addInitStylesMethod(codeList, staticCodeList, styleCodeList,
+						styles, blocks, i, lineIndex, start, end, styleSheet);
 			}
 		}
+
 		
 		/*
 		String[] styleNames = styleSheet.getUsedStyleNames();
@@ -395,7 +351,7 @@ public class CssConverter extends Converter {
 		// check if label-style has been defined:
 		if (!isLabelStyleReferenced) {
 			//if (styleSheet.getStyle("label" ) == null) {
-			toMainStyleClass.add( "\tpublic static Style labelStyle = defaultStyle; // no specific label-style has been defined");
+				codeList.add( "\tpublic static Style labelStyle = defaultStyle; // no specific label-style has been defined");
 			/*} else {
 				processStyle( styleSheet.getStyle("label" ), codeList, styleSheet, device );
 			}*/
@@ -423,7 +379,7 @@ public class CssConverter extends Converter {
 		Style focusedStyle = styleSheet.getStyle("focused"); 
 		if (focusedStyle == null) {
 			//System.out.println("Warning: CSS-Style [focused] not found, now using the default style instead. If you use Forms or Lists, you should define the style [focused].");
-			toMainStyleClass.add(  "\tpublic static Style focusedStyle = new Style(\"focused\", 0, new de.enough.polish.ui.backgrounds.SimpleBackground(0), null, new short[]{-17}, new Object[]{new Color(0xffffff, false)} );\t// the focused-style is not defined.");
+			codeList.add(  "\tpublic static Style focusedStyle = new Style(\"focused\", 0, new de.enough.polish.ui.backgrounds.SimpleBackground(0), null, new short[]{-17}, new Object[]{new Color(0xffffff, false)} );\t// the focused-style is not defined.");
 		//} else {
 		//	processStyle( focusedStyle, codeList, styleSheet, device );
 		}
@@ -438,36 +394,83 @@ public class CssConverter extends Converter {
 		StyleSheet[] mediaQueries = styleSheet.getMediaQueries();
 		if (mediaQueries != null) {
 			styleCodeList.clear();
-			toStyleDefinitionsJava.add( "\tpublic static void showNotify(){" );
+			codeList.add( "\tpublic static void showNotify(){" );
 			for (int i = 0; i < mediaQueries.length; i++) {
 				StyleSheet mediaQuery = mediaQueries[i];
 				Style[] mediaStyles = mediaQuery.getAllStyles();
-				toStyleDefinitionsJava.add("\t\taddMediaQuery(\"" + mediaQuery.getMediaQueryCondition() + "\", new Style[]{");
+				codeList.add("\t\taddMediaQuery(\"" + mediaQuery.getMediaQueryCondition() + "\", new Style[]{");
 				for (int j = 0; j < mediaStyles.length; j++) {
 					Style style = mediaStyles[j];
-					processStyle( false, style, toStyleDefinitionsJava, null, styleSheet, device, env );
+					processStyle( false, style, codeList, null, false, styleSheet, device, env );
 					if (j != mediaStyles.length-1) {
-						toStyleDefinitionsJava.add("\t\t, ");
+						codeList.add("\t\t, ");
 					}
 				}
-				toStyleDefinitionsJava.add("\t\t}); // end of media query " + mediaQuery.getMediaQueryCondition() );
+				codeList.add("\t\t}); // end of media query " + mediaQuery.getMediaQueryCondition() );
 			}
-			toStyleDefinitionsJava.add("\t} // end of showNotify()");
+			codeList.add("\t} // end of showNotify()");
 		}
 		
 
-		toStyleDefinitionsJava.add("\tstatic final Hashtable stylesByName = new Hashtable(" + styles.length + ");");
-		toStyleDefinitionsJava.add("}");
-		String[] code = (String[]) toStyleDefinitionsJava.toArray( new String[ toStyleDefinitionsJava.size()]);
-		try {
-			FileUtil.writeTextFile(new File(rootFile.getParent(),"StyleDefinitions.java"), code);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		code = (String[]) toMainStyleClass.toArray( new String[ toMainStyleClass.size()]); 
+		// now insert the created source code into the source of the polish-StyleSheet.java:
+		String[] code = (String[]) codeList.toArray( new String[ codeList.size()]);
 		sourceCode.insert(code);
 		sourceCode.forward( code.length );
+	}
+
+	private int addInitStylesMethod(ArrayList codeList,
+			ArrayList staticCodeList, ArrayList styleCodeList, Style[] styles,
+			int blocks, int i, int lineIndex, int start, int end,
+			StyleSheet styleSheet) 
+	{
+		codeList.add( "protected static final void initStyles" + i + "(){");
+		for (int j=start; j<end;) {
+			String line = (String) styleCodeList.get(lineIndex);
+			codeList.add( line );
+			if (line.indexOf(';') != -1) {
+				j++;
+			}
+			lineIndex++;
+		}
+		if (i == blocks -1) {
+			// register all styles in the last static method:
+			// process dynamic styles:
+			if (styleSheet.containsDynamicStyles()) {
+				Style[] dynamicStyles = styleSheet.getDynamicStyles(); 
+				for (int j = 0; j < dynamicStyles.length; j++) {
+					Style style = dynamicStyles[j];
+					this.referencedStyles.add( style );
+				}
+			}
+			codeList.add("");
+			codeList.add("\t//register referenced and dynamic styles:");
+			for (int j = 0; j < styles.length; j++) {
+				Style style = styles[j];
+				String selector = style.getSelector();
+				codeList.add("\tStyleSheet.stylesByName.put( \"" + selector + "\", StyleSheet." + style.getStyleName() + "Style );");
+				if (selector.equals("rightcommandpressed")) {
+					System.out.println("found " + selector + " at " + j);
+				}
+			}
+			styles = (Style[]) this.referencedStyles.toArray( new Style[ this.referencedStyles.size() ] );
+			for (int j = 0; j < styles.length; j++) {
+				Style style = styles[j];
+				String name = style.getAbbreviation();
+				if (name == null) {
+					// quickfix 2009-02-24: 
+					// only when there is no abbreviation, this style is a truly dynamic
+					// one... Or so we hope.
+					name = style.getSelector();
+					codeList.add("\tStyleSheet.stylesByName.put( \"" + name + "\", StyleSheet." + style.getStyleName() + "Style );");
+				}
+			}
+			for (Iterator iter = staticCodeList.iterator(); iter.hasNext();) {
+				String line  = (String) iter.next();
+				codeList.add( line );
+			}
+		}
+		codeList.add( "}");
+		return lineIndex;
 	}
 
 
@@ -483,7 +486,7 @@ public class CssConverter extends Converter {
 	 * @param device the device for which the style should be processed
 	 * @param environment the environment
 	 */
-	protected void processDefaultStyle(boolean defaultFontDefined, boolean defaultBackgroundDefined, boolean defaultBorderDefined, ArrayList codeList, ArrayList staticCodeList, StyleSheet styleSheet, Device device, Environment environment ) {
+	protected void processDefaultStyle(boolean defaultFontDefined, boolean defaultBackgroundDefined, boolean defaultBorderDefined, ArrayList codeList, ArrayList staticCodeList, boolean defineStylesOutside, StyleSheet styleSheet, Device device, Environment environment ) {
 		//System.out.println("PROCESSSING DEFAULT STYLE " + styleSheet.getStyle("default").toString() );
 		Style copy = new Style( styleSheet.getStyle("default"));
 		HashMap group = copy.getGroup("font");
@@ -500,7 +503,7 @@ public class CssConverter extends Converter {
 			if (group == null) {
 				staticCodeList.add( STANDALONE_MODIFIER + "Background defaultBackground = null;");
 			} else {
-				processBackground("default", group, copy, staticCodeList, styleSheet, true, environment );
+				processBackground("default", group, copy, staticCodeList, false, styleSheet, true, environment );
 			}
 		}
 		group = copy.getGroup("border");
@@ -508,7 +511,7 @@ public class CssConverter extends Converter {
 			if (group == null) {
 				staticCodeList.add( STANDALONE_MODIFIER + "Border defaultBorder = null;");
 			} else {
-				processBorder("default", group, copy, staticCodeList, styleSheet, true, environment );
+				processBorder("default", group, copy, staticCodeList, false, styleSheet, true, environment );
 			}
 		}
 		// set default values:
@@ -525,7 +528,7 @@ public class CssConverter extends Converter {
 		group.put("border", "default");
 		copy.addGroup("border", group );
 		// now process the rest of the style completely normal:
-		processStyle(copy, codeList, staticCodeList, styleSheet, device, environment );
+		processStyle(copy, codeList, staticCodeList, defineStylesOutside, styleSheet, device, environment );
 	}
 
 	/**
@@ -537,8 +540,8 @@ public class CssConverter extends Converter {
 	 * @param device the device for which the style should be processed
 	 * @param environment the environment
 	 */
-	protected void processStyle(Style style, ArrayList codeList, ArrayList staticCodeList, StyleSheet styleSheet, Device device, Environment environment ) {
-		processStyle( true, style, codeList, staticCodeList, styleSheet, device, environment );
+	protected void processStyle(Style style, ArrayList codeList, ArrayList staticCodeList, boolean defineStylesOutside, StyleSheet styleSheet, Device device, Environment environment ) {
+		processStyle( true, style, codeList, staticCodeList, defineStylesOutside, styleSheet, device, environment );
 	}
 
 	/**
@@ -550,13 +553,16 @@ public class CssConverter extends Converter {
 	 * @param device the device for which the style should be processed
 	 * @param environment the environment
 	 */
-	protected void processStyle(boolean declareVariable, Style style, ArrayList codeList, ArrayList staticCodeList, StyleSheet styleSheet, Device device, Environment environment ) {
+	protected void processStyle(boolean declareVariable, Style style, ArrayList codeList, ArrayList staticCodeList, boolean defineStylesOutside, StyleSheet styleSheet, Device device, Environment environment ) {
 		String styleName = style.getStyleName();
 		//System.out.println("processing style " + style.getStyleName() + ": " + style.toString() );
 		// create a new style field:
 		if (declareVariable) {
 			staticCodeList.add( STANDALONE_MODIFIER_NON_FINAL + "Style " + styleName + "Style;");
 			// create a new style:
+			if (defineStylesOutside) {
+				styleName = "StyleSheet." + styleName;
+			}
 			codeList.add( "\t" + styleName + "Style = new Style (");
 		} else {
 			codeList.add("new Style(");
@@ -718,7 +724,7 @@ public class CssConverter extends Converter {
 		// process the background:
 		group = style.removeGroup("background");
 		if ( group != null ) {
-			processBackground( style.getSelector(), group, style, codeList, styleSheet, false, environment );
+			processBackground( style.getSelector(), group, style, codeList, defineStylesOutside, styleSheet, false, environment );
 			// ugly hack to preserve background-bottom and background-top, etc. attributes:
 			preserveAttributes( group, style, "background", this.backgroundAttributeNames );
 		} else {
@@ -728,7 +734,9 @@ public class CssConverter extends Converter {
 		// process the border:
 		group = style.removeGroup("border");
 		if ( group != null ) {
-			processBorder( style.getSelector(), group, style, codeList, styleSheet, false, environment );
+			processBorder( style.getSelector(), group, style, codeList, defineStylesOutside, styleSheet, false, environment );
+			// ugly hack to preserve background-bottom and background-top, etc. attributes:
+			preserveAttributes( group, style, "border", this.borderAttributeNames );
 		} else {
 			codeList.add("\t\tnull, \t// no border");
 		}
@@ -970,7 +978,7 @@ public class CssConverter extends Converter {
 			this.referencedStyles.add( style );
 		}
 		//System.out.println("CssConverter: resolved style reference for " + value + " is " + (reference + "Style") );
-		return reference + "Style"; //abbreviation;
+		return "StyleSheet." + reference + "Style"; //abbreviation;
 	}
 
 
@@ -1048,7 +1056,7 @@ public class CssConverter extends Converter {
 	 * @param isStandalone true when a new public border-field should be created,
 	 *        otherwise the border will be embedded in a style instantiation. 
 	 */
-	protected void processBorder(String borderName, Map group, Style style, ArrayList codeList, StyleSheet styleSheet, boolean isStandalone, Environment env ) {
+	protected void processBorder(String borderName, Map group, Style style, ArrayList codeList, boolean defineStylesOutside, StyleSheet styleSheet, boolean isStandalone, Environment env ) {
 		//System.out.println("processing border " + borderName + " = "+ group.toString() );
 		String reference = (String) group.get("border");
 		if (reference != null && group.size() == 1) {
@@ -1059,6 +1067,9 @@ public class CssConverter extends Converter {
 					codeList.add( "\t\tnull,\t// border:none was specified");
 				}
 			} else {
+				if (defineStylesOutside) {
+					reference = "StyleSheet." + reference;
+				}
 				// a reference to an existing border is given:
 				if (isStandalone) {
 					codeList.add( STANDALONE_MODIFIER + "Border " + borderName + "Border = " + reference + "Border;");
@@ -1122,7 +1133,7 @@ public class CssConverter extends Converter {
 	 * @param isStandalone true when a new public background-field should be created,
 	 *        otherwise the background will be embedded in a style instantiation. 
 	 */
-	protected void processBackground(String backgroundName, Map group, Style style, ArrayList codeList, StyleSheet styleSheet, boolean isStandalone, Environment env ) {
+	protected void processBackground(String backgroundName, Map group, Style style, ArrayList codeList, boolean defineStylesOutside, StyleSheet styleSheet, boolean isStandalone, Environment env ) {
 		//System.out.println("processing background " + backgroundName + " = " + group.toString() );
 		// check if the background is just a reference to another background:
 		String reference = (String) group.get("background");
@@ -1135,6 +1146,9 @@ public class CssConverter extends Converter {
 				}
 			} else {
 				// a reference to an existing background is given:
+				if (defineStylesOutside) {
+					reference = "StyleSheet." + reference;
+				}
 				if (isStandalone) {
 					codeList.add( STANDALONE_MODIFIER + "Background " + backgroundName + "Background = " + reference + "Background;");
 				} else {

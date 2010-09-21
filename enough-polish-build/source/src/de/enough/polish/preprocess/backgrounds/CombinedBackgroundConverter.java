@@ -100,7 +100,7 @@ public class CombinedBackgroundConverter extends BackgroundConverter
 		}
 		backgroundReference += "Background";
 		String result = "new " + BACKGROUNDS_PACKAGE + this.className + "(" 
-		+ foregroundReference + ", " + backgroundReference + ")";
+		+ "StyleSheet." + foregroundReference + ", StyleSheet." + backgroundReference + ")";
 	
 		return result;
 

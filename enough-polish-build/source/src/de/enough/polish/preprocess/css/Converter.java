@@ -107,6 +107,7 @@ public class Converter {
 					return Integer.parseInt( processedValue );
 				}
 			} catch (Exception e1) {
+				e1.printStackTrace();
 				if (value.indexOf('(') != -1) {
 					e = e1;
 				}

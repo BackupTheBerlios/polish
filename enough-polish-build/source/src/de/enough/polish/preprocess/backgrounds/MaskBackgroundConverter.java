@@ -94,8 +94,8 @@ public class MaskBackgroundConverter extends BackgroundConverter
 			DimensionCssAttribute attribute = new DimensionCssAttribute();
 			opacity = attribute.getValue(opacity, Environment.getInstance() ); //Integer.toString( parseInt("opacity", opacity) );
 		}
-		String result = "new " + BACKGROUNDS_PACKAGE + "MaskBackground(" 
-		+ maskReference + ", " + maskColor + ", " + backgroundReference  + ", " + opacity + ")";
+		String result = "new " + BACKGROUNDS_PACKAGE + "MaskBackground( StyleSheet." 
+		+ maskReference + ", " + maskColor + ", StyleSheet." + backgroundReference  + ", " + opacity + ")";
 	
 		return result;
 
