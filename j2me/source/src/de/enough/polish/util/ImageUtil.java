@@ -2257,5 +2257,21 @@ public final class ImageUtil {
         return source;
     }
     //#endif
+    
+    //#if tmp.supportImageOperations
+    /**
+     * Applies the alpha values of a RgbImage to another RgbImage
+     * @param source the source RgbImage
+     * @param alpha the RgbImage to use as the alpha map
+     */
+    public static void applyAlphaOntoRgbImage(RgbImage source, RgbImage alpha) {
+    	int[] sourceData = source.getRgbData();
+        int[] alphaData = alpha.getRgbData();
+        
+		for (int index = 0; index < sourceData.length; index++) {
+			sourceData[index] = (0x00FFFFFF & sourceData[index]) | ((alphaData[index] & 0xFF000000)); 
+		}
+    }
+    //#endif
 }
  
