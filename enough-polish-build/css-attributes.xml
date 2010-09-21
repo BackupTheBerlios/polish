@@ -5335,7 +5335,7 @@
 		type="dimension"
 		appliesTo="Item,FakeCustomItem"
 		description="Change the border width, height and position by specifying border-adjust. A positive value moves the border to the right and bottom."
-		id="463"
+		id="465"
 		since="J2ME Polish 2.2"
 	/>
 	
@@ -5344,7 +5344,7 @@
 		type="dimension"
 		appliesTo="ImageItem"
 		description="The maximum height of an image. If the image exceeds the maximum height, it will be scaled down accordingly." 
-		id="464"
+		id="466"
 		since="J2ME Polish 2.2"
 	/>
 	
@@ -5353,7 +5353,7 @@
 		type="dimension"
 		appliesTo="ImageItem"
 		description="The maximum width of an image. If the image exceeds the maximum width it will be scaled down accordingly. Example: max-image-width: 100%; ensures that the image will fit within the available space." 
-		id="465"
+		id="467"
 		since="J2ME Polish 2.2"
 	/>
 	
