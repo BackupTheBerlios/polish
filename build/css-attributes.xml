@@ -4137,6 +4137,7 @@
 		<mapping from="rotate" to="new de.enough.polish.ui.rgbfilters.RotateRgbFilter()" />
 		<mapping from="blur" to="new de.enough.polish.ui.rgbfilters.GaussianBlurRgbFilter()" />
 		<mapping from="scale" to="new de.enough.polish.ui.rgbfilters.ScaleRgbFilter()" />
+		<mapping from="alpha" to="new de.enough.polish.ui.rgbfilters.AlphaRgbFilter()" />
 		
 	</attribute>
 	
@@ -5307,6 +5308,26 @@
 		description="The height of a row within a table item, e.g. table-row-height: 10%; The row-height is calculated in relation to the available height."
 		id="462"
 		since="J2ME Polish 2.2"
+	/>
+	
+	<attribute
+		name="view-type-auto-traversal"
+		type="boolean"
+		appliesTo="ContainerView, Container, FakeContainerCustomItem, Screen"
+		description="Allows autotraversel for a container view."
+		default="false"
+		id="463"
+		since="2.0"
+	/>
+	
+	<attribute
+		name="filter-alpha-image"
+		type="imageurl"
+		appliesTo="AlphaRgbFilter"
+		description="The alpha map for the AlphaRgbFilter"
+		default="false"
+		id="464"
+		since="2.0"
 	/>
 	
 	<attribute
