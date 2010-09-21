@@ -223,8 +223,21 @@ implements Externalizable
 	}
 	
 	/**
+	 * Retrieves the number of images that are stored in this entry
+	 * @return the number of images that are stored in this entry
+	 */
+	public int getImagesSize() {
+		if (this.images == null) {
+			return 0;
+		}
+		return this.images.size();
+	}
+
+	
+	/**
 	 * Retrieves the internal array of the image URLs stored in this entry
 	 * @return either null or the internal array of stored AtomImages which may contain null values
+	 * @see #getImagesSize()
 	 */
 	public Object[] getImagesAsInternalArray() {
 		if (this.images == null) {
@@ -423,6 +436,35 @@ implements Externalizable
 		}
 		if (version > 100) {
 			this.isRead = in.readBoolean();
+		}
+	}
+
+	/**
+	 * Sets the images for this entry
+	 * @param images the images
+	 */
+	public void setImages(AtomImage[] images) {
+		if (images == null)
+		{
+			this.images = null;
+			this.hasLoadedImages = false;
+		} 
+		else
+		{
+			boolean isLoaded = true;
+			if (this.images == null) {
+				this.images = new IdentityArrayList();
+			} else {
+				this.images.clear();
+			}
+			for (int i = 0; i < images.length; i++) {
+				AtomImage atomImage = images[i];
+				this.images.add(atomImage);
+				if (isLoaded && atomImage.getData() == null) {
+					isLoaded = false;
+				}
+			}
+			this.hasLoadedImages = isLoaded;
 		}
 	}
 
