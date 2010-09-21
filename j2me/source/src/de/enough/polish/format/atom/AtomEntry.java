@@ -258,7 +258,9 @@ implements Externalizable
 	 */
 	public void loadImages( AtomImageConsumer consumer, HashMap requestProperties ) {
 		if (this.images == null) {
-			consumer.onAtomImageLoadFinished(this);
+			if (consumer != null) {
+				consumer.onAtomImageLoadFinished(this);
+			}
 			return;
 		}
 		InputStream in = null;

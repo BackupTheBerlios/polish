@@ -42,6 +42,7 @@ implements Externalizable
 {
 	
 	private static final int VERSION = 100;
+	private static boolean serializeImageData = true;
 	private String url;
 	private byte[] data;
 	private Object nativeRepresentation;
@@ -69,8 +70,28 @@ implements Externalizable
 	public AtomImage( String url, byte[] data ) {
 		this.url = url;
 		this.data = data;
-		
 	}
+	
+	
+	/**
+	 * Determines whether image data should be serialized (true by default).
+	 * 
+	 * @return true when image data should also be serialized
+	 * @see #setSerializeImageData(boolean)
+	 */
+	public static boolean isSerializeImageData() {
+		return serializeImageData;
+	}
+	
+	/**
+	 * Specifies if image data of entry feeds should be serialized. By default image data is serialized.
+	 * @param serializeData true when image data should be serialized
+	 * @see #isSerializeImageData()
+	 */
+	public static void setSerializeImageData(boolean serializeData) {
+		serializeImageData   = serializeData;
+	}
+
 	
 	/**
 	 * Retrieves the data of this image
@@ -127,7 +148,7 @@ implements Externalizable
 		if (notNull) {
 			out.writeUTF(this.url);
 		}
-		notNull = (this.data != null);
+		notNull = (this.data != null && serializeImageData);
 		out.writeBoolean(notNull);
 		if (notNull) {
 			out.writeInt(this.data.length);

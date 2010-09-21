@@ -88,6 +88,7 @@ implements Externalizable
 	 * Sets a limit for the number of entries when this feed is serialized.
 	 * By default the number is not limited.
 	 * @param max the maximum number of serialized entries
+	 * @see #getMaxNumberOfSerializedEntries()
 	 */
 	public static void setMaxNumberOfSerializedEntries(int max) {
 		maxNumberOfSerializedEntries = max;
@@ -97,6 +98,7 @@ implements Externalizable
 	 * Retrieves a possible limit for the number of entries when this feed is serialized.
 	 * By default the number is not limited.
 	 * @return the maximum number of serialized entries, values <= 0 mean that entries are not limited
+	 * @see #setMaxNumberOfSerializedEntries(int)
 	 */
 	public static int getMaxNumberOfSerializedEntries() {
 		return maxNumberOfSerializedEntries;
@@ -455,7 +457,7 @@ implements Externalizable
 			this.author.write(out);
 		}
 		int size = this.entries.size();
-		if (maxNumberOfSerializedEntries > 0 && size > maxNumberOfSerializedEntries) {
+		if ((maxNumberOfSerializedEntries > 0) && (size > maxNumberOfSerializedEntries)) {
 			size = maxNumberOfSerializedEntries;
 		}
 		out.writeInt(size);
