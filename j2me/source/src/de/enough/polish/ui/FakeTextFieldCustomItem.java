@@ -45,7 +45,6 @@ import javax.microedition.lcdui.Graphics;
 	import de.enough.polish.predictive.TextBuilder;
 	import de.enough.polish.predictive.trie.TrieProvider;
 //#endif
-import de.enough.polish.ui.keyboard.view.KeyboardView;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.DeviceControl;
 import de.enough.polish.util.DeviceInfo;
