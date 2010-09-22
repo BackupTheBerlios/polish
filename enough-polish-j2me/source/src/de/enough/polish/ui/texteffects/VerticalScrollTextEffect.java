@@ -280,4 +280,18 @@ public class VerticalScrollTextEffect extends TextEffect{
 		//#endif
 	}
 
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.TextEffect#getContentHeight(de.enough.polish.util.WrappedText, int, int)
+	 */
+	public int calculateLinesHeight(WrappedText lines, int lineHeight,
+			int paddingVertical) {
+		if(this.maxLines > lines.size()) {
+			return lines.size() * lineHeight - paddingVertical;
+		} else {
+			return this.maxLines * lineHeight - paddingVertical;
+		}
+	}
+	
+	
+
 }

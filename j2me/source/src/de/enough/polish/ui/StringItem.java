@@ -804,7 +804,8 @@ public class StringItem extends Item
 		//#endif
 				wrap(body, firstLineWidth, availWidth);
 				WrappedText lines = this.textLines;
-				this.contentHeight = (lines.size() * getLineHeight()) - this.paddingVertical;
+				this.contentHeight = calculateLinesHeight(lines, getLineHeight());
+				System.out.println(this.style.name + ":" + this.contentHeight);
 				int maxWidth = lines.getMaxLineWidth();
 				//#if polish.i18n.rightToLeft
 					Object[] lineObjects = lines.getLinesInternalArray();
@@ -847,6 +848,25 @@ public class StringItem extends Item
 				TextUtil.wrap(body, this.font, firstLineWidth, availWidth, maxNumberOfLines, maxAppendix, maxPosition, this.textLines);
 		//#ifdef tmp.useTextEffect
 			}
+		//#endif
+	}
+	
+	/**
+	 * Calculates the content width with the lines, the lineheight and the vertical padding
+	 * @param lines the lines
+	 * @param lineHeight the lineheight
+	 * @return the height in pixels
+	 */
+	protected int calculateLinesHeight(WrappedText lines, int lineHeight) {
+		//#ifdef tmp.useTextEffect
+		if (this.textEffect != null) {
+			return this.textEffect.calculateLinesHeight(lines,lineHeight,this.paddingVertical);
+		} else
+		{
+		//#endif
+			return  (lines.size() * lineHeight) - this.paddingVertical;
+		//#ifdef tmp.useTextEffect
+		}
 		//#endif
 	}
 	
@@ -1014,7 +1034,7 @@ public class StringItem extends Item
 					}
 					this.isTextInitializationRequired = true;
 				}
-			}
+			} 
 			//#ifdef polish.css.max-lines-appendix
 				String appendix = style.getProperty("max-lines-appendix");
 				if (resetStyle || appendix != null) {

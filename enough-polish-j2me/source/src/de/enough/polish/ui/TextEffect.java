@@ -528,5 +528,15 @@ public abstract class TextEffect implements Serializable
 	{
 		g.drawChar(c, x, y, anchor);		
 	}
-
+	
+	/**
+	 * Calculates the content width with the lines, the lineheight and the vertical padding
+	 * @param lines the lines
+	 * @param lineHeight the lineheight
+	 * @param paddingVertical the vertical padding
+	 * @return the height in pixels
+	 */
+	public int calculateLinesHeight(WrappedText lines, int lineHeight, int paddingVertical) {
+		return  (lines.size() * lineHeight) - paddingVertical;
+	}
 }
