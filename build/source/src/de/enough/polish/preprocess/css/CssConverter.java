@@ -448,9 +448,6 @@ public class CssConverter extends Converter {
 				Style style = styles[j];
 				String selector = style.getSelector();
 				codeList.add("\tStyleSheet.stylesByName.put( \"" + selector + "\", StyleSheet." + style.getStyleName() + "Style );");
-				if (selector.equals("rightcommandpressed")) {
-					System.out.println("found " + selector + " at " + j);
-				}
 			}
 			styles = (Style[]) this.referencedStyles.toArray( new Style[ this.referencedStyles.size() ] );
 			for (int j = 0; j < styles.length; j++) {
