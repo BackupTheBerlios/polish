@@ -52,6 +52,10 @@ implements Externalizable
 	private static final int VERSION = 101;
 	private String id;
 	private String title;
+	
+	private String sourceId;
+	private String sourceTitle;
+	
 	private String updatedString;
 	private TimePoint updated;
 	private String summary;
@@ -68,6 +72,11 @@ implements Externalizable
 	public AtomEntry(XmlDomNode node) {
 		this.id = node.getChildText("id");
 		this.title = node.getChildText("title");
+		
+		XmlDomNode sourceNode = node.getChild("source");
+		this.sourceId = sourceNode.getChildText("id");
+		this.sourceTitle = sourceNode.getChildText("title");
+		
 		this.updatedString = node.getChildText("updated");
 		this.summary = node.getChildText("summary");
 		XmlDomNode contNode = node.getChild("content");
@@ -96,6 +105,7 @@ implements Externalizable
 		}
 	}
 
+
 	/**
 	 * Retrieves the ID of this entry
 	 * @return the id
@@ -110,6 +120,22 @@ implements Externalizable
 	 */
 	public String getTitle() {
 		return this.title;
+	}
+	
+	/**
+	 * Retrieves the ID of the entry's source
+	 * @return the source id
+	 */
+	public String getSourceId() {
+		return sourceId;
+	}
+	
+	/**
+	 * Retrieves the title of the entry's source
+	 * @return the source title
+	 */
+	public String getSourceTitle() {
+		return sourceTitle;
 	}
 
 	/**
