@@ -4701,7 +4701,7 @@ public class TextField extends StringItem
 		int cursorPosition = this.editField.getCursorPosition();
 		// check if cursor is in visible area:
 		int lineHeight = this.font.getHeight() + this.paddingVertical;
-		if (this.textLines != null) {
+		if (this.text != null) {
 			this.internalX = 0;
 			this.internalHeight = lineHeight;
 			this.internalWidth = this.contentWidth;
