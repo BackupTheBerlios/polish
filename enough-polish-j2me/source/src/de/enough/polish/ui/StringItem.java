@@ -805,7 +805,6 @@ public class StringItem extends Item
 				wrap(body, firstLineWidth, availWidth);
 				WrappedText lines = this.textLines;
 				this.contentHeight = calculateLinesHeight(lines, getLineHeight());
-				System.out.println(this.style.name + ":" + this.contentHeight);
 				int maxWidth = lines.getMaxLineWidth();
 				//#if polish.i18n.rightToLeft
 					Object[] lineObjects = lines.getLinesInternalArray();
