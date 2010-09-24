@@ -248,11 +248,15 @@ public final class Font extends Object
 			if ( (style & STYLE_UNDERLINED) == STYLE_UNDERLINED  ) {
 				bbStyle |= net.rim.device.api.ui.Font.UNDERLINED;
 			}
-			this.size = size.getValue(100);
+			int resolvedSize = size.getValue(100);
 			int unit = Ui.UNITS_px;
-			if(size.getUnit() == Dimension.UNIT_POINT) {
+			if (size.getUnit() == Dimension.UNIT_POINT) {
 				unit = Ui.UNITS_pt;
+			} else if (size.isPercent()) {
+				int defaultSize = net.rim.device.api.ui.Font.getDefault().getHeight();
+				resolvedSize = (this.size * defaultSize) / 100;
 			}
+			this.size = resolvedSize;
 			this.font = family.getFont( bbStyle, this.size, unit );
 			if (this.font == null) {
 				//#debug
