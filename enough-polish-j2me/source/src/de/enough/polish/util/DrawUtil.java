@@ -1159,6 +1159,31 @@ public final class DrawUtil {
 		drawRgb( image.getRgbData(), x, y, image.getWidth(), image.getHeight(), image.isProcessTransparency(), g.getClipX(), g.getClipY(), g.getClipWidth(), g.getClipHeight(), g );
 	}
 	
-
-	
+	/**
+	 * Draws the outline of the specified rectangle using the current color and stroke style. 
+	 * The resulting rectangle will cover an area (width + 1) pixels wide by (height + 1) pixels tall. 
+	 * If either width or height is less than zero, nothing is drawn.
+	 * 
+	 * Includes transparent drawing for BlackBerry devices.
+	 * 
+	 * @param x the x coordinate of the rectangle to be drawn
+	 * @param y the y coordinate of the rectangle to be drawn
+	 * @param width the width of the rectangle to be drawn
+	 * @param height the height of the rectangle to be drawn
+	 * @param g the graphics context
+	 */
+	public static void drawRect(int color, int x, int y, int width, int height, Graphics g) {
+		//#if polish.blackberry
+			net.rim.device.api.ui.Graphics bbGraphics = null;
+			//# bbGraphics = g.g;
+			int alpha = color >>> 24;
+			bbGraphics.setGlobalAlpha( alpha );
+			bbGraphics.setColor(color);
+			bbGraphics.drawRect(x, y, width, height);
+			bbGraphics.setGlobalAlpha( 0xff ); // reset to fully opaque		
+		//#else 
+			g.setColor(color);
+			g.drawRect(x, y, width, height);
+		//#endif
+	}
 }

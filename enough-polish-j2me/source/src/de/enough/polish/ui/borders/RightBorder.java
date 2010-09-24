@@ -27,6 +27,7 @@
 package de.enough.polish.ui.borders;
 
 import de.enough.polish.ui.Border;
+import de.enough.polish.util.DrawUtil;
 
 import javax.microedition.lcdui.Graphics;
 
@@ -55,14 +56,13 @@ public class RightBorder extends Border {
 	 * @see de.enough.polish.ui.Border#paint(int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
 	public void paint(int x, int y, int width, int height, Graphics g) {
-		g.setColor( this.color );
 		x += width;
 		int endY = y + height;
-		g.drawLine( x, y, x, endY );
+		DrawUtil.drawLine(this.color,  x, y, x, endY, g);
 		if (this.borderWidthRight > 1) {
 			int border = this.borderWidthRight - 1;
 			while ( border > 0) {
-				g.drawLine( x - border, y, x - border, endY );
+				DrawUtil.drawLine(this.color,  x - border, y, x - border, endY, g);
 				border--;
 			}
 		}

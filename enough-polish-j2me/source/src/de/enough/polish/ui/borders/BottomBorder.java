@@ -27,6 +27,7 @@
 package de.enough.polish.ui.borders;
 
 import de.enough.polish.ui.Border;
+import de.enough.polish.util.DrawUtil;
 
 import javax.microedition.lcdui.Graphics;
 
@@ -55,14 +56,13 @@ public class BottomBorder extends Border {
 	 * @see de.enough.polish.ui.Border#paint(int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
 	public void paint(int x, int y, int width, int height, Graphics g) {
-		g.setColor( this.color );
 		y += height - 1;
 		int endX = x + width - 1;
-		g.drawLine( x, y, endX, y );
+		DrawUtil.drawLine(this.color, x, y, endX, y, g );
 		if (this.borderWidthBottom > 1) {
 			int border = this.borderWidthBottom - 1;
 			while ( border > 0) {
-				g.drawLine( x, y - border, endX, y - border );
+				DrawUtil.drawLine(this.color, x, y - border, endX, y - border, g );
 				border--;
 			}
 		}

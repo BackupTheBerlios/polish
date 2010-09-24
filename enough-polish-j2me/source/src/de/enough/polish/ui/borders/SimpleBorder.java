@@ -29,6 +29,7 @@ package de.enough.polish.ui.borders;
 import de.enough.polish.ui.Border;
 import de.enough.polish.ui.Color;
 import de.enough.polish.ui.Style;
+import de.enough.polish.util.DrawUtil;
 
 import javax.microedition.lcdui.Graphics;
 
@@ -74,12 +75,11 @@ public class SimpleBorder extends Border {
 	public void paint(int x, int y, int width, int height, Graphics g) {
 		width--;
 		height--;
-		g.setColor( this.color );
-		g.drawRect( x, y, width, height );
+		DrawUtil.drawRect( this.color, x, y, width, height, g);
 		if (this.borderWidthLeft > 1) {
 			int border = this.borderWidthLeft - 1;
 			while ( border > 0) {
-				g.drawRect( x+border, y+border, width - (border<<1), height - (border<<1) );
+				DrawUtil.drawRect( this.color, x+border, y+border, width - (border<<1), height - (border<<1), g);
 				border--;
 			}
 		}
