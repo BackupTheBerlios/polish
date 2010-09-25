@@ -30,9 +30,16 @@ import de.enough.polish.ui.StyleSheet;
 
 import net.rim.device.api.i18n.Locale;
 import net.rim.device.api.ui.Graphics;
+import net.rim.device.api.ui.component.BasicEditField;
 import net.rim.device.api.ui.component.EditField;
 
-public class PolishEditField extends EditField implements PolishTextField {
+public class PolishEditField 
+//#if !polish.blackberry.useBasicEditField
+extends EditField 
+//#else
+//# extends BasicEditField
+//#endif
+implements PolishTextField {
 
 
 	private boolean isFocused;
