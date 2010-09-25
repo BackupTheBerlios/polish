@@ -350,14 +350,14 @@ public class ImageItem extends Item
 			x += this.xOffset;
 			if (this.isLayoutExpand) {
 				if (this.isLayoutCenter) {
-					g.drawImage( this.image, x + (rightBorder - x)/2 , y, Graphics.TOP | Graphics.HCENTER );
+					drawImage( this.image, x + (rightBorder - x)/2 , y, Graphics.TOP | Graphics.HCENTER, g );
 				} else if (this.isLayoutRight) {
-					g.drawImage( this.image, rightBorder, y, Graphics.TOP | Graphics.RIGHT );
+					drawImage( this.image, rightBorder, y, Graphics.TOP | Graphics.RIGHT, g );
 				} else {
-					g.drawImage(this.image, x, y, Graphics.TOP | Graphics.LEFT );
+					drawImage(this.image, x, y, Graphics.TOP | Graphics.LEFT, g );
 				}
 			} else {
-				g.drawImage( this.image, x, y, Graphics.TOP | Graphics.LEFT );
+				drawImage( this.image, x, y, Graphics.TOP | Graphics.LEFT, g );
 			}
 			if (this.xOverlap != 0) {
 				g.setClip(clipX, clipY, clipWidth, clipHeight);
@@ -367,6 +367,18 @@ public class ImageItem extends Item
 			g.setFont( this.font );
 			g.drawString(this.altText, x, y, Graphics.TOP | Graphics.LEFT );
 		}
+	}
+	
+	/**
+	 * Draws the given image
+	 * @param image the image
+	 * @param x the x offset
+	 * @param y the y offset 
+	 * @param anchor the anchor
+	 * @param g the Graphics context
+	 */
+	public void drawImage(Image image, int x, int y, int anchor, Graphics g) {
+		g.drawImage( this.image, x, y, Graphics.TOP | Graphics.LEFT );
 	}
 
 	/* (non-Javadoc)
