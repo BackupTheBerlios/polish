@@ -75,7 +75,7 @@ public class AlphaRgbFilter extends RgbFilter
 	 * @see de.enough.polish.ui.RgbFilter#setStyle(de.enough.polish.ui.Style, boolean)
 	 */
 	public void setStyle(Style style, boolean resetStyle) {
-		//#if polish.css.filter-alpha-map
+		//#if polish.css.filter-alpha-image
 		String alphaMapUrl = style.getProperty( "filter-alpha-image" );
 		try {
 			Image img = StyleSheet.getImage(alphaMapUrl, this, true);
