@@ -52,16 +52,29 @@ public class AlphaRgbFilter extends RgbFilter
 	/**
 	 * the RgbImage alpha map
 	 */
-	RgbImage alphaMap;
+	transient RgbImage alphaMap;
+	
+	/**
+	 * flag indicating if the input in process should be processed directly
+	 */
+	boolean direct = false;
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.RgbFilter#process(de.enough.polish.util.RgbImage)
 	 */
 	public RgbImage process(RgbImage input) {
-        RgbImage result = new RgbImage(input);
-        // apply the alpha map onto the copied input
+		RgbImage result;
+		
+		if(this.direct) {
+			result = input;
+		} else {
+			result = new RgbImage(input);
+		}
+
+		// apply the alpha map onto the copied input
         ImageUtil.applyAlphaOntoRgbImage(result, this.alphaMap);
-        return result;
+        
+		return result;
     }
     
 	/* (non-Javadoc)
@@ -83,6 +96,12 @@ public class AlphaRgbFilter extends RgbFilter
 		} catch (IOException e) {
 			//#debug error
 			System.out.println("unable to load image [" + alphaMapUrl + "]" + e);
+		}
+		//#endif
+		//#if polish.css.filter-direct
+		Boolean filterDirectBoolean = style.getBooleanProperty( "filter-direct" );
+		if(filterDirectBoolean != null) {
+			this.direct = filterDirectBoolean.booleanValue();
 		}
 		//#endif
 	}	
