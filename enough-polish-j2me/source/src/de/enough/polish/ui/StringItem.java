@@ -543,6 +543,7 @@ public class StringItem extends Item
 		if (lines.size() == 0) {
 			return;
 		}
+		
 		//#if polish.css.text-wrap
 			int clipX = 0;
 			int clipY = 0;
@@ -630,6 +631,13 @@ public class StringItem extends Item
 				}
 				int lineX = x;
 				int lineY = y;
+				
+				//#if polish.blackberry.font.ignoreLeading
+				//# if(!(this instanceof TextField)) {
+				//# 	lineY -= this.font.getLeading();
+				//# }
+				//#endif
+				
 				int orientation;
 				// adjust the painting according to the layout:
 				if (isRight) {
@@ -863,7 +871,13 @@ public class StringItem extends Item
 		} else
 		{
 		//#endif
-			return  (lines.size() * lineHeight) - this.paddingVertical;
+			int linesHeight = (lines.size() * lineHeight) - this.paddingVertical;
+			//#if polish.blackberry.font.ignoreLeading
+			//# if(!(this instanceof TextField)) {
+			//# 	linesHeight -= this.font.getLeading();
+			//# }
+			//#endif
+			return linesHeight;
 		//#ifdef tmp.useTextEffect
 		}
 		//#endif

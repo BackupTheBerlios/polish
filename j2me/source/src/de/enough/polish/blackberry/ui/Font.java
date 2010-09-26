@@ -159,7 +159,12 @@ public final class Font extends Object
 	 * @since MIDP 2.0
 	 */
 	public static final int FONT_INPUT_TEXT = 1;
+	
 
+	private final static int FONT_MIN_SIZE = 5;
+	
+	private final static int FONT_MAX_SIZE = 100;
+	
 	//following variables are implicitely defined by getter- or setter-methods:
 	private static Font defaultFont;
 	private final int style;
@@ -167,6 +172,12 @@ public final class Font extends Object
 	private final int face;
 	private final int height;
 	private final int baselinePosition;
+	
+	//#if polish.blackberry.font.ignoreLeading
+	private int leading;
+	private int ascent;
+	private int descent;
+	//#endif
 	
 	protected net.rim.device.api.ui.Font font;
 
@@ -206,7 +217,9 @@ public final class Font extends Object
 				} else {
 					bbSize = defaultSize + ((defaultSize * 30) / 100);
 				}
-				this.font = family.getFont( bbStyle, bbSize, Ui.UNITS_px  );
+				
+				this.font = getFont(family, bbStyle, bbSize, Ui.UNITS_px);
+				
 				if (this.font == null) {
 					//#debug
 					System.out.println("Unable to retrieve font...");
@@ -224,6 +237,27 @@ public final class Font extends Object
 			//# this.height = 0;
 			//# this.baselinePosition = 0;
 		//#endif
+	}
+	
+	private net.rim.device.api.ui.Font getFont(FontFamily family, int bbStyle, int bbSize, int bbUnits) {
+		//#if polish.blackberry.font.ignoreLeading
+		// determine the font which fits the given in ascent and descent combined, ignoring the leading ...
+		for (int size = FONT_MIN_SIZE; size < FONT_MAX_SIZE; size++) {
+			net.rim.device.api.ui.Font font = family.getFont( bbStyle, size ,bbUnits);
+			// if the font's ascent and descent combined equal
+			// the requested size or is already higher (for corner cases) ...
+			if(font.getAscent() + font.getDescent() >= bbSize) {
+
+				this.leading = font.getLeading();
+				this.ascent = font.getAscent();
+				this.descent = font.getDescent();
+				
+				// return the found font
+				return font;
+			}
+		} 
+		//#endif
+		return family.getFont( bbStyle, bbSize, bbUnits  );
 	}
 	
 	private Font( int face, int style, Dimension size ) throws ClassNotFoundException {
@@ -256,8 +290,21 @@ public final class Font extends Object
 				int defaultSize = net.rim.device.api.ui.Font.getDefault().getHeight();
 				resolvedSize = (this.size * defaultSize) / 100;
 			}
+			
 			this.size = resolvedSize;
-			this.font = family.getFont( bbStyle, this.size, unit );
+			
+			this.font = getFont(family, bbStyle, this.size, unit );
+			
+			if (this.font == null) {
+				//#debug
+				System.out.println("Unable to retrieve font...");
+				this.font = net.rim.device.api.ui.Font.getDefault();
+			}
+			
+			this.leading = this.font.getLeading();
+			this.ascent = this.font.getAscent();
+			this.descent = this.font.getDescent();
+			
 			if (this.font == null) {
 				//#debug
 				System.out.println("Unable to retrieve font...");
@@ -564,5 +611,30 @@ public final class Font extends Object
 	{
 		return this.font.getAdvance( str.substring( offset, offset + len ) );
 	}
+	
+	//#if polish.blackberry.font.ignoreLeading
+	/**
+	 * Returns the leading of the font
+	 * @return the leading of the font
+	 */
+	public int getLeading() {
+		return this.leading;
+	}
 
+	/**
+	 * Returns the ascent of the font
+	 * @return the ascent of the font
+	 */
+	public int getAscent() {
+		return this.ascent;
+	}
+
+	/**
+	 * Returns the descent of the font
+	 * @return the descent of the font
+	 */
+	public int getDescent() {
+		return this.descent;
+	}
+	//#endif
 }
