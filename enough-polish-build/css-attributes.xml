@@ -5357,6 +5357,16 @@
 		since="J2ME Polish 2.2"
 	/>
 	
+	<attribute
+		name="filter-direct"
+		type="boolean"
+		appliesTo="RgbFilter"
+		description="Defines wether the the RgbFilters should be applied directly to the RgbImage input"
+		default="false"
+		id="468"
+		since="J2ME Polish 2.2"
+	/>
+	
 <!--
 	<attribute
 		name="repaint-previous-screen-anchor"
