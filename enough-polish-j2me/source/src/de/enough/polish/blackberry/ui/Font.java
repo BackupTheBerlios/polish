@@ -301,10 +301,6 @@ public final class Font extends Object
 				this.font = net.rim.device.api.ui.Font.getDefault();
 			}
 			
-			this.leading = this.font.getLeading();
-			this.ascent = this.font.getAscent();
-			this.descent = this.font.getDescent();
-			
 			if (this.font == null) {
 				//#debug
 				System.out.println("Unable to retrieve font...");
