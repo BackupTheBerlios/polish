@@ -38,8 +38,7 @@ public class BlackBerryUtils {
             if (file.exists()) {
                 blackberryHomeStr = WINDOWS_BB_HOME;
             } else {
-                System.err.println("Unable to start blackberry simulator: Ant property \"blackberry.home\" is not set.");
-                return null;
+            	throw new BuildException("Unable to start blackberry simulator: Ant property \"blackberry.home\" is not set.");
             }
         }
         File blackberryHome = new File(blackberryHomeStr);
@@ -59,9 +58,6 @@ public class BlackBerryUtils {
      */
     public static File getBBHome(Device dev, Environment env) {
         File blackberryHome = getBBHome(env);
-        if (blackberryHome == null) {
-            throw new BuildException("Can not find blackberry home. Please define blackberry.home or make sure it points to a valid location.");
-        }
         // search for "*JDE*" folders:
         File parent;
         if (blackberryHome.getName().indexOf("JDE") == -1) {
