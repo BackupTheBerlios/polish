@@ -5367,6 +5367,16 @@
 		since="J2ME Polish 2.2"
 	/>
 	
+	<attribute
+		name="ignore-leading"
+		type="boolean"
+		appliesTo="StringItem"
+		description="Defines whether the StringItem should draw the text without the leading of the font in the first line "
+		default="false"
+		id="469"
+		since="J2ME Polish 2.2"
+	/>
+	
 <!--
 	<attribute
 		name="repaint-previous-screen-anchor"
