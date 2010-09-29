@@ -2273,5 +2273,37 @@ public final class ImageUtil {
 		}
     }
     //#endif
+    
+    /**
+     * Returns the pixel of the given image at the given x/y offset
+     * @param rgbImage the RgbImage
+     * @param x the x offset
+     * @param y the y offset
+     * @return the pixel;
+     */
+    public static int getPixelColor(Image image, int x, int y) {
+    	RgbImage rgbImage = new RgbImage(image,true);
+    	return getPixelColor(rgbImage, x, y);
+    }
+    
+    /**
+     * Returns the pixel of the given RgbImage at the given x/y offset
+     * @param rgbImage the RgbImage
+     * @param x the x offset
+     * @param y the y offset
+     * @return the pixel;
+     */
+    public static int getPixelColor(RgbImage rgbImage, int x, int y) {
+    	int[] rgbData = rgbImage.getRgbData();
+    	// get the pixel offset
+    	int offset = (y * rgbImage.getWidth()) + x;
+    	
+    	if(offset < rgbData.length) {
+    		return rgbData[offset];
+    	} else {
+    		throw new IllegalArgumentException("offset is out of the image bounds");
+    	}
+    }
+    
 }
  
