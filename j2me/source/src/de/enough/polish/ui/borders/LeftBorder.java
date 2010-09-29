@@ -40,6 +40,7 @@ import javax.microedition.lcdui.Graphics;
 public class LeftBorder extends Border {
 
 	private final int color;
+	private final boolean isArgb;
 
 	/**
 	 * Creates a new simple border.
@@ -50,6 +51,7 @@ public class LeftBorder extends Border {
 	public LeftBorder( int color, int borderWidth ) {
 		super(borderWidth, 0, 0, 0 );
 		this.color = color;
+		this.isArgb = ((color & 0xff000000) != 0) && ((color & 0xff000000) != 0xff);
 	}
 
 	/* (non-Javadoc)
@@ -57,11 +59,19 @@ public class LeftBorder extends Border {
 	 */
 	public void paint(int x, int y, int width, int height, Graphics g) {
 		int endY = y + height;
-		DrawUtil.drawLine(this.color,  x, y, x, endY, g);
-		if (this.borderWidthLeft > 1) {
-			int border = this.borderWidthLeft - 1;
+		int border = this.borderWidthLeft - 1;
+		int col = this.color;
+		if (this.isArgb) {
+			DrawUtil.drawLine(col,  x, y, x, endY, g);
 			while ( border > 0) {
-				DrawUtil.drawLine(this.color,  x + border, y, x + border, endY, g);
+				DrawUtil.drawLine(col,  x + border, y, x + border, endY, g);
+				border--;
+			}
+		} else {
+			g.setColor( col );
+			g.drawLine(x, y, x, endY );
+			while ( border > 0) {
+				g.drawLine(x + border, y, x + border, endY );
 				border--;
 			}
 		}

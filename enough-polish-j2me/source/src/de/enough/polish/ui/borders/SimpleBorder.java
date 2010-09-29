@@ -42,6 +42,7 @@ import javax.microedition.lcdui.Graphics;
 public class SimpleBorder extends Border {
 
 	protected int color;
+	protected final boolean isArgb;
 
 	/**
 	 * Creates a new simple border.
@@ -52,6 +53,7 @@ public class SimpleBorder extends Border {
 	public SimpleBorder( int color, int borderWidth ) {
 		super( borderWidth, borderWidth, borderWidth, borderWidth );
 		this.color = color;
+		this.isArgb = ((color & 0xff000000) != 0) && ((color & 0xff000000) != 0xff);
 	}
 	
 	/**
@@ -66,6 +68,7 @@ public class SimpleBorder extends Border {
 	public SimpleBorder( int color, int leftWidth, int rightWidth, int topWidth, int bottomWidth  ) {
 		super(leftWidth, rightWidth, topWidth, bottomWidth);
 		this.color = color;
+		this.isArgb = ((color & 0xff000000) != 0) && ((color & 0xff000000) != 0xff);
 	}
 
 
@@ -75,11 +78,19 @@ public class SimpleBorder extends Border {
 	public void paint(int x, int y, int width, int height, Graphics g) {
 		width--;
 		height--;
-		DrawUtil.drawRect( this.color, x, y, width, height, g);
-		if (this.borderWidthLeft > 1) {
-			int border = this.borderWidthLeft - 1;
+		int border = this.borderWidthLeft - 1;
+		int col = this.color;
+		if (this.isArgb) {
+			DrawUtil.drawRect( col, x, y, width, height, g);
 			while ( border > 0) {
-				DrawUtil.drawRect( this.color, x+border, y+border, width - (border<<1), height - (border<<1), g);
+				DrawUtil.drawRect( col, x+border, y+border, width - (border<<1), height - (border<<1), g);
+				border--;
+			}
+		} else {
+			g.setColor( col );
+			g.drawRect( x, y, width, height);
+			while ( border > 0) {
+				g.drawRect( x+border, y+border, width - (border<<1), height - (border<<1));
 				border--;
 			}
 		}

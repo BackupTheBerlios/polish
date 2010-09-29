@@ -40,6 +40,7 @@ import javax.microedition.lcdui.Graphics;
 public class TopBorder extends Border {
 
 	private final int color;
+	private final boolean isArgb;
 
 	/**
 	 * Creates a new top border.
@@ -50,6 +51,7 @@ public class TopBorder extends Border {
 	public TopBorder( int color, int borderWidth ) {
 		super(0, 0, borderWidth, 0);
 		this.color = color;
+		this.isArgb = ((color & 0xff000000) != 0) && ((color & 0xff000000) != 0xff);
 	}
 
 	/* (non-Javadoc)
@@ -57,11 +59,19 @@ public class TopBorder extends Border {
 	 */
 	public void paint(int x, int y, int width, int height, Graphics g) {
 		int endX = x + width -1;
-		DrawUtil.drawLine(this.color,  x, y, endX, y, g);
-		if (this.borderWidthTop > 1) {
-			int border = this.borderWidthTop - 1;
+		int border = this.borderWidthTop - 1;
+		int col = this.color;
+		if (this.isArgb) {
+			DrawUtil.drawLine(col, x, y, endX, y, g);
 			while ( border > 0) {
-				DrawUtil.drawLine(this.color,  x, y - border, endX, y - border, g);
+				DrawUtil.drawLine(col, x, y - border, endX, y - border, g);
+				border--;
+			}
+		} else {
+			g.setColor( col );
+			g.drawLine(x, y, endX, y );
+			while ( border > 0) {
+				g.drawLine(x, y - border, endX, y - border );
 				border--;
 			}
 		}
