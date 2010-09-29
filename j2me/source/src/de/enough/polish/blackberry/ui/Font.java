@@ -173,11 +173,9 @@ public final class Font extends Object
 	private final int height;
 	private final int baselinePosition;
 	
-	//#if polish.blackberry.font.ignoreLeading
 	private int leading;
 	private int ascent;
 	private int descent;
-	//#endif
 	
 	protected net.rim.device.api.ui.Font font;
 
@@ -220,6 +218,10 @@ public final class Font extends Object
 				
 				this.font = getFont(family, bbStyle, bbSize, Ui.UNITS_px);
 				
+				this.leading = font.getLeading();
+				this.ascent = font.getAscent();
+				this.descent = font.getDescent();
+				
 				if (this.font == null) {
 					//#debug
 					System.out.println("Unable to retrieve font...");
@@ -240,18 +242,13 @@ public final class Font extends Object
 	}
 	
 	private net.rim.device.api.ui.Font getFont(FontFamily family, int bbStyle, int bbSize, int bbUnits) {
-		//#if polish.blackberry.font.ignoreLeading
+		//#if polish.blackberry.ignoreFontLeading
 		// determine the font which fits the given in ascent and descent combined, ignoring the leading ...
 		for (int size = FONT_MIN_SIZE; size < FONT_MAX_SIZE; size++) {
 			net.rim.device.api.ui.Font font = family.getFont( bbStyle, size ,bbUnits);
 			// if the font's ascent and descent combined equal
 			// the requested size or is already higher (for corner cases) ...
 			if(font.getAscent() + font.getDescent() >= bbSize) {
-
-				this.leading = font.getLeading();
-				this.ascent = font.getAscent();
-				this.descent = font.getDescent();
-				
 				// return the found font
 				return font;
 			}
@@ -294,6 +291,10 @@ public final class Font extends Object
 			this.size = resolvedSize;
 			
 			this.font = getFont(family, bbStyle, this.size, unit );
+			
+			this.leading = this.font.getLeading();
+			this.ascent = this.font.getAscent();
+			this.descent = this.font.getDescent();
 			
 			if (this.font == null) {
 				//#debug
@@ -608,7 +609,6 @@ public final class Font extends Object
 		return this.font.getAdvance( str.substring( offset, offset + len ) );
 	}
 	
-	//#if polish.blackberry.font.ignoreLeading
 	/**
 	 * Returns the leading of the font
 	 * @return the leading of the font
@@ -632,5 +632,4 @@ public final class Font extends Object
 	public int getDescent() {
 		return this.descent;
 	}
-	//#endif
 }

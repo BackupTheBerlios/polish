@@ -101,6 +101,9 @@ public class StringItem extends Item
 		private RgbFilter[] originalTextFilters;
 		private int textFilterLayout;
 	//#endif
+	//#if polish.css.ignore-leading
+	private boolean ignoreLeading;
+	//#endif
 	
 	/**
 	 * Creates a new <code>StringItem</code> object.  Calling this
@@ -632,8 +635,8 @@ public class StringItem extends Item
 				int lineX = x;
 				int lineY = y;
 				
-				//#if polish.blackberry.font.ignoreLeading
-				//# if(!(this instanceof TextField)) {
+				//#if polish.css.ignore-leading
+				//# if(this.ignoreLeading) {
 				//# 	lineY -= this.font.getLeading();
 				//# }
 				//#endif
@@ -872,8 +875,8 @@ public class StringItem extends Item
 		{
 		//#endif
 			int linesHeight = (lines.size() * lineHeight) - this.paddingVertical;
-			//#if polish.blackberry.font.ignoreLeading
-			//# if(!(this instanceof TextField)) {
+			//#if polish.css.ignore-leading
+			//# if(this.ignoreLeading) {
 			//# 	linesHeight -= this.font.getLeading();
 			//# }
 			//#endif
@@ -967,6 +970,14 @@ public class StringItem extends Item
 				}
 			//#endif
 		//#endif
+
+		//#if polish.css.ignore-leading
+			Boolean ignoreLeadingBoolean = style.getBooleanProperty("ignore-leading");
+			if (ignoreLeadingBoolean != null) {
+				this.ignoreLeading = ignoreLeadingBoolean.booleanValue();
+			}	
+		//#endif
+				
 		super.setStyle(style);
 	}
 
