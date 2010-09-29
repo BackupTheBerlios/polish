@@ -59,6 +59,9 @@ public class BlackBerryUtils {
      */
     public static File getBBHome(Device dev, Environment env) {
         File blackberryHome = getBBHome(env);
+        if (blackberryHome == null) {
+            throw new BuildException("Can not find blackberry home. Please define blackberry.home or make sure it points to a valid location.");
+        }
         // search for "*JDE*" folders:
         File parent;
         if (blackberryHome.getName().indexOf("JDE") == -1) {
