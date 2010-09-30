@@ -35,7 +35,6 @@ import de.enough.polish.io.RedirectHttpConnection;
 import de.enough.polish.util.HashMap;
 import de.enough.polish.util.IdentityArrayList;
 import de.enough.polish.util.StreamUtil;
-import de.enough.polish.util.TextUtil;
 import de.enough.polish.util.TimePoint;
 import de.enough.polish.xml.XmlDomNode;
 
@@ -49,7 +48,7 @@ public class AtomEntry
 implements Externalizable
 {
 
-	private static final int VERSION = 101;
+	private static final int VERSION = 102;
 	private String id;
 	private String title;
 	
@@ -62,6 +61,7 @@ implements Externalizable
 	private String content;
 	private String contentType;
 	private IdentityArrayList images;
+	private IdentityArrayList linksList;
 	private boolean hasLoadedImages;
 	private boolean isRead;
 
@@ -91,6 +91,12 @@ implements Externalizable
 		for (int i=0; i<childCount; i++) {
 			XmlDomNode linkNode = node.getChild(i);
 			if ("link".equals(linkNode.getName())) {
+				if (this.linksList == null) {
+					this.linksList = new IdentityArrayList();
+				}
+				AtomEntryLink link = new AtomEntryLink(linkNode);
+				this.linksList.add(link);
+				
 				String type = linkNode.getAttribute("type");
 				if (type != null && type.startsWith("image")) {
 					String href = linkNode.getAttribute("href");
@@ -339,6 +345,72 @@ implements Externalizable
 	}
 	
 	/**
+	 * Retrieves all links in this entry
+	 * @return all links, the array might be empty but not null
+	 */
+	public AtomEntryLink[] getLinks() {
+		if (this.linksList == null) {
+			return new AtomEntryLink[0];
+		}
+		return (AtomEntryLink[]) this.linksList.toArray( new AtomEntryLink[ this.linksList.size() ] );
+	}
+	
+	/**
+	 * Retrieves the number of links in this entry
+	 * @return the number of links
+	 * @see #getLinksAsInternalArray()
+	 */
+	public int getLinksSize() {
+		if (this.linksList == null) {
+			return 0;
+		}
+		return this.linksList.size();
+	}
+	
+	/**
+	 * Retrieves all links as an internal array
+	 * @return either null when there are no links or an object array which might include null values
+	 * @see #getLinksSize() for retrieving the number of links
+	 */
+	public Object[] getLinksAsInternalArray() {
+		if (this.linksList == null) {
+			return null;
+		}
+		return this.linksList.getInternalArray();
+	}
+	
+	/**
+	 * Retrieves the first matching link
+	 * @param rel the relation
+	 * @param type the type
+	 * @return the first matching link or null
+	 */
+	public AtomEntryLink getLink( String rel, String type ) {
+		if (this.linksList == null) {
+			return null;
+		}
+		Object[] links = this.linksList.getInternalArray();
+		boolean isMatching;
+		for (int i = 0; i < links.length; i++) {
+			AtomEntryLink link = (AtomEntryLink) links[i];
+			if (link == null) {
+				break;
+			}
+			isMatching = true;
+			if ((rel != null && !rel.equals(link.getRel())) || (rel == null && link.getRel() != null)) {
+				isMatching = false;
+			}
+			if (isMatching && ( (type != null && !type.equals(link.getType())) || (type == null && link.getRel() != null)) ) {
+				isMatching = false;
+			}
+			if (isMatching) {
+				return link;
+			}
+		}
+		return null;
+	}
+	
+	/**
 	 * Determines whether this entry has been read already.
 	 * @return true when this entry has been read
 	 * @see #markRead()
@@ -414,6 +486,16 @@ implements Externalizable
 			}
 		}
 		out.writeBoolean(this.isRead);
+		notNull = (this.linksList != null);
+		out.writeBoolean(notNull);
+		if (notNull) {
+			int size = this.linksList.size();
+			out.writeInt( size );
+			for (int i=0; i<size; i++) {
+				AtomEntryLink link = (AtomEntryLink) this.linksList.get(i);
+				link.write(out);
+			}
+		}
 	}
 	
 	/*
@@ -462,6 +544,19 @@ implements Externalizable
 		}
 		if (version > 100) {
 			this.isRead = in.readBoolean();
+		}
+		if (version > 101) {
+			notNull = in.readBoolean();
+			if (notNull) {
+				int size = in.readInt();
+				this.linksList = new IdentityArrayList(size);
+				for (int i=0; i<size; i++) {
+					AtomEntryLink link = new AtomEntryLink();
+					link.read(in);
+					this.linksList.add(link);
+				}
+			}
+			
 		}
 	}
 
