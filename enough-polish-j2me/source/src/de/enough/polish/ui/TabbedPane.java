@@ -1243,6 +1243,7 @@ implements ScreenInitializerListener
 		Screen scr = this.currentScreen;
 		if ((scr == null ||!scr.isMenuOpened()) && tabs.isInItemArea(x - tabs.relativeX, y - tabs.relativeY)) {
 			tabs.handlePointerDragged(x - tabs.relativeX, y - tabs.relativeY);
+			repaint(tabs.relativeX, tabs.relativeY, tabs.itemWidth, tabs.itemHeight);
 			return;
 		}
 		if (scr != null) {
