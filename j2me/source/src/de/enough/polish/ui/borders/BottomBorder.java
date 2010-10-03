@@ -65,14 +65,14 @@ public class BottomBorder extends Border {
 		if (this.isArgb) {
 			DrawUtil.drawLine(col, x, y, endX, y, g );
 			while (border > 0) {
-				DrawUtil.drawLine(col, x, y + border, endX, y + border, g );
+				DrawUtil.drawLine(col, x, y - border, endX, y - border, g );
 				border--;
 			}
 		} else {
 			g.setColor( col );
 			g.drawLine(x, y, endX, y );
 			while ( border > 0) {
-				g.drawLine(x, y + border, endX, y + border );
+				g.drawLine(x, y - border, endX, y - border );
 				border--;
 			}
 		}

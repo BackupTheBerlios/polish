@@ -62,7 +62,7 @@ public class LeftBorder extends Border {
 		int border = this.borderWidthLeft - 1;
 		int col = this.color;
 		if (this.isArgb) {
-			DrawUtil.drawLine(col,  x, y, x, endY, g);
+			DrawUtil.drawLine(col, x, y, x, endY, g);
 			while ( border > 0) {
 				DrawUtil.drawLine(col,  x + border, y, x + border, endY, g);
 				border--;
