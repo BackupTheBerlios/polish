@@ -14,6 +14,9 @@ import de.enough.polish.util.ArrayList;
  * <A HREF="../../../javax/microedition/lcdui/Screen.html" title="class in javax.microedition.lcdui"><CODE>Screens</CODE></A> to the user and allows them to navigate between them
  * by selecting the corresponding tab.
  * </p>
+ * <p>Set the preprocessing variable <code>polish.TabbedPane.switchTabsWithGestures</code> to <code>true</code>
+ * if you want to switch tabs with left and right swipe gestures.
+ * </p>
  * 
  * <p>
  * Each tab has a Screen object that is its <em>contents</em>. Only
@@ -149,6 +152,9 @@ implements ScreenInitializerListener
 	private Screen currentScreen;
 	private boolean isTabPositionTop;
 	private TabbedFormListener tabbedFormListener;
+	//#if polish.TabbedPane.switchTabsWithGestures
+		private int pointerPressX;
+	//#endif
 	private boolean isSizeChangedCalled;
 
 	/**
@@ -1269,6 +1275,9 @@ implements ScreenInitializerListener
 			return;
 		}
 		if (scr != null) {
+			//#if polish.TabbedPane.switchTabsWithGestures
+				this.pointerPressX = x;
+			//#endif
 			this.lastInteractionTime = System.currentTimeMillis();
 			scr.pointerPressed(x, y);
 		} else {
@@ -1296,6 +1305,21 @@ implements ScreenInitializerListener
 			}
 		}
 		if (scr != null) {
+			//#if polish.TabbedPane.switchTabsWithGestures
+				if (Math.abs(x - this.pointerPressX) > this.screenWidth / 4) {
+					int currentTabIndex = getSelectedIndex();
+					if (x < this.pointerPressX) {
+						currentTabIndex++;
+					} else {
+						currentTabIndex--;
+					}
+					if (currentTabIndex >= 0 && currentTabIndex < size()) {
+						setCurrentTab(currentTabIndex);
+						return;
+					}
+				}
+			//#endif
+			
 			this.lastInteractionTime = System.currentTimeMillis();
 			scr.pointerReleased(x, y);
 		} else {
