@@ -2726,6 +2726,7 @@ public class Container extends Item {
 					//System.out.println("DID NOT FIND SUITEABLE ITEM - current style=" + this.style.name);
 					// this container has only non-focusable items!
 					if (this.plainStyle != null) {
+						// this will result in plainStyle being returned in the super.focus() call:
 						this.style = this.plainStyle;
 					}
 					
