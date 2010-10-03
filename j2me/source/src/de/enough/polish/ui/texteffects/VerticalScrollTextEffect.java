@@ -127,7 +127,7 @@ public class VerticalScrollTextEffect extends TextEffect{
 						//#debug debug
 						System.out.println("stage change to STAGE_SHOW");
 						
-						this.lineIndex = (this.lineIndex + 1) % this.textLines.size();
+						this.lineIndex = (this.lineIndex + 1) % this.originalWrappedText.size();
 						this.lineOffset = 0;
 						
 						this.stageCurrent = STAGE_SHOW;
@@ -161,18 +161,18 @@ public class VerticalScrollTextEffect extends TextEffect{
 			int leftBorder, int rightBorder, int lineHeight, int maxWidth,
 			int layout, Graphics g) 
 	{
-		int textLinesSize = this.textLines.size();
-		if (textLinesSize < this.maxLines) {
+		if (this.originalWrappedText == null) {
 			super.drawStrings(wrappedText, textColor, x, y, leftBorder, rightBorder,
 					lineHeight, maxWidth, layout, g);
 			return;
 		}
+		int textLinesSize = this.originalWrappedText.size();
 		this.lineHeight = lineHeight;
 		
 		int index = this.lineIndex;
 		for (int i = 0; i < this.drawLines.size(); i++) {
 			int textLinesIndex = (index + i) % textLinesSize;
-			this.drawLines.setLine(i, this.textLines.getLine( textLinesIndex ), this.textLines.getLineWidth(textLinesIndex) );
+			this.drawLines.setLine(i, this.originalWrappedText.getLine( textLinesIndex ), this.originalWrappedText.getLineWidth(textLinesIndex) );
 		}
 		
 		int clipX = g.getClipX();
@@ -225,6 +225,7 @@ public class VerticalScrollTextEffect extends TextEffect{
 		}
 		else
 		{
+			this.originalWrappedText = null;
 			this.drawLines = this.textLines;
 			this.lines = wrappedTextResult.size();
 			this.needsAnimation = false;
@@ -249,9 +250,11 @@ public class VerticalScrollTextEffect extends TextEffect{
 	 * @see de.enough.polish.ui.TextEffect#drawString(java.lang.String, int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
 	public void drawString(String text, int textColor, int x, int y,
-			int anchor, Graphics g) {
+			int anchor, Graphics g) 
+	{
 		//#if polish.blackberry
-		g.setFont(style.getFont());
+			//TODO andre: is setFont(style.getFont()) really required?
+			g.setFont(style.getFont());
 		//#endif
 		g.setColor(textColor);
 		g.drawString(text, x, y, anchor);
