@@ -635,7 +635,7 @@ public class StringItem extends Item
 				int lineX = x;
 				int lineY = y;
 				
-				//#if polish.css.ignore-leading
+				//#if polish.css.ignore-leading && polish.blackberry
 				//# if(this.ignoreLeading) {
 				//# 	lineY -= this.font.getLeading();
 				//# }
@@ -875,7 +875,7 @@ public class StringItem extends Item
 		{
 		//#endif
 			int linesHeight = (lines.size() * lineHeight) - this.paddingVertical;
-			//#if polish.css.ignore-leading
+			//#if polish.css.ignore-leading && polish.blackberry
 			//# if(this.ignoreLeading) {
 			//# 	linesHeight -= this.font.getLeading();
 			//# }
