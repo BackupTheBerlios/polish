@@ -4719,7 +4719,7 @@ public abstract class Item implements UiElement, Animatable
 		
 		Style oldStyle = this.style;
 		
-		if(!this.isFocused) {
+		if ((!this.isFocused) || (newStyle != this.style && newStyle != null)) {
 			if (!this.isStyleInitialised && oldStyle != null) {
 				setStyle( oldStyle );
 			}
