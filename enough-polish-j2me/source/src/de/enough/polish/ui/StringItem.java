@@ -686,18 +686,17 @@ public class StringItem extends Item
 						endIndex = lines.size();
 					}
 				}
-				int availContentWidth = this.availContentWidth;
+				int usedContentWidth = rightBorder - leftBorder;
 				int lineWidth;
-				x = lineX;
 				Object[] lineObjects = lines.getLinesInternalArray();
 				for (int i = startIndex; i < endIndex; i++) {
 					String line = (String) lineObjects[i];
 					if (isCenter || isRight) {
 						lineWidth = lines.getLineWidth(i);
 						if (isCenter) {
-							x += (availContentWidth - lineWidth)/2;
+							x = centerX - (lineWidth/2);
 						} else {
-							x += availContentWidth - lineWidth;
+							x = lineX + usedContentWidth - lineWidth;
 						}
 					}
 					drawString( line, x, lineY, orientation, g );
