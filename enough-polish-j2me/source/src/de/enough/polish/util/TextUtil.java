@@ -414,7 +414,7 @@ public final class TextUtil {
 		char[] valueChars = value.toCharArray();
 		int startPos = 0;
 		int lastSpacePos = -1;
-		int lastSpacePosLength = 0;
+		int lastSpacePosLineWidth = 0;
 		int currentLineWidth = 0;
 		for (int i = 0; i < valueChars.length; i++) {
 			char c = valueChars[i];
@@ -447,9 +447,9 @@ public final class TextUtil {
 						//System.out.println("value=" + value + ", i=" + i + ", startPos=" + startPos);
 						list.addLine( new String( valueChars, startPos, lastSpacePos - startPos ), stringWidth);
 						startPos =  lastSpacePos;
-						currentLineWidth -= lastSpacePosLength;
+						currentLineWidth -= lastSpacePosLineWidth;
 						lastSpacePos = i;
-						lastSpacePosLength = currentLineWidth;
+						lastSpacePosLineWidth = currentLineWidth;
 					} else {
 						//line += font.stringWidth(line) + "[" + currentLineWidth + "]";
 						list.addLine( line, currentLineWidth );
@@ -464,10 +464,10 @@ public final class TextUtil {
 					startPos =  i;
 					currentLineWidth = font.charWidth(valueChars[i]);
 				} else {
-					currentLineWidth -= lastSpacePosLength;
+					currentLineWidth -= lastSpacePosLineWidth;
 					String line = new String( valueChars, startPos, lastSpacePos - startPos );
 					//line += font.stringWidth(line) + "<" + lastSpacePosLength + ">";
-					list.addLine( line, lastSpacePosLength );
+					list.addLine( line, lastSpacePosLineWidth );
 					startPos =  lastSpacePos + 1;
 					lastSpacePos = -1;
 				}
@@ -475,7 +475,7 @@ public final class TextUtil {
 				firstLineWidth = lineWidth; 
 			} else if (c == ' ' || c == '\t') {
 				lastSpacePos = i;
-				lastSpacePosLength = currentLineWidth;
+				lastSpacePosLineWidth = currentLineWidth;
 			}
 
 		} 
@@ -483,7 +483,8 @@ public final class TextUtil {
 		if(list.size() != maxLines)
 		{
 			// add tail:
-			list.addLine( new String( valueChars, startPos, valueChars.length - startPos ), 0 );
+			String tail = new String( valueChars, startPos, valueChars.length - startPos );
+			list.addLine( tail, currentLineWidth );
 		}
 
 		/*
