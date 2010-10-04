@@ -1073,6 +1073,16 @@ public class Graphics extends Object
 		} 
 		this.g.drawText(str, x + this.translateX - 1, y + this.translateY, DrawStyle.LEFT | DrawStyle.TOP );
 	}
+	
+	/**
+	 * Draws the specified text at the top | left position
+	 * @param str the text
+	 * @param leftX the horizontal left start position of the text
+	 * @param topY the vertical top start position of the text
+	 */
+	public void drawString( String str, int leftX, int topY ) {
+		this.g.drawText(str, leftX + this.translateX - 1, topY + this.translateY, DrawStyle.LEFT | DrawStyle.TOP );
+	}
 
 	/**
 	 * Translates the given anchor into a blackberry one.

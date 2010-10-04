@@ -641,17 +641,17 @@ public class StringItem extends Item
 				//# }
 				//#endif
 				
-				int orientation;
+				int orientation = Graphics.LEFT;
 				// adjust the painting according to the layout:
-				if (isRight) {
-					lineX = rightBorder; //x + this.backgroundWidth - this.paddingLeft - this.paddingRight; // rightBorder can be influenced by sub classes such as IconItem, the rest not.
-					orientation = Graphics.RIGHT;
-				} else if (isCenter) {
-					lineX = centerX;
-					orientation = Graphics.HCENTER;
-				} else {
-					orientation = Graphics.LEFT;
-				}
+//				if (isRight) {
+//					lineX = rightBorder; //x + this.backgroundWidth - this.paddingLeft - this.paddingRight; // rightBorder can be influenced by sub classes such as IconItem, the rest not.
+//					orientation = Graphics.RIGHT;
+//				} else if (isCenter) {
+//					lineX = centerX;
+//					orientation = Graphics.HCENTER;
+//				} else {
+//					orientation = Graphics.LEFT;
+//				}
 				
 				//#if polish.css.text-wrap
 					if (this.clipText) {
@@ -686,10 +686,21 @@ public class StringItem extends Item
 						endIndex = lines.size();
 					}
 				}
+				int availContentWidth = this.availContentWidth;
+				int lineWidth;
+				x = lineX;
 				Object[] lineObjects = lines.getLinesInternalArray();
 				for (int i = startIndex; i < endIndex; i++) {
 					String line = (String) lineObjects[i];
-					drawString( line, lineX, lineY, orientation, g );
+					if (isCenter || isRight) {
+						lineWidth = lines.getLineWidth(i);
+						if (isCenter) {
+							x += (availContentWidth - lineWidth)/2;
+						} else {
+							x += availContentWidth - lineWidth;
+						}
+					}
+					drawString( line, x, lineY, orientation, g );
 					lineY += lineHeight;
 				}
 		//#if tmp.useTextEffect
@@ -703,13 +714,18 @@ public class StringItem extends Item
 	}
 	
 	/**
-	 * @param line
-	 * @param x
-	 * @param y
-	 * @param anchor
+	 * Paints a single line of text that is within the visible bounds
+	 * @param line the text 
+	 * @param x the left horizontal start position
+	 * @param y the top or bottom vertical position
+	 * @param anchor either Graphics.LEFT | Graphics.TOP or Graphics.LEFT | Graphics.BOTTOM
 	 */
 	public void drawString(String line, int x, int y, int anchor, Graphics g) {
-		g.drawString( line, x, y, anchor );
+		//#if polish.blackberry
+			//# g.drawString(line, x, y ); // assuming top | left for all text
+		//#else
+			g.drawString( line, x, y, anchor );
+		//#endif
 	}
 	
 	/**
