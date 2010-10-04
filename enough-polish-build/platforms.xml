@@ -91,7 +91,7 @@
 		<identifier>BlackBerry</identifier>
 		<features>blackberry, hasCommandKeyEvents</features>
 		<description>BlackBerry provides a platform that supplements CLDC 1.0 and MIDP 2.0 by BlackBerry specific APIs.</description>
-		<capability name="Bugs" value="drawRgbNeedsFullBuffer" />
+		<capability name="Bugs" value="drawRgbNeedsFullBuffer, ClosedInputstreamWhenEmptyHttpResponseBody" />
 		<capability name="key.EscapeKey" value="1769472" />
 		<capability name="key.ReturnKey" value="1769472" />
 		<capability name="key.RightSoftKey" value="1769472" />

@@ -730,6 +730,19 @@
 			Show another physical screen and then return to the snapshot screen or use the J2ME Polish SnapshotScreen.
 		</solution>
 	</bug>
+
+	<bug>
+		<name>ClosedInputstreamWhenEmptyHttpResponseBody</name>
+		<area>io</area>
+		<description>
+			When the body of a HTTP response is empty a closed InputStream is returned on openInputStream()
+			call of HttpConnection.
+		</description>
+		<solution>
+			The first read() on the InputStream throws a ConnectionClosedException instead of returning -1.
+			This needs to be catched and handled as if -1 would have been directly returned.
+		</solution>
+	</bug>
 	
 	<!--
 	<bug>
