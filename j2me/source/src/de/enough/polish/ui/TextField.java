@@ -2524,7 +2524,7 @@ public class TextField extends StringItem
 			}
 		//#elif tmp.directInput
 			this.rowHeight = getFontHeight() + this.paddingVertical;			
-			if (this.textLines == null || this.text.length() == 0) {
+			if (this.textLines == null || this.text == null || this.text.length() == 0) {
 				this.caretX = 0;
 				this.caretY = 0;
 				this.caretPosition = 0;
