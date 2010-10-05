@@ -452,7 +452,7 @@ public final class TextUtil {
 						lastSpacePosLineWidth = currentLineWidth;
 					} else {
 						//line += font.stringWidth(line) + "[" + currentLineWidth + "]";
-						list.addLine( line, currentLineWidth );
+						list.addLine( line, stringWidth );
 						startPos =  ++i;
 						currentLineWidth = 0;
 						lastSpacePos = -1;
@@ -460,7 +460,9 @@ public final class TextUtil {
 				} else if ( lastSpacePos == -1) {
 					/**/
 					//System.out.println("value=" + value + ", i=" + i + ", startPos=" + startPos);
-					list.addLine( new String( valueChars, startPos, i - startPos ), currentLineWidth );
+					String line = new String( valueChars, startPos, i - startPos );
+					int stringWidth = font.stringWidth(line);
+					list.addLine( line, stringWidth );
 					startPos =  i;
 					currentLineWidth = font.charWidth(valueChars[i]);
 				} else {
