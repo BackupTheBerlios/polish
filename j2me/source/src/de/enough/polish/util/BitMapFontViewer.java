@@ -67,8 +67,8 @@ public class BitMapFontViewer {
 	public final static int COLORIZE_MASK = 0xFF000000;
 
 	private Image image;
-	private final short[] xPositions;
-	private final byte[] usedCharactersWidths;
+	private short[] xPositions;
+	private byte[] usedCharactersWidths;
 	private final int fontHeight;
 	private int verticalPadding;
 	private final int spaceIndex;
@@ -76,7 +76,7 @@ public class BitMapFontViewer {
 	private int width;
 	private int numberOfLines;
 	private short[] lineWidths;
-	private final int[] indeces;
+	private int[] indeces;
 	private final byte[] actualCharacterWidths;
 	private int orientation;
 	private BitMapFontViewer maxLineAppendixViewer;
@@ -341,12 +341,13 @@ public class BitMapFontViewer {
 		boolean maxLinesReached = false;
 		maxLines--;
 		int i = 0;
-		for (i = 0; i < this.usedCharactersWidths.length; i++ ) {
-			byte characterWidth = this.usedCharactersWidths[i];
+		byte[] charWidths = this.usedCharactersWidths;
+		for (i = 0; i < charWidths.length; i++ ) {
+			byte characterWidth = charWidths[i];
 			if ( characterWidth == ARTIFICAL_LINE_BREAK) {
 				// restore original character width:
 				characterWidth = this.actualCharacterWidths[ this.indeces[i] ];
-				this.usedCharactersWidths[i] = characterWidth;
+				charWidths[i] = characterWidth;
 			} else if (characterWidth == ABSOLUTE_LINE_BREAK) {
 				// this is an absolute linebreak (\n)
 				this.lineWidths[ lineIndex ] = currentLineWidth;
@@ -377,7 +378,7 @@ public class BitMapFontViewer {
 			if (currentLineWidth > firstLineWidth) {
 				// we need to include an artificial line-break:
 				if (lastSpaceIndex > lineStartIndex ) {
-					this.usedCharactersWidths[ lastSpaceIndex ] = ARTIFICAL_LINE_BREAK;
+					charWidths[ lastSpaceIndex ] = ARTIFICAL_LINE_BREAK;
 					lineStartIndex = lastSpaceIndex + 1; 
 					this.lineWidths[ lineIndex ] = (short) lastSpaceWidth;
 					if (lastSpaceWidth > maxLineWidth) {
@@ -393,8 +394,39 @@ public class BitMapFontViewer {
 					if (lineIndex >= this.lineWidths.length) {
 						this.lineWidths = increaseShortArraySize(this.lineWidths, 10);
 					}
-				// } else {
-					// System.out.println("Unable to break line without any prior space");
+				} else {
+					// we need to include a character into the array:
+					byte[] widths = new byte[ charWidths.length + 1 ];
+					System.arraycopy(charWidths, 0, widths, 0, i);
+					widths[i] = ARTIFICAL_LINE_BREAK;
+					System.arraycopy(charWidths, i, widths, i+1, charWidths.length - i);
+					charWidths = widths;
+					this.usedCharactersWidths = charWidths;
+					int[] indexArray = new int[ this.indeces.length + 1];
+					System.arraycopy(this.indeces, 0, indexArray, 0, i);
+					System.arraycopy(this.indeces, i, indexArray, i+1, this.indeces.length - i);
+					this.indeces = indexArray;
+					short[] xPosArray = new short[ this.xPositions.length + 1 ]; 
+					System.arraycopy(this.xPositions, 0, xPosArray, 0, i);
+					System.arraycopy(this.xPositions, i, xPosArray, i+1, this.xPositions.length - i);
+					this.xPositions = xPosArray;
+					
+					lineStartIndex = i; 
+					currentLineWidth -= characterWidth;
+					this.lineWidths[ lineIndex ] = (short) currentLineWidth;
+					if (currentLineWidth > maxLineWidth) {
+						maxLineWidth = (short) currentLineWidth;
+					}
+					if (lineIndex == maxLines) {
+						maxLinesReached = true;
+						break;
+					}
+					lineIndex++;
+
+					if (lineIndex >= this.lineWidths.length) {
+						this.lineWidths = increaseShortArraySize(this.lineWidths, 10);
+					}
+					currentLineWidth = 0;
 				}
 			}
 			firstLineWidth = lineWidth;
@@ -407,8 +439,8 @@ public class BitMapFontViewer {
 				int lastLineWidth = this.lineWidths[lineIndex];
 				lastLineWidth += appendixViewer.getWidth();
 				while (lastLineWidth  > firstLineWidth && i > 0) {
-					lastLineWidth -= this.usedCharactersWidths[i];
-					this.usedCharactersWidths[i] = ARTIFICAL_LINE_BREAK;
+					lastLineWidth -= charWidths[i];
+					charWidths[i] = ARTIFICAL_LINE_BREAK;
 					i--;
 				}
 				this.maxLineAppendixViewer = appendixViewer;
