@@ -632,4 +632,14 @@ public final class Font extends Object
 	public int getDescent() {
 		return this.descent;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	public boolean equals(Object arg0) {
+		Font font = (Font)arg0;
+		return (this.size == font.size && this.style == font.style);
+	}
+	
+	
 }
