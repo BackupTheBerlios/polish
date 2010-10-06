@@ -404,6 +404,11 @@ public final class TextUtil {
 			WrappedText list,
 			int maxLines, int maxLinesAppendixPosition ) 
 	{
+		
+		boolean debug = maxLines == 1 && value.startsWith("Margaret Cho");
+		if (debug) {
+			System.out.println("wrapping " + value + ", firstLineWidth=" + firstLineWidth + ", lineWidth=" + lineWidth + ", stringWidth=" + font.stringWidth(value));
+		}
 		//TODO extend wrapping : bottom line - based wrapping 
 		if(maxLinesAppendixPosition == MAXLINES_APPENDIX_POSITION_BEFORE && maxLines == 1) {
 			list.addLine(value, 0);
@@ -430,7 +435,9 @@ public final class TextUtil {
 				if(list.size() == lastLineIndex)
 				{
 					// add the remainder of the value
-					list.addLine( new String( valueChars, startPos, valueChars.length - startPos ), currentLineWidth );
+					String line = new String( valueChars, startPos, valueChars.length - startPos );
+					currentLineWidth = font.stringWidth(line);
+					list.addLine( line, currentLineWidth );
 					break;
 				}
 
