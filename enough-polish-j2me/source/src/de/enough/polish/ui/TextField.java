@@ -54,6 +54,7 @@ import de.enough.polish.util.Properties;
 //#if polish.blackberry
 	import de.enough.polish.blackberry.ui.PolishTextField;
 	import de.enough.polish.blackberry.ui.PolishEditField;
+	import de.enough.polish.blackberry.ui.PolishOneLineField;
 	import de.enough.polish.blackberry.ui.PolishPasswordEditField;
     import de.enough.polish.blackberry.ui.PolishEmailAddressEditField;
 	import net.rim.device.api.system.Application;
@@ -1985,7 +1986,16 @@ public class TextField extends StringItem
 			}else if((bbStyle & BasicEditField.FILTER_EMAIL) == BasicEditField.FILTER_EMAIL) {
                 this.editField = new PolishEmailAddressEditField( null, getString(), max, bbStyle );
             } else {
-                    this.editField = new PolishEditField( null, getString(), max, bbStyle );
+            	    if ( "false".equals(getStyle().getProperty("text-wrap")) )
+            		{
+            			this.editField = new PolishOneLineField( null, getString(), max, bbStyle ); 
+            			getStyle().addAttribute("max-lines", new Integer(1));
+            			getStyle().addAttribute("max-height", new Dimension(getStyle().getFont().getHeight()));
+            		}
+            		else
+            		{
+            			this.editField = new PolishEditField(null, getString(), max, bbStyle);
+            		}
             } 
 
 			if (this.style != null) {
@@ -2510,7 +2520,7 @@ public class TextField extends StringItem
 				// alowing native field to expand to the fully available width,
 				// the content size does not need to be changed as the same font is being
 				// used.
-				this.editField.layout( availWidth, this.contentHeight );
+				this.editField.doLayout( availWidth, this.contentHeight );
 				
 				// On some devices, like the 9000, after layout() the native EditField
 				// grows larger than the maximum specified height, but only by a few

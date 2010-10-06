@@ -50,7 +50,7 @@ implements PolishTextField {
 //	//#endif
 
 	public PolishEditField(String label, String text, int numChars, long style) {
-		super(label, text, numChars, style);
+		super(label, text, numChars, style );
 	}
 
 	public void focusAdd( boolean draw ) {

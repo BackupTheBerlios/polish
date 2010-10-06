@@ -1219,6 +1219,11 @@ public abstract class BaseScreen
 	            }
 	            if (getFieldWithFocus() != item._bbField) {
 	            	setFocus( item._bbField, 0, 0, 0, 0 );
+	            	
+	            	if (item._bbField instanceof PolishOneLineField)
+	            	{
+	            		setFocus( ((PolishOneLineField)item._bbField).getEditField(), 0, 0, 0, 0 );
+	            	}
 	            }
 	            //System.out.println("Canvas.focus(): focusing field " + item._bbField );
 	            this.dummyFieldHasFocus = false;
