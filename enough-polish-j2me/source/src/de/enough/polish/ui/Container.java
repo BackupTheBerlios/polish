@@ -2928,9 +2928,11 @@ public class Container extends Item {
 	 */
 	public void animate(long currentTime, ClippingRegion repaintRegion) {
 		super.animate(currentTime, repaintRegion);
+		boolean addFullRepaintRegion = false;
 		// scroll the container:
 		int target = this.targetYOffset;
 		int current = this.yOffset;
+		int diff = 0;
 		if (target != current) {
 			if (this.scrollHeight != -1 && Math.abs(target - current) > this.scrollHeight) {
 				// maximally scroll one page:
@@ -2947,31 +2949,14 @@ public class Container extends Item {
 			if ( ( speed > 0 && current > target) || (speed < 0 && current < target ) ) {
 				current = target;
 			}
-			int diff = Math.abs( current - this.yOffset);
+			diff = Math.abs( current - this.yOffset);
 			this.yOffset = current;
 //			if (this.focusedItem != null && this.focusedItem.backgroundYOffset != 0) {
 //				this.focusedItem.backgroundYOffset = (this.targetYOffset - this.yOffset);
 //			}
 			// # debug
 			//System.out.println("animate(): adjusting yOffset to " + this.yOffset );
-			// add repaint region:
-			int x, y, width, height;
-			Screen scr = getScreen();
-			height = getItemAreaHeight();;
-			if (this.scrollHeight > height) {
-				x = scr.contentX;
-				y = scr.contentY;
-				height = scr.contentHeight;
-				width = scr.contentWidth + scr.getScrollBarWidth();
-			} else {
-				x = getAbsoluteX();
-				y = getAbsoluteY();
-				width = this.itemWidth;
-				//#if polish.useScrollBar || polish.classes.ScrollBar:defined
-					width += scr.getScrollBarWidth();
-				//#endif
-			}
-			repaintRegion.addRegion( x, y, width, height + diff + 1 );
+			addFullRepaintRegion = true;
 		}
 		int speed = this.scrollSpeed;
 		if (speed != 0) {
@@ -2989,7 +2974,6 @@ public class Container extends Item {
 				this.scrollSpeed = 0;
 			}
 			int offset = this.yOffset;
-			int height = getItemAreaHeight();
 			if (this.scrollDirection == Canvas.UP) {
 				offset += speed;
 				target = offset;
@@ -3026,11 +3010,15 @@ public class Container extends Item {
 			}
 			this.yOffset = offset;
 			this.targetYOffset = target;
-			// add repaint region:
-			int x, y, width;
+			addFullRepaintRegion = true;
+		}
+		
+		// add repaint region:
+		if (addFullRepaintRegion) {
+			int x, y, width, height;
 			Screen scr = getScreen();
-			height = this.itemHeight;
-			if (this.scrollHeight > height) {
+			height = getItemAreaHeight();
+			if (this.scrollHeight > height || this.enableScrolling) {
 				x = scr.contentX;
 				y = scr.contentY;
 				height = scr.contentHeight;
@@ -3043,8 +3031,9 @@ public class Container extends Item {
 					width += scr.getScrollBarWidth();
 				//#endif
 			}
-			repaintRegion.addRegion( x, y, width, height );
+			repaintRegion.addRegion( x, y, width, height + diff + 1 );
 		}
+
 		
 		this.lastAnimationTime = currentTime;
 		
