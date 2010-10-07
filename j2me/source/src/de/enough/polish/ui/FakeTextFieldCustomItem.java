@@ -2461,7 +2461,7 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 				// alowing native field to expand to the fully available width,
 				// the content size does not need to be changed as the same font is being
 				// used.
-				this.editField.layout( availWidth, this.contentHeight );
+				this.editField.doLayout( availWidth, this.contentHeight );
 				updateInternalArea();
 			}
 		//#elif tmp.directInput
