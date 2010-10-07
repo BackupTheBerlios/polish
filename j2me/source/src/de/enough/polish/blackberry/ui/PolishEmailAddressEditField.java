@@ -59,6 +59,11 @@ public class PolishEmailAddressEditField extends EmailAddressEditField implement
 	        this.isFocused = false;
 	}
 	
+	public void doLayout(int width, int height)
+	{
+		layout(width, height);
+	}
+	
 	public void layout( int width, int height) {
 		if (height < 0 || width < 0) {
 			//#debug info
