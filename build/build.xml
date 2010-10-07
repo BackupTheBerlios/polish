@@ -85,7 +85,7 @@
 				<pathelement path="import/advancedmultimedia-1.0.jar" />
 				<pathelement path="import/android-2.1.jar" />
 				<pathelement path="import/btapi.jar" />
-				<pathelement path="import/blackberry-4.7.0.jar" />
+				<pathelement path="import/blackberry-6.0.0.jar" />
 				<pathelement path="import/doja-2.5.jar" />
 				<pathelement path="import/m3g.jar" />
 				<pathelement path="import/mmapi.jar" />
