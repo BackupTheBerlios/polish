@@ -669,7 +669,6 @@ public class FramedForm extends Form {
 				}
 			//#endif
 			if (clipY < frameY + this.topFrame.itemHeight) {
-				System.out.println("painting top frame...");
 				this.topFrame.paint( this.originalContentX, frameY, this.originalContentX, this.originalContentX + this.originalContentWidth, g );
 			}
 			//#if polish.css.topframe-height
