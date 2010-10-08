@@ -434,9 +434,6 @@ public abstract class ContentSource {
 				// destroy the content
 				destroyContent(reference);
 			} while ((this.storageIndex.isCleanNeeded()));
-
-			// call garbage collectors
-			System.gc();
 		}
 	}
 
