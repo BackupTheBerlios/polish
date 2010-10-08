@@ -534,7 +534,17 @@ public class Display
      */
     public static final int KEY_POUND = 35;
     //#endif
-
+    
+    /**
+     * the input method identifier for touch
+     */
+    public static final int INPUT_METHOD_TOUCH = 0x00;
+    
+    /**
+     * the input method identifier for keys
+     */
+    public static final int INPUT_METHOD_KEY= 0x01;
+    
 	private static Display instance;
 	
 	protected Displayable currentDisplayable;
@@ -616,6 +626,7 @@ public class Display
 		private int bbMaxScreenHeight;
 		private int bbMinScreenHeight = Integer.MAX_VALUE;
 	//#endif
+    private int inputMethod = INPUT_METHOD_KEY;
 
 	private Displayable nextOrCurrentDisplayable;
 	private boolean emitNotifyOnUserEvent;
@@ -1963,6 +1974,8 @@ public class Display
 	 * @see javax.microedition.lcdui.Canvas#keyPressed(int)
 	 */
 	protected void keyPressed(int keyCode) {
+		setInputMethod(INPUT_METHOD_KEY);
+		
 		//#if polish.Display.useUserInputValidation
 		if(this.validator != null && !this.validator.isKeyPressValid(keyCode)) {
 			return;
@@ -2072,6 +2085,7 @@ public class Display
 	 * @see javax.microedition.lcdui.Canvas#pointerPressed(int,int)
 	 */
 	protected void pointerPressed(int x, int y) {
+		setInputMethod(INPUT_METHOD_TOUCH);
 		//#if polish.Display.useUserInputValidation
 		if(this.validator != null && !this.validator.isPointerPressValid(x, y)) {
 			return;
@@ -2840,4 +2854,24 @@ public class Display
 	protected void emitNotifyOnUserEvents(boolean emitNoify) {
 		this.emitNotifyOnUserEvent = emitNoify;
 	}
+	
+
+    /**
+     * Returns the current input method
+     * @return the current input method
+     */
+    public int getInputMethod() {
+    	return this.inputMethod; 
+    }
+    
+    /**
+     * Sets the current input method
+     * @param inputMethod the current input method
+     */
+    private void setInputMethod(int inputMethod) {
+    	//#debug debug
+    	System.out.println("input method set : " + inputMethod);
+    	this.inputMethod = inputMethod;
+    }
+
 }
