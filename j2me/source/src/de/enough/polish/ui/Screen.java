@@ -388,8 +388,11 @@ implements UiElement, Animatable
 	private UiEventListener uiEventListener;
 	
 	//#if polish.css.portrait-style || polish.css.landscape-style
-	protected Style landscapeStyle;
-	protected Style portraitStyle;
+		protected Style landscapeStyle;
+		protected Style portraitStyle;
+	//#endif
+	//#if polish.hasPointerEvents
+		private final ClippingRegion userEventRepaintRegion = new ClippingRegion();
 	//#endif
 	private ScreenInitializerListener screenInitializerListener;
 	
@@ -4895,6 +4898,12 @@ implements UiElement, Animatable
 			if (handlePointerDragged(x,y)) {
 				repaint();
 			}
+			ClippingRegion repaintRegion = this.userEventRepaintRegion;
+			repaintRegion.reset();
+			handlePointerDragged(x, y, repaintRegion );
+			if (repaintRegion.containsRegion()) {
+				repaint( repaintRegion.getX(), repaintRegion.getY(), repaintRegion.getWidth(), repaintRegion.getHeight() );
+			}
 		} finally {
 			this.ignoreRepaintRequests = false;
 		}
@@ -5094,7 +5103,7 @@ implements UiElement, Animatable
 		//#endif
 		return handled;
 	}
-
+	
 	/**
 	 * Handles the dragging/movement of a pointer.
 	 * This method should be overwritten only when the polish.hasPointerEvents 
@@ -5108,15 +5117,33 @@ implements UiElement, Animatable
 	 * @param y the absolute y position of the pointer movement
 	 * @return true when the dragging of the pointer was actually handled by this screen.
 	 */
-	protected boolean handlePointerDragged(int x, int y)
+	protected boolean handlePointerDragged(int x, int y, ClippingRegion repaintRegion)
 	{
 		boolean handled = false;
 		//#ifdef polish.hasPointerEvents
 			if (this.container != null) {
-				handled = this.container.handlePointerDragged(x - this.container.relativeX, y - this.container.relativeY );
+				handled = this.container.handlePointerDragged(x - this.container.relativeX, y - this.container.relativeY, repaintRegion );
 			}
 		//#endif
 		return handled;
+	}
+
+	/**
+	 * Handles the dragging/movement of a pointer.
+	 * This method should be overwritten only when the polish.hasPointerEvents 
+	 * preprocessing symbol is defined.
+	 * When the screen could handle the pointer drag event, it needs to 
+	 * return true.
+	 * The default implementation returns false.
+	 *  
+	 * @param x the absolute x position of the pointer movement
+	 * @param y the absolute y position of the pointer movement
+	 * @return true when the dragging of the pointer was actually handled by this screen.
+	 * @see #handlePointerDragged(int, int, ClippingRegion)
+	 */
+	protected boolean handlePointerDragged(int x, int y)
+	{
+		return false;
 	}
 
 	/**

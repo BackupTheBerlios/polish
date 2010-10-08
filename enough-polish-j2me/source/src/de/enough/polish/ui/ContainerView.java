@@ -1648,9 +1648,9 @@ extends ItemView
 
 	//#ifdef polish.hasPointerEvents
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.ItemView#handlePointerDragged(int, int)
+	 * @see de.enough.polish.ui.ItemView#handlePointerDragged(int, int,ClippingRegion)
 	 */
-	public boolean handlePointerDragged(int x, int y) {
+	public boolean handlePointerDragged(int x, int y, ClippingRegion repaintRegion) {
 		int availWidth = this.availableWidth;
 		if (this.isPointerPressedHandled && this.contentWidth > availWidth) {
 			int offset = this.xOffset + (x - this.pointerPressedX);
@@ -1669,6 +1669,7 @@ extends ItemView
 			//#endif
 			setScrollXOffset( offset, false );
 			this.pointerPressedX = x;
+			this.parentContainer.addRepaintArea(repaintRegion);
 			return true;
 		}
 		return super.handlePointerDragged(x, y);

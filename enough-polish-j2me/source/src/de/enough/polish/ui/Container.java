@@ -2922,6 +2922,7 @@ public class Container extends Item {
 	}
 
 	private long lastAnimationTime;
+	private boolean isScrolling;
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#animate(long, de.enough.polish.ui.ClippingRegion)
@@ -3033,7 +3034,7 @@ public class Container extends Item {
 			}
 			repaintRegion.addRegion( x, y, width, height + diff + 1 );
 		}
-
+		
 		
 		this.lastAnimationTime = currentTime;
 		
@@ -3081,6 +3082,24 @@ public class Container extends Item {
 		//#endif
 	}
 	
+	
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#addRepaintArea(de.enough.polish.ui.ClippingRegion)
+	 */
+	public void addRepaintArea(ClippingRegion repaintRegion) {
+		if (this.enableScrolling) {
+			Screen scr = getScreen();
+			int x = scr.contentX;
+			int y = scr.contentY;
+			int height = scr.contentHeight;
+			int width = scr.contentWidth + scr.getScrollBarWidth();
+			repaintRegion.addRegion(x, y, width, height);
+		} else {
+			super.addRepaintArea(repaintRegion);
+		}
+	}
+
 	/**
 	 * Called by the system to notify the item that it is now at least
 	 * partially visible, when it previously had been completely invisible.
@@ -3172,6 +3191,7 @@ public class Container extends Item {
 		//#debug
 		System.out.println("Container.handlePointerPressed(" + relX + ", " + relY + ") for " + this );
 		//System.out.println("Container.handlePointerPressed( x=" + x + ", y=" + y + "): adjustedY=" + (y - (this.yOffset  + this.marginTop + this.paddingTop )) );
+		this.isScrolling = false;
 		// an item within this container was selected:
 		this.lastPointerPressY = relY;
 		this.lastPointerPressYOffset = getScrollYOffset();
@@ -3490,12 +3510,21 @@ public class Container extends Item {
 		return this.defaultCommand != null && super.handlePointerReleased(origRelX, origRelY);
 	}
 	//#endif
-
+	
 	//#ifdef polish.hasPointerEvents
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#handlePointerDragged(int, int)
 	 */
 	protected boolean handlePointerDragged(int relX, int relY) {
+		return false;
+	}
+	//#endif
+
+	//#ifdef polish.hasPointerEvents
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#handlePointerDragged(int, int)
+	 */
+	protected boolean handlePointerDragged(int relX, int relY, ClippingRegion repaintRegion) {
 		//#debug
 		System.out.println("handlePointerDraggged " + relX + ", " + relY + " for " + this + ", enableScrolling=" + this.enableScrolling + ", focusedItem=" + this.focusedItem);
 		//#ifdef polish.css.before
@@ -3503,12 +3532,13 @@ public class Container extends Item {
 		//#endif
 		
 		Item item = this.focusedItem;
-		if (item != null && item.handlePointerDragged( relX - this.contentX - item.relativeX, relY - this.yOffset - this.contentY - item.relativeY)) {
+		if (item != null && item.handlePointerDragged( relX - this.contentX - item.relativeX, relY - this.yOffset - this.contentY - item.relativeY, repaintRegion)) {
 			return true;
 		}
 		//#ifdef tmp.supportViewType
 			if (this.containerView != null) {
-				if ( this.containerView.handlePointerDragged(relX,relY) ) {
+				if ( this.containerView.handlePointerDragged(relX,relY) ) { //TODO use clipping region for views as well
+					addRepaintArea(repaintRegion);
 					return true;
 				}
 			}
@@ -3545,13 +3575,15 @@ public class Container extends Item {
 						}
 					}
 				//#endif
-				if (nextOffset != lastOffset) {
+				this.isScrolling = (nextOffset != lastOffset);
+				if (this.isScrolling) {
 					setScrollYOffset( nextOffset, false );
+					addRepaintArea(repaintRegion);
 					return true;
 				}
 			}
 		}
-		return super.handlePointerDragged(relX, relY);
+		return super.handlePointerDragged(relX, relY, repaintRegion);
 	}
 	//#endif
 	
@@ -3851,6 +3883,20 @@ public class Container extends Item {
 		}
 		this.targetYOffset = offset;
 		this.scrollSpeed = 0;
+	}
+	
+	/**
+	 * Determines whether this container or one of its parent containers is currently being scrolled
+	 * @return true when this container or one of its parent containers is currently being scrolled
+	 */
+	public boolean isScrolling() {
+		if (this.enableScrolling) {
+			return (this.isScrolling) || (this.targetYOffset != this.yOffset)  ||  (this.scrollSpeed != 0); 
+		} else if (this.parent instanceof Container) {
+            return ((Container)this.parent).isScrolling();
+        } else {
+            return false;
+        }
 	}
 	
 	/**

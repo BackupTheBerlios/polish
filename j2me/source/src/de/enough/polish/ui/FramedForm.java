@@ -646,34 +646,36 @@ public class FramedForm extends Form {
 			this.rightFrame.paint( this.contentWidth, y, this.contentWidth, this.screenWidth, g );
 		}
 		if (this.topFrame != null ) {
+			int clipY = g.getClipY();
 			this.topFrame.relativeX = this.originalContentX;
 			this.topFrame.relativeY = this.originalContentY;
 			int frameY = this.originalContentY;
 			//#if polish.css.topframe-height
-			int clipX = 0;
-			int clipY = 0;
-			int clipWidth = 0;
-			int clipHeight = 0;
-			if(this.topFrameHeight != null)
-			{
-				if (paintContentContainerLast) {
-					super.paintScreen(g);
-					paintContentContainerLast = false;
+				int clipX = 0;
+				int clipWidth = 0;
+				int clipHeight = 0;
+				if(this.topFrameHeight != null)
+				{
+					if (paintContentContainerLast) {
+						super.paintScreen(g);
+						paintContentContainerLast = false;
+					}
+					clipX = g.getClipX();
+					clipWidth = g.getClipWidth();
+					clipHeight = g.getClipHeight();
+					int itemHeight = this.topFrame.itemHeight;
+					int height = this.topFrameHeight.getValue( itemHeight );
+					g.clipRect( clipX, frameY, clipWidth, height );
 				}
-				clipX = g.getClipX();
-				clipY = g.getClipY();
-				clipWidth = g.getClipWidth();
-				clipHeight = g.getClipHeight();
-				int itemHeight = this.bottomFrame.itemHeight;
-				int height = this.bottomFrameHeight.getValue( itemHeight );
-				g.clipRect( clipX, frameY, clipWidth, height );
-			}
 			//#endif
-			this.topFrame.paint( this.originalContentX, frameY, this.originalContentX, this.originalContentX + this.originalContentWidth, g );
-			//#if polish.css.topframe-height
-			if (this.topFrameHeight != null) {
-				g.setClip( clipX, clipY, clipWidth, clipHeight );
+			if (clipY < frameY + this.topFrame.itemHeight) {
+				System.out.println("painting top frame...");
+				this.topFrame.paint( this.originalContentX, frameY, this.originalContentX, this.originalContentX + this.originalContentWidth, g );
 			}
+			//#if polish.css.topframe-height
+				if (this.topFrameHeight != null) {
+					g.setClip( clipX, clipY, clipWidth, clipHeight );
+				}
 			//#endif
 		}
 		if (this.bottomFrame != null ) {
@@ -681,30 +683,30 @@ public class FramedForm extends Form {
 			this.bottomFrame.relativeY = this.contentY + this.contentHeight;
 			int frameY = this.contentY + this.contentHeight;
 			//#if polish.css.bottomframe-height
-			int clipX = 0;
-			int clipY = 0;
-			int clipWidth = 0;
-			int clipHeight = 0;
-			if(this.bottomFrameHeight != null)
-			{
-				if (paintContentContainerLast) {
-					super.paintScreen(g);
-					paintContentContainerLast = false;
+				int clipX = 0;
+				int clipY = 0;
+				int clipWidth = 0;
+				int clipHeight = 0;
+				if(this.bottomFrameHeight != null)
+				{
+					if (paintContentContainerLast) {
+						super.paintScreen(g);
+						paintContentContainerLast = false;
+					}
+					clipX = g.getClipX();
+					clipY = g.getClipY();
+					clipWidth = g.getClipWidth();
+					clipHeight = g.getClipHeight();
+					int itemHeight = this.bottomFrame.itemHeight;
+					int height = this.bottomFrameHeight.getValue( itemHeight );
+					g.clipRect( clipX, frameY, clipWidth, height );
 				}
-				clipX = g.getClipX();
-				clipY = g.getClipY();
-				clipWidth = g.getClipWidth();
-				clipHeight = g.getClipHeight();
-				int itemHeight = this.bottomFrame.itemHeight;
-				int height = this.bottomFrameHeight.getValue( itemHeight );
-				g.clipRect( clipX, frameY, clipWidth, height );
-			}
 			//#endif
 			this.bottomFrame.paint( this.originalContentX, frameY, this.originalContentX, this.originalContentX + this.originalContentWidth, g );
 			//#if polish.css.bottomframe-height
-			if (this.bottomFrameHeight != null) {
-				g.setClip( clipX, clipY, clipWidth, clipHeight );
-			}
+				if (this.bottomFrameHeight != null) {
+					g.setClip( clipX, clipY, clipWidth, clipHeight );
+				}
 			//#endif
 		}
 		

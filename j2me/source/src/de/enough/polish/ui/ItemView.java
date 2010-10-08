@@ -448,6 +448,30 @@ public abstract class ItemView implements Serializable{
 	
 	/**
 	 * Handles the event when a pointer has been dragged to the specified position.
+	 * The default implementation adds a repaint region when handlePointerDragged(x,y) returned true.
+	 * You only need to implement this method when there are pointer events:
+	 * <pre>
+	 * //#if polish.hasPointerEvents
+	 * </pre>
+	 *    
+	 * @param x the x position of the event relative to the item's horizontal left edge
+	 * @param y the y position of the event relative to the item's vertical top edge
+	 * @param repaintRegion the repaint region into which the repaint area is marked when the event is handled
+	 * @return true when the pressing of the pointer was actually handled by this item.
+	 * @see #handlePointerDragged(int, int)
+	 * @see Item#addRepaintArea(ClippingRegion)
+	 */
+	public boolean handlePointerDragged(int x, int y, ClippingRegion repaintRegion)
+	{
+		if (handlePointerDragged(x, y)) {
+			this.parentItem.addRepaintArea(repaintRegion);
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Handles the event when a pointer has been dragged to the specified position.
 	 * The default implementation just returns false.
 	 * You only need to implement this method when there are pointer events:
 	 * <pre>
