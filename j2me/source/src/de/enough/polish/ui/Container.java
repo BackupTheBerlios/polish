@@ -3191,7 +3191,6 @@ public class Container extends Item {
 		//#debug
 		System.out.println("Container.handlePointerPressed(" + relX + ", " + relY + ") for " + this );
 		//System.out.println("Container.handlePointerPressed( x=" + x + ", y=" + y + "): adjustedY=" + (y - (this.yOffset  + this.marginTop + this.paddingTop )) );
-		this.isScrolling = false;
 		// an item within this container was selected:
 		this.lastPointerPressY = relY;
 		this.lastPointerPressYOffset = getScrollYOffset();
@@ -3367,6 +3366,7 @@ public class Container extends Item {
 		
 		Item item = this.focusedItem;
 		if (this.enableScrolling) {
+			this.isScrolling = false;
 			int scrollDiff = Math.abs(getScrollYOffset() - this.lastPointerPressYOffset);
 			if ( scrollDiff > Display.getScreenHeight()/10  ||  handlePointerScrollReleased(relX, relY) ) {
 				// we have scrolling in the meantime
