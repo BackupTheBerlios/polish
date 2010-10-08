@@ -40,6 +40,7 @@ import de.enough.polish.event.EventManager;
 import de.enough.polish.event.UiEventListener;
 import de.enough.polish.ui.backgrounds.TranslucentSimpleBackground;
 import de.enough.polish.util.ArrayList;
+import de.enough.polish.util.DeviceControl;
 import de.enough.polish.util.Locale;
 
 //#ifdef polish.Screen.imports:defined
@@ -5304,7 +5305,7 @@ implements UiElement, Animatable
 		}
 		//#if polish.css.portrait-style || polish.css.landscape-style
 		Style newStyle = null;
-		if (width > height) {
+		if ((width > height) && !(DeviceControl.isSoftKeyboardShown())) {
 			if (this.landscapeStyle != null && this.style != this.landscapeStyle) {
 				newStyle = this.landscapeStyle;
 			}
