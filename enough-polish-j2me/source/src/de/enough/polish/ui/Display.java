@@ -626,7 +626,12 @@ public class Display
 		private int bbMaxScreenHeight;
 		private int bbMinScreenHeight = Integer.MAX_VALUE;
 	//#endif
+		
+	//#if polish.hasPointerEvents
     private int inputMethod = INPUT_METHOD_KEY;
+    //#else
+    //# private int inputMethod = INPUT_METHOD_TOUCH;
+    //#endif
 
 	private Displayable nextOrCurrentDisplayable;
 	private boolean emitNotifyOnUserEvent;
