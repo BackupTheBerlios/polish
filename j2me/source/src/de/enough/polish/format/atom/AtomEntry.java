@@ -74,8 +74,10 @@ implements Externalizable
 		this.title = node.getChildText("title");
 		
 		XmlDomNode sourceNode = node.getChild("source");
-		this.sourceId = sourceNode.getChildText("id");
-		this.sourceTitle = sourceNode.getChildText("title");
+		if (sourceNode != null) {
+			this.sourceId = sourceNode.getChildText("id");
+			this.sourceTitle = sourceNode.getChildText("title");
+		}
 		
 		this.updatedString = node.getChildText("updated");
 		this.summary = node.getChildText("summary");
