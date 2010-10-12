@@ -538,12 +538,12 @@ public class Display
     /**
      * the input method identifier for touch
      */
-    public static final int INPUT_METHOD_TOUCH = 0x00;
+    public static final int INPUT_METHOD_TOUCH = 0;
     
     /**
      * the input method identifier for keys
      */
-    public static final int INPUT_METHOD_KEY= 0x01;
+    public static final int INPUT_METHOD_KEY= 1;
     
 	private static Display instance;
 	
@@ -2171,6 +2171,7 @@ public class Display
 	 * @return true when the event was handled
 	 */
 	public boolean handlePointerTouchDown( int x, int y ) {
+		setInputMethod(INPUT_METHOD_TOUCH);
 		if (this.emitNotifyOnUserEvent) {
 			this.emitNotifyOnUserEvent = false;
 			synchronized (this) {
@@ -2862,8 +2863,11 @@ public class Display
 	
 
     /**
-     * Returns the current input method
+     * Determines the current input method.
+     * When the user's last action was using keys, INPUT_METHOD_KEY is returned. When the last action was a pointer event, INPUT_METHOD_TOUCH is returned.
      * @return the current input method
+     * @see #INPUT_METHOD_KEY
+     * @see #INPUT_METHOD_TOUCH
      */
     public int getInputMethod() {
     	return this.inputMethod; 
@@ -2872,6 +2876,8 @@ public class Display
     /**
      * Sets the current input method
      * @param inputMethod the current input method
+     * @see #INPUT_METHOD_KEY
+     * @see #INPUT_METHOD_TOUCH
      */
     private void setInputMethod(int inputMethod) {
     	//#debug debug
