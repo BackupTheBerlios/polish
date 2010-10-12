@@ -124,6 +124,9 @@ public class Container extends Item {
 	//#if polish.css.focus-all-style
 		protected Style focusAllStyle;
 	//#endif
+	//#if polish.css.press-all
+		private boolean isPressAllChildren;
+	//#endif
 	private boolean isIgnoreMargins;
 	//private int availableContentWidth;
 	//#if polish.css.show-delay
@@ -2435,6 +2438,7 @@ public class Container extends Item {
 				this.focusAllStyle = focusAllStyleObj;
 			}
 		//#endif
+			
 		//#ifdef polish.css.view-type
 //			ContainerView viewType =  (ContainerView) style.getObjectProperty("view-type");
 //			if (this instanceof ChoiceGroup) {
@@ -2496,7 +2500,14 @@ public class Container extends Item {
 				this.isFocusAllChildren = focusAllBool.booleanValue();
 			}
 		//#endif
-	
+
+		//#if polish.css.press-all
+			Boolean pressAllBool = style.getBooleanProperty("press-all");
+			if (pressAllBool != null) {
+				this.isPressAllChildren = pressAllBool.booleanValue();
+			}
+		//#endif
+
 		//#if polish.css.change-styles
 			String changeStyles = style.getProperty("change-styles");
 			if (changeStyles != null) {
@@ -4301,6 +4312,46 @@ public class Container extends Item {
 		return item;
 	}
 
+	//#if polish.css.press-all
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#notifyItemPressedStart()
+	 */
+	public boolean notifyItemPressedStart() {
+		boolean handled = super.notifyItemPressedStart();
+		if (this.isPressAllChildren) {
+			Object[] children = this.itemsList.getInternalArray();
+			for (int i = 0; i < children.length; i++) {
+				Item child = (Item) children[i];
+				if (child == null) {
+					break;
+				}
+				child.notifyItemPressedStart();
+			}			
+		}
+		return handled;
+	}
+	//#endif
+
+
+	//#if polish.css.press-all
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#notifyItemPressedEnd()
+	 */
+	public void notifyItemPressedEnd() {
+		super.notifyItemPressedEnd();
+		if (this.isPressAllChildren) {
+			Object[] children = this.itemsList.getInternalArray();
+			for (int i = 0; i < children.length; i++) {
+				Item child = (Item) children[i];
+				if (child == null) {
+					break;
+				}
+				child.notifyItemPressedEnd();
+			}
+		}
+	}
+	//#endif
+	
 
 
 

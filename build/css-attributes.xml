@@ -4303,7 +4303,7 @@
 		name="focus-all"
 		type="boolean"
 		appliesTo="Container,FakeContainerCustomItem"
-		description="Focusses all children items with their specific :hover style when the parent container is focused, even when such item's are not interactive."
+		description="Focusses all children items with their specific :hover style when the parent container is focused, even when those items are not interactive."
 		default="false"
 		id="359"
 		since="J2ME Polish 2.1"
@@ -5371,11 +5371,22 @@
 		name="ignore-leading"
 		type="boolean"
 		appliesTo="StringItem"
-		description="Defines whether the StringItem should draw the text without the leading of the font in the first line "
+		description="Defines whether the StringItem should draw the text without the leading of the font in the first line on BlackBerry devices."
 		default="false"
 		id="469"
 		since="J2ME Polish 2.2"
 	/>
+	
+	<attribute
+		name="press-all"
+		type="boolean"
+		appliesTo="Container,FakeContainerCustomItem"
+		description="Presses all children items with their specific :pressed style when the parent container is pressed even when those items are not interactive."
+		default="false"
+		id="470"
+		since="J2ME Polish 2.2"
+	/>
+	
 	
 <!--
 	<attribute
