@@ -47,6 +47,15 @@ public class ToStringHelper {
 	}
 	
 	/**
+	 * Creates anew ToStringHelper instance
+	 * @param object the object
+	 */
+	public ToStringHelper(Object object) {
+		// resolve class and use as name
+		this(object.getClass().getName());
+	}
+	
+	/**
 	 * Creates a new ToStringHelper instance
 	 * @param name the name to use
 	 */
