@@ -29,11 +29,6 @@ public class StorageIndex implements Comparator {
 	final int maxCacheSize;
 
 	/**
-	 * the threshold size
-	 */
-	final int threshold;
-
-	/**
 	 * is the StorageIndex prepared ?
 	 */
 	boolean isPrepared;
@@ -46,7 +41,6 @@ public class StorageIndex implements Comparator {
 	 */
 	public StorageIndex(final int maxCacheSize) {
 		this.maxCacheSize = maxCacheSize;
-		this.threshold = ((this.maxCacheSize / 3) * 2);
 		this.index = new ArrayList();
 		this.isPrepared = false;
 	}
@@ -208,7 +202,7 @@ public class StorageIndex implements Comparator {
 	 *         otherwise false
 	 */
 	public boolean isCleanNeeded() {
-		return getCacheSize() > this.threshold;
+		return getCacheSize() > this.maxCacheSize;
 	}
 
 	/*
@@ -269,9 +263,11 @@ public class StorageIndex implements Comparator {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return ToStringHelper.createInstance("StorageIndex").set("cacheSize",
-				this.cacheSize).set("maxCacheSize", this.maxCacheSize).set(
-				"threshold", this.threshold).set("isPrepared", this.isPrepared)
-				.set("index", this.index).toString();
+		return ToStringHelper.createInstance("StorageIndex")
+				.set("cacheSize",this.cacheSize)
+				.set("maxCacheSize", this.maxCacheSize)
+				.set("isPrepared", this.isPrepared)
+				.set("index", this.index)
+				.toString();
 	}
 }
