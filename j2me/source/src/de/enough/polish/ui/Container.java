@@ -1346,8 +1346,14 @@ public class Container extends Item {
 		synchronized (this.itemsList) {
 			int myContentWidth = 0;
 			int myContentHeight = 0;
-			Item[] myItems = (Item[]) this.itemsList.toArray( new Item[ this.itemsList.size() ]);
-			this.containerItems = myItems;
+			Item[] myItems;
+			if (this.containerItems == null || this.containerItems.length != this.itemsList.size()) {
+				myItems = (Item[]) this.itemsList.toArray( new Item[ this.itemsList.size() ]);
+				this.containerItems = myItems;
+			} else {
+				myItems = (Item[]) this.itemsList.toArray(this.containerItems);
+			}
+			
 			//#if (polish.css.child-style-first || polish.css.child-style-last) && polish.css.child-style
 				if (this.style != null && this.childStyle != null) {
 					Style firstStyle = null;

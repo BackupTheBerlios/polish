@@ -34,11 +34,7 @@ import de.enough.polish.util.TextUtil;
 
 /**
  * <p>Is responsible for visual representation and interpretation of user-input.</p>
- * <p>Copyright Enough Software 2004 - 2007 - 2009</p>
- * <pre>
- * history
- *        Oct 27, 2004 - rob creation
- * </pre>
+ * <p>Copyright Enough Software 2004 - 2010</p>
  * @author Robert Virkus, robert@enough.de
  */
 public class ContainerView 
@@ -442,6 +438,12 @@ extends ItemView
 			}
 		//#endif
 		
+			
+		/*
+		 * Init items in a table layout with columns and rows.
+		 * This only allows simple layouts, complex layouts with colspan AND rowspan is handled by the TableItem.
+		 */
+			
 		//#ifdef tmp.useTable
 			this.isHorizontal = true;
 			// columns are used
@@ -569,8 +571,7 @@ extends ItemView
 				if (reinitInAnyCase || width > availColWidth || !item.isInitialized) {
 					width = item.getItemWidth( availColWidth, availColWidth, availHeight );
 				}
-				//System.out.println("got item width");
-				int height = item.itemHeight; //getItemHeight( availColWidth, availColWidth, availHeight );
+				int height = item.itemHeight; //getItemHeight( availColWidth, availColWidth, availHeight ) is not needed as it is initialized above if required;
 				if (item.appearanceMode != Item.PLAIN) {
 					hasFocusableItem = true;
 				}
