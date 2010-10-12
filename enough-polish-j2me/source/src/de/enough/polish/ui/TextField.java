@@ -1986,16 +1986,25 @@ public class TextField extends StringItem
 			}else if((bbStyle & BasicEditField.FILTER_EMAIL) == BasicEditField.FILTER_EMAIL) {
                 this.editField = new PolishEmailAddressEditField( null, getString(), max, bbStyle );
             } else {
-            	    if ( "false".equals(getStyle().getProperty("text-wrap")) )
-            		{
-            			this.editField = new PolishOneLineField( null, getString(), max, bbStyle ); 
-            			getStyle().addAttribute("max-lines", new Integer(1));
-            			getStyle().addAttribute("max-height", new Dimension(getStyle().getFont().getHeight()));
+            	Style fieldStyle = getStyle();
+            	if (   (fieldStyle != null) 
+            		&& (fieldStyle.getBooleanProperty("text-wrap") != null) 
+            		&& (fieldStyle.getBooleanProperty("text-wrap").booleanValue() == false) 
+            	) {
+            		this.editField = new PolishOneLineField( null, getString(), max, bbStyle );
+            		//#if polish.css.max-lines
+            		fieldStyle.addAttribute("max-lines", new Integer(1));
+            		//#endif
+            		//#if polish.css.max-height
+            		if (fieldStyle.getFont() != null) {
+            			fieldStyle.addAttribute("max-height", new Dimension(fieldStyle.getFont().getHeight()));
             		}
-            		else
-            		{
-            			this.editField = new PolishEditField(null, getString(), max, bbStyle);
-            		}
+            		//#endif
+            	}
+            	else
+            	{
+            		this.editField = new PolishEditField(null, getString(), max, bbStyle);
+            	}
             } 
 
 			if (this.style != null) {
