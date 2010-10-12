@@ -225,7 +225,7 @@ public class BooleanEvaluator {
 	throws BuildException
 	{
 		//System.out.println("EvaluatingTerm: " + term);
-		// check for parenthesisses:
+		// check for parentheses:
 		if (term.indexOf('(') != -1) {
 			throw new BuildException(fileName + " line " + line 
 					+ ": invalid/additional parenthesis \"(\" in term [" + term 
