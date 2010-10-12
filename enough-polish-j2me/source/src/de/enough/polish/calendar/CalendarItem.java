@@ -336,7 +336,12 @@ public class CalendarItem extends TableItem
 			setSelectedCell( selCol, selRow );
 		} else if (this.shownMonth.equalsMonth(this.originalDay)) {
 			col = getColumn(dayOfWeek);
-			int row = (col + this.shownMonth.getDay()) / 7 + 1;
+			int row;
+			if ( ((col + this.shownMonth.getDay()) % 7) != 0 ) {
+				row = (col + this.shownMonth.getDay()) / 7 + 1;
+			} else {
+				row = (col + this.shownMonth.getDay()) / 7;
+			}
 			forMonth.setDay( this.shownMonth.getDay() );
 			col = getColumn( forMonth.getDayOfWeek() );
 			setSelectedCell( col, row );
