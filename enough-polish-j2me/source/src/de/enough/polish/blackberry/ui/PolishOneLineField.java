@@ -25,32 +25,24 @@
  */
 package de.enough.polish.blackberry.ui;
 
-import de.enough.polish.ui.Style;
-import de.enough.polish.ui.StyleSheet;
-
+import net.rim.device.api.ui.FieldChangeListener;
 import net.rim.device.api.ui.Graphics;
-import net.rim.device.api.ui.component.BasicEditField;
 import net.rim.device.api.ui.component.EditField;
-import net.rim.device.api.system.Display;
-
-import net.rim.device.api.ui.* ;
-import net.rim.device.api.ui.component.*;
-import net.rim.device.api.ui.container.*;
-import net.rim.device.api.system.* ;
+import net.rim.device.api.ui.container.VerticalFieldManager;
+import de.enough.polish.ui.Style;
 
 
 public class PolishOneLineField extends VerticalFieldManager implements PolishTextField, AccessibleField {
         
-    private PolishEditField _editField;
+    private PolishEditField editField;
     public boolean processKeyEvents = true;
-    private int fontColor;
+    public boolean ignoreLocalSetCurrentLocation = false;
     
     public PolishEditField getEditField()
     {
-    	return _editField;
+    	return this.editField;
     }
     
-    public boolean ignoreLocalSetCurrentLocation = false;
     
          
     public void moveTo(int x, int y)
@@ -61,9 +53,9 @@ public class PolishOneLineField extends VerticalFieldManager implements PolishTe
     public void sublayout(int width, int height) 
     {        
         super.sublayout(width,height);   
-        if ( _editField != null )
+        if ( this.editField != null )
         {     
-            int textLength = _editField.getFont().getAdvance( _editField.getText() ) ;
+            int textLength = this.editField.getFont().getAdvance( this.editField.getText() ) ;
             // Leave some room to see the cursor at the end and to prevent scroll bugs
             setVirtualExtent(textLength + width / 2 ,height);         }
     }
@@ -76,9 +68,9 @@ public class PolishOneLineField extends VerticalFieldManager implements PolishTe
     public PolishOneLineField(String label, String text, int numChars, long style) {
 	    super(HORIZONTAL_SCROLL | NO_VERTICAL_SCROLL);
 	    //#if ${ version(polish.JavaPlatform, BlackBerry) } >= ${version(6.0)}
-	    setScrollingInertial(false);
+	    	setScrollingInertial(false);
 	    //#endif
-	    _editField = new PolishEditField(label, "", numChars, style | EditField.NO_NEWLINE | EditField.EDITABLE | EditField.NO_COMPLEX_INPUT | EditField.NO_LEARNING | EditField.NO_EDIT_MODE_INPUT ) 
+	    this.editField = new PolishEditField(label, "", numChars, style | EditField.NO_NEWLINE | EditField.EDITABLE | EditField.NO_COMPLEX_INPUT | EditField.NO_LEARNING | EditField.NO_EDIT_MODE_INPUT ) 
 	    {
 	        protected boolean keyChar(char key, int status, int time)
 	        {
@@ -135,28 +127,28 @@ public class PolishOneLineField extends VerticalFieldManager implements PolishTe
 	        
 	        public void onFocus(int direction)
 	        {              
-	        	ignoreLocalSetCurrentLocation = false;
+	        	PolishOneLineField.this.ignoreLocalSetCurrentLocation = false;
 	            super.onFocus(direction);
 	        }
 	        
 	    };
 	    
-	    add(_editField);
+	    add(this.editField);
     }
 
 	public String getText() 
 	{
-		return _editField.getText();
+		return this.editField.getText();
 	}
 	        
 	public void setText(String text) 
 	{
-	    _editField.setText(text);
+	    this.editField.setText(text);
 	}
 
     public void setStyle(Style style) 
     {
-           _editField.setStyle(style);            
+           this.editField.setStyle(style);            
     }
 
     
@@ -178,7 +170,7 @@ public class PolishOneLineField extends VerticalFieldManager implements PolishTe
     //#if ${ version(polish.JavaPlatform, BlackBerry) } >= ${version(6.0)}
     public void setCurrentLocation(int x, int y)
     {
-        if ( ignoreLocalSetCurrentLocation )
+        if ( this.ignoreLocalSetCurrentLocation )
         {
             return;
         }
@@ -192,12 +184,12 @@ public class PolishOneLineField extends VerticalFieldManager implements PolishTe
     
     protected void onUnfocus()
     {                  
-    	ignoreLocalSetCurrentLocation = true;               
+    	this.ignoreLocalSetCurrentLocation = true;               
         setCursorPosition(0);   
         //#if ${ version(polish.JavaPlatform, BlackBerry) } >= ${version(6.0)}
-        super.setCurrentLocation(0,0); 
+        	super.setCurrentLocation(0,0); 
         //#else
-        super.setHorizontalScroll(0);
+        	super.setHorizontalScroll(0);
         //#endif
         super.onUnfocus(); 
     }
@@ -216,22 +208,22 @@ public class PolishOneLineField extends VerticalFieldManager implements PolishTe
     }
 
     public void setCursorPosition(int pos) {
-            _editField.setCursorPosition(pos);
+            this.editField.setCursorPosition(pos);
     }
 
     public int getInsertPositionOffset() {
-            return _editField.getCursorPosition();
+            return this.editField.getCursorPosition();
     }
     
     public void setChangeListener( FieldChangeListener listener )
     {
         super.setChangeListener(listener);
-        _editField.setChangeListener(listener);
+        this.editField.setChangeListener(listener);
     }
 
 
     public int getCursorPosition() {
-            return _editField.getCursorPosition();
+            return this.editField.getCursorPosition();
     }
     
     public void doLayout( int width, int height) 
@@ -241,7 +233,7 @@ public class PolishOneLineField extends VerticalFieldManager implements PolishTe
 
     //#if ${ version(polish.JavaPlatform, BlackBerry) } >= ${version(6.0)}
     public boolean needsNavigationFix() {
-            return _editField.needsNavigationFix() ;               
+            return this.editField.needsNavigationFix() ;               
     }
     //#endif
 
