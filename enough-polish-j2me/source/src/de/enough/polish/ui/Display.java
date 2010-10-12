@@ -2874,6 +2874,15 @@ public class Display
     }
     
     /**
+     * Returns true if the given input method equals the current input method
+     * @param inputMethod the input method
+     * @return true if the given input method equals the current input method otherwise false
+     */
+    public boolean isInputMethod(int inputMethod) {
+    	return this.inputMethod == inputMethod;
+    }
+    
+    /**
      * Sets the current input method
      * @param inputMethod the current input method
      * @see #INPUT_METHOD_KEY
