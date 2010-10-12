@@ -1350,7 +1350,7 @@ public abstract class BaseScreen
     }
     //#endif
     
-    //#if ${ version(polish.JavaPlatform, BlackBerry) } >= ${version(6.0)}
+    //#if polish.JavaPlatform >= BlackBerry/6.0
     protected boolean focusChangeNeeded(Field field) {
     	if(field instanceof PolishTextField) {
     		return ((PolishEditField)field).needsNavigationFix();
@@ -1381,7 +1381,7 @@ public abstract class BaseScreen
         		   }
                    if (processed) {
                 	   if (focusChangeDetected(screen)
-               			   //#if ${ version(polish.JavaPlatform, BlackBerry) } >= ${version(6.0)}
+               			   //#if polish.JavaPlatform >= BlackBerry/6.0
                   			|| focusChangeNeeded(this.currentItem._bbField)
                   			//#endif   
                 	   		) {

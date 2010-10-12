@@ -66,7 +66,7 @@ public interface PolishTextField {
 
 	int getCursorPosition();
 
-	//#if ${ version(polish.JavaPlatform, BlackBerry) } >= ${version(6.0)}
+	//#if polish.JavaPlatform >= BlackBerry/6.0
 	public boolean needsNavigationFix();
 	//#endif
 

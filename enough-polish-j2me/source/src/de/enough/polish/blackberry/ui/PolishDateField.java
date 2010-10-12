@@ -64,7 +64,7 @@ implements AccessibleField
 	private int fontColor;
 	private int maxLayoutHeight;
 	private int maxLayoutWidth;
-	//#if ${ version(polish.JavaPlatform, BlackBerry) } >= ${version(4.6)}
+	//#if polish.JavaPlatform >= BlackBerry/4.6
 		private BackgroundWrapper backgroundWrapper;
 	//#endif
 	private final XYRect xyFocusRect;
@@ -221,7 +221,7 @@ implements AccessibleField
 			System.out.println("Layout error: " + e );
 		}
 		this.fontColor = style.getFontColor();
-		//#if ${ version(polish.JavaPlatform, BlackBerry) } >= ${version(4.6)}
+		//#if polish.JavaPlatform >= BlackBerry/4.6
 			if (style.background != null) {
 				if (this.backgroundWrapper == null) {
 					this.backgroundWrapper = new BackgroundWrapper( style.background );

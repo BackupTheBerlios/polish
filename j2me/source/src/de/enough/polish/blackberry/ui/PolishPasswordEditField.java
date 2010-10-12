@@ -37,7 +37,7 @@ public class PolishPasswordEditField extends PasswordEditField implements Polish
         private boolean isFocused;
         public boolean processKeyEvents = true;
 		private int fontColor;
-		//#if ${ version(polish.JavaPlatform, BlackBerry) } >= ${version(4.6)}
+		//#if polish.JavaPlatform >= BlackBerry/4.6
 			private BackgroundWrapper backgroundWrapper;
 		//#endif
 
@@ -114,7 +114,7 @@ public class PolishPasswordEditField extends PasswordEditField implements Polish
 				System.out.println("Layout error: " + e );
 			}
 			this.fontColor = style.getFontColor();
-			//#if ${ version(polish.JavaPlatform, BlackBerry) } >= ${version(4.6)}
+			//#if polish.JavaPlatform >= BlackBerry/4.6
 				if (style.background != null) {
 					if (this.backgroundWrapper == null) {
 						this.backgroundWrapper = new BackgroundWrapper( style.background );
@@ -131,7 +131,7 @@ public class PolishPasswordEditField extends PasswordEditField implements Polish
 			//#endif
 		}
 
-		//#if ${ version(polish.JavaPlatform, BlackBerry) } >= ${version(6.0)}
+		//#if polish.JavaPlatform >= BlackBerry/6.0
 		boolean needsCursorFix = false;
 		boolean needsNavigationFix = false;
 		

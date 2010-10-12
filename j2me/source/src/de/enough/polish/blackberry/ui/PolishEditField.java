@@ -159,7 +159,7 @@ implements PolishTextField {
 		//#endif
 	}
 	
-	//#if ${ version(polish.JavaPlatform, BlackBerry) } >= ${version(6.0)}
+	//#if polish.JavaPlatform >= BlackBerry/6.0
 	boolean needsCursorFix = false;
 	boolean needsNavigationFix = false;
 	

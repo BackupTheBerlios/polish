@@ -67,7 +67,7 @@ public class PolishOneLineField extends VerticalFieldManager implements PolishTe
 
     public PolishOneLineField(String label, String text, int numChars, long style) {
 	    super(HORIZONTAL_SCROLL | NO_VERTICAL_SCROLL);
-	    //#if ${ version(polish.JavaPlatform, BlackBerry) } >= ${version(6.0)}
+	    //#if polish.JavaPlatform >= BlackBerry/6.0
 	    	setScrollingInertial(false);
 	    //#endif
 	    this.editField = new PolishEditField(label, "", numChars, style | EditField.NO_NEWLINE | EditField.EDITABLE | EditField.NO_COMPLEX_INPUT | EditField.NO_LEARNING | EditField.NO_EDIT_MODE_INPUT ) 
@@ -167,7 +167,7 @@ public class PolishOneLineField extends VerticalFieldManager implements PolishTe
     	// Do nothing
     }
     
-    //#if ${ version(polish.JavaPlatform, BlackBerry) } >= ${version(6.0)}
+    //#if polish.JavaPlatform >= BlackBerry/6.0
     public void setCurrentLocation(int x, int y)
     {
         if ( this.ignoreLocalSetCurrentLocation )
@@ -186,7 +186,7 @@ public class PolishOneLineField extends VerticalFieldManager implements PolishTe
     {                  
     	this.ignoreLocalSetCurrentLocation = true;               
         setCursorPosition(0);   
-        //#if ${ version(polish.JavaPlatform, BlackBerry) } >= ${version(6.0)}
+        //#if polish.JavaPlatform >= BlackBerry/6.0
         	super.setCurrentLocation(0,0); 
         //#else
         	super.setHorizontalScroll(0);
@@ -231,7 +231,7 @@ public class PolishOneLineField extends VerticalFieldManager implements PolishTe
             layout(width, height);            
     }        
 
-    //#if ${ version(polish.JavaPlatform, BlackBerry) } >= ${version(6.0)}
+    //#if polish.JavaPlatform >= BlackBerry/6.0
     public boolean needsNavigationFix() {
             return this.editField.needsNavigationFix() ;               
     }

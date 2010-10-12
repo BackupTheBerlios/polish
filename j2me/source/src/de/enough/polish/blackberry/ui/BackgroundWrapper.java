@@ -1,4 +1,4 @@
-//#condition polish.blackberry && ${ version(polish.JavaPlatform, BlackBerry) } >= ${version(4.6)}
+//#condition polish.blackberry &&  polish.JavaPlatform >= BlackBerry/4.6
 /**
  * 
  */
