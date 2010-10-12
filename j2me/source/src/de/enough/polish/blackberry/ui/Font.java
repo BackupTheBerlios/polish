@@ -633,12 +633,13 @@ public final class Font extends Object
 		return this.descent;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
+	/**
+	 * Compares the size and style of this font with the specified font.
+	 * @param fnt the font used for comparison
+	 * @return true when the fonts have the same size and style.
 	 */
-	public boolean equals(Object arg0) {
-		Font font = (Font)arg0;
-		return (this.size == font.size && this.style == font.style);
+	public boolean isSimilarTo(Font fnt) {
+		return (this.size == fnt.size && this.style == fnt.style);
 	}
 	
 	
