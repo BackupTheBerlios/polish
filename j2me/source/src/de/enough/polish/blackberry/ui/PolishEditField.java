@@ -45,6 +45,8 @@ implements PolishTextField {
 	private boolean isFocused;
 	public boolean processKeyEvents = true;
 	private int fontColor;
+	private int oldX = 0;
+	private int oldY = 0;
 //	//#if ${polish.JavaPlatform} >= BlackBerry/4.6
 //	private BackgroundWrapper backgroundWrapper;
 //	//#endif
@@ -64,6 +66,17 @@ implements PolishTextField {
 		super.focusRemove();
 		this.isFocused = false;
 	}
+	
+    public void resetRoundRect()
+    {
+        if ( (this.isFocus() || this.isFocused) && !StyleSheet.currentScreen.isMenuOpened() )
+                {
+                    int cursorPosition = getCursorPosition();
+                    setCursorPosition(0);
+                    setCursorPosition(cursorPosition);      
+                    setFocus();
+            }
+        }
 
 	public void doLayout(int width, int height)
 	{
@@ -131,11 +144,18 @@ implements PolishTextField {
 
 	public void setFont(javax.microedition.lcdui.Font font, int textColor) {
 	}
-
-	public void setPaintPosition(int x, int y ) {
-		this.isFocused = true;
-		super.setPosition(x, y);
-	}
+	
+    public void setPaintPosition(int x, int y ) 
+    {
+            this.isFocused = true;
+            super.setPosition(x, y);
+            if ( x != this.oldX || y!= this.oldY )
+            {
+                resetRoundRect();
+                this.oldX = x;
+                this.oldY = y;
+            }
+    }
 
 
 	public int getInsertPositionOffset() {

@@ -37,13 +37,13 @@ public class PolishOneLineField extends VerticalFieldManager implements PolishTe
     private PolishEditField editField;
     public boolean processKeyEvents = true;
     public boolean ignoreLocalSetCurrentLocation = false;
+    int oldX = 0;
+    int oldY = 0;
     
     public PolishEditField getEditField()
     {
     	return this.editField;
-    }
-    
-    
+    }   
          
     public void moveTo(int x, int y)
     {
@@ -150,12 +150,17 @@ public class PolishOneLineField extends VerticalFieldManager implements PolishTe
     {
            this.editField.setStyle(style);            
     }
-
     
-    public void setPaintPosition(int x, int y)
+    public void setPaintPosition(int x, int y ) 
     {
-    	setPosition(x,y);
-    }              
+            super.setPosition(x, y);
+            if ( x != this.oldX || y!= this.oldY )
+            {
+                this.editField.resetRoundRect();
+                this.oldX = x;
+                this.oldY = y;
+            }
+    }               
             
     public void focusRemove()
     {
