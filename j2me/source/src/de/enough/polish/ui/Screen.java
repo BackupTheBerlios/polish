@@ -5304,16 +5304,18 @@ implements UiElement, Animatable
 			return;
 		}
 		//#if polish.css.portrait-style || polish.css.landscape-style
-		Style newStyle = null;
-		if ((width > height) && !(DeviceControl.isSoftKeyboardShown())) {
-			if (this.landscapeStyle != null && this.style != this.landscapeStyle) {
-				newStyle = this.landscapeStyle;
+		if (!DeviceControl.isSoftKeyboardShown()) {
+			Style newStyle = null;
+			if ((width > height)) {
+				if (this.landscapeStyle != null && this.style != this.landscapeStyle) {
+					newStyle = this.landscapeStyle;
+				}
+			} else if (this.portraitStyle != null && this.style != this.portraitStyle){
+				newStyle = this.portraitStyle;
 			}
-		} else if (this.portraitStyle != null && this.style != this.portraitStyle){
-			newStyle = this.portraitStyle;
-		}
-		if (newStyle != null) {
-			setStyle( newStyle );
+			if (newStyle != null) {
+				setStyle( newStyle );
+			}
 		}
 		//#endif
 		
