@@ -696,7 +696,7 @@ public class StringItem extends Item
 						if (isCenter) {
 							x = centerX - (lineWidth/2);
 						} else {
-							x = lineX + usedContentWidth - lineWidth;
+							x = rightBorder - lineWidth; // lineX + usedContentWidth - lineWidth; (the outcommented calculation results in misbehaving right aligment)
 						}
 					}
 					drawString( line, x, lineY, orientation, g );

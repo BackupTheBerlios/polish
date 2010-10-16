@@ -2600,6 +2600,20 @@ public abstract class Item implements UiElement, Animatable
 			}
 		//#endif
 			
+//			g.setColor(0xff0000);
+//			g.drawRect( x + this.contentX, y + this.contentY, this.contentWidth, this.contentHeight );
+//			g.drawLine( x + this.contentX, y + this.contentY, x + this.contentX + this.contentWidth, y + this.contentY + this.contentHeight );
+//			g.setColor(0xffFF00);
+//			g.drawRect( getAbsoluteX() + 1, getAbsoluteY() + 1, this.itemWidth - 2, this.itemHeight - 2);
+
+//			Item p = this.parent; xxx
+//			String start = "";
+//			while (p != null) {
+//				start += " ";
+//				p = p.parent;
+//			}
+//			System.out.println(start + "paint at x=" + x + ", contentX=" + this.contentX + ", leftBorder=" + leftBorder +", rightBorder=" + rightBorder + " of "  + this);
+			
 		//#debug ovidiu
 		Benchmark.startSmartTimer("0");
 			
@@ -2780,7 +2794,7 @@ public abstract class Item implements UiElement, Animatable
 		//#ifdef polish.css.after
 			rightBorder -= getAfterWidthWithPadding();
 		//#endif
-
+			
 		//System.out.println( this.style.name + ":  decreasing rightBorder by " + (this.marginRight + this.borderWidth + this.paddingRight));
 //		if ( this.isLayoutCenter  && availWidth > this.itemWidth) {
 //			int difference = (availWidth - this.itemWidth) >> 1;
@@ -2812,13 +2826,8 @@ public abstract class Item implements UiElement, Animatable
 			if (!this.includeLabel) {
 		//#endif
 				int backgroundX = x;
-				if (labelItem != null) { 
-					backgroundX += this.contentX - this.paddingLeft - this.marginLeft - getBorderWidthLeft();
-					if (this.isLayoutCenter) {
-						//TODO: what happens when having an animated background width?
-                        rightBorder = backgroundX + this.backgroundWidth - this.paddingRight - this.marginRight - getBorderWidthRight();
-                        leftBorder = x + this.contentX;
-					}
+				if (labelItem != null && this.useSingleRow) { 
+					backgroundX += labelItem.itemWidth;
 				}
 				paintBackgroundAndBorder(backgroundX, y, this.backgroundWidth, this.backgroundHeight, g);
 		//#if polish.css.include-label
@@ -2850,7 +2859,10 @@ public abstract class Item implements UiElement, Animatable
 		//#endif
 		//#ifdef polish.css.before
 			if (this.beforeImage != null) {
-				int beforeX = x;
+				int beforeX = origX + getBorderWidthLeft() + this.paddingLeft + this.marginLeft;
+				if (labelItem != null && this.useSingleRow) {
+					beforeX += labelItem.itemWidth;
+				}
 				int beforeY = y;
 				int yAdjust = this.beforeHeight - this.contentHeight;
 				if ( this.beforeHeight < this.contentHeight) {
@@ -2876,7 +2888,7 @@ public abstract class Item implements UiElement, Animatable
 				{
 					beforeX = rightBorder - (this.contentWidth + this.beforeWidth);
 				}
-				
+				//System.out.println("drawing before at " + beforeX + ", contentX=" + this.contentX + ", this=" + this);
 				g.drawImage(this.beforeImage, beforeX, beforeY, Graphics.TOP | Graphics.LEFT );
 				x += getBeforeWidthWithPadding();
 			}
@@ -2936,8 +2948,6 @@ public abstract class Item implements UiElement, Animatable
 			}
 		//#endif
 			
-//		g.setColor(0xffFF00);
-//		g.drawRect( getAbsoluteX() + 1, getAbsoluteY() + 1, this.itemWidth - 2, this.itemHeight - 2);
 //		if (this.parent != null) {
 //			g.setColor(0x00ff00);
 //			g.drawRect( this.parent.getAbsoluteX()  + this.parent.contentX + this.relativeX, this.parent.getAbsoluteY() + this.parent.contentY + this.relativeY, this.itemWidth, this.itemHeight);
@@ -3058,11 +3068,16 @@ public abstract class Item implements UiElement, Animatable
 		//#endif
 		
 		if ( this.background != null ) {
-			int bWidthL = getBorderWidthLeft();
-			int bWidthR = getBorderWidthRight();
-			int bWidthT = getBorderWidthTop();
-			int bWidthB = getBorderWidthBottom();
+			int bWidthL = 0;
+			int bWidthR = 0;
+			int bWidthT = 0;
+			int bWidthB = 0;
 			if ( this.border != null ) {
+				bWidthL = getBorderWidthLeft();
+				bWidthR = getBorderWidthRight();
+				bWidthT = getBorderWidthTop();
+				bWidthB = getBorderWidthBottom();
+				
 				x += bWidthL;
 				y += bWidthT;
 				width -= bWidthL + bWidthR;
@@ -3401,7 +3416,7 @@ public abstract class Item implements UiElement, Animatable
 						minWidth = availWidth;
 					}
 					int diff = minWidth - this.itemWidth;
-					this.itemWidth += diff;
+					setItemWidth( this.itemWidth + diff );
 					setContentWidth( this.contentWidth + diff );
 					cWidth = this.contentWidth;
 				}
@@ -3419,31 +3434,23 @@ public abstract class Item implements UiElement, Animatable
 			}
 		//#endif
 		
-		//#ifdef polish.css.before
-			if (cHeight < this.beforeHeight) {
-				cHeight = this.beforeHeight;
-			}
-		//#endif
-		//#ifdef polish.css.after
-			if (cHeight < this.afterHeight) {
-				cHeight = this.afterHeight;
-			}
-		//#endif
 		if ( this.isLayoutExpand ) {
 			if (cWidth < availableContentWidth) {
+				int iWidth = this.itemWidth;
 				if (
 					//#if polish.css.max-width
 						this.maximumWidth == null && 
 					//#endif
 					this.itemWidth + labelWidth <= availWidth && (this.label == null || !(this.label.isLayoutNewlineAfter() || isLayoutNewlineBefore()))) 
 				{
-					this.itemWidth += availableContentWidth - cWidth - labelWidth;
+					iWidth += availableContentWidth - cWidth - labelWidth;
 				} else {
-					this.itemWidth += availableContentWidth - cWidth;
+					iWidth += availableContentWidth - cWidth;
 				}
+				setItemWidth( iWidth );
 			}
 		} else if (this.itemWidth > availWidth) {
-			this.itemWidth = availWidth;
+			setItemWidth( availWidth );
 		}
 		if (this.itemWidth + labelWidth <= availWidth) {
 			// label and content fit on one row:
@@ -3456,7 +3463,7 @@ public abstract class Item implements UiElement, Animatable
 				}
 			}
 			if (this.useSingleRow && labelWidth > 0) {
-				this.itemWidth += labelWidth;
+				this.itemWidth += labelWidth; //TODO: when calling setItemWidth() here it will affect center and right layout items within a Container, but setting the variable directly is also not cool... 
 				this.contentX += labelWidth;
 				if ( cHeight + noneContentHeight < labelHeight ) {
 					cHeight = labelHeight - noneContentHeight;
@@ -3469,6 +3476,7 @@ public abstract class Item implements UiElement, Animatable
 		}
 		
 		int originalContentHeight = cHeight;
+
 		//#ifdef polish.css.height
 			if(this.cssHeight != null) {
 				setContentHeight( targetHeight );
@@ -3518,6 +3526,16 @@ public abstract class Item implements UiElement, Animatable
 				this.contentY += ( ch - originalContentHeight );
 			}
 		}
+		//#ifdef polish.css.before
+			if (cHeight < this.beforeHeight) {
+				cHeight = this.beforeHeight;
+			}
+		//#endif
+		//#ifdef polish.css.after
+			if (cHeight < this.afterHeight) {
+				cHeight = this.afterHeight;
+			}
+		//#endif
 		this.itemHeight = cHeight + noneContentHeight;
 		
 		if (this.useSingleRow) {
@@ -3552,8 +3570,9 @@ public abstract class Item implements UiElement, Animatable
 				contX = (availWidth - this.contentWidth);
 			}
 			if (contX > this.contentX) {
+				//System.out.println("init: changing contentX from " + contentX + " to " + contX);
 				this.contentX = contX;
-				this.itemWidth = availWidth;
+				setItemWidth( availWidth );
 			}
 		}
 		if (labelWidth > 0 && this.useSingleRow && labelHeight < this.itemHeight) {
@@ -5147,7 +5166,7 @@ public abstract class Item implements UiElement, Animatable
 //			absX += this.contentX;
 //		}
 		Item item = this.parent;
-		if (item != null && item.label == this) {
+		if (item != null && item.label == this && item.useSingleRow) {
 			// this is the label of another item
 			absX -= item.contentX;
 		}

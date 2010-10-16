@@ -1353,7 +1353,6 @@ public class Container extends Item {
 			} else {
 				myItems = (Item[]) this.itemsList.toArray(this.containerItems);
 			}
-			
 			//#if (polish.css.child-style-first || polish.css.child-style-last) && polish.css.child-style
 				if (this.style != null && this.childStyle != null) {
 					Style firstStyle = null;
@@ -1478,13 +1477,25 @@ public class Container extends Item {
 		
 			boolean isLayoutShrink = (this.layout & LAYOUT_SHRINK) == LAYOUT_SHRINK;
 			boolean hasFocusableItem = false;
-			int myContentStartX = Integer.MAX_VALUE;
-			int myContentEndX = Integer.MIN_VALUE;
 			int numberOfVerticalExpandItems = 0;
 			Item lastVerticalExpandItem = null;
 			int lastVerticalExpandItemIndex = 0;
+			boolean hasCenterOrRightItems = false;
+			boolean hasVerticalExpandItems = false;
 			for (int i = 0; i < myItems.length; i++) {
 				Item item = myItems[i];
+				if (item.isLayoutVerticalExpand()) {
+					hasVerticalExpandItems = true;
+					break;
+				}
+			}
+			for (int i = 0; i < myItems.length; i++) {
+				Item item = myItems[i];
+				if (hasVerticalExpandItems) {
+					// re-initialize items when we have vertical-expand items, so that relativeY and itemHeight is correctly calculated 
+					// with each run:
+					item.setInitialized(false);
+				}
 				//System.out.println("initalising " + item.getClass().getName() + ":" + i);
 				int width = item.getItemWidth( availWidth, availWidth, availHeight );
 				int height = item.itemHeight; // no need to call getItemHeight() since the item is now initialised...
@@ -1499,7 +1510,7 @@ public class Container extends Item {
 					numberOfVerticalExpandItems++;
 					lastVerticalExpandItem = item;
 					lastVerticalExpandItemIndex = i;
-				}
+				} 
 				if (item.appearanceMode != PLAIN) {
 					hasFocusableItem = true;
 				}
@@ -1537,26 +1548,12 @@ public class Container extends Item {
 					myContentWidth = width; 
 				}
 				item.relativeY = myContentHeight;
-				// the container layouts the items itself, items should not do layout work at all:
-//				if (item.isLayoutExpand) {
-//					item.relativeX = 0;
-//				} else 
-				if (item.isLayoutCenter) {
-					item.relativeX = (availWidth - width) / 2;
-					myContentWidth = availWidth;
-				} else if (item.isLayoutRight) {
-					item.relativeX = (availWidth - width);
-					myContentWidth = availWidth;
+				if (item.isLayoutCenter || item.isLayoutRight) {
+					hasCenterOrRightItems = true;
 				} else {
 					item.relativeX = 0;
 				}				
 
-				if (item.relativeX < myContentStartX ) {
-					myContentStartX = item.relativeX;
-				}
-				if (item.relativeX + width > myContentEndX ) {
-					myContentEndX = item.relativeX + width;
-				}
 				myContentHeight += height != 0 ? height + this.paddingVertical : 0;
 				//System.out.println("item.yTopPos=" + item.yTopPos);
 			} // cycling through all items
@@ -1573,23 +1570,22 @@ public class Container extends Item {
 					}
 				} else {
 					// okay, there are several items that would like to be expanded vertically:
+//					System.out.println("having " + numberOfVerticalExpandItems + ", diff: " + diff + "=>" + (diff / numberOfVerticalExpandItems) + "=>" + ((diff / numberOfVerticalExpandItems) * numberOfVerticalExpandItems));
 					diff = diff / numberOfVerticalExpandItems;
 					int relYAdjust = 0;
 					for (int i = 0; i < myItems.length; i++)
 					{
 						Item item = myItems[i];
+//						System.out.println("changing relativeY from " + item.relativeY + " to " + (item.relativeY + relYAdjust) + ", relYAdjust=" + relYAdjust + " for " + item );
 						item.relativeY +=  relYAdjust;
 						if (item.isLayoutVerticalExpand()) {
+//							System.out.println("changing itemHeight from " + item.itemHeight + " to " + (item.itemHeight + diff) + " for " + item);
 							item.setItemHeight(item.itemHeight + diff );
 							relYAdjust += diff;
 						}
 					}
 				}
 				myContentHeight = availHeight;
-			}
-			if (myContentEndX - myContentStartX > myContentWidth) {
-				// this can happen when there are different layouts like left and right within the same container:
-				myContentWidth = myContentEndX - myContentStartX;
 			}
 			if (this.minimumWidth != null && this.minimumWidth.getValue(firstLineWidth) > myContentWidth) {
 				myContentWidth = this.minimumWidth.getValue(firstLineWidth) - (getBorderWidthLeft() + getBorderWidthRight() + this.marginLeft + this.paddingLeft + this.marginRight + this.paddingRight);
@@ -1600,9 +1596,7 @@ public class Container extends Item {
 					{
 						Item item = myItems[i];
 						if (!item.isLayoutExpand && item.itemWidth < myContentWidth) {
-							item.isLayoutExpand = true;
-							item.init(myContentWidth, myContentWidth, availHeight);
-							item.isLayoutExpand = false;
+							item.setItemWidth( myContentWidth );
 						}
 					}
 				}
@@ -1622,40 +1616,37 @@ public class Container extends Item {
 					updateInternalPosition(item);
 					if (isLayoutShrink) {
 						//System.out.println("container has shrinking layout and contains focused item " + item);
-						item.setInitialized(false);
 						boolean doExpand = item.isLayoutExpand;
 						int width;
 						if (doExpand) {
+							item.setInitialized(false);
 							item.isLayoutExpand = false;
 							width = item.getItemWidth( availWidth, availWidth, availHeight );
 							item.setInitialized(false);
 							item.isLayoutExpand = true;
-						} else {
-							width = item.itemWidth;
-							if (item.isLayoutCenter) {
-								item.relativeX = (availWidth - width) / 2;
-								myContentWidth = availWidth;
-							} else if (item.isLayoutRight) {
-								item.relativeX = (availWidth - width);
-								myContentWidth = availWidth;
+							if (width > myContentWidth) {
+								myContentWidth = width;
 							}
-						}
-						if (width > myContentWidth) {
-							myContentWidth = width;
 						}
 						if ( this.minimumWidth != null && myContentWidth < this.minimumWidth.getValue(availWidth) ) {
 							myContentWidth = this.minimumWidth.getValue(availWidth);
 						}
 						if (doExpand) {
 							item.init(myContentWidth, myContentWidth, availHeight);
-							width = item.itemWidth;
-							if (item.isLayoutCenter) {
-								item.relativeX = (myContentWidth - width) / 2;
-							} else if (item.isLayoutRight) {
-								item.relativeX = (myContentWidth - width);
-							}
 						}
 						//myContentHeight += item.getItemHeight( lineWidth, lineWidth );
+					}
+				}
+			}
+			if (hasCenterOrRightItems) {
+				int width;
+				for (int i = 0; i < myItems.length; i++) {
+					Item item = myItems[i];
+					width = item.itemWidth;
+					if (item.isLayoutCenter) {
+						item.relativeX = (myContentWidth - width) / 2;
+					} else if (item.isLayoutRight) {
+						item.relativeX = (myContentWidth - width);
 					}
 				}
 			}
@@ -1753,6 +1744,35 @@ public class Container extends Item {
 		}
 	}
 	//#endif
+	
+	
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#setItemWidth(int)
+	 */
+	public void setItemWidth(int width) {
+		int myContentWidth = this.contentWidth + width - this.itemWidth;
+		super.setItemWidth(width);
+		//#ifdef tmp.supportViewType
+		if (this.containerView == null) {
+		//#endif
+			Item[] myItems = this.containerItems; 
+			if (myItems != null) {
+				for (int i = 0; i < myItems.length; i++) {
+					Item item = myItems[i];
+					width = item.itemWidth;
+					if (item.isLayoutCenter) {
+						item.relativeX = (myContentWidth - width) / 2;
+					} else if (item.isLayoutRight) {
+						item.relativeX = (myContentWidth - width);
+					}
+				}
+				
+			}
+		//#ifdef tmp.supportViewType
+		}
+		//#endif
+	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#paintContent(int, int, int, int, javax.microedition.lcdui.Graphics)
@@ -1805,10 +1825,6 @@ public class Container extends Item {
 			} else {
 		//#endif
 			Item[] myItems = this.containerItems;
-			if (!(this.isLayoutCenter || this.isLayoutRight)) {
-				// adjust the right border:
-				rightBorder = leftBorder + this.contentWidth;
-			}
 			int startY = g.getClipY();
 			int endY = startY + g.getClipHeight();
 			Item focItem = this.focusedItem;
