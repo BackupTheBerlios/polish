@@ -3269,7 +3269,10 @@ public class Container extends Item {
 						item.relativeX = this.contentWidth - item.itemWidth;
 					}
 				}
+				notifyItemPressedStart();
 				return true;
+			} else if (item.isPressed) {
+				notifyItemPressedStart();
 			}
 		}
 		//#ifdef tmp.supportViewType
@@ -3277,13 +3280,14 @@ public class Container extends Item {
 				relX += viewXOffset;
 				if ( contView.handlePointerPressed(relX + this.contentX, relY + this.contentY) ) {
 					//System.out.println("ContainerView " + contView + " consumed pointer press event");
+					notifyItemPressedStart();
 					return true;
 				}
 				relX -= viewXOffset;
 			}
 			if (!isInItemArea(origRelX, origRelY - this.yOffset) || (item != null && item.isInItemArea(relX - item.relativeX, relY - item.relativeY )) ) {
 				//System.out.println("Container.handlePointerPressed(): out of range, relativeX=" + this.relativeX + ", relativeY="  + this.relativeY + ", contentHeight=" + this.contentHeight );
-				return this.defaultCommand != null && super.handlePointerPressed(origRelX, origRelY);
+				return (this.defaultCommand != null) && super.handlePointerPressed(origRelX, origRelY);
 			}
 		//#else
 			if (!isInItemArea(origRelX, origRelY) || (item != null && item.isInItemArea(relX - item.relativeX, relY - item.relativeY )) ) {
@@ -3295,7 +3299,7 @@ public class Container extends Item {
 		if ( ((origRelY < 0) && (scr == null || origRelY + this.relativeY - scr.contentY < 0)) 
 				|| (this.enableScrolling && origRelY > this.scrollHeight) 
 		){
-			return this.defaultCommand != null && super.handlePointerPressed(origRelX, origRelY);
+			return (this.defaultCommand != null) && super.handlePointerPressed(origRelX, origRelY);
 		}
 		Item nextItem = getChildAt( origRelX, origRelY );
 		if (nextItem != null && nextItem != item) {
@@ -3312,6 +3316,7 @@ public class Container extends Item {
 				this.autoFocusEnabled = true;
 				this.autoFocusIndex = index;
 			}
+			notifyItemPressedStart();
 			return true;			
 
 		}
@@ -3341,7 +3346,7 @@ public class Container extends Item {
 //			}
 //			return true;			
 //		}
-		return this.defaultCommand != null && super.handlePointerPressed(origRelX, origRelY);
+		return (this.defaultCommand != null) && super.handlePointerPressed(origRelX, origRelY);
 	}
 	//#endif
 	
@@ -3469,6 +3474,9 @@ public class Container extends Item {
 			if (contView != null) {
 				if (contView.handlePointerReleased(relX + this.contentX, relY + this.contentY)) {
 					//System.out.println("ContainerView consumed pointer release event " + contView);
+					if (this.isPressed) {
+						notifyItemPressedEnd();
+					}
 					return true;
 				}
 				viewXOffset = contView.getScrollXOffset(); 
@@ -3502,15 +3510,18 @@ public class Container extends Item {
 						item.relativeX = this.contentWidth - item.itemWidth;
 					}
 				}
+				if (this.isPressed) {
+					notifyItemPressedEnd();
+				}
 				return true;
 			} else if ( item.isInItemArea(relX - item.relativeX, relY - item.relativeY )) {
 				//#debug
 				System.out.println("pointerReleased not handled by focused item but within that item's area. Item=" + item + ", container=" + this);
-				return this.defaultCommand != null && super.handlePointerReleased(origRelX, origRelY);
+				return (this.defaultCommand != null) && super.handlePointerReleased(origRelX, origRelY);
 			}
 		}
 		if (!isInItemArea(origRelX, origRelY)) {
-			return this.defaultCommand != null && super.handlePointerReleased(origRelX, origRelY);
+			return (this.defaultCommand != null) && super.handlePointerReleased(origRelX, origRelY);
 		}
 		Item nextItem = getChildAt(origRelX, origRelY);
 		if (nextItem != null && nextItem != item) {
@@ -3518,6 +3529,9 @@ public class Container extends Item {
 			int itemRelX = relX - item.relativeX;
 			int itemRelY = relY - item.relativeY;
 			item.handlePointerReleased( itemRelX , itemRelY );
+			if (this.isPressed) {
+				notifyItemPressedEnd();
+			}
 			return true;			
 		}
 //		Item[] myItems = getItems();
@@ -3540,7 +3554,7 @@ public class Container extends Item {
 //			item.handlePointerReleased( itemRelX , itemRelY );
 //			return true;			
 //		}
-		return this.defaultCommand != null && super.handlePointerReleased(origRelX, origRelY);
+		return (this.defaultCommand != null) && super.handlePointerReleased(origRelX, origRelY);
 	}
 	//#endif
 	
