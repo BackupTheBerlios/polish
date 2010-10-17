@@ -257,7 +257,7 @@ public class BooleanEvaluator {
 			} else {
 				if (this.environment != null) {
 					//System.out.println("BooleanEvaluator: checking symbol " + symbol + " by environment");
-					symbolResult = this.environment.hasSymbol( symbol ) || "true".equals( this.environment.getVariable(symbol));
+					symbolResult = this.environment.hasSymbol( symbol ); // this is done by Envrionment.hasSymbol already: || "true".equals( this.environment.getVariable(symbol));
 				} else if (this.device != null) {
 					symbolResult = this.device.hasFeature( symbol )  || "true".equals( this.device.getCapability(symbol) );
 				} else {
@@ -455,6 +455,7 @@ public class BooleanEvaluator {
 					+ "] after symbol [" + symbol + "] in term [" + term 
 					+ "] (both symbol and term might be simplified)." ); 
 		}
+		// System.out.println("term result=" + result);
 		return result;
 	}
 	
