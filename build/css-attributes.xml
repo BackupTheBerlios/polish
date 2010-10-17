@@ -5387,6 +5387,15 @@
 		since="J2ME Polish 2.2"
 	/>
 	
+	<attribute
+		name="bounce"
+		type="boolean"
+		appliesTo="Container,FakeContainerCustomItem"
+		description="Allows to switch on the bouncing drag effect for a specific container. If you want to switch off bouncing for all containers set the preprocessing variable &quot;polish.Container.ScrollBounce&quot; to &quot;false&quot;."
+		default="true"
+		id="471"
+		since="J2ME Polish 2.2"
+	/>
 	
 <!--
 	<attribute

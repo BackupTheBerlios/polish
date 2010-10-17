@@ -144,6 +144,13 @@ public class Container extends Item {
 	//#ifdef tmp.supportFocusItemsInVisibleContentArea
 		private boolean needsCheckItemInVisibleContent = false;
 	//#endif
+	private long lastAnimationTime;
+	private boolean isScrolling;
+	//#if polish.css.bounce && !(polish.Container.ScrollBounce:defined && polish.Container.ScrollBounce == false)
+		//#define tmp.checkBouncing
+		private boolean allowBouncing = true;
+	//#endif
+
 	
 	/**
 	 * Creates a new empty container.
@@ -2501,6 +2508,14 @@ public class Container extends Item {
 				this.scrollSmooth = (scrollModeInt.intValue() == SCROLL_SMOOTH);
 			}
 		//#endif
+			
+		//#if tmp.checkBouncing
+			Boolean allowBounceBool = style.getBooleanProperty("bounce");
+			if (allowBounceBool != null) {
+				this.allowBouncing = allowBounceBool.booleanValue();
+			}
+		//#endif
+			
 		//#if polish.css.expand-items
 			synchronized(this.itemsList) {
 				Boolean expandItemsBool = style.getBooleanProperty("expand-items");
@@ -2954,9 +2969,6 @@ public class Container extends Item {
 		return handled;
 	}
 
-	private long lastAnimationTime;
-	private boolean isScrolling;
-
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#animate(long, de.enough.polish.ui.ClippingRegion)
 	 */
@@ -3014,7 +3026,11 @@ public class Container extends Item {
 				if (offset > 0) {
 					this.scrollSpeed = 0;
 					target = 0;
-					//#if polish.Container.ScrollBounce:defined && polish.Container.ScrollBounce == false
+					//#if tmp.checkBouncing
+						if (!this.allowBouncing) {
+							offset = 0;
+						}
+					//#elif polish.Container.ScrollBounce:defined && polish.Container.ScrollBounce == false
 						offset = 0;
 					//#endif
 				}
@@ -3037,7 +3053,11 @@ public class Container extends Item {
 				if (offset + maxItemHeight < this.scrollHeight) { 
 					this.scrollSpeed = 0;
 					target = this.scrollHeight - maxItemHeight;
-					//#if polish.Container.ScrollBounce:defined && polish.Container.ScrollBounce == false
+					//#if tmp.checkBouncing
+						if (!this.allowBouncing) {
+							offset = target;
+						}
+					//#elif polish.Container.ScrollBounce:defined && polish.Container.ScrollBounce == false
 						offset = target;
 					//#endif
 				}
@@ -3584,8 +3604,7 @@ public class Container extends Item {
 		}
 		//#ifdef tmp.supportViewType
 			if (this.containerView != null) {
-				if ( this.containerView.handlePointerDragged(relX,relY) ) { //TODO use clipping region for views as well
-					addRepaintArea(repaintRegion);
+				if ( this.containerView.handlePointerDragged(relX,relY, repaintRegion) ) {
 					return true;
 				}
 			}
@@ -3603,23 +3622,32 @@ public class Container extends Item {
 			if (maxItemHeight > this.scrollHeight || this.yOffset != 0) {
 				int lastOffset = getScrollYOffset();
 				int nextOffset = this.lastPointerPressYOffset + (relY - this.lastPointerPressY);
-				//#if polish.Container.ScrollBounce:defined && polish.Container.ScrollBounce == false
-					if (nextOffset > 0) {
-						nextOffset = 0;
-					} else {
-						maxItemHeight += this.scrollHeight/4;
-						if (nextOffset + maxItemHeight < this.scrollHeight) { 
-							nextOffset = this.scrollHeight - maxItemHeight;
+				//#if tmp.checkBouncing
+					if (!this.allowBouncing) {
+				//#endif
+					//#if tmp.checkBouncing || (polish.Container.ScrollBounce:defined && polish.Container.ScrollBounce == false)
+						if (nextOffset > 0) {
+							nextOffset = 0;
+						} else {
+							if (nextOffset + maxItemHeight < this.scrollHeight) { 
+								nextOffset = this.scrollHeight - maxItemHeight;
+							}
 						}
-					}
-				//#else
-					if (nextOffset > this.scrollHeight/3) {
-						nextOffset = this.scrollHeight/3;
+					//#endif
+				//#if tmp.checkBouncing
 					} else {
-						maxItemHeight += this.scrollHeight/3;
-						if (nextOffset + maxItemHeight < this.scrollHeight) { 
-							nextOffset = this.scrollHeight - maxItemHeight;
+				//#endif
+					//#if tmp.checkBouncing || !(polish.Container.ScrollBounce:defined && polish.Container.ScrollBounce == false)
+						if (nextOffset > this.scrollHeight/3) {
+							nextOffset = this.scrollHeight/3;
+						} else {
+							maxItemHeight += this.scrollHeight/3;
+							if (nextOffset + maxItemHeight < this.scrollHeight) { 
+								nextOffset = this.scrollHeight - maxItemHeight;
+							}
 						}
+					//#endif
+				//#if tmp.checkBouncing
 					}
 				//#endif
 				this.isScrolling = (nextOffset != lastOffset);
