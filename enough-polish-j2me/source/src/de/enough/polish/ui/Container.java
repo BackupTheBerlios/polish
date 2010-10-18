@@ -3265,6 +3265,7 @@ public class Container extends Item {
 			}
 		//#endif
 		//System.out.println("Container.handlePointerPressed: adjusted to (" + relX + ", " + relY + ") for " + this );
+		boolean eventHandled = false;
 		Item item = this.focusedItem;
 		if (item != null) {
 			// the focused item can extend the parent container, e.g. subcommands, 
@@ -3292,7 +3293,7 @@ public class Container extends Item {
 				notifyItemPressedStart();
 				return true;
 			} else if (item.isPressed) {
-				notifyItemPressedStart();
+				eventHandled = notifyItemPressedStart();
 			}
 		}
 		//#ifdef tmp.supportViewType
@@ -3307,19 +3308,19 @@ public class Container extends Item {
 			}
 			if (!isInItemArea(origRelX, origRelY - this.yOffset) || (item != null && item.isInItemArea(relX - item.relativeX, relY - item.relativeY )) ) {
 				//System.out.println("Container.handlePointerPressed(): out of range, relativeX=" + this.relativeX + ", relativeY="  + this.relativeY + ", contentHeight=" + this.contentHeight );
-				return (this.defaultCommand != null) && super.handlePointerPressed(origRelX, origRelY);
+				return ((this.defaultCommand != null) && super.handlePointerPressed(origRelX, origRelY)) || eventHandled;
 			}
 		//#else
 			if (!isInItemArea(origRelX, origRelY) || (item != null && item.isInItemArea(relX - item.relativeX, relY - item.relativeY )) ) {
 				//System.out.println("Container.handlePointerPressed(): out of range, relativeX=" + this.relativeX + ", relativeY="  + this.relativeY + ", contentHeight=" + this.contentHeight );
-				return super.handlePointerPressed(origRelX, origRelY);
+				return super.handlePointerPressed(origRelX, origRelY) || eventHandled;
 			}
 		//#endif
 		Screen scr = this.screen;
 		if ( ((origRelY < 0) && (scr == null || origRelY + this.relativeY - scr.contentY < 0)) 
 				|| (this.enableScrolling && origRelY > this.scrollHeight) 
 		){
-			return (this.defaultCommand != null) && super.handlePointerPressed(origRelX, origRelY);
+			return ((this.defaultCommand != null) && super.handlePointerPressed(origRelX, origRelY)) || eventHandled;
 		}
 		Item nextItem = getChildAt( origRelX, origRelY );
 		if (nextItem != null && nextItem != item) {
@@ -3366,7 +3367,7 @@ public class Container extends Item {
 //			}
 //			return true;			
 //		}
-		return (this.defaultCommand != null) && super.handlePointerPressed(origRelX, origRelY);
+		return ((this.defaultCommand != null) && super.handlePointerPressed(origRelX, origRelY)) || eventHandled;
 	}
 	//#endif
 	
