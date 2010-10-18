@@ -154,6 +154,22 @@ public class Container extends Item {
 	
 	/**
 	 * Creates a new empty container.
+	 */
+	public Container() {
+		this( null, false, null, -1 );
+	}
+	
+	/**
+	 * Creates a new empty container with the specified style.
+	 * 
+	 * @param style the style for this container
+	 */
+	public Container(Style style) {
+		this( null, false, style, -1 );
+	}
+	
+	/**
+	 * Creates a new empty container.
 	 * 
 	 * @param focusFirstElement true when the first focussable element should be focused automatically.
 	 */
