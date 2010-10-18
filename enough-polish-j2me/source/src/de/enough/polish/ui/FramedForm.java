@@ -1057,8 +1057,10 @@ public class FramedForm extends Form {
 		Container areaFrame = getFrame( x, y );
 		Container activeFrame = this.currentlyActiveContainer;
 		if (areaFrame != null && areaFrame != activeFrame && areaFrame.isInteractive()) {
+			int yOffset = areaFrame.getScrollYOffset();
+			setActiveFrame(areaFrame);
+			areaFrame.setScrollYOffset(yOffset, false);
 			if (areaFrame.handlePointerPressed(x - areaFrame.relativeX, y - areaFrame.relativeY)) {
-				setActiveFrame(areaFrame);
 				return true;
 			}
 		}
