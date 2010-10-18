@@ -1673,7 +1673,7 @@ extends ItemView
 			this.parentContainer.addRepaintArea(repaintRegion);
 			return true;
 		}
-		return super.handlePointerDragged(x, y);
+		return super.handlePointerDragged(x, y, repaintRegion);
 	}
 	//#endif
 	
