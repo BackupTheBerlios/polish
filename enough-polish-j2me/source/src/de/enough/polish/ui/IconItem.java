@@ -222,12 +222,11 @@ implements ImageConsumer
 			} else {
 				this.yAdjustText = 0;
 			}
-			//#ifdef polish.css.icon-image-align-next
-				if (this.isLayoutExpand && this.imageAlign == Graphics.RIGHT && !this.imageAlignNext) 
-			//#else
-				if (this.isLayoutExpand && this.imageAlign == Graphics.RIGHT) 
-			//#endif
-			{
+			if (this.isLayoutExpand && (this.imageAlign == Graphics.RIGHT || this.imageAlign == Graphics.LEFT) 
+				//#ifdef polish.css.icon-image-align-next
+					&& !this.imageAlignNext 
+				//#endif
+			) {
 				this.contentWidth = firstLineWidth;
 			}
 			this.contentWidth += imgWidth;
@@ -258,14 +257,17 @@ implements ImageConsumer
 		int iconTopY = yAdjustImage;
 		if (this.imageAlign == Graphics.LEFT ) {
 			//#ifdef polish.css.icon-image-align-next
-				if (this.imageAlignNext && this.isLayoutExpand) {
+				if (!this.imageAlignNext) 
+			//#endif
+			{
+				if (this.isLayoutExpand) {
 					if (this.isLayoutCenter) {
 						iconLeftX = (availWidth + imgWidth - this.contentWidth) >> 1;
 					} else if (this.isLayoutRight) {
 						iconLeftX = availWidth  + imgWidth - this.contentWidth;
 					}
 				}
-			//#endif
+			}
 		} else if (this.imageAlign == Graphics.RIGHT ) {
 			iconLeftX = firstLineWidth; // - this.imageWidth (imageWidth is already subtracted);
 			//#ifdef polish.css.icon-image-align-next
@@ -275,14 +277,10 @@ implements ImageConsumer
 					} else if (!this.isLayoutRight) {
 						iconLeftX = this.contentWidth - imgWidth;
 					}
-				}
+				} 
 			//#endif
 		} else { // image align is top or bottom:
-			if (this.isLayoutExpand) {
-				iconLeftX = (availWidth - imgWidth) >> 1;
-			} else {
-				iconLeftX = (this.contentWidth - imgWidth) >> 1;
-			}
+			iconLeftX = (this.contentWidth - imgWidth) >> 1;
 			if (this.imageAlign == Graphics.BOTTOM ){
 				iconTopY += this.contentHeight - imgHeight;
 			}
