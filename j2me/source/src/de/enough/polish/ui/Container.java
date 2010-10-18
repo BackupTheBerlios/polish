@@ -4390,7 +4390,7 @@ public class Container extends Item {
 				if (child == null) {
 					break;
 				}
-				child.notifyItemPressedStart();
+				handled |= child.notifyItemPressedStart();
 			}			
 		}
 		return handled;
