@@ -71,9 +71,11 @@ implements PolishTextField {
     {
         if ( (this.isFocus() || this.isFocused) && !StyleSheet.currentScreen.isMenuOpened() )
                 {
-                    int cursorPosition = getCursorPosition();
-                    setCursorPosition(0);
-                    setCursorPosition(cursorPosition);      
+        			//#if polish.JavaPlatform >= BlackBerry/6.0
+	                    int cursorPosition = getCursorPosition();
+	                    setCursorPosition(0);
+	                    setCursorPosition(cursorPosition);
+                    //#endif
                     setFocus();
             }
         }
