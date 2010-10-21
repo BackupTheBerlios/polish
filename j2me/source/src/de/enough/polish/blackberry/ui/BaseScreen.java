@@ -981,7 +981,9 @@ public abstract class BaseScreen
         }
         //#debug
     	System.out.println("keyDown: keyCode=" + keyCode + ", key=" + Keypad.key( keyCode) + ", char=" + Keypad.map( keyCode ) );
+    	//#if polish.JavaPlatform < BlackBerry/6.0
     	keyCode = getMidpKeyCode(keyCode);
+    	//#endif
         keyPressed( keyCode );
         if ( screen != null ) {
         	return (screen.keyPressedProcessed);
@@ -1008,7 +1010,8 @@ public abstract class BaseScreen
 	private int getMidpKeyCode(int keyCode)
 	{
 		int key = Keypad.key( keyCode );
-        switch ( Keypad.map( key, 1 ) ) { // 1 is the ALT status
+		int status = Keypad.status(keyCode);
+        switch ( Keypad.map( key, status ) ) { 
 	        case '0': keyCode = Canvas.KEY_NUM0; break;
 	        case '1': keyCode = Canvas.KEY_NUM1; break;
 	        case '2': keyCode = Canvas.KEY_NUM2; break;
@@ -1054,7 +1057,9 @@ public abstract class BaseScreen
         }
         //#debug
     	System.out.println("keyUp: keyCode=" + keyCode + ", key=" + Keypad.key( keyCode) + ", char=" + Keypad.map( keyCode ) );
+    	//#if polish.JavaPlatform < BlackBerry/6.0
     	keyCode = getMidpKeyCode(keyCode);
+    	//#endif
         keyReleased( keyCode );
         if ( screen != null ) {
         	boolean handled = screen.keyReleasedProcessed; 
