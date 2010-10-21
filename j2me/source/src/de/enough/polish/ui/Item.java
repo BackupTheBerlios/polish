@@ -2628,6 +2628,10 @@ public abstract class Item implements UiElement, Animatable
 			
 			init(this.availableWidth, this.availableWidth, this.availableHeight);
 			
+            if (this.itemHeight < previousItemHeight && this.isLayoutVerticalExpand()) {
+                setItemHeight( previousItemHeight );
+            }
+			
 			if ((previousItemWidth != this.itemWidth || previousItemHeight != this.itemHeight) && this.parent != null)
 			{
 				this.parent.requestInit();
