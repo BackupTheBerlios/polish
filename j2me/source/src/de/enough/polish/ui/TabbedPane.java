@@ -1252,7 +1252,7 @@ implements ScreenInitializerListener
 			repaintRegion.reset();
 			tabs.handlePointerDragged(x - tabs.relativeX, y - tabs.relativeY, repaintRegion);
 			if (repaintRegion.containsRegion()) {
-				repaint( repaintRegion.getX(), repaintRegion.getY(), repaintRegion.getWidth(), repaintRegion.getHeight() );
+				repaint(tabs.relativeX, tabs.relativeY, tabs.itemWidth, tabs.itemHeight);
 				return;
 			}
 		}
