@@ -1248,9 +1248,13 @@ implements ScreenInitializerListener
 		Container tabs = this.tabIconsContainer;
 		Screen scr = this.currentScreen;
 		if ((scr == null ||!scr.isMenuOpened()) && tabs.isInItemArea(x - tabs.relativeX, y - tabs.relativeY)) {
-			tabs.handlePointerDragged(x - tabs.relativeX, y - tabs.relativeY);
-			repaint(tabs.relativeX, tabs.relativeY, tabs.itemWidth, tabs.itemHeight);
-			return;
+			ClippingRegion repaintRegion = this.userEventRepaintRegion;
+			repaintRegion.reset();
+			tabs.handlePointerDragged(x - tabs.relativeX, y - tabs.relativeY, repaintRegion);
+			if (repaintRegion.containsRegion()) {
+				repaint(tabs.relativeX, tabs.relativeY, tabs.itemWidth, tabs.itemHeight);
+				return;
+			}
 		}
 		if (scr != null) {
 			scr.pointerDragged(x, y);

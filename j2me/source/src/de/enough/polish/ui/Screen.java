@@ -393,7 +393,7 @@ implements UiElement, Animatable
 		protected Style portraitStyle;
 	//#endif
 	//#if polish.hasPointerEvents
-		private final ClippingRegion userEventRepaintRegion = new ClippingRegion();
+		protected final ClippingRegion userEventRepaintRegion = new ClippingRegion();
 	//#endif
 	private ScreenInitializerListener screenInitializerListener;
 	
@@ -4020,8 +4020,9 @@ implements UiElement, Animatable
 	 * @param commandStyle the style for the command
 	 */
 	public void addCommand(Command cmd, Style commandStyle ) {
+		int cmdType = cmd.getCommandType();
 		//#if polish.Item.suppressItemCommands
-			if (cmd.getCommandType() == Command.ITEM) {
+			if (cmdType == Command.ITEM) {
 				return;
 			}
 		//#endif
@@ -4034,7 +4035,6 @@ implements UiElement, Animatable
 				return;
 			}
 		//#endif
-		int cmdType = cmd.getCommandType();
 		if ( cmdType == Command.OK 
 				&&  (this.okCommand == null || this.okCommand.getPriority() > cmd.getPriority() ) ) 
 		{
