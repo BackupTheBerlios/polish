@@ -213,7 +213,7 @@ public class ChoiceItem extends IconItem
 	 */
 	protected void initContent(int firstLineWidth, int availWidth, int availHeight) {
 		if (!this.drawBox) {
-			super.initContent(firstLineWidth, availWidth, availHeight);
+			initContentImpl(firstLineWidth, availWidth, availHeight);
 			return;
 		}
 		if (this.selected == null && !this.drawNoSelected) {
@@ -236,7 +236,7 @@ public class ChoiceItem extends IconItem
 		firstLineWidth -= maxWidth;
 		availWidth -=  maxWidth;
 		
-		super.initContent(firstLineWidth, availWidth, availHeight);
+		initContentImpl(firstLineWidth, availWidth, availHeight);
 		this.contentWidth += maxWidth;
 		if (this.contentHeight < maxHeight) {
 			// the image is bigger than the text:
@@ -265,6 +265,16 @@ public class ChoiceItem extends IconItem
 		} else {
 			this.boxImage = this.plain;
 		}
+	}
+	
+	/**
+	 * Initializes the content of this choice item (apart from the choice box).
+	 * @param firstLineWidth the available width
+	 * @param availWidth the available width
+	 * @param availHeight the available height
+	 */
+	protected void initContentImpl(int firstLineWidth, int availWidth, int availHeight) {
+		super.initContent(firstLineWidth, availWidth, availHeight);
 	}
 	
 	/**
@@ -349,6 +359,18 @@ public class ChoiceItem extends IconItem
 			}
 			y += this.yAdjust;
 		}
+		paintContentImpl(x, y, leftBorder, rightBorder, g);
+	}
+	
+	/**
+	 * Paints the content of this choice item, typically the icon item.
+	 * @param x the x position
+	 * @param y the y position
+	 * @param leftBorder the left border
+	 * @param rightBorder the right border
+	 * @param g the graphics context
+	 */
+	protected void paintContentImpl( int x, int y, int leftBorder, int rightBorder, Graphics g) { 
 		super.paintContent(x, y, leftBorder, rightBorder, g);
 	}
 	
