@@ -341,6 +341,19 @@ extends ItemView
 		this.parentContainer = parent;
 		Item[] myItems = parent.getItems();
 		int myItemsLength = myItems.length;
+		boolean hasCenterOrRightItems = false;
+		boolean hasVerticalExpandItems = false;
+		for (int i = 0; i < myItems.length; i++) {
+			Item item = myItems[i];
+			if (item.isLayoutVerticalExpand()) {
+				hasVerticalExpandItems = true;
+				break;
+			}
+		}
+		int numberOfVerticalExpandItems = 0;
+		Item lastVerticalExpandItem = null;
+		int lastVerticalExpandItemIndex = 0;
+
 
 		//#ifdef tmp.useTable
 			if (this.columnsSetting == NO_COLUMNS || myItemsLength <= 1 || this.numberOfColumns <= 1) {
@@ -352,14 +365,25 @@ extends ItemView
 			int myContentWidth = 0;
 			int myContentHeight = 0;
 			boolean hasFocusableItem = false;
+			
 			for (int i = 0; i < myItemsLength; i++) {
 				Item item = myItems[i];
+				if (hasVerticalExpandItems) {
+					// re-initialize items when we have vertical-expand items, so that relativeY and itemHeight is correctly calculated 
+					// with each run:
+					item.setInitialized(false);
+				}
 				//System.out.println("initalising " + item.getClass().getName() + ":" + i);
 				int width = item.itemWidth;
 				if (reinitInAnyCase || !item.isInitialized) {
 					width = item.getItemWidth( firstLineWidth, availWidth, availHeight );
 				}
 				int height = item.itemHeight;
+				if (item.isLayoutVerticalExpand()) {
+					numberOfVerticalExpandItems++;
+					lastVerticalExpandItem = item;
+					lastVerticalExpandItemIndex = i;
+				} 
 				if (item.appearanceMode != Item.PLAIN) {
 					hasFocusableItem = true;
 				}
@@ -409,6 +433,35 @@ extends ItemView
 				}
 			} else {
 				this.appearanceMode = Item.PLAIN;
+			}
+			if (numberOfVerticalExpandItems > 0 && myContentHeight < availHeight) {
+				int diff = availHeight - myContentHeight;
+				if (numberOfVerticalExpandItems == 1) {
+					// this is a simple case:
+					lastVerticalExpandItem.setItemHeight( lastVerticalExpandItem.itemHeight + diff );
+					for (int i = lastVerticalExpandItemIndex+1; i < myItems.length; i++)
+					{
+						Item item = myItems[i];
+						item.relativeY += diff;
+					}
+				} else {
+					// okay, there are several items that would like to be expanded vertically:
+//					System.out.println("having " + numberOfVerticalExpandItems + ", diff: " + diff + "=>" + (diff / numberOfVerticalExpandItems) + "=>" + ((diff / numberOfVerticalExpandItems) * numberOfVerticalExpandItems));
+					diff = diff / numberOfVerticalExpandItems;
+					int relYAdjust = 0;
+					for (int i = 0; i < myItems.length; i++)
+					{
+						Item item = myItems[i];
+//						System.out.println("changing relativeY from " + item.relativeY + " to " + (item.relativeY + relYAdjust) + ", relYAdjust=" + relYAdjust + " for " + item );
+						item.relativeY +=  relYAdjust;
+						if (item.isLayoutVerticalExpand()) {
+//							System.out.println("changing itemHeight from " + item.itemHeight + " to " + (item.itemHeight + diff) + " for " + item);
+							item.setItemHeight(item.itemHeight + diff );
+							relYAdjust += diff;
+						}
+					}
+				}
+				myContentHeight = availHeight;
 			}
 			
 			//#if polish.css.view-type-top-y-offset
