@@ -2526,7 +2526,7 @@ public class TextField extends StringItem
 				if (this.style != null) {
 					this.editField.setStyle( this.style );
 				}
-				// alowing native field to expand to the fully available width,
+				// allowing native field to expand to the fully available width,
 				// the content size does not need to be changed as the same font is being
 				// used.
 				this.editField.doLayout( availWidth, this.contentHeight );
