@@ -31,6 +31,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import de.enough.polish.BuildException;
+import de.enough.polish.Environment;
+
 import org.apache.tools.ant.types.Path;
 
 import de.enough.polish.Device;
@@ -64,11 +66,18 @@ public class CldcPreverifier extends Preverifier {
 		} else {
 			// hope that the "preverify" executable is on the path:
 			if ( File.separatorChar == '\\') {
+				System.out.println("Warning: did not find 'preverify.exe', assuming it is found on the %PATH% environment...");
 				// this is a windows environment:
 				arguments.add( "preverify.exe" );
 			} else {
+				System.out.println("Warning: did not find 'preverify' executable, assuming it is found on the %PATH% environment...");
 				// this is a unix environment:
 				arguments.add( "preverify" );
+			}
+			if (Environment.getInstance().getVariable("wtk.home") == null) {
+				System.out.println("Please define the ${wtk.home} ANT property.");
+			} else if ( !(new File(Environment.getInstance().getVariable("wtk.home")).exists())) {
+				System.out.println("Please redefine the ${wtk.home} ANT property, the current setting '" + Environment.getInstance().getVariable("wtk.home") + "' points to a non-existing directory.");
 			}
 		}
 		String classPathStr = bootClassPath.toString();
