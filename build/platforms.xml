@@ -103,7 +103,6 @@
 		<capability name="polish.MenuBar.Position" value="invisible" />
 		<capability name="polish.IconSize" value="28x28,55x55" />
 		<capability name="SoundFormat" value="mp3"/>
-		<capability name="build.Preverifier" value="blackberry" />
 		<capability name="build.Obfuscator" value="blackberry" />
 		<capability name="build.ImplicitGroups" value="blackberry" />
 		<capability name="Emulator.Class" value="BlackBerryEmulator" />
