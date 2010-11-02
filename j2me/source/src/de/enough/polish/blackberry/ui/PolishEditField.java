@@ -47,14 +47,22 @@ implements PolishTextField {
 	private int fontColor;
 	private int oldX = 0;
 	private int oldY = 0;
+	
+	//#if polish.JavaPlatform >= BlackBerry/6.0
 	private long style;
+	boolean needsCursorFix = false;
+	boolean needsNavigationFix = false;
+	//#endif
+	
 //	//#if ${polish.JavaPlatform} >= BlackBerry/4.6
 //	private BackgroundWrapper backgroundWrapper;
 //	//#endif
 
 	public PolishEditField(String label, String text, int numChars, long style) {
 		super(label, text, numChars, style );
+		//#if polish.JavaPlatform >= BlackBerry/6.0
 		this.style = style;
+		//#endif
 	}
 
 	public void focusAdd( boolean draw ) {
@@ -116,8 +124,11 @@ implements PolishTextField {
 	 * @see net.rim.device.api.im.ITextInputStyle#getTextInputStyle()
 	 */
 	public int getTextInputStyle() {
-		// TODO Besitzer implement getTextInputStyle
-		return (int)this.style;
+		//#if polish.JavaPlatform >= BlackBerry/6.0
+		//#= return (int)this.style;
+		//#else
+		return 0;
+		//#endif
 	}
 
 	/* (non-Javadoc)
@@ -184,8 +195,6 @@ implements PolishTextField {
 	}
 	
 	//#if polish.JavaPlatform >= BlackBerry/6.0
-	boolean needsCursorFix = false;
-	boolean needsNavigationFix = false;
 	
 	protected void update(int arg0) {
 		super.update(arg0);
