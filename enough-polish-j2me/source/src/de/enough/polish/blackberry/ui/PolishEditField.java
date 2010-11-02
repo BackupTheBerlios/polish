@@ -47,12 +47,14 @@ implements PolishTextField {
 	private int fontColor;
 	private int oldX = 0;
 	private int oldY = 0;
+	private long style;
 //	//#if ${polish.JavaPlatform} >= BlackBerry/4.6
 //	private BackgroundWrapper backgroundWrapper;
 //	//#endif
 
 	public PolishEditField(String label, String text, int numChars, long style) {
 		super(label, text, numChars, style );
+		this.style = style;
 	}
 
 	public void focusAdd( boolean draw ) {
@@ -115,7 +117,7 @@ implements PolishTextField {
 	 */
 	public int getTextInputStyle() {
 		// TODO Besitzer implement getTextInputStyle
-		return 0;
+		return (int)this.style;
 	}
 
 	/* (non-Javadoc)
