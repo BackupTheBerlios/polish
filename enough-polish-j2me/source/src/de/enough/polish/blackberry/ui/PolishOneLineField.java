@@ -70,7 +70,7 @@ public class PolishOneLineField extends VerticalFieldManager implements PolishTe
 	    //#if polish.JavaPlatform >= BlackBerry/6.0
 	    	setScrollingInertial(false);
 	    //#endif
-	    this.editField = new PolishEditField(label, "", numChars, style | EditField.NO_NEWLINE | EditField.EDITABLE | EditField.NO_COMPLEX_INPUT | EditField.NO_LEARNING | EditField.NO_EDIT_MODE_INPUT ) 
+	    this.editField = new PolishEditField(label, "", numChars, style | EditField.NO_NEWLINE ) 
 	    {
 	        protected boolean keyChar(char key, int status, int time)
 	        {
@@ -241,5 +241,11 @@ public class PolishOneLineField extends VerticalFieldManager implements PolishTe
             return this.editField.needsNavigationFix() ;               
     }
     //#endif
+    
+    
+    public void updateInputStyle() {
+		// TODO Besitzer implement updateInputStyle
+		System.out.println("Update input Style!!!!!!!!!!!");
+	}
 
 }
