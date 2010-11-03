@@ -721,13 +721,7 @@ public abstract class BaseScreen
 //      // do nothing..
 //    }
     
-    //#if !polish.useFullScreen
-    protected void paint( net.rim.device.api.ui.Graphics g ) {
-	    // when extending the BB MainScreen, super.paint(g) will
-    	// clear the paint area, subpaint(g) will only render the fields.
-	    super.subpaint(g);
-   }
-    //#endif
+ 
 
     protected void paintBackground( net.rim.device.api.ui.Graphics g ) {
         //System.out.println("Canvas.paintBackground(): enter");
@@ -1707,6 +1701,15 @@ class BaseScreenManager extends Manager {
 		return null;
 	}
 
+	
+	//#if !polish.useFullScreen
+    protected void paint( net.rim.device.api.ui.Graphics g ) {
+	    // when extending the BB MainScreen, super.paint(g) will
+    	// clear the paint area, subpaint(g) will only render the fields.
+	    subpaint(g);
+    }
+    //#endif
+	
 	protected void subpaint(net.rim.device.api.ui.Graphics g) {
 		BaseScreen baseScreen = this.screen;
 		Screen polishScreen = baseScreen.getPolishScreen();
