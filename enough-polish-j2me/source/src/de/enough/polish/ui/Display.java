@@ -18,7 +18,7 @@ import de.enough.polish.util.ImageUtil;
 //#if polish.api.sensor && polish.Screen.AutomaticOrientationChange && polish.midp2
 	//#define tmp.automaticScreenOrientation
 	import de.enough.polish.util.sensor.AccelerationListener;
-	import de.enough.polish.util.sensor.AccelerationUtil;
+import de.enough.polish.util.sensor.AccelerationUtil;
 //#endif
 
 
@@ -1016,7 +1016,7 @@ public class Display
 						if (this.currentCanvas != null && this.currentCanvas instanceof UiElement) {
 							lastScreen = (Screen) this.currentCanvas;
 							Command lastCommand = lastScreen.lastTriggeredCommand;
-							if (lastCommand != null && lastCommand.getCommandType() == Command.BACK ) {
+							if (lastCommand != null && (lastCommand.getCommandType() == Command.BACK  || lastCommand.getCommandType() == Command.CANCEL) ) {
 								screenAnimation = backwardAnimation;
 								screenstyle = lastScreen.style;
 								isForwardAnimation = false;
@@ -1028,7 +1028,14 @@ public class Display
 								screenstyle = nextScreen.style;
 							}
 						}
-					//#else					
+					//#else	
+						//#ifdef polish.useDynamicStyles
+							// check if the next screen has got a style:
+							if (nextScreen != null && nextScreen.style == null) {
+								nextScreen.cssSelector = nextScreen.createCssSelector();
+								nextScreen.setStyle( StyleSheet.getStyle( nextScreen ) );
+							}
+						//#endif
 						if (nextScreen != null && nextScreen.style != null && nextScreen.enableScreenChangeAnimation) {
 							screenstyle = nextScreen.style;
 							screenAnimation = (ScreenChangeAnimation) screenstyle.getObjectProperty("screen-change-animation");
@@ -1057,15 +1064,18 @@ public class Display
 								}
 							//#endif							
 							Command lastCommand = lastScreen.lastTriggeredCommand;
-							if (lastCommand != null && lastCommand.getCommandType() == Command.BACK ) {
+							if (lastCommand != null && (lastCommand.getCommandType() == Command.BACK  || lastCommand.getCommandType() == Command.CANCEL) ) {
 								isForwardAnimation = false;
 							}
 							if ( (screenAnimation == null || !isForwardAnimation || lastScreen instanceof Alert) && lastScreen.style != null && lastScreen.enableScreenChangeAnimation) {
-								if (screenAnimation == null || lastScreen.style.getObjectProperty("screen-change-animation") != null) {
+								ScreenChangeAnimation animation = (ScreenChangeAnimation) lastScreen.style.getObjectProperty("screen-change-animation");
+								if (screenAnimation == null || animation != null) {
 									screenstyle = lastScreen.style;
-									screenAnimation = (ScreenChangeAnimation) screenstyle.getObjectProperty("screen-change-animation");
+									screenAnimation = animation;
+									isForwardAnimation = false;
+								} else {
+									isForwardAnimation = true;
 								}
-								isForwardAnimation = false;
 								//#debug
 								System.out.println("StyleSheet: Using screen animation of last screen");
 							}
@@ -1085,12 +1095,13 @@ public class Display
 						}
 						//#if polish.blackberry && polish.hasPointerEvents
 							if (nextScreen != null) {
+								Item currentItem = nextScreen.getCurrentItem();
 								if (height < this.bbMaxScreenHeight) {
-									if (nextScreen.getCurrentItem() == null || nextScreen.getCurrentItem()._bbField == null) {
+									if (currentItem == null || currentItem._bbField == null) {
 										height = this.bbMaxScreenHeight;
 										nextScreen.sizeChanged( width, height );
 									}
-								} else if (nextScreen.getCurrentItem() != null && nextScreen.getCurrentItem()._bbField != null) {
+								} else if (currentItem != null && currentItem._bbField != null) {
 									nextScreen.sizeChanged( width, this.bbMinScreenHeight );
 								}
 							}
