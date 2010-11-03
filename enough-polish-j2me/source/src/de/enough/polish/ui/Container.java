@@ -1514,7 +1514,7 @@ public class Container extends Item {
 			}
 			for (int i = 0; i < myItems.length; i++) {
 				Item item = myItems[i];
-				if (hasVerticalExpandItems) {
+				if (hasVerticalExpandItems && item.isLayoutVerticalExpand()) {
 					// re-initialize items when we have vertical-expand items, so that relativeY and itemHeight is correctly calculated 
 					// with each run:
 					item.setInitialized(false);
@@ -1529,11 +1529,6 @@ public class Container extends Item {
 				//if (item.isInvisible && height != 0) {
 				//	System.out.println("*** item.height != 0 even though it is INVISIBLE - isInitialized=" + item.isInitialized );
 				//}
-				if (item.isLayoutVerticalExpand()) {
-					numberOfVerticalExpandItems++;
-					lastVerticalExpandItem = item;
-					lastVerticalExpandItemIndex = i;
-				} 
 				if (item.appearanceMode != PLAIN) {
 					hasFocusableItem = true;
 				}
@@ -1566,6 +1561,11 @@ public class Container extends Item {
 	//					// ensure that lines of textfields etc are within the visible area:
 	//					scroll(0, item );
 					}
+				} 
+				if (item.isLayoutVerticalExpand()) {
+					numberOfVerticalExpandItems++;
+					lastVerticalExpandItem = item;
+					lastVerticalExpandItemIndex = i;
 				} 
 				if (width > myContentWidth) {
 					myContentWidth = width; 
