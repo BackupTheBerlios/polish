@@ -11,6 +11,10 @@ import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.Sprite;
 import javax.microedition.midlet.MIDlet;
 
+//#if polish.JavaPlatform >= BlackBerry/6.0
+	import net.rim.device.api.system.Sensor;
+//#endif
+
 import de.enough.polish.event.EventManager;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.DeviceInfo;
@@ -1094,7 +1098,12 @@ public class Display
 							height = getScreenHeight();
 						}
 						//#if polish.blackberry && polish.hasPointerEvents
-							if (nextScreen != null) {
+							if (nextScreen != null
+									//#if polish.JavaPlatform >= BlackBerry/6.0
+										&& (!Sensor.isSupported(Sensor.SLIDE) || (Sensor.getState(Sensor.SLIDE) == Sensor.STATE_SLIDE_CLOSED) )
+									//#endif
+							) {
+								//adjust the screen size for the virtual keyboard that is going to be shown on the next screen:
 								Item currentItem = nextScreen.getCurrentItem();
 								if (height < this.bbMaxScreenHeight) {
 									if (currentItem == null || currentItem._bbField == null) {
