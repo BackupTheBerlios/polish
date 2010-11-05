@@ -350,7 +350,8 @@ public class ImageItem extends Item
 			x += this.xOffset;
 			if (this.isLayoutExpand) {
 				if (this.isLayoutCenter) {
-					drawImage( this.image, x + (rightBorder - x)/2 , y, Graphics.TOP | Graphics.HCENTER, g );
+					// now drawing image TOP | LEFT as centering is done by Item
+					drawImage( this.image, x, y, Graphics.TOP | Graphics.LEFT, g );
 				} else if (this.isLayoutRight) {
 					drawImage( this.image, rightBorder, y, Graphics.TOP | Graphics.RIGHT, g );
 				} else {
