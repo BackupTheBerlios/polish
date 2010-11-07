@@ -11,10 +11,13 @@ import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.Sprite;
 import javax.microedition.midlet.MIDlet;
 
-//#if polish.JavaPlatform >= BlackBerry/6.0
-	import net.rim.device.api.system.Sensor;
+//#if polish.BlackBerry
+	//#if polish.JavaPlatform >= BlackBerry/6.0
+		import net.rim.device.api.system.Sensor;
+	//#endif
+	import net.rim.device.api.ui.Keypad;
 //#endif
-
+	
 import de.enough.polish.event.EventManager;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.DeviceInfo;
@@ -632,9 +635,9 @@ public class Display
 	//#endif
 		
 	//#if polish.hasPointerEvents
-    private int inputMethod = INPUT_METHOD_KEY;
+    private int inputMethod = INPUT_METHOD_TOUCH;
     //#else
-    //# private int inputMethod = INPUT_METHOD_TOUCH;
+    //# private int inputMethod = INPUT_METHOD_KEY;
     //#endif
 
 	private Displayable nextOrCurrentDisplayable;
@@ -1100,7 +1103,7 @@ public class Display
 						//#if polish.blackberry && polish.hasPointerEvents
 							if (nextScreen != null
 									//#if polish.JavaPlatform >= BlackBerry/6.0
-										&& (!Sensor.isSupported(Sensor.SLIDE) || (Sensor.getState(Sensor.SLIDE) == Sensor.STATE_SLIDE_CLOSED) )
+									//#	&& (!Sensor.isSupported(Sensor.SLIDE) || (Sensor.getState(Sensor.SLIDE) == Sensor.STATE_SLIDE_CLOSED) )
 									//#endif
 							) {
 								//adjust the screen size for the virtual keyboard that is going to be shown on the next screen:
@@ -1999,7 +2002,12 @@ public class Display
 	 * @see javax.microedition.lcdui.Canvas#keyPressed(int)
 	 */
 	protected void keyPressed(int keyCode) {
-		setInputMethod(INPUT_METHOD_KEY);
+		//#if polish.blackberry
+		if(Keypad.key(keyCode) != Keypad.KEY_MENU || Keypad.key(keyCode) != Keypad.KEY_ESCAPE);
+		//#endif
+		{
+			setInputMethod(INPUT_METHOD_KEY);
+		}
 		
 		//#if polish.Display.useUserInputValidation
 		if(this.validator != null && !this.validator.isKeyPressValid(keyCode)) {
