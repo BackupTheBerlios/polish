@@ -17,7 +17,7 @@ import javax.microedition.midlet.MIDlet;
 	//#endif
 	import net.rim.device.api.ui.Keypad;
 //#endif
-	
+
 import de.enough.polish.event.EventManager;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.DeviceInfo;
@@ -634,11 +634,12 @@ public class Display
 		private int bbMinScreenHeight = Integer.MAX_VALUE;
 	//#endif
 		
-	//#if polish.hasPointerEvents
-    private int inputMethod = INPUT_METHOD_TOUCH;
-    //#else
-    //# private int inputMethod = INPUT_METHOD_KEY;
-    //#endif
+    private int inputMethod = 
+    	//#if polish.hasPointerEvents
+	    	INPUT_METHOD_TOUCH;
+	    //#else
+    		//# INPUT_METHOD_KEY;
+    	//#endif
 
 	private Displayable nextOrCurrentDisplayable;
 	private boolean emitNotifyOnUserEvent;
@@ -1103,7 +1104,7 @@ public class Display
 						//#if polish.blackberry && polish.hasPointerEvents
 							if (nextScreen != null
 									//#if polish.JavaPlatform >= BlackBerry/6.0
-									//#	&& (!Sensor.isSupported(Sensor.SLIDE) || (Sensor.getState(Sensor.SLIDE) == Sensor.STATE_SLIDE_CLOSED) )
+										&& (!Sensor.isSupported(Sensor.SLIDE) || (Sensor.getState(Sensor.SLIDE) == Sensor.STATE_SLIDE_CLOSED) )
 									//#endif
 							) {
 								//adjust the screen size for the virtual keyboard that is going to be shown on the next screen:
@@ -2003,7 +2004,8 @@ public class Display
 	 */
 	protected void keyPressed(int keyCode) {
 		//#if polish.blackberry
-		if(Keypad.key(keyCode) != Keypad.KEY_MENU || Keypad.key(keyCode) != Keypad.KEY_ESCAPE);
+		if ((this.inputMethod == INPUT_METHOD_TOUCH) 
+				&& (Keypad.key(keyCode) != Keypad.KEY_MENU || Keypad.key(keyCode) != Keypad.KEY_ESCAPE))
 		//#endif
 		{
 			setInputMethod(INPUT_METHOD_KEY);
@@ -2903,11 +2905,13 @@ public class Display
     
     /**
      * Returns true if the given input method equals the current input method
-     * @param inputMethod the input method
+     * @param method the input method
      * @return true if the given input method equals the current input method otherwise false
+	 * @see #INPUT_METHOD_KEY
+	 * @see #INPUT_METHOD_TOUCH
      */
-    public boolean isInputMethod(int inputMethod) {
-    	return this.inputMethod == inputMethod;
+    public boolean isInputMethod(int method) {
+    	return (this.inputMethod == method);
     }
     
     /**
