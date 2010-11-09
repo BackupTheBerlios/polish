@@ -2767,26 +2767,13 @@ public abstract class Item implements UiElement, Animatable
 		// paint label:
 		StringItem labelItem = this.label;
 		if (labelItem != null) {
-			if (this.useSingleRow) {
-				labelItem.paint( x + labelItem.relativeX, y + labelItem.relativeY, leftBorder, rightBorder - (this.contentWidth + this.paddingHorizontal), g );
-				leftBorder += labelItem.itemWidth;
-			} else {
-				int labelX = x;
-				int labelLeftBorder = leftBorder;
-				if (this.isLayoutRight && (labelItem.itemWidth > this.itemWidth)) {
-					int diff = labelItem.itemWidth - this.itemWidth;
-					labelX -= diff;
-					labelLeftBorder -= diff;
-				} else if (labelItem.isLayoutRight) {
-					labelX = rightBorder - labelItem.itemWidth;
-					labelLeftBorder = labelX;
-				} else if (labelItem.isLayoutCenter) {
-					labelX = (rightBorder - leftBorder - labelItem.itemWidth) / 2;
-					labelLeftBorder = labelX;
-				}
-				labelItem.paint( labelX + labelItem.relativeX, y + labelItem.relativeY, labelLeftBorder, labelLeftBorder + labelItem.itemWidth, g );
-				y += labelItem.itemHeight;
-			}
+            int labelX = x + labelItem.relativeX;
+            labelItem.paint(labelX, y + labelItem.relativeY, labelX, labelX + labelItem.itemWidth, g );
+            if (this.useSingleRow) {
+                leftBorder += labelItem.itemWidth;
+            } else {
+                y += labelItem.itemHeight;
+            }
 		}
 		
 		leftBorder += (this.marginLeft + getBorderWidthLeft() + this.paddingLeft);
@@ -3254,9 +3241,9 @@ public abstract class Item implements UiElement, Animatable
 		//#endif
 		
 		//#ifdef polish.css.view-type
-		if (this.view != null) {
-			this.view.parentItem = this;
-		}
+			if (this.view != null) {
+				this.view.parentItem = this;
+			}
 		//#endif
 		
 		Style myStyle = this.style;
@@ -3287,7 +3274,7 @@ public abstract class Item implements UiElement, Animatable
 		
 		//#ifdef polish.css.max-width
 			if (this.maximumWidth != null ) {
-				int maxWidth = this.maximumWidth.getValue(availWidth);
+				int maxWidth = this.maximumWidth.getValue(availableContentWidth);
 				if(firstLineContentWidth > maxWidth) {
 					firstLineContentWidth = maxWidth;
 				}
@@ -3300,7 +3287,7 @@ public abstract class Item implements UiElement, Animatable
 		//#ifdef polish.css.width
 			int targetWidth = 0;
 			if (this.cssWidth != null) {
-				availableContentWidth = this.cssWidth.getValue(availWidth);
+				availableContentWidth = this.cssWidth.getValue(availWidth - noneContentWidth);
 				firstLineContentWidth = availableContentWidth;
 				targetWidth = availableContentWidth;
 			}
@@ -3387,22 +3374,34 @@ public abstract class Item implements UiElement, Animatable
 		//#ifdef polish.css.width
 			if(this.cssWidth != null) {
 				setContentWidth( targetWidth );
+				int diff = this.contentWidth - cWidth;
+				if (isLayoutCenter()) {
+					this.contentX += diff/2;
+				} else if (isLayoutRight()) {
+					this.contentX += diff;
+				}
 				cWidth = this.contentWidth;
 			}
 		//#endif
 			
 		//#ifdef polish.css.min-width
 			if (this.minimumWidth != null) {
-				int minWidth = this.minimumWidth.getValue(availWidth);
+				int minWidth = this.minimumWidth.getValue(availWidth - noneContentWidth);
 				if (cWidth < minWidth ) {
 					setContentWidth( minWidth );
+					int diff = this.contentWidth - cWidth;
+					if (isLayoutCenter()) {
+						this.contentX += diff/2;
+					} else if (isLayoutRight()) {
+						this.contentX += diff;
+					}
 					cWidth = this.contentWidth;
 				}
 			}
 		//#endif
 		//#ifdef polish.css.max-width
 			if (this.maximumWidth != null) {
-				int maxWidth = this.maximumWidth.getValue(availWidth);
+				int maxWidth = this.maximumWidth.getValue(availWidth - noneContentWidth);
 				if (cWidth > maxWidth ) {
 					setContentWidth( maxWidth );
 					cWidth = this.contentWidth;
@@ -3477,6 +3476,20 @@ public abstract class Item implements UiElement, Animatable
 			this.useSingleRow = false;
 			cHeight += labelHeight;
 			this.contentY += labelHeight;
+            if (labelWidth > 0) {
+                int labelX = 0;
+                if (isLayoutCenter()) {
+                    labelX = (this.itemWidth - availWidth) / 2;
+                 } else if (isLayoutRight()) {
+                     labelX = this.itemWidth - availWidth;
+                 }
+                 if (this.label.isLayoutCenter()) {
+                     labelX += (availWidth - labelWidth)/2;
+                 } else if (this.label.isLayoutRight()) {
+                     labelX += (availWidth - labelWidth);
+                 }
+                 this.label.relativeX = labelX;
+            }
 		}
 		
 		int originalContentHeight = cHeight;
@@ -3565,20 +3578,20 @@ public abstract class Item implements UiElement, Animatable
 //				this.itemWidth = labelWidth;
 //			}
 		}
-		if (labelWidth > 0 && availableContentWidth > this.contentWidth) {
-			//int diff = availableContentWidth - this.contentWidth;
-			int contX = this.contentX;
-			if (isLayoutCenter()) {
-				contX = (availWidth - this.contentWidth)/2;
-			} else if (isLayoutRight()) {
-				contX = (availWidth - this.contentWidth);
-			}
-			if (contX > this.contentX) {
-				//System.out.println("init: changing contentX from " + contentX + " to " + contX);
-				this.contentX = contX;
-				setItemWidth( availWidth );
-			}
-		}
+//		if (labelWidth > 0 && availableContentWidth > this.contentWidth) {
+//			//int diff = availableContentWidth - this.contentWidth;
+//			int contX = this.contentX;
+//			if (isLayoutCenter()) {
+//				contX = (availWidth - this.contentWidth)/2;
+//			} else if (isLayoutRight()) {
+//				contX = (availWidth - this.contentWidth);
+//			}
+//			if (contX > this.contentX) {
+//				//System.out.println("init: changing contentX from " + contentX + " to " + contX);
+//				//this.contentX = contX;
+//				setItemWidth( availWidth );
+//			}
+//		}
 		if (labelWidth > 0 && this.useSingleRow && labelHeight < this.itemHeight) {
 			if (this.label.isLayoutVerticalCenter()) {
 				this.label.relativeY = (this.itemHeight - labelHeight) / 2;

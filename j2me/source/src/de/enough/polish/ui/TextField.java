@@ -2234,24 +2234,7 @@ public class TextField extends StringItem
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		//#if polish.blackberry
         	if (this.isFocused && getScreen().isNativeUiShownFor(this)) {
-        		x--;
-        		int diff = this.backgroundWidth - this.originalContentWidth - this.paddingLeft - this.paddingRight;
-        		if (diff != 0) {
-        			//#if polish.css.text-layout
-	        			if (this.textLayout != 0) {
-	        				if ((this.textLayout & LAYOUT_CENTER) == LAYOUT_CENTER) {
-	        					x += diff / 2;
-	        				} else if ((this.textLayout & LAYOUT_CENTER) == LAYOUT_RIGHT) {
-	        					x += diff - 1;
-	        				}
-	        			} else 
-        			//#endif
-        			if (this.isLayoutCenter) {
-        				x += diff / 2;
-        			} else if (this.isLayoutRight) {
-        				x += diff;
-        			}
-        		}
+        		x--; // blackberry paints a border around the text that is one pixel wide
 				this.editField.setPaintPosition( x + g.getTranslateX(), y + g.getTranslateY() );
 			} else {
 				if (this.isUneditable || !this.isFocused) {
@@ -2509,12 +2492,7 @@ public class TextField extends StringItem
 		if (this.font == null) {
 			this.font = Font.getDefaultFont();
 		}
-		if (this.minimumWidth != null && this.contentWidth < this.minimumWidth.getValue( firstLineWidth)) {
-			this.contentWidth = this.minimumWidth.getValue( firstLineWidth );
-		} 
-		if (this.minimumHeight != null && this.contentHeight < this.minimumHeight.getValue(availWidth)) {
-			this.contentHeight = this.minimumHeight.getValue(availWidth);
-		} else  if (this.contentHeight < getFontHeight()) {
+		if (this.contentHeight < getFontHeight()) {
 			this.contentHeight = getFontHeight();
 		}
 		//#if polish.blackberry
