@@ -158,11 +158,15 @@ public abstract class BaseScreen
      */
     public boolean hasPointerEvents()
     {
+    	boolean result = false;
     	//#if polish.hasPointerEvents
-    		//# return true;
-    	//#else
-            return false;
+    		//#if polish.JavaPlatform >= BlackBerry/4.7
+    			result = net.rim.device.api.ui.Touchscreen.isSupported();
+    		//#else
+    			result = true;
+    		//#endif
         //#endif
+        return result;
     }
 
     /**

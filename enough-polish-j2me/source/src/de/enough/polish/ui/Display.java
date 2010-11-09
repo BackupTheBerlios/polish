@@ -25,7 +25,7 @@ import de.enough.polish.util.ImageUtil;
 //#if polish.api.sensor && polish.Screen.AutomaticOrientationChange && polish.midp2
 	//#define tmp.automaticScreenOrientation
 	import de.enough.polish.util.sensor.AccelerationListener;
-import de.enough.polish.util.sensor.AccelerationUtil;
+	import de.enough.polish.util.sensor.AccelerationUtil;
 //#endif
 
 
@@ -1102,10 +1102,11 @@ public class Display
 							height = getScreenHeight();
 						}
 						//#if polish.blackberry && polish.hasPointerEvents
-							if (nextScreen != null
-									//#if polish.JavaPlatform >= BlackBerry/6.0
-										&& (!Sensor.isSupported(Sensor.SLIDE) || (Sensor.getState(Sensor.SLIDE) == Sensor.STATE_SLIDE_CLOSED) )
-									//#endif
+							if ((nextScreen != null)
+								&& hasPointerEvents()
+								//#if polish.JavaPlatform >= BlackBerry/6.0
+									&& (!Sensor.isSupported(Sensor.SLIDE) || (Sensor.getState(Sensor.SLIDE) == Sensor.STATE_SLIDE_CLOSED) )
+								//#endif
 							) {
 								//adjust the screen size for the virtual keyboard that is going to be shown on the next screen:
 								Item currentItem = nextScreen.getCurrentItem();
