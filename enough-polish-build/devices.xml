@@ -13705,7 +13705,7 @@ These namespaces/schemas will be used soon.
   </device>
  <device>
     <identifier>BlackBerry/9780</identifier>
-    <features>hasTrackballEvents, hasPointerEvents, hasTouchEvents</features>
+    <features>hasTrackballEvents</features>
     <capability name="ScreenSize" value="480x360" />
     <capability name="JavaPlatform" value="MIDP/2.0, BlackBerry/6.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
