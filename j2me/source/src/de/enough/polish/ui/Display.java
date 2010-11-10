@@ -2006,7 +2006,7 @@ public class Display
 	protected void keyPressed(int keyCode) {
 		//#if polish.blackberry
 		if ((this.inputMethod == INPUT_METHOD_TOUCH) 
-				&& (Keypad.key(keyCode) != Keypad.KEY_MENU || Keypad.key(keyCode) != Keypad.KEY_ESCAPE))
+			&& (Keypad.key(keyCode) != Keypad.KEY_MENU && Keypad.key(keyCode) != Keypad.KEY_ESCAPE))
 		//#endif
 		{
 			setInputMethod(INPUT_METHOD_KEY);
