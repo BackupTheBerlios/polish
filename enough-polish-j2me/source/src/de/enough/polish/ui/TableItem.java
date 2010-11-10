@@ -1051,6 +1051,8 @@ public class TableItem
 			Object data = get(col, row);
 			if (focItem == data && data != null) {
 				// this cell is already selected:
+				this.selectedColumnIndex = col;
+				this.selectedRowIndex = row;
 				return;
 			}
 			if (this.itemStyle != null && focItem != null) {
