@@ -220,7 +220,7 @@ implements Runnable
 					.append( entry.exception );
 				try {
 					//#if polish.log.file.flushEachEntry == true
-						this.out = new PrintStream( connection.openOutputStream() );
+						this.out = new PrintStream( connection.openOutputStream(connection.fileSize()) );
 					//#endif
 					this.out.println( buffer.toString() );
 					//#if polish.log.file.flushEachEntry == true
