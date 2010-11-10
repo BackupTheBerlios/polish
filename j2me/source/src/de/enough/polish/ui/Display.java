@@ -1105,7 +1105,7 @@ public class Display
 							if ((nextScreen != null)
 								&& hasPointerEvents()
 								//#if polish.JavaPlatform >= BlackBerry/6.0
-								//#	&& (!Sensor.isSupported(Sensor.SLIDE) || (Sensor.getState(Sensor.SLIDE) == Sensor.STATE_SLIDE_CLOSED) )
+									&& (!Sensor.isSupported(Sensor.SLIDE) || (Sensor.getState(Sensor.SLIDE) == Sensor.STATE_SLIDE_CLOSED) )
 								//#endif
 							) {
 								//adjust the screen size for the virtual keyboard that is going to be shown on the next screen:
@@ -2006,7 +2006,8 @@ public class Display
 	protected void keyPressed(int keyCode) {
 		//#if polish.blackberry
 		if ((this.inputMethod == INPUT_METHOD_TOUCH) 
-			&& (Keypad.key(keyCode) != Keypad.KEY_MENU && Keypad.key(keyCode) != Keypad.KEY_ESCAPE))
+			&& (Keypad.key(keyCode) != Keypad.KEY_MENU) 
+			&& (Keypad.key(keyCode) != Keypad.KEY_ESCAPE))
 		//#endif
 		{
 			setInputMethod(INPUT_METHOD_KEY);
