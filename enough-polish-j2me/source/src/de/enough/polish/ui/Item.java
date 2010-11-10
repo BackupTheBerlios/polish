@@ -4779,6 +4779,7 @@ public abstract class Item implements UiElement, Animatable
 				this.preserveViewType = true;
 			//#endif
 				
+			this.isFocused = true;
 			setStyle( newStyle );
 			
 			//#if polish.css.pressed-style
@@ -4789,7 +4790,6 @@ public abstract class Item implements UiElement, Animatable
 			//#if polish.css.view-type
 				this.preserveViewType = false;
 			//#endif
-			this.isFocused = true;
 			// now set any commands of this item:
 			if (this.commands != null) {
 				showCommands();
@@ -4913,6 +4913,7 @@ public abstract class Item implements UiElement, Animatable
 			notifyItemPressedEnd();
 		}
 		this.backgroundYOffset = 0;
+		this.isFocused = false;
 		if (originalStyle != null) {
 			setStyle( originalStyle );
 		} else {
@@ -4920,7 +4921,6 @@ public abstract class Item implements UiElement, Animatable
 			this.border = null;
 			this.style = null;
 		}
-		this.isFocused = false;
 		// now remove any commands which are associated with this item:
 		if (this.commands != null) {
 			Screen scr = getScreen();
