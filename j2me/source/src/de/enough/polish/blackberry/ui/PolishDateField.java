@@ -240,7 +240,7 @@ implements AccessibleField
 
 	public void setPaintPosition(int x, int y ) {
 		this.isFocused = true;
-		super.setPosition(x - 1, y);
+		super.setPosition(x, y);
 	}
 
 	public void setInputMode(int mode) {

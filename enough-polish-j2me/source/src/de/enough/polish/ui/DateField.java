@@ -693,25 +693,6 @@ implements
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		//#if polish.blackberry
 			if (getScreen().isNativeUiShownFor(this)) {
-				x--;
-				int diff = this.backgroundWidth - this.originalWidth - this.paddingLeft - this.paddingRight;
-        		//int diff = this.contentWidth - this.originalWidth;
-        		if (diff != 0) {
-        			//#if polish.css.text-layout
-	        			if (this.textLayout != 0) {
-	        				if ((this.textLayout & LAYOUT_CENTER) == LAYOUT_CENTER) {
-	        					x += diff / 2;
-	        				} else if ((this.textLayout & LAYOUT_CENTER) == LAYOUT_RIGHT) {
-	        					x += diff;
-	        				}
-	        			} else 
-        			//#endif
-        			if (this.isLayoutCenter) {
-        				x += diff / 2;
-        			} else if (this.isLayoutRight) {
-        				x += diff;
-        			}
-        		}
         		y -= this.bbYAdjust;
 				this.blackberryDateField.setPaintPosition( x + g.getTranslateX(), y + g.getTranslateY() );
 			} else {
@@ -798,23 +779,9 @@ implements
 		}
 		// init StringItem:
 		super.initContent(firstLineWidth, availWidth, availHeight);
-		
-		//#if polish.blackberry && polish.hasPointerEvents
-			//this is needed to open the native DateField-Keyboard from the whole content
-			this.contentWidth = availWidth;
-		//#endif
-		
+				
 		this.originalWidth = this.contentWidth;
 		this.originalHeight = this.contentHeight;
-		if (this.minimumWidth != null && this.contentWidth < this.minimumWidth.getValue(firstLineWidth)) {
-			this.contentWidth = this.minimumWidth.getValue(firstLineWidth);
-		} 
-		if (this.minimumHeight != null && this.contentHeight < this.minimumHeight.getValue(availWidth)) {
-			this.contentHeight = this.minimumHeight.getValue(availWidth);
-		} else  if (this.contentHeight < getFontHeight()) {
-			this.contentHeight = getFontHeight();
-			this.originalHeight = this.contentHeight;
-		}
 		//#if polish.blackberry
 			if (!this.isFocused) {
 				return;
@@ -829,7 +796,12 @@ implements
 				this.blackberryDateField.setStyle( this.style );
 			}
 			// allow extra pixels for the cursor:
-			this.blackberryDateField.doLayout( this.contentWidth+2, this.contentHeight );
+			int w = this.contentWidth+2;
+			//#if polish.blackberry && polish.hasPointerEvents
+				//this is needed to open the native DateField-Keyboard from the whole content
+				w = availWidth;
+			//#endif
+			this.blackberryDateField.doLayout( w, this.contentHeight );
 			this.bbYAdjust = (this.blackberryDateField.getExtent().height - this.contentHeight) / 2;
 			//System.out.println("TextField: editField.getText()="+ this.editField.getText() );
 		//#endif			
