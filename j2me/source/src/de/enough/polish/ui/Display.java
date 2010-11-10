@@ -1105,7 +1105,7 @@ public class Display
 							if ((nextScreen != null)
 								&& hasPointerEvents()
 								//#if polish.JavaPlatform >= BlackBerry/6.0
-									&& (!Sensor.isSupported(Sensor.SLIDE) || (Sensor.getState(Sensor.SLIDE) == Sensor.STATE_SLIDE_CLOSED) )
+								//#	&& (!Sensor.isSupported(Sensor.SLIDE) || (Sensor.getState(Sensor.SLIDE) == Sensor.STATE_SLIDE_CLOSED) )
 								//#endif
 							) {
 								//adjust the screen size for the virtual keyboard that is going to be shown on the next screen:

@@ -965,11 +965,18 @@ public abstract class BaseScreen
     	// to the corresponding consumer. Weird, really. This means that text input seems
     	// to be handled differently from keyDown. And it's not keyChar.
         Screen screen = getPolishScreen();
+        //#debug
+        System.out.println("keyDown: keyCode=" + keyCode + ", key=" + Keypad.key( keyCode) + ", char=" + Keypad.map( keyCode ) );
+        //#if polish.JavaPlatform < BlackBerry/6.0
+        keyCode = getMidpKeyCode(keyCode);
+        //#endif
+        
         if ( screen != null ) {
            if (forwardEventToNativeField( screen, keyCode) 
         		   && (Keypad.map( keyCode ) != Keypad.KEY_ESCAPE))
            {
         	   try {
+        		   keyPressed(keyCode);
         		   return super.keyDown(keyCode, time);                	   
         	   } catch (Exception e) {
         		   //#debug error
@@ -977,11 +984,6 @@ public abstract class BaseScreen
         	   }
            }
         }
-        //#debug
-    	System.out.println("keyDown: keyCode=" + keyCode + ", key=" + Keypad.key( keyCode) + ", char=" + Keypad.map( keyCode ) );
-    	//#if polish.JavaPlatform < BlackBerry/6.0
-    	keyCode = getMidpKeyCode(keyCode);
-    	//#endif
         keyPressed( keyCode );
         if ( screen != null ) {
         	return (screen.keyPressedProcessed);
@@ -1040,12 +1042,18 @@ public abstract class BaseScreen
      * @see net.rim.device.api.ui.Screen#keyUp(int, int)
      */ 
 	protected boolean keyUp(int keyCode, int time) {
-        Screen screen = getPolishScreen();
+		Screen screen = getPolishScreen();
+		 //#debug
+    	System.out.println("keyUp: keyCode=" + keyCode + ", key=" + Keypad.key( keyCode) + ", char=" + Keypad.map( keyCode ) );
+    	//#if polish.JavaPlatform < BlackBerry/6.0
+    	keyCode = getMidpKeyCode(keyCode);
+    	//#endif
         if ( screen != null ) {
            if (forwardEventToNativeField( screen, keyCode) 
         		   && (Keypad.map( keyCode ) != Keypad.KEY_ESCAPE))
            {
         	   try {
+        		   keyReleased(keyCode);
         		   return super.keyUp(keyCode, time);                	   
         	   } catch (Exception e) {
         		   //#debug error
@@ -1053,11 +1061,7 @@ public abstract class BaseScreen
         	   }
            }
         }
-        //#debug
-    	System.out.println("keyUp: keyCode=" + keyCode + ", key=" + Keypad.key( keyCode) + ", char=" + Keypad.map( keyCode ) );
-    	//#if polish.JavaPlatform < BlackBerry/6.0
-    	keyCode = getMidpKeyCode(keyCode);
-    	//#endif
+       
         keyReleased( keyCode );
         if ( screen != null ) {
         	boolean handled = screen.keyReleasedProcessed; 
