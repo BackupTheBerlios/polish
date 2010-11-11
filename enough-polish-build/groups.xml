@@ -153,7 +153,6 @@
 		<name>Series60</name>
 		<parent>Nokia-UI</parent>
 		<capability name="OS" value="Symbian OS 6.1" />
-		<capability name="key.ClearKey" value="-8" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
 		<capability name="JavaPackage" value="wmapi, mmapi" />		
