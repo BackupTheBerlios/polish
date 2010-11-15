@@ -1214,7 +1214,7 @@ public abstract class Item implements UiElement, Animatable
 			Style labStyle = (Style) style.getObjectProperty("label-style");
 			if (labStyle != null) {
 				this.labelStyle = labStyle;
-			} else if (this.labelStyle == null || this.isFocused) {
+			} else if (this.labelStyle == null) {
 				this.labelStyle = StyleSheet.labelStyle;
 			}
 		//#else
