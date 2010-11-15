@@ -21,6 +21,7 @@ import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.Canvas;
 import de.enough.polish.ui.Display;
 import de.enough.polish.ui.Displayable;
+import de.enough.polish.ui.UiAccess;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.DeviceControl;
 
@@ -976,7 +977,12 @@ public abstract class BaseScreen
         		   && (Keypad.map( keyCode ) != Keypad.KEY_ESCAPE))
            {
         	   try {
-        		   keyPressed(keyCode);
+        		   // if the current item is valid ... 
+        		   if(this.currentItem != null) {
+        			   int gameAction = screen.getGameAction(keyCode);
+        			   // forward the key event to the current item
+        			   UiAccess.handleKeyPressed(this.currentItem, keyCode, gameAction);
+        		   }
         		   return super.keyDown(keyCode, time);                	   
         	   } catch (Exception e) {
         		   //#debug error
@@ -1053,7 +1059,12 @@ public abstract class BaseScreen
         		   && (Keypad.map( keyCode ) != Keypad.KEY_ESCAPE))
            {
         	   try {
-        		   keyReleased(keyCode);
+        		   // if the current item is valid ... 
+        		   if(this.currentItem != null) {
+        			   int gameAction = screen.getGameAction(keyCode);
+        			   // forward the key event to the current item
+        			   UiAccess.handleKeyReleased(this.currentItem, keyCode, gameAction);
+        		   }
         		   return super.keyUp(keyCode, time);                	   
         	   } catch (Exception e) {
         		   //#debug error
