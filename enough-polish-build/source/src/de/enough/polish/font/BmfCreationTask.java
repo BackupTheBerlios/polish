@@ -67,6 +67,7 @@ public class BmfCreationTask extends Task
      */
 	public void setColor(String color)
 	{
+		System.out.println("in setColor()");
 		if (color.indexOf(':') != -1) {
 		
 			String[] split = color.split(TOKEN);
@@ -84,7 +85,7 @@ public class BmfCreationTask extends Task
 	        this.attributeColor = new Color(red, green, blue, alpha);
 		} else {
 			ColorConverter converter = new ColorConverter();
-			long colorL = Long.parseLong(converter.parseColor(color), 16 );
+			long colorL = Long.parseLong(converter.parseColor(color).substring(2), 16 );
 			int alpha = (int) ((colorL >>> 24));
 			int red = (int) ((colorL >>> 16) & 0x00ff);
 			int green = (int) ((colorL >>> 8) & 0x0000ff);
