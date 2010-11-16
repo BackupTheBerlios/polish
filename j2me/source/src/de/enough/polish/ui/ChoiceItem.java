@@ -227,7 +227,10 @@ public class ChoiceItem extends IconItem
 		if (!this.drawNoPlain && this.plain.getWidth() > maxWidth ) {
 			maxWidth = this.plain.getWidth();
 		}
-		maxWidth += this.paddingHorizontal;
+		if(!this.isBoxAlignRight) {
+			// only add horizontal padding if the box align is not right
+			maxWidth += this.paddingHorizontal;
+		}
 		this.boxWidth = maxWidth;
 		int maxHeight = this.selected == null ? 0 : this.selected.getHeight();
 		if ( !this.drawNoPlain && this.plain.getHeight() > maxHeight ) {
@@ -345,7 +348,7 @@ public class ChoiceItem extends IconItem
 			int boxY = y + this.yBoxAdjust;
 			//#if polish.css.box-align
 				if (this.isBoxAlignRight) {
-					rightBorder -= this.boxWidth + this.paddingHorizontal;
+					rightBorder -= this.boxWidth;
 					boxX = rightBorder;
 				} else {
 			//#endif
