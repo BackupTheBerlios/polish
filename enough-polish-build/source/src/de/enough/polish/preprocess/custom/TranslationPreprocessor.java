@@ -138,7 +138,13 @@ public class TranslationPreprocessor extends CustomPreprocessor {
 						}
 						String id = "" + (translation.getId() - 1);
 						String quotedKey = '"' + key + '"';
-						String callReplacement = StringUtil.replace( call, quotedKey, id );
+						int index = call.indexOf(quotedKey);
+						String callReplacement;
+						if (translation.isPlain() && call.indexOf(',', index + quotedKey.length()) != -1) {
+							callReplacement = "Locale.get(" + id + ")";
+						} else {
+							callReplacement = StringUtil.replace( call, quotedKey, id );
+						}
 						line = StringUtil.replace( line, call, callReplacement );						
 					} else {
 						if (translation.isPlain()) {
