@@ -67,7 +67,6 @@ public class BmfCreationTask extends Task
      */
 	public void setColor(String color)
 	{
-		System.out.println("in setColor()");
 		if (color.indexOf(':') != -1) {
 		
 			String[] split = color.split(TOKEN);
