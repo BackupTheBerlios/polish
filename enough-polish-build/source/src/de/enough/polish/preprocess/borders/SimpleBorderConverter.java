@@ -57,10 +57,10 @@ public class SimpleBorderConverter extends BorderConverter {
 	 * @see de.enough.polish.preprocess.BorderConverter#createNewStatement(java.util.HashMap, de.enough.polish.preprocess.Style, de.enough.polish.preprocess.StyleSheet)
 	 */
 	protected String createNewStatement(Map border, Style style, StyleSheet styleSheet) throws BuildException {
-		String topWidthStr = (String) border.get("top-width");
-		String bottomWidthStr = (String) border.get("bottom-width");
-		String leftWidthStr = (String) border.get("left-width");
-		String rightWidthStr = (String) border.get("right-width");
+		String topWidthStr = (String) border.get("width-top");
+		String bottomWidthStr = (String) border.get("width-bottom");
+		String leftWidthStr = (String) border.get("width-left");
+		String rightWidthStr = (String) border.get("width-right");
 		
 		if (topWidthStr == null && bottomWidthStr == null && leftWidthStr == null && rightWidthStr == null) {
 			return "new " + BORDERS_PACKAGE + "SimpleBorder( " + this.color 
