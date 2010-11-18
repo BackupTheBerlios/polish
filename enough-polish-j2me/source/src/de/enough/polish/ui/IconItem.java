@@ -269,7 +269,7 @@ implements ImageConsumer
 				}
 			}
 		} else if (this.imageAlign == Graphics.RIGHT ) {
-			iconLeftX = firstLineWidth; // - this.imageWidth (imageWidth is already subtracted);
+			iconLeftX = this.contentWidth - imgWidth + this.paddingHorizontal; // - this.imageWidth (imageWidth is already subtracted);
 			//#ifdef polish.css.icon-image-align-next
 				if (this.imageAlignNext && this.isLayoutExpand) {
 					if (this.isLayoutCenter) {
