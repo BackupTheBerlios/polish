@@ -903,20 +903,26 @@ public class FramedForm extends Form {
 	 * @see de.enough.polish.ui.Screen#handleKeyReleased(int, int)
 	 */
 	protected boolean handleKeyReleased(int keyCode, int gameAction) {
-		boolean handled = this.currentlyActiveContainer.handleKeyReleased(keyCode, gameAction);
-		return handled || super.handleKeyReleased(keyCode, gameAction);
+		if(this.currentlyActiveContainer != this.container) {
+			boolean handled = this.currentlyActiveContainer.handleKeyReleased(keyCode, gameAction);
+			return handled || super.handleKeyReleased(keyCode, gameAction);
+		} else {
+			return super.handleKeyReleased(keyCode, gameAction);
+		}
 	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Screen#handleKeyRepeated(int, int)
 	 */
 	protected boolean handleKeyRepeated(int keyCode, int gameAction) {
-		boolean handled = this.currentlyActiveContainer.handleKeyRepeated(keyCode, gameAction);
-		return handled || super.handleKeyRepeated(keyCode, gameAction);
+		if(this.currentlyActiveContainer != this.container) {
+			boolean handled = this.currentlyActiveContainer.handleKeyRepeated(keyCode, gameAction);
+			return handled || super.handleKeyRepeated(keyCode, gameAction);
+		} else {
+			return super.handleKeyRepeated(keyCode, gameAction);
+		}
 	}
 	
-	
-
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Screen#handleCommand(javax.microedition.lcdui.Command)
 	 */
