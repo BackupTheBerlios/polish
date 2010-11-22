@@ -119,7 +119,11 @@ public class DebugHelper {
 		try{
 			throw new RuntimeException();
 		}
-		catch(RuntimeException e)
+		//#if polish.blackberry
+		//# catch(Throwable e)
+		//#else
+		catch(Exception e)
+		//#endif
 		{
 			e.printStackTrace();
 		}
