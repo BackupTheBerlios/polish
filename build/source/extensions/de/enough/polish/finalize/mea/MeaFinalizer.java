@@ -162,6 +162,7 @@ public class MeaFinalizer extends Finalizer{
         String description = env.getVariable("MIDlet-Description");
         if(description != null){
             description = description.replaceAll("\"","&quot;");
+            description = description.replaceAll("&","&amp;");
         }
         String name = env.getVariable("MIDlet-Name");
         if(name == null || name.length() == 0) {
