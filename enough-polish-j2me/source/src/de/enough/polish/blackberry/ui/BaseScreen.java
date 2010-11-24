@@ -1371,7 +1371,7 @@ public abstract class BaseScreen
     //#if polish.JavaPlatform >= BlackBerry/6.0
     protected boolean focusChangeNeeded(Field field) {
     	if(field instanceof PolishTextField) {
-    		return ((PolishEditField)field).needsNavigationFix();
+    		return ((PolishTextField)field).needsNavigationFix();
     	} else {
     		return false;
     	}
