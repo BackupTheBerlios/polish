@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.Map;
@@ -310,7 +309,7 @@ implements OutputFilter
 				try {
 					int signResult = requester.requestSignature(device, locale, new File( blackberryHome ), codFile, env);
 					if (signResult != 0) {
-						System.out.println("Unable to request BlackBerry signature: Signing request returned " + signResult );
+						throw new BuildException("Unable to request BlackBerry signature: Signing request returned " + signResult);
 					}
 				} catch (Exception e) {
 					throw new BuildException("Unable to to request BlackBerry signature: " + e.toString() );
