@@ -4110,10 +4110,6 @@ public class TextField extends StringItem
 	 */
 	protected boolean handlePointerPressed( int x, int y ) {
 		if (isInItemArea(x, y)) {
-			
-			//#if polish.blackberry && polish.hasPointerEvents
-			 	DeviceControl.showSoftKeyboard();
-			//#endif
 			 
 			//#if polish.javaplatform >= Android/1.5
 				this.androidLastPointerPressedTime = System.currentTimeMillis();
@@ -4171,6 +4167,15 @@ public class TextField extends StringItem
 	//#endif
 
 
+	//#if polish.hasPointerEvents
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#handleOnFocusSoftKeyboardDisplayBehavior()
+	 */
+	public void handleOnFocusSoftKeyboardDisplayBehavior() {
+		DeviceControl.showSoftKeyboard();
+	}
+	//#endif
+	
 	
 	//#ifdef tmp.directInput
 	/**
@@ -4472,6 +4477,10 @@ public class TextField extends StringItem
 				DeviceControl.showSoftKeyboard();
 				this.androidFocusedTime = System.currentTimeMillis();
 			}
+		//#endif			
+			
+		//#if polish.blackberry && polish.hasPointerEvents
+		 	DeviceControl.showSoftKeyboard();
 		//#endif
 		return unfocusedStyle;
 	}

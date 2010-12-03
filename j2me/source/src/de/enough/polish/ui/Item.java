@@ -42,6 +42,7 @@ import de.enough.polish.event.GestureEvent;
 import de.enough.polish.event.UiEventListener;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.Arrays;
+import de.enough.polish.util.DeviceControl;
 import de.enough.polish.util.DrawUtil;
 import de.enough.polish.util.HashMap;
 import de.enough.polish.util.RgbImage;
@@ -4752,6 +4753,18 @@ public abstract class Item implements UiElement, Animatable
 		//#endif
 		return focStyle;
 	}
+	
+
+	//#if polish.hasPointerEvents
+	/**
+	 * Handles the behavior of the virtual keyboard when the item is focused.
+	 * By defaukt, the virtual keyboard is hidden. Components which need to have the virtual keyboard
+	 * shown when they are focused can override this method.
+	 */
+	public void handleOnFocusSoftKeyboardDisplayBehavior() {
+		DeviceControl.hideSoftKeyboard();
+	}
+	//#endif
 
 	/**
 	 * Focuses this item.
@@ -4765,6 +4778,10 @@ public abstract class Item implements UiElement, Animatable
 	protected Style focus( Style newStyle, int direction ) {
 		//#debug
 		System.out.println("focus " + this);
+		
+		//#if polish.hasPointerEvents
+		handleOnFocusSoftKeyboardDisplayBehavior();
+		//#endif
 		
 		Style oldStyle = this.style;
 		
