@@ -161,12 +161,13 @@ public class MeaFinalizer extends Finalizer{
         super.notifyBuildEnd(env);
         String description = env.getVariable("MIDlet-Description");
         if(description != null){
-            description = description.replaceAll("\"","&quot;");
-            description = description.replaceAll("&","&amp;");
+            description = escapeXml( description );
         }
         String name = env.getVariable("MIDlet-Name");
         if(name == null || name.length() == 0) {
             name = "unknown";
+        } else {
+        	name = escapeXml(name);        	
         }
         String version = env.getVariable("MIDlet-Version");
         if(version == null || version.length() == 0) {
@@ -175,6 +176,8 @@ public class MeaFinalizer extends Finalizer{
         String vendor = env.getVariable("MIDlet-Vendor");
         if(vendor == null || vendor.length() == 0) {
             vendor = "unknown";
+        } else {
+        	vendor = escapeXml(vendor);
         }
         
         // Write contents.xml file.
@@ -295,7 +298,13 @@ public class MeaFinalizer extends Finalizer{
         
     }
 
-    public void setFallbackDevice(String fallbackDevice) {
+    private String escapeXml(String input) {
+        input.replaceAll("\"","&quot;");
+        input = input.replaceAll("&","&amp;");
+		return input;
+	}
+
+	public void setFallbackDevice(String fallbackDevice) {
         this.fallbackDevice = fallbackDevice;
     }
 
