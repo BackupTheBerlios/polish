@@ -959,7 +959,7 @@ public class Display
 		
 		//#if polish.blackberry
 			if (this.nativeDisplay.notifyDisplayableChange( this.currentDisplayable, nextDisplayable )) {
-				this.currentDisplayable = null;
+				this.nextOrCurrentDisplayable = null;
 				return;
 			}
 		//#endif

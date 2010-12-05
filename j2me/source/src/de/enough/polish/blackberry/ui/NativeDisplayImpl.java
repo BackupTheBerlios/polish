@@ -27,8 +27,11 @@
 package de.enough.polish.blackberry.ui;
 
 import de.enough.polish.blackberry.midlet.MIDlet;
+//#if polish.useNativeGui || polish.useNativeAlerts
+	import de.enough.polish.blackberry.nativeui.AlertDialog;
+//#endif
 //#if polish.useNativeGui
-import de.enough.polish.blackberry.nativeui.FormScreen;
+	import de.enough.polish.blackberry.nativeui.FormScreen;
 //#endif
 import de.enough.polish.ui.Alert;
 import de.enough.polish.ui.AlertType;
@@ -184,6 +187,16 @@ public class NativeDisplayImpl implements NativeDisplay
     	// remove all fields but the dummy field:
 		BaseScreen screen = (BaseScreen)(Object)Display.getInstance();
 		screen.notifyDisplayableChange( currentDisplayable, nextDisplayable );
+		//#if polish.useNativeAlerts || polish.useNativeGui
+			if (nextDisplayable instanceof Alert) {
+				AlertDialog dialog = new AlertDialog((Alert) nextDisplayable);
+		        Object lock = Application.getEventLock();
+		        synchronized (lock) {
+		        	this.midlet.pushScreen(dialog);
+		        }
+				return true;
+			} else 
+		//#endif
 		//#if polish.useNativeGui
 			if (nextDisplayable instanceof Form) {
 				Form polishForm = (Form)nextDisplayable;
@@ -203,18 +216,6 @@ public class NativeDisplayImpl implements NativeDisplay
 				if (StyleSheet.animationThread == null) {
 					StyleSheet.animationThread = new AnimationThread();
 					StyleSheet.animationThread.start();
-				}
-				return true;
-			} else if (nextDisplayable instanceof Alert) {
-				Alert alert = (Alert) nextDisplayable;
-				String text =  alert.getString();
-				if (text == null) {
-					text = alert.getTitle();
-				}
-				if (alert.getType() == AlertType.INFO) {
-					Dialog.inform( text );
-				} else {
-					Dialog.alert( text );
 				}
 				return true;
 			}
