@@ -383,8 +383,8 @@ implements Externalizable
 	
 	/**
 	 * Retrieves the first matching link
-	 * @param rel the relation
-	 * @param type the type
+	 * @param rel the relation, null of the relation should be ignored
+	 * @param type the type, null if the type should be ignored
 	 * @return the first matching link or null
 	 */
 	public AtomEntryLink getLink( String rel, String type ) {
@@ -399,10 +399,10 @@ implements Externalizable
 				break;
 			}
 			isMatching = true;
-			if ((rel != null && !rel.equals(link.getRel())) || (rel == null && link.getRel() != null)) {
+			if ((rel != null) && !(rel.equals(link.getRel()))) {
 				isMatching = false;
 			}
-			if (isMatching && ( (type != null && !type.equals(link.getType())) || (type == null && link.getRel() != null)) ) {
+			if (isMatching && (type != null) && !(type.equals(link.getType())) ) {
 				isMatching = false;
 			}
 			if (isMatching) {
