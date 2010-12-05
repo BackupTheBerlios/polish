@@ -396,7 +396,18 @@ implements Externalizable
 		if (newCapacity == currentCapacity ) {
 			newCapacity++;
 		}
-		Object[] newStore = new Object[ newCapacity ];
+		ensureCapacity( newCapacity );
+	}
+
+	/**
+	 * Ensures that the specified capacity is available on this list.
+	 * @param capacity the capacity
+	 */
+	public void ensureCapacity(int capacity) {
+		if (capacity <= this.storedObjects.length) {
+			return;
+		}
+		Object[] newStore = new Object[ capacity ];
 		System.arraycopy( this.storedObjects, 0, newStore, 0, this.size );
 		this.storedObjects = newStore;
 	}
