@@ -4474,14 +4474,10 @@ public class TextField extends StringItem
 		
 		//#if polish.javaplatform >= Android/1.5
 			if (this.isShown) {
-				DeviceControl.showSoftKeyboard();
 				this.androidFocusedTime = System.currentTimeMillis();
 			}
 		//#endif			
 			
-		//#if polish.blackberry && polish.hasPointerEvents
-		 	DeviceControl.showSoftKeyboard();
-		//#endif
 		return unfocusedStyle;
 	}
 	//#endif
