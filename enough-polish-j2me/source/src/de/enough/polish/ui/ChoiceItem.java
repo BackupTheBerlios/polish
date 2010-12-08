@@ -227,7 +227,10 @@ public class ChoiceItem extends IconItem
 		if (!this.drawNoPlain && this.plain.getWidth() > maxWidth ) {
 			maxWidth = this.plain.getWidth();
 		}
-		if(!this.isBoxAlignRight) {
+		//#if polish.css.box-align
+		if(!this.isBoxAlignRight) 
+		//#endif
+		{
 			// only add horizontal padding if the box align is not right
 			maxWidth += this.paddingHorizontal;
 		}
