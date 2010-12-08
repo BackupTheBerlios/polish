@@ -864,6 +864,16 @@ public class Container extends Item {
 					this.containerView.focusedItem = null;
 				}
 			//#endif
+			//#if polish.blackberry
+				if (this.isFocused) {
+					if(getScreen() != null) {
+						getScreen().notifyFocusSet(this);
+					} else {
+						Display.getInstance().notifyFocusSet(this);
+					}
+				}
+			//#endif
+			
 			return true;
 		}
 		if (!this.isFocused) {
