@@ -32,6 +32,7 @@ import java.io.IOException;
 import javax.microedition.io.HttpConnection;
 
 import de.enough.polish.util.HashMap;
+import de.enough.polish.util.TextUtil;
 
 /**
  * Provides a <code>HttpConnection</code> that supports HTTP redirects and allows easy creation of HTTP POST requests. This
@@ -88,7 +89,7 @@ public class PostRedirectHttpConnection extends RedirectHttpConnection
 		if (this.body.length() > 0) {
 			this.body.append('&');
 		}
-		this.body.append( name ).append( '=' ).append( value );
+		this.body.append( TextUtil.encodeUrl(name) ).append( '=' ).append( TextUtil.encodeUrl(value) );
 	}
 
 	/*
