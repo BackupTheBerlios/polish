@@ -104,7 +104,7 @@
 			>
 				<!-- midlets definition -->
 				<!-- CHANGE THIS!       -->
-				<midlet class="de.enough.polish.sample.email.EmailMidlet" name="Email" />
+				<midlet class="de.enough.polish.app.App" name="BlankApp" />
 				<!-- project-wide variables - used for preprocessing.  -->
 				<!-- You can set localized variables in the resources/messages.txt files as well.  -->
 				<variables includeAntProperties="true" >

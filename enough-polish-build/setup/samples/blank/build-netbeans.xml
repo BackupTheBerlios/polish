@@ -99,7 +99,7 @@
 				<!-- NetBeans defines this property automatically:  -->
 				<midlets definition="${manifest.midlets}" if="manifest.midlets:defined" />
 				<midlets unless="manifest.midlets:defined">
-					<midlet class="de.enough.polish.example.MenuMidlet" name="Example" />
+					<midlet class="de.enough.polish.app.App" name="BlankApp" />
 				</midlets>
 				<!-- project-wide variables - used for preprocessing  -->
 				<variables>
