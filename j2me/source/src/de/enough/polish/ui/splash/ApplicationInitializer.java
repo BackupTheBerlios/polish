@@ -33,7 +33,7 @@ package de.enough.polish.ui.splash;
 //#endif
 
 /**
- * <p>Initalizes the actual application.
+ * <p>Initializes the actual application.
  * The SplashScreen is launching a background thread that calls the initApp() method.
  * You can define the preprocessing variable "polish.classes.ApplicationInitializer"
  * for making this interface redundant (which saves some precious JAR space).
@@ -48,7 +48,7 @@ package de.enough.polish.ui.splash;
  * </pre>
  * </p>
  *
- * <p>Copyright (c) Enough Software 2005 - 2009</p>
+ * <p>Copyright (c) Enough Software 2005 - 2010</p>
  * <pre>
  * history
  *        23-Mar-2005 - rob creation
@@ -58,7 +58,7 @@ package de.enough.polish.ui.splash;
 public interface ApplicationInitializer {
 	
 	/**
-	 * Initialises the application and returns the first screen that should be shown after the splash screen.
+	 * Initializes the application and returns the first screen that should be shown after the splash screen.
 	 * This method is called by a background thread of the SplashScreen.
 	 * 
 	 * @return the first screen that should be shown after the splash screen.
