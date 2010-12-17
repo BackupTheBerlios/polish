@@ -191,7 +191,7 @@ public class Container extends Item {
 	 * Creates a new empty container.
 	 * 
 	 * @param label the label of this container
-	 * @param focusFirstElement true when the first focussable element should be focused automatically.
+	 * @param focusFirstElement true when the first focusable element should be focused automatically.
 	 * @param style the style for this container
 	 * @param height the vertical space available for this container, set to -1 when scrolling should not be activated
 	 * @see #setScrollHeight( int ) 
