@@ -597,6 +597,7 @@ implements ImageConsumer
 	}
 	//#endif
 	
+	
 	/**
 	 * Sets the image for this icon.
 	 * 
@@ -784,7 +785,7 @@ implements ImageConsumer
 	 * @see de.enough.polish.ui.Item#focus(de.enough.polish.ui.Style, int)
 	 */
 	protected Style focus(Style newStyle, int direction) {
-		if (this.imageHover != null) {
+		if (this.imageHover != null && this.image != this.imageHover) {
 			this.imageNormal = this.image;
 			setImage( this.imageHover );
 		}
