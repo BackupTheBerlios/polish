@@ -1273,6 +1273,9 @@ public class TextField extends StringItem
 				this.enableDirectInput = true;
 			}
 		//#endif
+		//#if tmp.forceDirectInput
+			this.enableDirectInput = true;
+		//#endif
 			
 		setConstraints(constraints);
 				
@@ -4036,6 +4039,9 @@ public class TextField extends StringItem
 	protected boolean handleKeyReleased( int keyCode, int gameAction ) {
 		//#debug
 		System.out.println("handleKeyReleased  " + keyCode );
+		if (!this.enableDirectInput) {
+			return super.handleKeyReleased(keyCode, gameAction);
+		}
 		//#if tmp.useNativeTextBox && !(polish.Vendor == Samsung)
 			if(this.skipKeyReleasedEvent) {
 				this.skipKeyReleasedEvent = false;
