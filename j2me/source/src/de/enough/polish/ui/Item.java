@@ -4780,7 +4780,7 @@ public abstract class Item implements UiElement, Animatable
 		System.out.println("focus " + this);
 		
 		//#if polish.hasPointerEvents
-		handleOnFocusSoftKeyboardDisplayBehavior();
+			handleOnFocusSoftKeyboardDisplayBehavior();
 		//#endif
 		
 		Style oldStyle = this.style;
@@ -4821,6 +4821,43 @@ public abstract class Item implements UiElement, Animatable
 		
 		return oldStyle;
 	}
+	
+
+	/**
+	 * Removes the focus from this item.
+	 * 
+	 * @param originalStyle the original style which will be restored.
+	 */
+	protected void defocus( Style originalStyle ) {
+		//#debug
+		System.out.println("defocus " + this + " with style " + (originalStyle != null ? originalStyle.name : "<no style>"));
+		if (this.isPressed) {
+			notifyItemPressedEnd();
+		}
+		this.backgroundYOffset = 0;
+		this.isFocused = false;
+		if (originalStyle != null) {
+			setStyle( originalStyle );
+		} else {
+			this.background = null;
+			this.border = null;
+			this.style = null;
+		}
+		// now remove any commands which are associated with this item:
+		if (this.commands != null) {
+			Screen scr = getScreen();
+			if (scr != null) {
+				scr.removeItemCommands(this);
+			}
+		}
+		//#if polish.Item.ShowCommandsOnHold
+			this.isShowCommands = false;
+		//#endif
+		//#if tmp.handleEvents
+			EventManager.fireEvent( EventManager.EVENT_DEFOCUS, this, null); 
+		//#endif
+	}
+
 	
 
 	/**
@@ -4917,41 +4954,6 @@ public abstract class Item implements UiElement, Animatable
 		}
 	//#endif
 
-
-	/**
-	 * Removes the focus from this item.
-	 * 
-	 * @param originalStyle the original style which will be restored.
-	 */
-	protected void defocus( Style originalStyle ) {
-		//#debug
-		System.out.println("defocus " + this + " with style " + (originalStyle != null ? originalStyle.name : "<no style>"));
-		if (this.isPressed) {
-			notifyItemPressedEnd();
-		}
-		this.backgroundYOffset = 0;
-		this.isFocused = false;
-		if (originalStyle != null) {
-			setStyle( originalStyle );
-		} else {
-			this.background = null;
-			this.border = null;
-			this.style = null;
-		}
-		// now remove any commands which are associated with this item:
-		if (this.commands != null) {
-			Screen scr = getScreen();
-			if (scr != null) {
-				scr.removeItemCommands(this);
-			}
-		}
-		//#if polish.Item.ShowCommandsOnHold
-			this.isShowCommands = false;
-		//#endif
-		//#if tmp.handleEvents
-			EventManager.fireEvent( EventManager.EVENT_DEFOCUS, this, null); 
-		//#endif
-	}
 
 	/**
 	 * Called by the system to notify the item that it is now at least
