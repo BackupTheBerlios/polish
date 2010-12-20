@@ -128,6 +128,7 @@ public class MeaFinalizer extends Finalizer{
     private String tags;
     private String access = "owner";
     private String pseudoprivateToken = null;
+	private String extension = "mea";
     
     public void finalize(File jadFile, File jarFile, Device device, Locale locale, Environment env) {
         finalize( env.getBuildSetting().getDestDir(env), jadFile, jarFile, device, locale, env  );
@@ -184,8 +185,8 @@ public class MeaFinalizer extends Finalizer{
 
         FileWriter fileWriter = null;
         File contentsXmlFile = null;
-        File meaFile = new File(distFile,name+".mea");
-        System.out.println("Creating media archive '"+meaFile.getName()+"' with " + this.access + " access.");
+        File meaFile = new File(distFile, name + "." + this.extension);
+        System.out.println("Creating media archive '" + meaFile.getName() + "' with " + this.access + " access.");
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(meaFile);
             ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
@@ -326,6 +327,10 @@ public class MeaFinalizer extends Finalizer{
         	}
         }
         this.access  = accessParameter;
+    }
+    
+    public void setExtension( String extension ) {
+		this.extension  = extension;
     }
     
     public static void main(String[] args)
