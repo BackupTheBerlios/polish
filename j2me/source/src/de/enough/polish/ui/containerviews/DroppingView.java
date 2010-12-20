@@ -39,10 +39,6 @@ import de.enough.polish.ui.Style;
  *
  * <p>Copyright Enough Software 2004 - 2009</p>
 
- * <pre>
- * history
- *        13-Nov-2004 - rob creation
- * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class DroppingView extends ContainerView {
