@@ -98,7 +98,6 @@ public class HorizontalContainerView extends ContainerView {
 			arrowWidth = this.arrowLeft.getWidth() + this.arrowRight.getWidth() + (this.paddingHorizontal * 2);
 			availWidth -= arrowWidth;
 			firstLineWidth -= arrowWidth;
-			System.out.println("paddingHorizontal=" + this.paddingHorizontal + ", arrowWidth=" + arrowWidth);
 		}
 		
 		int selectedItemIndex = parent.getFocusedIndex();
@@ -157,7 +156,6 @@ public class HorizontalContainerView extends ContainerView {
 			}
 			int startX = completeWidth;
 			item.relativeX = completeWidth;
-			System.out.println( i + ": completeWidth=" + completeWidth );
 			item.relativeY = 0;
 			completeWidth += itemWidth + (isLast ? 0 :  this.paddingHorizontal);
 			//#if polish.css.horizontalview-distribution
