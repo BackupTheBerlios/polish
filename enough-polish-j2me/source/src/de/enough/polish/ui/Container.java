@@ -150,7 +150,7 @@ public class Container extends Item {
 		//#define tmp.checkBouncing
 		private boolean allowBouncing = true;
 	//#endif
-
+	private FocusListener focusListener;
 	
 	/**
 	 * Creates a new empty container.
@@ -227,7 +227,7 @@ public class Container extends Item {
 	}
 	
 	/**
-	 * Returns the available height for scrolling eiter from this container or from it's parent container.
+	 * Returns the available height for scrolling either from this container or from it's parent container.
 	 * Note that the height available for this container might differ from the returned value.
 	 * 
 	 * @return the available vertical space or -1 when it is not known.
@@ -842,6 +842,24 @@ public class Container extends Item {
 	}
 	
 	/**
+	 * Sets the focus listener.
+	 * @param listener the new listener, use null to remove an existing listener.
+	 * @see #getFocusListener()
+	 */
+	public void setFocusListener( FocusListener listener ) {
+		this.focusListener = listener;
+	}
+	
+	/**
+	 * Retrieves the focus listener
+	 * @return the listener, may be null
+	 * @see #setFocusListener(FocusListener)
+	 */
+	public FocusListener getFocusListener() {
+		return this.focusListener;
+	}
+	
+	/**
 	 * Focuses the specified item.
 	 * 
 	 * @param index the index of the item. The first item has the index 0, 
@@ -873,7 +891,9 @@ public class Container extends Item {
 					}
 				}
 			//#endif
-			
+			if (this.focusListener != null) {
+				this.focusListener.onFocusChanged(this, null, -1);
+			}
 			return true;
 		}
 		if (!this.isFocused) {
@@ -1132,8 +1152,11 @@ public class Container extends Item {
 		}
 		
 		//#if polish.Container.notifyFocusChange
-		notifyStateChanged();
+			notifyStateChanged();
 		//#endif
+		if (this.focusListener != null) {
+			this.focusListener.onFocusChanged(this, this.focusedItem, this.focusedIndex);
+		}
 	}
 
 	/**

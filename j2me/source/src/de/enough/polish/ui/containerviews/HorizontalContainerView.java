@@ -26,7 +26,10 @@
  */
 package de.enough.polish.ui.containerviews;
 
+import java.io.IOException;
+
 import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
 
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.ContainerView;
@@ -34,6 +37,7 @@ import de.enough.polish.ui.IconItem;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.Style;
+import de.enough.polish.ui.StyleSheet;
 
 
 /**
@@ -61,6 +65,11 @@ public class HorizontalContainerView extends ContainerView {
 	//#endif
 	private boolean isClippingRequired;
 
+	private Image arrowRight;
+	private Image arrowLeft;
+	private int arrowLeftYAdjust;
+	private int arrowRightYAdjust;
+
 	/**
 	 * Creates a new view
 	 */
@@ -84,9 +93,20 @@ public class HorizontalContainerView extends ContainerView {
 		
 		this.availableWidth = availWidth;
 		
+		int arrowWidth = 0;
+		if (this.arrowLeft != null && this.arrowRight != null) {
+			arrowWidth = this.arrowLeft.getWidth() + this.arrowRight.getWidth() + (this.paddingHorizontal * 2);
+			availWidth -= arrowWidth;
+			firstLineWidth -= arrowWidth;
+			System.out.println("paddingHorizontal=" + this.paddingHorizontal + ", arrowWidth=" + arrowWidth);
+		}
+		
 		int selectedItemIndex = parent.getFocusedIndex();
 		int maxHeight = 0;
 		int completeWidth = 0;
+		if (arrowWidth > 0) {
+			completeWidth = this.arrowLeft.getWidth() + this.paddingHorizontal;
+		}
 		Item[] items = parent.getItems();
 		//#if polish.css.show-text-in-title
 			if (this.isShowTextInTitle && (this.labels == null || this.labels.length != items.length)) {
@@ -137,6 +157,7 @@ public class HorizontalContainerView extends ContainerView {
 			}
 			int startX = completeWidth;
 			item.relativeX = completeWidth;
+			System.out.println( i + ": completeWidth=" + completeWidth );
 			item.relativeY = 0;
 			completeWidth += itemWidth + (isLast ? 0 :  this.paddingHorizontal);
 			//#if polish.css.horizontalview-distribution
@@ -175,17 +196,26 @@ public class HorizontalContainerView extends ContainerView {
 			}
 		}
 		this.contentHeight = maxHeight;
+		if (arrowWidth > 0) {
+			if (parent.isLayoutVerticalCenter()) {
+				this.arrowLeftYAdjust = (maxHeight - this.arrowLeft.getHeight()) / 2;
+				this.arrowRightYAdjust = (maxHeight - this.arrowRight.getHeight()) / 2;
+			} else if (parent.isLayoutBottom()) {
+				this.arrowLeftYAdjust = (maxHeight - this.arrowLeft.getHeight());
+				this.arrowRightYAdjust = (maxHeight - this.arrowRight.getHeight());				
+			}
+		}
 		if (completeWidth > availWidth) {
 			this.isClippingRequired = true;
 		} else {
 			this.isClippingRequired = false;
 		}
+		if (arrowWidth > 0) {
+			completeWidth += this.arrowRight.getWidth() + this.paddingHorizontal;
+		}
 		this.contentWidth = completeWidth;
 		
-    	if (
-    			((parent.getLayout() & Item.LAYOUT_RIGHT) == Item.LAYOUT_RIGHT)
-    		&&	((parent.getLayout() & Item.LAYOUT_EXPAND) == Item.LAYOUT_EXPAND)
-    		) 
+    	if ( parent.isLayoutRight() && parent.isLayoutExpand() )
     	{
     		this.isExpandRightLayout = true;
     	} else {
@@ -255,8 +285,73 @@ public class HorizontalContainerView extends ContainerView {
 				this.isDistributeEquals = (distribution.intValue() == DISTRIBUTE_EQUALS);
 			}
 		//#endif
-
+		//#if polish.css.horizontalview-arrow-left
+			String urlLeft = style.getProperty("horizontalview-arrow-left");
+			if (urlLeft != null) {
+				setArrowLeft( urlLeft );
+			}
+		//#endif
+		//#if polish.css.horizontalview-arrow-right
+			String urlRight = style.getProperty("horizontalview-arrow-right");
+			if (urlRight != null) {
+				setArrowRight( urlRight );
+			}
+		//#endif
 	}
+
+	/**
+	 * Sets the image URL that indicates that there are more resource right of the currently selected item.
+	 * @param urlRight the image URL, use null to remove arrow image
+	 * @return true when the image could be loaded successfully
+	 */
+	public boolean setArrowRight(String urlRight) {
+		if (urlRight == null) {
+			setArrowRight((Image)null);
+		}
+		try {
+			setArrowRight( StyleSheet.getImage(urlRight, null, false) );
+			return true;
+		} catch (IOException e) {
+			//#debug error
+			System.out.println("Unable to load image " + urlRight + e);
+			return false;
+		}
+	}
+
+	/**
+	 * Sets the image that indicates that there are more resource right of the currently selected item.
+	 * @param image the image, use null to remove arrow image
+	 */
+	public void setArrowRight(Image image) {
+		this.arrowRight = image;
+	}
+	/**
+	 * Sets the image URL that indicates that there are more resource left of the currently selected item.
+	 * @param urlLeft the image URL, use null to remove arrow image
+	 * @return true when the image could be loaded successfully
+	 */
+	public boolean setArrowLeft(String urlLeft) {
+		if (urlLeft == null) {
+			setArrowLeft((Image)null);
+		}
+		try {
+			setArrowLeft( StyleSheet.getImage(urlLeft, null, false) );
+			return true;
+		} catch (IOException e) {
+			//#debug error
+			System.out.println("Unable to load image " + urlLeft + e);
+			return false;
+		}
+	}
+
+	/**
+	 * Sets the image that indicates that there are more resource left of the currently selected item.
+	 * @param image the image, use null to remove arrow image
+	 */
+	public void setArrowLeft(Image image) {
+		this.arrowLeft = image;
+	}
+
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#paintContent(de.enough.polish.ui.Container, de.enough.polish.ui.Item[], int, int, int, int, int, int, int, int, javax.microedition.lcdui.Graphics)
@@ -264,12 +359,21 @@ public class HorizontalContainerView extends ContainerView {
 	protected void paintContent(Container container, Item[] myItems, int x, int y, int leftBorder, int rightBorder, int clipX, int clipY, int clipWidth, int clipHeight, Graphics g) {
 		//#debug
 		System.out.println("paint " + this + " at " + x + ", " + y + ", with xOffset " + getScrollXOffset() + ", clipping req=" + this.isClippingRequired + ", expandRightLayout=" + this.isExpandRightLayout);
-		
     	if (this.isExpandRightLayout) {
     		x = rightBorder - this.contentWidth;
     	}
+    	Image right = this.arrowRight;
+    	Image left = this.arrowLeft;
+    	boolean paintArrows = (right != null) && (left != null);
+    	if (paintArrows) {
+    		x += left.getWidth() + this.paddingHorizontal;
+    		rightBorder -= right.getWidth() + this.paddingHorizontal;
+    	}
     	if (this.isClippingRequired) {
     		g.clipRect( x, y, rightBorder - x + 1, this.contentHeight + 1 );
+    	}
+    	if (paintArrows) {
+    		x -= left.getWidth() + this.paddingHorizontal;
     	}
 		super.paintContent(container, myItems, x, y, leftBorder, rightBorder, clipX,
 				clipY, clipWidth, clipHeight, g);
@@ -277,6 +381,18 @@ public class HorizontalContainerView extends ContainerView {
 		if (this.isClippingRequired) {
 			g.setClip(clipX, clipY, clipWidth, clipHeight);
 		}
+    	if (paintArrows) {
+    		if (container.isLayoutExpand()) {
+    			rightBorder += this.paddingHorizontal;
+	    		g.drawImage(left, leftBorder, y + this.arrowLeftYAdjust, Graphics.TOP | Graphics.LEFT );
+	    		g.drawImage(right, rightBorder, y + this.arrowRightYAdjust, Graphics.TOP | Graphics.LEFT );
+    			
+    		} else {
+	    		g.drawImage(left, x, y + this.arrowLeftYAdjust, Graphics.TOP | Graphics.LEFT );
+	    		g.drawImage(right, x + this.contentWidth, y + this.arrowRightYAdjust, Graphics.TOP | Graphics.RIGHT );
+    		}
+    	}
+
 	}
 
 
