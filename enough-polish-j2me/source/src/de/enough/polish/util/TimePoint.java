@@ -994,7 +994,7 @@ implements Externalizable, Comparator, Comparable
 	/**
 	 * Parses the given text in RFC3339 format.
 	 * 
-	 * @param dateTimeText the date time text as defined by RFC3339
+	 * @param dateTimeText the date time text as defined by RFC3339, e.g. "2010-12-19T16:39:57-08:00"
 	 * @return the parsed TimePoint represented by the given dateTime text
 	 * @see "http://tools.ietf.org/html/rfc3339"
 	 * @throws IllegalArgumentException when the text could not be parsed

@@ -212,7 +212,10 @@ implements FocusListener
 		if (index == -1) {
 			index = 0;
 		}
+		Container rootContainer = getScreen().getRootContainer();
+		int offset = rootContainer.getScrollYOffset();
 		tabbar.focusChild(index);
+		rootContainer.setScrollYOffset(offset, false);
 		
 		// set size:
 		this.contentWidth = maxWidth;
@@ -338,8 +341,10 @@ implements FocusListener
 	 * @see de.enough.polish.ui.ContainerView#handlePointerTouchDown(int, int)
 	 */
 	public boolean handlePointerTouchDown(int x, int y) {
-		// TODO Besitzer implement handlePointerTouchDown
-		return super.handlePointerTouchDown(x, y);
+		Point p = adjustToContentArea(x, y);
+		Container tabbar = this.tabbarContainer;
+		boolean handled = tabbar.handlePointerTouchDown( p.x - tabbar.relativeX, p.y - tabbar.relativeY );
+		return handled || super.handlePointerTouchDown(x, y);
 	}
 	//#endif
 
@@ -348,8 +353,10 @@ implements FocusListener
 	 * @see de.enough.polish.ui.ContainerView#handlePointerTouchUp(int, int)
 	 */
 	public boolean handlePointerTouchUp(int x, int y) {
-		// TODO Besitzer implement handlePointerTouchUp
-		return super.handlePointerTouchUp(x, y);
+		Point p = adjustToContentArea(x, y);
+		Container tabbar = this.tabbarContainer;
+		boolean handled = tabbar.handlePointerTouchUp( p.x - tabbar.relativeX, p.y - tabbar.relativeY );
+		return handled || super.handlePointerTouchUp(x, y);
 	}
 	//#endif
 
