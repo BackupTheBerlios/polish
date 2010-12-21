@@ -1721,10 +1721,12 @@ extends ItemView
 					offset = availWidth/3;
 				}
 			//#endif
-			setScrollXOffset( offset, false );
-			this.pointerPressedX = x;
-			this.parentContainer.addRepaintArea(repaintRegion);
-			return true;
+			if (offset != this.xOffset) {
+				setScrollXOffset( offset, false );
+				this.pointerPressedX = x;
+				this.parentContainer.addRepaintArea(repaintRegion);
+				return true;
+			}
 		}
 		return super.handlePointerDragged(x, y, repaintRegion);
 	}
