@@ -1244,6 +1244,7 @@
 		<mapping from="size-decrease" to="new de.enough.polish.ui.itemviews.SizeDecreaseItemView()" appliesTo="Item" />
 		<mapping from="particle" to="new de.enough.polish.ui.itemviews.ExplodingParticlesItemView()" appliesTo="Item" />
 		<!--  for Containers:  -->
+		<mapping from="tabbed" to="new de.enough.polish.ui.containerviews.TabbedContainerView()"  appliesTo="Container,FakeContainerCustomItem" />
 		<mapping from="slide" to="new de.enough.polish.ui.containerviews.SlideContainerView()"  appliesTo="Container,FakeContainerCustomItem" />
 		<mapping from="slideup" to="new de.enough.polish.ui.containerviews.SlideContainerView()" />
 		<mapping from="slide-up" to="new de.enough.polish.ui.containerviews.SlideContainerView()" />
@@ -5397,6 +5398,75 @@
 		since="J2ME Polish 2.2"
 	/>
 	
+	
+	<attribute
+		name="tabbedview-icon"
+		type="imageurl"
+		appliesTo="TabbedContainerView"
+		description="The URL of the icon image that represents a tab"
+		id="472"
+		since="J2ME Polish 2.2"
+	/>
+	
+	<attribute
+		name="tabbedview-icon-hover"
+		type="imageurl"
+		appliesTo="TabbedContainerView"
+		description="The URL of the icon for the currently focused tab"
+		id="473"
+		since="J2ME Polish 2.2"
+	/>
+	<attribute
+		name="tabbedview-roundtrip"
+		type="boolean"
+		appliesTo="TabbedContainerView"
+		description="Allows to start at the first tab when being in the last tap and pressing right (or going from the first to the last tab)."
+		default="true"
+		id="474"
+		since="J2ME Polish 2.2"
+	/>
+	<attribute
+		name="horizontalview-arrow-left"
+		type="imageurl"
+		appliesTo="HorizontalContainerView"
+		description="The URL of the image that displays a right image."
+		id="475"
+		since="J2ME Polish 2.2"
+	/>
+	<attribute
+		name="horizontalview-arrow-right"
+		type="imageurl"
+		appliesTo="HorizontalContainerView"
+		description="The URL of the image that displays a left image."
+		id="476"
+		since="J2ME Polish 2.2"
+	/>
+	<attribute
+		name="tabbedview-tabbar-position"
+		type="integer"
+		appliesTo="TabbedContainerView"
+		description="The position of the tabs."
+		default="top"
+		values="top,bottom"
+		id="477"
+		since="J2ME Polish 2.2"
+	/>
+	<attribute
+		name="tabbedview-tabbar-style"
+		type="style"
+		appliesTo="TabbedContainerView"
+		description="The style for the container that includes the tabs."
+		id="478"
+		since="J2ME Polish 2.2"
+	/>
+	<attribute
+		name="tabbedview-tab-style"
+		type="style"
+		appliesTo="TabbedContainerView"
+		description="The style for a single tab."
+		id="479"
+		since="J2ME Polish 2.2"
+	/>
 <!--
 	<attribute
 		name="repaint-previous-screen-anchor"
@@ -5430,7 +5500,7 @@
 		default=""
 		values=""
 		id=""
-		since="J2ME Polish 2.1"
+		since="J2ME Polish 2.2"
 	/>
  -->
 	
