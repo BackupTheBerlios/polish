@@ -522,7 +522,7 @@ extends ItemView
 				if (isNormalWidthColumns) {
 					// this.columnsSetting == NORMAL_WIDTH_COLUMNS
 					// each column should use as much space as it can use
-					// without ousting the other columns
+					// without busting the other columns
 					// (the calculation will be finished below)
 					availableColumnWidth = availWidth - ((this.numberOfColumns -1) * this.paddingHorizontal);
 				} else {
@@ -910,15 +910,11 @@ extends ItemView
 					myContentWidth = 0;
 				}
 			}
-			if (isLayoutExpand()) {
-				myContentWidth = availWidth;
-			} else {
-				myContentWidth = 0;
-				for (int i = 0; i < this.columnsWidths.length; i++) {
-					myContentWidth += this.columnsWidths[i].getValue( availWidth ) + this.paddingHorizontal;
-				}
-				myContentWidth -= this.paddingHorizontal;
+			myContentWidth = 0;
+			for (int i = 0; i < this.columnsWidths.length; i++) {
+				myContentWidth += this.columnsWidths[i].getValue( availWidth ) + this.paddingHorizontal;
 			}
+			myContentWidth -= this.paddingHorizontal;
 			this.isVertical = this.numberOfRows > 1;
 			this.contentWidth = myContentWidth;
 			this.contentHeight = myContentHeight;
