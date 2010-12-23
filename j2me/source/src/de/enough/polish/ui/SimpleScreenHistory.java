@@ -124,7 +124,7 @@ public class SimpleScreenHistory {
 			Displayable screen = (Displayable) this.history.get( this.history.size() - 1 );
 			//#debug
 			System.out.println("showPrevious(): history.size()=" + this.history.size() );
-			display.setCurrent(screen);
+			this.display.setCurrent(screen);
 			return true;
 		} else {
 			return false;
