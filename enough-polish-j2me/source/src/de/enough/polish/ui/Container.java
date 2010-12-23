@@ -3123,7 +3123,7 @@ public class Container extends Item {
 			int x, y, width, height;
 			Screen scr = getScreen();
 			height = getItemAreaHeight();
-			if (this.scrollHeight > height || this.enableScrolling) {
+			if (this.parent == null && (this.scrollHeight > height || this.enableScrolling)) { // parent==null is required for example when a commands container is scrolled.
 				x = scr.contentX;
 				y = scr.contentY;
 				height = scr.contentHeight;
