@@ -1865,7 +1865,9 @@ public class Container extends Item {
 				int diff = this.relativeY - scr.contentY;
 				g.clipRect(clipX, y - diff, clipWidth, clipHeight - (y - clipY) + diff );				
 			} else {
-				g.clipRect(clipX, y, clipWidth, clipHeight - (y - clipY) );
+				//g.clipRect(clipX, y, clipWidth, clipHeight - (y - clipY) );
+				// in this way we also clip the padding area at the bottom of the container (padding-bottom):
+				g.clipRect(clipX, y, clipWidth, this.scrollHeight - this.paddingTop - this.paddingBottom );
 			}
 		}
 		//x = leftBorder;
