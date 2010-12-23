@@ -56,10 +56,11 @@ import javax.microedition.io.HttpConnection;
  */
 public class RedirectHttpConnection implements HttpConnection
 {
-	//#ifndef polish.Browser.MaxRedirects:defined
-		private static final int MAX_REDIRECTS = 5;
+	private static final int MAX_REDIRECTS
+	//#if polish.Browser.MaxRedirects:defined
+		//#= = ${polish.Browser.MaxRedirects};
 	//#else
-		// #= private static final int MAX_REDIRECTS = ${polish.Browser.MaxRedirects};
+		= 5;
 	//#endif
 
 	private final String originalUrl;
