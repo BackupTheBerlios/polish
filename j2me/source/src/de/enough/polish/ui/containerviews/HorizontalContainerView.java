@@ -142,15 +142,10 @@ public class HorizontalContainerView extends ContainerView {
 			//#endif
 			int itemHeight = item.getItemHeight(availItemWidth, availItemWidth, availHeight);
 			int itemWidth = item.itemWidth;
-			//#if polish.css.horizontalview-distribution
-				if (this.isDistributeEquals) {
-					itemWidth = availItemWidth;
-				}
-			//#endif
 			if (itemHeight > maxHeight ) {
 				maxHeight = itemHeight;
 			}
-			boolean isLast = i == items.length - 1;
+			boolean isLast = (i == items.length - 1);
 			if ( isLast && item.isLayoutRight() && (completeWidth  + item.itemWidth < availWidth) ) {
 				completeWidth = availWidth - item.itemWidth;
 			}
@@ -161,6 +156,13 @@ public class HorizontalContainerView extends ContainerView {
 			//#if polish.css.horizontalview-distribution
 				if (this.isDistributeEquals) {
 					completeWidth = (availItemWidthWithPaddingShift8 * (i+1)) >> 8;
+					if (itemWidth < availItemWidth) {
+						if (item.isLayoutCenter()) {
+							item.relativeX += (availItemWidth - itemWidth) / 2;
+						} else if (item.isLayoutRight() && !isLast) {
+							item.relativeX += (availItemWidth - itemWidth);
+						}
+					}
 				}
 			//#endif
 			if ( i == selectedItemIndex) {
