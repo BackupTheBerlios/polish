@@ -296,6 +296,12 @@ public class Command
 	 */
 	public static final int ITEM = 8;
 
+	/**
+	 * This is not a command but a visual separator that can be added.
+	 * <P>Value <code>100</code> is assigned to <code>SEPARATOR</code>.</P>
+	 */
+	public static final int SEPARATOR = 100;
+
 	private String longLabel;
 	private int commandType;
 	private int priority;
@@ -401,15 +407,29 @@ public class Command
 	public Command( String shortLabel, String longLabel, int commandType, int priority, Style style)
 	{
 		//#if polish.midp1
-			//# super( shortLabel, commandType, priority);
+			//# super( getLabel(shortLabel), getValidType(commandType), priority);
 		//#else
-			super( shortLabel, longLabel, commandType, priority);
+			super( getValidLabel(shortLabel), longLabel, getValidType(commandType), priority);
 		//#endif
 		this.label = shortLabel;
 		this.longLabel = longLabel;
 		this.commandType = commandType;
 		this.priority = priority;
 		this.style = style;
+	}
+
+	private static int getValidType(int type) {
+		if (type == SEPARATOR) {
+			type = SCREEN;
+		}
+		return type;
+	}
+
+	private static String getValidLabel(String label) {
+		if (label == null) {
+			label = ""; 
+		}
+		return label;
 	}
 
 	/**

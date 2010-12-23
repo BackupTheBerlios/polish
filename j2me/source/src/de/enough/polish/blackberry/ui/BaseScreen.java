@@ -16,6 +16,7 @@ import net.rim.device.api.ui.component.Menu;
 	import net.rim.device.api.ui.TouchEvent; 
 //#endif
 import de.enough.polish.blackberry.midlet.MIDlet;
+import de.enough.polish.ui.Command;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.Canvas;
@@ -23,6 +24,8 @@ import de.enough.polish.ui.Display;
 import de.enough.polish.ui.Displayable;
 import de.enough.polish.ui.UiAccess;
 import de.enough.polish.util.ArrayList;
+import de.enough.polish.util.Arrays;
+import de.enough.polish.util.Comparator;
 import de.enough.polish.util.DeviceControl;
 
 /**
@@ -1553,12 +1556,17 @@ public abstract class BaseScreen
 	protected void makeMenu(Menu menu, int instance) {
 		super.makeMenu(menu, instance);
 		Object[] objects = this.addedMenuItems.getInternalArray();
+		Arrays.sort(objects, MenuItemComparator.instance );
 		for (int i = 0; i < objects.length; i++) {
 			CommandMenuItem item = (CommandMenuItem) objects[i];
 			if (item == null) {
 				break;
 			}
-			menu.add(item);
+			if (item.isSeparator) {
+				menu.addSeparator();
+			} else {
+				menu.add(item);
+			}
 		}
 	}	
 	//#endif
@@ -1599,7 +1607,25 @@ public abstract class BaseScreen
     
 }
 
-class BaseScreenManager extends Manager {
+final class MenuItemComparator implements Comparator{
+	static MenuItemComparator instance = new MenuItemComparator();
+
+	public int compare(Object o1, Object o2) {
+		if(o1 == null) {
+			if (o2 == null) {
+				return 0;
+			}
+			return 1;
+		} else if (o2 == null) {
+			return -1;
+		}
+		Command c1 = ((CommandMenuItem)o1).cmd;
+		Command c2 = ((CommandMenuItem)o2).cmd;
+		return c1.getPriority() - c2.getPriority();
+	}
+}
+
+final class BaseScreenManager extends Manager {
 	
 	private static BaseScreenManager instance;
 	public static BaseScreenManager getInstance() {

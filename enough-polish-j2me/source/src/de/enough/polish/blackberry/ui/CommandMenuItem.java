@@ -48,18 +48,34 @@ public class CommandMenuItem extends MenuItem {
 	final Command cmd;
 	private Displayable displayable;
 	private Item item;
+	protected final boolean isSeparator;
 
 	/**
 	 * @param cmd the command associated with this item
 	 * @param displayable the displayable to which this command belongs to
 	 */
 	public CommandMenuItem(Command cmd, Displayable displayable) {
-		super( getLabel( cmd  ), cmd.getPriority(), cmd.getPriority() );
-		this.cmd = cmd;
-		this.displayable = displayable;
+		this( cmd, displayable, null);
 	}
 
 
+	/**
+	 * @param cmd the command associated with this item
+	 * @param item the item to which this command belongs to
+	 */
+	public CommandMenuItem(Command cmd, Item item) {
+		this( cmd, null, item);
+	}
+	
+	private CommandMenuItem( Command cmd, Displayable displayable, Item item) {
+		super( getLabel( cmd  ), 0, cmd.getPriority() );
+		this.cmd = cmd;
+		this.displayable = displayable;
+		this.item = item;
+		this.isSeparator = (cmd.getCommandType() == Command.SEPARATOR);		
+	}
+	
+	
 	private static String getLabel(Command command) {
 		if (command.hasSubCommands()) {
 			return command.getLabel() + "   >";
@@ -67,12 +83,6 @@ public class CommandMenuItem extends MenuItem {
 		return command.getLabel();
 	}
 
-
-	public CommandMenuItem(Command cmd, Item item) {
-		super(cmd.getLabel(), cmd.getPriority(), cmd.getPriority() );
-		this.cmd = cmd;
-		this.item = item;
-	}
 
 
 	/* (non-Javadoc)

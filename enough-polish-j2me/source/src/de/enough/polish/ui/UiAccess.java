@@ -2000,6 +2000,57 @@ public final class UiAccess {
 	}
 	//#endif
 
+	//#if polish.usePolishGui
+	/**
+	 * Adds add separator with the given priority to the menu
+	 * 
+	 * @param priority the priority, same as Command priorities
+	 * @param screen the screen.
+	 */
+	public static void addCommandSeparator(  int priority, Screen screen ) {
+		screen.addCommandSeparator( priority );
+	}
+	//#endif
+
+	//#if polish.usePolishGui
+	/**
+	 * Adds add separator with the given priority to the menu
+	 * 
+	 * @param priority the priority, same as Command priorities
+	 * @param screen the screen.
+	 * @param style the style of the separator
+	 */
+	public static void addCommandSeparator(  int priority, Screen screen, Style style  ) {
+		screen.addCommandSeparator( priority, style );
+	}
+	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Adds add separator with the given priority to the menu
+	 * 
+	 * @param priority the priority, same as Command priorities
+	 * @param screen the screen.
+	 */
+	public static void addCommandSeparator(  int priority, javax.microedition.lcdui.Screen screen ) {
+		// ignore
+	}
+	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Adds add separator with the given priority to the menu
+	 * 
+	 * @param priority the priority, same as Command priorities
+	 * @param screen the screen.
+	 * @param style the style of the separator
+	 */
+	public static void addCommandSeparator(  int priority, javax.microedition.lcdui.Screen screen, Style style  ) {
+		// ignore
+	}
+	//#endif
+
+
 	//#if polish.midp
 	/**
 	 * Checks whether the commands menu of the screen is currently opened.

@@ -590,7 +590,7 @@ implements ScreenInitializerListener
 		if (this.isShown()) {
 			Displayable previous = (Displayable) this.tabDisplayables.get(index);
 			if (previous instanceof Canvas) {
-				((Canvas) previous).hideNotify();
+				((Canvas) previous)._hideNotify();
 			}
 		}
 		this.tabDisplayables.set( index, tab );
@@ -780,7 +780,7 @@ implements ScreenInitializerListener
 		boolean isShown = isShown();
 		
 		if (isShown && previousDisplayable instanceof Canvas) {
-			((Canvas)previousDisplayable).hideNotify();
+			((Canvas)previousDisplayable)._hideNotify();
 		}
 		Displayable disp = (Displayable) this.tabDisplayables.get(tabIndex);
 		this.currentDisplayable = disp;
@@ -799,12 +799,12 @@ implements ScreenInitializerListener
 				init( screenFullWidth, screenFullHeight);
 			}
 			if (isShown) {
-				screen.showNotify();
+				screen._showNotify();
 			}
 		} else  {
 			this.currentScreen = null;
 			if (isShown && disp instanceof Canvas) {
-				((Canvas)disp).showNotify();
+				((Canvas)disp)._showNotify();
 			}
 		}
 		StyleSheet.currentScreen = this;
@@ -1358,7 +1358,7 @@ implements ScreenInitializerListener
 	 */
 	public void hideNotify() {
 		if (this.currentScreen != null) {
-			this.currentScreen.hideNotify();
+			this.currentScreen._hideNotify();
 		}
 		super.hideNotify();
 	}
@@ -1372,7 +1372,7 @@ implements ScreenInitializerListener
 			setFocus(0);
 		}
 		if (this.currentScreen != null) {
-			this.currentScreen.showNotify();
+			this.currentScreen._showNotify();
 		}
 		super.showNotify();
 	}
@@ -1395,6 +1395,18 @@ implements ScreenInitializerListener
 				this.isSizeChangedCalled = false;
 			}
 		}
+	}
+	
+	
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#handleCommand(de.enough.polish.ui.Command)
+	 */
+	protected boolean handleCommand(Command cmd) {
+		if (this.currentScreen != null) {
+			return this.currentScreen.handleCommand(cmd);
+		}
+		return super.handleCommand(cmd);
 	}
 
 	/*

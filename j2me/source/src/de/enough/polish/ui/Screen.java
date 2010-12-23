@@ -6460,6 +6460,29 @@ implements UiElement, Animatable
 	//#endif
 
 
+	/**
+	 * Adds a command separator to the menu of this screen.
+	 * @param priority the priority of the sepator, same as for Command
+	 */
+	public void addCommandSeparator(int priority) {
+		//#if polish.css.style.menuSeparator
+			//#style menuSeparator?
+			addCommandSeparator( priority );
+		//#else
+			addCommandSeparator( priority, null );
+		//#endif
+	}
+	
+	/**
+	 * Adds a command separator to the menu of this screen.
+	 * @param priority the priority of the sepator, same as for Command
+	 * @param separatorStyle the style of the separator
+	 */
+	public void addCommandSeparator(int priority, Style separatorStyle) {
+		addCommand( new Command(null, Command.SEPARATOR, priority, separatorStyle));
+	}
+
+
 
 //#ifdef polish.Screen.additionalMethods:defined
 	//#include ${polish.Screen.additionalMethods}

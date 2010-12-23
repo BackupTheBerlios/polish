@@ -77,12 +77,12 @@ public class CommandItem extends IconItem {
 	/**
 	 * Creates a new command item.
 	 * 
-	 * @param command the commmand represented by this item.
+	 * @param command the command represented by this item.
 	 * @param parent the parent item
 	 * @param style the style for this item
 	 */
 	public CommandItem( Command command, Item parent, Style style ) {
-		super( null, command.getLabel(), null, (style == null ? command.getStyle() : style) );
+		super( null, command.getLabel(), null, (command.getStyle() != null ? command.getStyle() : style) );
 		this.appearanceMode = Item.INTERACTIVE;
 		this.command = command;
 		this.parent = parent;
@@ -95,6 +95,9 @@ public class CommandItem extends IconItem {
 				}
 				addChild( child, child.getStyle() );
 			}
+		}
+		if (command.getCommandType() == Command.SEPARATOR) {
+			this.appearanceMode = PLAIN;
 		}
 	}
 	
@@ -214,6 +217,11 @@ public class CommandItem extends IconItem {
 	protected void initContent(int firstLineWidth, int availWidth, int availHeight) {
 		//#debug
 		System.out.println("initContent(" + firstLineWidth + ", " + availWidth + ", " + availHeight + ") for " + this);
+		if (this.command.getCommandType() == Command.SEPARATOR) {
+			this.contentWidth = availWidth;
+			this.contentHeight = 0;
+			return;
+		}
 		if (this.hasChildren) {
 			firstLineWidth -= this.childIndicatorWidth + this.paddingHorizontal;
 			availWidth -= this.childIndicatorWidth + this.paddingHorizontal;
