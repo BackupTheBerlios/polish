@@ -185,8 +185,9 @@ implements ImageConsumer
 		this.imageWidth = imgWidth;
 		this.imageHeight = imgHeight;
 		int yAdjustImage = 0;
+		boolean hasText = (getText() != null);
 		if (this.imageAlign == Graphics.LEFT || this.imageAlign == Graphics.RIGHT ) {
-			if (this.isTextVisible && getText() != null) {
+			if (this.isTextVisible && hasText) {
 				imgWidth += this.paddingHorizontal;
 				this.imageWidth = imgWidth;
 				firstLineWidth -= imgWidth;
@@ -222,16 +223,17 @@ implements ImageConsumer
 			} else {
 				this.yAdjustText = 0;
 			}
-			if (this.isLayoutExpand && (this.imageAlign == Graphics.RIGHT || this.imageAlign == Graphics.LEFT) 
+			if (this.isLayoutExpand // && (this.imageAlign == Graphics.RIGHT || this.imageAlign == Graphics.LEFT) 
 				//#ifdef polish.css.icon-image-align-next
 					&& !this.imageAlignNext 
 				//#endif
+				&& hasText
 			) {
 				this.contentWidth = firstLineWidth;
 			}
 			this.contentWidth += imgWidth;
 		} else { // image align is top or bottom:
-			if (this.isTextVisible && getText() != null) {
+			if (this.isTextVisible && hasText) {
 				//#if polish.css.icon-padding
 					if (this.paddingIcon == 0) {
 						this.paddingIcon = this.paddingVertical;
@@ -250,35 +252,13 @@ implements ImageConsumer
 			if (imgWidth > this.contentWidth) {
 				this.contentWidth = imgWidth;
 			}
-		}
+		} 
 		
 		// calculate icon positions:
 		int iconLeftX = 0;
 		int iconTopY = yAdjustImage;
-		if (this.imageAlign == Graphics.LEFT ) {
-			//#ifdef polish.css.icon-image-align-next
-				if (!this.imageAlignNext) 
-			//#endif
-			{
-				if (this.isLayoutExpand) {
-					if (this.isLayoutCenter) {
-						iconLeftX = (availWidth + imgWidth - this.contentWidth) >> 1;
-					} else if (this.isLayoutRight) {
-						iconLeftX = availWidth  + imgWidth - this.contentWidth;
-					}
-				}
-			}
-		} else if (this.imageAlign == Graphics.RIGHT ) {
-			iconLeftX = this.contentWidth - imgWidth + this.paddingHorizontal; // - this.imageWidth (imageWidth is already subtracted);
-			//#ifdef polish.css.icon-image-align-next
-				if (this.imageAlignNext && this.isLayoutExpand) {
-					if (this.isLayoutCenter) {
-						iconLeftX -= (availWidth + imgWidth - this.contentWidth) >> 1;
-					} else if (!this.isLayoutRight) {
-						iconLeftX = this.contentWidth - imgWidth;
-					}
-				} 
-			//#endif
+		if (hasText && this.imageAlign == Graphics.RIGHT ) {
+			iconLeftX = this.contentWidth - imgWidth + this.paddingHorizontal;
 		} else { // image align is top or bottom:
 			iconLeftX = (this.contentWidth - imgWidth) >> 1;
 			if (this.imageAlign == Graphics.BOTTOM ){
@@ -311,6 +291,7 @@ implements ImageConsumer
 	 * @see de.enough.polish.ui.Item#setContentWidth(int)
 	 */
 	protected void setContentWidth( int width ) {
+		System.out.println("changing content width from " + this.contentWidth + " to " + width + " for " + this);
 		if (this.imageAlign == Graphics.TOP || this.imageAlign == Graphics.BOTTOM || this.text == null) {
 			int diff = width - this.contentWidth;
 			this.relativeIconX += diff/2;
@@ -319,8 +300,7 @@ implements ImageConsumer
 		}
 		super.setContentWidth(width);
 	}
-	
-	
+		
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#paintContent(int, int, javax.microedition.lcdui.Graphics)
 	 */
