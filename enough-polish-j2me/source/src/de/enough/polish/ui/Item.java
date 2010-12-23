@@ -2601,11 +2601,6 @@ public abstract class Item implements UiElement, Animatable
 			}
 		//#endif
 			
-//			g.setColor(0xff0000);
-//			g.drawRect( x + this.contentX, y + this.contentY, this.contentWidth, this.contentHeight );
-//			g.drawLine( x + this.contentX, y + this.contentY, x + this.contentX + this.contentWidth, y + this.contentY + this.contentHeight );
-//			g.setColor(0xffFF00);
-//			g.drawRect( getAbsoluteX() + 1, getAbsoluteY() + 1, this.itemWidth - 2, this.itemHeight - 2);
 
 //			Item p = this.parent; xxx
 //			String start = "";
@@ -2949,6 +2944,13 @@ public abstract class Item implements UiElement, Animatable
 				paintCommands( origX, origY, g );
 			}
 		//#endif
+			
+//			g.setColor(0xff0000);
+//			g.drawRect( origX + this.contentX, origY + this.contentY, this.contentWidth, this.contentHeight );
+//			g.drawLine( origX + this.contentX, origY + this.contentY, origX + this.contentX + this.contentWidth, origY + this.contentY + this.contentHeight );
+//			g.setColor(0xffFF00);
+//			g.drawRect( getAbsoluteX() + 1, getAbsoluteY() + 1, this.itemWidth - 2, this.itemHeight - 2);
+
 	}
 	
 	/**
@@ -6004,7 +6006,7 @@ public abstract class Item implements UiElement, Animatable
 		//#if polish.midp2
 			if (this.itemWidth < 1 || this.itemHeight < 1) {
 				//#debug error
-				System.out.println("Unable to retrieve RGB data for item with a dimension of " + this.itemWidth + "x" + this.itemHeight );
+				System.out.println("Unable to retrieve RGB data for item with a dimension of " + this.itemWidth + "x" + this.itemHeight + " for " + this );
 				return new int[0];
 			}
 			Image image = Image.createImage( this.itemWidth, this.itemHeight );
