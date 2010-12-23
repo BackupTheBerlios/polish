@@ -143,10 +143,8 @@ implements Runnable
 		} catch (Exception e) {
 			//#debug error
 			System.out.println("Unable to call initApp()" + e );
-			//#if !polish.classes.SplashView:defined
-				this.message = "Error: " + e.toString();
-				repaint();
-			//#endif
+			this.message = "Error: " + e.toString();
+			repaint();
 		}
 	}
 	
