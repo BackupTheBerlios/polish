@@ -259,6 +259,8 @@ implements ImageConsumer
 		int iconTopY = yAdjustImage;
 		if (hasText && this.imageAlign == Graphics.RIGHT ) {
 			iconLeftX = this.contentWidth - imgWidth + this.paddingHorizontal;
+		} else if (hasText && this.imageAlign == Graphics.LEFT) {
+			iconLeftX = 0;
 		} else { // image align is top or bottom:
 			iconLeftX = (this.contentWidth - imgWidth) >> 1;
 			if (this.imageAlign == Graphics.BOTTOM ){
