@@ -1094,7 +1094,7 @@ extends ItemView
 	 */
 	protected Item getNextItem( int keyCode, int gameAction ) 
 	{
-//		System.out.println("getNextItem for "+ getScreen().getKeyName( keyCode ));
+//		System.out.println("getNextItem for "+ getScreen().getKeyName( keyCode ) + ", view=" + this);
 		Item[] myItems = this.parentContainer.getItems();
 		if ( 
 				//#if polish.blackberry && !polish.hasTrackballEvents
@@ -1108,16 +1108,16 @@ extends ItemView
 				if (!this.isSequentialTraversal) {
 			//#endif
 					if (gameAction == Canvas.DOWN && this.columnsSetting != NO_COLUMNS) {
-						return shiftFocus( true, this.numberOfColumns - 1, myItems );
+						return shiftFocus( true, this.numberOfColumns - 1, myItems, this.allowCycling, gameAction );
 					}
 			//#if polish.css.view-type-sequential-traversal
 				}
 			//#endif
 			boolean allowCycle = this.allowCycling;
-			if (this.isHorizontal && gameAction == Canvas.RIGHT && !this.isVertical) {
+			if (this.isHorizontal && (gameAction == Canvas.RIGHT) && !this.isVertical) {
 				allowCycle = true;
 			}
-			return shiftFocus( true, 0, myItems, allowCycle );
+			return shiftFocus( true, 0, myItems, allowCycle, gameAction );
 			
 		} else if ( 
 				//#if polish.blackberry && !polish.hasTrackballEvents
@@ -1131,16 +1131,16 @@ extends ItemView
 				if (!this.isSequentialTraversal) {
 			//#endif
 					if (gameAction == Canvas.UP && this.columnsSetting != NO_COLUMNS) {
-						return shiftFocus( false,  -(this.numberOfColumns -1 ), myItems);
+						return shiftFocus( false,  -(this.numberOfColumns -1 ), myItems, this.allowCycling, gameAction);
 					}
 			//#if polish.css.view-type-sequential-traversal
 				}
 			//#endif
 			boolean allowCycle = this.allowCycling;
-			if (this.isHorizontal && gameAction == Canvas.LEFT && !this.isVertical) {
+			if (this.isHorizontal && (gameAction == Canvas.LEFT) && !this.isVertical) {
 				allowCycle = true;
 			}
-			return shiftFocus( false, 0, myItems, allowCycle );
+			return shiftFocus( false, 0, myItems, allowCycle, gameAction );
 		}
 		
 //		System.out.println("getNextItem: returning null for " + getScreen().getKeyName( keyCode )	);
@@ -1160,7 +1160,7 @@ extends ItemView
 	 * @return the item that has been focused or null, when no item has been focused.
 	 */
 	protected Item shiftFocus(boolean forwardFocus, int steps, Item[] items) {
-		return shiftFocus( forwardFocus, steps, items, this.allowCycling );
+		return shiftFocus( forwardFocus, steps, items, this.allowCycling, 0 );
 	}
 	
 	/**
@@ -1175,8 +1175,23 @@ extends ItemView
 	 * @return the item that has been focused or null, when no item has been focused.
 	 */
 	protected Item shiftFocus(boolean forwardFocus, int steps, Item[] items, boolean allowCycle) {
+		return shiftFocus( forwardFocus, steps, items, allowCycle, 0 );
+	}
+	/**
+	 * Shifts the focus to the next or the previous item.
+	 * 
+	 * @param forwardFocus true when the next item should be focused, false when
+	 * 		  the previous item should be focused.
+	 * @param steps how many steps forward or backward the search for the next focusable item should be started,
+	 *        0 for the current item, negative values go backwards.
+	 * @param items the items of this view
+	 * @param allowCycle true when cycling should be allowed (starting at the first item when the last has been reached and the other way round)
+	 * @param direction the original direction that should be gone, e.g. Canvas.UP or Canvas.LEFT
+	 * @return the item that has been focused or null, when no item has been focused.
+	 */
+	protected Item shiftFocus(boolean forwardFocus, int steps, Item[] items, boolean allowCycle, int direction) {
 		//#debug
-		System.out.println("ContainerView.shiftFocus( forward=" + forwardFocus + ", steps=" + steps + ", focusedIndex=" + this.focusedIndex + " [container:" + this.parentContainer.focusedIndex + "])" );
+		System.out.println("ContainerView.shiftFocus( forward=" + forwardFocus + ", steps=" + steps + ", focusedIndex=" + this.focusedIndex + " [container:" + this.parentContainer.focusedIndex + "]), direction=" + direction );
 //		System.out.println("parent.focusedIndex=" + this.parentContainer.getFocusedIndex() );
 		//boolean allowCycle = this.allowCycling;
 		if (!allowCycle && forwardFocus && steps != 0 && isInBottomRow(this.focusedIndex) ) {
@@ -1189,7 +1204,7 @@ extends ItemView
 				//System.out.println("ShiftFocus: steps=" + steps + ", forward=" + forwardFocus);
 				int doneSteps = 0;
 				steps = Math.abs( steps ) + 1;
-				Item item = items[i]; //(Item) this.parentContainer.itemsList.get(i);
+				Item item = items[i]; //(Item) this.parentContainer.itemsList.get(i); 
 				while( doneSteps <= steps ) {
 					doneSteps += item.colSpan;
 					if (doneSteps >= steps) {
@@ -1247,7 +1262,7 @@ extends ItemView
 						}
 						i = items.length + i;
 					}
-					//System.out.println("forward: Adjusting startIndex to " + i );
+//					System.out.println("forward: Adjusting startIndex to " + i );
 				} else {
 					i = i % items.length;
 					if ( i >= items.length) {
@@ -1261,7 +1276,7 @@ extends ItemView
 			}
 		//#endif
 		//#if polish.Container.allowCycling != false
-			if (allowCycle) {
+			if (allowCycle && ((direction == Canvas.UP) || (direction == Canvas.DOWN)) ) {
 				if (forwardFocus) {
 					// when you scroll to the bottom and
 					// there is still space, do
@@ -1273,13 +1288,14 @@ extends ItemView
 					// when you scroll to the top and there is still space, do
 					// scroll first before cycling to the last item:
 					allowCycle = (this.parentContainer.getScrollYOffset() == 0);
+//					System.out.println("allowing cycle switched to " + allowCycle + ", scrollOffset=" + this.parentContainer.getScrollYOffset() + ", parentContainer=" + this.parentContainer);
 				}						
 
 			}
 		//#endif
 		Item nextItem = null;
-		//System.out.println("shifting focus - allowCycle=" + allowCycle + ", this.allowCycling=" + this.allowCycling + ", parent.allowCycling=" + this.parentContainer.allowCycling);
-		//System.out.println("starting at i=" + i + ", focusedIndex=" + this.focusedIndex + ", steps=" + steps + ", allowCycle=" + allowCycle) ;
+//		System.out.println("shifting focus - allowCycle=" + allowCycle + ", this.allowCycling=" + this.allowCycling + ", parent.allowCycling=" + this.parentContainer.allowCycling);
+//		System.out.println("starting at i=" + i + ", focusedIndex=" + this.focusedIndex + ", steps=" + steps + ", allowCycle=" + allowCycle) ;
 		while (true) {
 			if (forwardFocus) {
 				i++;
