@@ -1046,9 +1046,13 @@ public class TableItem
 	 */
 	public void setSelectedCell(int col, int row, int direction)
 	{
+		//try { throw new RuntimeException("for  " + col + "/" + row); } catch (Exception e) { e.printStackTrace(); }
 		if ((this.selectionMode & SELECTION_MODE_CELL) == SELECTION_MODE_CELL) {
 			Item focItem = this.focusedItem;
-			Object data = get(col, row);
+			Object data = null;
+			if (col >= 0 && row >= 0) {
+				data = get(col, row);
+			}
 			if (focItem == data && data != null) {
 				// this cell is already selected:
 				this.selectedColumnIndex = col;
@@ -1091,6 +1095,8 @@ public class TableItem
 						Display.getInstance().notifyFocusSet(item);
 					}
 				//#endif
+			} else {
+				this.focusedItem = null;
 			}
 		}
 		this.selectedColumnIndex = col;

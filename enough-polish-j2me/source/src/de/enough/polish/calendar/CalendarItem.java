@@ -37,6 +37,7 @@ import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.TableItem;
+import de.enough.polish.ui.UiAccess;
 import de.enough.polish.util.TextUtil;
 import de.enough.polish.util.TimePeriod;
 import de.enough.polish.util.TimePoint;
@@ -107,6 +108,7 @@ public class CalendarItem extends TableItem
 	private Style calendarDayInactiveStyle;
 	private Style calendarDayStyle;
 	private Style calendarCurrentdayStyle;
+	private Style calendarDayInvalidStyle;
 	private CalendarEntryModel model;
 	private boolean isLimitToEnabledEntries;
 	private CalendarRenderer renderer;
@@ -115,6 +117,10 @@ public class CalendarItem extends TableItem
 	private boolean isBuild;
 	private TimePeriod validPeriod;
 	private Command cmdDayDefault;
+	private boolean calendarInactiveDaysAreInteractice = true;
+	private boolean isMonthNameSelectable;
+	private Style monthNameStyle;
+	private boolean isMonthNameFocused;
 	
 	
 	
@@ -337,17 +343,8 @@ public class CalendarItem extends TableItem
 		
 		if (selCol != -1 && selRow != -1) {
 			setSelectedCell( selCol, selRow );
-		} else if (this.shownMonth.equalsMonth(this.originalDay)) {
-			col = getColumn(dayOfWeek);
-			int row;
-			if ( ((col + this.shownMonth.getDay()) % 7) != 0 ) {
-				row = (col + this.shownMonth.getDay()) / 7 + 1;
-			} else {
-				row = (col + this.shownMonth.getDay()) / 7;
-			}
-			forMonth.setDay( this.shownMonth.getDay() );
-			col = getColumn( forMonth.getDayOfWeek() );
-			setSelectedCell( col, row );
+		} else if (!this.isMonthNameFocused && this.shownMonth.equalsMonth(this.originalDay)) {
+			go(this.originalDay);
 		}
 		if (this.availableWidth != 0) {
 			init( this.availableWidth, this.availableWidth, this.availableHeight );
@@ -372,8 +369,13 @@ public class CalendarItem extends TableItem
 		} else {
 			item = createCalendaryDay(day, currentMonth, originalCurrentDay, entriesForTheDay, this);
 		}
-		if (this.cmdDayDefault != null && item.getDefaultCommand() == null) {
+		if (this.cmdDayDefault != null && day.equalsMonth(currentMonth) && item.getDefaultCommand() == null) {
 			item.setDefaultCommand( this.cmdDayDefault );
+		}
+		if (this.validPeriod != null) {
+			if (!this.validPeriod.matches(day)) {
+				item.setAppearanceMode(Item.PLAIN);
+			}
 		}
 		return item;
 	}
@@ -391,11 +393,17 @@ public class CalendarItem extends TableItem
 	public static Item createCalendaryDay(TimePoint day, TimePoint currentMonth, TimePoint originalCurrentDay, CalendarEntry[] entriesForTheDay, CalendarItem parent) 
 	{
 		StringItem item;
+		boolean dayIsInteractive = true;
 		if (!day.equalsMonth(currentMonth)) {
 			//#style calendarDayInactive?
 			item = new StringItem( null, Integer.toString( day.getDay() ));
-			if (parent != null && parent.calendarDayInactiveStyle != null) {
-				item.setStyle(parent.calendarDayInactiveStyle);
+			if (parent != null) {
+				if (parent.calendarDayInactiveStyle != null) {
+					item.setStyle(parent.calendarDayInactiveStyle);
+				}
+				if (!parent.calendarInactiveDaysAreInteractice) {
+					dayIsInteractive = false;
+				}
 			}
 		} else {
 			if (day.equalsDay(originalCurrentDay)) {
@@ -407,13 +415,17 @@ public class CalendarItem extends TableItem
 			} else {
 				//#style calendarDay?
 				item = new StringItem( null, Integer.toString( day.getDay() ));
-				if (parent != null && parent.calendarDayStyle != null) {
-					item.setStyle(parent.calendarDayStyle);
+				if (parent != null) {
+					if (parent.validPeriod != null && parent.calendarDayInvalidStyle != null && !parent.validPeriod.matches(day)) {
+						item.setStyle(parent.calendarDayInvalidStyle);
+					} else if (parent.calendarDayStyle != null) {
+						item.setStyle(parent.calendarDayStyle);
+					}
 				}
 			}
 
 		}
-		if (parent.selectionMode != TableItem.SELECTION_MODE_NONE) {
+		if (dayIsInteractive && (parent == null || (parent.selectionMode != TableItem.SELECTION_MODE_NONE))) {
 			item.setAppearanceMode( INTERACTIVE );
 		}
 		return item;
@@ -456,7 +468,7 @@ public class CalendarItem extends TableItem
 	public int getRow( TimePoint day) {
 		int daysFromStart = day.getDay();
 		day.setDay(1);
-		int col = getColumn( day );
+		int col = getColumn( day ) - 1;
 		day.setDay(daysFromStart);
 		daysFromStart += col;
 		return (daysFromStart / 7) + 1;
@@ -507,14 +519,57 @@ public class CalendarItem extends TableItem
 	 */
 	protected boolean handleKeyPressed(int keyCode, int gameAction)
 	{
+		if (this.isMonthNameFocused) {
+			if (gameAction == Canvas.LEFT) {
+				return goPreviousMonth();
+			} else if (gameAction == Canvas.RIGHT) {
+				return goNextMonth();
+			} else if (gameAction == Canvas.DOWN) {
+				UiAccess.defocus(this.label, this.monthNameStyle);
+				this.isMonthNameFocused = false;
+				this.shownMonth.setDay(1);
+				go(this.shownMonth);
+				return true;
+			} else {
+				return false;
+			}
+		}
 		boolean handled = super.handleKeyPressed(keyCode, gameAction);
 		if (!handled && isInteractive()) {
 			if (gameAction == Canvas.LEFT || gameAction == Canvas.UP) {
-				goPreviousMonth();
-				return true;
+				if (gameAction == Canvas.LEFT && getSelectedColumn() == 0) {
+					int selectedRow = getSelectedRow();
+					if (selectedRow > 1) {
+						selectedRow--;
+						int col = 6;
+						Object o = get(col, selectedRow);
+						if (o instanceof Item && ((Item)o).isInteractive()) {
+							setSelectedCell(col, selectedRow);
+							return true;
+						}
+					}
+				}
+				if (this.isMonthNameSelectable && (gameAction == Canvas.UP)) {
+					this.monthNameStyle = UiAccess.focus(this.label, 0, null);
+					this.isMonthNameFocused = true;
+					setSelectedCell(-1, -1);
+					return true;
+				}
+				return goPreviousMonth();
 			} else if (gameAction == Canvas.RIGHT || gameAction == Canvas.DOWN) {
-				goNextMonth();
-				return true;
+				if (gameAction == Canvas.RIGHT && getSelectedColumn() == 6) {
+					int selectedRow = getSelectedRow();
+					if (selectedRow < 6) {
+						selectedRow++;
+						int col = 0;
+						Object o = get(col, selectedRow);
+						if (o instanceof Item && ((Item)o).isInteractive()) {
+							setSelectedCell(col, selectedRow);
+							return true;
+						}
+					}
+				}
+				return goNextMonth();
 			}
 		}
 		return handled;
@@ -522,31 +577,82 @@ public class CalendarItem extends TableItem
 
 	/**
 	 * Moves this calendar to the next month
+	 * @return true when the previous month is in the valid period or when no valid range is specified
 	 */
-	public void goNextMonth()
+	public boolean goNextMonth()
 	{
-		this.shownMonth.addMonth(1);
-		this.shownMonth.setDay(1);
-		buildCalendar( this.shownMonth );
+		TimePeriod range = this.validPeriod;
+		TimePoint nextMonth;
+		if (range == null) {
+			nextMonth = this.shownMonth;
+		} else {
+			nextMonth = new TimePoint(this.shownMonth);
+		}
+		nextMonth.addMonth(1);
+		nextMonth.setDay(1);
+		if ( (range == null) || range.matches(nextMonth)) {
+			buildCalendar( nextMonth );
+			if (!this.isMonthNameFocused) {
+				go( nextMonth );
+			}
+			return true;			
+		}
+		return false;
 	}
 
 	/**
 	 * Moves this calendar to the previous month
+	 * @return true when the previous month is in the valid period or when no valid range is specified
 	 */
-	public void goPreviousMonth()
+	public boolean goPreviousMonth()
 	{
-		this.shownMonth.addMonth(-1);
-		this.shownMonth.setDay(1);
-		if (this.validPeriod == null || this.validPeriod.matches(this.shownMonth)) {			
-			buildCalendar( this.shownMonth );
+		TimePeriod range = this.validPeriod;
+		TimePoint nextMonth;
+		if (range == null) {
+			nextMonth = this.shownMonth;
+		} else {
+			nextMonth = new TimePoint(this.shownMonth);
 		}
+		nextMonth.addMonth(-1);
+		if (range != null) {
+			nextMonth.setDay( nextMonth.getDaysInMonth() );
+			if (!range.matches(nextMonth)) {
+				return false;
+			}
+		}
+		nextMonth.setDay(1);
+		buildCalendar( nextMonth );
+		if (!this.isMonthNameFocused) {
+			if (range != null && range.getStart().equalsMonth(nextMonth)) 
+			{
+				nextMonth.setDay( nextMonth.getDaysInMonth() );
+			}
+			go( nextMonth );
+		}
+		return true;
 	}
 	
 	/**
-	 * Goes to the specified day
+	 * Goes to the specified day.
+	 * When the day is outside of the scope of the specified date range, it will be either moved to the beginning of the 
+	 * valid range or to its end.
 	 * @param day the day that should be shown
+	 * @see #setValidPeriod(TimePeriod)
 	 */
 	public void go(TimePoint day) {
+		if (this.validPeriod != null && !this.validPeriod.matches(day)) {
+			if (day.equalsMonth(this.validPeriod.getStart()) || (day.isBefore(this.validPeriod.getStart()))) {
+				day.setDate( this.validPeriod.getStart() );
+				if (!this.validPeriod.isIncludeStart()) {
+					day.addDay(1);
+				}
+			} else {
+				day.setDate( this.validPeriod.getEnd() );
+				if (!this.validPeriod.isIncludeEnd()) {
+					day.addDay(-1);
+				}
+			}
+		}
 		int col = getColumn(day);
 		int row = getRow(day);
 		if (!day.equalsMonth(this.shownMonth)) {
@@ -658,8 +764,16 @@ public class CalendarItem extends TableItem
 		}
 	}
 	
+	/**
+	 * Specifies whether the user can select the label that displays the month names.
+	 * When the user can select the month name, she can move between the months using LEFT and RIGHT key actions.
+	 * 
+	 * @param isSelectable true when the user should be able to select the month names, by default this is false
+	 */
+	public void setMonthNameSelectable( boolean isSelectable) {
+		this.isMonthNameSelectable = isSelectable;
+	}
 	
-
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.TableItem#initContent(int, int, int)
 	 */
@@ -736,6 +850,14 @@ public class CalendarItem extends TableItem
 	public void setCalendarCurrentdayStyle(Style calendarCurrentdayStyle) {
 		this.calendarCurrentdayStyle = calendarCurrentdayStyle;
 	}
+	
+	/**
+	 * Specifies whether days that are outside of the current month can be selected
+	 * @param isInteractive true when they should be selectable (this is the default state), false if not.
+	 */
+	public void setCalendarInactiveDaysAreInteractive( boolean isInteractive) {
+		this.calendarInactiveDaysAreInteractice  = isInteractive;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -779,6 +901,12 @@ public class CalendarItem extends TableItem
 				this.calendarCurrentdayStyle = currentDayStyle;
 			}
 		//#endif		
+			//#if polish.css.calendar-day-invalid-style
+			Style dayInvalidStyle = (Style) style.getObjectProperty("calendar-day-invalid-style");
+			if (dayInactiveStyle != null) {
+				this.calendarDayInvalidStyle = dayInvalidStyle;
+			}
+		//#endif
 		//#if polish.css.calendar-show-mode
 			Integer showModeInt = style.getIntProperty("calendar-show-mode");
 			if (showModeInt != null) {
@@ -809,6 +937,15 @@ public class CalendarItem extends TableItem
 	 */
 	public void setStyleDay(Style dayStyle) {
 		this.calendarDayStyle = dayStyle;
+	}
+	
+	/**
+	 * Sets the style for days for days that are not valid
+	 * @param dayStyle the style for days that are in the current month but not valid
+	 * @see #setValidPeriod(TimePeriod)
+	 */
+	public void setStyleInvalidDay( Style dayStyle ) {
+		this.calendarDayInvalidStyle = dayStyle;
 	}
 	
 	/**

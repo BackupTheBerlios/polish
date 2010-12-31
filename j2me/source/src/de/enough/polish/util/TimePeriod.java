@@ -53,6 +53,29 @@ implements Externalizable
 	public TimePeriod() {
 		// just used for serialization
 	}
+	
+	/**
+	 * Creates a new time period that excludes the start, but includes the end time ]start...end]
+	 * 
+	 * @param start the start time in RFC 3339 format
+	 * @param end the end time in RFC 3339 format
+	 * @see TimePoint#parseRfc3339(String)
+	 */
+	public TimePeriod( String start, String end ) {
+		this( start, false, end, true );
+	}
+	
+	/**
+	 * Creates a new time period
+	 * 
+	 * @param start the start time in RFC 3339 format
+	 * @param includeStart true when this should include the start time, false when the start time should be excluded 
+	 * @param end the end time in RFC 3339 format
+	 * @param includeEnd true when this should include the end time, false when the end time should be excluded
+	 */
+	public TimePeriod( String start, boolean includeStart, String end, boolean includeEnd ) {
+		this( TimePoint.parseRfc3339(start), includeStart, TimePoint.parseRfc3339(end), includeEnd );
+	}
 
 	/**
 	 * Creates a new time period that excludes the start, but includes the end time ]start...end]
