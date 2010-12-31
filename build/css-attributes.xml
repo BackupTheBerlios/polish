@@ -5467,6 +5467,17 @@
 		id="479"
 		since="J2ME Polish 2.2"
 	/>
+	
+		
+	<attribute
+		name="calendar-day-invalid-style"
+		type="style"
+		appliesTo="CalendarItem"
+		description="The style for days of the current month that are outside of the specified valid period within an CalendarItem."
+		id="480"
+		since="J2ME Polish 2.2"
+	/>	
+	
 <!--
 	<attribute
 		name="repaint-previous-screen-anchor"
