@@ -2411,6 +2411,9 @@ public class Container extends Item {
 				i++;
 				if (i >= items.length) {
 					if (allowCycle) {
+						if (!fireContinueCycle(CycleListener.DIRECTION_BOTTOM_TO_TOP)) {
+							return false;
+						}
 						allowCycle = false;
 						i = 0;
 						//#debug
@@ -2423,6 +2426,9 @@ public class Container extends Item {
 				i--;
 				if (i < 0) {
 					if (allowCycle) {
+						if (!fireContinueCycle(CycleListener.DIRECTION_TOP_TO_BOTTOM)) {
+							return false;
+						}
 						allowCycle = false;
 						i = items.length - 1;
 						//#debug

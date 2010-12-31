@@ -110,7 +110,7 @@ import de.enough.polish.util.ArrayList;
  */
 public class TabbedPane 
 extends Screen
-implements ScreenInitializerListener
+implements ScreenInitializerListener, CycleListener
 {
 	//#if polish.Bugs.needsNokiaUiForSystemAlerts && !polish.SystemAlertNotUsed
 		//#define tmp.needsNokiaUiForSystemAlerts
@@ -156,6 +156,8 @@ implements ScreenInitializerListener
 		private int pointerPressX;
 	//#endif
 	private boolean isSizeChangedCalled;
+	private boolean isTabIconsContainerFocused;
+	private Style tabIconsContainerStyle;
 
 	/**
 	 * Creates a new, empty TabbedPane, specifying its title.
@@ -319,13 +321,17 @@ implements ScreenInitializerListener
 			// this was the first tab, switch to it by default:
 			setFocus(0);
 		}
+		if(tab instanceof Screen)
+		{
+			((Screen)tab).getRootContainer().setCycleListener(this);
+		} 
 	}
 	
 	//#if polish.LibraryBuild
 		public void addTab( javax.microedition.lcdui.Displayable tab, IconItem iconItem, Style tabIconStyle){}
 	//#endif
 
-
+	
 	/**
 	 * Sets a listener for focus change to this TabbedPane, replacing any
 	 * previous TabListener. A null reference is allowed and has the effect of
@@ -1010,7 +1016,7 @@ implements ScreenInitializerListener
 		Screen scr = this.currentScreen;
 		if (scr != null) {
 			if (!scr.isInitialized) {
-				System.out.println("XXXXXXXXXXXX*** Re-Intialzing the screen " + scr);
+				//System.out.println("XXXXXXXXXXXX*** Re-Intialzing the screen " + scr);
 				int w = getScreenFullWidth();
 				int h = Display.getScreenHeight();
 				int tabHeight = this.tabIconsContainer.itemHeight;
@@ -1152,6 +1158,10 @@ implements ScreenInitializerListener
 		super.setStyle(style);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#animate(long, de.enough.polish.ui.ClippingRegion)
+	 */
 	public void animate(long currentTime, ClippingRegion repaintRegion) {
 		super.animate(currentTime, repaintRegion);
 		Screen screen = this.currentScreen;
@@ -1161,11 +1171,45 @@ implements ScreenInitializerListener
 		this.tabIconsContainer.animate(currentTime, repaintRegion);
 	}
 
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.CycleListener.onCycle(Item,int)
+	 */
+	public boolean onCycle(Item item, int direction) {
+		if (direction == CycleListener.DIRECTION_BOTTOM_TO_TOP || direction == CycleListener.DIRECTION_TOP_TO_BOTTOM) {
+			this.tabIconsContainerStyle = this.tabIconsContainer.focus(null, 0);
+			this.isTabIconsContainerFocused = true;
+			if (this.currentScreen != null) {
+				Container rc = this.currentScreen.getRootContainer();
+				rc.defocus(rc.style);
+			}
+			return false;
+		}
+		return true;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see de.enough.polish.ui.Screen#keyPressed(int)
 	 */
 	public void keyPressed(int keyCode) {
+		if (this.isTabIconsContainerFocused) {
+			int gameAction = getGameAction(keyCode);
+			if (this.tabIconsContainer.handleKeyPressed(keyCode, gameAction)) {
+				setFocus( this.tabIconsContainer.getFocusedIndex() );
+				if (this.currentScreen != null) {
+					Container rc = this.currentScreen.getRootContainer();
+					rc.defocus(rc.style);
+				}
+			} else if (gameAction == DOWN || gameAction == UP) {
+				this.tabIconsContainer.defocus(this.tabIconsContainerStyle);
+				this.isTabIconsContainerFocused = false;
+				if (this.currentScreen != null) {
+					Container rc = this.currentScreen.getRootContainer();
+					rc.focus(rc.style, gameAction);
+				}
+			}
+			return;
+		}
 		if (this.currentScreen != null) {
 			this.lastInteractionTime = System.currentTimeMillis();
 			this.currentScreen.keyPressed(keyCode);
@@ -1179,10 +1223,12 @@ implements ScreenInitializerListener
 	 * @see de.enough.polish.ui.Screen#keyRepeated(int)
 	 */
 	public void keyRepeated(int keyCode) {
-		if (this.currentScreen != null) {
-			this.currentScreen.keyRepeated(keyCode);
-		} else {
-			super.keyRepeated(keyCode);	
+		if (!this.isTabIconsContainerFocused) {
+			if (this.currentScreen != null) {
+				this.currentScreen.keyRepeated(keyCode);
+			} else {
+				super.keyRepeated(keyCode);	
+			}
 		}
 	}
 	
@@ -1191,30 +1237,27 @@ implements ScreenInitializerListener
 	 * @see de.enough.polish.ui.Screen#keyReleased(int)
 	 */
 	public void keyReleased(int keyCode) {
-		//#ifdef polish.hasPointerEvents
-		if(!Display.getInstance().hasPointerEvents())
-		{
-		//#endif
-			int gameAction = 0;
-			try {
-				gameAction = getGameAction(keyCode);
-			} catch (Exception e) {
-				// ignore
+		if (!this.isTabIconsContainerFocused) {
+//			//#ifdef polish.hasPointerEvents
+//			if(!Display.getInstance().hasPointerEvents())
+//			{
+//			//#endif
+//				int gameAction = getGameAction(keyCode);
+//				if (gameAction == RIGHT && keyCode != KEY_NUM6 && this.currentDisplayableIndex < this.tabDisplayables.size()-1) {
+//					setFocus( this.currentDisplayableIndex + 1 );
+//					return;
+//				} else if (gameAction == LEFT && keyCode != KEY_NUM4 && this.currentDisplayableIndex > 0) {
+//					setFocus( this.currentDisplayableIndex - 1 );
+//					return;
+//				}
+//			//#ifdef polish.hasPointerEvents
+//			} 
+//			//#endif
+			if (this.currentScreen != null) {
+				this.currentScreen.keyReleased(keyCode);
+			} else {
+				super.keyReleased(keyCode);	
 			}
-			if (gameAction == RIGHT && keyCode != KEY_NUM6 && this.currentDisplayableIndex < this.tabDisplayables.size()-1) {
-				setFocus( this.currentDisplayableIndex + 1 );
-				return;
-			} else if (gameAction == LEFT && keyCode != KEY_NUM4 && this.currentDisplayableIndex > 0) {
-				setFocus( this.currentDisplayableIndex - 1 );
-				return;
-			}
-		//#ifdef polish.hasPointerEvents
-		} 
-		//#endif
-		if (this.currentScreen != null) {
-			this.currentScreen.keyReleased(keyCode);
-		} else {
-			super.keyReleased(keyCode);	
 		}
 	}
 
@@ -1549,7 +1592,5 @@ implements ScreenInitializerListener
 			scr.contentY += tabHeight;
 		}
 	}
-	
-	
 
 }

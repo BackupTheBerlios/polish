@@ -897,6 +897,7 @@ public abstract class Item implements UiElement, Animatable
 		protected NativeItem nativeItem;
 	//#endif
 	private UiEventListener uiEventListener;
+	private CycleListener cycleListener;
 
 
 
@@ -6140,6 +6141,48 @@ public abstract class Item implements UiElement, Animatable
 			}
 		//#endif
 		return result;
+	}
+	
+	/**
+	 * Fires a cycle event.
+	 * The default implementation forwards the event to the  cycle listener if one is registered, otherwise it will be forwarded to the parent item.
+	 * When there is neither a parent item or a cycle listener, this method will return true.
+	 * 
+	 * @param direction the direction, e.g. CycleListener.DIRECTION_BOTTOM_TO_TOP
+	 * @return true when the cycling process can continue, false when the cycle event should be aborted
+	 * @see CycleListener#DIRECTION_BOTTOM_TO_TOP
+	 * @see CycleListener#DIRECTION_TOP_TO_BOTTOM
+	 * @see CycleListener#DIRECTION_LEFT_TO_RIGHT
+	 * @see CycleListener#DIRECTION_RIGHT_TO_LEFT
+	 * @see #setCycleListener(CycleListener)
+	 * @see #getCycleListener()
+	 */
+	public boolean fireContinueCycle( int direction ) {
+		if (this.cycleListener != null) {
+			return this.cycleListener.onCycle(this, direction);
+		}
+		if (this.parent != null) {
+			return this.parent.fireContinueCycle(direction);
+		}
+		return true;
+	}
+	
+	/**
+	 * Allows to specify a cycle listener
+	 * @param listener the listener, use null to deregister the listener
+	 * @see #getCycleListener()
+	 */
+	public void setCycleListener( CycleListener listener ) {
+		this.cycleListener = listener;
+	}
+	
+	/**
+	 * Retrieves the cycle listener
+	 * @return the currently registered cycle listener
+	 * @see #setCycleListener(CycleListener)
+	 */
+	public CycleListener getCycleListener() {
+		return this.cycleListener;
 	}
 
 	

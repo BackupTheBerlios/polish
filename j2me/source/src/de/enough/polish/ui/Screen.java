@@ -1172,7 +1172,7 @@ implements UiElement, Animatable
 		this.backgroundWidth = this.screenWidth - this.backgroundX - borderWidthR - this.marginRight;
 		//#if tmp.menuFullScreen
 			this.backgroundHeight = this.fullScreenHeight - this.backgroundY - borderWidthB - this.marginBottom;
-			//#if polish.css.background-bottom
+			//#if polish.css.background-bottom || polish.css.backgroundrange-bottom
 				if (this.excludeMenuBarForBackground) {
 					this.backgroundHeight -= this.menuBarHeight - 1;
 				} else {
@@ -1180,13 +1180,13 @@ implements UiElement, Animatable
 					if (this.isLayoutVerticalShrink) {
 						this.backgroundHeight -= this.menuBarHeight - 1;
 					}
-			//#if polish.css.background-bottom
+			//#if polish.css.background-bottom || polish.css.backgroundrange-bottom
 				}
 			//#endif
 		//#else
 			this.backgroundHeight = this.screenHeight - this.backgroundY - borderWidthB - this.marginBottom;
 		//#endif
-		//#if polish.css.background-top && tmp.usingTitle
+		//#if (polish.css.background-top || polish.css.backgroundrange-top) && tmp.usingTitle
 			if (this.excludeTitleForBackground) {
 				this.backgroundY += this.titleHeight;
 				this.backgroundHeight -= this.titleHeight;
@@ -1860,12 +1860,24 @@ implements UiElement, Animatable
 					this.excludeMenuBarForBackground = backgroundBottomInt.intValue() == 1; 
 				}
 			//#endif
+			//#if polish.css.backgroundrange-bottom
+				Integer backgroundRangeBottomInt = style.getIntProperty("backgroundrange-bottom");
+				if (backgroundRangeBottomInt != null) {
+					this.excludeMenuBarForBackground = backgroundRangeBottomInt.intValue() == 1; 
+				}
+			//#endif
 		//#endif
 		//#ifdef tmp.usingTitle
-			//#if polish.css.background-top	
+			//#if polish.css.background-top
 				Integer backgroundTopInt = style.getIntProperty("background-top");
 				if (backgroundTopInt != null) {
 					this.excludeTitleForBackground = backgroundTopInt.intValue() == 1; 
+				}
+			//#endif
+			//#if polish.css.backgroundrange-top
+				Integer backgroundRangeTopInt = style.getIntProperty("backgroundrange-top");
+				if (backgroundRangeTopInt != null) {
+					this.excludeTitleForBackground = backgroundRangeTopInt.intValue() == 1; 
 				}
 			//#endif
 		//#endif

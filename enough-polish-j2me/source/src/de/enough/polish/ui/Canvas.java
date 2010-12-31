@@ -625,7 +625,11 @@ implements Displayable
      */
     public int getGameAction(int keyCode)
     {
-    	return Display.getInstance().getGameAction(keyCode);
+    	try {
+    		return Display.getInstance().getGameAction(keyCode);
+    	} catch (Exception e) {
+    		return 0;
+    	}
     }
 
     /**
