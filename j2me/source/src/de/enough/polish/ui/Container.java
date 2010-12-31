@@ -3996,7 +3996,7 @@ public class Container extends Item {
 	public void setScrollYOffset( int offset, boolean smooth) {
 		//#debug
 		System.out.println("Setting scrollYOffset to " + offset + " for " + this);
-		//try { throw new RuntimeException("for yOffset " + offset); } catch (Exception e) { e.printStackTrace(); }
+		//try { throw new RuntimeException("for yOffset " + offset + " in " + this); } catch (Exception e) { e.printStackTrace(); }
 		if (!this.enableScrolling && this.parent instanceof Container) {
 			((Container)this.parent).setScrollYOffset(offset, smooth);
 			return;
@@ -4390,6 +4390,11 @@ public class Container extends Item {
 	public void onScreenSizeChanged(int screenWidth, int screenHeight) {
 		Style lastStyle = this.style;
 		super.onScreenSizeChanged(screenWidth, screenHeight);
+		//#if tmp.supportViewType
+			if (this.containerView != null) {
+				this.containerView.onScreenSizeChanged(screenWidth, screenHeight);
+			}
+		//#endif
 		//#if polish.css.landscape-style || polish.css.portrait-style
 			if (this.plainStyle != null && this.style != lastStyle) {
 				Style newStyle = null;

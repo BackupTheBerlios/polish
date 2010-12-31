@@ -5901,6 +5901,11 @@ public abstract class Item implements UiElement, Animatable
 		if (this.label != null) {
 			this.label.onScreenSizeChanged(screenWidth, screenHeight);
 		}
+		//#ifdef polish.css.view-type
+		if (this.view != null) {
+			this.view.onScreenSizeChanged(screenWidth, screenHeight);
+		}
+		//#endif
 		//#if polish.css.portrait-style || polish.css.landscape-style
 			if (!this.isStyleInitialised && this.style != null) {
 				setStyle( this.style );

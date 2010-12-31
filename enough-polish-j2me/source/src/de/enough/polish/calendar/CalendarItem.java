@@ -31,6 +31,7 @@ import java.util.Date;
 
 import javax.microedition.lcdui.Canvas;
 
+import de.enough.polish.ui.Command;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.StringItem;
@@ -43,7 +44,7 @@ import de.enough.polish.util.TimePoint;
 /**
  * <p>Displays a calendar for a specific month</p>
  *
- * <p>Copyright Enough Software 2009</p>
+ * <p>Copyright Enough Software 2009-2010</p>
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class CalendarItem extends TableItem
@@ -112,6 +113,8 @@ public class CalendarItem extends TableItem
 	private TimePoint firstColumnFirstRowDay;
 	private boolean isEditable = true;
 	private boolean isBuild;
+	private TimePeriod validPeriod;
+	private Command cmdDayDefault;
 	
 	
 	
@@ -363,12 +366,16 @@ public class CalendarItem extends TableItem
 	 * @return the created item, must not be null
 	 */
 	protected Item createCalendaryDay(TimePoint day, TimePoint currentMonth, TimePoint originalCurrentDay, CalendarEntry[] entriesForTheDay, int col, int row) {
+		Item item;
 		if (this.renderer != null) {
-			return this.renderer.createCalendaryDay(day, currentMonth, originalCurrentDay, entriesForTheDay, this);
+			item = this.renderer.createCalendaryDay(day, currentMonth, originalCurrentDay, entriesForTheDay, this);
 		} else {
-			return createCalendaryDay(day, currentMonth, originalCurrentDay, entriesForTheDay, this);
+			item = createCalendaryDay(day, currentMonth, originalCurrentDay, entriesForTheDay, this);
 		}
-
+		if (this.cmdDayDefault != null && item.getDefaultCommand() == null) {
+			item.setDefaultCommand( this.cmdDayDefault );
+		}
+		return item;
 	}
 	
 
@@ -422,10 +429,43 @@ public class CalendarItem extends TableItem
 			buildCalendar(this.shownMonth);
 		}
 	}
+	
+	/**
+	 * Sets the default command for days.
+	 * This can be used for using the calendar item for an easy day picker.
+	 * @param cmd the command that is triggered when a day is selected
+	 */
+	public void setDayDefaultCommand( Command cmd ) {
+		this.cmdDayDefault = cmd;
+	}
+	
+	/**
+	 * Retrieves the column for the specified day
+	 * @param day the day
+	 * @return the column for the day
+	 */
+	public int getColumn( TimePoint day) {
+		return getColumn(day.getDayOfWeek());
+	}
+	
+	/**
+	 * Retrieves the row for the specified day
+	 * @param day the day
+	 * @return the row for the day
+	 */
+	public int getRow( TimePoint day) {
+		int daysFromStart = day.getDay();
+		day.setDay(1);
+		int col = getColumn( day );
+		day.setDay(daysFromStart);
+		daysFromStart += col;
+		return (daysFromStart / 7) + 1;
+	}
 
 	/**
-	 * @param dayOfWeek
-	 * @return
+	 * Retrieves the column
+	 * @param dayOfWeek the day within 
+	 * @return the corresponding column
 	 */
 	private int getColumn(int dayOfWeek)
 	{
@@ -481,7 +521,7 @@ public class CalendarItem extends TableItem
 	}
 
 	/**
-	 * 
+	 * Moves this calendar to the next month
 	 */
 	public void goNextMonth()
 	{
@@ -491,14 +531,28 @@ public class CalendarItem extends TableItem
 	}
 
 	/**
-	 * 
+	 * Moves this calendar to the previous month
 	 */
 	public void goPreviousMonth()
 	{
 		this.shownMonth.addMonth(-1);
 		this.shownMonth.setDay(1);
-		buildCalendar( this.shownMonth );
-
+		if (this.validPeriod == null || this.validPeriod.matches(this.shownMonth)) {			
+			buildCalendar( this.shownMonth );
+		}
+	}
+	
+	/**
+	 * Goes to the specified day
+	 * @param day the day that should be shown
+	 */
+	public void go(TimePoint day) {
+		int col = getColumn(day);
+		int row = getRow(day);
+		if (!day.equalsMonth(this.shownMonth)) {
+			buildCalendar( day );
+		}
+		setSelectedCell(col, row);
 	}
 
 	
@@ -557,8 +611,9 @@ public class CalendarItem extends TableItem
 	}
 	
 	/**
-	 * Retrieves the currently selected day as a Calendar
-	 * @return a Calendar representing the currently selected day
+	 * Retrieves the currently selected day as a TimePoint
+	 * @return a TimePoint representing the currently selected day
+	 * @see #go(TimePoint)
 	 */
 	public TimePoint getSelectedTimePoint()
 	{
@@ -571,6 +626,7 @@ public class CalendarItem extends TableItem
 	/**
 	 * Retrieves the currently selected day as a Calendar
 	 * @return a Calendar representing the currently selected day
+	 * @see #go(TimePoint)
 	 */
 	public Calendar getSelectedCalendar()
 	{
@@ -582,6 +638,7 @@ public class CalendarItem extends TableItem
 	/**
 	 * Retrieves the currently selected day as a Date
 	 * @return a Date representing the currently selected day
+	 * @see #go(TimePoint)
 	 */
 	public Date getSelectedDate()
 	{
@@ -831,5 +888,34 @@ public class CalendarItem extends TableItem
 	 */
 	public int getShowMode() {
 		return this.showMode;
+	}
+	
+	/**
+	 * Sets the time range that is valid for this instance.
+	 * The user cannot navigate outside of the specified validity period.
+	 * @param validPeriod the valid range, use null to remove any boundaries
+	 * @see #getValidPeriod()
+	 */
+	public void setValidPeriod( TimePeriod validPeriod ) {
+		this.validPeriod = validPeriod;
+		if (validPeriod != null) {
+			TimePoint tp = getSelectedTimePoint();
+			if (!validPeriod.matches(tp)) {
+				if (tp.isBefore(validPeriod.getStart())) {
+					go( validPeriod.getStart() );
+				} else {
+					go( validPeriod.getEnd() );
+				}
+			}
+		}
+	}
+
+	/**
+	 * Retrieves the time range that is valid for this instance.
+	 * @return the specified time period, may be null
+	 * @see #setValidPeriod(TimePeriod)
+	 */
+	public TimePeriod getValidPeriod() {
+		return this.validPeriod;
 	}
 }

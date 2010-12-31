@@ -638,5 +638,15 @@ public abstract class ItemView implements Serializable{
 		this.contentHeight = height;
 	}
 
+	/**
+	 * Notifies this item about a new screen size.
+	 * The default implementation is empty.
+	 * @param screenWidth the screen width
+	 * @param screenHeight the screen height
+	 */
+	protected void onScreenSizeChanged(int screenWidth, int screenHeight) {
+		// you can override this
+	}
+
 	
 }

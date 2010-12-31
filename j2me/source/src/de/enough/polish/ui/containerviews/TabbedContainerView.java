@@ -96,6 +96,7 @@ implements FocusListener
 	private Style tabbarStyle;
 	private transient Container tabbarContainer;
 	private Style tabStyle;
+	private boolean isTabbarInitRequired;
 
 	/**
 	 * Creates a new tabbed view-type
@@ -165,6 +166,9 @@ implements FocusListener
 				tabbar.add(tab);
 			}
 			UiAccess.init(tabbar, firstLineWidth, availWidth, availHeight - (maxHeight + this.paddingVertical));
+		} else if (this.isTabbarInitRequired) {
+			UiAccess.init(tabbar, firstLineWidth, availWidth, availHeight - (maxHeight + this.paddingVertical));
+			this.isTabbarInitRequired = false;
 		}
 		// layout tabbar:
 		int y = 0;
@@ -382,6 +386,15 @@ implements FocusListener
 		if (focIndex != -1 && focIndex != this.focusedIndex) {
 			this.parentContainer.focusChild(focIndex, focItem, 0, false);
 		}
+	}
+
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.ItemView#onScreenSizeChanged(int, int)
+	 */
+	protected void onScreenSizeChanged(int screenWidth, int screenHeight) {
+		super.onScreenSizeChanged(screenWidth, screenHeight);
+		this.isTabbarInitRequired = true;
 	}
 	
 
