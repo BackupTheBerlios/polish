@@ -543,11 +543,14 @@ implements Externalizable, Comparator, Comparable
 	 */
 	public void addDay(int numberOfDays) {
 		int d = this.day + numberOfDays;
-		int daysInMonth = getDaysInMonth();
-		while (d > daysInMonth) {
-			addMonth(1);
-			d -= daysInMonth;
+		int daysInMonth;
+		if (numberOfDays > 0) {
 			daysInMonth = getDaysInMonth();
+			while (d > daysInMonth) {
+				addMonth(1);
+				d -= daysInMonth;
+				daysInMonth = getDaysInMonth();
+			}
 		}
 		while (d < 1) {
 			addMonth(-1);
@@ -907,7 +910,8 @@ implements Externalizable, Comparator, Comparable
 			if (dayOfMonth == 29) { // okay, this is easy ;-)
 				daysInMonth = 29;
 			} else {
-				long addedTime = (29L - dayOfMonth) * 24 * 60 * 60 * 1000;
+				cal.set(Calendar.DAY_OF_MONTH, 1);
+				long addedTime = 29L * 24 * 60 * 60 * 1000;
 				Date testDate = new Date( cal.getTime().getTime() + addedTime );
 				cal.setTime( testDate );
 				this.resetCalendar = true;
