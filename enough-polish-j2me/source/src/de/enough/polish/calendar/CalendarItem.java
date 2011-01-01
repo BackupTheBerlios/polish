@@ -676,6 +676,11 @@ public class CalendarItem extends TableItem
 				goNextMonth();
 				return true;
 			}
+		} else if (this.isMonthNameFocused) {
+			UiAccess.defocus(this.label, this.monthNameStyle);
+			this.isMonthNameFocused = false;
+			this.shownMonth.setDay(1);
+			go(this.shownMonth);
 		}
 		return super.handlePointerReleased(relX, relY);
 	}
@@ -1035,7 +1040,7 @@ public class CalendarItem extends TableItem
 	 */
 	public void setValidPeriod( TimePeriod validPeriod ) {
 		this.validPeriod = validPeriod;
-		if (validPeriod != null) {
+		if (validPeriod != null && this.isBuild) {
 			TimePoint tp = getSelectedTimePoint();
 			if (!validPeriod.matches(tp)) {
 				if (tp.isBefore(validPeriod.getStart())) {
