@@ -3352,11 +3352,13 @@ implements UiElement, Animatable
 	 * to ensure that super.keyPressed( int ) is called!
 	 * 
 	 * @param keyCode The code of the pressed key
+	 * @return true when the event was handled/consumed
 	 */
-	public void keyPressed(int keyCode) {
+	public boolean _keyPressed(int keyCode) {
 		//#if polish.Screen.callSuperEvents
-			super.keyPressed(keyCode);
+			super._keyPressed(keyCode);
 		//#endif
+		boolean processed = false;
 		this.lastInteractionTime = System.currentTimeMillis();
 		synchronized (this.paintLock) {
 			//#if polish.Bugs.noSoftKeyReleasedEvents
@@ -3366,23 +3368,16 @@ implements UiElement, Animatable
 				this.ignoreRepaintRequests = true;
 				//#debug
 				System.out.println("keyPressed: [" + keyCode + "].");
-				int gameAction = -1;
+				int gameAction = getGameAction(keyCode);
 				//#if tmp.trackKeyUsage
 					this.keyPressedProcessed = true;
 				//#endif
-				try {
-					gameAction = getGameAction(keyCode);
-				} catch (Exception e) { // can happen when code is a  LEFT/RIGHT softkey on SE devices, for example
-					//#debug warn
-					System.out.println("Unable to get game action for key code " + keyCode + ": " + e );
-				}
 				if (gameAction != 0) {
 					int bit = 1 << gameAction;
 					this.keyStates |= bit;
 			        this.releasedKeys &= ~bit;
 				}
 
-				boolean processed = false;
 				//#if tmp.menuFullScreen
 					boolean letTheMenuBarProcessKey;
 					//#ifdef tmp.useExternalMenuBar
@@ -3421,14 +3416,14 @@ implements UiElement, Animatable
 									}
 								//#endif
 								repaint();
-								return;
+								return true;
 							}
 							if (this.menuBar.isSoftKeyPressed) {
 								//System.out.println("menubar detected softkey " + keyCode );
 								//#if tmp.trackKeyUsage
 									this.keyPressedProcessed = false;
 								//#endif
-								return;
+								return false;
 							}
 							//System.out.println("menubar did not handle " + keyCode );
 						//#else
@@ -3440,7 +3435,7 @@ implements UiElement, Animatable
 								//#endif
 								if ( this.menuSingleLeftCommand != null) {
 									callCommandListener( this.menuSingleLeftCommand );
-									return;
+									return true;
 								} else {
 									if (!this.menuOpened 
 											&& this.menuContainer != null 
@@ -3448,7 +3443,7 @@ implements UiElement, Animatable
 									{
 										openMenu( true );
 										repaint();
-										return;
+										return true;
 									} else {
 										gameAction = Canvas.FIRE;
 										//#if polish.Bugs.SoftKeyMappedToFire
@@ -3464,7 +3459,7 @@ implements UiElement, Animatable
 								if (!this.menuOpened && this.menuSingleRightCommand != null) {
 									callCommandListener( this.menuSingleRightCommand );
 									repaint();
-									return;
+									return true;
 								}
 							}
 							boolean doReturn = false;
@@ -3498,10 +3493,10 @@ implements UiElement, Animatable
 									//#endif
 								}
 								repaint();
-								return;
+								return true;
 							}
 							if (doReturn) {
-								return;
+								return false;
 							}
 						//#endif
 					}
@@ -3509,7 +3504,7 @@ implements UiElement, Animatable
 				//#if (polish.Screen.FireTriggersOkCommand == true) && tmp.menuFullScreen
 					if (gameAction == FIRE && keyCode != Canvas.KEY_NUM5 && this.okCommand != null) {
 						callCommandListener(this.okCommand);
-						return;
+						return true;
 					}
 				//#endif
 				//#if polish.key.ReturnKey:defined && tmp.trackKeyUsage
@@ -3535,6 +3530,7 @@ implements UiElement, Animatable
 					//#endif
 					notifyScreenStateChanged();
 					repaint();
+					processed = true;
 				}
 			//#if polish.debug.eror
 			} catch (Exception e) {
@@ -3545,6 +3541,7 @@ implements UiElement, Animatable
 				this.ignoreRepaintRequests = false;
 				this.isScreenChangeDirtyFlag = false;
 			}
+			return processed;
 		}
 	}
 	
@@ -3553,11 +3550,12 @@ implements UiElement, Animatable
 	 * Just maps the event to the the keyPressed method.
 	 * 
 	 * @param keyCode the code of the key, which is pressed repeatedly
+	 * @return true when the event was handled/consumed
 	 */
-	public void keyRepeated(int keyCode) {
+	public boolean _keyRepeated(int keyCode) {
 		//#if polish.Bugs.noSoftKeyReleasedEvents
 			if (keyCode == this.triggerReleasedKeyCode && this.triggerReleasedTime == 0) {
-				return;
+				return false;
 			}
 		//#endif
 		//synchronized (this.paintLock) {
@@ -3566,27 +3564,21 @@ implements UiElement, Animatable
 			//#debug
 			System.out.println("keyRepeated(" + keyCode + ")");
 			this.lastInteractionTime = System.currentTimeMillis();
-			int gameAction = 0;
-			try {
-				gameAction = getGameAction( keyCode );
-			} catch (Exception e) { // can happen when code is a  LEFT/RIGHT softkey on SE devices, for example
-				//#debug warn
-				System.out.println("Unable to get game action for key code " + keyCode + ": " + e );
-			}
+			int gameAction = getGameAction( keyCode );
 			//#if tmp.menuFullScreen
 				//#ifdef tmp.useExternalMenuBar
 					if (this.menuBar.handleKeyRepeated(keyCode, gameAction)) {
 						repaint();
-						return;
+						return true;
 					} else if (this.menuBar.isOpened) {
-						return;
+						return true;
 					}
 				//#else
 					if (this.menuOpened  && this.menuContainer != null ) {
 						if (this.menuContainer.handleKeyRepeated(keyCode, gameAction)) {
 							repaint();
 						}
-						return;
+						return true;
 					}
 	
 				//#endif
@@ -3595,19 +3587,22 @@ implements UiElement, Animatable
 			if ( handled  || this.isRepaintRequested ) {
 				this.isRepaintRequested = false;
 				repaint();
+				return true;
 			}
 		//}
 		} finally {
 			this.ignoreRepaintRequests = false;
 		}
+		return false;
 	}
 
 	/**
 	 * Is called when a key is released.
 	 * 
 	 * @param keyCode the code of the key, which has been released
+	 * @return true when the event was handled/consumed
 	 */
-	public void keyReleased(int keyCode) {
+	public boolean _keyReleased(int keyCode) {
 		boolean processed = false;
 		try {
 			synchronized (this.paintLock) {
@@ -3615,7 +3610,7 @@ implements UiElement, Animatable
 					if (keyCode == this.triggerReleasedKeyCode) {
 						if (this.triggerReleasedTime == 0) {
 							this.triggerReleasedKeyCode = 0;
-							return;
+							return true;
 						} else {
 							this.triggerReleasedTime = 0;
 						}
@@ -3625,13 +3620,7 @@ implements UiElement, Animatable
 				//#debug
 				System.out.println("keyReleased(" + keyCode + ")");
 				this.lastInteractionTime = System.currentTimeMillis();
-				int gameAction = 0;
-				try {
-					gameAction = getGameAction( keyCode );
-				} catch (Exception e) { // can happen when code is a  LEFT/RIGHT softkey on SE devices, for example
-					//#debug warn
-					System.out.println("Unable to get game action for key code " + keyCode + ": " + e );
-				}
+				int gameAction = getGameAction( keyCode );
 				if (gameAction != 0) {
 					this.releasedKeys |= 1 << gameAction;
 				}
@@ -3642,9 +3631,7 @@ implements UiElement, Animatable
 							if (processed) {
 								repaint();
 							}
-							//if (processed || isMenuOpened()) { 
-								//# return;
-							//}
+							//# return true;
 						//#else
 							if (this.menuOpened  && this.menuContainer != null ) {
 								if ( isSoftKeyLeft(keyCode, gameAction)) {
@@ -3657,9 +3644,7 @@ implements UiElement, Animatable
 								if (processed) {
 									repaint();
 								}
-								//if (processed || isMenuOpened()) { 
-									return;
-								//}
+								return true;
 							}
 			
 						//#endif
@@ -3717,6 +3702,7 @@ implements UiElement, Animatable
 				if ( processed  || this.isRepaintRequested) {
 					this.isRepaintRequested = false;
 					repaint();
+					processed = true;
 				}
 			}
 		} finally {
@@ -3726,6 +3712,7 @@ implements UiElement, Animatable
 			//#endif
 
 		}
+		return processed;
 	}
 
 	//#ifdef polish.useDynamicStyles	
@@ -4870,9 +4857,9 @@ implements UiElement, Animatable
 
 	//#ifdef polish.hasPointerEvents
 	/* (non-Javadoc)
-	 * @see javax.microedition.lcdui.Canvas#pointerDragged(int, int)
+	 * @see javax.microedition.lcdui.Canvas#_pointerDragged(int, int)
 	 */
-	public void pointerDragged(int x, int y)
+	public boolean _pointerDragged(int x, int y)
 	{
 		//#debug
 		System.out.println("screen: pointer drag " + x + ", " + y);
@@ -4884,14 +4871,14 @@ implements UiElement, Animatable
 			//#if tmp.useScrollBar
 				if (this.scrollBar.handlePointerDragged( x - this.scrollBar.relativeX, y - this.scrollBar.relativeY )) {
 					repaint();
-					return;
+					return true;
 				}			
 			//#endif
 			//#ifdef tmp.menuFullScreen
 				//#ifdef tmp.useExternalMenuBar
 					if (this.menuBar.handlePointerDragged(x - this.menuBar.relativeX, y - this.menuBar.relativeY)) {
 						repaint();
-						return;
+						return true;
 					}
 				//#else
 					// check if one of the command buttons has been pressed:
@@ -4901,7 +4888,7 @@ implements UiElement, Animatable
 							//openMenu( false ); close the menu in pointerReleased so that the user can scroll within large commands menu
 							repaint();
 						}
-						return;
+						return true;
 					}
 				//#endif
 			//#endif
@@ -4913,29 +4900,31 @@ implements UiElement, Animatable
 			handlePointerDragged(x, y, repaintRegion );
 			if (repaintRegion.containsRegion()) {
 				repaint( repaintRegion.getX(), repaintRegion.getY(), repaintRegion.getWidth(), repaintRegion.getHeight() );
+				return true;
 			}
 		} finally {
 			this.ignoreRepaintRequests = false;
 		}
+		return false;
 	}
 	//#endif
 
 	
 	//#ifdef polish.hasPointerEvents
 	/* (non-Javadoc)
-	 * @see javax.microedition.lcdui.Canvas#pointerReleased(int, int)
+	 * @see javax.microedition.lcdui.Canvas#_pointerReleased(int, int)
 	 */
-	public void pointerReleased(int x, int y)
+	public boolean _pointerReleased(int x, int y)
 	{
 		//#if polish.Screen.callSuperEvents
 			super.pointerReleased(x, y);
 		//#endif
 		//#debug
 		System.out.println("pointerReleased at " + x + ", " + y );
+		boolean processed = false;
 		try {
 			this.ignoreRepaintRequests = true;
 			this.lastInteractionTime = System.currentTimeMillis();
-			boolean processed = false;
 			//#ifdef tmp.menuFullScreen
 				//#ifdef tmp.useExternalMenuBar
 					if (!processed) {
@@ -4997,10 +4986,12 @@ implements UiElement, Animatable
 			if (processed || this.isRepaintRequested) {
 				this.isRepaintRequested = false;
 				repaint();
+				processed = true;
 			}
 		} finally {
 			this.ignoreRepaintRequests = false;
 		}
+		return processed;
 	}
 	//#endif
 	

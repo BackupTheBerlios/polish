@@ -348,13 +348,15 @@ implements Runnable
 	 * @param y the vertical coordinate of the clicked pixel
 	 * @see #updateNextScreen(Canvas, Image, int[])
 	 */
-	public void pointerPressed( int x, int y ) {
+	public boolean _pointerPressed( int x, int y ) {
+		boolean handled = false;
 		Canvas next = this.nextCanvas;
 		Image nextImage = this.nextCanvasImage;
 		if (next != null) {
-			next.pointerPressed( x, y );
+			handled = next._pointerPressed( x, y );
 			updateNextScreen(next, nextImage, this.nextCanvasRgb);
 		}
+		return handled;
 	}
 	//#endif
 	
@@ -366,13 +368,15 @@ implements Runnable
 	 * @param y the vertical coordinate of the clicked pixel
 	 * @see #updateNextScreen(Canvas, Image, int[])
 	 */
-	public void pointerReleased( int x, int y ) {
+	public boolean _pointerReleased( int x, int y ) {
+		boolean handled = false;
 		Canvas next = this.nextCanvas;
 		Image nextImage = this.nextCanvasImage;
 		if (next != null) {
-			next.pointerReleased( x, y );
+			handled = next._pointerReleased( x, y );
 			updateNextScreen(next, nextImage, this.nextCanvasRgb);
 		}
+		return handled;
 	}
 	//#endif
 	
@@ -384,13 +388,15 @@ implements Runnable
 	 * @param y the vertical coordinate of the clicked pixel
 	 * @see #updateNextScreen(Canvas, Image, int[])
 	 */
-	public void pointerDragged( int x, int y ) {
+	public boolean _pointerDragged( int x, int y ) {
+		boolean handled = false;
 		Canvas next = this.nextCanvas;
 		Image nextImage = this.nextCanvasImage;
 		if (next != null) {
-			next.pointerDragged( x, y );
+			handled = next._pointerDragged( x, y );
 			updateNextScreen(next, nextImage, this.nextCanvasRgb);
 		}
+		return handled;
 	}
 	//#endif
 	
@@ -432,18 +438,20 @@ implements Runnable
 	 * @see #nextCanvasImage
 	 * @see #updateNextScreen(Canvas, Image, int[])
 	 */
-	public void keyRepeated( int keyCode ) {
+	public boolean _keyRepeated( int keyCode ) {
+		boolean handled = false;
 		Canvas next = this.nextCanvas;
 		Image nextImage = this.nextCanvasImage;
 		try {
 			if (next != null) {
-				next.keyRepeated( keyCode );
+				handled = next._keyRepeated( keyCode );
 				updateNextScreen( next, nextImage, this.nextCanvasRgb );
 			}
 		} catch (Exception e) {
 			//#debug error
 			System.out.println("Error while handling keyRepeated event" + e );
 		}
+		return handled;
 	}
 
 	/**
@@ -454,18 +462,20 @@ implements Runnable
 	 * @see #nextCanvasImage
 	 * @see #updateNextScreen(Canvas, Image, int[])
 	 */
-	public void keyReleased( int keyCode ) {
+	public boolean _keyReleased( int keyCode ) {
+		boolean handled = false;
 		Canvas next = this.nextCanvas;
 		Image nextImage = this.nextCanvasImage;
 		try {
 			if (next != null) {
-				next.keyReleased( keyCode );
+				handled = next._keyReleased( keyCode );
 				updateNextScreen( next, nextImage, this.nextCanvasRgb );
 			}
 		} catch (Exception e) {
 			//#debug error
 			System.out.println("Error while handling keyReleased event" + e );
 		}
+		return handled;
 	}
 
 	/**
@@ -476,18 +486,20 @@ implements Runnable
 	 * @see #nextCanvasImage
 	 * @see #updateNextScreen(Canvas, Image, int[])
 	 */
-	public void keyPressed( int keyCode ) {
+	public boolean _keyPressed( int keyCode ) {
+		boolean handled = false;
 		Canvas next = this.nextCanvas;
 		Image nextImage = this.nextCanvasImage;
 		try {
 			if (next != null) {
-				next.keyPressed( keyCode );
+				handled = next._keyPressed( keyCode );
 				updateNextScreen( next, nextImage, this.nextCanvasRgb );
 			}
 		} catch (Exception e) {
 			//#debug error
 			System.out.println("Error while handling keyPressed event" + e );
 		}
+		return handled;
 	}
 	
 	

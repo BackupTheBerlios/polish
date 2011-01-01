@@ -156,6 +156,7 @@ implements ScreenInitializerListener, CycleListener
 		private int pointerPressX;
 	//#endif
 	private boolean isSizeChangedCalled;
+	private boolean isTabIconsContainerSelectable = true;
 	private boolean isTabIconsContainerFocused;
 	private Style tabIconsContainerStyle;
 
@@ -321,7 +322,7 @@ implements ScreenInitializerListener, CycleListener
 			// this was the first tab, switch to it by default:
 			setFocus(0);
 		}
-		if(tab instanceof Screen)
+		if(this.isTabIconsContainerSelectable && tab instanceof Screen)
 		{
 			((Screen)tab).getRootContainer().setCycleListener(this);
 		} 
@@ -1022,6 +1023,10 @@ implements ScreenInitializerListener, CycleListener
 				int tabHeight = this.tabIconsContainer.itemHeight;
 				h -= tabHeight;
 				scr.init( w, h );
+				//#if tmp.useExternalMenuBar
+					MenuBar currentMenuBar = scr.getMenuBar();
+					currentMenuBar.relativeY += tabHeight;
+				//#endif
 			}
 			scr.paintBackgroundAndBorder(g);
 		} else {
@@ -1171,6 +1176,17 @@ implements ScreenInitializerListener, CycleListener
 		this.tabIconsContainer.animate(currentTime, repaintRegion);
 	}
 
+	/**
+	 * Allows to specify whether the tabbar can be selected by the user with key events.
+	 * By default this is allowed. Note that this configuration method needs to be called before
+	 * any tabs are added to this pane.
+	 * 
+	 * @param isSelectable false when the tabbar should not be selectable.
+	 */
+	public void setTabbarIsSelectable( boolean isSelectable ) {
+		this.isTabIconsContainerSelectable = isSelectable;
+	}
+
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.CycleListener.onCycle(Item,int)
 	 */
@@ -1178,9 +1194,21 @@ implements ScreenInitializerListener, CycleListener
 		if (direction == CycleListener.DIRECTION_BOTTOM_TO_TOP || direction == CycleListener.DIRECTION_TOP_TO_BOTTOM) {
 			this.tabIconsContainerStyle = this.tabIconsContainer.focus(null, 0);
 			this.isTabIconsContainerFocused = true;
-			if (this.currentScreen != null) {
-				Container rc = this.currentScreen.getRootContainer();
+			Screen scr = this.currentScreen;
+			if (scr != null) {
+				//#if tmp.useExternalMenuBar
+					MenuBar currentMenuBar = scr.getMenuBar();
+					int relY = currentMenuBar.relativeY;
+				//#endif
+				Container rc = scr.getRootContainer();
 				rc.defocus(rc.style);
+				rc.setScrollYOffset(0, true);
+				//#if tmp.useExternalMenuBar
+					if (currentMenuBar.relativeY != relY) {
+						int tabHeight = this.tabIconsContainer.itemHeight;
+						currentMenuBar.relativeY += tabHeight;
+					}
+				//#endif
 			}
 			return false;
 		}
@@ -1189,11 +1217,11 @@ implements ScreenInitializerListener, CycleListener
 
 	/*
 	 * (non-Javadoc)
-	 * @see de.enough.polish.ui.Screen#keyPressed(int)
+	 * @see de.enough.polish.ui.Screen#_keyPressed(int)
 	 */
-	public void keyPressed(int keyCode) {
+	public boolean _keyPressed(int keyCode) {
+		int gameAction = getGameAction(keyCode);
 		if (this.isTabIconsContainerFocused) {
-			int gameAction = getGameAction(keyCode);
 			if (this.tabIconsContainer.handleKeyPressed(keyCode, gameAction)) {
 				setFocus( this.tabIconsContainer.getFocusedIndex() );
 				if (this.currentScreen != null) {
@@ -1208,57 +1236,61 @@ implements ScreenInitializerListener, CycleListener
 					rc.focus(rc.style, gameAction);
 				}
 			}
-			return;
+			return true;
 		}
 		if (this.currentScreen != null) {
 			this.lastInteractionTime = System.currentTimeMillis();
-			this.currentScreen.keyPressed(keyCode);
+			boolean processed = this.currentScreen._keyPressed(keyCode);
+			if (!processed) {
+				if (gameAction == RIGHT && (this.currentDisplayableIndex < (this.tabDisplayables.size()-1)) ) {
+					setFocus( this.currentDisplayableIndex + 1 );
+					processed = true;
+				} else if (gameAction == LEFT && this.currentDisplayableIndex > 0) {
+					setFocus( this.currentDisplayableIndex - 1 );
+					processed = true;
+				}
+				if (processed && this.currentScreen != null) {
+					Container rc = this.currentScreen.getRootContainer();
+					if (!rc.isFocused()) {
+						rc.focus(rc.style, DOWN);
+					}
+
+				}
+			}
+			return processed;
 		} else {
-			super.keyPressed(keyCode);	
+			return super._keyPressed(keyCode);	
 		}
 	}
 	
 	/*
 	 * (non-Javadoc)
-	 * @see de.enough.polish.ui.Screen#keyRepeated(int)
+	 * @see de.enough.polish.ui.Screen#_keyRepeated(int)
 	 */
-	public void keyRepeated(int keyCode) {
+	public boolean _keyRepeated(int keyCode) {
 		if (!this.isTabIconsContainerFocused) {
 			if (this.currentScreen != null) {
-				this.currentScreen.keyRepeated(keyCode);
+				return this.currentScreen._keyRepeated(keyCode);
 			} else {
-				super.keyRepeated(keyCode);	
+				return super._keyRepeated(keyCode);	
 			}
 		}
+		return false;
 	}
 	
 	/*
 	 * (non-Javadoc)
-	 * @see de.enough.polish.ui.Screen#keyReleased(int)
+	 * @see de.enough.polish.ui.Screen#_keyReleased(int)
 	 */
-	public void keyReleased(int keyCode) {
+	public boolean _keyReleased(int keyCode) {
 		if (!this.isTabIconsContainerFocused) {
-//			//#ifdef polish.hasPointerEvents
-//			if(!Display.getInstance().hasPointerEvents())
-//			{
-//			//#endif
-//				int gameAction = getGameAction(keyCode);
-//				if (gameAction == RIGHT && keyCode != KEY_NUM6 && this.currentDisplayableIndex < this.tabDisplayables.size()-1) {
-//					setFocus( this.currentDisplayableIndex + 1 );
-//					return;
-//				} else if (gameAction == LEFT && keyCode != KEY_NUM4 && this.currentDisplayableIndex > 0) {
-//					setFocus( this.currentDisplayableIndex - 1 );
-//					return;
-//				}
-//			//#ifdef polish.hasPointerEvents
-//			} 
-//			//#endif
 			if (this.currentScreen != null) {
-				this.currentScreen.keyReleased(keyCode);
+				return this.currentScreen._keyReleased(keyCode);
 			} else {
-				super.keyReleased(keyCode);	
+				return super._keyReleased(keyCode);	
 			}
 		}
+		return false;
 	}
 
 //	/* (non-Javadoc)
@@ -1285,9 +1317,9 @@ implements ScreenInitializerListener, CycleListener
 	
 	//#ifdef polish.hasPointerEvents
 	/* (non-Javadoc)
-	 * @see javax.microedition.lcdui.Canvas#pointerDragged(int, int)
+	 * @see javax.microedition.lcdui.Canvas#_pointerDragged(int, int)
 	 */
-	public void pointerDragged(int x, int y) {
+	public boolean _pointerDragged(int x, int y) {
 		Container tabs = this.tabIconsContainer;
 		Screen scr = this.currentScreen;
 		if ((scr == null ||!scr.isMenuOpened()) && tabs.isInItemArea(x - tabs.relativeX, y - tabs.relativeY)) {
@@ -1296,48 +1328,49 @@ implements ScreenInitializerListener, CycleListener
 			tabs.handlePointerDragged(x - tabs.relativeX, y - tabs.relativeY, repaintRegion);
 			if (repaintRegion.containsRegion()) {
 				repaint(tabs.relativeX, tabs.relativeY, tabs.itemWidth, tabs.itemHeight);
-				return;
+				return true;
 			}
 		}
 		if (scr != null) {
-			scr.pointerDragged(x, y);
+			return scr._pointerDragged(x, y);
 		} else {
-			super.pointerDragged(x, y);
+			return super._pointerDragged(x, y);
 		}
 	}
 	//#endif
 
 	//#ifdef polish.hasPointerEvents
 	/* (non-Javadoc)
-	 * @see javax.microedition.lcdui.Canvas#pointerDragged(int, int)
+	 * @see javax.microedition.lcdui.Canvas#_pointerPressed(int, int)
 	 */
-	public void pointerPressed(int x, int y) {
+	public boolean _pointerPressed(int x, int y) {
 		Container tabs = this.tabIconsContainer;
 		Screen scr = this.currentScreen;
 		if ((scr == null ||!scr.isMenuOpened()) && tabs.isInItemArea(x - tabs.relativeX, y - tabs.relativeY)) {
 			if (tabs.handlePointerPressed(x - tabs.relativeX, y - tabs.relativeY)) {
 				this.lastInteractionTime = System.currentTimeMillis();
 				repaint();
+				return true;
 			}
-			return;
+			return false;
 		}
 		if (scr != null) {
 			//#if polish.TabbedPane.switchTabsWithGestures
 				this.pointerPressX = x;
 			//#endif
 			this.lastInteractionTime = System.currentTimeMillis();
-			scr.pointerPressed(x, y);
+			return scr._pointerPressed(x, y);
 		} else {
-			super.pointerReleased(x, y);
+			return super._pointerPressed(x, y);
 		}
 	}
 	//#endif
 
 	//#ifdef polish.hasPointerEvents
 	/* (non-Javadoc) 
-	 * @see javax.microedition.lcdui.Canvas#pointerDragged(int, int)
+	 * @see javax.microedition.lcdui.Canvas#_pointerReleased(int, int)
 	 */
-	public void pointerReleased(int x, int y) {
+	public boolean _pointerReleased(int x, int y) {
 		Container tabs = this.tabIconsContainer;
 		Screen scr = this.currentScreen;
 		if ((scr == null ||!scr.isMenuOpened()) && tabs.isInItemArea(x - tabs.relativeX, y - tabs.relativeY)) {
@@ -1347,8 +1380,19 @@ implements ScreenInitializerListener, CycleListener
 				int index = tabs.getFocusedIndex();
 				if (index != -1) {
 					setFocus( index );
+					if (this.isTabIconsContainerFocused) {
+						this.tabIconsContainer.defocus(this.tabIconsContainerStyle);
+						this.isTabIconsContainerFocused = false;
+					}
+					if (this.currentScreen != null) {
+						Container rc = this.currentScreen.getRootContainer();
+						if (!rc.isFocused()) {
+							rc.focus(rc.style, DOWN);
+						}
+					}
+					return true;
 				}
-				return;
+				return false;
 			}
 		}
 		if (scr != null) {
@@ -1362,15 +1406,15 @@ implements ScreenInitializerListener, CycleListener
 					}
 					if (currentTabIndex >= 0 && currentTabIndex < size()) {
 						setCurrentTab(currentTabIndex);
-						return;
+						return true;
 					}
 				}
 			//#endif
 			
 			this.lastInteractionTime = System.currentTimeMillis();
-			scr.pointerReleased(x, y);
+			return scr._pointerReleased(x, y);
 		} else {
-			super.pointerReleased(x, y);
+			return super._pointerReleased(x, y);
 		}
 	}
 	//#endif

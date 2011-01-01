@@ -2034,7 +2034,7 @@ public class Display
 			this.isIgnoreReleasedEvent = false;
 		//#endif
 		if (this.currentCanvas != null) { 
-			this.currentCanvas.keyPressed( keyCode );
+			this.currentCanvas._keyPressed( keyCode );
 		}
 		
 		//#if polish.Display.idleEvent
@@ -2086,7 +2086,7 @@ public class Display
 					return;
 				}
 			//#endif
-			this.currentCanvas.keyRepeated( keyCode );
+			this.currentCanvas._keyRepeated( keyCode );
 		}
 	}
 
@@ -2112,7 +2112,7 @@ public class Display
 			}
 		//#endif
 		if (this.currentCanvas != null) {
-			this.currentCanvas.keyReleased( keyCode );
+			this.currentCanvas._keyReleased( keyCode );
 		}
 	}
 	
@@ -2142,7 +2142,7 @@ public class Display
 				x = p.x;
 				y = p.y;
 			//#endif
-			this.currentCanvas.pointerPressed( x, y );
+			this.currentCanvas._pointerPressed( x, y );
 		}
 	}
 	//#endif
@@ -2164,7 +2164,7 @@ public class Display
 				x = p.x;
 				y = p.y;
 			//#endif
-			this.currentCanvas.pointerReleased( x, y );
+			this.currentCanvas._pointerReleased( x, y );
 		}
 	}
 	//#endif
@@ -2186,7 +2186,7 @@ public class Display
 				x = p.x;
 				y = p.y;
 			//#endif
-			this.currentCanvas.pointerDragged(x, y);
+			this.currentCanvas._pointerDragged(x, y);
 		}
 	}
 	//#endif
