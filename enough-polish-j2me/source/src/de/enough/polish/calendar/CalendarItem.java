@@ -499,7 +499,7 @@ public class CalendarItem extends TableItem
 	 * @return the number of days within the month that is currently shown.
 	 */
 	public int getDaysInMonth() {
-		return this.originalDay.getDaysInMonth();
+		return this.shownMonth.getDaysInMonth();
 	}
 	
 	/**
