@@ -1023,10 +1023,6 @@ implements ScreenInitializerListener, CycleListener
 				int tabHeight = this.tabIconsContainer.itemHeight;
 				h -= tabHeight;
 				scr.init( w, h );
-				//#if tmp.useExternalMenuBar
-					MenuBar currentMenuBar = scr.getMenuBar();
-					currentMenuBar.relativeY += tabHeight;
-				//#endif
 			}
 			scr.paintBackgroundAndBorder(g);
 		} else {
@@ -1093,7 +1089,10 @@ implements ScreenInitializerListener, CycleListener
 		if(width == 0 || height == 0) {
 			return;
 		}
-		
+//		int h = Display.getScreenHeight();
+//		int tabHeight = this.tabIconsContainer.itemHeight;
+//		h -= tabHeight;
+//		scr.init( w, h );
 		super.init(width, height);
 		int tabHeight = this.tabIconsContainer.itemHeight;
 		height -= tabHeight;
@@ -1107,7 +1106,7 @@ implements ScreenInitializerListener, CycleListener
 				if (currentMenuBar.relativeY > height / 2) {
 					// menubar is located at bottom:
 					alignWithMenuBar = true;
-					currentMenuBar.relativeY += tabHeight;
+					//currentMenuBar.relativeY += tabHeight;
 				}
 				//System.out.println("setting screen's menubar.relativeY to " + this.currentScreen.getMenuBar().relativeY );
 			//#elif tmp.menuFullScreen
@@ -1614,16 +1613,21 @@ implements ScreenInitializerListener, CycleListener
 	 * @see de.enough.polish.ui.ScreenInitializerListener#notifyScreenInitialized(de.enough.polish.ui.Screen)
 	 */
 	public void notifyScreenInitialized(Screen scr) {
+		int tabHeight = this.tabIconsContainer.itemHeight;
 		if (this.isTabPositionTop) {
-			int tabHeight = this.tabIconsContainer.itemHeight;
-			int th = scr.getTitleHeight();
-			this.tabIconsContainer.relativeY = th;
+			int titleH = scr.getTitleHeight();
+			this.tabIconsContainer.relativeY = titleH;
 			Item subtitle = scr.getSubTitleItem();
 			if (subtitle != null) {
 				subtitle.relativeY += tabHeight;
 			}
 			scr.backgroundHeight += tabHeight;
 		}
+		//#if tmp.useExternalMenuBar
+			MenuBar currentMenuBar = scr.getMenuBar();
+			currentMenuBar.relativeY += tabHeight;
+		//#endif
+		//System.out.println("notifyScreenInitialized: contY=" + scr.contentY + ", contH=" + scr.contentHeight);
 	}
 
 	/*
@@ -1633,8 +1637,10 @@ implements ScreenInitializerListener, CycleListener
 	public void adjustContentArea(Screen scr) {
 		if (this.isTabPositionTop) {
 			int tabHeight = this.tabIconsContainer.itemHeight;
+			//System.out.println("adjusting contentY from " + scr.contentY + " to " + (scr.contentY + tabHeight));
 			scr.contentY += tabHeight;
 		}
+//		System.out.println("adjust content area: contY=" + scr.contentY + ", contH=" + scr.contentHeight);
 	}
 
 }

@@ -4219,42 +4219,42 @@ public class Container extends Item {
 		return this.itemsList.getInternalArray();
 	}
 
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Item#getAbsoluteY()
-	 */
-	public int getAbsoluteY()
-	{
-		return super.getAbsoluteY() + this.yOffset;
-	}
-	
-	//#ifdef tmp.supportViewType
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Item#getAbsoluteX()
-	 */
-	public int getAbsoluteX() {
-		int xAdjust = 0;
-		if (this.containerView != null) {
-			xAdjust = this.containerView.getScrollXOffset();
-		}
-		return super.getAbsoluteX() + xAdjust;
-	}
-	//#endif
-	
-	
-	
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Item#getAbsoluteX()
-	 */
-	public boolean isInItemArea(int relX, int relY, Item child) {
-		relY -= this.yOffset;
-		//#ifdef tmp.supportViewType
-			if (this.containerView != null) {
-				relX -= this.containerView.getScrollXOffset();
-			}
-		//#endif
-		return super.isInItemArea(relX, relY, child);
-	}
-	
+//	/* (non-Javadoc)
+//	 * @see de.enough.polish.ui.Item#getAbsoluteY()
+//	 */
+//	public int getAbsoluteY()
+//	{
+//		return super.getAbsoluteY() + this.yOffset;
+//	}
+//	
+//	//#ifdef tmp.supportViewType
+//	/* (non-Javadoc)
+//	 * @see de.enough.polish.ui.Item#getAbsoluteX()
+//	 */
+//	public int getAbsoluteX() {
+//		int xAdjust = 0;
+//		if (this.containerView != null) {
+//			xAdjust = this.containerView.getScrollXOffset();
+//		}
+//		return super.getAbsoluteX() + xAdjust;
+//	}
+//	//#endif
+//	
+//	
+//	
+//	/* (non-Javadoc)
+//	 * @see de.enough.polish.ui.Item#getAbsoluteX()
+//	 */
+//	public boolean isInItemArea(int relX, int relY, Item child) {
+//		relY -= this.yOffset;
+//		//#ifdef tmp.supportViewType
+//			if (this.containerView != null) {
+//				relX -= this.containerView.getScrollXOffset();
+//			}
+//		//#endif
+//		return super.isInItemArea(relX, relY, child);
+//	}
+//	
 	
 
 	/*

@@ -239,10 +239,19 @@ public class HorizontalContainerView extends ContainerView {
 		//#endif
 		if(item != null) {
 			if (this.isClippingRequired) {
-				if (getScrollTargetXOffset() + item.relativeX < 0) {
-					setScrollXOffset( -item.relativeX, true );
-				} else if (getScrollTargetXOffset() + item.relativeX + item.itemWidth > this.availableWidth) {
-					setScrollXOffset( this.availableWidth - item.relativeX - item.itemWidth, true );
+				int leftStart = 0;
+		    	Image right = this.arrowRight;
+		    	Image left = this.arrowLeft;
+		    	boolean paintArrows = (right != null) && (left != null);
+		    	int availWidth = this.availableWidth;
+		    	if (paintArrows) {
+		    		leftStart = left.getWidth() + this.paddingHorizontal;
+		    		availWidth -= right.getWidth() + this.paddingHorizontal;
+		    	}
+				if (getScrollTargetXOffset() + item.relativeX < leftStart) {
+					setScrollXOffset( leftStart - item.relativeX, true );
+				} else if (getScrollTargetXOffset() + item.relativeX + item.itemWidth > availWidth) {
+					setScrollXOffset( availWidth - item.relativeX - item.itemWidth, true );
 				}
 			}			
 			//#if polish.css.horizontalview-align-heights
@@ -370,7 +379,7 @@ public class HorizontalContainerView extends ContainerView {
     		rightBorder -= right.getWidth() + this.paddingHorizontal;
     	}
     	if (this.isClippingRequired) {
-    		g.clipRect( x, y, rightBorder - x + 1, this.contentHeight + 1 );
+    		g.clipRect( x, y, rightBorder - x, this.contentHeight + 1 );
     	}
     	if (paintArrows) {
     		x -= left.getWidth() + this.paddingHorizontal;

@@ -31,6 +31,7 @@ import java.io.IOException;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
+import de.enough.polish.ui.ClippingRegion;
 import de.enough.polish.ui.Color;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.ContainerView;
@@ -339,6 +340,19 @@ implements FocusListener
 		boolean handled = UiAccess.handlePointerReleased( tabbar, p.x - tabbar.relativeX, p.y - tabbar.relativeY );
 		return handled || super.handlePointerReleased(x, y);
 	}
+	
+	
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.ContainerView#handlePointerDragged(int, int, de.enough.polish.ui.ClippingRegion)
+	 */
+	public boolean handlePointerDragged(int x, int y, ClippingRegion repaintRegion) {
+		Point p = adjustToContentArea(x, y);
+		Container tabbar = this.tabbarContainer;
+		boolean handled = UiAccess.handlePointerDragged( tabbar, p.x - tabbar.relativeX, p.y - tabbar.relativeY, repaintRegion );
+		return handled || super.handlePointerDragged(x, y, repaintRegion);
+	}
+
 
 	//#ifdef polish.hasTouchEvents
 	/* (non-Javadoc)
@@ -363,6 +377,8 @@ implements FocusListener
 		return handled || super.handlePointerTouchUp(x, y);
 	}
 	//#endif
+	
+	
 
 	/*
 	 * (non-Javadoc)
@@ -376,6 +392,15 @@ implements FocusListener
 		}
 		return next;
 	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.ContainerView#animate(long, de.enough.polish.ui.ClippingRegion)
+	 */
+	public void animate(long currentTime, ClippingRegion repaintRegion) {
+		this.tabbarContainer.animate(currentTime, repaintRegion);
+		super.animate(currentTime, repaintRegion);
+	}
+
 
 	/*
 	 * (non-Javadoc)

@@ -25,8 +25,6 @@
  */
 package de.enough.polish.ui;
 
-import de.enough.polish.util.ToStringHelper;
-
 /**
  * <p>Manages a region that is increased when further regions are added.</p>
  *

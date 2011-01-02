@@ -486,7 +486,7 @@ implements UiElement, Animatable
 	 */
 	protected void init( int width, int height) {
 		//#debug
-		System.out.println("Initialising screen " + this + " with dimension " + width + "x" + height);
+		System.out.println("Initializing screen " + this + " with dimension " + width + "x" + height);
 		
 		// calling super.setFullScreenMode(true) is already done within the showNotify() method
 		if (height == 0 || width == 0) {
@@ -499,7 +499,6 @@ implements UiElement, Animatable
 		this.originalScreenHeight =  height;
 		this.screenWidth = width;
 
-		
 		//#ifdef polish.Screen.initCode:defined
 			//#include ${polish.Screen.initCode}
 		//#endif
@@ -531,7 +530,6 @@ implements UiElement, Animatable
 			this.container.onScreenSizeChanged(width, height);
 		}
 
-			
 		if (this.style != null) {
 			this.marginLeft = this.style.getMarginLeft(this.screenWidth);
 			this.marginRight = this.style.getMarginRight(this.screenWidth);			
@@ -946,31 +944,26 @@ implements UiElement, Animatable
 			//TODO use #if polish.css.separate-menubar    
 			// if (!this.separateMenubar) {
 
-			int space;
 			//#if polish.MenuBar.Position:defined
-			
-			if(this.menuBar != null 
-				//#if tmp.useTitleMenu
-				&& this.hasTitleMenu
-				//#endif
-				)
-			{
-				if (this.excludeMenuBarForBackground) {
-					this.backgroundHeight -= this.menuBar.getSpaceBottom( this.screenWidth, this.fullScreenHeight );
+				if(this.menuBar != null 
+					//#if tmp.useTitleMenu
+					&& this.hasTitleMenu
+					//#endif
+					)
+				{
+					if (this.excludeMenuBarForBackground) {
+						this.backgroundHeight -= this.menuBar.getSpaceBottom( this.screenWidth, this.fullScreenHeight );
+					}
+					int space = this.menuBar.getSpaceLeft( this.screenWidth, this.fullScreenHeight );
+					x += space;
+					width -= space;
+					space = this.menuBar.getSpaceRight( this.screenWidth, this.fullScreenHeight );
+					width -= space;
+					space = this.menuBar.getSpaceTop( this.screenWidth, this.fullScreenHeight );
+					y += space;
+					height -= space;
 				}
-				space = this.menuBar.getSpaceLeft( this.screenWidth, this.fullScreenHeight );
-				x += space;
-				width -= space;
-				space = this.menuBar.getSpaceRight( this.screenWidth, this.fullScreenHeight );
-				width -= space;
-				space = this.menuBar.getSpaceTop( this.screenWidth, this.fullScreenHeight );
-				y += space;
-				height -= space;
-			}
 			//#endif
-				// this is already deducted...
-				//			space = this.menuBar.getSpaceBottom( this.screenWidth, this.fullScreenHeight );
-				//			height -= space;
 		//#endif
 		//#ifndef polish.skipTicker			
 			int tickerHeight = 0;
@@ -1014,6 +1007,9 @@ implements UiElement, Animatable
 		height = this.contentHeight;
 		originalWidth = this.contentWidth;
 		
+		//#if tmp.useExternalMenuBar
+			int previousMenuBarHeight = this.menuBarHeight;
+		//#endif
 		//#if tmp.useScrollBar
 			//#if polish.css.show-scrollbar
 				if ( this.scrollBarVisible ) {
@@ -1063,6 +1059,15 @@ implements UiElement, Animatable
 				cont.getItemHeight(originalWidth, originalWidth, height);
 			}
 		//#endif
+		//#if tmp.useExternalMenuBar
+			int space = this.menuBar.getSpaceBottom( this.screenWidth, this.fullScreenHeight );
+			if (space != previousMenuBarHeight) {
+				height += (previousMenuBarHeight - space);
+				this.contentHeight = height;
+				cont.getItemHeight(originalWidth, originalWidth, height);
+			}
+		//#endif
+
 		//System.out.println("calculateContentArea: container.itemHeight=" + cont.itemHeight + ", screenHeight=" + this.screenHeight + ", cont.itemWidth=" + cont.itemWidth );
 			
 		Item info = this.infoItem;
@@ -2834,7 +2839,7 @@ implements UiElement, Animatable
 //		} else {
 //			containerHeight = cont.getItemHeight( width, width, height);
 //		}
-		
+
 		g.clipRect(x, y, width, height );
 		
 		if ( g.getClipHeight() > 0 ) {

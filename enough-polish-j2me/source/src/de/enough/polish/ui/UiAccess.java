@@ -1315,6 +1315,8 @@ public final class UiAccess {
 	 * @param x the x position of the pointer position relative to this item's left position
 	 * @param y the y position of the pointer position relative to this item's top position
 	 * @return true when the event has been consumed by the item
+	 * @deprecated use handlePointerDragged(Item,int,int,ClippingRegion)
+	 * @see #handlePointerDragged(Item, int, int, ClippingRegion)
 	 */
 	public static boolean handlePointerDragged( Item item, int x, int y ) {
 		//#if polish.hasPointerEvents
@@ -1334,8 +1336,46 @@ public final class UiAccess {
 	 * @param x the x position of the pointer position relative to this item's left position
 	 * @param y the y position of the pointer position relative to this item's top position
 	 * @return true when the event has been consumed by the item
+	 * @deprecated use handlePointerDragged(Item,int,int,ClippingRegion)
+	 * @see #handlePointerDragged(javax.microedition.lcdui.Item, int, int, ClippingRegion)
 	 */
 	public static boolean handlePointerDragged( javax.microedition.lcdui.Item item, int x, int y ) {
+		return false;
+	}
+	//#endif
+
+	//#if polish.usePolishGui
+	/**
+	 * Forwards a pointer event to the specified item.
+	 * The handlePointerDragged call is protected, this is an public accessor for any item.
+	 * 
+	 * @param item the item 
+	 * @param x the x position of the pointer position relative to this item's left position
+	 * @param y the y position of the pointer position relative to this item's top position
+	 * @param repaintRegion the repaint region that should be refreshed after handling the drag event
+	 * @return true when the event has been consumed by the item
+	 */
+	public static boolean handlePointerDragged( Item item, int x, int y, ClippingRegion repaintRegion ) {
+		//#if polish.hasPointerEvents
+			return item.handlePointerDragged(x, y, repaintRegion);
+		//#else
+			//# return false;
+		//#endif
+	}
+	//#endif
+
+	//#if polish.midp
+	/**
+	 * Forwards a pointer event to the specified item.
+	 * The handlePointerDragged call is protected, this is an public accessor for any item.
+	 * 
+	 * @param item the item 
+	 * @param x the x position of the pointer position relative to this item's left position
+	 * @param y the y position of the pointer position relative to this item's top position
+	 * @param repaintRegion the repaint region that should be refreshed after handling the drag event
+	 * @return true when the event has been consumed by the item
+	 */
+	public static boolean handlePointerDragged( javax.microedition.lcdui.Item item, int x, int y, ClippingRegion repaintRegion ) {
 		return false;
 	}
 	//#endif

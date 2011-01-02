@@ -159,7 +159,7 @@ extends ItemView
 			// add repaint region:
 			int x, y, width, height;
 			Screen scr = getScreen();
-			x = this.parentContainer.getAbsoluteX() - this.xOffset;
+			x = this.parentContainer.getAbsoluteX();
 			y = this.parentContainer.getAbsoluteY();
 			width = this.parentContainer.itemWidth;
 			//#if polish.useScrollBar || polish.classes.ScrollBar:defined
@@ -212,7 +212,7 @@ extends ItemView
 			// add repaint region:
 			int x, y, height;
 			Screen scr = getScreen();
-			x = this.parentContainer.getAbsoluteX() - this.xOffset;
+			x = this.parentContainer.getAbsoluteX();
 			y = this.parentContainer.getAbsoluteY();
 			//#if polish.useScrollBar || polish.classes.ScrollBar:defined
 				width += scr.getScrollBarWidth();
@@ -1691,7 +1691,7 @@ extends ItemView
 	
 	//#ifdef polish.hasPointerEvents
 	private void initHorizontalScrolling(int x, int y) {
-		//this.lastPointerPressX = x;
+		//System.out.println("initHorizontalScrolling, inContentArea=" + this.parentContainer.isInContentWithPaddingArea(x, y) + ", for " + this);
 		this.pointerPressedX = x;
 		this.lastPointerPressXOffset = getScrollXOffset();
 		this.lastPointerPressTime = System.currentTimeMillis();
