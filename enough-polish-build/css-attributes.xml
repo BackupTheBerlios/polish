@@ -2435,9 +2435,27 @@
 		id="153"
 		values="bottom,menubar"
 	/>
-
+	
+	<attribute
+		name="backgroundrange-bottom"
+		type="integer"
+		appliesTo="Screen"
+		description="The bottom border of the background for this screen. Usually the background reaches to the very bottom of the screen which includes the menubar. By setting background-bottom: menubar; this background only reaches to the menubar." 
+		id="153"
+		values="bottom,menubar"
+	/>
+	
 	<attribute
 		name="background-top"
+		type="integer"
+		appliesTo="Screen"
+		description="The top border of the background for this screen. Usually the background reaches from the very top of the screen which includes the title. By setting background-top: title; this background starts after the title." 
+		id="154"
+		values="top,title"
+	/>
+	
+	<attribute
+		name="backgroundrange-top"
 		type="integer"
 		appliesTo="Screen"
 		description="The top border of the background for this screen. Usually the background reaches from the very top of the screen which includes the title. By setting background-top: title; this background starts after the title." 
