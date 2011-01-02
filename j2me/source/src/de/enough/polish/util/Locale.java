@@ -500,6 +500,8 @@ public final class Locale {
 	 * @return the locale specific date representation.
 	 * @throws NullPointerException when the date is null
 	 * @see #formatDate(Date)
+	 * @see #getDefaultDateFormatPattern()
+	 * @see #setDefaultDateFormatPattern(String)
 	 */
 	public static String formatDate( long time ) {		
 		return formatDate( new Date( time ) );
@@ -527,6 +529,8 @@ public final class Locale {
 	 * @return the locale specific date representation.
 	 * @throws NullPointerException when the date is null
 	 * @see #formatDate(Calendar)
+	 * @see #getDefaultDateFormatPattern()
+	 * @see #setDefaultDateFormatPattern(String)
 	 */
 	public static String formatDate( Date date ) {
 		Calendar calendar = Calendar.getInstance();
@@ -556,6 +560,8 @@ public final class Locale {
 	 * @param calendar the calendar which holds the date
 	 * @return the locale specific date representation.
 	 * @throws NullPointerException when the calendar is null
+	 * @see #getDefaultDateFormatPattern()
+	 * @see #setDefaultDateFormatPattern(String)
 	 */
 	public static String formatDate( Calendar calendar ) {
 		StringBuffer buffer = new StringBuffer(10);
@@ -564,7 +570,7 @@ public final class Locale {
 	}
 	
 	/**
-	 * Formats the given calendar to the current locale's format.
+	 * Formats the given calendar to the specified locale's format.
 	 * 
 	 * @param calendar the calendar which holds the date
 	 * @param dateFormat the date format that may include yyyy (year), M, MM, MMMMM (month in numerical [M, MM] or textual representation), dd (day of month), HH (hour of day) and mm (minute of hour)
@@ -578,21 +584,21 @@ public final class Locale {
 	}
 
 	/**
-	 * Formats the given calendar to the current locale's format.
+	 * Formats the given TimePoint to the current locale's format.
 	 * 
-	 * @param calendar the calendar which holds the date
+	 * @param tp the TimePoint which holds the date
 	 * @return the locale specific date representation.
 	 * @throws NullPointerException when the calendar is null
+	 * @see #getDefaultDateFormatPattern()
+	 * @see #setDefaultDateFormatPattern(String)
 	 */
-	public static String formatDate( TimePoint calendar ) {
-		StringBuffer buffer = new StringBuffer(10);
-		formatDate( calendar.getAsCalendar(), buffer );
-		return buffer.toString();
+	public static String formatDate( TimePoint tp ) {
+		return formatDate( tp, getDefaultDateFormatPattern() );
 	}
 	
 	/**
 	 * Formats the given TimePoint to the current locale's format.
-	 * 
+	 * Example: Locale.formatDate( tp, "MMMMM/dd/yyyy" );
 	 * @param tp the TimePoint which holds the date
 	 * @param dateFormat the date format that may include yyyy (year), M, MM, MMMMM (month in numerical [M, MM] or textual representation), dd (day of month), HH (hour of day) and mm (minute of hour)
 	 * @return the locale specific date representation.
@@ -605,7 +611,7 @@ public final class Locale {
 	}
 	
 	/**
-	 * Formats the given TimePoint to the current locale's format.
+	 * Formats the given TimePoint to the given locale's format.
 	 * 
 	 * @param tp the TimePoint which holds the date
 	 * @param dateFormat the date format that may include yyyy (year), M, MM, MMMMM (month in numerical [M, MM] or textual representation), dd (day of month), HH (hour of day) and mm (minute of hour)
@@ -623,6 +629,8 @@ public final class Locale {
 	 * @param calendar the calendar which holds the date
 	 * @param buffer a StringBuffer, should be at least 10 characters big
 	 * @throws NullPointerException when the calendar is null
+	 * @see #getDefaultDateFormatPattern()
+	 * @see #setDefaultDateFormatPattern(String)
 	 */
 	public static void formatDate( Calendar calendar, StringBuffer buffer  ) {
 		formatDate( calendar, buffer, getDefaultDateFormatPattern() );
