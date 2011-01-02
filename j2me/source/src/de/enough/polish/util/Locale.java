@@ -40,6 +40,9 @@ import java.util.Date;
 	import javax.microedition.rms.RecordStore;
 	import javax.microedition.rms.RecordStoreException;
 //#endif
+//#if polish.blackberry
+	import net.rim.device.api.i18n.SimpleDateFormat;
+//#endif
 	
 import de.enough.polish.io.RecordingDataInputStream;
 
@@ -403,7 +406,9 @@ public final class Locale {
 	public static String getDefaultDateFormatPattern() {
 		if (DATE_FORMAT_PATTERN == null) {
 			StringBuffer buffer = new StringBuffer();
-			//#if polish.DateFormat == us
+			//#if polish.blackberry
+				buffer.append( new SimpleDateFormat(SimpleDateFormat.DATE_MEDIUM).toPattern() );
+			//#elif polish.DateFormat == us
 				buffer.append( "MM/dd/yyyy" );
 			//#elif polish.DateFormat == de
 				buffer.append( "dd.MM.yyyy" );
@@ -619,7 +624,11 @@ public final class Locale {
 	 * @throws NullPointerException when the calendar is null
 	 */
 	public static void formatDate( TimePoint tp, String dateFormat, StringBuffer buffer ) {
-		formatDate( tp.getYear(), tp.getMonth() + 1, tp.getDay(), tp.getHour(), tp.getMinute(), dateFormat, buffer );
+		//#if polish.blackberry
+			formatDate( tp.getAsCalendar(), buffer, dateFormat );
+		//#else
+			formatDate( tp.getYear(), tp.getMonth() + 1, tp.getDay(), tp.getHour(), tp.getMinute(), dateFormat, buffer );
+		//#endif
 	}
 
 	/**
@@ -646,12 +655,17 @@ public final class Locale {
 	 * @throws NullPointerException when the calendar is null
 	 */
 	public static void formatDate( Calendar calendar, StringBuffer buffer, String dateFormat  ) {
-		int year = calendar.get(Calendar.YEAR);
-		int month = calendar.get( Calendar.MONTH ) + 1;
-		int day = calendar.get( Calendar.DAY_OF_MONTH );
-		int hour = calendar.get( Calendar.HOUR_OF_DAY );
-		int minute = calendar.get( Calendar.MINUTE );
-		formatDate(year, month, day, hour, minute, dateFormat, buffer);
+		//#if polish.blackberry
+			SimpleDateFormat format = new SimpleDateFormat(dateFormat);
+			format.format(calendar, buffer, null);
+		//#else
+			int year = calendar.get(Calendar.YEAR);
+			int month = calendar.get( Calendar.MONTH ) + 1;
+			int day = calendar.get( Calendar.DAY_OF_MONTH );
+			int hour = calendar.get( Calendar.HOUR_OF_DAY );
+			int minute = calendar.get( Calendar.MINUTE );
+			formatDate(year, month, day, hour, minute, dateFormat, buffer);
+		//#endif
 	}
 
 	private static void formatDate(int year, int month, int day, int hour,
