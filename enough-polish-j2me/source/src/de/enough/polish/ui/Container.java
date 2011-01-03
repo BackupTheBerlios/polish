@@ -1807,11 +1807,13 @@ public class Container extends Item {
 	 * @see de.enough.polish.ui.Item#setItemWidth(int)
 	 */
 	public void setItemWidth(int width) {
+		int prevContentX = this.contentX;
 		int myContentWidth = this.contentWidth + width - this.itemWidth;
 		super.setItemWidth(width);
 		//#ifdef tmp.supportViewType
 		if (this.containerView == null) {
 		//#endif
+			boolean hasCenterOrRightAlignedItems = false;
 			Item[] myItems = this.containerItems; 
 			if (myItems != null) {
 				for (int i = 0; i < myItems.length; i++) {
@@ -1819,11 +1821,17 @@ public class Container extends Item {
 					width = item.itemWidth;
 					if (item.isLayoutCenter) {
 						item.relativeX = (myContentWidth - width) / 2;
+						hasCenterOrRightAlignedItems = true;
 					} else if (item.isLayoutRight) {
 						item.relativeX = (myContentWidth - width);
+						hasCenterOrRightAlignedItems = true;
 					}
 				}
 				
+			}
+			if (hasCenterOrRightAlignedItems) {
+				this.contentWidth = myContentWidth;
+				this.contentX = prevContentX;
 			}
 		//#ifdef tmp.supportViewType
 		}
