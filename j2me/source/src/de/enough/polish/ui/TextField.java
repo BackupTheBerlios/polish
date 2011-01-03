@@ -2262,7 +2262,7 @@ public class TextField extends StringItem
 					this.helpItem.paint(x, y, leftBorder, rightBorder, g);
 				} else
 			//#endif
-    			super.paintContent(x, y, leftBorder, rightBorder, g);
+    		super.paintContent(x, y, leftBorder, rightBorder, g);
 			return;
 		}
 		
@@ -2444,16 +2444,13 @@ public class TextField extends StringItem
 	 */
 	private int getCaretXPosition(int x, int rightBorder, int availWidth) {
 		int cX;
-		if (this.isLayoutCenter) {
-			cX = x + (((availWidth) - this.caretRowWidth) >> 1 ) + this.caretX;
-		} else if (this.isLayoutRight) {
-			//#if polish.i18n.rightToLeft
+		//#if polish.i18n.rightToLeft
+			if (this.isLayoutRight) {
 				cX = rightBorder -  this.caretX;
-			//#else
-				cX = rightBorder - this.caretRowWidth + this.caretX;
-			//#endif
-		} else {
-			cX = x + this.caretX;
+			} else
+		//#endif
+		{
+			cX = x + this.caretX;	
 		}
 		return cX;
 	}
