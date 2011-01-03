@@ -1625,7 +1625,7 @@ implements ScreenInitializerListener, CycleListener
 		}
 		//#if tmp.useExternalMenuBar
 			MenuBar currentMenuBar = scr.getMenuBar();
-			currentMenuBar.relativeY += tabHeight;
+			currentMenuBar.relativeY = scr.screenHeight + tabHeight;
 		//#endif
 		//System.out.println("notifyScreenInitialized: contY=" + scr.contentY + ", contH=" + scr.contentHeight);
 	}
