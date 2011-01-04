@@ -1256,12 +1256,35 @@ implements Choice
 			}
 			if (this.popupItem.contentWidth > this.contentWidth) {
 				this.contentWidth = this.popupItem.contentWidth;		
+			} else {
+				this.popupItem.setContentWidth(this.contentWidth);
 			}
 			this.contentHeight = this.popupItem.contentHeight;
 		}
 	}
 	//#endif
 	
+//
+//	//#ifdef polish.usePopupItem
+//	/* (non-Javadoc)
+//	 * @see de.enough.polish.ui.Container#setItemWidth(int)
+//	 */
+//	public void setItemWidth(int width) {
+//		System.out.println("increasing popup width to " + width);
+//		if (!this.isPopup) {
+//			super.setItemWidth(width);
+//		} else {
+//			int diff = (width - this.itemWidth);
+//			int availWidth = (this.availContentWidth + diff);
+//			this.popupItem.setItemWidth(availWidth);
+//			this.contentWidth = availWidth;
+//			this.backgroundWidth += diff;
+//			this.itemWidth = width;
+//		}
+//	}
+//	//#endif
+//	
+
 	//#ifdef polish.usePopupItem
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Container#updateInternalPosition(Item)
@@ -1277,7 +1300,6 @@ implements Choice
 		}
 	}
 	//#endif
-
 
 	//#ifdef polish.useDynamicStyles
 	/* (non-Javadoc)
@@ -1579,7 +1601,7 @@ implements Choice
 //				&& this.isPopup && !this.isPopupClosed
 //				)
 //			) {
-		boolean gameActionIsFire =	getScreen().isGameActionFire(keyCode, gameAction); 
+		boolean gameActionIsFire = getScreen().isGameActionFire(keyCode, gameAction); 
 		if (gameActionIsFire) {
 			ChoiceItem choiceItem = (ChoiceItem) this.focusedItem;
 			boolean handled = false;
@@ -2006,7 +2028,7 @@ implements Choice
 	}
 	//#endif
 	
-	//#ifndef tmp.suppressAllCommands
+	//#if polish.usePopupItem || !tmp.suppressAllCommands
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Container#handleCommand(javax.microedition.lcdui.Command)
 	 */
@@ -2031,61 +2053,63 @@ implements Choice
 				}
 			}
 		//#endif
-		//#if tmp.allowSelectCommand && tmp.allowMarkCommands
-			if (cmd == List.SELECT_COMMAND || cmd == MARK_COMMAND || cmd == this.selectCommand  ) {
-		//#elif tmp.allowSelectCommand
-			//# if (cmd == List.SELECT_COMMAND || cmd == this.selectCommand ) {
-		//#elif tmp.allowMarkCommands
-			//# if (cmd == MARK_COMMAND || cmd == this.selectCommand ) {
-		//#else
-			//#abort Invalid combination of suppressed commands for a ChoiceGroup!
-			//# if (false) {
-		//#endif
-			if (this.focusedIndex != -1) {
-				setSelectedIndex( this.focusedIndex, true );
-				if ( (this.choiceType != Choice.IMPLICIT) 
-						//#ifdef polish.usePopupItem
-						&& !(this.isPopup && !this.isPopupClosed)
-						//#endif
-				) {
-					notifyStateChanged();
+		//#ifndef tmp.suppressAllCommands
+			//#if tmp.allowSelectCommand && tmp.allowMarkCommands
+				if (cmd == List.SELECT_COMMAND || cmd == MARK_COMMAND || cmd == this.selectCommand  ) {
+			//#elif tmp.allowSelectCommand
+				//# if (cmd == List.SELECT_COMMAND || cmd == this.selectCommand ) {
+			//#elif tmp.allowMarkCommands
+				//# if (cmd == MARK_COMMAND || cmd == this.selectCommand ) {
+			//#else
+				//#abort Invalid combination of suppressed commands for a ChoiceGroup!
+				//# if (false) {
+			//#endif
+				if (this.focusedIndex != -1) {
+					setSelectedIndex( this.focusedIndex, true );
+					if ( (this.choiceType != Choice.IMPLICIT) 
+							//#ifdef polish.usePopupItem
+							&& !(this.isPopup && !this.isPopupClosed)
+							//#endif
+					) {
+						notifyStateChanged();
+					}
+					//#ifdef polish.usePopupItem
+						if (this.isPopup) {
+							if (this.isPopupClosed) {
+								openPopup();
+							} else {
+								closePopup();
+							}
+							repaint();
+						}
+					//#endif
+					return !this.isImplicit;
 				}
 				//#ifdef polish.usePopupItem
-					if (this.isPopup) {
-						if (this.isPopupClosed) {
-							openPopup();
-						} else {
-							closePopup();
-						}
-						repaint();
+					else if (this.isPopup && this.isPopupClosed) {
+						openPopup();
+						return true;
 					}
 				//#endif
-				return !this.isImplicit;
-			}
-			//#ifdef polish.usePopupItem
-				else if (this.isPopup && this.isPopupClosed) {
-					openPopup();
+			//#ifdef tmp.allowMarkCommands
+			} else if (cmd == UNMARK_COMMAND ) {
+				if (this.focusedIndex != -1) {
+					setSelectedIndex( this.focusedIndex, false );
+					if ( (this.choiceType != Choice.IMPLICIT) 
+							//#ifdef polish.usePopupItem
+							&& !(this.isPopup && !this.isPopupClosed)
+							//#endif
+					) {
+						notifyStateChanged();
+					}
 					return true;
 				}
 			//#endif
-		//#ifdef tmp.allowMarkCommands
-		} else if (cmd == UNMARK_COMMAND ) {
-			if (this.focusedIndex != -1) {
-				setSelectedIndex( this.focusedIndex, false );
-				if ( (this.choiceType != Choice.IMPLICIT) 
-						//#ifdef polish.usePopupItem
-						&& !(this.isPopup && !this.isPopupClosed)
-						//#endif
-				) {
-					notifyStateChanged();
-				}
+			} else if (this.additionalItemCommandListener != null && this.additionalItemCommandListener != this) {
+				this.additionalItemCommandListener.commandAction(cmd, this);
 				return true;
 			}
 		//#endif
-		} else if (this.additionalItemCommandListener != null && this.additionalItemCommandListener != this) {
-			this.additionalItemCommandListener.commandAction(cmd, this);
-			return true;
-		}
 		return super.handleCommand(cmd);
 	}
 	//#endif
