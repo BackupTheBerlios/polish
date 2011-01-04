@@ -293,7 +293,6 @@ implements ImageConsumer
 	 * @see de.enough.polish.ui.Item#setContentWidth(int)
 	 */
 	protected void setContentWidth( int width ) {
-		System.out.println("changing content width from " + this.contentWidth + " to " + width + " for " + this);
 		if (this.imageAlign == Graphics.TOP || this.imageAlign == Graphics.BOTTOM || this.text == null) {
 			int diff = width - this.contentWidth;
 			this.relativeIconX += diff/2;
