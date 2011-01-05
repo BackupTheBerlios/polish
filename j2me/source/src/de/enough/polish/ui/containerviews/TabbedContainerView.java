@@ -28,6 +28,7 @@ package de.enough.polish.ui.containerviews;
 
 import java.io.IOException;
 
+import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
@@ -88,16 +89,12 @@ implements FocusListener
 	
 	private String iconUrl;
 	private String iconHoverUrl;
-	private boolean isRoundtrip;
-	private boolean isShowArrows;
-	private String arrowUrlLeft;
-	private String arrowUrlRight;
-	private Color arrowColor;
 	private int tabbarPosition = POSITION_TOP;
 	private Style tabbarStyle;
 	private transient Container tabbarContainer;
 	private Style tabStyle;
 	private boolean isTabbarInitRequired;
+	private boolean isRoundtrip = true;
 
 	/**
 	 * Creates a new tabbed view-type
@@ -131,7 +128,6 @@ implements FocusListener
 				maxHeight = item.itemHeight;
 			}
 		}
-		
 		// init tabs:
 		Container tabbar = this.tabbarContainer;
 		if (tabbar == null) {
@@ -172,15 +168,16 @@ implements FocusListener
 			this.isTabbarInitRequired = false;
 		}
 		// layout tabbar:
+		boolean displayTabs = (children.length > 1); // only display tabs when there is more than 1 item
 		int y = 0;
 		if (this.tabbarPosition == POSITION_BOTTOM) {
 			tabbar.relativeY = maxHeight + this.paddingVertical;
-		} else {
+		} else if (displayTabs) { 
 			tabbar.relativeY = 0;
 			y = tabbar.itemHeight + this.paddingVertical;  
 		}
 		//System.out.println("maxWidth=" + maxWidth + ", availWidth=" + availWidth + ", tabbar.itemWidth=" + tabbar.itemWidth);
-		if (maxWidth < tabbar.itemWidth) {
+		if (displayTabs && (maxWidth < tabbar.itemWidth)) {
 			maxWidth = tabbar.itemWidth;
 		}
 		if (tabbar.isLayoutCenter()) {
@@ -217,14 +214,20 @@ implements FocusListener
 		if (index == -1) {
 			index = 0;
 		}
-		Container rootContainer = getScreen().getRootContainer();
-		int offset = rootContainer.getScrollYOffset();
-		tabbar.focusChild(index);
-		rootContainer.setScrollYOffset(offset, false);
+		if (index < tabbar.size()) {
+			Container rootContainer = getScreen().getRootContainer();
+			int offset = rootContainer.getScrollYOffset();
+			tabbar.focusChild(index);
+			rootContainer.setScrollYOffset(offset, false);
+		}
 		
 		// set size:
 		this.contentWidth = maxWidth;
-		this.contentHeight = maxHeight + this.paddingVertical + tabbar.itemHeight;
+		if (displayTabs) {
+			this.contentHeight = maxHeight + this.paddingVertical + tabbar.itemHeight;
+		} else {
+			this.contentHeight = maxHeight;
+		}
 		this.appearanceMode = Item.INTERACTIVE;
 	}
 	
@@ -245,23 +248,12 @@ implements FocusListener
 				return;
 			}
 		}
-		Container tb = this.tabbarContainer;
-		tb.paint(x + tb.relativeX, y + tb.relativeY, x + tb.relativeX, x + tb.relativeX + tb.itemWidth, g);
+		if (myItems.length > 1) {
+			Container tb = this.tabbarContainer;
+			tb.paint(x + tb.relativeX, y + tb.relativeY, x + tb.relativeX, x + tb.relativeX + tb.itemWidth, g);
+		}
 		Item item = myItems[index];
 		paintItem(item, index, x + item.relativeX, y + item.relativeY, x, x + item.relativeX + item.itemWidth, clipX, clipY, clipWidth, clipHeight, g);
-	}
-
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.ItemView#setStyle(de.enough.polish.ui.Style, boolean)
-	 */
-	protected void setStyle(Style style, boolean resetStyle) {
-		super.setStyle(style, resetStyle);
-		//#if polish.css.tabbedview-arrow-color
-			Color arrowCol = (Color) style.getObjectProperty("tabbedview-arrow-color");
-			if (arrowCol != null) {
-				this.arrowColor = arrowCol;
-			}
-		//#endif
 	}
 
 	/* (non-Javadoc)
@@ -284,7 +276,7 @@ implements FocusListener
 		//#if polish.css.tabbedview-roundtrip
 			Boolean roundtripBool = style.getBooleanProperty("tabbedview-roundtrip");
 			if (roundtripBool != null) {
-				this.isRoundtrip = roundtripBool.booleanValue();
+				this.isRoundtrip  = roundtripBool.booleanValue();
 			}
 		//#endif
 		//#if polish.css.tabbedview-tabbar-position
@@ -386,6 +378,15 @@ implements FocusListener
 	 */
 	protected Item getNextItem( int keyCode, int gameAction ) 
 	{
+		//#if polish.css.tabbedview-roundtrip
+		if (!this.isRoundtrip) {
+			if (gameAction == Canvas.LEFT && this.focusedIndex <= 0) {
+				return null;
+			} else if (gameAction == Canvas.RIGHT && this.focusedIndex == this.parentContainer.size() - 1) {
+				return null;
+			}
+		}
+		//#endif
 		Item next = super.getNextItem(keyCode, gameAction);
 		if (next != null) {
 			this.tabbarContainer.focusChild(this.focusedIndex);
