@@ -356,9 +356,9 @@ implements Externalizable, Comparator, Comparable
 	}
 
 	/**
-	 * Checks whether this given point in time is before this TimePoint
-	 * @param tp the time point that might be before this one
-	 * @return true when the given time point is before this one.
+	 * Checks whether this  point in time is before the given TimePoint
+	 * @param tp the given time point
+	 * @return true when the this time point is before the given one.
 	 */
 	public boolean isBefore(TimePoint tp) {
 		if (equalsTimeZone( tp )) {
@@ -372,6 +372,50 @@ implements Externalizable, Comparator, Comparable
 		}
 		return getAsCalendar().before( tp.getAsCalendar() );
 	}
+	
+	/**
+	 * Checks whether this  point in time is before the given TimePoint
+	 * @param tp the given time point
+	 * @param scope the dimension for the comparison, the scope is only applied when both timepoints share the same timezone
+	 * @return true when the this time point is before the given one.
+	 * @see TimePeriod#SCOPE_MILLISECOND
+	 * @see TimePeriod#SCOPE_SECOND
+	 * @see TimePeriod#SCOPE_HOUR
+	 * @see TimePeriod#SCOPE_DAY
+	 * @see TimePeriod#SCOPE_MONTH
+	 * @see TimePeriod#SCOPE_YEAR
+	 */
+	public boolean isBefore(TimePoint tp, int scope) {
+		boolean result;
+		if (equalsTimeZone( tp )) {
+			result = (this.year < tp.year);
+			if (!result && (this.year == tp.year) && (scope <= TimePeriod.SCOPE_MONTH)) {
+				result = (this.month < tp.month);
+				if (!result && (this.month == tp.month) && (scope <= TimePeriod.SCOPE_DAY)) {
+					result = (this.day < tp.day);
+					if (!result && (this.day == tp.day) && (scope <= TimePeriod.SCOPE_HOUR)) {
+						result = (this.hour < tp.hour);
+						if (!result && (this.hour == tp.hour) && (scope <= TimePeriod.SCOPE_MINUTE)) {
+							result = (this.minute < tp.minute);
+							if (!result && (this.minute == tp.minute) && (scope <= TimePeriod.SCOPE_SECOND)) {
+								result = (this.second < tp.second);
+								if (!result && (this.second == tp.second)) {
+									result = (this.millisecond < tp.millisecond);
+								}
+							}
+						}
+					}
+				}
+			}
+		} else {
+			result = getAsCalendar().before( tp.getAsCalendar() );
+//			if (!result && (scope > TimePeriod.SCOPE_MILLISECOND)) {
+//				
+//			}
+		}
+		return result;
+	}
+
 	
 	private boolean equalsTimeZone(TimePoint tp) {
 		if ( this.timeZone == tp.timeZone ) {
@@ -387,9 +431,9 @@ implements Externalizable, Comparator, Comparable
 	}
 
 	/**
-	 * Checks whether this given point in time is before this TimePoint
-	 * @param tp the time point that might be before this one
-	 * @return true when the given time point is before this one.
+	 * Checks whether this  point in time is after the given TimePoint
+	 * @param tp the given time point
+	 * @return true when the this time point is after the given one.
 	 */
 	public boolean isAfter(TimePoint tp) {
 		if (equalsTimeZone( tp )) {
@@ -402,6 +446,49 @@ implements Externalizable, Comparator, Comparable
 				|| (this.year == tp.year && this.month == tp.month && this.day == tp.day && this.hour == tp.hour && this.minute == tp.minute && this.second == tp.second && this.millisecond > tp.millisecond);
 		}
 		return getAsCalendar().after( tp.getAsCalendar() );
+	}
+	
+	/**
+	 * Checks whether this  point in time is after the given TimePoint
+	 * @param tp the given time point
+	 * @param scope the dimension for the comparison, the scope is only applied when both timepoints share the same timezone
+	 * @return true when the this time point is after the given one.
+	 * @see TimePeriod#SCOPE_MILLISECOND
+	 * @see TimePeriod#SCOPE_SECOND
+	 * @see TimePeriod#SCOPE_HOUR
+	 * @see TimePeriod#SCOPE_DAY
+	 * @see TimePeriod#SCOPE_MONTH
+	 * @see TimePeriod#SCOPE_YEAR
+	 */
+	public boolean isAfter(TimePoint tp, int scope) {
+		boolean result;
+		if (equalsTimeZone( tp )) {
+			result = (this.year > tp.year);
+			if (!result && (this.year == tp.year) && (scope <= TimePeriod.SCOPE_MONTH)) {
+				result = (this.month > tp.month);
+				if (!result && (this.month == tp.month) && (scope <= TimePeriod.SCOPE_DAY)) {
+					result = (this.day > tp.day);
+					if (!result && (this.day == tp.day) && (scope <= TimePeriod.SCOPE_HOUR)) {
+						result = (this.hour > tp.hour);
+						if (!result && (this.hour == tp.hour) && (scope <= TimePeriod.SCOPE_MINUTE)) {
+							result = (this.minute > tp.minute);
+							if (!result && (this.minute == tp.minute) && (scope <= TimePeriod.SCOPE_SECOND)) {
+								result = (this.second > tp.second);
+								if (!result && (this.second == tp.second)) {
+									result = (this.millisecond > tp.millisecond);
+								}
+							}
+						}
+					}
+				}
+			}
+		} else {
+			result = getAsCalendar().after( tp.getAsCalendar() );
+//			if (!result && (scope > TimePeriod.SCOPE_MILLISECOND)) {
+//				
+//			}
+		}
+		return result;
 	}
 
 	
@@ -800,7 +887,41 @@ implements Externalizable, Comparator, Comparable
 	}
 
 
-
+	/**
+	 * Tests whether this point in time refers to the same one as the specified TimePoint in the given scope context.
+	 * Note that timezones are ignored for the comparison.
+	 * @param tp the other TimePoint that should be compared to this one
+	 * @param scope the dimension for the comparison
+	 * @return true when the this time point is the same one as the given one in the provided scope.
+	 * @see TimePeriod#SCOPE_MILLISECOND
+	 * @see TimePeriod#SCOPE_SECOND
+	 * @see TimePeriod#SCOPE_HOUR
+	 * @see TimePeriod#SCOPE_DAY
+	 * @see TimePeriod#SCOPE_MONTH
+	 * @see TimePeriod#SCOPE_YEAR
+	 */
+	public boolean equals( TimePoint tp, int scope ) {
+		boolean result = (this.year == tp.year);
+		if (result && (scope <= TimePeriod.SCOPE_MONTH)) {
+			result = (this.month == tp.month);
+			if (result && (scope <= TimePeriod.SCOPE_DAY)) {
+				result = (this.day == tp.day);
+				if (result && (scope <= TimePeriod.SCOPE_HOUR)) {
+					result = (this.hour == tp.hour);
+					if (result && (scope <= TimePeriod.SCOPE_MINUTE)) {
+						result = (this.minute == tp.minute);
+						if (result && (scope <= TimePeriod.SCOPE_SECOND)) {
+							result = (this.second == tp.second);
+							if (result && (scope <= TimePeriod.SCOPE_MILLISECOND)) {
+								result = (this.millisecond == tp.millisecond);
+							}
+						}
+					}
+				}
+			}
+		}
+		return result;
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
@@ -1073,6 +1194,7 @@ implements Externalizable, Comparator, Comparable
 			throw new IllegalArgumentException("for " + dateTimeText + ": " + e);
 		}
 	}
+
 
 
 }

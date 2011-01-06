@@ -373,7 +373,7 @@ public class CalendarItem extends TableItem
 			item.setDefaultCommand( this.cmdDayDefault );
 		}
 		if (this.validPeriod != null) {
-			if (!this.validPeriod.matches(day)) {
+			if (!this.validPeriod.matches(day, TimePeriod.SCOPE_DAY)) {
 				item.setAppearanceMode(Item.PLAIN);
 			}
 		}

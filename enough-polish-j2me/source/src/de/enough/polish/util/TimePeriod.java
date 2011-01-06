@@ -40,12 +40,62 @@ import de.enough.polish.io.Externalizable;
 public class TimePeriod
 implements Externalizable
 {
+	/**
+	 * Default match scope that compares the millisecond settings of timepoints.
+	 * @see #setMatchScope(int)  
+	 * @see #matches(TimePoint, int)
+	 */
+	public static int SCOPE_MILLISECOND = 0;
+
+	/**
+	 * Match scope that compares the second settings of timepoints.
+	 * @see #setMatchScope(int)  
+	 * @see #matches(TimePoint, int)
+	 */
+	public static int SCOPE_SECOND = 1;
+	
+	/**
+	 * Match scope that compares the minute settings of timepoints.
+	 * @see #setMatchScope(int)  
+	 * @see #matches(TimePoint, int)
+	 */
+	public static int SCOPE_MINUTE = 2;
+	
+	/**
+	 * Match scope that compares the hour settings of timepoints.
+	 * @see #setMatchScope(int)  
+	 * @see #matches(TimePoint, int)
+	 */
+	public static int SCOPE_HOUR = 3;
+	/**
+	 * Match scope that compares the day settings of timepoints.
+	 * @see #setMatchScope(int)  
+	 * @see #matches(TimePoint, int)
+	 */
+	public static int SCOPE_DAY = 4;
+	/**
+	 * Match scope that compares the month settings of timepoints.
+	 * @see #setMatchScope(int)  
+	 * @see #matches(TimePoint, int)
+	 */
+	public static int SCOPE_MONTH = 5;
+	/**
+	 * Match scope that compares the year settings of timepoints.
+	 * @see #setMatchScope(int)  
+	 * @see #matches(TimePoint, int)
+	 */
+	public static int SCOPE_YEAR = 6;
+
+
+
 	private static final int VERSION = 100;
 
 	private TimePoint start;
 	private boolean includeStart;
 	private TimePoint end;
 	private boolean includeEnd;
+
+	private int matchScope;
 	
 	/**
 	 * Creates a new uninitialized time period
@@ -159,19 +209,29 @@ implements Externalizable
 	 * @return true when the point in time falls within this period
 	 */
 	public boolean matches( TimePoint timePoint ){
+		return matches( timePoint, this.matchScope );
+	}
+	
+	/**
+	 * Checks whether this given point in time falls within this period.
+	 * @param timePoint the time point that should be checked
+	 * @param scope the scope that is used for comparing time points
+	 * @return true when the point in time falls within this period
+	 */
+	public boolean matches( TimePoint timePoint, int scope ){
 		if (this.start != null) {
-			if (timePoint.isBefore( this.start )) {
+			if (timePoint.isBefore( this.start, scope )) {
 				return false;
 			}
-			if (!this.includeStart && this.start.equals(timePoint)) {
+			if (!this.includeStart && this.start.equals(timePoint, scope)) {
 				return false;
 			}
 		}
 		if (this.end != null) {
-			if (timePoint.isAfter( this.end )) {
+			if (timePoint.isAfter( this.end, scope )) {
 				return false;
 			}
-			if (!this.includeEnd && this.end.equals(timePoint)) {
+			if (!this.includeEnd && this.end.equals(timePoint, scope)) {
 				return false;
 			}
 		}
@@ -228,6 +288,15 @@ implements Externalizable
 	 */
 	public boolean isIncludeEnd() {
 		return this.includeEnd;
+	}
+	
+	/**
+	 * Sets the scope that is used for the matches() method
+	 * @param scope the scope
+	 * @see #matches(TimePoint)
+	 */
+	public void setMatchScope( int scope ) {
+		this.matchScope = scope;
 	}
 
 	/*
