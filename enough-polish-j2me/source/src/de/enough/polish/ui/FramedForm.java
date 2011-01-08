@@ -46,7 +46,10 @@ import de.enough.polish.util.ArrayList;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class FramedForm extends Form {
+public class FramedForm 
+extends Form
+implements CycleListener
+{
 	
 	protected Container leftFrame;
 	protected Container rightFrame;
@@ -83,6 +86,7 @@ public class FramedForm extends Form {
 	private int originalContentY;
 	private int originalContentX;
 	private boolean keepContentFocused;
+	private boolean isCycled;
 
 	/**
 	 * Creates a new FramedForm
@@ -102,10 +106,7 @@ public class FramedForm extends Form {
 	public FramedForm(String title, Style style) {
 		super( title, style );
 		this.currentlyActiveContainer = this.container;
-		//#if polish.Container.allowCycling != false
-			this.container.allowCycling = false;
-		//#endif
-
+		this.container.setCycleListener(this);
 	}
 
 	private Container getFrame( int frameOrientation ) {
@@ -463,6 +464,7 @@ public class FramedForm extends Form {
 				if (this.topFrame == null) {
 					//#style topframe, frame, default
 					this.topFrame = new Container( false );
+					this.topFrame.setCycleListener(this);
 					//#if polish.css.topframe-style
 						if (this.topFrameStyle != null) {
 							this.topFrame.setStyle(this.topFrameStyle);
@@ -475,6 +477,7 @@ public class FramedForm extends Form {
 				if (this.bottomFrame == null) {
 					//#style bottomframe, frame, default
 					this.bottomFrame = new Container( false );
+					this.bottomFrame.setCycleListener(this);
 					//#if polish.css.bottomframe-style
 						if (this.bottomFrameStyle != null) {
 							this.bottomFrame.setStyle(this.bottomFrameStyle);
@@ -487,6 +490,7 @@ public class FramedForm extends Form {
 				if (this.leftFrame == null) {
 					//#style leftframe, frame, default
 					this.leftFrame = new Container( false );
+					this.leftFrame.setCycleListener(this);
 					//#if polish.css.leftframe-style
 						if (this.leftFrameStyle != null) {
 							this.leftFrame.setStyle(this.leftFrameStyle);
@@ -499,6 +503,7 @@ public class FramedForm extends Form {
 				if (this.rightFrame == null) {
 					//#style rightframe, frame, default
 					this.rightFrame = new Container( false );
+					this.rightFrame.setCycleListener(this);
 					//#if polish.css.rightframe-style
 						if (this.rightFrameStyle != null) {
 							this.rightFrame.setStyle(this.rightFrameStyle);
@@ -512,9 +517,6 @@ public class FramedForm extends Form {
 				return;
 		}
 		frame.screen = this;
-		//#if polish.Container.allowCycling != false
-			frame.allowCycling = false;
-		//#endif
 		frame.add( item );
 		if (isShown()) {
 			requestInit();
@@ -718,66 +720,51 @@ public class FramedForm extends Form {
 	 * @see de.enough.polish.ui.Screen#handleKeyPressed(int, int)
 	 */
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
+		this.isCycled = false;
 		boolean handled = this.currentlyActiveContainer.handleKeyPressed(keyCode, gameAction);
-		
-		if (! handled && !isSoftKey(keyCode)) {
-			if (this.keepContentFocused) {
-				return super.handleKeyPressed(keyCode, gameAction);
-			}
-			
-			Container newFrame = getNextFrame(gameAction);
-			
-			if ( newFrame != null ) {
-				setActiveFrame(newFrame, false, gameAction);
+		if (!handled && !this.keepContentFocused) {
+			if (this.isCycled) {
 				handled = true;
-				
-				//#if polish.FramedForm.allowCycling
-				if(this.allowCycling)
-				{
-					// make sure that the right item is focused i.e.
-					// if the direction is UP the last item of
-					// the resulting container should be focused
-					focusByAction(gameAction, newFrame);
+				this.isCycled = false;
+			} else {
+				Container nextFrame = getNextFrame(gameAction);
+				if (nextFrame != null) {
+					setActiveFrame(nextFrame, false, gameAction);
+					handled = true;
+				} else {
+					return false;
 				}
-				
-				return true;
-				//#endif
-			}
-			else
-			{
-				return false;
 			}
 		}
-		
-		return handled;
+		return handled || super.handleKeyPressed(keyCode, gameAction);
 	}
 	
 	/**
 	 * Focuses the first resp. last element of the container 
 	 * depending on the direction of the frame change
 	 * @param gameAction the game action
-	 * @param container the container
+	 * @param cont the container
 	 */
-	public void focusByAction(int gameAction, Container container)
+	public void focusByAction(int gameAction, Container cont)
 	{
 		switch(gameAction)
 		{
 			case LEFT:
 			case RIGHT:
 			case DOWN :
-				for (int i=0; i<container.size(); i++) {
-					Item item = container.get(i);
+				for (int i=0; i<cont.size(); i++) {
+					Item item = cont.get(i);
 					if (item.appearanceMode != Item.PLAIN) {
-						container.focusChild(i);
+						cont.focusChild(i);
 						break;
 					}
 				}
 				break;
 			case UP : 
-				for (int i=container.size(); --i >= 0; ) {
-					Item item = container.get(i);
+				for (int i=cont.size(); --i >= 0; ) {
+					Item item = cont.get(i);
 					if (item.appearanceMode != Item.PLAIN) {
-						container.focusChild(i);
+						cont.focusChild(i);
 						break;
 					}
 				}
@@ -797,7 +784,7 @@ public class FramedForm extends Form {
 			newFrame = getFrameByGameAction(gameAction, new Container[]{ this.bottomFrame, this.leftFrame, this.rightFrame, this.topFrame }, 
 													new Container[]{ this.topFrame, this.leftFrame, this.rightFrame, this.bottomFrame }, 
 													new Container[]{ this.leftFrame, this.topFrame, this.bottomFrame, this.rightFrame },
-													new Container[]{ this.rightFrame, this.topFrame, this.bottomFrame, this.leftFrame });
+													new Container[]{ this.rightFrame, this.bottomFrame, this.topFrame, this.leftFrame });
 		} 
 		//#if polish.FramedForm.allowCycling
 		else if(this.allowCycling)
@@ -830,6 +817,7 @@ public class FramedForm extends Form {
 														new Container[]{ this.container, this.leftFrame },
 														new Container[]{ this.leftFrame, this.container });
 			}
+			
 		}
 		else
 		{
@@ -1499,6 +1487,32 @@ public class FramedForm extends Form {
 		if (this.bottomFrame != null) {
 			this.bottomFrame.destroy();
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.CycleListener#onCycle(de.enough.polish.ui.Item, int)
+	 */
+	public boolean onCycle(Item item, int direction) {
+		if (!this.keepContentFocused) {
+			int gameAction;
+			if (direction == CycleListener.DIRECTION_TOP_TO_BOTTOM) {
+				gameAction = UP;
+			} else if (direction == CycleListener.DIRECTION_BOTTOM_TO_TOP) {
+				gameAction = DOWN;
+			} else if (direction == CycleListener.DIRECTION_LEFT_TO_RIGHT) {
+				gameAction = LEFT;
+			} else {
+				gameAction = RIGHT;
+			}
+			Container newFrame = getNextFrame(gameAction);
+			if (newFrame != null && newFrame != this.currentlyActiveContainer) {
+				this.isCycled = true;
+				setActiveFrame(newFrame, false, gameAction );
+				return false;
+			}
+		}
+		return true;
 	}
 
 	
