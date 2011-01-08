@@ -1895,6 +1895,7 @@ public class Container extends Item {
 			int endY = startY + g.getClipHeight();
 			Item focItem = this.focusedItem;
 			int focIndex = this.focusedIndex;
+			int itemX;
 			//int originalY = y;
 			for (int i = 0; i < myItems.length; i++) {
 				Item item = myItems[i];
@@ -1903,7 +1904,8 @@ public class Container extends Item {
 				int itemY = y + item.relativeY;
 				if (i != focIndex &&  itemY + item.itemHeight >= startY && itemY < endY ){
 					//item.paint(x, y, leftBorder, rightBorder, g);
-					item.paint(x + item.relativeX, itemY, leftBorder, rightBorder, g);
+					itemX = x + item.relativeX;
+					item.paint(itemX, itemY, itemX, itemX + item.itemWidth, g);
 				}
 //				if (item.itemHeight != 0) {
 //					y += item.itemHeight + this.paddingVertical;
@@ -1913,7 +1915,8 @@ public class Container extends Item {
 			if (focItem != null) {
 				paintFocusedItemOutside = setClipping && (focItem.internalX != NO_POSITION_SET);
 				if (!paintFocusedItemOutside) {
-					focItem.paint(x + focItem.relativeX, y + focItem.relativeY, leftBorder, rightBorder, g);
+					itemX = x + focItem.relativeX;
+					focItem.paint(itemX, y + focItem.relativeY, itemX, itemX + focItem.itemWidth, g);
 				}
 			}
 	
@@ -1925,7 +1928,8 @@ public class Container extends Item {
 			// for example useful for popup items that extend the actual container area.
 			if (paintFocusedItemOutside) {
 				//System.out.println("Painting focusedItem " + this.focusedItem + " with width=" + this.focusedItem.itemWidth + " and with increased colwidth of " + (focusedRightBorder - focusedX)  );
-				focItem.paint(x + focItem.relativeX, y + focItem.relativeY, leftBorder, rightBorder, g);
+				itemX = x + focItem.relativeX;
+				focItem.paint(itemX, y + focItem.relativeY, itemX, itemX + focItem.itemWidth, g);
 			}
 		//#ifdef tmp.supportViewType
 			}
