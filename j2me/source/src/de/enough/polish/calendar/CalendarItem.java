@@ -416,7 +416,7 @@ public class CalendarItem extends TableItem
 				//#style calendarDay?
 				item = new StringItem( null, Integer.toString( day.getDay() ));
 				if (parent != null) {
-					if (parent.validPeriod != null && parent.calendarDayInvalidStyle != null && !parent.validPeriod.matches(day)) {
+					if (parent.validPeriod != null && parent.calendarDayInvalidStyle != null && !parent.validPeriod.matches(day, TimePeriod.SCOPE_DAY)) {
 						item.setStyle(parent.calendarDayInvalidStyle);
 					} else if (parent.calendarDayStyle != null) {
 						item.setStyle(parent.calendarDayStyle);
@@ -590,7 +590,7 @@ public class CalendarItem extends TableItem
 		}
 		nextMonth.addMonth(1);
 		nextMonth.setDay(1);
-		if ( (range == null) || range.matches(nextMonth)) {
+		if ( (range == null) || range.matches(nextMonth, TimePeriod.SCOPE_DAY)) {
 			buildCalendar( nextMonth );
 			if (!this.isMonthNameFocused) {
 				go( nextMonth );
@@ -616,7 +616,7 @@ public class CalendarItem extends TableItem
 		nextMonth.addMonth(-1);
 		if (range != null) {
 			nextMonth.setDay( nextMonth.getDaysInMonth() );
-			if (!range.matches(nextMonth)) {
+			if (!range.matches(nextMonth, TimePeriod.SCOPE_DAY)) {
 				return false;
 			}
 		}
@@ -640,8 +640,8 @@ public class CalendarItem extends TableItem
 	 * @see #setValidPeriod(TimePeriod)
 	 */
 	public void go(TimePoint day) {
-		if (this.validPeriod != null && !this.validPeriod.matches(day)) {
-			if (day.equalsMonth(this.validPeriod.getStart()) || (day.isBefore(this.validPeriod.getStart()))) {
+		if (this.validPeriod != null && !this.validPeriod.matches(day, TimePeriod.SCOPE_DAY)) {
+			if (day.equalsMonth(this.validPeriod.getStart()) || (day.isBefore(this.validPeriod.getStart(), TimePeriod.SCOPE_DAY))) {
 				day.setDate( this.validPeriod.getStart() );
 				if (!this.validPeriod.isIncludeStart()) {
 					day.addDay(1);
@@ -1042,8 +1042,8 @@ public class CalendarItem extends TableItem
 		this.validPeriod = validPeriod;
 		if (validPeriod != null && this.isBuild) {
 			TimePoint tp = getSelectedTimePoint();
-			if (!validPeriod.matches(tp)) {
-				if (tp.isBefore(validPeriod.getStart())) {
+			if (!validPeriod.matches(tp, TimePeriod.SCOPE_DAY)) {
+				if (tp.isBefore(validPeriod.getStart(), TimePeriod.SCOPE_DAY)) {
 					go( validPeriod.getStart() );
 				} else {
 					go( validPeriod.getEnd() );
