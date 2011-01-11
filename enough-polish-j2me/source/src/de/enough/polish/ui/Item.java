@@ -4303,6 +4303,11 @@ public abstract class Item implements UiElement, Animatable
 		//#ifdef polish.hasPointerEvents
 			//#debug
 			System.out.println("handlePointerReleased " + relX + ", " + relY + " for item " + this + " isPressed=" + this.isPressed);
+			// handle keyboard behaviour only if this not a container,
+			// its handled in the overwritten version
+			if(!(this instanceof Container) && isFocused()) {
+				handleOnFocusSoftKeyboardDisplayBehavior();
+			}
 			//#if tmp.supportTouchGestures
 				if (this.isIgnorePointerReleaseForGesture) {
 					this.isIgnorePointerReleaseForGesture = false;
@@ -4781,10 +4786,6 @@ public abstract class Item implements UiElement, Animatable
 	protected Style focus( Style newStyle, int direction ) {
 		//#debug
 		System.out.println("focus " + this);
-		
-		//#if polish.hasPointerEvents
-			handleOnFocusSoftKeyboardDisplayBehavior();
-		//#endif
 		
 		Style oldStyle = this.style;
 		

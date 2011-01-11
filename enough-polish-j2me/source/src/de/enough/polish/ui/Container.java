@@ -3486,6 +3486,11 @@ public class Container extends Item {
 		//#debug
 		System.out.println("Container.handlePointerReleased(" + relX + ", " + relY + ") for " + this  );
 		
+		// handle keyboard behaviour
+		if(isFocused()) {
+			handleOnFocusSoftKeyboardDisplayBehavior();
+		}
+		
 		//#ifdef tmp.supportFocusItemsInVisibleContentArea
 			//#if polish.hasPointerEvents		
 				this.needsCheckItemInVisibleContent=true;
