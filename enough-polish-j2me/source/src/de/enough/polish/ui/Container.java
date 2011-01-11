@@ -1606,6 +1606,9 @@ public class Container extends Item {
 				item.relativeY = myContentHeight;
 				if (item.isLayoutCenter || item.isLayoutRight) {
 					hasCenterOrRightItems = true;
+					if (this.parent == null) {
+						myContentWidth = availWidth;
+					}
 				} else {
 					item.relativeX = 0;
 				}				
@@ -2337,9 +2340,9 @@ public class Container extends Item {
 	 */
 	private boolean shiftFocus(boolean forwardFocus, int steps ) {
 		Item[] items = getItems();
-		if ( items == null || items.length == 0) {
+		if ( items == null || items.length <= 1) {
 			//#debug
-			System.out.println("shiftFocus fails: this.items==null");
+			System.out.println("shiftFocus fails: this.items==null or items.length <= 0");
 			return false;
 		}
 		//System.out.println("|");
