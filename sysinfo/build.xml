@@ -54,7 +54,7 @@
 						jarUrl="${deploy-url}${polish.jarName}" 
 						name="MIDPSysInfo" 
 						vendorName="Enough Software" 
-						version="0.9.9"
+						version="0.9.10"
 						profile="MIDP-1.0" 
 						configuration="CLDC-1.0" 
 					/>

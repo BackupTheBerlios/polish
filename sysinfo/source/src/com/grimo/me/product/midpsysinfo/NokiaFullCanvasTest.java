@@ -1,4 +1,4 @@
-//#condition polish.vendor != BlackBerry
+//#condition polish.vendor == Nokia
 /*
  * Created on 10-Feb-2005 at 19:54:06.
  * 
