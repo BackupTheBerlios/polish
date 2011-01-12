@@ -891,24 +891,14 @@ implements CycleListener
 	 * @see de.enough.polish.ui.Screen#handleKeyReleased(int, int)
 	 */
 	protected boolean handleKeyReleased(int keyCode, int gameAction) {
-		if(this.currentlyActiveContainer != this.container) {
-			boolean handled = this.currentlyActiveContainer.handleKeyReleased(keyCode, gameAction);
-			return handled || super.handleKeyReleased(keyCode, gameAction);
-		} else {
-			return super.handleKeyReleased(keyCode, gameAction);
-		}
+		return this.currentlyActiveContainer.handleKeyReleased(keyCode, gameAction);
 	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Screen#handleKeyRepeated(int, int)
 	 */
 	protected boolean handleKeyRepeated(int keyCode, int gameAction) {
-		if(this.currentlyActiveContainer != this.container) {
-			boolean handled = this.currentlyActiveContainer.handleKeyRepeated(keyCode, gameAction);
-			return handled || super.handleKeyRepeated(keyCode, gameAction);
-		} else {
-			return super.handleKeyRepeated(keyCode, gameAction);
-		}
+		return this.currentlyActiveContainer.handleKeyRepeated(keyCode, gameAction);
 	}
 	
 	/* (non-Javadoc)
