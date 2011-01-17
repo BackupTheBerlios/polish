@@ -1069,7 +1069,8 @@ extends ItemView
 	protected void paintItem( Item item, int index,  int x, int y, int leftBorder, int rightBorder, int clipX, int clipY, int clipWidth, int clipHeight, Graphics g ) {
 		//#debug
 		System.out.println("ContainerView: painting item at (" +  x + ", " + y + ") " + item );
-		if ( ( (y < clipY + clipHeight && (y + item.getItemAreaHeight() > clipY) )
+		if ( (index == this.focusedIndex)
+			|| ( (y < clipY + clipHeight && (y + item.getItemAreaHeight() > clipY) )
 			|| (item.internalX != Item.NO_POSITION_SET && y + item.internalY < clipY + clipHeight && y + item.internalY + item.internalHeight > clipY ) )
 			&& (x < clipX + clipWidth && x + item.itemWidth > clipX) ) 
 		{
