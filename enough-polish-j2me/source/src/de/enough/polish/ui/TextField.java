@@ -4708,9 +4708,9 @@ public class TextField extends StringItem
 		int lineHeight = this.font.getHeight() + this.paddingVertical;
 		if (this.text != null) {
 			this.internalX = 0;
-			this.internalHeight = lineHeight;
-			this.internalWidth = this.contentWidth;
 			int size = this.textLines.size();
+			this.internalHeight = lineHeight * size;
+			this.internalWidth = this.itemWidth;
 			if (cursorPosition >= this.text.length() - this.textLines.getLine(size-1).length()) {
 				this.internalY = this.contentHeight - lineHeight;
 			} else {
@@ -4743,7 +4743,10 @@ public class TextField extends StringItem
 					direction = Canvas.UP;
 				}
 				this.bbLastCursorPosition = cursorPosition;
-				((Container)this.parent).scroll(direction, this, true);
+				boolean scrolled = ((Container)this.parent).scroll(direction, this, true);
+				if(scrolled) {
+					repaintFully();
+				}
 			}
 		} else {
 			this.internalX = NO_POSITION_SET;
