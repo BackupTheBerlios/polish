@@ -4305,7 +4305,7 @@ public abstract class Item implements UiElement, Animatable
 			System.out.println("handlePointerReleased " + relX + ", " + relY + " for item " + this + " isPressed=" + this.isPressed);
 			// handle keyboard behaviour only if this not a container,
 			// its handled in the overwritten version
-			if(!(this instanceof Container) && isFocused()) {
+			if (this.isFocused && !(this instanceof Container)) {
 				handleOnFocusSoftKeyboardDisplayBehavior();
 			}
 			//#if tmp.supportTouchGestures
