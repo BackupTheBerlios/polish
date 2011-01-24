@@ -1,4 +1,4 @@
-//#condition polish.blackberry &&  polish.JavaPlatform >= BlackBerry/4.6
+//#condition polish.blackberry && polish.usePolishGui && polish.JavaPlatform >= BlackBerry/4.6
 /**
  * 
  */
