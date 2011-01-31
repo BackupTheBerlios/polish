@@ -296,16 +296,11 @@ public abstract class BaseScreen
         int key = Keypad.key( keyCode );
         switch ( key ) {
         case Keypad.KEY_ENTER: return Canvas.FIRE;
-        //#if polish.BlackBerry.mapSpaceToFire != false
+        //#if polish.BlackBerry.mapSpaceToFire
         	case Keypad.KEY_SPACE: return Canvas.FIRE;
         //#endif
         case Keypad.KEY_NEXT: return Canvas.DOWN;
         }
-        //#if polish.BlackBerry.mapSpaceToFire != false
-	        if (keyCode == 48) { // = SPACE, the key(48) method returns 0 for some reason... 
-	        	return Canvas.FIRE;
-	        }
-        //#endif
             
         //#if polish.key.EnterKey:defined
         	//#if false
@@ -982,7 +977,7 @@ public abstract class BaseScreen
         	   try {
         		   // if the current item is valid ... 
         		   if(this.currentItem != null) {
-        			   int gameAction = screen.getGameAction(keyCode);
+        			   int gameAction = getGameAction(keyCode);
         			   // forward the key event to the current item
         			   UiAccess.handleKeyPressed(this.currentItem, keyCode, gameAction);
         		   }
@@ -1064,7 +1059,7 @@ public abstract class BaseScreen
         	   try {
         		   // if the current item is valid ... 
         		   if(this.currentItem != null) {
-        			   int gameAction = screen.getGameAction(keyCode);
+        			   int gameAction = getGameAction(keyCode);
         			   // forward the key event to the current item
         			   UiAccess.handleKeyReleased(this.currentItem, keyCode, gameAction);
         		   }
