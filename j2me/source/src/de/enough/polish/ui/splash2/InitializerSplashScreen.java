@@ -112,8 +112,10 @@ implements Runnable
 		int height = getHeight();
 		int width = getWidth();
 		g.setColor( this.backgroundColor );
-		g.fillRect( 0, 0, width, height );					
-		g.drawImage(this.image,  width/2, height/2, Graphics.HCENTER | Graphics.VCENTER );
+		g.fillRect( 0, 0, width, height );
+		if (this.image != null) {
+			g.drawImage(this.image,  width/2, height/2, Graphics.HCENTER | Graphics.VCENTER );
+		}
 		if (this.message != null) {
 			g.setColor( this.messageColor );
 			Font font = Font.getDefaultFont();
