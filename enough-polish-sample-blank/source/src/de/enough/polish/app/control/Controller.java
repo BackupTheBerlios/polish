@@ -38,6 +38,7 @@ import de.enough.polish.ui.Command;
 import de.enough.polish.ui.CommandListener;
 import de.enough.polish.ui.Display;
 import de.enough.polish.ui.Displayable;
+import de.enough.polish.ui.SimpleScreenHistory;
 import de.enough.polish.ui.splash2.ApplicationInitializer;
 import de.enough.polish.ui.splash2.InitializerSplashScreen;
 import de.enough.polish.util.Locale;
@@ -61,6 +62,7 @@ implements ApplicationInitializer, CommandListener
 	private Command cmdBack = new Command(Locale.get("cmd.back"), Command.BACK, 2);
 	
 	private MainMenuList screenMainMenu;
+	private SimpleScreenHistory screenHistory;
 	
 	
 
@@ -71,6 +73,7 @@ implements ApplicationInitializer, CommandListener
 	public Controller(App midlet) {
 		this.midlet = midlet;
 		this.display = Display.getDisplay(midlet);
+		this.screenHistory = new SimpleScreenHistory(this.display);
 	}
 
 	/**
@@ -179,7 +182,11 @@ implements ApplicationInitializer, CommandListener
 				return;
 			}
 		} else if (cmd == this.cmdBack) {
-			
+			if (this.screenHistory.hasPrevious()) {
+				this.screenHistory.showPrevious();
+			} else {
+				this.display.setCurrent(this.screenMainMenu);
+			}
 		}
 		
 	}
