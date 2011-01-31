@@ -118,11 +118,15 @@
 					defaultexcludes="yes"
 					excludes="readme.txt"
 				>
+					<root dir="resources/base/i18n" />
 					<root dir="resources/base/images" />
 					<root dir="resources/base/sounds" />
+					<root dir="resources/base/style" />
 					<root dir="resources/${customization}" if="build.${customization}" />
+					<root dir="resources/${customization}/i18n" if="build.${customization}" />
 					<root dir="resources/${customization}/images" if="build.${customization}" />
 					<root dir="resources/${customization}/sounds" if="build.${customization}" />
+					<root dir="resources/${customization}/style" if="build.${customization}" />
 					<!-- add the localization element for created localized
 					     versions of your application: 
 					<localization>
