@@ -108,10 +108,7 @@ implements OutputFilter
 			} else {
 				mainClassName= "de.enough.polish.blackberry.midlet.MIDlet";
 			}
-			// add JAD file to JAR, so that MIDlet.getAppProperty() works later onwards:
-			// TODO: we should remove all unneeded MIDlet attributes that are not going to be read anyhow
 			try {
-				storeJadProperties(jadFile, classesDir, env);
 				FileUtil.delete(jarFile);
 
 				Packager packager = (Packager) env.get( Packager.KEY_ENVIRONMENT );
@@ -354,37 +351,6 @@ implements OutputFilter
 		}
 	}
 
-	/**
-	 * Writes the JAD properties in a way so that the MIDlet can load them.
-	 * 
-	 * @param jadFile the JAD file
-	 * @param classesDir the classes directory to which the JAD properties should be saved
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 * @throws UnsupportedEncodingException
-	 */
-	private void storeJadProperties(File jadFile, File classesDir, Environment env) 
-	throws FileNotFoundException, IOException, UnsupportedEncodingException
-	{
-		File txtJadFile = new File( classesDir, jadFile.getName().substring( 0, jadFile.getName().length() - ".jad".length() ) + ".txt");
-		//FileUtil.copy( jadFile, txtJadFile );
-		Attribute[] descriptorAttributes = (Attribute[]) env.get(ManifestCreator.MANIFEST_ATTRIBUTES_KEY);
-		Jad jad = new Jad( env );
-		jad.setAttributes( descriptorAttributes );
-		descriptorAttributes = (Attribute[]) env.get(DescriptorCreator.DESCRIPTOR_ATTRIBUTES_KEY);
-		jad.addAttributes( descriptorAttributes );
-		String[] jadPropertiesLines = jad.getContent();
-		StringBuffer buffer = new StringBuffer();
-		for (int i = 0; i < jadPropertiesLines.length; i++)
-		{
-			String line = jadPropertiesLines[i];
-			buffer.append(line).append('\n');
-		}
-		FileOutputStream fileOut = new FileOutputStream(  txtJadFile );
-		fileOut.write( buffer.toString().getBytes("UTF-8") );
-		fileOut.flush();
-		fileOut.close();
-	}
 
 	/**
 	 * Enables or disables the verbose mode with more logging.
