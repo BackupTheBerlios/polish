@@ -641,8 +641,11 @@ public class Display
     		//# INPUT_METHOD_KEY;
     	//#endif
 
-	private Displayable nextOrCurrentDisplayable;
 	private boolean emitNotifyOnUserEvent;
+	//#if !polish.blackberry
+		protected boolean isLastEventProcessed;
+	//#endif
+	private Displayable nextOrCurrentDisplayable;
 		
 	//#if polish.build.classes.NativeDisplay:defined
 		//#= protected Display( MIDlet midlet, ${polish.build.classes.NativeDisplay} nativeDisplay ) {
@@ -2034,7 +2037,7 @@ public class Display
 			this.isIgnoreReleasedEvent = false;
 		//#endif
 		if (this.currentCanvas != null) { 
-			this.currentCanvas._keyPressed( keyCode );
+			this.isLastEventProcessed = this.currentCanvas._keyPressed( keyCode );
 		}
 		
 		//#if polish.Display.idleEvent
@@ -2086,7 +2089,7 @@ public class Display
 					return;
 				}
 			//#endif
-			this.currentCanvas._keyRepeated( keyCode );
+				this.isLastEventProcessed = this.currentCanvas._keyRepeated( keyCode );
 		}
 	}
 
@@ -2112,7 +2115,7 @@ public class Display
 			}
 		//#endif
 		if (this.currentCanvas != null) {
-			this.currentCanvas._keyReleased( keyCode );
+			this.isLastEventProcessed = this.currentCanvas._keyReleased( keyCode );
 		}
 	}
 	
@@ -2142,7 +2145,7 @@ public class Display
 				x = p.x;
 				y = p.y;
 			//#endif
-			this.currentCanvas._pointerPressed( x, y );
+			this.isLastEventProcessed = this.currentCanvas._pointerPressed( x, y );
 		}
 	}
 	//#endif
@@ -2164,7 +2167,7 @@ public class Display
 				x = p.x;
 				y = p.y;
 			//#endif
-			this.currentCanvas._pointerReleased( x, y );
+			this.isLastEventProcessed = this.currentCanvas._pointerReleased( x, y );
 		}
 	}
 	//#endif
@@ -2186,10 +2189,90 @@ public class Display
 				x = p.x;
 				y = p.y;
 			//#endif
-			this.currentCanvas._pointerDragged(x, y);
+			this.isLastEventProcessed = this.currentCanvas._pointerDragged(x, y);
 		}
 	}
 	//#endif
+	
+	//#if polish.blackberry
+	 /**
+     * Called when a key is pressed.
+     * For backwards compatibility this method calls keyPressed(int).
+     * 
+     * @param keyCode the key code of the key that was pressed
+     * @return true when the event was handled
+     */
+    protected boolean _keyPressed(int keyCode)
+    {
+    	keyPressed(keyCode);
+    	return true;
+    }
+
+    /**
+     * Called when a key is repeated (held down).
+     * For backwards compatibility this method calls keyRepeated(int).
+     * 
+     * @param keyCode the key code of the key that was repeated
+     * @see #hasRepeatEvents()
+     */
+    protected boolean _keyRepeated(int keyCode)
+    {
+    	keyRepeated(keyCode);
+    	return true;
+    }
+
+    /**
+     * Called when a key is released.
+     * For backwards compatibility this method calls keyReleased(int).
+     * 
+     * @param keyCode the key code of the key that was released
+     */
+    protected boolean _keyReleased(int keyCode)
+    {
+    	keyReleased(keyCode);
+    	return true;
+    }
+    
+    /**
+     * Called when the pointer is pressed.
+     * For backwards compatibility this method calls pointerPressed(int,int).
+     * 
+     * @param x - the horizontal location where the pointer was pressed (relative to the Canvas)
+     * @param y - the vertical location where the pointer was pressed (relative to the Canvas)
+     */
+    protected boolean _pointerPressed(int x, int y)
+    {
+    	pointerPressed(x, y);
+    	return true;
+    }
+
+    /**
+     * Called when the pointer is released.
+     * For backwards compatibility this method calls pointerReleased(int,int).
+     * 
+     * @param x the horizontal location where the pointer was released (relative to the Canvas)
+     * @param y the vertical location where the pointer was released (relative to the Canvas)
+     */
+    protected boolean _pointerReleased(int x, int y)
+    {
+    	pointerReleased(x, y);
+    	return true;
+    }
+
+    /**
+     * Called when the pointer is dragged.
+     * For backwards compatibility this method calls pointerDragged(int,int).
+     * 
+     * @param x the horizontal location where the pointer was dragged (relative to the Canvas)
+     * @param y the vertical location where the pointer was dragged (relative to the Canvas)
+     */
+    protected boolean _pointerDragged(int x, int y)
+    {
+    	pointerDragged(x, y);
+    	return true;
+    }
+
+    //#endif
 	
 	
 	//#ifdef polish.hasTouchEvents

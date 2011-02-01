@@ -298,11 +298,11 @@ implements UiElement, Animatable
 	//#if polish.css.clip-screen-info
 		private boolean clipScreenInfo;
 	//#endif	
-	//#if polish.blackberry || polish.android
+	//#if polish.android
 		//#define tmp.trackKeyUsage
-		/** flag for key pressed events - only for internal usage on BlackBerry platforms! */
+		/** flag for key pressed events - only for internal usage on Android platforms! */
 		public boolean keyPressedProcessed;
-		/** flag for key released events - only for internal usage on BlackBerry platforms! */
+		/** flag for key released events - only for internal usage on Android platforms! */
 		public boolean keyReleasedProcessed;
 	//#endif
 	protected int contentX;
@@ -3712,7 +3712,7 @@ implements UiElement, Animatable
 			}
 		} finally {
 			this.ignoreRepaintRequests = false;
-			//#if polish.blackberry
+			//#if tmp.trackKeyUsage
 				this.keyReleasedProcessed = processed;
 			//#endif
 

@@ -81,6 +81,7 @@ public abstract class BaseScreen
 	private int lastWidth;
 	private int lastHeight;
 	private boolean ignoreObscureEvent;
+	protected boolean isLastEventProcessed;
 	
     /**
      * Constructs a new <code>Canvas</code> object.
@@ -326,7 +327,8 @@ public abstract class BaseScreen
     {
     	//this.fullScreenMode = mode;
     }
-
+    
+ 
     /**
      * Called when a key is pressed.
      * 
@@ -902,16 +904,11 @@ public abstract class BaseScreen
             // for loop outcommented, so that only one scroll step within each event is processed
             //for (; --amount >= 0; ) {
                     keyPressed( keyCode );
-                    if ( screen != null ) {
-                            processed |= screen.keyPressedProcessed;
-                    }
+                    processed |= this.isLastEventProcessed;
                     keyReleased( keyCode );
+                    processed |= this.isLastEventProcessed;
             //}
-            if (screen != null) {
-                    return processed;
-            } else {
-                    return true;
-            }
+            return processed;
     	} catch (Exception e) {
     		//#debug error
     		System.out.println("error while processing trackwheel roll" + e);
@@ -989,11 +986,7 @@ public abstract class BaseScreen
            }
         }
         keyPressed( keyCode );
-        if ( screen != null ) {
-        	return (screen.keyPressedProcessed);
-        } else { 
-        	return true; // consume the key event
-        } 
+        return this.isLastEventProcessed;
     }
 
 	Screen getPolishScreen() {
@@ -1073,7 +1066,7 @@ public abstract class BaseScreen
        
         keyReleased( keyCode );
         if ( screen != null ) {
-        	boolean handled = screen.keyReleasedProcessed; 
+        	boolean handled = this.isLastEventProcessed; 
     		//#if !tmp.fullscreen
 	        	if (!handled && (Keypad.map( keyCode ) == Keypad.KEY_ESCAPE)) {
 	        		if (this.addedMenuItems.size() == 1) {
@@ -1317,12 +1310,7 @@ public abstract class BaseScreen
     	boolean processed = super.navigationClick(status, time);
     	if (!processed) {
     		keyPressed( KEY_BB_FIRE );
-            Screen screen = getPolishScreen();
-            if ( screen != null ) {
-    			processed = screen.keyPressedProcessed;
-    		} else {
-    			processed = true;
-    		}
+    		processed = this.isLastEventProcessed;
     	}
     	return processed;
     }
@@ -1345,19 +1333,17 @@ public abstract class BaseScreen
     	boolean processed = super.navigationUnclick(status, time);
     	if (!processed) {
     		Screen screenBefore = getPolishScreen();
-    		keyReleased( KEY_BB_FIRE );
+    		keyReleased(KEY_BB_FIRE );
+    		processed = this.isLastEventProcessed;
     		Screen screen = getPolishScreen();
     		if (screen != screenBefore) {
     			processed = true;
-    		} else if ( screen != null ) {
-    			processed = screen.keyReleasedProcessed;
-        		//#if !tmp.fullscreen
-		        	if (!processed && this.addedMenuItems.size() == 1) {
-        				CommandMenuItem item = (CommandMenuItem) this.addedMenuItems.get(0);
-        				item.run();
-        				processed = true;
-		        	}
-	        	//#endif
+			//#if !tmp.fullscreen
+    			} else if (!processed && this.addedMenuItems.size() == 1) {
+    				CommandMenuItem item = (CommandMenuItem) this.addedMenuItems.get(0);
+    				item.run();
+    				processed = true;
+        	//#endif
     		} else {
     			processed = true;
     		}
