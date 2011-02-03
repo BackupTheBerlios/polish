@@ -1083,41 +1083,14 @@ implements CycleListener
 	
 	//#ifdef polish.hasPointerEvents
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Screen#handlePointerPressed(int, int)
+	 * @see de.enough.polish.ui.Screen#handlePointerPressed(int, int, ClippingRegion)
 	 */
-	protected boolean handlePointerDragged(int x, int y) {
-		Container newFrame = null;
+	protected boolean handlePointerDragged(int x, int y, ClippingRegion repaintRegion ) {
 		Container activeFrame = this.currentlyActiveContainer;
-		if ( activeFrame != null 
-				&& activeFrame.handlePointerDragged(x - activeFrame.relativeX, y - activeFrame.relativeY)) 
-		{ 
-			newFrame = activeFrame;
-		} else if ( this.container != activeFrame 
-				&& getFrame(x, y) == this.container
-				&& this.container.handlePointerDragged(x - this.container.relativeX, y - this.container.relativeY)) 
-		{
-			newFrame = this.container;
-		} else if ( this.topFrame != null && this.topFrame != activeFrame 
-				&& this.topFrame.handlePointerDragged(x - this.topFrame.relativeX, y - this.topFrame.relativeY) ) 
-		{
-			newFrame = this.topFrame;
-		} else if ( this.bottomFrame != null && this.bottomFrame != activeFrame
-				&& this.bottomFrame.handlePointerDragged(x - this.bottomFrame.relativeX, y - this.bottomFrame.relativeY) ) 
-		{
-			newFrame = this.bottomFrame;
-		} else if ( this.leftFrame != null && this.leftFrame != activeFrame 
-				&& this.leftFrame.handlePointerDragged(x - this.leftFrame.relativeX, y - this.leftFrame.relativeY) ) 
-		{
-			newFrame = this.leftFrame;
-		} else if ( this.rightFrame != null && this.rightFrame != activeFrame 
-				&& this.rightFrame.handlePointerDragged(x - this.rightFrame.relativeX, y - this.rightFrame.relativeY) ) 
-		{
-			newFrame = this.rightFrame;
+		if ( activeFrame != null ) {
+			return activeFrame.handlePointerDragged(x - activeFrame.relativeX, y - activeFrame.relativeY, repaintRegion);
 		}
-		if (!this.keepContentFocused && newFrame != null && newFrame != activeFrame ) {
-			setActiveFrame(newFrame);
-		}
-		return (newFrame != null);
+		return false;
 	}
 	//#endif
 	
