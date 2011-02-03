@@ -431,7 +431,7 @@ public class HorizontalChoiceView extends ContainerView {
 		if (setClip) {
 			g.clipRect(modifiedX, clipY, rightBorder - modifiedX, clipHeight );
 		}
-		super.paintContent(container, myItems, x + getScrollXOffset(), y, leftBorder, rightBorder, clipX, clipY, clipWidth, clipHeight, g);
+		super.paintContent(container, myItems, x, y, leftBorder, rightBorder, clipX, clipY, clipWidth, clipHeight, g);
 //		int itemX = modifiedX + this.xOffset;
 //		int focusedX = 0;
 //		int cHeight = this.contentHeight;
@@ -706,6 +706,7 @@ public class HorizontalChoiceView extends ContainerView {
 			this.pointerReleasedIndex = -1;
 			return false;
 		}
+		super.handlePointerReleased(x, y);	
 		boolean isMultiple = ((ChoiceGroup)this.parentContainer).getType() == ChoiceGroup.MULTIPLE;
 		if (x >= this.rightArrowStartX  && x <= this.rightArrowEndX ) {
 			if (isMultiple) {
@@ -779,10 +780,6 @@ public class HorizontalChoiceView extends ContainerView {
 			choiceGroup.setSelectedIndex( index, !item.isSelected );
 		}
 		this.parentContainer.notifyStateChanged();
-		int offset = getScrollXOffset();
-		if (offset + this.contentWidth < this.availableWidth) {
-			setScrollXOffset( this.availableWidth - this.contentWidth, true );
-		}
 		return true;
 	}
 	//#endif
