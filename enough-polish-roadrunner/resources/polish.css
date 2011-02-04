@@ -188,9 +188,11 @@ focused {
 }
 
 .mainMenuItem:hover {
-	//#if polish.midp2
-		text-effect: fade;
-	//#endif
+	font-color-animation {
+		on: focus;
+		range: fontColor..highlightedFontColor;
+		repeat: always;
+	}
 	background-color:bgColor;
 }
 
