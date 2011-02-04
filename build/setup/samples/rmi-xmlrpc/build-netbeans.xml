@@ -153,7 +153,7 @@
 					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
 				</variables>
 				<!-- obfuscator settings: always obfuscate -->
-				<obfuscator name="ProGuard" unless="polish.blackberry or dontobfuscate" />
+				<obfuscator name="ProGuard" unless="test or dontobfuscate" />
 				<!-- debug/log settings: only include debug setting when the test-property is true -->
 				<debug level="info" verbose="true" logTimestamp="true" if="test">
 					<filter level="debug" package="de.enough.polish.sample.rmi"/>

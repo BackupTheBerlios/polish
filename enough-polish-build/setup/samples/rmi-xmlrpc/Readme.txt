@@ -1,12 +1,12 @@
 ****************************************************
-*** RMI Sample Application
+*** XML RPC RMI Sample Application
 ****************************************************
 
-This application shows how easily you can call server side code with the Remote Method Invocation (RMI) framework of J2ME Polish.
+This application shows how easily you can call XML RPC server side code with the Remote Method Invocation (RMI) framework of J2ME Polish.
 
-Please build first the application by calling either the "j2mepolish", "emulator" or the "build-all" Ant target, 
-then create the server side code by calling "deploy-war", which will place a generated WAR file into ${webapps.home}.
+We call a sample XML RPC service called WordTracker, you will find more details here:
+http://www.wordtracker.com/docs/api/ch03s02.html
 
-Check out the build.xml script and the source code for details. You can find more informatin about the RMI framework on www.j2mepolish.org.
+Check out the build.xml script and the source code for details. You can find more information about the RMI framework on www.j2mepolish.org.
 
 Have fun!
