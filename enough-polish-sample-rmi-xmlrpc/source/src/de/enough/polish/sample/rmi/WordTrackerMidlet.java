@@ -110,8 +110,10 @@ public class WordTrackerMidlet extends MIDlet implements CommandListener {
 		this.display.setCurrent( this.form );
 	}
 
-
-
+	/*
+	 * (non-Javadoc)
+	 * @see javax.microedition.lcdui.CommandListener#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)
+	 */
 	public void commandAction(Command cmd, Displayable dis) {
 		if (cmd == this.cmdQuit ) {
 			notifyDestroyed();
@@ -120,7 +122,7 @@ public class WordTrackerMidlet extends MIDlet implements CommandListener {
 			String[] words = TextUtil.splitAndTrim(wordsStr, ',');
 			try
 			{
-				Hashtable table = this.server.get_exact_phrase_popularity("guest", words, WordTracker.CASE_DISTINCT, true, false, WordTracker.ADULT_EXCLUDE, 100, 10 );
+				Hashtable table = this.server.get_exact_phrase_popularity("guest", words, WordTracker.CASE_FOLDED, true, false, WordTracker.ADULT_EXCLUDE, 100, 10 );
 				Enumeration enumeration = table.keys();
 				while (enumeration.hasMoreElements()) {
 					String key = (String) enumeration.nextElement();
