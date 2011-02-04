@@ -282,8 +282,8 @@ This sample application shows how to use the browser technology of J2ME Polish.
             <parsable targetfile="$INSTALL_PATH/samples/menu/nbproject/project.properties" type="shell" /> 
         </pack>
         
-        <pack name="Logviewer Sample Application" required="no" preselected="yes">
-            <description>A sample application that is used to show log entries that have been previously stored in the recordstore.</description>
+        <pack name="Logviewer Sample Application" required="no" preselected="no">
+            <description>A sample application that is used to show log entries that have been previously stored in the recordstore using the 'rms' logger.</description>
             <file src="samples/logviewer" targetdir="$INSTALL_PATH/samples"/>
             <parsable targetfile="$INSTALL_PATH/samples/logviewer/build.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/logviewer/build-netbeans.xml" type="shell" /> 
