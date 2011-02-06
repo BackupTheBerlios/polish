@@ -181,12 +181,8 @@ public class KeyItem extends Item
 			g.setColor(0x000000);
 		}
 
-		// calculate x to display the key values centered
-		int width = rightBorder - leftBorder;
-		x = (x + (width / 2)) - this.stringWidth / 2;
-		
 		// draw the keys
-		g.drawString(getKeys(this.keyboard.isShift()), x, y, Item.LAYOUT_DEFAULT);
+		g.drawString(getKeys(this.keyboard.isShift()), x, y, Graphics.LEFT | Graphics.TOP);
 	}
 	
 	/**
