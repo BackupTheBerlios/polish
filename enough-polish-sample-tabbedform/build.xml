@@ -94,10 +94,9 @@
 				                   <variable name="polish.rmi.xmlrpc" value="true" />
 				                   <variable name="polish.usesScrollBar" value="true" />
 				                   <variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
-				                   <variable name="polish.MenuBar.useMiddleCommand" value="true" />
-				<variable name="polish.css.allowAllAttributes" value="true" />
-				                   <variable name="polish.TabbedForm.allowTabSelection" value="true" />			
 				<!-- 
+				                   <variable name="polish.MenuBar.useMiddleCommand" value="true" />
+				                   <variable name="polish.TabbedForm.allowTabSelection" value="true" />			
 				-->
 				<!--
 				<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
