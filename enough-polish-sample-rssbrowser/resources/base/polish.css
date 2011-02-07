@@ -501,7 +501,7 @@ info {
 keyboardView {
 	padding: 0;
 	
-	background-color: black;	
+	background-color: #fff;	
 		
 	layout: vcenter | hcenter;	
 }
@@ -535,131 +535,133 @@ keyboardViewSubmit:hover {}
 
 keyboardViewSubmit:pressed {}
 
-key extends keyDimension {
-	margin: 1%;
+//#if polish.TextField.useVirtualKeyboard && false
+	key extends keyDimension {
+		margin: 1%;
+		
+		border-color: #00aeef;
+		border-width: 1;
+		
+		font-color: #00aeef;
+		font-size: large;
+		
+		text-layout: center | vcenter;
+		layout: center | vcenter;
+	}
 	
-	border-color: #00aeef;
-	border-width: 1;
+	key:pressed {
+		border-color: #f26522;
+		font-color: #fff;
+		background-color: #f26522;
+	}
 	
-	font-color: #00aeef;
-	font-size: large;
+	key:hover {}
 	
-	text-layout: center | vcenter;
-	layout: center | vcenter;
-}
-
-key:pressed {
-	border-color: #f26522;
-	font-color: #fff;
-	background-color: #f26522;
-}
-
-key:hover {}
-
-keySpace extends keySpaceDimension {
-	margin: 1%;
+	keySpace extends keySpaceDimension {
+		margin: 1%;
+		
+		border-color: #00aeef;
+		border-width: 1;
+		
+		font-color: #00aeef;
+		font-size: large;
+		
+		layout: center | vcenter;
+	}
 	
-	border-color: #00aeef;
-	border-width: 1;
+	keySpace:pressed {
+		border-color: #f26522;
+		font-color: #fff;
+		background-color: #f26522;
+	}
 	
-	font-color: #00aeef;
-	font-size: large;
+	keySpace:hover{}
 	
-	layout: center | vcenter;
-}
-
-keySpace:pressed {
-	border-color: #f26522;
-	font-color: #fff;
-	background-color: #f26522;
-}
-
-keySpace:hover{}
-
-keyShift {
-	margin: 1%;
+	keyShift {
+		margin: 1%;
+		
+		border-color: #00aeef;
+		border-width: 1;
+		
+		font-color: black;
+		font-size: large;
+		
+		background-color: #00aeef; 
+		
+		layout: center | vcenter;
+	}
 	
-	border-color: #00aeef;
-	border-width: 1;
+	keyShift:pressed {
+		border-color: #f26522;
+		font-color: #fff;
+		background-color: #f26522;
+	}
 	
-	font-color: black;
-	font-size: large;
+	keyShift:hover {}
 	
-	background-color: #00aeef; 
+	keyMode {
+		margin: 1%;
+		
+		border-color: #00aeef;
+		border-width: 1;
+		
+		font-color: black;
+		font-size: large;
+		
+		background-color: #00aeef; 
+		
+		layout: center | vcenter;
+	}
 	
-	layout: center | vcenter;
-}
-
-keyShift:pressed {
-	border-color: #f26522;
-	font-color: #fff;
-	background-color: #f26522;
-}
-
-keyShift:hover {}
-
-keyMode {
-	margin: 1%;
+	keyMode:pressed {
+		border-color: #f26522;
+		font-color: #fff;
+		background-color: #f26522;
+	}
 	
-	border-color: #00aeef;
-	border-width: 1;
+	keyMode:hover {}
 	
-	font-color: black;
-	font-size: large;
+	keyDelete {
+		margin: 1%;
+		
+		border-color: #00aeef;
+		border-width: 1;
+		
+		font-color: black;
+		font-size: large;
+		
+		background-color: #00aeef; 
+		
+		layout: center | vcenter;
+	}
 	
-	background-color: #00aeef; 
+	keyDelete:pressed {
+		border-color: #f26522;
+		font-color: #fff;
+		background-color: #f26522;
+	}
 	
-	layout: center | vcenter;
-}
-
-keyMode:pressed {
-	border-color: #f26522;
-	font-color: #fff;
-	background-color: #f26522;
-}
-
-keyMode:hover {}
-
-keyDelete {
-	margin: 1%;
+	keyDelete:hover {}
 	
-	border-color: #00aeef;
-	border-width: 1;
+	keyClear {
+		margin: 1%;
+		
+		border-color: #00aeef;
+		border-width: 1;
+		
+		font-color: black;
+		font-size: large;
+		
+		background-color: #00aeef; 
+		
+		layout: center | vcenter;
+	}
 	
-	font-color: black;
-	font-size: large;
+	keyClear:pressed {
+		border-color: #f26522;
+		font-color: #fff;
+		background-color: #f26522;
+	}
 	
-	background-color: #00aeef; 
-	
-	layout: center | vcenter;
-}
-
-keyDelete:pressed {
-	border-color: #f26522;
-	font-color: #fff;
-	background-color: #f26522;
-}
-
-keyDelete:hover {}
-
-keyClear {
-	margin: 1%;
-	
-	border-color: #00aeef;
-	border-width: 1;
-	
-	font-color: black;
-	font-size: large;
-	
-	background-color: #00aeef; 
-	
-	layout: center | vcenter;
-}
-
-keyClear:pressed {
-	border-color: #f26522;
-	font-color: #fff;
-	background-color: #f26522;
-}
-
-keyClear:hover {}
+	keyClear:hover {}
+//#endif
