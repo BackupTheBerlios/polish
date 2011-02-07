@@ -279,7 +279,7 @@ implements CommandListener, ApplicationInitializer
 	 */
 	private void showAbout() {
 		//#style aboutAlert
-		Alert alert = new Alert("About", "Enough Software (c) 2010\nYou can use this application as a basis for your own apps.\nPowered by J2ME Polish.", null, null);
+		Alert alert = new Alert("About", "Enough Software (c) 2011\nYou can use this application as a basis for your own apps.\nPowered by J2ME Polish.", null, null);
 		alert.setTimeout(Alert.FOREVER);
 		try {
 			Image splashImage = Image.createImage("/splash.png");
