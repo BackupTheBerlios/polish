@@ -168,7 +168,30 @@ public class MeaFinalizer extends Finalizer{
         if(name == null || name.length() == 0) {
             name = "unknown";
         } else {
-        	name = escapeXml(name);        	
+        	name = escapeXml(name);
+        	/* Since microsoft windows does not allow the following characters "?", "*", ":", "/", "|", "\", """, "<" and ">"
+        	 * in their file names we have to parse these characters.
+        	 */
+        	int length = name.length();
+        	char[] charArray = name.toCharArray();
+        	for (int i = 0; i < length; i++) {
+        		switch (charArray[i]) {
+					case '?':
+					case '*':
+					case ':':
+					case '/':
+					case '\\':
+					case '|':
+					case '<':
+					case '>':
+					case '\"':
+						charArray[i] = '_';
+						break;
+					default:
+						break;
+				}
+        	}
+        	name = charArray.toString();
         }
         String version = env.getVariable("MIDlet-Version");
         if(version == null || version.length() == 0) {
