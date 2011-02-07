@@ -535,7 +535,7 @@ keyboardViewSubmit:hover {}
 
 keyboardViewSubmit:pressed {}
 
-//#if polish.TextField.useVirtualKeyboard && false
+//#if polish.TextField.useVirtualKeyboard
 	key extends keyDimension {
 		margin: 1%;
 		
