@@ -41,6 +41,7 @@ import javax.microedition.midlet.MIDletStateChangeException;
 import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.ScreenStateListener;
 import de.enough.polish.ui.TabbedForm;
+import de.enough.polish.ui.TabbedFormListener;
 import de.enough.polish.ui.UiAccess;
 import de.enough.polish.util.Locale;
 
@@ -56,7 +57,7 @@ import de.enough.polish.util.Locale;
  */
 public class TabbedFormDemo 
 extends MIDlet
-implements ScreenStateListener, CommandListener
+implements TabbedFormListener, CommandListener
 {
 
 	private Command exitCmd = new Command( Locale.get("cmd.exit"), Command.BACK, 2 );
@@ -130,7 +131,7 @@ implements ScreenStateListener, CommandListener
 		form.append( 2, field );
 		
 		form.addCommand( this.exitCmd );
-		form.setScreenStateListener( this );
+		form.setTabbedFormListener(this);
 		form.setCommandListener( this );
 		this.tabbedForm = form;
 		
@@ -165,8 +166,8 @@ implements ScreenStateListener, CommandListener
 			notifyDestroyed();			
 		} else if (cmd == this.backCmd) {
 			this.tabbedForm.setActiveTab( this.lastTabIndex - 1 );
+			//xxxnotifyTabChangeRequested(this.lastTabIndex, this.lastTabIndex -1 );
 			// manually call screenStateChanged, so that commands are updated accordingly:
-			screenStateChanged( this.tabbedForm );
 		} else if (cmd == this.playerCmd) {
 			try {
 				Image image = Image.createImage("/icon.png");
@@ -182,33 +183,7 @@ implements ScreenStateListener, CommandListener
 		}
 	}
 
-	public void screenStateChanged(Screen screen) {
-		if (screen == this.tabbedForm ) {
-			int tabIndex = this.tabbedForm.getActiveTab();
-			if (tabIndex != this.lastTabIndex ) {
-				//#debug
-				System.out.println("ScreenStateChanged: new tab=" + tabIndex );
-				if (tabIndex == 0) {
-					this.tabbedForm.removeCommand( this.backCmd );
-					this.tabbedForm.removeCommand( this.parentCmd );
-					this.tabbedForm.addCommand( this.exitCmd );					
-				} else if (tabIndex == 1 && this.lastTabIndex == 0){
-					this.tabbedForm.removeCommand( this.exitCmd );
-					this.tabbedForm.addCommand( this.backCmd );
-//					for (int i = 0; i < 20; i++) {
-//						this.tabbedForm.addCommand( new Command( getText(i), Command.SCREEN, i % 14 + 2) );								
-//					}
-					this.tabbedForm.addCommand( this.parentCmd );
-					UiAccess.addSubCommand( this.playerCmd , this.parentCmd, this.tabbedForm );
-					UiAccess.addSubCommand( this.adversaryCmd , this.parentCmd, this.tabbedForm );
-//					UiAccess.addSubCommand( new Command("hi1 and some longer text", Command.SCREEN, 5), this.parentCmd, this.tabbedForm );
-//					UiAccess.addSubCommand( new Command("hi2 and allaf", Command.SCREEN, 4), this.parentCmd, this.tabbedForm );
-//					UiAccess.addSubCommand( new Command("hi3 whoey! Yes", Command.SCREEN, 3), this.parentCmd, this.tabbedForm );
-				}
-				this.lastTabIndex = tabIndex;
-			}
-		}		
-	}
+
 
 	protected String getText(int i) {
 		int len  = (i * 2) % 7 + (i * 3) % 13;
@@ -223,6 +198,43 @@ implements ScreenStateListener, CommandListener
 		}
 		buffer.append( i );
 		return buffer.toString();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.TabbedFormListener#notifyTabChangeCompleted(int, int)
+	 */
+	public void notifyTabChangeCompleted(int oldTabIndex, int newTabIndex) {
+		// ignore
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.TabbedFormListener#notifyTabChangeRequested(int, int)
+	 */
+	public boolean notifyTabChangeRequested(int oldTabIndex, int newTabIndex) {
+		//#debug
+		System.out.println("notifyTabChangeRequested: new tab=" + newTabIndex );
+		if (newTabIndex == 0) {
+			this.tabbedForm.removeCommand( this.backCmd );
+			this.tabbedForm.removeCommand( this.parentCmd );
+			this.tabbedForm.addCommand( this.exitCmd );					
+		} else if (newTabIndex == 1 && this.lastTabIndex == 0){
+			this.tabbedForm.removeCommand( this.exitCmd );
+			this.tabbedForm.addCommand( this.backCmd );
+//						for (int i = 0; i < 20; i++) {
+//							this.tabbedForm.addCommand( new Command( getText(i), Command.SCREEN, i % 14 + 2) );								
+//						}
+			this.tabbedForm.addCommand( this.parentCmd );
+			UiAccess.addSubCommand( this.playerCmd , this.parentCmd, this.tabbedForm );
+			UiAccess.addSubCommand( this.adversaryCmd , this.parentCmd, this.tabbedForm );
+			System.out.println("adding subcommands...");
+//						UiAccess.addSubCommand( new Command("hi1 and some longer text", Command.SCREEN, 5), this.parentCmd, this.tabbedForm );
+//						UiAccess.addSubCommand( new Command("hi2 and allaf", Command.SCREEN, 4), this.parentCmd, this.tabbedForm );
+//						UiAccess.addSubCommand( new Command("hi3 whoey! Yes", Command.SCREEN, 3), this.parentCmd, this.tabbedForm );
+		}
+		this.lastTabIndex = newTabIndex;
+		return true;
 	}
 
 }
