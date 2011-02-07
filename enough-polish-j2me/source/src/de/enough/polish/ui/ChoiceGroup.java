@@ -1672,6 +1672,12 @@ implements Choice
 		boolean handled = super.handlePointerPressed(relX, relY); // focuses the appropriate item, might change this.focusedIndex...
 		relY -= this.contentY;
 		relX -= this.contentX;
+		//#ifdef tmp.supportViewType
+			ContainerView contView = this.containerView;
+			if (contView != null) {
+				relX -= contView.getScrollXOffset();
+			}
+		//#endif
 		boolean triggerKey = (    
 				(handled || isInItemArea(relX, relY, this.focusedItem))
 				//#if polish.css.view-type
@@ -1721,8 +1727,15 @@ implements Choice
 						handled = this.containerView.handlePointerReleased(relX, relY - this.yOffset);
 					}
 				//#endif
+				int x = relX;
+				//#ifdef tmp.supportViewType
+					ContainerView contView = this.containerView;
+					if (contView != null) {
+						x -= contView.getScrollXOffset();
+					}
+				//#endif
 //				System.out.println("isInItemArea(relX - this.contentX, relY - this.yOffset - this.contentY, this.focusedItem)=" + isInItemArea(relX - this.contentX, relY - this.yOffset - this.contentY, this.focusedItem));
-				if (!handled && isInItemArea(relX - this.contentX, relY - this.contentY, this.focusedItem)) {
+				if (!handled && isInItemArea(x - this.contentX, relY - this.contentY, this.focusedItem)) {
 					handled = handleKeyReleased( 0, Canvas.FIRE );
 				}
 			}
