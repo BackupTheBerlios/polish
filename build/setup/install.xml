@@ -40,7 +40,7 @@
 		<!-- 
         <res id="Installer.image" src="../setup/tinyturtle.jpg" />
 		 -->
-        <res id="Installer.image" src="../setup/j2mepolish-logo.png" />
+        <res id="Installer.image" src="../setup/enough_retro.png" />
         <res id="eng.xml" src="../setup/eng.xml" />
     </resources>
     
