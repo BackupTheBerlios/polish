@@ -301,7 +301,7 @@ implements Runnable, ResourceLoader
 		String protocol = url.substring(0, pos);
 		ProtocolHandler handler = (ProtocolHandler) this.protocolHandlersByProtocol.get(protocol);
 		if (handler == null) {
-			throw new IOException("protocol handler not found");
+			throw new IOException("protocol handler [" + protocol + "] not found for " + url);
 		}
 		return handler;
 	}
