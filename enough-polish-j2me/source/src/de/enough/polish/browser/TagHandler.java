@@ -215,4 +215,39 @@ public abstract class TagHandler
 	{
 		return (Command[]) this.commandsByKey.get(tag);
 	}
+	
+	
+	/**
+	 * Trims the given text.
+	 * @param text the input text
+	 * @return the given text without spaces and newline-breaks at the beginning and/or end
+	 */
+	protected String trim( String text) {
+		if (text == null || text.length() == 0) {
+			return text;
+		}
+		int length = text.length();
+		StringBuffer buffer = new StringBuffer(length);
+		for (int i=length; --i >= 0; ) {
+			char c = text.charAt(i);
+			if (c <= ' ' || c == '\t' || c == '\n') {
+				length--;
+			} else {
+				break;
+			}
+		}
+		boolean isAtBeginning = true;
+		for (int i=0; i<length; i++) {
+			char c = text.charAt(i);
+			if (isAtBeginning) {
+				if (c <= ' ' || c == '\t' || c == '\n') {
+					continue;
+				} else {
+					isAtBeginning = false;
+				}
+			}
+			buffer.append(c);
+		}
+		return buffer.toString();
+	}
 }

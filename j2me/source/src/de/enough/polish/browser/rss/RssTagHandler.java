@@ -199,7 +199,7 @@ public class RssTagHandler
 				if (TAG_TITLE.equals(tagName)) {
 					if (opening) {
 						parser.next();
-						this.title = parser.getText();
+						this.title = trim( parser.getText() );
 					}
 
 					return true;
@@ -208,7 +208,7 @@ public class RssTagHandler
 				if (TAG_LINK.equals(tagName)) {
 					if (opening) {
 						parser.next();
-						this.url = parser.getText();
+						this.url = trim( parser.getText() );
 					}
 
 					return true;
@@ -217,7 +217,7 @@ public class RssTagHandler
 				if (TAG_DESCRIPTION.equals(tagName)) {
 					if (opening) {
 						parser.next();
-						this.description = parser.getText();
+						this.description = trim( parser.getText() );
 						// Description can be encoded HTML. Decode it.
 						this.description = decodeHtml(this.description);
 						if (this.includeDescriptions) {
@@ -235,7 +235,7 @@ public class RssTagHandler
 			} else if (TAG_TITLE.equals(tagName)) {
 				if (opening) {
 					parser.next();
-					String text = parser.getText();
+					String text = trim( parser.getText() );
 					this.browser.getScreen().setTitle(text);
 				}
 				return true;
