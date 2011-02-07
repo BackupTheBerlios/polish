@@ -4271,7 +4271,9 @@ implements UiElement, Animatable
 		if (commandStyle != null) {
 			child.setStyle( commandStyle );
 		}
-		parent.addSubCommand(child);
+		if (!parent.addSubCommand(child)) {
+			return; // this command has been added already
+		}
 		//#if tmp.menuFullScreen
 			//#debug
 			System.out.println("Adding subcommand " + child.getLabel() );
