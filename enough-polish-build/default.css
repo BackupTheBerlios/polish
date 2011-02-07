@@ -245,11 +245,12 @@ scrollbar {
 
 //#if polish.TextField.useVirtualKeyboard 
 	keyDimension {
-		min-height: 15%;
-		min-width: 15%;
+		min-height: 12%;
+		min-width: 12%;
 	}
 	
 	keySpaceDimension extends keyDimension {
+		inherit: false;
 		min-width: 45%;
 	}
 	
@@ -263,7 +264,6 @@ scrollbar {
 		font-color: black;
 		font-size: large;
 		
-		text-layout: center | vcenter;
 		layout: center | vcenter;
 		focused-style: keyFocused;
 	}
@@ -278,11 +278,11 @@ scrollbar {
 		font-color: black;
 		font-size: large;
 		
-		text-layout: center | vcenter;
 		layout: center | vcenter;
 	}
 	
 	keySpace extends keySpaceDimension {
+		inherit: false;
 		margin: 1%;
 		
 		border-color: black;
@@ -295,6 +295,7 @@ scrollbar {
 	}
 	
 	.keySpaceFocused {
+		inherit: false;
 		margin: 1%;
 		
 		border-color: black;
@@ -305,17 +306,29 @@ scrollbar {
 		layout: center | vcenter;
 	}
 	
-	keyShift extends key {}
+	keyShift extends key {
+		inherit: false;
+	}
 	
-	keyDelete extends key {}
+	keyDelete extends key {
+		inherit: false;
+	}
 	
-	keyClear extends key {}
+	keyClear extends key {
+		inherit: false;
+	}
 	
-	keyAbc extends key {}
+	keyAbc extends key {
+		inherit: false;
+	}
 	
-	key123 extends key {}
+	key123 extends key {
+		inherit: false;
+	}
 	
-	keyBlank extends keyDimension{}
+	keyBlank extends keyDimension{
+		inherit: false;
+	}
 	
 	keyrow {
 		view-type: horizontal;
@@ -357,7 +370,6 @@ scrollbar {
 		min-width: 15%;
 		border-color: black;
 		border-width: 1;
-		text-layout: center | vcenter;
 		layout: vcenter;
 		focused-style: keyboardViewSubmitFocused;
 	}
@@ -368,13 +380,11 @@ scrollbar {
 		min-width: 15%;
 		border-color: black;
 		border-width: 1;
-		text-layout: center | vcenter;
 		layout: vcenter;
 	}
 	
 	keyboardViewDisplay {
 		margin: 1%;
-		text-layout: left | vcenter;
 		layout: expand | vcenter;
 		border-color: black;
 		border-width: 1;
@@ -385,7 +395,6 @@ scrollbar {
 	
 	keyboardViewDisplayFocused{
 		margin: 1%;
-		text-layout: left | vcenter;
 		layout: expand | vcenter;
 		border-color: black;
 		border-width: 1;
