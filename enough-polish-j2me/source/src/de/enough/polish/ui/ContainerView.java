@@ -1750,6 +1750,7 @@ extends ItemView
 	 * @see de.enough.polish.ui.ItemView#handlePointerReleased(int, int)
 	 */
 	public boolean handlePointerReleased(int x, int y) {
+		this.isPointerPressedHandled = false; // this is for cases where the press event is not forwarded to the view
 		if ((this.contentWidth > this.availableWidth) && startHorizontalScroll(x , y )) {
 			return true;
 		}

@@ -912,6 +912,17 @@ implements Displayable
     	//#     }
     	//# }
     //#endif
+	
+	/**
+	 * Repaints the specified region
+	 * @param region the clipping region that contains the x, y, width and height area of the area that should be repainted.
+	 */
+	public void repaint( ClippingRegion region ) {
+    	Display display = Display.getInstance();
+    	if (display != null) {
+    		display.requestRepaint(region.getX(), region.getY(), region.getWidth(), region.getHeight());
+    	}
+	}
 
     /**
      * Requests a repaint for the entire <code>Canvas</code>. The

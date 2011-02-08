@@ -4740,7 +4740,7 @@ implements UiElement, Animatable
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#pointerPressed(int, int)
 	 */
-	public void pointerPressed(int x, int y) {
+	public boolean _pointerPressed(int x, int y) {
 		//#if polish.Screen.callSuperEvents
 			super.pointerPressed(x, y);
 		//#endif
@@ -4786,7 +4786,7 @@ implements UiElement, Animatable
 						handleKeyPressed( 0, gameAction );
 					//#endif
 					repaint();
-					return;
+					return true;
 				}
 			//#endif
 			//#ifdef tmp.menuFullScreen
@@ -4803,12 +4803,12 @@ implements UiElement, Animatable
 								//openMenu( false ); close the menu in pointerReleased so that the user can scroll within large commands menu
 								repaint();
 							}
-							return;
+							return true;
 						} else if (x <= this.menuLeftCommandX){
 							// the "SELECT" command has been clicked:
 							this.menuContainer.handleKeyPressed(0, Canvas.FIRE);
 							repaint();
-							return;
+							return true;
 						}
 					}
 				//#endif
@@ -4837,11 +4837,13 @@ implements UiElement, Animatable
 					this.isRepaintRequested = false;
 					notifyScreenStateChanged();
 					repaint();
+					processed = true;
 				}
 			//#else
 				if (processed || this.isRepaintRequested) {
 					this.isRepaintRequested = false;
 					repaint();
+					processed = true;
 				}
 			//#endif
 			
@@ -4851,9 +4853,11 @@ implements UiElement, Animatable
 					System.out.println("PointerPressed at " + x + ", " + y + " not processed.");					
 				}
 			//#endif
+			return processed;
 		} catch (Exception e) {
 			//#debug error
 			System.out.println("PointerPressed at " + x + "," + y + " resulted in exception" + e );
+			return false;
 		} finally {
 			this.ignoreRepaintRequests = false;
 			this.isScreenChangeDirtyFlag = false;
@@ -4875,38 +4879,48 @@ implements UiElement, Animatable
 			//#if polish.Screen.callSuperEvents
 				super.pointerDragged(x, y);
 			//#endif
+			ClippingRegion repaintRegion = this.userEventRepaintRegion;
+			repaintRegion.reset();
 			//#if tmp.useScrollBar
-				if (this.scrollBar.handlePointerDragged( x - this.scrollBar.relativeX, y - this.scrollBar.relativeY )) {
-					repaint();
+				if (this.scrollBar.handlePointerDragged( x - this.scrollBar.relativeX, y - this.scrollBar.relativeY, repaintRegion )) {
+					repaint(repaintRegion);
 					return true;
 				}			
 			//#endif
 			//#ifdef tmp.menuFullScreen
 				//#ifdef tmp.useExternalMenuBar
-					if (this.menuBar.handlePointerDragged(x - this.menuBar.relativeX, y - this.menuBar.relativeY)) {
-						repaint();
+					if (this.menuBar.handlePointerDragged(x - this.menuBar.relativeX, y - this.menuBar.relativeY, repaintRegion)) {
+						repaint(repaintRegion);
 						return true;
 					}
 				//#else
 					// check if one of the command buttons has been pressed:
 					if (this.menuOpened && y <= this.screenHeight) {
 						// a menu-item could have been selected:
-						if (this.menuContainer.handlePointerDragged( x - this.menuContainer.relativeX, y - this.menuContainer.relativeY )) {
+						if (this.menuContainer.handlePointerDragged( x - this.menuContainer.relativeX, y - this.menuContainer.relativeY, repaintRegion )) {
 							//openMenu( false ); close the menu in pointerReleased so that the user can scroll within large commands menu
-							repaint();
+							repaint(repaintRegion);
 						}
 						return true;
 					}
 				//#endif
 			//#endif
+			//#if tmp.usingTitle
+				if (this.title != null) {
+					if (this.title.handlePointerDragged(x - this.title.relativeX, y - this.title.relativeY, repaintRegion)) {
+						repaint(repaintRegion);
+						return true;
+					}
+				}
+			//#endif
+					
 			if (handlePointerDragged(x,y)) {
 				repaint();
 			}
-			ClippingRegion repaintRegion = this.userEventRepaintRegion;
 			repaintRegion.reset();
 			handlePointerDragged(x, y, repaintRegion );
 			if (repaintRegion.containsRegion()) {
-				repaint( repaintRegion.getX(), repaintRegion.getY(), repaintRegion.getWidth(), repaintRegion.getHeight() );
+				repaint( repaintRegion );
 				return true;
 			}
 		} finally {
