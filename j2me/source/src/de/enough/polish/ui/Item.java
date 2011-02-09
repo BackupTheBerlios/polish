@@ -4842,6 +4842,9 @@ public abstract class Item implements UiElement, Animatable
 		this.isFocused = false;
 		if (originalStyle != null) {
 			setStyle( originalStyle );
+			if (this.label != null) {
+				this.label.defocus((Style) originalStyle.getObjectProperty("label-style"));
+			}
 		} else {
 			this.background = null;
 			this.border = null;
