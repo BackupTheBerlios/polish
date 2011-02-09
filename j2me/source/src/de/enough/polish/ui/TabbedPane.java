@@ -1624,8 +1624,13 @@ implements ScreenInitializerListener, CycleListener
 			scr.backgroundHeight += tabHeight;
 		}
 		//#if tmp.useExternalMenuBar
-			MenuBar currentMenuBar = scr.getMenuBar();
-			currentMenuBar.relativeY = scr.screenHeight + tabHeight;
+			//#if polish.css.title-menu
+				if (!scr.hasTitleMenu)
+			//#endif
+			{
+				MenuBar currentMenuBar = scr.getMenuBar();
+				currentMenuBar.relativeY = scr.screenHeight + tabHeight;
+			}
 		//#endif
 		//System.out.println("notifyScreenInitialized: contY=" + scr.contentY + ", contH=" + scr.contentHeight);
 	}

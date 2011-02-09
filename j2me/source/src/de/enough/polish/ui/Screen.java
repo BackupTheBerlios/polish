@@ -945,11 +945,7 @@ implements UiElement, Animatable
 			// if (!this.separateMenubar) {
 
 			//#if polish.MenuBar.Position:defined
-				if(this.menuBar != null 
-					//#if tmp.useTitleMenu
-					&& this.hasTitleMenu
-					//#endif
-					)
+				if(this.menuBar != null)
 				{
 					if (this.excludeMenuBarForBackground) {
 						this.backgroundHeight -= this.menuBar.getSpaceBottom( this.screenWidth, this.fullScreenHeight );
@@ -1061,10 +1057,16 @@ implements UiElement, Animatable
 		//#endif
 		//#if tmp.useExternalMenuBar
 			int space = this.menuBar.getSpaceBottom( this.screenWidth, this.fullScreenHeight );
-			if (space != previousMenuBarHeight) {
+			if (space != previousMenuBarHeight
+				//#if tmp.useTitleMenu
+					&& (!this.hasTitleMenu)
+				//#endif
+			){
 				height += (previousMenuBarHeight - space);
 				this.contentHeight = height;
-				cont.getItemHeight(originalWidth, originalWidth, height);
+				if (cont != null) {
+					cont.getItemHeight(originalWidth, originalWidth, height);
+				}
 			}
 		//#endif
 
@@ -1138,6 +1140,7 @@ implements UiElement, Animatable
 		if (this.screenInitializerListener != null) {
 			this.screenInitializerListener.notifyScreenInitialized(this);
 		}
+		
 	}
 	
 	/**
