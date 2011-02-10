@@ -39,17 +39,25 @@ import de.enough.polish.util.ArrayList;
  *    regardless whether the form is scrolled.
  * </p>
  *
- * <p>Copyright (c) Enough Software 2005 - 2009</p>
- * <pre>
- * history
- *        14-Apr-2005 - rob creation
- * </pre>
+ * <p>Copyright (c) Enough Software 2005 - 2011</p>
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class FramedForm 
 extends Form
 implements CycleListener
 {
+	
+	/** the frame positioned at the top */
+	public static final int FRAME_TOP = Graphics.TOP;
+	/** the frame positioned at the bottom */
+	public static final int FRAME_BOTTOM = Graphics.BOTTOM;
+	/** the frame positioned at the left */
+	public static final int FRAME_LEFT = Graphics.LEFT;
+	/** the frame positioned at the right */
+	public static final int FRAME_RIGHT = Graphics.RIGHT;
+	/** the frame positioned at the center (the scrollable view) */
+	public static final int FRAME_CENTER = -1;
+	
 	
 	protected Container leftFrame;
 	protected Container rightFrame;
@@ -281,7 +289,12 @@ implements CycleListener
 	/**
 	 * Removes all items from the specified frame.
 	 * 
-	 * @param frameOrientation either Graphics.TOP, Graphics.BOTTOM, Graphics.LEFT or Graphics.RIGHT. Use -1 for the content frame.
+	 * @param frameOrientation either FRAME_TOP, FRAME_BOTTOM, FRAME_LEFT, FRAME_RIGHT or FRAME_CENTER for the content frame.
+	 * @see #FRAME_TOP
+	 * @see #FRAME_BOTTOM
+	 * @see #FRAME_LEFT
+	 * @see #FRAME_RIGHT
+	 * @see #FRAME_CENTER
 	 */
 	public void deleteAll( int frameOrientation ) {
 		Container frame = getFrame( frameOrientation );
@@ -302,9 +315,14 @@ implements CycleListener
 	//#if polish.LibraryBuild
 	/**
 	 * Updates an existing item in the specified frame
-	 * @param frameOrientation either Graphics.TOP, Graphics.BOTTOM, Graphics.LEFT or Graphics.RIGHT
+	 * @param frameOrientation either FRAME_TOP, FRAME_BOTTOM, FRAME_LEFT, FRAME_RIGHT or FRAME_CENTER for the content frame.
 	 * @param itemNumber the index of the previous item
 	 * @param item the new item
+	 * @see #FRAME_TOP
+	 * @see #FRAME_BOTTOM
+	 * @see #FRAME_LEFT
+	 * @see #FRAME_RIGHT
+	 * @see #FRAME_CENTER
 	 */
 	public void set( int frameOrientation, int itemNumber, javax.microedition.lcdui.Item item ) {
 		// just a convenience method, in reality the append( Item item ) method is called
@@ -324,10 +342,15 @@ implements CycleListener
 
 	//#if polish.LibraryBuild
 	/**
-	 * Adds the given item to the specifid frame.
+	 * Adds the given item to the specified frame.
 	 * 
-	 * @param frameOrientation either Graphics.TOP, Graphics.BOTTOM, Graphics.LEFT or Graphics.RIGHT
+	 * @param frameOrientation either FRAME_TOP, FRAME_BOTTOM, FRAME_LEFT, FRAME_RIGHT or FRAME_CENTER for the content frame.
 	 * @param item the item
+	 * @see #FRAME_TOP
+	 * @see #FRAME_BOTTOM
+	 * @see #FRAME_LEFT
+	 * @see #FRAME_RIGHT
+	 * @see #FRAME_CENTER
 	 */
 	public void append( int frameOrientation, javax.microedition.lcdui.Item item ) {
 		// just a convenience method, in reality the addItem( Item item, int frameOrientation ) method is called
@@ -351,10 +374,15 @@ implements CycleListener
 
 
 	/**
-	 * Adds the given item to the specifid frame.
+	 * Adds the given item to the specified frame.
 	 * 
-	 * @param frameOrientation either Graphics.TOP, Graphics.BOTTOM, Graphics.LEFT or Graphics.RIGHT
+	 * @param frameOrientation either FRAME_TOP, FRAME_BOTTOM, FRAME_LEFT, FRAME_RIGHT or FRAME_CENTER for the content frame.
 	 * @param item the item
+	 * @see #FRAME_TOP
+	 * @see #FRAME_BOTTOM
+	 * @see #FRAME_LEFT
+	 * @see #FRAME_RIGHT
+	 * @see #FRAME_CENTER
 	 */
 	public void append( int frameOrientation, Item item ) {
 		append( frameOrientation, item, null );
@@ -363,9 +391,14 @@ implements CycleListener
 	
 	/**
 	 * Updates an existing item in the specified frame
-	 * @param frameOrientation either Graphics.TOP, Graphics.BOTTOM, Graphics.LEFT or Graphics.RIGHT
+	 * @param frameOrientation either FRAME_TOP, FRAME_BOTTOM, FRAME_LEFT, FRAME_RIGHT or FRAME_CENTER for the content frame.
 	 * @param itemNum the index of the previous item
 	 * @param item the new item
+	 * @see #FRAME_TOP
+	 * @see #FRAME_BOTTOM
+	 * @see #FRAME_LEFT
+	 * @see #FRAME_RIGHT
+	 * @see #FRAME_CENTER
 	 */
 	public void set( int frameOrientation, int itemNum, Item item ) {
 		Container frame = getFrame( frameOrientation );
@@ -375,12 +408,17 @@ implements CycleListener
 	}
 	
 	/**
-	 * Removes the given item from the specifid frame.
+	 * Removes the given item from the specified frame.
 	 * The <code>itemNum</code> parameter must be
 	 * within the range <code>[0..size()-1]</code>, inclusive.
 	 * 
-	 * @param frameOrientation either Graphics.TOP, Graphics.BOTTOM, Graphics.LEFT or Graphics.RIGHT
+	 * @param frameOrientation either FRAME_TOP, FRAME_BOTTOM, FRAME_LEFT, FRAME_RIGHT or FRAME_CENTER for the content frame.
 	 * @param itemNum the index of the item
+	 * @see #FRAME_TOP
+	 * @see #FRAME_BOTTOM
+	 * @see #FRAME_LEFT
+	 * @see #FRAME_RIGHT
+	 * @see #FRAME_CENTER
 	 */
 	public void delete( int frameOrientation, int itemNum ) {
 		Container frame = getFrame( frameOrientation );
@@ -397,8 +435,13 @@ implements CycleListener
 	/**
 	 * Retrieves the size of the specified frame.
 	 * 
-	 * @param frameOrientation either Graphics.TOP, Graphics.BOTTOM, Graphics.LEFT or Graphics.RIGHT
+	 * @param frameOrientation either FRAME_TOP, FRAME_BOTTOM, FRAME_LEFT, FRAME_RIGHT or FRAME_CENTER for the content frame.
 	 * @return the size of the frame, -1 when the frame does not exist 
+	 * @see #FRAME_TOP
+	 * @see #FRAME_BOTTOM
+	 * @see #FRAME_LEFT
+	 * @see #FRAME_RIGHT
+	 * @see #FRAME_CENTER
 	 */
 	public int size( int frameOrientation ) {
 		Container frame = getFrame( frameOrientation );
@@ -412,8 +455,13 @@ implements CycleListener
 	/**
 	 * Deletes a complete frame.
 	 * 
-	 * @param frameOrientation either Graphics.TOP, Graphics.BOTTOM, Graphics.LEFT or Graphics.RIGHT 
+	 * @param frameOrientation either FRAME_TOP, FRAME_BOTTOM, FRAME_LEFT, FRAME_RIGHT or FRAME_CENTER for the content frame.
 	 * @return true when the frame could be deleted
+	 * @see #FRAME_TOP
+	 * @see #FRAME_BOTTOM
+	 * @see #FRAME_LEFT
+	 * @see #FRAME_RIGHT
+	 * @see #FRAME_CENTER
 	 */
 	public boolean deleteFrame(int frameOrientation) {
 		Container frame;
@@ -448,11 +496,16 @@ implements CycleListener
 	}
 
 	/**
-	 * Adds the given item to the specifid frame.
+	 * Adds the given item to the specified frame.
 	 * 
-	 * @param frameOrientation either Graphics.TOP, Graphics.BOTTOM, Graphics.LEFT or Graphics.RIGHT
+	 * @param frameOrientation either FRAME_TOP, FRAME_BOTTOM, FRAME_LEFT, FRAME_RIGHT or FRAME_CENTER for the content frame.
 	 * @param item the item
 	 * @param itemStyle the style for that item, is ignored when null
+	 * @see #FRAME_TOP
+	 * @see #FRAME_BOTTOM
+	 * @see #FRAME_LEFT
+	 * @see #FRAME_RIGHT
+	 * @see #FRAME_CENTER
 	 */
 	public void append( int frameOrientation, Item item, Style itemStyle ) {
 		if (itemStyle != null) {
