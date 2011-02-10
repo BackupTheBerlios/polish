@@ -343,7 +343,7 @@ public class ArgumentHelper {
 		{
 			alternativePath = getTools(env) + "/dx";
 		}
-		return resolveValidPath(alternativePath, alternativePath);
+		return resolveValidPath(path, alternativePath);
 	}
 	
 	/**
