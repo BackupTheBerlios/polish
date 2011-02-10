@@ -65,6 +65,8 @@
 	  	<property name="test" value="false" />
 		<property name="dir.work" value="build/real" />
 		<property name="deploy-url" value="" />
+		<property name="nutiteq.home" value="nutiteq_maps_lib_src_1_1_0" />
+		<property name="lib.dir" value="${nutiteq.home}/ivy-libs" />
 	</target>
 	 
 	<!-- In this target the J2ME Polish task is used.             -->
@@ -86,7 +88,7 @@
 				icon="/nutiteq.png" 
 				jarUrl="${polish.jarName}" 
 				version="1.0.0"
-				copyright="Nutiteq 2010"
+				copyright="Nutiteq 2011"
 			/>
 			<!-- selection of supported devices -->
             <deviceRequirements if="config.active:defined and (test or enableCompilerMode)" >		
@@ -128,6 +130,7 @@
 
 				<resources dir="resources" defaultexcludes="yes">
 					<localization locales="en_US" />
+					<root dir="${nutiteq.home}/resources" includeSubDirs="true" includeBaseDir="false" />
 				</resources>
 
 				<obfuscator name="ProGuard" unless="test || polish.blackberry" />

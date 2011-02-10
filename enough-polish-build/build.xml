@@ -975,7 +975,7 @@
 			>
 			<fileset dir="setup/samples/thirdparty-nutiteq-openstreetmap" excludes="**/macosx/**,**/CVS" />
 			<fileset dir="../enough-polish-sample-nutiteq" includes="resources/**/*.*" excludes="**/CVS"/>
-			<fileset dir="../enough-polish-sample-nutiteq" includes="nutiteq_maps_library_0.10.0_src/**/*.*" excludes="**/CVS"/>
+			<fileset dir="../enough-polish-sample-nutiteq" includes="nutiteq_maps_lib_src_1_1_0/**/*.*" excludes="**/CVS"/>
 		</copy>
 		
 	</target>

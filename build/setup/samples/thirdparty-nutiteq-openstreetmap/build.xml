@@ -27,7 +27,7 @@
 		<property name="emulate" value="false" />
 		<property name="dir.work" value="build/real" />
 		<property name="deploy-url" value="" />
-		<property name="nutiteq.home" value="nutiteq_maps_library_0.10.0_src" />
+		<property name="nutiteq.home" value="nutiteq_maps_lib_src_1_1_0" />
 		<property name="lib.dir" value="${nutiteq.home}/ivy-libs" />
 		<property name="dir.work" value="build/real" />
 	</target>
@@ -42,7 +42,7 @@
 			icon="/nutiteq.png" 
 			jarUrl="${polish.jarName}" 
 			version="1.0.0"
-			copyright="Nutiteq 2010"
+			copyright="Nutiteq 2011"
 		/>
 		<deviceRequirements if="test">
 			<requirement name="Identifier" value="${device}" />
@@ -75,6 +75,7 @@
 
 			<resources dir="resources" defaultexcludes="yes">
 				<localization locales="en_US" />
+				<root dir="${nutiteq.home}/resources" includeSubDirs="true" includeBaseDir="false" />
 			</resources>
 
 			<obfuscator name="ProGuard" unless="emulate || polish.blackberry" />
