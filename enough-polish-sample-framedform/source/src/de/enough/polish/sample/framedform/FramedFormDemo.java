@@ -25,15 +25,12 @@
  */
 package de.enough.polish.sample.framedform;
 
-import java.util.Calendar;
-
 import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.ChoiceGroup;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
-import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Item;
 import javax.microedition.lcdui.ItemCommandListener;
 import javax.microedition.lcdui.ItemStateListener;
@@ -42,9 +39,13 @@ import javax.microedition.lcdui.TextField;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
+import de.enough.polish.calendar.CalendarItem;
 import de.enough.polish.ui.FramedForm;
 import de.enough.polish.ui.UiAccess;
 import de.enough.polish.util.IntHashMap;
+import de.enough.polish.util.Locale;
+import de.enough.polish.util.TimePeriod;
+import de.enough.polish.util.TimePoint;
 
 /**
  * <p>Provides an example how to use the FramedForm</p>
@@ -85,6 +86,7 @@ implements ItemStateListener, CommandListener, ItemCommandListener
 	private Command cmdExit = new Command("Exit", Command.EXIT, 2 );
 	private Command cmdNext = new Command("Next", Command.OK, 1 );
 	private Command cmdShowAlert = new Command("Alert", Command.ITEM, 3 );
+	private Command cmdSelectDay = new Command( "Select", Command.SCREEN, 3 );
 	
 	private static final int DEMO_RIGHT = 0;
 	private static final int DEMO_BOTTOM = 1;
@@ -155,7 +157,7 @@ implements ItemStateListener, CommandListener, ItemCommandListener
 		this.framedForm = form;
 		this.display.setCurrent( form );
 		this.gradientItem = new GradientItem( 20 );
-		this.framedForm.append( Graphics.RIGHT,  this.gradientItem );
+		this.framedForm.append( FramedForm.FRAME_RIGHT,  this.gradientItem );
 		this.topColorGroup = createColorChoiceGroup("top: ");
 		this.topColorGroup.setSelectedIndex(WHITE, true);
 		this.framedForm.append( this.topColorGroup );
@@ -176,10 +178,10 @@ implements ItemStateListener, CommandListener, ItemCommandListener
 		this.framedForm.deleteAll();
 		this.topColorGroup = createColorChoiceGroup("top: ");
 		this.topColorGroup.setSelectedIndex(WHITE, true);
-		this.framedForm.append( Graphics.TOP, this.topColorGroup );
+		this.framedForm.append( FramedForm.FRAME_TOP, this.topColorGroup );
 		this.bottomColorGroup = createColorChoiceGroup("bottom: ");
 		this.bottomColorGroup.setSelectedIndex(BLUE, true);
-		this.framedForm.append( Graphics.BOTTOM, this.bottomColorGroup );
+		this.framedForm.append( FramedForm.FRAME_BOTTOM, this.bottomColorGroup );
 		StringItem item = null;
 		int numberOfAppendedItems = 20;
 		for (int i=0; i<numberOfAppendedItems; i++) {
@@ -202,13 +204,13 @@ implements ItemStateListener, CommandListener, ItemCommandListener
 		this.gradientItem = new GradientItem( 20 );
 		//#style note
 		this.framedForm.append("Enter color definition in RGB hex for setting the top color (e.g. ff0000 for red).");
-		this.framedForm.append( Graphics.RIGHT, this.gradientItem );
+		this.framedForm.append( FramedForm.FRAME_RIGHT, this.gradientItem );
 		//#style colorInput
 		TextField field = new TextField(null, "ffffff", 6, TextField.ANY );
 		UiAccess.setItemStateListener(field, this);
-		this.framedForm.append( Graphics.BOTTOM, field );
+		this.framedForm.append( FramedForm.FRAME_BOTTOM, field );
 		// select the bottom frame (and therefore the input field):
-		this.framedForm.setActiveFrame(Graphics.BOTTOM);
+		this.framedForm.setActiveFrame(FramedForm.FRAME_BOTTOM);
 	}
 	
 	private void nextDemoDefaultCommand()
@@ -227,57 +229,42 @@ implements ItemStateListener, CommandListener, ItemCommandListener
 			item = new StringItem( null, "press-" + i);
 			item.setDefaultCommand( this.cmdShowAlert );
 			item.setItemCommandListener( this );
-			this.framedForm.append( Graphics.TOP, item );
+			this.framedForm.append( FramedForm.FRAME_TOP, item );
 		}
 		for (int i=6; i>0; i--) {
 			//#style itemWithDefaultCommand
 			item = new StringItem( null, "press+" + i);
 			item.setDefaultCommand( this.cmdShowAlert );
 			item.setItemCommandListener( this );
-			this.framedForm.append( Graphics.BOTTOM, item );
+			this.framedForm.append( FramedForm.FRAME_BOTTOM, item );
 		}
 		//#style horizontalFrame
-		this.framedForm.setFrameStyle( Graphics.TOP );
+		this.framedForm.setFrameStyle( FramedForm.FRAME_TOP );
 		//#style horizontalFrame
-		this.framedForm.setFrameStyle( Graphics.BOTTOM );
-		this.framedForm.setActiveFrame(Graphics.TOP);
+		this.framedForm.setFrameStyle( FramedForm.FRAME_BOTTOM );
+		this.framedForm.setActiveFrame(FramedForm.FRAME_TOP);
 	}
 
 	
 	private void nextDemoCalendar() {
-		String[] MONTHS = new String[]{ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
-		int[] DAYS_IN_MONTH_OF_NONLEAPYEAR = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-		String[] DAYS = new String[]{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
 		this.framedForm.deleteAll();
-		//#style calendarFramedForm
-		UiAccess.setStyle( this.framedForm );
-		Calendar calendar = Calendar.getInstance();
-		String month = MONTHS[ calendar.get( Calendar.MONTH ) ];
-		this.framedForm.setTitle( month );
-		for (int i = 0; i < DAYS.length; i++)
-		{
-			String day = DAYS[i];
-			//#style calendarDayHeader
-			StringItem dayItem = new StringItem(null, day);
-			this.framedForm.append( Graphics.TOP, dayItem );
+		TimePoint startRange = TimePoint.parseRfc3339("2011-01-02");
+		TimePoint endRange = TimePoint.now();
+		endRange.addDay(1);
+		TimePeriod validRange = new TimePeriod(startRange, true, endRange, true); 
+		TimePoint startDay = TimePoint.now();
+		//#style itemDatePicker?
+		CalendarItem calendarItem = new CalendarItem(startDay);
+		calendarItem.setDayDefaultCommand(this.cmdSelectDay);
+		calendarItem.setItemCommandListener(this);
+		calendarItem.setMonthNameSelectable(true);
+		calendarItem.setCalendarInactiveDaysAreInteractive(false);
+		calendarItem.setValidPeriod(validRange);
+		if (startDay != null) {
+			calendarItem.go(startDay);
 		}
-		int dayOfMonthIndex = calendar.get(Calendar.DAY_OF_MONTH) - 1;
-		int numberOfDays = DAYS_IN_MONTH_OF_NONLEAPYEAR[calendar.get( Calendar.MONTH )];
-		Command command = new Command("Add Date", Command.ITEM, 2 );
-		for (int i = 0; i < numberOfDays; i++)
-		{
-			
-			//#style calendarDayEntry
-			StringItem item = new StringItem( null, Integer.toString( i + 1));
-			if (i == dayOfMonthIndex) {
-				//#style currentCalendarDayEntry
-				UiAccess.setStyle( item );
-			}
-			item.setDefaultCommand(command);
-			this.framedForm.append(item);
-			
-		}
-		
+		this.framedForm.append( calendarItem );
+		this.framedForm.setActiveFrame( FramedForm.FRAME_CENTER );
 	}
 
 	private ChoiceGroup createColorChoiceGroup(String label) {
@@ -358,6 +345,11 @@ implements ItemStateListener, CommandListener, ItemCommandListener
 			//#style popupAlert
 			Alert alert = new Alert("Showing a popup alert!");
 			this.display.setCurrent( alert );
+		} else if (cmd == this.cmdSelectDay) {
+			CalendarItem item = (CalendarItem) (Object) this.framedForm.get(0);
+			//#style popupAlert
+			Alert alert = new Alert("Selected day: " + Locale.formatDate( item.getSelectedTimePoint(), "MMMMM/dd/yyyy"));
+			this.display.setCurrent( alert );			
 		} else if (cmd == this.cmdExit) {
 			notifyDestroyed();
 		}
@@ -372,8 +364,7 @@ implements ItemStateListener, CommandListener, ItemCommandListener
 			//#style popupAlert
 			Alert alert = new Alert("Showing a popup alert for " + item);
 			this.display.setCurrent( alert );			
-		}
-		
+		}		
 	}
 
 }

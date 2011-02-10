@@ -33,11 +33,7 @@ borders {
 
 scrollbar {
 	background-color: #7272f4;
-	//#if polish.hasPointerEvents
-		scrollbar-slider-width: 12;
-	//#else
-		scrollbar-slider-width: 4;
-	//#endif 
+	scrollbar-slider-width: 4;
 }
 
 rightframe {
@@ -95,6 +91,7 @@ rightframe {
 
 .colorChoiceItem:hover {
 	font-style: bold;
+	font-color: #a00;
 }
 
 .meaninglessSelectableItem {
@@ -141,6 +138,22 @@ label {
 	font-color: fontColor;
 }
 
+/************************ TextField Demo ********************************************************************/
+
+
+.note {
+	font-size: small;
+	font-style: italic;
+}
+
+.colorInput {
+	background-color: silver;
+	layout: expand;
+}
+
+.colorInput:hover {
+	background-color: white;
+}
 /************************ Default Command Demo ********************************************************************/
 
 .horizontalFrame {
@@ -165,56 +178,180 @@ label {
 
 /************************* Calendar Demo **************************************************************************/
 
-.note {
-	font-style: italic;
-	font-color: #333;
+.itemDatePicker {
+	padding: 0px;
+	layout: horizontal-center | vertical-center | expand;
+	label-style: calendarMonth;
+	calendar-day-style: calendarDay;
+	calendar-day-inactive-style: inactiveDay;
+	calendar-day-invalid-style: invalidDay;
+	table-line-stroke: invisible;
+	table-row-height: 11%;
+}
+
+.itemDatePicker:hover {
+}
+
+.calendarMonth {
+	padding: 3px;
+	margin-left: 3px;
+	margin-right: 3px;
+	margin-bottom: 1px;
+	font-color: #777;
+	font-style: bold;
+	font-size: large;
+	before: url( arrow-left.png );
+	after: url( arrow-right.png );
+	layout: expand | center | newline-after;
+	background {
+		type: round-rect;
+		arc: imageheight( arrow-left.png ) + 6;
+		color: #ddd;
+	}
+}
+
+.calendarMonth:hover {
+	background-color: #222;
+	font-color: #fff;
+}
+
+.calendarWeekday {
+	margin: 1px;
+	padding: 0px;
+	layout: center | bottom;
+	font-style: bold;
 	font-size: small;
+	font-color: #543707;
+	min-item-width: 14.2%;
 }
 
-.colorInput {
-	margin: 1;
-	background-color: silver;
-	layout: expand;
-	textfield-direct-input: true;
+.calendarDay extends .calendarWeekday {
+	background-color: #fff;
+	font-color: #00d;
+	layout: horizontal-center | vertical-center;
 }
 
-.colorInput:hover {
-	margin: 0;
-	border-color: black;
-	background-color: white;
+.calendarDay:hover {
+	padding: -3px;
+	border {
+		color: #f90;
+		width: 3;
+	}
+}
+
+.calendarCurrentday extends .calendarDay {
+	background {
+		type: vertical-gradient;
+		top-color: #38719b;
+		bottom-color: #00447c;
+	}
+	font-color: #fff;
+}
+
+.calendarCurrentday:hover {
+	padding: -3px;
+	border {
+		color: #f90;
+		width: 3;
+	}
+}
+
+.inactiveDay extends .calendarWeekday {
+	font-color: #fff;
+	background-color: #fff;
+	layout: horizontal-center | vertical-center;
+}
+
+.invalidDay extends calendarDay {
+	font-color: #666;
 }
 
 
-.calendarFramedForm extends gradientFramedForm {
-	columns: 7;
-	columns-width: equal;
-	topframe-style: calendarFramedFormHeader;
+
+
+/************************  Commands Menu  ****************************************************************/
+
+menu {
+	padding: 0px;
+	padding-bottom: 3px;
+	width: 60%;
+	font-size: medium;
+	view-type: slide-up;
+	background {
+		type: round-tab;
+		color: #301e3a;
+	}
+	expand-items: true;
+	focused-style-first: menuItemFocusedFirst;
 }
 
-.calendarFramedFormHeader {
-	columns: 7;
-	columns-width: equal;
+
+/**
+  * The menuItem style is a predefined style
+  * for the actual commands in a fullscreen-menu.
+  * When the menuItem style is not defined,
+  * the menu style will be used instead. 
+  */
+menuItem {
+	padding: 3;
+	font {
+		color: white;
+		size: medium;
+		style: bold;
+	}
+	layout: left;
+	border {
+		type: bottom;
+		color: #999;
+	}
 }
 
-.calendarDayHeader {
-	font-style: italic;
-	font-size: small;
-	layout: center | expand;
+/**
+  * This is a custom style for focused menu items.  
+  */
+.menuItem:hover {
+	background-color: #6dd0f7;
+	font-color: black;
+	layout: left | horizontal-expand;
 }
 
-.calendarDayEntry {
-	font-size: small;
-	min-height: 40;
-	layout: center | expand | vertical-center;
-	background-color: silver;
-	border-color: #333;
+/**
+  * The focused style for the first menu item uses a round-tab background:  
+  */
+.menuItemFocusedFirst extends menuItem {
+	font-color: black;
+	layout: left | horizontal-expand;
+	background {
+		type: round-tab;
+		color: #6dd0f7;
+	}
 }
 
-.calendarDayEntry:hover {
-	border-color: #f66;
+
+
+menubar {
+	background {
+		type: split;
+		top-color: #301e3a;
+		bottom-color: #150020;
+	}
 }
 
-.currentCalendarDayEntry extends calendarDayEntry {
-	background-color: yellow;
-	border-color: #3f3;
+leftcommand {
+	padding: 2;
+	font-color: white;
+	text-effect: split;
+	text-split-bottom-color: #ddd;
+}
+
+leftcommand:pressed {
+	font-color: yellow;
+}
+
+rightcommand extends leftcommand {
+	layout: right;
+}
+
+rightcommand:pressed {
+	font-color: yellow;
 }
