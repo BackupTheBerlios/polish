@@ -442,6 +442,17 @@ public class CalendarItem extends TableItem
 		}
 	}
 	
+	//#if polish.LibraryBuild	
+	/**
+	 * Sets the default command for days.
+	 * This can be used for using the calendar item for an easy day picker.
+	 * @param cmd the command that is triggered when a day is selected
+	 */
+	public void setDayDefaultCommand( javax.microedition.lcdui.Command cmd ) {
+		// ignore
+	}
+	//#endif
+	
 	/**
 	 * Sets the default command for days.
 	 * This can be used for using the calendar item for an easy day picker.
