@@ -25,6 +25,7 @@
 
 package de.enough.polish.ui.gaugeviews;
 
+import de.enough.polish.ui.ClippingRegion;
 import de.enough.polish.ui.Gauge;
 import de.enough.polish.ui.Image;
 import de.enough.polish.ui.Item;
@@ -573,13 +574,14 @@ public class ClockInstrumentGaugeView extends ItemView {
 
     /**
      * (non-javadoc)
-     * @see de.enough.polish.ui.ItemView#handlePointerDragged(int, int) 
+     * @see de.enough.polish.ui.ItemView#handlePointerDragged(int, int, ClippingRegion) 
      */
-    public boolean handlePointerDragged(int x, int y)
+    public boolean handlePointerDragged(int x, int y, ClippingRegion repaintRegion)
     {
-        if ( gauge.isInteractive())
+        if ( this.gauge.isInteractive())
         {
             valueBasedOnPointerPosition(x, y);
+            addFullRepaintRegion(this.gauge, repaintRegion);
             return true;
         }
         return false;
@@ -591,7 +593,7 @@ public class ClockInstrumentGaugeView extends ItemView {
      */
     public boolean handlePointerPressed(int x, int y)
     {
-        if ( gauge.isInteractive())
+        if ( this.gauge.isInteractive())
         {
             valueBasedOnPointerPosition(x, y);
             return true;
