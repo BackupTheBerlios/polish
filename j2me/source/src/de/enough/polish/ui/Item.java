@@ -3467,6 +3467,9 @@ public abstract class Item implements UiElement, Animatable
 					this.useSingleRow = false;
 					cHeight += labelHeight;
 					this.contentY += labelHeight;
+					if (this.itemWidth < labelWidth) {
+						setItemWidth(labelWidth);
+					}
 				}
 			}
 			if (this.useSingleRow && labelWidth > 0) {
