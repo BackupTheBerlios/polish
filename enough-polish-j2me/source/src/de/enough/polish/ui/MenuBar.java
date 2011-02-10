@@ -39,14 +39,13 @@ import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.DeviceControl;
 import de.enough.polish.util.HashMap;
 import de.enough.polish.util.IdentityArrayList;
-import de.enough.polish.util.Locale;
 
 //#if polish.android
-import de.enough.polish.android.midlet.MidletBridge;
+	import de.enough.polish.android.midlet.MidletBridge;
 //#endif
 
 //#if polish.api.windows
-import de.enough.polish.windows.Keyboard;
+	import de.enough.polish.windows.Keyboard;
 //#endif
 
 /**
@@ -72,7 +71,7 @@ public class MenuBar extends Item {
 		//#elif polish.build.classes.fullscreen:defined
 			//#define tmp.fullScreen
 		//#endif
-		//#if polish.MenuBar.useExtendedMenuBar || polish.classes.MenuBar:defined
+		//#if tmp.fullScreen && (polish.MenuBar.useExtendedMenuBar || polish.classes.MenuBar:defined)
 			//#if polish.css.title-menu
 				//#define tmp.useTitleMenu
 			//#endif
