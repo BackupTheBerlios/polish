@@ -1632,7 +1632,8 @@ public class TableItem
 				}
 			}
 		}
-		System.out.println("DID NOT FIND SELECTABLE CELL");
+		//#debug warn
+		System.out.println("did not find selectable cell in " + this);
 	}
 	
 	/**
