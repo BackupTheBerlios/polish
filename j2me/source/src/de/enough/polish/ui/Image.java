@@ -1,6 +1,6 @@
-//#condition polish.midp || polish.usePolishGui
+//#condition polish.usePolishGui
 /*
- * Copyright (c) 2004-2005 Robert Virkus / Enough Software
+ * Copyright (c) 2010-2011 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
