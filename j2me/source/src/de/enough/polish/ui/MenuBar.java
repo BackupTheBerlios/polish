@@ -61,6 +61,24 @@ import de.enough.polish.windows.Keyboard;
  */
 public class MenuBar extends Item {
 	
+
+	//#if polish.useFullScreen
+		//#if polish.Screen.base:defined
+			//#define tmp.fullScreen
+		//#elif (polish.midp2 && !tmp.needsNokiaUiForSystemAlerts) && (!polish.useMenuFullScreen || tmp.hasCommandKeyEvents)
+			//#define tmp.fullScreen
+		//#elif polish.classes.fullscreen:defined
+			//#define tmp.fullScreen
+		//#elif polish.build.classes.fullscreen:defined
+			//#define tmp.fullScreen
+		//#endif
+		//#if polish.MenuBar.useExtendedMenuBar || polish.classes.MenuBar:defined
+			//#if polish.css.title-menu
+				//#define tmp.useTitleMenu
+			//#endif
+		//#endif
+	//#endif
+	
 	//#if polish.handleEvents || polish.css.animations
 		//#define tmp.handleEvents
 	//#endif
@@ -733,7 +751,7 @@ public class MenuBar extends Item {
 			//#if tmp.useInvisibleMenuBar && (polish.JavaPlatform <= BlackBerry/4.3)
 				cmdCont.relativeY = this.itemHeight - this.screenHeight + this.topY;
 			//#else
-				//#if polish.MenuBar.useExtendedMenuBar && polish.css.title-menu
+				//#if tmp.useTitleMenu
 					if (this.screen.hasTitleMenu) {
 						cmdCont.relativeY = this.itemHeight + 1;
 						scrollHeight--; // adjust for +1 in relativeY
@@ -1076,7 +1094,7 @@ public class MenuBar extends Item {
 			int clipHeight = g.getClipHeight();
 			int scrHeight = this.screenHeight - this.itemHeight;
 			int maxClipHeight = Math.max(this.relativeY - this.topY, scrHeight - this.topY);
-			//#if polish.MenuBar.useExtendedMenuBar && polish.css.title-menu
+			//#if tmp.useTitleMenu
 				if (this.screen.hasTitleMenu) {
 					maxClipHeight = scrHeight;
 				}
