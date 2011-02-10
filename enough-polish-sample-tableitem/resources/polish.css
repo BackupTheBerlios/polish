@@ -246,8 +246,15 @@ leftcommand {
 	text-split-bottom-color: #ddd;
 }
 
+leftcommand:pressed {
+	font-color: yellow;
+}
+
 rightcommand extends leftcommand {
 	layout: right;
 }
 
+rightcommand:pressed {
+	font-color: yellow;
+}
 
