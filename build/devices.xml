@@ -4,7 +4,7 @@
 	You can add or change the existing specifications and
 	use the changed settings in the code.
 
-    Copyright (c) 2004 - 2008 Robert Virkus / Enough Software
+    Copyright (c) 2004 - 2011 Robert Virkus / Enough Software
 
     This file is part of J2ME Polish.
 
@@ -513,6 +513,33 @@ These namespaces/schemas will be used soon.
     <groups>android</groups>
     <capability name="JavaPlatform" value="Android/2.1" />
     <capability name="JavaConfiguration" value="Android/2.1" />
+  </device>
+  
+  <device supportsPolishGui="true">
+    <identifier>Generic/android2.2</identifier>
+    <features>isVirtual</features>
+    <description>An Android compatible device with the 2.2 firmware.</description>
+    <groups>android</groups>
+    <capability name="JavaPlatform" value="Android/2.2" />
+    <capability name="JavaConfiguration" value="Android/2.2" />
+  </device>
+  
+  <device supportsPolishGui="true">
+    <identifier>Generic/android2.3</identifier>
+    <features>isVirtual</features>
+    <description>An Android compatible device with the 2.3 firmware.</description>
+    <groups>android</groups>
+    <capability name="JavaPlatform" value="Android/2.3" />
+    <capability name="JavaConfiguration" value="Android/2.3" />
+  </device>
+
+  <device supportsPolishGui="true">
+    <identifier>Generic/android3.0</identifier>
+    <features>isVirtual</features>
+    <description>An Android compatible device with the 3.0 firmware.</description>
+    <groups>android</groups>
+    <capability name="JavaPlatform" value="Android/3.0" />
+    <capability name="JavaConfiguration" value="Android/3.0" />
   </device>
   
    <device supportsPolishGui="true">
