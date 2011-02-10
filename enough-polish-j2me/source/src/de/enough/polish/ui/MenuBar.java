@@ -52,11 +52,7 @@ import de.enough.polish.windows.Keyboard;
 /**
  * <p>Provides a more powerful alternative to the build-in menu bar of the Screen-class.</p>
  *
- * <p>Copyright (c) Enough Software 2005 - 2009</p>
- * <pre>
- * history
- *        24-Jan-2005 - rob creation
- * </pre>
+ * <p>Copyright (c) Enough Software 2005 - 2011</p>
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class MenuBar extends Item {
