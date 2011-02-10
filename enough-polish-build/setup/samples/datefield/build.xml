@@ -81,12 +81,12 @@
 		    <!-- Have a look at the <jad>-section for setting specialised attributes.
 		         You can also define localized attributes in the resources/messages.txt files -->
 			<info
-				name="Chart"
+				name="DateField"
 				version="1.0.0"
-				description="A demonstration of the J2ME Polish ChartItem."
+				description="A demonstration of the J2ME Polish DateField."
 				vendorName="Enough Software"
 				infoUrl="http://www.j2mepolish.org"
-				jarName="${polish.vendor}-${polish.name}-${polish.locale}-chartitem.jar" 
+				jarName="${polish.vendor}-${polish.name}-${polish.locale}-datefield.jar" 
 				jarUrl="${deploy-url}${polish.jarName}"
 				copyright="Copyright 2010 Enough Software. All rights reserved."
 			/>
