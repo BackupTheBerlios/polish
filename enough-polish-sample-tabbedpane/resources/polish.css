@@ -60,6 +60,13 @@ backgrounds {
 		mask: commandBackBgMask;
 		background: commandBgGradient;
 	}
+
+	commandBackBgPressed {
+		type: mask;
+		mask-color: red;
+		mask: commandBackBgMask;
+		background: commandBgPressedGradient;
+	}
 	
 	commandBackBgMask {
 		type: horizontal;
@@ -89,6 +96,14 @@ backgrounds {
 		background: commandBgGradient;
 	}
 	
+	commandBgPressed {
+		type: mask;
+		mask-color: red;
+		mask: commandBgMask;
+		background: commandBgPressedGradient;
+	}
+	
+	
 	commandBgMask {
 		type: round-rect;
 		arc: 4;
@@ -100,6 +115,13 @@ backgrounds {
 		top-color: #fdfeff;
 		bottom-color: #9e8e81;
 	}
+	
+	commandBgPressedGradient {
+		type: vertical-gradient;
+		top-color: #cdcecf;
+		bottom-color: #0e0e01;
+	}
+	
 		
 	menuItemBg {
 		type: mask;
@@ -151,10 +173,19 @@ leftcommand {
 	layout: left | vertical-center;
 }
 
+leftcommand:pressed {
+	background: commandBackBgPressed;
+}
+
 rightcommand extends leftcommand {
 	layout: right | vertical-center;
 	background: commandBg;
 }
+
+rightcommand:pressed {
+	background: commandBgPressed;
+}
+
 
 title {
 	max-width: 56%;
@@ -199,11 +230,13 @@ title {
 
 .tabbedPane {
 	title-menu: true;
+	tabbedpane-tabbar-position: bottom;
 }
 
 .tabbedPaneIcons {
-	view-type: horizontal;
+	view-type: horizontal-left;
 	horizontalview-distribution: equal;
+	horizontalview-roundtrip: true;
 	background {
 		type: vertical-gradient;
 		top-color: #f6f6f6;
@@ -390,8 +423,7 @@ scrollbar {
 menu {
 	margin-left: 2px;
 	margin-right: 2px;
-	min-width: 75%;
-	max-width: 75%;
+	width: 75%;
 	padding: 2px;
 	background-color: #ddd;
 	border {

@@ -148,10 +148,6 @@
 			<!-- You can set localized variables in the resources/messages.txt files as well.  -->
 			<variables includeAntProperties="true" >
 				<variable name="polish.usePopupItem" value="true" />
-				<variable name="polish.Browser.UserAgent" value="J2ME-Polish 2.0" />
-				<variable name="polish.Browser.MaxRedirects" value="5" />
-				<variable name="polish.Browser.Gzip" value="true" />
-				<variable name="polish.Browser.PaintDownloadIndicator" value="true" />
 				<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
 				<variable name="polish.useScrollBar" value="true" />
 				<!-- override default settings for BB and Android: -->
