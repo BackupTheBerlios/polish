@@ -251,17 +251,11 @@ public class TableItem
 		this.lineStroke = lineStroke;
 		this.lineColor = lineColor;
 	}
-	
-	
 
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Item#getAbsoluteX()
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.FakeContainerCustomItem#initContent(int, int, int)
 	 */
-	public int getAbsoluteX()
-	{
-		return super.getAbsoluteX() + this.xOffset;
-	}
-
 	protected void initContent(int firstLineWidth, int availWidth, int availHeight)
 	{
 		if (availWidth == 0) {
