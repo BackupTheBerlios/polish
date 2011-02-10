@@ -39,13 +39,14 @@ import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.DeviceControl;
 import de.enough.polish.util.HashMap;
 import de.enough.polish.util.IdentityArrayList;
+import de.enough.polish.util.Locale;
 
 //#if polish.android
 	import de.enough.polish.android.midlet.MidletBridge;
 //#endif
 
 //#if polish.api.windows
-	import de.enough.polish.windows.Keyboard;
+import de.enough.polish.windows.Keyboard;
 //#endif
 
 /**
@@ -1030,11 +1031,11 @@ public class MenuBar extends Item {
         public String getMenuSelectText(){
             String selectText =
             //#ifdef polish.i18n.useDynamicTranslations
-                    //#= Locale.get( "polish.command.select" );
+                    Locale.get( "polish.command.select" );
             //#elifdef polish.command.select:defined
                     //#= "${polish.command.select}";
             //#else
-                   SELECT_CMD_TXT;
+                   //# SELECT_CMD_TXT;
             //#endif
              return selectText;
         }
