@@ -262,15 +262,15 @@ public class TitleMenuBar extends MenuBar{
 
 	//#ifdef polish.hasPointerEvents
 	/* non-Javadoc
-	 * @see MenuBar#handleKeyPressed(int,int)
+	 * @see MenuBar#handleKeyPressed(int,int, ClippingRegion)
 	 */
-	protected boolean handlePointerDragged(int relX, int relY) {
+	protected boolean handlePointerDragged(int relX, int relY, ClippingRegion repaintRegion) {
 		Item title = this.titleItem;
 		boolean handled = false;
 		if (!this.isOpened && title.appearanceMode != PLAIN) {
-			handled = title.handlePointerDragged(relX - title.relativeX, relY - title.relativeY);
+			handled = title.handlePointerDragged(relX - title.relativeX, relY - title.relativeY, repaintRegion);
 		}
-		return handled || super.handlePointerDragged(relX, relY);
+		return handled || super.handlePointerDragged(relX, relY, repaintRegion);
 	}
 	//#endif
 

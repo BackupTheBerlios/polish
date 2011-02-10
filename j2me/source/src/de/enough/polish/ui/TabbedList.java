@@ -253,11 +253,12 @@ public class TabbedList extends Screen {
 	
 	//#ifdef polish.hasPointerEvents
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Screen#handlePointerReleased(int, int)
+	 * @see de.enough.polish.ui.Screen#handlePointerReleased(int, int, ClippingRegion)
 	 */
-	protected boolean handlePointerDragged(int x, int y) {
-		return this.tabTitles.handlePointerDragged(x-this.tabTitles.relativeX, y-this.tabTitles.relativeY) 
-				|| super.handlePointerReleased(x, y);
+	protected boolean handlePointerDragged(int x, int y, ClippingRegion repaintRegion) {
+		Container cont = this.tabTitles;
+		return cont.handlePointerDragged(x-cont.relativeX, y-cont.relativeY, repaintRegion) 
+				|| super.handlePointerDragged(x, y, repaintRegion);
 	}
 	//#endif
 

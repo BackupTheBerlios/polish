@@ -4163,8 +4163,11 @@ public class TextField extends StringItem
 	//#endif
 	
 	//#if polish.hasPointerEvents && polish.javaplatform >= Android/1.5
-	protected boolean handlePointerDragged(int relX, int relY) {
-		return super.handlePointerDragged(relX, relY) 
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#handlePointerDragged(int, int, ClippingRegion)
+	 */
+	protected boolean handlePointerDragged(int relX, int relY, ClippingRegion repaintRegion) {
+		return super.handlePointerDragged(relX, relY, repaintRegion) 
 		|| (((System.currentTimeMillis() - this.androidLastPointerPressedTime) < 500) && isInItemArea(relX, relY));
 	}
 	//#endif

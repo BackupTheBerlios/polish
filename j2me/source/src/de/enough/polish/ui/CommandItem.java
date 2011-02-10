@@ -515,16 +515,16 @@ public class CommandItem extends IconItem {
 
 	//#ifdef polish.hasPointerEvents
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Item#handlePointerDragged(int, int)
+	 * @see de.enough.polish.ui.Item#handlePointerDragged(int, int, ClippingRegion)
 	 */
-	protected boolean handlePointerDragged(int x, int y) {
+	protected boolean handlePointerDragged(int x, int y, ClippingRegion repaintRegion) {
 		//#debug
 		System.out.println("handlePointerDragged( " + x + ", " + y + ") for " + this);
 		boolean handled = false;
 		if (this.isOpen) {
-			handled = this.children.handlePointerDragged(x - this.children.relativeX, y - this.children.relativeY );
+			handled = this.children.handlePointerDragged(x - this.children.relativeX, y - this.children.relativeY, repaintRegion );
 		}
-		return handled || super.handlePointerDragged(x, y);
+		return handled || super.handlePointerDragged(x, y, repaintRegion);
 	}
 	//#endif
 

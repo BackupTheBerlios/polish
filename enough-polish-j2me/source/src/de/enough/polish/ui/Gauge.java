@@ -1162,14 +1162,14 @@ implements ImageConsumer
 	
 	//#ifdef polish.hasPointerEvents
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Item#handlePointerDragged(int, int)
+	 * @see de.enough.polish.ui.Item#handlePointerDragged(int, int, ClippingRegion)
 	 */
-	protected boolean handlePointerDragged(int x, int y) {
+	protected boolean handlePointerDragged(int x, int y, ClippingRegion repaintRegion ) {
 		if (this.isIndefinite || !this.isInteractive || !isInContentArea(x, y)) {
-			return super.handlePointerDragged(x, y);
+			return super.handlePointerDragged(x, y, repaintRegion);
 		}
 		//#if polish.css.view-type
-			if (this.view != null && this.view.handlePointerDragged(x, y)) {
+			if (this.view != null && this.view.handlePointerDragged(x, y, repaintRegion)) {
 				return true;
 			}
 		//#endif
@@ -1183,7 +1183,8 @@ implements ImageConsumer
 		if (val != this.value) {
 			setValue( val );
 			notifyStateChanged();
-		}
+			addRepaintArea(repaintRegion);
+		}		
 		return true;
 	}
 	//#endif

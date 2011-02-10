@@ -720,22 +720,47 @@ public class MenuBar extends Item {
 	protected void init(int firstLineWidth, int availWidth, int availHeight) {
 		super.init(firstLineWidth, availWidth, availHeight);
 		if (this.isOpened) {
-			int containerHeight = this.commandsContainer.getItemHeight( firstLineWidth, firstLineWidth, availHeight - this.itemHeight);
-			int commandsContainerY = this.screenHeight - this.itemHeight - containerHeight - 1;
+			Container cmdCont = this.commandsContainer;
+			int cmdContHeight = cmdCont.getItemHeight( firstLineWidth, firstLineWidth, availHeight - this.itemHeight);
+			int cmdContY = this.screenHeight - this.itemHeight - cmdContHeight - 1;
 			int titleHeight = this.screen.getTitleHeight(); // + this.screen.subTitleHeight + this.screen.infoHeight;
-			if ( commandsContainerY < titleHeight) {
-				containerHeight -= titleHeight - commandsContainerY;
-				commandsContainerY = titleHeight;
+			if ( cmdContY < titleHeight) {
+				cmdContHeight -= titleHeight - cmdContY;
+				cmdContY = titleHeight;
 			}
 			int scrollHeight = this.screenHeight - titleHeight - this.itemHeight;
-			this.commandsContainer.setScrollHeight( scrollHeight );
+			cmdCont.setScrollHeight( scrollHeight );
 			//#if tmp.useInvisibleMenuBar && (polish.JavaPlatform <= BlackBerry/4.3)
-				this.commandsContainer.relativeY = this.itemHeight - this.screenHeight + this.topY;
+				cmdCont.relativeY = this.itemHeight - this.screenHeight + this.topY;
 			//#else
-				this.commandsContainer.relativeY = - containerHeight;
+				//#if polish.css.title-menu
+					if (this.screen.hasTitleMenu) {
+						cmdCont.relativeY = this.itemHeight + 1;
+						scrollHeight--; // adjust for +1 in relativeY
+						if (cmdCont.isLayoutVerticalExpand()) {
+							cmdCont.setItemHeight(scrollHeight);
+						} else if (cmdCont.isLayoutVerticalCenter()) {
+							cmdCont.relativeY += (scrollHeight - cmdContHeight) / 2; 
+						} else if (cmdCont.isLayoutBottom()) {
+							cmdCont.relativeY += (scrollHeight - cmdContHeight);
+						}
+						if (cmdCont.isLayoutCenter()) {
+							cmdCont.relativeX = (availWidth - cmdCont.itemWidth) / 2;
+						} else if (cmdCont.isLayoutRight()) {
+							cmdCont.relativeX = (availWidth - cmdCont.itemWidth);
+						} else {
+							cmdCont.relativeX = 0;
+						}
+						
+					} else 
+				//#endif
+				{
+					cmdCont.relativeY = - cmdContHeight;
+				}
 			//#endif
-			this.canScrollDownwards = (this.commandsContainer.yOffset + containerHeight > scrollHeight) 
-				&& (this.commandsContainer.focusedIndex != this.commandsList.size() - 1 );
+
+			this.canScrollDownwards = (cmdCont.yOffset + cmdContHeight > scrollHeight) 
+				&& (cmdCont.focusedIndex != this.commandsList.size() - 1 );
 			this.paintScrollIndicator = this.canScrollUpwards || this.canScrollDownwards;
 		}
 	}
@@ -1051,6 +1076,11 @@ public class MenuBar extends Item {
 			int clipHeight = g.getClipHeight();
 			int scrHeight = this.screenHeight - this.itemHeight;
 			int maxClipHeight = Math.max(this.relativeY - this.topY, scrHeight - this.topY);
+			//#if polish.css.title-menu
+				if (this.screen.hasTitleMenu) {
+					maxClipHeight = scrHeight;
+				}
+			//#endif
 			//#if polish.ScreenOrientationCanChange
 	        	if (this.isOrientationVertical) {
 		        	g.setClip(0, this.topY, this.screen.screenWidth, scrHeight - this.topY - this.itemHeight );
@@ -1784,7 +1814,10 @@ public class MenuBar extends Item {
 	//#endif
 	
 	//#ifdef polish.hasPointerEvents
-	protected boolean handlePointerDragged(int relX, int relY) {
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#handlePointerDragged(int, int, ClippingRegion)
+	 */
+	protected boolean handlePointerDragged(int relX, int relY, ClippingRegion repaintRegion) {
 		// check if one of the command buttons has been pressed:
 		//#debug
 		System.out.println("MenuBar: handlePointerDragged( relX=" + relX + ", relY=" + relY + " ),  screenHeight=" + this.screenHeight);
@@ -1795,7 +1828,7 @@ public class MenuBar extends Item {
 //				// the menu is painted at the lower right corner:
 //				x -= this.screen.screenWidth - this.commandsContainer.itemWidth;
 //			//#endif
-			this.commandsContainer.handlePointerDragged( x, y );
+			this.commandsContainer.handlePointerDragged( x, y, repaintRegion );
 			return true;
 		}
 		//#if polish.css.pressed-style
@@ -1816,10 +1849,13 @@ public class MenuBar extends Item {
 				//#endif
 			}
 		//#endif
-		return super.handlePointerDragged( relX, relY );
+		return super.handlePointerDragged( relX, relY, repaintRegion );
 	}
 	//#endif
 	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#setStyle(de.enough.polish.ui.Style)
+	 */
 	public void setStyle(Style style) {
 		//#if !polish.Bugs.noTranslucencyWithDrawRgb
 			if (this.overlayBackground == null) {

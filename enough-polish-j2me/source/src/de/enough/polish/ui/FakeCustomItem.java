@@ -4208,6 +4208,22 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 */
 	protected boolean handlePointerDragged(int relX, int relY)
 	{
+		return false;
+	}
+	
+	/**
+	 * Handles the dragging/movement of a pointer.
+	 * This method should be overwritten only when the polish.hasPointerEvents 
+	 * preprocessing symbol is defined.
+	 * The default implementation returns false.
+	 *  
+	 * @param relX the x position of the pointer pressing relative to this item's left position
+	 * @param relY the y position of the pointer pressing relative to this item's top position
+	 * @return true when the dragging of the pointer was actually handled by this item.
+	 */
+	protected boolean handlePointerDragged(int relX, int relY, ClippingRegion repaintRegion) 
+	{
+		boolean handled = false;
 		//#ifdef polish.hasPointerEvents
 			//#if tmp.supportTouchGestures
 				if (this.gestureStartTime != 0 && Math.abs( relX - this.gestureStartX) > 30 || Math.abs( relY - this.gestureStartY) > 30) {
@@ -4216,24 +4232,21 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 				}
 			//#endif
 			//#if polish.Item.ShowCommandsOnHold
-				if (this.isShowCommands && this.commandsContainer.handlePointerDragged(relX - this.commandsContainer.relativeX, relY - this.commandsContainer.relativeY)) {
-					return true;
+				if (this.isShowCommands && this.commandsContainer.handlePointerDragged(relX - this.commandsContainer.relativeX, relY - this.commandsContainer.relativeY, repaintRegion)) {
+					handled = true;
 				}
 			//#endif
 			//#ifdef polish.css.view-type
-				if (this.view != null && this.view.handlePointerDragged(relX, relY)) {
-					return true;
+				if (this.view != null && this.view.handlePointerDragged(relX, relY, repaintRegion)) {
+					handled = true;
 				}
 			//#endif
 		//#endif
-		
-		//#ifdef polish.css.view-type
-			if(this.view != null) {
-				return this.view.handlePointerDragged(relX, relY);
-			}
-		//#endif
-		
-		return false;
+		if (handlePointerDragged(relX, relY)) {
+			addRepaintArea(repaintRegion);
+			handled = true;
+		}
+		return handled;
 	}
 	
 	/**

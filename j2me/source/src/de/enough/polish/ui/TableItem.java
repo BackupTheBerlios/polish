@@ -889,13 +889,13 @@ public class TableItem
 	
 	//#ifdef polish.hasPointerEvents
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Item#handlePointerDragged(int, int)
+	 * @see de.enough.polish.ui.Item#handlePointerDragged(int, int, ClippingRegion)
 	 */
-	protected boolean handlePointerDragged(int relX, int relY) {
+	protected boolean handlePointerDragged(int relX, int relY, ClippingRegion repaintRegion) {
 		//#debug
 		System.out.println("TableItem.handlePointerDragged(" + relX + ", " + relY + ") for " + this );
 		Item item = this.focusedItem;
-		if (item != null && this.focusedItemHandledPointerEvent && item.handlePointerDragged(relX - this.xOffset - this.contentX - item.relativeX, relY - this.yOffset - this.contentY - item.relativeY)) {
+		if (item != null && this.focusedItemHandledPointerEvent && item.handlePointerDragged(relX - this.xOffset - this.contentX - item.relativeX, relY - this.yOffset - this.contentY - item.relativeY, repaintRegion)) {
 			return true;
 		}
 		int diff = 	relX - this.pointerEventX;
@@ -909,9 +909,10 @@ public class TableItem
 			this.pointerEventX = relX;
 			this.targetXOffset = diff;
 			this.xOffset = diff;
+			addRepaintArea(repaintRegion);
 			return true;
 		}
-		return super.handlePointerDragged( relX, relY );
+		return super.handlePointerDragged( relX, relY, repaintRegion );
 	}
 	//#endif
 
