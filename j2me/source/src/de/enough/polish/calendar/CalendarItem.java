@@ -653,12 +653,17 @@ public class CalendarItem extends TableItem
 				}
 			}
 		}
-		int col = getColumn(day);
-		int row = getRow(day);
-		if (!day.equalsMonth(this.shownMonth)) {
-			buildCalendar( day );
+		if (this.isBuild) {
+			if (!day.equalsMonth(this.shownMonth)) {
+				buildCalendar( day );
+			}
+			int col = getColumn(day);
+			int row = getRow(day);
+			setSelectedCell(col, row);
+		} else {
+			this.originalDay = day;
+			this.shownMonth = new TimePoint( day );
 		}
-		setSelectedCell(col, row);
 	}
 
 	
