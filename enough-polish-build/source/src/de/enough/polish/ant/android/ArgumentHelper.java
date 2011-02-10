@@ -236,30 +236,60 @@ public class ArgumentHelper {
 	 */
 	public static String adb(Environment env)
 	{
+		String path;
 		if(OsUtil.isRunningWindows())
 		{
-			return getHome(env) + "\\tools\\adb.exe";
+			path = getHome(env) + "\\platform-tools\\adb.exe";
 		}
 		else
 		{
-			return getHome(env) + "/tools/adb";
+			path = getHome(env) + "/platform-tools/adb";
 		}
+		String alternativePath;
+		if(OsUtil.isRunningWindows())
+		{
+			alternativePath = getHome(env) + "\\tools\\adb.exe";
+		}
+		else
+		{
+			alternativePath = getHome(env) + "/tools/adb";
+		}
+		return resolveValidPath( path, alternativePath );
 	}
 	
+	private static String resolveValidPath(String path, String alternativePath) {
+		File file = new File( path );
+		if (file.exists()) {
+			return path;
+		}
+		return alternativePath;
+	}
+
 	/**
 	 * Returns the os-dependent executable for aidl
 	 * @return the os-dependent executable for aidl
 	 */
 	public static String aidl(Environment env)
 	{
+		String path;
 		if(OsUtil.isRunningWindows())
 		{
-			return getTools(env) + "\\aidl.exe";
+			path = getHome(env) + "\\platform-tools\\aidl.exe";
 		}
 		else
 		{
-			return getTools(env) + "/aidl";
+			path = getTools(env) + "/platform-tools/aidl";
 		}
+		String alternativePath;
+		if(OsUtil.isRunningWindows())
+		{
+			alternativePath = getTools(env) + "\\aidl.exe";
+		}
+		else
+		{
+			alternativePath = getTools(env) + "/aidl";
+		}
+		return resolveValidPath(path, alternativePath);
 	}
 	
 	/**
@@ -268,14 +298,25 @@ public class ArgumentHelper {
 	 */
 	public static String aapt(Environment env)
 	{
+		String path;
 		if(OsUtil.isRunningWindows())
 		{
-			return getTools(env) + "\\aapt.exe";
+			path = getHome(env) + "\\platform-tools\\aapt.exe";
 		}
 		else
 		{
-			return getTools(env) + "/aapt";
+			path = getHome(env) + "/platform-tools/aapt";
 		}
+		String alternativePath;
+		if(OsUtil.isRunningWindows())
+		{
+			alternativePath = getTools(env) + "\\aapt.exe";
+		}
+		else
+		{
+			alternativePath = getTools(env) + "/aapt";
+		}
+		return resolveValidPath(path, alternativePath);
 	}
 	
 	/**
@@ -284,14 +325,25 @@ public class ArgumentHelper {
 	 */
 	public static String dx(Environment env)
 	{
+		String path;
 		if(OsUtil.isRunningWindows())
 		{
-			return getTools(env) + "\\dx.bat";
+			path = getHome(env) + "\\platform-tools\\dx.bat";
 		}
 		else
 		{
-			return getTools(env) + "/dx";
+			path = getHome(env) + "/platform-tools/dx";
 		}
+		String alternativePath;
+		if(OsUtil.isRunningWindows())
+		{
+			alternativePath = getTools(env) + "\\dx.bat";
+		}
+		else
+		{
+			alternativePath = getTools(env) + "/dx";
+		}
+		return resolveValidPath(alternativePath, alternativePath);
 	}
 	
 	/**
