@@ -43,7 +43,6 @@ implements PolishTextField {
 
 
 	private boolean isFocused;
-	public boolean processKeyEvents = true;
 	private int fontColor;
 	private int oldX = 0;
 	private int oldY = 0;
