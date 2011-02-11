@@ -4708,16 +4708,16 @@ public class TextField extends StringItem
 	public void updateInternalArea() {
 		int cursorPosition = this.editField.getCursorPosition();
 		// check if cursor is in visible area:
-		int lineHeight = this.font.getHeight() + this.paddingVertical;
+		int lineHeight = getLineHeight();
 		if (this.text != null) {
 			this.internalX = 0;
 			int size = this.textLines.size();
-			this.internalHeight = lineHeight * size;
+			this.internalHeight = lineHeight;
 			this.internalWidth = this.itemWidth;
-			if (cursorPosition >= this.text.length() - this.textLines.getLine(size-1).length()) {
-				this.internalY = this.contentHeight - lineHeight;
-			} else {
-				this.internalY = -1;
+			// assume last row by default:
+			this.internalY = this.contentHeight - lineHeight;
+			if (cursorPosition < this.text.length() - this.textLines.getLine(size-1).length()) {
+				// cursor might not be in the last row:
 				int endOfLinePos = 0;
 				int textLength = this.text.length();
 				for (int i = 0; i < size; i++) {
@@ -4734,9 +4734,6 @@ public class TextField extends StringItem
 						this.internalY = lineHeight * i;
 						break;
 					}
-				}
-				if (this.internalY == -1) {
-					this.internalY= this.contentHeight - lineHeight;
 				}
 			}
 			if (this.parent instanceof Container) {
