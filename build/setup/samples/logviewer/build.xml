@@ -43,7 +43,7 @@
 		<j2mepolish>
 		    <!-- general settings -->
 			<info 
-				copyright="Copyright 2005 - 2010 Enough Software. All rights reserved." 
+				copyright="Copyright 2005 - 2011 Enough Software. All rights reserved." 
 				description="A log viewer." 
 				jarName="${polish.vendor}-${polish.name}-logviewer.jar" 
 				name="Logviewer" 
@@ -59,7 +59,6 @@
 			</deviceRequirements>
 		    <!-- build settings -->
 			<build 
-				fullscreen="menu" 
 	            usePolishGui="yes"
 	            sourceDir="source/src"
 				workDir="${dir.work}"
@@ -69,6 +68,13 @@
 				<midlet class="de.enough.polish.log.rms.LogViewerMidlet" name="Log Viewer"/>
 				<!-- project-wide variables - used for preprocessing  -->
 				<variables>
+					<!-- use the advanced menubar mode that offers near-native command handling and positioning, on BB and Android use native commands: -->
+					<variable
+						name="polish.FullScreen"
+						value="menu" 
+						unless="polish.blackberry || polish.android" 
+					/>
+					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
 					<variable name="polish.classes.ApplicationInitializer" value="de.enough.polish.log.rms.LogViewerMidlet" />
 					<variable name="polish.TextField.useDirectInput" value="true" unless="polish.hasPointerEvents" />
 					<!--

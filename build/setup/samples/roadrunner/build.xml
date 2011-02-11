@@ -49,7 +49,7 @@
 				name="RoadRunner" 
 				vendorName="Enough Software" 
 				version="1.0.1"
-				copyright="Copyright 2005 - 2010 Enough Software. All rights reserved." 
+				copyright="Copyright 2005 - 2011 Enough Software. All rights reserved." 
 				description="A frogger clone." 
 				icon="icon.png"
 				infoUrl="http://www.enough.de" 
@@ -65,7 +65,7 @@
 				<requirement name="Identifier" value="${devices}"/>
 			</deviceRequirements>
 		    <!-- build settings -->
-			<build	fullscreen="menu" 
+			<build	 
 					usePolishGui="true"
 					sourceDir="source/src"
 					workDir="${dir.work}"
@@ -74,6 +74,13 @@
 				<midlet class="de.enough.roadrunner.RoadRunner" name="RoadRunner"/>
 				<!-- project-wide variables - used for preprocessing  -->
 				<variables>
+					<!-- use the advanced menubar mode that offers near-native command handling and positioning, on BB and Android use native commands: -->
+					<variable
+						name="polish.FullScreen"
+						value="menu" 
+						unless="polish.blackberry || polish.android" 
+					/>
+					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
 					<variable name="polish.TiledLayer.useBackBuffer" value="true"/>
 					<variable name="polish.TiledLayer.TransparentTileColor" value="0x00FF00"/>
 				</variables>

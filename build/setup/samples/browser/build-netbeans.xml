@@ -81,7 +81,7 @@
 			>
 		<j2mepolish>
 		    <!-- general settings -->
-			<info copyright="Copyright 2010 Enough Software. All rights reserved." 
+			<info copyright="Copyright 2011 Enough Software. All rights reserved." 
 				description="A demonstration of the Browser." 
 				infoUrl="http://www.j2mepolish.org" 
 				jarName="${polish.vendor}-${polish.name}-${polish.locale}-browser.jar" 
@@ -101,7 +101,7 @@
 				<requirement name="Identifier" value="${devices}" />
 			</deviceRequirements>
 		    <!-- build settings -->
-			<build fullscreen="menu"
+			<build 
 	                symbols="polish.skipArgumentCheck" 
 	                usePolishGui="true"
 				>
@@ -113,7 +113,11 @@
 				</midlets>
 				<!-- project-wide variables - used for preprocessing  -->
 				<variables>
-					<variable name="polish.FullScreen" value="false" if="polish.android" />
+					<variable
+						name="polish.FullScreen"
+						value="menu" 
+						unless="polish.blackberry || polish.android" 
+					/>
 					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
 					<variable name="polish.useScrollBar" value="true" />
 					<variable name="polish.Browser.UserAgent" value="J2ME-Polish 2.0" />

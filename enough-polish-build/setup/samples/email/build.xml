@@ -98,7 +98,7 @@
 				infoUrl="http://www.j2mepolish.org"
 				jarName="${polish.vendor}-${polish.name}-${polish.locale}-email.jar" 
 				jarUrl="${deploy-url}${polish.jarName}"
-				copyright="Copyright 2010 Enough Software. All rights reserved."
+				copyright="Copyright 2011 Enough Software. All rights reserved."
 				icon="icon.png"
 			/>
 			<!-- selection of supported devices -->
@@ -124,7 +124,6 @@
 			 -->
 			<build
 				symbols="ExampleSymbol, AnotherExample"
-				fullscreen="menu"
 				usePolishGui="true"
 				workDir="${dir.work}"
 			>
@@ -137,6 +136,11 @@
 					<variable name="polish.TextField.usePredictiveInput" value="true" />
 					<variable name="polish.TextField.includeInputInfo" value="true" />
 					<variable name="polish.TextField.supportSymbolsEntry" value="true" />
+					<variable
+						name="polish.FullScreen"
+						value="menu" 
+						unless="polish.blackberry || polish.android" 
+					/>
 					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
 					<variable name="polish.useScrollBar" value="true" />
 					<variable name="polish.ScreenInfo.enable" value="true" />

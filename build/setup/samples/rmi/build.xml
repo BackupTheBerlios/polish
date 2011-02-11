@@ -106,7 +106,7 @@
 				infoUrl="http://www.j2mepolish.org"
 				jarName="${ nospace(polish.vendor) }-${ nospace(polish.name) }-rmi.jar" 
 				jarUrl="${deploy-url}${polish.jarName}"
-				copyright="Copyright 2010 Enough Software. All rights reserved."
+				copyright="Copyright 2011 Enough Software. All rights reserved."
 			/>
 			<!-- selection of supported devices -->
 			<!-- In the test mode the application is build only for the  -->
@@ -123,7 +123,6 @@
 			 -->
 			<build
 				symbols="ExampleSymbol, AnotherExample"
-				fullscreen="menu"
 				usePolishGui="true"
 				workDir="${dir.work}"
 			>
@@ -132,6 +131,14 @@
 				<!-- project-wide variables - used for preprocessing.  -->
 				<!-- You can set localized variables in the resources/messages.txt files as well.  -->
 				<variables includeAntProperties="true" >
+					<!-- use the advanced menubar mode that offers near-native command handling and positioning, on BB and Android use native commands: -->
+					<variable
+						name="polish.FullScreen"
+						value="menu" 
+						unless="polish.blackberry || polish.android" 
+					/>
+					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
+					<variable name="polish.useScrollBar" value="true" />
 					<!-- 
 					You can use following mockup implementation for testing this application without using a server:
 					-->
@@ -147,9 +154,6 @@
 					<variable name="polish.TextField.Symbols" value="&quot;@#()&lt;&gt;&amp;;,.:!/\~$%^*" />
 					- activate switching to the native (e.g.T9) input mode: -
 					<variable name="polish.TextField.allowNativeModeSwitch" value="true" />
-					- use the advanced menubar mode that offers near-native command handling and positioning -
-					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
-					<variable name="polish.useScrollBar" value="true" />
 					- suppress List-select commands -
 					<variable name="polish.List.suppressSelectCommand" value="true" />
 					-

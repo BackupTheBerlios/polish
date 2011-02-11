@@ -88,7 +88,7 @@
 				infoUrl="http://www.j2mepolish.org"
 				jarName="${polish.vendor}-${polish.name}-${polish.locale}-datefield.jar" 
 				jarUrl="${deploy-url}${polish.jarName}"
-				copyright="Copyright 2010 Enough Software. All rights reserved."
+				copyright="Copyright 2011 Enough Software. All rights reserved."
 			/>
 			<!-- selection of supported devices -->
 			<deviceRequirements if="test">
@@ -110,7 +110,6 @@
 		    <!-- build settings -->
 			<build
 				symbols="ExampleSymbol, AnotherExample"
-				fullscreen="menu"
 				usePolishGui="true"
 				workDir="${dir.work}"
 			>
@@ -126,6 +125,11 @@
 					-->
 					<variable name="polish.DateField.useDirectInput" value="true" />
 					<variable name="polish.DateField.useDirectInputForPointer" value="true" />
+					<variable
+						name="polish.FullScreen"
+						value="menu" 
+						unless="polish.blackberry || polish.android" 
+					/>
 					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
 					<variable name="polish.useScrollBar" value="true" />
 				</variables>

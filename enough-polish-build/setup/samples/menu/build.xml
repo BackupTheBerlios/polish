@@ -102,7 +102,7 @@
 				icon="dot.png"
 				jarName="${polish.vendor}-${polish.name}-${polish.locale}-menu.jar" 
 				jarUrl="${deploy-url}${polish.jarName}"
-				copyright="Copyright 2005 - 2010 Enough Software. All rights reserved."
+				copyright="Copyright 2005 - 2011 Enough Software. All rights reserved."
 				deleteConfirm="Do you really want to kill me?" 
 			/>
 			<!-- selection of supported devices -->
@@ -127,7 +127,6 @@
 			<!-- 
 			 -->
 			<build
-				fullscreen="menu"
 				usePolishGui="true"
 				workDir="${dir.work}"
 				destDir="${dir.dist}"
@@ -137,6 +136,13 @@
 				<!-- project-wide variables - used for preprocessing.  -->
 				<!-- You can set localized variables in the resources/messages.txt files as well.  -->
 				<variables includeAntProperties="true" >
+					<!-- use the advanced menubar mode that offers near-native command handling and positioning, on BB and Android use native commands: -->
+					<variable
+						name="polish.FullScreen"
+						value="menu" 
+						unless="polish.blackberry || polish.android" 
+					/>
+					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
 					<!-- example variables:
 					In your Java-code you can use the following snipet to use this variable:
 					//#= private static final String UPDATE_URL = "${ update-url }";

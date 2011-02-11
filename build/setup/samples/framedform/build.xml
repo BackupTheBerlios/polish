@@ -97,7 +97,7 @@
 				infoUrl="http://www.j2mepolish.org"
 				jarName="${ nospace(polish.vendor) }-${ nospace(polish.name) }-framedform.jar" 
 				jarUrl="${deploy-url}${polish.jarName}"
-				copyright="Copyright 2010 Enough Software. All rights reserved."
+				copyright="Copyright 2011 Enough Software. All rights reserved."
 			/>
 			<!-- selection of supported devices -->
 			<!-- In the test mode the application is build only for the  -->
@@ -114,7 +114,6 @@
 			 -->
 			<build
 				symbols="ExampleSymbol, AnotherExample"
-				fullscreen="menu"
 				usePolishGui="true"
 				workDir="${dir.work}"
 			>
@@ -123,11 +122,12 @@
 				<!-- project-wide variables - used for preprocessing.  -->
 				<!-- You can set localized variables in the resources/messages.txt files as well.  -->
 				<variables includeAntProperties="true" >
-					<!-- example variables:
-					In your Java-code you can use the following snipet to use this variable:
-					//#= private static final String UPDATE_URL = "${ update-url }";
-					You can change the title of the sample application with the "title"-var.
-					-->
+					<variable
+						name="polish.FullScreen"
+						value="menu" 
+						unless="polish.blackberry || polish.android" 
+					/>
+					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
 					<variable name="polish.TextField.useDirectInput" value="true" />
 				</variables>
 				<!-- Here you can set the dir attribute to "resources2" for an alternative design. -->

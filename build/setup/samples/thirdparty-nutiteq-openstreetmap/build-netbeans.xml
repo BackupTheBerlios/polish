@@ -102,7 +102,6 @@
 			</deviceRequirements>
 		    <!-- build settings -->
 			<build 
-				fullscreen="menu" 
 				usePolishGui="true"
 				workDir="${dir.work}"
 				>
@@ -124,6 +123,12 @@
 				</midlets>
 				
 				<variables>
+					<!-- use the advanced menubar mode that offers near-native command handling and positioning, on BB and Android use native commands: -->
+					<variable
+						name="polish.FullScreen"
+						value="menu" 
+						unless="polish.blackberry || polish.android" 
+					/>
 					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
 					<variable name="polish.useScrollBar" value="true" />
 				</variables>

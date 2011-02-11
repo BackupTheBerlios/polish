@@ -75,7 +75,7 @@
 				infoUrl="http://www.j2mepolish.org"
 				jarName="${polish.vendor}-${polish.name}-${polish.locale}-blank.jar" 
 				jarUrl="${deploy-url}${polish.jarName}"
-				copyright="Copyright 2010 Your Company. All rights reserved."
+				copyright="Copyright 2011 Your Company. All rights reserved."
 			/>
 			<!-- selection of supported devices -->
 			<deviceRequirements if="test">
@@ -97,7 +97,6 @@
 		    <!-- build settings -->
 			<build
 				symbols="ExampleSymbol, AnotherExample"
-				fullscreen="menu"
 				usePolishGui="true"
 				workDir="${dir.work}"
 				destDir="${dir.dist}"
@@ -111,11 +110,15 @@
 					<variable file="configuration/configuration.properties" />
 					<!-- allow customized configuration settings: -->
 					<variable file="configuration/${customization}/configuration.properties" />
-					<variable name="polish.FullScreen" value="false" if="polish.android" />
+					<variable
+						name="polish.FullScreen"
+						value="menu" 
+						unless="polish.blackberry || polish.android" 
+					/>
+					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
 					<!-- Sample configuration options for J2ME Polish
 					<variable name="polish.TextField.useDirectInput" value="true" />
 					<variable name="polish.TextField.supportSymbolsEntry" value="true" />
-					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
 					<variable name="polish.useScrollBar" value="true" />
 					-->
 				</variables>

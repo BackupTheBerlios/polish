@@ -98,7 +98,7 @@
 				infoUrl="http://www.j2mepolish.org"
 				jarName="${polish.vendor}-${polish.name}-${polish.locale}-rss.jar" 
 				jarUrl="${deploy-url}${polish.jarName}"
-				copyright="Copyright 2010 Enough Software. All rights reserved."
+				copyright="Copyright 2011 Enough Software. All rights reserved."
 				icon="rss.png"
 			/>
 			<!-- selection of supported devices -->
@@ -124,7 +124,6 @@
 			 -->
 			<build
 				symbols="ExampleSymbol, AnotherExample"
-				fullscreen="menu"
 				usePolishGui="true"
 				workDir="${dir.work}"
 			>
@@ -133,13 +132,18 @@
 				<!-- project-wide variables - used for preprocessing.  -->
 				<!-- You can set localized variables in the resources/messages.txt files as well.  -->
 				<variables includeAntProperties="true" >
-					<variable name="polish.FullScreen" value="false" if="polish.android" />
+					<!-- use the advanced menubar mode that offers near-native command handling and positioning, on BB and Android use native commands: -->
+					<variable
+						name="polish.FullScreen"
+						value="menu" 
+						unless="polish.blackberry || polish.android" 
+					/>
+					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
+					<variable name="polish.useScrollBar" value="true" />
 					<variable name="polish.TextField.useDirectInput" value="true" />
 					<variable name="polish.TextField.usePredictiveInput" value="false" />
 					<variable name="polish.TextField.includeInputInfo" value="true" />
 					<variable name="polish.TextField.supportSymbolsEntry" value="true" />
-					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
-					<variable name="polish.useScrollBar" value="true" />
 					<variable name="polish.handleEvents" value="true" />
 					<variable name="polish.Item.ShowCommandsOnHold" value="true" />
 				</variables>

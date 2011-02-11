@@ -97,7 +97,7 @@
 				icon="dot.png"
 				jarName="${polish.vendor}-${polish.name}-${polish.locale}-menu.jar" 
 				jarUrl="${deploy-url}${polish.jarName}"
-				copyright="Copyright 2005 - 2010 Enough Software. All rights reserved."
+				copyright="Copyright 2005 - 2011 Enough Software. All rights reserved."
 				deleteConfirm="Do you really want to kill me?" 
 			/>
 			<!-- selection of supported devices -->
@@ -115,7 +115,6 @@
 			 -->
 			<build
 				symbols="ExampleSymbol, AnotherExample"
-				fullscreen="menu"
 				usePolishGui="true"
 				workDir="${dir.work}"
                 compilerMode="${enableCompilerMode}"
@@ -130,8 +129,12 @@
 				<!-- project-wide variables - used for preprocessing.  -->
 				<!-- You can set localized variables in the resources/messages.txt files as well.  -->
 				<variables includeAntProperties="true" >
+					<variable
+						name="polish.FullScreen"
+						value="menu" 
+						unless="polish.blackberry || polish.android" 
+					/>
 					<variable name="polish.MenuBar.useExtendedMenubar" value="true" />
-					<variable name="polish.FullScreen" value="false" if="polish.android" />
 				</variables>
 				<!-- Here you can set the dir attribute to "resources2" for an alternative design. -->
 				<resources

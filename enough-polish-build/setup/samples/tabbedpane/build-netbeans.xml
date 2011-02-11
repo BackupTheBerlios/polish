@@ -89,7 +89,7 @@
 			>
 		<j2mepolish>
 		    <!-- general settings -->
-			<info copyright="Copyright 2010 Enough Software. All rights reserved." 
+			<info copyright="Copyright 2011 Enough Software. All rights reserved." 
 				description="A demonstration of the TabbedForm." 
 				infoUrl="http://www.enough.de" 
 				jarName="${ nospace(polish.vendor) }-${ nospace(polish.name) }-tabbedform.jar" 
@@ -109,7 +109,7 @@
 				<requirement name="Identifier" value="${devices}" />
 			</deviceRequirements>
 		    <!-- build settings -->
-			<build fullscreen="menu" 
+			<build  
 	                symbols="polish.skipArgumentCheck" 
 	                usePolishGui="true"
 				>
@@ -126,6 +126,12 @@
 					<variable name="polish.TextField.suppressAddSymbolCommand" value="true" if="polish.key.AddSymbolKey:defined" />
 					<variable name="polish.command.entersymbol" value="Add Symbol" />
 					-->
+					<!-- use the advanced menubar mode that offers near-native command handling and positioning, on BB and Android use native commands: -->
+					<variable
+						name="polish.FullScreen"
+						value="menu" 
+						unless="polish.blackberry || polish.android" 
+					/>
 					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
 					<variable name="polish.useScrollBar" value="true" />
 				</variables>

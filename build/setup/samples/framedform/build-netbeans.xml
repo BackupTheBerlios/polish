@@ -88,7 +88,7 @@
 			>
 		<j2mepolish>
 		    <!-- general settings -->
-			<info copyright="Copyright 2010 Enough Software. All rights reserved." 
+			<info copyright="Copyright 2011 Enough Software. All rights reserved." 
 				description="A demonstration of the FramedForm." 
 				infoUrl="http://www.enough.de" 
 				jarName="${ nospace(polish.vendor) }-${ nospace(polish.name) }-framedform.jar" 
@@ -109,7 +109,7 @@
 			</deviceRequirements>
 
 		    <!-- build settings -->
-			<build fullscreen="menu" 
+			<build  
 	                symbols="polish.skipArgumentCheck" 
 	                usePolishGui="true"
 				>
@@ -119,6 +119,11 @@
 				<variables>
 					<variable name="polish.TextField.useDirectInput" value="true" />
 					<variable name="polish.Container.allowCycling" value="false" />
+					<variable
+						name="polish.FullScreen"
+						value="menu" 
+						unless="polish.blackberry || polish.android" 
+					/>
 					<variable name="polish.MenuBar.useExtendedMenuBar" value="false" />
 					<variable name="polish.useScrollBar" value="true" />
 				</variables>

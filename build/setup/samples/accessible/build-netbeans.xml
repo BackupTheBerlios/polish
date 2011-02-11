@@ -97,7 +97,7 @@
 				icon="dot.png"
 				jarName="${polish.vendor}-${polish.name}-${polish.locale}-accessible.jar" 
 				jarUrl="${deploy-url}${polish.jarName}"
-				copyright="Copyright 2005 - 2010 Enough Software. All rights reserved."
+				copyright="Copyright 2005 - 2011 Enough Software. All rights reserved."
 			/>
 			<!-- selection of supported devices -->
             <deviceRequirements if="config.active:defined and (test or enableCompilerMode)" >		
@@ -114,7 +114,6 @@
 			 -->
 			<build
 				symbols="ExampleSymbol, AnotherExample"
-				fullscreen="menu"
 				usePolishGui="true"
 				workDir="${dir.work}"
                 compilerMode="${enableCompilerMode}"
@@ -132,10 +131,13 @@
 					<!-- example variables:
 					In your Java-code you can use the following snipet to use this variable:
 					//#= private static final String UPDATE_URL = "${ update-url }";
-					You can change the title of the sample application with the "title"-var.
 					-->
 					<variable name="update-url" value="http://www.enough.de/update" />
-					<variable name="title" value="J2ME Polish" />
+					<variable
+						name="polish.FullScreen"
+						value="menu" 
+						unless="polish.blackberry || polish.android" 
+					/>
 				</variables>
 				<!-- Here you can set the dir attribute to "resources2" for an alternative design. -->
 				<resources

@@ -89,7 +89,7 @@
 			>
 		<j2mepolish>
 		    <!-- general settings -->
-			<info copyright="Copyright 2010 Enough Software. All rights reserved." 
+			<info copyright="Copyright 2011 Enough Software. All rights reserved." 
 				name="RSS" 
 				description="Using RSS in J2ME Polish." 
 				infoUrl="http://www.enough.de" 
@@ -110,7 +110,7 @@
 				<requirement name="Identifier" value="${devices}" />
 			</deviceRequirements>
 		    <!-- build settings -->
-			<build fullscreen="menu"
+			<build 
 	                symbols="polish.skipArgumentCheck" 
 	                usePolishGui="true"
 				>
@@ -118,13 +118,18 @@
 				<midlet class="de.enough.polish.sample.rss.RssMidlet" name="News Reader" />
 				<!-- project-wide variables - used for preprocessing  -->
 				<variables>
-					<variable name="polish.FullScreen" value="false" if="polish.android" />
+					<!-- use the advanced menubar mode that offers near-native command handling and positioning, on BB and Android use native commands: -->
+					<variable
+						name="polish.FullScreen"
+						value="menu" 
+						unless="polish.blackberry || polish.android" 
+					/>
+					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
+					<variable name="polish.useScrollBar" value="true" />
 					<variable name="polish.TextField.useDirectInput" value="true" />
 					<variable name="polish.TextField.usePredictiveInput" value="false" />
 					<variable name="polish.TextField.includeInputInfo" value="true" />
 					<variable name="polish.TextField.supportSymbolsEntry" value="true" />
-					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
-					<variable name="polish.useScrollBar" value="true" />
 					<variable name="polish.handleEvents" value="true" />
 					<variable name="polish.Item.ShowCommandsOnHold" value="true" />
 				</variables>

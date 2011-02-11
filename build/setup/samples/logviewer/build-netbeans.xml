@@ -100,7 +100,7 @@
 				icon="dot.png"
 				jarName="${polish.vendor}-${polish.name}-${polish.locale}-logviewer.jar" 
 				jarUrl="${deploy-url}${polish.jarName}"
-				copyright="Copyright 2005 - 2010 Enough Software. All rights reserved."
+				copyright="Copyright 2005 - 2011 Enough Software. All rights reserved."
 			/>
 			<!-- selection of supported devices -->
             <deviceRequirements if="config.active:defined and (test or enableCompilerMode)" >		
@@ -115,7 +115,6 @@
 		    <!-- build settings -->
 			<build
 				symbols="ExampleSymbol, AnotherExample"
-				fullscreen="menu"
 				usePolishGui="true"
 				workDir="${dir.work}"
                 compilerMode="${enableCompilerMode}"
@@ -131,6 +130,13 @@
 				<variables includeAntProperties="true" >
 					<variable name="polish.classes.ApplicationInitializer" value="de.enough.polish.log.rms.LogViewerMidlet" />
 					<variable name="polish.TextField.useDirectInput" value="true" unless="polish.hasPointerEvents" />
+					<!-- use the advanced menubar mode that offers near-native command handling and positioning, on BB and Android use native commands: -->
+					<variable
+						name="polish.FullScreen"
+						value="menu" 
+						unless="polish.blackberry || polish.android" 
+					/>
+					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
 					<!--
 					You need to change the polish.log.MIDletSuite and polish.log.Vendor
 					preprocessing variables if you want to use the Logviewer for showing
