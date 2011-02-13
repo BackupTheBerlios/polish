@@ -58,7 +58,7 @@ public class DexPostCompiler extends PostCompiler{
 		String dx = ArgumentHelper.dx(env);
 		if (dx != null) {
 			ArrayList arguments = getDefaultArguments(dx,env);
-			File directory = new File(ArgumentHelper.getTools(env));
+			File directory = new File(ArgumentHelper.getPlatformTools(env));
 	
 			System.out.println("dx: Converting compiled files and external libraries...");
 			

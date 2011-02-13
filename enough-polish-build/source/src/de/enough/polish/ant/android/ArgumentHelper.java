@@ -137,9 +137,11 @@ public class ArgumentHelper {
 	 * @param env the environment
 	 * @return the /tools folder of the android installation
 	 */
-	public static String getTools(Environment env)
+	public static String getPlatformTools(Environment env)
 	{
-		return getPlatformHome(env) + File.separator + "tools";
+		String newPath = getHome(env) + File.separator + "platform-tools";
+		String oldPath = getPlatformHome(env) + File.separator + "tools"; 
+		return resolveValidPath(newPath, oldPath);
 	}
 	
 	/**
@@ -149,7 +151,7 @@ public class ArgumentHelper {
 	 */
 	public static String getFramework(Environment env)
 	{
-		return getTools(env) + File.separator + "lib" + File.separator + "framework.aidl";
+		return getPlatformTools(env) + File.separator + "lib" + File.separator + "framework.aidl";
 	}
 	
 	/**
@@ -204,11 +206,11 @@ public class ArgumentHelper {
 	{
 		if(OsUtil.isRunningWindows())
 		{
-			return resolve( getTools(env) + "\\activitycreator.bat" );
+			return resolve( getPlatformTools(env) + "\\activitycreator.bat" );
 		}
 		else
 		{
-			return resolve( getTools(env) + "/activitycreator" );
+			return resolve( getPlatformTools(env) + "/activitycreator" );
 		}
 	}
 	
@@ -278,16 +280,16 @@ public class ArgumentHelper {
 		}
 		else
 		{
-			path = getTools(env) + "/platform-tools/aidl";
+			path = getPlatformTools(env) + "/platform-tools/aidl";
 		}
 		String alternativePath;
 		if(OsUtil.isRunningWindows())
 		{
-			alternativePath = getTools(env) + "\\aidl.exe";
+			alternativePath = getPlatformTools(env) + "\\aidl.exe";
 		}
 		else
 		{
-			alternativePath = getTools(env) + "/aidl";
+			alternativePath = getPlatformTools(env) + "/aidl";
 		}
 		return resolveValidPath(path, alternativePath);
 	}
@@ -310,11 +312,11 @@ public class ArgumentHelper {
 		String alternativePath;
 		if(OsUtil.isRunningWindows())
 		{
-			alternativePath = getTools(env) + "\\aapt.exe";
+			alternativePath = getPlatformTools(env) + "\\aapt.exe";
 		}
 		else
 		{
-			alternativePath = getTools(env) + "/aapt";
+			alternativePath = getPlatformTools(env) + "/aapt";
 		}
 		return resolveValidPath(path, alternativePath);
 	}
@@ -337,11 +339,11 @@ public class ArgumentHelper {
 		String alternativePath;
 		if(OsUtil.isRunningWindows())
 		{
-			alternativePath = getTools(env) + "\\dx.bat";
+			alternativePath = getPlatformTools(env) + "\\dx.bat";
 		}
 		else
 		{
-			alternativePath = getTools(env) + "/dx";
+			alternativePath = getPlatformTools(env) + "/dx";
 		}
 		return resolveValidPath(path, alternativePath);
 	}
@@ -409,9 +411,12 @@ public class ArgumentHelper {
 			if (availablePlatforms == null || availablePlatforms.length == 0) {
 				platformHome = getHome(env);
 			} else if (platformVersion != null) {
+				String targetVersion = env.getVariable("polish.build.Android.Platform.Target");
 				for (int i = 0; i < availablePlatforms.length; i++) {
 					String name = availablePlatforms[i];
-					if (name.indexOf(platformVersion) != -1) {
+					if ((name.indexOf(platformVersion) != -1)
+						|| (targetVersion != null && name.indexOf(targetVersion) != -1) 
+					){
 						File file = new File( platformsHome, name );
 						if (file.isDirectory()) {
 							platformHome = file.getAbsolutePath();

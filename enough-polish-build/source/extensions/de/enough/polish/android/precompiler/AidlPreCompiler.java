@@ -60,7 +60,7 @@ public class AidlPreCompiler extends PreCompiler{
 		Environment env = device.getEnvironment();
 		
 		ArrayList arguments = getDefaultArguments(ArgumentHelper.aidl(env),env);
-		File directory = new File(ArgumentHelper.getTools(env));  
+		File directory = new File(ArgumentHelper.getPlatformTools(env));  
 		
 		try {
 			ProcessUtil.exec( arguments, "aidl: ", true, null, directory );

@@ -60,7 +60,7 @@ public class ResourcesPackager extends Packager{
 		String aapt = ArgumentHelper.aapt(env);
 		if (aapt != null) {
 			ArrayList arguments = getDefaultArguments(aapt,env);
-			File directory = new File(ArgumentHelper.getTools(env));
+			File directory = new File(ArgumentHelper.getPlatformTools(env));
 			
 			System.out.println("resource package (aapt): Packaging resources...");
 			

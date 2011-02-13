@@ -86,7 +86,7 @@ implements OutputFilter
 			name = "activityCreator";
 			arguments = getActivityCreatorArguments(activityCreator,env);
 		}
-		File directory = new File(ArgumentHelper.getTools(env)); 
+		File directory = new File(ArgumentHelper.getPlatformTools(env));
 		
 		try {
 			// Delete the previously build activity
