@@ -191,7 +191,7 @@ public class MeaFinalizer extends Finalizer{
 						break;
 				}
         	}
-        	name = charArray.toString();
+        	name = new String(charArray);
         }
         String version = env.getVariable("MIDlet-Version");
         if(version == null || version.length() == 0) {
