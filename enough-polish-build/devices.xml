@@ -13721,7 +13721,7 @@ These namespaces/schemas will be used soon.
     <capability name="Bugs" value="ItemStateListenerCalledTooEarly" />
   </device>
   <device>
-    <identifier>BlackBerry/6.0</identifier>
+    <identifier>BlackBerry/6.0, Blackberry/Torch, Blackberry/9800</identifier>
     <features>hasTrackballEvents, hasPointerEvents, hasTouchEvents, isVirtual</features>
     <capability name="JavaPlatform" value="MIDP/2.0, BlackBerry/6.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
