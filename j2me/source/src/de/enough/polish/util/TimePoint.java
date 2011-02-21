@@ -1115,6 +1115,113 @@ implements Externalizable, Comparator, Comparable
 		}
 		return result; 
 	}
+	
+	/**
+	 * Returns the current time point in a RFC822-compatible format (YYYY-MM-dd'T'HH:MM:SSZZ , where ZZ = +/-HHMM )
+	 * @return the current time point in a RFC822-compatible format
+	 */
+	public String toRfc822() {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append( this.year ).append('-');
+		if( this.month < 9) {
+			buffer.append('0');
+		}
+		buffer.append( (this.month+1)).append('-');
+		if (this.day < 10) {
+			buffer.append('0');
+		}
+		buffer.append(this.day);
+		buffer.append('T');
+		if (this.hour < 10) {
+			buffer.append('0');
+		}
+		buffer.append( this.hour ).append(':');
+		if (this.minute < 10) {
+			buffer.append('0');
+		}
+		buffer.append( this.minute ).append(':');
+		if (this.second < 10) {
+			buffer.append('0');
+		}
+		buffer.append( this.second );
+
+		if (this.timeZone != null) {
+			int rawOffsetMinutes = this.timeZone.getRawOffset() / 60000;
+			if ( rawOffsetMinutes > 0 ) {
+				buffer.append("+");
+			} else {
+				buffer.append("-");
+				rawOffsetMinutes *= -1;
+			}
+			int offsetMinutes = rawOffsetMinutes % 60 ;
+			int offsetHours = rawOffsetMinutes / 60;			
+			if ( offsetHours < 10 ) {
+				buffer.append('0');
+			}
+			buffer.append(offsetHours);
+			if ( offsetMinutes < 10 ) {
+				buffer.append('0');
+			}
+			buffer.append(offsetMinutes);
+		} else {
+			buffer.append("-0000");
+		}
+		return buffer.toString();
+	}
+	
+	/**
+	 * Returns the current time point in a RFC3339-compatible format (YYYY-MM-dd'T'HH:MM:SSZZ , where ZZ = +/-HH:MM )
+	 * @return the current time point in a RFC3339-compatible format
+	 */
+	public String toRfc3339() {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append( this.year ).append('-');
+		if( this.month < 9) {
+			buffer.append('0');
+		}
+		buffer.append( (this.month+1)).append('-');
+		if (this.day < 10) {
+			buffer.append('0');
+		}
+		buffer.append(this.day);
+		buffer.append('T');
+		if (this.hour < 10) {
+			buffer.append('0');
+		}
+		buffer.append( this.hour ).append(':');
+		if (this.minute < 10) {
+			buffer.append('0');
+		}
+		buffer.append( this.minute ).append(':');
+		if (this.second < 10) {
+			buffer.append('0');
+		}
+		buffer.append( this.second );
+
+		if (this.timeZone != null) {
+			int rawOffsetMinutes = this.timeZone.getRawOffset() / 60000;
+			if ( rawOffsetMinutes > 0 ) {
+				buffer.append("+");
+			} else {
+				buffer.append("-");
+				rawOffsetMinutes *= -1;
+			}
+			int offsetMinutes = rawOffsetMinutes % 60 ;
+			int offsetHours = rawOffsetMinutes / 60;			
+			if ( offsetHours < 10 ) {
+				buffer.append('0');
+			}
+			buffer.append(offsetHours);
+			buffer.append(':');
+			if ( offsetMinutes < 10 ) {
+				buffer.append('0');
+			}
+			buffer.append(offsetMinutes);
+		} else {
+			buffer.append("-00:00");
+		}
+		return buffer.toString();
+	}
 
 	/**
 	 * Parses the given text in RFC3339 format.
