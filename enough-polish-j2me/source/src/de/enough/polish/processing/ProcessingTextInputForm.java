@@ -50,9 +50,9 @@ public class ProcessingTextInputForm  implements CommandListener, Runnable {
 
     /**
      * Create a new text input form.
-     * @param title
-     * @param text
-     * @param maxSize
+     * @param title the form title
+     * @param text the form's initial text
+     * @param maxSize the maximum size of the text
      */
     public ProcessingTextInputForm(String title, String text, int maxSize) {
         this.title = title;
@@ -62,7 +62,7 @@ public class ProcessingTextInputForm  implements CommandListener, Runnable {
 
     /**
      * Get the lock object for this form
-     * @return
+     * @return the lock object
      */
     public Object getExternalLockObject()
     {
@@ -88,7 +88,7 @@ public class ProcessingTextInputForm  implements CommandListener, Runnable {
 
     /**
      * Get the text inside the form
-     * @return
+     * @return the text inside the form
      */
     public String getText()
     {
@@ -97,8 +97,8 @@ public class ProcessingTextInputForm  implements CommandListener, Runnable {
 
     /**
      * Process any commands the form has received
-     * @param cmd
-     * @param dis
+     * @param cmd the received command
+     * @param dis the displayable from which it came from
      */
     public void commandAction(Command cmd, Displayable dis) {
         if (cmd == this.cmdOk)

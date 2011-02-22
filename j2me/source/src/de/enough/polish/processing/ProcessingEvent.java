@@ -60,8 +60,6 @@ public class ProcessingEvent {
     public static final int EVENT_APP_DESTROY = 12 ;
     public static final int EVENT_INIT = 13 ;
 
-
-
     public ProcessingInterface object;
     public int eventType;
     public int param1;
@@ -71,8 +69,8 @@ public class ProcessingEvent {
 
     /**
      * Create a new ProcessingEvent of the specified type with the specified parameter.
-     * @param object
-     * @param eventType
+     * @param object the Processing object
+     * @param eventType the event type
      */
     public ProcessingEvent(ProcessingInterface object, int eventType)
     {
@@ -81,9 +79,9 @@ public class ProcessingEvent {
 
     /**
      * Create a new ProcessingEvent of the specified type with the specified parameter.
-     * @param object
-     * @param eventType
-     * @param param1
+     * @param object the Processing object
+     * @param eventType the event type
+     * @param param1 the parameter value
      */
     public ProcessingEvent(ProcessingInterface object, int eventType, String param1)
     {
@@ -93,10 +91,10 @@ public class ProcessingEvent {
 
     /**
      * Create a new ProcessingEvent of the specified type with the specified parameters.
-     * @param object
-     * @param eventType
-     * @param param1
-     * @param param2
+     * @param object the Processing object
+     * @param eventType the event type
+     * @param param1 the value of the first parameter
+     * @param param2 the value of the second parameter
      */
     public ProcessingEvent(ProcessingInterface object, int eventType, int param1, int param2)
     {

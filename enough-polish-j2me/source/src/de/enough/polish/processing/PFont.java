@@ -56,17 +56,31 @@ public class PFont {
     public static int STYLE_ITALIC = Font.STYLE_ITALIC ;
     public static int STYLE_UNDERLINED = Font.STYLE_UNDERLINED ;
 
+    /**
+     * Creates a new PFont instance
+     * @param font the font to use
+     */
     public PFont(Font font)
     {
         platformFont = font ;
     }
 
+    /**
+     * Creates a new PFont instance from a J2MEPolish font
+     * @param fontUrl the URL from where to load the font
+     */
     public PFont(String fontUrl)
     {
         bitmapFont = BitMapFont.getInstance(fontUrl);
         useNativeFontColor = true ;
     }
 
+    /**
+     * Creates a new PFont instance from a J2MEPolish font
+     * @param fontUrl the URL from where to load the font
+     * @param textColor the text color
+     * @param bgColor the background color
+     */
     public PFont(String fontUrl, color textColor, color bgColor)
     {
         this.color = textColor.color;
@@ -74,6 +88,10 @@ public class PFont {
         bitmapFont = BitMapFont.getInstance(fontUrl);
     }
 
+    /**
+     * Gets the font height
+     * @return the font height
+     */
     public int getHeight()
     {
         if ( platformFont != null )
@@ -86,6 +104,10 @@ public class PFont {
         }
     }
 
+    /**
+     * Returns the font's baseline position
+     * @return the baseline position of the font
+     */
     public int getBaseline()
     {
         if ( platformFont != null )
@@ -98,6 +120,13 @@ public class PFont {
         }
     }
 
+    /**
+     * Returns the width of the given char arary or of a sub-array of thereof when drawn with the given font
+     * @param ch the char array in question
+     * @param offset the offset at which to start the subset
+     * @param length the length of the subset
+     * @return the width in pixels
+     */
     public int charsWidth(char[] ch, int offset, int length) {
         int result = 0;
         int temp;
@@ -119,6 +148,11 @@ public class PFont {
         return result;
     }
 
+    /**
+     * Returns the width of the given char when drawn with the current font
+     * @param ch the char in question
+     * @return the width in pixels
+     */
     public int charWidth(char ch) {
         int result = 0;
         int temp;
@@ -138,6 +172,11 @@ public class PFont {
         return result;
     }
 
+    /**
+     * Returns the width of the given string when drawn with the current font 
+     * @param str the string in question
+     * @return the width in pixels
+     */
     public int stringWidth(String str) {
         int result;
         if (platformFont != null) {
@@ -148,6 +187,13 @@ public class PFont {
         return result;
     }
 
+    /**
+     * Returns the width of a substring when drawn with the current font
+     * @param str the whole string
+     * @param offset the offset of the desired substring
+     * @param length the substring length
+     * @return
+     */
     public int substringWidth(String str, int offset, int length) {
         int result = 0;
         int temp ;
@@ -170,6 +216,14 @@ public class PFont {
         return result;
     }
 
+    /**
+     * Draws a string at the specified position
+     * @param g the Graphics object to draw on 
+     * @param str the string to draw
+     * @param x the x-coordinate of the drawing position
+     * @param y the y-coordinate of the drawing position
+     * @param textAlign the text alignment to use
+     */
     public void draw(Graphics g, String str, int x, int y, int textAlign) {
         if (platformFont != null) {
             //// system font
@@ -208,6 +262,10 @@ public class PFont {
         }
     }
 
+    /**
+     * Returns if the current font is a bitmap one or not
+     * @return true if the font is a bitmap font, false otherwise
+     */
     public boolean isBitmapFont()
     {
         if ( bitmapFont != null )

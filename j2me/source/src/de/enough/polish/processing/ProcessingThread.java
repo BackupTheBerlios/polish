@@ -62,7 +62,7 @@ public class ProcessingThread extends Thread implements Runnable {
 
     /**
      * Queue an event
-     * @param event
+     * @param event the event to queue
      */
     public static void queueEvent(ProcessingEvent event)
     {        
@@ -78,7 +78,7 @@ public class ProcessingThread extends Thread implements Runnable {
 
     /**
      * Remove a processing object from the internal list.
-     * @param object
+     * @param object the processing object to remove  
      */
     public static void removeProcessingObject ( ProcessingInterface object )
     {
@@ -87,7 +87,7 @@ public class ProcessingThread extends Thread implements Runnable {
 
     /**
      * Start a new thread
-     * @param object
+     * @param object the runnable object which should run in a new thread
      */
     protected static void startThread(Runnable object)
     {

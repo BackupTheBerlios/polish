@@ -37,31 +37,56 @@ public class PImage {
 
     private Image img = null ;
     
+    /**
+     * Creates a new, empty PImage
+     * @param width the width of the image
+     * @param height the height of the image
+     */
     public PImage(int width, int height)
     {
         img = Image.createImage(width, height);
     }
 
+    /**
+     * Creates a new PImage based on an existing image
+     * @param img the existing image
+     */
     public PImage(Image img)
     {
         this.img = img;
     }
 
+    /**
+     * Creates a new PImage based on an existing byte array containing the image data
+     * @param data
+     */
     public PImage(byte[] data)
     {
         img = Image.createImage(data, 0, data.length);
     }
 
+    /**
+     * Returns the native image object
+     * @return the native image object
+     */
     public Image getImage()
     {
         return img;
     }
 
+    /**
+     * Returns the image width
+     * @return the image width
+     */
     public int getWidth()
     {
         return img.getWidth();
     }
 
+    /**
+     * Returns the image height
+     * @return the image height
+     */
     public int getHeight()
     {
         return img.getHeight();

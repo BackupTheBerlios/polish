@@ -34,6 +34,10 @@ public class color {
 
     public int color = 0;
 
+    /**
+     * Creates a new color
+     * @param color the ARGB color coded as an integer (AARRGGBB) 
+     */
     public color(int color) {
         this.color = color;
     }

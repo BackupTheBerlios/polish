@@ -43,7 +43,7 @@ public class ProcessingBackground extends Background implements ProcessingContex
 
     /**
      * Creates a new ProcessingBackground based on the provided context
-     * @param context
+     * @param context the Processing context to use
      */
     public ProcessingBackground ( ProcessingInterface context)
     {
@@ -53,8 +53,8 @@ public class ProcessingBackground extends Background implements ProcessingContex
         context.signalInitialization();
     }
 
-    /**
-     * @see de.enough.polish.ui.Background#setParentItem(de.enough.polish.ui.Item) 
+    /* (non-Javadoc)
+     * @see de.enough.polish.ui.Background#setParentItem(de.enough.polish.ui.Item)
      */
     public void setParentItem(Item parent)
     {
@@ -67,8 +67,8 @@ public class ProcessingBackground extends Background implements ProcessingContex
         //#endif
     }
 
-    /**
-     * @see de.enough.polish.ui.Background#paint(int, int, int, int, javax.microedition.lcdui.Graphics) 
+    /* (non-Javadoc)
+     * @see de.enough.polish.ui.Background#paint(int, int, int, int, javax.microedition.lcdui.Graphics)
      */
     public void paint(int x, int y, int width, int height, Graphics g) {
 
@@ -120,8 +120,8 @@ public class ProcessingBackground extends Background implements ProcessingContex
        }
     }
 
-    /**
-     * @see de.enough.polish.processing.ProcessingContextContainerInterface#processingRequestRepaint() 
+    /* (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingContextContainerInterface#processingRequestRepaint()
      */
     public void processingRequestRepaint() {
 
@@ -136,14 +136,15 @@ public class ProcessingBackground extends Background implements ProcessingContex
         }
     } 
 
-    /**
-     * @see de.enough.polish.ui.Background#releaseResources() 
+    /* (non-Javadoc)
+     * @see de.enough.polish.ui.Background#releaseResources()
      */
     public void releaseResources() {
 		context.signalDestroy();
 	}
-    /**
-     * @see de.enough.polish.processing.ProcessingContextContainerInterface#setSoftkey(java.lang.String) 
+    
+    /* (non-Javadoc)
+     * @see de.enough.polish.processing.ProcessingContextContainerInterface#setSoftkey(java.lang.String)
      */
     public void setSoftkey(String text)
     {

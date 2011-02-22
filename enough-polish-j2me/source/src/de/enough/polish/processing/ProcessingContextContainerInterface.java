@@ -31,7 +31,14 @@ package de.enough.polish.processing;
 public interface ProcessingContextContainerInterface
 {
 
+    /**
+     * Requests a repaint of the container
+     */
     public void processingRequestRepaint();
 
+    /**
+     * Sets the text of the Processing-controlled softkey
+     * @param text the text to use
+     */
     public void setSoftkey(String text);
 }

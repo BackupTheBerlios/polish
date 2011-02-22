@@ -91,8 +91,8 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
 
     }
 
-    /**
-     * @see de.enough.polish.ui.Screen#paintScreen(javax.microedition.lcdui.Graphics) 
+    /* (non-Javadoc)
+     * @see de.enough.polish.ui.Screen#paintScreen(javax.microedition.lcdui.Graphics)
      */
     protected void paintScreen(Graphics g) {
 
@@ -115,7 +115,7 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
        }
     }
 
-    /**
+    /* (non-Javadoc)
      * @see de.enough.polish.ui.Screen#handleCommand(de.enough.polish.ui.Command)
      */
     protected boolean handleCommand(Command cmd)
@@ -124,7 +124,7 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
         return context.areSoftkeysCaptured();
     }
 
-    /**
+    /* (non-Javadoc)
      * @see de.enough.polish.ui.Screen#handleKeyPressed(int, int) 
      */
     protected boolean handleKeyPressed(int keyCode, int gameAction) {
@@ -134,7 +134,7 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
 
     }
 
-    /**
+    /* (non-Javadoc)
      * @see de.enough.polish.ui.Screen#handleKeyReleased(int, int) 
      */
     protected boolean handleKeyReleased(int keyCode, int gameAction) {
@@ -143,7 +143,7 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
         return context.areKeypressesCaptured();
     }
 
-    /**
+    /* (non-Javadoc)
      * @see de.enough.polish.ui.Screen#handleKeyRepeated(int, int) 
      */
     protected boolean handleKeyRepeated(int keyCode, int gameAction) {
@@ -153,7 +153,7 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
 
     }
 
-    /**
+    /* (non-Javadoc)
      * @see de.enough.polish.ui.Screen#handlePointerPressed(int, int) 
      */
     protected boolean handlePointerPressed(int x, int y) {
@@ -167,7 +167,7 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
         return context.arePointerEventsCaptured();
     }
 
-    /**
+    /* (non-Javadoc)
      * @see de.enough.polish.ui.Screen#handlePointerReleased(int, int) 
      */
     protected boolean handlePointerReleased(int x, int y) {
@@ -181,7 +181,7 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
         return context.arePointerEventsCaptured();
     }
 
-    /**
+    /* (non-Javadoc)
      * @see de.enough.polish.ui.Screen#handlePointerDragged(int, int) 
      */
     protected boolean handlePointerDragged(int x, int y) {
@@ -195,7 +195,7 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
         return context.arePointerEventsCaptured();
     }
 
-    /**
+    /* (non-Javadoc)
      * @see de.enough.polish.ui.Screen#handlePointerTouchDown(int, int) 
      */
     public boolean handlePointerTouchDown(int x, int y) {
@@ -209,7 +209,7 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
         return context.arePointerEventsCaptured();
     }
 
-    /**
+    /* (non-Javadoc)
      * @see de.enough.polish.ui.Screen#handlePointerTouchUp(int, int)
      */
     public boolean handlePointerTouchUp(int x, int y) {
@@ -223,14 +223,14 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
         return context.arePointerEventsCaptured();
     }
 
-    /**
+    /* (non-Javadoc)
      * @see de.enough.polish.ui.Screen#createCssSelector() 
      */
     protected String createCssSelector() {
         return "processing";
     }
 
-    /**
+    /* (non-Javadoc)
      * @see de.enough.polish.processing.ProcessingContextContainerInterface#processingRequestRepaint() 
      */
     public void processingRequestRepaint() {
@@ -238,7 +238,7 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
         repaint();
     }
 
-    /**
+    /* (non-Javadoc)
      * @see de.enough.polish.ui.Screen#hideNotify() 
      */
     public void hideNotify() {
@@ -247,7 +247,7 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
         super.hideNotify();
     }
 
-    /**
+    /* (non-Javadoc)
      * @see de.enough.polish.ui.Screen#releaseResources() 
      */
     public void releaseResources() {
@@ -255,7 +255,7 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
         super.releaseResources();
     }
 
-    /**
+    /* (non-Javadoc)
      * @see de.enough.polish.processing.ProcessingContextContainerInterface#setSoftkey(java.lang.String) 
      */
     public void setSoftkey(String text) {
