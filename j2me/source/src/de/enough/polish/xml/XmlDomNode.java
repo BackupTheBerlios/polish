@@ -310,17 +310,36 @@ public class XmlDomNode
 	 * @return the node as an XML string.
 	 */
 	public String toXmlString() {
+		return toXmlString(true);
+	}
+	
+	/**
+	 * Retrieves an XML representation of this XML node and its nested children.
+	 * @param useWhitespace specifies if whitespace should be used between tags or if the representation should be as compact as possible
+	 * @return
+	 */
+	public String toXmlString(boolean useWhitespace) {
 		StringBuffer xml = new StringBuffer();
-		appendXmlString("", xml);
+		appendXmlString("", xml,useWhitespace);
 		return xml.toString();
 	}
-
+	
 	/**
 	 * Appends this node's information in XML format to the given StringBuffer
 	 * @param indent the current indentation
 	 * @param xml the buffer
 	 */
 	protected void appendXmlString(String indent, StringBuffer xml) {
+		appendXmlString(indent, xml, true);
+	}
+
+	/**
+	 * Appends this node's information in XML format to the given StringBuffer
+	 * @param indent the current indentation
+	 * @param xml the buffer
+	 * @param useWhitespace specifies if whitespace should be used between tags or if the representation should be as compact as possible
+	 */
+	protected void appendXmlString(String indent, StringBuffer xml, boolean useWhitespace) {
 		xml.append( indent ).append( '<' ).append( this.name );
 		if (this.attributes != null) {
 			Enumeration  keys = this.attributes.keys();
@@ -330,18 +349,28 @@ public class XmlDomNode
 				xml.append(' ').append( key ).append( "=\"").append( value ).append("\"");
 			}
 		}
-		xml.append(">\n");
-		String childIndent = ' ' + indent;
+		xml.append('>');
+		String childIndent = "";
+		if ( useWhitespace ) {
+			xml.append('\n');
+			childIndent = ' ' + indent;
+		}
 		if (this.text != null) {
-			xml.append(childIndent).append(this.text).append('\n');
+			xml.append(childIndent).append(this.text);
+			if ( useWhitespace ) {
+				xml.append('\n');
+			}
 		}
 		if (this.childList != null) {
 			for (int i=0; i<this.childList.size(); i++) {
 				XmlDomNode node = (XmlDomNode) this.childList.get(i);
-				node.appendXmlString(childIndent, xml);
+				node.appendXmlString(childIndent, xml,useWhitespace);
 			}
 		}
-		xml.append( indent ).append( "</" ).append( this.name ).append(">\n");
+		xml.append( indent ).append( "</" ).append( this.name ).append(">");
+		if ( useWhitespace ) {
+			xml.append('\n');
+		}
 	}
 
 	/**
