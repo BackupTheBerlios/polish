@@ -845,7 +845,7 @@ public final class Locale {
 	{
 		//#debug
 		System.out.println("loading translations from " + url );
-		InputStream is = url.getClass().getResourceAsStream( url );
+		InputStream is = Locale.class.getResourceAsStream( url );
 		if (is == null) {
 			//System.out.println("!!!!!Cannot find:  " + url );
 			throw new IOException();
