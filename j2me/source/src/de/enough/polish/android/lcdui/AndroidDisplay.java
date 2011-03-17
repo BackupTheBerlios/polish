@@ -388,9 +388,6 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 				if (keyCode == KeyEvent.KEYCODE_MENU) { // && this.addedCommandMenuItemBridges.size() > 0) {
 					return false;
 				}
-				if (keyCode == KeyEvent.KEYCODE_BACK) {
-					return MidletBridge.instance.onBack();
-				}
 				if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER ) {
 					return MidletBridge.instance.onOK();
 				}
@@ -428,6 +425,9 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 				if ((screen == null) || (!screen.keyPressedProcessed)) {			
 					return false;
 				}
+			}
+			if (keyCode == KeyEvent.KEYCODE_BACK) {
+				return MidletBridge.instance.onBack();
 			}
 		//#endif
 		
