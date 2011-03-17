@@ -24,9 +24,9 @@ public class ResourcesHelper {
 	 */
 	private static final String resourcePath = "/res/raw"; 
 	
-	//#if polish.android2.1
+	//#if polish.JavaPlatform >= Android/2.1
 	private static final int start = 0x7f040000;
-	private static final int end = 0x7f050000;
+	private static final int end =   0x7f050000;
 	//#else 
 	//# private static final int start = 0x7f030000;
 	//# private static final int end = 0x7f040000;
@@ -51,7 +51,6 @@ public class ResourcesHelper {
 	{
 		resourceMap = new HashMap<String,Integer>();
 		resources = MidletBridge.instance.getResources();
-		
 		int id = -1;
 		try
 		{	
@@ -61,6 +60,7 @@ public class ResourcesHelper {
 				int resourcePathOffset = resourcePath.length() - 1;
 				name = name.substring(resourcePathOffset);
 				resourceMap.put(name, new Integer(id));
+//				System.out.println(Integer.toH);
 			}
 		}
 		catch(Resources.NotFoundException e){
@@ -72,6 +72,7 @@ public class ResourcesHelper {
 		}
 	}
 	
+
 	public static int getResourceID(String resourceName) throws IOException
 	{
 		resourceName = resourceName.toLowerCase();
