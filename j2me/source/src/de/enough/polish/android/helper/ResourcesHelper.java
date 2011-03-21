@@ -60,7 +60,6 @@ public class ResourcesHelper {
 				int resourcePathOffset = resourcePath.length() - 1;
 				name = name.substring(resourcePathOffset);
 				resourceMap.put(name, new Integer(id));
-//				System.out.println(Integer.toH);
 			}
 		}
 		catch(Resources.NotFoundException e){
