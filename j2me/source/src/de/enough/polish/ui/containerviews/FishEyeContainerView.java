@@ -259,7 +259,10 @@ public class FishEyeContainerView extends ContainerView {
 						if (adjustAlpha && !isScaled) {
 							// adjust only the translucency:
 							animated = true;
-							ImageUtil.setTransparencyOnlyForOpaque( currentAlpha, this.shownRgbData[i], true );
+							int[] rgbData = this.shownRgbData[i];
+							if (rgbData != null) {
+								ImageUtil.setTransparencyOnlyForOpaque( currentAlpha, rgbData, true );
+							}
 						}
 					//#endif
 				}
@@ -374,6 +377,7 @@ public class FishEyeContainerView extends ContainerView {
 			this.focusedStyle = this.focusedItem.getFocusedStyle();
 		}
 		if (this.referenceXCenterPositions != null && this.referenceXCenterPositions.length == length) {
+			// only another item has been focused, so nothing needs to be adjusted.
 			return;
 		}
 
@@ -730,16 +734,27 @@ public class FishEyeContainerView extends ContainerView {
 				if (scr != null) {
 					scr.setTitle( this.labels[ focIndex ] );
 				}
-			} else if (this.focusedLabel != null) {
-				this.focusedLabel.setText( this.labels[ focIndex ] );
-				if (this.focusedLabel.getStyle() != item.getStyle() 
-						//#if polish.css.fisheyeview-text-style
-							&& (this.focusedLabelStyle == null)
-						//#endif
-				) {
-					this.focusedLabel.setStyle( item.getStyle() );
-					removeItemBackground( this.focusedLabel );
-					removeItemBorder( this.focusedLabel );
+			} else {
+				StringItem focLabel = this.focusedLabel;
+				if (focLabel != null) {
+					int previousHeight = focLabel.itemHeight;
+					focLabel.setText( this.labels[ focIndex ] );
+					if (focLabel.getStyle() != item.getStyle() 
+							//#if polish.css.fisheyeview-text-style
+								&& (this.focusedLabelStyle == null)
+							//#endif
+					) {
+						focLabel.setStyle( item.getStyle() );
+						removeItemBackground( focLabel );
+						removeItemBorder( focLabel );
+					}
+					if (focLabel.getAvailableHeight() != 0) {
+						int currentHeight = focLabel.getItemHeight(focLabel.getAvailableWidth(), focLabel.getAvailableWidth(), focLabel.getAvailableHeight() );
+						if (currentHeight != previousHeight) {
+							this.contentHeight += (currentHeight - previousHeight);
+							this.parentContainer.setInitialized(false);
+						}
+					}
 				}
 			}
 		}
