@@ -1008,7 +1008,9 @@ public class StringItem extends Item
 		if (resetStyle) {
 			this.textColor = style.getFontColor();
 			//System.out.println("reset style: color=" + Integer.toHexString(this.textColor) + " for " + this);
+			Font prevFont = this.font;
 			this.font = style.getFont();
+			this.isTextInitializationRequired = (prevFont == null || !prevFont.equals(this.font));
 		}
 
 		//#ifdef polish.css.font-color
