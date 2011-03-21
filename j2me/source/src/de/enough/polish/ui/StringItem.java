@@ -660,6 +660,8 @@ public class StringItem extends Item
 						// start and stop the scrolling at wrong places outside of the clipping area: 
 						orientation = Graphics.LEFT;
 						lineX = x + this.xOffset;
+						isCenter = false;
+						isRight = false;
 					}
 				//#endif
 				//#if polish.Bugs.needsBottomOrientiationForStringDrawing
@@ -686,7 +688,7 @@ public class StringItem extends Item
 						endIndex = lines.size();
 					}
 				}
-				int usedContentWidth = rightBorder - leftBorder;
+				//int usedContentWidth = rightBorder - leftBorder;
 				int lineWidth;
 				Object[] lineObjects = lines.getLinesInternalArray();
 				for (int i = startIndex; i < endIndex; i++) {
@@ -694,12 +696,12 @@ public class StringItem extends Item
 					if (isCenter || isRight) {
 						lineWidth = lines.getLineWidth(i);
 						if (isCenter) {
-							x = centerX - (lineWidth/2);
+							lineX = centerX - (lineWidth/2);
 						} else {
-							x = rightBorder - lineWidth; // lineX + usedContentWidth - lineWidth; (the outcommented calculation results in misbehaving right aligment)
+							lineX = rightBorder - lineWidth; // lineX + usedContentWidth - lineWidth; (the outcommented calculation results in misbehaving right aligment)
 						}
 					}
-					drawString( line, x, lineY, orientation, g );
+					drawString( line, lineX, lineY, orientation, g );
 					lineY += lineHeight;
 				}
 		//#if tmp.useTextEffect
