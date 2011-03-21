@@ -1417,6 +1417,52 @@ implements ScreenInitializerListener, CycleListener
 		}
 	}
 	//#endif
+	
+	
+	//#ifdef polish.hasTouchEvents
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#handlePointerTouchDown(int, int)
+	 */
+	public boolean handlePointerTouchDown( int x, int y ) {
+		Screen scr = this.currentScreen;
+		if (scr != null) {
+			return scr.handlePointerTouchDown(x, y);
+		}
+		return super.handlePointerTouchDown(x, y);
+	}
+	//#endif
+	
+
+	//#ifdef polish.hasTouchEvents
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#handlePointerTouchUp(int, int)
+	 */
+	public boolean handlePointerTouchUp( int x, int y ) {
+		Screen scr = this.currentScreen;
+		if (scr != null) {
+			return scr.handlePointerTouchUp(x, y);
+		}
+		return super.handlePointerTouchUp(x, y);
+	}
+	//#endif
+	
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#getItemAt(int, int)
+	 */
+	public Item getItemAt( int x, int y ) {
+		Container tabs = this.tabIconsContainer;
+		if (tabs.isInItemArea(x - tabs.relativeX, y - tabs.relativeY)) {
+			return tabs.getItemAt(x - tabs.relativeX, y - tabs.relativeY);
+		}
+		Screen scr = this.currentScreen;
+		if (scr != null) {
+			return scr.getItemAt(x, y);
+		}
+		return super.getItemAt(x, y);
+	}
 
 	/* (non-Javadoc) 
 	 * @see Screen#notifyScreenStateChanged()
