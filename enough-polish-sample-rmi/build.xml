@@ -120,11 +120,8 @@
 		<!-- 
 		 -->
 		<build
-			symbols="ExampleSymbol, AnotherExample"
-			fullscreen="menu"
 			usePolishGui="always"
 			workDir="${dir.work}"
-			polishDir="../enough-polish-j2me/source/src"
 		>
 		    <sources>
 		    	<source dir="source/src" />
@@ -151,6 +148,13 @@
 				<variable name="polish.TextField.useDirectInput" value="true" />
 				<variable name="polish.useScrollBar" value="true" />
 				<variable name="polish.rmi.redirect" value="false" />
+				<variable
+					name="polish.FullScreen"
+					value="menu" 
+					unless="polish.blackberry || polish.android" 
+				/>
+				<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
+
 				<!-- 
 				You can use following mockup implementation for testing this application without using a server:
 				-->
@@ -172,7 +176,7 @@
 			</resources>
 			
 			<!-- obfuscator settings: do not obfuscate when the test-property is true -->
-			<obfuscator name="ProGuard" useDefaultPackage="false" unless="polish.blackberry or dontobfuscate" >
+			<obfuscator name="ProGuard" unless="polish.blackberry or dontobfuscate" >
 				<!--
 				You can set additional parameters here, e.g.:
 				<parameter name="optimize" value="false" />
