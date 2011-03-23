@@ -204,11 +204,11 @@ implements CommandListener
 			this.settingsForm = new Form( Locale.get("title.Settings") );
 			//#style exclusiveChoice
 			ChoiceGroup group = new ChoiceGroup( Locale.get("setting.sound"), ChoiceGroup.EXCLUSIVE );
-			//#style exclusiveChoiceItem, default
+			//#style exclusiveChoiceItem?
 			group.append( Locale.get("setting.sound.off"), null );
-			//#style exclusiveChoiceItem, default
+			//#style exclusiveChoiceItem?
 			group.append( Locale.get("setting.sound.on"), null );
-			//#style exclusiveChoiceItem, default
+			//#style exclusiveChoiceItem?
 			group.append( Locale.get("setting.sound.fxonly"), null );
 			this.settingsForm.append( group );
 			
@@ -219,7 +219,7 @@ implements CommandListener
 				int i = 0;
 				//#foreach locale in polish.SupportedLocales
 					//#message adding supported locale ${locale}
-					//#style exclusiveChoiceItem, default
+					//#style exclusiveChoiceItem?
 					//#= group.append( "${ displaylanguage( locale) }", null );
 					//#= this.localesFileNames[i] = "${ localefilename( locale) }";
 					i++;					
