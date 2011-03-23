@@ -125,36 +125,39 @@ alertcontent {
 }
 
 
+/*********************   MENU BAR     *******************************************************************************************************/
+/* You need to activate the extended menubar that allows this finetuned design by setting the 
+   "polish.MenuBar.useExtendedMenuBar" variable to "true" in your build.xml script. */
 
-/********************** commands menu ************************************************************************************/
+menubar
+{
+	padding-top: 3px;
+	padding: 2px;
+	background-color: bgColor;
+}
 
-/**
-  * the menu style is a predefined style for
-  * designing the fullscreen-menu.
-  * The font-settings (font-color,
-  * font-face, font-style and font-size)
-  * are used to design the menu-texts
-  * (like Options, Select, or Cancel).
-  * The menubar-color can be set to any
-  * color. When "transparent" is used,
-  * the background shines through.
-  */
 menu {
-	inherit: false;
-	margin-left: 2;
-	padding: 2;
+	margin-left: 2px;
+	margin-right: 2px;
+	min-width: 60%;
+	padding: 2px;
 	background {
 		type: round-rect;
-		color: brightBgColor;
+		color: focusedBgColor;
 		border-width: 2;
 		border-color: bgColor;
 	}
-	font-color: brightFontColor;
-	font-style: bold;
-	menubar-color: bgColor;
-	view-type: slide-up;
-	min-width: 65%;
 }
+
+/** Style for the first layer of subcommands: **/
+menu1 extends menu {
+	background-color: argb(150, 255, 255, 0 );
+	background-type: simple;
+      layout: right;
+      margin-bottom: 4px;
+      margin-right: 4px;
+}
+
 
 /**
   * The menuItem style is a predefined style
@@ -163,26 +166,49 @@ menu {
   * the menu style will be used instead. 
   */
 menuItem {
-	inherit: false;
-	margin-top: 2;
-	padding: 2;
-	padding-left: 5;
+	margin-top: 2px;
+	padding: 2px;
+	padding-left: 5px;
 	font {
 		color: fontColor;
 		size: medium;
 		style: bold;
 	}
 	layout: left;
+	/**
+	 * Yes, it's possible to use preprocessing within CSS files. Use any preprocessing
+	 * variables like polish.midp2 or polish.api.nokia-ui. You can also access resource
+	 * information using these property functions:
+	 * - exists( resourcename ): checks whether a resource is defined for the current target device
+	 * - imagewidth( imagename ): retrieves the width of the given image
+	 * - imageheight( imagename ): retrieves the height of the given image
+	 */
+	//#if ${ exists( arrowRight.png ) }
+		command-child-indicator: url(arrowRight.png);
+	//#else
+		command-child-indicator-color: blue;
+		command-child-indicator-width: 8;
+		command-child-indicator-height: 10;
+	//#endif
 }
 
-/**
-  * This is a custom style for selected
-  * menu items. It is used, because it has
-  * been defined in the menu style. 
-  */
 .menuItem:hover {
-	inherit: false;
 	background-color: bgColor;
-	font-color: brightFontColor;
+	font-color: focusedFontColor;
 	layout: left | horizontal-expand;
+}
+
+leftcommand
+{
+	margin: 0px; /* default */
+	padding-top: 3px;
+	padding-bottom: 0px;
+	font-color: fontColor;
+	font-style: bold;
+	layout: left;
+}
+
+rightcommand extends leftcommand
+{
+	layout: right;
 }
