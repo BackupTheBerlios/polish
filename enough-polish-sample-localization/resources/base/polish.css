@@ -143,21 +143,9 @@ menu {
 	padding: 2px;
 	background {
 		type: round-rect;
-		color: focusedBgColor;
-		border-width: 2;
-		border-color: bgColor;
+		color: brightBgColor;
 	}
 }
-
-/** Style for the first layer of subcommands: **/
-menu1 extends menu {
-	background-color: argb(150, 255, 255, 0 );
-	background-type: simple;
-      layout: right;
-      margin-bottom: 4px;
-      margin-right: 4px;
-}
-
 
 /**
   * The menuItem style is a predefined style
@@ -194,7 +182,7 @@ menuItem {
 
 .menuItem:hover {
 	background-color: bgColor;
-	font-color: focusedFontColor;
+	font-color: brightFontColor;
 	layout: left | horizontal-expand;
 }
 
@@ -203,12 +191,20 @@ leftcommand
 	margin: 0px; /* default */
 	padding-top: 3px;
 	padding-bottom: 0px;
-	font-color: fontColor;
+	font-color: brightFontColor;
 	font-style: bold;
 	layout: left;
+}
+
+leftcommand:pressed {
+	font-color: #333;
 }
 
 rightcommand extends leftcommand
 {
 	layout: right;
+}
+
+rightcommand:pressed {
+	font-color: #333;
 }
