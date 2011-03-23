@@ -76,7 +76,7 @@
 				-->
 			</deviceRequirements>
 		    <!-- build settings -->
-			<build fullscreen="menu" 
+			<build 
 	                imageLoadStrategy="foreground" 
 	                polishDir="../enough-polish-j2me/source/src" 
 	                symbols="" 
@@ -92,6 +92,12 @@
 				<midlet class="de.enough.roadrunner.RoadRunner" name="RoadRunner"/>
 				<!-- project-wide variables - used for preprocessing  -->
 				<variables>
+					<variable
+						name="polish.FullScreen"
+						value="menu" 
+						unless="polish.blackberry || polish.android" 
+					/>
+					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
 					<variable name="polish.usePolishTitle" value="true" />
 					<variable name="update-url" value="http://www.enough.de/update"/>
 					<variable name="polish.TextField.useDirectInput" value="true"  />
