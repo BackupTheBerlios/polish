@@ -60,7 +60,7 @@
 				<requirement name="Identifier" value="${device}"/>
 			</deviceRequirements>
 		    <!-- build settings -->
-			<build fullscreen="menu" 
+			<build  
 	                symbols="polish.skipArgumentCheck" 
 	                usePolishGui="true"
 					workDir="${dir.work}"
@@ -72,6 +72,12 @@
 				<variables>
 					<variable name="update-url" value="http://www.enough.de/update"/>
 					<variable name="polish.css.allowAllAttributes" value="true" />
+					<variable
+						name="polish.FullScreen"
+						value="menu" 
+						unless="polish.blackberry || polish.android" 
+					/>
+					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
 				</variables>
 				<!--
 				<jad>
