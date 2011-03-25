@@ -1618,7 +1618,7 @@ implements Choice
 					setSelectedIndex(this.focusedIndex, true);
 					handled = true;
 				}
-				if ( this.choiceType != Choice.IMPLICIT ) 
+				if ( handled && (this.choiceType != Choice.IMPLICIT) ) 
 				{
 					notifyStateChanged();
 				}
@@ -1681,7 +1681,7 @@ implements Choice
 		boolean triggerKey = (    
 				(handled || isInItemArea(relX, relY, this.focusedItem))
 				//#if polish.css.view-type
-				&& (index == this.focusedIndex || this.containerView == null || this.containerView.allowsDirectSelectionByPointerEvent) 
+				&& (index == this.focusedIndex || contView == null || contView.allowsDirectSelectionByPointerEvent) 
 				//#endif
 		);
 		//#debug
@@ -1723,13 +1723,13 @@ implements Choice
 			boolean handled = handlePointerScrollReleased(relX, relY);
 			if (!handled) {
 				//#ifdef tmp.supportViewType
-					if (this.containerView != null) {
-						handled = this.containerView.handlePointerReleased(relX, relY - this.yOffset);
+				ContainerView contView = this.containerView;
+					if (contView != null) {
+						handled = contView.handlePointerReleased(relX, relY - this.yOffset);
 					}
 				//#endif
 				int x = relX;
 				//#ifdef tmp.supportViewType
-					ContainerView contView = this.containerView;
 					if (contView != null) {
 						x -= contView.getScrollXOffset();
 					}
