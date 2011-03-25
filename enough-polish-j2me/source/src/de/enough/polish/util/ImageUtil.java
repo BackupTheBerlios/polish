@@ -1428,6 +1428,7 @@ public final class ImageUtil {
      * @param transparency the transparency between 0 (fully transparent) and 255 (fully opaque)
      * @param data the RGB data
      * @param onlyForPixelsWithGreaterAlphas true when the given transparency should be only applied to pixels that have a greater alpha value
+     * @throws NullPointerException when data is null
      */
     public static void setTransparencyOnlyForOpaque(int transparency, int[] data, boolean onlyForPixelsWithGreaterAlphas) {
         int alpha = (transparency << 24); // is now 0xtt000000
