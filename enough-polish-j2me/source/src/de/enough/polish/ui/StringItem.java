@@ -1010,7 +1010,9 @@ public class StringItem extends Item
 			//System.out.println("reset style: color=" + Integer.toHexString(this.textColor) + " for " + this);
 			Font prevFont = this.font;
 			this.font = style.getFont();
-			this.isTextInitializationRequired = this.isTextInitializationRequired || (prevFont == null && this.font != null) || !prevFont.equals(this.font);
+			this.isTextInitializationRequired = this.isTextInitializationRequired 
+				|| (prevFont == null && this.font != null) 
+				|| (prevFont != null && !prevFont.equals(this.font));
 		}
 
 		//#ifdef polish.css.font-color
