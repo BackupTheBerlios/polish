@@ -10,22 +10,23 @@ import de.enough.polish.util.ArrayList;
 /**
  * 
  * <p>
- * TabbedPane is a <A HREF="../../../javax/microedition/lcdui/Screen.html" title="class in javax.microedition.lcdui"><CODE>Screen</CODE></A> subclass that presents a series of
- * <A HREF="../../../javax/microedition/lcdui/Screen.html" title="class in javax.microedition.lcdui"><CODE>Screens</CODE></A> to the user and allows them to navigate between them
+ * TabbedPane is a <A HREF="../../../de/enough/polish/ui/Screen.html" title="class in de.enough.polish.ui"><CODE>Screen</CODE></A> subclass that presents a series of
+ * <A HREF="../../../de/enough/polish/ui/Screen.html" title="class in de.enough.polish.ui"><CODE>Screens</CODE></A> to the user and allows them to navigate between them
  * by selecting the corresponding tab.
  * </p>
  * <p>Set the preprocessing variable <code>polish.TabbedPane.switchTabsWithGestures</code> to <code>true</code>
  * if you want to switch tabs with left and right swipe gestures.
  * </p>
+ * <p>Call <code>tabbedPane.setTabbarIsSelectable(true);<code> before adding tabs if the tab bar should be focusable with key events.</p>
  * 
  * <p>
  * Each tab has a Screen object that is its <em>contents</em>. Only
- * <A HREF="../../../javax/microedition/lcdui/Form.html" title="class in javax.microedition.lcdui"><CODE>Form</CODE></A> and <A HREF="../../../javax/microedition/lcdui/List.html" title="class in javax.microedition.lcdui"><CODE>List</CODE></A> objects can be added as the contents
+ * <A HREF="../../../de/enough/polish/ui/Form.html" title="class in de.enough.polish.ui"><CODE>Form</CODE></A> and <A HREF="../../../de/enough/polish/ui/List.html" title="class in de.enough.polish.ui"><CODE>List</CODE></A> objects can be added as the contents
  * for a tab; another TabbedPane cannot be used as the contents for a tab.
  * </p>
  * 
  * <p>
- * Each tab must include an icon <A HREF="../../../javax/microedition/lcdui/Image.html" title="class in javax.microedition.lcdui"><CODE>Image</CODE></A> object to indicate its
+ * Each tab must include an icon <A HREF="../../../de/enough/polish/ui/Image.html" title="class in de.enough.polish.ui"><CODE>Image</CODE></A> object to indicate its
  * content. The <code>Image</code> may be mutable or immutable; if the
  * <code>Image</code> is mutable, the effect is as if a snapshot of the Image
  * is taken at the time the TabbedPane is constructed or the tab is added to the
@@ -37,8 +38,8 @@ import de.enough.polish.util.ArrayList;
  * <p>
  * Implementations may truncate or scale the icon image if it is larger than the
  * size supported by device. Applications can query the implementation's tab
- * icon size by calling <A HREF="../../../javax/microedition/lcdui/Display.html#getBestImageWidth(int)"><CODE>Display.getBestImageWidth(int)</CODE></A> and
- * <A HREF="../../../javax/microedition/lcdui/Display.html#getBestImageHeight(int)"><CODE>Display.getBestImageHeight(int)</CODE></A> methods using the <A HREF="../../../javax/microedition/lcdui/Display.html#TAB"><CODE>Display.TAB</CODE></A>
+ * icon size by calling <A HREF="../../../de/enough/polish/ui/Display.html#getBestImageWidth(int)"><CODE>Display.getBestImageWidth(int)</CODE></A> and
+ * <A HREF="../../../de/enough/polish/ui/Display.html#getBestImageHeight(int)"><CODE>Display.getBestImageHeight(int)</CODE></A> methods using the <A HREF="../../../de/enough/polish/ui/Display.html#TAB"><CODE>Display.TAB</CODE></A>
  * image type. The style and apperance of tabs are platform-dependent.
  * </p>
  * 
@@ -47,7 +48,7 @@ import de.enough.polish.util.ArrayList;
  * on the screen at one time. In that case, implementations must indicate to
  * users that more tabs are available and provide a mechanism for accessing
  * them. An application can be notified of tab navigation events on a given
- * TabbedPane using the <A HREF="TabListener.html" title="interface in javax.microedition.lcdui"><CODE>TabListener</CODE></A> interface.
+ * TabbedPane using the <A HREF="TabListener.html" title="interface in de.enough.polish.ui"><CODE>TabListener</CODE></A> interface.
  * </P>
  * <p>
  * <img src="doc-files/arrows_in_tab.gif">
@@ -156,7 +157,7 @@ implements ScreenInitializerListener, CycleListener
 		private int pointerPressX;
 	//#endif
 	private boolean isSizeChangedCalled;
-	private boolean isTabIconsContainerSelectable = true;
+	private boolean isTabIconsContainerSelectable;
 	private boolean isTabIconsContainerFocused;
 	private Style tabIconsContainerStyle;
 
@@ -737,6 +738,8 @@ implements ScreenInitializerListener, CycleListener
 	 * @throws NullPointerException if either tab or icon is null.
 	 */
 	public void setCurrentTab( Displayable tab, IconItem tabIconItem, Style tabIconStyle) {
+		//#debug
+		System.out.println("setting current tab " + tab + ", currentIndex=" + this.currentDisplayableIndex);
 		int index = this.currentDisplayableIndex;
 		if (index == -1) {
 			if (size() == 0) {
@@ -1177,7 +1180,7 @@ implements ScreenInitializerListener, CycleListener
 
 	/**
 	 * Allows to specify whether the tabbar can be selected by the user with key events.
-	 * By default this is allowed. Note that this configuration method needs to be called before
+	 * By default this is not allowed. Note that this configuration method needs to be called before
 	 * any tabs are added to this pane.
 	 * 
 	 * @param isSelectable false when the tabbar should not be selectable.
@@ -1201,7 +1204,6 @@ implements ScreenInitializerListener, CycleListener
 				//#endif
 				Container rc = scr.getRootContainer();
 				rc.defocus(rc.style);
-				rc.setScrollYOffset(0, true);
 				//#if tmp.useExternalMenuBar
 					if (currentMenuBar.relativeY != relY) {
 						int tabHeight = this.tabIconsContainer.itemHeight;
@@ -1209,6 +1211,7 @@ implements ScreenInitializerListener, CycleListener
 					}
 				//#endif
 			}
+			repaint();
 			return false;
 		}
 		return true;
@@ -1222,11 +1225,12 @@ implements ScreenInitializerListener, CycleListener
 		int gameAction = getGameAction(keyCode);
 		if (this.isTabIconsContainerFocused) {
 			if (this.tabIconsContainer.handleKeyPressed(keyCode, gameAction)) {
-				setFocus( this.tabIconsContainer.getFocusedIndex() );
-				if (this.currentScreen != null) {
-					Container rc = this.currentScreen.getRootContainer();
-					rc.defocus(rc.style);
+				Displayable disp = getDisplayable( this.tabIconsContainer.getFocusedIndex() );
+				if (disp instanceof Screen) {
+					Container rc = ((Screen)disp).getRootContainer();
+					rc.defocus(rc.style);					
 				}
+				setFocus( this.tabIconsContainer.getFocusedIndex() );
 			} else if (gameAction == DOWN || gameAction == UP) {
 				this.tabIconsContainer.defocus(this.tabIconsContainerStyle);
 				this.isTabIconsContainerFocused = false;
@@ -1235,6 +1239,7 @@ implements ScreenInitializerListener, CycleListener
 					rc.focus(rc.style, gameAction);
 				}
 			}
+			repaint();
 			return true;
 		}
 		if (this.currentScreen != null) {
@@ -1316,7 +1321,7 @@ implements ScreenInitializerListener, CycleListener
 	
 	//#ifdef polish.hasPointerEvents
 	/* (non-Javadoc)
-	 * @see javax.microedition.lcdui.Canvas#_pointerDragged(int, int)
+	 * @see de.enough.polish.ui.Canvas#_pointerDragged(int, int)
 	 */
 	public boolean _pointerDragged(int x, int y) {
 		Container tabs = this.tabIconsContainer;
@@ -1340,7 +1345,7 @@ implements ScreenInitializerListener, CycleListener
 
 	//#ifdef polish.hasPointerEvents
 	/* (non-Javadoc)
-	 * @see javax.microedition.lcdui.Canvas#_pointerPressed(int, int)
+	 * @see de.enough.polish.ui.Canvas#_pointerPressed(int, int)
 	 */
 	public boolean _pointerPressed(int x, int y) {
 		Container tabs = this.tabIconsContainer;
@@ -1367,7 +1372,7 @@ implements ScreenInitializerListener, CycleListener
 
 	//#ifdef polish.hasPointerEvents
 	/* (non-Javadoc) 
-	 * @see javax.microedition.lcdui.Canvas#_pointerReleased(int, int)
+	 * @see de.enough.polish.ui.Canvas#_pointerReleased(int, int)
 	 */
 	public boolean _pointerReleased(int x, int y) {
 		Container tabs = this.tabIconsContainer;
@@ -1489,6 +1494,8 @@ implements ScreenInitializerListener, CycleListener
 	 * @see de.enough.polish.ui.Screen#hideNotify()
 	 */
 	public void hideNotify() {
+		//#debug
+		System.out.println("hideNotify for " + this);
 		if (this.currentScreen != null) {
 			this.currentScreen._hideNotify();
 		}
@@ -1500,6 +1507,8 @@ implements ScreenInitializerListener, CycleListener
 	 * @see de.enough.polish.ui.Screen#showNotify()
 	 */
 	public void showNotify() {
+		//#debug
+		System.out.println("showNotify for " + this);
 		if (this.currentDisplayableIndex == -1 && this.tabDisplayables.size() > 0) {
 			setFocus(0);
 		}
