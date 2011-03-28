@@ -458,11 +458,7 @@ public class Container extends Item {
 			return last;
 		}
 		item.parent = this;
-		boolean focusNewItem = false;
-		if (index == this.focusedIndex) {
-			focusNewItem = last.isFocused;
-			last.defocus(this.itemStyle);
-		}
+		boolean focusNewItem = (index == this.focusedIndex) && (last.isFocused);
 		this.itemsList.set(index, item);
 		if (itemStyle != null) {
 			item.setStyle(itemStyle);
@@ -1091,7 +1087,6 @@ public class Container extends Item {
 			//System.out.println("focus: contentWidth=" + this.contentWidth + ", of container " + this);
 			//int wAfter = item.getItemWidth( this.availableContentWidth, this.availableContentWidth, this.availableHeight );
 			// fix 2008-11-11: availableContentWidth can be different from the width granted to items in a ContainerView: 
-			
 			int wAfter = getChildWidth( item );
 			int hAfter = item.itemHeight;
 			int layoutAfter = item.layout;
@@ -1166,9 +1161,31 @@ public class Container extends Item {
 	 * @return the width of the child item
 	 */
 	protected int getChildWidth(Item item) {
-		int widthAfter = item.getItemWidth( item.availableWidth, item.availableWidth, item.availableHeight );
-		return widthAfter;
+		int w;
+		if (item.availableWidth > 0) {
+			w = item.getItemWidth( item.availableWidth, item.availableWidth, item.availableHeight );
+		} else {
+			w = item.getItemWidth( this.availContentWidth, this.availContentWidth, this.availContentHeight );
+		}
+		return w;
 	}
+	
+	/**
+	 * Queries the height of an child item of this container.
+	 * This allows subclasses to control the possible re-initialization that is happening here.
+	 * @param item the child item
+	 * @return the height of the child item
+	 */
+	protected int getChildHeight(Item item) {
+		int h;
+		if (item.availableWidth > 0) {
+			h = item.getItemHeight( item.availableWidth, item.availableWidth, item.availableHeight );
+		} else {
+			h = item.getItemHeight( this.availContentWidth, this.availContentWidth, this.availContentHeight );
+		}
+		return h;
+	}
+
 
 	/**
 	 * Retrieves the best matching focus style for the given item
