@@ -765,7 +765,6 @@ public class MenuBar extends Item {
 						} else {
 							cmdCont.relativeX = 0;
 						}
-						
 					} else 
 				//#endif
 				{

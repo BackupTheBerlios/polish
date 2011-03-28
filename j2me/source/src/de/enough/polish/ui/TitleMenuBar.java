@@ -130,9 +130,33 @@ public class TitleMenuBar extends MenuBar{
 			}
 		//#endif
 	}
+
 	
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.MenuBar#initContent(int, int, int)
+	 * @see de.enough.polish.ui.Item#init(int, int, int)
+	 */
+	protected void init(int firstLineWidth, int availWidth, int availHeight) {
+		super.init(firstLineWidth, availWidth, availHeight);
+		
+		Container cmds = this.commandsContainer;
+		if (cmds.isLayoutVerticalCenter()) {
+			cmds.relativeY = this.contentHeight + (availHeight - (this.contentHeight + cmds.itemHeight))/2;
+		} else if (cmds.isLayoutBottom()) {
+			cmds.relativeY = this.contentHeight + (availHeight - (this.contentHeight + cmds.itemHeight));
+		} else {
+			cmds.relativeY = this.contentHeight;
+		}
+		if (cmds.isLayoutCenter()) {
+			cmds.relativeX = (availWidth - cmds.itemWidth)/2;
+		} else if (cmds.isLayoutRight) {
+			cmds.relativeX = (availWidth - cmds.itemWidth);
+		} else {
+			cmds.relativeX = 0;
+		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#initContent(int, int, int)
 	 */
 	protected void initContent(int firstLineWidth, int availWidth, int availHeight) {
 		super.initContent(firstLineWidth, availWidth, availHeight);
@@ -174,24 +198,7 @@ public class TitleMenuBar extends MenuBar{
 		} else {
 			title.relativeX = 0;
 		}
-//		int availScreenWidth = availWidth >> 1;
-//		title.relativeX = availScreenWidth - (title.itemWidth / 2);
-		
-		Container cmds = this.commandsContainer;
-		if (cmds.isLayoutVerticalCenter()) {
-			cmds.relativeY = this.contentHeight + (availHeight - (this.contentHeight + cmds.itemHeight))/2;
-		} else if (cmds.isLayoutBottom()) {
-			cmds.relativeY = this.contentHeight + (availHeight - (this.contentHeight + cmds.itemHeight));
-		} else {
-			cmds.relativeY = this.contentHeight;
-		}
-		if (cmds.isLayoutCenter()) {
-			cmds.relativeX = (availWidth - cmds.itemWidth)/2;
-		} else if (cmds.isLayoutRight) {
-			cmds.relativeX = (availWidth - cmds.itemWidth);
-		} else {
-			cmds.relativeX = 0;
-		}
+
 	}
 	
 	/* (non-Javadoc)
