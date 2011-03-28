@@ -4649,10 +4649,38 @@ public class TextField extends StringItem
 	 * @param text the help text
 	 * @see #setHelpStyle()
 	 * @see #setHelpStyle(Style)
+	 * @see #setHelpText(String,Style)
 	 */
 	public void setHelpText(String text)
 	{
 		this.helpItem.setText(text);
+	}
+	//#endif
+	
+	//#if polish.TextField.showHelpText
+	/**
+	 * Sets a help text for this TextField and its style. The help text
+	 * appears when a TextField has no input yet and is
+	 * used to inform the user about the desired content 
+	 * (e.g. "Insert name here ...")
+	 * This method is only available when you have set the <code>polish.TextField.showHelpText</code> preprocessing variable to <code>true</code>
+	 * in the build.xml.
+	 * This method can be used with preprocessing:
+	 * <pre>
+	 * //#style inputHelp
+	 * myTextField.setHelpText("Enter your Name...");
+	 * </pre>
+	 * @param text the help text
+	 * @see #setHelpStyle()
+	 * @see #setHelpStyle(Style)
+	 * @see #setHelpText(String)
+	 */
+	public void setHelpText(String text, Style helpStyle)
+	{
+		this.helpItem.setText(text);
+		if (helpStyle != null) {
+			this.helpItem.setStyle(helpStyle);
+		}
 	}
 	//#endif
 	
