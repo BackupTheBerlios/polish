@@ -4644,7 +4644,11 @@ public class TextField extends StringItem
 	 * appears when a TextField has no input yet and is
 	 * used to inform the user about the desired content 
 	 * (e.g. "Insert name here ...")
+	 * This method is only available when you have set the <code>polish.TextField.showHelpText</code> preprocessing variable to <code>true</code>
+	 * in the build.xml.
 	 * @param text the help text
+	 * @see #setHelpStyle()
+	 * @see #setHelpStyle(Style)
 	 */
 	public void setHelpText(String text)
 	{
@@ -4656,8 +4660,14 @@ public class TextField extends StringItem
 	/**
 	 * Sets the help style for this TextField
 	 * with the use of style preprocessing e.g.:
+	 * <pre>
 	 * //#style myStyle
 	 * setHelpStyle();
+	 * </pre>
+	 * This method is only available when you have set the <code>polish.TextField.showHelpText</code> preprocessing variable to <code>true</code>
+	 * in the build.xml.
+	 * @see #setHelpText(String)
+	 * @see #setHelpStyle(Style)
 	 */
 	public void setHelpStyle() {
 		// nothing here
@@ -4665,7 +4675,11 @@ public class TextField extends StringItem
 	
 	/**
 	 * Sets the style of the help text
+	 * This method is only available when you have set the <code>polish.TextField.showHelpText</code> preprocessing variable to <code>true</code>
+	 * in the build.xml.
 	 * @param style the style
+	 * @see #setHelpText(String)
+	 * @see #setHelpStyle()
 	 */
 	public void setHelpStyle(Style style)
 	{
@@ -4677,6 +4691,7 @@ public class TextField extends StringItem
 	/**
 	 * Returns the StringItem which is displaying the input info
 	 * @return the StringItem displaying the input info
+	 * @see #getInfoItem()
 	 */
 	public StringItem getInfoItem() {
 		return this.infoItem;
@@ -4685,6 +4700,7 @@ public class TextField extends StringItem
 	/**
 	 * Sets the StringItem which should display the input info 
 	 * @param infoItem the StringItem to display the input info
+	 * @see #setInfoItem(StringItem)
 	 */
 	public void setInfoItem(StringItem infoItem) {
 		this.infoItem = infoItem;
