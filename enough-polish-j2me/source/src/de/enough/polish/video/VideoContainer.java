@@ -26,6 +26,7 @@ import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.UiAccess;
 import de.enough.polish.util.ArrayList;
+import de.enough.polish.util.ToStringHelper;
 import de.enough.polish.video.util.VideoUtil;
 
 /**
@@ -556,11 +557,13 @@ public class VideoContainer extends Container implements Runnable, PlayerListene
 				getScreen().removePermanentNativeItem(this);
 			}
 			this._bbField = (Field) videoControl.initDisplayMode(VideoControl.USE_GUI_PRIMITIVE, "net.rim.device.api.ui.Field");
+			videoControl.setDisplaySize(this.videoWidth, this.videoHeight);
 			if (this.adjustSizeAutomatically) {
-				this.contentWidth = videoControl.getSourceWidth();
-				this.contentHeight = videoControl.getSourceHeight();
-			}
-
+				int resultWidth = videoControl.getDisplayWidth();
+				int resultHeight = videoControl.getDisplayHeight();
+				this.contentWidth = resultWidth;
+				this.contentHeight = resultHeight;
+			} 
 		//#elif polish.video.rotate
 			if(isLandscape())
 			{
@@ -1067,8 +1070,8 @@ public class VideoContainer extends Container implements Runnable, PlayerListene
 		if (this.adjustSizeAutomatically && this.source != null) {
 			VideoControl videoControl = this.source.getVideoControl();
 			if (videoControl != null) {
-				this.contentWidth = videoControl.getSourceWidth();
-				this.contentHeight = videoControl.getSourceHeight();
+				this.contentWidth = videoControl.getDisplayWidth();
+				this.contentHeight = videoControl.getDisplayHeight();
 			}
 		}
 	}
