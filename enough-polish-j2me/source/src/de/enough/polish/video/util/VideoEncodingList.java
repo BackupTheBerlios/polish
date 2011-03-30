@@ -153,4 +153,13 @@ public class VideoEncodingList {
 	public VideoEncoding get(int index) {
 		return (VideoEncoding) this.encodings.get(index);
 	}
+
+	/**
+	 * Returns the video encodings as an array
+	 * 
+	 * @return the video encodings as an array
+	 */
+	public VideoEncoding[] toArray() {
+		return (VideoEncoding[])this.encodings.toArray(new VideoEncoding[this.encodings.size()]);
+	}
 }

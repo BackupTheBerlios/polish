@@ -212,6 +212,14 @@ public class VideoEncoding {
 	public String getMode() {
 		return mode;
 	}
+	
+	/**
+	 * Returns a string describing the solution of the encoding
+	 * @return a string describing the solution of the encoding
+	 */
+	public String toResolutionString() {
+		return this.width + "x" + this.height;
+	}
 
 	/*
 	 * (non-Javadoc)
