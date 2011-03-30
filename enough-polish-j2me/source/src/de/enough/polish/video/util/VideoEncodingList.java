@@ -79,56 +79,42 @@ public class VideoEncodingList {
 		for (int index = 0; index < encodings.size(); index++) {
 			VideoEncoding encoding = (VideoEncoding) encodings.get(index);
 
-			boolean result = false;
-
 			String mime = filter.getMime();
 			if (mime != null) {
-				if (mime.equals(encoding.getMime())) {
-					result = true;
-				} else {
-					result = false;
+				if (!mime.equals(encoding.getMime())) {
+					continue;
 				}
 			}
 
 			String width = filter.getWidth();
 			if (width != null) {
-				if (width.equals(encoding.getWidth())) {
-					result = true;
-				} else {
-					result = false;
+				if (!width.equals(encoding.getWidth())) {
+					continue;
 				}
 			}
 
 			String height = filter.getHeight();
 			if (height != null) {
-				if (height.equals(encoding.getHeight())) {
-					result = true;
-				} else {
-					result = false;
+				if (!height.equals(encoding.getHeight())) {
+					continue;
 				}
 			}
 
 			String videoCodec = filter.getVideoCodec();
 			if (videoCodec != null) {
-				if (videoCodec.equals(encoding.getVideoCodec())) {
-					result = true;
-				} else {
-					result = false;
+				if (!videoCodec.equals(encoding.getVideoCodec())) {
+					continue;
 				}
 			}
 
 			String audioCodec = filter.getAudioCodec();
 			if (audioCodec != null) {
-				if (audioCodec.equals(encoding.getAudioCodec())) {
-					result = true;
-				} else {
-					result = false;
-				}
+				if (!audioCodec.equals(encoding.getAudioCodec())) {
+					continue;
+				} 
 			}
 
-			if (result) {
-				filteredEncodings.add(encoding);
-			}
+			filteredEncodings.add(encoding);
 		}
 
 		return filteredEncodings;
