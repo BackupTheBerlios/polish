@@ -33,7 +33,7 @@ public abstract class AbstractPlayer implements Player {
 	protected abstract void doClose();
 
 	/**
-	 * @j2mepolish This method will not interrupt a blocking {@link #realize()} call.
+	 * This method will not interrupt a blocking {@link #realize()} call.
 	 */
 	public void deallocate() {
 		if(this.meState == STARTED) {

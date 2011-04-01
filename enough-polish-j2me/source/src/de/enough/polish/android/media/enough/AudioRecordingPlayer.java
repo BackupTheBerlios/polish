@@ -112,7 +112,7 @@ public class AudioRecordingPlayer extends AbstractPlayer implements RecordContro
 	}
 
 	/**
-	 * @j2mepolish When this method is called, all recorded data is written in one bulk to a given OutputStream.
+	 * When this method is called, all recorded data is written in one bulk to a given OutputStream.
 	 */
 	public void commit() throws IOException {
 		FileInputStream fileInputStream;
@@ -166,7 +166,7 @@ public class AudioRecordingPlayer extends AbstractPlayer implements RecordContro
 	}
 
 	/**
-	 * @j2mepolish Only audio capture is supported. Supported encodings: amr,3gpp,mpeg4
+	 * Only audio capture is supported. Supported encodings: amr,3gpp,mpeg4
 	 */
 	public void setRecordLocation(String locator) throws IOException, MediaException {
 		if(this.recordingState != RECORDING_STOPPED) {

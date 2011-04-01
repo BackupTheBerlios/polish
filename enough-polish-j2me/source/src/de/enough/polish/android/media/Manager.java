@@ -220,7 +220,7 @@ public final class Manager extends Object
 
 	/**
 	 * Create a <code>Player</code> from an input locator.
-	 * @j2mepolish As locator parameters only the http protocol is supported.
+	 *
 	 * @param locator - A locator string in URI syntax that describes the media content.
 	 * @return A new Player.
 	 * @throws IllegalArgumentException - Thrown if locator is null.

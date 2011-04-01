@@ -59,7 +59,7 @@ public class AndroidPlayer implements Player,VolumeControl, RecordControl, Runna
 	}
 
 	/**
-	 * @j2mepolish This method does nothing if in the STARTED state and the stream can not be stopped.
+	 * This method does nothing if in the STARTED state and the stream can not be stopped.
 	 */
 	public void deallocate() {
 		if(this.meState == STARTED) {
@@ -114,7 +114,7 @@ public class AndroidPlayer implements Player,VolumeControl, RecordControl, Runna
 	}
 
 	/**
-	 * @j2mepolish This method is not really needed as realization happens at construction time with the {@link #setDataSource(String)} method.
+	 * This method is not really needed as realization happens at construction time with the {@link #setDataSource(String)} method.
 	 */
 	public void realize() throws MediaException {
 		// Does nothing as the realization already happened at creation time of the Player.
@@ -130,7 +130,7 @@ public class AndroidPlayer implements Player,VolumeControl, RecordControl, Runna
 	}
 
 	/**
-	 * @j2mepolish This method is not supported.
+	 * This method is not supported.
 	 */
 	public long setMediaTime(long now) throws MediaException {
 		throw new MediaException("Not supported.");
@@ -168,7 +168,7 @@ public class AndroidPlayer implements Player,VolumeControl, RecordControl, Runna
 	}
 
 	/**
-	 * @j2mepolish This method is internal. It should only be called right after creation of a MediaPlayer.
+	 * This method is internal. It should only be called right after creation of a MediaPlayer.
 	 * @param locator
 	 * @throws IOException
 	 * @throws MediaException 
