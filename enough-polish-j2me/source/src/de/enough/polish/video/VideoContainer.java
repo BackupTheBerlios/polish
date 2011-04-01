@@ -26,7 +26,6 @@ import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.UiAccess;
 import de.enough.polish.util.ArrayList;
-import de.enough.polish.util.ToStringHelper;
 import de.enough.polish.video.util.VideoUtil;
 
 /**
