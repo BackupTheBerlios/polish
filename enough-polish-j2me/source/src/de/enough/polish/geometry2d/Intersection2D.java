@@ -40,8 +40,8 @@ public class Intersection2D {
     /**
      * Checks if two points coincide.
      * 
-     * @param the first point.
-     * @param the second point
+     * @param p1 the first point.
+     * @param p2 the second point
      * @return a reference to p1 if the points coincide, null otherwise.
      */
     public static Point2D intersection(Point2D p1, Point2D p2)
@@ -59,8 +59,8 @@ public class Intersection2D {
     /**
      * Checks if a line and a point intersect (if the point is on the line).
      *
-     * @param the line to use
-     * @param the point to use
+     * @param line the line to use
+     * @param point the point to use
      * @return a reference to the point if the two entities intersect, null otherwise.
      */
     public static Point2D intersection(Line2D line, Point2D point)
@@ -97,8 +97,8 @@ public class Intersection2D {
     /**
      * Checks if two lines (or line segments) overlap.
      *
-     * @param the first line
-     * @param the second line
+     * @param line1 the first line
+     * @param line2 the second line
      * @return returns true if they overlap, false otherwise
      */
     public static boolean areOverlapping(Line2D line1, Line2D line2)
@@ -118,8 +118,8 @@ public class Intersection2D {
      * IMPORTANT: If the intersection is not a point but a line or a line segment,
      * the function will return null.
      *
-     * @param the first line
-     * @param the second line
+     * @param line1 the first line
+     * @param line2 the second line
      * @return the intersection point, or null if they are parallel
      */
     public static Point2D intersection(Line2D line1, Line2D line2)
@@ -173,8 +173,8 @@ public class Intersection2D {
     /**
      * Determines if a given point intersects with a polygon
      *
-     * @param the polygon to use
-     * @param the point to use
+     * @param polygon the polygon to use
+     * @param point the point to use
      * @return a reference to the point if the two shapes intersect, null otherwise
      */
     public static Point2D intersection(Polygon2D polygon, Point2D point)
@@ -226,8 +226,8 @@ public class Intersection2D {
     /**
      * Determines if a given point is inside the specified polygon.
      *
-     * @param the polygon to use
-     * @param the point to use
+     * @param polygon the polygon to use
+     * @param point the point to use
      * @return a reference to the point if it sits inside, null otherwise
      */
     public static Point2D isInside(Polygon2D polygon, Point2D point)
@@ -317,8 +317,8 @@ public class Intersection2D {
     /**
      * Calculates the intersection point(s) between a polygon and a line.
      *
-     * @param the polygon to use
-     * @param the line to use
+     * @param polygon the polygon to use
+     * @param line the line to use
      * @return a Vector of Point2D objects representing the intersection points, or null if the two entities do not intersect
      */
     public static Vector intersection(Polygon2D polygon, Line2D line)
@@ -391,8 +391,8 @@ public class Intersection2D {
     /**
      * Calculates the intersection point(s) of two polygons.
      *
-     * @param the first polygon
-     * @param the second polygon
+     * @param polygon1 the first polygon
+     * @param polygon2 the second polygon
      * @return a Vector of Point2D objects representing the intersection points, or null if the two entities do not intersect
      */
     public static Vector intersection(Polygon2D polygon1, Polygon2D polygon2)

@@ -171,7 +171,7 @@ public class JSONParser {
 	
 	/**
 	 * Parses JSON data from an InputStream
-	 * @param JSON the InputStream containing the JSON data
+	 * @param stream the InputStream containing the JSON data
 	 * @return the native object hierarchy corresponding to the JSON data
 	 * @throws IOException
 	 * @throws JSONException

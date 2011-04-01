@@ -64,7 +64,7 @@ public class TexturePlane extends Group
 	 * @param sourceImg source image that is to be shown by subquads
 	 * @param textureDimension texture dimension to be used
 	 * @param isExplicit if texture dimension is set explicitly
-	 * @param Appearance appearance whose settings are to be shared amongst subquads  
+	 * @param baseAppearance appearance whose settings are to be shared amongst subquads  
 	 */
 	public TexturePlane(Image sourceImg, int textureDimension, boolean isExplicit, Appearance baseAppearance ) 
 	{
@@ -118,7 +118,7 @@ public class TexturePlane extends Group
 	 * @param sourceImg source image that is to be shown by subquads
 	 * @param textureDimension texture dimension to be used
 	 * @param isExplicit if texture dimension is set explicitly
-	 * @param Appearance appearance whose settings are to be shared amongst subquads 
+	 * @param baseAppearance appearance whose settings are to be shared amongst subquads 
 	 */
 	public void setTexture(Image sourceImg, int textureDimension, boolean isExplicit, Appearance baseAppearance) 
 	{
@@ -374,7 +374,7 @@ public class TexturePlane extends Group
 	
 	/**
 	 * 
-	 * @return
+	 * @return the texture dimension
 	 */
 	public int getTextureDimension()
 	{

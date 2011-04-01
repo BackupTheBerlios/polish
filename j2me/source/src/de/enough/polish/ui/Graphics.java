@@ -2047,7 +2047,6 @@ public class Graphics {
 	 * @param y2 the y coordinate of the second vertex of the triangle
 	 * @param x3 the x coordinate of the third vertex of the triangle
 	 * @param y3 the y coordinate of the third vertex of the triangle
-	 * @param g the graphics context
 	 */
 	public void drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3) {
 		graphics.drawLine( x1, y1, x2, y2 );
@@ -2585,11 +2584,11 @@ public class Graphics {
 
     //#if polish.hasFloatingPoint
     /**
-     * Draws a thick line of the specified width, at the specified coordinates, having the specified angle.* @param width the width (or thickness) of the line
+     * Draws a thick line of the specified width, at the specified coordinates, having the specified angle.
+     * @param width the width (or thickness) of the line
      * @param length the length of the line
-
-     * @param targetX the X target coordinate
-     * @param targetY the Y target coordinate
+     * @param startX the X start coordinate
+     * @param startY the Y start coordinate
      * @param degrees the line angle (in degrees)
      */
     public void drawAngledLine( int width, int length, int startX, int startY, int degrees )
@@ -2626,11 +2625,11 @@ public class Graphics {
     //#if polish.hasFloatingPoint
     /**
      * Draws a line of the specified width
-     * @param line width
-     * @param x coordinate of the starting point
-     * @param y coordinate of the starting point
-     * @param x coordinate of the end point
-     * @param y coordinate of the end point
+     * @param width the line width
+     * @param x1 the x coordinate of the starting point
+     * @param y1 the y coordinate of the starting point
+     * @param x2 the x coordinate of the end point
+     * @param y2 the y coordinate of the end point
      */
     public void drawLine( int width, int x1, int y1, int x2, int y2 )
     {
@@ -2792,7 +2791,7 @@ public class Graphics {
     //#if polish.hasFloatingPoint
     /**
      * Draws a rotated RgbImage at the specified coordinates.
-     * @param image the image to draw
+     * @param img the image to draw
      * @param imageCenterX the image rotation center X coordinate
      * @param imageCenterY the image rotation center Y coordinate
      * @param targetCenterX the X coordinate of the rotation center on the Graphics object

@@ -177,7 +177,7 @@ public class Image
      * <li>the transform is <code>TRANS_NONE</code>.</li>
      * </ul>
      *
-     * @param image the source image to be copied from
+     * @param img the source image to be copied from
      * @param x the horizontal location of the region to be copied
      * @param y the vertical location of the region to be copied
      * @param width the width of the region to be copied

@@ -43,7 +43,7 @@ public class Enlarge2D
      * Enlarges the specified line.
      *
      * @param line to enlarge
-     * @param enlargement factor
+     * @param factor the factor
      */
     public static void enlarge(Line2D line, double factor)
     {
@@ -58,7 +58,7 @@ public class Enlarge2D
      * Enlarges the specified polygon.
      *
      * @param polygon to enlarge
-     * @param enlargement factor
+     * @param factor the factor
      */
     public static void enlarge(Polygon2D polygon, double factor)
     {

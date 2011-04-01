@@ -38,9 +38,9 @@ public class Translation2D
     /**
      * Translate a Point2D object on the X and Y axes.
      * 
-     * @param the point to translate
-     * @param the X-axis offset
-     * @param the Y-axis offset
+     * @param point the point to translate
+     * @param dx the X-axis offset
+     * @param dy the Y-axis offset
      */
     public static void translate(Point2D point, double dx, double dy)
     {
@@ -51,9 +51,9 @@ public class Translation2D
     /**
      * Translate a Line2D object on the X and Y axes.
      * 
-     * @param the line to translate
-     * @param the X-axis offset
-     * @param the Y-axis offset
+     * @param line the line to translate
+     * @param dx the X-axis offset
+     * @param dy the Y-axis offset
      */
     public static void translate(Line2D line, double dx, double dy)
     {
@@ -66,9 +66,9 @@ public class Translation2D
     /**
      * Translate a Polygon2D object on the X and Y axes.
      *
-     * @param the polygon to translate
-     * @param the X-axis offset
-     * @param the Y-axis offset
+     * @param polygon the polygon to translate
+     * @param dx the X-axis offset
+     * @param dy the Y-axis offset
      */
     public static void translate(Polygon2D polygon, double dx, double dy)
     {
@@ -83,8 +83,8 @@ public class Translation2D
     /**
      * Moves a Line2D object (with respect to it's origin) to specified point.
      * 
-     * @param the line to move
-     * @param the point to move to
+     * @param line the line to move
+     * @param point the point to move to
      */
     public static void moveTo(Line2D line, Point2D point)
     {
@@ -94,8 +94,8 @@ public class Translation2D
     /**
      * Moves a Polygon2D object (with respect to it's origin) to specified point.
      *
-     * @param the polygon to move
-     * @param the point to move to
+     * @param polygon the polygon to move
+     * @param point the point to move to
      */
     public static void moveTo(Polygon2D polygon, Point2D point)
     {

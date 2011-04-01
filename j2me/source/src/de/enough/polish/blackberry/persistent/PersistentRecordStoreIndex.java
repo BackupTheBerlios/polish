@@ -82,8 +82,8 @@ public class PersistentRecordStoreIndex implements Persistable{
 	
 	/**
 	 * Create a DataCollection and returns it.
-	 * @param name
-	 * @return
+	 * @param name the name of the record store
+	 * @return the created record store
 	 */
 	public PersistentRecordStore createRecordStore(String name) {
 		// get the id from the running DataCollection ID

@@ -80,7 +80,9 @@ public class Image2DExtended extends Image2D
 	/**
 	 * Updates the Image2D using argument int[] rgb image representation 
 	 * 
-	 * @param image
+	 * @param width the width
+	 * @param height the height
+	 * @param imageRgb the image data
 	 */
 	public void set(int width, int height, int[] imageRgb)
 	{

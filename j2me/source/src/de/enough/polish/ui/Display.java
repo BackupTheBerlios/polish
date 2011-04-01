@@ -2972,8 +2972,8 @@ public class Display
 	 * This is used by the AnimationThread to hold the animation thread completely after a time of inactivity
 	 * @param emitNotify true when this.notifyAll() should be called after receiving an input event.
 	 */
-	protected void emitNotifyOnUserEvents(boolean emitNoify) {
-		this.emitNotifyOnUserEvent = emitNoify;
+	protected void emitNotifyOnUserEvents(boolean emitNotify) {
+		this.emitNotifyOnUserEvent = emitNotify;
 	}
 	
 

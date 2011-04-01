@@ -415,7 +415,6 @@ public interface ProcessingInterface {
 
     /**
      * Returns the reported total amount of memory available. This may change if the operating system is dynamically adjusting the amount of memory available. 
-     * @return
      */
     public int reportedMemory();
 
@@ -521,7 +520,7 @@ public interface ProcessingInterface {
      * Sets the color used to draw lines and borders around shapes.
      * @param color the color to use
      */
-    public void stroke(color whatColor);
+    public void stroke(color color);
 
     /**
      * Sets a shade of gray to be used used to draw lines and borders around shapes.
@@ -656,7 +655,7 @@ public interface ProcessingInterface {
      * Draws a rectangle to the screen. A rectangle is a four-sided shape with every angle at ninety degrees. The first two parameters set the location, the third sets the width, and the fourth sets the height. The origin is changed with the rectMode() function. 
      * @param x x-coordinate of the rectangle
      * @param y y-coordinate of the rectangle
-     * @param wodth width of the rectangle
+     * @param width width of the rectangle
      * @param height height of the rectangle
      * @see #rectMode(int)
      */
@@ -1195,7 +1194,6 @@ public interface ProcessingInterface {
     /**
      * Doubles the size of an array.
      * @param array the array in question
-     * @return
      */
     public boolean[] expand(boolean[] array);
     
@@ -1210,7 +1208,6 @@ public interface ProcessingInterface {
     /**
      * Doubles the size of an array.
      * @param array the array in question
-     * @return
      */
     public byte[] expand(byte[] array);
 
@@ -1225,7 +1222,6 @@ public interface ProcessingInterface {
     /**
      * Doubles the size of an array.
      * @param array the array in question
-     * @return
      */
     public char[] expand(char[] array);
     
@@ -1240,7 +1236,6 @@ public interface ProcessingInterface {
     /**
      * Doubles the size of an array.
      * @param array the array in question
-     * @return
      */
     public int[] expand(int[] array);
 
@@ -1255,7 +1250,6 @@ public interface ProcessingInterface {
     /**
      * Doubles the size of an array.
      * @param array the array in question
-     * @return
      */
     public String[] expand(String[] array);
 
@@ -1515,56 +1509,56 @@ public interface ProcessingInterface {
 
     /**
      * Returns a string representation of its parameter.
-     * @param parameter the value to represent as a string
+     * @param val the value to represent as a string
      * @return string representation
      */
     public String str(boolean val);
 
     /**
      * Returns a string representation of its parameter.
-     * @param parameter the value to represent as a string
+     * @param val the value to represent as a string
      * @return string representation
      */
     public String str(byte val);
 
     /**
      * Returns a string representation of its parameter.
-     * @param parameter the value to represent as a string
+     * @param val the value to represent as a string
      * @return string representation
      */
     public String str(char val);
 
     /**
      * Returns a string representation of its parameter.
-     * @param parameter the value to represent as a string
+     * @param val the value to represent as a string
      * @return string representation
      */
     public String str(int val);
 
     /**
      * Returns a string representation of its parameter.
-     * @param parameter the value to represent as a string
+     * @param val the value to represent as a string
      * @return string representation
      */
     public String[] str(boolean[] val);
 
     /**
      * Returns a string representation of its parameter.
-     * @param parameter the value to represent as a string
+     * @param val the value to represent as a string
      * @return string representation
      */
     public String[] str(byte[] val);
 
     /**
      * Returns a string representation of its parameter.
-     * @param parameter the value to represent as a string
+     * @param val the value to represent as a string
      * @return string representation
      */
     public String[] str(char[] val);
 
     /**
      * Returns a string representation of its parameter.
-     * @param parameter the value to represent as a string
+     * @param val the value to represent as a string
      * @return string representation
      */
     public String[] str(int[] val);
@@ -1657,7 +1651,6 @@ public interface ProcessingInterface {
      * Multiplies two fixed point values and returns a fixed point value.
      * @param value1 the first number 
      * @param value2 the second number
-     * @return
      */
     public int mul(int value1, int value2);
 
@@ -1665,7 +1658,6 @@ public interface ProcessingInterface {
      * Divides the value of the second fixed point parameter by the value of the first fixed point parameter. 
      * @param dividend dividend
      * @param divisor divisior
-     * @return
      */
     public int div(int dividend, int divisor);
 
@@ -1679,7 +1671,6 @@ public interface ProcessingInterface {
     /**
      * Returns the largest integer less than or equal to the specified fixed point value. Use this function to convert a fixed point value into a normal integer for use in other functions, such as drawing functions. 
      * @param value1 the fixed point value in question
-     * @return
      */
     public int fptoi(int value1);
 
@@ -1713,21 +1704,18 @@ public interface ProcessingInterface {
     /**
      * Calculates the closest int fixed point value that is less than or equal to the fixed point value of the parameter. 
      * @param value1 the fixed point value in question 
-     * @return
      */
     public int floor(int value1);
 
     /**
      * Calculates the closest int fixed point value that is greater than or equal to the fixed point value of the parameter. For example, ceil(9.03)  returns the value 10.0. 
      * @param value1 the fixed point value in question 
-     * @return
      */
     public int ceil(int value1);
 
     /**
      * Calculates the integer fixed point value closest to the fixed point value  parameter. For example, round(9.2) returns the value 9.0. 
      * @param value1 the fixed point value in question 
-     * @return
      */
     public int round(int value1);
 
@@ -1777,7 +1765,6 @@ public interface ProcessingInterface {
     /**
      * Reads the contents of a file and creates a String array of its individual lines.
      * @param filename the filename to load data from
-     * @return
      */
     public String[] loadStrings(String filename);
 
@@ -1828,7 +1815,6 @@ public interface ProcessingInterface {
 
     /**
      * Loads the default font as a PFont object.
-     * @return
      */
     public PFont loadFont() ;
 

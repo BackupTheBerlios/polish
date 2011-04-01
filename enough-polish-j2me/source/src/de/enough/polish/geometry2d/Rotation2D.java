@@ -39,9 +39,9 @@ public class Rotation2D
     /**
      * Rotate a Point2D object around another Point2D object
      *
-     * @param the point to rotate
-     * @param the point around which to rotate
-     * @param the angle (in degrees) of rotation
+     * @param point the point to rotate
+     * @param origin the point around which to rotate
+     * @param angle the angle (in degrees) of rotation
      */
     public static void rotate(Point2D point, Point2D origin, double angle)
     {
@@ -55,10 +55,10 @@ public class Rotation2D
    /**
      * Rotate a Point2D object around another Point2D object
      *
-     * @param the point to rotate
-     * @param the point around which to rotate
-     * @param the cosine of the rotation angle
-     * @param the sine of the rotation angle
+     * @param point the point to rotate
+     * @param origin the point around which to rotate
+     * @param cos the cosine of the rotation angle
+     * @param sin the sine of the rotation angle
      */
     public static void rotate(Point2D point, Point2D origin, double cos, double sin)
     {
@@ -73,9 +73,9 @@ public class Rotation2D
     /**
      * Rotates a Line2D object around a Point2D object.
      * 
-     * @param the line to rotate
-     * @param the point around which to rotate
-     * @param the angle (in degrees) of rotation
+     * @param line the line to rotate
+     * @param origin the point around which to rotate
+     * @param angle the angle (in degrees) of rotation
      */
     public static void rotate(Line2D line, Point2D origin, double angle)
     {
@@ -88,10 +88,10 @@ public class Rotation2D
     /**
      * Rotates a Line2D object around a Point2D object.
      *
-     * @param the line to rotate
-     * @param the point around which to rotate
-     * @param the cosine of the rotation angle
-     * @param the sine of the rotation angle
+     * @param line the line to rotate
+     * @param origin the point around which to rotate
+     * @param cos the cosine of the rotation angle
+     * @param sin the sine of the rotation angle
      */
     private static void rotate(Line2D line, Point2D origin, double cos, double sin)
     {
@@ -102,9 +102,9 @@ public class Rotation2D
     /**
      * Rotates a Polygon2D object around a Point2D object.
      * 
-     * @param the polygon to rotate
-     * @param the point around which to rotate
-     * @param the rotation angle (in degrees)
+     * @param polygon the polygon to rotate
+     * @param origin the point around which to rotate
+     * @param angle the rotation angle (in degrees)
      */
     public static void rotate(Polygon2D polygon, Point2D origin, double angle)
     {
@@ -117,10 +117,10 @@ public class Rotation2D
     /**
      * Rotates a Polygon2D object around a Point2D object.
      *
-     * @param the polygon to rotate
-     * @param the point around which to rotate
-     * @param the cosine of the rotation angle
-     * @param the sine of the rotation angle
+     * @param polygon the polygon to rotate
+     * @param origin the point around which to rotate
+     * @param cos the cosine of the rotation angle
+     * @param sin the sine of the rotation angle
      */
     public static void rotate(Polygon2D polygon, Point2D origin, double cos, double sin) {
         Enumeration points = polygon.points.elements() ;

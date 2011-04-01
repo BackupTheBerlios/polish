@@ -368,7 +368,7 @@ public final class TextUtil {
 	 * @param lineWidth the allowed width for all other lines, lineWidth >= firstLineWidth
 	 * @param result the WrappedText to which the substrings will be added.
 	 * @deprecated please use wrap instead
-	 * @see #wrap(String, Font, int, int, int, ArrayList, int, int)
+	 * @see #wrap(String, Font, int, int, int, WrappedText, int, int)
 	 */
 	public static void split( String value, Font font, 
 			int completeWidth, int firstLineWidth, int lineWidth, 

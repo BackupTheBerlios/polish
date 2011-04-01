@@ -50,7 +50,6 @@ public class NodeFactory
 	/**
      * Creates a quad mesh using argument Apperance object
 	 * 
-	 * @param appearance
 	 * @return Mesh a quad
 	 */
 	public static Mesh createQuad(boolean useNormals, boolean useTextCords)
@@ -131,7 +130,6 @@ public class NodeFactory
 	/**
      * Creates a Cube mesh
 	 * 
-	 * @param appearance
 	 * @return Mesh a cube
 	 */
 	public static Mesh createCube(boolean useNormals, boolean useTextCords)

@@ -94,7 +94,7 @@ public class Vec4Dx
 	/**
 	 * Euclidean length of vector
 	 * 
-	 * @return
+	 * @return the length
 	 */
 	public int length()
 	{

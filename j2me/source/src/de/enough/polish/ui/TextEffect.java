@@ -172,7 +172,7 @@ public abstract class TextEffect implements Serializable
 	 * @param maxWidth the width of the longest line
 	 * @param layout the anchor or the text, e.g. Item.LAYOUT_CENTER or Item.LAYOUT_RIGHT
 	 * @param g the graphics context
-	 * @see #drawStrings(String[], int, int, int, int, int, int, int, int, Graphics)
+	 * @see #drawStrings(WrappedText, int, int, int, int, int, int, int, int, Graphics)
 	 */
 	public void drawStrings( Item parent, WrappedText textLines, int textColor, int x, int y, int leftBorder, int rightBorder, int lineHeight, int maxWidth, int layout, Graphics g ) {
 		drawStrings(textLines, textColor, x, y, leftBorder, rightBorder, lineHeight, maxWidth, layout, g);

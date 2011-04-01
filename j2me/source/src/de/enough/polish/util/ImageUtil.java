@@ -2277,10 +2277,10 @@ public final class ImageUtil {
     
     /**
      * Returns the pixel of the given image at the given x/y offset
-     * @param rgbImage the RgbImage
+     * @param image the RgbImage
      * @param x the x offset
      * @param y the y offset
-     * @return the pixel;
+     * @return the pixel color
      */
     public static int getPixelColor(Image image, int x, int y) {
     	RgbImage rgbImage = new RgbImage(image,true);

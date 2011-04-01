@@ -178,8 +178,8 @@ public class PersistentRecordEnumerationImpl implements PersistentRecordEnumerat
 	}
 	
 	/**
-	 * Removes the given record id from the record id vector
-	 * @param recordId the record id
+	 * Returns the selected record id from the record id vector
+	 * @return the record id
 	 */
 	protected int getSelectedRecordId() throws ArrayIndexOutOfBoundsException {
 		Integer recordIdInt = (Integer)this.recordIds.elementAt(this.recordIdIndex);

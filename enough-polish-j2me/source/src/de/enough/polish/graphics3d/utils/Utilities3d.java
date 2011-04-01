@@ -19,7 +19,7 @@ public class Utilities3d
 	 * @param sourceImg
 	 * @param maxTexDim
 	 * @param texMatrix
-	 * @return
+	 * @return the image matrix
 	 */
 	public static Image[][] imageToTextureMatrix(Image sourceImg, int maxTexDim, Image[][] texMatrix)
 	{
@@ -131,7 +131,7 @@ public class Utilities3d
 	 * 
 	 * @param sourceImg
 	 * @param maxTexDim
-	 * @return
+	 * @return the number of texture matrices
 	 */
 	public static int getNumTextureMatrixPerRow(Image sourceImg, int maxTexDim)
 	{
@@ -155,7 +155,7 @@ public class Utilities3d
 	 * 
 	 * @param sourceImg
 	 * @param maxTexDim
-	 * @return
+	 * @return the number of texture matrices
 	 */
 	public static int getNumTextureMatrixPerColumn(Image sourceImg, int maxTexDim)
 	{
@@ -205,7 +205,6 @@ public class Utilities3d
 	 * @param sourceImg
 	 * @param maxTexDim
 	 * @param thresholdPercent
-	 * @return
 	 */
 	public static int calculateOptimalTextureResolution(Image sourceImg, int maxTexDim, int thresholdPercent )
 	{

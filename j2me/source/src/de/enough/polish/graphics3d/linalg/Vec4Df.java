@@ -94,7 +94,7 @@ public class Vec4Df
 	/**
 	 * Euclidean length of vector
 	 * 
-	 * @return
+	 * @return the length
 	 */
 	public float length()
 	{

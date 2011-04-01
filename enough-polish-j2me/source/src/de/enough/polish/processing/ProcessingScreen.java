@@ -53,8 +53,8 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
     /**
      * Creates a new ProcessingScreen based on the specified ProcessingContext.
      *
-     * @param screen's title
-     * @param the context
+     * @param title the screen's title
+     * @param context the context
      */
     public ProcessingScreen(String title, ProcessingInterface context) {
         super(title, null, true);
@@ -65,9 +65,9 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
     /**
      * Creates a new ProcessingScreen based on the specified ProcessingContext, with the given style.
      *
-     * @param screen's title
-     * @param the context
-     * @param the style to use
+     * @param title the screen's title
+     * @param context the context
+     * @param style the style to use
      */
     public ProcessingScreen(String title, ProcessingInterface context, Style style) {
         super(title, style, true);

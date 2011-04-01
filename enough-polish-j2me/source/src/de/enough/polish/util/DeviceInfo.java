@@ -292,7 +292,7 @@ public class DeviceInfo
 	 * Retrieves a unique ID of this device.
 	 * This could be the IMEI or the local Bluetooth address of this device.
 	 * Note that some phones allow to access the IMEI but only when the application has been signed.
-	 * @return
+	 * @return the device id
 	 */
 	public static String getDeviceId() {
 		//#if polish.blackberry

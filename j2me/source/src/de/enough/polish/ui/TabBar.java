@@ -575,7 +575,6 @@ public class TabBar extends Item {
 	 * Creates a new tab on the tab bar.
 	 *
 	 * @param tab the new tab item
-	 * @param tabStyle the style of the tab
 	 */
 	public void addNewTab(Item tab) {
 		addNewTab( tab, this.inactiveStyle );

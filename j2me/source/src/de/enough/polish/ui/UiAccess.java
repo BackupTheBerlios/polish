@@ -5075,8 +5075,12 @@ public final class UiAccess {
 
 	//#if polish.usePolishGui
 	/**
-	 * Intializes the specified screen
-	 * @param screen the screen
+	 * Intializes the specified view
+	 * @param view the view
+	 * @param container the container
+	 * @param firstLineWidth the first line width
+	 * @param availWidth the available width
+	 * @param availHeight the available height
 	 */
 	public static void initView(ContainerView view, Container container, int firstLineWidth, int availWidth,
 			int availHeight)

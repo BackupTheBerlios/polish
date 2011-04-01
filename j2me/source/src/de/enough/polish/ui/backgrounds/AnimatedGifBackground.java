@@ -54,7 +54,7 @@ public class AnimatedGifBackground extends VideoBackground
 	}
 
 	/**
-	 * @param url
+	 * @param data
 	 * @param loopCount
 	 */
 	public AnimatedGifBackground(int color, byte[] data, int loopCount, int anchor, int xOffset, int yOffset)

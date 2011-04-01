@@ -266,8 +266,7 @@ public class TexturePlane extends Actorx
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * @return the texture dimension
 	 */
 	public int getTextureDimension()
 	{

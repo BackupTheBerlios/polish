@@ -45,8 +45,8 @@ public class Util2D {
     /**
      * Returns the slope of a line defined by two points
      *
-     * @param the first point
-     * @param the second point
+     * @param point1 the first point
+     * @param point2 the second point
      * @return the slope of the line
      */
     public static double getSlope(Point2D point1, Point2D point2)
@@ -57,7 +57,7 @@ public class Util2D {
     /**
      * Return the slope of a line.
      *
-     * @param the line
+     * @param line the line
      * @return the slope of the line
      */
     public static double getSlope(Line2D line)
@@ -68,8 +68,8 @@ public class Util2D {
     /**
      * Returns the distance between two points.
      *
-     * @param the first point
-     * @param the second point
+     * @param p1 the first point
+     * @param p2 the second point
      * @return the distance between the two points
      */
     public static double getDistance(Point2D p1, Point2D p2)
@@ -80,7 +80,7 @@ public class Util2D {
     /**
      * Returns the Y-intercept of a line.
      *
-     * @param the line
+     * @param line the line
      * @return the Y-intercept
      */
     public static double getYIntercept(Line2D line)
@@ -92,7 +92,7 @@ public class Util2D {
     /**
      * Returns the X-intercept of a line.
      *
-     * @param the line
+     * @param line the line
      * @return the X-intercept
      */
     public static double getXIntercept(Line2D line)
@@ -103,9 +103,9 @@ public class Util2D {
     /**
      * Returns a Line2D object for a line, based on the line's general equation (Ax + By = C).
      *
-     * @param value of coefficient A
-     * @param value of coefficient B
-     * @param value of coefficient C
+     * @param A value of coefficient A
+     * @param B value of coefficient B
+     * @param C value of coefficient C
      * @return the Line2D object representing the line with the specified coefficients
      */
     public static Line2D line2DFromGeneralEquation(double A, double B, double C)
@@ -119,7 +119,7 @@ public class Util2D {
     /**
      * Checks if a line is vertical.
      *
-     * @param the line to check
+     * @param line the line to check
      * @return returns true if the line is vertical, false otherwise.
      */
     public static boolean isVertical (Line2D line)
@@ -130,8 +130,8 @@ public class Util2D {
     /**
      * Checks if two lines are parallel
      *
-     * @param the first line
-     * @param the second line
+     * @param line1 he first line
+     * @param line2 the second line
      * @return returns true if the lines are parallel, false otherwise
      */
     public static boolean areParallel(Line2D line1, Line2D line2)

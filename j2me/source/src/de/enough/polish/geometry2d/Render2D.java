@@ -39,8 +39,8 @@ public class Render2D
     /**
      * Paints a Point2D object on a Graphics object.
      *
-     * @param the point to paint
-     * @param the Graphics object to paint on
+     * @param point the point to paint
+     * @param g the Graphics object to paint on
      */
     public static void paint(Point2D point, Graphics g)
     {
@@ -50,9 +50,9 @@ public class Render2D
     /**
      * Paints a Point2D object on a Graphics object and with the specified thickness.
      *
-     * @param the point to paint
-     * @param the Graphics object to paint on
-     * @param the thickness to use
+     * @param point the point to paint
+     * @param g the Graphics object to paint on
+     * @param thickness the thickness to use
      */
     public static void paint(Point2D point, Graphics g, int thickness)
     {
@@ -62,8 +62,8 @@ public class Render2D
     /**
      * Paints a Line2D object on a Graphics object.
      *
-     * @param the line to paint
-     * @param the Graphics object to paint on
+     * @param line the line to paint
+     * @param g the Graphics object to paint on
      */
     public static void paint(Line2D line, Graphics g)
     {
@@ -73,8 +73,8 @@ public class Render2D
     /**
      * Paints a Polygon2D object on a Graphics object.
      *
-     * @param the polygon to paint
-     * @param the Graphics object to paint on
+     * @param polygon the polygon to paint
+     * @param g the Graphics object to paint on
      */
     public static void paint(Polygon2D polygon, Graphics g)
     {

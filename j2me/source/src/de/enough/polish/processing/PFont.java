@@ -192,7 +192,7 @@ public class PFont {
      * @param str the whole string
      * @param offset the offset of the desired substring
      * @param length the substring length
-     * @return
+     * @return the width
      */
     public int substringWidth(String str, int offset, int length) {
         int result = 0;

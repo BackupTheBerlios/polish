@@ -146,8 +146,8 @@ public class PersistentRecordStore implements Persistable {
 	
 	/**
 	 * Creates a new PersistentRecordStore instance
+	 * @param name the name of the record store
 	 * @param persistentStorageId the id of the storage in the PersistentStore
-	 * @param runningPersistentRecordOffset the offset for the records of the PersistentStore
 	 */
 	protected PersistentRecordStore(String name, long persistentStorageId) {
 		this.name = name;
@@ -428,7 +428,7 @@ public class PersistentRecordStore implements Persistable {
 	 * previousRecord()</code>, the record data of the last element of the
 	 * enumeration will be returned. Each subsequent call to <code>
 	 * previousRecord()</code> will step backwards through the sequence.
-	 * <P>
+	 *
 	 * @param filter - if non-null, will be used to determine what subset of the
 	 * record store records will be used
 	 * @param comparator - if non-null, will be used to determine the order in
@@ -447,7 +447,7 @@ public class PersistentRecordStore implements Persistable {
 	 * @return an enumeration for traversing a set of records in the record
 	 * store in an optionally specified order
 	 * @throws RecordStoreNotOpenException - if the record store is not open
-	 * @see RecordEnumeration#rebuild()
+	 * @see javax.microedition.rms.RecordEnumeration#rebuild()
 	 */
 	public PersistentRecordEnumeration enumerateRecords(PersistentRecordFilter filter, PersistentRecordComparator comparator, boolean keepUpdated) throws RecordStoreNotOpenException {
 		checkOpen();

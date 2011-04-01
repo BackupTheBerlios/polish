@@ -545,7 +545,7 @@ public class ProcessingContext implements ProcessingInterface {
 
     /**
      * Sets the raw keycode to use for processing the next keypress.
-     * @param keycode the keycode to process
+     * @param keyCode the keycode to process
      */
     public void setRawKeyCode(int keyCode)
     {
@@ -791,7 +791,7 @@ public class ProcessingContext implements ProcessingInterface {
      * @param v1 v1
      * @param v2 v2 
      * @param vH vH
-     * @return
+     * @return the RGB value
      */
     public double _Hue_2_RGB(double v1, double v2, double vH)
     {
@@ -1950,8 +1950,8 @@ public class ProcessingContext implements ProcessingInterface {
     /**
      * Called when an uppercase key is pressed in multitap mode
      * @param editing mode state (enabled/disabled)
-     * @param character pressed
-     * @return
+     * @param newChar the character pressed
+     * @return the mapped character
      */
     public char _multitapUpperKeyPressed(boolean editing, char newChar) {
         _multitapIsUpperCase = !_multitapIsUpperCase;

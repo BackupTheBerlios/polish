@@ -316,7 +316,7 @@ public class XmlDomNode
 	/**
 	 * Retrieves an XML representation of this XML node and its nested children.
 	 * @param useWhitespace specifies if whitespace should be used between tags or if the representation should be as compact as possible
-	 * @return
+	 * @return the node as XML string
 	 */
 	public String toXmlString(boolean useWhitespace) {
 		StringBuffer xml = new StringBuffer();
