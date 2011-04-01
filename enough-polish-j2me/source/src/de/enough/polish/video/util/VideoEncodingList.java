@@ -79,9 +79,9 @@ public class VideoEncodingList {
 		for (int index = 0; index < encodings.size(); index++) {
 			VideoEncoding encoding = (VideoEncoding) encodings.get(index);
 
-			String mime = filter.getMime();
+			String mime = filter.getEncoding();
 			if (mime != null) {
-				if (!mime.equals(encoding.getMime())) {
+				if (!mime.equals(encoding.getEncoding())) {
 					continue;
 				}
 			}

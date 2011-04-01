@@ -15,7 +15,7 @@ public class VideoEncoding {
 	/**
 	 * key for the mime type
 	 */
-	private static final String MIME = "encoding";
+	private static final String ENCODING = "encoding";
 
 	/**
 	 * key for the width
@@ -41,11 +41,16 @@ public class VideoEncoding {
 	 * key for the mode
 	 */
 	private static final String MODE = "mode";
+	
+	/**
+	 * the full encoding string
+	 */
+	private final String descriptor;
 
 	/**
 	 * the mime type
 	 */
-	private final String mime;
+	private final String encoding;
 
 	/**
 	 * the width
@@ -81,8 +86,9 @@ public class VideoEncoding {
 	 *             if the encoding format is wrong
 	 */
 	public VideoEncoding(String encoding) throws IllegalArgumentException {
+		this.descriptor = encoding;
 		HashMap encodingMap = parseEncoding(encoding);
-		this.mime = (String) encodingMap.get(MIME);
+		this.encoding = (String) encodingMap.get(ENCODING);
 		this.width = (String) encodingMap.get(WIDTH);
 		this.height = (String) encodingMap.get(HEIGHT);
 		this.videoCodec = (String) encodingMap.get(VIDEO_CODEC);
@@ -93,7 +99,7 @@ public class VideoEncoding {
 	/**
 	 * Creates a new VideoEncoding instance
 	 * 
-	 * @param mime
+	 * @param encoding
 	 *            the mime type
 	 * @param width
 	 *            the width
@@ -106,9 +112,10 @@ public class VideoEncoding {
 	 * @param mode
 	 *            the mode
 	 */
-	public VideoEncoding(String mime, String width, String height,
+	public VideoEncoding(String encoding, String width, String height,
 			String videoCodec, String audioCodec, String mode) {
-		this.mime = mime;
+		this.descriptor = null;
+		this.encoding = encoding;
 		this.width = width;
 		this.height = height;
 		this.videoCodec = videoCodec;
@@ -164,8 +171,8 @@ public class VideoEncoding {
 	 * 
 	 * @return the mime type
 	 */
-	public String getMime() {
-		return mime;
+	public String getEncoding() {
+		return encoding;
 	}
 
 	/**
@@ -214,6 +221,14 @@ public class VideoEncoding {
 	}
 	
 	/**
+	 * Returns the encoding string
+	 * @return the encoding string
+	 */
+	public String getDescriptor() {
+		return this.descriptor;
+	}
+	
+	/**
 	 * Returns a string describing the solution of the encoding
 	 * @return a string describing the solution of the encoding
 	 */
@@ -227,7 +242,7 @@ public class VideoEncoding {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return new ToStringHelper(this).set(MIME, this.mime).set(WIDTH,
+		return new ToStringHelper(this).set(ENCODING, this.encoding).set(WIDTH,
 				this.width).set(HEIGHT, this.height).set(VIDEO_CODEC,
 				this.videoCodec).set(AUDIO_CODEC, this.audioCodec).set(MODE,
 				this.mode).toString();

@@ -50,7 +50,7 @@ public class CaptureSource extends VideoSource {
 	private boolean isSnapshotInProgress;
 	private boolean isAutofocusEnabled;
 	private boolean isInitializing;
-	private String captureProtocol;
+	private String protocol;
 
 
 	/**
@@ -58,7 +58,7 @@ public class CaptureSource extends VideoSource {
 	 * @throws MediaException when the protocol could not be retrieved or when snapshots are not supported 
 	 */
 	public CaptureSource() throws MediaException {
-		this( SnapshotUtil.getProtocol() );
+		this( SnapshotUtil.getProtocol());
 	}
 
 	
@@ -68,27 +68,18 @@ public class CaptureSource extends VideoSource {
 	 */
 	public CaptureSource(String protocol) {
 		super("capture", protocol, null);
-		this.captureProtocol = protocol;
+		this.protocol = protocol;
 	}
 	
-	
-
-
 	/* (non-Javadoc)
 	 * @see de.enough.polish.video.VideoSource#open()
 	 */
 	protected void open() throws Exception {
-		this.player = Manager.createPlayer(getProtocol());
+		this.player = Manager.createPlayer(this.protocol);
 		this.player.realize();
 		this.player.prefetch();
 		this.videoControl = (VideoControl) this.player.getControl("VideoControl");
 	}
-
-
-	public String getProtocol() {
-		return this.captureProtocol;
-	}
-
 
 	/**
 	 * Captures a snapshot.
@@ -108,7 +99,7 @@ public class CaptureSource extends VideoSource {
 		int step = 0;
 		try {
             //#debug info
-            System.out.println("getSnapshot(" + encoding + "), protocol=" + this.captureProtocol + " at " + (new Date()).toString());
+            System.out.println("getSnapshot(" + encoding + "), protocol=" + this.protocol + " at " + (new Date()).toString());
 			VideoControl vc = this.videoControl;
 			Player pl = this.player;
 			if (vc == null || pl.getState() == Player.CLOSED) {
