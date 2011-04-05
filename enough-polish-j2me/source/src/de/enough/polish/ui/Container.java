@@ -2262,16 +2262,17 @@ public class Container extends Item {
 		if (item != null) {
 			int scrollOffset = getScrollYOffset();
 			if ( item.handleKeyReleased( keyCode, gameAction ) ) {
-				if (this.enableScrolling) {
-					if (getScrollYOffset() == scrollOffset) {
-						//#debug
-						System.out.println("scrolling focused item that has handled key released, item=" + item + ", item.internalY=" + item.internalY);
-						scroll(gameAction, item, false);
+				if (item.isShown) { // could be that the item or its screen has been removed in the meantime...
+					if (this.enableScrolling) {
+						if (getScrollYOffset() == scrollOffset) {
+							//#debug
+							System.out.println("scrolling focused item that has handled key released, item=" + item + ", item.internalY=" + item.internalY);
+							scroll(gameAction, item, false);
+						}
+					} else  {
+						updateInternalPosition(item);
 					}
-				} else  {
-					updateInternalPosition(item);
 				}
-
 //				2009-06-10:
 //				if (this.enableScrolling && item.internalX != NO_POSITION_SET) {
 //					scroll(gameAction, item);
