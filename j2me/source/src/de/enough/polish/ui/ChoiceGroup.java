@@ -1735,7 +1735,7 @@ implements Choice
 					}
 				//#endif
 //				System.out.println("isInItemArea(relX - this.contentX, relY - this.yOffset - this.contentY, this.focusedItem)=" + isInItemArea(relX - this.contentX, relY - this.yOffset - this.contentY, this.focusedItem));
-				if (!handled && isInItemArea(x - this.contentX, relY - this.contentY, this.focusedItem)) {
+				if (!handled && isInItemArea(x - this.contentX, relY - this.yOffset - this.contentY, this.focusedItem)) {
 					handled = handleKeyReleased( 0, Canvas.FIRE );
 				}
 			}
