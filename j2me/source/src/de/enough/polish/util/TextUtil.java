@@ -32,7 +32,7 @@ import javax.microedition.lcdui.Font;
 //#endif
 
 /**
- * <p>Provides some usefull String methods.</p>
+ * <p>Provides some useful String methods.</p>
  *
  * <p>Copyright Enough Software 2004 - 2011</p>
  * @author Robert Virkus, robert@enough.de
