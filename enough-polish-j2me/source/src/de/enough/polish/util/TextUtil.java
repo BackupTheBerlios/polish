@@ -797,7 +797,7 @@ public final class TextUtil {
 	 * Reverses the given text while keeping English texts and numbers in the normal position.
 	 * 
 	 * @param input the text
-	 * @return the reveresed text
+	 * @return the reversed text
 	 */
 	public static String reverseForRtlLanguage(String input)
 	{
