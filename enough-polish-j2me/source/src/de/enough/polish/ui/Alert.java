@@ -562,7 +562,7 @@ implements CommandListener
 	 * Gets the type of the <code>Alert</code>.
 	 * 
 	 * @return a reference to an instance of AlertType, or null if the Alert has no specific type
-	 * @see #setType(javax.microedition.lcdui.AlertType)
+	 * @see #setType(AlertType)
 	 */
 	public AlertType getType()
 	{

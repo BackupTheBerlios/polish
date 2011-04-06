@@ -122,7 +122,7 @@ public class FakeStringCustomItem extends FakeCustomItem
 	 * 
 	 * @param label the Item label
 	 * @param text the text contents
-	 * @see #StringItem(String, String, int, Style)
+	 * @see #FakeStringCustomItem(String, String, int, Style)
 	 */
 	public FakeStringCustomItem( String label, String text)
 	{
@@ -140,7 +140,7 @@ public class FakeStringCustomItem extends FakeCustomItem
 	 * @param label the Item label
 	 * @param text the text contents
 	 * @param style the style
-	 * @see #StringItem(String, String, int, Style)
+	 * @see #FakeStringCustomItem(String, String, int, Style)
 	 */
 	public FakeStringCustomItem( String label, String text, Style style )
 	{
