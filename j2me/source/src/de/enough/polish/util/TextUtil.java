@@ -400,10 +400,6 @@ public final class TextUtil {
 			int maxLines, int maxLinesAppendixPosition ) 
 	{
 		
-		boolean debug = maxLines == 1 && value.startsWith("Margaret Cho");
-		if (debug) {
-			System.out.println("wrapping " + value + ", firstLineWidth=" + firstLineWidth + ", lineWidth=" + lineWidth + ", stringWidth=" + font.stringWidth(value));
-		}
 		//TODO extend wrapping : bottom line - based wrapping 
 		if(maxLinesAppendixPosition == MAXLINES_APPENDIX_POSITION_BEFORE && maxLines == 1) {
 			list.addLine(value, 0);
