@@ -1,0 +1,38 @@
+/**
+  * The polish.css files contains all
+  * design information about a project.
+  */
+
+
+/**
+  * The title style is a predefined style which is used
+  * for all screen-titles unless the screen style defines the title-style CSS attribute.
+  */
+title {
+	padding: 2px;
+	font-face: proportional;
+	font-size: large;
+	font-style: bold;
+	font-color: #fff;
+	text-effect: shadow;
+	border: none;
+	layout: horizontal-center | horizontal-expand;
+	background {
+		type: vertical-gradient;
+		top-color: #333;
+		bottom-color: #eee;
+	}
+}
+
+
+/**
+  * The .mainScreen style is a static style, which
+  * is set in the MIDlet source-code with the //#style directive.
+  */
+.mainScreen {
+	padding: 2px;
+	padding-left: 5%;
+	padding-right: 5%;
+	background-color: #666;
+	layout: horizontal-expand | horizontal-center | vertical-center;
+}
