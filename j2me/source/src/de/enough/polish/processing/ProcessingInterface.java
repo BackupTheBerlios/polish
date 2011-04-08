@@ -1086,6 +1086,22 @@ public interface ProcessingInterface {
      * @return resulting array
      */
     public boolean[] append(boolean[] array, boolean element);
+    
+    /**
+     * Expands an array by one element and adds data to the new position. The datatype of the element parameter must be the same as the datatype of the array.
+     * @param array the original array
+     * @param element element to append
+     * @return resulting array
+     */
+    public float[] append(float[] array, float element);
+    
+    /**
+     * Expands an array by one element and adds data to the new position. The datatype of the element parameter must be the same as the datatype of the array.
+     * @param array the original array
+     * @param element element to append
+     * @return resulting array
+     */
+    public double[] append(double[] array, double element);
 
     /**
      * Expands an array by one element and adds data to the new position. The datatype of the element parameter must be the same as the datatype of the array.
@@ -1633,11 +1649,18 @@ public interface ProcessingInterface {
     public int constrain(int value, int min, int max); 
 
     /**
-     * Generates a random number between 0 and the specified maximum number.
+     * Generates a random number between 0 and the specified maximum number, excluding the specified number.
      * @param value maximum number
      * @return random number between 0 and the maximum number specified
      */
     public int random(int value);
+    
+    /**
+     * Generates a random number between 0 and the specified maximum number, excluding the specified number.
+     * @param value maximum number
+     * @return random number between 0 and the maximum number specified
+     */
+    public double random(double value);
 
     /**
      * Generates a random number in the specified interval.
@@ -1732,6 +1755,13 @@ public interface ProcessingInterface {
      * @return sine value (fixed-point number)
      */
     public int sin(int rad);
+    
+    /**
+     * Calculates the sine of an angle. This function expects the values of the angle parameter to be provided in radians.
+     * @param rad angle in radians
+     * @return sine value
+     */
+    public double sind(double rad);
 
     /**
      * Calculates the cosine of an angle. This function expects the values of the angle parameter to be provided in radian fixed point values (values from 0 to PI*2). Values are returned as fixed point values in the range -1 to 1. 
@@ -1739,6 +1769,13 @@ public interface ProcessingInterface {
      * @return cosine (fixed-point number)
      */
     public int cos(int rad);
+    
+    /**
+     * Calculates the cosine of an angle. This function expects the values of the angle parameter to be provided in radians.
+     * @param rad angle in radians
+     * @return cosine
+     */
+    public double cosd(double rad);
 
     /**
      * Returns the arc tangent of a value. This function expects the values as fixed point values in the range of -Infinity to Infinity (exclusive) and values are returned as fixed point values in the range -PI/2  to PI/2 . 
@@ -1754,6 +1791,21 @@ public interface ProcessingInterface {
      * @return angle in radians (fixed-point value)
      */
     public int atan2(int x, int y);
+    
+    /**
+     * Returns the arc tangent of a value. This function expects the values as fixed point values in the range of -Infinity to Infinity (exclusive) and values are returned as fixed point values in the range -PI/2  to PI/2 . 
+     * @param value1 value to calculate the arctangent of
+     * @return arctangent
+     */
+    public double atan(double value1);
+
+    /**
+     * Calculates the angle (in radians) from a specified point to the coordinate origin as measured from the positive x-axis. Values are returned as an int fixed point value in the range from PI to -PI. The atan2() function is most often used for orienting geometry to the position of the cursor. Note: The y-coordinate of the point is the first parameter and the x-coordinate is the second due the the structure of calculating the tangent. 
+     * @param x the x-coordinate of the point
+     * @param y the y-coordinate of the point
+     * @return angle in radians
+     */
+    public double atan2d(int x, int y);
 
     /**
      * Reads the contents of a file and places it in a byte array.

@@ -25,9 +25,11 @@
 
 package de.enough.polish.processing;
 
+import de.enough.polish.geometry2d.Util2D;
 import de.enough.polish.ui.Display;
 import de.enough.polish.ui.Displayable;
 import de.enough.polish.util.DrawUtil;
+import de.enough.polish.util.MathUtil;
 import de.enough.polish.util.RgbImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -3106,7 +3108,7 @@ public class ProcessingContext implements ProcessingInterface {
             _random = new Random();
         }
         int min = Math.min(value1, value2);
-        int range = Math.abs(value2 - value1) + 1;
+        int range = Math.abs(value2 - value1) ;
 
         return min + Math.abs((_random.nextInt() % range));
     }
@@ -3509,6 +3511,13 @@ public class ProcessingContext implements ProcessingInterface {
     public static final int TWO_PI          = 2 * PI;
     /** Convenience constant of the value of pi/2 in fixed point. */
     public static final int HALF_PI         = PI / 2;
+    
+    /** Convenience constant of the value of pi in fixed point. */
+    public static final double PI_D              = Math.PI;
+    /** Convenience constant of the value of 2*pi in fixed point. */
+    public static final double TWO_PI_D          = 2 * Math.PI;
+    /** Convenience constant of the value of pi/2 in fixed point. */
+    public static final double HALF_PI_D         = Math.PI / 2;
 
 
     /* (non-Javadoc)
@@ -3728,6 +3737,34 @@ public class ProcessingContext implements ProcessingInterface {
         }
         return result;
     }
+    
+	/* (non-Javadoc)
+	 * @see de.enough.polish.processing.ProcessingInterface#sin(double)
+	 */
+	public double sind(double rad) {
+		return Math.sin(rad);
+	}
+    
+	/* (non-Javadoc)
+	 * @see de.enough.polish.processing.ProcessingInterface#cos(double)
+	 */
+	public double cosd(double rad) {
+		return Math.cos(rad);
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.processing.ProcessingInterface#atan(double)
+	 */
+	public double atan(double value1) {
+		return MathUtil.atan(value1);
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.processing.ProcessingInterface#atan2d(int, int)
+	 */
+	public double atan2d(int x, int y) {
+		return MathUtil.atan2(x, y);
+	} 
 
     /** Lookup table for sin function, indexed by degrees. */
     public static final int[] sin = {
@@ -4092,6 +4129,34 @@ public class ProcessingContext implements ProcessingInterface {
         (int) (-0.0348994967025008f * ONE),
         (int) (-0.0174524064372844f * ONE),
     };
-        
 
+	/* (non-Javadoc)
+	 * @see de.enough.polish.processing.ProcessingInterface#append(float[], float)
+	 */
+	public float[] append(float[] array, float element) {
+		float[] old = array;
+        int length = old.length;
+        array = new float[length + 1];
+        System.arraycopy(old, 0, array, 0, length);
+        array[length] = element;
+        return array;
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.processing.ProcessingInterface#append(double[], double)
+	 */
+	public double[] append(double[] array, double element) {
+		double[] old = array;
+        int length = old.length;
+        array = new double[length + 1];
+        System.arraycopy(old, 0, array, 0, length);
+        array[length] = element;
+        return array;
+	}
+
+	public double random(double value) {
+		double COEFF  = 10000;
+		int randomNumber = random( (int) (value * COEFF));
+		return randomNumber / COEFF;
+	} 
 }
