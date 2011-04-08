@@ -25,8 +25,6 @@
  */
 package de.enough.polish.ui;
 
-import de.enough.polish.util.BitMapFont;
-import de.enough.polish.util.BitMapFontViewer;
 import de.enough.polish.util.RgbImage;
 import de.enough.polish.util.TextUtil;
 import de.enough.polish.util.WrappedText;
