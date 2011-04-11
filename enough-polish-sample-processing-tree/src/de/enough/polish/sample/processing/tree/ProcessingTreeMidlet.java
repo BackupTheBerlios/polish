@@ -1,7 +1,5 @@
 /*
- * Created on 26-June-2007 at 16:14:27.
- *
- * Copyright (c) 2007 Robert Virkus / Enough Software
+ * Copyright (c) 2011 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -26,29 +24,19 @@
 
 package de.enough.polish.sample.processing.tree;
 
-import de.enough.polish.processing.ProcessingContext;
-import de.enough.polish.processing.ProcessingScreen;
 import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Displayable;
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.CommandListener;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
-import de.enough.polish.util.DeviceControl;
 
-//#ifdef polish.debugEnabled
-//#endif
+import de.enough.polish.processing.ProcessingContext;
+import de.enough.polish.processing.ProcessingScreen;
 
 /**
  * <p>Shows a demonstration of the possibilities of J2ME Polish.</p>
  *
- * <p>Copyright Enough Software 2007</p>
-
- * <pre>
- * history
- *        26-June-2007 - rob creation
- * </pre>
- * @author Robert Virkus, j2mepolish@enough.de
+ * <p>Copyright Enough Software 2011</p>
+ * 
+ * @author Ovidiu Iliescu
  */
 public class ProcessingTreeMidlet extends MIDlet{
 

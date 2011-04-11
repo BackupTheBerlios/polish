@@ -1,7 +1,5 @@
 /*
- * Created on 26-June-2007 at 16:14:27.
- *
- * Copyright (c) 2007 Robert Virkus / Enough Software
+ * Copyright (c) 2011 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -26,9 +24,8 @@
 
 package de.enough.polish.sample.processing.tree;
 
-import de.enough.polish.processing.PFont;
-import de.enough.polish.processing.color;
 import de.enough.polish.processing.ProcessingContext;
+import de.enough.polish.processing.color;
 
 /**
  * An example Processing Context that renders a randomly generated tree.
@@ -97,7 +94,10 @@ public class ProcessingTreeContext extends ProcessingContext {
 		noFill();
 		stroke(grass);
 		for(int i=0; i<width; i++){
-			drawGrass(i, (int) (height*0.81875+((i-height/2)*(i-width/2))/800), random(5)+3, true);
+            double b2 = height*height*9/256;
+            double a2 = width*width*25/64;
+            int ycoord = height - (int) Math.sqrt(Math.abs( b2 - (b2*(i-width/2)*(i-width/2))/a2 )) ;
+            drawGrass(i, ycoord,  random(5)+3, true);
 		}
 		  
 		// Draw branches
@@ -107,7 +107,7 @@ public class ProcessingTreeContext extends ProcessingContext {
 			strokeWeight((int)sw);
 			sw -= maxRecursions/recursions;
 			for(int j = 0; j<branchX.length; j++){
-			   if(i > 0){
+			   if(i > 0){ 
 			     if(i % 5 == 0){
 			       int num = (int)(random(2)+2);
 			       for(int k = 0; k < num; k++){
