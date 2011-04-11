@@ -37,6 +37,7 @@ import de.enough.polish.benchmark.Benchmark;
 	import net.rim.device.api.ui.Field;
 //#endif
 
+import de.enough.polish.event.AsynchronousMultipleCommandListener;
 import de.enough.polish.event.EventManager;
 import de.enough.polish.event.GestureEvent;
 import de.enough.polish.event.UiEventListener;
@@ -3917,7 +3918,11 @@ public abstract class Item implements UiElement, Animatable
 			if (item.defaultCommand != null) {
 				if (!item.defaultCommand.commandAction(this, scr)) {
 					if (item.itemCommandListener != null) {
-						item.itemCommandListener.commandAction(item.defaultCommand, this);
+						//#if polish.executeCommandsAsynchrone
+							AsynchronousMultipleCommandListener.getInstance().commandAction(item.itemCommandListener, item.defaultCommand, this);
+						//#else
+							item.itemCommandListener.commandAction(item.defaultCommand, this);
+						//#endif
 					} else {			
 						scr.callCommandListener(item.defaultCommand);
 					}

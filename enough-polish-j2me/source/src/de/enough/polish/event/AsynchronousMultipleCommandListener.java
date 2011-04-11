@@ -30,6 +30,8 @@ package de.enough.polish.event;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Item;
+import javax.microedition.lcdui.ItemCommandListener;
 
 /**
  * <p>Processes commandAction events in (possibly several) separate threads.</p>
@@ -53,6 +55,8 @@ public class AsynchronousMultipleCommandListener implements Runnable {
 	private CommandListener commandListener;
 	private Command command;
 	private Displayable displayable;
+	private ItemCommandListener itemCommandListener;
+	private Item parentItem;
 	private boolean isStopRequested;
 	private boolean isWorking;
 
@@ -104,6 +108,28 @@ public class AsynchronousMultipleCommandListener implements Runnable {
 
 	}
 	
+	/**
+	 * Executes the specified command event asynchronously
+	 * @param listener the listener
+	 * @param cmd the command
+	 * @param item the parent item 
+	 */
+	public void commandAction(ItemCommandListener listener, Command cmd, Item item) {
+		synchronized (this) {
+			if (this.isWorking) {
+				WorkerThread thread = new WorkerThread( listener, cmd, item );
+				thread.start();
+			} else {
+				this.itemCommandListener = listener;
+				this.command = cmd;
+				this.parentItem = item;
+				notify();
+			}
+		}
+
+	}
+
+	
 	//#if false
 		/**
 		 * Executes the specified command event asynchronously
@@ -116,8 +142,26 @@ public class AsynchronousMultipleCommandListener implements Runnable {
 		}
 	//#endif
 		
+	//#if false
+		/**
+		 * Executes the specified command event asynchronously
+		 * @param listener the listener
+		 * @param cmd the command
+		 * @param item the parent item 
+		 */
+		public void commandAction( de.enough.polish.ui.ItemCommandListener listener, de.enough.polish.ui.Command cmd, de.enough.polish.ui.Item item) {
+			// ignore
+		}
+	//#endif
+
+		
 	//#if polish.LibraryBuild && polish.usePolishGui
 		//# public void commandAction( javax.microedition.lcdui.CommandListener listener, javax.microedition.lcdui.Command cmd, javax.microedition.lcdui.Displayable disp) {
+		//# }
+	//#endif
+
+	//#if polish.LibraryBuild && polish.usePolishGui
+		//# public void commandAction( javax.microedition.lcdui.ItemCommandListener listener, javax.microedition.lcdui.Command cmd, javax.microedition.lcdui.Item item) {
 		//# }
 	//#endif
 
@@ -127,8 +171,10 @@ public class AsynchronousMultipleCommandListener implements Runnable {
 	 */
 	public void run() {
 		CommandListener listener = null;
+		ItemCommandListener itemListener = null;
 		Command cmd = null;
 		Displayable disp = null;
+		Item itm = null;
 		while (!this.isStopRequested) {
 			synchronized(this) {
 				if (this.command == null) {
@@ -141,15 +187,23 @@ public class AsynchronousMultipleCommandListener implements Runnable {
 				}
 				this.isWorking = true;
 				listener = this.commandListener;
+				itemListener = this.itemCommandListener;
 				cmd = this.command;
 				disp = this.displayable;
+				itm = this.parentItem;
 				this.command = null;
 				this.displayable = null;
 				this.commandListener = null;
+				this.itemCommandListener = null;
+				this.parentItem = null;
 			}
 			
 			try {
-				listener.commandAction(cmd, disp);
+				if (listener != null) {
+					listener.commandAction(cmd, disp);
+				} else {
+					itemListener.commandAction(cmd, itm); 
+				}
 			} catch (Throwable e) {
 				//#debug error
 				System.out.println("Unable to process cmd " + cmd.getLabel() + " for screen " + disp + e);
@@ -160,20 +214,32 @@ public class AsynchronousMultipleCommandListener implements Runnable {
 
 	
 	
-	class WorkerThread extends Thread {
+	private static class WorkerThread extends Thread {
 		private Command command;
 		private Displayable displayable;
 		private CommandListener commandListener;
+		private ItemCommandListener itemCommandListener;
+		private Item item;
 		
 		public WorkerThread( CommandListener commandListener, Command command, Displayable displayable) {
 			this.commandListener = commandListener;
 			this.command = command;
 			this.displayable = displayable;
 		}
-		
+
+		public WorkerThread( ItemCommandListener commandListener, Command command, Item item) {
+			this.itemCommandListener = commandListener;
+			this.command = command;
+			this.item = item;
+		}
+
 		public void run() {
 			try {
-				this.commandListener.commandAction( this.command, this.displayable);
+				if (this.commandListener != null) {
+					this.commandListener.commandAction( this.command, this.displayable);
+				} else {
+					this.itemCommandListener.commandAction(this.command, this.item);
+				}
 			} catch (Throwable e) {
 				//#debug error
 				System.out.println("Unable to process cmd " + this.command.getLabel() + " for screen " + this.displayable + e);
