@@ -25,12 +25,12 @@
 
 package de.enough.polish.processing;
 
-import de.enough.polish.geometry2d.Util2D;
 import de.enough.polish.ui.Display;
 import de.enough.polish.ui.Displayable;
 import de.enough.polish.util.DrawUtil;
 import de.enough.polish.util.MathUtil;
 import de.enough.polish.util.RgbImage;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,6 +40,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 import java.util.Vector;
+
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
