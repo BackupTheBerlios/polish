@@ -407,7 +407,7 @@ public class Command
 	public Command( String shortLabel, String longLabel, int commandType, int priority, Style style)
 	{
 		//#if polish.midp1
-			//# super( getLabel(shortLabel), getValidType(commandType), priority);
+			//# super( getValidLabel(shortLabel), getValidType(commandType), priority);
 		//#else
 			super( getValidLabel(shortLabel), longLabel, getValidType(commandType), priority);
 		//#endif

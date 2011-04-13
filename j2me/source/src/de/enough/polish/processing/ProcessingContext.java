@@ -1,4 +1,4 @@
-//#condition polish.usePolishGui && polish.hasFloatingPoint
+//#condition polish.usePolishGui
 /*
  * Copyright (c) 2010 Robert Virkus / Enough Software
  *
@@ -25,12 +25,6 @@
 
 package de.enough.polish.processing;
 
-import de.enough.polish.ui.Display;
-import de.enough.polish.ui.Displayable;
-import de.enough.polish.util.DrawUtil;
-import de.enough.polish.util.MathUtil;
-import de.enough.polish.util.RgbImage;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,14 +42,17 @@ import javax.microedition.lcdui.Image;
 import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreNotFoundException;
 
+import de.enough.polish.math.HFloat;
+import de.enough.polish.ui.Display;
+import de.enough.polish.ui.Displayable;
+import de.enough.polish.util.DrawUtil;
+import de.enough.polish.util.MathUtil;
+import de.enough.polish.util.RgbImage;
+
 /**
  * This is the standard Mobile Processing implementation for J2ME Polish.
  *
  * @author Ovidiu Iliescu
- */
-/**
- * @author Ovidiu
- *
  */
 public class ProcessingContext implements ProcessingInterface {
 
@@ -464,10 +461,15 @@ public class ProcessingContext implements ProcessingInterface {
      */
     public boolean isDrawingTransparent()
     {
-        return _transparentDrawing ;
+    	//#if polish.midp2
+        	return _transparentDrawing ;
+    	//#else
+        	//#= return false;
+    	//#endif
     }
 
 
+    //#if polish.midp2
     /* (non-Javadoc)
      * @see de.enough.polish.processing.ProcessingInterface#getTransparentRgbImage()
      */
@@ -512,6 +514,7 @@ public class ProcessingContext implements ProcessingInterface {
 
        return _transparentImage;
     }
+    //#endif
 
     /* (non-Javadoc)
      * @see de.enough.polish.processing.ProcessingInterface#signalPointerDragged(int, int)
@@ -789,6 +792,7 @@ public class ProcessingContext implements ProcessingInterface {
             // for more information
     }
 
+    //#if polish.hasFloatingPoint
     /**
      * Helper function used in converting colors from HSB to RGB.
      * @param v1 v1
@@ -820,6 +824,32 @@ public class ProcessingContext implements ProcessingInterface {
         }
         return (v1);
     }
+    //#else
+    public HFloat _Hue_2_RGB(HFloat v1, HFloat v2, HFloat vH)
+    {
+        if (vH.cmp(0).intValue() < 0 )
+        {
+            vH = vH.add(1);
+        }
+        if (vH.cmp(1).intValue() > 0 )        		
+        {
+            vH = vH.sbt(1);
+        }
+        if (vH.mlt(6).cmp(1).intValue() < 0)
+        {
+            return (v1.add(v2.sbt(v1)).mlt(6).mlt(vH));
+        }
+        if ( vH.mlt(2).cmp(1).intValue() < 0)
+        {
+            return (v2);
+        }
+        if ( vH.mlt(3).cmp(2).intValue() < 0 )
+        {
+            return (v1.add( v2.sbt(v1).mlt( new HFloat(2).div(3).sbt(vH) ).mlt(6) ));
+        }
+        return (v1);
+    }
+    //#endif
 
     /**
      * Draws the a polygon based on the vertexes in the vertex buffer. You can specify the indexes of the first and last vertexes of the polygon.
@@ -1248,40 +1278,78 @@ public class ProcessingContext implements ProcessingInterface {
         }
         else if (_colorMode == HSB)
         {
-            double R, G, B;
-            int Ri, Gi, Bi;
-            double temp2, temp1;
-            double H = ((double) value1) / _colorRange1;
-            double S = ((double) value2) / _colorRange2;
-            double L = ((double) value3) / _colorRange3;
-
-            if (S == 0) //HSL from 0 to 1
-            {
-                R = L * 255;
-                G = L * 255;
-                B = L * 255;
-            }
-            else
-            {
-                if (L < 0.5)
-                {
-                    temp2 = L * (1 + S);
-                } else
-                {
-                    temp2 = (L + S) - (S * L);
-                }
-
-                temp1 = 2 * L - temp2;
-
-                R = 255 * _Hue_2_RGB(temp1, temp2, H + ( 1.0 / 3));
-                G = 255 * _Hue_2_RGB(temp1, temp2, H);
-                B = 255 * _Hue_2_RGB(temp1, temp2, H - ( 1.0 / 3));
-
-            }
-
-            Ri = (int) R;
-            Gi = (int) G;
-            Bi = (int) B;
+        	
+        	//#if polish.hasFloatingPoint
+	            double R, G, B;
+	            int Ri, Gi, Bi;
+	            double temp2, temp1;
+	            double H = ((double) value1) / _colorRange1;
+	            double S = ((double) value2) / _colorRange2;
+	            double L = ((double) value3) / _colorRange3;
+	
+	            if (S == 0) //HSL from 0 to 1
+	            {
+	                R = L * 255;
+	                G = L * 255;
+	                B = L * 255;
+	            }
+	            else
+	            {
+	                if (L < 0.5)
+	                {
+	                    temp2 = L * (1 + S);
+	                } else
+	                {
+	                    temp2 = (L + S) - (S * L);
+	                }
+	
+	                temp1 = 2 * L - temp2;
+	
+	                R = 255 * _Hue_2_RGB(temp1, temp2, H + ( 1.0 / 3));
+	                G = 255 * _Hue_2_RGB(temp1, temp2, H);
+	                B = 255 * _Hue_2_RGB(temp1, temp2, H - ( 1.0 / 3)); 
+	
+	            }
+	
+	            Ri = (int) R;
+	            Gi = (int) G;
+	            Bi = (int) B;
+            //#else
+	            HFloat R, G, B;
+	            int Ri, Gi, Bi;
+	            HFloat temp2, temp1;
+	            HFloat H = new HFloat(value1).div(_colorRange1);
+	            HFloat S = new HFloat(value2).div(_colorRange2);
+	            HFloat L = new HFloat(value3).div(_colorRange3);
+	
+	            if (S.equals(new HFloat(0))) //HSL from 0 to 1
+	            {
+	                R = L.mlt(255);
+	                G = L.mlt(255);
+	                B = L.mlt(255);
+	            }
+	            else
+	            {
+	                if (L.cmp(new HFloat(1).div(2)).intValue() < 0 )
+	                {
+	                    temp2 = L.mlt (S.add(1));
+	                } else
+	                {
+	                    temp2 = L.add(S).sbt(S.mlt(L));
+	                }
+	
+	                temp1 = L.mlt(2).sbt(temp2);
+	
+	                R = _Hue_2_RGB(temp1, temp2, H.add( new HFloat(1).div(3))).mlt(255);
+	                G = _Hue_2_RGB(temp1, temp2, H).mlt(255);
+	                B = _Hue_2_RGB(temp1, temp2, H.sbt( new HFloat(1).div(3))).mlt(255); 
+	
+	            }
+	
+	            Ri = R.toInteger().intValue();
+	            Gi = G.toInteger().intValue();
+	            Bi = B.toInteger().intValue();
+            //#endif
 
             int col = (alpha << 24) | (Ri << 16) | (Gi << 8) | (Bi);
             return new color(col);
@@ -1447,25 +1515,48 @@ public class ProcessingContext implements ProcessingInterface {
 
         if ( _fastDrawingEnabled == true )
         {
-            // Calculate line width and other stuff
-            int strokeWidthDiv2 = _strokeWidth / 2 ;
-            double pointDistance = Math.sqrt ( (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2) ) ;
-            int startWidth = _strokeWidth / 2;
-            int remainingWidth = _strokeWidth - startWidth ;
-            double lineCos = -(x1-x2) / pointDistance;
-            double lineSin = - ( y1-y2 ) / pointDistance ;
-            double cosPerpendicularLine =  - lineSin ;
-            double sinPerpendicularLine = lineCos ;
-
-            // Calculate the polygon defining the line
-            __arrX[0] = (int)( x1 + cosPerpendicularLine * startWidth );
-            __arrX[1] = (int)( x1 - cosPerpendicularLine * remainingWidth );
-            __arrX[2] = (int)( x2 - cosPerpendicularLine * remainingWidth );
-            __arrX[3] = (int)( x2 + cosPerpendicularLine * startWidth );
-            __arrY[0] = (int)( y1 + sinPerpendicularLine * startWidth );
-            __arrY[1] = (int)( y1 - sinPerpendicularLine * remainingWidth );
-            __arrY[2] = (int)( y2 - sinPerpendicularLine * remainingWidth );
-            __arrY[3] = (int)( y2 + sinPerpendicularLine * startWidth );
+        	//#if polish.hasFloatingPoint			
+	            // Calculate line width and other stuff
+	            int strokeWidthDiv2 = _strokeWidth / 2 ;
+	            double pointDistance = Math.sqrt ( (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2) ) ;
+	            int startWidth = _strokeWidth / 2;
+	            int remainingWidth = _strokeWidth - startWidth ;
+	            double lineCos = -(x1-x2) / pointDistance;
+	            double lineSin = - ( y1-y2 ) / pointDistance ;
+	            double cosPerpendicularLine =  - lineSin ;
+	            double sinPerpendicularLine = lineCos ;
+	
+	            // Calculate the polygon defining the line
+	            __arrX[0] = (int)( x1 + cosPerpendicularLine * startWidth );
+	            __arrX[1] = (int)( x1 - cosPerpendicularLine * remainingWidth );
+	            __arrX[2] = (int)( x2 - cosPerpendicularLine * remainingWidth );
+	            __arrX[3] = (int)( x2 + cosPerpendicularLine * startWidth );
+	            __arrY[0] = (int)( y1 + sinPerpendicularLine * startWidth );
+	            __arrY[1] = (int)( y1 - sinPerpendicularLine * remainingWidth );
+	            __arrY[2] = (int)( y2 - sinPerpendicularLine * remainingWidth );
+	            __arrY[3] = (int)( y2 + sinPerpendicularLine * startWidth );
+            //#else
+            	HFloat temp;
+	            int strokeWidthDiv2 = _strokeWidth / 2 ;
+	            temp = new HFloat((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));	            
+	            HFloat pointDistance =  temp.sqrt();
+	            int startWidth = _strokeWidth / 2;
+	            int remainingWidth = _strokeWidth - startWidth ;
+	            HFloat lineCos = new HFloat(-(x1-x2)).div(pointDistance);
+	            HFloat lineSin = new HFloat(- ( y1-y2 )).div(pointDistance);
+	            HFloat cosPerpendicularLine =  new HFloat (lineSin.mlt(-1));
+	            HFloat sinPerpendicularLine = lineCos ;
+	
+	            // Calculate the polygon defining the line
+	            __arrX[0] = cosPerpendicularLine.mlt(startWidth).add(x1).toInteger().intValue();
+	            __arrX[1] = cosPerpendicularLine.mlt(-remainingWidth).add(x1).toInteger().intValue();
+	            __arrX[2] = cosPerpendicularLine.mlt(-remainingWidth).add(x2).toInteger().intValue();
+	            __arrX[3] = cosPerpendicularLine.mlt(startWidth).add(x2).toInteger().intValue();
+	            __arrY[0] = sinPerpendicularLine.mlt(startWidth).add(y1).toInteger().intValue();
+	            __arrY[1] = sinPerpendicularLine.mlt(-remainingWidth).add(y1).toInteger().intValue();
+	            __arrY[2] = sinPerpendicularLine.mlt(-remainingWidth).add(y2).toInteger().intValue();
+	            __arrY[3] = sinPerpendicularLine.mlt(startWidth).add(y2).toInteger().intValue();
+            //#endif
 
             // Draw the polygon
             DrawUtil.fillPolygon(__arrX, __arrY, _strokeColor, _bufferg);
@@ -3513,12 +3604,14 @@ public class ProcessingContext implements ProcessingInterface {
     /** Convenience constant of the value of pi/2 in fixed point. */
     public static final int HALF_PI         = PI / 2;
     
+    //#if polish.hasFloatingPoint
     /** Convenience constant of the value of pi in fixed point. */
     public static final double PI_D              = Math.PI;
     /** Convenience constant of the value of 2*pi in fixed point. */
     public static final double TWO_PI_D          = 2 * Math.PI;
     /** Convenience constant of the value of pi/2 in fixed point. */
     public static final double HALF_PI_D         = Math.PI / 2;
+    //#endif
 
 
     /* (non-Javadoc)
@@ -3739,6 +3832,7 @@ public class ProcessingContext implements ProcessingInterface {
         return result;
     }
     
+    //#if polish.hasFloatingPoint
 	/* (non-Javadoc)
 	 * @see de.enough.polish.processing.ProcessingInterface#sin(double)
 	 */
@@ -3765,7 +3859,8 @@ public class ProcessingContext implements ProcessingInterface {
 	 */
 	public double atan2d(int x, int y) {
 		return MathUtil.atan2(x, y);
-	} 
+	}
+	//#endif
 
     /** Lookup table for sin function, indexed by degrees. */
     public static final int[] sin = {
@@ -4131,6 +4226,7 @@ public class ProcessingContext implements ProcessingInterface {
         (int) (-0.0174524064372844f * ONE),
     };
 
+    //#if polish.hasFloatingPoint
 	/* (non-Javadoc)
 	 * @see de.enough.polish.processing.ProcessingInterface#append(float[], float)
 	 */
@@ -4159,5 +4255,6 @@ public class ProcessingContext implements ProcessingInterface {
 		double COEFF  = 10000;
 		int randomNumber = random( (int) (value * COEFF));
 		return randomNumber / COEFF;
-	} 
+	}
+	//#endif
 }

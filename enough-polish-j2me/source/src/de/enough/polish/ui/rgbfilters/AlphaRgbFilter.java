@@ -72,7 +72,9 @@ public class AlphaRgbFilter extends RgbFilter
 		}
 
 		// apply the alpha map onto the copied input
+		//#if tmp.supportImageOperations
         ImageUtil.applyAlphaOntoRgbImage(result, this.alphaMap);
+        //#endif
         
 		return result;
     }

@@ -96,23 +96,25 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
      */
     protected void paintScreen(Graphics g) {
 
-        context.signalSizeChange(contentWidth, contentHeight);
-
-        if ( focusHasBeenTriggered == false )
-        {
-            context.signalHasFocus();
-            focusHasBeenTriggered = true ;
-        }
-
-        // Draw the processing buffer
-        if ( context.isDrawingTransparent() == false )
-       {
-        g.drawImage(context.getBuffer(), contentX, contentY, Graphics.TOP | Graphics.LEFT );
-       }
-       else
-       {
-          context.getTransparentRgbImage().paint(contentX, contentY, g);
-       }
+		context.signalSizeChange(contentWidth, contentHeight);
+		
+		if ( focusHasBeenTriggered == false )
+		{
+		    context.signalHasFocus();
+		    focusHasBeenTriggered = true ;
+		}
+		
+		// Draw the processing buffer
+		if ( context.isDrawingTransparent() == false )
+		{
+			g.drawImage(context.getBuffer(), contentX, contentY, Graphics.TOP | Graphics.LEFT );
+		}
+		else
+		{
+			//#if polish.midp2
+			context.getTransparentRgbImage().paint(contentX, contentY, g);
+			//#endif
+		}
     }
 
     /* (non-Javadoc)

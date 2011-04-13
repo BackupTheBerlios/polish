@@ -585,6 +585,7 @@ public class Graphics {
         this.graphics.clipRect(x, y, width, height);
     }
 
+    //#if polish.midp2
     /**
      * Copies the contents of a rectangular area
      * <code>(x_src, y_src, width, height)</code> to a destination area,
@@ -658,6 +659,7 @@ public class Graphics {
     {
         this.graphics.copyArea( x_src,  y_src,  width,  height,  x_dest,  y_dest,  anchor);
     }
+    //#endif
 
     /**
      * Draws the outline of a circular or elliptical arc
@@ -821,6 +823,7 @@ public class Graphics {
         this.graphics.drawRect( x,y, width, height);
     }
 
+    //#if polish.midp2
     /**
      * Copies a region of the specified source image to a location within
      * the destination, possibly transforming (rotating and reflecting)
@@ -921,7 +924,9 @@ public class Graphics {
     {
         this.graphics.drawRegion( src.image,  x_src,  y_src,  width,  height,  transform,  x_dest,  y_dest,  anchor) ;
     }
+    //#endif
 
+    //#if polish.midp2
     /**
      * Renders a series of device-independent RGB+transparency values in a
      * specified region.  The values are stored in
@@ -1020,6 +1025,7 @@ public class Graphics {
     {
         this.graphics.drawRGB(rgbData, offset,scanlength, x, y,width, height, processAlpha) ;
     }
+    //#endif
 
     /**
      * Draws the outline of the specified rounded corner rectangle
@@ -1249,6 +1255,7 @@ public class Graphics {
         return this.graphics.getColor() ;
     }
 
+    //#if polish.midp2
     /**
      * Gets the color that will be displayed if the specified color
      * is requested. This method enables the developer to check the
@@ -1269,6 +1276,7 @@ public class Graphics {
     {
         return this.graphics.getDisplayColor(color);
     }
+    //#endif
 
     /**
      * Gets the current font.

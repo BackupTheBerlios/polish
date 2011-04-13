@@ -217,11 +217,13 @@ public interface ProcessingInterface {
      */
     public boolean isDrawingTransparent();
 
+    //#if polish.midp2
     /**
      * Returns the image buffer as an RgbImage, with transparency applied to it.
      * @return the image buffer as an RgbImage
      */
     public RgbImage getTransparentRgbImage();
+    //#endif
 
     /**
      * Returns the current transparent color (pixels of this color will be replaced with transparent ones when calling getTransparentRgbImage()).
@@ -1087,6 +1089,7 @@ public interface ProcessingInterface {
      */
     public boolean[] append(boolean[] array, boolean element);
     
+    //#if polish.hasFloatingPoint
     /**
      * Expands an array by one element and adds data to the new position. The datatype of the element parameter must be the same as the datatype of the array.
      * @param array the original array
@@ -1102,6 +1105,7 @@ public interface ProcessingInterface {
      * @return resulting array
      */
     public double[] append(double[] array, double element);
+    //#endif
 
     /**
      * Expands an array by one element and adds data to the new position. The datatype of the element parameter must be the same as the datatype of the array.
@@ -1655,12 +1659,14 @@ public interface ProcessingInterface {
      */
     public int random(int value);
     
+    //#if polish.hasFloatingPoint
     /**
      * Generates a random number between 0 and the specified maximum number, excluding the specified number.
      * @param value maximum number
      * @return random number between 0 and the maximum number specified
      */
     public double random(double value);
+    //#endif
 
     /**
      * Generates a random number in the specified interval.
@@ -1756,12 +1762,14 @@ public interface ProcessingInterface {
      */
     public int sin(int rad);
     
+    //#if polish.hasFloatingPoint
     /**
      * Calculates the sine of an angle. This function expects the values of the angle parameter to be provided in radians.
      * @param rad angle in radians
      * @return sine value
      */
     public double sind(double rad);
+    //#endif
 
     /**
      * Calculates the cosine of an angle. This function expects the values of the angle parameter to be provided in radian fixed point values (values from 0 to PI*2). Values are returned as fixed point values in the range -1 to 1. 
@@ -1770,12 +1778,14 @@ public interface ProcessingInterface {
      */
     public int cos(int rad);
     
+    //#if polish.hasFloatingPoint
     /**
      * Calculates the cosine of an angle. This function expects the values of the angle parameter to be provided in radians.
      * @param rad angle in radians
      * @return cosine
      */
     public double cosd(double rad);
+    //#endif
 
     /**
      * Returns the arc tangent of a value. This function expects the values as fixed point values in the range of -Infinity to Infinity (exclusive) and values are returned as fixed point values in the range -PI/2  to PI/2 . 
@@ -1792,6 +1802,7 @@ public interface ProcessingInterface {
      */
     public int atan2(int x, int y);
     
+    //#if polish.hasFloatingPoint
     /**
      * Returns the arc tangent of a value. This function expects the values as fixed point values in the range of -Infinity to Infinity (exclusive) and values are returned as fixed point values in the range -PI/2  to PI/2 . 
      * @param value1 value to calculate the arctangent of
@@ -1806,6 +1817,7 @@ public interface ProcessingInterface {
      * @return angle in radians
      */
     public double atan2d(int x, int y);
+    //#endif
 
     /**
      * Reads the contents of a file and places it in a byte array.

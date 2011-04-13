@@ -654,6 +654,7 @@ implements ImageConsumer
 	 */
 	public void addRepaintArea(ClippingRegion repaintRegion) {
 		super.addRepaintArea(repaintRegion);
+		//#if polish.css.icon-filter && polish.midp2
 		RgbImage img = this.iconFilterProcessedRgbImage;
 		if (img != null && (img.getHeight() > this.imageHeight || img.getWidth() > this.imageWidth)) {
 			int lo = this.layout;
@@ -678,6 +679,7 @@ implements ImageConsumer
 			}
 			repaintRegion.addRegion( absX, absY, w, h );
 		}
+		//#endif
 	}
 	//#endif
 

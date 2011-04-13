@@ -2275,6 +2275,7 @@ public final class ImageUtil {
     }
     //#endif
     
+    //#if polish.midp2
     /**
      * Returns the pixel of the given image at the given x/y offset
      * @param image the RgbImage
@@ -2286,6 +2287,7 @@ public final class ImageUtil {
     	RgbImage rgbImage = new RgbImage(image,true);
     	return getPixelColor(rgbImage, x, y);
     }
+    //#endif
     
     /**
      * Returns the pixel of the given RgbImage at the given x/y offset

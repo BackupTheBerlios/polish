@@ -116,7 +116,9 @@ public class ProcessingBackground extends Background implements ProcessingContex
        }
        else
        {
+    	  //#if polish.midp2
           context.getTransparentRgbImage().paint(x, y, g);
+          //#endif
        }
     }
 

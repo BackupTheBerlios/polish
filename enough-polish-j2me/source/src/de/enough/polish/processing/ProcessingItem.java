@@ -86,21 +86,23 @@ public class ProcessingItem extends Item implements ProcessingContextContainerIn
      */
     public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 
-        setContentWidth ( itemWidth - paddingLeft - paddingRight );
-        setContentHeight ( itemHeight - paddingTop - paddingBottom );
-        
-        // Resize the Processing canvas area if needed.
-        context.signalSizeChange( contentWidth , contentHeight );
-        
-        // Draw the processing buffer.
-        if ( context.isDrawingTransparent() == false )
-       {
-        g.drawImage(context.getBuffer(), x, y, Graphics.TOP | Graphics.LEFT );
-       }
-       else
-       {
-          context.getTransparentRgbImage().paint(x, y, g);
-       }
+		setContentWidth ( itemWidth - paddingLeft - paddingRight );
+		setContentHeight ( itemHeight - paddingTop - paddingBottom );
+		
+		// Resize the Processing canvas area if needed.
+		context.signalSizeChange( contentWidth , contentHeight );
+		
+		// Draw the processing buffer.
+	    if ( context.isDrawingTransparent() == false )
+		{
+	    	g.drawImage(context.getBuffer(), x, y, Graphics.TOP | Graphics.LEFT );
+		}
+		else
+		{
+			//#if polish.midp2
+			context.getTransparentRgbImage().paint(x, y, g);
+			//#endif
+		}
 
     }
 

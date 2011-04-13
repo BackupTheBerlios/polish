@@ -202,6 +202,7 @@ public class Font {
         this.font = font;
     }
 
+    //#if polish.midp2
     /**
      * Gets the <code>Font</code> used by the high level user interface
      * for the <code>fontSpecifier</code> passed in. It should be used
@@ -224,6 +225,7 @@ public class Font {
 	        	//#endif
         		.getFont(fontSpecifier) );
     }
+    //#endif
 
     /**
      * Gets the default font of the system.

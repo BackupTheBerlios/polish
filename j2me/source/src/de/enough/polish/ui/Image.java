@@ -122,6 +122,7 @@ public class Image
         return result;
     }
 
+    //#if polish.midp2
     /**
      * Creates an immutable image using pixel data from the specified
      * region of a source image, transformed as specified.
@@ -211,6 +212,7 @@ public class Image
 	    Image result = new Image(thisImage);
         return result;
     }
+    //#endif
 
     /**
      * Creates an immutable image from a source image.
@@ -255,6 +257,7 @@ public class Image
         return result;
     }
 
+    //#if polish.midp2
     /**
      * Creates an immutable image from decoded image data obtained froH an
      * <code>InputStream</code>.  This method blocks until all image data has 
@@ -288,6 +291,7 @@ public class Image
 	    Image result = new Image(thisImage);
         return result;
     }
+    //#endif
 
     /**
      * Creates a new, mutable image for off-screen drawing. Every pixel
@@ -355,6 +359,7 @@ public class Image
         return result;
     }
 
+    //#if polish.midp2
     /**
      * Creates an immutable image from a sequence of ARGB values, specified
      * as <code>0xAARRGGBB</code>.
@@ -434,6 +439,7 @@ public class Image
 	    Image result = new Image(thisImage);
         return result;
     }
+    //#endif
 
     /**
      * Creates a new <code>Graphics</code> object that renders to this
@@ -513,7 +519,7 @@ public class Image
         }
     }
 
-
+    //#if polish.midp2
     /**
      * Obtains ARGB pixel data from the specified region of this image and
      * stores it in the provided array of integers.  Each pixel value is
@@ -628,8 +634,8 @@ public class Image
         {
             image.getRGB(rgbData, offset, scanlength, x, y, width, height);
         }
-
     }
+    //#endif
 
     /**
      * Check if this image is mutable. Mutable images can be modified by
@@ -653,6 +659,8 @@ public class Image
     }
 
     // Extra methods
+    
+    //#if polish.midp2
     /**
      * Returns an ARGB array containing a copy of the image's RGB data. Convenience method.
      * @return ARGB array
@@ -663,6 +671,7 @@ public class Image
         image.getRGB(data, 0, image.getWidth(), 0, 0, image.getWidth(), image.getHeight() );
         return data;
     }
+    //#endif
 
     public NativeImage getNativeImage() {
     	//todo implement getNativeImage

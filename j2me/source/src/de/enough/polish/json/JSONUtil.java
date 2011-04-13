@@ -113,7 +113,11 @@ public class JSONUtil {
 		} else {
 			// Native object types must be serialized manually. Most of them must be quoted, i.e. placed between quotes.
 			// Unquoted data types are boolean, integer, double, float and JSONParser.NULL. Everything else will be converted to String and quoted.
-			boolean needsQuotes = ! (object instanceof Integer || object instanceof Long || object instanceof Double || object instanceof Float || object instanceof Boolean || object == JSONParser.NULL );
+			boolean needsQuotes = ! (object instanceof Integer || object instanceof Long
+					//#if polish.hasFloatingPoint
+						|| object instanceof Double || object instanceof Float
+					//#endif
+						|| object instanceof Boolean || object == JSONParser.NULL );
 			if ( needsQuotes ) 
 			{
 				stringBuffer.append(JSONParser.TOKEN_QUOTATION_MARK);

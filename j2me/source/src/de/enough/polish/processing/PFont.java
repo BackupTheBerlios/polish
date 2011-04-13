@@ -85,6 +85,7 @@ public class PFont {
     {
         this.color = textColor.color;
         this.bgColor = bgColor.color;
+        this.useNativeFontColor = false;
         bitmapFont = BitMapFont.getInstance(fontUrl);
     }
 
@@ -250,7 +251,7 @@ public class PFont {
             BitMapFontViewer bfv = null;
             if (useNativeFontColor)
             {
-                bfv = bitmapFont.getViewer(str);
+               bfv = bitmapFont.getViewer(str);
             }
             else
             {

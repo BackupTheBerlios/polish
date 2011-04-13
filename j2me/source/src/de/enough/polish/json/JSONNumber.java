@@ -60,6 +60,7 @@ public class JSONNumber implements JSONItem {
 		this.stringRepresentation = number.toString();
 	}
 	
+	//#if polish.hasFloatingPoint	
 	/**
 	 * Creates a new JSON number
 	 * @param number the number
@@ -83,6 +84,7 @@ public class JSONNumber implements JSONItem {
 	public JSONNumber(Double number) {
 		this.stringRepresentation = number.toString();
 	}
+	//#endif
 	
 	/**
 	 * Creates a new JSON number

@@ -138,7 +138,7 @@ public class RgbImage {
 	}
 	//#endif
 	
-	//#if polish.usePolishGui && !polish.android
+	//#if polish.usePolishGui && !polish.android && polish.midp2
 	/**
 	 * Creates a new RGB image. WARNING: The extraction of RGB data can only succeed on MIDP 2.0 devices
 	 * 

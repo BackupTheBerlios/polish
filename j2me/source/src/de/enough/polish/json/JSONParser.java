@@ -34,6 +34,11 @@ import java.io.InputStream;
  */
 public class JSONParser {
 	
+	//#if !polish.cldc1.1
+	public static Boolean TRUE = new Boolean(true);
+	public static Boolean FALSE = new Boolean(false);
+	//#endif
+	
 	/**
 	 * This class defines the default NULL object in JSON.
 	 * @author Ovidiu Iliescu
@@ -416,10 +421,18 @@ public class JSONParser {
     	// Everything went OK. Return the corresponding object
     	switch ( originalCharacter ) {
     		case 't':
-    			return Boolean.TRUE;
+    			//#if polish.cldc1.1
+    				return Boolean.TRUE;
+				//#else
+    				//#= return TRUE;
+				//#endif
     				
     		case 'f':
-    			return Boolean.FALSE;
+    			//#if polish.cldc1.1
+					return Boolean.FALSE;
+				//#else
+					//#= return FALSE;
+				//#endif
     			
     		case 'n':
     			return JSONParser.NULL;
