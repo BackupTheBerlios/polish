@@ -1315,40 +1315,39 @@ public class ProcessingContext implements ProcessingInterface {
 	            Gi = (int) G;
 	            Bi = (int) B;
             //#else
-	            HFloat R, G, B;
-	            int Ri, Gi, Bi;
-	            HFloat temp2, temp1;
-	            HFloat H = new HFloat(value1).div(_colorRange1);
-	            HFloat S = new HFloat(value2).div(_colorRange2);
-	            HFloat L = new HFloat(value3).div(_colorRange3);
-	
-	            if (S.equals(new HFloat(0))) //HSL from 0 to 1
-	            {
-	                R = L.mlt(255);
-	                G = L.mlt(255);
-	                B = L.mlt(255);
-	            }
-	            else
-	            {
-	                if (L.cmp(new HFloat(1).div(2)).intValue() < 0 )
-	                {
-	                    temp2 = L.mlt (S.add(1));
-	                } else
-	                {
-	                    temp2 = L.add(S).sbt(S.mlt(L));
-	                }
-	
-	                temp1 = L.mlt(2).sbt(temp2);
-	
-	                R = _Hue_2_RGB(temp1, temp2, H.add( new HFloat(1).div(3))).mlt(255);
-	                G = _Hue_2_RGB(temp1, temp2, H).mlt(255);
-	                B = _Hue_2_RGB(temp1, temp2, H.sbt( new HFloat(1).div(3))).mlt(255); 
-	
-	            }
-	
-	            Ri = R.toInteger().intValue();
-	            Gi = G.toInteger().intValue();
-	            Bi = B.toInteger().intValue();
+				//#= HFloat R, G, B;
+				//#= int Ri, Gi, Bi;
+				//#= HFloat temp2, temp1;
+				//#= HFloat H = new HFloat(value1).div(_colorRange1);
+				//#= HFloat S = new HFloat(value2).div(_colorRange2);
+				//#= HFloat L = new HFloat(value3).div(_colorRange3);
+				//#= 
+				//#= if (S.equals(new HFloat(0))) //HSL from 0 to 1
+				//#= {
+				//#= R = L.mlt(255);
+				//#= G = L.mlt(255);
+				//#= B = L.mlt(255);
+				//#= }
+				//#= else
+				//#= {
+				//#= 	if (L.cmp(new HFloat(1).div(2)).intValue() < 0 )
+				//#= 	{
+				//#= 		temp2 = L.mlt (S.add(1));
+				//#= 	} else
+				//#= 	{
+				//#=		temp2 = L.add(S).sbt(S.mlt(L));
+				//#=	}
+				//#= 
+				//#=	temp1 = L.mlt(2).sbt(temp2);
+				//#= 
+				//#=	R = _Hue_2_RGB(temp1, temp2, H.add( new HFloat(1).div(3))).mlt(255);
+				//#=	G = _Hue_2_RGB(temp1, temp2, H).mlt(255);
+				//#=	B = _Hue_2_RGB(temp1, temp2, H.sbt( new HFloat(1).div(3))).mlt(255);
+				//#= }
+				//#=
+				//#= Ri = R.toInteger().intValue();
+				//#= Gi = G.toInteger().intValue();
+				//#= Bi = B.toInteger().intValue();
             //#endif
 
             int col = (alpha << 24) | (Ri << 16) | (Gi << 8) | (Bi);
@@ -1536,26 +1535,26 @@ public class ProcessingContext implements ProcessingInterface {
 	            __arrY[2] = (int)( y2 - sinPerpendicularLine * remainingWidth );
 	            __arrY[3] = (int)( y2 + sinPerpendicularLine * startWidth );
             //#else
-            	HFloat temp;
-	            int strokeWidthDiv2 = _strokeWidth / 2 ;
-	            temp = new HFloat((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));	            
-	            HFloat pointDistance =  temp.sqrt();
-	            int startWidth = _strokeWidth / 2;
-	            int remainingWidth = _strokeWidth - startWidth ;
-	            HFloat lineCos = new HFloat(-(x1-x2)).div(pointDistance);
-	            HFloat lineSin = new HFloat(- ( y1-y2 )).div(pointDistance);
-	            HFloat cosPerpendicularLine =  new HFloat (lineSin.mlt(-1));
-	            HFloat sinPerpendicularLine = lineCos ;
-	
-	            // Calculate the polygon defining the line
-	            __arrX[0] = cosPerpendicularLine.mlt(startWidth).add(x1).toInteger().intValue();
-	            __arrX[1] = cosPerpendicularLine.mlt(-remainingWidth).add(x1).toInteger().intValue();
-	            __arrX[2] = cosPerpendicularLine.mlt(-remainingWidth).add(x2).toInteger().intValue();
-	            __arrX[3] = cosPerpendicularLine.mlt(startWidth).add(x2).toInteger().intValue();
-	            __arrY[0] = sinPerpendicularLine.mlt(startWidth).add(y1).toInteger().intValue();
-	            __arrY[1] = sinPerpendicularLine.mlt(-remainingWidth).add(y1).toInteger().intValue();
-	            __arrY[2] = sinPerpendicularLine.mlt(-remainingWidth).add(y2).toInteger().intValue();
-	            __arrY[3] = sinPerpendicularLine.mlt(startWidth).add(y2).toInteger().intValue();
+				//#= HFloat temp;
+				//#= int strokeWidthDiv2 = _strokeWidth / 2 ;
+				//#= temp = new HFloat((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));	
+				//#= HFloat pointDistance =temp.sqrt();
+				//#= int startWidth = _strokeWidth / 2;
+				//#= int remainingWidth = _strokeWidth - startWidth ;
+				//#= HFloat lineCos = new HFloat(-(x1-x2)).div(pointDistance);
+				//#= HFloat lineSin = new HFloat(- ( y1-y2 )).div(pointDistance);
+				//#= HFloat cosPerpendicularLine =new HFloat (lineSin.mlt(-1));
+				//#= HFloat sinPerpendicularLine = lineCos ;
+				//#= 
+				//#= 	// Calculate the polygon defining the line
+				//#= __arrX[0] = cosPerpendicularLine.mlt(startWidth).add(x1).toInteger().intValue();
+				//#= __arrX[1] = cosPerpendicularLine.mlt(-remainingWidth).add(x1).toInteger().intValue();
+				//#= __arrX[2] = cosPerpendicularLine.mlt(-remainingWidth).add(x2).toInteger().intValue();
+				//#= __arrX[3] = cosPerpendicularLine.mlt(startWidth).add(x2).toInteger().intValue();
+				//#= __arrY[0] = sinPerpendicularLine.mlt(startWidth).add(y1).toInteger().intValue();
+				//#= __arrY[1] = sinPerpendicularLine.mlt(-remainingWidth).add(y1).toInteger().intValue();
+				//#= __arrY[2] = sinPerpendicularLine.mlt(-remainingWidth).add(y2).toInteger().intValue();
+				//#= __arrY[3] = sinPerpendicularLine.mlt(startWidth).add(y2).toInteger().intValue();
             //#endif
 
             // Draw the polygon
