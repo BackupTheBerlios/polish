@@ -962,6 +962,8 @@ public class MidletBridge extends Activity {
 				return true;
 			}
 		//#endif
+/* Disabled due to back handled twice in case of native command handling.
+ * Untested for polish command handling.
 		Command cmdBack = null;
 		Object[] commands = this.addedCommands.getInternalArray();
 		for (int i = 0; i < commands.length; i++) {
@@ -985,6 +987,8 @@ public class MidletBridge extends Activity {
 			return true;
 		}
 		return false;
+*/
+		return true;
 	}
 	//#endif
 	
