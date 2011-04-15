@@ -101,7 +101,7 @@ implements CommandListener
 		if (cmd == this.cmdExit) {
 			quit();
 		} else {
-			Alert alert = new Alert("A tree is being rendered everytime you click a button or touch the screen (on touch enabled phones).");
+			Alert alert = new Alert("A tree is being rendered everytime you click a button or touch the screen (on touch enabled phones).\nOriginal code by Michael Lange\n\nhttp://www.openprocessing.org/visuals/?visualID=4732");
 			this.display.setCurrent(alert);
 		}
 		
