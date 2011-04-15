@@ -3062,8 +3062,10 @@ implements UiElement, Animatable
 				//#if tmp.useTitleMenu
 				if(!this.hasTitleMenu)
 				{
+				//#endif
 					this.title = null;
 					this.titleHeight = 0;
+				//#if tmp.useTitleMenu
 				}
 				//#endif
 			}
