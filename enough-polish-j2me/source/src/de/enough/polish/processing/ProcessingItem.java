@@ -150,7 +150,7 @@ public class ProcessingItem extends Item implements ProcessingContextContainerIn
     protected boolean handleCommand(Command cmd)
     {
         context.signalSoftkeyPressed(cmd.getLabel());
-        return context.areSoftkeysCaptured();
+        return context.areSoftkeysCaptured() || super.handleCommand(cmd);
     }
 
     /* (non-Javadoc)
