@@ -17,7 +17,7 @@
 <!--                                                          -->
 <!-- Have fun!                                                -->
 <project 
-	name="enough-j2mepolish-email" 
+	name="enough-j2mepolish-rss" 
 	default="j2mepolish">
 	
 	<!-- import user specific properties                          -->

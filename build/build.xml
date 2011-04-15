@@ -754,6 +754,16 @@
 			<fileset dir="setup/samples/animation" excludes="**/macosx/**,**/CVS" />
 			<fileset dir="../enough-polish-sample-animation" includes="resources/**/*.*" excludes="**/CVS"/>
 		</copy>
+		<!-- copy processing-tree application -->
+		<mkdir dir="tmp/samples/processing-tree/source/src" />
+		<copy todir="tmp/samples/processing-tree/source/src">
+			<fileset dir="../enough-polish-sample-processing-tree/source/src" includes="**/*.java" />
+		</copy>
+		<copy todir="tmp/samples/processing-tree/" 
+			>
+			<fileset dir="setup/samples/processing-tree" excludes="**/macosx/**,**/CVS" />
+			<fileset dir="../enough-polish-sample-processing-tree" includes="resources/**/*.*" excludes="**/CVS"/>
+		</copy>
 		<!-- copy fisheye application -->
 		<mkdir dir="tmp/samples/fisheye/source/src" />
 		<copy todir="tmp/samples/fisheye/source/src">

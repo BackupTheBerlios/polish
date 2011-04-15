@@ -179,6 +179,15 @@ When the plugin is not installed correctly, please start eclipse with "-clean" c
             <parsable targetfile="$INSTALL_PATH/samples/rmi-xmlrpc/nbproject/project.properties" type="shell" /> 
         </pack>
         
+        <pack name="Processing Tree Sample Application" required="no" preselected="yes">
+            <description>This project shows you how to use Processing within J2ME Polish. Visit processing.org for more information about Processing.</description>
+            <file src="samples/processing-tree" targetdir="$INSTALL_PATH/samples"/>
+            <parsable targetfile="$INSTALL_PATH/samples/processing-tree/build.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/processing-tree/build-netbeans.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/processing-tree/.classpath" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/processing-tree/nbproject/project.properties" type="shell" /> 
+        </pack>
+        
         <pack name="Fisheye Sample Application" required="no" preselected="yes">
             <description>A simple application demonstrating the fisheye view-type.</description>
             <file src="samples/fisheye" targetdir="$INSTALL_PATH/samples"/>
