@@ -52,6 +52,13 @@ title {
 	layout: horizontal-expand | horizontal-center | vertical-center;
 }
 
+alert {
+	repaint-previous-screen: true;
+	background-color: white;
+	layout: vertical-shrink | bottom;
+	padding: 5px;
+}
+
 
 /*********************   SCROLL BAR   ******************************************************************************************************/
 /* You need to activate the scrollbar by setting the "polish.useScrollBar" variable to "true" in your build.xml script. */
