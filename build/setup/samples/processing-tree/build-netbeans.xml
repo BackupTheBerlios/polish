@@ -137,7 +137,7 @@
 					<filter level="info" pattern="de.enough.polish.ui.*"/>
 				</debug>
 				<resources
-					dir="resources/base"
+					dir="resources"
 					defaultexcludes="yes"
 					excludes="readme.txt"
 				>
