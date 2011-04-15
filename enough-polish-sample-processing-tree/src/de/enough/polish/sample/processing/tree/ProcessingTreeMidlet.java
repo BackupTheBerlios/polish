@@ -30,6 +30,10 @@ import javax.microedition.midlet.MIDletStateChangeException;
 
 import de.enough.polish.processing.ProcessingContext;
 import de.enough.polish.processing.ProcessingScreen;
+import de.enough.polish.ui.Alert;
+import de.enough.polish.ui.Command;
+import de.enough.polish.ui.CommandListener;
+import de.enough.polish.ui.Displayable;
 
 /**
  * <p>Shows a demonstration of the possibilities of J2ME Polish.</p>
@@ -38,10 +42,17 @@ import de.enough.polish.processing.ProcessingScreen;
  * 
  * @author Ovidiu Iliescu
  */
-public class ProcessingTreeMidlet extends MIDlet{
+public class ProcessingTreeMidlet 
+extends MIDlet
+implements CommandListener
+{
 
-	ProcessingScreen screen ;
-    Display display;
+	private ProcessingScreen screen ;
+    private Display display;
+    
+    private Command cmdExit = new Command("Exit", Command.EXIT, 1 );
+    private Command cmdHelp = new Command("Help", Command.HELP, 1 );
+    
 
 	public ProcessingTreeMidlet() {
 		super();
@@ -51,17 +62,33 @@ public class ProcessingTreeMidlet extends MIDlet{
 
         // And attach it to a ProcessingScreen.
 		//#style mainScreen
-		this.screen = new ProcessingScreen("Processing Tree", context);                
+		this.screen = new ProcessingScreen("Processing Tree", context);
+		this.screen.addCommand( this.cmdExit );
+		this.screen.addCommand(this.cmdHelp);
+		this.screen.setCommandListener(this);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see javax.microedition.midlet.MIDlet#startApp()
+	 */
 	protected void startApp() throws MIDletStateChangeException {		
 		this.display = Display.getDisplay(this);
 		this.display.setCurrent( this.screen );		
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see javax.microedition.midlet.MIDlet#pauseApp()
+	 */
 	protected void pauseApp() {
+		// ignore
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see javax.microedition.midlet.MIDlet#destroyApp(boolean)
+	 */
 	protected void destroyApp(boolean unconditional) throws MIDletStateChangeException {
 		// just quit
 	}
@@ -69,5 +96,16 @@ public class ProcessingTreeMidlet extends MIDlet{
 	private void quit() {
 		notifyDestroyed();
 	}
+
+	public void commandAction(Command cmd, Displayable disp) {
+		if (cmd == this.cmdExit) {
+			quit();
+		} else {
+			Alert alert = new Alert("A tree is being rendered everytime you click a button or touch the screen (on touch enabled phones).");
+			this.display.setCurrent(alert);
+		}
+		
+	}
+
 
 }

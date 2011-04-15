@@ -146,6 +146,10 @@ public class ProcessingTreeContext extends ProcessingContext {
 		noLoop();	  	  
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.processing.ProcessingContext#keyPressed()
+	 */
 	public void keyPressed(){
 	    branchX = new float[1];
 	    branchY = new float[1];
@@ -153,7 +157,16 @@ public class ProcessingTreeContext extends ProcessingContext {
 	    tempY = new float[0];
 	    loop();
 	}
+	
+	
 	 
+	/* (non-Javadoc)
+	 * @see de.enough.polish.processing.ProcessingContext#pointerPressed()
+	 */
+	public void pointerPressed() {
+		keyPressed();
+	}
+
 	void drawBranch(float x, float y, float r, boolean newBranch, boolean firstBranch){
 	  float rotation;
 	  float lowerlimit;

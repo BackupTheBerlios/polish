@@ -85,7 +85,7 @@
 
                         <compiler optimize="true"/>
 			<!-- obfuscator settings: do not obfuscate when the test-property is true -->
-			<obfuscator useDefaultPackage="true" name="ProGuard" unless="noobfuscator">
+			<obfuscator name="ProGuard" unless="noobfuscator">
 			</obfuscator>
 			<!-- debug settings: only include debug setting when the test-property is true -->
 			<debug level="ovidiu" showLogOnError="true" verbose="false">
@@ -139,6 +139,8 @@
 		</exec>
 
 	</target>
+	
+	<target name="emulator" depends="test,j2mepolish" />
 
 	<target name="cleanbuild" depends="clean,j2mepolish" />
 
