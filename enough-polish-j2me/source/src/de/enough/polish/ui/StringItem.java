@@ -94,6 +94,7 @@ public class StringItem extends Item
 	private int lastContentWidth;
 	private int lastContentHeight;
 	//#if polish.css.text-filter && polish.midp2
+		//#define tmp.useTextFilter
 		private RgbFilter[] textFilters;
 		private boolean isTextFiltersActive;
 		private RgbImage textFilterRgbImage;
@@ -274,7 +275,7 @@ public class StringItem extends Item
 	}
 	//#endif
 
-	//#if polish.css.text-filter
+	//#if tmp.useTextFilter
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#addRepaintArea(de.enough.polish.ui.ClippingRegion)
 	 */
@@ -499,7 +500,7 @@ public class StringItem extends Item
 				return;
 			}
 		//#endif
-		//#if polish.css.text-filter && polish.midp2
+		//#if tmp.useTextFilter
 			if (this.isTextFiltersActive && this.textFilters != null) {
 				RgbImage rgbImage = this.textFilterRgbImage;
 				if ( rgbImage == null) {
@@ -538,7 +539,7 @@ public class StringItem extends Item
 				paintText(x, y, leftBorder, rightBorder, g);
 			}
 		//#endif		
-	//#if polish.css.text-filter && polish.midp2
+	//#if tmp.useTextFilter
 	}
 	private void paintText( int x, int y, int leftBorder, int rightBorder, Graphics g) {
 	//#endif
@@ -956,7 +957,7 @@ public class StringItem extends Item
 				this.textLayout = style.layout;
 			}
 		//#endif 
-		//#if polish.css.text-filter && polish.midp2
+		//#if tmp.useTextFilter
 			RgbFilter[] filterObjects = (RgbFilter[]) style.getObjectProperty("text-filter");
 			if (filterObjects != null) {
 				if (filterObjects != this.originalTextFilters) {
@@ -1101,7 +1102,7 @@ public class StringItem extends Item
 				this.isTextVisible = true;
 			}
 		//#endif
-		//#if polish.css.text-filter && polish.midp2
+		//#if tmp.useTextFilter
 			if (this.textFilters != null) {
 				boolean isActive = false;
 				for (int i=0; i<this.textFilters.length; i++) {

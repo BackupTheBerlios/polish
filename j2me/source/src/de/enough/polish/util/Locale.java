@@ -845,7 +845,13 @@ public final class Locale {
 	{
 		//#debug
 		System.out.println("loading translations from " + url );
-		InputStream is = Locale.class.getResourceAsStream( url );
+		InputStream is = 
+			//#if polish.cldc11
+				Locale.class.getResourceAsStream( url );
+			//#else
+				// on CLDC 1.0 we have no Locale.class shortcut:
+				(new Locale()).getClass().getResourceAsStream(url);
+			//#endif
 		if (is == null) {
 			//System.out.println("!!!!!Cannot find:  " + url );
 			throw new IOException();
