@@ -45,7 +45,14 @@ public class ProcessingTreeContext extends ProcessingContext {
 	float sw;
 	 
 	public void setup(){
+		branchX = new float[1];
+		branchY = new float[1];
+		branchR = new float[1];
+		tempR = new float[0];
+		tempX = new float[0];
+		tempY = new float[0];
 		noLoop();
+		redraw();
 	}
 	
 	public void draw(){ 
@@ -155,7 +162,7 @@ public class ProcessingTreeContext extends ProcessingContext {
 	    branchY = new float[1];
 	    tempX = new float[0];
 	    tempY = new float[0];
-	    loop();
+	    redraw();
 	}
 	
 	
