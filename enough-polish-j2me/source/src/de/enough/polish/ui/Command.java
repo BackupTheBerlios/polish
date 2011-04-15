@@ -571,7 +571,11 @@ public class Command
 				item = ((Container)item).getFocusedItem();
 			}
 			if (item != null && ((item.commands != null && item.commands.contains(this)) || (item.getDefaultCommand() == this))) {
-				this.itemCommandListener.commandAction(this, item);
+				//#if polish.executeCommandsAsynchrone
+					AsynchronousMultipleCommandListener.getInstance().commandAction(this.itemCommandListener, this, item);
+				//#else
+					this.itemCommandListener.commandAction(this, item);
+				//#endif
 				return true;
 			}
 		}
