@@ -123,7 +123,7 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
     protected boolean handleCommand(Command cmd)
     {
         context.signalSoftkeyPressed(cmd.getLabel());
-        return context.areSoftkeysCaptured();
+        return context.areSoftkeysCaptured() || super.handleCommand(cmd);
     }
 
     /* (non-Javadoc)
@@ -276,4 +276,5 @@ public class ProcessingScreen extends Screen implements ProcessingContextContain
         }
 
     }
+    
 }
