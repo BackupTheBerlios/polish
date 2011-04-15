@@ -29,7 +29,7 @@ import de.enough.polish.processing.color;
 
 /**
  * An example Processing Context that renders a randomly generated tree.
- * Adapted from the sketch at http://www.openprocessind(g.org/visuals/?visualID=4732
+ * Adapted from the sketch at http://www.openprocessing.org/visuals/?visualID=4732
  *
  * @author Ovidiu Iliescu
  */
