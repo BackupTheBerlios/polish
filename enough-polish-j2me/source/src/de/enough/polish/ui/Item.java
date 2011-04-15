@@ -1169,7 +1169,7 @@ public abstract class Item implements UiElement, Animatable
 	 */
 	public void setStyle( Style style ) {
 		//#debug
-		System.out.println("setting style " + style.name + " for " + this );
+		System.out.println("setting style " + style.name + " for " + this + ", prevStyle=" + (this.style == null ? "<null>" : this.style.name) );
 		this.isStyleInitialised = true;
 		this.style = style;
 		
@@ -4851,7 +4851,14 @@ public abstract class Item implements UiElement, Animatable
 		if (originalStyle != null) {
 			setStyle( originalStyle );
 			if (this.label != null) {
-				this.label.defocus((Style) originalStyle.getObjectProperty("label-style"));
+				Style prevLabelStyle = this.label.style;
+				//#if polish.css.label-style
+					prevLabelStyle = (Style) originalStyle.getObjectProperty("label-style");
+					if (prevLabelStyle == null) {
+						prevLabelStyle = this.label.style;
+					}
+				//#endif
+				this.label.defocus(prevLabelStyle);
 			}
 		} else {
 			this.background = null;
