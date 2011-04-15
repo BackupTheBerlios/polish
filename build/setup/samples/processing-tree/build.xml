@@ -147,8 +147,6 @@
 					defaultexcludes="yes"
 					excludes="readme.txt"
 				>
-					<root dir="resources/base/images" />
-					<root dir="resources/base/sounds" />
 					<!-- add the localization element for created localized
 					     versions of your application: -->
 					<localization locales="en_US" unless="test" />
