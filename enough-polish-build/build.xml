@@ -85,7 +85,7 @@
 				<pathelement path="import/advancedmultimedia-1.0.jar" />
 				<pathelement path="import/android-2.1.jar" />
 				<pathelement path="import/btapi.jar" />
-				<pathelement path="import/blackberry-6.0.0.jar" />
+				<pathelement path="import/blackberry-4.7.0.jar" />
 				<pathelement path="import/doja-2.5.jar" />
 				<pathelement path="import/m3g.jar" />
 				<pathelement path="import/mmapi.jar" />
@@ -1081,7 +1081,7 @@
 		    	nodeprecated="false" 
 		    	packagenames="de.enough.*" 
 		    	sourcepath="../enough-polish-j2me/source/src" 
-		    	classpath="../enough-polish-j2me/bin/classes:import/cldc-1.1.jar:import/midp-2.0.jar:import/windows.jar:import/advancedmultimedia-1.0.jar:import/android-2.1.jar:import/blackberry-5.0.0.jar:import/doja-2.5.jar:import/m3g.jar:import/nokia-ui.jar:import/sensor.jar:import/siemens-extension-api.jar"
+		    	classpath="../enough-polish-j2me/bin/classes:import/cldc-1.1.jar:import/midp-2.0.jar:import/windows.jar:import/advancedmultimedia-1.0.jar:import/android-2.1.jar:import/blackberry-6.0.0.jar:import/doja-2.5.jar:import/m3g.jar:import/nokia-ui.jar:import/sensor.jar:import/siemens-extension-api.jar"
 		    	doctitle="The J2ME Polish Client Framework, Version ${Version}"
 		>
 			<link href="http://java.sun.com/javame/reference/apis/jsr118/" />
