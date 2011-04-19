@@ -44,10 +44,10 @@ implements PolishTextField {
 
 	private boolean isFocused;
 	private int fontColor;
-	private int oldX = 0;
-	private int oldY = 0;
 	
 	//#if polish.JavaPlatform >= BlackBerry/6.0
+	private int oldX = 0;
+	private int oldY = 0;
 	private long style;
 	boolean needsCursorFix = false;
 	boolean needsNavigationFix = false;
@@ -76,18 +76,18 @@ implements PolishTextField {
 		this.isFocused = false;
 	}
 	
-    public void resetRoundRect()
+	//#if polish.JavaPlatform >= BlackBerry/6.0
+    protected void resetRoundRect()
     {
         if ( (this.isFocus() || this.isFocused) && !StyleSheet.currentScreen.isMenuOpened() )
-                {
-        			//#if polish.JavaPlatform >= BlackBerry/6.0
-	                    int cursorPosition = getCursorPosition();
-	                    setCursorPosition(0);
-	                    setCursorPosition(cursorPosition);
-                    //#endif
-                    setFocus();
-            }
+        {
+            int cursorPosition = getCursorPosition();
+            setCursorPosition(0);
+            setCursorPosition(cursorPosition);
+            setFocus();
         }
+    }
+    //#endif
 
 	public void doLayout(int width, int height)
 	{
@@ -161,14 +161,16 @@ implements PolishTextField {
 	
     public void setPaintPosition(int x, int y ) 
     {
-            this.isFocused = true;
-            super.setPosition(x, y);
-            if ( x != this.oldX || y!= this.oldY )
-            {
-                resetRoundRect();
-                this.oldX = x;
-                this.oldY = y;
-            }
+        this.isFocused = true;
+        super.setPosition(x, y);
+    	//#if polish.JavaPlatform >= BlackBerry/6.0
+        if ( x != this.oldX || y!= this.oldY )
+        {
+            resetRoundRect();
+            this.oldX = x;
+            this.oldY = y;
+        }
+        //#endif
     }
 
 

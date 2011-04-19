@@ -154,12 +154,14 @@ public class PolishOneLineField extends VerticalFieldManager implements PolishTe
     public void setPaintPosition(int x, int y ) 
     {
             super.setPosition(x, y);
+        	//#if polish.JavaPlatform >= BlackBerry/6.0
             if ( x != this.oldX || y!= this.oldY )
             {
                 this.editField.resetRoundRect();
                 this.oldX = x;
                 this.oldY = y;
             }
+            //#endif
     }               
             
     public void focusRemove()
