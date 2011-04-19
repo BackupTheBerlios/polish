@@ -529,6 +529,11 @@ public class Container extends Item {
 	 */
 	public Item remove( int index ) {
 		Item removedItem = null;
+		//#if polish.blackberry
+			// when the currently focused item is removed and this contains a native blackberry field,
+			// this can cause deadlocks with Container.initContent().
+			synchronized (de.enough.polish.blackberry.midlet.MIDlet.getEventLock()) {
+		//#endif
 		synchronized (this.itemsList) {
 			removedItem = (Item) this.itemsList.remove(index);
 			if (removedItem == this.scrollItem) {
@@ -606,6 +611,9 @@ public class Container extends Item {
 				removedItem.hideNotify();
 			}
 		}
+		//#if polish.blackberry
+			}
+		//#endif
 		repaint();
 		notifyValueChanged(removedItem);
 		return removedItem;
