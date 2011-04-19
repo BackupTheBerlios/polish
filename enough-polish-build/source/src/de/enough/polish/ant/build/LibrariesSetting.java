@@ -41,15 +41,15 @@ import de.enough.polish.util.IntegerIdGenerator;
 /**
  * <p>A container for several &lt;library&gt; tags.</p>
  *
- * <p>Copyright Enough Software 2005</p>
- * <pre>
- * history
- *        14-Apr-2005 - rob creation
- * </pre>
+ * <p>Copyright Enough Software 2005-2011</p>
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class LibrariesSetting extends Setting {
-	
+	/**
+	 * Key for the environment.
+	 * @see Environment#get(String)
+	 */
+	public static final String KEY_ENVIRONMENT = "key.LibrariesSetting";
 	private final ArrayList libraries;
 	private final IntegerIdGenerator integerIdGenerator;
 	private Environment environment;

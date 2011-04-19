@@ -39,16 +39,31 @@ import de.enough.polish.Extension;
 /**
  * <p>Preverifies the project for a specific device.</p>
  *
- * <p>Copyright Enough Software 2005</p>
- * <pre>
- * history
- *        22-May-2005 - rob creation
- * </pre>
+ * <p>Copyright Enough Software 2005 - 2011</p>
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public abstract class Preverifier extends Extension {
 	
 	public static final String BUILDCONTROL_PREVERIFIER_ENABLED = "polish.buildcontrol.preverifier.enabled";
+
+	/**
+	 * Key for accessing the used preverifier in the Environment.
+	 * @see Environment#get(String)
+	 */
+	public static final String KEY_ENVIRONMENT = "key.preverifier";
+
+	/**
+	 * Key for accessing the executable in the Environment.
+	 * @see Environment#get(String)
+	 */
+	public static final String KEY_EXECUTABLE = "preverify.executable";
+
+
+	/**
+	 * Key for accessing the preverify target directory in the Environment.
+	 * @see Environment#get(String)
+	 */
+	public static final String KEY_TARGET = "preverify.target";
 
 	
 	/**

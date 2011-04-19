@@ -13716,7 +13716,7 @@ These namespaces/schemas will be used soon.
     <capability name="JavaConfiguration" value="CLDC/1.1" />
     <capability name="JavaPackage" value="wmapi, mmapi, pimapi,javacard,contenthandler,location" />
     <capability name="SoundFormat" value="amr, nb-amr" />
-    <capability name="Emulator.Skin" value="9500" />
+    <capability name="Emulator.Skin" value="9000" />
     <capability name="Bugs" value="ReservedKeywordSerializable" />
     <capability name="Bugs" value="ItemStateListenerCalledTooEarly" />
   </device>

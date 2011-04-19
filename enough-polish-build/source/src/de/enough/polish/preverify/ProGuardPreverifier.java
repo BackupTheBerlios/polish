@@ -42,13 +42,9 @@ import de.enough.polish.util.OutputFilter;
 import de.enough.polish.util.ProcessUtil;
 
 /**
- * <p>Uses the normal WTK based preverifier for verifying the compiled classes.</p>
+ * <p>Uses the normal ProGuard obfuscator for verifying the compiled classes.</p>
  *
- * <p>Copyright Enough Software 2005</p>
- * <pre>
- * history
- *        30-Jul-2005 - rob creation
- * </pre>
+ * <p>Copyright Enough Software 2005 - 2011</p>
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class ProGuardPreverifier 

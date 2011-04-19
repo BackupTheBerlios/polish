@@ -133,12 +133,8 @@ import de.enough.polish.util.TextFileManager;
 /**
  * <p>Manages a J2ME project from the preprocessing to the packaging and obfuscation.</p>
  *
- * <p>Copyright Enough Software 2004, 2005, 2006</p>
+ * <p>Copyright Enough Software 2004 - 2011</p>
 
- * <pre>
- * history
- *        21-Jan-2003 - rob creation
- * </pre>
  * @author Robert Virkus, robert@enough.de
  */
 public class PolishTask extends ConditionalTask {
@@ -2184,6 +2180,8 @@ public class PolishTask extends ConditionalTask {
 	 * Sets up and copies any binary libraries.
 	 * @param device
 	 * @param locale
+	 * @param targetDir
+	 * @param targetDirName
 	 */
 	protected void copyBinaryLibraries(Device device, Locale locale, File targetDir, String targetDirName ) {
 		// load third party binary libraries, if any.
@@ -2195,6 +2193,7 @@ public class PolishTask extends ConditionalTask {
 			File binaryBaseDir = new File( this.buildSetting.getWorkDir(), "binary");
 			try {
 				this.binaryLibrariesUpdated = this.binaryLibraries.copyToCache( binaryBaseDir );
+				this.environment.set(LibrariesSetting.KEY_ENVIRONMENT, this.binaryLibraries);
 			} catch (IOException e) {
 				e.printStackTrace();
 				throw new BuildException("Unable to copy the binary libraries to the internal cache [" + binaryBaseDir.getAbsolutePath() + "]: " + e.toString(), e );
@@ -2208,7 +2207,6 @@ public class PolishTask extends ConditionalTask {
 				for (int i = 0; i < settings.length; i++) {
 					LibrarySetting setting = settings[i];
 					if (setting.isActive( this.environment )) {
-
 						try
 						{
 							FileUtil.copyDirectoryContents( setting.getCacheDirectory(), targetDir, true );
@@ -2220,6 +2218,7 @@ public class PolishTask extends ConditionalTask {
 									processor.processLibrary( targetDir, fileNames, device, locale, this.environment );
 								}
 							}
+							
 						} catch (IOException e)
 						{
 							e.printStackTrace();
@@ -2828,7 +2827,7 @@ public class PolishTask extends ConditionalTask {
 		// add environment settings:
 		File preverifyExecutable = this.buildSetting.getPreverify();
 		if ( preverifyExecutable != null ) {
-			this.environment.set( "preverify.executable", preverifyExecutable );
+			this.environment.set( Preverifier.KEY_EXECUTABLE, preverifyExecutable );
 		}
 		File destinationDir;
 		if (this.buildSetting.isInCompilerMode()) {
@@ -2839,7 +2838,7 @@ public class PolishTask extends ConditionalTask {
 				destinationDir = new File( getProject().getBaseDir(), device.getClassesDir() );
 			}
 		}
-		this.environment.set( "preverify.target", destinationDir );
+		this.environment.set( Preverifier.KEY_TARGET, destinationDir );
 
 		// get the correct preverifier:
 		Preverifier preverifier = null;
@@ -3000,6 +2999,9 @@ public class PolishTask extends ConditionalTask {
 		}
 
 		// add build properties - midlet infos:
+		if (this.infoSetting.getIcon() != null) {
+			this.environment.set("build.icon", this.infoSetting.getIcon());
+		}
 		String mainClassName = this.environment.getVariable( "polish.classes.main" );
 		if (mainClassName != null) {
 			//System.out.println("Using Main-Class " + mainClassName );
