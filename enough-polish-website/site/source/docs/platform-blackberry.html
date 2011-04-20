@@ -164,6 +164,16 @@ the project in the BlackBerry JDE with this generated project file. You will fin
 <br />
 To import a project right-click on the workspace in the <i>files</i> view of the JDE and select &quot;Add Project...&quot;.
 </p>
+<p>
+In case you use <a href="build-build.html#libraries">binary libraries</a> in your project, J2ME Polish will generate two projects - one library project and another CLDC application 
+project that depends on the generated library project. You will need to add both projects to the JDE - the library project will be called like your application 
+with an additional &quot;LIB&quot; at the end.
+</p>
+<p>
+When you are using the <a href="serialization.html">serialization</a> or <a href="rmi.html">RMI</a> features of J2ME Polish, you should not rely on 
+<code>de.enough.polish.io.Serializable</code> but instead implement <code>de.enough.polish.io.Externalizable</code> when using running projects from
+within the JDE. This is required since Serializable classes are processed within the class files in byte code, but in the JDE only the source code is used.
+</p>
 <h2 id="blackberry-verification-erros">Verification error</h2>
 <p>
 It may happen that a blackberry build can't be executed due to a verification error. The device will respond to the execution of the application with something like this :
@@ -203,14 +213,14 @@ There are three interesting values in the .bug file:
 <p>(the class)</p>
 <pre>VM:VECMm</pre>
 <p>(and the method which causes the error)</p>
-<h2 id="blackberry-gui">Using the J2ME Polish GUI on BlackBerry Devices</h2>
+<h2 id="blackberry-gui">Using the J2ME Polish UI on BlackBerry Devices</h2>
 <p>
-The J2ME Polish GUI can be used normally on BlackBerry devices as well. In order to make most of the system, 
+The J2ME Polish UI can be used normally on BlackBerry devices as well. In order to make most of the system, 
 J2ME Polish converts your MIDlet into a native BlackBerry UiApplication. 
 This allows J2ME Polish to process trackwheel/trackball events and so on correctly. 
 The successful conversion requires that your MIDlet uses a public constructor. 
 </p>
-<h2 id="blackberry-gui-textfield">BlackBerry TextFields</h2>
+<h3 id="blackberry-gui-textfield">BlackBerry TextFields</h3>
 <p>
 On BlackBerry devices native BlackBerry <code>EditFields</code> are used for text input. These native fields
 work in the same way like in other BlackBerry applications, but they do not offer the same wealth of design options
@@ -221,14 +231,14 @@ When the <code>TextField</code> is focused, however, we switch to the native Bla
 specify the background, border and font styles of a focused <code>TextField</code>, but advanced designs like 
 <a href="gui-visualguide-texteffects.html">text effects</a> will not be supported.
 </p>
-<h2 id="blackberry-gui-datefield">BlackBerry DateFields</h2>
+<h3 id="blackberry-gui-datefield">BlackBerry DateFields</h3>
 <p>
 Similar to <code>TextFields</code>, J2ME Polish uses native BlackBerry  <code>DateFields</code> when a J2ME Polish
 <a href="gui-item-datefield.html">DateField</a> is focused. 
 This is why the visualization of the  <code>DateField</code> might change when it is focused.
 </p>
 
-<h2 id="blackberry-gui-menubar">BlackBerry Menubar</h2>
+<h3 id="blackberry-gui-menubar">BlackBerry Menubar</h3>
 <p>
 J2ME Polish uses the <code>fullscreen</code> attribute of the <code>&lt;build&gt;</code> element of the <code>&lt;j2mepolish&gt;</code> task to determine
 whether commands should be rendered by J2ME Polish or natively by BlackBerry. We recommend to use native command rendering on BlackBerry which is achieved 
@@ -241,7 +251,7 @@ with one of the following settings:
   value=&quot;false&quot; if=&quot;polish.blackberry || polish.android&quot; /&gt;
 </pre>
 
-<h2 id="blackberry-gui-alerts">BlackBerry Alerts</h2>
+<h3 id="blackberry-gui-alerts">BlackBerry Alerts</h3>
 <p>
 You can instruct J2ME Polish so that it uses native BlackBerry alerts instead of ones rendered by J2ME Polish. This improves the integration into the 
 BlackBerry platform and is a recommended setting in your <i>build.xml</i> script:
