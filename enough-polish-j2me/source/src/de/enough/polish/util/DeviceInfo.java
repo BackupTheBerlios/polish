@@ -299,7 +299,7 @@ public class DeviceInfo
 			int idInt = net.rim.device.api.system.DeviceInfo.getDeviceId();
 			//# return Integer.toString(idInt);
 		//#else
-			String[] properties = new String[]{ "phone.imei", "phone.imei", "com.sonyericsson.imei", "IMEI", "com.motorola.IMEI", "com.samsung.imei", "com.lge.imei"};
+			String[] properties = new String[]{ "phone.imei", "phone.imei", "com.sonyericsson.imei", "IMEI", "com.motorola.IMEI", "com.samsung.imei", "com.lge.imei", "IMEI"};
 			String id = null;
 			for (int i = 0; i < properties.length; i++) {
 				String name = properties[i];
