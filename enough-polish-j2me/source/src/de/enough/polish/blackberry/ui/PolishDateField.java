@@ -277,6 +277,18 @@ implements AccessibleField
 		return processed;
 	}
 	//#endif
+	
+   //#if polish.hasTrackballEvents && (polish.JavaPlatform >= BlackBerry/6.0)
+	public boolean navigationClick(int status, int time) {
+		boolean processed = super.navigationClick(status, time);
+		if (!processed) {
+			super.invokeAction(ACTION_INVOKE);
+			processed = true;
+		}
+		return processed;
+	}
+	//#endif
+
 
 	/**
 	 * Sets a new dateformat for this field.
