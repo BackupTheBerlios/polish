@@ -278,14 +278,13 @@ implements AccessibleField
 	}
 	//#endif
 	
-   //#if polish.hasTrackballEvents && (polish.JavaPlatform >= BlackBerry/6.0)
+	//#if polish.hasTrackballEvents
 	public boolean navigationClick(int status, int time) {
 		boolean processed = super.navigationClick(status, time);
 		if (!processed) {
 			super.invokeAction(ACTION_INVOKE);
-			processed = true;
 		}
-		return processed;
+		return true;
 	}
 	//#endif
 
