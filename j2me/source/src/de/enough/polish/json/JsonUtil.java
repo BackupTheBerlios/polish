@@ -28,16 +28,16 @@ package de.enough.polish.json;
  * @author Ovidiu Iliescu
  *
  */
-public class JSONUtil {
+public class JsonUtil {
 
 	/**
 	 * Escapes a string according to JSON rules.
 	 * @param value the string to escape
 	 * @return the escaped string
 	 */
-	public static final String escapeToJSON(String value) {
+	public static final String escapeToJson(String value) {
 		StringBuffer result = new StringBuffer();
-		escapeToJSON(value,result);
+		escapeToJson(value,result);
 		return result.toString();
 	}
 	
@@ -46,7 +46,7 @@ public class JSONUtil {
 	 * @param value the string to escape
 	 * @param stringBuffer the StringBuffer to escape to
 	 */
-	public static final void escapeToJSON(String value, StringBuffer stringBuffer) {
+	public static final void escapeToJson(String value, StringBuffer stringBuffer) {
 		int index;
 		int length = value.length();
 		char c;
@@ -54,25 +54,25 @@ public class JSONUtil {
 		for (index = 0; index < length; index++ ) {
             c = value.charAt(index);
             switch (c) {
-            case JSONParser.TOKEN_ESCAPE_CHARACTER:
-            case JSONParser.TOKEN_QUOTATION_MARK:
+            case JsonParser.TOKEN_ESCAPE_CHARACTER:
+            case JsonParser.TOKEN_QUOTATION_MARK:
             case '/':
                 stringBuffer.append('\\');
                 stringBuffer.append(c);
                 break;
-            case JSONParser.CHARACTER_BACKSPACE:
+            case JsonParser.CHARACTER_BACKSPACE:
                 stringBuffer.append("\\b");
                 break;
-            case JSONParser.CHARACTER_TAB:
+            case JsonParser.CHARACTER_TAB:
                 stringBuffer.append("\\t");
                 break;
-            case JSONParser.CHARACTER_LINE_FEED:
+            case JsonParser.CHARACTER_LINE_FEED:
                 stringBuffer.append("\\n");
                 break;
-            case JSONParser.CHARACTER_FORM_FEED:
+            case JsonParser.CHARACTER_FORM_FEED:
                 stringBuffer.append("\\f");
                 break;
-            case JSONParser.CHARACTER_CARRIAGE_RETURN:
+            case JsonParser.CHARACTER_CARRIAGE_RETURN:
                 stringBuffer.append("\\r");
                 break;
             default:
@@ -93,9 +93,9 @@ public class JSONUtil {
 	 * @param object the object to represent
 	 * @return the JSON string representation of the object
 	 */
-	public static final String toJSONValue(Object object) {
+	public static final String toJsonValue(Object object) {
 		StringBuffer buffer = new StringBuffer();
-		toJSONValue(object, buffer);
+		toJsonValue(object, buffer);
 		return buffer.toString();
 	}
 	
@@ -105,11 +105,11 @@ public class JSONUtil {
 	 * @param object the object to represent
 	 * @param stringBuffer the StringBuffer to write the representation to
 	 */
-	public static final void toJSONValue(Object object, StringBuffer stringBuffer) {
+	public static final void toJsonValue(Object object, StringBuffer stringBuffer) {
 		
-		if ( object instanceof JSONItem ) {
+		if ( object instanceof JsonItem ) {
 			// JSONItems can serialize themselves to JSON-compatible strings
-			((JSONItem) object).serializeToStringBuffer(stringBuffer);
+			((JsonItem) object).serializeToStringBuffer(stringBuffer);
 		} else {
 			// Native object types must be serialized manually. Most of them must be quoted, i.e. placed between quotes.
 			// Unquoted data types are boolean, integer, double, float and JSONParser.NULL. Everything else will be converted to String and quoted.
@@ -117,12 +117,12 @@ public class JSONUtil {
 					//#if polish.hasFloatingPoint
 						|| object instanceof Double || object instanceof Float
 					//#endif
-						|| object instanceof Boolean || object == JSONParser.NULL );
+						|| object instanceof Boolean || object == JsonParser.NULL );
 			if ( needsQuotes ) 
 			{
-				stringBuffer.append(JSONParser.TOKEN_QUOTATION_MARK);
-				escapeToJSON(object.toString(),stringBuffer);
-				stringBuffer.append(JSONParser.TOKEN_QUOTATION_MARK);
+				stringBuffer.append(JsonParser.TOKEN_QUOTATION_MARK);
+				escapeToJson(object.toString(),stringBuffer);
+				stringBuffer.append(JsonParser.TOKEN_QUOTATION_MARK);
 			} else {
 				stringBuffer.append(object.toString());
 			}

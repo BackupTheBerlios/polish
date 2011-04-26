@@ -24,12 +24,21 @@
 package de.enough.polish.json;
 
 /**
- * This class defines a standard JSON Exception
+ * This interface defines methods common to all JSON-specific items (arrays, objects, numbers)
  * @author Ovidiu Iliescu
+ *
  */
-public class JSONException extends Exception {
+public interface JsonItem {
 
-	public JSONException(String message) {
-		super(message);
-	}
+	/**
+	 * Serializes the item to a StringBuffer, in a JSON-compatible format.
+	 * @param stringBuffer the StringBuffer to serialize to
+	 */
+	void serializeToStringBuffer(StringBuffer stringBuffer) ;
+	
+	/**
+	 * Serializes the item to a String, in a JSON-compatible format.
+	 * @return the resulting String
+	 */
+	String serializeToString() ;
 }

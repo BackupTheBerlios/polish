@@ -32,11 +32,14 @@ import java.util.Hashtable;
  * @author Ovidiu Iliescu
  *
  */
-public class JSONObject implements JSONItem {
+public class JsonObject implements JsonItem {
 
 	/**
 	 * The object members are stored here
 	 */
+	//#if polish.java5
+	@SuppressWarnings("unchecked")
+	//#endif
 	Hashtable members = new Hashtable();
 	
 	/**
@@ -44,8 +47,11 @@ public class JSONObject implements JSONItem {
 	 * @param key the member name
 	 * @param value the member's value.
 	 */
+	//#if polish.java5
+	@SuppressWarnings("unchecked")
+	//#endif
 	public void put(String key, Object value) {
-		members.put(key, value);
+		this.members.put(key, value);
 	}
 	
 	/**
@@ -54,7 +60,7 @@ public class JSONObject implements JSONItem {
 	 * @return its value
 	 */
 	public Object get(String key) {
-		return members.get(key);
+		return this.members.get(key);
 	}
 	
 	/**
@@ -62,7 +68,7 @@ public class JSONObject implements JSONItem {
 	 * @param key the name/key of the member
 	 */
 	public void remove(String key) {
-		members.remove(key);
+		this.members.remove(key);
 	}
 	
 	/**
@@ -70,7 +76,7 @@ public class JSONObject implements JSONItem {
 	 * @return the member values
 	 */
 	public Enumeration getValues() {
-		return members.elements();
+		return this.members.elements();
 	}
 	
 	/**
@@ -78,7 +84,7 @@ public class JSONObject implements JSONItem {
 	 * @return the member names/keys
 	 */
 	public Enumeration getKeys() {
-		return members.keys();
+		return this.members.keys();
 	}
 
 	/* (non-Javadoc)
@@ -88,7 +94,7 @@ public class JSONObject implements JSONItem {
 		Enumeration values = getValues();
 		Enumeration keys = getKeys();
 		
-		stringBuffer.append(JSONParser.TOKEN_BEGIN_OBJECT);
+		stringBuffer.append(JsonParser.TOKEN_BEGIN_OBJECT);
 		
 		String currentKey;
 		Object currentValue;
@@ -96,22 +102,22 @@ public class JSONObject implements JSONItem {
 			currentKey = (String) keys.nextElement();
 			currentValue = values.nextElement();
 			
-			JSONUtil.toJSONValue(currentKey, stringBuffer);
+			JsonUtil.toJsonValue(currentKey, stringBuffer);
 			
-			stringBuffer.append(JSONParser.TOKEN_NAME_SEPARATOR);
+			stringBuffer.append(JsonParser.TOKEN_NAME_SEPARATOR);
 			
-			if ( currentValue instanceof JSONItem) {
-				 ( (JSONItem) currentValue ).serializeToStringBuffer(stringBuffer);
+			if ( currentValue instanceof JsonItem) {
+				 ( (JsonItem) currentValue ).serializeToStringBuffer(stringBuffer);
 			} else {
-				JSONUtil.toJSONValue(currentValue, stringBuffer);
+				JsonUtil.toJsonValue(currentValue, stringBuffer);
 			}					
 			
 			if ( keys.hasMoreElements() ) {
-				stringBuffer.append(JSONParser.TOKEN_VALUE_SEPARATOR);
+				stringBuffer.append(JsonParser.TOKEN_VALUE_SEPARATOR);
 			}
 		}
 		
-		stringBuffer.append(JSONParser.TOKEN_END_OBJECT);
+		stringBuffer.append(JsonParser.TOKEN_END_OBJECT);
 	}
 	
 	/* (non-Javadoc)

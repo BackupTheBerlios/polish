@@ -32,11 +32,11 @@ import java.io.InputStream;
  * @author Ovidiu Iliescu
  *
  */
-public class JSONParser {
+public class JsonParser {
 	
 	//#if !polish.cldc1.1
-	public static Boolean TRUE = new Boolean(true);
-	public static Boolean FALSE = new Boolean(false);
+	private static final Boolean TRUE = new Boolean(true);
+	private static final Boolean FALSE = new Boolean(false);
 	//#endif
 	
 	/**
@@ -57,28 +57,28 @@ public class JSONParser {
 		 * @see java.lang.Object#equals(java.lang.Object)
 		 */
 		public boolean equals(Object object) {
-            return object == null || object == this || object instanceof JSONParser.Null;
+            return object == null || object == this || object instanceof JsonParser.Null;
         }
 	}
 	
 	// Token definitions
-	public static final char TOKEN_BEGIN_ARRAY = '[' ;	
-	public static final char TOKEN_BEGIN_OBJECT = '{' ;	
-	public static final char TOKEN_END_ARRAY = ']' ;	
-	public static final char TOKEN_END_OBJECT = '}' ;	
-	public static final char TOKEN_NAME_SEPARATOR = ':' ;	
-	public static final char TOKEN_VALUE_SEPARATOR = ',' ;	
-	public static final char TOKEN_WHITESPACE_SPACE = ' ';	
-	public static final char TOKEN_WHITESPACE_TAB = '\t' ;	
-	public static final char TOKEN_WHITSPACE_LINE_FEED = '\n' ;	
-	public static final char TOKEN_WHITESPACE_CARRIAGE_RETURN = '\r' ;	
-	public static final char TOKEN_ESCAPE_CHARACTER = '\\';	
-	public static final char TOKEN_QUOTATION_MARK = '\"' ;	
-	public static final char CHARACTER_BACKSPACE = '\b';	
-	public static final char CHARACTER_FORM_FEED = '\f';	
-	public static final char CHARACTER_TAB = '\t' ;	
-	public static final char CHARACTER_LINE_FEED = '\n' ;	
-	public static final char CHARACTER_CARRIAGE_RETURN = '\r' ;
+	protected static final char TOKEN_BEGIN_ARRAY = '[' ;	
+	protected static final char TOKEN_BEGIN_OBJECT = '{' ;	
+	protected static final char TOKEN_END_ARRAY = ']' ;	
+	protected static final char TOKEN_END_OBJECT = '}' ;	
+	protected static final char TOKEN_NAME_SEPARATOR = ':' ;	
+	protected static final char TOKEN_VALUE_SEPARATOR = ',' ;	
+	protected static final char TOKEN_WHITESPACE_SPACE = ' ';	
+	protected static final char TOKEN_WHITESPACE_TAB = '\t' ;	
+	protected static final char TOKEN_WHITSPACE_LINE_FEED = '\n' ;	
+	protected static final char TOKEN_WHITESPACE_CARRIAGE_RETURN = '\r' ;	
+	protected static final char TOKEN_ESCAPE_CHARACTER = '\\';	
+	protected static final char TOKEN_QUOTATION_MARK = '\"' ;	
+	protected static final char CHARACTER_BACKSPACE = '\b';	
+	protected static final char CHARACTER_FORM_FEED = '\f';	
+	protected static final char CHARACTER_TAB = '\t' ;	
+	protected static final char CHARACTER_LINE_FEED = '\n' ;	
+	protected static final char CHARACTER_CARRIAGE_RETURN = '\r' ;
 	
 	/**
 	 * The JSON null object.
@@ -110,9 +110,9 @@ public class JSONParser {
 	 * Convenience method for throwing a JSONException
 	 * @param exceptionType the type of the exception
 	 * @param extraInfo extra information about the exception
-	 * @throws JSONException
+	 * @throws JsonException
 	 */
-	protected static void throwJSONException(int exceptionType, String extraInfo) throws JSONException {
+	protected static void throwJsonException(int exceptionType, String extraInfo) throws JsonException {
 		String exceptionText;
 		
 		switch ( exceptionType ) {
@@ -121,23 +121,23 @@ public class JSONParser {
 				if ( extraInfo != null ) {
 					exceptionText += ": " + extraInfo;
 				}
-				throw new JSONException(exceptionText);
+				throw new JsonException(exceptionText);
 				
 			case EXCEPTION_UNEXPECTED_TOKEN:
-				throw new JSONException("Unexpected token encountered: " + extraInfo);
+				throw new JsonException("Unexpected token encountered: " + extraInfo);
 				
 			case EXCEPTION_INVALID_ESCAPE_CHARACTER:
-				throw new JSONException("Invalid escape character encountered: " + extraInfo);
+				throw new JsonException("Invalid escape character encountered: " + extraInfo);
 				
 			case EXCEPTION_UNTERMINATED_STRING:
-				throw new JSONException("Unterminated string \"" + extraInfo + "...\"");
+				throw new JsonException("Unterminated string \"" + extraInfo + "...\"");
 				
 			default:
 				exceptionText = "General exception encountered";
 				if ( extraInfo != null ) {
 					exceptionText += ": " + extraInfo;
 				}
-				throw new JSONException(exceptionText);
+				throw new JsonException(exceptionText);
 					
 			
 		}
@@ -147,9 +147,9 @@ public class JSONParser {
 	 * Skips whitespace characters and stops on the first non-whitespace character encountered. If the current
 	 * character is non-whitespace, it stops on the current character.
 	 * @throws IOException
-	 * @throws JSONException
+	 * @throws JsonException
 	 */
-	protected void skipWhitespace() throws IOException, JSONException {
+	protected void skipWhitespace() throws IOException, JsonException {
 		// Read character tokens until a non-whitespace one is encountered
 		while ( this.currentChar == TOKEN_WHITESPACE_SPACE || this.currentChar == TOKEN_WHITESPACE_TAB || this.currentChar == TOKEN_WHITSPACE_LINE_FEED || this.currentChar == TOKEN_WHITESPACE_CARRIAGE_RETURN ) {
 			this.currentChar = this.stream.read();
@@ -157,32 +157,32 @@ public class JSONParser {
 		
 		// Check for end of the stream and throw an error if found
 		if ( this.currentChar == -1 ) {
-			throwJSONException(EXCEPTION_UNEXPECTED_END_OF_STREAM, null);
+			throwJsonException(EXCEPTION_UNEXPECTED_END_OF_STREAM, null);
 		}
 	}
 	
 		
 	/**
 	 * Parses JSON data from a String
-	 * @param JSON the String containing the JSON data
+	 * @param json the String containing the JSON data
 	 * @return the native object hierarchy corresponding to the JSON data
 	 * @throws IOException
-	 * @throws JSONException
+	 * @throws JsonException
 	 */
-	public Object parseJSON(String JSON) throws IOException, JSONException {
-		ByteArrayInputStream byteArrayInputStream= new ByteArrayInputStream(JSON.getBytes());
-		return parseJSON(byteArrayInputStream);
+	public Object parseJson(String json) throws IOException, JsonException {
+		ByteArrayInputStream byteArrayInputStream= new ByteArrayInputStream(json.getBytes());
+		return parseJson(byteArrayInputStream);
 	}
 	
 	/**
 	 * Parses JSON data from an InputStream
-	 * @param stream the InputStream containing the JSON data
+	 * @param inputStream the InputStream containing the JSON data
 	 * @return the native object hierarchy corresponding to the JSON data
 	 * @throws IOException
-	 * @throws JSONException
+	 * @throws JsonException
 	 */
-	public Object parseJSON(InputStream stream) throws IOException, JSONException {
-		this.stream = stream;
+	public Object parseJson(InputStream inputStream) throws IOException, JsonException {
+		this.stream = inputStream;
 		this.currentChar = TOKEN_WHITESPACE_SPACE;
 		skipWhitespace();
 		return readEntity();
@@ -192,16 +192,16 @@ public class JSONParser {
 	 * Reads a JSON object from the current source. The object is expected to be encoded according to standard JSON rules
 	 * @return the corresponding JSONObject instance
 	 * @throws IOException
-	 * @throws JSONException
+	 * @throws JsonException
 	 */
-	protected JSONObject readJSONObject() throws IOException, JSONException {    	
+	protected JsonObject readJsonObject() throws IOException, JsonException {    	
 		// Check if we really are at the start of a JSON object. Raise an exception otherwise
 		if ( this.currentChar != TOKEN_BEGIN_OBJECT ) {
-			throwJSONException(EXCEPTION_UNEXPECTED_TOKEN, "encountered '" + (char) this.currentChar + "' while expecting '" + TOKEN_BEGIN_OBJECT + "' when reading an object");
+			throwJsonException(EXCEPTION_UNEXPECTED_TOKEN, "encountered '" + (char) this.currentChar + "' while expecting '" + TOKEN_BEGIN_OBJECT + "' when reading an object");
 		}
 		
 		// Declare needed variables
-    	JSONObject result = new JSONObject();
+    	JsonObject result = new JsonObject();
     	String memberName;
     	Object value;    	
 		
@@ -223,11 +223,11 @@ public class JSONParser {
     		if ( this.currentChar != TOKEN_QUOTATION_MARK ) {
     			StringBuffer currentObject= new StringBuffer();
     			result.serializeToStringBuffer(currentObject);
-    			throwJSONException(EXCEPTION_UNEXPECTED_TOKEN, "'" + (char) this.currentChar + "' encountered while reading a member name of the object " + currentObject.toString());   			
+    			throwJsonException(EXCEPTION_UNEXPECTED_TOKEN, "'" + (char) this.currentChar + "' encountered while reading a member name of the object " + currentObject.toString());   			
     		}
     		
     		// Read the object's next member name
-    		memberName  = readJSONString();
+    		memberName  = readJsonString();
     		
     		// Read to the next character in the object body    		
     		skipWhitespace(); 
@@ -236,7 +236,7 @@ public class JSONParser {
     		if ( this.currentChar != TOKEN_NAME_SEPARATOR ) {
     			StringBuffer currentObject= new StringBuffer();
     			result.serializeToStringBuffer(currentObject);
-    			throwJSONException(EXCEPTION_UNEXPECTED_TOKEN, "'" + (char) this.currentChar + "' encountered instead of name separator in the object " + currentObject.toString());   			
+    			throwJsonException(EXCEPTION_UNEXPECTED_TOKEN, "'" + (char) this.currentChar + "' encountered instead of name separator in the object " + currentObject.toString());   			
     		}
     		    		
     		// Read to the begining of the value
@@ -265,7 +265,7 @@ public class JSONParser {
     			// If we have read something else, throw an unexpected token exception
     			StringBuffer currentArray = new StringBuffer();
     			result.serializeToStringBuffer(currentArray);
-    			throwJSONException(EXCEPTION_UNEXPECTED_TOKEN, "'" + (String.valueOf((char) this.currentChar)) + "' encountered while reading array " + currentArray.toString());
+    			throwJsonException(EXCEPTION_UNEXPECTED_TOKEN, "'" + (String.valueOf((char) this.currentChar)) + "' encountered while reading array " + currentArray.toString());
     		}
     		   		    		
 		} while (true);
@@ -275,17 +275,17 @@ public class JSONParser {
 	 * Reads a JSON array from the current source. The array is expected to be encoded according to standard JSON rules
 	 * @return the corresponding JSONArray instance
 	 * @throws IOException
-	 * @throws JSONException
+	 * @throws JsonException
 	 */
-    protected Object readJSONArray() throws IOException, JSONException {
+    protected Object readJsonArray() throws IOException, JsonException {
     	
     	// Check if we really are at the start of a JSON array. Raise an exception otherwise
     	if ( this.currentChar != TOKEN_BEGIN_ARRAY ) {
-			throwJSONException(EXCEPTION_UNEXPECTED_TOKEN, "encountered '" + (char) this.currentChar + "' while expecting '" + TOKEN_BEGIN_ARRAY + "' when reading an object");
+			throwJsonException(EXCEPTION_UNEXPECTED_TOKEN, "encountered '" + (char) this.currentChar + "' while expecting '" + TOKEN_BEGIN_ARRAY + "' when reading an object");
 		}
     	
     	// Declare the array variable
-    	JSONArray result = new JSONArray();
+    	JsonArray result = new JsonArray();
     	
     	// Move inside the body of the array
     	this.currentChar = this.stream.read();
@@ -319,7 +319,7 @@ public class JSONParser {
     			// If we have read something else, throw an unexpected token exception
     			StringBuffer currentArray = new StringBuffer();
     			result.serializeToStringBuffer(currentArray);
-    			throwJSONException(EXCEPTION_UNEXPECTED_TOKEN, (String.valueOf((char) this.currentChar)) + " encountered while reading array " + currentArray.toString());
+    			throwJsonException(EXCEPTION_UNEXPECTED_TOKEN, (String.valueOf((char) this.currentChar)) + " encountered while reading array " + currentArray.toString());
     		}
     		   		    		
 		} while (true);
@@ -331,18 +331,18 @@ public class JSONParser {
      * that an array will be read, etc)
      * @return the read entity
      * @throws IOException
-     * @throws JSONException
+     * @throws JsonException
      */
-    protected Object readEntity() throws IOException, JSONException {
+    protected Object readEntity() throws IOException, JsonException {
     	switch (this.currentChar){
     		case TOKEN_BEGIN_ARRAY:
-    			return readJSONArray();
+    			return readJsonArray();
     			
     		case TOKEN_BEGIN_OBJECT:
-    			return readJSONObject();
+    			return readJsonObject();
     			
     		case TOKEN_QUOTATION_MARK:
-    			return readJSONString();
+    			return readJsonString();
     			
     		case '-':
     		case '0':
@@ -355,15 +355,15 @@ public class JSONParser {
     		case '7':
     		case '8':
     		case '9':
-    			return readJSONNumber();    
+    			return readJsonNumber();    
     			
     		case 't':
     		case 'f':
     		case 'n':
-    			return readJSONLiteral();
+    			return readJsonLiteral();
     			
 			default:
-				throwJSONException(EXCEPTION_UNEXPECTED_TOKEN, (String.valueOf((char) this.currentChar)) + " encountered while trying to read a value");		    		
+				throwJsonException(EXCEPTION_UNEXPECTED_TOKEN, (String.valueOf((char) this.currentChar)) + " encountered while trying to read a value");		    		
     	}
     	return null;
     }
@@ -371,10 +371,10 @@ public class JSONParser {
     /**
      * Reads a JSON literal from the current source.
      * @return the corresponding value. Returns either Boolean.FALSE, Boolean.TRUE or JSONParser.NULL.
-     * @throws JSONException
+     * @throws JsonException
      * @throws IOException
      */
-    protected Object readJSONLiteral() throws JSONException, IOException {
+    protected Object readJsonLiteral() throws JsonException, IOException {
     	    	
     	// Keep a backup of the original character
     	int originalCharacter = this.currentChar ;
@@ -394,7 +394,7 @@ public class JSONParser {
     			break;
     			
 			default:
-				throwJSONException(EXCEPTION_UNEXPECTED_TOKEN, "expected literal, but no JSON literal can start with the letter '" + (char) this.currentChar + "'");    			
+				throwJsonException(EXCEPTION_UNEXPECTED_TOKEN, "expected literal, but no JSON literal can start with the letter '" + (char) this.currentChar + "'");    			
     		
     	}
     	
@@ -408,10 +408,10 @@ public class JSONParser {
     			currentIndex++;
     		} else if ( this.currentChar == -1) {
 	    		// End of the stream found, throw an error
-    			throwJSONException(EXCEPTION_UNEXPECTED_END_OF_STREAM, " end of stream encountered while trying to read literal" );
+    			throwJsonException(EXCEPTION_UNEXPECTED_END_OF_STREAM, " end of stream encountered while trying to read literal" );
     		} else {
     			// Invalid character found
-    			throwJSONException(EXCEPTION_UNEXPECTED_TOKEN, "found unexpected character '" + (char) this.currentChar + "' in literal" );
+    			throwJsonException(EXCEPTION_UNEXPECTED_TOKEN, "found unexpected character '" + (char) this.currentChar + "' in literal" );
     		}    		
 
     		// Read the next character from the stream
@@ -422,20 +422,20 @@ public class JSONParser {
     	switch ( originalCharacter ) {
     		case 't':
     			//#if polish.cldc1.1
-    				return Boolean.TRUE;
+    				//# return Boolean.TRUE;
 				//#else
-    				//#= return TRUE;
+    				return TRUE;
 				//#endif
     				
     		case 'f':
     			//#if polish.cldc1.1
-					return Boolean.FALSE;
+					//# return Boolean.FALSE;
 				//#else
-					//#= return FALSE;
+					return FALSE;
 				//#endif
     			
     		case 'n':
-    			return JSONParser.NULL;
+    			return JsonParser.NULL;
     			
 			default:
 				return null;
@@ -444,11 +444,11 @@ public class JSONParser {
     
     /**
      * Reads a JSON number from the current source
-     * @return a corresponding JSONNumber instance
+     * @return a corresponding JsonNumber instance
      * @throws IOException
-     * @throws JSONException
+     * @throws JsonException
      */
-    protected JSONNumber readJSONNumber() throws IOException, JSONException {
+    protected JsonNumber readJsonNumber() throws IOException, JsonException {
     	
     	// Declare the needed variables
     	boolean integerPartFound = false;
@@ -487,9 +487,9 @@ public class JSONParser {
 	    		// and if we have an integer part before the decimal point.
     			case '.':
     				if ( decimalPointFound ) {
-    					throwJSONException(EXCEPTION_UNEXPECTED_TOKEN, "extra decimal point found in number" + result.toString());
+    					throwJsonException(EXCEPTION_UNEXPECTED_TOKEN, "extra decimal point found in number" + result.toString());
     				} else if (! integerPartFound) {
-    					throwJSONException(EXCEPTION_UNEXPECTED_TOKEN, "decimal point found before integer part in number" + result.toString());
+    					throwJsonException(EXCEPTION_UNEXPECTED_TOKEN, "decimal point found before integer part in number" + result.toString());
     				}
     				decimalPointFound = true;
     				break;
@@ -500,20 +500,20 @@ public class JSONParser {
     			case 'E':
     			case 'e':
     				if ( exponentSignFound ) {
-    					throwJSONException(EXCEPTION_UNEXPECTED_TOKEN, "extra exponent sign found in number" + result.toString());
+    					throwJsonException(EXCEPTION_UNEXPECTED_TOKEN, "extra exponent sign found in number" + result.toString());
     				} else if (! integerPartFound) {
-    					throwJSONException(EXCEPTION_UNEXPECTED_TOKEN, "exponent sign found before integer part in number" + result.toString());
+    					throwJsonException(EXCEPTION_UNEXPECTED_TOKEN, "exponent sign found before integer part in number" + result.toString());
     				}
     				exponentSignFound = true;
     				break;
     				
     			// If we have reached the end of this.stream, throw an error
 	    		case -1:
-	    			throwJSONException(EXCEPTION_UNEXPECTED_END_OF_STREAM, "while trying to read number beginning with \"" + result.toString() + "...\"");
+	    			throwJsonException(EXCEPTION_UNEXPECTED_END_OF_STREAM, "while trying to read number beginning with \"" + result.toString() + "...\"");
 
 				// If any other character is encountered, the number has been fully read. Return it.	
     			default:
-    				return new JSONNumber(result.toString());
+    				return new JsonNumber(result.toString());
     		}
     		
     		// If the character is a valid character in the context of the current number, add it to the buffer
@@ -528,13 +528,13 @@ public class JSONParser {
      * Reads a JSON string from the current source
      * @return the string
      * @throws IOException
-     * @throws JSONException
+     * @throws JsonException
      */
-    protected String readJSONString() throws IOException, JSONException {
+    protected String readJsonString() throws IOException, JsonException {
 
     	// Check if we really are at the beginning of a string. Raise an exception otherwise
     	if ( this.currentChar != TOKEN_QUOTATION_MARK ) {
-			throwJSONException(EXCEPTION_UNEXPECTED_TOKEN, "encountered '" + (char) this.currentChar + "' while expecting '" + TOKEN_QUOTATION_MARK + "' when reading an object");
+			throwJsonException(EXCEPTION_UNEXPECTED_TOKEN, "encountered '" + (char) this.currentChar + "' while expecting '" + TOKEN_QUOTATION_MARK + "' when reading an object");
 		}
     	
     	// Declare the needed variables
@@ -552,7 +552,7 @@ public class JSONParser {
     		
     			// If we have reached the end of this.stream, throw an error
 	    		case -1:
-	    			throwJSONException(EXCEPTION_UNEXPECTED_END_OF_STREAM, "while trying to read string beginning with \"" + buffer.toString() + "...\"");
+	    			throwJsonException(EXCEPTION_UNEXPECTED_END_OF_STREAM, "while trying to read string beginning with \"" + buffer.toString() + "...\"");
 	    			
 	    		// End of string has been reached. Move outside the body of the string and return the result
 	    		case TOKEN_QUOTATION_MARK:
@@ -601,7 +601,7 @@ public class JSONParser {
 	    						this.currentChar = this.stream.read();
 	    						
 	    						if ( this.currentChar == -1 ) {
-	    							throwJSONException(EXCEPTION_UNEXPECTED_END_OF_STREAM, "while trying to read next unicode character in string \"" + buffer.toString() + "...\"");
+	    							throwJsonException(EXCEPTION_UNEXPECTED_END_OF_STREAM, "while trying to read next unicode character in string \"" + buffer.toString() + "...\"");
 	    						}
 	    						
     							unicodeBuffer.append((char) this.currentChar);	    						
@@ -613,14 +613,14 @@ public class JSONParser {
 	    					break;
 	    					
     					default:
-    						throwJSONException(EXCEPTION_INVALID_ESCAPE_CHARACTER, "'" + (char) this.currentChar + "' found in string \"" + buffer.toString() + "...\"");
+    						throwJsonException(EXCEPTION_INVALID_ESCAPE_CHARACTER, "'" + (char) this.currentChar + "' found in string \"" + buffer.toString() + "...\"");
     						break;	    						
 	    			}
 	    			break;
 	    			
 	    		case TOKEN_WHITSPACE_LINE_FEED:
 	    		case TOKEN_WHITESPACE_CARRIAGE_RETURN:
-	    			throwJSONException(EXCEPTION_UNTERMINATED_STRING, buffer.toString());
+	    			throwJsonException(EXCEPTION_UNTERMINATED_STRING, buffer.toString());
 	    			
     			default:
     				buffer.append((char) this.currentChar);    				    			

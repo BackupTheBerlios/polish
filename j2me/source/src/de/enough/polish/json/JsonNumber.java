@@ -29,7 +29,7 @@ package de.enough.polish.json;
  * @author Ovidiu Iliescu
  *
  */
-public class JSONNumber implements JSONItem {
+public class JsonNumber implements JsonItem {
 	
 	/**
 	 * The String representation of the number
@@ -40,7 +40,7 @@ public class JSONNumber implements JSONItem {
 	 * Creates a new JSON number
 	 * @param stringRepresentation the string representation of the number
 	 */
-	public JSONNumber(String stringRepresentation) {
+	public JsonNumber(String stringRepresentation) {
 		this.stringRepresentation = stringRepresentation;
 	}
 	
@@ -48,7 +48,7 @@ public class JSONNumber implements JSONItem {
 	 * Creates a new JSON number
 	 * @param number the number
 	 */
-	public JSONNumber(int number) {
+	public JsonNumber(int number) {
 		this.stringRepresentation = String.valueOf(number);
 	}
 	
@@ -56,7 +56,7 @@ public class JSONNumber implements JSONItem {
 	 * Creates a new JSON number
 	 * @param number the number
 	 */
-	public JSONNumber(Integer number) {
+	public JsonNumber(Integer number) {
 		this.stringRepresentation = number.toString();
 	}
 	
@@ -65,7 +65,7 @@ public class JSONNumber implements JSONItem {
 	 * Creates a new JSON number
 	 * @param number the number
 	 */
-	public JSONNumber(float number) {
+	public JsonNumber(float number) {
 		this.stringRepresentation = String.valueOf(number);
 	}
 	
@@ -73,7 +73,7 @@ public class JSONNumber implements JSONItem {
 	 * Creates a new JSON number
 	 * @param number the number
 	 */
-	public JSONNumber(Float number) {
+	public JsonNumber(Float number) {
 		this.stringRepresentation = number.toString();
 	}
 	
@@ -81,7 +81,7 @@ public class JSONNumber implements JSONItem {
 	 * Creates a new JSON number
 	 * @param number the number
 	 */
-	public JSONNumber(Double number) {
+	public JsonNumber(Double number) {
 		this.stringRepresentation = number.toString();
 	}
 	//#endif
@@ -90,7 +90,7 @@ public class JSONNumber implements JSONItem {
 	 * Creates a new JSON number
 	 * @param number the number
 	 */
-	public JSONNumber(byte number) {
+	public JsonNumber(byte number) {
 		this.stringRepresentation = String.valueOf(number);
 	}
 	
@@ -98,14 +98,14 @@ public class JSONNumber implements JSONItem {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return stringRepresentation;
+		return this.stringRepresentation;
 	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.json.JSONItem#serializeToStringBuffer(java.lang.StringBuffer)
 	 */
 	public void serializeToStringBuffer(StringBuffer stringBuffer) {
-		stringBuffer.append(stringRepresentation);		
+		stringBuffer.append(this.stringRepresentation);		
 	}
 
 	/* (non-Javadoc)

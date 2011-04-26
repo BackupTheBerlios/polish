@@ -31,11 +31,14 @@ import java.util.Vector;
  * @author Ovidiu Iliescu
  *
  */
-public class JSONArray implements JSONItem {
+public class JsonArray implements JsonItem {
 
 	/**
 	 * The elements of the array
 	 */
+	//#if polish.java5
+	@SuppressWarnings("unchecked")
+	//#endif
 	protected Vector elements = new Vector();
 	
 	/**
@@ -43,23 +46,29 @@ public class JSONArray implements JSONItem {
 	 * @return the number of elements in the array
 	 */
 	public int getCount() {
-		return elements.size();
+		return this.elements.size();
 	}
 	
 	/**
 	 * Adds an element to the array
 	 * @param object the element to add
 	 */
+	//#if polish.java5
+	@SuppressWarnings("unchecked")
+	//#endif
 	public void put(Object object) {
-		elements.addElement(object);
+		this.elements.addElement(object);
 	}
 	
 	/**
 	 * Removes an element from the array
 	 * @param object the element to remove
 	 */
+	//#if polish.java5
+	@SuppressWarnings("unchecked")
+	//#endif
 	public void remove(Object object) {
-		elements.removeElement(object);
+		this.elements.removeElement(object);
 	}
 	
 	/**
@@ -68,7 +77,7 @@ public class JSONArray implements JSONItem {
 	 * @return the corresponding element
 	 */
 	public Object get(int index) {
-		return elements.elementAt(index);
+		return this.elements.elementAt(index);
 	}
 	
 	/**
@@ -76,29 +85,33 @@ public class JSONArray implements JSONItem {
 	 * @return an Enumeration containing all the elements
 	 */
 	public Enumeration getAll() {
-		return elements.elements();
+		return this.elements.elements();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.json.JSONItem#serializeToStringBuffer(java.lang.StringBuffer)
+	 */
 	public void serializeToStringBuffer(StringBuffer stringBuffer) {
-		Enumeration elements = getAll();
+		Enumeration tmpWlements = getAll();
 		
-		stringBuffer.append(JSONParser.TOKEN_BEGIN_ARRAY);
+		stringBuffer.append(JsonParser.TOKEN_BEGIN_ARRAY);
 		
 		Object currentElement;
-		while (elements.hasMoreElements()) {
-			currentElement = elements.nextElement();
+		while (tmpWlements.hasMoreElements()) {
+			currentElement = tmpWlements.nextElement();
 			
-			if ( currentElement instanceof JSONItem) {
-				 ( (JSONItem) currentElement ).serializeToStringBuffer(stringBuffer);
+			if ( currentElement instanceof JsonItem) {
+				 ( (JsonItem) currentElement ).serializeToStringBuffer(stringBuffer);
 			} else {
-				JSONUtil.toJSONValue(currentElement, stringBuffer);
+				JsonUtil.toJsonValue(currentElement, stringBuffer);
 			}
 			
-			if ( elements.hasMoreElements() ) {
-				stringBuffer.append(JSONParser.TOKEN_VALUE_SEPARATOR);
+			if ( tmpWlements.hasMoreElements() ) {
+				stringBuffer.append(JsonParser.TOKEN_VALUE_SEPARATOR);
 			}
 		}
-		stringBuffer.append(JSONParser.TOKEN_END_ARRAY);
+		stringBuffer.append(JsonParser.TOKEN_END_ARRAY);
 	}
 
 	/* (non-Javadoc)

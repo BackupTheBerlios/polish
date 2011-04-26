@@ -23,22 +23,19 @@
  */
 package de.enough.polish.json;
 
+import java.io.IOException;
+
 /**
- * This interface defines methods common to all JSON-specific items (arrays, objects, numbers)
+ * This class defines a standard JSON Exception
  * @author Ovidiu Iliescu
- *
  */
-public interface JSONItem {
+public class JsonException extends IOException {
 
 	/**
-	 * Serializes the item to a StringBuffer, in a JSON-compatible format.
-	 * @param stringBuffer the StringBuffer to serialize to
+	 * Creates a new JSON exception
+	 * @param message the message
 	 */
-	public void serializeToStringBuffer(StringBuffer stringBuffer) ;
-	
-	/**
-	 * Serializes the item to a String, in a JSON-compatible format.
-	 * @return the resulting String
-	 */
-	public String serializeToString() ;
+	public JsonException(String message) {
+		super(message);
+	}
 }
