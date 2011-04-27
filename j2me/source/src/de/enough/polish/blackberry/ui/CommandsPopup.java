@@ -131,8 +131,15 @@ public class CommandsPopup
 		}
 		return handled;
 	}
-	
-	//TODO when touch down outside of area exit this popup
 
-    
+	//#if polish.JavaPlatform < BlackBerry/4.5
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.blackberry.ui.BaseScreen#paint(de.enough.polish.blackberry.ui.Graphics)
+	 */
+	protected void paint(Graphics g) {
+		// ignore
+	}
+	//#endif
+	
 }
