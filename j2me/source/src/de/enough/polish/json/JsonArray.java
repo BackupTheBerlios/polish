@@ -36,9 +36,6 @@ public class JsonArray implements JsonItem {
 	/**
 	 * The elements of the array
 	 */
-	//#if polish.java5
-	@SuppressWarnings("unchecked")
-	//#endif
 	protected Vector elements = new Vector();
 	
 	/**
@@ -53,9 +50,6 @@ public class JsonArray implements JsonItem {
 	 * Adds an element to the array
 	 * @param object the element to add
 	 */
-	//#if polish.java5
-	@SuppressWarnings("unchecked")
-	//#endif
 	public void put(Object object) {
 		this.elements.addElement(object);
 	}
@@ -64,9 +58,6 @@ public class JsonArray implements JsonItem {
 	 * Removes an element from the array
 	 * @param object the element to remove
 	 */
-	//#if polish.java5
-	@SuppressWarnings("unchecked")
-	//#endif
 	public void remove(Object object) {
 		this.elements.removeElement(object);
 	}

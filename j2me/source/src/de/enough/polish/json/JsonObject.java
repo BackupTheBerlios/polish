@@ -37,9 +37,6 @@ public class JsonObject implements JsonItem {
 	/**
 	 * The object members are stored here
 	 */
-	//#if polish.java5
-	@SuppressWarnings("unchecked")
-	//#endif
 	Hashtable members = new Hashtable();
 	
 	/**
@@ -47,9 +44,6 @@ public class JsonObject implements JsonItem {
 	 * @param key the member name
 	 * @param value the member's value.
 	 */
-	//#if polish.java5
-	@SuppressWarnings("unchecked")
-	//#endif
 	public void put(String key, Object value) {
 		this.members.put(key, value);
 	}
