@@ -89,13 +89,20 @@ public abstract class BaseScreen
     protected BaseScreen()
     {
     	//#if polish.useFullScreen
-    		//# super( BaseScreenManager.getInstance(), 0 );
+    		//# this( BaseScreenManager.getInstance(), 0 );
     	//#else
-    		super( BaseScreenManager.getInstance(), DEFAULT_MENU );
-    		
-    		//#if polish.BlackBerry.addDefaultClose != true
-    			super.setDefaultClose(false);
-    		//#endif
+    		this( BaseScreenManager.getInstance(), DEFAULT_MENU );
+    	//#endif
+    }
+    
+    /**
+     * Constructs a new <code>Canvas</code> object.
+     */
+    protected BaseScreen(Manager manager, long style)
+    {
+		super( manager, style );
+    	//#if !polish.useFullScreen && polish.BlackBerry.addDefaultClose != true
+			super.setDefaultClose(false);
     	//#endif
     	this.addedItems = new ArrayList();
         this.graphics = new Graphics();
@@ -103,6 +110,7 @@ public abstract class BaseScreen
         add( this.dummyField );
         BaseScreenManager.getInstance().setBaseScreen(this);
     }
+    
 
     /**
      * Checks if the software version of this device is higher than the specified one
