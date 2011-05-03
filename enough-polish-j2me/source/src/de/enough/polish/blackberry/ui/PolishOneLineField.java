@@ -29,6 +29,7 @@ import net.rim.device.api.ui.FieldChangeListener;
 import net.rim.device.api.ui.Graphics;
 import net.rim.device.api.ui.component.EditField;
 import net.rim.device.api.ui.container.VerticalFieldManager;
+import net.rim.device.api.ui.text.TextFilter;
 import de.enough.polish.ui.Style;
 
 
@@ -248,6 +249,10 @@ public class PolishOneLineField extends VerticalFieldManager implements PolishTe
     public void updateInputStyle() {
 		// TODO Besitzer implement updateInputStyle
 		System.out.println("Update input Style!!!!!!!!!!!");
+	}
+
+	public void setFilter(TextFilter filter) {
+		this.editField.setFilter(filter);		
 	}
 
 }

@@ -31,6 +31,7 @@ package de.enough.polish.blackberry.ui;
 import de.enough.polish.ui.Style;
 import net.rim.device.api.ui.FieldChangeListener;
 import net.rim.device.api.ui.XYRect;
+import net.rim.device.api.ui.text.TextFilter;
 
 /**
  * <p>Provides common funcitonality of the PolishEditField and the PolishPasswordEditField.</p>
@@ -65,6 +66,8 @@ public interface PolishTextField {
 	void setChangeListener( FieldChangeListener listener );
 
 	int getCursorPosition();
+	
+	void setFilter (TextFilter filter);
 
 	//#if polish.JavaPlatform >= BlackBerry/6.0
 	public boolean needsNavigationFix();

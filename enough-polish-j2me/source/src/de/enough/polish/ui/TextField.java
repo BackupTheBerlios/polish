@@ -63,6 +63,7 @@ import de.enough.polish.util.Properties;
 	import net.rim.device.api.ui.Manager;
 	import net.rim.device.api.ui.UiApplication;
 	import net.rim.device.api.ui.component.BasicEditField;
+import net.rim.device.api.ui.text.TextFilter;
 //#endif
 
 //#if polish.api.windows
@@ -1934,7 +1935,8 @@ public class TextField extends StringItem
 			this.animateTextWrap = this.isUneditable;
 		//#endif
 		//#if polish.blackberry
-			
+						
+			int filterType = TextFilter.DEFAULT;
 			long bbStyle = Field.FOCUSABLE;
 			if (this.isUneditable) {
 				bbStyle |= Field.READONLY;
@@ -1944,14 +1946,19 @@ public class TextField extends StringItem
 			
 			if ( fieldType == DECIMAL || fieldType == FIXED_POINT_DECIMAL) {
 				bbStyle |= BasicEditField.FILTER_REAL_NUMERIC;
+				filterType = TextFilter.REAL_NUMERIC;
 			} else if (fieldType == NUMERIC) {
 				bbStyle |= BasicEditField.FILTER_INTEGER;
+				filterType = TextFilter.INTEGER;
 			} else if (fieldType == PHONENUMBER) {
 				bbStyle |= BasicEditField.FILTER_PHONE;
+				filterType = TextFilter.PHONE; 
 			} else if (fieldType == EMAILADDR ) {
 				bbStyle |= BasicEditField.FILTER_EMAIL;
+				filterType = TextFilter.EMAIL;
 			} else if ( fieldType == URL ) {
 				bbStyle |= BasicEditField.FILTER_URL;
+				filterType = TextFilter.URL;
 			}
 			if ((constraints & SENSITIVE) == SENSITIVE) {
 				bbStyle |= BasicEditField.NO_LEARNING; 
@@ -2008,8 +2015,10 @@ public class TextField extends StringItem
             	{
             		this.editField = new PolishEditField(null, getString(), max, bbStyle);
             	}
-            } 
-
+            }
+			
+			this.editField.setFilter(TextFilter.get(filterType));
+			
 			if (this.style != null) {
 				this.editField.setStyle( this.style );
 			}
