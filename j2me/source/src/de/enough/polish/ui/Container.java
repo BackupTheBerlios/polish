@@ -1316,8 +1316,8 @@ public class Container extends Item {
 		
 		int yTopAdjust = 0;
 		Screen scr = this.screen;
-		boolean centerOrBottomLayout = (this.layout & LAYOUT_VCENTER) == LAYOUT_VCENTER || (this.layout & LAYOUT_BOTTOM) == LAYOUT_BOTTOM;
-		if (centerOrBottomLayout && (scr != null && this == scr.container && this.relativeY > scr.contentY)) {
+		boolean isCenterOrBottomLayout = (this.layout & LAYOUT_VCENTER) == LAYOUT_VCENTER || (this.layout & LAYOUT_BOTTOM) == LAYOUT_BOTTOM;
+		if (isCenterOrBottomLayout && (scr != null && this == scr.container && this.relativeY > scr.contentY)) {
 			// this is an adjustment for calculating the correct scroll offset for containers with a vertical-center or bottom layout:
 			yTopAdjust = this.relativeY - scr.contentY;
 		}
