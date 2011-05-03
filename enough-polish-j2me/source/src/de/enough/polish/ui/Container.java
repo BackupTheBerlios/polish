@@ -1281,10 +1281,6 @@ public class Container extends Item {
 	 * @return true when the scroll request changed the internal scroll offsets
 	 */
 	protected boolean scroll( int direction, int x, int y, int width, int height, boolean force ) {
-		if(getParent() == null) {
-			System.out.println("y:" + y);
-			System.out.println("height:" + height);
-		}
 		//#debug
 		System.out.println("scroll: direction=" + direction + ", y=" + y + ", availableHeight=" + this.scrollHeight +  ", height=" +  height + ", focusedIndex=" + this.focusedIndex + ", yOffset=" + this.yOffset + ", targetYOffset=" + this.targetYOffset +", numberOfItems=" + this.itemsList.size() + ", in " + this + ", downwards=" + (direction == Canvas.DOWN || direction == Canvas.RIGHT ||  direction == 0));
 		if (!this.enableScrolling) {
