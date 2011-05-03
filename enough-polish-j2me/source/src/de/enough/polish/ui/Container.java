@@ -1281,6 +1281,10 @@ public class Container extends Item {
 	 * @return true when the scroll request changed the internal scroll offsets
 	 */
 	protected boolean scroll( int direction, int x, int y, int width, int height, boolean force ) {
+		if(getParent() == null) {
+			System.out.println("y:" + y);
+			System.out.println("height:" + height);
+		}
 		//#debug
 		System.out.println("scroll: direction=" + direction + ", y=" + y + ", availableHeight=" + this.scrollHeight +  ", height=" +  height + ", focusedIndex=" + this.focusedIndex + ", yOffset=" + this.yOffset + ", targetYOffset=" + this.targetYOffset +", numberOfItems=" + this.itemsList.size() + ", in " + this + ", downwards=" + (direction == Canvas.DOWN || direction == Canvas.RIGHT ||  direction == 0));
 		if (!this.enableScrolling) {
@@ -1309,9 +1313,11 @@ public class Container extends Item {
 		int originalYOffset = currentYOffset;
 
 		int verticalSpace = this.scrollHeight - (this.contentY + this.marginBottom + this.paddingBottom + getBorderWidthBottom()); // the available height for this container
+		
 		int yTopAdjust = 0;
 		Screen scr = this.screen;
-		if (scr != null && this == scr.container && this.relativeY > scr.contentY) {
+		boolean centerOrBottomLayout = (this.layout & LAYOUT_VCENTER) == LAYOUT_VCENTER || (this.layout & LAYOUT_BOTTOM) == LAYOUT_BOTTOM;
+		if (centerOrBottomLayout && (scr != null && this == scr.container && this.relativeY > scr.contentY)) {
 			// this is an adjustment for calculating the correct scroll offset for containers with a vertical-center or bottom layout:
 			yTopAdjust = this.relativeY - scr.contentY;
 		}
