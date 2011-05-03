@@ -1490,7 +1490,7 @@ public class Container extends Item {
 					this.containerView.init( this, firstLineWidth, availWidth, availHeight);
 					if (this.defaultCommand != null || (this.commands != null && this.commands.size() > 0)) {
 						this.appearanceMode = INTERACTIVE;
-					} else {
+					} else if(!this.appearanceModeSet){
 						this.appearanceMode = this.containerView.appearanceMode;
 					}
 					if (this.isFocused && this.autoFocusEnabled) {
