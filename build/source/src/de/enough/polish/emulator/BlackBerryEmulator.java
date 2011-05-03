@@ -2,6 +2,7 @@ package de.enough.polish.emulator;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 
 import de.enough.polish.Device;
@@ -10,6 +11,8 @@ import de.enough.polish.ant.emulator.EmulatorSetting;
 import de.enough.polish.util.BlackBerryUtils;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.OsUtil;
+import de.enough.polish.util.OutputFilter;
+import de.enough.polish.util.ProcessUtil;
 
 /**
  * Invokes a specific BlackBerry simulator.
@@ -28,7 +31,10 @@ public class BlackBerryEmulator extends Emulator {
 
     private File blackberryHome;
     private File executionDir;
+    private Device device;
     private String[] arguments;
+    private String shortName = null;
+    private boolean isSimulatorRunning = false;
 
     public boolean init(Device dev, EmulatorSetting setting,
             Environment env) {
@@ -37,6 +43,8 @@ public class BlackBerryEmulator extends Emulator {
         if (executable != null && !executable.exists()) {
             return false;
         }
+        
+        this.device = dev;
         this.executionDir = executable.getParentFile();
 
         ArrayList argumentsList = new ArrayList();
@@ -80,6 +88,7 @@ public class BlackBerryEmulator extends Emulator {
         // now copy the jar, cod, alx and jad files to the simulator's home directory:
         File targetDir = this.executionDir;
         File file = new File(env.getVariable("polish.jadPath"));
+        shortName = file.getName().substring(0, file.getName().length() - ".jar".length());
         try {
             //FileUtil.copy( file, targetDir );
             //file = new File( env.getVariable("polish.jarPath") );
@@ -108,6 +117,61 @@ public class BlackBerryEmulator extends Emulator {
     protected File getExecutionDir() {
         return this.executionDir;
     }
+    
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.emulator.Emulator#exec(java.lang.String[], java.lang.String, boolean, de.enough.polish.util.OutputFilter, java.io.File)
+	 */
+	protected int exec( String[] arguments, String info, boolean wait, OutputFilter filter, File executionDir ) 
+	throws IOException 
+	{	
+		// By default, we assume that the simulator is not already running
+		isSimulatorRunning = false;
+		
+		// Set the proper path to fledgecontroller.exe
+		String fledgeControllerPath = this.executionDir + File.separator + "fledgecontroller.exe";
+		
+		// Check if the proper simulator is already running. To do this, we use fledgecontroller to get a list
+		// of all running sessions, and check if the session we need is present in the list.
+		// To check if the session is present in the list, we redirect fledgecontroller's output to the filter()
+		// method of this class.
+		ProcessUtil.exec(new String[] { fledgeControllerPath, "/get-sessions"}, info, true, this, executionDir );
+		
+		// Depending on whether the simulator is running or not, we either do nothing or launch the simulator.
+		if ( isSimulatorRunning ) {
+			// Do nothing if the simulator is already running
+			System.out.println("Blackberry " + device.getName() + " simulator is already running.");
+		} else {
+			// Launch the simulator
+			super.exec( arguments, info, false, filter,  executionDir );
+			
+			// Give it some "breathing room" so that it can properly initialise itself before loading the COD file
+			// via fledgecontroller
+			try {
+				Thread.sleep(5000);
+			} catch (Exception ex) {};
+		}
+		
+		// Load the COD file via fledgecontroller
+		System.out.println("Loading " + shortName + ".cod via fledgecontroller.");
+		String [] controllerArguments = new String[3];
+		controllerArguments[0] = fledgeControllerPath;
+		controllerArguments[1] = "/session=" + device.getName();
+		controllerArguments[2] = "/execute=LoadCod(\"" + shortName + ".cod\")";
+		ProcessUtil.exec(controllerArguments, info, wait, filter, executionDir);			
+		
+		return 0;
+	}
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.emulator.Emulator#filter(java.lang.String, java.io.PrintStream)
+	 */
+	public void filter( String logMessage, PrintStream output ) {
+		// If the emulator name is found in the session list, then it is already running
+		if ( logMessage.indexOf(device.getName()) != -1 ) {
+			isSimulatorRunning = true;
+		}
+	}
 
     public File getEmulator(Device dev, Environment env) {
         blackberryHome = BlackBerryUtils.getBBHome(dev, env);
