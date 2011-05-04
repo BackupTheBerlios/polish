@@ -35,6 +35,7 @@ public class BlackBerryEmulator extends Emulator {
     private String[] arguments;
     private String shortName = null;
     private boolean isSimulatorRunning = false;
+    private boolean supportsFledgeController = false;
 
     public boolean init(Device dev, EmulatorSetting setting,
             Environment env) {
@@ -42,6 +43,11 @@ public class BlackBerryEmulator extends Emulator {
         File executable = getEmulator(dev, env);
         if (executable != null && !executable.exists()) {
             return false;
+        }
+        
+        // Check if fledgecontroller is supported
+        if ( env.isConditionFulfilled("polish.build.BlackBerry.JDE-Version >= 4.2") ) {
+        	supportsFledgeController = true;
         }
         
         this.device = dev;
@@ -125,6 +131,11 @@ public class BlackBerryEmulator extends Emulator {
 	protected int exec( String[] arguments, String info, boolean wait, OutputFilter filter, File executionDir ) 
 	throws IOException 
 	{	
+		// If Fledgecontroller is not supported, use the old loading method.
+		if ( ! this.supportsFledgeController ) {
+			return super.exec(arguments, info, wait, filter, executionDir);
+		}
+		
 		// By default, we assume that the simulator is not already running
 		isSimulatorRunning = false;
 		
@@ -148,7 +159,7 @@ public class BlackBerryEmulator extends Emulator {
 			// Give it some "breathing room" so that it can properly initialise itself before loading the COD file
 			// via fledgecontroller
 			try {
-				Thread.sleep(5000);
+				Thread.sleep(15000);
 			} catch (Exception ex) {};
 		}
 		
@@ -168,7 +179,7 @@ public class BlackBerryEmulator extends Emulator {
 	 */
 	public void filter( String logMessage, PrintStream output ) {
 		// If the emulator name is found in the session list, then it is already running
-		if ( logMessage.indexOf(device.getName()) != -1 ) {
+		if ( logMessage.substring(logMessage.length()-device.getName().length()).equals(device.getName()) ) {
 			isSimulatorRunning = true;
 		}
 	}
