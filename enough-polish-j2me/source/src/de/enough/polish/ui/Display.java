@@ -2009,7 +2009,9 @@ public class Display
 	protected void keyPressed(int keyCode) {
 		//#if polish.blackberry
 		if ((this.inputMethod == INPUT_METHOD_TOUCH) 
-			&& (Keypad.key(keyCode) != Keypad.KEY_MENU) 
+			//#if polish.JavaPlatform >= BlackBerry/4.2
+			//#= && (Keypad.key(keyCode) != Keypad.KEY_MENU)
+			//#endif
 			&& (Keypad.key(keyCode) != Keypad.KEY_ESCAPE))
 		//#endif
 		{
