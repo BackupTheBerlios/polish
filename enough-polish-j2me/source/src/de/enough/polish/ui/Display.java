@@ -2010,7 +2010,7 @@ public class Display
 		//#if polish.blackberry
 		if ((this.inputMethod == INPUT_METHOD_TOUCH) 
 			//#if polish.JavaPlatform >= BlackBerry/4.2
-			//#= && (Keypad.key(keyCode) != Keypad.KEY_MENU)
+			&& (Keypad.key(keyCode) != Keypad.KEY_MENU)
 			//#endif
 			&& (Keypad.key(keyCode) != Keypad.KEY_ESCAPE))
 		//#endif
