@@ -18,7 +18,7 @@
 			</page>
 		</page>
 	</page>
-	<page file="gui-concepts.html" title="Design">
+	<page file="gui-concepts.html" title="Lush UI">
 		<page file="gui-visualguide.html" title="Visual Guide" />
 		<page file="gui-visualguide-backgrounds.html" title="Visual Guide to Backgrounds" />
 		<page file="gui-visualguide-borders.html" title="Visual Guide to Borders" />
@@ -32,7 +32,8 @@
 		<page file="gui-touchsupport.html" title="Touch Support" />
 		<page file="gui-programming.html" title="Programming Concepts" />
 		<page file="gui-localization.html" title="GUI Localization" />
-		<page file="gui-configuration.html" title="Configuration Options" />
+		<page file="gui-processing.html" title="Processing" />
+		<page file="extending-gui.html" title="Extending the UI" />
 	</page>
 	
 	<page file="customization.html" title="Customization" />

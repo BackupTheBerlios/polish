@@ -256,7 +256,7 @@
 				<div class="secondLevelLink"><a href="<%= basedir %>docs/install.html">Installation</a></div>
 			<%endif %>
 			<%ifdef inDocumentationSection.gui %>
-				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/gui-concepts.html">Design</a></div>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/gui-concepts.html">Lush UI</a></div>
 				<div id="thirdLevel">
 				<p class="thirdLevel">
 				<a href="<%= basedir %>docs/gui-visualguide.html">Visual Guide</a>
@@ -272,12 +272,13 @@
 				<a href="<%= basedir %>docs/gui-touchsupport.html">Touch Support</a>
 				<a href="<%= basedir %>docs/gui-programming.html">Programming Concepts</a>
 				<a href="<%= basedir %>docs/gui-localization.html">GUI Localization</a>
+				<a href="<%= basedir %>docs/gui-processing.html">Processing</a>
 				<a href="<%= basedir %>docs/extending-gui.html">Extending the UI</a>
 				</p>
 				</div>
 				<div class="secondLevelLink"><a href="<%= basedir %>docs/gui-visualguide.html">Visual Guide</a></div>
 			<%else %>
-				<div class="secondLevelLink"><a href="<%= basedir %>docs/gui-concepts.html">Design</a></div>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/gui-concepts.html">Lush UI</a></div>
 				<div class="secondLevelLink"><a href="<%= basedir %>docs/gui-visualguide.html">Visual Guide</a></div>
 			<%endif %>
 
