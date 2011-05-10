@@ -31,7 +31,6 @@ public class BlackBerryEmulator extends Emulator {
 
     private File blackberryHome;
     private File executionDir;
-    private Device device;
     private String[] arguments;
     private String shortName = null;
     private boolean isSimulatorRunning = false;
@@ -47,7 +46,7 @@ public class BlackBerryEmulator extends Emulator {
         
         // Check if fledgecontroller is supported
         if ( env.isConditionFulfilled("polish.build.BlackBerry.JDE-Version >= 4.2") ) {
-        	supportsFledgeController = true;
+        	this.supportsFledgeController = true;
         }
         
         this.device = dev;
@@ -94,7 +93,7 @@ public class BlackBerryEmulator extends Emulator {
         // now copy the jar, cod, alx and jad files to the simulator's home directory:
         File targetDir = this.executionDir;
         File file = new File(env.getVariable("polish.jadPath"));
-        shortName = file.getName().substring(0, file.getName().length() - ".jar".length());
+        this.shortName = file.getName().substring(0, file.getName().length() - ".jar".length());
         try {
             //FileUtil.copy( file, targetDir );
             //file = new File( env.getVariable("polish.jarPath") );
@@ -128,16 +127,16 @@ public class BlackBerryEmulator extends Emulator {
 	 * (non-Javadoc)
 	 * @see de.enough.polish.emulator.Emulator#exec(java.lang.String[], java.lang.String, boolean, de.enough.polish.util.OutputFilter, java.io.File)
 	 */
-	protected int exec( String[] arguments, String info, boolean wait, OutputFilter filter, File executionDir ) 
+	protected int exec( String[] args, String info, boolean wait, OutputFilter filter, File execDir ) 
 	throws IOException 
 	{	
 		// If Fledgecontroller is not supported, use the old loading method.
 		if ( ! this.supportsFledgeController ) {
-			return super.exec(arguments, info, wait, filter, executionDir);
+			return super.exec(args, info, wait, filter, execDir);
 		}
 		
 		// By default, we assume that the simulator is not already running
-		isSimulatorRunning = false;
+		this.isSimulatorRunning = false;
 		
 		// Set the proper path to fledgecontroller.exe
 		String fledgeControllerPath = this.executionDir + File.separator + "fledgecontroller.exe";
@@ -146,30 +145,32 @@ public class BlackBerryEmulator extends Emulator {
 		// of all running sessions, and check if the session we need is present in the list.
 		// To check if the session is present in the list, we redirect fledgecontroller's output to the filter()
 		// method of this class.
-		ProcessUtil.exec(new String[] { fledgeControllerPath, "/get-sessions"}, info, true, this, executionDir );
+		ProcessUtil.exec(new String[] { fledgeControllerPath, "/get-sessions"}, info, true, this, execDir );
 		
 		// Depending on whether the simulator is running or not, we either do nothing or launch the simulator.
-		if ( isSimulatorRunning ) {
+		if ( this.isSimulatorRunning ) {
 			// Do nothing if the simulator is already running
-			System.out.println("Blackberry " + device.getName() + " simulator is already running.");
+			System.out.println("Blackberry " + this.device.getName() + " simulator is already running.");
 		} else {
 			// Launch the simulator
-			super.exec( arguments, info, false, filter,  executionDir );
+			super.exec( args, info, false, filter,  execDir );
 			
-			// Give it some "breathing room" so that it can properly initialise itself before loading the COD file
+			// Give it some "breathing room" so that it can properly initialize itself before loading the COD file
 			// via fledgecontroller
 			try {
 				Thread.sleep(15000);
-			} catch (Exception ex) {};
+			} catch (Exception ex) {
+				// ignore
+			};
 		}
 		
 		// Load the COD file via fledgecontroller
-		System.out.println("Loading " + shortName + ".cod via fledgecontroller.");
+		System.out.println("Loading " + this.shortName + ".cod via fledgecontroller.");
 		String [] controllerArguments = new String[3];
 		controllerArguments[0] = fledgeControllerPath;
-		controllerArguments[1] = "/session=" + device.getName();
-		controllerArguments[2] = "/execute=LoadCod(\"" + shortName + ".cod\")";
-		ProcessUtil.exec(controllerArguments, info, wait, filter, executionDir);			
+		controllerArguments[1] = "/session=" + this.device.getName();
+		controllerArguments[2] = "/execute=LoadCod(\"" + this.shortName + ".cod\")";
+		ProcessUtil.exec(controllerArguments, info, wait, filter, execDir);			
 		
 		return 0;
 	}
@@ -179,13 +180,20 @@ public class BlackBerryEmulator extends Emulator {
 	 */
 	public void filter( String logMessage, PrintStream output ) {
 		// If the emulator name is found in the session list, then it is already running
-		if ( logMessage.substring(logMessage.length()-device.getName().length()).equals(device.getName()) ) {
-			isSimulatorRunning = true;
+		if ( !this.isSimulatorRunning && logMessage.substring(logMessage.length()-this.device.getName().length()).equals(this.device.getName()) ) {
+			this.isSimulatorRunning = true;
 		}
+		output.println(logMessage);
 	}
 
+	/**
+	 * Retrieves the emulator executable
+	 * @param dev the current device
+	 * @param env the environment
+	 * @return a file pointing to the executable
+	 */
     public File getEmulator(Device dev, Environment env) {
-        blackberryHome = BlackBerryUtils.getBBHome(dev, env);
+        this.blackberryHome = BlackBerryUtils.getBBHome(dev, env);
         File simHome = new File(this.blackberryHome, "simulator");
         File executable = BlackBerryUtils.getExecutable(simHome, dev, env);
         if (!executable.exists()) {
