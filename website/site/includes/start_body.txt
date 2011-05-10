@@ -333,10 +333,10 @@
 				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/programming.html">Programming</a></div>
 				<div id="thirdLevel">
 				<p class="thirdLevel">
-				<a href="<%= basedir %>docs/utilities.html">Utility Classes</a>
+				<a href="<%= basedir %>docs/programming-utilities.html">Utility Classes</a>
 				<a href="<%= basedir %>docs/serialization.html">Serialization</a>
-				<a href="<%= basedir %>docs/java5.html">Java 5 Syntax</a>
-				<a href="<%= basedir %>docs/porting.html">Porting</a>
+				<a href="<%= basedir %>docs/programming-java5.html">Java 5 Syntax</a>
+				<a href="<%= basedir %>docs/programming-porting.html">Porting</a>
 				</p>
 				</div>
 			<%else %>

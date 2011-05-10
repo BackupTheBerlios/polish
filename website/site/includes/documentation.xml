@@ -61,10 +61,10 @@
 		
 	</page>
 	<page file="programming.html" title="Programming" >
-		<page file="utilities.html" title="Utility Classes" />
+		<page file="programming-utilities.html" title="Utility Classes" />
 		<page file="serialization.html" title="Serialization" />
-		<page file="java5.html" title="Java 5 Syntax" />
-		<page file="porting.html" title="Porting" />
+		<page file="programming-java5.html" title="Java 5 Syntax" />
+		<page file="programming-porting.html" title="Porting" />
 	</page>
 	<page file="platform.html" title="Platforms" >
 		<page file="platform-midp.html" title="MIDP" />
