@@ -23,7 +23,11 @@
  * http://www.j2mepolish.org for details.
  */
 
+//#if !tmp.isContextIncluded
 package de.enough.polish.processing;
+//#endif
+
+//#if !tmp.isContextIncluded || tmp.isContextIncludedForImports
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -49,12 +53,17 @@ import de.enough.polish.util.DrawUtil;
 import de.enough.polish.util.MathUtil;
 import de.enough.polish.util.RgbImage;
 
+//#endif
+
 /**
  * This is the standard Mobile Processing implementation for J2ME Polish.
  *
  * @author Ovidiu Iliescu
  */
+//#if !tmp.isContextIncluded
 public class ProcessingContext implements ProcessingInterface {
+//#endif
+//#if !tmp.isContextIncluded || tmp.isContextIncludedForCode
 
     // Inner-working methods. Not related to the Mobile Processing specs
     // -----------------------------------------------------------------
@@ -4256,4 +4265,8 @@ public class ProcessingContext implements ProcessingInterface {
 		return randomNumber / COEFF;
 	}
 	//#endif
+
+//#endif
+//#if !tmp.isContextIncluded
 }
+//#endif
