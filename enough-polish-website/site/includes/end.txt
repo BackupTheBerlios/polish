@@ -9,7 +9,6 @@
 				<li class="left">copyright &copy; Enough Software</li>
 				<li><a href="http://www.enough.de/" title="Enough Software">Enough Software</a></li>
 				<li><a href="http://www.j2mepolish.org/" title="J2ME Polish">J2ME Polish</a></li>
-				<li><a href="<%= basedir %>contact.html" title="Inprint">Inprint</a></li>
 			</ul>
 		</div> <!-- end #footer-in -->
 	</div> <!-- end #footer-wrap -->
