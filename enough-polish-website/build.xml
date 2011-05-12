@@ -6,7 +6,8 @@
 <taskdef name="deviceExport" classname="de.enough.polish.ant.HtmlExporterTask" classpath="../enough-polish-build/bin/classes:../enough-polish-build/lib/jdom.jar"/>
 <!-- build targets, each target can be called via "ant [name]", e.g. "ant clean" -->
 
-<property name="Version" value="2.0" />
+<property file="../enough-polish-build/version.properties" />
+<property name="Version" value="2.2" />
 	<!--
 -->
 <property name="JavaDocVersion" value="${Version}" />

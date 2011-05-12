@@ -34,6 +34,7 @@ div#print {
 	display: none;
 	}
 
+
 div#container {
 	margin: 10px;
 	text-align: left;
@@ -52,6 +53,14 @@ div#container {
 			/*
 			*/
 			}
+		div#header-text {
+			font-size: 120%;
+			font-family: Helvetica, Verdana, Arial, sans-serif;
+			font-weight: bold;
+			font-style: italic;
+			color: #666;
+			}
+		
 
 	div#content-wrap {
 		}
@@ -319,7 +328,7 @@ a {
 	margin-bottom: 10px;
 }
 
-#currentLink a {
+.currentLink a {
 	width: 138px;
 	color: #666;
 	/*
@@ -329,7 +338,7 @@ a {
 	font-weight: bold;
 }
 
-#currentLink a:hover {
+.currentLink a:hover {
 	color: #666;
 	/*
 	background-color: #F1F7FF;

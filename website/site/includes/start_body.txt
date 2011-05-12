@@ -6,121 +6,20 @@
 
 
 			<div id="header-in">
-
-
-				<!--
-				<ul id="nav-top">
-
-					<li><a href="" title="">link</a></li>
-
-					<li><a href="" title="">link</a></li>
-
-					<li><a href="" title="">link</a></li>
-
-					<li><a href="" title="">link</a></li>
-
-				</ul>
-				-->
 				
 				
-		<img src="<%= basedir %>images/header.png" alt="J2ME Polish" width="750" height="50"/>
+		<table><tr>
+			<td><a href="http://www.j2mepolish.org"><img src="<%= basedir %>images/ES_schildkroete_black_76x76.png" alt="J2ME Polish" width="76" height="76"/></a></td>
+			<td><div id="header-text">J2ME Polish <%= PolishVersion %> Local Documentation</div></td>
+		</tr></table>
+		
+		
 		<a class="imageLink" href="http://www.enough.de">
-			<img class="headerImage" src="<%= basedir %>images/logo-small.png" alt="Enough Software" width="69" height="40" /> 
+			<img class="headerImage" src="<%= basedir %>images/ES_logo_black_76x76.png" alt="Enough Software" width="76" height="76" /> 
 		</a>
 	
 		</div>  <!-- end header-in -->
-	
-		
-		<!-- main menu -->
-		<div class="menu2">
-
-<ul>
-<li><a class="menu2one" href="<%= basedir %>index.html">Home</a></li>
-</ul>
-<ul>
-
-<li><a class="menu2three" href="#nogo">Company
-<!--[if IE 7]><!--></a><!--<![endif]-->
-	<table><tr><td>
-	<ul class="scroller">
-	<li><a href="http://www.enough.de/company-enough.html">Enough Software</a></li>
-	<!--
-	<li><a href="http://www.enough.de/company-units.html">Business Units</a></li>
-	<li><a href="http://www.enough.de/company-management.html">Management</a></li>
-	-->
-	<li><a href="http://www.enough.de/company-jobs.html">Jobs</a></li>
-	</ul>
-	</td></tr></table>
-<!--[if lte IE 6]></a><![endif]-->
-
-<li><a class="menu2two" href="#nogo">Products
-<!--[if IE 7]><!--></a><!--<![endif]-->
-	<table><tr><td>
-	<ul>
-	<li><a href="http://www.j2mepolish.org">J2ME Polish</a></li>
-	<li><a href="http://www.enough.de/products-ota.html">OTA Delivery Platform</a></li>
-	<li><a href="http://www.enough.de/products-hosting.html">OTA Delivery Hosting</a></li>
-	<li><a class="drop" href="#nogo">Applications&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;>
-	<!--[if IE 7]><!--></a><!--<![endif]-->
-		<table><tr><td>
-		<ul>
-		<li><a href="http://www.enough.de/products-applications.html#mobay">Mobay</a></li>
-		<li><a href="http://www.enough.de/products-applications.html#mdict">Mobile Dictionary</a></li>
-		<li><a href="http://www.enough.de/products-applications.html#smscompressor">SMS Compressor</a></li>
-		<li><a href="http://www.enough.de/products-applications.html#mshop">Mobile Shop</a></li>
-		<li><a href="http://www.enough.de/products-applications.html#mdiet">Mobile Diet</a></li>
-		</ul>
-		</td></tr></table>
-	<!--[if lte IE 6]></a><![endif]-->
-	</li>
-	</ul>
-	</td></tr></table>
-<!--[if lte IE 6]></a><![endif]-->
-</li>
-
-<li><a class="menu2three" href="#nogo">Services
-<!--[if IE 7]><!--></a><!--<![endif]-->
-	<table><tr><td>
-	<ul class="scroller">
-	<li><a href="http://www.enough.de/services-consulting.html">Consulting</a></li>
-	<li><a href="http://www.enough.de/services-development.html">Development</a></li>
-	<li><a href="http://www.enough.de/services-porting.html">Porting</a></li>
-	<li><a href="http://www.enough.de/services-optimization.html">Optimizations</a></li>
-	</ul>
-	</td></tr></table>
-<!--[if lte IE 6]></a><![endif]-->
-
-<li><a class="menu2three" href="#nogo">Support
-<!--[if IE 7]><!--></a><!--<![endif]-->
-	<table><tr><td>
-	<ul class="scroller">
-	<li><a href="http://www.j2mepolish.org/contact.html">Contact</a></li>
-	<li><a href="http://www.j2mepolish.org/discussion.html">Discussion Forums</a></li>
-	<!--
-	<li><a href="http://www.enough.de/blog">Developer Blog</a></li>
-	-->
-	<li><a href="http://www.enough.de/support-options.html">Support Options</a></li>
-	<li><a href="<%= basedir %>atoz.html">Site Map</a></li>
-	</ul>
-	</td></tr></table>
-<!--[if lte IE 6]></a><![endif]-->
-
-</li>
-<li><a class="menu2four" href="http://www.enough.de/shop.html">Shop</a></li>
-<li><a class="menu2four" href="http://www.enough.de/partners.html">Partners</a></li>
-<li><a class="menu2six" href="http://www.enough.de/news.html">News
-
-<!--[if IE 7]><!--></a><!--<![endif]-->
-
-	<!--[if IE 7]><!--></a><!--<![endif]-->
-
-	<!--[if lte IE 6]></a><![endif]-->
-<!--[if lte IE 6]></a><![endif]-->
-</li>
-</ul>
-
-</div> <!-- end menu2 -->
-		
+			
 	
 	
 </div>  <!-- end header-wrapper -->
@@ -138,8 +37,8 @@
 		
 		<%ifndef inEnoughSoftware %>
 		
-		<%ifdef inIntroductionSection %>
-			<div id="currentLink"><a href="<%= basedir %>docs/introduction.html">Introduction</a></div>
+		
+			<div class="currentLink"><a href="<%= basedir %>docs/introduction.html">Introduction</a></div>
 			<%ifdef inIntroductionSection.lush %>
 				<div id="currentSecondLevelLink"><a href="<%= basedir %>lush/index.html">Lush</a></div>
 			<%else %>
@@ -194,21 +93,11 @@
 			
 			-->
 	
-		<%else %>
-			<a href="<%= basedir %>docs/introduction.html">Introduction</a>
-		<%endif %>
 		
-		<%ifndef excludeDownload %>
-			<%ifdef inDownloadSection %>
-				<div id="currentLink"><a href="<%= basedir %>download.html">Download</a></div>
-			<%else %>
-				<a href="<%= basedir %>download.html">Download</a>
-			<%endif %>
-					
-		<%endif %>
 		
-		<%ifdef inDocumentationSection %>
-			<div id="currentLink"><a href="<%= basedir %>documentation.html">Documentation</a></div>
+		
+		
+			<div class="currentLink"><a href="<%= basedir %>documentation.html">Documentation</a></div>
 			<%ifdef inDocumentationSection.install %>
 				<%ifdef inDocumentationSection.installcore %>
 					<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/install.html">Installation</a></div>
@@ -421,94 +310,8 @@
 			<%endif %>
 			-->
 			
-		<%else %>
-			<a href="<%= basedir %>documentation.html">Documentation</a>
-		<%endif %>
-		<%ifdef inFaqSection %>
-			<div id="currentLink"><a href="<%= basedir %>faq.html">FAQ</a></div>
-		<%else %>
-			<a href="<%= basedir %>faq.html">FAQ</a>
-		<%endif %>
-		<%ifdef inScreenshotsSection %>
-			<div id="currentLink"><a href="<%= basedir %>docs/gui-visualguide.html">Screenshots</a></div>
-		<%else %>
-			<a href="<%= basedir %>docs/gui-visualguide.html">Screenshots</a>
-		<%endif %>
-		<%ifdef inLicensingSection %>
-			<div id="currentLink"><a href="<%= basedir %>licenses.html">Licensing</a></div>
-			<%ifdef inLicensingSection.order %>
-				<div id="currentSecondLevelLink"><a href="<%= basedir %>licenses.html#order">Order</a></div>
-			<%else %>
-				<div class="secondLevelLink"><a href="<%= basedir %>licenses.html#order">Order</a></div>
-			<%endif %>
-			
-		<%else %>
-			<a href="<%= basedir %>licenses.html">Licensing</a>
-		<%endif %>
-		<%ifdef inRoadmapSection %>
-			<div id="currentLink"><a href="<%= basedir %>roadmap.html">Roadmap</a></div>
-		<%else %>
-			<a href="<%= basedir %>roadmap.html">Roadmap</a>
-		<%endif %>
-		<%ifdef inDevicesSection %>
-			<div id="currentLink"><a href="<%= basedir %>devices-overview.html">Devices</a></div>
-			<%ifdef inDevicesSection.vendor %>
-				<div id="currentSecondLevelLink"><a href="<%= basedir %>devices/devices-vendor.html">by Vendor</a></div>
-			<%else %>
-				<div class="secondLevelLink"><a href="<%= basedir %>devices/devices-vendor.html">by Vendor</a></div>
-			<%endif %>
-			<%ifdef inDevicesSection.api %>
-				<div id="currentSecondLevelLink"><a href="<%= basedir %>devices/apis.html">by API</a></div>
-			<%else %>
-				<div class="secondLevelLink"><a href="<%= basedir %>devices/apis.html">by API</a></div>
-			<%endif %>
-			<%ifdef inDevicesSection.platform %>
-				<div id="currentSecondLevelLink"><a href="<%= basedir %>devices/platform.html">by Platform</a></div>
-				<div id="thirdLevel">
-				<p class="thirdLevel">
-				<a href="<%= basedir %>devices/platform_MIDP_1.0.html">MIDP/1.0</a>
-				<a href="<%= basedir %>devices/platform_MIDP_2.0.html">MIDP/2.0</a>
-				<a href="<%= basedir %>devices/configuration_CLDC_1.0.html">CLDC/1.0</a>
-				<a href="<%= basedir %>devices/configuration_CLDC_1.1.html">CLDC/1.1</a>
-				</p>
-				</div>
-			<%else %>
-				<div class="secondLevelLink"><a href="<%= basedir %>devices/platform.html">by Platform</a></div>
-			<%endif %>
-			<%ifdef inDevicesSection.issues %>
-				<div id="currentSecondLevelLink"><a href="<%= basedir %>devices/issues.html">Known Issues</a></div>
-			<%else %>
-				<div class="secondLevelLink"><a href="<%= basedir %>devices/issues.html">Known Issues</a></div>
-			<%endif %>
-			
-		<%else %>
-			<a href="<%= basedir %>devices-overview.html">Devices</a>
-		<%endif %>
-		<%ifdef inDiscussionSection %>
-			<div id="currentLink"><a href="<%= basedir %>discussion.html">Discussion</a></div>
-			<%ifdef inDiscussionSection.forum %>
-				<div id="currentSecondLevelLink"><a href="<%= basedir %>forums.html">Forums</a></div>
-				<div id="thirdLevel">
-				<p class="thirdLevel">
-					<a href="http://developer.berlios.de/forum/forum.php?forum_id=3780" target="_blank">BerliOS Forum (English)</a>
-					<a href="http://www.j2meforum.com/viewforum.php?f=35" target="_blank">J2MeForum.com (deutsch)</a>
-				</p>
-				</div>
-			<%else %>
-				<div class="secondLevelLink"><a href="forums.html">Forums</a></div>
-			<%endif %>			
-			<div class="secondLevelLink"><a href="http://developer.berlios.de/mail/?group_id=1246" target="_blank">Mailing Lists</a></div>
-			<div class="secondLevelLink"><a href="http://developer.berlios.de/feature/?group_id=1246" target="_blank">Feature Request</a></div>
-			<div class="secondLevelLink"><a href="http://openfacts.berlios.de/index-en.phtml?title=J2ME%20Polish" target="_blank">Wiki</a></div>
-		<%else %>
-			<a href="<%= basedir %>discussion.html">Discussion</a>
-		<%endif %>
 		
-		<%ifdef inContributorSection %>
-			<div id="currentLink"><a href="<%= basedir %>contributors.html">Contributors</a></div>
-		<%else %>
-			<a href="<%= basedir %>contributors.html">Contributors</a>
-		<%endif %>
+
 		
 		<%endif %><!-- ifndef inEnoughSoftware -->
 		
@@ -540,7 +343,7 @@
 	</a>
 	<br />
 		-->
-	<a class="imageLink" href="<%= basedir %>book/book.html">
+	<a class="imageLink" href="http://www.apress.com/9781590595039">
 		<img src="<%= basedir %>images/proj2mepolish.gif" width="125" height="164" alt="Pro J2ME Polish book" />
 	</a>
 		</div> <!-- end #navigation-in -->
