@@ -19,13 +19,13 @@ import de.enough.polish.io.Serializer;
  * @author Andre Schmidt
  * 
  */
-public class RMSContentStorage extends ContentSource {
+public class RmsContentStorage extends ContentSource {
 	
 	static final String STORAGE = "RMSContentStorage";
 	
 	RecordStore store;
 
-	public RMSContentStorage(String id, StorageIndex index) {
+	public RmsContentStorage(String id, StorageIndex index) {
 		super(id, index);
 		
 		// open the record store

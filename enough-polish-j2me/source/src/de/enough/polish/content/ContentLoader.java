@@ -35,12 +35,13 @@ public class ContentLoader extends ContentSource implements Runnable {
 		public ContentQueue() {
 			this.root = new QueueElement();
 			this.root.content = null;
-			this.root.prev = root;
-			this.root.next = root;
+			this.root.prev = this.root;
+			this.root.next = this.root;
 		}
 
 		/**
 		 * Checks if the queue is empty.
+		 * @return true when the loader queue is empty
 		 */
 		public synchronized boolean isEmpty() {
 			return (this.root.content == null);
@@ -48,6 +49,7 @@ public class ContentLoader extends ContentSource implements Runnable {
 
 		/**
 		 * Adds an object to the queue.
+		 * @param o the object to be added
 		 */
 		public synchronized void push(Object o) {
 			if (this.root.content == null) {
@@ -64,6 +66,7 @@ public class ContentLoader extends ContentSource implements Runnable {
 
 		/**
 		 * Takes the next object from the queue.
+		 * @return the next object
 		 */
 		public synchronized Object pop() {
 			if (this.root.content == null) {
@@ -72,7 +75,7 @@ public class ContentLoader extends ContentSource implements Runnable {
 
 			Object o = this.root.content;
 			remove(this.root);
-			root = this.root.next;
+			this.root = this.root.next;
 			return o;
 		}
 
@@ -95,13 +98,15 @@ public class ContentLoader extends ContentSource implements Runnable {
 
 		/**
 		 * Removes a given object from the queue.
+		 * @param o the object
+		 * @throws InterruptedException 
 		 */
 		public synchronized void cancel(Object o) throws InterruptedException {
 			if (this.root.content != null) {
 				if (this.root.content.equals(o)) {
 					pop();
 				} else {
-					for (QueueElement e = root.next; (e != root); e = e.next) {
+					for (QueueElement e = this.root.next; (e != this.root); e = e.next) {
 						if (e.content.equals(o)) {
 							remove(e);
 							break;
@@ -112,8 +117,9 @@ public class ContentLoader extends ContentSource implements Runnable {
 		}
 
 		/**
-		 * Returns the object that was added most recently. Doesn't wait if the
-		 * queue is empty.
+		 * Returns the object that was added most recently. 
+		 * Doesn't wait if the queue is empty.
+		 * @return the Object that was added most recently
 		 */
 		protected Object latest() {
 			return (this.root.content == null) ? null : this.root.prev.content;
@@ -143,6 +149,9 @@ public class ContentLoader extends ContentSource implements Runnable {
 	 */
 	public final static String ID = "ContentLoader";
 	
+	/**
+	 * default size of the cache (100,000)
+	 */
 	public final static int LOADER_CACHE_SIZE = 100000;
 
 	/**
@@ -258,7 +267,9 @@ public class ContentLoader extends ContentSource implements Runnable {
 				this.queue.cancel(descriptor);
 				this.listeners.remove(descriptor.getHash());
 			}
-		} catch (InterruptedException e) {}
+		} catch (InterruptedException e) {
+			// ignore
+		}
 	}
 
 	/*

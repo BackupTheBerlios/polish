@@ -50,7 +50,7 @@ import javax.microedition.media.control.RecordControl;
 import javax.microedition.media.control.VideoControl;
 
 import de.enough.polish.camera.CameraScreenEvent;
-import de.enough.polish.camera.CameraScreenListner;
+import de.enough.polish.camera.CameraScreenListener;
 import de.enough.polish.camera.CameraUtil;
 import de.enough.polish.camera.CameraResolution;
 import de.enough.polish.util.ArrayList;
@@ -1727,17 +1727,17 @@ public class CameraScreen extends SnapshotScreen implements Runnable,
 		}
 	}
 
-	public void addEventListner(CameraScreenListner observer) {
+	public void addEventListner(CameraScreenListener observer) {
 		this.observers.add(observer);
 	}
 
-	public void removeEventListner(CameraScreenListner observer) {
+	public void removeEventListner(CameraScreenListener observer) {
 		this.observers.remove(observer);
 	}
 
 	private void notifyObservers(final CameraScreenEvent event) {
 		for (int i = 0; i < observers.size(); i++) {
-			final CameraScreenListner observer = (CameraScreenListner) observers
+			final CameraScreenListener observer = (CameraScreenListener) observers
 					.get(i);
 
 			if (observer != null) {

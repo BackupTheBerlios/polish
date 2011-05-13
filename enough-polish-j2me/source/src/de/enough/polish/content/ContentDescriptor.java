@@ -5,7 +5,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 import de.enough.polish.io.Externalizable;
-import de.enough.polish.io.Serializable;
 import de.enough.polish.util.ToStringHelper;
 
 /**
@@ -65,7 +64,9 @@ public class ContentDescriptor implements Externalizable {
 	 * Default descriptor for instantiation for serialization
 	 * DO NOT USE !
 	 */
-	public ContentDescriptor() {}
+	public ContentDescriptor() {
+		// do nothing
+	}
 	
 	/**
 	 * Creates a new ContentDescriptor instance
@@ -153,7 +154,7 @@ public class ContentDescriptor implements Externalizable {
 	 * @return the caching policy
 	 */
 	public int getCachingPolicy() {
-		return cachingPolicy;
+		return this.cachingPolicy;
 	}
 
 	/**

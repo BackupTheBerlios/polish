@@ -19,14 +19,14 @@ import de.enough.polish.io.RmsStorage;
 import de.enough.polish.io.Serializer;
 import de.enough.polish.util.ArrayList;
 
-public class RMSStorageIndex extends StorageIndex {
+public class RmsStorageIndex extends StorageIndex {
 	static final String STORAGE = "RMSStorageIndex";
 	static final int RECORD_UNKNOWN = Integer.MIN_VALUE;
 
 	RecordStore store;
 	int recordId = RECORD_UNKNOWN;
 
-	public RMSStorageIndex(int maxCacheSize) {
+	public RmsStorageIndex(int maxCacheSize) {
 		super(maxCacheSize);
 
 		try {

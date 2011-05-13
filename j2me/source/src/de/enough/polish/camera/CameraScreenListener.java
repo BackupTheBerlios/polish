@@ -2,6 +2,6 @@ package de.enough.polish.camera;
 
 
 
-public interface CameraScreenListner {
+public interface CameraScreenListener {
 	public void cameraDoSomething(CameraScreenEvent event);
 }
