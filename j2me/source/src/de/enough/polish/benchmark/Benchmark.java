@@ -35,12 +35,10 @@ public class Benchmark {
     private static long checkInterval = 5000;
 
     static {
-        //#mdebug benchmark
         totalExecutionTimes = new HashMap();
         tempExecutionTimes = new HashMap();
         timerDescriptions = new HashMap();
         benchmarks = new HashMap();
-        //#enddebug
     }
 
     /**
@@ -50,7 +48,6 @@ public class Benchmark {
      *            the key
      */
     public static void start(String key) {
-        //#mdebug benchmark
         Benchmark benchmark = (Benchmark) benchmarks.get(key);
 
         if (benchmark == null) {
@@ -60,14 +57,18 @@ public class Benchmark {
         benchmark.setTime(System.currentTimeMillis());
 
         benchmarks.put(key, benchmark);
-
+        //#debug benchmark
         System.out.println(key + " : started");
-        //#enddebug
     }
 
+    /**
+     * Stops the benchmark with the given key
+     * @param key the key 
+     * @param name the name
+     * @return the used time in that benchmark
+     */
     public static long stop(String key, String name) {
     	long time = 0;
-        //#mdebug benchmark
         Benchmark benchmark = (Benchmark) benchmarks.get(key);
 
         if (benchmark == null) {
@@ -76,10 +77,9 @@ public class Benchmark {
 
         time = System.currentTimeMillis() - benchmark.getTime();
         String formattedTime = getFormattedTime(time);
-
+        //#debug benchmark
         System.out.println(key + " : " + name + ": " + formattedTime + " seconds");
         
-        //#enddebug
         return time;
     }
 
@@ -125,8 +125,6 @@ public class Benchmark {
      * Reset all smart timers
      */
     private static void resetSmartTimers() {
-        //#mdebug benchmark
-
         Iterator temp = totalExecutionTimes.keysIterator();
         Object key;
         while (temp.hasNext()) {
@@ -135,16 +133,12 @@ public class Benchmark {
             tempExecutionTimes.put(key, new Long(0));
         }
         lastTime = System.currentTimeMillis();
-
-        //#enddebug
     }
 
     /**
      * Output smart timer information to console
      */
     private static void outputSmartTimers() {
-        //#mdebug benchmark
-
         Iterator temp = totalExecutionTimes.keysIterator();
         Object key;
         String tempStr;
@@ -158,12 +152,11 @@ public class Benchmark {
                 }
 
                 if (outputResults) {
+                	//#debug benchmark
                     System.out.println("Timer " + tempStr + " has value " + ((Long) totalExecutionTimes.get(key)).toString());
                 }
             }
         }
-
-        //#enddebug
     }
 
     /**
@@ -172,11 +165,7 @@ public class Benchmark {
      * @param description
      */
     public static void setSmartTimerDescription(Object timerName, String description) {
-        //#mdebug benchmark
-
         timerDescriptions.put(timerName, description);
-
-        //#enddebug
     }
 
     /**
@@ -184,11 +173,7 @@ public class Benchmark {
      * @param name
      */
     public static void startSmartTimer(Object name) {
-        //#mdebug benchmark
-
         tempExecutionTimes.put(name, new Long(System.currentTimeMillis()));
-
-        //#enddebug
     }
 
     /**
@@ -196,16 +181,12 @@ public class Benchmark {
      * @param name
      */
     public static void incrementSmartTimer(Object name) {
-        //#mdebug benchmark
-
         Long val = (Long) totalExecutionTimes.get(name);
         if (val == null) {
             totalExecutionTimes.put(name, new Long(0));
         } else {
             totalExecutionTimes.put(name, new Long(val.longValue() + 1));
         }
-
-        //#enddebug
     }
 
     /**
@@ -213,8 +194,6 @@ public class Benchmark {
      * @param name
      */
     public static void pauseSmartTimer(Object name) {
-        //#mdebug benchmark
-
         // If timer is paused without being started first, we must ignore the rest of the method
         Long val = (Long) tempExecutionTimes.get(name);
         if (val == null) {
@@ -231,30 +210,20 @@ public class Benchmark {
         }
         totalExecutionTimes.put(name, new Long(timeSpentSoFar + System.currentTimeMillis() - val.longValue()));
         tempExecutionTimes.put(name, new Long(0));
-
-        //#enddebug
     }
 
     /**
      * Check if enough time has elapsed since this method was last called. If enough time has passed, output the smart timer values.
      */
     public static void check() {
-        //#mdebug benchmark
-
         check(checkInterval);
-
-        //#enddebug
     }
 
-    /*
+    /**
      * Sets the default "time elapsed interval" for the check() method.
      */
     public static void setSmartTimerCheckInterval(long value) {
-        //#mdebug benchmark
-
         checkInterval = value;
-
-        //#enddebug
     }
 
     /**
@@ -262,8 +231,6 @@ public class Benchmark {
      * @param desiredElapsedTime
      */
     public static void check(long desiredElapsedTime) {
-        //#mdebug benchmark
-
         long currentTime = System.currentTimeMillis();
         if (currentTime - desiredElapsedTime > lastTime) {
             if (outputResults) {
@@ -273,29 +240,19 @@ public class Benchmark {
             outputSmartTimers();
             resetSmartTimers();
         }
-
-        //#enddebug
     }
 
-    /*
+    /**
      * Prevents smart timers from outputing their values
      */
     public static void haltOutput() {
-        //#mdebug benchmark
-
         outputResults = false;
-
-        //#enddebug
     }
 
-    /*
+    /**
      * Resumes output for smart timers
      */
     public static void resumeOutput() {
-        //#mdebug benchmark
-
         outputResults = true;
-
-        //#enddebug
     }
 }
