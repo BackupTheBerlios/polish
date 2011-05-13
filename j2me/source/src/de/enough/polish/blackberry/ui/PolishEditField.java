@@ -144,6 +144,9 @@ implements PolishTextField {
 	public void updateInputStyle() {
 		// TODO Besitzer implement updateInputStyle
 		
+		//#if polish.JavaPlatform <= BlackBerry/4.3
+		//#= super.updateInputStyle();
+		//#endif
 	}
 
 	public void setFont(Font font, int textColor) {
