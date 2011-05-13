@@ -34,13 +34,9 @@ import net.rim.device.api.ui.XYRect;
 import net.rim.device.api.ui.text.TextFilter;
 
 /**
- * <p>Provides common funcitonality of the PolishEditField and the PolishPasswordEditField.</p>
+ * <p>Provides common functionality of the PolishEditField, PolishPasswordEditField, etc.</p>
  *
- * <p>Copyright Enough Software 2007 - 2010</p>
- * <pre>
- * history
- *        Mar 13, 2007 - rob creation
- * </pre>
+ * <p>Copyright Enough Software 2007 - 2011</p>
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public interface PolishTextField {

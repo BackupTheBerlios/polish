@@ -32,7 +32,13 @@ import net.rim.device.api.ui.container.VerticalFieldManager;
 import net.rim.device.api.ui.text.TextFilter;
 import de.enough.polish.ui.Style;
 
-
+/**
+ * 
+ * <p>An EditField that uses a single line (without text wrapping)</p>
+ *
+ * <p>Copyright Enough Software 2011</p>
+ * @author Ovidiu Iliescu
+ */
 public class PolishOneLineField extends VerticalFieldManager implements PolishTextField, AccessibleField {
         
     private PolishEditField editField;
@@ -41,31 +47,13 @@ public class PolishOneLineField extends VerticalFieldManager implements PolishTe
     int oldX = 0;
     int oldY = 0;
     
-    public PolishEditField getEditField()
-    {
-    	return this.editField;
-    }   
-         
-    public void moveTo(int x, int y)
-    {
-        setPosition(x,y);
-    }
-    
-    public void sublayout(int width, int height) 
-    {        
-        super.sublayout(width,height);   
-        if ( this.editField != null )
-        {     
-            int textLength = this.editField.getFont().getAdvance( this.editField.getText() ) ;
-            // Leave some room to see the cursor at the end and to prevent scroll bugs
-            setVirtualExtent(textLength + width / 2 ,height);         }
-    }
-    
-    public void relayout()
-    {
-        updateLayout();
-    }
-
+    /**
+     * Creates a new edit field that uses a single line (without text wrapping)
+     * @param label the label
+     * @param text the current text
+     * @param numChars the number of allowed characters
+     * @param style the style
+     */
     public PolishOneLineField(String label, String text, int numChars, long style) {
 	    super(HORIZONTAL_SCROLL | NO_VERTICAL_SCROLL);
 	    //#if polish.JavaPlatform >= BlackBerry/6.0
@@ -137,21 +125,78 @@ public class PolishOneLineField extends VerticalFieldManager implements PolishTe
 	    add(this.editField);
     }
 
+    /**
+     * Retrieves the internally used edit field
+     * @return
+     */
+    public PolishEditField getEditField()
+    {
+    	return this.editField;
+    }
+    
+    /**
+     * Sets the position of the field
+     * @param x horizontal position
+     * @param y vertical position
+     */
+    public void moveTo(int x, int y)
+    {
+        setPosition(x,y);
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see net.rim.device.api.ui.container.VerticalFieldManager#sublayout(int, int)
+     */
+    public void sublayout(int width, int height) 
+    {        
+        super.sublayout(width,height);   
+        if ( this.editField != null )
+        {     
+            int textLength = this.editField.getFont().getAdvance( this.editField.getText() ) ;
+            // Leave some room to see the cursor at the end and to prevent scroll bugs
+            setVirtualExtent(textLength + width / 2 ,height);         }
+    }
+    
+    /**
+     * Updates the layout (just calls updateLayout())
+     */
+    public void relayout()
+    {
+        updateLayout();
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see de.enough.polish.blackberry.ui.PolishTextField#getText()
+     */
 	public String getText() 
 	{
 		return this.editField.getText();
 	}
-	        
+	     
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.blackberry.ui.PolishTextField#setText(java.lang.String)
+	 */
 	public void setText(String text) 
 	{
 	    this.editField.setText(text);
 	}
-
+	
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.blackberry.ui.PolishTextField#setStyle(de.enough.polish.ui.Style)
+	 */
     public void setStyle(Style style) 
     {
            this.editField.setStyle(style);            
     }
     
+    /*
+     * (non-Javadoc)
+     * @see de.enough.polish.blackberry.ui.PolishTextField#setPaintPosition(int, int)
+     */
     public void setPaintPosition(int x, int y ) 
     {
             super.setPosition(x, y);
@@ -164,18 +209,30 @@ public class PolishOneLineField extends VerticalFieldManager implements PolishTe
             }
             //#endif
     }               
-            
+    
+    /*
+     * (non-Javadoc)
+     * @see net.rim.device.api.ui.Field#focusRemove()
+     */
     public void focusRemove()
     {
     	// Do nothing
     }
-            
+    
+    /*
+     * (non-Javadoc)
+     * @see net.rim.device.api.ui.Field#focusAdd(boolean)
+     */
     public void focusAdd(boolean draw)
     {    	
     	// Do nothing
     }
     
     //#if polish.JavaPlatform >= BlackBerry/6.0
+    /*
+     * (non-Javadoc)
+     * @see net.rim.device.api.ui.ScrollView#setCurrentLocation(int, int)
+     */
     public void setCurrentLocation(int x, int y)
     {
         if ( this.ignoreLocalSetCurrentLocation )
@@ -187,9 +244,12 @@ public class PolishOneLineField extends VerticalFieldManager implements PolishTe
         super.setCurrentLocation(x,y);
               
     }
-   //#endif
+    //#endif
 
-    
+    /*
+     * (non-Javadoc)
+     * @see net.rim.device.api.ui.Manager#onUnfocus()
+     */
     protected void onUnfocus()
     {                  
     	this.ignoreLocalSetCurrentLocation = true;               
@@ -202,6 +262,10 @@ public class PolishOneLineField extends VerticalFieldManager implements PolishTe
         super.onUnfocus(); 
     }
     
+    /*
+     * (non-Javadoc)
+     * @see net.rim.device.api.ui.Manager#navigationMovement(int, int, int, int)
+     */
     public boolean navigationMovement(int dx, int dy, int status, int time) {
         int curPos = getCursorPosition() + dx;
         setCursorPosition(curPos);   
@@ -215,42 +279,63 @@ public class PolishOneLineField extends VerticalFieldManager implements PolishTe
         }
     }
 
+    /*
+     * (non-Javadoc)
+     * @see de.enough.polish.blackberry.ui.PolishTextField#setCursorPosition(int)
+     */
     public void setCursorPosition(int pos) {
             this.editField.setCursorPosition(pos);
     }
 
+    /*
+     * (non-Javadoc)
+     * @see de.enough.polish.blackberry.ui.PolishTextField#getInsertPositionOffset()
+     */
     public int getInsertPositionOffset() {
             return this.editField.getCursorPosition();
     }
     
+    /*
+     * (non-Javadoc)
+     * @see net.rim.device.api.ui.Field#setChangeListener(net.rim.device.api.ui.FieldChangeListener)
+     */
     public void setChangeListener( FieldChangeListener listener )
     {
         super.setChangeListener(listener);
         this.editField.setChangeListener(listener);
     }
 
-
+    /*
+     * (non-Javadoc)
+     * @see de.enough.polish.blackberry.ui.PolishTextField#getCursorPosition()
+     */
     public int getCursorPosition() {
             return this.editField.getCursorPosition();
     }
     
+    /*
+     * (non-Javadoc)
+     * @see de.enough.polish.blackberry.ui.PolishTextField#doLayout(int, int)
+     */
     public void doLayout( int width, int height) 
     {
             layout(width, height);            
     }        
 
     //#if polish.JavaPlatform >= BlackBerry/6.0
+    /*
+     * (non-Javadoc)
+     * @see de.enough.polish.blackberry.ui.PolishTextField#needsNavigationFix()
+     */
     public boolean needsNavigationFix() {
             return this.editField.needsNavigationFix() ;               
     }
     //#endif
     
-    
-    public void updateInputStyle() {
-		// TODO Besitzer implement updateInputStyle
-		System.out.println("Update input Style!!!!!!!!!!!");
-	}
-
+    /*
+     * (non-Javadoc)
+     * @see de.enough.polish.blackberry.ui.PolishTextField#setFilter(net.rim.device.api.ui.text.TextFilter)
+     */
 	public void setFilter(TextFilter filter) {
 		this.editField.setFilter(filter);		
 	}
