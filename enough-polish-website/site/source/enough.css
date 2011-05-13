@@ -145,7 +145,7 @@ ul#nav-left {
 		ul#nav-left li a:hover {
 			color: #666;
 			background-color: #F1F7FF;
-			border-bottom: 1px solid #E3EFFF;
+			border-bottom: 1px solid #e3e3e3;
 			}
 
 ul#nav-top {
@@ -170,7 +170,7 @@ ul#nav-top {
 		ul#nav-top li a:hover {
 			color: #4494FF;
 			background-color: inherit;
-			border-bottom: 1px solid #F1F7FF;
+			border-bottom: 1px solid #666;
 			}
 
 ul#nav-footer {
@@ -307,7 +307,7 @@ a {
 		color: #666;
 		background-color: inherit;
 		text-decoration: none;
-		border-bottom: 1px solid  #c00;
+		border-bottom: 1px solid  #666;
 	}
 
 #navigation a:hover {
@@ -320,7 +320,7 @@ a {
 }
 
 #navigation-in>.imageLink { /* Pro J2ME Polish book link */
-	border-bottom: 0px solid  #c00;	
+	border-bottom: 0px solid  #666;	
 	}
 
 #navigation form { /** google search box **/
