@@ -679,10 +679,7 @@ public class PolishTask extends ConditionalTask {
 		//System.out.println("wtk.home=" + this.wtkHome + ", mpp.home=" + mppHome ) ;
 
 		if (this.buildSetting.getPreverify() == null) {
-			// no preverify has been set, that's okay when the wtk.home ant-property has been set:
-			if (this.wtkHome == null && mppHome == null) { 
-				System.err.println("Warning: Nested element [build] should define the attribute [preverify] which points to the preverify-executable of the wireless toolkit. Alternatively you can set the home directory of the Wireless Toolkit by defining the Ant-property [wtk.home]: <property name=\"wtk.home\" location=\"C:\\WTK2.3\"/>\nAnother option is to set the \"mpp.home\" property that points to the installation directory of the MPowerPlayer SDK.\nThese settings are only necessary when you target MIDP devices, though.");
-			}
+			// no preverify has been set, that's okay, we can always use ProGuard for preverification
 			if (this.wtkHome != null) {
 				File wtkHomeFile = new File( this.wtkHome );
 				if ( !wtkHomeFile.exists() ) {
@@ -2726,6 +2723,9 @@ public class PolishTask extends ConditionalTask {
 	protected Obfuscator[] getObfuscators()
 	{
 		String obfuscatorOverride = this.environment.getVariable("polish.build.obfuscator");
+		if ("none".equals(obfuscatorOverride)) {
+			return new Obfuscator[0];
+		}
 		if (obfuscatorOverride != null && (!"true".equals(this.environment.getVariable("test")) || this.obfuscators != null)) { 
 			// the 'test' check is a quick and dirty hack but this allows us to use an obfuscator in normal
 			// builds even though no obfuscator has been specified by the developer (which is the typical case for BlackBerry devices, for example)
