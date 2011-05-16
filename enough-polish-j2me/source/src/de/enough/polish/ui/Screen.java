@@ -3367,6 +3367,8 @@ implements UiElement, Animatable
 	public boolean _keyPressed(int keyCode) {
 		//#if polish.Screen.callSuperEvents
 			super._keyPressed(keyCode);
+		//#else
+			keyPressed(keyCode); // for backwards compatibility
 		//#endif
 		boolean processed = false;
 		this.lastInteractionTime = System.currentTimeMillis();
@@ -3563,6 +3565,11 @@ implements UiElement, Animatable
 	 * @return true when the event was handled/consumed
 	 */
 	public boolean _keyRepeated(int keyCode) {
+		//#if polish.Screen.callSuperEvents
+			super._keyRepeated(keyCode);
+		//#else
+			keyRepeated(keyCode); // for backwards compatibility
+		//#endif
 		//#if polish.Bugs.noSoftKeyReleasedEvents
 			if (keyCode == this.triggerReleasedKeyCode && this.triggerReleasedTime == 0) {
 				return false;
@@ -3613,6 +3620,11 @@ implements UiElement, Animatable
 	 * @return true when the event was handled/consumed
 	 */
 	public boolean _keyReleased(int keyCode) {
+		//#if polish.Screen.callSuperEvents
+			super._keyReleased(keyCode);
+		//#else
+			keyReleased(keyCode); // for backwards compatibility
+		//#endif
 		boolean processed = false;
 		try {
 			synchronized (this.paintLock) {
@@ -4748,6 +4760,8 @@ implements UiElement, Animatable
 	public boolean _pointerPressed(int x, int y) {
 		//#if polish.Screen.callSuperEvents
 			super.pointerPressed(x, y);
+		//#else
+			pointerPressed(x, y); // for backwards compatibility
 		//#endif
 		//#debug
 		System.out.println("pointerPressed at " + x + ", " + y );
@@ -4877,6 +4891,11 @@ implements UiElement, Animatable
 	 */
 	public boolean _pointerDragged(int x, int y)
 	{
+		//#if polish.Screen.callSuperEvents
+			super._pointerDragged(x, y);
+		//#else
+			pointerDragged(x, y); // for backwards compatibility
+		//#endif
 		//#debug
 		System.out.println("screen: pointer drag " + x + ", " + y);
 		try {
@@ -4944,6 +4963,8 @@ implements UiElement, Animatable
 	{
 		//#if polish.Screen.callSuperEvents
 			super.pointerReleased(x, y);
+		//#else
+			pointerReleased(x, y); // for backwards compatibility
 		//#endif
 		//#debug
 		System.out.println("pointerReleased at " + x + ", " + y );
