@@ -3341,10 +3341,11 @@ public abstract class Item implements UiElement, Animatable
 				}
 			//#endif
 			//#ifdef polish.css.view-type
-				if (this.view != null) {
-					this.view.init(this, firstLineContentWidth, availableContentWidth, availHeight);
-					this.contentWidth = this.view.contentWidth;
-					this.contentHeight = this.view.contentHeight;
+				ItemView myView = this.view;
+				if (myView != null) {
+					myView.init(this, firstLineContentWidth, availableContentWidth, availHeight);
+					this.contentWidth = myView.contentWidth;
+					this.contentHeight = myView.contentHeight;
 				} else {
 			//#endif
 					initContent( firstLineContentWidth, availableContentWidth, availHeight );
