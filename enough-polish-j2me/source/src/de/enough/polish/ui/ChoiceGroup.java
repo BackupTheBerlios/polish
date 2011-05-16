@@ -1793,11 +1793,17 @@ implements Choice
 	 * @see de.enough.polish.ui.Item#isInItemArea(int, int)
 	 */
 	public boolean isInItemArea(int relX, int relY) {
-		if (this.isPopup && !this.isPopupClosed) {
-			if (relY < 0 || relY > (this.itemHeight + (this.originalContentHeight - this.contentHeight)) 
-					|| relX < 0 || relX > (this.itemWidth + (this.originalContentWidth - this.contentWidth)))
-			{
-				return false;
+		if (this.isPopup) {
+			if(this.isPopupClosed) {
+				if (relY < 0 || relY > this.itemHeight) {
+					return false;
+				}
+			} else {
+				if (relY < 0 || relY > (this.itemHeight + (this.originalContentHeight - this.contentHeight)) 
+						|| relX < 0 || relX > (this.itemWidth + (this.originalContentWidth - this.contentWidth)))
+				{
+					return false;
+				}
 			}
 			return true;
 		} else {
