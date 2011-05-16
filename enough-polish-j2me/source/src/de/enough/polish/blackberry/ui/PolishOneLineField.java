@@ -127,7 +127,7 @@ public class PolishOneLineField extends VerticalFieldManager implements PolishTe
 
     /**
      * Retrieves the internally used edit field
-     * @return
+     * @return the edit field
      */
     public PolishEditField getEditField()
     {
