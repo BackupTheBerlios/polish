@@ -205,6 +205,9 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 		//#define tmp.fullScreen
 	//#endif
 
+	private static final KeyEvent delKeyDownEvent = new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_DEL);
+	private static final KeyEvent delKeyUpEvent = new KeyEvent(KeyEvent.ACTION_UP,KeyEvent.KEYCODE_DEL);
+	
 	private static AndroidDisplay instance;
 
 	// This is just a fallback
@@ -1273,7 +1276,15 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 	public InputConnection onCreateInputConnection(EditorInfo editorInfo) {
 		editorInfo.imeOptions |= EditorInfo.IME_FLAG_NO_EXTRACT_UI | EditorInfo.IME_ACTION_NONE;
         //return new PolishInputConnection(this, false);
-		return new BaseInputConnection(this, false);
+		return new BaseInputConnection(this, false) {
+			public boolean deleteSurroundingText(int leftLength, int rightLength) {
+				// Emulate the del key. This is needed for the Sony Ericsson Xperia X8 device which does not send the raw key event
+				// but calls this method to communicate a deletion. No other device behaves like this.
+				onKeyDown(KeyEvent.KEYCODE_DEL, delKeyDownEvent);
+				onKeyUp(KeyEvent.KEYCODE_DEL, delKeyUpEvent);
+				return super.deleteSurroundingText(leftLength, rightLength);
+			}
+		};
 	}
 
 	@Override
