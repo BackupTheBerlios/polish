@@ -63,6 +63,7 @@ import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Gauge;
 import de.enough.polish.ui.ImageItem;
 import de.enough.polish.ui.Item;
+import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.StyleSheet;
@@ -454,17 +455,24 @@ implements Runnable, ResourceLoader
 		}
 
 		//System.out.println("closing container with size " + current.size() + ", 0=" + current.get(0));
-		if (current.size() == 1) {
-			Item item = current.get(0);
-			if (item != null) {
-				if (current.getStyle() != null) {
-					item.setStyle( current.getStyle() );
+		Object lock = this.itemsList;
+		Screen scr = getScreen();
+		if (scr != null) {
+			lock = scr.getPaintLock();
+		}
+		synchronized (lock) {
+			if (current.size() == 1) {
+				Item item = current.get(0);
+				if (item != null) {
+					if (current.getStyle() != null) {
+						item.setStyle( current.getStyle() );
+					}
+					//previousContainer.remove(current);
+					add( item );
 				}
-				//previousContainer.remove(current);
-				add( item );
+			} else {
+				add(current);
 			}
-		} else {
-			add(current);
 		}
 		return previousContainer;
 	}
