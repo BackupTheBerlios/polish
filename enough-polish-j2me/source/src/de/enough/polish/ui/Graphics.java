@@ -2779,7 +2779,7 @@ public class Graphics {
     }
     //#endif
 
-    //#if polish.hasFloatingPoint
+    //#if polish.hasFloatingPoint && !polish.midp1
     /**
      * Draws a rotated Image at the specified coordinates.
      * @param image the image to draw
