@@ -1402,6 +1402,23 @@ public class Container extends Item {
 			initMargin(style, availWidth);
 		}
 	}
+	
+	/**
+	 * Retrieves the synchronization lock for this container.
+	 * As a lock either the internal ArrayList for items is used or the paint lock of the screen when this container is associated with a screen.
+	 * The lock can be used manipulate a Container that is currently displayed
+	 * @return the synchronization lock
+	 * @see Screen#getPaintLock()
+	 * @see #add(Item)
+	 */
+	public Object getSynchronizationLock() {
+		Object lock = this.itemsList;
+		Screen scr = getScreen();
+		if (scr != null) {
+			lock = scr.getPaintLock();
+		}
+		return lock;
+	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#initItem( int, int )

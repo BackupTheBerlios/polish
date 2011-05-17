@@ -455,11 +455,7 @@ implements Runnable, ResourceLoader
 		}
 
 		//System.out.println("closing container with size " + current.size() + ", 0=" + current.get(0));
-		Object lock = this.itemsList;
-		Screen scr = getScreen();
-		if (scr != null) {
-			lock = scr.getPaintLock();
-		}
+		Object lock = getSynchronizationLock();
 		synchronized (lock) {
 			if (current.size() == 1) {
 				Item item = current.get(0);
