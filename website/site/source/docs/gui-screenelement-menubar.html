@@ -411,7 +411,7 @@ UiAccess.addSubCommand( this.cmdStatusOffline, this.cmdStatus, form );
 }
 </pre>
  
-	<h3 id="commandsorder">Order Commands</h3>
+	<h3 id="commandsorder">Ordering of Commands</h3>
 	<p>
 	The order of commands is specified using the priorities of commands. A command with a higher numerical value will be placed below a command with
 	a lower value.
@@ -429,10 +429,46 @@ UiAccess.setAccessible( myForm, cmdForward, false );
 	Please note that you need to use the extended menubar when you want to deactivate commands that are shown directly (not within the Options menu).
 	</p>
 	
+	<h3 id="commandseparator">Command Separators</h3>
+<p>
+	You can also add separators to the native menu by adding a <code>Command.SEPARATOR</code> command:
+</p>
+<pre>
+import de.enough.polish.ui.Command;
+[...]
+	
+//#style menuSeparator
+Command cmdSeparator = new Command("", Command.SEPARATOR, 5 );
+myScreen.addCommand( cmdSeparator );
+</pre>
+<p>
+	The style <code>.menuSeparator</code> can then include your specific design.
+</p>
+	<h3 id="commandglobal">Global Commands</h3>
+	<p>
+		If you are using the same command with the same logic in different locations of your applications, you can register a <code>CommandListener</code> or a <code>ItemCommandListener</code> 
+		directly on a <code>Command</code> as well:
+	</p>
+<pre>
+import de.enough.polish.ui.Command;
+[...]
+
+final MIDlet midlet = this;
+Command cmdExit = new Command("Exit", Command.EXIT, 10 );
+cmdExit.setCommandListener( new CommandListener() { 
+	public void commandAction( Command cmd, Screen scr) { 
+		midlet.notifyDestroyed(); 
+	}
+} );
+</pre>
+
+
+	
 	<h2 id="JavaDoc">JavaDoc</h2>
 	<p>
 		<a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/UiAccess.html">UiAccess</a>
-		<br /><a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/MenuBar.html">MenuBar</a>
+		<br /><a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/MenuBar.html">Extended MenuBar</a>
+		<br /><a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/Command.html">Command</a>
 	</p>
 
 <%include end.txt %>
