@@ -250,6 +250,14 @@ with one of the following settings:
   name=&quot;polish.FullScreen&quot;
   value=&quot;false&quot; if=&quot;polish.blackberry || polish.android&quot; /&gt;
 </pre>
+<p>
+	You can also add separators to the native menu by adding a <code>Command.SEPARATOR</code> command:
+</p>
+<pre>
+	//#style menuSeparator
+	Command cmdSeparator = new Command("", Command.SEPARATOR, 5 );
+	myScreen.addCommand( cmdSeparator );
+</pre>
 
 <h3 id="blackberry-gui-alerts">BlackBerry Alerts</h3>
 <p>
