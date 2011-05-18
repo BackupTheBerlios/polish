@@ -1668,6 +1668,11 @@ implements Choice
 	protected boolean handlePointerPressed(int relX, int relY) {
 		//#debug
 		System.out.println("ChoiceGroup.handlePointerPressed(" + relX + ", " + relY + ") for " + this );
+		//#ifdef polish.usePopupItem
+			if (this.isPopup && this.isPopupClosed && !isInItemArea(relX, relY)) {
+				return false;
+			}
+		//#endif
 		int index = this.focusedIndex;
 		boolean handled = super.handlePointerPressed(relX, relY); // focuses the appropriate item, might change this.focusedIndex...
 		relY -= this.contentY;
