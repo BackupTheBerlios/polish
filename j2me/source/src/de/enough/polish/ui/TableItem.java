@@ -1776,7 +1776,7 @@ public class TableItem
 		}
 		if (this.selectedRowIndex != -1) {
 			this.internalY = getRelativeRowY(this.selectedRowIndex);
-			this.internalHeight = this.rowHeights[this.selectedRowIndex] - (this.paddingVertical / 1);
+			this.internalHeight = this.rowHeights[this.selectedRowIndex] - this.paddingVertical;
 		} else {
 			this.internalY = 0;
 			this.internalHeight = this.contentHeight;
@@ -1784,8 +1784,8 @@ public class TableItem
 		//System.out.println("col=" + this.selectedColumnIndex + ", row=" + this.selectedRowIndex + ", x=" + this.internalX + ", y=" + this.internalY);
 		Item item = this.focusedItem;
 		if (item != null && item.internalX != NO_POSITION_SET) {
-			int intX = this.xOffset + item.relativeX + item.contentX + item.internalX;
-			int intY = this.yOffset + item.relativeY + item.contentY + item.internalY;
+			int intX = item.relativeX + item.contentX + item.internalX;
+			int intY = item.relativeY + item.contentY + item.internalY;
 			if (	this.internalHeight > this.availableHeight 
 					|| intY + item.internalHeight > this.internalY + this.internalHeight 
 					|| intY < this.internalY
@@ -1797,7 +1797,7 @@ public class TableItem
 				this.internalY = intY;
 				this.internalWidth = item.internalWidth;
 				this.internalHeight = item.internalHeight;				
-				//System.out.println("internal X of cell set, x=" + this.internalX + ", y=" + this.internalY);
+//				System.out.println("internal X of cell set, x=" + this.internalX + ", y=" + this.internalY);
 			}
 		} 
 	}
