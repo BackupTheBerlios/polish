@@ -1908,8 +1908,8 @@ implements Choice
 	 */
 	protected Style focus(Style focusStyle, int direction) {
 		if (this.isPopup && this.isPopupClosed) {
-			if (this.focusedStyle != null) {
-				focusStyle = this.focusedStyle;
+			if (focusStyle == null) {
+				focusStyle = getFocusedStyle();
 			}
 			Style original = this.style;
 			this.popupItem.setStyle( focusStyle );
