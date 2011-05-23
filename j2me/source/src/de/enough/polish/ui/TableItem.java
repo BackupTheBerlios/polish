@@ -629,27 +629,7 @@ public class TableItem
 			this.focusedItemHandledKeyEvent = false;
 		}
 		if (this.appearanceMode != PLAIN) {
-			if (this.selectionMode == SELECTION_MODE_NONE) {
-				if (gameAction == Canvas.RIGHT 
-						&& this.xOffset + this.completeWidth > this.contentWidth) 
-				{
-					int offset = this.targetXOffset -  (this.contentWidth >> 1);
-					if (offset + this.completeWidth < this.contentWidth) {
-						offset = this.contentWidth - this.completeWidth;
-					}
-					this.targetXOffset = offset;
-					return true;
-				} else if (gameAction == Canvas.LEFT 
-						&& this.xOffset < 0)
-				{
-					int offset = this.targetXOffset + (this.contentWidth >> 1);
-					if (offset > 0) {
-						offset = 0;
-					}
-					this.targetXOffset = offset;
-					return true;
-				}
-			} else {
+			if (this.selectionMode != SELECTION_MODE_NONE) {
 				boolean selectInteractive = ((this.selectionMode & SELECTION_MODE_INTERACTIVE) == SELECTION_MODE_INTERACTIVE);
 				boolean selectNotempty = ((this.selectionMode & SELECTION_MODE_NONEMPTY) == SELECTION_MODE_NONEMPTY);
 				boolean selectCell = ((this.selectionMode & SELECTION_MODE_CELL) == SELECTION_MODE_CELL);
@@ -772,6 +752,25 @@ public class TableItem
 					}
 
 				}
+			}
+			if (gameAction == Canvas.RIGHT 
+					&& this.xOffset + this.completeWidth > this.contentWidth) 
+			{
+				int offset = this.targetXOffset -  (this.contentWidth >> 1);
+				if (offset + this.completeWidth < this.contentWidth) {
+					offset = this.contentWidth - this.completeWidth;
+				}
+				this.targetXOffset = offset;
+				return true;
+			} else if (gameAction == Canvas.LEFT 
+					&& this.xOffset < 0)
+			{
+				int offset = this.targetXOffset + (this.contentWidth >> 1);
+				if (offset > 0) {
+					offset = 0;
+				}
+				this.targetXOffset = offset;
+				return true;
 			}
 		}
 		return super.handleKeyPressed(keyCode, gameAction);
@@ -1788,18 +1787,24 @@ public class TableItem
 			int intY = item.relativeY + item.contentY + item.internalY;
 			if (	this.internalHeight > this.availableHeight 
 					|| intY + item.internalHeight > this.internalY + this.internalHeight 
-					|| intY < this.internalY
-					|| this.internalWidth > this.availableWidth
+					|| intY < this.internalY ) 
+			{
+				this.internalY = intY;
+				this.internalHeight = item.internalHeight;				
+//				System.out.println("internal X of cell set, x=" + this.internalX + ", y=" + this.internalY);
+			}
+			if (	this.internalWidth > this.availableWidth
 					|| intX + item.internalWidth > this.internalX + this.internalWidth 
 					|| intX < this.internalX ) 
 			{
 				this.internalX = intX;
-				this.internalY = intY;
 				this.internalWidth = item.internalWidth;
-				this.internalHeight = item.internalHeight;				
-//				System.out.println("internal X of cell set, x=" + this.internalX + ", y=" + this.internalY);
+				//System.out.println("setting internal dimensions to " + intX + ", " + item.internalWidth);
 			}
 		} 
+		if (this.targetXOffset + this.internalX + this.internalWidth > this.availContentWidth) {
+			this.targetXOffset = this.availContentWidth - this.internalX - this.internalWidth;
+		}
 	}
 
 	
