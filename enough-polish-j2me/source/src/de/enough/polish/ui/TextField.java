@@ -1324,7 +1324,7 @@ public class TextField extends StringItem
 	 */
 	private void createTextBox() {
 		String currentText = this.isPassword ? this.passwordText : this.text;
-		this.midpTextBox = new de.enough.polish.midp.ui.TextBox( this.title, currentText, this.maxSize, this.constraints );
+		this.midpTextBox = new de.enough.polish.midp.ui.TextBox( this.title, currentText, this.maxSize, getMidpConstraints() );
 		this.midpTextBox.addCommand(StyleSheet.OK_CMD);
 		if (!this.isUneditable) {
 			this.midpTextBox.addCommand(StyleSheet.CANCEL_CMD);
@@ -1337,6 +1337,19 @@ public class TextField extends StringItem
 		//#endif
 	}
 	//#endif
+
+	/**
+	 * Converts the current constraints into MIDP compatible ones
+	 * @return MIDP compatible constraints
+	 */
+	private int getMidpConstraints() {
+		int cont = this.constraints;
+		if ((cont & FIXED_POINT_DECIMAL) == FIXED_POINT_DECIMAL) {
+			cont = cont & ~FIXED_POINT_DECIMAL | DECIMAL;
+		}
+		return cont;
+	}
+
 	
 	/**
 	 * Gets the contents of the <code>TextField</code> as a string value.
