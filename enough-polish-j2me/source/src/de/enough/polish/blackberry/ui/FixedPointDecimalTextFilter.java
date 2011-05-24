@@ -53,7 +53,7 @@ public class FixedPointDecimalTextFilter extends NumericTextFilter {
 	 * @see net.rim.device.api.ui.text.TextFilter#convert(char, int)
 	 */
 	public char convert(char c, int status) {
-		if (Character.isDigit(c) || c == Locale.DECIMAL_SEPARATOR || c == '.') {
+		if (Character.isDigit(c) || c == Locale.DECIMAL_SEPARATOR  || c == Locale.GROUPING_SEPARATOR || c == '.') {
 			return c;
 		}
 		return super.convert(c, status);
@@ -63,7 +63,7 @@ public class FixedPointDecimalTextFilter extends NumericTextFilter {
 	 * @see net.rim.device.api.ui.text.TextFilter#validate(char)
 	 */
 	public boolean validate(char c) {
-		if (Character.isDigit(c) || c == Locale.DECIMAL_SEPARATOR || c == '.') {
+		if (Character.isDigit(c) || c == Locale.DECIMAL_SEPARATOR || c == Locale.GROUPING_SEPARATOR || c == '.') {
 			return true;
 		}
 		return super.validate(c);

@@ -52,6 +52,7 @@ import de.enough.polish.util.Locale;
 import de.enough.polish.util.Properties;
 
 //#if polish.blackberry
+	import de.enough.polish.blackberry.ui.FixedPointDecimalTextFilter;
 	import de.enough.polish.blackberry.ui.PolishTextField;
 	import de.enough.polish.blackberry.ui.PolishEditField;
 	import de.enough.polish.blackberry.ui.PolishOneLineField;
@@ -532,6 +533,7 @@ public class TextField extends StringItem
 	 * @see #setNumberOfDecimalFractions(int)
 	 * @see #getNumberOfDecimalFractions()
 	 * @see #convertToFixedPointDecimal(String)
+	 * @see #convertToFixedPointDecimal(String, boolean)
 	 */
 	public static final int FIXED_POINT_DECIMAL = 20;
 
@@ -1342,7 +1344,7 @@ public class TextField extends StringItem
 	 * Converts the current constraints into MIDP compatible ones
 	 * @return MIDP compatible constraints
 	 */
-	private int getMidpConstraints() {
+	public int getMidpConstraints() {
 		int cont = this.constraints;
 		if ((cont & FIXED_POINT_DECIMAL) == FIXED_POINT_DECIMAL) {
 			cont = cont & ~FIXED_POINT_DECIMAL | DECIMAL;
@@ -1434,7 +1436,7 @@ public class TextField extends StringItem
 			int fieldType = this.constraints & 0xffff;
 			if (fieldType == FIXED_POINT_DECIMAL) {
 				int lengthBefore = text.length();
-				text = convertToFixedPointDecimal(text);
+				text = convertToFixedPointDecimal(text, true);
 				//#if !polish.blackberry
 				if (text.length() > lengthBefore) {
 					setCaretPosition( getCaretPosition() + text.length() - lengthBefore);
@@ -1542,7 +1544,7 @@ public class TextField extends StringItem
 	}
 
 	/**
-	 * Converts the given entry into cash format.
+	 * Converts the given entry into cash format without grouping separator.
 	 * Subclasses may override this to implement their own behavior.
 	 * @param original the original text, e.g. "1"
 	 * @return the processed text, e.g. "0.01"
@@ -1550,8 +1552,24 @@ public class TextField extends StringItem
 	 * @see UiAccess#CONSTRAINT_FIXED_POINT_DECIMAL
 	 * @see #getNumberOfDecimalFractions()
 	 * @see #setNumberOfDecimalFractions(int)
+	 * @see #convertToFixedPointDecimal(String, boolean)
 	 */
 	protected String convertToFixedPointDecimal(String original) {
+		return convertToFixedPointDecimal(original, false);
+	}
+	
+	/**
+	 * Converts the given entry into cash format.
+	 * Subclasses may override this to implement their own behavior.
+	 * @param original the original text, e.g. "1"
+	 * @param addGroupingSeparator true when a grouping separator should be added like "1,000.00"
+	 * @return the processed text, e.g. "0.01"
+	 * @see #FIXED_POINT_DECIMAL
+	 * @see UiAccess#CONSTRAINT_FIXED_POINT_DECIMAL
+	 * @see #getNumberOfDecimalFractions()
+	 * @see #setNumberOfDecimalFractions(int)
+	 */
+	protected String convertToFixedPointDecimal(String original, boolean addGroupingSeparator) {
 		int fractions = this.numberOfDecimalFractions;
 		StringBuffer buffer = new StringBuffer( original.length() + 3 );
 		int added = 0;
@@ -1580,6 +1598,15 @@ public class TextField extends StringItem
 			added++;
 			if (added == fractions-1) {
 				buffer.insert(0, Locale.DECIMAL_SEPARATOR);
+			}
+		}
+		if (addGroupingSeparator) {
+			int numberBeforeDecimalSeparator = buffer.length() - fractions - 1;
+			if (numberBeforeDecimalSeparator >= 3) {
+				for (int i = 3; i<=numberBeforeDecimalSeparator; i+=3) {
+					int pos = numberBeforeDecimalSeparator - i + 1;
+					buffer.insert(pos, Locale.GROUPING_SEPARATOR);
+				}
 			}
 		}
 		original = buffer.toString();
@@ -2000,7 +2027,8 @@ public class TextField extends StringItem
 			}
 			int max = this.maxSize;
 			if (fieldType == FIXED_POINT_DECIMAL) {
-				max++;
+				int possibleGroupingSeparators = (max - this.numberOfDecimalFractions) / 3;
+				max = max + 1 + possibleGroupingSeparators; // this is for the dot and the grouping separator
 			}
 			this.isPassword = false;
 			if ((constraints & PASSWORD) == PASSWORD) {
@@ -2030,7 +2058,7 @@ public class TextField extends StringItem
             	}
             }
 			if ( fieldType == FIXED_POINT_DECIMAL) {
-				this.editField.setFilter( new de.enough.polish.blackberry.ui.FixedPointDecimalTextFilter());
+				this.editField.setFilter( new FixedPointDecimalTextFilter());
 			} else {
 				this.editField.setFilter(TextFilter.get(filterType));
 			}
