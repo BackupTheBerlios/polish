@@ -2029,8 +2029,11 @@ public class TextField extends StringItem
             		this.editField = new PolishEditField(null, getString(), max, bbStyle);
             	}
             }
-			
-			this.editField.setFilter(TextFilter.get(filterType));
+			if ( fieldType == FIXED_POINT_DECIMAL) {
+				this.editField.setFilter( new de.enough.polish.blackberry.ui.FixedPointDecimalTextFilter());
+			} else {
+				this.editField.setFilter(TextFilter.get(filterType));
+			}
 			
 			if (this.style != null) {
 				this.editField.setStyle( this.style );
