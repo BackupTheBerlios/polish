@@ -646,6 +646,8 @@ public class Display
 		protected boolean isLastEventProcessed;
 	//#endif
 	private Displayable nextOrCurrentDisplayable;
+
+	private boolean hasBeenShown;
 		
 	//#if polish.build.classes.NativeDisplay:defined
 		//#= protected Display( MIDlet midlet, ${polish.build.classes.NativeDisplay} nativeDisplay ) {
@@ -1963,6 +1965,7 @@ public class Display
 	protected void showNotify() {
 		//#debug
 		System.out.println("Display.showNotify()");
+		this.hasBeenShown = true;
 		//#if tmp.wrapperScreen
 			if (this.ignoreShowHide) {
 				return;
@@ -2406,7 +2409,7 @@ public class Display
 		//#endif
 		this.screenWidth = width;
 		this.screenHeight = height;
-		if (this.currentCanvas != null) {
+		if (this.currentCanvas != null && this.hasBeenShown) {
 			//#debug
 			System.out.println("Calling sizeChanged " + width + "x" + height + " on "+ this.currentCanvas);
 			this.currentCanvas.sizeChanged( width, height );

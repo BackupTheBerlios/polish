@@ -409,7 +409,7 @@ public final class StyleSheet {
 						if (style.background != null) {
 							parent.background = style.background;
 						}
-						if (style.background != null) {
+						if (style.border != null) {
 							parent.border = style.border;
 						}
 						short[] keys = style.getRawAttributeKeys();
