@@ -1398,6 +1398,19 @@ public class TextField extends StringItem
 						throw new IllegalStateException();
 					}
 					String value = getString();
+					if ((this.constraints & FIXED_POINT_DECIMAL) == FIXED_POINT_DECIMAL) {
+						// remove grouping separator:
+						StringBuffer buffer = new StringBuffer(value.length());
+						for (int i=0; i<value.length(); i++) {
+							char c = value.charAt(i);
+							if (c == Locale.DECIMAL_SEPARATOR) {
+								buffer.append('.');
+							} else if (c != Locale.GROUPING_SEPARATOR) {
+								buffer.append(c);
+							}
+						}
+						return buffer.toString();
+					}
 					if ( Locale.DECIMAL_SEPARATOR == '.' || value == null) {
 						return value;
 					} else {
@@ -1418,6 +1431,8 @@ public class TextField extends StringItem
 			return value.replace(',', '.');			
 		//#endif
 	}
+	
+	
 
 	/**
 	 * Sets the contents of the <code>TextField</code> as a string
