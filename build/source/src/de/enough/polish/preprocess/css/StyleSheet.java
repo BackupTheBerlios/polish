@@ -41,12 +41,8 @@ import java.util.Set;
 /**
  * <p>Represents a StyleSheet for a specific application.</p>
  *
- * <p>Copyright Enough Software 2004, 2005</p>
+ * <p>Copyright Enough Software 2004 - 2011</p>
 
- * <pre>
- * history
- *        16-Jan-2004 - rob creation
- * </pre>
  * @author Robert Virkus, robert@enough.de
  * @author Eugene Markov, fixed inheritance of styles
  */
@@ -499,7 +495,11 @@ public class StyleSheet {
 		} else { // this is a style:
 			String parent = null;
 			int extendsPos = selector.indexOf(" extends ");
+			int colonPos = selector.indexOf(':');
 			if (extendsPos != -1) {
+				if ( colonPos != -1) {
+					throw new BuildException("Invalid CSS: the CSS style \"" + selector + "\" is a pseudo style that uses an extends clause. Please either use a pseudo style (:hover, etc) or use the extends clause. Pseudo styles inherit from their base styles automatically. Please adjust your polish.css design settings.");
+				}
 				parent = selector.substring( extendsPos + 9).trim();
 				if (parent.charAt(0) == '.') {
 					parent = parent.substring(1);
@@ -510,7 +510,6 @@ public class StyleSheet {
 				}
 			}
 			// check for the "[parentStyleName]:hover" "[parentStyleName]:pressed" etc syntax:
-			int colonPos = selector.indexOf(':');
 			if ( colonPos != -1) {
 				// allow any number of levels of pseudo styles, e.g. myStyle:hover:visited:pressed
 				String subName = null;
