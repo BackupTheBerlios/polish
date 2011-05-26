@@ -406,43 +406,7 @@ public final class StyleSheet {
 					Style style = styles[i];
 					Style parent = getStyle( style.name );
 					if (parent != null) {
-						copyStyleSettings(style, parent);
-						//#if polish.css.focused-style
-							Style focStyle = (Style) parent.getObjectProperty(1);
-							if (focStyle != null) {
-								copyStyleSettings(style, focStyle);
-							}
-						//#endif
-						//#if polish.css.pressed-style
-							Style pressedStyle = (Style) parent.getObjectProperty(292);
-							if (pressedStyle != null) {
-								copyStyleSettings(style, pressedStyle);
-							}
-						//#endif
-						//#if polish.css.landscape-style
-							Style landscapeStyle = (Style) parent.getObjectProperty(397);
-							if (landscapeStyle != null) {
-								copyStyleSettings(style, landscapeStyle);
-								//#if polish.css.focused-style
-									focStyle = (Style) landscapeStyle.getObjectProperty(1);
-									if (focStyle != null) {
-										copyStyleSettings(style, focStyle);
-									}
-								//#endif
-							}
-						//#endif
-						//#if polish.css.portrait-style
-							Style portraitStyle = (Style) parent.getObjectProperty(398);
-							if (portraitStyle != null) {
-								copyStyleSettings(style, portraitStyle);
-								//#if polish.css.focused-style
-									focStyle = (Style) portraitStyle.getObjectProperty(1);
-									if (focStyle != null) {
-										copyStyleSettings(style, focStyle);
-									}
-								//#endif
-							}
-						//#endif
+						copyStyleSettings(style.name, 1, style, parent);
 					}
 				}
 			}
@@ -450,7 +414,21 @@ public final class StyleSheet {
 	//#endif
 
 	//#if polish.css.mediaquery
-		private static void copyStyleSettings(Style source, Style target) {
+		private static void copyStyleSettings(String name, int level, Style source, Style target) {
+			if (level < 4) {
+				Object[] values = target.getRawAttributeValues();
+				if (values != null) {
+					for (int i = 0; i < values.length; i++) {
+						Object value = values[i];
+						if (value instanceof Style) {
+							Style substyle = (Style) value;
+							if (substyle.name != null && substyle.name.startsWith(name)) {
+								copyStyleSettings(name, level + 1, source, substyle);
+							}
+						}
+					}
+				}
+			}
 			if (source.background != null) {
 				target.background = source.background;
 			}
