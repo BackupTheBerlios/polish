@@ -283,7 +283,7 @@ public final class CssReader {
 			} else if (c == '}') {
 				parenthesisCount--;
 				if (parenthesisCount == 0) {
-					chunksList.add( str.substring(blockStart, i + 1) );
+					chunksList.add( str.substring(blockStart, i + 1).trim() );
 					blockStart = i+ 1;
 				} else if (parenthesisCount < 0) {
 					throw new BuildException("Invalid CSS - there is at least one closing parenthesis '}' too much in this CSS code: " + str.toString() );
