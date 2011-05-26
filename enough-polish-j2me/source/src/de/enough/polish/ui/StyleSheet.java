@@ -406,20 +406,62 @@ public final class StyleSheet {
 					Style style = styles[i];
 					Style parent = getStyle( style.name );
 					if (parent != null) {
-						if (style.background != null) {
-							parent.background = style.background;
-						}
-						if (style.border != null) {
-							parent.border = style.border;
-						}
-						short[] keys = style.getRawAttributeKeys();
-						if (keys != null) {
-							Object[] values = style.getRawAttributeValues();
-							for (int j = 0; j < values.length; j++) {
-								parent.addAttribute(keys[j], values[j]);
+						copyStyleSettings(style, parent);
+						//#if polish.css.focused-style
+							Style focStyle = (Style) parent.getObjectProperty(1);
+							if (focStyle != null) {
+								copyStyleSettings(style, focStyle);
 							}
-						}
+						//#endif
+						//#if polish.css.pressed-style
+							Style pressedStyle = (Style) parent.getObjectProperty(292);
+							if (pressedStyle != null) {
+								copyStyleSettings(style, pressedStyle);
+							}
+						//#endif
+						//#if polish.css.landscape-style
+							Style landscapeStyle = (Style) parent.getObjectProperty(397);
+							if (landscapeStyle != null) {
+								copyStyleSettings(style, landscapeStyle);
+								//#if polish.css.focused-style
+									focStyle = (Style) landscapeStyle.getObjectProperty(1);
+									if (focStyle != null) {
+										copyStyleSettings(style, focStyle);
+									}
+								//#endif
+							}
+						//#endif
+						//#if polish.css.portrait-style
+							Style portraitStyle = (Style) parent.getObjectProperty(398);
+							if (portraitStyle != null) {
+								copyStyleSettings(style, portraitStyle);
+								//#if polish.css.focused-style
+									focStyle = (Style) portraitStyle.getObjectProperty(1);
+									if (focStyle != null) {
+										copyStyleSettings(style, focStyle);
+									}
+								//#endif
+							}
+						//#endif
 					}
+				}
+			}
+		}
+	//#endif
+
+	//#if polish.css.mediaquery
+		private static void copyStyleSettings(Style source, Style target) {
+			if (source.background != null) {
+				target.background = source.background;
+			}
+			if (source.border != null) {
+				target.border = source.border;
+			}
+			short[] keys = source.getRawAttributeKeys();
+			if (keys != null) {
+				Object[] values = source.getRawAttributeValues();
+				for (int j = 0; j < values.length; j++) {
+					target.addAttribute(keys[j], values[j]);
 				}
 			}
 		}
