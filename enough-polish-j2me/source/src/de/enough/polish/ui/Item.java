@@ -1321,15 +1321,17 @@ public abstract class Item implements UiElement, Animatable
 		//#if polish.css.portrait-style || polish.css.landscape-style
 			//#if polish.css.landscape-style
 				Style lsStyle = (Style) style.getObjectProperty("landscape-style");
-				if (lsStyle != null) {
+				if (lsStyle != null && lsStyle != style) {
 					this.landscapeStyle = lsStyle;
-					this.portraitStyle = style;
+					if ((!this.isFocused)&& style.name != null && style.name.indexOf("landscape") == -1) {
+						this.portraitStyle = style;
+					}
 				}
 			//#endif
 			//#if polish.css.portrait-style
 				Style ptStyle = (Style) style.getObjectProperty("portrait-style");
-				if (ptStyle != null) {
-					if (this.landscapeStyle == null) {
+				if (ptStyle != null && ptStyle != style) {
+					if ((!this.isFocused)&& style.name != null && style.name.indexOf("portrait") == -1) {
 						this.landscapeStyle = style;
 					}
 					this.portraitStyle = ptStyle;

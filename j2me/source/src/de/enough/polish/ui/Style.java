@@ -1039,6 +1039,14 @@ public class Style implements Externalizable
 	public Object[] getRawAttributeValues() {
 		return this.attributeValues;
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return '[' + this.name + "] "+ super.toString();
+	}
 
 	
 //#ifdef polish.Style.additionalMethods:defined

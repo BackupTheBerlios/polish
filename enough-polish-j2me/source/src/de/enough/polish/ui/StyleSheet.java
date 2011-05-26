@@ -394,8 +394,8 @@ public final class StyleSheet {
 	
 	//#if polish.css.mediaquery
 		/**
-		 * Adds a media query to this set of styles if the condition is fullfilled.
-		 * This method is only accessible when the preprocesing symbol <code>polish.css.mediaquery</code> is true.
+		 * Adds a media query to this set of styles if the condition is fulfilled.
+		 * This method is only accessible when the preprocessing symbol <code>polish.css.mediaquery</code> is true.
 		 * 
 		 * @param condition the condition, compare http://www.w3.org/TR/css3-mediaqueries/
 		 * @param styles the styles that should be modified by this condition
@@ -406,7 +406,7 @@ public final class StyleSheet {
 					Style style = styles[i];
 					Style parent = getStyle( style.name );
 					if (parent != null) {
-						copyStyleSettings(style.name, 1, style, parent);
+						copyStyleSettings(style.name, 1, style, parent, null);
 					}
 				}
 			}
@@ -414,16 +414,18 @@ public final class StyleSheet {
 	//#endif
 
 	//#if polish.css.mediaquery
-		private static void copyStyleSettings(String name, int level, Style source, Style target) {
+		private static void copyStyleSettings(String name, int level, Style source, Style target, Style parentOfTarget) {
+//			System.out.println(level + ": copy " + name + " to " + target.name + ", :hover=" + target.getObjectProperty(1));
 			if (level < 4) {
 				Object[] values = target.getRawAttributeValues();
 				if (values != null) {
 					for (int i = 0; i < values.length; i++) {
 						Object value = values[i];
-						if (value instanceof Style) {
+						if (value != parentOfTarget && value instanceof Style) {
 							Style substyle = (Style) value;
 							if (substyle.name != null && substyle.name.startsWith(name)) {
-								copyStyleSettings(name, level + 1, source, substyle);
+//								System.out.println("found substyle " + target.getRawAttributeKeys()[i]);
+								copyStyleSettings(name, level + 1, source, substyle, target);
 							}
 						}
 					}
