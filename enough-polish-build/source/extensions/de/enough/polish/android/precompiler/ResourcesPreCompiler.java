@@ -186,7 +186,7 @@ public class ResourcesPreCompiler extends PreCompiler {
 		activityElement.setAttribute("label",midletName,namespace);
 		
 		String trapHomeButtonFlag = env.getVariable("android.traphomebutton");
-		if(trapHomeButtonFlag != null && "true".equals(trapHomeButtonFlag)) {
+		if("true".equals(trapHomeButtonFlag)) {
 			Element intentFilterElement = activityElement.getChild("intent-filter");
 			Element intentCategoryElement;
 			intentCategoryElement = new Element("category");
