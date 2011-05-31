@@ -6,9 +6,12 @@ import java.util.HashMap;
 import java.util.Locale;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.net.Uri;
@@ -24,9 +27,11 @@ import android.telephony.gsm.GsmCellLocation;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewParent;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
 
 import de.enough.polish.android.helper.ResourcesHelper;
 import de.enough.polish.android.io.ConnectionNotFoundException;
@@ -67,8 +72,10 @@ import de.enough.polish.util.IdentityArrayList;
  * The state change is not considered complete until the state change method has
  * returned. It is intended that these methods return quickly.
  * <p>
- * <HR>
  * 
+ * To trap the home button and prevent its action, you can use the variable
+ * polish.android.traphomebutton in the build.xml.
+ * <b>Warning: If your application is the default launcher application, you may have problems to switch back. Try to remove your application with adb remove
  * 
  */
 public class MidletBridge extends Activity {
@@ -235,6 +242,28 @@ public class MidletBridge extends Activity {
 			e.printStackTrace();
 			notifyDestroyed();
 		}
+		
+		//#if polish.android.trapHomeButton
+		PackageManager packageManager = getPackageManager();
+		System.out.println("trap Home");
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.intent.action.MAIN");
+        filter.addCategory("android.intent.category.HOME");
+        filter.addCategory("android.intent.category.DEFAULT");
+
+        TextView textView = new TextView(this);
+        textView.setText("Jail House Rock");
+        setContentView(textView);
+        
+        ComponentName newHomeComponent = new ComponentName(getPackageName(), MidletBridge.class.getName());
+
+        ComponentName[] systemComponents = new ComponentName[] {new ComponentName("com.android.launcher", "com.android.launcher.Launcher"), newHomeComponent};
+
+        packageManager.clearPackagePreferredActivities("com.android.launcher");
+        packageManager.addPreferredActivity(filter, IntentFilter.MATCH_CATEGORY_EMPTY, systemComponents, newHomeComponent);
+		
+        //#endif
+		
 		//#= display.setMidlet(midlet);
 	}
 
@@ -335,8 +364,11 @@ public class MidletBridge extends Activity {
 		//#debug
 		System.out.println("onResume().");
 		super.onResume();
+		
 		AndroidDisplay display = AndroidDisplay.getDisplay(midlet);
-		setContentView(display);
+		if(display.getParent() == null) {
+			setContentView(display);
+		}
 		// This should allow to control the audio volume with the volume keys on the handset when the application has focus.
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		this.shuttingDown = false;
