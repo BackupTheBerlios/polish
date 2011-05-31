@@ -185,6 +185,18 @@ public class ResourcesPreCompiler extends PreCompiler {
 		activityElement.setAttribute("configChanges","mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|fontScale",namespace);
 		activityElement.setAttribute("label",midletName,namespace);
 		
+		String trapHomeButtonFlag = env.getVariable("android.traphomebutton");
+		if(trapHomeButtonFlag != null && "true".equals(trapHomeButtonFlag)) {
+			Element intentFilterElement = activityElement.getChild("intent-filter");
+			Element intentCategoryElement;
+			intentCategoryElement = new Element("category");
+			intentCategoryElement.setAttribute("name", "android.intent.category.HOME", namespace);
+			intentFilterElement.addContent(intentCategoryElement);
+			intentCategoryElement = new Element("category");
+			intentCategoryElement.setAttribute("name", "android.intent.category.DEFAULT", namespace);
+			intentFilterElement.addContent(intentCategoryElement);
+		}
+		
 		String iconUrl = env.getVariable("MIDlet-Icon");
 		if(iconUrl != null) {
 			int indexOfPoint = iconUrl.indexOf(".");
