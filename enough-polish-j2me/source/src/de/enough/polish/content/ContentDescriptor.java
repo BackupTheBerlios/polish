@@ -65,6 +65,11 @@ public class ContentDescriptor implements Externalizable {
 	 * the attributes hashtable
 	 */
 	protected Hashtable attributes = new Hashtable();
+	
+	/**
+	 * the priority of this content. content with higher priorities get deleted last.
+	 */
+	protected int priority = 0;
 
 	
 	/**
@@ -97,6 +102,22 @@ public class ContentDescriptor implements Externalizable {
 		this.hash = descriptor.getHash();
 		this.version = descriptor.getVersion();
 		this.transformId = descriptor.getTransformID();
+	}
+	
+	/**
+	 * Sets the priority
+	 * @param priority
+	 */
+	public void setPriority(int priority) {
+		this.priority = priority;
+	}
+	
+	/**
+	 * Returns the priority
+	 * @return
+	 */
+	public int getPriority() {
+		return this.priority;
 	}
 
 	/**
@@ -231,6 +252,7 @@ public class ContentDescriptor implements Externalizable {
 		this.transformId = in.readUTF();
 		this.version = in.readInt();
 		this.cachingPolicy = in.readInt();
+		this.priority = in.readInt();
 		this.attributes = (Hashtable) Serializer.deserialize(in);
 	}
 
@@ -243,6 +265,7 @@ public class ContentDescriptor implements Externalizable {
 		out.writeUTF(this.transformId);
 		out.writeInt(this.version);
 		out.writeInt(this.cachingPolicy);
+		out.writeInt(this.priority);
 		Serializer.serialize(this.attributes, out);
 	}
 

@@ -122,7 +122,20 @@ public class StorageIndex implements Comparator {
 	 * @return the index of the first disposable content.
 	 */
 	public int getDisposableIndex() {
-		return 0;
+		int currentDisposableIndex = 0;
+		if ( index.size() == 0) {
+			return 0;
+		}
+		int minPrioritySoFar = ((StorageReference) index.get(0)).getPriority();
+		int currentPriority = 0;
+		for (int i=0;i<index.size();i++) {
+			currentPriority = ((StorageReference) index.get(i)).getPriority() ;
+			if ( currentPriority < minPrioritySoFar ) {
+				minPrioritySoFar = currentPriority;
+				currentDisposableIndex = i;
+			}
+		}
+		return currentDisposableIndex;
 	}
 
 	/**
@@ -238,7 +251,7 @@ public class StorageIndex implements Comparator {
 	 */
 	public boolean isDisposableTo(StorageReference reference,
 			StorageReference master) {
-		return reference.getCreationTime() < master.getCreationTime();
+		return reference.getPriority() <= master.getPriority() && reference.getCreationTime() < master.getCreationTime();
 	}
 
 	/**

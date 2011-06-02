@@ -65,6 +65,7 @@ public class StorageReference extends ContentDescriptor {
 		this.size = size;
 		this.activityCount = 0;
 		this.activityTime = this.creationTime;
+		this.priority = descriptor.getPriority();
 	}
 
 	/**
