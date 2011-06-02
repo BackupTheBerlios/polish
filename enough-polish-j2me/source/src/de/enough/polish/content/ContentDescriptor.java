@@ -3,8 +3,10 @@ package de.enough.polish.content;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Hashtable;
 
 import de.enough.polish.io.Externalizable;
+import de.enough.polish.io.Serializer;
 import de.enough.polish.util.ToStringHelper;
 
 /**
@@ -58,6 +60,11 @@ public class ContentDescriptor implements Externalizable {
 	 * the caching policy
 	 */
 	protected int cachingPolicy = CACHING_READ_WRITE;
+	
+	/**
+	 * the attributes hashtable
+	 */
+	protected Hashtable attributes = new Hashtable();
 
 	
 	/**
@@ -185,6 +192,24 @@ public class ContentDescriptor implements Externalizable {
 	public int hashCode() {
 		return getHash();
 	}
+	
+	/**
+	 * Retrieves an attribute
+	 * @param attributeKey the attribute's key
+	 * @return the value of the attribute
+	 */
+	public Object getAttribute(Object attributeKey) {
+		return this.attributes.get(attributeKey);
+	}
+	
+	/**
+	 * Sets an attribute
+	 * @param attributeKey the attribute's key
+	 * @param attributeValue the attribute itself
+	 */
+	public void setAttribute(Object attributeKey, Object attributeValue) {
+		this.attributes.put(attributeKey, attributeValue);
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -206,6 +231,7 @@ public class ContentDescriptor implements Externalizable {
 		this.transformId = in.readUTF();
 		this.version = in.readInt();
 		this.cachingPolicy = in.readInt();
+		this.attributes = (Hashtable) Serializer.deserialize(in);
 	}
 
 	/* (non-Javadoc)
@@ -217,6 +243,7 @@ public class ContentDescriptor implements Externalizable {
 		out.writeUTF(this.transformId);
 		out.writeInt(this.version);
 		out.writeInt(this.cachingPolicy);
+		Serializer.serialize(this.attributes, out);
 	}
 
 }
