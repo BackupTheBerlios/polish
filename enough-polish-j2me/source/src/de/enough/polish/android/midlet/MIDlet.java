@@ -74,6 +74,7 @@ public abstract class MIDlet
 	protected MIDlet() {
 		midletInstance = this;
 		this.appProperties = new HashMap<String,String>();
+		// TODO: Merge the next three lines into MidletBridge.
 		//#= this.appProperties.put("MIDlet-Name", "${MIDlet-Name}");
 		//#= this.appProperties.put("MIDlet-Vendor", "${MIDlet-Vendor}");
 		//#= this.appProperties.put("MIDlet-Version", "${MIDlet-Version}");
