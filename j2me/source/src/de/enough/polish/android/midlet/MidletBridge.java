@@ -251,10 +251,6 @@ public class MidletBridge extends Activity {
         filter.addCategory("android.intent.category.HOME");
         filter.addCategory("android.intent.category.DEFAULT");
 
-        TextView textView = new TextView(this);
-        textView.setText("Jail House Rock");
-        setContentView(textView);
-        
         ComponentName newHomeComponent = new ComponentName(getPackageName(), MidletBridge.class.getName());
 
         ComponentName[] systemComponents = new ComponentName[] {new ComponentName("com.android.launcher", "com.android.launcher.Launcher"), newHomeComponent};
