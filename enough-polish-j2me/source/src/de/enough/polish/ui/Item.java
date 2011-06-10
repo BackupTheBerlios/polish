@@ -3321,8 +3321,14 @@ public abstract class Item implements UiElement, Animatable
 			int targetHeight = 0;
 			if(this.cssHeight != null) {
 				// according to css specs the base for the height calculation is the available width
-				availHeight = this.cssHeight.getValue(availWidth);
-				targetHeight = availHeight;
+				targetHeight = this.cssHeight.getValue(
+						//#if polish.Item.useHeightInsteadOfWidth
+							//# availHeight
+						//#else
+							availWidth
+						//#endif
+						);
+				availHeight = targetHeight;
 			}
 		//#endif
 			
@@ -3505,6 +3511,11 @@ public abstract class Item implements UiElement, Animatable
 		
 		int originalContentHeight = cHeight;
 
+		int heightRelativeValue = availWidth;
+		//#if polish.Item.useHeightInsteadOfWidth
+			 heightRelativeValue = availHeight;
+		//#endif
+
 		//#ifdef polish.css.height
 			if(this.cssHeight != null) {
 				setContentHeight( targetHeight );
@@ -3514,7 +3525,7 @@ public abstract class Item implements UiElement, Animatable
 			
 		//#ifdef polish.css.min-height
 			if (this.minimumHeight != null) {
-				int minHeight = this.minimumHeight.getValue(availWidth);
+				int minHeight = this.minimumHeight.getValue(heightRelativeValue);
 				if (cHeight < minHeight ) {
 					setContentHeight( minHeight );
 					cHeight = this.contentHeight;
@@ -3523,7 +3534,7 @@ public abstract class Item implements UiElement, Animatable
 		//#endif
 		//#ifdef polish.css.max-height
 			if (this.maximumHeight != null) {
-				int maxHeight = this.maximumHeight.getValue(availWidth);
+				int maxHeight = this.maximumHeight.getValue(heightRelativeValue);
 				if (cHeight > maxHeight ) {
 					setContentHeight( maxHeight );
 					cHeight = this.contentHeight;
@@ -3532,14 +3543,14 @@ public abstract class Item implements UiElement, Animatable
 		//#endif
 		
 		//#if polish.css.min-item-height
-			if (this.minimumItemHeight != null && cHeight + noneContentHeight < this.minimumItemHeight.getValue(availWidth)) {
-				cHeight = this.minimumItemHeight.getValue(availWidth) - noneContentHeight;
+			if (this.minimumItemHeight != null && cHeight + noneContentHeight < this.minimumItemHeight.getValue(heightRelativeValue)) {
+				cHeight = this.minimumItemHeight.getValue(heightRelativeValue) - noneContentHeight;
 			}
 		//#endif
 			
 		//#if polish.css.max-item-height
-			if (this.maximumItemHeight != null && cHeight + noneContentHeight > this.maximumItemHeight.getValue(availWidth)) {
-				cHeight = this.maximumItemHeight.getValue(availWidth) - noneContentHeight;
+			if (this.maximumItemHeight != null && cHeight + noneContentHeight > this.maximumItemHeight.getValue(heightRelativeValue)) {
+				cHeight = this.maximumItemHeight.getValue(heightRelativeValue) - noneContentHeight;
 			}
 		//#endif
 			
