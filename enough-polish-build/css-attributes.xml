@@ -2358,7 +2358,7 @@
 		name="min-height"
 		type="dimension"
 		appliesTo="Item"
-		description="The minimum content height of an item."
+		description="The minimum content height of an item. Note that in conformance with the web CSS standard for percentage values the available width is being used. If you would like to use the available height for measurements, please set the preprocessing variable 'polish.Item.useHeightInsteadOfWidth' to 'true'."
 		id="144"
 	/>
 
@@ -2366,7 +2366,7 @@
 		name="max-height"
 		type="dimension"
 		appliesTo="Item"
-		description="The maximum content height of an item."
+		description="The maximum content height of an item. Note that in conformance with the web CSS standard for percentage values the available width is being used. If you would like to use the available height for measurements, please set the preprocessing variable 'polish.Item.useHeightInsteadOfWidth' to 'true'."
 		id="145"
 	/>
 	
@@ -3086,7 +3086,7 @@
 		name="height"
 		type="dimension"
 		appliesTo="relative view-type"
-		description="The height of an item either in pixels or in percent."
+		description="The height of the content of an item either in pixels or in percent. Note that in conformance with the web CSS standard for percentage values the available width is being used. If you would like to use the available height for measurements, please set the preprocessing variable 'polish.Item.useHeightInsteadOfWidth' to 'true'."
 		id="227"
 	/>
 	<attribute
@@ -5191,7 +5191,7 @@
 		name="min-item-height"
 		type="dimension"
 		appliesTo="Item"
-		description="The minimum complete height of an item."
+		description="The minimum complete height of an item. Note that in conformance with the web CSS standard for percentage values the available width is being used. If you would like to use the available height for measurements, please set the preprocessing variable 'polish.Item.useHeightInsteadOfWidth' to 'true'."
 		id="447"
 		since="J2ME Polish 2.2"
 	/>
@@ -5200,7 +5200,7 @@
 		name="max-item-height"
 		type="dimension"
 		appliesTo="Item"
-		description="The maximum complete height of an item."
+		description="The maximum complete height of an item. Note that in conformance with the web CSS standard for percentage values the available width is being used. If you would like to use the available height for measurements, please set the preprocessing variable 'polish.Item.useHeightInsteadOfWidth' to 'true'."
 		id="448"
 		since="J2ME Polish 2.2"
 	/>
