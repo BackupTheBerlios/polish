@@ -62,11 +62,7 @@ import java.util.Hashtable;
 /**
  * <p>Creates COD out of JAR files for RIM BlackBerry devices, also creates an ALX file for deployment using the BlackBerry Desktop Manager.</p>
  *
- * <p>Copyright Enough Software 2005</p>
- * <pre>
- * history
- *        22-May-2005 - rob creation
- * </pre>
+ * <p>Copyright Enough Software 2005-2011</p>
  * @author Robert Virkus, j2mepolish@enough.de
  * @author Stephen Johnson, original converter
  */

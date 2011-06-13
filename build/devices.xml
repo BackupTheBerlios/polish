@@ -13747,7 +13747,7 @@ These namespaces/schemas will be used soon.
     <capability name="JavaPlatform" value="MIDP/2.0, BlackBerry/6.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
     <capability name="SoundFormat" value="amr, nb-amr" />
-    <capability name="Emulator.Skin" value="9700" />
+    <capability name="Emulator.Skin" value="9800" />
     <capability name="Bugs" value="ReservedKeywordSerializable, ItemStateListenerCalledTooEarly" />
   </device>
   <device>

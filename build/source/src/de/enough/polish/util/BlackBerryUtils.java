@@ -1,7 +1,27 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (c) 2011 Robert Virkus / Enough Software
+ *
+ * This file is part of J2ME Polish.
+ *
+ * J2ME Polish is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * J2ME Polish is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with J2ME Polish; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * 
+ * Commercial licenses are also available, please
+ * refer to the accompanying LICENSE.txt or visit
+ * http://www.j2mepolish.org for details.
  */
+
 package de.enough.polish.util;
 
 import de.enough.polish.BuildException;
@@ -12,7 +32,8 @@ import java.io.FileFilter;
 import java.util.Arrays;
 
 /**
- *
+ * Helper class for the BlackBerry build support
+ * 
  * @author david
  */
 public class BlackBerryUtils {
@@ -23,7 +44,7 @@ public class BlackBerryUtils {
     /**
      * Looks for the defined blackberry home directory. If it wasn't defined
      * it tries some default locations.
-     * @param env the environmentt
+     * @param env the environment
      * @return the directory configured as blackberry.home
      */
     public static File getBBHome(Environment env) {
@@ -75,20 +96,23 @@ public class BlackBerryUtils {
         //First search for an exact matched device.
         //It was BlackBerry Device Simulators, but searching for simulators will also find this value.
         //My install of 4.2 4.7 the folder is called simulators so try match it all.
+        //Also make sure that the found device matches the BlackBerry OS version 
+        String bbVersion = getBlackBerryOSVersion(dev);
         for (int i = jdes.length - 1; i >= 0; i--) {
             File jdeFolder = jdes[i];
-
-            File[] simulators = jdeFolder.listFiles(new DirectoryFilter("simulator"));
-            for (int j = simulators.length - 1; j >= 0; j--) {
-                File executable = getExecutable(simulators[j], dev, env);
-                if (executable.exists()) {
-                    return jdeFolder;
-                }
+            if (jdeFolder.getName().indexOf(bbVersion) >= 0) {            
+	            File[] simulators = jdeFolder.listFiles(new DirectoryFilter("simulator"));
+	            for (int j = simulators.length - 1; j >= 0; j--) {
+	                File executable = getExecutable(simulators[j], dev, env);
+	                if (executable.exists()) {
+	                	
+	                    return jdeFolder;
+	                }
+	            }
             }
         }
 
-        //Next
-        String bbVersion = getBlackBerryOSVersion(dev);
+        //Second search for BB OS Home:
         //Search for closest BBversion
         for (int i = jdes.length - 1; i >= 0; i--) {
             File jdeFolder = jdes[i];
