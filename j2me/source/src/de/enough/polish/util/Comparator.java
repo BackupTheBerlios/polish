@@ -25,8 +25,37 @@
  */
 package de.enough.polish.util;
 
-public interface Comparator {
+/**
+ * <p>Allows to compare two objects</p>
+ *
+ * @param <K> when you use the enough-polish-client-java5.jar you can parameterize the Comparator, e.g. Comparator&lt;Integer&gt; = new Comparator&lt;Integer&gt;() { public int compare( Integer i1, Integer i2 ) { return i1.intValue() - i2.intValue(); } ); 
+ * <p>Copyright Enough Software 2011</p>
+ * @author Robert Virkus, j2mepolish@enough.de
+ */
+public interface Comparator 
+//#if polish.java5
+<K>
+//#endif
+{
 
-
-	int compare(Object o1,Object o2);
+	/**
+	 * Compares two objects.
+	 * In the foregoing description, the notation sgn(expression) designates the mathematical signum function, which is defined to return one of -1, 0, or 1 according to whether the value of expression is negative, zero or positive.
+	 * The implementor must ensure that sgn(compare(x, y)) == -sgn(compare(y, x)) for all x and y. (This implies that compare(x, y) must throw an exception if and only if compare(y, x) throws an exception.)
+	 * The implementor must also ensure that the relation is transitive: ((compare(x, y)>0) && (compare(y, z)>0)) implies compare(x, z)>0.
+	 * Finally, the implementor must ensure that compare(x, y)==0 implies that sgn(compare(x, z))==sgn(compare(y, z)) for all z.
+	 * It is generally the case, but not strictly required that (compare(x, y)==0) == (x.equals(y)). Generally speaking, any comparator that violates this condition should clearly indicate this fact. The recommended language is "Note: this comparator imposes orderings that are inconsistent with equals." 
+	 * 
+	 * @param o1 the first object
+	 * @param o2 the object that is compared with o1
+	 * @return a negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater than the second. 
+	 * @throws ClassCastException if the arguments' types prevent them from being compared by this comparator.
+	 */
+	int compare(
+			//#if polish.java5
+				K o1, K o2
+			//#else
+				//# Object o1, Object o2
+			//#endif
+	);
 }

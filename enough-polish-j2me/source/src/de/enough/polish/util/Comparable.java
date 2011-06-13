@@ -28,9 +28,14 @@ package de.enough.polish.util;
 /**
  * An implementation of Comparable for J2ME
  * 
+ * @param <K> when you use the enough-polish-client-java5.jar you can parameterize the Comparable interface. 
  * @author Andre Schmidt
  */
-public interface Comparable {
+public interface Comparable 
+//#if polish.java5
+<K>
+//#endif
+{
 	
 	/**
 	 * Compares this object with the specified object for order. 
@@ -40,5 +45,11 @@ public interface Comparable {
 	 * @param obj the Object to be compared. 
 	 * @return a negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object. 
 	 */
-	int compareTo(Object obj);
+	int compareTo(
+			//#if polish.java5
+				K obj
+			//#else
+				//# Object obj
+			//#endif
+	);
 }
