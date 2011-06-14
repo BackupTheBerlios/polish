@@ -61,5 +61,11 @@ public class HttpContentSource extends ContentSource{
 		// do nothing here, its just a source
 		return null;
 	}
+	
+	protected Object[] storeContentAndGetDataSize(ContentDescriptor descriptor,
+			Object data) throws IOException {
+		// Do nothing, this is a source
+		return null;
+	}
 
 }

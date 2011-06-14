@@ -23,7 +23,7 @@ public class RmsContentStorage extends ContentSource {
 	
 	static final String STORAGE = "RMSContentStorage";
 	
-	RecordStore store;
+	protected RecordStore store;
 
 	public RmsContentStorage(String id, StorageIndex index) {
 		super(id, index);
@@ -63,8 +63,11 @@ public class RmsContentStorage extends ContentSource {
 			throw new IOException("unable to delete data " + e);
 		}
 	}
-
-	protected synchronized Object store(ContentDescriptor descriptor, Object data) throws IOException {
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.content.source.ContentSource#storeContentAndGetDataSize(de.enough.polish.content.ContentDescriptor, java.lang.Object)
+	 */
+	protected Object[] storeContentAndGetDataSize(ContentDescriptor descriptor, Object data) throws IOException {
 		try {
 			// serialize the data and convert it to a byte array 
 			ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
@@ -76,10 +79,15 @@ public class RmsContentStorage extends ContentSource {
 			// add the record
 			int recordId = store.addRecord(bytes, 0, bytes.length);
 			
-			return new Integer(recordId);
+			return new Object[] { new Integer(bytes.length), new Integer(recordId)};
 		} catch (RecordStoreException e) {
 			throw new IOException("unable to store data " + e);
-		}
+		}				
+	}
+
+	protected synchronized Object store(ContentDescriptor descriptor, Object data) throws IOException {
+		// Do nothing here as the #storeContentAndGetDataSize method will be used. instead
+		return null;
 	}
 
 	protected synchronized Object load(ContentDescriptor descriptor)

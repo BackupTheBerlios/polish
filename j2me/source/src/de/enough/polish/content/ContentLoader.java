@@ -1,5 +1,7 @@
 package de.enough.polish.content;
 
+import java.io.IOException;
+
 import de.enough.polish.content.source.ContentSource;
 import de.enough.polish.content.storage.StorageIndex;
 import de.enough.polish.content.storage.StorageReference;
@@ -362,6 +364,12 @@ public class ContentLoader extends ContentSource implements Runnable {
 	 */
 	protected Object store(ContentDescriptor descriptor, Object data) {
 		this.cache.put(descriptor.getHash(), data);
+		return null;
+	}
+	
+	protected Object[] storeContentAndGetDataSize(ContentDescriptor descriptor,
+			Object data) throws IOException {
+		// Do nothing, this is a source
 		return null;
 	}
 

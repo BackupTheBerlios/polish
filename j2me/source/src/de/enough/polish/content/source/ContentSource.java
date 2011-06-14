@@ -337,6 +337,15 @@ public abstract class ContentSource {
 			throw new ContentException(message);
 		}
 	}
+	
+	/**
+	 * Stores an object and returns a reference to it along with its stored size in one single step. Storages that support this should
+	 * overwrite this method. Storages that do not support this should leave this method untouched.
+	 * @param descriptor the content descriptor
+	 * @param data the data that needs to be stored
+	 * @return an Object [], the first element is an Integer object containing the stored object's data size, the second element is a reference to the stored object
+	 */
+	protected abstract Object[] storeContentAndGetDataSize(ContentDescriptor descriptor, Object data) throws IOException ;
 
 	protected void storeContent(ContentDescriptor descriptor, Object data)
 			throws ContentException {
@@ -347,14 +356,23 @@ public abstract class ContentSource {
 				//#debug debug
 				info("storing content : " + data + " : for :" + descriptor);
 
-				// get the size of the content
-				int size = getSize(descriptor, data);
-
-				//#debug debug
-				info("data size for : " + data + " : " + size);
-
-				// store the content
-				Object reference = store(descriptor, data);
+				int size;
+				Object reference;
+				
+				Object [] result = storeContentAndGetDataSize(descriptor, data);
+				if ( result != null ) {
+					size = ( (Integer) result[0] ).intValue();
+					reference = result[1];
+				} else {				
+					// get the size of the content
+					size = getSize(descriptor, data);
+	
+					//#debug debug
+					info("data size for : " + data + " : " + size);
+	
+					// store the content
+					reference = store(descriptor, data);
+				}
 
 				// add the reference to the StorageIndex
 				this.storageIndex.addReference(new StorageReference(descriptor,
@@ -416,6 +434,10 @@ public abstract class ContentSource {
 	public void clean() throws ContentException {
 		if (hasStorage()) {
 			if (!this.storageIndex.isCleanNeeded()) {
+				return;
+			}
+			
+			if ( this.storageIndex.size() == 0 ) {
 				return;
 			}
 

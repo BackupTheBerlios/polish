@@ -109,5 +109,10 @@ public class PersistentContentStorage extends ContentSource {
 		}
 	}
 	
+	protected Object[] storeContentAndGetDataSize(ContentDescriptor descriptor,
+			Object data) throws IOException {
+		// Do nothing
+		return null;
+	}
 	
 }

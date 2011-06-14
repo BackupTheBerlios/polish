@@ -1,6 +1,7 @@
 package de.enough.polish.content.storage;
 
 import de.enough.polish.content.ContentDescriptor;
+import de.enough.polish.io.Serializable;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.Arrays;
 import de.enough.polish.util.Comparator;
@@ -16,17 +17,17 @@ public class StorageIndex implements Comparator {
 	/**
 	 * the index list
 	 */
-	ArrayList index;
+	protected ArrayList index;
 
 	/**
 	 * the current cache size
 	 */
-	int cacheSize = 0;
+	long cacheSize = 0;
 
 	/**
 	 * the maximum cache size
 	 */
-	final int maxCacheSize;
+	final long maxCacheSize;
 
 	/**
 	 * is the StorageIndex prepared ?
@@ -39,7 +40,7 @@ public class StorageIndex implements Comparator {
 	 * @param maxCacheSize
 	 *            the maximum cache size for this instances
 	 */
-	public StorageIndex(final int maxCacheSize) {
+	public StorageIndex(final long maxCacheSize) {
 		this.maxCacheSize = maxCacheSize;
 		this.index = new ArrayList();
 		this.isPrepared = false;
@@ -163,7 +164,7 @@ public class StorageIndex implements Comparator {
 	 * 
 	 * @return the current cache size
 	 */
-	public int getCacheSize() {
+	public long getCacheSize() {
 		return this.cacheSize;
 	}
 
