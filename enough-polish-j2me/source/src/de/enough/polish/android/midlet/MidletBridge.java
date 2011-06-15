@@ -107,7 +107,7 @@ public class MidletBridge extends Activity {
 	
 	private boolean isSoftkeyboardOpen;
 
-	private int currentScreenYOffset;
+	private int softkeyboardScreenYOffsetAdjustment;
 
 	private boolean suicideOnExit =
 		//#if polish.android.killProcessOnExit:defined
@@ -848,31 +848,48 @@ public class MidletBridge extends Activity {
 	
 	private void onSoftKeyboardOpened() {
 		Screen screen = getCurrentScreen();
-//		System.out.println("onSoftKeyOpened, screen=" + screen);
 		if (screen != null) {
-			Item item = screen.getCurrentItem();
-			if (item != null) {
-				while (item instanceof Container && ((Container)item).getFocusedItem() != null) {
-					item = ((Container)item).getFocusedItem();
+			this.softkeyboardScreenYOffsetAdjustment = 0;
+			Container rootContainer = screen.getRootContainer();
+			if (rootContainer != null) {
+				Item item = rootContainer.getFocusedChild();
+				if (item != null) {
+					int absY = item.getAbsoluteY();
+					int screenHeight = screen.getAvailableHeight();
+					if (absY > screenHeight / 3) {
+						int newYOffset = - (absY - rootContainer.getAbsoluteY());
+						this.softkeyboardScreenYOffsetAdjustment = screen.getScrollYOffset() - newYOffset;
+						screen.setScrollYOffset( newYOffset, true);
+					}
 				}
-				this.currentScreenYOffset = screen.getScrollYOffset();
-				int contAbsY = 0;
-				Container cont = screen.getRootContainer();
-				if (cont != null) {
-					contAbsY = cont.getAbsoluteY() + (screen.getScreenContentY() - cont.relativeY);
-					//System.out.println("contentY=" + screen.getScreenContentY() + ", cont.relativeY=" + cont.relativeY + ", cont.absY=" + cont.getAbsoluteY() + ", item.absY=" + item.getAbsoluteY());
-				}
-				int newYOffset = - (item.getAbsoluteY() - contAbsY); // - this.currentScreenYOffset;
-				screen.setScrollYOffset( newYOffset, true);
 			}
 		}
 	}
 
 	private void onSoftKeyboardClosed() {
 		Screen screen = getCurrentScreen();
-//		System.out.println("onSoftKeyClosed, screen=" + screen + ", yOffset=" + this.currentScreenYOffset);
 		if (screen != null) {
-			screen.setScrollYOffset(this.currentScreenYOffset, true);
+			int currentYOffset = screen.getScrollYOffset();
+			int newYOffset = currentYOffset + this.softkeyboardScreenYOffsetAdjustment;
+			if (newYOffset > 0) {
+				newYOffset = 0;
+			}
+			Container rootContainer = screen.getRootContainer();
+			if (rootContainer != null) {
+				Item item = rootContainer.getFocusedChild();
+				if (item != null) {
+					int absY = item.getAbsoluteY();
+					int scrollHeight = rootContainer.getScrollHeight();
+					if (absY + newYOffset - currentYOffset > scrollHeight) {
+						newYOffset = scrollHeight - absY + currentYOffset;
+						if (newYOffset > 0) {
+							newYOffset = 0;
+						}
+					}
+				}
+			}
+
+			screen.setScrollYOffset(newYOffset, true);
 		}
 	}
 

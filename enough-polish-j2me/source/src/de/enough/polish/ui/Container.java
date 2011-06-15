@@ -3518,6 +3518,22 @@ public class Container extends Item {
 	}
 	//#endif
 	
+	//#if polish.hasPointerEvents
+	/**
+	 * Handles the behavior of the virtual keyboard when the item is focused.
+	 * By defaukt, the virtual keyboard is hidden. Components which need to have the virtual keyboard
+	 * shown when they are focused can override this method.
+	 */
+	public void handleOnFocusSoftKeyboardDisplayBehavior() {
+		Item focItem = this.focusedItem;
+		if (focItem != null) {
+			focItem.handleOnFocusSoftKeyboardDisplayBehavior();
+		} else {
+			super.handleOnFocusSoftKeyboardDisplayBehavior();	
+		}
+	}
+	//#endif
+	
 	//#ifdef polish.hasPointerEvents
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#handlePointerReleased(int, int)
