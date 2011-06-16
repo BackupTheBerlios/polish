@@ -107,8 +107,6 @@ public class MidletBridge extends Activity {
 	
 	private boolean isSoftkeyboardOpen;
 
-	private int softkeyboardScreenYOffsetAdjustment;
-
 	private boolean suicideOnExit =
 		//#if polish.android.killProcessOnExit:defined
 			//#= ${polish.android.killProcessOnExit}
@@ -754,7 +752,7 @@ public class MidletBridge extends Activity {
 			return;
 		}
 		//#debug
-		System.out.println("About to show softkeyboard");
+		System.out.println("About to hide softkeyboard");
 		AndroidDisplay display = AndroidDisplay.getDisplay(midlet);
 		InputMethodManager inputMethodManager = (InputMethodManager)getSystemService( Context.INPUT_METHOD_SERVICE);
 		boolean active;
@@ -839,7 +837,7 @@ public class MidletBridge extends Activity {
 		if (display == null) {
 			return null;
 		}
-		Displayable disp = display.getCurrent();
+		Displayable disp = display.getNextOrCurrent();
 		if (disp == null || (!(disp instanceof Screen))) {
 			return null;
 		}
@@ -849,17 +847,21 @@ public class MidletBridge extends Activity {
 	private void onSoftKeyboardOpened() {
 		Screen screen = getCurrentScreen();
 		if (screen != null) {
-			this.softkeyboardScreenYOffsetAdjustment = 0;
 			Container rootContainer = screen.getRootContainer();
 			if (rootContainer != null) {
 				Item item = rootContainer.getFocusedChild();
 				if (item != null) {
 					int absY = item.getAbsoluteY();
-					int screenHeight = screen.getAvailableHeight();
+					int screenHeight = screen.getScreenHeight();
 					if (absY > screenHeight / 3) {
-						int newYOffset = - (absY - rootContainer.getAbsoluteY());
-						this.softkeyboardScreenYOffsetAdjustment = screen.getScrollYOffset() - newYOffset;
+						int newYOffset = - item.relativeY;
+						int contHeight = rootContainer.getItemAreaHeight();
+						if (contHeight < screen.getScreenContentHeight()) {
+							newYOffset -= rootContainer.relativeY - screen.getScreenContentY();
+						}
+						
 						screen.setScrollYOffset( newYOffset, true);
+						rootContainer.resetLastPointerPressYOffset();
 					}
 				}
 			}
@@ -869,27 +871,15 @@ public class MidletBridge extends Activity {
 	private void onSoftKeyboardClosed() {
 		Screen screen = getCurrentScreen();
 		if (screen != null) {
-			int currentYOffset = screen.getScrollYOffset();
-			int newYOffset = currentYOffset + this.softkeyboardScreenYOffsetAdjustment;
-			if (newYOffset > 0) {
-				newYOffset = 0;
-			}
 			Container rootContainer = screen.getRootContainer();
 			if (rootContainer != null) {
-				Item item = rootContainer.getFocusedChild();
-				if (item != null) {
-					int absY = item.getAbsoluteY();
-					int scrollHeight = rootContainer.getScrollHeight();
-					if (absY + newYOffset - currentYOffset > scrollHeight) {
-						newYOffset = scrollHeight - absY + currentYOffset;
-						if (newYOffset > 0) {
-							newYOffset = 0;
-						}
-					}
+				int contHeight = rootContainer.getItemAreaHeight();
+				if (contHeight < screen.getScreenContentHeight()) {
+					// only reset the scroll y offset for screens that use less space than is available:
+					rootContainer.setScrollYOffset(0, true);
+					rootContainer.resetLastPointerPressYOffset();
 				}
 			}
-
-			screen.setScrollYOffset(newYOffset, true);
 		}
 	}
 

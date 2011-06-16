@@ -4554,6 +4554,16 @@ public class Container extends Item {
 		}
 	}
 	//#endif
+
+	/**
+	 * Resets the pointer press y offset which is used for starting scrolling processes.
+	 * This is only applicable for touch enabled handsets.
+	 */
+	public void resetLastPointerPressYOffset() {
+		//#if polish.hasPointerEvents
+			this.lastPointerPressYOffset = this.targetYOffset;
+		//#endif
+	}
 	
 
 
