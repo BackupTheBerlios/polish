@@ -13,8 +13,10 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import de.enough.polish.android.midlet.MIDlet;
 import de.enough.polish.android.midlet.MidletBridge;
+import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Display;
 import de.enough.polish.ui.Displayable;
+import de.enough.polish.ui.Item;
 import de.enough.polish.ui.NativeDisplay;
 import de.enough.polish.ui.Screen;
 import de.enough.polish.util.ArrayList;
@@ -22,7 +24,7 @@ import de.enough.polish.util.ArrayList;
 //#if polish.javaplatform >= Android/1.5
 	import android.view.inputmethod.BaseInputConnection;
 	import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputConnection;
+	import android.view.inputmethod.InputConnection;
 //#endif
 
 /**
@@ -350,7 +352,7 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 		if (display == null) {
 			return null;
 		}
-		Displayable disp = display.getCurrent();
+		Displayable disp = display.getNextOrCurrent();
 		if (disp == null || (!(disp instanceof Screen))) {
 			return null;
 		}
@@ -407,8 +409,39 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 		if(keyCode == KeyEvent.KEYCODE_ENTER && ((event.getFlags() & KeyEvent.FLAG_SOFT_KEYBOARD) == KeyEvent.FLAG_SOFT_KEYBOARD)) {
 			//#debug
 			System.out.println("Hiding Softkeyboard");
-			MidletBridge.instance.hideSoftKeyboard();
-			return true;
+			Screen screen = getCurrentScreen();
+			if (screen != null) {
+				boolean hideSoftKeyboard = true;				
+				Container rootContainer = screen.getRootContainer();
+				if (rootContainer != null) {
+					int offset = rootContainer.getScrollYOffset();
+					boolean handled = screen._keyPressed(de.enough.polish.android.lcdui.Canvas.KEY_ANDROID_DOWN)
+									| screen._keyReleased(de.enough.polish.android.lcdui.Canvas.KEY_ANDROID_DOWN);
+					rootContainer.setScrollYOffset(offset, false);
+					if (handled) {
+						Item item = rootContainer.getFocusedChild();
+						if (item != null) {
+							int absY = item.getAbsoluteY();
+							int screenHeight = screen.getScreenHeight();
+							if (absY > screenHeight / 3 || absY < rootContainer.relativeY) {
+								int newYOffset = - item.relativeY;
+								int contHeight = rootContainer.getItemAreaHeight();
+								if (contHeight < screen.getScreenContentHeight()) {
+									newYOffset -= rootContainer.relativeY - screen.getScreenContentY();
+								}
+								screen.setScrollYOffset( newYOffset, true);
+								rootContainer.resetLastPointerPressYOffset();
+							}
+							hideSoftKeyboard = false;
+							
+						}
+					}
+				}
+				if (hideSoftKeyboard){
+					MidletBridge.instance.hideSoftKeyboard();
+				}
+				return true;
+			} 
 		}
 		//#endif
 		if(this.util == null)

@@ -753,8 +753,9 @@ public abstract class Item implements UiElement, Animatable
 	protected int internalWidth;
 	/** The internal height of this item's content.  */
 	protected int internalHeight;
-	/** flag indicating whether this item is focused */
+	/** flag indicating whether this item is focused, please use isFocused() for accessing it. */
 	public boolean isFocused;
+	protected boolean isJustFocused;
 	
 	//#ifdef polish.css.before
 		private String beforeUrl;
@@ -4327,7 +4328,8 @@ public abstract class Item implements UiElement, Animatable
 			System.out.println("handlePointerReleased " + relX + ", " + relY + " for item " + this + " isPressed=" + this.isPressed);
 			// handle keyboard behaviour only if this not a container,
 			// its handled in the overwritten version
-			if (this.isFocused && !(this instanceof Container)) {
+			if (this.isJustFocused) {
+				this.isJustFocused = false;
 				handleOnFocusSoftKeyboardDisplayBehavior();
 			}
 			//#if tmp.supportTouchGestures
@@ -4788,7 +4790,7 @@ public abstract class Item implements UiElement, Animatable
 	//#if polish.hasPointerEvents
 	/**
 	 * Handles the behavior of the virtual keyboard when the item is focused.
-	 * By defaukt, the virtual keyboard is hidden. Components which need to have the virtual keyboard
+	 * By default, the virtual keyboard is hidden. Components which need to have the virtual keyboard
 	 * shown when they are focused can override this method.
 	 */
 	public void handleOnFocusSoftKeyboardDisplayBehavior() {
@@ -4823,6 +4825,7 @@ public abstract class Item implements UiElement, Animatable
 			//#endif
 				
 			this.isFocused = true;
+			this.isJustFocused = true;
 			setStyle( newStyle );
 			
 			//#if polish.css.pressed-style

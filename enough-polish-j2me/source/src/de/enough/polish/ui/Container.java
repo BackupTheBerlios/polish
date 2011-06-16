@@ -33,7 +33,7 @@ import de.enough.polish.util.ArrayList;
 
 /**
  * <p>Contains a number of items.</p>
- * <p>Main purpose is to manage all items of a Form or similiar canvases.</p>
+ * <p>Main purpose is to manage all items of a Form or similar canvases.</p>
  * <p>Containers support following additional CSS attributes:
  * </p>
  * <ul>
@@ -3543,7 +3543,8 @@ public class Container extends Item {
 		System.out.println("Container.handlePointerReleased(" + relX + ", " + relY + ") for " + this  );
 		
 		// handle keyboard behaviour
-		if(isFocused()) {
+		if(this.isJustFocused) {
+			this.isJustFocused = false;
 			handleOnFocusSoftKeyboardDisplayBehavior();
 		}
 		
