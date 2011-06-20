@@ -23,6 +23,7 @@ import de.enough.polish.util.ArrayList;
 
 //#if polish.javaplatform >= Android/1.5
 	import android.view.inputmethod.BaseInputConnection;
+	import android.view.inputmethod.CompletionInfo;
 	import android.view.inputmethod.EditorInfo;
 	import android.view.inputmethod.InputConnection;
 //#endif
@@ -493,8 +494,11 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 				String characters = event.getCharacters();
 				if (characters != null) {
 					for (int i=0; i<characters.length();i++) {
-						key += characters.charAt(i);
+						key = characters.charAt(i);
+						this.currentPolishCanvas.keyPressed(key);
+						this.currentPolishCanvas.keyReleased(key);
 					}
+					return true;
 				}
 			}
 			this.currentPolishCanvas.keyPressed(key);
@@ -1317,6 +1321,23 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 				onKeyUp(KeyEvent.KEYCODE_DEL, delKeyUpEvent);
 				return super.deleteSurroundingText(leftLength, rightLength);
 			}
+
+			/* (non-Javadoc)
+			 * @see android.view.inputmethod.BaseInputConnection#commitCompletion(android.view.inputmethod.CompletionInfo)
+			 */
+			public boolean commitCompletion(CompletionInfo text) {
+				System.out.println("commitCompletion: " + text + ": " + text.getText());
+				return super.commitCompletion(text);
+			}
+
+			/* (non-Javadoc)
+			 * @see android.view.inputmethod.BaseInputConnection#commitText(java.lang.CharSequence, int)
+			 */
+			public boolean commitText(CharSequence text, int startPos) {
+				System.out.println("commitText: " + text + ", startPost=" + startPos);
+				return super.commitText(text, startPos);
+			}
+			
 		};
 	}
 
