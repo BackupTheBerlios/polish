@@ -443,7 +443,9 @@ public final class TextUtil {
 							i--;
 						}
 						//System.out.println("value=" + value + ", i=" + i + ", startPos=" + startPos);
-						list.addLine( new String( valueChars, startPos, lastSpacePos - startPos ), stringWidth);
+						line = new String( valueChars, startPos, lastSpacePos - startPos );
+						stringWidth = font.stringWidth(line);
+						list.addLine( line, stringWidth);
 						startPos =  lastSpacePos;
 						currentLineWidth -= lastSpacePosLineWidth;
 						lastSpacePos = i;
@@ -466,8 +468,11 @@ public final class TextUtil {
 				} else {
 					currentLineWidth -= lastSpacePosLineWidth;
 					String line = new String( valueChars, startPos, lastSpacePos - startPos );
+					//System.out.println("stringWidth=" + font.stringWidth(line) + ", lastSpacePosLineWidth=" + lastSpacePosLineWidth + " for [" + line + "]");
+					//lastSpacePosLineWidth = font.stringWidth(line);
 					//line += font.stringWidth(line) + "<" + lastSpacePosLength + ">";
-					list.addLine( line, lastSpacePosLineWidth );
+					int stringWidth = font.stringWidth(line);
+					list.addLine( line, stringWidth );
 					startPos =  lastSpacePos + 1;
 					lastSpacePos = -1;
 				}
@@ -484,6 +489,7 @@ public final class TextUtil {
 		{
 			// add tail:
 			String tail = new String( valueChars, startPos, valueChars.length - startPos );
+			currentLineWidth = font.stringWidth(tail);
 			list.addLine( tail, currentLineWidth );
 		}
 

@@ -1044,12 +1044,7 @@ public class Container extends Item {
 				//int wAfter = previouslyFocusedItem.getItemWidth( this.availableContentWidth, this.availableContentWidth, this.availableHeight );
 				//fix 2008-12-10: on some ContainerViews it can happen, that not all items have been initialized before:
 				//int wAfter = item.getItemWidth( item.availableWidth, item.availableWidth, item.availableHeight );
-				int wAfter;
-				if (item.availableWidth > 0) {
-					wAfter = item.getItemWidth( item.availableWidth, item.availableWidth, item.availableHeight );
-				} else {
-					wAfter = item.getItemWidth( this.availableWidth, this.availableWidth, this.availableHeight );
-				}
+				int wAfter = getChildWidth(item);
 				int hAfter = previouslyFocusedItem.itemHeight;
 				int layoutAfter = previouslyFocusedItem.layout;
 				if (wAfter != wBefore || hAfter != hBefore || layoutAfter != layoutBefore ) {
@@ -1165,10 +1160,19 @@ public class Container extends Item {
 	/**
 	 * Queries the width of an child item of this container.
 	 * This allows subclasses to control the possible re-initialization that is happening here.
+	 * Also ContainerViews can override the re-initialization in their respective getChildWidth() method.
 	 * @param item the child item
 	 * @return the width of the child item
+	 * @see #getChildHeight(Item)
+	 * @see ContainerView#getChildWidth(Item)
 	 */
 	protected int getChildWidth(Item item) {
+		//#if tmp.supportViewType
+			ContainerView contView = this.containerView;
+			if (contView != null) {
+				return contView.getChildWidth(item);
+			}
+		//#endif
 		int w;
 		if (item.availableWidth > 0) {
 			w = item.getItemWidth( item.availableWidth, item.availableWidth, item.availableHeight );
@@ -1181,10 +1185,19 @@ public class Container extends Item {
 	/**
 	 * Queries the height of an child item of this container.
 	 * This allows subclasses to control the possible re-initialization that is happening here.
+	 * Also ContainerViews can override the re-initialization in their respective getChildHeight() method.
 	 * @param item the child item
 	 * @return the height of the child item
+	 * @see #getChildHeight(Item)
+	 * @see ContainerView#getChildHeight(Item)
 	 */
 	protected int getChildHeight(Item item) {
+		//#if tmp.supportViewType
+			ContainerView contView = this.containerView;
+			if (contView != null) {
+				return contView.getChildHeight(item);
+			}
+		//#endif
 		int h;
 		if (item.availableWidth > 0) {
 			h = item.getItemHeight( item.availableWidth, item.availableWidth, item.availableHeight );

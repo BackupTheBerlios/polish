@@ -341,7 +341,7 @@ extends ItemView
 		this.parentContainer = parent;
 		Item[] myItems = parent.getItems();
 		int myItemsLength = myItems.length;
-		boolean hasCenterOrRightItems = false;
+		//boolean hasCenterOrRightItems = false;
 		boolean hasVerticalExpandItems = false;
 		for (int i = 0; i < myItems.length; i++) {
 			Item item = myItems[i];
@@ -409,7 +409,7 @@ extends ItemView
 				this.appearanceMode = Item.INTERACTIVE;
 				if (isLayoutShrink && this.focusedItem != null) {
 					Item item = this.focusedItem;
-					//System.out.println("container has shrinking layout and contains focuse item " + item + ", minWidth=" + parent.minimumWidth);
+					//System.out.println("container has shrinking layout and contains focused item " + item + ", minWidth=" + parent.minimumWidth);
 					item.setInitialized(false);
 					boolean doExpand = item.isLayoutExpand;
 					int width;
@@ -1045,6 +1045,7 @@ extends ItemView
 		if (focItem != null) {
 			x += focItem.relativeX;
 			paintItem(focItem, this.focusedIndex, x, y + focItem.relativeY, x, x + focItem.itemWidth, clipX, clipY, clipWidth, clipHeight, g);
+			//paintItem(focItem, this.focusedIndex, x, y + focItem.relativeY, leftBorder, leftBorder + focItem.itemWidth, clipX, clipY, clipWidth, clipHeight, g);
 		}
 		
 	}
@@ -1084,7 +1085,7 @@ extends ItemView
 	} 
 
 	/**
-	 * Interpretes the given user-input and retrieves the nexte item which should be focused.
+	 * Interprets the given user-input and retrieves the next item which should be focused.
 	 * Please not that the focusItem()-method is not called as well. The
 	 * view is responsible for updating its internal configuration here as well.
 	 * 
@@ -1937,4 +1938,42 @@ extends ItemView
 	public Item getChildAt(int relX, int relY) {
 		return this.parentContainer.getChildAtImpl(relX, relY);
 	}
+	
+
+	/**
+	 * Queries the width of an child item of this container.
+	 * This allows subclasses to control the possible re-initialization that is happening here.
+	 * @param item the child item
+	 * @return the width of the child item
+	 * @see #getChildHeight(Item)
+	 */
+	protected int getChildWidth(Item item) {
+		Container parent = this.parentContainer;
+		int w;
+		if (item.availableWidth > 0) {
+			w = item.getItemWidth( item.availableWidth, item.availableWidth, item.availableHeight );
+		} else {
+			w = item.getItemWidth( parent.availContentWidth, parent.availContentWidth, parent.availContentHeight );
+		}
+		return w;
+	}
+	
+	/**
+	 * Queries the height of an child item of this container.
+	 * This allows subclasses to control the possible re-initialization that is happening here.
+	 * @param item the child item
+	 * @return the height of the child item
+	 * @see #getChildHeight(Item)
+	 */
+	protected int getChildHeight(Item item) {
+		Container parent = this.parentContainer;
+		int h;
+		if (item.availableWidth > 0) {
+			h = item.getItemHeight( item.availableWidth, item.availableWidth, item.availableHeight );
+		} else {
+			h = item.getItemHeight( parent.availContentWidth, parent.availContentWidth, parent.availContentHeight );
+		}
+		return h;
+	}
+
 }

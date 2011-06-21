@@ -494,7 +494,7 @@ public class StringItem extends Item
 	 */
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		//#debug
-		System.out.println("painting at left=" + leftBorder + ", right=" + rightBorder + ", x=" + x + ", text=" + this.text);
+		System.out.println("painting at left=" + leftBorder + ", right=" + rightBorder + ", x=" + x + ", y=" + y + ", text=" + this.text);
 		//#if polish.css.text-visible
 			if (!this.isTextVisible) {
 				return;
@@ -681,6 +681,9 @@ public class StringItem extends Item
 					if (lineY < clippingY) {
 						startIndex = (clippingY - lineY) / lineHeight;
 						lineY += startIndex * lineHeight;
+						if (startIndex > 0) {
+							lineX = leftBorder;
+						}
 					}
 					//#if polish.Bugs.needsBottomOrientiationForStringDrawing
 						endIndex++;
@@ -704,6 +707,9 @@ public class StringItem extends Item
 					}
 					drawString( line, lineX, lineY, orientation, g );
 					lineY += lineHeight;
+					if (i == 0 && x > leftBorder) {
+						lineX = leftBorder;
+					}
 				}
 		//#if tmp.useTextEffect
 			}
@@ -1147,6 +1153,17 @@ public class StringItem extends Item
 				 this.textEffect.releaseResources();
 			 }
 		//#endif
+	}
+
+	/**
+	 * Allows access to the wrapped text within this StringItem.
+	 * Note that the text is only wrapped AFTER init()/initContent() has been called on this StringItem.
+	 * @return the wrapped text, may be null when called before init()/initContent()
+	 * @see #init(int, int, int)
+	 * @see #initContent(int, int, int)
+	 */
+	public WrappedText getWrappedText() {
+		return this.textLines;
 	}
 
 }

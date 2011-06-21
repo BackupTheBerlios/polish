@@ -3710,30 +3710,142 @@ public abstract class Item implements UiElement, Animatable
 	/**
 	 * Initializes the margin of this item
 	 * Subclasses can override this (e.g. the container embedded in a screen)
-	 * @param style the style
+	 * @param itemStyle the style
 	 * @param availWidth the available width
 	 */
-	protected void initMargin(Style style, int availWidth) {
-		this.marginLeft = style.getMarginLeft(availWidth);
-		this.marginRight = style.getMarginRight(availWidth);
-		this.marginTop = style.getMarginTop(availWidth);
-		this.marginBottom = style.getMarginBottom(availWidth);
+	protected void initMargin(Style itemStyle, int availWidth) {
+		this.marginLeft = itemStyle.getMarginLeft(availWidth);
+		this.marginRight = itemStyle.getMarginRight(availWidth);
+		this.marginTop = itemStyle.getMarginTop(availWidth);
+		this.marginBottom = itemStyle.getMarginBottom(availWidth);
 	}
 
 	/**
 	 * Initializes the padding of this item
 	 * Subclasses can override this (e.g. the container embedded in a screen)
-	 * @param style the style
+	 * @param itemStyle the style
 	 * @param availWidth the available width
 	 */
-	protected void initPadding(Style style, int availWidth) {
-		this.paddingLeft = style.getPaddingLeft(availWidth);
-		this.paddingRight = style.getPaddingRight(availWidth);
-		this.paddingTop = style.getPaddingTop(availWidth);
-		this.paddingBottom = style.getPaddingBottom(availWidth);
-		this.paddingVertical = style.getPaddingVertical(availWidth);
-		this.paddingHorizontal = style.getPaddingHorizontal(availWidth);
-		}
+	protected void initPadding(Style itemStyle, int availWidth) {
+		this.paddingLeft = itemStyle.getPaddingLeft(availWidth);
+		this.paddingRight = itemStyle.getPaddingRight(availWidth);
+		this.paddingTop = itemStyle.getPaddingTop(availWidth);
+		this.paddingBottom = itemStyle.getPaddingBottom(availWidth);
+		this.paddingVertical = itemStyle.getPaddingVertical(availWidth);
+		this.paddingHorizontal = itemStyle.getPaddingHorizontal(availWidth);
+	}
+	
+	/**
+	 * Retrieves the right padding of this item.
+	 * Note that the padding is only initialized AFTER init() or initContent() has been called.
+	 * @return the padding in pixels.
+	 * @see Item#init(int, int, int)
+	 * @see Item#initContent(int, int, int)
+	 */
+	public int getPaddingRight() {
+		return this.paddingRight;
+	}
+	
+	/**
+	 * Retrieves the left padding of this item.
+	 * Note that the padding is only initialized AFTER init() or initContent() has been called.
+	 * @return the padding in pixels.
+	 * @see Item#init(int, int, int)
+	 * @see Item#initContent(int, int, int)
+	 */
+	public int getPaddingLeft() {
+		return this.paddingLeft;
+	}
+	
+	/**
+	 * Retrieves the rop padding of this item.
+	 * Note that the padding is only initialized AFTER init() or initContent() has been called.
+	 * @return the padding in pixels.
+	 * @see Item#init(int, int, int)
+	 * @see Item#initContent(int, int, int)
+	 */
+	public int getPaddingTop() {
+		return this.paddingTop;
+	}
+	
+	/**
+	 * Retrieves the bottom padding of this item.
+	 * Note that the padding is only initialized AFTER init() or initContent() has been called.
+	 * @return the padding in pixels.
+	 * @see Item#init(int, int, int)
+	 * @see Item#initContent(int, int, int)
+	 */
+	public int getPaddingBottom() {
+		return this.paddingBottom;
+	}
+	
+	/**
+	 * Retrieves the horizontal padding of this item.
+	 * Note that the padding is only initialized AFTER init() or initContent() has been called.
+	 * @return the padding in pixels.
+	 * @see Item#init(int, int, int)
+	 * @see Item#initContent(int, int, int)
+	 */
+	public int getPaddingHorizontal() {
+		return this.paddingHorizontal;
+	}
+	
+	/**
+	 * Retrieves the vertical padding of this item.
+	 * Note that the padding is only initialized AFTER init() or initContent() has been called.
+	 * @return the padding in pixels.
+	 * @see Item#init(int, int, int)
+	 * @see Item#initContent(int, int, int)
+	 */
+	public int getPaddingVertical() {
+		return this.paddingVertical;
+	}
+	
+	
+	/**
+	 * Retrieves the right margin of this item.
+	 * Note that the margin is only initialized AFTER init() or initContent() has been called.
+	 * @return the margin in pixels.
+	 * @see Item#init(int, int, int)
+	 * @see Item#initContent(int, int, int)
+	 */
+	public int getMarginRight() {
+		return this.marginRight;
+	}
+	
+	/**
+	 * Retrieves the left margin of this item.
+	 * Note that the margin is only initialized AFTER init() or initContent() has been called.
+	 * @return the margin in pixels.
+	 * @see Item#init(int, int, int)
+	 * @see Item#initContent(int, int, int)
+	 */
+	public int getMarginLeft() {
+		return this.marginLeft;
+	}
+	
+	/**
+	 * Retrieves the rop margin of this item.
+	 * Note that the margin is only initialized AFTER init() or initContent() has been called.
+	 * @return the margin in pixels.
+	 * @see Item#init(int, int, int)
+	 * @see Item#initContent(int, int, int)
+	 */
+	public int getMarginTop() {
+		return this.marginTop;
+	}
+	
+	/**
+	 * Retrieves the bottom margin of this item.
+	 * Note that the margin is only initialized AFTER init() or initContent() has been called.
+	 * @return the margin in pixels.
+	 * @see Item#init(int, int, int)
+	 * @see Item#initContent(int, int, int)
+	 */
+	public int getMarginBottom() {
+		return this.marginBottom;
+	}
+	
 
 	/**
 	 * Sets the content width of this item.
