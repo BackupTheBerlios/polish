@@ -1245,6 +1245,7 @@
 		<mapping from="particle" to="new de.enough.polish.ui.itemviews.ExplodingParticlesItemView()" appliesTo="Item" />
 		<!--  for Containers:  -->
 		<mapping from="tabbed" to="new de.enough.polish.ui.containerviews.TabbedContainerView()"  appliesTo="Container,FakeContainerCustomItem" />
+		<mapping from="text" to="new de.enough.polish.ui.containerviews.TextContainerView()"  appliesTo="Container,FakeContainerCustomItem" />
 		<mapping from="slide" to="new de.enough.polish.ui.containerviews.SlideContainerView()"  appliesTo="Container,FakeContainerCustomItem" />
 		<mapping from="slideup" to="new de.enough.polish.ui.containerviews.SlideContainerView()" />
 		<mapping from="slide-up" to="new de.enough.polish.ui.containerviews.SlideContainerView()" />
