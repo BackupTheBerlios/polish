@@ -286,6 +286,8 @@ public abstract class ItemView implements Serializable{
 	 * 
 	 * @param item the item to remove the border from
 	 * @return the formerly set border
+	 * @see #removeItemBackground(Item)
+	 * @see #addItemBorder(Item, Border)
 	 */
 	protected Border removeItemBorder(Item item) {
 		Border border = item.border;
@@ -298,11 +300,48 @@ public abstract class ItemView implements Serializable{
 	 * 
 	 * @param item the item to remove the background from
 	 * @return the formerly set background
+	 * @see #removeItemBorder(Item)
+	 * @see #addItemBackground(Item, Background)
 	 */
 	protected Background removeItemBackground(Item item) {
 		Background background = item.background;
 		item.background = null;
 		return background;
+	}
+	
+	/**
+	 * Adds a background to an item again
+	 * @param item to which the background should be added
+	 * @param background the background
+	 * @see #removeItemBackground(Item)
+	 * @see #addItemBackgroundBorder(Item, Background, Border)
+	 */
+	protected void addItemBackground(Item item, Background background) {
+		item.background = background;
+	}
+	
+	/**
+	 * Adds a border to an item again
+	 * @param item to which the border should be added
+	 * @param border the border
+	 * @see #removeItemBorder(Item)
+	 * @see #addItemBackgroundBorder(Item, Background, Border)
+	 */
+	protected void addItemBorder(Item item, Border border) {
+		item.border = border;
+	}
+	
+	/**
+	 * Adds a background and a border to an item again
+	 * @param item to which the border should be added
+	 * @param background the background
+	 * @param border the border
+	 * @see #removeItemBackground(Item)
+	 * @see #removeItemBorder(Item)
+	 */
+	protected void addItemBackgroundBorder( Item item, Background background, Border border ) {
+		item.background = background;
+		item.border = border;		
 	}
 	
 	/**

@@ -72,16 +72,6 @@ public class TextContainerView extends ContainerView {
 		Item focItem = parent.getFocusedItem();
 		if (focItem != this.focusedItem) {
 			this.focusedItem = focItem;
-			if (focItem != null) {
-				Background bg = removeItemBackground(focItem);
-				if (bg != null) {
-					this.focusedBackground = bg;
-				}
-				Border border = removeItemBorder(focItem);
-				if (border != null) {
-					this.focusedBorder = border;
-				}
-			}
 		}
 		//#if polish.Container.allowCycling != false
 			this.allowCycling = parent.allowCycling;
@@ -159,28 +149,6 @@ public class TextContainerView extends ContainerView {
 		this.contentWidth = availWidth;
 		
 	}
-	
-	
-
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.ContainerView#focusItem(int, de.enough.polish.ui.Item, int, de.enough.polish.ui.Style)
-	 */
-	public Style focusItem(int index, Item item, int direction,
-			Style focusedStyle) 
-	{
-		Style focStyle = super.focusItem(index, item, direction, focusedStyle);
-		Background bg = removeItemBackground(item);
-		if (bg != null) {
-			this.focusedBackground = bg;
-		}
-		Border border = removeItemBorder(item);
-		if (border != null) {
-			this.focusedBorder = border;
-		}
-		return focStyle;
-	}
-	
-	
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#paintContent(de.enough.polish.ui.Container, de.enough.polish.ui.Item[], int, int, int, int, int, int, int, int, javax.microedition.lcdui.Graphics)
@@ -194,17 +162,15 @@ public class TextContainerView extends ContainerView {
 			if (i != this.focusedIndex) {
 				Item item = myItems[i];
 				//System.out.println("item " + i + " at " + item.relativeX + "/" + item.relativeY);
-				int itemX = x + item.relativeX + offsets[i];
+				int itemX = x + item.relativeX;
 				int itemY = y + item.relativeY;
-//				leftBorder = itemX;
-//				rightBorder = itemX + item.itemWidth;
 				if (itemY > clipY + clipHeight) {
 					break;
 				}
 				if (itemY + item.itemHeight < clipY) {
 					continue;
 				}
-				paintItem(item, i, itemX, itemY, leftBorder, rightBorder, clipX, clipY, clipWidth, clipHeight, g);
+				paintItem(item, i, itemX, itemY, leftBorder, rightBorder, clipX, clipY, clipWidth, clipHeight, offsets, g);
 			}
 		}
 		// paint focused item last:
@@ -212,76 +178,85 @@ public class TextContainerView extends ContainerView {
 		if (focItem != null) {
 			x += focItem.relativeX;
 			y += focItem.relativeY;
-			Background background = this.focusedBackground;
-			Border border = this.focusedBorder;
-			int xAdjust = offsets[this.focusedIndex];
-			if (background != null || border != null) {
-				int backgroundWidth = rightBorder - leftBorder;
-				int topLineHeight = 0;
-				int bottomLineHeight = 0;
-				int bottomLineWidth = focItem.itemWidth;
-				int bodyHeight = focItem.itemHeight;
-				if (focItem instanceof StringItem) {
-					StringItem stringItem = (StringItem) focItem;
-					WrappedText wrappedText = stringItem.getWrappedText();
-					if (xAdjust > 0 && wrappedText.size() > 1) {
-						topLineHeight = stringItem.getMarginTop() + stringItem.getPaddingTop() + stringItem.getLineHeight();
-					}
-					bottomLineWidth = stringItem.getMarginLeft() + stringItem.getPaddingLeft() + wrappedText.getLineWidth( wrappedText.size() - 1) + stringItem.getPaddingRight() + stringItem.getMarginRight();
-					if (bottomLineWidth < backgroundWidth - (backgroundWidth/10)) {
-						bottomLineHeight = stringItem.getMarginBottom() + stringItem.getPaddingBottom() + stringItem.getLineHeight();
-					}
-					bodyHeight -= topLineHeight + bottomLineHeight;
-					if (wrappedText.size() == 1) {
-						backgroundWidth = focItem.itemWidth;
-					}
-					//System.out.println("xAdjust=" + xAdjust + ", lineHeight=" + stringItem.getLineHeight() + ", top=" + topLineHeight + ", bottom=" + bottomLineHeight + ", body=" + bodyHeight + ", itemHeight=" + focItem.itemHeight + " for " + stringItem.getText());
+			paintItem(focItem, this.focusedIndex, x, y, leftBorder,
+					rightBorder, clipX, clipY, clipWidth, clipHeight, offsets,
+					g);
+		}
+	}
+
+	protected void paintItem(Item item, int index, int x, int y,
+			int leftBorder, int rightBorder, int clipX, int clipY,
+			int clipWidth, int clipHeight, int[] offsets, Graphics g) 
+	{
+		Background background = removeItemBackground(item);
+		Border border = removeItemBorder(item);
+		int xAdjust = offsets[index];
+		if (background != null || border != null) {
+			int backgroundWidth = rightBorder - leftBorder;
+			int topLineHeight = 0;
+			int bottomLineHeight = 0;
+			int bottomLineWidth = item.itemWidth;
+			int bodyHeight = item.itemHeight;
+			if (item instanceof StringItem) {
+				StringItem stringItem = (StringItem) item;
+				WrappedText wrappedText = stringItem.getWrappedText();
+				if (xAdjust > 0 && wrappedText.size() > 1) {
+					topLineHeight = stringItem.getMarginTop() + stringItem.getPaddingTop() + stringItem.getLineHeight();
 				}
-				if (topLineHeight > 0) {
-					// okay, we have at least one line that starts not at the beginning:
-					g.clipRect(x + xAdjust, y, backgroundWidth - xAdjust, topLineHeight);
-					if (background != null) {
-						background.paint(x, y, backgroundWidth, focItem.itemHeight, g); // remove margins
-					}
-					if (border != null) {
-						border.paint( x + xAdjust, y, backgroundWidth - xAdjust, focItem.itemHeight, g);
-					}
-					g.setClip(clipX, clipY, clipWidth, clipHeight);
-				} 
-				g.clipRect( x, y + topLineHeight, backgroundWidth, bodyHeight);
+				bottomLineWidth = stringItem.getMarginLeft() + stringItem.getPaddingLeft() + wrappedText.getLineWidth( wrappedText.size() - 1) + stringItem.getPaddingRight() + stringItem.getMarginRight();
+				if (bottomLineWidth < backgroundWidth - (backgroundWidth/10)) {
+					bottomLineHeight = stringItem.getMarginBottom() + stringItem.getPaddingBottom() + stringItem.getLineHeight();
+				}
+				bodyHeight -= topLineHeight + bottomLineHeight;
+				if (wrappedText.size() == 1) {
+					backgroundWidth = item.itemWidth;
+				}
+				//System.out.println("xAdjust=" + xAdjust + ", lineHeight=" + stringItem.getLineHeight() + ", top=" + topLineHeight + ", bottom=" + bottomLineHeight + ", body=" + bodyHeight + ", itemHeight=" + focItem.itemHeight + " for " + stringItem.getText());
+			}
+			if (topLineHeight > 0) {
+				// okay, we have at least one line that starts not at the beginning:
+				g.clipRect(x + xAdjust, y, backgroundWidth - xAdjust, topLineHeight);
 				if (background != null) {
-					background.paint(x, y, backgroundWidth, focItem.itemHeight, g); // remove margins
+					background.paint(x, y, backgroundWidth, item.itemHeight, g); // remove margins
 				}
 				if (border != null) {
-					border.paint( x, y, backgroundWidth, focItem.itemHeight, g);
-					if (topLineHeight != 0) {
-						g.clipRect( x, y + topLineHeight, xAdjust + border.getBorderWidthRight(), bodyHeight);
-						border.paint( x, y + topLineHeight, backgroundWidth, bodyHeight + bottomLineHeight, g);						
-					}  
-					if (bottomLineHeight != 0) {
-						if (topLineHeight != 0) {
-							g.setClip(clipX, clipY, clipWidth, clipHeight);
-						}
-						g.clipRect( x + bottomLineWidth - border.getBorderWidthLeft(), y + topLineHeight + bodyHeight - border.getBorderWidthBottom(), backgroundWidth - bottomLineWidth, bodyHeight);
-						border.paint( x + bottomLineWidth - 2, y, backgroundWidth - bottomLineWidth + 2, topLineHeight + bodyHeight, g);						
-					}
+					border.paint( x + xAdjust, y, backgroundWidth - xAdjust, item.itemHeight, g);
 				}
 				g.setClip(clipX, clipY, clipWidth, clipHeight);
-				if (bottomLineHeight > 0) {
-					g.clipRect( x, y + topLineHeight + bodyHeight, bottomLineWidth, bottomLineHeight);
-					if (background != null) {
-						background.paint(x, y, backgroundWidth, focItem.itemHeight, g); // remove margins
+			} 
+			g.clipRect( x, y + topLineHeight, backgroundWidth, bodyHeight);
+			if (background != null) {
+				background.paint(x, y, backgroundWidth, item.itemHeight, g); // remove margins
+			}
+			if (border != null) {
+				border.paint( x, y, backgroundWidth, item.itemHeight, g);
+				if (topLineHeight != 0) {
+					g.clipRect( x, y + topLineHeight, xAdjust + border.getBorderWidthRight(), bodyHeight);
+					border.paint( x, y + topLineHeight, backgroundWidth, bodyHeight + bottomLineHeight, g);						
+				}  
+				if (bottomLineHeight != 0) {
+					if (topLineHeight != 0) {
+						g.setClip(clipX, clipY, clipWidth, clipHeight);
 					}
-					if (border != null) {
-						border.paint( x, y, bottomLineWidth, focItem.itemHeight, g);
-					}
-					g.setClip(clipX, clipY, clipWidth, clipHeight);					
+					g.clipRect( x + bottomLineWidth - border.getBorderWidthLeft(), y + topLineHeight + bodyHeight - border.getBorderWidthBottom(), backgroundWidth - bottomLineWidth, bodyHeight);
+					border.paint( x + bottomLineWidth - 2, y, backgroundWidth - bottomLineWidth + 2, topLineHeight + bodyHeight, g);						
 				}
 			}
-			x += xAdjust;
-			//paintItem(focItem, this.focusedIndex, x, y + focItem.relativeY, x, x + focItem.itemWidth, clipX, clipY, clipWidth, clipHeight, g);
-			paintItem(focItem, this.focusedIndex, x, y, leftBorder, rightBorder, clipX, clipY, clipWidth, clipHeight, g);
+			g.setClip(clipX, clipY, clipWidth, clipHeight);
+			if (bottomLineHeight > 0) {
+				g.clipRect( x, y + topLineHeight + bodyHeight, bottomLineWidth, bottomLineHeight);
+				if (background != null) {
+					background.paint(x, y, backgroundWidth, item.itemHeight, g); // remove margins
+				}
+				if (border != null) {
+					border.paint( x, y, bottomLineWidth, item.itemHeight, g);
+				}
+				g.setClip(clipX, clipY, clipWidth, clipHeight);					
+			}			
 		}
+		x += xAdjust;
+		paintItem(item, index, x, y, leftBorder, rightBorder, clipX, clipY, clipWidth, clipHeight, g);
+		addItemBackgroundBorder(item, background, border);
 	}
 
 	/* (non-Javadoc)
