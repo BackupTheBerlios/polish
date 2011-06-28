@@ -139,6 +139,7 @@ implements ApplicationInitializer, CommandListener
 		list.addEntry("entry1");
 		list.addEntry("entry2");
 		list.addEntry("entry3");
+		list.addEntry(Locale.get("cmd.exit"));
 		return list;
 	}
 
