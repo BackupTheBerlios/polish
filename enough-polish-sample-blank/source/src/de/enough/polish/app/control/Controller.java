@@ -62,6 +62,11 @@ implements ApplicationInitializer, CommandListener
 	private Command cmdBack = new Command(Locale.get("cmd.back"), Command.BACK, 2);
 	
 	private MainMenuList screenMainMenu;
+	private static final int MAIN_ACTION_START = 0;
+	private static final int MAIN_ACTION_SETTINGS = 1;
+	private static final int MAIN_ACTION_ABOUT = 2;
+	private static final int MAIN_ACTION_EXIT = 3;
+	
 	private SimpleScreenHistory screenHistory;
 	
 	
@@ -173,12 +178,9 @@ implements ApplicationInitializer, CommandListener
 	 */
 	public void commandAction(Command cmd, Displayable disp) {
 		if (cmd == this.cmdExit) {
-			if (this.configuration.isDirty()) {
-				configurationSave();
-			}
-			this.midlet.exit();
+			exit();
 		} else if (disp == this.screenMainMenu) {
-			if (handleCommandMainMenu()) {
+			if (handleCommandMainMenu(cmd)) {
 				return;
 			}
 		} else if (cmd == this.cmdBack) {
@@ -193,10 +195,32 @@ implements ApplicationInitializer, CommandListener
 
 	/**
 	 * Handles commands for the main menu
+	 * @param cmd the command of the main menu
 	 * @return true when a command was handled
 	 */
-	private boolean handleCommandMainMenu() {
-		
+	private boolean handleCommandMainMenu(Command cmd) {
+		if (cmd == MainMenuList.SELECT_COMMAND) {
+			int index = this.screenMainMenu.getSelectedIndex();
+			switch (index) {
+			case MAIN_ACTION_START:
+			case MAIN_ACTION_SETTINGS:
+			case MAIN_ACTION_ABOUT:
+				break;
+			case MAIN_ACTION_EXIT:
+				exit();
+				return true;
+			}
+		}
 		return false;
+	}
+
+	/**
+	 * Exits this app
+	 */
+	private void exit() {
+		if (this.configuration.isDirty()) {
+			configurationSave();
+		}
+		this.midlet.exit();
 	}
 }
