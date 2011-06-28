@@ -1,4 +1,4 @@
-MicroEmulator
+MicroEmulator 2.0.4
 
 J2ME Device Emulator is pure Java implementation of J2ME in J2SE.
 It allows demonstrate MIDlet (MIDP/CLDC) based applications as a
