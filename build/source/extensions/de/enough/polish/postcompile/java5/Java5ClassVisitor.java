@@ -99,12 +99,14 @@ public class Java5ClassVisitor
    */
   public FieldVisitor visitField(int access, String name, String desc, String signature, Object value)
   {
+    EnumManager enumManager = EnumManager.getInstance();
+
     if (this.isEnumClass
         && this.classDesc.equals(desc))
       {
         String fieldName = this.classDesc + "." + name;
         desc = "I";
-        value = EnumManager.getInstance().getEnumValue(fieldName);
+        value = enumManager.getEnumValue(fieldName);
         
         if (value == null)
           {
@@ -122,6 +124,11 @@ public class Java5ClassVisitor
         desc = "[I";
       }
     
+    if (desc.charAt(0) == 'L'
+    	&& enumManager.isEnumClass(desc.substring(1, desc.length() - 1))) {
+    	desc = "I";
+    }
+
     return super.visitField(access, name, desc, signature, value);
   }
 

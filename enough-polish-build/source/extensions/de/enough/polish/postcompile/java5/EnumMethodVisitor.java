@@ -98,9 +98,18 @@ public class EnumMethodVisitor
    */
   public void visitTypeInsn(int opcode, String desc)
   {
-    super.visitTypeInsn(opcode, EnumManager.transform(desc));
+    if (CHECKCAST == opcode
+    	&& EnumManager.getInstance().isEnumClass(desc)) {
+    	super.visitInsn(NOP);
+    }
+    else  {
+    	super.visitTypeInsn(opcode, EnumManager.transform(desc));
+    }
   }
   
+  /* (non-Javadoc)
+   * @see org.objectweb.asm.commons.LocalVariablesSorter#visitVarInsn(int, int)
+   */
   public void visitVarInsn(int opcode, int var)
   {
     EnumManager manager = EnumManager.getInstance();
