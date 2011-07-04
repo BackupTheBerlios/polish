@@ -36,11 +36,7 @@ import de.enough.polish.ui.Style;
 /**
  * <p>Moves the new screen from the left to the front.</p>
  *
- * <p>Copyright (c) Enough Software 2005 - 2009</p>
- * <pre>
- * history
- *        31-May-2005 - mkoch creation
- * </pre>
+ * <p>Copyright (c) Enough Software 2005 - 2011</p>
  * @author Michael Koch, michael@enough.de
  */
 public class VerticalFlashScreenChangeAnimation extends ScreenChangeAnimation

@@ -37,18 +37,14 @@ import de.enough.polish.ui.Style;
  * <p>Moves the new screen from the right to the front.</p>
  *
  * <p>Copyright (c) Enough Software 2005 - 2009</p>
- * <pre>
- * history
- *        31-May-2005 - mkoch creation
- * </pre>
  * @author Michael Koch, michael@enough.de
  */
 public class LeftShutterScreenChangeAnimation extends ScreenChangeAnimation
 {	
 	private int currentX;
 	private int speed = -1;
-	//#if polish.css.right-shutter-screen-change-animation-color
-	private int color = 0;
+	//#if polish.css.left-shutter-screen-change-animation-color
+		private int color = 0;
 	//#endif
 
 	/**
@@ -71,8 +67,8 @@ public class LeftShutterScreenChangeAnimation extends ScreenChangeAnimation
 		} else {
 			this.currentX = this.screenWidth;
 		}
-		//#if polish.css.right-shutter-screen-change-animation-speed
-			Integer speedInt = style.getIntProperty("right-shutter-screen-change-animation-speed");
+		//#if polish.css.left-shutter-screen-change-animation-speed
+			Integer speedInt = style.getIntProperty("left-shutter-screen-change-animation-speed");
 			if (speedInt != null)
 			{
 				this.speed = speedInt.intValue();
@@ -81,8 +77,8 @@ public class LeftShutterScreenChangeAnimation extends ScreenChangeAnimation
 			}
 		//#endif
 		
-		//#if polish.css.right-shutter-screen-change-animation-color
-			Integer colorInt = style.getIntProperty("right-shutter-screen-change-animation-color");
+		//#if polish.css.left-shutter-screen-change-animation-color
+			Integer colorInt = style.getIntProperty("left-shutter-screen-change-animation-color");
 			if (colorInt != null)
 			{
 				this.color = colorInt.intValue();
@@ -135,7 +131,7 @@ public class LeftShutterScreenChangeAnimation extends ScreenChangeAnimation
 			second = this.lastCanvasImage;
 		}
 		g.drawImage(first, 0, 0, Graphics.TOP | Graphics.LEFT);
-		//#if polish.css.right-shutter-screen-change-animation-color
+		//#if polish.css.left-shutter-screen-change-animation-color
 			g.setColor(this.color);
 		//#else
 			g.setColor(0);

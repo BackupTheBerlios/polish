@@ -34,41 +34,36 @@ import de.enough.polish.ui.ScreenChangeAnimation;
 import de.enough.polish.ui.Style;
 
 /**
- * <p>Moves the new screen from the top to the front.</p>
+ * <p>Moves the new screen like two snapping doors from top and bottom that meet in the middle.</p>
  *
- * <p>Copyright (c) Enough Software 2005 - 2011</p>
- * @author Michael Koch, michael@enough.de
+ * <p>Copyright (c) Enough Software 2011</p>
+ * @author Robert Virkus, j2mepolish@enough.de
  */
-public class TopShutterScreenChangeAnimation extends ScreenChangeAnimation
+public class VerticalDoorsScreenChangeAnimation extends ScreenChangeAnimation
 {	
 	private int currentY;
-	//#if polish.css.top-shutter-screen-change-animation-speed
 	private int speed = -1;
-	//#endif
-	//#if polish.css.top-shutter-screen-change-animation-color
-	private int color = 0;
-	//#endif
 
 	/**
 	 * Creates a new animation 
 	 */
-	public TopShutterScreenChangeAnimation()
+	public VerticalDoorsScreenChangeAnimation()
 	{
 		// Do nothing here.
 	}
+
+	
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#setStyle(de.enough.polish.ui.Style)
 	 */
 	protected void setStyle(Style style)
 	{
-		if (this.isForwardAnimation) {
-			this.currentY = 0;
-		} else {
-			this.currentY = this.screenHeight;
-		}
-		//#if polish.css.top-shutter-screen-change-animation-speed
-			Integer speedInt = style.getIntProperty("top-shutter-screen-change-animation-speed");
+		super.setStyle(style);
+		this.currentY = this.screenHeight / 2;
+
+		//#if polish.css.vertical-doors-screen-change-animation-speed
+			Integer speedInt = style.getIntProperty("vertical-doors-change-animation-speed");
 			if (speedInt != null)
 			{
 				this.speed = speedInt.intValue();
@@ -76,43 +71,28 @@ public class TopShutterScreenChangeAnimation extends ScreenChangeAnimation
 				this.speed = -1;
 			}
 		//#endif
-		//#if polish.css.top-shutter-screen-change-animation-color
-			Integer colorInt = style.getIntProperty("top-shutter-screen-change-animation-color");
-			if (colorInt != null)
-			{
-				this.color = colorInt.intValue();
-			}
-		//#endif
-		super.setStyle(style);
+		
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#animate()
 	 */
 	protected boolean animate()
 	{
 		int adjust;
-		//#if polish.css.top-shutter-screen-change-animation-speed
+		//#if polish.css.vertical-doors-screen-change-animation-speed
 			if (this.speed != -1) {
 				adjust = this.speed;
 			} else {
 		//#endif
-				adjust = (this.screenHeight - this.currentY) / 3;
+				adjust = this.currentY / 3;
 				if (adjust < 2) {
 					adjust = 2;
 				}
-		//#if polish.css.top-shutter-screen-change-animation-speed
+		//#if polish.css.vertical-doors-screen-change-animation-speed
 			}
-		//#endif			
-		
-		if (this.isForwardAnimation) {
-			if (this.currentY < this.screenHeight)
-			{
-				this.currentY += adjust;
-				return true;
-			}
-		}
-		else if  (this.currentY > 0)
+		//#endif
+		if (this.currentY > 0)
 		{
 			this.currentY -= adjust;
 			return true;
@@ -127,23 +107,21 @@ public class TopShutterScreenChangeAnimation extends ScreenChangeAnimation
 	{
 		Image first;
 		Image second;
+		int height;
 		if (this.isForwardAnimation) {
-			first = this.nextCanvasImage;
-			second = this.lastCanvasImage;
-		} else {
 			first = this.lastCanvasImage;
 			second = this.nextCanvasImage;
+			height = (this.screenHeight/2) - this.currentY;
+		} else {
+			first = this.nextCanvasImage;
+			second = this.lastCanvasImage;
+			height = this.currentY;
 		}
+
 		g.drawImage(first, 0, 0, Graphics.TOP | Graphics.LEFT);
-		//#if polish.css.top-shutter-screen-change-animation-color
-		g.setColor(this.color);
-		//#else
-		g.setColor(0);
-		//#endif
-		g.drawLine(0, this.currentY - 1, this.screenWidth, this.currentY - 1);
-		g.setClip(0, this.currentY, this.screenWidth, this.screenHeight - this.currentY);
-		g.drawImage(second, 0, 0, Graphics.TOP | Graphics.LEFT);
+		g.setClip(0, 0, this.screenWidth, height );
+		g.drawImage(second, 0, height - (this.screenHeight/2), Graphics.TOP | Graphics.LEFT);
+		g.setClip(0, this.screenHeight-height, this.screenWidth, height );
+		g.drawImage(second, 0, (this.screenHeight/2) - height , Graphics.TOP | Graphics.LEFT);
 	}
 }
-
-	
