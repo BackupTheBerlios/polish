@@ -1565,6 +1565,8 @@
 		<mapping from="topShutter" to="new de.enough.polish.ui.screenanimations.TopShutterScreenChangeAnimation()" />
 		<mapping from="bottomshutter" to="new de.enough.polish.ui.screenanimations.BottomShutterScreenChangeAnimation()" />
 		<mapping from="bottomShutter" to="new de.enough.polish.ui.screenanimations.BottomShutterScreenChangeAnimation()" />
+		<mapping from="verticaldoors" to="new de.enough.polish.ui.screenanimations.VerticalDoorsScreenChangeAnimation()" />
+		<mapping from="vertical-doors" to="new de.enough.polish.ui.screenanimations.VerticalDoorsScreenChangeAnimation()" />
 		<mapping from="flash" to="new de.enough.polish.ui.screenanimations.FlashScreenChangeAnimation()" />
 		<mapping from="verticalflash" to="new de.enough.polish.ui.screenanimations.VerticalFlashScreenChangeAnimation()" />
 		<mapping from="verticalFlash" to="new de.enough.polish.ui.screenanimations.VerticalFlashScreenChangeAnimation()" />
@@ -5533,7 +5535,18 @@
 		description="The style for days of the current month that are outside of the specified valid period within an CalendarItem."
 		id="480"
 		since="J2ME Polish 2.2"
-	/>	
+	/>
+	
+	<attribute
+		name="vertical-doors-screen-change-animation-speed"
+		type="integer"
+		appliesTo="VerticalDoorsScreenChangeAnimation"
+		description="The constant speed of the animation. By default the animation uses a somewhat quadratic de-acceleration."
+		default="-1"
+		id="481"
+		since="J2ME Polish 2.2"
+	/>
+	
 	
 <!--
 	<attribute
