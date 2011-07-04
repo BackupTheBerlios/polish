@@ -60,6 +60,22 @@ public class JsonNumber implements JsonItem {
 		this.stringRepresentation = number.toString();
 	}
 	
+	/**
+	 * Creates a new JSON number
+	 * @param number the number
+	 */
+	public JsonNumber(long number) {
+		this.stringRepresentation = String.valueOf(number);
+	}
+	
+	/**
+	 * Creates a new JSON number
+	 * @param number the number
+	 */
+	public JsonNumber(Long number) {
+		this.stringRepresentation = number.toString();
+	}
+	
 	//#if polish.hasFloatingPoint	
 	/**
 	 * Creates a new JSON number
@@ -68,7 +84,9 @@ public class JsonNumber implements JsonItem {
 	public JsonNumber(float number) {
 		this.stringRepresentation = String.valueOf(number);
 	}
+	//#endif
 	
+	//#if polish.hasFloatingPoint	
 	/**
 	 * Creates a new JSON number
 	 * @param number the number
@@ -76,7 +94,9 @@ public class JsonNumber implements JsonItem {
 	public JsonNumber(Float number) {
 		this.stringRepresentation = number.toString();
 	}
+	//#endif
 	
+	//#if polish.hasFloatingPoint	
 	/**
 	 * Creates a new JSON number
 	 * @param number the number
