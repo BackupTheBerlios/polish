@@ -1003,43 +1003,18 @@ extends ItemView
 	 */
 	protected void paintContent(Container container, Item[] myItems, int x, int y, int leftBorder, int rightBorder, int clipX, int clipY, int clipWidth, int clipHeight, Graphics g) {
 		x += this.xOffset;
-		//#ifdef tmp.useTable
-			if (this.columnsSetting == NO_COLUMNS || myItems.length == 1 || this.numberOfColumns <= 1) {
-		//#endif
-				for (int i = 0; i < myItems.length; i++) {
-					if (i != this.focusedIndex) {
-						Item item = myItems[i];
-						//System.out.println("item " + i + " at " + item.relativeX + "/" + item.relativeY);
-						int itemX = x + item.relativeX;
-						int itemY = y + item.relativeY;
-						leftBorder = itemX;
-						rightBorder = itemX + item.itemWidth;
-						paintItem(item, i, itemX, itemY, leftBorder, rightBorder, clipX, clipY, clipWidth, clipHeight, g);
-					}
-				}
-		//#ifdef tmp.useTable
-			} else {
-				//int rowIndex = 0;
-				//#if polish.debug.warn
-					if (this.columnsWidths == null) {
-						//#debug warn
-						System.out.println(this + ": no columnsWidth for " + this.parentContainer.getStyle().name + " with " + myItems.length + " elements");
-					}
-				//#endif
-				for (int i = 0; i < myItems.length; i++) {
-					if (i != this.focusedIndex) {
-						Item item = myItems[i];
-						int itemX = x + item.relativeX;
-						int itemY = y + item.relativeY;
-						leftBorder = itemX;
-						rightBorder = itemX + item.itemWidth;
-						//System.out.println("item " + i + " at " + item.relativeX + "/" + item.relativeY);
-						paintItem(item, i, itemX, itemY, leftBorder, rightBorder, clipX, clipY, clipWidth, clipHeight, g);
-					} 
-					//System.out.println("painting item " + item + " at x=" + itemX + ", leftBorder=" + leftBorder + ", rightBorder=" + rightBorder + ", relativeX=" + item.relativeX );
-				}				
+		for (int i = 0; i < myItems.length; i++) {
+			if (i != this.focusedIndex) {
+				Item item = myItems[i];
+				//System.out.println("item " + i + " at " + item.relativeX + "/" + item.relativeY);
+				int itemX = x + item.relativeX;
+				int itemY = y + item.relativeY;
+//				leftBorder = itemX;
+//				rightBorder = itemX + item.itemWidth;
+				paintItem(item, i, itemX, itemY, itemX, itemX + item.itemWidth, clipX, clipY, clipWidth, clipHeight, g);
 			}
-		//#endif
+		}
+		
 		// paint focused item last:
 		Item focItem = this.focusedItem;
 		if (focItem != null) {

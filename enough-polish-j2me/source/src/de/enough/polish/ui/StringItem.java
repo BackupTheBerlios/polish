@@ -708,6 +708,7 @@ public class StringItem extends Item
 					drawString( line, lineX, lineY, orientation, g );
 					lineY += lineHeight;
 					if (i == 0 && x > leftBorder) {
+						//System.out.println("changing lineX from " + lineX + " to " + leftBorder);
 						lineX = leftBorder;
 					}
 				}
@@ -854,8 +855,30 @@ public class StringItem extends Item
 		//#if polish.css.text-wrap
 			}
 		//#endif
+//		if (this.textEffect != null)
+//			System.out.println("init: padding-vertical=" + this.paddingVertical + ", paddingTop=" + this.paddingTop + " for " + this.text);
 		this.lastContentWidth = this.contentWidth;
 		this.lastContentHeight = this.contentHeight;
+	}
+	
+	/**
+	 * Resets if the text needs reinitialization.
+	 * Normally this method does not need to be called, as any changes that require text-reinitialization are picked up
+	 * automatically.
+	 * @param isInitializationRequired true when the text needs to be initialized again.
+	 * @see #isTextInitializationRequired()
+	 */
+	public void setTextInitializationRequired( boolean isInitializationRequired) {
+		this.isTextInitializationRequired = isInitializationRequired;
+	}
+	
+	/**
+	 * Checks if the text needs to be initialized again at this point in time.
+	 * @return true when a reinitialization is reuqired.
+	 * @see #setTextInitializationRequired(boolean)
+	 */
+	public boolean isTextInitializationRequired() {
+		return this.isTextInitializationRequired;
 	}
 	
 	/**
@@ -886,10 +909,11 @@ public class StringItem extends Item
 	}
 	
 	/**
-	 * Calculates the content width with the lines, the lineheight and the vertical padding
+	 * Calculates the content height with the lines, the lineheight and the vertical padding
 	 * @param lines the lines
 	 * @param lineHeight the lineheight
-	 * @return the height in pixels
+	 * @return the height in pixels, normally (lines.size() * lineHeight) - this.paddingVertical;
+	 * @see TextEffect#calculateLinesHeight(WrappedText, int, int)
 	 */
 	protected int calculateLinesHeight(WrappedText lines, int lineHeight) {
 		//#ifdef tmp.useTextEffect
@@ -1164,6 +1188,20 @@ public class StringItem extends Item
 	 */
 	public WrappedText getWrappedText() {
 		return this.textLines;
+	}
+	
+	/**
+	 * Retrieves the number of lines.
+	 * Note that the text is only wrapped AFTER init()/initContent() has been called on this StringItem.
+	 * @return the number of lines or -1 when the text has not been initialized yet.
+	 * @see #init(int, int, int)
+	 * @see #initContent(int, int, int)
+	 */
+	public int getNumberOfLines() {
+		if (this.textLines == null) {
+			return -1;
+		}
+		return this.textLines.size();
 	}
 
 }

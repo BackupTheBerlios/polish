@@ -1438,7 +1438,7 @@ public class Container extends Item {
 	 */
 	protected void initContent(int firstLineWidth, int availWidth, int availHeight) {
 		//#debug
-		System.out.println("Container: intialising content for " + this + ": autofocus=" + this.autoFocusEnabled + ", autoFocusIndex=" + this.autoFocusIndex + ", firstLineWidth=" + firstLineWidth + ", availWidth=" + availWidth + ", availHeight=" + availHeight + ", size=" + this.itemsList.size() );
+		System.out.println("Container: intialising content for " + this + ": autofocus=" + this.autoFocusEnabled + ", autoFocusIndex=" + this.autoFocusIndex + ", isFocused=" + this.isFocused + ", firstLineWidth=" + firstLineWidth + ", availWidth=" + availWidth + ", availHeight=" + availHeight + ", size=" + this.itemsList.size() );
 		//this.availableContentWidth = firstLineWidth;
 		//#if polish.css.focused-style
 			if (this.focusedStyle != null) {
@@ -1524,7 +1524,7 @@ public class Container extends Item {
 						this.appearanceMode = this.containerView.appearanceMode;
 					}
 					if (this.isFocused && this.autoFocusEnabled) {
-						//#debug
+						// #debug
 						System.out.println("Container/View: autofocusing element starting at " + this.autoFocusIndex);
 						if (this.autoFocusIndex >= 0 && this.appearanceMode != Item.PLAIN) {
 							for (int i = this.autoFocusIndex; i < myItems.length; i++) {
@@ -2790,7 +2790,7 @@ public class Container extends Item {
 	 */
 	protected Style focus(Style focusStyle, int direction ) {
 		//#debug
-		System.out.println("focussing container " + this + " from " + (this.style != null ? this.style.name : "<no style>") + " to " + getFocusedStyle().name);
+		System.out.println("focusing container " + this + " from " + (this.style != null ? this.style.name : "<no style>") + " to " + getFocusedStyle().name);
 		if (this.isFocused) {
 			return this.style;
 		}

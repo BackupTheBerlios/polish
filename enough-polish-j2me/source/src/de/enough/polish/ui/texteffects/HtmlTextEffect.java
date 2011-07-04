@@ -31,6 +31,7 @@ import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.io.StringReader;
+import de.enough.polish.ui.Dimension;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
@@ -45,13 +46,28 @@ import de.enough.polish.xml.XmlPullParser;
 
 /**
  * Allows to use simple HTML markup for the design of the text.
+ * Usage in polish.css:
+ * <pre>
+ * .myText {
+ * 	 text-effect: html;
+ * }
+ * .redText {
+ *   always-include: true;
+ * 	 font-color: red;
+ * }
+ * </pre>
+ * 
+ * Usage in Java:
+ * //#style myText
+ * StringItem item = new StringItem(null, "hello <div class=\"redText\">red, red</div> <b>world</b>
  * @author Robert Virkus
  *
  */
 public class HtmlTextEffect extends TextEffect {
 
-	private Midp2ContainerView midp2View;
+	private HtmlTextContainerView containerView;
 	private transient Item[] textItems;
+	private WrappedText storedWrappedText;
 
 
 	/**
@@ -69,19 +85,23 @@ public class HtmlTextEffect extends TextEffect {
 			int leftBorder, int rightBorder, int lineHeight, int maxWidth,
 			int layout, Graphics g) 
 	{
-		if (this.midp2View == null) {
+		if (this.containerView == null) {
 			super.drawStrings(textLines, textColor, x, y, leftBorder, rightBorder,
 					lineHeight, maxWidth, layout, g);
 		} else {
 			//#if polish.Bugs.needsBottomOrientiationForStringDrawing
-				y -= this.midp2View.getContentHeight();
+				y -= getFontHeight();
 			//#endif
 			if ((layout & Item.LAYOUT_CENTER) == Item.LAYOUT_CENTER) {
-				x += ((rightBorder - leftBorder) - this.midp2View.getContentWidth()) / 2;
+				x += ((rightBorder - leftBorder) - this.containerView.getContentWidth()) / 2;
 			} else if ((layout & Item.LAYOUT_CENTER) == Item.LAYOUT_RIGHT) {
-				x += ((rightBorder - leftBorder) - this.midp2View.getContentWidth());				
+				x += ((rightBorder - leftBorder) - this.containerView.getContentWidth());				
 			}
-			this.midp2View.paintContent( this.textItems, x, y, leftBorder, rightBorder, g );			
+			//System.out.println("painting: y=" + y + ", x=" + x + ", left=" + leftBorder + " for " + this );
+			//if (x + this.containerView.getContentWidth() > rightBorder) {
+				x = leftBorder;
+			//}
+			this.containerView.paintContent( this.textItems, x, y, leftBorder, rightBorder, g );			
 		}
 	}
 
@@ -93,9 +113,15 @@ public class HtmlTextEffect extends TextEffect {
 			String maxLinesAppendix, int maxLinesAppendixPosition,
 			WrappedText wrappedText) 
 	{
+		this.storedWrappedText = wrappedText;
 		ArrayList childList = new ArrayList();
 		Style baseStyle = this.style.clone(true);
 		baseStyle.removeAttribute("text-effect");
+		Dimension padding = new Dimension(0);
+		baseStyle.addAttribute("padding-left", padding);
+		baseStyle.addAttribute("padding-right", padding);
+		baseStyle.addAttribute("padding-top", padding);
+		baseStyle.addAttribute("padding-bottom", padding);
 		baseStyle.layout = (baseStyle.layout & (~(Item.LAYOUT_EXPAND | Item.LAYOUT_VEXPAND | Item.LAYOUT_SHRINK | Item.LAYOUT_VSHRINK)) );
 		baseStyle.background = null;
 		baseStyle.border = null;
@@ -116,59 +142,37 @@ public class HtmlTextEffect extends TextEffect {
 		Item[] items = (Item[]) childList.toArray( new Item[childList.size()]);
 		for (int i = 0; i < items.length; i++) {
 			Item item = items[i];
-			//System.out.println( i + ": " + ((StringItem)item).getText());
+			//System.out.println( i + ": [" + ((StringItem)item).getText() + "]");
 			item.getItemWidth( lineWidth, lineWidth, -1);
 		}
-		Midp2ContainerView view = new Midp2ContainerView();
+		HtmlTextContainerView view = new HtmlTextContainerView(wrappedText);
+		wrappedText.clear();
 		view.initContent(items, firstLineWidth, lineWidth, -1);
+		if (view.isInitializationError && (firstLineWidth < lineWidth)) {
+			wrappedText.clear();
+			view.resetInitializationError();
+			Item item = items[0];
+			item.setInitialized(false);
+			item.getItemWidth(lineWidth, lineWidth, -1);
+			//((StringItem)item).setTextInitializationRequired(true);
+			view.initContent(items, lineWidth, lineWidth, -1);
+		}
 		this.textItems = items;
-		this.midp2View = view;
+		this.containerView = view;
 		//System.out.println("WRAPPING RESULT: items=" + items.length + ", view=" + view.getContentWidth() + " X " + view.getContentHeight());
-		wrappedText.setMaxLineWidth(view.getContentWidth());
 	}
-
-
-//	/*
-//	 * (non-Javadoc)
-//	 * @see de.enough.polish.ui.TextEffect#wrap(java.lang.String, int, javax.microedition.lcdui.Font, int, int)
-//	 */
-//	public String[] wrap(String htmlText, int textColor, Font font,
-//			int firstLineWidth, int lineWidth) 
-//	{
-////		XmlDomNode root = XmlDomParser.parseTree( "<r>" + htmlText + "</r>" );
-//		ArrayList childList = new ArrayList();
-//		Style baseStyle = this.style.clone(true);
-//		baseStyle.removeAttribute("text-effect");
-//		baseStyle.layout = (baseStyle.layout & (~(Item.LAYOUT_EXPAND | Item.LAYOUT_VEXPAND | Item.LAYOUT_SHRINK | Item.LAYOUT_VSHRINK)) );
-//		baseStyle.background = null;
-//		baseStyle.border = null;
-//		
-//		try {
-//			XmlPullParser xmlReader = new XmlPullParser(new StringReader(htmlText), false );
-//			xmlReader.relaxed = true;
-//			parse( xmlReader, baseStyle, childList );
-//		} catch (IOException e) {
-//			//#debug error
-//			System.out.println("Unable to parse text " + htmlText + e );
-//			return super.wrap( htmlText, textColor, font, firstLineWidth, lineWidth );
-//		}
-//
-//		
-//		Item[] items = (Item[]) childList.toArray( new Item[childList.size()]);
-//		for (int i = 0; i < items.length; i++) {
-//			Item item = items[i];
-//			//System.out.println( i + ": " + ((StringItem)item).getText());
-//			item.getItemWidth( lineWidth, lineWidth, -1);
-//		}
-//		Midp2ContainerView view = new Midp2ContainerView();
-//		view.initContent(items, firstLineWidth, lineWidth, -1);
-//		this.textItems = items;
-//		this.midp2View = view;
-//		//System.out.println("WRAPPING RESULT: items=" + items.length + ", view=" + view.getContentWidth() + " X " + view.getContentHeight());
-//		return new String[]{""};
-//	}
-
-
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.TextEffect#calculateLinesHeight(de.enough.polish.util.WrappedText, int, int)
+	 */
+	public int calculateLinesHeight(WrappedText lines, int lineHeight,
+			int paddingVertical) 
+	{
+		if (this.containerView != null) {
+			return this.containerView.getContentHeight();
+		}
+		return super.calculateLinesHeight(lines, lineHeight, paddingVertical);
+	}
 
 	private void parse(XmlPullParser parser, Style nodeStyle, ArrayList childList) 
 	{
@@ -192,6 +196,13 @@ public class HtmlTextEffect extends TextEffect {
 				Style nextNodeStyle = null;
 				if (styleName != null) {
 					nextNodeStyle = StyleSheet.getStyle(styleName);
+					if (nextNodeStyle != null) {
+						nextNodeStyle.removeAttribute("padding-left");
+						nextNodeStyle.removeAttribute("padding-right");
+						nextNodeStyle.removeAttribute("padding-bottom");
+						nextNodeStyle.removeAttribute("padding-top");
+						nextNodeStyle.addAttribute("padding", new Dimension(0));
+					}
 				}
 				if (nextNodeStyle == null) {
 					nextNodeStyle = nodeStyle;
@@ -209,45 +220,7 @@ public class HtmlTextEffect extends TextEffect {
 				return;
 			}
 		} 
-		
 	}
-
-
-//	private void addNode(XmlDomNode node, Style nodeStyle, ArrayList childList) {
-//		String name = node.getName().toLowerCase();
-//		int addedFontStyle = -1;
-//		if ("b".equals(name)) {
-//			addedFontStyle = Font.STYLE_BOLD;
-//		} else if ("i".equals(name)) {
-//			addedFontStyle = Font.STYLE_ITALIC;
-//		}
-//		String styleName = node.getAttribute("class");
-//		if (styleName == null) {
-//			node.getAttribute("id");
-//		}
-//		if (styleName != null) {
-//			Style nextNodeStyle = StyleSheet.getStyle(styleName);
-//			if (nextNodeStyle != null) {
-//				nodeStyle = nextNodeStyle;
-//			}
-//		}
-//		if (addedFontStyle != -1) {
-//			nodeStyle = nodeStyle.clone(true);
-//			Integer fontStyle = nodeStyle.getIntProperty("font-style");
-//			nodeStyle.addAttribute("font-style", addToFontStyle( addedFontStyle, fontStyle ) );
-//		}
-//		String text = node.getText();
-//		if (text != null) {
-//			System.out.println(childList.size() + ": text=" + text);
-//			addText( text, nodeStyle, childList );
-//		}
-//		for (int i=0; i<node.getChildCount(); i++) {
-//			XmlDomNode child = node.getChild(i);
-//			addNode( child, nodeStyle, childList );
-//		}
-//
-//	}
-
 
 	private Object addToFontStyle(int styleSetting, Integer fontStyle) {
 		if (fontStyle == null) {
@@ -262,6 +235,9 @@ public class HtmlTextEffect extends TextEffect {
 		String[] texts = TextUtil.split(text, ' ');
 		for (int i = 0; i < texts.length; i++) {
 			String chunk = texts[i];
+			if (i < texts.length - 1) {
+				chunk += " ";
+			}
 			childList.add( new StringItem( null, chunk, textStyle));
 		}
 		
@@ -295,10 +271,10 @@ public class HtmlTextEffect extends TextEffect {
 	 * @see de.enough.polish.ui.TextEffect#getFontHeight()
 	 */
 	public int getFontHeight() {
-		if (this.midp2View == null) {
+		if (this.containerView == null) {
 			return super.getFontHeight();
 		} else {
-			return this.midp2View.getContentHeight();
+			return this.containerView.getContentHeight() / this.storedWrappedText.size();
 		}
 	}
 	
@@ -307,10 +283,94 @@ public class HtmlTextEffect extends TextEffect {
 	 * @see de.enough.polish.ui.TextEffect#stringWidth(java.lang.String)
 	 */
 	public int stringWidth(String str) {
-		if (this.midp2View == null) {
+		if (this.containerView == null) {
 			wrap( (StringItem)null, str, 0, getFont(), Integer.MAX_VALUE, Integer.MAX_VALUE, TextUtil.MAXLINES_UNLIMITED, null, TextUtil.MAXLINES_APPENDIX_POSITION_AFTER, new WrappedText() );
 		} 
-		return this.midp2View.getContentWidth();
+		return this.containerView.getContentWidth();
 	}
+	
+	private static class HtmlTextContainerView extends Midp2ContainerView {
+		private final WrappedText wrappedText;
+		private int widthDifference;
+		private boolean isFirstLine;
+		private boolean isInitializationError;
+
+		/**
+		 * Creates a new container view
+		 * @param wrappedText the wrapped text in which line breaks are stored
+		 */
+		public HtmlTextContainerView( WrappedText wrappedText ) {
+			this.wrappedText = wrappedText;
+		}
+		
+		
+
+		/* (non-Javadoc)
+		 * @see de.enough.polish.ui.containerviews.Midp2ContainerView#initContent(de.enough.polish.ui.Item[], int, int, int)
+		 */
+		public void initContent(Item[] items, int firstLineWidth,
+				int availWidth, int availHeight) 
+		{
+			this.widthDifference = availWidth - firstLineWidth;
+			this.isFirstLine = (this.widthDifference != 0);
+			super.initContent(items, firstLineWidth, availWidth, availHeight);
+		}
+
+
+
+		/* (non-Javadoc)
+		 * @see de.enough.polish.ui.containerviews.Midp2ContainerView#addLineBreak(de.enough.polish.ui.Item[], int, int, int, int, int)
+		 */
+		protected void addLineBreak(Item[] items, int currentRowStartIndex,
+				int currentRowEndIndex, int currentRowWidth,
+				int currentRowHeight, int availWidth) 
+		{
+			if (currentRowEndIndex == 0 && items.length > 1) {
+				StringItem endOfLineItem = (StringItem) items[currentRowEndIndex];
+				if (endOfLineItem.getNumberOfLines() > 1) {
+					endOfLineItem.setInitialized(false);
+					this.isInitializationError = true;
+				}
+			}
+			super.addLineBreak(items, currentRowStartIndex, currentRowEndIndex,
+					currentRowWidth, currentRowHeight, availWidth);
+			if (this.isFirstLine) {
+				this.isFirstLine = false;
+				//System.out.println("adding " + this.widthDifference + " to xOffset of items...");
+				for (int i=currentRowStartIndex; i <= currentRowEndIndex; i++) {
+					Item item = items[i];
+					item.relativeX += this.widthDifference;
+				}
+			}
+			this.wrappedText.addLine("", currentRowWidth);
+			if (currentRowStartIndex == currentRowEndIndex) {
+				// this is only one time, check if it contains line breaks:
+				StringItem stringItem = (StringItem) items[currentRowStartIndex];
+				int numberOfLines = stringItem.getNumberOfLines();
+				if (numberOfLines > 1) {
+					for (int i=1; i<numberOfLines; i++) {
+						this.wrappedText.addLine("", 0);
+					}
+				}
+			}
+		}
+		
+		/**
+		 * Determines if the initialization failed, e.g. when the first line was too small.
+		 * @return true when the initialization failed.
+		 */
+		public boolean isInitializationError() {
+			return this.isInitializationError;
+		}
+		
+		/**
+		 * Resets the initialization error status to false.
+		 */
+		public void resetInitializationError() {
+			this.isInitializationError = false;
+		}
+		
+	}
+	
 
 }
