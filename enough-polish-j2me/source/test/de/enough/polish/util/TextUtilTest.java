@@ -164,7 +164,32 @@ public class TextUtilTest extends TestCase {
 		assertEquals( "two", output[1] );
 		assertEquals( "three", output[2] );
 		assertEquals( null, output[3] );
+	} 
+	
+	public void testSplit() {
+		String input;
+		String[] output;
+
+		input = "This was John's testimony when the Jewish leaders sent priests and Temple assistants from Jerusalem to ask  John, ";
+		output = TextUtil.split( input, ' ' );
+		assertEquals( 20, output.length );
+		assertEquals( "This", output[0] );
+		assertEquals( "was", output[1] );
+		assertEquals( "John's", output[2] );
+		assertEquals( "", output[17] );
+		assertEquals( "John,", output[18] );
+		assertEquals( "", output[19] );
+		
+		input = "This was John's testimony when the Jewish leaders sent priests and Temple assistants from Jerusalem to ask John,";
+		output = TextUtil.split( input, ' ' );
+		assertEquals( 18, output.length );
+		assertEquals( "This", output[0] );
+		assertEquals( "was", output[1] );
+		assertEquals( "John's", output[2] );
+		assertEquals( "John,", output[17] );
 	}
+	
+	
 		
 	public void testReverseForRtlLanguage() {
 		String input = "ŠšŸ 123 ŠšŸ";
