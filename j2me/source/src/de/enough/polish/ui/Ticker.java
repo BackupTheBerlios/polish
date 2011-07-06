@@ -86,7 +86,7 @@ public class Ticker extends IconItem
 	 */
 	public static final int DIRECTION_LEFT_TO_RIGHT = 1;
 	/** the x offset - if it increased, then the text will be painted more to the left side */ 
-	private int tickerXOffset;
+	private int tickerXOffset = Integer.MIN_VALUE;
 	private int step = 2;
 	private int tickerWidth;
 	private int direction;
@@ -142,12 +142,15 @@ public class Ticker extends IconItem
 		//#debug
 		System.out.println("init content of ticker " + this.toString() + ", tickerWidth=" + this.tickerWidth + ", textVisible=" + this.isTextVisible) ;
 		this.contentWidth = availWidth;
-		if (this.direction == DIRECTION_LEFT_TO_RIGHT) {
-			this.tickerXOffset = this.tickerWidth;
-		} else {
-			this.tickerXOffset = - availWidth;
+		// if the ticker offset isn't initialized or the content width as changed ...
+		if(this.tickerXOffset == Integer.MIN_VALUE) {
+			// initialize it
+			if (this.direction == DIRECTION_LEFT_TO_RIGHT) {
+				this.tickerXOffset = this.tickerWidth;
+			} else {
+				this.tickerXOffset = - availWidth;
+			}
 		}
-		
 	}
 
 	/* (non-Javadoc)
