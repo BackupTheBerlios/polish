@@ -38,6 +38,8 @@ import de.enough.polish.ui.Command;
 import de.enough.polish.ui.CommandListener;
 import de.enough.polish.ui.Display;
 import de.enough.polish.ui.Displayable;
+import de.enough.polish.ui.Gauge;
+import de.enough.polish.ui.ScreenInfo;
 import de.enough.polish.ui.SimpleScreenHistory;
 import de.enough.polish.ui.splash2.ApplicationInitializer;
 import de.enough.polish.ui.splash2.InitializerSplashScreen;
@@ -63,11 +65,12 @@ implements ApplicationInitializer, CommandListener
 	
 	private MainMenuList screenMainMenu;
 	private static final int MAIN_ACTION_START = 0;
-	private static final int MAIN_ACTION_SETTINGS = 1;
+	private static final int MAIN_ACTION_STOP = 1;
 	private static final int MAIN_ACTION_ABOUT = 2;
 	private static final int MAIN_ACTION_EXIT = 3;
 	
 	private SimpleScreenHistory screenHistory;
+	private int busyIndicators;
 	
 	
 
@@ -117,14 +120,20 @@ implements ApplicationInitializer, CommandListener
 	 */
 	public void initApp() {
 		long initStartTime = System.currentTimeMillis();
+		//#style busyGauge
+		Gauge busyGauge = new Gauge(null, false, Gauge.INDEFINITE, Gauge.CONTINUOUS_RUNNING );
+		ScreenInfo.setItem(busyGauge);
+		ScreenInfo.setVisible(false);
+		
 		this.storage = new RmsStorage();
 		this.configuration = configurationLoad();
 		// create main menu:
 		this.screenMainMenu = createMainMenu();
 		long currentTime = System.currentTimeMillis();
-		if (currentTime - initStartTime < 2000) { // show the splash at least for 2000 ms / 2 seconds:
+		long maxTime = 1500;
+		if (currentTime - initStartTime < maxTime) { // show the splash at least for 1500 ms / 2 seconds:
 			try {
-				Thread.sleep(2000 - currentTime + initStartTime);
+				Thread.sleep(maxTime - currentTime + initStartTime);
 			} catch (InterruptedException e) {
 				// ignore
 			}
@@ -136,9 +145,9 @@ implements ApplicationInitializer, CommandListener
 		MainMenuList list = new MainMenuList();
 		list.setCommandListener(this);
 		list.addCommand(this.cmdExit);
-		list.addEntry("entry1");
-		list.addEntry("entry2");
-		list.addEntry("entry3");
+		list.addEntry("Start Busy Indicator");
+		list.addEntry("Stop Busy Indicator");
+		list.addEntry("entry 3");
 		list.addEntry(Locale.get("cmd.exit"));
 		return list;
 	}
@@ -188,6 +197,7 @@ implements ApplicationInitializer, CommandListener
 			if (this.screenHistory.hasPrevious()) {
 				this.screenHistory.showPrevious();
 			} else {
+				this.screenHistory.clearHistory();
 				this.display.setCurrent(this.screenMainMenu);
 			}
 		}
@@ -204,7 +214,11 @@ implements ApplicationInitializer, CommandListener
 			int index = this.screenMainMenu.getSelectedIndex();
 			switch (index) {
 			case MAIN_ACTION_START:
-			case MAIN_ACTION_SETTINGS:
+				startBusyIndicator();
+				break;
+			case MAIN_ACTION_STOP:
+				stopBusyIndicator();
+				break;
 			case MAIN_ACTION_ABOUT:
 				break;
 			case MAIN_ACTION_EXIT:
@@ -223,5 +237,44 @@ implements ApplicationInitializer, CommandListener
 			configurationSave();
 		}
 		this.midlet.exit();
+	}
+	
+	/**
+	 * Stops the busy indicator.
+	 * When no busy indicators are left, the busy indicator won't be shown any more.
+	 * The busy indicator uses ScreenInfo, this element requires the preprocessing variable 
+	 * <variable name="polish.ScreenInfo.enable" value="true" />
+	 * in your build.xml script.
+	 * Each long running operation should call startBusyIndicator() and stopBusyIndicator() for giving the user feedback.
+	 * @see #startBusyIndicator()
+	 */
+	private synchronized void stopBusyIndicator() {
+		if (this.busyIndicators > 0) {
+			this.busyIndicators--;
+			if (this.busyIndicators == 0) {
+				ScreenInfo.setVisible(false);
+			}
+		}
+		//#debug
+		System.out.println("stop busy indicator: Number of busy indicators: " + this.busyIndicators);
+	}
+
+	/**
+	 * Starts the busy indicator.
+	 * When this is the first indicator, the busy indicator will be made visible.
+	 * The busy indicator uses ScreenInfo, this element requires the preprocessing variable 
+	 * <variable name="polish.ScreenInfo.enable" value="true" />
+	 * in your build.xml script.
+	 * Each long running operation should call startBusyIndicator() and stopBusyIndicator() for giving the user feedback.
+	 * @see #stopBusyIndicator()
+	 * @see #initApp() for initialization of the gauge
+	 */
+	private synchronized void startBusyIndicator() {
+		if (this.busyIndicators == 0) {
+			ScreenInfo.setVisible(true);
+		}
+		this.busyIndicators++;
+		//#debug
+		System.out.println("start busy indicator: Number of busy indicators: " + this.busyIndicators);
 	}
 }

@@ -6,10 +6,7 @@
 	<property  name="device" value="Generic/AnyPhone" />
 
 
-	<property name="wtk.home" location="/home/enough/dev/WTK2.2" />
-	<property name="nokia.home" location="/home/enough/dev/Nokia" />
 	<property name="polish.home" location="../enough-polish-build" />
-	<property  name="mpp.home" location="/home/enough/dev/mpp-sdk"/>
 
 	
 	<!-- task definitions -->
@@ -40,7 +37,7 @@
 	<j2mepolish>
 	    <!-- general settings -->
 		<info 
-			copyright="Copyright 2010 Enough Software. All rights reserved." 
+			copyright="Copyright 2011 Enough Software. All rights reserved." 
 			description="An application stub." 
 			infoUrl="http://www.enough.de" 
 			jarName="${polish.vendor}-${polish.name}-${polish.locale}-app.jar" 
@@ -58,8 +55,6 @@
 		</deviceRequirements>
 	    <!-- build settings -->
 		<build fullscreen="menu" 
-                polishDir="../enough-polish-j2me/source/src" 
-                symbols="polish.skipArgumentCheck" 
                 usePolishGui="true"
 			>
 			<!-- midlets definition -->
@@ -73,6 +68,7 @@
 				-->
 				<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
 				<variable name="polish.useScrollBar" value="true" />
+				<variable name="polish.ScreenInfo.enable" value="true" />
 			</variables>
 			<!-- obfuscator settings: do not obfuscate when the test-property is true -->
 			<obfuscator useDefaultPackage="false" name="ProGuard" unless="test">

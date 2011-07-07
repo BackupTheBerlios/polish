@@ -86,6 +86,8 @@ title {
 	background-color: bgColor;
 	border: none;
 	layout: horizontal-center | horizontal-expand;
+	layout: center | vertical-center | expand;
+	min-height: imageheight( busy01.png );
 }
 
 /*********************   MAIN MENU   ******************************************************************************************************/
@@ -111,7 +113,22 @@ title {
 scrollbar {
 	scrollbar-slider-color: #333;
 	scrollbar-slider-width: 3;
+	/*
+	when the scrollbar should be faded out when not used:
+	scrollbar-fadeout: true;
+	opacity: 80%;
+	*/
 }
+
+/*********************   BUSY INDICATOR   ******************************************************************************************************/
+.busyGauge {
+	padding-top: 9px;
+	padding-left: 1px;
+	view-type: gauge-images;
+	gauge-images-sources: busy01.png,busy02.png,busy03.png,busy04.png,busy05.png,busy06.png,busy07.png,busy08.png,busy09.png,busy10.png,busy11.png,busy12.png;
+	gauge-images-interval: 100;
+}
+
 
 /*********************   MENU BAR     *******************************************************************************************************/
 /* You need to activate the extended menubar that allows this finetuned design by setting the 
