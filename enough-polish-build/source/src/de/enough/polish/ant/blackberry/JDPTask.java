@@ -262,7 +262,7 @@ public class JDPTask extends Task {
 		}
 		if (env.hasSymbol(Obfuscator.SYMBOL_ENVIRONMENT_HAS_BEEN_OBFUSCATED)) {
 			// this project has been obfuscated, cannot create a library project:
-			System.out.println("Note: project is obfuscated, the generated JDP will not contain the necessary subproject for the imported files.");
+			System.out.println("JDP: Note: project is obfuscated, the generated JDP will not contain the necessary subproject for the imported files.");
 			return "";
 		}
 		// create import list:
