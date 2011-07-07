@@ -2603,7 +2603,7 @@ public class PolishTask extends ConditionalTask {
 
 		if (device.getNumberOfChangedFiles() == 0 && !this.lastRunFailed) {
 			System.out.println("Skipping obfuscate step (no compilation)." );
-			this.environment.addSymbol("polish.build.obfuscated");
+			this.environment.addSymbol(Obfuscator.SYMBOL_ENVIRONMENT_HAS_BEEN_OBFUSCATED);
 			String targetPath = device.getBaseDir() + File.separatorChar + "obfuscated";
 			File targetDir = new File( targetPath );
 			if (targetDir.exists()) {
