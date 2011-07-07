@@ -5538,15 +5538,25 @@
 	/>
 	
 	<attribute
-		name="vertical-doors-screen-change-animation-speed"
-		type="integer"
+		name="vertical-doors-screen-change-animation-duration"
+		type="time"
 		appliesTo="VerticalDoorsScreenChangeAnimation"
-		description="The constant speed of the animation. By default the animation uses a somewhat quadratic de-acceleration."
-		default="-1"
+		description="The duration of the animation."
+		default="800ms"
 		id="481"
 		since="J2ME Polish 2.2"
 	/>
 	
+	<attribute
+		name="vertical-doors-screen-change-animation-direction"
+		type="integer"
+		appliesTo="VerticalDoorsScreenChangeAnimation"
+		description="The direction of the animation."
+		default="default"
+		values="default,open,close"
+		id="482"
+		since="J2ME Polish 2.2"
+	/>
 	
 <!--
 	<attribute
