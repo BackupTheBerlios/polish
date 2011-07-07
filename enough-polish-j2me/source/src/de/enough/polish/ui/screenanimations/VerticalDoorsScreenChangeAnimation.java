@@ -30,6 +30,9 @@ package de.enough.polish.ui.screenanimations;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
+import de.enough.polish.ui.CssAnimation;
+import de.enough.polish.ui.Display;
+import de.enough.polish.ui.Displayable;
 import de.enough.polish.ui.ScreenChangeAnimation;
 import de.enough.polish.ui.Style;
 
@@ -41,8 +44,14 @@ import de.enough.polish.ui.Style;
  */
 public class VerticalDoorsScreenChangeAnimation extends ScreenChangeAnimation
 {	
+	private static final int DIRECTION_DEFAULT = 0;
+	private static final int DIRECTION_CLOSE = 1;
+	private static final int DIRECTION_OPEN = 2;
+	
 	private int currentY;
-	private int speed = -1;
+	private long duration = 500;
+	private int direction = DIRECTION_DEFAULT;
+	private long startTime;
 
 	/**
 	 * Creates a new animation 
@@ -62,46 +71,66 @@ public class VerticalDoorsScreenChangeAnimation extends ScreenChangeAnimation
 		super.setStyle(style);
 		this.currentY = this.screenHeight / 2;
 
-		//#if polish.css.vertical-doors-screen-change-animation-speed
-			Integer speedInt = style.getIntProperty("vertical-doors-change-animation-speed");
-			if (speedInt != null)
+		//#if polish.css.vertical-doors-screen-change-animation-duration
+			Integer durationInt = style.getIntProperty("vertical-doors-screen-change-animation-duration");
+			if (durationInt != null)
 			{
-				this.speed = speedInt.intValue();
-			} else {
-				this.speed = -1;
+				this.duration = durationInt.longValue();
 			}
 		//#endif
-		
+		//#if polish.css.vertical-doors-screen-change-animation-direction
+			Integer directionInt = style.getIntProperty("vertical-doors-screen-change-animation-direction");
+			if (durationInt != null)
+			{
+				this.direction = directionInt.intValue();
+			} else {
+				this.direction = DIRECTION_DEFAULT;
+			}
+		//#endif
 	}
+	
+	
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.ScreenChangeAnimation#onShow(de.enough.polish.ui.Style, de.enough.polish.ui.Display, int, int, de.enough.polish.ui.Displayable, de.enough.polish.ui.Displayable, boolean)
+	 */
+	protected void onShow(Style style, Display dsplay, int width, int height,
+			Displayable lstDisplayable, Displayable nxtDisplayable,
+			boolean isForward) 
+	{
+		super.onShow(style, dsplay, width, height, lstDisplayable, nxtDisplayable,
+				isForward);
+		this.startTime = System.currentTimeMillis();
+		//#if polish.css.vertical-doors-screen-change-animation-direction
+			if (this.direction == DIRECTION_CLOSE) {
+				this.isForwardAnimation = true;
+			} else if (this.direction == DIRECTION_OPEN) {
+				this.isForwardAnimation = false;
+			}
+		//#endif
+	}
+
+
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#animate()
 	 */
 	protected boolean animate()
 	{
-		int adjust;
-		//#if polish.css.vertical-doors-screen-change-animation-speed
-			if (this.speed != -1) {
-				adjust = this.speed;
-			} else {
-		//#endif
-				adjust = this.currentY / 3;
-				if (adjust < 2) {
-					adjust = 2;
-				}
-		//#if polish.css.vertical-doors-screen-change-animation-speed
-			}
-		//#endif
-		if (this.currentY > 0)
+		long passedTime = System.currentTimeMillis() - this.startTime;
+		int nextY = CssAnimation.calculatePointInRange(this.screenHeight/2, 0, passedTime, this.duration, CssAnimation.FUNCTION_EASE_OUT);
+
+		if (nextY > 0)
 		{
-			this.currentY -= adjust;
+			this.currentY = nextY;
 			return true;
 		}
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.microedition.lcdui.Canvas#paint(javax.microedition.lcdui.Graphics)
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.ScreenChangeAnimation#paintAnimation(javax.microedition.lcdui.Graphics)
 	 */
 	public void paintAnimation(Graphics g)
 	{
