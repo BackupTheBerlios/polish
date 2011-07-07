@@ -78,6 +78,8 @@
 						unless="polish.blackberry || polish.android" 
 					/>
 					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
+					<!-- use available height instead of the CSS standard width for min-height, min-item-height, max-height, etc: -->
+					<variable name="polish.Item.useHeightInsteadOfWidth" value="true" />
 				</variables>
 				<!--
 				<jad>

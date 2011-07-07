@@ -80,23 +80,25 @@ title {
 	inherit: false;
 	margin: 2px;
 	padding: 5px;
+	padding-bottom: 14px;
 	font-color: fontColor;
 	font-style: bold;
 	font-size: small;
 	icon-image: url( icon%INDEX%.png );	
 	icon-image-align: top;
-	layout: center | expand;
+	layout: expand | center | vertical-center;
+	min-height: 30%;
 }
 
 .mainCommand:hover {
-	inherit: false;
-	margin: 0px;
+	font-color: #fff;
 	background {
-		type: round-rect;
-		arc: 8;
-		color: brightBgColor;
-		border-color: fontColor;
-		border-width: 2px;
+		type: patch;
+		image: url( glass-button.png );
+		left-width: 14;
+		top-height: 14;
+		right-width: 14;
+		bottom-height: 14; 
 	}
 }
 
