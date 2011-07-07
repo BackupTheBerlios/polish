@@ -506,12 +506,12 @@
 		
 		<mapping from="patch"
 			to="de.enough.polish.ui.backgrounds.PatchBackground">
-			<param name="image" type="image-url" />
-			<param name="left-width" type="int" primitive="true" default="0" />
-			<param name="top-height" type="int" primitive="true" default="0" />
-			<param name="right-width" type="int" primitive="true" default="0" />
-			<param name="bottom-height" type="int" primitive="true" default="0" />
-			<param name="transparent-fill" type="boolean" primitive="true" default="false" />
+			<param name="image" type="image-url" description="The 9-patch source image" since="2.2.2" />
+			<param name="left-width" type="int" primitive="true" default="0" description="The width of the corners on the left side in pixel" since="2.2.2" />
+			<param name="top-height" type="int" primitive="true" default="0" description="The height of the corners on the top side in pixel" since="2.2.2" />
+			<param name="right-width" type="int" primitive="true" default="0"  description="The width of the corners on the right side in pixel" since="2.2.2" />
+			<param name="bottom-height" type="int" primitive="true" default="0"  description="The height of the corners on the bottom side in pixel" since="2.2.2" />
+			<param name="transparent-fill" type="boolean" primitive="true" default="false" description="Set to true when the center region should not be tiled at all" since="2.2.2" />
 		</mapping>
 	</attribute>
 	
