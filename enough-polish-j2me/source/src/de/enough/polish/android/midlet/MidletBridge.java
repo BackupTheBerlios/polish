@@ -268,7 +268,7 @@ public class MidletBridge extends Activity {
 //			return;
 //		}
 //		PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-//		this.wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK|PowerManager.ACQUIRE_CAUSES_WAKEUP, "Skobbler Wake Lock");
+//		this.wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK|PowerManager.ACQUIRE_CAUSES_WAKEUP, "Wake Lock");
 //		this.wakeLock.acquire();
 //		//#debug
 //		System.out.println("WakeLock acquired?"+this.wakeLock.isHeld());

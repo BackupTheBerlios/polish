@@ -507,39 +507,11 @@
 		<mapping from="patch"
 			to="de.enough.polish.ui.backgrounds.PatchBackground">
 			<param name="image" type="image-url" />
-			<param name="color-x" type="int" primitive="true" default="0" />
-			<param name="color-y" type="int" primitive="true" default="0" />
 			<param name="left-width" type="int" primitive="true" default="0" />
 			<param name="top-height" type="int" primitive="true" default="0" />
 			<param name="right-width" type="int" primitive="true" default="0" />
 			<param name="bottom-height" type="int" primitive="true" default="0" />
-			<param name="margin-left" type="int" primitive="true" default="0" />
-			<param name="margin-top" type="int" primitive="true" default="0" />
-			<param name="margin-right" type="int" primitive="true" default="0" />
-			<param name="margin-bottom" type="int" primitive="true"
-				default="0" />
-			<param name="style" type="map" default="full" primitive="true"
-				values="full, top, bottom, vertical" allowsCombinations="false"
-				requiresMapping="true" isCaseSensitive="false" description="The style of the patch">
-				<mapping from="full"
-					to="de.enough.polish.ui.backgrounds.PatchBackground.STYLE_FULL" />
-				<mapping from="top"
-					to="de.enough.polish.ui.backgrounds.PatchBackground.STYLE_TOP" />
-				<mapping from="center"
-					to="de.enough.polish.ui.backgrounds.PatchBackground.STYLE_CENTER" />
-				<mapping from="bottom"
-					to="de.enough.polish.ui.backgrounds.PatchBackground.STYLE_BOTTOM" />
-			</param>
-		</mapping>
-		<mapping from="horizonal-patch"
-			to="de.enough.polish.ui.backgrounds.HorizontalPatchBackground">
-			<param name="image" type="image-url" />
-			<param name="corner-width" type="int" primitive="true" default="0" />
-			<param name="margin-left" type="int" primitive="true" default="0" />
-			<param name="margin-top" type="int" primitive="true" default="0" />
-			<param name="margin-right" type="int" primitive="true" default="0" />
-			<param name="margin-bottom" type="int" primitive="true"
-				default="0" />
+			<param name="transparent-fill" type="boolean" primitive="true" default="false" />
 		</mapping>
 	</attribute>
 	
