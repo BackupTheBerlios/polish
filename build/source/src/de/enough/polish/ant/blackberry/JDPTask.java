@@ -16,6 +16,7 @@ import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.ant.build.LibrariesSetting;
 import de.enough.polish.ant.build.LibrarySetting;
+import de.enough.polish.obfuscate.Obfuscator;
 import de.enough.polish.preverify.Preverifier;
 import de.enough.polish.preverify.ProGuardPreverifier;
 import de.enough.polish.util.FileUtil;
@@ -256,8 +257,15 @@ public class JDPTask extends Task {
 		Environment env = Environment.getInstance();
 		LibrariesSetting libraries = (LibrariesSetting) env.get(LibrariesSetting.KEY_ENVIRONMENT);
 		if (libraries == null) {
+			// this project does not use any libraries:
 			return "";
 		}
+		if (env.hasSymbol(Obfuscator.SYMBOL_ENVIRONMENT_HAS_BEEN_OBFUSCATED)) {
+			// this project has been obfuscated, cannot create a library project:
+			System.out.println("Note: project is obfuscated, the generated JDP will not contain the necessary subproject for the imported files.");
+			return "";
+		}
+		// create import list:
 		Device device = env.getDevice();
 		LibrarySetting[] settings = libraries.getLibraries();
 		ArrayList filesList = new ArrayList();
@@ -286,7 +294,8 @@ public class JDPTask extends Task {
 			// now rewrite the files:
 			for (int i = 0; i < files.length; i++) {
 				File file = files[i];
-				files[i] = new File( targetDir, file.getAbsolutePath().replace(sourceDir.getAbsolutePath(), ""));
+				File newFile = new File( targetDir, file.getAbsolutePath().replace(sourceDir.getAbsolutePath(), ""));
+				files[i]= newFile;
 			}
 			// now create the JAR file:
 			JarUtil.jar(files, targetDir, new File( rootFolder + "bb-library.jar"), false );

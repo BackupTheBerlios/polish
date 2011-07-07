@@ -52,7 +52,11 @@ import de.enough.polish.devices.LibraryManager;
  * @author Robert Virkus, robert@enough.de
  */
 public abstract class Obfuscator extends Extension {
-	
+	/**
+	 * The symbol that can be queried in Environment.getSymbol() when you're interested whether this project has been obfuscated already.
+	 * @see Environment#hasSymbol(String)
+	 */
+	public static final String SYMBOL_ENVIRONMENT_HAS_BEEN_OBFUSCATED = "polish.build.obfuscated";
 	protected Project project;
 	protected LibraryManager libraryManager;
 	protected File libDir;
