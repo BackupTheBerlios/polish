@@ -134,7 +134,7 @@ public class TranslationPreprocessor extends CustomPreprocessor {
 						if (translation.getId() <= 0) {
 							throw new BuildException(getErrorStart(className, lines) + "Translation for key [" + key + "] has no assigned ID. Please report this error to j2mepolish@enough.de along with the error message and messages.txt file.");
 						} else if (translation.getId() > this.translationManager.numberOfTranslations( translation.getType() )) {
-							throw new BuildException(getErrorStart(className, lines) + "Translation for key [" + key + "] has the invalid assigned ID " + translation.getId() + ", max=" + this.translationManager.numberOfTranslations( translation.getType() ) + ". Please report this error to j2mepolish@enough.de along with the error message and messages.txt file.");
+							throw new BuildException(getErrorStart(className, lines) + "Translation for key [" + key + "] has the invalid assigned ID " + translation.getId() + ", max=" + this.translationManager.numberOfTranslations( translation.getType() ) + ". Please remove the .polishSettings directory from the root directory of this project. If this does not solve this problem, please report this error to j2mepolish@enough.de along with the error message, the .polishSettings directory and messages.txt file.");
 						}
 						String id = "" + (translation.getId() - 1);
 						String quotedKey = '"' + key + '"';
