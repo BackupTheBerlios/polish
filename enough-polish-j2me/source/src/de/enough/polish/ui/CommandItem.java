@@ -656,6 +656,29 @@ public class CommandItem extends IconItem {
 			}
 		//#endif
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#onScreenSizeChanged(int, int)
+	 */
+	public void onScreenSizeChanged(int screenWidth, int screenHeight) {
+		super.onScreenSizeChanged(screenWidth, screenHeight);
+		if (this.children != null) {
+			this.children.onScreenSizeChanged(screenWidth, screenHeight);
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#resetStyle(boolean)
+	 */
+	public void resetStyle(boolean recursive) {
+		super.resetStyle(recursive);
+		if (recursive) {
+			if (this.children != null) {
+				this.children.resetStyle(recursive);
+			}
+		}
+	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.IconItem#animate(long, de.enough.polish.ui.ClippingRegion)

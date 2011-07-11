@@ -959,6 +959,17 @@ public class TreeItem
 			}
 		}
 
+		/* (non-Javadoc)
+		 * @see de.enough.polish.ui.Item#resetStyle(boolean)
+		 */
+		public void resetStyle(boolean recursive) {
+			super.resetStyle(recursive);
+			if (recursive) {
+				if (this.children != null) {
+					this.children.resetStyle(recursive);
+				}
+			}
+		}
 		
 	}
 
