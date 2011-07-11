@@ -977,4 +977,13 @@ implements CommandListener
 		//#endif
 	}
 
+	/**
+	 * Sets the next displayable for Alerts that have a default OK option.
+	 * By default this is set automatically within the showNotify() method 
+	 * @param next the next displayble
+	 */
+	public void setNextDisplayable(Displayable next) {
+		this.nextDisplayable = next;
+	}
+
 }

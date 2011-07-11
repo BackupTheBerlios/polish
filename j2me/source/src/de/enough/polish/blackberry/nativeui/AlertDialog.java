@@ -28,6 +28,7 @@ package de.enough.polish.blackberry.nativeui;
 
 import de.enough.polish.ui.Alert;
 import de.enough.polish.ui.Command;
+import de.enough.polish.ui.Display;
 import de.enough.polish.util.ArrayList;
 import net.rim.device.api.ui.component.Dialog;
 import net.rim.device.api.ui.component.DialogClosedListener;
@@ -51,6 +52,7 @@ public class AlertDialog extends Dialog implements DialogClosedListener {
 	public AlertDialog(Alert alert) {
 		super( getMessage(alert), getChoices(alert), getChoiceValues(alert), 0, null, 0 );
 		this.alert = alert;
+		this.alert.setNextDisplayable( Display.getInstance().getCurrent() );
 		setDialogClosedListener(this);
 	}
 
