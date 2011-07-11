@@ -6038,6 +6038,26 @@ public abstract class Item implements UiElement, Animatable
 	}
 	
 	/**
+	 * Resets the style of this item and all its children (if any).
+	 * This is useful when you have applied changes to this Item's style or one of its elements.
+	 * @param recursive true when all subelements of this Item should reset their style as well.
+	 * @see Screen#resetStyle(boolean)
+	 * @see UiAccess#resetStyle(Screen,boolean)
+	 * @see UiAccess#resetStyle(Item,boolean)
+	 */
+	public void resetStyle(boolean recursive) {
+		if (this.style != null) {
+			setStyle(this.style);
+		}
+		if (recursive) {
+			if (this.label != null) {
+				this.label.resetStyle(recursive);
+			}
+		}
+	}
+
+	
+	/**
 	 * Notifies this item about a new screen size.
 	 * The default implementation just checks if the design should switch to portrait or landscape-style (if those CSS attributes are used).
 	 * The item will be re-initialized with its available dimensions using init(int,int,int) soon.
@@ -6355,6 +6375,7 @@ public abstract class Item implements UiElement, Animatable
 			return this.nativeItem;
 		}
 	//#endif
+
 
 
 //#ifdef polish.Item.additionalMethods:defined

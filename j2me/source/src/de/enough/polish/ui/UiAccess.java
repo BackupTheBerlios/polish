@@ -968,7 +968,58 @@ public final class UiAccess {
 		// ignore
 	}
 	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Resets the style of the specified item and all its children (if any).
+	 * This is useful when you have applied changes to the Item's style or one of its elements.
+	 * @param recursive true when all subelements of the Item should reset their style as well.
+	 * @param item the item which should reset its style
+	 * @see UiAccess#resetStyle(Screen, boolean)
+	 */
+	public static void resetStyle( javax.microedition.lcdui.Item item, boolean recursive ) {
+		// ignore
+	}
+	//#endif
 
+	//#if polish.midp
+	/**
+	 * Resets the style of the specified screen and all its elements.
+	 * This is useful when you have applied changes to the screen's style or one of its elements.
+	 * @param screen the screen which should reset its style
+	 * @param recursive true when all subelements of the screen should reset their style as well.
+	 * @see UiAccess#resetStyle(Item, boolean)
+	 */
+	public static void resetStyle( javax.microedition.lcdui.Screen screen, boolean recursive ) {
+		// ignore
+	}
+	//#endif
+
+	//#if polish.usePolishGui
+	/**
+	 * Resets the style of the specified item and all its children (if any).
+	 * This is useful when you have applied changes to the Item's style or one of its elements.
+	 * @param recursive true when all subelements of the Item should reset their style as well.
+	 * @param item the item which should reset its style
+	 * @see UiAccess#resetStyle(Screen, boolean)
+	 */
+	public static void resetStyle( Item item, boolean recursive ) {
+		item.resetStyle(recursive);
+	}
+	//#endif
+
+	//#if polish.usePolishGui
+	/**
+	 * Resets the style of the specified screen and all its elements.
+	 * This is useful when you have applied changes to the screen's style or one of its elements.
+	 * @param screen the screen which should reset its style
+	 * @param recursive true when all subelements of the screen should reset their style as well.
+	 * @see UiAccess#resetStyle(Item, boolean)
+	 */
+	public static void resetStyle( Screen screen, boolean recursive ) {
+		screen.resetStyle(recursive);
+	}
+	//#endif
 
 	//#if polish.usePolishGui
 	/**

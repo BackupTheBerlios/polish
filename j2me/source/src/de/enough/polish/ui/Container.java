@@ -2714,6 +2714,25 @@ public class Container extends Item {
 			}
 		}
 	//#endif
+		
+	
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#resetStyle(boolean)
+	 */
+	public void resetStyle(boolean recursive) {
+		super.resetStyle(recursive);
+		if (recursive) {
+			Object[] items = this.itemsList.getInternalArray();
+			for (int i = 0; i < items.length; i++) {
+				Item item = (Item) items[i];
+				if (item == null) {
+					break;
+				}
+				item.resetStyle(recursive);
+			}
+		}
+	}
 
 	/**
 	 * Changes the style of all children that are currently using the specified oldChildStyle with the given newChildStyle.

@@ -1974,6 +1974,23 @@ public class MenuBar extends Item {
 		//#endif
 	}
 	
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#resetStyle(boolean)
+	 */
+	public void resetStyle(boolean recursive) {
+		super.resetStyle(recursive);
+		if (recursive) {
+			this.commandsContainer.resetStyle(recursive);
+			this.singleLeftCommandItem.resetStyle(recursive);
+			this.singleRightCommandItem.resetStyle(recursive);
+			//#if tmp.useMiddleCommand
+				this.singleMiddleCommandItem.resetStyle(recursive);
+			//#endif
+		}
+	}
+
+	
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#animate(long, de.enough.polish.ui.ClippingRegion)

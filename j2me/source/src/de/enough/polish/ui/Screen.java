@@ -482,7 +482,7 @@ implements UiElement, Animatable
 	}
 		
 	/**
-	 * Initialises this screen before it is painted for the first time.
+	 * Initializes this screen before it is painted for the first time.
 	 */
 	protected void init( int width, int height) {
 		//#debug
@@ -1607,6 +1607,33 @@ implements UiElement, Animatable
 	}
 	
 	/**
+	 * Resets the style of this screen and all its elements.
+	 * This is useful when you have applied changes to this screen's style or one of its elements.
+	 * @param recursive true when all subelements of this screen should reset their style as well.
+	 */
+	public void resetStyle(boolean recursive) {
+		if (this.style != null) {
+			setStyle(this.style);
+		}
+		if (recursive) {
+			//#if tmp.usingTitle
+				if (this.title != null) {
+					this.title.resetStyle(recursive);
+				}
+			//#endif
+			//#if tmp.useExternalMenuBar
+				this.menuBar.resetStyle(recursive);
+			//#endif
+			if (this.subTitle != null) {
+				this.subTitle.resetStyle(recursive);
+			}
+			if (this.container != null) {
+				this.container.resetStyle(recursive);
+			}
+		}
+	}
+	
+	/**
 	 * Sets the style of this screen.
 	 * 
 	 * @param style the style
@@ -1937,18 +1964,6 @@ implements UiElement, Animatable
 		setStyle( style, true );
 	}
 	
-	//#if tmp.useTitleMenu
-	boolean hasTitleMenu(Style style)
-	{
-		Boolean titleMenuBool = style.getBooleanProperty("title-menu");
-		if(titleMenuBool != null)
-		{
-			return titleMenuBool.booleanValue();
-		}
-		
-		return false;
-	}
-	//#endif
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.UiElement#setStyle(de.enough.polish.ui.Style, boolean)
@@ -2032,6 +2047,19 @@ implements UiElement, Animatable
 			}
 		//#endif
 	}
+	
+	//#if tmp.useTitleMenu
+	boolean hasTitleMenu(Style screenStyle)
+	{
+		Boolean titleMenuBool = screenStyle.getBooleanProperty("title-menu");
+		if(titleMenuBool != null)
+		{
+			return titleMenuBool.booleanValue();
+		}
+		
+		return false;
+	}
+	//#endif
 	
 	/**
 	 * Animates this screen.
