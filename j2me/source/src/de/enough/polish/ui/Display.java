@@ -962,17 +962,18 @@ public class Display
 			}
 		//#endif
 		
+		if (nextDisplayable == this.currentDisplayable) {
+			repaint();
+			this.nextOrCurrentDisplayable = null;
+			return;
+		}
+
 		//#if polish.blackberry
 			if (this.nativeDisplay.notifyDisplayableChange( this.currentDisplayable, nextDisplayable )) {
 				this.nextOrCurrentDisplayable = null;
 				return;
 			}
 		//#endif
-		if (nextDisplayable == this.currentDisplayable) {
-			repaint();
-			this.nextOrCurrentDisplayable = null;
-			return;
-		}
 		if (nextDisplayable == null || !(nextDisplayable instanceof Canvas)) {
 			// this is a native Displayable
 			if (nextDisplayable != null) {
