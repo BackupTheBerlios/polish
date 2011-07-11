@@ -514,24 +514,23 @@ implements Comparator
 			}
 		}
 		//TODO 2011-07-04: check whether this code is a) really necessary and b) really working:
-		if (this.isDynamic && false) {
+		if (this.isDynamic) {
 			// check if any translations have been removed - in that case empty strings need to be included,
 			// otherwise the dynamic translations are not backwards compatible anymore:
 			if (translationsPlain.size() < idsPlain.getIdsMap().size()) {
-				System.out.println("it appears that a translation is not used anymore: there are " + idsPlain.getIdsMap().size() + " IDs but only " + translationsPlain.size() + " translations.");
+				//System.out.println("it appears that a translation is not used anymore: there are " + idsPlain.getIdsMap().size() + " IDs but only " + translationsPlain.size() + " translations.");
 				Translation[] translations = getTranslations( translationsPlain );
-				int index = 0;
+				int index = 1;
 				for (int i = 0; i < translations.length; i++)
 				{
 					Translation translation = translations[i];
-					//System.out.println(translation.getId() + "=" +  (index+1) );
-					while (translation.getId() != (index+1)) {
+					while (translation.getId() != index) {
 						String key = idsPlain.getKey(index);
 						if (key == null) {
-							System.out.println("Plain IDs are: " + idsPlain.getIdsMap());
+							//System.out.println("Plain IDs are: " + idsPlain.getIdsMap());
 							throw new BuildException("Error while auto-conceiling with unused translation with ID=" + translation.getId() + " at index=" + index  + ": " +  translation.getKey() + "=" + translation.getQuotedValue() + " in language " + this.environment.getVariable("polish.locale") + ". Please remove ${project.home}/.polishSettings and restart J2ME Polish.");
 						}
-						//System.out.println("adding empty translation for " + index + "=" + key );
+						//System.out.println("adding empty translation for " + index + "=" + key);
 						Translation plain = new Translation(key, "", index);
 						this.translationsByKey.put(key, plain);
 						translationsPlain.add(plain);
