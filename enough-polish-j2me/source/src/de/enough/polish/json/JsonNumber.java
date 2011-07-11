@@ -136,5 +136,50 @@ public class JsonNumber implements JsonItem {
 		serializeToStringBuffer(buffer);
 		return buffer.toString();
 	}
+	
+	/**
+	 * Convenience method for getting the long value of this number
+	 * @return the long value
+	 * @throws NullPointerException when the string representation is null
+	 * @throws NumberFormatException when the number could not be parsed
+	 */
+	public long toLong() {
+		return Long.parseLong(this.stringRepresentation);
+	}
+
+	/**
+	 * Convenience method for getting the int value of this number
+	 * @return the integer value
+	 * @throws NullPointerException when the string representation is null
+	 * @throws NumberFormatException when the number could not be parsed
+	 */
+	public int toInt() {
+		return Integer.parseInt(this.stringRepresentation);
+	}
+	
+	//#if polish.hasFloatingPoint
+	/**
+	 * Convenience method for getting the float value of this number
+	 * @return the float value
+	 * @throws NullPointerException when the string representation is null
+	 * @throws NumberFormatException when the number could not be parsed
+	 */
+	public float toFloat() {
+		return Float.parseFloat(this.stringRepresentation);
+	}
+	//#endif
+
+	
+	//#if polish.hasFloatingPoint
+	/**
+	 * Convenience method for getting the double value of this number
+	 * @return the double value
+	 * @throws NullPointerException when the string representation is null
+	 * @throws NumberFormatException when the number could not be parsed
+	 */
+	public double toDouble() {
+		return Double.parseDouble(this.stringRepresentation);
+	}
+	//#endif
 
 }
