@@ -1352,8 +1352,6 @@ public abstract class BaseScreen
     				item.run();
     				processed = true;
         	//#endif
-    		} else {
-    			processed = true;
     		}
     	}
     	return processed;
@@ -1553,7 +1551,7 @@ public abstract class BaseScreen
 			}
 			if (item.isSeparator) {
 				menu.addSeparator();
-			} else {
+			} else if ((instance == 0) || item.isContextMenu()) {
 				menu.add(item);
 			}
 		}
