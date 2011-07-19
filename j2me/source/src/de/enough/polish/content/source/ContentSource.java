@@ -552,7 +552,7 @@ public abstract class ContentSource {
 	 * @throws ContentException
 	 *             if an error occurs
 	 */
-	public void sweep() throws ContentException {
+	public void sweep(boolean includeSources) throws ContentException {
 		if (hasStorage()) {
 			for (int index = 0; index < this.storageIndex.size(); index++) {
 				StorageReference reference = this.storageIndex
@@ -563,9 +563,11 @@ public abstract class ContentSource {
 			}
 		}
 		
-		for (int index = 0; index < this.sources.size(); index++) {
-			ContentSource source = (ContentSource) this.sources.get(index);
-			source.sweep();
+		if(includeSources) {
+			for (int index = 0; index < this.sources.size(); index++) {
+				ContentSource source = (ContentSource) this.sources.get(index);
+				source.sweep(true);
+			}
 		}
 	}
 
