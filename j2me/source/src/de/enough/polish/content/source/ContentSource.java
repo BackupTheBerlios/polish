@@ -554,10 +554,9 @@ public abstract class ContentSource {
 	 */
 	public void sweep(boolean includeSources) throws ContentException {
 		if (hasStorage()) {
-			for (int index = 0; index < this.storageIndex.size(); index++) {
+			while(this.storageIndex.size() > 0) {
 				StorageReference reference = this.storageIndex
-						.getReference(index);
-
+						.getReference(0);
 				// destroy the content
 				destroyContent(reference);
 			}
