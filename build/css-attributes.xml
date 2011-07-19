@@ -5540,6 +5540,17 @@
 		since="J2ME Polish 2.2"
 	/>
 	
+	<attribute
+		name="color"
+		type="color"
+		appliesTo="Item"
+		description="A color attribute to be used for various needs and concerns"
+		default="black"
+		id="484"
+		since="J2ME Polish 2.2"
+	/>
+	
+	
 <!--
 	<attribute
 		name="repaint-previous-screen-anchor"
