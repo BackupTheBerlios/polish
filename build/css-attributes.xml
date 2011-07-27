@@ -5529,15 +5529,16 @@
 		id="482"
 		since="J2ME Polish 2.2"
 	/>
-	
+
 	<attribute
-		name="vertical-doors-screen-change-animation-delay"
-		type="time"
+		name="vertical-doors-screen-change-animation-door"
+		type="integer"
 		appliesTo="VerticalDoorsScreenChangeAnimation"
-		description="The delay between the upper and the lower door of the animation."
-		default="0ms"
+		description="The door which should be operated during the animation."
+		default="both"
+		values="both,top,bottom"
 		id="483"
-		since="J2ME Polish 2.2"
+		since="J2ME Polish 2.2.2"
 	/>
 	
 	<attribute
@@ -5549,6 +5550,7 @@
 		id="484"
 		since="J2ME Polish 2.2"
 	/>
+	
 	
 	
 <!--
