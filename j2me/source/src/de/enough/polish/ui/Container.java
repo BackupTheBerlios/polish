@@ -31,6 +31,10 @@ import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.util.ArrayList;
 
+//#if polish.blackberry
+//# import de.enough.polish.blackberry.ui.BaseScreen;
+//#endif
+
 /**
  * <p>Contains a number of items.</p>
  * <p>Main purpose is to manage all items of a Form or similar canvases.</p>
